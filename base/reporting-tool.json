@@ -1,0 +1,586 @@
+{
+  "ReportingTool": {
+    "configurations": {
+      "name": "Overview",
+      "dashboard": {
+        "cards": [
+          {
+            "id": 24,
+            "name": "DemoTopXCard",
+            "params": {
+              "url": "/reports/top-x",
+              "params": {
+                "filter": {
+                  "teu": {},
+                  "topX": {
+                    "x": 5
+                  },
+                  "shipper": {},
+                  "boundType": {
+                    "boundType": [
+                      "O"
+                    ]
+                  },
+                  "estimatedDepartureDate": {
+                    "To": "2018-04-30",
+                    "From": "2017-05-01"
+                  }
+                }
+              },
+              "process": {
+                "filter": {
+                  "rowIndex": {
+                    "$ne": 999999
+                  }
+                }
+              }
+            },
+            "layouts": {
+              "lg": {
+                "h": 8,
+                "w": 2,
+                "x": 0,
+                "y": 8
+              },
+              "md": {
+                "h": 8,
+                "w": 2,
+                "x": 0,
+                "y": 8
+              },
+              "__base": {
+                "w": 2,
+                "minH": 8
+              }
+            }
+          },
+          {
+            "id": 25,
+            "name": "DemoYoYCard",
+            "params": {
+              "url": "/reports/yoy-by-month",
+              "params": {
+                "fields": ["consignee"],
+                "filter": {
+                  "teu": {},
+                  "shipmentMonth": {},
+                  "consigneeParties": {
+                    "parties": [
+                      16767,
+                      35317,
+                      34913,
+                      24909,
+                      20971
+                    ]
+                  },
+                  "estimatedDepartureDate": {
+                    "To": "2018-04-30",
+                    "From": "2017-05-01"
+                  }
+                }
+              }
+            },
+            "layouts": {
+              "lg": {
+                "h": 8,
+                "w": 4,
+                "x": 0,
+                "y": 0
+              },
+              "md": {
+                "h": 8,
+                "w": 4,
+                "x": 0,
+                "y": 0
+              },
+              "__base": {
+                "w": 2,
+                "minH": 8
+              }
+            }
+          },
+          {
+            "id": 27,
+            "name": "DemoTableCard",
+            "params": {
+              "url": "/reports/yoy-by-month",
+              "table": {
+                "plugins": [
+                  "even",
+                  {
+                    "name": "grouping",
+                    "params": {
+                      "groupBy": "groupAttribute"
+                    }
+                  }
+                ]
+              },
+              "params": {
+                "fields": ["consignee"],
+                "filter": {
+                  "teu": {},
+                  "shipmentMonth": {},
+                  "consigneeParties": {
+                    "parties": [
+                      16767,
+                      35317,
+                      34913,
+                      24909,
+                      20971
+                    ]
+                  },
+                  "estimatedDepartureDate": {
+                    "To": "2018-04-30",
+                    "From": "2017-05-01"
+                  }
+                }
+              }
+            },
+            "layouts": {
+              "lg": {
+                "h": 8,
+                "w": 2,
+                "x": 2,
+                "y": 28
+              },
+              "md": {
+                "h": 8,
+                "w": 2,
+                "x": 2,
+                "y": 28
+              },
+              "__base": {
+                "w": 2,
+                "minH": 8
+              }
+            }
+          },
+          {
+            "id": 34,
+            "name": "DemoChartCard",
+            "params": {
+              "url": "/reports/yoy-by-month",
+              "type": "line",
+              "params": {
+                "fields": ["consignee"],
+                "filter": {
+                  "teu": {},
+                  "shipmentMonth": {},
+                  "consigneeParties": {
+                    "parties": [
+                      16767,
+                      35317,
+                      34913,
+                      24909,
+                      20971
+                    ]
+                  },
+                  "estimatedDepartureDate": {
+                    "To": "2018-04-30",
+                    "From": "2017-05-01"
+                  }
+                }
+              },
+              "mapping": "thisMonth",
+              "datasets": [
+                {
+                  "label": "Last year",
+                  "mapping": "lastPeriodData"
+                },
+                {
+                  "label": "This year",
+                  "mapping": "thisPeriodData"
+                }
+              ]
+            },
+            "layouts": {
+              "lg": {
+                "h": 8,
+                "w": 2,
+                "x": 0,
+                "y": 28
+              },
+              "md": {
+                "h": 8,
+                "w": 2,
+                "x": 0,
+                "y": 28
+              },
+              "__base": {
+                "w": 2,
+                "minH": 8
+              }
+            }
+          },
+          {
+            "id": 53,
+            "name": "New Shipment Map Card",
+            "layouts": {
+              "lg": {
+                "h": 12,
+                "w": 4,
+                "x": 0,
+                "y": 16
+              },
+              "md": {
+                "h": 12,
+                "w": 4,
+                "x": 0,
+                "y": 16
+              },
+              "__base": {
+                "minH": 12,
+                "minW": 4
+              }
+            }
+          },
+          {
+            "id": 36,
+            "name": "Actions",
+            "layouts": {
+              "lg": {
+                "h": 8,
+                "w": 2,
+                "x": 0,
+                "y": 44
+              },
+              "md": {
+                "h": 8,
+                "w": 2,
+                "x": 0,
+                "y": 44
+              },
+              "__base": {
+                "w": 2,
+                "minH": 8
+              }
+            }
+          },
+          {
+            "id": 37,
+            "name": "Alerts",
+            "layouts": {
+              "lg": {
+                "h": 8,
+                "w": 2,
+                "x": 2,
+                "y": 36
+              },
+              "md": {
+                "h": 8,
+                "w": 2,
+                "x": 2,
+                "y": 36
+              },
+              "__base": {
+                "w": 2,
+                "minH": 8
+              }
+            }
+          },
+          {
+            "id": 38,
+            "name": "Shipment Status",
+            "layouts": {
+              "lg": {
+                "h": 4,
+                "w": 4,
+                "x": 0,
+                "y": 52
+              },
+              "md": {
+                "h": 4,
+                "w": 4,
+                "x": 0,
+                "y": 52
+              },
+              "sm": {
+                "h": 7
+              },
+              "xs": {
+                "h": 7
+              },
+              "xxs": {
+                "h": 7
+              },
+              "__base": {
+                "minW": 4
+              }
+            }
+          },
+          {
+            "id": 47,
+            "name": "Shipments by Arrival Region",
+            "layouts": {
+              "lg": {
+                "h": 8,
+                "w": 2,
+                "x": 2,
+                "y": 8
+              },
+              "md": {
+                "h": 8,
+                "w": 2,
+                "x": 2,
+                "y": 8
+              },
+              "__base": {
+                "w": 2,
+                "minH": 8
+              }
+            }
+          },
+          {
+            "id": 48,
+            "name": "Top Shipper Customers",
+            "layouts": {
+              "lg": {
+                "h": 8,
+                "w": 2,
+                "x": 2,
+                "y": 44
+              },
+              "md": {
+                "h": 8,
+                "w": 2,
+                "x": 2,
+                "y": 44
+              },
+              "__base": {
+                "w": 2,
+                "minH": 8
+              }
+            }
+          }
+        ]
+      }
+    },
+    "filters": {
+      "estimatedDepartureDate": {
+        "value": {
+          "to": "2018-12-31",
+          "from": "2018-01-01"
+        },
+        "summary": "2018/01/01 - 2018/12/31"
+      }
+    },
+    "url": "reports/uber"
+  },
+  "adhoc": {
+    "configurations": { "table": {} },
+    "filters": {
+      "estimatedDepartureDate": {
+        "value": {
+          "to": "2018-12-31",
+          "from": "2018-01-01"
+        },
+        "summary": "2018/01/01 - 2018/12/31"
+      }
+    },
+    "url": "reports/uber"
+  },
+  "Shipments:Table": {
+    "configurations": { "table": {} },
+    "filters": {
+      "estimatedDepartureDate": {
+        "value": {
+          "to": "2018-12-31",
+          "from": "2018-01-01"
+        },
+        "summary": "2018/01/01 - 2018/12/31"
+      }
+    },
+    "url": "reports/uber"
+  },
+  "Bookings:Table": {
+    "configurations": {
+      "table": {
+        "sortBy": {
+          "direction": "desc",
+          "fieldName": "createdAt"
+        }
+      }
+    },
+    "filters": {
+      "estimatedDepartureDate": {
+        "value": {
+          "to": "2018-12-31",
+          "from": "2018-01-01"
+        },
+        "summary": "2018/01/01 - 2018/12/31"
+      }
+    },
+    "url": "reports/booking-details"
+  },
+  "PurchaseOrders:Table": {
+    "configurations": { "table": {} },
+    "filters": {
+      "estimatedDepartureDate": {
+        "value": {
+          "to": "2018-12-31",
+          "from": "2018-01-01"
+        },
+        "summary": "2018/01/01 - 2018/12/31"
+      }
+    },
+    "url": "reports/purchaseOrder-details"
+  },
+  "Messages:Table": {
+    "configurations": { "table": {} },
+    "filters": {
+      "estimatedDepartureDate": {
+        "value": {
+          "to": "2018-12-31",
+          "from": "2018-01-01"
+        },
+        "summary": "2018/01/01 - 2018/12/31"
+      }
+    },
+    "url": "reports/alert-details"
+  },
+  "map": {
+    "url": "reports/uber",
+    "configurations": {
+      "map": {
+        "id": "ClusterMapView",
+        "props": {
+          "center": [0, 0],
+          "doubleClickZoom": false,
+          "dragging": true,
+          "minZoom": 2,
+          "scrollWheelZoom": true,
+          "zoom": 2,
+          "zoomControl": false
+        },
+        "routeProps": {
+          "startPointOptions": {
+            "weight": 1.5,
+            "radius": 13,
+            "color": "#FFF3E0"
+          },
+          "startPointIconOptions": {
+            "iconUrl": "/images/factory.png",
+            "iconSize": [15, 15]
+          },
+          "middlePointOptions": {
+            "weight": 1.5,
+            "radius": 13,
+            "color": "#FF9800"
+          },
+          "middlePointIconOptions": {
+            "iconUrl": "/images/map/SEA.svg",
+            "iconSize": [15, 15]
+          },
+          "endPointOptions": {
+            "weight": 1.5,
+            "radius": 13,
+            "color": "#E65100"
+          },
+          "endPointIconOptions": {
+            "iconUrl": "/images/destination.svg",
+            "iconSize": [15, 15]
+          },
+          "travelledRouteStyle": {
+
+          },
+          "notTravelRouteStyle": {
+            "dashArray": "5,5",
+            "dashOffset": "0"
+          },
+          "options": {
+            "weight": 1,
+            "color": "blue"
+          },
+          "textOptions": {
+            "offset": 10,
+            "attributes": {
+              "color": "blue",
+              "font-weight": "bold",
+              "font-size": 30
+            }
+          },
+          "routeStyle": {
+            "color": "blue",
+            "vertices": 300,
+            "offset": 10
+          }
+        },
+        "layers": [
+          {
+            "id": 1,
+            "component": "TileLayer",
+            "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          },
+          {
+            "id": 2,
+            "component": "ZoomControl",
+            "position": "bottomleft"
+          },
+          {
+            "id": 3,
+            "component": "ClusteringLayer",
+            "url": "/reports/{entity}-details",
+            "countUrl": "/reports/{entity}-details/count",
+            "maxCount": 50000,
+            "params": {
+              "fields": ["id"],
+              "filter": {}
+            },
+            "click": {
+              "args": {
+                "url": "{current}/details",
+                "process": {
+                  "_plugins": [
+                    "from-string"
+                  ],
+                  "from-string": "{{\"{key}\":{{\"{key}\":[\"{value}\"]}}}}"
+                },
+                "cardProcess": {
+                  "_plugins": [
+                    "selection-by-row"
+                  ],
+                  "selection-by-row": {
+                    "key": "entity",
+                    "cards": {
+                      "shipment": 54,
+                      "booking": 56
+                    }
+                  }
+                }
+              }
+            },
+            "config": {
+              "id": "masterNo",
+              "searchPolNameKey": "portOfLoading",
+              "searchPodNameKey": "portOfDischarge",
+              "getPolNameKey": "pol",
+              "getPodNameKey": "pod",
+              "getPodCoordKey": "podCoord",
+              "getPolCoordKey": "polCoord",
+              "cluster": {
+                "singleMarkerMode": true,
+                "showCoverageOnHover": true,
+                "maxClusterRadius": 80,
+                "chunkedLoading": true,
+                "removeOutsideVisibleBounds": true,
+                "spiderfyDistanceMultiplier": 0.00000000001
+              }
+            }
+          }
+        ]
+      }
+    },
+    "filters": {
+      "estimatedDepartureDate": {
+        "value": {
+          "to": "2018-06-30",
+          "from": "2018-06-01"
+        },
+        "summary": "2018/06/01 - 2018/06/30"
+      }
+    },
+    "mapControl": {
+      "pod": true
+    }
+  }
+}

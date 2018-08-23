@@ -1,0 +1,197 @@
+{
+  "PO No.": {
+    "name": "PO No",
+    "code": "poNo*"
+  },
+  "PO Date": {
+    "name": "PO Date",
+    "code": "transactionDates.PO date"
+  },
+  "Mode": {
+    "name": "Mode",
+    "code": "moduleType"
+  },
+  "Port of Loading": {
+    "name": "Port of Loading",
+    "code": "portOfLoading"
+  },
+  "Port of Discharge": {
+    "name": "Port of Discharge",
+    "code": "portOfDischarge"
+  },
+  "Incoterms": {
+    "name": "Incoterms",
+    "code": "incoTerms"
+  },
+  "Freight Term": {
+    "name": "Freight Term",
+    "code": "freightTerms"
+  },
+  "Reference No.": {
+    "name": "Reference No",
+    "code": "referenceNumber"
+  },
+  "Remarks": {
+    "name": "Remarks",
+    "code": "remarks"
+  },
+  "Estimated Shipping Date": {
+    "name": "Estimated Shipping Date",
+    "code": "transactionDates.Shipping Date"
+  },
+  "Estimated Arrival Date": {
+    "name": "Estimated Arrival Date",
+    "code": "transactionDates.Arrival Date"
+  },
+  "Estimated Ex-factory date": {
+    "name": "Estimated Ex-factory date",
+    "code": "transactionDates.Ex Factory Date"
+  },
+  "Do Not Ship Before": {
+    "name": "Do Not Ship Before",
+    "code": "transactionDates.Do Not Ship Before"
+  },
+  "Do Not Ship After": {
+    "name": "Do Not Ship After",
+    "code": "transactionDates.Do Not Ship After"
+  },
+  "Estimated Delivery Date": {
+    "name": "Estimated Delivery Date",
+    "code": "transactionDates.Delivery Date"
+  },
+  "Buyer": {
+    "name": "Buyer",
+    "code": "purchaseOrderParties.BuyerName"
+  },
+  "Buyer Code": {
+    "name": "Buyer Code",
+    "code": "purchaseOrderParties.BuyerCustomerPartyCode"
+  },
+  "Shipper Code": {
+    "name": "Shipper Code",
+    "code": "purchaseOrderParties.ShipperCustomerPartyCode"
+  },
+  "Shipper": {
+    "name": "Shipper",
+    "code": "purchaseOrderParties.ShipperName"
+  },
+  "Shipper Email": {
+    "name": "Shipper Email",
+    "code": "purchaseOrderParties.ShipperEmail"
+  },
+  "Factory Code": {
+    "name": "Factory Code",
+    "code": "purchaseOrderParties.FactoryCustomerPartyCode"
+  },
+  "Factory": {
+    "name": "Factory",
+    "code": "purchaseOrderParties.FactoryName"
+  },
+  "Factory Email": {
+    "name": "Factory Email",
+    "code": "purchaseOrderParties.FactoryEmail"
+  },
+  "Ship To Code": {
+    "name": "Ship To Code",
+    "code": "purchaseOrderParties.ConsigneeCustomerPartyCode"
+  },
+  "Ship To": {
+    "name": "Ship To",
+    "code": "purchaseOrderParties.ConsigneeName"
+  },
+  "Ship To Email": {
+    "name": "Ship To Email",
+    "code": "purchaseOrderParties.ConsigneeEmail"
+  },
+  "Sea": {
+    "name": "Sea",
+    "code": "purchaseOrderItems.flexData.Sea"
+  },
+  "Style": {
+    "name": "Style",
+    "code": "purchaseOrderItems.flexData.style"
+  },
+  "Style Desc": {
+    "name": "Style Desc",
+    "code": "purchaseOrderItems.product.name"
+  },
+  "Piece": {
+    "name": "Piece",
+    "code": "purchaseOrderItems.flexData.Piece"
+  },
+  "Piece Desc": {
+    "name": "Piece Desc",
+    "code": "purchaseOrderItems.flexData.Piece Desc"
+  },
+  "Color": {
+    "name": "Color",
+    "code": "purchaseOrderItems.flexData.Color"
+  },
+  "Color Desc": {
+    "name": "Color Desc",
+    "code": "purchaseOrderItems.flexData.Color Desc"
+  },
+  "Pack": {
+    "name": "Pack",
+    "code": "purchaseOrderItems.flexData.Pack"
+  },
+  "Packing": {
+    "name": "Packing",
+    "code": "purchaseOrderItems.flexData.Packing"
+  },
+  "Size": {
+    "name": "Size",
+    "code": "purchaseOrderItems.flexData.size"
+  },
+  "PO Qty": {
+    "name": "PO Qty",
+    "code": "purchaseOrderItems.quantity"
+  },
+  "UPC/EN": {
+    "name": "UPC/EN(item code)",
+    "code": "purchaseOrderItems.itemCode"
+  },
+  "Per Package Qty": {
+    "name": "Per Package Qty",
+    "code": "purchaseOrderItems.flexData.Per Package Qty"
+  },
+  "transactionDate": {
+    "postProcess":true,
+    "codes": {
+      "PO Date": "PO Date",
+      "Shipping Date": "DEPARTURE",
+      "Arrival Date": "Arrival Date",
+      "Ex Factory Date": "Ex Factory Date",
+      "Do Not Ship Before": "Do Not Ship Before",
+      "Do Not Ship After": "Do Not Ship After",
+      "Delivery Date": "Delivery Date"
+    },
+    "actualDatesList": [
+      "PO Date",
+      "Do Not Ship Before",
+      "Do Not Ship After"
+    ]
+  },
+  "purchaseOrderParties": {
+    "postProcess":true,
+    "roles": [
+      "Buyer",
+      "Shipper",
+      "Consignee",
+      "Factory"
+    ],
+    "arrayTypes": [
+      "email"
+    ],
+    "hint": "While parsing we are using jspath there mapping elementValues like .BuyerName/.ConsigneeEmail etc..",
+    "elements": {
+      "primaryText": "Name",
+      "customerPartyCode": "CustomerPartyCode",
+      "name": "Name",
+      "email": "Email",
+      "address1": "Address1",
+      "country": "Country",
+      "cityCode": "CityCode"
+    }
+  }
+}

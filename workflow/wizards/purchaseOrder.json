@@ -1,0 +1,160 @@
+{
+  "purchaseOrder": [
+    {
+      "name": "poNo",
+      "label": "PO No.",
+      "type": "text",
+      "mandatory": true,
+      "important": true
+    },
+    {
+      "name": "moduleType",
+      "label": "Mode",
+      "type": "list-codemaster",
+      "mandatory": true,
+      "important": true,
+      "codeType": "MODULE"
+    },
+    {
+      "name": "portOfLoading",
+      "label": "POL",
+      "type": "autosuggest-port",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "portOfDischarge",
+      "label": "POD",
+      "type": "autosuggest-port",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "incoTerms",
+      "label": "Incoterms",
+      "type": "list-codemaster",
+      "mandatory": false,
+      "important": false,
+      "codeType": "INCOTERMS"
+    },
+    {
+      "name": "freightTerms",
+      "label": "Freight Term",
+      "type": "list-codemaster",
+      "mandatory": false,
+      "important": false,
+      "codeType": "PAYTERMS"
+    },
+    {
+      "name": "referenceNumber",
+      "label": "Ref. No.",
+      "type": "text",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "remarks",
+      "label": "Remarks",
+      "type": "text",
+      "mandatory": false,
+      "important": false
+    }
+  ],
+  "transactionDate": [
+    {
+      "name": "PO Date",
+      "label": "PO Date",
+      "type": "date",
+      "mandatory": true,
+      "important": true,
+      "dateCode": "PO",
+      "actualOnly": true
+    },
+    {
+      "name": "Shipping Date",
+      "label": "Shipping Date",
+      "type": "date",
+      "mandatory": false,
+      "important": true,
+      "dateCode": "DEPARTURE",
+      "actualOnly": false
+    },
+    {
+      "name": "Arrival Date",
+      "label": "Arrival Date",
+      "type": "date",
+      "mandatory": false,
+      "important": false,
+      "dateCode": "ARRIVAL",
+      "actualOnly": false
+    },
+    {
+      "name": "Ex-factory Date",
+      "label": "Ex-factory Date",
+      "type": "date",
+      "mandatory": false,
+      "important": true,
+      "dateCode": "EXF",
+      "actualOnly": false
+    },
+    {
+      "name": "donotShipBefore",
+      "label": "Do Not Ship Before",
+      "type": "date",
+      "dateCode": "DONOTSHIPBEFORE",
+      "mandatory": false,
+      "important": false,
+      "actualOnly": true
+    },
+    {
+      "name": "donotShipAfter",
+      "label": "Do Not Ship After",
+      "type": "date",
+      "dateCode": "DONOTSHIPAFTER",
+      "mandatory": false,
+      "important": false,
+      "actualOnly": true
+    },
+    {
+      "name": "deliveryDate",
+      "label": "Delivery Date",
+      "type": "date",
+      "dateCode": "DELIVERY",
+      "mandatory": false,
+      "important": true,
+      "actualOnly": false
+    }
+  ],
+  "transactionParty": [
+    {
+      "name": "Buyer",
+      "label": "Buyer",
+      "mandatory": true,
+      "important": true,
+      "roleCode": "BUY",
+      "readOnly": true
+    },
+    {
+      "name": "Shipper",
+      "label": "Shipper",
+      "mandatory": true,
+      "important": true,
+      "roleCode": "SHP"
+    },
+    {
+      "name": "Factory",
+      "label": "Factory",
+      "mandatory": true,
+      "important": true,
+      "roleCode": "FTY"
+    },
+    {
+      "name": "Consignee",
+      "label": "Ship To",
+      "mandatory": true,
+      "important": true,
+      "roleCode": "CGN",
+      "expanded": true
+    }
+  ]
+}
