@@ -5,13 +5,21 @@ function CheckETD() {
 		if(data.data.estimatedDepartureDate) {
 			if(data.oldData.estimatedDepartureDate == null) {
 				console.log("NEW DEPARTURE DATE FOR BILL %s: %s", data.data.id, data.data.estimatedDepartureDate);
-				return "DATESET";
+				helper.persistence.models.bill.findOne({ id: data.data.id })
+					.then((bill) => {
+						if (bill.estimatedDepartureDate < data.data.estimatedDepartureDate) {
+							console.log("ETD DELAY FOR BILL %s CUSTOMERID %s: %s", data.data.masterNo, data.data.customerId, data.data.estimatedDepartureDate);
+							return "DELAY";
+						} else {
+							return "DATESET";
+						}
+					})
 			} else {
-				if(data.data.estimatedDepartureDate > data.oldData.estimatedDepartureDate) {
+				if (data.data.estimatedDepartureDate < data.oldData.estimatedDepartureDate) {
 					console.log("ETD DELAY FOR BILL %s CUSTOMERID %s: %s", data.data.masterNo, data.data.customerId, data.data.estimatedDepartureDate);
 					return "DELAY";
 				}
-            }
+			}
 		}
 	}
 }
