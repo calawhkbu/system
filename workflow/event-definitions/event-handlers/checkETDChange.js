@@ -4,9 +4,11 @@ function CheckETD() {
 	this.handle = function(definition, data, handlerParameters, helper) {
 		if(data.data.estimatedDepartureDate) {
 			if(data.oldData.estimatedDepartureDate == null) {
+				console.log("NEW DEPARTURE DATE FOR BILL %s: %s", data.data.id, data.data.estimatedDepartureDate);
 				return "DATESET";
 			} else {
 				if(data.data.estimatedDepartureDate > data.oldData.estimatedDepartureDate) {
+					console.log("ETD DELAY FOR BILL %s CUSTOMERID %s: %s", data.data.masterNo, data.data.customerId, data.data.estimatedDepartureDate);
 					return "DELAY";
 				}
             }
