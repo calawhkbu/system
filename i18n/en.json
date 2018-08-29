@@ -849,6 +849,7 @@
     "referenceNo": "referenceNo",
     "Branch": "Branch",
     "Branch-chip": "Branch: {name}",
+    "User-chip": "User: {name}",
     "Edit card": "Edit card - {name}",
     "message":"Message",
     "alertType":"Alert Type",
