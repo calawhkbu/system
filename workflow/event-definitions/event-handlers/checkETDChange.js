@@ -11,6 +11,7 @@ function CheckETD() {
 				helper.persistence.models.bill.findOne({ id: data.data.id })
 					.then((bill) => {
 						console.log('FM3000 ETD', bill.estimatedDepartureDate)
+						data.oldDate.bill = {}
 						data.oldData.bill.estimatedDepartureDate = bill.estimatedDepartureDate;
 						if (bill.estimatedDepartureDate < data.data.lastStatusDetails.estimatedDepartureDate) {
 							console.log("ETD DELAY FOR BILL %s CUSTOMERID %s: %s", data.data.masterNo, data.data.customerId, data.data.lastStatusDetails.estimatedDepartureDate);
