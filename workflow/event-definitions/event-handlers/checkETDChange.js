@@ -5,7 +5,7 @@ function CheckETD() {
 		console.log('Check ETD Changed')
 		console.log('Old ETD', data.oldData.lastStatusDetails.estimatedDepartureDate)
 		console.log('Old ETD in moment', (helper.moment(data.oldData.lastStatusDetails.estimatedDepartureDate)).format('YYYY-MM-DD HH:ii:ss'))
-		console.log('New ETD', data.data.lastStatusDetails.estimatedDepartureDate,
+		console.log('New ETD', data.data.lastStatusDetails.estimatedDepartureDate)
 		console.log('New ETD in moment', (helper.moment(data.data.lastStatusDetails.estimatedDepartureDate)).format('YYYY-MM-DD HH:ii:ss'))
 		if (data.data.lastStatusDetails.estimatedDepartureDate) {
 			if (data.oldData.lastStatusDetails.estimatedDepartureDate == null) {
