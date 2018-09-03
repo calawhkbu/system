@@ -188,7 +188,6 @@ module.exports = {
 		}
 	},
 	"definitionMaps": {
-		"uber-details": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
 		"uber": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
 		"booking-details": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
 		"alerts": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
