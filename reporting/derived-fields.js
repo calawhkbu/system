@@ -188,13 +188,13 @@ module.exports = {
 		}
 	},
 	"definitionMaps": {
-		"uber": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
+		/* "uber": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
 		"booking-details": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
 		"alerts": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
 		"transaction-status-summary": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
 		"booking-summary": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
 		"purchaseOrder-details": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
  		"uber-summary": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
-		"reporting-tool/metadata-1": ["departureRegion", "arrivalRegion", "departureSubRegion", "arrivalSubRegion" ]
+		"reporting-tool/metadata-1": ["departureRegion", "arrivalRegion", "departureSubRegion", "arrivalSubRegion" ] */
 	}
 }
