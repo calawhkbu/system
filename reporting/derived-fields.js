@@ -11,7 +11,7 @@ module.exports = {
 						and cg.category = 'Region'
                         and cgc.groupValue = pol.countryCode), '_N/A')
 			`,
-			"filter": {
+			/* "filter": {
 	            "api": {
 	                "url": "/api/customGroup",
 	                "mapping": {
@@ -29,7 +29,7 @@ module.exports = {
 	            },
 	            "type": "list",
 	            "field": "departureRegion"
-			}
+			} */
 		},
 		"arrivalRegion": {
 			"fieldName": "arrivalRegion",
@@ -42,7 +42,7 @@ module.exports = {
 						and cg.category = 'Region'
                         and cgc.groupValue = pod.countryCode), '_N/A')
 			`,
-			"filter": {
+			/* "filter": {
 	            "api": {
 	                "url": "/api/customGroup",
 	                "mapping": {
@@ -60,7 +60,7 @@ module.exports = {
 	            },
 	            "type": "list",
 	            "field": "arrivalRegion"
-			}
+			} */
 		},
 		"departureSubRegion": {
 			"fieldName": "departureSubRegion",
@@ -73,7 +73,7 @@ module.exports = {
 											and cg.category = 'Sub-Region'
                                             and cgc.groupValue = portOfLoading), '_N/A')
 			`,
-			"filter": {
+			/* "filter": {
 	            "api": {
 	                "url": "/api/customGroup",
 	                "mapping": {
@@ -91,7 +91,7 @@ module.exports = {
 	            },
 	            "type": "list",
 	            "field": "departureSubRegion"
-			}
+			} */
 		},
 		"arrivalSubRegion": {
 			"fieldName": "arrivalSubRegion",
@@ -104,7 +104,7 @@ module.exports = {
 											and cg.category = 'Sub-Region'
                                             and cgc.groupValue = portOfDischarge), '_N/A')
 			`,
-			"filter": {
+			/* "filter": {
 	            "api": {
 	                "url": "/api/customGroup",
 	                "mapping": {
@@ -122,7 +122,7 @@ module.exports = {
 	            },
 	            "type": "list",
 	            "field": "arrivalSubRegion"
-			}
+			} */
 		}
 	},
 	"filters": {
@@ -188,13 +188,13 @@ module.exports = {
 		}
 	},
 	"definitionMaps": {
-		/* "uber": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
+		"uber": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
 		"booking-details": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
 		"alerts": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
 		"transaction-status-summary": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
 		"booking-summary": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
 		"purchaseOrder-details": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
  		"uber-summary": ["departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion"],
-		"reporting-tool/metadata-1": ["departureRegion", "arrivalRegion", "departureSubRegion", "arrivalSubRegion" ] */
+		"reporting-tool/metadata-1": ["departureRegion", "arrivalRegion", "departureSubRegion", "arrivalSubRegion" ]
 	}
 }
