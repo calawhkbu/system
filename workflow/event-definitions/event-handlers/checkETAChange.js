@@ -2,7 +2,7 @@
 function CheckETA() {
 	this.returns = ["DATESET", "DELAY"];
 	this.handle = function(definition, data, handlerParameters, helper) {
-		console.log(`[Event Triggered] Check ETA Change for master ${data.masterNo}`)
+		console.log(`[Event Triggered] Check ETA Change for master ${data.data.masterNo}`)
 		if (data.data.estimatedArrivalDate) {
 			console.log(`New ETA from SwivelTrack: ${data.data.estimatedArrivalDate}`)
 			if (data.oldData.estimatedArrivalDate == null) {

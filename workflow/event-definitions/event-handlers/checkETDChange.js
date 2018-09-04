@@ -2,12 +2,12 @@
 function CheckETD() {
 	this.returns = ["DATESET", "DELAY","CHANGED"];
 	this.handle = function(definition, data, handlerParameters, helper) {
-		console.log(`[Event Triggered] Check ETA Change for master ${data.masterNo}`)
+		console.log(`[Event Triggered] Check ETA Change for master ${data.data.masterNo}`)
 		if (data.data.lastStatusDetails && data.data.lastStatusDetails.estimatedDepartureDate) {
 			console.log(`New ETD from SwivelTrack: ${data.data.lastStatusDetails.estimatedDepartureDate}`)
-			console.log('New ETD from SwivelTrack', (helper.moment(data.data.lastStatusDetails.estimatedDepartureDate)).format('YYYY-MM-DD HH:ii:ss'))
+			console.log('New ETD from SwivelTrack (moment format):', (helper.moment(data.data.lastStatusDetails.estimatedDepartureDate)).format('YYYY-MM-DD HH:mm:ss'))
 			if (data.oldData.lastStatusDetails && data.oldData.lastStatusDetails.estimatedDepartureDate == null) {
-				console.log("NEW DEPARTURE DATE FOR BILL %s: %s", data.data.id, data.data.lastStatusDetails.estimatedDepartureDate);
+				console.log(`NEW ETD FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}: ${data.data.lastStatusDetails.estimatedDepartureDate}`);
 				helper.persistence.models.bill.findOne({ customer: data.data.customerId, masterNo: data.data.masterNo })
 					.then((bill) => {
 						console.log(`FM3000 ETA: ${bill.estimatedArrivalDate}`)
