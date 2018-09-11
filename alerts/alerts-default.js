@@ -79,6 +79,7 @@ module.exports = {
             filters:[{"etdBetweenDays":7},{"alertType":"Cargo Not Ready"},{"cargoReadyDate":null}],
             limit:1000,
             roles:["ShipperUser","ShipperAdmin", "ForwarderAdmin"],
+            defaultFilters: {},
             onlySubscribers:true
         },
         {
@@ -113,6 +114,7 @@ module.exports = {
             filters:[{"etdDaysFromNow":3},{"alertType":"Prepaid Invoice Missing"},{"transactionStatus":"Create Prepaid Sales Invoice"}],
             limit:1000,
             roles:["ShipperUser","ShipperAdmin", "ForwarderAdmin"],
+            defaultFilters: {},
             onlySubscribers:true
         },
         {
@@ -147,6 +149,7 @@ module.exports = {
             filters:[{"etdBetweenDays":3},{"vgmWeightGreater":0},{"alertType":"VGM Missing"}],
             limit:1000,
             roles:["ShipperUser","ShipperAdmin", "ForwarderAdmin"],
+            defaultFilters: {},
             onlySubscribers:true
         },
         {
@@ -171,6 +174,7 @@ module.exports = {
             filters:[{"etdDaysFromNow":3},{"transactionStatus":"Create Sample Ocean Bill"},{"alertType":"Missing MBL"}],
             limit:1000,
             roles:["ShipperUser","ShipperAdmin", "ForwarderAdmin"],
+            defaultFilters: {},
             onlySubscribers:true
         },
         {
@@ -217,6 +221,7 @@ module.exports = {
             filters:[{"tableName":["booking"]},{"booking":"booking"},{"trackingStatus":"Delayed"},{"alertType":"Booking delayed"}],
             limit:1000,
             roles:["ShipperUser","ShipperAdmin", "ForwarderAdmin"],
+            defaultFilters: {},
             onlySubscribers:false
         }
     ]
