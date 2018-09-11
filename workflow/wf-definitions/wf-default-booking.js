@@ -10,10 +10,8 @@ module.exports ={
             },
             onEnterRule: "isSent = sendNotifications(booking,{entityName:'booking',rolesToEmail:['ConsigneeUser'],useMeta:false})",
             roles: [
-                "SwivelAdmin",
-                "ShipperUser",
-                "ShipperAdmin",
-                "ForwarderAdmin"
+                "Admin",
+                "User"
             ],
             generatedDate:"gDate = date(booking.createdAt); var aDate=date(booking.createdAt)",
             actualDate:"aDate = date(booking.createdAt);",
@@ -47,10 +45,8 @@ module.exports ={
             },
             onEnterRule: "isSent =  sendNotifications(booking,{entityName:'booking',rolesToEmail:['ConsigneeUser','ShipperUser'],useMeta:false})",
             roles: [
-                "SwivelAdmin",
-                "ShipperUser",
-                "ShipperAdmin",
-                "ForwarderAdmin",
+                "Admin",
+                "User"
             ],
             action: "/document/create/shippingAdvice",
             generatedDate:"gDate = date(booking.estimatedDepartureDate); gDate= gDate.addDays(-2)",
@@ -83,10 +79,8 @@ module.exports ={
             },
             onEnterRule: "isSent =  sendNotifications(booking,{entityName:'booking',rolesToEmail:['ConsigneeUser','ShipperUser'],useMeta:false})",
             roles: [
-                "SwivelAdmin",
-                "ShipperUser",
-                "ShipperAdmin",
-                "ForwarderAdmin",
+              "Admin",
+              "User"
             ],
             action: "/document/create/shippingAdvice",
             generatedDate:"gDate = date(booking.estimatedDepartureDate); gDate= gDate.addDays(-2)",
@@ -109,10 +103,8 @@ module.exports ={
             },
             onEnterRule: "isSent = sendNotifications(booking,{entityName:'booking',rolesToEmail:['ConsigneeUser', 'AgentUser', 'ShipperUser', 'ForwarderUser'],useMeta:false})",
             roles: [
-                "SwivelAdmin",
-                "ConsigneeAdmin",
-                "ForwarderAdmin",
-                "ConsigneeUser"
+                "Admin",
+                "User"
             ],
             action: "/document/confirm/shippingAdvice",
             generatedDate:"gDate = date(booking.estimatedDepartureDate); gDate= gDate.addDays(-1)",
@@ -144,9 +136,8 @@ module.exports ={
             },
             onEnterRule: "isSent = sendNotifications(booking,{entityName:'booking',rolesToEmail:['ConsigneeUser', 'AgentUser', 'ShipperUser', 'ForwarderUser'],useMeta:false})",
             roles: [
-                "SwivelAdmin",
-                "ForwarderAdmin",
-                "ShipperUser"
+                "Admin",
+                "User"
             ],
             generatedDate:"gDate = date(booking.estimatedDepartureDate);",
             action: ""
@@ -155,9 +146,8 @@ module.exports ={
             name: "HBL Ready",
             validationRules: [],
             roles: [
-                "SwivelAdmin",
-                "ForwarderAdmin",
-                "ForwarderUser"
+              "Admin",
+              "User"
             ],
             tags: {
             },
@@ -168,9 +158,8 @@ module.exports ={
             name: "ASN Ready",
             validationRules: [],
             roles: [
-                "SwivelAdmin",
-                "ForwarderAdmin",
-                "ShipperUser"
+              "Admin",
+              "User"
             ],
             tags: {
             },
@@ -182,9 +171,8 @@ module.exports ={
             validationRules: [],
             generatedDate:"gDate = date(booking.estimatedArrivalDate); gDate= gDate.addDays(2)",
             roles: [
-                "SwivelAdmin",
-                "ForwarderAdmin",
-                "ForwarderUser"
+              "Admin",
+              "User"
             ],
             tags: {
             },
@@ -195,9 +183,8 @@ module.exports ={
             validationRules: [],
             generatedDate:"gDate = date(booking.estimatedArrivalDate); gDate= gDate.addDays(2)",
             roles: [
-                "SwivelAdmin",
-                "ShipperAdmin",
-                "ForwarderAdmin"
+              "Admin",
+              "User"
             ],
             tags: {
             },
@@ -208,9 +195,8 @@ module.exports ={
             validationRules: [],
             generatedDate:"gDate = date(booking.estimatedArrivalDate); gDate= gDate.addDays(2)",
             roles: [
-                "SwivelAdmin",
-                "ForwarderAdmin",
-                "ForwarderUser"
+              "Admin",
+              "User"
             ],
             tags: {
             },
@@ -220,8 +206,10 @@ module.exports ={
             name: "Cancelled",
             validationRules: "",
             roles: [
-                "ForwarderAdmin",
-                "ForwarderUser"
+              "Admin",
+              "User",
+              "ClientAdmin",
+              "ClientUser"
             ],
             tags: {
             },
