@@ -444,7 +444,7 @@
   },
   "forgotPassword": {
     "resetPassword": "Reset Password",
-    "enterYourMailId": "Enter Your MailId",
+    "enterYourMailId": "Enter Your Email",
     "send": "send",
     "setPassword": "Set a new password",
     "password": "Password",
