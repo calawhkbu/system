@@ -5,7 +5,8 @@ module.exports = {
     defaultHandlers:[
       {name:"Email",code:"email"},
       {name:"WeChat",code:"weChat"},
-      {name:"SMS",code:"sms"}
+      {name:"SMS",code:"sms"},
+      {name:"No Notification", code:"noNotifaction"}
     ],
     alerts: [
         {
