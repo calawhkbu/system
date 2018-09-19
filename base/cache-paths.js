@@ -40,12 +40,7 @@ module.exports = {
 			path: "/reports/shipment-status",
 			method: "GET",
 			expiryMinutes: 60
-		},
-		{
-			path: "/reports/alerts",
-			method: "GET",
-			expiryMinutes: 15
-		},
+		}
 	]
 };
 	
