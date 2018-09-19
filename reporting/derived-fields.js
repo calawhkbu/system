@@ -2,14 +2,23 @@ module.exports = {
 	"fields": {
 		"departureRegion": {
 			"fieldName": "departureRegion",
-			"fieldKey": "departureRegion", 
-			"expression": 
-			`ifnull((select max(cg.name) from customGroupCriteria cgc, customGroup cg
-						where cg.id = cgc.customGroupId
+			"fieldKey": "departureRegion",
+			"expression":
+			`ifnull(
+				(
+					select
+						max(cg.name)
+					from
+						customGroupCriteria cgc, customGroup cg
+					where
+						cg.id = cgc.customGroupId
 						and cg.ownerEntity = 'customer'
 						and cg.ownerEntityId = 0
 						and cg.category = 'Region'
-                        and cgc.groupValue = pol.countryCode), '_N/A')
+						and cgc.groupValue = b.polCountry
+				),
+				'_N/A'
+			)
 			`,
 			/* "filter": {
 	            "api": {
