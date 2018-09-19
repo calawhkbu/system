@@ -2,14 +2,23 @@ module.exports = {
 	"fields": {
 		"departureRegion": {
 			"fieldName": "departureRegion",
-			"fieldKey": "departureRegion", 
-			"expression": 
-			`ifnull((select max(cg.name) from customGroupCriteria cgc, customGroup cg
-						where cg.id = cgc.customGroupId
+			"fieldKey": "departureRegion",
+			"expression":
+			`ifnull(
+				(
+					select
+						max(cg.name)
+					from
+						customGroupCriteria cgc, customGroup cg
+					where
+						cg.id = cgc.customGroupId
 						and cg.ownerEntity = 'customer'
 						and cg.ownerEntityId = 0
 						and cg.category = 'Region'
-                        and cgc.groupValue = pol.countryCode), '_N/A')
+						and cgc.groupValue = b.polCountry
+				),
+				'_N/A'
+			)
 			`,
 			/* "filter": {
 	            "api": {
@@ -33,14 +42,24 @@ module.exports = {
 		},
 		"arrivalRegion": {
 			"fieldName": "arrivalRegion",
-			"fieldKey": "arrivalRegion", 
-			"expression": 
-			`ifnull((select max(cg.name) from customGroupCriteria cgc, customGroup cg
-						where cg.id = cgc.customGroupId
+			"fieldKey": "arrivalRegion",
+			"expression":
+			`
+			ifnull(
+				(
+					select
+						max(cg.name)
+					from
+						customGroupCriteria cgc, customGroup cg
+					where
+						cg.id = cgc.customGroupId
 						and cg.ownerEntity = 'customer'
 						and cg.ownerEntityId = 0
 						and cg.category = 'Region'
-                        and cgc.groupValue = pod.countryCode), '_N/A')
+						and cgc.groupValue = b.podCountry
+				),
+				'_N/A'
+			)
 			`,
 			/* "filter": {
 	            "api": {
@@ -53,7 +72,7 @@ module.exports = {
 	                	"filter": {
 		                	"category": "Region",
 		                	"ownerEntity": "customer",
-		                	"ownerEntityId": 0	                		
+		                	"ownerEntityId": 0
 	                	}
 	                }
 
@@ -64,14 +83,23 @@ module.exports = {
 		},
 		"departureSubRegion": {
 			"fieldName": "departureSubRegion",
-			"fieldKey": "departureSubRegion", 
-			"expression": 
-			`ifnull((select max(cg.name) from customGroupCriteria cgc, customGroup cg
-											where cg.id = cgc.customGroupId
-											and cg.ownerEntity = 'customer'
-											and cg.ownerEntityId = 0
-											and cg.category = 'Sub-Region'
-                                            and cgc.groupValue = portOfLoading), '_N/A')
+			"fieldKey": "departureSubRegion",
+			"expression":
+			`ifnull(
+				(
+					select
+						max(cg.name)
+					from
+						customGroupCriteria cgc, customGroup cg
+					where
+						cg.id = cgc.customGroupId
+						and cg.ownerEntity = 'customer'
+						and cg.ownerEntityId = 0
+						and cg.category = 'Sub-Region'
+						and cgc.groupValue = b.polCountry
+				),
+				'_N/A'
+			)
 			`,
 			/* "filter": {
 	            "api": {
@@ -84,7 +112,7 @@ module.exports = {
 	                	"filter": {
 		                	"category": "Sub-Region",
 		                	"ownerEntity": "customer",
-		                	"ownerEntityId": 0	                		
+		                	"ownerEntityId": 0
 	                	}
 	                }
 
@@ -95,14 +123,23 @@ module.exports = {
 		},
 		"arrivalSubRegion": {
 			"fieldName": "arrivalSubRegion",
-			"fieldKey": "arrivalSubRegion", 
-			"expression": 
-			`ifnull((select max(cg.name) from customGroupCriteria cgc, customGroup cg
-											where cg.id = cgc.customGroupId
-											and cg.ownerEntity = 'customer'
-											and cg.ownerEntityId = 0
-											and cg.category = 'Sub-Region'
-                                            and cgc.groupValue = portOfDischarge), '_N/A')
+			"fieldKey": "arrivalSubRegion",
+			"expression":
+			`ifnull(
+				(
+					select
+						max(cg.name)
+					from
+						customGroupCriteria cgc, customGroup cg
+					where
+						cg.id = cgc.customGroupId
+						and cg.ownerEntity = 'customer'
+						and cg.ownerEntityId = 0
+						and cg.category = 'Sub-Region'
+						and cgc.groupValue = b.polCountry
+					),
+					'_N/A'
+				)
 			`,
 			/* "filter": {
 	            "api": {
@@ -115,7 +152,7 @@ module.exports = {
 	                	"filter": {
 		                	"category": "Sub-Region",
 		                	"ownerEntity": "customer",
-		                	"ownerEntityId": 0	                		
+		                	"ownerEntityId": 0
 	                	}
 	                }
 
@@ -127,13 +164,13 @@ module.exports = {
 	},
 	"filters": {
 		"departureRegion": {
-			"expression": 
+			"expression":
 			`(select max(cg.name) from customGroupCriteria cgc, customGroup cg
 						where cg.id = cgc.customGroupId
 						and cg.ownerEntity = 'customer'
 						and cg.ownerEntityId = 0
 						and cg.category = 'Region'
-                        and cgc.groupValue = pol.countryCode) in (:departureRegion)
+                        and cgc.groupValue = b.polCountry) in (:departureRegion)
 			`,
             fields: {
                "departureRegion": {
@@ -142,13 +179,13 @@ module.exports = {
             }
 		},
 		"arrivalRegion": {
-			"expression": 
+			"expression":
 			`(select max(cg.name) from customGroupCriteria cgc, customGroup cg
 						where cg.id = cgc.customGroupId
 						and cg.ownerEntity = 'customer'
 						and cg.ownerEntityId = 0
 						and cg.category = 'Region'
-                        and cgc.groupValue = pod.countryCode) in (:arrivalRegion)
+                        and cgc.groupValue =  b.podCountry) in (:arrivalRegion)
 			`,
             fields: {
                "arrivalRegion": {
@@ -157,13 +194,13 @@ module.exports = {
             }
 		},
 		"departureSubRegion": {
-			"expression": 
+			"expression":
 			`(select max(cg.name) from customGroupCriteria cgc, customGroup cg
 											where cg.id = cgc.customGroupId
 											and cg.ownerEntity = 'customer'
 											and cg.ownerEntityId = 0
 											and cg.category = 'Sub-Region'
-                                            and cgc.groupValue = portOfLoading) in (:departureSubRegion)
+                                            and cgc.groupValue =  b.polCountry) in (:departureSubRegion)
 			`,
             fields: {
                "departureSubRegion": {
@@ -172,13 +209,13 @@ module.exports = {
             }
 		},
 		"arrivalSubRegion": {
-			"expression": 
+			"expression":
 			`(select max(cg.name) from customGroupCriteria cgc, customGroup cg
 											where cg.id = cgc.customGroupId
 											and cg.ownerEntity = 'customer'
 											and cg.ownerEntityId = 0
 											and cg.category = 'Sub-Region'
-                                            and cgc.groupValue = portOfDischarge) in (:arrivalSubRegion)
+                                            and cgc.groupValue = b.podCountry) in (:arrivalSubRegion)
 			`,
             fields: {
                "arrivalSubRegion": {
