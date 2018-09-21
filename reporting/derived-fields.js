@@ -20,6 +20,7 @@ module.exports = {
 				'_N/A'
 			)
 			`,
+			disabled: true,
 			/* "filter": {
 	            "api": {
 	                "url": "/api/customGroup",
@@ -61,6 +62,7 @@ module.exports = {
 				'_N/A'
 			)
 			`,
+			disabled: true,
 			/* "filter": {
 	            "api": {
 	                "url": "/api/customGroup",
@@ -101,6 +103,7 @@ module.exports = {
 				'_N/A'
 			)
 			`,
+			disabled: true,
 			/* "filter": {
 	            "api": {
 	                "url": "/api/customGroup",
@@ -141,6 +144,7 @@ module.exports = {
 					'_N/A'
 				)
 			`,
+			disabled: true,
 			/* "filter": {
 	            "api": {
 	                "url": "/api/customGroup",
