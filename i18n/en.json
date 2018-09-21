@@ -701,9 +701,9 @@
     "consignee": "Consignee",
     "20ft": "20ft Containers",
     "40ft": "40ft Containers",
-    "40ft HQ": "40ft HQ Containers",
+    "40ftHQ": "40ft HQ Containers",
     "45ft": "45ft Containers",
-    "otherContainerType": "Other Containers"
+    "OtherContainerType": "Other Containers"
   },
   "Save": "Save",
   "Apply": "Apply",
