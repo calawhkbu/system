@@ -2,7 +2,7 @@
 function CheckETD() {
 	this.returns = ["DATESET", "DELAY","CHANGED"];
 	this.handle = function(definition, data, handlerParameters, helper) {
-		console.log(`[Event Triggered] Check ETA Change for master ${data.data.masterNo}`)
+		console.log(`[Event Triggered] Check ETD Change for master ${data.data.masterNo}`)
 		if (data.data.estimatedDepartureDate) {
 			console.log(`New ETD from SwivelTrack: ${data.data.estimatedDepartureDate}`)
 			if (data.oldData.estimatedArrivalDate == null) {
