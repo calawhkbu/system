@@ -40,6 +40,11 @@ module.exports = {
 			path: "/reports/shipment-status",
 			method: "GET",
 			expiryMinutes: 60
+		},
+		{
+			path: "/fm3k",
+			method: "GET",
+			expiryMinutes: 60
 		}
 	]
 };
