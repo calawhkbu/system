@@ -6,7 +6,7 @@ function CheckETA() {
 		if (data.data.estimatedArrivalDate) {
 			console.log(`New ETA from SwivelTrack: ${data.data.estimatedArrivalDate}`)
 			if (data.oldData.estimatedArrivalDate == null) {
-				helper.persistence.models.bill.findOne({ where:{ customer: data.data.customerId, masterNo: data.data.masterNo } })
+				helper.persistence.models.bill.findOne({ where:{ customerId: data.data.customerId, masterNo: data.data.masterNo } })
 					.then((bill) => {
 						console.log(`FM3000 ETA: ${bill.estimatedArrivalDate}`)
 						if (bill.estimatedArrivalDate > data.data.estimatedArrivalDate) {

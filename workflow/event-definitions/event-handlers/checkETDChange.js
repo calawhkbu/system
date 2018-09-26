@@ -7,7 +7,7 @@ function CheckETD() {
 			console.log(`New ETD from SwivelTrack: ${data.data.estimatedDepartureDate}`)
 			if (data.oldData.estimatedArrivalDate == null) {
 				console.log(`NEW ETD FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
-				helper.persistence.models.bill.findOne({ where:{ customer: data.data.customerId, masterNo: data.data.masterNo } })
+				helper.persistence.models.bill.findOne({ where:{ customerId: data.data.customerId, masterNo: data.data.masterNo } })
 					.then((bill) => {
 						console.log(`FM3000 ETA: ${bill.estimatedDepartureDate}`)
 						if (bill.estimatedDepartureDate < data.data.lastStatusDetails.estimatedDepartureDate) {
