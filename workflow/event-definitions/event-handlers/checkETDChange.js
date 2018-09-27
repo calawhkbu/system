@@ -10,16 +10,16 @@ function CheckETD() {
 				helper.persistence.models.bill.findOne({ where:{ customerId: data.data.customerId, masterNo: data.data.masterNo } })
 					.then((bill) => {
 						console.log(`FM3000 ETA: ${bill.estimatedDepartureDate}`)
-						if (bill.estimatedDepartureDate < data.data.lastStatusDetails.estimatedDepartureDate) {
-							console.log(`ETD DELAY FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
+						if (bill.estimatedDepartureDate != data.data.estimatedDepartureDate) {
+							console.log(`ETD CHANGE FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
 							return "DELAY";
 						} else {
 							return "DATESET";
 						}
 					})
 			} else {
-				if (data.data.estimatedDepartureDate < data.oldData.estimatedDepartureDate) {
-					console.log(`ETD DELAY FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
+				if (data.data.estimatedDepartureDate != data.oldData.estimatedDepartureDate) {
+					console.log(`ETD CHANGED FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
 					return "DELAY";
 				} else {
 					return "DATESET";

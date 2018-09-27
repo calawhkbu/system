@@ -9,7 +9,7 @@ function CheckETA() {
 				helper.persistence.models.bill.findOne({ where:{ customerId: data.data.customerId, masterNo: data.data.masterNo } })
 					.then((bill) => {
 						console.log(`FM3000 ETA: ${bill.estimatedArrivalDate}`)
-						if (bill.estimatedArrivalDate > data.data.estimatedArrivalDate) {
+						if (bill.estimatedArrivalDate !== data.data.estimatedArrivalDate) {
 							console.log(`ETA DELAY FOR BILL ${data.data.masterNo} CUSTOMERID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
 							return "DELAY";
 						} else {
@@ -17,7 +17,8 @@ function CheckETA() {
 						}
 					})
 			} else {
-				if (data.data.estimatedArrivalDate > data.oldData.estimatedArrivalDate) {
+				console.log(`Old ETA from SwivelTrack: ${data.oldData.estimatedArrivalDate}`)
+				if (data.data.estimatedArrivalDate !== data.oldData.estimatedArrivalDate) {
 					console.log(`ETA DELAY FOR BILL ${data.data.masterNo} CUSTOMERID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
 					return "DELAY";
 				} else {
