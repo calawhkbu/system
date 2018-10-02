@@ -42,7 +42,7 @@ module.exports = {
                     name: "checkETAChange"
                 },
                 {
-                    on: {
+                    _on: {
                         "DELAY": {
                             name: "sendEmail",
                             parameters: {
@@ -88,7 +88,7 @@ module.exports = {
                     name: "checkETDChange"
                 },
                 {
-                    on: {
+                    _on: {
                         "DELAY": {
                             name: "sendEmail",
                             parameters: {
