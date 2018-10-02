@@ -72,7 +72,7 @@ module.exports = {
                   }
                 }
               },
-              { name: "clearReturn" }
+              { name: "clearReturn" },
               { name: "checkETDChange" },
               {
                 on: {
