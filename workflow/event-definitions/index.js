@@ -38,98 +38,74 @@ module.exports = {
                 entity: "customer",
                 entityId: "data.customerId"
             },
-            handlers: [{
-                    name: "checkETAChange"
-                },
-                {
-                    _on: {
-                        "DELAY": {
-                            name: "sendEmail",
-                            parameters: {
-                                to: "360testing@swivelsoftware.com",
-                                from: "360testing@swivelsoftware.com",
-                                subject: "Shipment ETA Changed",
-                                text: "Master BL#: {{data.masterNo}} from {{oldData.estimatedArrivalDate | date('d M Y H:i:s')}} to {{data.estimatedArrivalDate | date('d M Y H:i:s')}}."
-                            }
-                        }
+            handlers: [
+              { name: "checkETAChange" },
+              {
+                on: {
+                  "DELAY": {
+                    name: "sendNotification",
+                    parameters: {
+                      roles: ["Admin", "User", "ClientAdmin", "ClientUser", "OFE"],
+                      subject: "Master BL# {{masterNo}} ETA changed from {{oldData.estimatedArrivalDate | date('d M Y H:i:s')}} to {{data.estimatedArrivalDate | date('d M Y H:i:s')}}.",
+                      severity: "Medium",
+                      tableName: "bill",
+                      primaryKey: "id",
+                      customerId: "customerId",
+                      type: "Shipment ETA Changed",
+                      getRecords: true,
+                      referenceObject: "data",
+                      alertCategory: "Exception",
+                      whereQuery: "{ \"masterNo\":\"{{masterNo}}\",\"customerId\":{{customerId}} }",
+                      echoOnly: true,
+                      email: {
+                        echoOnly: true,
+                        template: "bill-tracking-update",
+                        subject: "Master BL# {{data.masterNo}} ETA changed from {{oldData.estimatedArrivalDate | date('d M Y H:i:s')}} to {{data.estimatedArrivalDate | date('d M Y H:i:s')}}."
+                      },
+                      wechat: {
+                        publicTemplateId: 'OPENTM402244876',
+                        privateTemplateId: 'sX4vIVmYVap4hJ9GO8Ze6ReWp1hhqzQq7_QysyA3lSw',
+                        dataBinding: []
+                      },
+                      sms: {}
                     }
-                },
-                {
-                    _on: {
-                        "DELAY": {
-                            name: "sendNotification",
-                            parameters: {
-                                roles: ["Admin", "User", "ClientAdmin", "ClientUser", "OFE"],
-                                subject: "Master BL# {{masterNo}} ETA changed from {{oldData.estimatedArrivalDate | date('d M Y H:i:s')}} to {{data.estimatedArrivalDate | date('d M Y H:i:s')}}.",
-                                severity: "Medium",
-                                tableName: "bill",
-                                primaryKey: "id",
-                                customerId: "customerId",
-                                type: "Shipment ETA Changed",
-                                getRecords: true,
-                                referenceObject: "data",
-                                alertCategory: "Exception",
-                                whereQuery: "{ \"masterNo\":\"{{masterNo}}\",\"customerId\":{{customerId}} }",
-                                email: {
-                                    template: "bill-tracking-update",
-                                    subject: "Master BL# {{data.masterNo}} ETA changed from {{oldData.estimatedArrivalDate | date('d M Y H:i:s')}} to {{data.estimatedArrivalDate | date('d M Y H:i:s')}}.",
-                                },
-                                wechat: {
-                                    publicTemplateId: 'OPENTM402244876',
-                                    privateTemplateId: 'sX4vIVmYVap4hJ9GO8Ze6ReWp1hhqzQq7_QysyA3lSw',
-                                    dataBinding: []
-                                },
-                                sms: {}
-                            }
-                        }
-                    }
-                },
-                {
-                    name: "checkETDChange"
-                },
-                {
-                    _on: {
-                        "DELAY": {
-                            name: "sendEmail",
-                            parameters: {
-                                to: "360testing@swivelsoftware.com",
-                                from: "360testing@swivelsoftware.com",
-                                subject: "Shipment ETD Changed",
-                                text: "Master BL# {{data.masterNo}} from {{oldData.estimatedArrivalDate | date('d M Y H:i:s')}} to {{data.estimatedArrivalDate | date('d M Y H:i:s')}}."
-                            }
-                        }
-                    }
-                },
-                {
-                    _on: {
-                        "DELAY": {
-                            name: "sendNotification",
-                            parameters: {
-                                roles: ["Admin", "User", "ClientAdmin", "ClientUser", "OFE"],
-                                subject: "Master BL# {{masterNo}} ETD changed from {{oldData.estimatedArrivalDate | date('d M Y H:i:s')}} to {{data.estimatedArrivalDate | date('d M Y H:i:s')}}.",
-                                severity: "Medium",
-                                tableName: "bill",
-                                primaryKey: "id",
-                                customerId: "customerId",
-                                type: "Shipment ETD Changed",
-                                getRecords: true,
-                                referenceObject: "data",
-                                alertCategory: "Exception",
-                                whereQuery: "{ \"masterNo\":\"{{masterNo}}\",\"customerId\":{{customerId}} }",
-                                email: {
-                                    template: "bill-tracking-update",
-                                    subject: "Master BL# {{data.masterNo}} ETD changed from {{oldData.estimatedArrivalDate | date('d M Y H:i:s')}} to {{data.estimatedArrivalDate | date('d M Y H:i:s')}}.",
-                                },
-                                wechat: {
-                                    publicTemplateId: 'OPENTM402244876',
-                                    privateTemplateId: 'sX4vIVmYVap4hJ9GO8Ze6ReWp1hhqzQq7_QysyA3lSw',
-                                    dataBinding: []
-                                },
-                                sms: {}
-                            }
-                        }
-                    }
+                  }
                 }
+              },
+              { name: "clearReturn" }
+              { name: "checkETDChange" },
+              {
+                on: {
+                  "DELAY": {
+                    name: "sendNotification",
+                    parameters: {
+                      roles: ["Admin", "User", "ClientAdmin", "ClientUser", "OFE"],
+                      subject: "Master BL# {{masterNo}} ETD changed from {{oldData.estimatedArrivalDate | date('d M Y H:i:s')}} to {{data.estimatedArrivalDate | date('d M Y H:i:s')}}.",
+                      severity: "Medium",
+                      tableName: "bill",
+                      primaryKey: "id",
+                      customerId: "customerId",
+                      type: "Shipment ETD Changed",
+                      getRecords: true,
+                      referenceObject: "data",
+                      alertCategory: "Exception",
+                      whereQuery: "{ \"masterNo\":\"{{masterNo}}\",\"customerId\":{{customerId}} }",
+                      email: {
+                        echoOnly: true,
+                        template: "bill-tracking-update",
+                        subject: "Master BL# {{data.masterNo}} ETD changed from {{oldData.estimatedArrivalDate | date('d M Y H:i:s')}} to {{data.estimatedArrivalDate | date('d M Y H:i:s')}}.",
+                      },
+                      wechat: {
+                        echoOnly: true,
+                        publicTemplateId: 'OPENTM402244876',
+                        privateTemplateId: 'sX4vIVmYVap4hJ9GO8Ze6ReWp1hhqzQq7_QysyA3lSw',
+                        dataBinding: []
+                      },
+                      sms: {}
+                    }
+                  }
+                }
+              }
             ]
         },
         {
