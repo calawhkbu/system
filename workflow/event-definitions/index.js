@@ -55,7 +55,7 @@ module.exports = {
                     }
                 },
                 {
-                    on: {
+                    _on: {
                         "DELAY": {
                             name: "sendNotification",
                             parameters: {
@@ -101,7 +101,7 @@ module.exports = {
                     }
                 },
                 {
-                    on: {
+                    _on: {
                         "DELAY": {
                             name: "sendNotification",
                             parameters: {
