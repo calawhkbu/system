@@ -92,7 +92,7 @@ module.exports = {
                       email: {
                         echoOnly: true,
                         template: "bill-tracking-update",
-                        subject: "Master BL# {{data.masterNo}} ETD changed from {{oldData.estimatedDepartureDate | date('d M Y H:i:s')}} to {{data.estimatedDepartureDate | date('d M Y H:i:s')}}.",
+                        subject: "Master BL# {{bill.masterNo}} ETD changed from {% if oldData.estimatedDepartureDate %}{{oldData.estimatedDepartureDate | date('d M Y H:i:s')}}{% else %}{{bill.estimatedDepartureDate | date('d M Y H:i:s')}}{% endif %} to {{data.estimatedDepartureDate | date('d M Y H:i:s')}}.",
                       },
                       wechat: {
                         echoOnly: true,
