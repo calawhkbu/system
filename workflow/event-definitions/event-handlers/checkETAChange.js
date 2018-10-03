@@ -9,8 +9,9 @@ function CheckETA() {
 				var promise = new Promise(function (resolve) {
 					helper.persistence.models.bill.findOne({ where:{ customerId: data.data.customerId, masterNo: data.data.masterNo } })
 						.then((bill) => {
-							console.log(bill.estimatedArrivalDate, data.data.estimatedArrivalDate)
-							if (bill.estimatedArrivalDate !== data.data.estimatedArrivalDate) {
+							var oldEstimatedArrivalDate = helper.moment(bill.estimatedArrivalDate);
+							var newEstimatedArrivalDate = helper.moment(data.data.estimatedArrivalDate);
+							if (!oldEstimatedArrivalDate.isSame(newEstimatedArrivalDate)) {
 								console.log(`ETA Change FOR BILL ${data.data.masterNo} CUSTOMERID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
 								return resolve("DELAY");
 							} else {

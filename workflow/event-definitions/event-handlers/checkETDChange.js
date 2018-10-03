@@ -9,8 +9,9 @@ function CheckETD() {
 				var promise = new Promise(function (resolve) {
 					helper.persistence.models.bill.findOne({ where:{ customerId: data.data.customerId, masterNo: data.data.masterNo } })
 						.then((bill) => {
-							console.log(bill.estimatedDepartureDate, data.data.estimatedDepartureDate)
-							if (bill.estimatedDepartureDate != data.data.estimatedDepartureDate) {
+							var oldEstimatedDepartureDate = helper.moment(bill.estimatedDepartureDate);
+							var newEstimatedDepartureDate = helper.moment(data.data.estimatedDepartureDate);
+							if (!oldEstimatedDepartureDate.isSame(newEstimatedDepartureDate)) {
 								console.log(`ETD CHANGE FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
 								return resolve("DELAY");
 							} else {
