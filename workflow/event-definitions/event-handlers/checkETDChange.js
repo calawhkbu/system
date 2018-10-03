@@ -6,17 +6,19 @@ function CheckETD() {
 		if (data.data.estimatedDepartureDate) {
 			console.log(`New ETD from SwivelTrack: ${data.data.estimatedDepartureDate}`)
 			if (data.oldData.estimatedArrivalDate == null) {
-				console.log(`NEW ETD FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
-				helper.persistence.models.bill.findOne({ where:{ customerId: data.data.customerId, masterNo: data.data.masterNo } })
-					.then((bill) => {
-						console.log(`FM3000 ETA: ${bill.estimatedDepartureDate}`)
-						if (bill.estimatedDepartureDate != data.data.estimatedDepartureDate) {
-							console.log(`ETD CHANGE FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
-							return "DELAY";
-						} else {
-							return "DATESET";
-						}
-					})
+				var promise = new Promise(function (resolve) {
+					helper.persistence.models.bill.findOne({ where:{ customerId: data.data.customerId, masterNo: data.data.masterNo } })
+						.then((bill) => {
+							console.log(bill.estimatedDepartureDate, data.data.estimatedDepartureDate)
+							if (bill.estimatedDepartureDate != data.data.estimatedDepartureDate) {
+								console.log(`ETD CHANGE FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
+								return resolve("DELAY");
+							} else {
+								return resolve("DATESET");
+							}
+						})
+				})
+				return promise;
 			} else {
 				if (data.data.estimatedDepartureDate != data.oldData.estimatedDepartureDate) {
 					console.log(`ETD CHANGED FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);

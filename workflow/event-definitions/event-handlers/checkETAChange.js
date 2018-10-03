@@ -6,16 +6,19 @@ function CheckETA() {
 		if (data.data.estimatedArrivalDate) {
 			console.log(`New ETA from SwivelTrack: ${data.data.estimatedArrivalDate}`)
 			if (data.oldData.estimatedArrivalDate == null) {
-				helper.persistence.models.bill.findOne({ where:{ customerId: data.data.customerId, masterNo: data.data.masterNo } })
-					.then((bill) => {
-						console.log(`FM3000 ETA: ${bill.estimatedArrivalDate}`)
-						if (bill.estimatedArrivalDate !== data.data.estimatedArrivalDate) {
-							console.log(`ETA DELAY FOR BILL ${data.data.masterNo} CUSTOMERID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
-							return "DELAY";
-						} else {
-							return "DATESET";
-						}
-					})
+				var promise = new Promise(function (resolve) {
+					helper.persistence.models.bill.findOne({ where:{ customerId: data.data.customerId, masterNo: data.data.masterNo } })
+						.then((bill) => {
+							console.log(bill.estimatedArrivalDate, data.data.estimatedArrivalDate)
+							if (bill.estimatedArrivalDate !== data.data.estimatedArrivalDate) {
+								console.log(`ETA Change FOR BILL ${data.data.masterNo} CUSTOMERID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
+								return resolve("DELAY");
+							} else {
+								return resolve("DATESET");
+							}
+						})
+				})
+				return promise;
 			} else {
 				console.log(`Old ETA from SwivelTrack: ${data.oldData.estimatedArrivalDate}`)
 				if (data.data.estimatedArrivalDate !== data.oldData.estimatedArrivalDate) {
