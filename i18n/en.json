@@ -684,6 +684,7 @@
     "referenceNo": "referenceNo",
     "Branch": "Branch",
     "Branch-chip": "Branch: {name}",
+    "Division-chip": "Division: {name}",
     "User-chip": "User: {name}",
     "Edit card": "Edit card - {name}",
     "message": "Message",
