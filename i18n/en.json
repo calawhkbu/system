@@ -525,6 +525,7 @@
     "not-submitted": "Not Submitted"
   },
   "ReportingTool": {
+    "Total": "TOTAL",
     "New Report": "New Report",
     "(No filters)": "(No filters)",
     "pagination": "{from}-{to} of {count}",
