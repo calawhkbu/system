@@ -22,7 +22,7 @@ function CheckETA() {
 				return promise;
 			} else {
 				console.log(`Old ETA from SwivelTrack: ${data.oldData.estimatedArrivalDate}`)
-				if (data.data.estimatedArrivalDate !== data.oldData.estimatedArrivalDate) {
+				if (data.data.estimatedArrivalDate && data.data.estimatedArrivalDate !== data.oldData.estimatedArrivalDate) {
 					console.log(`ETA DELAY FOR BILL ${data.data.masterNo} CUSTOMERID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
 					return "DELAY";
 				} else {

@@ -21,7 +21,7 @@ function CheckETD() {
 				})
 				return promise;
 			} else {
-				if (data.data.estimatedDepartureDate != data.oldData.estimatedDepartureDate) {
+				if (data.data.estimatedDepartureDate && data.data.estimatedDepartureDate != data.oldData.estimatedDepartureDate) {
 					console.log(`ETD CHANGED FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
 					return "DELAY";
 				} else {
