@@ -12,7 +12,7 @@ function CheckETA() {
 							var oldEstimatedArrivalDate = helper.moment(bill.estimatedArrivalDate);
 							var newEstimatedArrivalDate = helper.moment(data.data.estimatedArrivalDate);
 							if (!oldEstimatedArrivalDate.isSame(newEstimatedArrivalDate)) {
-								console.log(`ETA Change FOR BILL ${data.data.masterNo} CUSTOMERID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
+								console.log(`ETA Change FOR BILL ${data.data.masterNo} CUSTOMERID ${data.data.customerId}`);
 								return resolve("DELAY");
 							} else {
 								return resolve("DATESET");
@@ -22,11 +22,13 @@ function CheckETA() {
 				return promise;
 			} else {
 				console.log(`Old ETA from SwivelTrack: ${data.oldData.estimatedArrivalDate}`)
-				if (data.data.estimatedArrivalDate && data.data.estimatedArrivalDate !== data.oldData.estimatedArrivalDate) {
-					console.log(`ETA DELAY FOR BILL ${data.data.masterNo} CUSTOMERID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
-					return "DELAY";
+				var oldEstimatedArrivalDate = helper.moment(data.oldData.estimatedArrivalDate);
+				var newEstimatedArrivalDate = helper.moment(data.data.estimatedArrivalDate);
+				if (!oldEstimatedArrivalDate.isSame(newEstimatedArrivalDate)) {
+					console.log(`ETA Change FOR BILL ${data.data.masterNo} CUSTOMERID ${data.data.customerId}`);
+					return resolve("DELAY");
 				} else {
-					return "DATESET";
+					return resolve("DATESET");
 				}
 			}
 		} else {

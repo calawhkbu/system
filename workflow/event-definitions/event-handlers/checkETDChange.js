@@ -12,7 +12,7 @@ function CheckETD() {
 							var oldEstimatedDepartureDate = helper.moment(bill.estimatedDepartureDate);
 							var newEstimatedDepartureDate = helper.moment(data.data.estimatedDepartureDate);
 							if (!oldEstimatedDepartureDate.isSame(newEstimatedDepartureDate)) {
-								console.log(`ETD CHANGE FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
+								console.log(`ETD CHANGE FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}`);
 								return resolve("DELAY");
 							} else {
 								return resolve("DATESET");
@@ -21,11 +21,13 @@ function CheckETD() {
 				})
 				return promise;
 			} else {
-				if (data.data.estimatedDepartureDate && data.data.estimatedDepartureDate != data.oldData.estimatedDepartureDate) {
-					console.log(`ETD CHANGED FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}: ${data.data.estimatedDepartureDate}`);
-					return "DELAY";
+				var oldEstimatedDepartureDate = helper.moment(data.oldData.estimatedDepartureDate);
+				var newEstimatedDepartureDate = helper.moment(data.data.estimatedDepartureDate);
+				if (!oldEstimatedDepartureDate.isSame(newEstimatedDepartureDate)) {
+					console.log(`ETD CHANGE FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}`);
+					return resolve("DELAY");
 				} else {
-					return "DATESET";
+					return resolve("DATESET");
 				}
 			}
 		} else {
