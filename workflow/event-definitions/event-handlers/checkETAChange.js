@@ -10,6 +10,7 @@ function CheckETA() {
 						.then((bill) => {
 							var oldEstimatedArrivalDate = helper.moment(bill.estimatedArrivalDate);
 							var newEstimatedArrivalDate = helper.moment(data.data.estimatedArrivalDate);
+							console.log('Compare with FM3000');
 							console.log(`OLD ETA: ${oldEstimatedArrivalDate}`)
 							console.log(`NEW ETA: ${newEstimatedArrivalDate}`)
 							if (!oldEstimatedArrivalDate.isSame(newEstimatedArrivalDate)) {
@@ -24,6 +25,7 @@ function CheckETA() {
 			} else {
 				var oldEstimatedArrivalDate = helper.moment(data.oldData.estimatedArrivalDate);
 				var newEstimatedArrivalDate = helper.moment(data.data.estimatedArrivalDate);
+				console.log('Compare with Old Data');
 				console.log(`OLD ETA: ${oldEstimatedArrivalDate}`)
 				console.log(`NEW ETA: ${newEstimatedArrivalDate}`)
 				if (!oldEstimatedArrivalDate.isSame(newEstimatedArrivalDate)) {
