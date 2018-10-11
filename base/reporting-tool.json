@@ -3,117 +3,33 @@
     "configurations": {
       "name": "Overview",
       "dashboard": {
-        "cards": [
-          {
-            "id": 36,
-            "name": "Actions",
-            "layouts": {
-              "lg": {
-                "h": 8,
-                "w": 2,
-                "x": 0,
-                "y": 44
-              },
-              "md": {
-                "h": 8,
-                "w": 2,
-                "x": 0,
-                "y": 44
-              },
-              "__base": {
-                "w": 2,
-                "minH": 8
-              }
-            }
-          },
-          {
-            "id": 37,
-            "name": "Alerts",
-            "layouts": {
-              "lg": {
-                "h": 8,
-                "w": 2,
-                "x": 2,
-                "y": 36
-              },
-              "md": {
-                "h": 8,
-                "w": 2,
-                "x": 2,
-                "y": 36
-              },
-              "__base": {
-                "w": 2,
-                "minH": 8
-              }
-            }
-          },
-          {
-            "id": 38,
-            "name": "Shipment Status",
-            "layouts": {
-              "lg": {
-                "h": 4,
-                "w": 4,
-                "x": 0,
-                "y": 52
-              },
-              "md": {
-                "h": 4,
-                "w": 4,
-                "x": 0,
-                "y": 52
-              },
-              "sm": {
-                "h": 7
-              },
-              "xs": {
-                "h": 7
-              },
-              "xxs": {
-                "h": 7
-              },
-              "__base": {
-                "minW": 4
-              }
-            }
-          }
-        ]
+        "cards": []
       }
     },
     "filters": {
-      "estimatedDepartureDate": {
-        "key": "LAST_30_DAYS",
-        "use": {"type": "day", "value": 30, "method": "last"},
-        "summary": "Last 30 Days"
+      "jobDate": {
+        "key": "CURRENT_YEAR",
+        "use": {"type": "year", "method": "current"},
+        "summary": "Current Year"
       }
     },
     "url": "reports/uber"
   },
   "adhoc": {
     "configurations": { "table": {} },
-    "filters": {
-      "estimatedDepartureDate": {
-        "value": {
-          "to": "2018-12-31",
-          "from": "2018-01-01"
-        },
-        "summary": "2018/01/01 - 2018/12/31"
-      }
-    },
+    "filters": {},
     "url": "reports/uber"
   },
   "Shipments:Table": {
-    "configurations": { "table": {} },
-    "filters": {
-      "estimatedDepartureDate": {
-        "value": {
-          "to": "2018-12-31",
-          "from": "2018-01-01"
-        },
-        "summary": "2018/01/01 - 2018/12/31"
+    "configurations": {
+      "table": {
+        "sortBy": {
+          "direction": "desc",
+          "fieldName": "jobDate"
+        }
       }
     },
+    "filters": {},
     "url": "reports/uber"
   },
   "Bookings:Table": {
@@ -125,28 +41,19 @@
         }
       }
     },
-    "filters": {
-      "estimatedDepartureDate": {
-        "value": {
-          "to": "2018-12-31",
-          "from": "2018-01-01"
-        },
-        "summary": "2018/01/01 - 2018/12/31"
-      }
-    },
+    "filters": {},
     "url": "reports/booking-details"
   },
   "PurchaseOrders:Table": {
-    "configurations": { "table": {} },
-    "filters": {
-      "estimatedDepartureDate": {
-        "value": {
-          "to": "2018-12-31",
-          "from": "2018-01-01"
-        },
-        "summary": "2018/01/01 - 2018/12/31"
+    "configurations": {
+      "table": {
+        "sortBy": {
+          "direction": "desc",
+          "fieldName": "createdAt"
+        }
       }
     },
+    "filters": {},
     "url": "reports/purchaseOrder-details"
   },
   "Messages:Table": {
@@ -160,18 +67,14 @@
           { "key": "message" },
           { "key": "tableName", "hidden": true },
           { "key": "primaryKey", "hidden": true }
-        ]
+        ],
+        "sortBy": {
+          "direction": "desc",
+          "fieldName": "createdAt"
+        }
       }
     },
-    "filters": {
-      "estimatedDepartureDate": {
-        "value": {
-          "to": "2018-12-31",
-          "from": "2018-01-01"
-        },
-        "summary": "2018/01/01 - 2018/12/31"
-      }
-    },
+    "filters": {},
     "url": "reports/alert-details"
   },
   "map": {
@@ -307,12 +210,10 @@
       }
     },
     "filters": {
-      "estimatedDepartureDate": {
-        "value": {
-          "to": "2018-06-30",
-          "from": "2018-06-01"
-        },
-        "summary": "2018/06/01 - 2018/06/30"
+      "jobDate": {
+        "key": "CURRENT_YEAR",
+        "use": {"type": "year", "method": "current"},
+        "summary": "Current Year"
       }
     },
     "mapControl": {
