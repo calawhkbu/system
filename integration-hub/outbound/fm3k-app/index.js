@@ -1,7 +1,6 @@
 function fm3kHandler () {
   this.handle = function (appId, params, helper) {
     var booking = params.data;
-    console.log("POSTING to FM3K " + JSON.stringify(booking));
     helper.persistence.models.customer.findOne({where: {id: booking.customerId}})
         .then(customer => {
           if(customer && customer.configuration && customer.configuration.webService["Booking"]) {
@@ -12,7 +11,6 @@ function fm3kHandler () {
                 if(Buffer.isBuffer(postData)){
                   postData = postData.toString('utf8');
                 }
-                console.log("RESPONSE FROM FM3K " + postData);
                 if(postData && postData.trim().length > 0) {
                   helper.emailer.sendMail({
                     to: "alert@swivelsoftware.com",   //TODO REMOVE HARD-CODED

@@ -11,20 +11,7 @@ module.exports = {
                 entity: "customer",
                 entityId: "data.customerId"
             },
-            handlers: [{
-                    name: "checkETAChange"
-                },
-                {
-                    on: {
-                        "DELAY": {
-                            name: "echoData",
-                            parameters: {
-                                "remarks": "echoData from system event"
-                            }
-                        }
-                    }
-                }
-            ]
+            handlers: []
         },
         {
             name: "update_billTracking",

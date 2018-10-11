@@ -4,7 +4,6 @@ function testingAppHandler () {
     // handle request from here
     var body = req.body;
     var changed = helper.swig.render(template, { locals: body });
-    console.log(JSON.parse(body), changed)
     req.body = { ...body, ...(JSON.parse(changed)) };
   }
   var handleResponse = function (appId, res, resData, helper) {
