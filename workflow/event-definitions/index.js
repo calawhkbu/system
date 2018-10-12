@@ -33,7 +33,7 @@ module.exports = {
                     name: "sendNotification",
                     parameters: {
                       roles: ["Admin", "User", "ClientAdmin", "ClientUser", "OFE"],
-                      subject: "Master BL# {{bill.masterNo}} ETA changed from {% if oldData.estimatedArrivalDate %}{{oldData.estimatedArrivalDate | date('d M Y H:i:s')}}{% else %}{{bill.estimatedArrivalDate | date('d M Y')}}{% endif %} to {% if data.estimatedArrivalDate %}{{data.estimatedArrivalDate | date('d M Y H:i:s')}}{% else %}{{data.actualArrivalDate | date('d M Y H:i:s')}}{% endif %}.",
+                      subject: "Master BL# {{bill.masterNo}} ETA changed from {% if oldData.estimatedArrivalDate %}{{oldData.estimatedArrivalDate | date('d M Y H:i:s')}}{% else %}{{bill.estimatedArrivalDate | date('d M Y')}}{% endif %} to {{data.estimatedArrivalDate | date('d M Y H:i:s')}}.",
                       severity: "Medium",
                       tableName: "bill",
                       primaryKey: "id",
@@ -47,7 +47,7 @@ module.exports = {
                       email: {
                         echoOnly: true,
                         template: "bill-tracking-update",
-                        subject: "Master BL# {{bill.masterNo}} ETA changed from {% if oldData.estimatedArrivalDate %}{{oldData.estimatedArrivalDate | date('d M Y H:i:s')}}{% else %}{{bill.estimatedArrivalDate | date('d M Y')}}{% endif %} to {% if data.estimatedArrivalDate %}{{data.estimatedArrivalDate | date('d M Y H:i:s')}}{% else %}{{data.actualArrivalDate | date('d M Y H:i:s')}}{% endif %}."
+                        subject: "Master BL# {{bill.masterNo}} ETA changed from {% if oldData.estimatedArrivalDate %}{{oldData.estimatedArrivalDate | date('d M Y H:i:s')}}{% else %}{{bill.estimatedArrivalDate | date('d M Y')}}{% endif %} to {{data.estimatedArrivalDate | date('d M Y H:i:s')}}."
                       },
                       wechat: {
                         publicTemplateId: 'OPENTM402244876',
