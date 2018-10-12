@@ -30,9 +30,9 @@ function CheckETA() {
 				console.log(`NEW ETA: ${newEstimatedArrivalDate}`)
 				if (!oldEstimatedArrivalDate.isSame(newEstimatedArrivalDate)) {
 					console.log(`ETA Change FOR BILL ${data.data.masterNo} CUSTOMERID ${data.data.customerId}`);
-					return resolve("DELAY");
+					return "DELAY";
 				} else {
-					return resolve("DATESET");
+					return "DATESET";
 				}
 			}
 		} else {

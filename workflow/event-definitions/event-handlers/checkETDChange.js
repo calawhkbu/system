@@ -30,9 +30,9 @@ function CheckETD() {
 				console.log(`NEW ETD: ${newEstimatedDepartureDate}`)
 				if (!oldEstimatedDepartureDate.isSame(newEstimatedDepartureDate)) {
 					console.log(`ETD CHANGE FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}`);
-					return resolve("DELAY");
+					return "DELAY";
 				} else {
-					return resolve("DATESET");
+					return "DATESET";
 				}
 			}
 		} else {
