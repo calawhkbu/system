@@ -25,9 +25,9 @@ function CheckETD() {
 			} else {
 				var oldEstimatedDepartureDate = helper.moment(data.oldData.estimatedDepartureDate);
 				var newEstimatedDepartureDate = helper.moment(data.data.estimatedDepartureDate);
-				console.log('Compare with Old Data');
-				console.log(`OLD ETD: ${oldEstimatedDepartureDate}`)
-				console.log(`NEW ETD: ${newEstimatedDepartureDate}`)
+				console.log(`[Master NO:${data.data.masterNo}] Compare with Old Data`);
+				console.log(`[Master NO:${data.data.masterNo}] OLD ETD: ${oldEstimatedDepartureDate}`)
+				console.log(`[Master NO:${data.data.masterNo}] NEW ETD: ${newEstimatedDepartureDate}`)
 				if (!oldEstimatedDepartureDate.isSame(newEstimatedDepartureDate)) {
 					console.log(`ETD CHANGE FOR BILL ${data.data.masterNo} CUSTOMER-ID ${data.data.customerId}`);
 					return "DELAY";

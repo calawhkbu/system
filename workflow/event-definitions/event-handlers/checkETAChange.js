@@ -25,9 +25,9 @@ function CheckETA() {
 			} else {
 				var oldEstimatedArrivalDate = helper.moment(data.oldData.estimatedArrivalDate);
 				var newEstimatedArrivalDate = helper.moment(data.data.estimatedArrivalDate);
-				console.log('Compare with Old Data');
-				console.log(`OLD ETA: ${oldEstimatedArrivalDate}`)
-				console.log(`NEW ETA: ${newEstimatedArrivalDate}`)
+				console.log(`[Master NO:${data.data.masterNo}] Compare with Old Data`);
+				console.log(`[Master NO:${data.data.masterNo}] OLD ETA: ${oldEstimatedArrivalDate}`)
+				console.log(`[Master NO:${data.data.masterNo}] NEW ETA: ${newEstimatedArrivalDate}`)
 				if (!oldEstimatedArrivalDate.isSame(newEstimatedArrivalDate)) {
 					console.log(`ETA Change FOR BILL ${data.data.masterNo} CUSTOMERID ${data.data.customerId}`);
 					return "DELAY";
