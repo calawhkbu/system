@@ -3,7 +3,8 @@ function CheckETD() {
 	this.returns = ["DATESET", "DELAY","CHANGED"];
 	this.handle = function(definition, data, handlerParameters, helper) {
 		console.log(`[Event Triggered] Check ETD Change for master ${data.data.masterNo}`)
-		if (data.data.estimatedDepartureDate) {
+		if (data.data.estimatedDepartureDate != null) {
+			console.log(`[Master NO:${data.data.masterNo}] NEW ETD: ${data.data.estimatedDepartureDate}`)
 			if (data.oldData.estimatedDepartureDate == null) {
 				var promise = new Promise(function (resolve) {
 					helper.persistence.models.bill.findOne({ where:{ customerId: data.data.customerId, masterNo: data.data.masterNo } })

@@ -3,7 +3,8 @@ function CheckETA() {
 	this.returns = ["DATESET", "DELAY"];
 	this.handle = function(definition, data, handlerParameters, helper) {
 		console.log(`[Event Triggered] Check ETA Change for master ${data.data.masterNo}`)
-		if (data.data.estimatedArrivalDate) {
+		if (data.data.estimatedArrivalDate != null) {
+			console.log(`[Master NO:${data.data.masterNo}] NEW ETA: ${data.data.estimatedArrivalDate}`)
 			if (data.oldData.estimatedArrivalDate == null) {
 				var promise = new Promise(function (resolve) {
 					helper.persistence.models.bill.findOne({ where:{ customerId: data.data.customerId, masterNo: data.data.masterNo } })
