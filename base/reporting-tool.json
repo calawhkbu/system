@@ -62,7 +62,7 @@
         "headers" : [
           { "key": "createdAt", "width": 200 },
           { "key": "alertType" },
-          { "key": "alertCategory" },
+          { "key": "alertCategory", "hidden": true },
           { "key": "alertStatus" },
           { "key": "message" },
           { "key": "tableName", "hidden": true },

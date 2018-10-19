@@ -57,8 +57,7 @@ module.exports = {
 		}
   ],
   demoUsers: [
-  	"admin@swivelsoftware.com",
-  	"expshoe1@swivelsoftware.com"
+  	"swivel360@swivelsoftware.com"
   ]
 }
 
@@ -78,7 +77,7 @@ function obfuscate(data, params) {
 						}
 					});
 				}
-			}					
+			}
 		}
 	})
 	return data;
