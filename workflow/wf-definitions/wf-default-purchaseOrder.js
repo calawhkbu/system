@@ -9,11 +9,9 @@ module.exports ={
             tags: {
             },
             roles: [
-                "SwivelAdmin",
-                "ConsigneeUser",
-                "ConsigneeAdmin",
-                "ForwarderAdmin",
-                "ForwarderUser"
+              "SwivelAdmin",
+              "Admin",
+              "User"
             ],
             generatedDate:"gDate = date(purchaseOrder.createdAt); var aDate=date(purchaseOrder.createdAt)",
             actualDate:"aDate = date(purchaseOrder.createdAt);",
@@ -46,10 +44,9 @@ module.exports ={
             },
             onEnterRule: "isSent =  sendNotifications(purchaseOrder,{entityName:'purchaseOrder',rolesToEmail:['Factory', 'Buyer'],useMeta:false})",
             roles: [
-                "SwivelAdmin",
-                "ShipperUser",
-                "ShipperAdmin",
-                "ForwarderAdmin",
+              "SwivelAdmin",
+              "Admin",
+              "User"
             ],
             action: "",
             generatedDate:"gDate = date(purchaseOrder.createdAt); gDate= gDate.addDays(2)",
@@ -73,11 +70,9 @@ module.exports ={
             },
             onEnterRule: "isSent =  sendNotifications(purchaseOrder,{entityName:'purchaseOrder',rolesToEmail:['Consignee','Shipper'],useMeta:false})",
             roles: [
-                "SwivelAdmin",
-                "ForwarderAdmin",
-                "ForwarderUser",
-                "ConsigneeUser",
-                "ConsigneeAdmin"
+              "SwivelAdmin",
+              "Admin",
+              "User"
             ],
             action: ""
         },
@@ -89,9 +84,9 @@ module.exports ={
             },
             onEnterRule: "isSent =  sendNotifications(purchaseOrder,{entityName:'purchaseOrder',rolesToEmail:['Consignee','Shipper'],useMeta:false})",
             roles: [
-                "SwivelAdmin",
-                "ForwarderAdmin",
-                "ForwarderUser"
+              "SwivelAdmin",
+              "Admin",
+              "User"
             ],
             action: ""
         },
@@ -103,9 +98,9 @@ module.exports ={
             },
             onEnterRule: "isSent =  sendNotifications(purchaseOrder,{entityName:'purchaseOrder',rolesToEmail:['Factory','Shipper'],useMeta:false})",
             roles: [
-                "SwivelAdmin",
-                "ShipperUser",
-                "ShipperAdmin"
+              "SwivelAdmin",
+              "Admin",
+              "User"
             ],
             action: ""
         },
@@ -117,9 +112,9 @@ module.exports ={
             },
             onEnterRule: "isSent =  sendNotifications(purchaseOrder,{entityName:'purchaseOrder',rolesToEmail:['Factory','Shipper'],useMeta:false})",
             roles: [
-                "SwivelAdmin",
-                "ConsigneeUser",
-                "ConsigneeAdmin"
+              "SwivelAdmin",
+              "Admin",
+              "User"
             ],
             action: ""
         },
@@ -130,9 +125,9 @@ module.exports ={
             tags: {
             },
             roles: [
-                "SwivelAdmin",
-                "ShipperUser",
-                "ShipperAdmin"
+              "SwivelAdmin",
+              "Admin",
+              "User"
             ],
             action: ""
         },
@@ -143,9 +138,9 @@ module.exports ={
             tags: {
             },
             roles: [
-                "SwivelAdmin",
-                "ForwarderAdmin",
-                "ForwarderUser"
+              "SwivelAdmin",
+              "Admin",
+              "User"
             ],
             action: ""
         },
@@ -156,9 +151,9 @@ module.exports ={
             tags: {
             },
             roles: [
-                "SwivelAdmin",
-                "ForwarderAdmin",
-                "ForwarderUser"
+              "SwivelAdmin",
+              "Admin",
+              "User"
             ],
             action: ""
         },
@@ -166,12 +161,9 @@ module.exports ={
             name: "Cancelled",
             validationRules: [],
             roles: [
-                "ForwarderAdmin",
-                "ForwarderUser",
-                "ConsigneeAdmin",
-                "ConsigneeUser",
-                "ShipperAdmin",
-                "ShipperUser"
+              "SwivelAdmin",
+              "Admin",
+              "User"
             ],
             action: "/cancel-booking"
         }
