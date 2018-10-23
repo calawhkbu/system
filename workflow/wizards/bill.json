@@ -78,27 +78,6 @@
       "label": "Incoterms"
     },
     {
-      "name": "freightTerms",
-      "label": "Freight Terms"
-    },
-    {
-      "name": "otherTerms",
-      "label": "Other Terms"
-    },
-    {
-      "name": "nominatedType",
-      "label": "Freehand/RO"
-    },
-    {
-      "name": "telexRelease",
-      "label": "Telex Release",
-      "type": "boolean"
-    },
-    {
-      "name": "otherTerms",
-      "label": "Freight Payable At"
-    },
-    {
       "name": "issuingAgent",
       "label": "Issuing Agent",
       "visibility": {
