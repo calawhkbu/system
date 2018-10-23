@@ -13,32 +13,6 @@
       "isHearchy": true
     },
     {
-      "name": "moduleType",
-      "label": "Module"
-    },
-    {
-      "name": "jobNo",
-      "label": "Job No"
-    },
-    {
-      "name": "boundType",
-      "label": "Bound"
-    },
-    {
-      "name": "division",
-      "label": "Division"
-    },
-    {
-      "name": "isDirect",
-      "label": "Is Direct",
-      "type": "boolean"
-    },
-    {
-      "name": "isCoload",
-      "label": "Is Coload",
-      "type": "boolean"
-    },
-    {
       "name": "placeOfReceipt",
       "label": "Place of Receipt"
     },
@@ -102,26 +76,6 @@
     {
       "name": "incoTerms",
       "label": "Incoterms"
-    },
-    {
-      "name": "freightTerms",
-      "label": "Freight Terms"
-    },
-    {
-      "name": "otherTerms",
-      "label": "Other Terms"
-    },
-    {
-      "name": "nominatedType",
-      "label": "Freehand/RO"
-    },
-    {
-      "name": "telexRelease",
-      "label": "Telex Release"
-    },
-    {
-      "name": "otherTerms",
-      "label": "Freight Payable At"
     },
     {
       "name": "issuingAgent",

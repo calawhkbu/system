@@ -382,7 +382,7 @@
     {
       "name": "currency",
       "label": "Currency",
-      "type": "list",
+      "type": "list-codemaster",
       "mandatory": false,
       "important": false,
       "codeType": "USD"
