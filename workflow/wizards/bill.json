@@ -13,32 +13,6 @@
       "isHearchy": true
     },
     {
-      "name": "moduleType",
-      "label": "Module"
-    },
-    {
-      "name": "jobNo",
-      "label": "Job No"
-    },
-    {
-      "name": "boundType",
-      "label": "Bound"
-    },
-    {
-      "name": "division",
-      "label": "Division"
-    },
-    {
-      "name": "isDirect",
-      "label": "Is Direct",
-      "type": "boolean"
-    },
-    {
-      "name": "isCoload",
-      "label": "Is Coload",
-      "type": "boolean"
-    },
-    {
       "name": "placeOfReceipt",
       "label": "Place of Receipt"
     },
