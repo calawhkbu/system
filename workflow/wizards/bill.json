@@ -91,7 +91,8 @@
     },
     {
       "name": "telexRelease",
-      "label": "Telex Release"
+      "label": "Telex Release",
+      "type": "boolean"
     },
     {
       "name": "otherTerms",
