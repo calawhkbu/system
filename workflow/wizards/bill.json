@@ -7,14 +7,14 @@
       "isHearchy": true
     },
     {
+      "name": "placeOfReceipt",
+      "label": "Place of Receipt"
+    },
+    {
       "name": "masterNo",
       "label": "Master No",
       "hearchy": ["billTransports",0, "masterNo"],
       "isHearchy": true
-    },
-    {
-      "name": "placeOfReceipt",
-      "label": "Place of Receipt"
     },
     {
       "name": "portOfLoading",
@@ -41,10 +41,6 @@
       "label": "Place Of Delivery"
     },
     {
-      "name": "finalDestination",
-      "label": "Final Destination"
-    },
-    {
       "name": "transport",
       "label": "Vessel/Voyage",
       "visibility": {
@@ -52,6 +48,10 @@
       },
       "hearchy": ["billTransports",0, "transport"],
       "isHearchy": true
+    },
+    {
+      "name": "finalDestination",
+      "label": "Final Destination"
     },
     {
       "name": "transport",
@@ -108,13 +108,7 @@
     {
       "name": "issueAt",
       "label": "Issue At"
-    },
-    {
-      "name": "issueDate",
-      "label": "Issue Date",
-      "type": "date"
     }
-
   ],
   "billCargoDetails": [
     {
