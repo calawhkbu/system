@@ -55,6 +55,13 @@ module.exports = {
 			expiryMinutes: 5
 		},
 
+		// booking-details for AdhocTool
+		{
+			path: '/reports/booking-details',
+			method: ['GET', 'POST'],
+			expiryMinutes: 15
+		},
+
 		// FM3K APIs for Dashboard
 		{
 			path: '/fm3k/',
