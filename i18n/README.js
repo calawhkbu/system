@@ -1,70 +1,95 @@
-{
+module.exports = {
+  // specify the name of the language for this file
   "language": "English",
-  "colon": ": ",
-  "space": " ",
-  "Login": "Login",
-  "Logout": "Logout",
-  "My Profile": "My Profile",
-  "Create": "Create",
-  "Update": "Update",
-  "Confirmed?": "Confirmed?",
-  "Delete": "Delete",
-  "Save": "Save",
-  "Save as": "Save As",
-  "Apply": "Apply",
-  "Reset": "Reset",
-  "Clear": "Clear",
-  "Cancel": "Cancel",
-  "Close": "Close",
-  "Share": "Share",
-  "Refresh": "Refresh",
-  "Next": "Next",
-  "Back": "Back",
-  "Preview": "Preview",
-  "Search": "Search",
-  "OK": "OK",
-  "Confirm": "Confirm",
-  "Select": "Select",
+
+  // the common text that will be used in different pages
+  "colon": ": ",  // colon sign may be different in different languages
+  "space": " ", // space size may be different in different languages
+  "Login": "Login", // 'Login' button
+  "Logout": "Logout", // 'Logout' button
+  "My Profile": "My Profile", // 'My Profile' button
+  "Create": "Create", // 'Create' button
+  "Update": "Update", // 'Update' button
+  "Confirmed?": "Confirmed?", // 'Confirm to Delete?' button
+  "Delete": "Delete", // 'Delete' button
+  "Save": "Save", // 'Save' button
+  "Save as": "Save As", // 'Save As' button
+  "Apply": "Apply", // 'Apply / Submit' button
+  "Reset": "Reset", // 'Reset' button
+  "Clear": "Clear", // 'Clear' button
+  "Cancel": "Cancel", // 'Cancel' button
+  "Close": "Close", // 'Close' button
+  "Share": "Share", // 'Share' button
+  "Refresh": "Refresh", // 'Refresh / Reload' button
+  "Next": "Next", // 'Next' button
+  "Back": "Back", // 'Back' button
+  "Preview": "Preview", // 'Preview' button
+  "Search": "Search", // 'Search' button
+  "OK": "OK", // 'OK' button
+  "Confirm": "Confirm", // 'Confirm' button
+  "Select": "Select", // 'Select' buttonf
+
+  // the text shown when login
   "login": {
     "Email": "Email",
     "Password": "Password",
     "Register": "Register",
     "Forgot Password?": "Forgot Password?",
     "Please open WeChat to scan the QR code": "Please open WeChat to scan the QR code.",
-    "Re-type the Password": "Re-type the Password",
+    "Re-type the Password": "Re-type the Password", // re-type the password in registration for confirmation
     "Create Account": "Create Account",
     "Reset Password": "Reset Password",
     "First Name": "First Name",
     "Last Name": "Last Name"
   },
+
+  // the text shown in 404 page
   "NotFoundPage": {
-    "Page Not Found": "Page Not Found",
-    "... or you do not have the right to access this page": "... or you do not have the right to access this page"
+    "Page Not Found": "Page Not Found", // 404 primary message
+    "... or you do not have the right to access this page": "... or you do not have the right to access this page"  // 404 secondary message
   },
+
+  // the text shown in 500 page
   "ErrorPage": {
-    "Error. Please retry.": "Error. Please retry."
+    "Error. Please retry.": "Error. Please retry."  // 500 message
   },
+
+  // the text shown
+  // in My Profile (/profile)
   "profile": {
+    // basic section
     "Basic Information": "Basic Information",
     "User Name": "Username",
     "Display Name": "Display Name",
     "Photo URL": "Photo URL",
+
+    // user preferences section
     "User Preferences": "User Preferences",
     "Select language": "Select Preferred Language",
-    "Change": "Change",
+
+    // change password section
+    "Change": "Change", // 'Change' button
     "Change password": "Change Password",
     "Old Password": "Old Password",
     "New Password": "New Password",
     "Re-type the New Password": "Re-type the New Password",
-    "Notification Preferences": "Notification Preferences",
+
+    // notification section
+    "Notification Preferences": "Notification Preferences", // settings about notifications
     "Phone": "Phone",
     "Enter your phone number": "Enter Your Tel. #",
     "WeChat ID": "WeChat ID",
     "Please click on the wechat button to login to Wechat": "Please click on the WeChat button to login to WeChat"
   },
+
+  // the text shown in alert preference table
+  // in My Profile (/profile)
+  // and some alert-related text
   "alerts": {
-    "Alert Entity": "Alert Entity",
-    "Notification Method": "Notification Method",
+    "Alert Entity": "Alert Entity", // the title of an alert type
+    "Notification Method": "Notification Method", // the way to notify the user about the alert
+
+    // the list of alert entities
     "New Booking": "New Booking",
     "Create Authentication": "Create Authentication",
     "Update Booking": "Update Booking",
@@ -75,115 +100,202 @@
     "VGM Missing": "VGM Missing",
     "Missing MBL": "Missing MBL",
     "Booking Delayed": "Booking Delayed",
+
+    // used in alert section in wizards
     "View Messages": "View Messages"
   },
+
+  // the text shown in autosuggest fields
+  // used anywhere
   "auto-suggest": {
-    "Short Name": "Short Name",
-    "Code": "Code",
-    "Location": "Location"
+    // CustomAutoSuggest
+    "Short Name": "Short Name", // party short name
+    "Code": "Code", // party code
+    "Location": "Location", // party address
   },
+
+  // the text shown in cards
+  // in Dashboard (/:dashboardId)
   "card": {
-    "Your Cards": "Your Cards",
-    "System Cards": "System Cards",
+    "Your Cards": "Your Cards", // the cards you own
+    "System Cards": "System Cards", // the cards provided by default
+
+    // shown in the list of available cards when there is none
     "No cards available": "No cards available",
+
+    // the category name of cards available for all used
     "General": "General",
+
+    // shown when there is no data
     "No data": "No data",
+
+    // shown when the card selected is not available
     "Not applicable": "Not applicable",
-    "Card '{name}' not found": "Card '{name}' not found",
+
+    // shown when the corresponding card is not found
+    "Card '{name}' not found": "Card '{name}' not found", // note the {name} should NOT be translated
+
+    // the parameters applied to the corresponding card is altered by some reasons
+    // a warning sign will be shown at the upper-right corner of the card
     "Filters altered": "Filters altered",
-    "Edit card": "Edit card - {name}",
-    "Error": "Error",
-    "Fail to load card component": "Fail to load card component",
+
+    // title of the card editor
+    "Edit card": "Edit card - {name}",  // note the {name} should NOT be translated
+
+    // shown when there is an error when loading the card
+    "Error": "Error", // the title of the error card
+    "Fail to load card component": "Fail to load card component", // when the card script cannot be loaded from server
+
+    // show more details
     "view-detail": "View Detail",
+
+    // the title of alerts cards
     "Alerts": "Alerts",
-    "Alerts - AIR": "Alerts - AIR",
-    "Alerts - SEA": "Alerts - SEA",
+    "Alerts - AIR": "Alerts - AIR", // for air shipment
+    "Alerts - SEA": "Alerts - SEA", // for sea shipment
+
+    // the title of outstanding status cards
     "Sea Export Freight Outstanding Status in 72 hours": "Sea Export Freight Outstanding Status within 72 hours",
     "Sea Import Import Outstanding Status in 72 hours": "Sea Import Freight Outstanding Status within 72 hours",
     "Air Export Freight Outstanding Status in 48 hours": "Air Export Freight Outstanding Status within 48 hours",
     "Air Import Freight Outstanding Status in 48 hours": "Air Import Freight Outstanding Status within 48 hours",
+
+    // dropdown options
+    // show alerts within the following range
     "Last 12 hours": "Last 12 hours",
     "Last 24 hours": "Last 24 hours",
     "Last 36 hours": "Last 36 hours",
     "Last 2 days": "Last 2 days",
     "Last 3 days": "Last 3 days",
+    // show data of the following range
     "Current Month": "Current Month",
-    "Unnamed": "Unnamed"
+
+    "Unnamed": "Unnamed", // card without a name
   },
+
+  // the text related to the hot list (~ My Favourites)
+  // in the top navigation bar
   "hotList": {
+    // tooltip
     "HotList": "Hot List",
+
+    // the name of the items that can be put in the hot list
     "booking": "Booking",
     "bill": "Shipment",
     "purchaseOrder": "Purchase Order",
+
     "Consignee": "Consignee",
     "Shipper": "Shipper",
-    "ETA": "Est. Arrival Date",
-    "From": "From",
-    "To": "To"
+
+    // date-related
+    "ETA": "Est. Arrival Date", // estimated arrival date
+    "From": "From", // From POL
+    "To": "To", // To POD
   },
+
+  // the text related to the search function
+  // in the top navigation bar
   "search": {
+    // shown when loading
     "Loading ...": "Loading ...",
-    "Total: {number} records": "Total: {number} records",
-    "{time} seconds": "{time} seconds",
+
+    // number of records found
+    "Total: {number} records": "Total: {number} records", // note the {number} should NOT be translated
+
+    // time spent on finding the records 
+    "{time} seconds": "{time} seconds", // note that {time} should NOT be translated
+
+    // shown when there is no result
     "No results": "No results"
   },
+
+  // the text related to the navigation menu
+  // in the LHS drawer
   "drawer-menu": {
     "Dashboard": "Dashboard",
-    "Book Now": "Book Now",
+    "Book Now": "Book Now", // create a booking
     "Shipments": "Shipments",
     "My Bookings": "My Bookings",
-    "Relationships": "Relationships",
+    "Relationships": "Relationships", // manage parties
     "Alerts": "Alerts",
     "Purchase Orders": "Purchase Orders",
-    "Flex Fields": "Flex Fields",
-    "Admin": "Admin",
-    "Products": "Products",
-    "Workflow": "Workflow",
-    "Product Categories": "Product Categories",
-    "Schedule Search": "Schedule Search",
-    "API Application": "API Application",
-    "Invitations and Users": "Invitations and Users",
-    "Customer Profile": "Customer Profile",
-    "User Group": "User Group"
+    "Flex Fields": "Flex Fields", // refer to flexFields.pageTitle
+    "Admin": "Admin", // administrator-only section
+    "Products": "Products", // product management page
+    "Workflow": "Workflow", // manage the flow of booking status
+    "Product Categories": "Product Categories", // product category management page
+    "Schedule Search": "Schedule Search", // search for shipment schedule
+    "API Application": "API Application", // manage how FM3K integrates data with 360
+    "Invitations and Users": "Invitations and Users", // manage invitations and users
+    "Customer Profile": "Customer Profile", // manage information of the current company
+    "User Group": "User Group"  // ~ department
   },
+
+  // the text related to workflow
+  // in administration page
   "Workflow": {
     "booking": "Booking",
     "purchaseOrder": "Purchase Order",
     "bill": "Shipment"
   },
+
+  // the text used (mainly the field names)
+  // in Dashboard (/:dashboardId)
+  // in AlertsPage (/messages)
+  // in ShipmentsPage (/shipments)
+  // in BookingsPage (/bookings)
+  // in PurchaseOrdersPage (/purchaseOrders)
   "ReportingTool": {
-    "Selected ({count})": "Selected ({count})",
+    // shown in parameteres that support multi-selection
+    "Selected ({count})": "Selected ({count})", // note the {count} should NOT be translated
+
+    // date-typed parameters
     "Current Week": "Current Week",
     "Current Month": "Current Month",
     "Current Year": "Current Year",
     "Last 3 Days": "Last 3 Days",
     "Last 7 Days": "Last 7 Days",
     "Last 30 Days": "Last 30 Days",
+
+    // title of the dashboard configuration dialog
     "Configure dashboard": "Configure Dashboard",
+
+    // title of the table configuration dialog
     "Configure table": "Configure Table",
-    "Unnamed": "Unnamed",
-    "New Report": "New Report",
+
+    // dropdown of reports
+    "Unnamed": "Unnamed", // report without a name
+    "New Report": "New Report", // creating a new report
     "No available reports": "No Available Reports",
     "Reports shared to me": "Reports Shared with Me",
     "My Reports": "My Reports",
-    "MBL": "MBL",
-    "HBL": "HBL",
+
+    // for mapping tool
+    "MBL": "MBL", // Master Bill of Landing
+    "HBL": "HBL", // House Bill of Landing
     "Booking#": "Booking #",
-    "Save report": "Save Report",
-    "Update report": "Update Report",
+    
+
+    // save report dialog
+    "Save report": "Save Report", // title of the dialog
+    "Update report": "Update Report", // title of the dialog
     "Report name": "Report Name",
     "Report category": "Report Category",
     "Description": "Description",
     "Save as new report": "Save as New Report",
     "Delete report": "Delete Report",
-    "Share report": "Share Report",
-    "Share to all available branches": "Share to all available branches",
-    "Branch": "Branch",
-    "Division": "Division",
-    "User": "User",
-    "Branch-chip": "Branch: {name}",
-    "Division-chip": "Division: {name}",
-    "User-chip": "User: {name}",
+
+    // share report dialog
+    "Share report": "Share Report", // title of the dialog
+    "Share to all available branches": "Share to all available branches", // button to share to all offices
+    "Branch": "Branch", // share a report to an office e.g. HKG
+    "Division": "Division", // share a report to a department e.g. sea import department
+    "User": "User", // share a report to a specific user by email
+    "Branch-chip": "Branch: {name}",  // note the {name} should NOT be translated
+    "Division-chip": "Division: {name}",  // note the {name} should NOT be translated
+    "User-chip": "User: {name}",  // note the {name} should NOT be translated
+
+    // fields for /shipments
     "id": "ID",
     "jobNo": "Job #",
     "jobDate": "Job Date",
@@ -226,29 +338,29 @@
     "commodity": "Commodity",
     "quantity": "Quantity",
     "containerNumbers": "Container #",
-    "20ft": "20FT Containers",
-    "40ft": "40FT Containers",
-    "40ftHQ": "40FT HQ Containers",
-    "45ft": "45FT Containers",
-    "OtherContainerType": "Other Containers",
+    "20ft": "20FT Containers",  // number of 20ft containers
+    "40ft": "40FT Containers",  // number of 40ft containers
+    "40ftHQ": "40FT HQ Containers", // number of 40ft HQ containers
+    "45ft": "45FT Containers",  // number of 45ft containers
+    "OtherContainerType": "Other Containers", // number of other containers
     "carrierName": "Carrier",
     "carrierCode": "Carrier Code",
     "vesselFlight": "Vessel / Flight",
     "vesselVoyage": "Vessel / Voyage",
-    "division": "Division",
-    "class": "Class",
-    "service": "Service",
+    "division": "Division", // department
+    "class": "Class", // airline classes
+    "service": "Service", // e.g. CY, CFS
     "incoTerms": "Incoterms",
-    "freightTerms": "Freight Terms",
-    "otherTerms": "Other Terms",
-    "moduleType": "Module Type",
-    "boundType": "Bound Type",
-    "billType": "Bill Type",
-    "serviceType": "Service Type",
-    "shipmentType": "Shipment Type",
-    "nominatedType": "Nominated Type",
-    "isDirect": "Direct?",
-    "isCoload": "Coload?",
+    "freightTerms": "Freight Terms",  // e.g. CC (collected), PP (Prepaid)
+    "otherTerms": "Other Terms",  // e.g. CC (collected), PP (Prepaid)
+    "moduleType": "Module Type",  // e.g. AIR, SEA
+    "boundType": "Bound Type",  // e.g. import, export
+    "billType": "Bill Type",  // e.g. M (master), H (house)
+    "serviceType": "Service Type",  // ~ division
+    "shipmentType": "Shipment Type",  // for SEA e.g. FCL, LCL, Consol
+    "nominatedType": "Nominated Type",  // e.g. R (Routing), F (Free-hand)
+    "isDirect": "Direct?",  // whether it is a direct shipment
+    "isCoload": "Coload?",  // whether it is a coload shipment
     "por": "Place of Receipt (code)",
     "porLocation": "Place of Receipt",
     "porCountryName": "Country of Receipt",
@@ -269,18 +381,22 @@
     "finalDestinationLocation": "Final Dest. Name",
     "finalDestinationCountryName": "Country of Final Dest.",
     "finalDestinationCountryCode": "Country of Final Dest. (code)",
-    "lastStatus": "Last Status",
+    "lastStatus": "Last Status",  // latest shipment status
     "lastStatusDate": "Last Status Date",
     "noOfContainer": "No. of Containers",
     "grossWeight": "Gross Weight",
     "chargeableWeight": "Chargeable Weight",
     "cntCbm": "CBM",
     "teu": "TEU",
+
+    // fields for /messages
     "createdAt": "Created At",
     "alertType": "Alert",
     "alertCategory": "Category",
-    "alertStatus": "Status",
+    "alertStatus": "Status",  // e.g. Open, Closed
     "message": "Message",
+
+    // fields for /bookings
     "poNo": "PO #",
     "cargeReadyDate": "Cargo Ready Date",
     "consignee": "Consignee",
@@ -293,78 +409,138 @@
     "placeOfDelivery": "Place of Delivery",
     "status": "Last Status",
     "statusDate": "Last Status Date",
-    "estimated": "Est. Delivery Date",
+
+    // fields for /purchaseOrders,
+    "estimated": "Est. Delivery Date",  // estimated delivery date
     "remarks": "Remarks",
+
+    // common fields
     "Total": "TOTAL"
   },
+
+  // the text used in Table
   "Table": {
+    // the number of rows shown in each page
     "Rows per Page": "Rows per Page",
-    "results": "{count} results",
-    "pages": "{numPages} pages",
+
+    // the number of rows
+    "results": "{count} results", // note the {count} should NOT be translated
+
+    // the number of pages
+    "pages": "{numPages} pages",  // note the {numPages} should NOT be translated
+
+    // used in summary row
     "Total": "TOTAL"
   },
+
+  // the text shown
+  // in AddUserPage (/admin/invitation/create)
   "addCustomerUsers": {
+    // title of the page
     "Update Invitation": "Update Invitation",
     "Create Invitation": "Create Invitation",
     "Update User": "Update User",
     "Create User": "Create User",
+
+    // the personal details of the user to be created
     "Personal Details": "Personal Details",
     "First Name": "First Name",
     "Last Name": "Last Name",
-    "Title": "Title",
+    "Title": "Title", // e.g. Mr., Ms., Dr., etc.
     "e-mail": "Email",
-    "User Group": "User Group",
+
+    // the group the user to be created belongs to (~ Department)
+    "User Group": "User Group", // e.g. Sea Export Department
+
+    // the checkbox for whethere the user to be created is an admin
     "is Admin": "is Admin",
-    "User Branches": "Branches",
+
+    // tell the user to select the office the user to be created belongs to
+    "User Branches": "Branches",  // e.g. Hong Kong office
     "selectBranchOrOfficeName": "Select branch or office name",
+
+    // the default filtering criteria for Dashboard
     "Default Filters": "Default Filters"
   },
+
+  // the text shown
+  // in product-related pages (/admin/products)
   "products": {
+    // the details of the product to be registered
     "name": "Name",
     "productCategory.name": "Category",
-    "productCategory.party.shortName": "Party",
-    "customerProductCode": "Customer Product Code",
+    "productCategory.party.shortName": "Party", // the company that provides this product
+    "customerProductCode": "Customer Product Code", // the internal product code used within the company
     "skuCode": "SKU Code",
     "description": "Description",
-    "Product created": "Product {name} created",
-    "Product updated": "Product {name} updated"
+
+    // shown when the product is saved successfully
+    "Product created": "Product {name} created",  // note the {name} should NOT be translated
+    "Product updated": "Product {name} updated" // note the {name} should NOT be translated
   },
+
+  // the text shown
+  // in AddProductCategoryPage (/admin/productCategories)
   "productCategories": {
+    // the details of the product category to be registered
     "name": "Name",
-    "party.shortName": "Party",
+    "party.shortName": "Party", // the company that provides products under this category
     "description": "Description",
-    "Category created": "Category '{name}' created",
-    "Category updated": "Category '{name}' updated"
+
+    // shown when the category is saved successfully
+    "Category created": "Category '{name}' created",  // note the {name} should NOT be translated
+    "Category updated": "Category '{name}' updated" // note the {name} should NOT be translated
   },
+
+  // the text shown
+  // in FlexFieldsPage (/admin/flexDefinition)
+  // these are flexible fields defined for each customer
   "flexFields": {
     "pageTitle": "Flex Fields",
     "Name": "Name",
     "Type": "Type",
+
+    // the list of available field types
     "Text": "Text",
     "Number": "Number",
     "List": "List"
   },
+
+  // the text shown
+  // in customer-related page (/connections)
   "customers": {
+    // the transaction role of that company corresponding to the company of the current user
     "Select Party Role": "Select Party Role",
+
+    // create a company relationship
     "Party Creation": "Party Creation",
+
+    // save the company relationship
     "Save Party": "Save Party",
+
+    // update the information of offices
     "Update Branches": "Update Branches"
   },
+
+  // the text shown
+  // in Wizard's document section e.g. /booking/:id, /purchaseOrder/:id
   "documents": {
     "documentLibrary": "Document Library",
-    "DocumentsUploaded": "{number} Documents Uploaded",
+    "DocumentsUploaded": "{number} Documents Uploaded", // note the {number} should NOT be translated
     "Manage Documents": "Manage Documents"
   },
+
+  // the text shown
+  // in Wizard's transaction date section e.g. /shipment/:id, /booking/:id, /purchaseOrder/:id
   "transactionDate": {
     "Transaction Date": "Transaction Date",
-    "Estimated-prefix": "Estimated ",
-    "Actual-prefix": "Actual",
-    "PO Date": "PO Date",
-    "Cargo Ready Date": "Cargo Ready Date",
-    "Departure Date": "Departure Date",
-    "Arrival Date": "Arrival Date",
-    "Final Delivery Date": "Final Delivery Date"
+    "Estimated": "Estimated",
+    "Actual": "Actual",
+    "empty": "(Empty)"
   },
+
+  // the text shown
+  // in Wizard's party section e.g. /shipment/:id, /booking/:id, /purchaseOrder/:id
   "partySection": {
     "Address": "Address",
     "Contact Person": "Contact Person",
@@ -373,7 +549,26 @@
     "Name": "Name",
     "Select Buyer": "Select Buyer"
   },
+
+  // the text shown
+  // in Wizard's transaction date section e.g. /shipment/:id, /booking/:id, /purchaseOrder/:id
+  "transactionDate": {
+    "Transaction Date": "Transaction Date",
+    "Estimated-prefix": "Estimated ", // prefix added to date field e.g. 'Estimated ' + 'Arrival Date' = 'Estimated Arrival Date'
+    "Actual-prefix": "Actual",  // prefix added to date field e.g. 'Actual ' + 'Arrival Date' = 'Actual Arrival Date'
+
+    // date label
+    "PO Date": "PO Date", // purchase order date
+    "Cargo Ready Date": "Cargo Ready Date",
+    "Departure Date": "Departure Date",
+    "Arrival Date": "Arrival Date",
+    "Final Delivery Date": "Final Delivery Date",
+  },
+
+  // the text shown
+  // in Wizard's cargo and container section e.g. /shipment/:id, /booking/:id
   "cargoAndContainers": {
+    // for cargos
     "Commodity": "Commodity",
     "Quantity": "Quantity",
     "Weight": "Weight",
@@ -381,24 +576,36 @@
     "Volume Weight": "Volumetric Weight",
     "Chargeable Weight": "Chargeable Weight",
     "CBM": "CBM",
+
+    // for containers
     "Container No": "Container #",
     "Carrier Booking No": "Carrier Booking #",
     "Seal No": "Seal #",
-    "Type": "Type"
+    "Type": "Type"  // e.g. 20'GP, 40FT, etc.
   },
+
+  // the text shown
+  // in Wizard's alert section e.g. /shipment/:id, /booking/:id, /purchaseOrder/:id
   "chat": {
     "channels": "Channels",
     "placeHolder": "Type a message",
-    "Unread": "Unread",
-    "Read": "Read"
+    "Unread": "Unread", // button to mark a message as unread
+    "Read": "Read"  // button to mark a message as read
   },
+
+  // the text shown
+  // in ShipmentPage (/shipment/:id)
   "shipments": {
     "pageTitle": "Shipment Summary",
     "shipments": "Shipments",
     "cargoDetails": "Cargo Details",
     "billContainerDetails": "Container Details",
+
+    // transaction date section
     "ARRIVAL": "Arrival Date",
     "DEPARTURE": "Departure Date",
+
+    // detail section
     "House No": "House #",
     "Master No": "Master #",
     "Place of Receipt": "Place of Receipt",
@@ -411,53 +618,67 @@
     "Vessel/Voyage": "Vessel / Voyage",
     "Flight No": "Flight #",
     "Carrier": "Carrier",
-    "Service": "Service",
+    "Service": "Service", // e.g. CY, CFS
     "Incoterms": "Incoterms",
     "Issuing Agent": "Issuing Agent",
     "Value For Carriage": "Value for Carriage",
     "Value For Customs": "Value for Customs",
     "Amount Of Insurance": "Amount of Insurance",
-    "Issue At": "Issue at",
+    "Issue At": "Issue at", // where it is issued,
     "Issue Date": "Issue Date",
+
+    // the shipment status section
     "shipmentsStatus": "Shipment Status",
-    "Booked": "Booked",
+    "Booked": "Booked", // shown when the shipment is booked but not yet being tracked
     "Show More...": "Show More...",
     "Show Less...": "Show Less..."
   },
+
+  // the text shown
+  // in BookingPage (/booking/:id)
   "booking": {
-    "booking": "Booking",
+    // general
+    "booking": "Booking", // page title
     "Please correct these errors and try again.": "Please correct these errors and try again.",
-    "Marks and Numbers": "Marks and Numbers",
+    "Marks and Numbers": "Marks and Numbers", // remark
     "Description of Goods": "Description of Goods",
-    "Parties": "Parties",
+    "Parties": "Parties", // transaction parties e.g. shipper, consignee, etc.
     "more": "Show More ...",
     "less": "Show Less ...",
-    "Book": "Book",
+    "Book": "Book", // 'Book' button
     "Workflow / Milestones": "Workflow / Milestones",
-    "Action Required By": "Action Required By",
+    "Action Required By": "Action Required By", // the people allowed to move on to the next workflow status or the next milestone
+
+    // container section
     "Container No": "Container #",
     "Container Type": "Type",
     "Seal No": "Seal #",
     "No.Of Units": "No. of Units",
-    "Unit": "Unit",
+    "Unit": "Unit", // the counting unit of 'No. of Units', the metric unit of dimensions, the metirc unit of weight
     "Quantity": "Quantity",
-    "V": "Vol.",
-    "L": "L.",
-    "W": "W.",
-    "H": "H.",
+    "V": "Vol.",  // volume
+    "L": "L.",  // length
+    "W": "W.",  // width
+    "H": "H.",  // height
     "Weight": "Weight",
-    "CTNS": "CTNS",
-    "Pieces": "Pieces",
+    "CTNS": "CTNS", // number of cartons,
+    "Pieces": "Pieces", // number of pieces specified in purchase order
+
+    // containers section
     "Containers": "Containers",
-    "Container": "Container",
+    "Container": "Container", // add container to Containers
     "Requested": "Requested",
     "Container Details": "Container Details",
-    "Container Detail": "Container Detail",
+    "Container Detail": "Container Detail", // add container detail to Container Details
     "Packing Details": "Packing Details",
-    "Packing Detail": "Packing Detail",
+    "Packing Detail": "Packing Detail", // add packing detail to Packing Details
+
+    // container details section
     "Add Container": "Add Container",
     "Packing": "Packing",
     "Dimension": "Dimension",
+
+    // delivery details section
     "Delivery Details": "Delivery Details",
     "BookingDetails": "Booking Details",
     "Flight Forwarder": "Flight Forwarder",
@@ -466,10 +687,10 @@
     "Create a new vessel": "Create a New Vessel",
     "Fill in Delivery Details": "Fill in Delivery Details",
     "Vessel Name": "Vessel Name",
-    "Call Sign": "Call Sign",
+    "Call Sign": "Call Sign", // vessel code
     "duplicateVessel": "Duplicate vessel found. Please check call sign.",
-    "Transport Mode": "Transport Mode",
-    "Bound": "Bound",
+    "Transport Mode": "Transport Mode", // moduleType i.e. AIR, SEA
+    "Bound": "Bound", // boundType i.e. I(Import), O(Export)
     "Port Of Loading": "Port Of Loading",
     "Port Of Discharge": "Port Of Discharge",
     "Estimated Departure Date": "Estimated Departure Date",
@@ -478,47 +699,72 @@
     "Place of Delivery": "Place of Delivery",
     "Final Destination": "Final Destination",
     "Carrier": "Carrier",
-    "Vessel": "Vessel",
-    "Voyage": "Voyage",
-    "Flight Number": "Flight Number",
+    "Vessel": "Vessel", // vessel name
+    "Voyage": "Voyage", // voyage for SEA, ROAD
+    "Flight Number": "Flight Number", // voyage for AIR
+
+    // freight details section
     "Freight Details": "Freight Details",
-    "Service": "Service",
+    "Service": "Service", // e.g. CY, CFS
     "Incoterms": "Incoterms",
     "Freight Term": "Freight Terms",
     "Other Term": "Other Terms",
+
+    // commodity details section
     "Commodity Details": "Commodity Details",
     "Commodity": "Commodity",
+
+    // party section
     "partiesTitle": "Fill in Parties' Information",
+
+    // transaction date section
     "transactionsTitle": "Fill in Transaction Dates",
+
+    // purchase order section
     "Purchase Orders": "Purchase Orders",
+    "Packing Details": "Packing Details",
     "Mass Update": "Mass Update",
     "Search for PO": "Search for PO",
+
+    // references section
     "References": "References",
     "Reference Type": "Reference Type",
     "Reference Number": "Reference #",
     "Doc Date": "Doc. Date",
     "Remarks": "Remarks"
   },
+
+  // the text shown
+  // in BookingPage (/booking/:id)
+  // in PurchaseOrderPage (/purchaseOrder/:id)
   "roleCode": {
     "Shipper": "Shipper",
     "Consignee": "Consignee",
-    "Agent": "Agent",
-    "Controlling Customer": "Controlling Customer",
-    "Liner Agent": "Liner Agent",
-    "Customer Office": "Customer Office",
-    "Forwarder": "Forwarder",
-    "Notify Party": "Notify Party",
-    "Select Buyer": "Select Buyer",
-    "Buyer": "Buyer",
-    "Factory": "Factory"
+    "Agent": "Agent", // for shipment and booking
+    "Controlling Customer": "Controlling Customer", // for shipment
+    "Liner Agent": "Liner Agent", // for shipment
+    "Customer Office": "Customer Office", // for shipment
+    "Forwarder": "Forwarder", // for booking
+    "Notify Party": "Notify Party", // for booking
+    "Select Buyer": "Select Buyer", // for purchase order
+    "Buyer": "Buyer", // for purchase order
+    "Factory": "Factory"  // for purchase order
   },
+
+  // the text from
+  // the CodeMaster table
   "codeMaster": {
-    "EXPORT": "EXPORT",
-    "IMPORT": "IMPORT",
-    "MISC": "MISC",
-    "SEA FREIGHT": "SEA FREIGHT",
-    "AIR FREIGHT": "AIR FREIGHT",
-    "ROAD FREIGHT": "ROAD FREIGHT",
+    // BOUND
+    "EXPORT": "EXPORT", // O, outbound
+    "IMPORT": "IMPORT", // I, inbound
+    "MISC": "MISC", // M, miscellaneous
+
+    // MODULE
+    "SEA FREIGHT": "SEA FREIGHT", // SEA
+    "AIR FREIGHT": "AIR FREIGHT", // AIR
+    "ROAD FREIGHT": "ROAD FREIGHT", // ROAD
+
+    // INCOTERMS
     "Ex Works": "Ex Works",
     "Free Carrier": "Free Carrier",
     "Carriage Paid To": "Carriage Paid To",
@@ -534,25 +780,33 @@
     "Delivered Ex Ship": "Delivered Ex Ship",
     "Delivered Ex Quay": "Delivered Ex Quay",
     "Delivered Duty Unpaid": "Delivered Duty Unpaid",
+
+    // PAYTERMS i.e. freight terms, other terms
     "PREPAID": "PREPAID",
     "COLLECT": "COLLECT",
+
+    // SERVTYPE i.e. service type
     "LCL/LCL": "LCL/LCL",
     "FCL/FCL": "FCL/FCL",
     "FCL/LCL": "FCL/LCL",
     "DIRECT": "DIRECT",
     "CONSOL": "CONSOL"
   },
+
+  // the text shown
+  // in ScheduleSearchPage (/scheduleSearch)
   "scheduleSearch": {
     "from": "From",
     "to": "To",
     "etd": "Estimated Departure Date",
-    "Transit Time": "Transit Time",
+    "Transit Time": "Transit Time", // estimated days required for the shipment
     "Carrier": "Carrier",
-    "Departure": "Departure",
-    "Arrival": "Arrival",
-    "Cut-off": "Cut-off",
-    "{days} Days": "{days} Days"
+    "Departure": "Departure", // = departure date
+    "Arrival": "Arrival", // = arrival date
+    "Cut-off": "Cut-off", // the deadline for booking
+    "{days} Days": "{days} Days"  // note the {days} should NOT be translated
   },
+
   "purchaseOrders": {
     "pageTitle": "Purchase Orders",
     "add": "Add",
