@@ -29,6 +29,9 @@ module.exports = {
   "Confirm": "Confirm", // 'Confirm' button
   "Select": "Select", // 'Select' buttonf
 
+  // search field in app bar
+  "search-by": "Search by SKU, PO, B/L, Booking #",
+
   // the text shown when login
   "login": {
     "Email": "Email",
@@ -171,6 +174,7 @@ module.exports = {
     "Current Month": "Current Month",
 
     "Unnamed": "Unnamed", // card without a name
+    "Unknown": "Unknown"  // if the card name is not found
   },
 
   // the text related to the hot list (~ My Favourites)
@@ -286,6 +290,7 @@ module.exports = {
     "Delete report": "Delete Report",
 
     // share report dialog
+    "Share To ...": "Share To ...", // placeholder
     "Share report": "Share Report", // title of the dialog
     "Share to all available branches": "Share to all available branches", // button to share to all offices
     "Branch": "Branch", // share a report to an office e.g. HKG
@@ -415,7 +420,7 @@ module.exports = {
     "remarks": "Remarks",
 
     // common fields
-    "Total": "TOTAL"
+    "Total": "Total"
   },
 
   // the text used in Table
@@ -430,7 +435,7 @@ module.exports = {
     "pages": "{numPages} pages",  // note the {numPages} should NOT be translated
 
     // used in summary row
-    "Total": "TOTAL"
+    "Total": "Total"
   },
 
   // the text shown
@@ -731,7 +736,12 @@ module.exports = {
     "Reference Type": "Reference Type",
     "Reference Number": "Reference #",
     "Doc Date": "Doc. Date",
-    "Remarks": "Remarks"
+    "Remarks": "Remarks",
+
+    // messages
+    "Booking created": "Booking created",
+    "Booking updated": "Booking updated",
+    "Sorry, Unable to process booking.": "Sorry, Unable to process booking."  // fail to prepare booking preview screen
   },
 
   // the text shown
@@ -799,6 +809,7 @@ module.exports = {
     "from": "From",
     "to": "To",
     "etd": "Estimated Departure Date",
+    "transport": "Transport", // ~ serviceType, i.e. FCL, LCL, AIR
     "Transit Time": "Transit Time", // estimated days required for the shipment
     "Carrier": "Carrier",
     "Departure": "Departure", // = departure date
@@ -968,21 +979,5 @@ module.exports = {
   "adminDashboard": {
     "Admin": "Admin",
     "Manage User and External Contacts": "Manage User and External Contacts"
-  },
-  "error": "Error: {error}",
-  "Confirm to Delete?": "Confirm to Delete?",
-  "customer": "Customer",
-  "customerName": "Customer Name",
-  "exportReport": "Export Reports :",
-  "logo": "Logo",
-  "po-status": "PO Status",
-  "no-of-po": "No. of PO",
-  "status": "Status",
-  "count": "Count",
-  "mtd": "MTD",
-  "ytd": "YTD",
-  "name": "Name",
-  "search-by": "Search-by-SKU, PO, B/L, Booking #",
-  "documentLibrary": "Document Library",
-  "Party Name": "Party Name"
+  }
 }

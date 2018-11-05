@@ -25,6 +25,7 @@
   "OK": "OK",
   "Confirm": "Confirm",
   "Select": "Select",
+  "search-by": "Search by SKU, PO, B/L, Booking #",
   "login": {
     "Email": "Email",
     "Password": "Password",
@@ -108,7 +109,8 @@
     "Last 2 days": "Last 2 days",
     "Last 3 days": "Last 3 days",
     "Current Month": "Current Month",
-    "Unnamed": "Unnamed"
+    "Unnamed": "Unnamed",
+    "Unknown": "Unknown"
   },
   "hotList": {
     "HotList": "Hot List",
@@ -176,6 +178,7 @@
     "Description": "Description",
     "Save as new report": "Save as New Report",
     "Delete report": "Delete Report",
+    "Share To ...": "Share To ...",
     "Share report": "Share Report",
     "Share to all available branches": "Share to all available branches",
     "Branch": "Branch",
@@ -295,13 +298,13 @@
     "statusDate": "Last Status Date",
     "estimated": "Est. Delivery Date",
     "remarks": "Remarks",
-    "Total": "TOTAL"
+    "Total": "Total"
   },
   "Table": {
     "Rows per Page": "Rows per Page",
     "results": "{count} results",
     "pages": "{numPages} pages",
-    "Total": "TOTAL"
+    "Total": "Total"
   },
   "addCustomerUsers": {
     "Update Invitation": "Update Invitation",
@@ -497,7 +500,10 @@
     "Reference Type": "Reference Type",
     "Reference Number": "Reference #",
     "Doc Date": "Doc. Date",
-    "Remarks": "Remarks"
+    "Remarks": "Remarks",
+    "Booking created": "Booking created",
+    "Booking updated": "Booking updated",
+    "Sorry, Unable to process booking.": "Sorry, Unable to process booking."
   },
   "roleCode": {
     "Shipper": "Shipper",
@@ -546,6 +552,7 @@
     "from": "From",
     "to": "To",
     "etd": "Estimated Departure Date",
+    "transport": "Transport",
     "Transit Time": "Transit Time",
     "Carrier": "Carrier",
     "Departure": "Departure",
@@ -714,21 +721,5 @@
   "adminDashboard": {
     "Admin": "Admin",
     "Manage User and External Contacts": "Manage User and External Contacts"
-  },
-  "error": "Error: {error}",
-  "Confirm to Delete?": "Confirm to Delete?",
-  "customer": "Customer",
-  "customerName": "Customer Name",
-  "exportReport": "Export Reports :",
-  "logo": "Logo",
-  "po-status": "PO Status",
-  "no-of-po": "No. of PO",
-  "status": "Status",
-  "count": "Count",
-  "mtd": "MTD",
-  "ytd": "YTD",
-  "name": "Name",
-  "search-by": "Search-by-SKU, PO, B/L, Booking #",
-  "documentLibrary": "Document Library",
-  "Party Name": "Party Name"
+  }
 }
