@@ -27,7 +27,7 @@ module.exports = {
   "Search": "Search", // 'Search' button
   "OK": "OK", // 'OK' button
   "Confirm": "Confirm", // 'Confirm' button
-  "Select": "Select", // 'Select' buttonf
+  "Select": "Select", // 'Select' button
 
   // search field in app bar
   "search-by": "Search by SKU, PO, B/L, Booking #",
@@ -818,6 +818,33 @@ module.exports = {
     "{days} Days": "{days} Days"  // note the {days} should NOT be translated
   },
 
+  // the text shown
+  // in ConnectionsPage (/connections)
+  "connections": {
+    "partyRoles": "Party Roles",
+    "searchParties": "Party Name or Short Name",
+    "createNewParty": "Create a New Party",
+    "roleCode": "Role Code",
+    "partyRole": "Party Role",
+    "Remove": "Remove",
+    "managePartyRelations": "Manage Party Relations",
+    "partyInfo": "Party Info.",
+    "connectedParties": "Connected Parties - {count}",  // note the {count} should NOT be translated
+    "contacts": "Contacts - {count}",
+    "choseParty": "Choose Parties to Connect",
+    "connectNewParty": "Connect a New Party",
+    "shortName": "Short Name",  // party short name
+    "customerPartyCode": "Customer Party Code",
+    "roles": "Roles", // party roles
+    "address": "Address",
+    "addNewRole": "Add a New Role to This Party",
+    "manageCurrentRoles": "Manage Roles of This Party",
+    "email": "Email",
+    "name": "Name",
+    "phone": "Phone",
+    "Invitation": "Invitation"
+  },
+
   "purchaseOrders": {
     "pageTitle": "Purchase Orders",
     "add": "Add",
@@ -859,60 +886,6 @@ module.exports = {
     "PO Items": "PO Items",
     "Purchase Order": "Purchase Order"
   },
-  "partyManagement": {
-    "pageTitle": "Parties",
-    "addParties": "Add Parties",
-    "partyName": "Party Name",
-    "customerPartyCode": "Customer Party Code",
-    "contact": "Contact",
-    "addresses": "Addresses",
-    "address1": "Address1",
-    "address2": "Address2",
-    "city": "City",
-    "state": "State",
-    "country": "Country"
-  },
-  "AllInvitations": {
-    "allInvitation": "All Invitations",
-    "createNewInvitation": "Create New Invitation",
-    "createInvitation": "Create Invitation",
-    "send": "Send",
-    "cancel": "Cancel",
-    "inviteeName": "Invitee Name",
-    "inviteeEMail": "Invitee Email",
-    "customerName": "CustomerName",
-    "configurationFrom": "Copy dashboard configuration from"
-  },
-  "manageUsers": {
-    "manageUsers": "Manage Users",
-    "createNewInvitation": "Create New Invitation",
-    "inviteeName": "Invitee Name",
-    "inviteeEmail": "Invitee Email",
-    "status": "Status",
-    "actions": "Actions",
-    "customer": "Customer"
-  },
-  "forgotPassword": {
-    "resetPassword": "Reset Password",
-    "enterYourMailId": "Enter Your Email",
-    "send": "send",
-    "setPassword": "Set a new password",
-    "password": "Password",
-    "confirmPassword": "Confirm Password",
-    "save": "Save",
-    "errorMessage": "password not matched"
-  },
-  "AddPartners": {
-    "addPartyPerson": "Add Party Persons",
-    "text": "Added party persons will be able to track and see the shipments cards based on party id",
-    "personDetails": "Person Details",
-    "firstName": "First Name",
-    "lastName": "Last Name",
-    "email": "Email",
-    "selectPartyforPerson": "Select Party to this Person",
-    "addPartner": "ADD PARTNER",
-    "dismiss": "DISMISS"
-  },
   "rolesManagement": {
     "rolesManagement": "Roles Management",
     "update": "Update",
@@ -930,54 +903,11 @@ module.exports = {
     "submit-to-INTTRA": "Submit to INTTRA",
     "not-submitted": "Not Submitted"
   },
-  "Shipment Detail Card": "Shipment Detail Card",
-  "Booking Detail Card": "Booking Detail Card",
-  "Shipper": "Shipper",
-  "Consignee": "Consignee",
-  "From": "From",
-  "To": "To",
-  "ETD": "ETD",
-  "ETA": "ETA",
   "mappingView": {
     "Mapping Attributes": "Mapping Attributes",
     "Columns": "Columns",
     "PO line items": "PO line items",
     "Template Name": "Template Name",
     "Add new mapping file": "Add new mapping file"
-  },
-  "relationships": {
-    "relationshipsDashboard": "Relationships Dashboard",
-    "createNewParty": "Create A New Party",
-    "filter": "Filter",
-    "reset": "Reset",
-    "searchParties": "Party Name or Short Name",
-    "filterByPartyRole": "Filter by Party Role",
-    "managePartyRelations": "Manage Party Relations",
-    "partyInfo": "Party Info",
-    "connectedParties": "Connected Parties",
-    "contacts": "Contacts",
-    "choseParty": "Chose Party to connect",
-    "connectNewParty": "Connect a New Party",
-    "shortName": "Short Name",
-    "customerPartyCode": "Customer Party Code",
-    "roles": "Roles",
-    "address": "Address",
-    "email": "Email",
-    "name": "Name",
-    "phone": "Phone",
-    "Invitation": "Invitation",
-    "cancel": "Cancel",
-    "save": "Save",
-    "close": "Close",
-    "update": "Update",
-    "addNewRole": "Add a New Role to this Party",
-    "manageCurrentRoles": "Manage Current Roles of this Party",
-    "roleCode": "Role Code",
-    "partyRole": "Party Role",
-    "remove": "Remove"
-  },
-  "adminDashboard": {
-    "Admin": "Admin",
-    "Manage User and External Contacts": "Manage User and External Contacts"
   }
 }
