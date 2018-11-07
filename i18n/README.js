@@ -159,7 +159,7 @@ module.exports = {
 
     // the title of outstanding status cards
     "Sea Export Freight Outstanding Status in 72 hours": "Sea Export Freight Outstanding Status within 72 hours",
-    "Sea Import Import Outstanding Status in 72 hours": "Sea Import Freight Outstanding Status within 72 hours",
+    "Sea Import Freight Outstanding Status in 72 hours": "Sea Import Freight Outstanding Status within 72 hours",
     "Air Export Freight Outstanding Status in 48 hours": "Air Export Freight Outstanding Status within 48 hours",
     "Air Import Freight Outstanding Status in 48 hours": "Air Import Freight Outstanding Status within 48 hours",
 
