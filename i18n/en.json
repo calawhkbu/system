@@ -268,8 +268,8 @@
     "pldLocation": "Place of Delivery",
     "pldCountryName": "Country of Delivery",
     "pldCountryCode": "Country of Delivery (code)",
-    "finalDestination": "Final Destination",
-    "finalDestinationLocation": "Final Dest. Name",
+    "finalDestination": "Final Dest. (code)",
+    "finalDestinationLocation": "Final Destination",
     "finalDestinationCountryName": "Country of Final Dest.",
     "finalDestinationCountryCode": "Country of Final Dest. (code)",
     "lastStatus": "Last Status",
@@ -361,7 +361,7 @@
   "transactionDate": {
     "Transaction Date": "Transaction Date",
     "Estimated-prefix": "Estimated ",
-    "Actual-prefix": "Actual",
+    "Actual-prefix": "Actual ",
     "PO Date": "PO Date",
     "Cargo Ready Date": "Cargo Ready Date",
     "Departure Date": "Departure Date",
@@ -514,7 +514,6 @@
     "Customer Office": "Customer Office",
     "Forwarder": "Forwarder",
     "Notify Party": "Notify Party",
-    "Select Buyer": "Select Buyer",
     "Buyer": "Buyer",
     "Factory": "Factory"
   },

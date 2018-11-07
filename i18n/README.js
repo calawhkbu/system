@@ -382,8 +382,8 @@ module.exports = {
     "pldLocation": "Place of Delivery",
     "pldCountryName": "Country of Delivery",
     "pldCountryCode": "Country of Delivery (code)",
-    "finalDestination": "Final Destination",
-    "finalDestinationLocation": "Final Dest. Name",
+    "finalDestination": "Final Dest. (code)",
+    "finalDestinationLocation": "Final Destination",
     "finalDestinationCountryName": "Country of Final Dest.",
     "finalDestinationCountryCode": "Country of Final Dest. (code)",
     "lastStatus": "Last Status",  // latest shipment status
@@ -560,7 +560,7 @@ module.exports = {
   "transactionDate": {
     "Transaction Date": "Transaction Date",
     "Estimated-prefix": "Estimated ", // prefix added to date field e.g. 'Estimated ' + 'Arrival Date' = 'Estimated Arrival Date'
-    "Actual-prefix": "Actual",  // prefix added to date field e.g. 'Actual ' + 'Arrival Date' = 'Actual Arrival Date'
+    "Actual-prefix": "Actual ",  // prefix added to date field e.g. 'Actual ' + 'Arrival Date' = 'Actual Arrival Date'
 
     // date label
     "PO Date": "PO Date", // purchase order date
@@ -756,7 +756,6 @@ module.exports = {
     "Customer Office": "Customer Office", // for shipment
     "Forwarder": "Forwarder", // for booking
     "Notify Party": "Notify Party", // for booking
-    "Select Buyer": "Select Buyer", // for purchase order
     "Buyer": "Buyer", // for purchase order
     "Factory": "Factory"  // for purchase order
   },
