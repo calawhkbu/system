@@ -11,7 +11,7 @@
   "Delete": "削除",
   "Save": "保存",
   "Save as": "保存先",
-  "Apply": "応用",
+  "Apply": "適用",
   "Reset": "リセット",
   "Clear": "クリア",
   "Cancel": "取消",
@@ -124,29 +124,29 @@
     "To": "揚地港"
   },
   "search": {
-    "Loading ...": "Loading ...",
-    "Total: {number} records": "Total: {number} records",
-    "{time} seconds": "{time} seconds",
-    "No results": "No results"
+    "Loading ...": "読み込み中…",
+    "Total: {number} records": "合計{number}件",
+    "{time} seconds": "{time}秒",
+    "No results": "結果なし"
   },
   "drawer-menu": {
-    "Dashboard": "Dashboard",
-    "Book Now": "Book Now",
-    "Shipments": "Shipments",
-    "My Bookings": "My Bookings",
+    "Dashboard": "ダッシュボード",
+    "Book Now": "今すぐご予約",
+    "Shipments": "船積み",
+    "My Bookings": "マイオーダー",
     "Relationships": "Relationships",
-    "Alerts": "Alerts",
-    "Purchase Orders": "Purchase Orders",
+    "Alerts": "お知らせ",
+    "Purchase Orders": "購入オーダー",
     "Flex Fields": "Flex Fields",
     "Admin": "Admin",
-    "Products": "Products",
+    "Products": "製品",
     "Workflow": "Workflow",
-    "Product Categories": "Product Categories",
+    "Product Categories": "製品カテゴリ",
     "Schedule Search": "Schedule Search",
     "API Application": "API Application",
     "Invitations and Users": "Invitations and Users",
-    "Customer Profile": "Customer Profile",
-    "User Group": "User Group"
+    "Customer Profile": "貴社情報",
+    "User Group": "担当部署"
   },
   "Workflow": {
     "booking": "Booking",
