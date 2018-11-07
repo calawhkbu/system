@@ -269,6 +269,7 @@ module.exports = {
 
     // dropdown of reports
     "Unnamed": "Unnamed", // report without a name
+    "Select report": "Select Report",
     "New Report": "New Report", // creating a new report
     "No available reports": "No Available Reports",
     "Reports shared to me": "Reports Shared with Me",
@@ -290,7 +291,7 @@ module.exports = {
     "Delete report": "Delete Report",
 
     // share report dialog
-    "Share To ...": "Share To ...", // placeholder
+    "Share to ...": "Share to ...", // placeholder
     "Share report": "Share Report", // title of the dialog
     "Share to all available branches": "Share to all available branches", // button to share to all offices
     "Branch": "Branch", // share a report to an office e.g. HKG
