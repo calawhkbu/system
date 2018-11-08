@@ -356,40 +356,40 @@
     "Update Branches": "Update Branches"
   },
   "documents": {
-    "documentLibrary": "Document Library",
-    "DocumentsUploaded": "{number} Documents Uploaded",
-    "Manage Documents": "Manage Documents"
+    "documentLibrary": "ファイル管理",
+    "DocumentsUploaded": "アップロード済のファイル{number}個",
+    "Manage Documents": "ファイル管理"
   },
   "transactionDate": {
-    "Transaction Date": "Transaction Date",
-    "Estimated-prefix": "Estimated ",
-    "Actual-prefix": "Actual",
-    "PO Date": "PO Date",
-    "Cargo Ready Date": "Cargo Ready Date",
-    "Departure Date": "Departure Date",
-    "Arrival Date": "Arrival Date",
-    "Final Delivery Date": "Final Delivery Date"
+    "Transaction Date": "いろいろな日付",
+    "Estimated-prefix": "予定",
+    "Actual-prefix": "実際",
+    "PO Date": "オーダー日付",
+    "Cargo Ready Date": "荷揃え日",
+    "Departure Date": "出発日",
+    "Arrival Date": "到着日",
+    "Final Delivery Date": "最終配達日"
   },
   "partySection": {
-    "Address": "Address",
-    "Contact Person": "Contact Person",
-    "Tel": "Tel.",
-    "Email": "Email",
-    "Name": "Name",
-    "Select Buyer": "Select Buyer"
+    "Address": "所在地",
+    "Contact Person": "連絡先",
+    "Tel": "電話",
+    "Email": "Eメール",
+    "Name": "名前",
+    "Select Buyer": "買い主を選択してください"
   },
   "cargoAndContainers": {
-    "Commodity": "Commodity",
-    "Quantity": "Quantity",
-    "Weight": "Weight",
-    "Gross Weight": "Gross Weight",
-    "Volume Weight": "Volumetric Weight",
-    "Chargeable Weight": "Chargeable Weight",
+    "Commodity": "貨物",
+    "Quantity": "数量",
+    "Weight": "重量",
+    "Gross Weight": "グロスウエイト",
+    "Volume Weight": "ボリュームウェイト",
+    "Chargeable Weight": "チャージャブルウェイト",
     "CBM": "CBM",
-    "Container No": "Container #",
-    "Carrier Booking No": "Carrier Booking #",
-    "Seal No": "Seal #",
-    "Type": "Type"
+    "Container No": "コンテナ番号",
+    "Carrier Booking No": "予約番号",
+    "Seal No": "シール番号",
+    "Type": "コンテナタイプ"
   },
   "chat": {
     "channels": "Channels",
