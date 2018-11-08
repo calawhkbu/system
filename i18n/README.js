@@ -382,7 +382,7 @@ module.exports = {
     "polCountryCode": "Country of Loading (code)",
     "pod": "Port of Discharge (code)",
     "podLocation": "Port of Discharge",
-    "podCountryName": "Country of Discharge",
+    "podCountry": "Country of Discharge",
     "podCountryCode": "Country of Discharge (code)",
     "pld": "Place of Delivery (code)",
     "pldLocation": "Place of Delivery",
@@ -403,9 +403,11 @@ module.exports = {
     // fields for /messages
     "createdAt": "Created At",
     "alertType": "Alert",
-    "alertCategory": "Category",
+    "alertCategory": "Type",
     "alertStatus": "Status",  // e.g. Open, Closed
     "message": "Message",
+    "tableName": "Category",
+    "primaryKey": "Reference ID",
 
     // fields for /bookings
     "poNo": "PO #",
@@ -424,6 +426,7 @@ module.exports = {
     // fields for /purchaseOrders,
     "estimated": "Est. Delivery Date",  // estimated delivery date
     "remarks": "Remarks",
+    "createdBy": "Created By",
 
     // common fields
     "Total": "Total"
@@ -550,9 +553,12 @@ module.exports = {
     "PO Date": "PO Date",
     "Cargo Ready Date": "Cargo Ready Date",
     "Departure Date": "Departure Date",
+    "DEPARTURE": "Departure Date",
     "Arrival Date": "Arrival Date",
+    "ARRIVAL": "Arrival Date",
     "Final Delivery Date": "Final Delivery Date",
-    "CY Cutoff": "CY Cutoff"
+    "CY Cutoff": "CY Cutoff",
+    "Create Sample Ocean Bill": "Create Sample Ocean Bill"
   },
 
   // the text shown

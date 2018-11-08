@@ -266,7 +266,7 @@
     "polCountryCode": "Country of Loading (code)",
     "pod": "Port of Discharge (code)",
     "podLocation": "Port of Discharge",
-    "podCountryName": "Country of Discharge",
+    "podCountry": "Country of Discharge",
     "podCountryCode": "Country of Discharge (code)",
     "pld": "Place of Delivery (code)",
     "pldLocation": "Place of Delivery",
@@ -285,9 +285,11 @@
     "teu": "TEU",
     "createdAt": "Created At",
     "alertType": "Alert",
-    "alertCategory": "Category",
+    "alertCategory": "Type",
     "alertStatus": "Status",
     "message": "Message",
+    "tableName": "Category",
+    "primaryKey": "Reference ID",
     "poNo": "PO #",
     "cargeReadyDate": "Cargo Ready Date",
     "consignee": "Consignee",
@@ -302,6 +304,7 @@
     "statusDate": "Last Status Date",
     "estimated": "Est. Delivery Date",
     "remarks": "Remarks",
+    "createdBy": "createdBy",
     "Total": "Total"
   },
   "Table": {
@@ -369,9 +372,12 @@
     "PO Date": "PO Date",
     "Cargo Ready Date": "Cargo Ready Date",
     "Departure Date": "Departure Date",
+    "DEPARTURE": "Departure Date",
     "Arrival Date": "Arrival Date",
+    "ARRIVAL": "Arrival Date",
     "Final Delivery Date": "Final Delivery Date",
-    "CY Cutoff": "CY Cutoff"
+    "CY Cutoff": "CY Cutoff",
+    "Create Sample Ocean Bill": "Create Sample Ocean Bill"
   },
   "partySection": {
     "Address": "Address",

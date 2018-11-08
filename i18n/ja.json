@@ -266,7 +266,7 @@
     "polCountryCode": "船積地コード",
     "pod": "揚地港コード",
     "podLocation": "揚地港",
-    "podCountryName": "揚げ地",
+    "podCountry": "揚げ地",
     "podCountryCode": "揚げ地コード",
     "pld": "配達先コード",
     "pldLocation": "配達先",
@@ -285,9 +285,11 @@
     "teu": "TEU",
     "createdAt": "作成日付",
     "alertType": "お知らせ",
-    "alertCategory": "ジャンル",
+    "alertCategory": "タイプ",
     "alertStatus": "状態",
     "message": "メッセージ",
+    "tableName": "ジャンル",
+    "primaryKey": "リファレンスID",
     "poNo": "オーダー番号",
     "cargoReadyDate": "荷揃え日",
     "consignee": "荷受人",
@@ -302,6 +304,7 @@
     "statusDate": "最新状況日付",
     "estimated": "予定配達日",
     "remarks": "付注",
+    "createdBy": "作り手",
     "Total": "合計"
   },
   "Table": {
@@ -368,9 +371,12 @@
     "PO Date": "オーダー日付",
     "Cargo Ready Date": "荷揃え日",
     "Departure Date": "出発日",
+    "DEPARTURE": "出発日",
     "Arrival Date": "到着日",
+    "ARRIVAL": "到着日",
     "Final Delivery Date": "最終配達日",
-    "CY Cutoff": "CYカット"
+    "CY Cutoff": "CYカット",
+    "Create Sample Ocean Bill": "船荷証券見本の作成"
   },
   "partySection": {
     "Address": "所在地",
