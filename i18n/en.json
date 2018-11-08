@@ -25,6 +25,7 @@
   "OK": "OK",
   "Confirm": "Confirm",
   "Select": "Select",
+  "empty": "(Empty)",
   "search-by": "Search by SKU, PO, B/L, Booking #",
   "login": {
     "Email": "Email",
@@ -369,7 +370,8 @@
     "Cargo Ready Date": "Cargo Ready Date",
     "Departure Date": "Departure Date",
     "Arrival Date": "Arrival Date",
-    "Final Delivery Date": "Final Delivery Date"
+    "Final Delivery Date": "Final Delivery Date",
+    "CY Cutoff": "CY Cutoff"
   },
   "partySection": {
     "Address": "Address",

@@ -25,6 +25,7 @@
   "OK": "確定",
   "Confirm": "確定",
   "Select": "選択",
+  "empty": "（なし）",
   "search-by": "Search by SKU, PO, B/L, Booking #",
   "login": {
     "Email": "Ｅメール",
@@ -357,7 +358,7 @@
   },
   "documents": {
     "documentLibrary": "ファイル管理",
-    "DocumentsUploaded": "アップロード済のファイル{number}個",
+    "DocumentsUploaded": "アップロード済のファイル：{number}個",
     "Manage Documents": "ファイル管理"
   },
   "transactionDate": {
@@ -368,7 +369,8 @@
     "Cargo Ready Date": "荷揃え日",
     "Departure Date": "出発日",
     "Arrival Date": "到着日",
-    "Final Delivery Date": "最終配達日"
+    "Final Delivery Date": "最終配達日",
+    "CY Cutoff": "CYカット"
   },
   "partySection": {
     "Address": "所在地",

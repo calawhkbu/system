@@ -29,6 +29,9 @@ module.exports = {
   "Confirm": "Confirm", // 'Confirm' button
   "Select": "Select", // 'Select' button
 
+  // no input
+  "empty": "(Empty)",
+
   // search field in app bar
   "search-by": "Search by SKU, PO, B/L, Booking #",
 
@@ -544,7 +547,12 @@ module.exports = {
     "Transaction Date": "Transaction Date",
     "Estimated": "Estimated",
     "Actual": "Actual",
-    "empty": "(Empty)"
+    "PO Date": "PO Date",
+    "Cargo Ready Date": "Cargo Ready Date",
+    "Departure Date": "Departure Date",
+    "Arrival Date": "Arrival Date",
+    "Final Delivery Date": "Final Delivery Date",
+    "CY Cutoff": "CY Cutoff"
   },
 
   // the text shown
