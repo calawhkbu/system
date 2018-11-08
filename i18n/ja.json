@@ -35,8 +35,8 @@
     "Re-type the Password": "パスワードを再入力してください",
     "Create Account": "アカウント作成",
     "Reset Password": "パスワードリセット",
-    "First Name": "名字",
-    "Last Name": "名前"
+    "First Name": "名前",
+    "Last Name": "名字"
   },
   "NotFoundPage": {
     "Page Not Found": "ページが見つかりません",
@@ -304,26 +304,25 @@
     "Total": "合計"
   },
   "Table": {
-    "Rows per Page": "Rows per Page",
+    "Rows per Page": "行数",
     "results": "合計{count}件",
     "pages": "{numPages}ページ",
     "Total": "合計"
   },
   "addCustomerUsers": {
-    "Update Invitation": "Update Invitation",
-    "Create Invitation": "Create Invitation",
-    "Update User": "Update User",
-    "Create User": "Create User",
-    "Personal Details": "Personal Details",
-    "First Name": "First Name",
-    "Last Name": "Last Name",
-    "Title": "Title",
-    "e-mail": "Email",
-    "User Group": "User Group",
-    "is Admin": "is Admin",
-    "User Branches": "Branches",
-    "selectBranchOrOfficeName": "Select branch or office name",
-    "Default Filters": "Default Filters"
+    "Update Invitation": "招待状を編集する",
+    "Create Invitation": "招待状を作成する",
+    "Update User": "ユーザー情報を編集する",
+    "Personal Details": "個人情報",
+    "First Name": "名前",
+    "Last Name": "名字",
+    "Title": "肩書",
+    "e-mail": "Eメール",
+    "User Group": "部門",
+    "is Admin": "管理者か",
+    "User Branches": "支社",
+    "selectBranchOrOfficeName": "支社を選択してください",
+    "Default Filters": "ダッシュボードフィルター"
   },
   "products": {
     "name": "Name",
