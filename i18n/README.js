@@ -232,6 +232,7 @@ module.exports = {
     "API Application": "API Application", // manage how FM3K integrates data with 360
     "Invitations and Users": "Invitations and Users", // manage invitations and users
     "Customer Profile": "Customer Profile", // manage information of the current company
+    "User Permissions": "User Permissions", // permission management
     "User Group": "User Group"  // ~ department
   },
 
