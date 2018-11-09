@@ -73,8 +73,8 @@
     "Departure Delayed (SEA) [ETD + 1 day]": "船の出発はもう１日遅延したところ",
     "Arrival Delayed (AIR) [ETA + 12 hours]": "航空機の到着はもう１２時間延したところ",
     "Arrival Delayed (SEA) [ETA + 1 day]": "船の到着はもう１日延したところ",
-    "email": "Ｅメール",
-    "noNotification": "無効"
+    "Email": "Ｅメール",
+    "No Notification": "無効"
   },
   "auto-suggest": {
     "Short Name": "略称",
@@ -247,10 +247,10 @@
     "otherTerms": "その他着払い・前払い",
     "moduleType": "空運・海運",
     "boundType": "輸入・輸出",
-    "billType": "Bill Type",
-    "serviceType": "Service Type",
+    "billType": "マスター・ハウス",
+    "serviceType": "タイプ",
     "shipmentType": "FCL・LCL",
-    "nominatedType": "Nominated Type",
+    "nominatedType": "Freehand・RO",
     "isDirect": "直接？",
     "isCoload": "混載？",
     "por": "受取先コード",

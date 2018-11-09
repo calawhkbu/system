@@ -73,8 +73,8 @@
     "Departure Delayed (SEA) [ETD + 1 day]": "Departure Delayed (SEA) [ETD + 1 day]",
     "Arrival Delayed (AIR) [ETA + 12 hours]": "Arrival Delayed (AIR) [ETA + 12 hours]",
     "Arrival Delayed (SEA) [ETA + 1 day]": "Arrival Delayed (SEA) [ETA + 1 day]",
-    "email": "Email",
-    "noNotification": "Disabled"
+    "Email": "Email",
+    "No Notification": "Disabled"
   },
   "auto-suggest": {
     "Short Name": "Short Name",

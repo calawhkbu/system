@@ -104,8 +104,8 @@ module.exports = {
     "Arrival Delayed (SEA) [ETA + 1 day]": "Arrival Delayed (SEA) [ETA + 1 day]",
 
     // the list of notification methods
-    "email": "Email",
-    "noNotification": "Disabled"
+    "Email": "Email",
+    "No Notification": "Disabled"
   },
 
   // the text shown in autosuggest fields
