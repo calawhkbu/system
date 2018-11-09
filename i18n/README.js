@@ -802,10 +802,6 @@ module.exports = {
     "Free on Board": "Free on Board",
     "Cost and Freight": "Cost and Freight",
     "Cost, Insurance & Freight": "Cost, Insurance & Freight",
-    "Delivered at Frontier": "Delivered at Frontier",
-    "Delivered Ex Ship": "Delivered Ex Ship",
-    "Delivered Ex Quay": "Delivered Ex Quay",
-    "Delivered Duty Unpaid": "Delivered Duty Unpaid",
 
     // PAYTERMS i.e. freight terms, other terms
     "PREPAID": "PREPAID",
