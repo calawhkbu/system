@@ -571,7 +571,6 @@ module.exports = {
     "Address 2": "Apartment, suite, unit, building, floor, etc.",
     "Address 3": "",
     "Address 4": "",
-    "Address 5": "",
     "City": "City",
     "State/Province": "State/Province",
     "Country": "Country",
@@ -706,6 +705,8 @@ module.exports = {
     "Add Container": "Add Container",
     "Packing": "Packing",
     "Dimension": "Dimension",
+    "By Units": "Per Pieces",
+    "By Total Shipment": "As a Whole",
 
     // delivery details section
     "Delivery Details": "Delivery Details",
