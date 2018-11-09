@@ -26,7 +26,7 @@
   "Confirm": "確定",
   "Select": "選択",
   "empty": "（なし）",
-  "search-by": "Search by SKU, PO, B/L, Booking #",
+  "search-by": "いろいろな番号から検索する",
   "login": {
     "Email": "Ｅメール",
     "Password": "パスワード",
@@ -65,19 +65,16 @@
     "Please click on the wechat button to login to Wechat": "WeChatボタンをクリックしてログインします"
   },
   "alerts": {
-    "Alert Entity": "Alert Entity",
-    "Notification Method": "Notification Method",
-    "New Booking": "New Booking",
-    "Create Authentication": "Create Authentication",
-    "Update Booking": "Update Booking",
-    "Update Bill Tracking": "Update Bill Tracking",
-    "Update Status": "Update Status",
-    "Late Ship": "Late Ship",
-    "Prepaid Invoice Missing": "Prepaid Invoice Missing",
-    "VGM Missing": "VGM Missing",
-    "Missing MBL": "Missing MBL",
-    "Booking Delayed": "Booking Delayed",
-    "View Messages": "View Messages"
+    "Alert Entity": "タイプ",
+    "Notification Method": "受信方法",
+    "Shipment ETD changed": "予定出発日を変更したところ",
+    "Shipment ETA changed": "予定到着日を変更したところ",
+    "Departure Delayed (AIR) [ETD + 30 mins]": "航空機の出発はもう３０分遅延したところ",
+    "Departure Delayed (SEA) [ETD + 1 day]": "船の出発はもう１日遅延したところ",
+    "Arrival Delayed (AIR) [ETA + 12 hours]": "航空機の到着はもう１２時間延したところ",
+    "Arrival Delayed (SEA) [ETA + 1 day]": "船の到着はもう１日延したところ",
+    "email": "Ｅメール",
+    "noNotification": "無効"
   },
   "auto-suggest": {
     "Short Name": "略称",
@@ -403,7 +400,8 @@
     "channels": "チャンネル",
     "placeHolder": "メッセージ入力",
     "Unread": "未読",
-    "Read": "既読"
+    "Read": "既読",
+    "View Messages": "メッセージを見る"
   },
   "shipments": {
     "pageTitle": "船積概要",
@@ -475,7 +473,7 @@
     "Select Freight Forwarder": "貨物取扱業者を選択してください",
     "SelectedFreightForwarder": "選択済みの貨物取扱業者",
     "Create a new vessel": "本船名",
-    "Fill in Delivery Details": "Fill in Delivery Details",
+    "Fill in Delivery Details": "運送詳細を入力してください",
     "Vessel Name": "本船名入力",
     "Call Sign": "VOYAGE番号",
     "duplicateVessel": "この本船名もうありましたが、入力内容をご確認ください",
@@ -490,7 +488,7 @@
     "Final Destination": "最終到着地",
     "Carrier": "運送人",
     "Vessel": "本船名",
-    "Voyage": "VOYAGE番号・フライト番号",
+    "Voyage": "VOYAGE番号",
     "Flight Number": "フライト番号",
     "Freight Details": "船荷概要",
     "Service": "FCL・LCL",

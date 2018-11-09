@@ -67,17 +67,14 @@
   "alerts": {
     "Alert Entity": "Alert Entity",
     "Notification Method": "Notification Method",
-    "New Booking": "New Booking",
-    "Create Authentication": "Create Authentication",
-    "Update Booking": "Update Booking",
-    "Update Bill Tracking": "Update Bill Tracking",
-    "Update Status": "Update Status",
-    "Late Ship": "Late Ship",
-    "Prepaid Invoice Missing": "Prepaid Invoice Missing",
-    "VGM Missing": "VGM Missing",
-    "Missing MBL": "Missing MBL",
-    "Booking Delayed": "Booking Delayed",
-    "View Messages": "View Messages"
+    "Shipment ETD changed": "Shipment ETD changed",
+    "Shipment ETA changed": "Shipment ETA changed",
+    "Departure Delayed (AIR) [ETD + 30 mins]": "Departure Delayed (AIR) [ETD + 30 mins]",
+    "Departure Delayed (SEA) [ETD + 1 day]": "Departure Delayed (SEA) [ETD + 1 day]",
+    "Arrival Delayed (AIR) [ETA + 12 hours]": "Arrival Delayed (AIR) [ETA + 12 hours]",
+    "Arrival Delayed (SEA) [ETA + 1 day]": "Arrival Delayed (SEA) [ETA + 1 day]",
+    "email": "Email",
+    "noNotification": "Disabled"
   },
   "auto-suggest": {
     "Short Name": "Short Name",
@@ -404,7 +401,8 @@
     "channels": "Channels",
     "placeHolder": "Type a message",
     "Unread": "Unread",
-    "Read": "Read"
+    "Read": "Read",
+    "View Messages": "View Messages"
   },
   "shipments": {
     "pageTitle": "Shipment Summary",

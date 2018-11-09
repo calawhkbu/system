@@ -96,19 +96,16 @@ module.exports = {
     "Notification Method": "Notification Method", // the way to notify the user about the alert
 
     // the list of alert entities
-    "New Booking": "New Booking",
-    "Create Authentication": "Create Authentication",
-    "Update Booking": "Update Booking",
-    "Update Bill Tracking": "Update Bill Tracking",
-    "Update Status": "Update Status",
-    "Late Ship": "Late Ship",
-    "Prepaid Invoice Missing": "Prepaid Invoice Missing",
-    "VGM Missing": "VGM Missing",
-    "Missing MBL": "Missing MBL",
-    "Booking Delayed": "Booking Delayed",
+    "Shipment ETD changed": "Shipment ETD changed",
+    "Shipment ETA changed": "Shipment ETA changed",
+    "Departure Delayed (AIR) [ETD + 30 mins]": "Departure Delayed (AIR) [ETD + 30 mins]",
+    "Departure Delayed (SEA) [ETD + 1 day]": "Departure Delayed (SEA) [ETD + 1 day]",
+    "Arrival Delayed (AIR) [ETA + 12 hours]": "Arrival Delayed (AIR) [ETA + 12 hours]",
+    "Arrival Delayed (SEA) [ETA + 1 day]": "Arrival Delayed (SEA) [ETA + 1 day]",
 
-    // used in alert section in wizards
-    "View Messages": "View Messages"
+    // the list of notification methods
+    "email": "Email",
+    "noNotification": "Disabled"
   },
 
   // the text shown in autosuggest fields
@@ -612,7 +609,8 @@ module.exports = {
     "channels": "Channels",
     "placeHolder": "Type a message",
     "Unread": "Unread", // button to mark a message as unread
-    "Read": "Read"  // button to mark a message as read
+    "Read": "Read", // button to mark a message as read
+    "View Messages": "View Messages"
   },
 
   // the text shown
