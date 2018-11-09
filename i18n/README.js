@@ -566,7 +566,16 @@ module.exports = {
     "Tel": "Tel.",
     "Email": "Email",
     "Name": "Name",
-    "Select Buyer": "Select Buyer"
+    "Select Buyer": "Select Buyer",
+    "Address 1": "Street and number, P.O. box, c/o.",
+    "Address 2": "Apartment, suite, unit, building, floor, etc.",
+    "Address 3": "",
+    "Address 4": "",
+    "Address 5": "",
+    "City": "City",
+    "State/Province": "State/Province",
+    "Country": "Country",
+    "Zip/Postal Code": "Zip/Postal Code"
   },
 
   // the text shown

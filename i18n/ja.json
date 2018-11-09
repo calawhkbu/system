@@ -376,12 +376,21 @@
     "Create Sample Ocean Bill": "船荷証券見本の作成"
   },
   "partySection": {
-    "Address": "所在地",
+    "Address": "アドレス",
     "Contact Person": "連絡先",
     "Tel": "電話",
     "Email": "Eメール",
     "Name": "名前",
-    "Select Buyer": "買い主を選択してください"
+    "Select Buyer": "買い主を選択してください",
+    "Address 1": "番地・マンション・部屋番号",
+    "Address 2": "",
+    "Address 3": "",
+    "Address 4": "",
+    "Address 5": "",
+    "City": "市区町村",
+    "State/Province": "都道府県",
+    "Country": "国/地域",
+    "Zip/Postal Code": "郵便番号"
   },
   "cargoAndContainers": {
     "Commodity": "貨物",
@@ -470,7 +479,7 @@
     "Delivery Details": "運送詳細",
     "BookingDetails": "予約詳細",
     "Flight Forwarder": "貨物取扱業者",
-    "Select Freight Forwarder": "貨物取扱業者を選択してください",
+    "Select Freight Forwarder": "貨物取扱業者",
     "SelectedFreightForwarder": "選択済みの貨物取扱業者",
     "Create a new vessel": "本船名",
     "Fill in Delivery Details": "運送詳細を入力してください",
