@@ -425,6 +425,10 @@ module.exports = {
     "remarks": "Remarks",
     "createdBy": "Created By",
 
+    // fields for /shipment/map/:id,
+    "Shipper": "Shipper",
+    "Consignee": "Consignee",
+
     // common fields
     "Total": "Total"
   },
@@ -603,6 +607,9 @@ module.exports = {
     "Volume Weight": "Volumetric Weight",
     "Chargeable Weight": "Chargeable Weight",
     "CBM": "CBM",
+    "Marks and Numbers": "Marks and Numbers",
+    "Descriptions of Goods": "Descriptions of Goods",
+    "Dimension": "Dimension",
 
     // for containers
     "Container No": "Container #",

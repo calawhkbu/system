@@ -302,6 +302,8 @@
     "estimated": "Est. Delivery Date",
     "remarks": "Remarks",
     "createdBy": "createdBy",
+    "Shipper": "Shipper",
+    "Consignee": "Consignee",
     "Total": "Total"
   },
   "Table": {
@@ -400,6 +402,9 @@
     "Volume Weight": "Volumetric Weight",
     "Chargeable Weight": "Chargeable Weight",
     "CBM": "CBM",
+    "Marks and Numbers": "Marks and Numbers",
+    "Descriptions of Goods": "Descriptions of Goods",
+    "Dimension": "Dimension",
     "Container No": "Container #",
     "Carrier Booking No": "Carrier Booking #",
     "Seal No": "Seal #",
