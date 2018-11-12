@@ -36,8 +36,8 @@
     "Re-type the Password": "再輸入一次密碼",
     "Create Account": "建立賬號",
     "Reset Password": "重設密碼",
-    "First Name": "名字",
-    "Last Name": "姓氐"
+    "First Name": "名",
+    "Last Name": "姓"
   },
   "NotFoundPage": {
     "Page Not Found": "找不到頁面",
@@ -288,7 +288,7 @@
     "tableName": "種類",
     "primaryKey": "參考ID",
     "poNo": "採購單號",
-    "cargeReadyDate": "出貨日",
+    "cargoReadyDate": "出貨日",
     "consignee": "收貨人",
     "shipper": "發貨人",
     "portOfLoading": "裝貨港",
@@ -313,20 +313,20 @@
     "Total": "總數"
   },
   "addCustomerUsers": {
-    "Update Invitation": "Update Invitation",
-    "Create Invitation": "Create Invitation",
-    "Update User": "Update User",
-    "Create User": "Create User",
-    "Personal Details": "Personal Details",
-    "First Name": "First Name",
-    "Last Name": "Last Name",
-    "Title": "Title",
-    "e-mail": "Email",
-    "User Group": "User Group",
-    "is Admin": "is Admin",
-    "User Branches": "Branches",
-    "selectBranchOrOfficeName": "Select branch or office name",
-    "Default Filters": "Default Filters"
+    "Update Invitation": "更新邀請",
+    "Create Invitation": "寄送邀請",
+    "Update User": "更新用戶",
+    "Create User": "建立用戶",
+    "Personal Details": "個人資料",
+    "First Name": "名",
+    "Last Name": "姓",
+    "Title": "頭銜",
+    "e-mail": "電郵",
+    "User Group": "群組",
+    "is Admin": "360管理人員？",
+    "User Branches": "隸屬分公司",
+    "selectBranchOrOfficeName": "選擇分公司",
+    "Default Filters": "儀表板預設篩選條件"
   },
   "products": {
     "name": "Name",
@@ -360,14 +360,14 @@
     "Update Branches": "Update Branches"
   },
   "documents": {
-    "documentLibrary": "Document Library",
-    "DocumentsUploaded": "{number} Documents Uploaded",
-    "Manage Documents": "Manage Documents"
+    "documentLibrary": "相關文件",
+    "DocumentsUploaded": "已上存{number}份文件",
+    "Manage Documents": "管理文件"
   },
   "transactionDate": {
     "Transaction Date": "日期",
     "Estimated-prefix": "預計",
-    "Actual-prefix": "實隙",
+    "Actual-prefix": "實際",
     "PO Date": "採購日",
     "Cargo Ready Date": "出貨日",
     "Departure Date": "出發日",
@@ -569,7 +569,7 @@
     "from": "由",
     "to": "到",
     "etd": "預計出發日",
-    "transport": "整箱貨／拼箱貨",
+    "transport": "整／拼",
     "Transit Time": "運送日數",
     "Carrier": "運送人",
     "Departure": "出發",

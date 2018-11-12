@@ -408,7 +408,7 @@ module.exports = {
 
     // fields for /bookings
     "poNo": "PO #",
-    "cargeReadyDate": "Cargo Ready Date",
+    "cargoReadyDate": "Cargo Ready Date",
     "consignee": "Consignee",
     "shipper": "Shipper",
     "portOfLoading": "Port of Loading",
