@@ -259,6 +259,7 @@ module.exports = {
     "Current Month": "Current Month",
     "Current Quarter": "Current Quarter",
     "Current Year": "Current Year",
+    "Year-To-Date": "Year-To-Date",
     "Last 7 Days": "Last 7 Days",
     "Last Month": "Last Month",
     "Last 12 Months": "Last 12 Months",
