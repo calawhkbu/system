@@ -806,21 +806,21 @@ module.exports = {
     "ROAD FREIGHT": "ROAD FREIGHT", // ROAD
 
     // INCOTERMS
-    "Ex Works": "Ex Works",
-    "Free Carrier": "Free Carrier",
-    "Carriage Paid To": "Carriage Paid To",
-    "Carriage and Insurance Paid to": "Carriage and Insurance Paid to",
-    "Delivered At Terminal": "Delivered At Terminal",
-    "Delivered At Place": "Delivered At Place",
-    "Delivered Duty Paid": "Delivered Duty Paid",
-    "Free Alongside Ship": "Free Alongside Ship",
-    "Free on Board": "Free on Board",
-    "Cost and Freight": "Cost and Freight",
-    "Cost, Insurance & Freight": "Cost, Insurance & Freight",
+    "Ex Works": "Ex Works (EXW)",
+    "Free Carrier": "Free Carrier (FCA)",
+    "Carriage Paid To": "Carriage Paid To (CPT)",
+    "Carriage and Insurance Paid to": "Carriage and Insurance Paid to (CIP)",
+    "Delivered At Terminal": "Delivered At Terminal (DAT)",
+    "Delivered At Place": "Delivered At Place (DAP)",
+    "Delivered Duty Paid": "Delivered Duty Paid (DDP)",
+    "Free Alongside Ship": "Free Alongside Ship (FAS)",
+    "Free on Board": "Free on Board (FOB)",
+    "Cost and Freight": "Cost and Freight (CFR)",
+    "Cost, Insurance & Freight": "Cost, Insurance & Freight (CIF)",
 
     // PAYTERMS i.e. freight terms, other terms
-    "PREPAID": "PREPAID",
-    "COLLECT": "COLLECT",
+    "PREPAID": "PREPAID (PP)",
+    "COLLECT": "COLLECT (CC)",
 
     // SERVTYPE i.e. service type
     "LCL/LCL": "LCL/LCL",
