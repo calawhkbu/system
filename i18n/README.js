@@ -120,7 +120,7 @@ module.exports = {
   // the text shown in cards
   // in Dashboard (/:dashboardId)
   "card": {
-    "Your Cards": "Your Cards", // the cards you own
+    "Your Cards": "My Cards", // the cards you own
     "System Cards": "System Cards", // the cards provided by default
 
     // shown in the list of available cards when there is none
@@ -257,10 +257,11 @@ module.exports = {
     // date-typed parameters
     "Current Week": "Current Week",
     "Current Month": "Current Month",
+    "Current Quarter": "Current Quarter",
     "Current Year": "Current Year",
-    "Last 3 Days": "Last 3 Days",
     "Last 7 Days": "Last 7 Days",
-    "Last 30 Days": "Last 30 Days",
+    "Last Month": "Last Month",
+    "Last 12 Months": "Last 12 Months",
 
     // title of the dashboard configuration dialog
     "Configure dashboard": "Configure Dashboard",
