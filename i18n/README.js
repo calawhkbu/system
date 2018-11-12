@@ -357,7 +357,6 @@ module.exports = {
     "vesselFlight": "Vessel / Flight",
     "vesselVoyage": "Vessel / Voyage",
     "division": "Division", // department
-    "class": "Class", // airline classes
     "service": "Service", // e.g. CY, CFS
     "incoTerms": "Incoterms",
     "freightTerms": "Freight Terms",  // e.g. CC (collected), PP (Prepaid)
