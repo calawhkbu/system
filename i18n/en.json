@@ -186,9 +186,9 @@
     "Branch": "Branch",
     "Division": "Division",
     "User": "User",
-    "Branch-chip": "Branch: {name}",
-    "Division-chip": "Division: {name}",
-    "User-chip": "User: {name}",
+    "Branch-chip": "Branch: {{ name }}",
+    "Division-chip": "Division: {{ name }}",
+    "User-chip": "User: {{ name }}",
     "id": "ID",
     "jobNo": "Job #",
     "jobDate": "Job Date",
@@ -310,8 +310,8 @@
   },
   "Table": {
     "Rows per Page": "Rows per Page",
-    "results": "{count} results",
-    "pages": "{numPages} pages",
+    "results": "{{ count }} results",
+    "pages": "{{ numPages }} pages",
     "Total": "Total"
   },
   "addCustomerUsers": {
@@ -337,15 +337,15 @@
     "customerProductCode": "Customer Product Code",
     "skuCode": "SKU Code",
     "description": "Description",
-    "Product created": "Product {name} created",
-    "Product updated": "Product {name} updated"
+    "Product created": "Product '{{ name }}' created",
+    "Product updated": "Product '{{ name }}' updated"
   },
   "productCategories": {
     "name": "Name",
     "party.shortName": "Party",
     "description": "Description",
-    "Category created": "Category '{name}' created",
-    "Category updated": "Category '{name}' updated"
+    "Category created": "Category '{{ name }}' created",
+    "Category updated": "Category '{{ name }}' updated"
   },
   "flexFields": {
     "pageTitle": "Flex Fields",
@@ -363,7 +363,7 @@
   },
   "documents": {
     "documentLibrary": "Document Library",
-    "DocumentsUploaded": "{number} Documents Uploaded",
+    "DocumentsUploaded": "{{ number }} Documents Uploaded",
     "Manage Documents": "Manage Documents"
   },
   "transactionDate": {
@@ -579,7 +579,7 @@
     "Departure": "Departure",
     "Arrival": "Arrival",
     "Cut-off": "Cut-off",
-    "{days} Days": "{days} Days"
+    "{days} Days": "{{ days }} Days"
   },
   "connections": {
     "partyRoles": "Party Roles",
@@ -590,8 +590,8 @@
     "Remove": "Remove",
     "managePartyRelations": "Manage Party Relations",
     "partyInfo": "Party Info.",
-    "connectedParties": "Connected Parties - {count}",
-    "contacts": "Contacts - {count}",
+    "connectedParties": "Connected Parties - {{ count }}",
+    "contacts": "Contacts - {{ count }}",
     "choseParty": "Choose Parties to Connect",
     "connectNewParty": "Connect a New Party",
     "shortName": "Short Name",
@@ -632,8 +632,8 @@
     "save": "Save",
     "cancel": "Cancel",
     "fclLcl": "FCL/LCL",
-    "PO created": "Purchase Order '{id}' created",
-    "PO updated": "Purchase Order '{id}' updated",
+    "PO created": "Purchase Order '{{ id }}' created",
+    "PO updated": "Purchase Order '{{ id }}' updated",
     "PO Header": "PO Header",
     "Remarks": "Remarks",
     "Ref. No.": "Ref. No.",

@@ -88,9 +88,9 @@
     "General": "一般",
     "No data": "无资料",
     "Not applicable": "不适用",
-    "Card '{name}' not found": "未找到卡片「{name}」",
+    "Card '{name}' not found": "未找到卡片「{{ name }}」",
     "Filters altered": "筛选条件变动",
-    "Edit card": "修改卡片「{name}」",
+    "Edit card": "修改卡片「{{ name }}」",
     "Error": "错误",
     "Fail to load card component": "未能载入卡片",
     "view-detail": "检视详情",
@@ -123,8 +123,8 @@
   },
   "search": {
     "Loading ...": "载入中…",
-    "Total: {number} records": "共有{number}条记录",
-    "{time} seconds": "{time}秒",
+    "Total: {number} records": "共有{{ number }}条记录",
+    "{time} seconds": "{{ time }}秒",
     "No results": "无结果"
   },
   "drawer-menu": {
@@ -153,7 +153,7 @@
     "bill": "船运"
   },
   "ReportingTool": {
-    "Selected ({count})": "已拣选（{count}）",
+    "Selected ({count})": "已拣选（{{ count }}）",
     "Current Week": "本周",
     "Current Month": "本月",
     "Current Quarter": "本季度",
@@ -186,9 +186,9 @@
     "Branch": "分公司",
     "Division": "部门",
     "User": "用户",
-    "Branch-chip": "分公司：{name}",
-    "Division-chip": "部门：{name}",
-    "User-chip": "用户：{name}",
+    "Branch-chip": "分公司：{{ name }}",
+    "Division-chip": "部门：{{ name }}",
+    "User-chip": "用户：{{ name }}",
     "id": "ID",
     "jobNo": "工作编号",
     "jobDate": "工作日期",
@@ -309,8 +309,8 @@
   },
   "Table": {
     "Rows per Page": "每页行数",
-    "results": "总共{count}件",
-    "pages": "{numPages}页",
+    "results": "总共{{ count }}件",
+    "pages": "{{ numPages }}页",
     "Total": "总数"
   },
   "addCustomerUsers": {
@@ -336,15 +336,15 @@
     "customerProductCode": "Customer Product Code",
     "skuCode": "SKU Code",
     "description": "Description",
-    "Product created": "Product {name} created",
-    "Product updated": "Product {name} updated"
+    "Product created": "Product '{{ name }}' created",
+    "Product updated": "Product '{{ name }}' updated"
   },
   "productCategories": {
     "name": "Name",
     "party.shortName": "Party",
     "description": "Description",
-    "Category created": "Category '{name}' created",
-    "Category updated": "Category '{name}' updated"
+    "Category created": "Category '{{ name }}' created",
+    "Category updated": "Category '{{ name }}' updated"
   },
   "flexFields": {
     "pageTitle": "Flex Fields",
@@ -362,7 +362,7 @@
   },
   "documents": {
     "documentLibrary": "相关文件",
-    "DocumentsUploaded": "已上存{number}份文件",
+    "DocumentsUploaded": "已上存{{ number }}份文件",
     "Manage Documents": "管理文件"
   },
   "transactionDate": {
@@ -576,7 +576,7 @@
     "Departure": "出发",
     "Arrival": "到达",
     "Cut-off": "截单",
-    "{days} Days": "{days}日"
+    "{days} Days": "{{ days }}日"
   },
   "connections": {
     "partyRoles": "Party Roles",
@@ -587,8 +587,8 @@
     "Remove": "Remove",
     "managePartyRelations": "Manage Party Relations",
     "partyInfo": "Party Info.",
-    "connectedParties": "Connected Parties - {count}",
-    "contacts": "Contacts - {count}",
+    "connectedParties": "Connected Parties - {{ count }}",
+    "contacts": "Contacts - {{ count }}",
     "choseParty": "Choose Parties to Connect",
     "connectNewParty": "Connect a New Party",
     "shortName": "Short Name",
@@ -629,8 +629,8 @@
     "save": "Save",
     "cancel": "Cancel",
     "fclLcl": "FCL/LCL",
-    "PO created": "Purchase Order '{id}' created",
-    "PO updated": "Purchase Order '{id}' updated",
+    "PO created": "Purchase Order '{{ id }}' created",
+    "PO updated": "Purchase Order '{{ id }}' updated",
     "PO Header": "PO Header",
     "Remarks": "Remarks",
     "Ref. No.": "Ref. No.",

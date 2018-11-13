@@ -88,9 +88,9 @@
     "General": "一般的",
     "No data": "データなし",
     "Not applicable": "該当なし",
-    "Card '{name}' not found": "カード（{name}）が見つかりません",
+    "Card '{name}' not found": "カード（{{ name }}）が見つかりません",
     "Filters altered": "変更られたフィルター",
-    "Edit card": "カード（{name}）を編集する",
+    "Edit card": "カード（{{ name }}）を編集する",
     "Error": "エラー",
     "Fail to load card component": "カード情報が読み込めません",
     "view-detail": "詳細を見る",
@@ -123,8 +123,8 @@
   },
   "search": {
     "Loading ...": "読み込み中…",
-    "Total: {number} records": "合計{number}件",
-    "{time} seconds": "{time}秒",
+    "Total: {number} records": "合計{{ number }}件",
+    "{time} seconds": "{{ time }}秒",
     "No results": "結果なし"
   },
   "drawer-menu": {
@@ -153,7 +153,7 @@
     "bill": "船積み"
   },
   "ReportingTool": {
-    "Selected ({count})": "選択済（{count}）",
+    "Selected ({count})": "選択済（{{ count }}）",
     "Current Week": "今週",
     "Current Month": "今月",
     "Current Quarter": "當季",
@@ -186,9 +186,9 @@
     "Branch": "支社",
     "Division": "部門",
     "User": "ユーザー",
-    "Branch-chip": "支社：{name}",
-    "Division-chip": "部門：{name}",
-    "User-chip": "ユーザー：{name}",
+    "Branch-chip": "支社：{{ name }}",
+    "Division-chip": "部門：{{ name }}",
+    "User-chip": "ユーザー：{{ name }}",
     "id": "ID",
     "jobNo": "業務番号",
     "jobDate": "業務日付",
@@ -309,8 +309,8 @@
   },
   "Table": {
     "Rows per Page": "行数",
-    "results": "合計{count}件",
-    "pages": "{numPages}ページ",
+    "results": "合計{{ count }}件",
+    "pages": "{{ numPages }}ページ",
     "Total": "合計"
   },
   "addCustomerUsers": {
@@ -335,15 +335,15 @@
     "customerProductCode": "Customer Product Code",
     "skuCode": "SKU Code",
     "description": "Description",
-    "Product created": "Product {name} created",
-    "Product updated": "Product {name} updated"
+    "Product created": "Product '{{ name }}' created",
+    "Product updated": "Product '{{ name }}' updated"
   },
   "productCategories": {
     "name": "Name",
     "party.shortName": "Party",
     "description": "Description",
-    "Category created": "Category '{name}' created",
-    "Category updated": "Category '{name}' updated"
+    "Category created": "Category '{{ name }}' created",
+    "Category updated": "Category '{{ name }}' updated"
   },
   "flexFields": {
     "pageTitle": "Flex Fields",
@@ -361,7 +361,7 @@
   },
   "documents": {
     "documentLibrary": "ファイル管理",
-    "DocumentsUploaded": "アップロード済のファイル：{number}個",
+    "DocumentsUploaded": "アップロード済のファイル：{{ number }}個",
     "Manage Documents": "ファイル管理"
   },
   "transactionDate": {
@@ -575,7 +575,7 @@
     "Departure": "出発",
     "Arrival": "到着",
     "Cut-off": "締め日",
-    "{days} Days": "{days}日"
+    "{days} Days": "{{ days }}日"
   },
   "connections": {
     "partyRoles": "Party Roles",
@@ -586,8 +586,8 @@
     "Remove": "Remove",
     "managePartyRelations": "Manage Party Relations",
     "partyInfo": "Party Info.",
-    "connectedParties": "Connected Parties - {count}",
-    "contacts": "Contacts - {count}",
+    "connectedParties": "Connected Parties - {{ count }}",
+    "contacts": "Contacts - {{ count }}",
     "choseParty": "Choose Parties to Connect",
     "connectNewParty": "Connect a New Party",
     "shortName": "Short Name",
@@ -628,8 +628,8 @@
     "save": "Save",
     "cancel": "Cancel",
     "fclLcl": "FCL/LCL",
-    "PO created": "Purchase Order '{id}' created",
-    "PO updated": "Purchase Order '{id}' updated",
+    "PO created": "Purchase Order '{{ id }}' created",
+    "PO updated": "Purchase Order '{{ id }}' updated",
     "PO Header": "PO Header",
     "Remarks": "Remarks",
     "Ref. No.": "Ref. No.",
