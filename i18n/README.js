@@ -819,6 +819,10 @@ module.exports = {
     "Free on Board": "Free on Board (FOB)",
     "Cost and Freight": "Cost and Freight (CFR)",
     "Cost, Insurance & Freight": "Cost, Insurance & Freight (CIF)",
+    "Delivered at Frontier": "Delivered at Frontier (DAF)",
+    "Delivered Ex Ship": "Delivered Ex Ship (DES)",
+    "Delivered Ex Quay": "Delivered Ex Quay (DEQ)",
+    "Delivered Duty Unpaid": "Delivered Duty Unpaid (DDU)",
 
     // PAYTERMS i.e. freight terms, other terms
     "PREPAID": "PREPAID (PP)",
