@@ -300,9 +300,9 @@ module.exports = {
     "Branch": "Branch", // share a report to an office e.g. HKG
     "Division": "Division", // share a report to a department e.g. sea import department
     "User": "User", // share a report to a specific user by email
-    "Branch-chip": "Branch: {name}",  // note the {name} should NOT be translated
-    "Division-chip": "Division: {name}",  // note the {name} should NOT be translated
-    "User-chip": "User: {name}",  // note the {name} should NOT be translated
+    "Branch-chip": "Branch: {{ name }}",  // note the {{ name }} should NOT be translated
+    "Division-chip": "Division: {{ name }}",  // note the {{ name }} should NOT be translated
+    "User-chip": "User: {{ name }}",  // note the {{ name }} should NOT be translated
 
     // fields for /shipments
     "id": "ID",
@@ -440,10 +440,10 @@ module.exports = {
     "Rows per Page": "Rows per Page",
 
     // the number of rows
-    "results": "{count} results", // note the {count} should NOT be translated
+    "results": "{{ count }} results", // note the {{ count }} should NOT be translated
 
     // the number of pages
-    "pages": "{numPages} pages",  // note the {numPages} should NOT be translated
+    "pages": "{{ numPages }} pages",  // note the {{ numPages }} should NOT be translated
 
     // used in summary row
     "Total": "Total"
@@ -491,8 +491,8 @@ module.exports = {
     "description": "Description",
 
     // shown when the product is saved successfully
-    "Product created": "Product {name} created",  // note the {name} should NOT be translated
-    "Product updated": "Product {name} updated" // note the {name} should NOT be translated
+    "Product created": "Product '{{ name }}' created",  // note the {{ name }} should NOT be translated
+    "Product updated": "Product '{{ name }}' updated" // note the {{ name }} should NOT be translated
   },
 
   // the text shown
@@ -504,8 +504,8 @@ module.exports = {
     "description": "Description",
 
     // shown when the category is saved successfully
-    "Category created": "Category '{name}' created",  // note the {name} should NOT be translated
-    "Category updated": "Category '{name}' updated" // note the {name} should NOT be translated
+    "Category created": "Category '{{ name }}' created",  // note the {{ name }} should NOT be translated
+    "Category updated": "Category '{{ name }}' updated" // note the {{ name }} should NOT be translated
   },
 
   // the text shown
@@ -542,7 +542,7 @@ module.exports = {
   // in Wizard's document section e.g. /booking/:id, /purchaseOrder/:id
   "documents": {
     "documentLibrary": "Document Library",
-    "DocumentsUploaded": "{number} Documents Uploaded", // note the {number} should NOT be translated
+    "DocumentsUploaded": "{{ number }} Documents Uploaded", // note the {{ number }} should NOT be translated
     "Manage Documents": "Manage Documents"
   },
 
@@ -843,7 +843,7 @@ module.exports = {
     "Departure": "Departure", // = departure date
     "Arrival": "Arrival", // = arrival date
     "Cut-off": "Cut-off", // the deadline for booking
-    "{days} Days": "{days} Days"  // note the {days} should NOT be translated
+    "{days} Days": "{{ days }} Days"  // note the {{ days }} should NOT be translated
   },
 
   // the text shown
@@ -857,8 +857,8 @@ module.exports = {
     "Remove": "Remove",
     "managePartyRelations": "Manage Party Relations",
     "partyInfo": "Party Info.",
-    "connectedParties": "Connected Parties - {count}",  // note the {count} should NOT be translated
-    "contacts": "Contacts - {count}",
+    "connectedParties": "Connected Parties - {{ count }}",  // note the {{ count }} should NOT be translated
+    "contacts": "Contacts - {{ count }}", // note the {{ count }} should NOT be translated
     "choseParty": "Choose Parties to Connect",
     "connectNewParty": "Connect a New Party",
     "shortName": "Short Name",  // party short name
@@ -900,8 +900,8 @@ module.exports = {
     "save": "Save",
     "cancel": "Cancel",
     "fclLcl": "FCL/LCL",
-    "PO created": "Purchase Order '{id}' created",
-    "PO updated": "Purchase Order '{id}' updated",
+    "PO created": "Purchase Order '{{ id }}' created",
+    "PO updated": "Purchase Order '{{ id }}' updated",
     "PO Header": "PO Header",
     "Remarks": "Remarks",
     "Ref. No.": "Ref. No.",

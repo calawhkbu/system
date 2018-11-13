@@ -172,7 +172,7 @@
                   "_plugins": [
                     "from-string"
                   ],
-                  "from-string": "{{\"{key}\":{{\"{key}\":[\"{value}\"]}}}}"
+                  "from-string": "{\"{{key}}\":{\"{{key}}\":[\"{{value}}\"]}}"
                 },
                 "cardProcess": {
                   "_plugins": [
