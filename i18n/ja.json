@@ -117,6 +117,7 @@
     "purchaseOrder": "購入オーダー",
     "Consignee": "荷受人",
     "Shipper": "荷主",
+    "ETD": "予定出発日",
     "ETA": "予定到着日",
     "From": "積地港",
     "To": "揚地港"

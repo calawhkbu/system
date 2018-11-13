@@ -117,6 +117,7 @@
     "purchaseOrder": "採購單",
     "Consignee": "收貨人",
     "Shipper": "發貨人",
+    "ETD": "預計出發日",
     "ETA": "預計到達日",
     "From": "由",
     "To": "到"

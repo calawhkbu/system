@@ -117,6 +117,7 @@
     "purchaseOrder": "采购单",
     "Consignee": "收货人",
     "Shipper": "发货人",
+    "ETD": "预计出发日",
     "ETA": "预计到达日",
     "From": "由",
     "To": "到"

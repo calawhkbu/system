@@ -192,6 +192,7 @@ module.exports = {
     "Shipper": "Shipper",
 
     // date-related
+    "ETD": "Est. Departure Date", // estimated departure date
     "ETA": "Est. Arrival Date", // estimated arrival date
     "From": "From", // From POL
     "To": "To", // To POD

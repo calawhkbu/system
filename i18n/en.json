@@ -117,6 +117,7 @@
     "purchaseOrder": "Purchase Order",
     "Consignee": "Consignee",
     "Shipper": "Shipper",
+    "ETD": "Est. Departure Date",
     "ETA": "Est. Arrival Date",
     "From": "From",
     "To": "To"
