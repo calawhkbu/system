@@ -159,7 +159,7 @@
     "Month": "月",
     "Shortcut": "ショートカット（{{ group|i18n(['ReportingTool']) }}）",
     "current": "今",
-    "last": "以前",
+    "last": "以内",
     "Current Week": "今週",
     "Current Month": "今月",
     "Current Quarter": "當季",
