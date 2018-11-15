@@ -253,7 +253,14 @@ module.exports = {
   // in PurchaseOrdersPage (/purchaseOrders)
   "ReportingTool": {
     // shown in parameteres that support multi-selection
-    "Selected ({count})": "Selected ({count})", // note the {count} should NOT be translated
+    "Selected ({count})": "Selected ({{ count }})", // note the {count} should NOT be translated
+
+    // groups in date filter popup
+    "Year": "Year",
+    "Month": "Month",
+    "Shortcut": "Shortcut ({{ group|i18n(['ReportingTool']) }})",
+    "current": "Current",
+    "last": "Last",
 
     // date-typed parameters
     "Current Week": "Current Week",
@@ -262,7 +269,7 @@ module.exports = {
     "Current Year": "Current Year",
     "Year-To-Date": "Year-To-Date",
     "Last 7 Days": "Last 7 Days",
-    "Last Month": "Last Month",
+    "Last 30 Days": "Last 30 Days",
     "Last 12 Months": "Last 12 Months",
 
     // title of the dashboard configuration dialog
