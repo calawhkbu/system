@@ -435,6 +435,10 @@ module.exports = {
     "Shipper": "Shipper",
     "Consignee": "Consignee",
 
+    // fields for TableCard
+    "noOfShipments": "No. of Shp",
+    "yoyPercentageChange": "YoY Pct Chg",
+
     // common fields
     "Total": "Total"
   },

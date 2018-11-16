@@ -309,6 +309,8 @@
     "createdBy": "createdBy",
     "Shipper": "Shipper",
     "Consignee": "Consignee",
+    "noOfShipments": "No. of Shp",
+    "yoyPercentageChange": "YoY Pct Chg",
     "Total": "Total"
   },
   "Table": {
