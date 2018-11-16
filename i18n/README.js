@@ -140,7 +140,7 @@ module.exports = {
 
     // the parameters applied to the corresponding card is altered by some reasons
     // a warning sign will be shown at the upper-right corner of the card
-    "Filters altered": "Filters altered",
+    "Filters": "Filters",
 
     // title of the card editor
     "Edit card": "Edit card - {name}",  // note the {name} should NOT be translated

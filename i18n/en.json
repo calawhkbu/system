@@ -89,7 +89,7 @@
     "No data": "No data",
     "Not applicable": "Not applicable",
     "Card '{name}' not found": "Card '{name}' not found",
-    "Filters altered": "Filters altered",
+    "Filters": "Filters",
     "Edit card": "Edit card - {name}",
     "Error": "Error",
     "Fail to load card component": "Fail to load card component",

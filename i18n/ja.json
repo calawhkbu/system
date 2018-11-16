@@ -89,7 +89,7 @@
     "No data": "データなし",
     "Not applicable": "該当なし",
     "Card '{name}' not found": "カード（{{ name }}）が見つかりません",
-    "Filters altered": "変更られたフィルター",
+    "Filters": "フィルター",
     "Edit card": "カード（{{ name }}）を編集する",
     "Error": "エラー",
     "Fail to load card component": "カード情報が読み込めません",
@@ -308,6 +308,8 @@
     "createdBy": "作り手",
     "Shipper": "荷主",
     "Consignee": "荷受人",
+    "noOfShipments": "船積数量",
+    "yoyPercentageChange": "前年比変化率",
     "Total": "合計"
   },
   "Table": {

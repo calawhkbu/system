@@ -89,7 +89,7 @@
     "No data": "无资料",
     "Not applicable": "不适用",
     "Card '{name}' not found": "未找到卡片「{{ name }}」",
-    "Filters altered": "筛选条件变动",
+    "Filters": "筛选条件",
     "Edit card": "修改卡片「{{ name }}」",
     "Error": "错误",
     "Fail to load card component": "未能载入卡片",
@@ -308,6 +308,8 @@
     "createdBy": "建立人",
     "Shipper": "发货人",
     "Consignee": "收货人",
+    "noOfShipments": "船运数",
+    "yoyPercentageChange": "年增率",
     "Total": "总数"
   },
   "Table": {
