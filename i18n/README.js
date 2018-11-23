@@ -126,9 +126,6 @@ module.exports = {
     // shown in the list of available cards when there is none
     "No cards available": "No cards available",
 
-    // the category name of cards available for all used
-    "General": "General",
-
     // shown when there is no data
     "No data": "No data",
 
@@ -151,6 +148,12 @@ module.exports = {
 
     // show more details
     "view-detail": "View Detail",
+
+    // categories
+    "Demo": "Demo",
+    "General": "General",
+    "Test": "Test",
+    "Deprecated": "Deprecated",
 
     // the title of alerts cards
     "Alerts": "Alerts",
