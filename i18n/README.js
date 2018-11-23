@@ -149,12 +149,6 @@ module.exports = {
     // show more details
     "view-detail": "View Detail",
 
-    // categories
-    "Demo": "Demo",
-    "General": "General",
-    "Test": "Test",
-    "Deprecated": "Deprecated",
-
     // the title of alerts cards
     "Alerts": "Alerts",
     "Alerts - Air": "Alerts - Air", // for air shipment
@@ -300,11 +294,17 @@ module.exports = {
     "Reports shared to me": "Reports Shared with Me",
     "My Reports": "My Reports",
 
+    // categories
+    "Demo": "Demo",
+    "General": "General",
+    "Test": "Test",
+    "Deprecated": "Deprecated",
+    "Alerts": "Alerts",
+
     // for mapping tool
     "MBL": "MBL", // Master Bill of Landing
     "HBL": "HBL", // House Bill of Landing
     "Booking#": "Booking #",
-    
 
     // save report dialog
     "Save report": "Save Report", // title of the dialog
