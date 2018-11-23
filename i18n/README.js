@@ -157,6 +157,17 @@ module.exports = {
     "Alerts - AIR": "Alerts - AIR", // for air shipment
     "Alerts - SEA": "Alerts - SEA", // for sea shipment
 
+    // shipment status
+    "Shipment Status": "Shipment Status",
+    "Delivered Shipments": "Delivered Shipments",
+    "Not In Track": "Not In Track",
+    "Processing": "Processing",
+    "Cargo Ready": "Cargo Ready",
+    "Departure": "Departure",
+    "In Transit": "In Transit",
+    "Arrival": "Arrival",
+    "Delivered": "Delivered",
+
     // the title of outstanding status cards
     "Sea Export Freight Outstanding Status in 72 hours": "Sea Export Freight Outstanding Status within 72 hours",
     "Sea Import Freight Outstanding Status in 72 hours": "Sea Import Freight Outstanding Status within 72 hours",
@@ -345,6 +356,7 @@ module.exports = {
     "agent": "Agent",
     "agentShortName": "Agent (abbr)",
     "agentPartyCode": "Agent Code",
+    "agentGroup": "Agent Group",
     "controllingCustomer": "Controlling Customer",
     "controllingCustomerShortName": "Controlling Customer (abbr)",
     "controllingCustomerPartyCode": "Controlling Customer Code",
