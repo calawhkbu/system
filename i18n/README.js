@@ -136,14 +136,14 @@ module.exports = {
     "Not applicable": "Not applicable",
 
     // shown when the corresponding card is not found
-    "Card '{name}' not found": "Card '{name}' not found", // note the {name} should NOT be translated
+    "Card '{name}' not found": "Card '{{ name|i18n(['card']) }}' not found", // note the {{ name }} should NOT be translated
 
     // the parameters applied to the corresponding card is altered by some reasons
     // a warning sign will be shown at the upper-right corner of the card
     "Filters": "Filters",
 
     // title of the card editor
-    "Edit card": "Edit card - {name}",  // note the {name} should NOT be translated
+    "Edit card": "Edit card - {{ name|i18n(['card']) }}",  // note the {{ name }} should NOT be translated
 
     // shown when there is an error when loading the card
     "Error": "Error", // the title of the error card
@@ -154,8 +154,8 @@ module.exports = {
 
     // the title of alerts cards
     "Alerts": "Alerts",
-    "Alerts - AIR": "Alerts - AIR", // for air shipment
-    "Alerts - SEA": "Alerts - SEA", // for sea shipment
+    "Alerts - Air": "Alerts - Air", // for air shipment
+    "Alerts - Sea": "Alerts - Sea", // for sea shipment
 
     // shipment status
     "Shipment Status": "Shipment Status",
@@ -216,10 +216,10 @@ module.exports = {
     "Loading ...": "Loading ...",
 
     // number of records found
-    "Total: {number} records": "Total: {number} records", // note the {number} should NOT be translated
+    "Total: {number} records": "Total: {{ number }} records", // note the {{ number }} should NOT be translated
 
     // time spent on finding the records 
-    "{time} seconds": "{time} seconds", // note that {time} should NOT be translated
+    "{time} seconds": "{{ time }} seconds", // note that {{ time }} should NOT be translated
 
     // shown when there is no result
     "No results": "No results"
@@ -264,7 +264,7 @@ module.exports = {
   // in PurchaseOrdersPage (/purchaseOrders)
   "ReportingTool": {
     // shown in parameteres that support multi-selection
-    "Selected ({count})": "Selected ({{ count }})", // note the {count} should NOT be translated
+    "Selected ({count})": "Selected ({{ count }})", // note the {{ count }} should NOT be translated
 
     // groups in date filter popup
     "Year": "Year",
