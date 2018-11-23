@@ -286,6 +286,9 @@ module.exports = {
     // title of the table configuration dialog
     "Configure table": "Configure Table",
 
+    // configure report-level toolbar
+    "Configure Toolbar": "Configure Toolbar",
+
     // dropdown of reports
     "Unnamed": "Unnamed", // report without a name
     "Select report": "Select Report",
