@@ -278,9 +278,11 @@ module.exports = {
     "Year-To-Date": "Year-To-Date",
     "Last 7 Days": "Last 7 Days",
     "Last 30 Days": "Last 30 Days",
+    "Last Month": "Last Month",
     "Last 12 Months": "Last 12 Months",
 
     // title of the dashboard configuration dialog
+    "Add a Card": "Add a Card",
     "Configure dashboard": "Configure Dashboard",
 
     // title of the table configuration dialog
