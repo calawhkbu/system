@@ -93,6 +93,7 @@
     "Error": "エラー",
     "Fail to load card component": "カード情報が読み込めません",
     "view-detail": "詳細を見る",
+    "Memo": "メモ",
     "Alerts": "お知らせ",
     "Alerts - Air": "航空輸送のお知らせ",
     "Alerts - Sea": "海上輸送のお知らせ",
@@ -163,6 +164,10 @@
   },
   "ReportingTool": {
     "Selected ({count})": "選択済（{{ count }}）",
+    "content": "内容",
+    "color": "カラー",
+    "size": "サイズ",
+    "bold": "太字",
     "Year": "年",
     "Month": "月",
     "Shortcut": "ショートカット（{{ group|i18n(['ReportingTool']) }}）",

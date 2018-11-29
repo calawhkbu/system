@@ -149,6 +149,9 @@ module.exports = {
     // show more details
     "view-detail": "View Detail",
 
+    // the title of general cards
+    "Memo": "Memo",
+
     // the title of alerts cards
     "Alerts": "Alerts",
     "Alerts - Air": "Alerts - Air", // for air shipment
@@ -262,6 +265,12 @@ module.exports = {
   "ReportingTool": {
     // shown in parameteres that support multi-selection
     "Selected ({count})": "Selected ({{ count }})", // note the {{ count }} should NOT be translated
+
+    // memo attributes
+    "content": "Content",
+    "color": "Color",
+    "size": "Size",
+    "bold": "Bold",
 
     // groups in date filter popup
     "Year": "Year",

@@ -93,6 +93,7 @@
     "Error": "错误",
     "Fail to load card component": "未能载入卡片",
     "view-detail": "检视详情",
+    "Memo": "便条",
     "Alerts": "通知",
     "Alerts - Air": "通知 - 飞机航班",
     "Alerts - Sea": "通知 - 海上航次",
@@ -163,6 +164,10 @@
   },
   "ReportingTool": {
     "Selected ({count})": "已拣选（{{ count }}）",
+    "content": "内容",
+    "color": "颜色",
+    "size": "大小",
+    "bold": "粗体",
     "Year": "年度",
     "Month": "月份",
     "Shortcut": "捷径（{{ group|i18n(['ReportingTool']) }}）",

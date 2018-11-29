@@ -93,6 +93,7 @@
     "Error": "Error",
     "Fail to load card component": "Fail to load card component",
     "view-detail": "View Detail",
+    "Memo": "Memo",
     "Alerts": "Alerts",
     "Alerts - Air": "Alerts - Air",
     "Alerts - Sea": "Alerts - Sea",
@@ -163,6 +164,10 @@
   },
   "ReportingTool": {
     "Selected ({count})": "Selected ({{ count }})",
+    "content": "Content",
+    "color": "Color",
+    "size": "Size",
+    "bold": "Bold",
     "Year": "Year",
     "Month": "Month",
     "Shortcut": "Shortcut ({{ group|i18n(['ReportingTool']) }})",
