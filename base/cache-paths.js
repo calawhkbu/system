@@ -62,6 +62,23 @@ module.exports = {
 			expiryMinutes: 15
 		},
 
+		// FM3K APIs for reports
+		{
+			pathRegExp: /\/fm3k\/reports/,
+			method: 'GET',
+			expiryMinutes: 5
+		},
+		{
+			pathRegExp: /\/fm3k\/report/,
+			method: 'POST',
+			expiryMinutes: 5
+		},
+		{
+			pathRegExp: /\/fm3k\/data/,
+			method: 'POST',
+			expiryMinutes: 5
+		},
+
 		// FM3K APIs for Dashboard
 		{
 			path: '/fm3k/',
