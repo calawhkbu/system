@@ -121,7 +121,8 @@ module.exports = {
   // in Dashboard (/:dashboardId)
   "card": {
     "Your Cards": "My Cards", // the cards you own
-    "System Cards": "System Cards", // the cards provided by default
+    "System Cards": "System Cards", // the cards provided by default,
+    "ERP Cards": "ERP Cards",
 
     // shown in the list of available cards when there is none
     "No cards available": "No cards available",
