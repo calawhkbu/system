@@ -84,7 +84,12 @@
   "card": {
     "Your Cards": "我的卡片",
     "System Cards": "预设卡片",
+    "360 Cards": "360报表",
     "ERP Cards": "ERP报表",
+    "Shipments": "船运",
+    "Bookings": "订单",
+    "PurchaseOrders": "采购单",
+    "Messages": "通知",
     "No cards available": "没有可用卡片",
     "No data": "无资料",
     "Not applicable": "不适用",

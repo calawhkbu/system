@@ -84,7 +84,12 @@
   "card": {
     "Your Cards": "マイカード",
     "System Cards": "システムカード",
+    "360 Cards": "360レポート",
     "ERP Cards": "ERPレポート",
+    "Shipments": "船積み",
+    "Bookings": "船腹予約",
+    "PurchaseOrders": "購入オーダー",
+    "Messages": "お知らせ",
     "No cards available": "カードなし",
     "No data": "データなし",
     "Not applicable": "該当なし",

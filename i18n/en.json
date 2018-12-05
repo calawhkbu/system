@@ -84,7 +84,12 @@
   "card": {
     "Your Cards": "My Cards",
     "System Cards": "System Cards",
+    "360 Cards": "360 Cards",
     "ERP Cards": "ERP Cards",
+    "Shipments": "Shipments",
+    "Bookings": "Bookings",
+    "PurchaseOrders": "Purchase Orders",
+    "Messages": "Alerts",
     "No cards available": "No cards available",
     "No data": "No data",
     "Not applicable": "Not applicable",

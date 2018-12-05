@@ -122,7 +122,14 @@ module.exports = {
   "card": {
     "Your Cards": "My Cards", // the cards you own
     "System Cards": "System Cards", // the cards provided by default,
+    "360 Cards": "360 Cards",
     "ERP Cards": "ERP Cards",
+
+    // categories for 360 cards
+    "Shipments": "Shipments",
+    "Bookings": "Bookings",
+    "PurchaseOrders": "Purchase Orders",
+    "Messages": "Alerts",
 
     // shown in the list of available cards when there is none
     "No cards available": "No cards available",
