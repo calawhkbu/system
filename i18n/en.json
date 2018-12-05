@@ -167,7 +167,7 @@
   "ReportingTool": {
     "Selected ({count})": "Selected ({{ count }})",
     "Shipments": "Shipments",
-    "Bookings": "Bookings",
+    "Bookings": "My Bookings",
     "PurchaseOrders": "Purchase Orders",
     "Messages": "Alerts",
     "content": "Content",
