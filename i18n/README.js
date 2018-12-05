@@ -125,12 +125,6 @@ module.exports = {
     "360 Cards": "360 Cards",
     "ERP Cards": "ERP Cards",
 
-    // categories for 360 cards
-    "Shipments": "Shipments",
-    "Bookings": "Bookings",
-    "PurchaseOrders": "Purchase Orders",
-    "Messages": "Alerts",
-
     // shown in the list of available cards when there is none
     "No cards available": "No cards available",
 
@@ -273,6 +267,12 @@ module.exports = {
   "ReportingTool": {
     // shown in parameteres that support multi-selection
     "Selected ({count})": "Selected ({{ count }})", // note the {{ count }} should NOT be translated
+
+    // categories for 360 cards
+    "Shipments": "Shipments",
+    "Bookings": "Bookings",
+    "PurchaseOrders": "Purchase Orders",
+    "Messages": "Alerts",
 
     // memo attributes
     "content": "Content",
