@@ -1,50 +1,96 @@
 // All expiry in MINUTES
 module.exports = {
 	refreshPaths: [
-		"/reports"
+		'/reports'
 	],
 	
 	paths: [
+		// list of divisions
 		{
-			pathRegExp: /reports\/uber[A-Za-z0-9\/\#\{\}\"\:\-\[\]\=,\&\%\?\ ]*groupBy/,
-			method: "GET",
-			expiryMinutes: 60
-		},
-		{
-			path: "/reports/uber",
-			method: "POST",
-			bodyRegExp: /groupBy/,
-			expiryMinutes: 60
-		},
-		{
-			path: "/reports/tag",
-			method: "GET",
+			path: '/reports/uber-division',
+			method: ['GET', 'POST'],
 			expiryMinutes: 1440
 		},
+
+		// metadata
 		{
-			path: "/reports/uber-summary",
-			method: "GET",
+			pathRegExp: /\/reports\/uber(.*?)\/meta/,
+			method: 'GET',
+			expiryMinutes: 1440
+		},
+
+		// uber for AdhocTool
+		{
+			path: '/reports/uber',
+			body: 'offset',
+			method: 'POST',
+			expiryMinutes: 15
+		},
+
+		// uber for Dashboard
+		{
+			path: '/reports/uber',
+			method: ['GET', 'POST'],
 			expiryMinutes: 60
 		},
+
+		// shipment-status for Dashboard
 		{
-			path: "/reports/top-x",
-			method: "GET",
-			expiryMinutes: 60
+			path: '/reports/shipment-status',
+			method: ['GET', 'POST'],
+			expiryMinutes: 15
+		},
+
+		// alert-details for AdhocTool
+		{
+			path: '/reports/alert-details',
+			method: ['GET', 'POST'],
+			expiryMinutes: 5
+		},
+
+		// alerts for Dashboard
+		{
+			path: '/reports/alerts',
+			method: ['GET', 'POST'],
+			expiryMinutes: 5
+		},
+
+		// booking-details for AdhocTool
+		{
+			path: '/reports/booking-details',
+			method: ['GET', 'POST'],
+			expiryMinutes: 15
+		},
+
+		// FM3K APIs for reports
+		{
+			pathRegExp: /\/fm3k\/reports/,
+			method: 'GET',
+			expiryMinutes: 5
 		},
 		{
-			path: "/reports/yoy-by-month",
-			method: "GET",
-			expiryMinutes: 60
+			pathRegExp: /\/fm3k\/report/,
+			method: 'POST',
+			expiryMinutes: 5
 		},
 		{
-			path: "/reports/shipment-status",
-			method: "GET",
+			pathRegExp: /\/fm3k\/data/,
+			method: 'POST',
+			expiryMinutes: 5
+		},
+
+		// FM3K APIs for Dashboard
+		{
+			path: '/fm3k/',
+			method: 'GET',
 			expiryMinutes: 60
 		},
+
+		// public API for tracking
 		{
-			path: "/fm3k",
-			method: "GET",
-			expiryMinutes: 60
+			path: '/api/bill/search',
+			method: 'GET',
+			expiryMinutes: 5
 		}
 	]
 };
