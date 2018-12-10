@@ -31,7 +31,9 @@
                       "card": [
                         {
                           "field": {
-                            "type": "display",
+                            "children": {
+                              "empty": ""
+                            },
                             "field": [
                               [
                                 "name",
@@ -42,7 +44,9 @@
                         },
                         {
                           "field": {
-                            "type": "display",
+                            "children": {
+                              "empty": ""
+                            },
                             "field": [
                               "cityCode",
                               "country"
@@ -51,7 +55,9 @@
                         },
                         {
                           "field": {
-                            "type": "display",
+                            "children": {
+                              "empty": ""
+                            },
                             "field": [
                               "email"
                             ]
@@ -64,11 +70,12 @@
                             "children": {
                               "context": "Shipment.TransactionParty",
                               "i18nKey": "name"
-                            },
-                            "isDisplay": true
+                            }
                           },
                           "field": {
-                            "type": "display",
+                            "children": {
+                              "empty": ""
+                            },
                             "field": [
                               [
                                 "name",
@@ -82,11 +89,12 @@
                             "children": {
                               "context": "Shipment.TransactionParty",
                               "i18nKey": "City / Country"
-                            },
-                            "isDisplay": true
+                            }
                           },
                           "field": {
-                            "type": "display",
+                            "children": {
+                              "empty": ""
+                            },
                             "field": [
                               "country",
                               "city"
@@ -98,11 +106,12 @@
                             "children": {
                               "context": "Shipment.TransactionParty",
                               "i18nKey": "Address"
-                            },
-                            "isDisplay": true
+                            }
                           },
                           "field": {
-                            "type": "display",
+                            "children": {
+                              "empty": ""
+                            },
                             "field": [
                               "address1",
                               "address2",
@@ -117,11 +126,12 @@
                             "children": {
                               "context": "Shipment.TransactionParty",
                               "i18nKey": "Contact Person"
-                            },
-                            "isDisplay": true
+                            }
                           },
                           "field": {
-                            "type": "display",
+                            "children": {
+                              "empty": ""
+                            },
                             "field": [
                               "contact"
                             ]
@@ -132,11 +142,12 @@
                             "children": {
                               "context": "Shipment.TransactionParty",
                               "i18nKey": "Tel."
-                            },
-                            "isDisplay": true
+                            }
                           },
                           "field": {
-                            "type": "display",
+                            "children": {
+                              "empty": ""
+                            },
                             "field": [
                               "phone"
                             ]
@@ -147,11 +158,12 @@
                             "children": {
                               "context": "Shipment.TransactionParty",
                               "i18nKey": "Email"
-                            },
-                            "isDisplay": true
+                            }
                           },
                           "field": {
-                            "type": "display",
+                            "children": {
+                              "empty": ""
+                            },
                             "field": [
                               "email"
                             ]
@@ -202,11 +214,9 @@
                         "children": {
                           "context": "Shipment",
                           "i18nKey": "House #"
-                        },
-                        "isDisplay": true
+                        }
                       },
                       "field": {
-                        "type": "display-empty",
                         "field": [
                           "houseNo"
                         ]
@@ -220,11 +230,9 @@
                         "children": {
                           "context": "Shipment",
                           "i18nKey": "Master #"
-                        },
-                        "isDisplay": true
+                        }
                       },
                       "field": {
-                        "type": "display-empty",
                         "field": [
                           "masterNo"
                         ]
@@ -238,11 +246,9 @@
                         "children": {
                           "context": "Shipment",
                           "i18nKey": "Estimated Departure Date"
-                        },
-                        "isDisplay": true
+                        }
                       },
                       "field": {
-                        "type": "display-empty",
                         "field": [
                           "estimatedDepartureDate"
                         ],
@@ -259,11 +265,9 @@
                         "children": {
                           "context": "Shipment",
                           "i18nKey": "Estimated Arrival Date"
-                        },
-                        "isDisplay": true
+                        }
                       },
                       "field": {
-                        "type": "display-empty",
                         "field": [
                           "estimatedArrivalDate"
                         ],
@@ -287,11 +291,9 @@
                         "children": {
                           "context": "Shipment",
                           "i18nKey": "Place of Receipt"
-                        },
-                        "isDisplay": true
+                        }
                       },
                       "field": {
-                        "type": "display-empty",
                         "field": [
                           "placeOfReceipt"
                         ]
@@ -305,11 +307,9 @@
                         "children": {
                           "context": "Shipment",
                           "i18nKey": "Place Of Delivery"
-                        },
-                        "isDisplay": true
+                        }
                       },
                       "field": {
-                        "type": "display-empty",
                         "field": [
                           "placeOfDelivery"
                         ]
@@ -323,11 +323,9 @@
                         "children": {
                           "context": "Shipment",
                           "i18nKey": "Place of Receipt"
-                        },
-                        "isDisplay": true
+                        }
                       },
                       "field": {
-                        "type": "display-empty",
                         "field": [
                           "portOfLoading"
                         ]
@@ -341,11 +339,9 @@
                         "children": {
                           "context": "Shipment",
                           "i18nKey": "Port of Discharge"
-                        },
-                        "isDisplay": true
+                        }
                       },
                       "field": {
-                        "type": "display-empty",
                         "field": [
                           "portOfDischarge"
                         ]
@@ -359,11 +355,9 @@
                         "children": {
                           "context": "Shipment",
                           "i18nKey": "Final Destination"
-                        },
-                        "isDisplay": true
+                        }
                       },
                       "field": {
-                        "type": "display-empty",
                         "field": [
                           "finalDestination"
                         ]
@@ -384,11 +378,9 @@
                         "children": {
                           "context": "Shipment",
                           "i18nKey": "Carrier"
-                        },
-                        "isDisplay": true
+                        }
                       },
                       "field": {
-                        "type": "display-empty",
                         "field": [
                           "billTransports[0].carrierCode"
                         ]
@@ -402,11 +394,9 @@
                         "children": {
                           "context": "Shipment",
                           "i18nKey": "Flight #"
-                        },
-                        "isDisplay": true
+                        }
                       },
                       "field": {
-                        "type": "display-empty",
                         "field": [
                           "billTransports[0].transport"
                         ]
@@ -423,11 +413,9 @@
                         "children": {
                           "context": "Shipment",
                           "i18nKey": "Vessel/Voyage"
-                        },
-                        "isDisplay": true
+                        }
                       },
                       "field": {
-                        "type": "display-empty",
                         "field": [
                           "billTransports[0].transport"
                         ]
@@ -444,11 +432,9 @@
                         "children": {
                           "context": "Shipment",
                           "i18nKey": "Service"
-                        },
-                        "isDisplay": true
+                        }
                       },
                       "field": {
-                        "type": "display-empty",
                         "field": [
                           "service"
                         ]
@@ -462,11 +448,9 @@
                         "children": {
                           "context": "Shipment",
                           "i18nKey": "Service"
-                        },
-                        "isDisplay": true
+                        }
                       },
                       "field": {
-                        "type": "display-empty",
                         "field": [
                           "incoTerms"
                         ]
@@ -480,11 +464,9 @@
                         "children": {
                           "context": "Shipment",
                           "i18nKey": "Issuing Agent"
-                        },
-                        "isDisplay": true
+                        }
                       },
                       "field": {
-                        "type": "display-empty",
                         "field": [
                           "issuingAgent"
                         ]
@@ -587,14 +569,12 @@
                   "children": {
                     "context": "Shipment.Cargo",
                     "i18nKey": "Commodity"
-                  },
-                  "isDisplay": true
+                  }
                 },
                 "field": {
                   "field": [
                     "commodity"
                   ],
-                  "type": "display-empty",
                   "children": {
                     "empty": "unavailable"
                   }
@@ -605,15 +585,13 @@
                   "children": {
                     "context": "Shipment.Cargo",
                     "i18nKey": "Quantity"
-                  },
-                  "isDisplay": true
+                  }
                 },
                 "field": {
                   "field": [
                     "quantity",
                     "quantityUnit"
                   ],
-                  "type": "display-empty",
                   "children": {
                     "empty": "unavailable"
                   }
@@ -632,7 +610,6 @@
                     "grossWeight",
                     "weightUnit"
                   ],
-                  "type": "display-empty",
                   "children": {
                     "empty": "unavailable"
                   }
@@ -643,14 +620,12 @@
                   "children": {
                     "context": "Shipment.Cargo",
                     "i18nKey": "CBM"
-                  },
-                  "isDisplay": true
+                  }
                 },
                 "field": {
                   "field": [
                     "cbm"
                   ],
-                  "type": "display-empty",
                   "children": {
                     "empty": "unavailable"
                   }
@@ -663,14 +638,12 @@
                   "children": {
                     "context": "Shipment.Cargo",
                     "i18nKey": "Marks and Numbers"
-                  },
-                  "isDisplay": true
+                  }
                 },
                 "field": {
                   "field": [
                     "shipMarks"
                   ],
-                  "type": "display-empty",
                   "children": {
                     "empty": "unavailable",
                     "type": "ellipsis",
@@ -686,14 +659,12 @@
                   "children": {
                     "context": "Shipment.Cargo",
                     "i18nKey": "Descriptions of Goods"
-                  },
-                  "isDisplay": true
+                  }
                 },
                 "field": {
                   "field": [
                     "goodsDescription"
                   ],
-                  "type": "display-empty",
                   "children": {
                     "empty": "unavailable",
                     "type": "ellipsis",
@@ -737,14 +708,12 @@
                   "children": {
                     "context": "Shipment.Container",
                     "i18nKey": "Container #"
-                  },
-                  "isDisplay": true
+                  }
                 },
                 "field": {
                   "field": [
                     "containerNo"
                   ],
-                  "type": "display-empty",
                   "children": {
                     "empty": "unavailable"
                   }
@@ -757,7 +726,6 @@
                     "context": "Shipment.Container",
                     "i18nKey": "Carrier Booking #"
                   },
-                  "isDisplay": true,
                   "style": {
                     "fontSize": "0.8rem"
                   }
@@ -766,7 +734,6 @@
                   "field": [
                     "carrierBookingNo"
                   ],
-                  "type": "display-empty",
                   "children": {
                     "empty": "unavailable"
                   }
@@ -784,7 +751,6 @@
                   "field": [
                     "sealNo1"
                   ],
-                  "type": "display-empty",
                   "children": {
                     "empty": "unavailable"
                   }
@@ -795,14 +761,12 @@
                   "children": {
                     "context": "Shipment.Container",
                     "i18nKey": "Type"
-                  },
-                  "isDisplay": true
+                  }
                 },
                 "field": {
                   "field": [
                     "containerType"
                   ],
-                  "type": "display-empty",
                   "children": {
                     "empty": "unavailable"
                   }
@@ -813,15 +777,13 @@
                   "children": {
                     "context": "Shipment.Container",
                     "i18nKey": "Quantity"
-                  },
-                  "isDisplay": true
+                  }
                 },
                 "field": {
                   "field": [
                     "quantity",
                     "quantityUnit"
                   ],
-                  "type": "display-empty",
                   "children": {
                     "empty": "unavailable"
                   }
@@ -832,15 +794,13 @@
                   "children": {
                     "context": "Shipment.Container",
                     "i18nKey": "Weight"
-                  },
-                  "isDisplay": true
+                  }
                 },
                 "field": {
                   "field": [
                     "grossWeight",
                     "weightUnit"
                   ],
-                  "type": "display-empty",
                   "children": {
                     "empty": "unavailable"
                   }
@@ -851,14 +811,12 @@
                   "children": {
                     "context": "Shipment.Container",
                     "i18nKey": "CBM"
-                  },
-                  "isDisplay": true
+                  }
                 },
                 "field": {
                   "field": [
                     "cbm"
                   ],
-                  "type": "display-empty",
                   "children": {
                     "empty": "unavailable"
                   }
@@ -875,10 +833,7 @@
         "lg": 4,
         "children": [
           {
-            "component": "TrackingStatusCard",
-            "actionPlugins": [
-              "CarrierButton"
-            ]
+            "component": "TrackingStatusCard"
           },
           {
             "component": "AlertCard"
