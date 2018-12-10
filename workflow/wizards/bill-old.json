@@ -1,0 +1,186 @@
+{
+  "shipperDetails": [
+    {
+      "name": "houseNo",
+      "label": "House No",
+      "hearchy": ["billTransports",0, "houseNo"],
+      "isHearchy": true
+    },
+    {
+      "name": "placeOfReceipt",
+      "label": "Place of Receipt"
+    },
+    {
+      "name": "masterNo",
+      "label": "Master No",
+      "hearchy": ["billTransports",0, "masterNo"],
+      "isHearchy": true
+    },
+    {
+      "name": "portOfLoading",
+      "label": "Port Of Loading"
+    },
+    {
+      "name": "estimatedDepartureDate",
+      "label": "Estimated Departure Date",
+      "dateCode": "ETD",
+      "type": "date"
+    },
+    {
+      "name": "portOfDischarge",
+      "label": "Port Of Discharge"
+    },
+    {
+      "name": "estimatedArrivalDate",
+      "label": "Estimated Arrival Date",
+      "dateCode": "ETA",
+      "type": "date"
+    },
+    {
+      "name": "placeOfDelivery",
+      "label": "Place Of Delivery"
+    },
+    {
+      "name": "transport",
+      "label": "Vessel/Voyage",
+      "visibility": {
+        "moduleType":"SEA"
+      },
+      "hearchy": ["billTransports",0, "transport"],
+      "isHearchy": true
+    },
+    {
+      "name": "finalDestination",
+      "label": "Final Destination"
+    },
+    {
+      "name": "transport",
+      "label": "Flight No",
+      "visibility": {
+        "moduleType":"AIR"
+      },
+      "hearchy": ["billTransports",0, "transport"],
+      "isHearchy": true
+    },
+
+    {
+      "name": "carrierCode",
+      "label": "Carrier",
+      "hearchy": ["billTransports",0, "carrierCode"],
+      "isHearchy": true
+    },
+    {
+      "name": "service",
+      "label": "Service"
+    },
+    {
+      "name": "incoTerms",
+      "label": "Incoterms"
+    },
+    {
+      "name": "issuingAgent",
+      "label": "Issuing Agent",
+      "visibility": {
+        "moduleType":"AIR"
+      }
+    },
+    {
+      "name": "valueForCarriage",
+      "label": "Value For Carriage",
+      "visibility": {
+        "moduleType":"AIR"
+      }
+    },
+    {
+      "name": "valueForCustoms",
+      "label": "Value For Customs",
+      "visibility": {
+        "moduleType":"AIR"
+      }
+    },
+    {
+      "name": "amountOfInsurance",
+      "label": "Amount Of Insurance",
+      "visibility": {
+        "moduleType":"AIR"
+      }
+    },
+    {
+      "name": "issueAt",
+      "label": "Issue At"
+    }
+  ],
+  "billCargoDetails": [
+    {
+      "name": "commodity",
+      "label": "Commodity"
+    },
+    {
+      "name": "quantity",
+      "label": "Quantity"
+    },
+    {
+      "name": "grossWeight",
+      "label": "Weight",
+      "visibility": {
+        "moduleType":"SEA"
+      }
+    },
+    {
+      "name": "grossWeight",
+      "label": "Gross Weight",
+      "visibility": {
+        "moduleType":"AIR"
+      }
+    },
+    {
+      "name": "volumeWeight",
+      "label": "Volume Weight",
+      "visibility": {
+        "moduleType":"AIR"
+      }
+    },
+    {
+      "name": "chargeableWeight",
+      "label": "Chargeable Weight",
+      "visibility": {
+        "moduleType":"AIR"
+      }
+    },
+    {
+      "name": "cbm",
+      "label": "CBM"
+    }
+  ],
+  "billContainerDetails": [
+    {
+      "name": "containerNo",
+      "label": "Container No"
+    },
+    {
+      "name": "carrierBookingNo",
+      "label": "Carrier Booking No"
+    },
+    {
+      "name": "sealNo1",
+      "label": "Seal No"
+    },
+    {
+      "name": "containerType",
+      "label": "Type"
+    },
+    {
+      "name": "quantity",
+      "label": "Quantity"
+    },
+    {
+      "name": "grossWeight",
+      "label": "Weight"
+    },
+    {
+      "name": "cbm",
+      "label": "CBM"
+    }
+  ]
+
+}
