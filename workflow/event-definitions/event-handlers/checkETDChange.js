@@ -3,7 +3,7 @@ function CheckETD() {
 	this.returns = ["DATESET", "DELAY","CHANGED"];
 	this.handle = function(definition, data, handlerParameters, helper) {
 		console.log(`[Event Triggered] Check ETD Change for master ${data.data.masterNo}`)
-		if (data.data.estimatedDepartureDate != null) {
+		if (data.data.estimatedDepartureDate != null && helper.moment.isDate(data.data.estimatedDepartureDate)) {
 			console.log(`[Master NO:${data.data.masterNo}] NEW ETD: ${data.data.estimatedDepartureDate}`)
 			if (data.oldData.estimatedDepartureDate == null) {
 				var promise = new Promise(function (resolve) {
@@ -37,6 +37,7 @@ function CheckETD() {
 				}
 			}
 		} else {
+			console.log(`[Master NO:${data.data.masterNo}] ETD not changed`)
 			return "DATESET";
 		}
 	}

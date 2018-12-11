@@ -3,7 +3,7 @@ function CheckETA() {
 	this.returns = ["DATESET", "DELAY"];
 	this.handle = function(definition, data, handlerParameters, helper) {
 		console.log(`[Event Triggered] Check ETA Change for master ${data.data.masterNo}`)
-		if (data.data.estimatedArrivalDate != null) {
+		if (data.data.estimatedArrivalDate != null && helper.moment.isDate(data.data.estimatedArrivalDate)) {
 			console.log(`[Master NO:${data.data.masterNo}] NEW ETA: ${data.data.estimatedArrivalDate}`)
 			if (data.oldData.estimatedArrivalDate == null) {
 				var promise = new Promise(function (resolve) {
@@ -37,6 +37,7 @@ function CheckETA() {
 				}
 			}
 		} else {
+			console.log(`[Master NO:${data.data.masterNo}] ETA not changed`)
 			return "DATESET";
 		}
 	}
