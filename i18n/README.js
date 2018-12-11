@@ -13,6 +13,7 @@ module.exports = {
   "Confirmed?": "Confirmed?", // 'Confirm to Delete?' button
   "Delete": "Delete", // 'Delete' button
   "Save": "Save", // 'Save' button
+  "Save to": "Save to", // 'Save to' button
   "Save as": "Save As", // 'Save As' button
   "Apply": "Apply", // 'Apply / Submit' button
   "Reset": "Reset", // 'Reset' button
