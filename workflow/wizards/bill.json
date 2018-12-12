@@ -322,7 +322,7 @@
                       "label": {
                         "children": {
                           "context": "Shipment",
-                          "i18nKey": "Place of Receipt"
+                          "i18nKey": "Port of Loading"
                         }
                       },
                       "field": {
@@ -508,7 +508,7 @@
                         "isDisplay": true
                       },
                       "field": {
-                        "type": "display-empty",
+                        "displaytype": "display-empty",
                         "field": [
                           "valueForCustoms"
                         ]
