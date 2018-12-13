@@ -345,7 +345,8 @@
     "Rows per Page": "Rows per Page",
     "results": "{{ count }} results",
     "pages": "{{ numPages }} pages",
-    "Total": "Total"
+    "Total": "Total",
+    "Subtotal": "Subtotal"
   },
   "addCustomerUsers": {
     "Update Invitation": "Update Invitation",

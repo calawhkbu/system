@@ -493,7 +493,8 @@ module.exports = {
     "pages": "{{ numPages }} pages",  // note the {{ numPages }} should NOT be translated
 
     // used in summary row
-    "Total": "Total"
+    "Total": "Total",
+    "Subtotal": "Subtotal"
   },
 
   // the text shown

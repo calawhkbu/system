@@ -344,7 +344,8 @@
     "Rows per Page": "每页行数",
     "results": "总共{{ count }}件",
     "pages": "{{ numPages }}页",
-    "Total": "总数"
+    "Total": "总数",
+    "Subtotal": "小计"
   },
   "addCustomerUsers": {
     "Update Invitation": "更新邀请",

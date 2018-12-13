@@ -344,7 +344,8 @@
     "Rows per Page": "行数",
     "results": "合計{{ count }}件",
     "pages": "{{ numPages }}ページ",
-    "Total": "合計"
+    "Total": "合計",
+    "Subtotal": "小計"
   },
   "addCustomerUsers": {
     "Update Invitation": "招待状を編集する",
