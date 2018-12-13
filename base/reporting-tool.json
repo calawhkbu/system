@@ -9,14 +9,19 @@
     "filters": {
       "jobDate": {
         "key": "CURRENT_YEAR",
-        "use": {"type": "year", "method": "current"},
+        "use": {
+          "type": "year",
+          "method": "current"
+        },
         "summary": "Current Year"
       }
     },
     "url": "reports/uber"
   },
   "adhoc": {
-    "configurations": { "table": {} },
+    "configurations": {
+      "table": {}
+    },
     "filters": {},
     "url": "reports/uber"
   },
@@ -59,14 +64,32 @@
   "Messages:Table": {
     "configurations": {
       "table": {
-        "headers" : [
-          { "key": "createdAt", "width": 200 },
-          { "key": "alertType" },
-          { "key": "alertCategory", "hidden": true },
-          { "key": "alertStatus" },
-          { "key": "message" },
-          { "key": "tableName", "hidden": true },
-          { "key": "primaryKey", "hidden": true }
+        "headers": [
+          {
+            "key": "createdAt",
+            "width": 200
+          },
+          {
+            "key": "alertType"
+          },
+          {
+            "key": "alertCategory",
+            "hidden": true
+          },
+          {
+            "key": "alertStatus"
+          },
+          {
+            "key": "message"
+          },
+          {
+            "key": "tableName",
+            "hidden": true
+          },
+          {
+            "key": "primaryKey",
+            "hidden": true
+          }
         ],
         "sortBy": {
           "direction": "desc",
@@ -83,7 +106,10 @@
       "map": {
         "id": "ClusterMapView",
         "props": {
-          "center": [0, 0],
+          "center": [
+            0,
+            0
+          ],
           "doubleClickZoom": false,
           "dragging": true,
           "minZoom": 2,
@@ -99,7 +125,10 @@
           },
           "startPointIconOptions": {
             "iconUrl": "/images/factory.png",
-            "iconSize": [15, 15]
+            "iconSize": [
+              15,
+              15
+            ]
           },
           "middlePointOptions": {
             "weight": 1.5,
@@ -108,7 +137,10 @@
           },
           "middlePointIconOptions": {
             "iconUrl": "/images/map/SEA.svg",
-            "iconSize": [15, 15]
+            "iconSize": [
+              15,
+              15
+            ]
           },
           "endPointOptions": {
             "weight": 1.5,
@@ -117,11 +149,12 @@
           },
           "endPointIconOptions": {
             "iconUrl": "/images/destination.svg",
-            "iconSize": [15, 15]
+            "iconSize": [
+              15,
+              15
+            ]
           },
-          "travelledRouteStyle": {
-
-          },
+          "travelledRouteStyle": {},
           "notTravelRouteStyle": {
             "dashArray": "5,5",
             "dashOffset": "0"
@@ -158,11 +191,13 @@
           {
             "id": 3,
             "component": "ClusteringLayer",
-            "url": "/reports/{entity}-details",
-            "countUrl": "/reports/{entity}-details/count",
+            "url": "/reports/{{ entity }}-details",
+            "countUrl": "/reports/{{ entity }}-details/count",
             "maxCount": 50000,
             "params": {
-              "fields": ["id"],
+              "fields": [
+                "id"
+              ],
               "filter": {}
             },
             "click": {
@@ -172,7 +207,7 @@
                   "_plugins": [
                     "from-string"
                   ],
-                  "from-string": "{\"{{key}}\":{\"{{key}}\":[\"{{value}}\"]}}"
+                  "from-string": "{\"{{ key }}\":{\"{{ key }}\":[\"{{ value }}\"]}}"
                 },
                 "cardProcess": {
                   "_plugins": [
@@ -202,7 +237,7 @@
                 "maxClusterRadius": 80,
                 "chunkedLoading": true,
                 "removeOutsideVisibleBounds": true,
-                "spiderfyDistanceMultiplier": 0.00000000001
+                "spiderfyDistanceMultiplier": 1e-11
               }
             }
           }
@@ -212,7 +247,10 @@
     "filters": {
       "jobDate": {
         "key": "CURRENT_YEAR",
-        "use": {"type": "year", "method": "current"},
+        "use": {
+          "type": "year",
+          "method": "current"
+        },
         "summary": "Current Year"
       }
     },
