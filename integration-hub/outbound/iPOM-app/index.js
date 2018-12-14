@@ -14,7 +14,7 @@ function iPOMHandler () {
               }
               if (postData && postData.trim().length > 0) {
                 helper.emailer.sendFreeMail({
-                  to: ["ken.chan@swivelsoftware.com", "waiman.chan@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
+                  to: ["ken.chan@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
                   from: "administrator@swivelsoftware.com",
                   subject: `TEST - Failed to post purchaseOrder to iPOM [DATA SENT OUT]`,
                   html: `<p>PO:${reqPayLoad}</p><p>Data Return:${JSON.stringify(postData)}</p>`
@@ -27,7 +27,7 @@ function iPOMHandler () {
           } catch (e) {
             console.error(e.message, e.stack)
             helper.emailer.sendFreeMail({
-              to: ["ken.chan@swivelsoftware.com", "waiman.chan@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
+              to: ["ken.chan@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
               from: "administrator@swivelsoftware.com",
               subject: `TEST - Failed to post purchaseOrder to iPOM [ERROR]`,
               html: `<p>PO:${reqPayLoad}</p><p>Error: ${JSON.stringify(e.message)}</p><p>${e.stack}</p>`
