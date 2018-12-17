@@ -476,6 +476,9 @@ module.exports = {
     // fields for TableCard
     "noOfShipments": "No. of Shp",
     "yoyPercentageChange": "YoY Pct Chg",
+    "grossProfit": "Gross Profit",
+    "grossProfitPercent": "GP%",
+    "yoyGPMarginPercentageChange": "YoY GP Margin Pct Chg",
 
     // common fields
     "Total": "Total"

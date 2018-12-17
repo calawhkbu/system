@@ -338,6 +338,9 @@
     "Consignee": "荷受人",
     "noOfShipments": "船積数量",
     "yoyPercentageChange": "前年比変化率",
+    "grossProfit": "粗利益",
+    "grossProfitPercent": "粗利%",
+    "yoyGPMarginPercentageChange": "粗利%前年比変化率",
     "Total": "合計"
   },
   "Table": {

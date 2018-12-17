@@ -338,6 +338,9 @@
     "Consignee": "收貨人",
     "noOfShipments": "船運數",
     "yoyPercentageChange": "年增率",
+    "grossProfit": "毛利",
+    "grossProfitPercent": "毛利%",
+    "yoyGPMarginPercentageChange": "邊際毛利年增率",
     "Total": "總數"
   },
   "Table": {
