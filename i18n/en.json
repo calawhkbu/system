@@ -340,8 +340,9 @@
     "noOfShipments": "No. of Shp",
     "yoyPercentageChange": "YoY Pct Chg",
     "grossProfit": "Gross Profit",
-    "grossProfitPercent": "GP%",
-    "yoyGPMarginPercentageChange": "YoY GP Margin Pct Chg",
+    "grossProfitPercent": "Margin",
+    "yoyGpPercentageChange": "YoY GP Pct Chg",
+    "yoyGPMarginPercentageChange": "YoY Margin Pct Chg",
     "Total": "Total"
   },
   "Table": {

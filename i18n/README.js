@@ -478,6 +478,7 @@ module.exports = {
     "yoyPercentageChange": "YoY Pct Chg",
     "grossProfit": "Gross Profit",
     "grossProfitPercent": "GP%",
+    "yoyGpPercentageChange": "YoY GP Pct Chg",
     "yoyGPMarginPercentageChange": "YoY GP Margin Pct Chg",
 
     // common fields

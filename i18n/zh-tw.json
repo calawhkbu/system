@@ -339,7 +339,8 @@
     "noOfShipments": "船運數",
     "yoyPercentageChange": "年增率",
     "grossProfit": "毛利",
-    "grossProfitPercent": "毛利%",
+    "grossProfitPercent": "邊際毛利",
+    "yoyGpPercentageChange": "毛利年增率",
     "yoyGPMarginPercentageChange": "邊際毛利年增率",
     "Total": "總數"
   },

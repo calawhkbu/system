@@ -340,6 +340,7 @@
     "yoyPercentageChange": "前年比変化率",
     "grossProfit": "粗利益",
     "grossProfitPercent": "粗利%",
+    "yoyGpPercentageChange": "粗利前年比変化率",
     "yoyGPMarginPercentageChange": "粗利%前年比変化率",
     "Total": "合計"
   },
