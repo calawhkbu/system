@@ -6,7 +6,7 @@ function fm3kHandler () {
           if(customer && customer.configuration && customer.configuration.webService["Booking"]) {
             let api = customer.wsURL + "/" + customer.configuration.webService["Booking"].api;
             try {
-              var reqPayLoad = JSON.stringify(booking);
+              var reqPayLoad = JSON.stringify({ ...booking, isUpdate: params.update });
               helper.restClient.post(api, {data: reqPayLoad}, (postData, response) => {
                 if(Buffer.isBuffer(postData)){
                   postData = postData.toString('utf8');

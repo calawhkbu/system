@@ -106,7 +106,15 @@ module.exports = {
                 entity: "customer",
                 entityId: "data.customerId"
             },
-            handlers: [{
+            handlers: [
+              {
+                  name: "sendDataToThirdParty",
+                  parameters: {
+                      appId: "fm3k-app",
+                      update: true
+                  }
+              },
+              {
                     name: "checkETAChange"
                 },
                 {
@@ -211,7 +219,8 @@ module.exports = {
                 {
                     name: "sendDataToThirdParty",
                     parameters: {
-                        appId: "fm3k-app"
+                        appId: "fm3k-app",
+                        update: false
                     }
                 },
                 {
