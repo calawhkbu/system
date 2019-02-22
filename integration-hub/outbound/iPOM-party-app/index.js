@@ -6,7 +6,7 @@ function iPOMPartyHandler () {
         if (customer && customer.configuration && customer.configuration.webService.purchaseOrder && customer.configuration.webService.purchaseOrder.partyApi) {
           let api = customer.configuration.webService.purchaseOrder.partyApi
           let payload = {
-            data: { party },
+            data: { party, customerType: party.partyRoles[0].roleTypeCode === 'CUS' ? 'CUSTOMER' : 'VENDOR' },
             headers: { "Content-Type": "application/json" }
           }
           try {
