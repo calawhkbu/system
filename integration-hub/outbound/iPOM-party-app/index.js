@@ -1,7 +1,7 @@
 function iPOMPartyHandler () {
   this.handle = function (appId, params, helper) {
     const party = params.data
-    helper.persistence.models.customer.findOne({ where: { id: purchaseOrder.customerId } })
+    helper.persistence.models.customer.findOne({ where: { id: party.customerId } })
       .then(customer => {
         if (customer && customer.configuration && customer.configuration.webService.purchaseOrder && customer.configuration.webService.purchaseOrder.partyApi) {
           let api = customer.configuration.webService.purchaseOrder.partyApi
