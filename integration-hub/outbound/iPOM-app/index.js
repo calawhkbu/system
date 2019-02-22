@@ -19,24 +19,26 @@ function iPOMHandler () {
                 const response = JSON.parse(postData.trim())[0]
                 if (response.status === 200) {
                   console.log('success send to ipom')
-                  helper.saveLog(appId, api, 'purchaseOrder', purchaseOrder.id, reqPayLoad, JSON.stringify(postData), null);
-                } else {
+                  helper.saveLog(appId, api, 'purchaseOrder', purchaseOrder.id, JSON.stringify(reqPayLoad), postData, null);
+                }
+                else {
                   helper.emailer.sendFreeMail({
                     to: ["ken.chan@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
                     from: "administrator@swivelsoftware.com",
                     subject: `TEST - Failed to post purchaseOrder to iPOM [DATA SENT OUT]`,
                     html: `<p>PO:</p><br/><p>${JSON.stringify(reqPayLoad)}</p><p>Data Return:</p><br/><p>${JSON.stringify(postData)}</p>`
                   }, {purchaseOrder: purchaseOrder});
-                  helper.saveLog(appId, api, 'purchaseOrder', purchaseOrder.id, reqPayLoad, null, JSON.stringify(postData));
+                  helper.saveLog(appId, api, 'purchaseOrder', purchaseOrder.id, JSON.stringify(reqPayLoad), null, postData);
                 }
-              } else {
+              }
+              else {
                 helper.emailer.sendFreeMail({
                   to: ["ken.chan@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
                   from: "administrator@swivelsoftware.com",
                   subject: `TEST - Failed to post purchaseOrder to iPOM [DATA SENT OUT]`,
                   html: `<p>PO:</p><br/><p>${JSON.stringify(reqPayLoad)}</p><p>Data Return:</p><br/><p>${JSON.stringify(postData)}</p>`
                 }, {purchaseOrder: purchaseOrder});
-                helper.saveLog(appId, api, 'purchaseOrder', purchaseOrder.id, reqPayLoad, null, JSON.stringify(postData));
+                helper.saveLog(appId, api, 'purchaseOrder', purchaseOrder.id, reqPayLoad, null, null);
               }
             })
           } catch (e) {
