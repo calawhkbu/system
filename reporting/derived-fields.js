@@ -1,71 +1,9 @@
 module.exports = {
 	"fields": {
-		"delayCategory": {
-			"fieldName": "delayCategory",
-			"fieldKey": "delayCategory",
-			"expression": `json_unquote(flexData.data->'$.delayCategory')`
-		},
-		"delayReasonRemark": {
-			"fieldName": "delayReasonRemark",
-			"fieldKey": "delayReasonRemark",
-			"expression": `json_unquote(flexData.data->'$.delayReasonRemark')`
-		},
 		"totalShipments": {
 			"fieldName": "totalShipments",
 			"fieldKey": "totalShipments",
 			"expression": "count(distinct b.bookingNo)",
-			"isGroupField": true
-		},
-		"grossDelays": {
-			"fieldName": "grossDelays",
-			"fieldKey": "grossDelays",
-			"expression": "sum(length(json_unquote(flexData.data->'$.delayReasonRemark')) > 0)",
-			"isGroupField": true
-		},
-		"grossDelaysPct": {
-			"fieldName": "grossDelaysPct",
-			"fieldKey": "grossDelaysPct",
-			"expression": "sum(length(json_unquote(flexData.data->'$.delayReasonRemark')) > 0) / count(*)",
-						"numberFormat": "2dp",
-			"isGroupField": true
-		},
-		"grossOntime": {
-			"fieldName": "grossDelays",
-			"fieldKey": "grossDelays",
-			"expression": "count(*) - sum(length(json_unquote(flexData.data->'$.delayReasonRemark')) > 0)",
-			"isGroupField": true
-		},
-		"grossOntimePct": {
-			"fieldName": "grossOntimePct",
-			"fieldKey": "grossOntimePct",
-			"expression": "(count(*) - sum(length(json_unquote(flexData.data->'$.delayReasonRemark')) > 0)) / count(*)",
-						"numberFormat": "2dp",
-			"isGroupField": true
-		},
-		"netDelays": {
-			"fieldName": "netDelays",
-			"fieldKey": "netDelays",
-			"expression": "sum(json_unquote(flexData.data->'$.isControllable'))",
-			"isGroupField": true
-		},
-		"netDelaysPct": {
-			"fieldName": "netDelaysPct",
-			"fieldKey": "netDelaysPct",
-			"expression": "sum(json_unquote(flexData.data->'$.isControllable')) / count(*)",
-            "numberFormat": "2dp",
-			"isGroupField": true
-		},
-		"netOntime": {
-			"fieldName": "netOntime",
-			"fieldKey": "netOntime",
-			"expression": "count(*) - sum(json_unquote(flexData.data->'$.isControllable'))",
-			"isGroupField": true
-		},
-		"netOntimePct": {
-			"fieldName": "netOntimePct",
-			"fieldKey": "netOntimePct",
-			"expression": "(count(*) - sum(json_unquote(flexData.data->'$.isControllable'))) / count(*)",
-            "numberFormat": "2dp",
 			"isGroupField": true
 		},
 		"departureRegion": {
@@ -304,10 +242,7 @@ module.exports = {
 			"serviceLevel",
 			"serviceType",
 			"isControllable",
-			"delayRemarksFromOrigin",
-			"delayRemarksFromDestination",
 			"delayReasonCode",
-			"delayReasonRemark",
 			"delayCategory"
 		],
 		"uber": [
@@ -327,12 +262,9 @@ module.exports = {
 		],
 		"booking-details": [
 			"departureRegion", "arrivalRegion",
-			"weDeliver", "serviceLevel", "serviceType", "isControllable",
-			"delayRemarksFromOrigin", "delayRemarksFromDestination",
-			"delayReasonCode", "delayReasonRemark", "delayCategory"
+			"weDeliver", "serviceLevel", "serviceType", "isControllable", "delayCategory"
 		],
 		"booking-summary": [
-			"delayReasonRemark",
 			"departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion",
 			"totalShipments", "grossDelays", "grossDelaysPct", "netDelays", "netDelaysPct",
 			"grossOntime", "grossOntimePct", "netOntime", "netOntimePct", "delayCategory"
