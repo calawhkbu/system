@@ -191,8 +191,8 @@
           {
             "id": 3,
             "component": "ClusteringLayer",
-            "url": "/reports/{{ entity }}-details",
-            "countUrl": "/reports/{{ entity }}-details/count",
+            "url": "/reports/{{ entity }}",
+            "countUrl": "/reports/{{ entity }}/count",
             "maxCount": 50000,
             "params": {
               "fields": [
