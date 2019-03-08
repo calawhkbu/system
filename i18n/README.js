@@ -398,8 +398,8 @@ module.exports = {
     "OtherContainerType": "Other Containers", // number of other containers
     "carrierName": "Carrier",
     "carrierCode": "Carrier Code",
-    "vesselFlight": "Vessel / Flight",
-    "vesselVoyage": "Vessel / Voyage",
+    "vesselFlight": "Vessel/Flight",
+    "vesselVoyage": "Vessel/Voyage",
     "division": "Division", // department
     "service": "Service", // e.g. CY, CFS
     "incoTerms": "Incoterms",
@@ -410,7 +410,7 @@ module.exports = {
     "billType": "Bill Type",  // e.g. M (master), H (house)
     "serviceType": "Service Type",  // ~ division
     "shipmentType": "Shipment Type",  // for SEA e.g. FCL, LCL, Consol
-    "nominatedType": "Nominated Type",  // e.g. R (Routing), F (Free-hand)
+    "nominatedType": "Freehand/RO",  // e.g. R (Routing), F (Free-hand)
     "isDirect": "Direct?",  // whether it is a direct shipment
     "isCoload": "Coload?",  // whether it is a coload shipment
     "por": "Place of Receipt (code)",
@@ -703,7 +703,7 @@ module.exports = {
     "Estimated Arrival Date": "Est. Arrival Date",
     "Place Of Delivery": "Place of Delivery",
     "Final Destination": "Final Destination",
-    "Vessel/Voyage": "Vessel / Voyage",
+    "Vessel/Voyage": "Vessel/Voyage",
     "Flight No": "Flight #",
     "Carrier": "Carrier",
     "Service": "Service", // e.g. CY, CFS
@@ -734,7 +734,7 @@ module.exports = {
     "more": "Show More ...",
     "less": "Show Less ...",
     "Book": "Book", // 'Book' button
-    "Workflow / Milestones": "Workflow / Milestones",
+    "Workflow / Milestones": "Workflow/Milestones",
     "Action Required By": "Action Required By", // the people allowed to move on to the next workflow status or the next milestone
 
     // container section
