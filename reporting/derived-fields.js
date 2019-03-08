@@ -262,7 +262,7 @@ module.exports = {
 		],
 		"booking-details": [
 			"departureRegion", "arrivalRegion",
-			"weDeliver", "serviceLevel", "serviceType", "isControllable", "delayCategory"
+			"weDeliver", "serviceLevel", "serviceType", "isControllable"
 		],
 		"booking-summary": [
 			"departureRegion", "departureSubRegion", "arrivalRegion", "arrivalSubRegion",
