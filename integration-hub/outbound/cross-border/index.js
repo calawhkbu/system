@@ -3,13 +3,7 @@ function lazadaNotificationHandler () {
   var getUrl = function (helper, action){
     // let hmac = helper.crypto.createHmac("sha512", new Buffer(constants.TOKEN, 'utf-8'));
     // let signed = hmac.update(new Buffer(encodeURIComponent(message), 'utf-8')).digest("hex");
-    return `
-      http://cbestaging.lazada.com/lzdelg-gw/cb-ftt/mawbsub/receive
-      ?action=updateStatus
-      &timestamp=${helper.moment().toISOString(true)}
-      &userid=Swivel
-      &signature=6700f708944732491dfebdf559422923c818e3c1fbd9df15e7e6688e097a81d3
-    `;
+    return `http://cbestaging.lazada.com/lzdelg-gw/cb-ftt/mawbsub/receive?action=updateStatus&timestamp=${helper.moment().toISOString(true)}&userid=Swivel&signature=6700f708944732491dfebdf559422923c818e3c1fbd9df15e7e6688e097a81d3`;
   }
   var compare = function (oldTracking, newTracking, diff) {
     return oldTracking.lastStatus !== newTracking.lastStatus
