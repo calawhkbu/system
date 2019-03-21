@@ -42,9 +42,9 @@ function lazadaNotificationHandler () {
             subject: `Success to send Status update to Lazada (MAWB: ${newTracking.masterNo})`,
             html: `
               <p>URL: ${url}</p>
-              <p>oldTracking: ${JSON.strinigfy(oldTracking)}</p>
-              <p>newTracking: ${JSON.strinigfy(newTracking)}</p>
-              <p>Data send out: ${JSON.strinigfy(mawbObject)}</p>
+              <p>oldTracking: ${JSON.stringfy(oldTracking)}</p>
+              <p>newTracking: ${JSON.stringfy(newTracking)}</p>
+              <p>Data send out: ${JSON.stringfy(mawbObject)}</p>
               <p>Data Return: ${JSON.stringify(postData)}</p>
             `
           }, {});
@@ -57,9 +57,9 @@ function lazadaNotificationHandler () {
           subject: `Fail to send Status update to Lazada (MAWB: ${newTracking.masterNo})`,
           html: `
             <p>URL: ${url}</p>
-            <p>oldTracking: ${JSON.strinigfy(oldTracking)}</p>
-            <p>newTracking: ${JSON.strinigfy(newTracking)}</p>
-            <p>Data send out: ${JSON.strinigfy(mawbObject)}</p>
+            <p>oldTracking: ${JSON.stringfy(oldTracking)}</p>
+            <p>newTracking: ${JSON.stringfy(newTracking)}</p>
+            <p>Data send out: ${JSON.stringfy(mawbObject)}</p>
             <p>Data Return: ${JSON.stringify(postData)}</p>
           `
         }, {});
