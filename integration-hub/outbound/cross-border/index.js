@@ -6,6 +6,15 @@ function lazadaNotificationHandler () {
     return `http://cbestaging.lazada.com/lzdelg-gw/cb-ftt/mawbsub/receive?action=updateStatus&timestamp=${helper.moment().toISOString(true)}&userid=Swivel&signature=6700f708944732491dfebdf559422923c818e3c1fbd9df15e7e6688e097a81d3`;
   }
   var compare = function (oldTracking, newTracking, diff) {
+    console.log(oldTracking.lastStatus, newTracking.lastStatus, oldTracking.lastStatus !== newTracking.lastStatus)
+    console.log(oldTracking.lastStatusCode, newTracking.lastStatusCode, oldTracking.lastStatusCode !== newTracking.lastStatusCode)
+    console.log(oldTracking.lastStatusDate, newTracking.lastStatusDate, oldTracking.lastStatusDate !== newTracking.lastStatusDate)
+    console.log(oldTracking.estimatedDepartureDate, newTracking.estimatedDepartureDate, oldTracking.estimatedDepartureDate !== newTracking.estimatedDepartureDate)
+    console.log(oldTracking.estimatedArrivalDate, newTracking.estimatedArrivalDate, oldTracking.estimatedArrivalDate !== newTracking.estimatedArrivalDate)
+    console.log(oldTracking.actualDepartureDate, newTracking.actualDepartureDate, oldTracking.actualDepartureDate !== newTracking.actualDepartureDate)
+    console.log(oldTracking.actualArrivalDate, newTracking.actualArrivalDate, oldTracking.actualArrivalDate !== newTracking.actualArrivalDate)
+    console.log(diff(oldTracking.lastStatusDetails, newTracking.lastStatusDetails))
+
     return oldTracking.lastStatus !== newTracking.lastStatus
     || oldTracking.lastStatusCode !== newTracking.lastStatusCode
     || oldTracking.lastStatusDate !== newTracking.lastStatusDate
