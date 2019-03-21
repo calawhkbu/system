@@ -31,12 +31,11 @@ function lazadaNotificationHandler () {
     var oldTracking = params.data.oldData;
     var newTracking = params.data.data;
     if (newTracking && newTracking.lastStatusDetails && compare(oldTracking, newTracking, helper.diff)) { // IF STATUS UPDATED
+      const { lastPort, isAtPort, history, lastActualUpdateDate, billCargoTracking, billContainerTracking, ...other } = newTracking.lastStatusDetails
       const mawbObject = {
-        ...newTracking.lastStatusDetails,
-        history:
-          newTracking.lastStatusDetails.history && newTracking.lastStatusDetails.history.length > 0
-            ? newTracking.lastStatusDetails.history.map(({ statusDescription_cn, ...status }) => status)
-            : []
+        ...other,
+        history: history && history.length > 0 ? history.map(({ updatedAt, statusPlaceType, statusDescription_cn, ...status }) => status) : [],
+        billCargoTracking: billCargoTracking
       }
       console.log('[LAZADA] what to sent out', mawbObject)
       try {
