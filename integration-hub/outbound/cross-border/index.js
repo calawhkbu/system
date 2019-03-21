@@ -40,7 +40,13 @@ function lazadaNotificationHandler () {
             to: ["ken.chan@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
             from: "administrator@swivelsoftware.com",
             subject: `Success to send Status update to Lazada (MAWB: ${newTracking.masterNo})`,
-            html: `<p>URL: ${url}</p><p>Data Return:</p><br/><p>${JSON.stringify(postData)}</p>`
+            html: `
+              <p>URL: ${url}</p>
+              <p>oldTracking: ${JSON.strinigfy(oldTracking)}</p>
+              <p>newTracking: ${JSON.strinigfy(newTracking)}</p>
+              <p>Data send out: ${JSON.strinigfy(mawbObject)}</p>
+              <p>Data Return: ${JSON.stringify(postData)}</p>
+            `
           }, {});
         })
       } catch (e) {
@@ -49,7 +55,13 @@ function lazadaNotificationHandler () {
           to: ["ken.chan@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
           from: "administrator@swivelsoftware.com",
           subject: `Fail to send Status update to Lazada (MAWB: ${newTracking.masterNo})`,
-          html: `<p>URL: ${url}</p><p>Error: ${JSON.stringify(e)}</p>`
+          html: `
+            <p>URL: ${url}</p>
+            <p>oldTracking: ${JSON.strinigfy(oldTracking)}</p>
+            <p>newTracking: ${JSON.strinigfy(newTracking)}</p>
+            <p>Data send out: ${JSON.strinigfy(mawbObject)}</p>
+            <p>Data Return: ${JSON.stringify(postData)}</p>
+          `
         }, {});
       }
     }
