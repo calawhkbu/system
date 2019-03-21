@@ -40,7 +40,7 @@ function lazadaNotificationHandler () {
       }
       console.log('[LAZADA] what to sent out', mawbObject)
       try {
-        helper.restClient.post(url, mawbObject, (postData) => {
+        helper.restClient.post(url, { data: mawbObject }, (postData) => {
           if(Buffer.isBuffer(postData)){
             postData = postData.toString('utf8');
           }
