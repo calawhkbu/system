@@ -40,7 +40,7 @@ function lazadaNotificationHandler () {
     var newTracking = params.data.data;
     var oldTransform = transform(oldTracking.lastStatusDetails);
     var newTransform = transform(newTracking.lastStatusDetails);
-    console.log(JSON.stringify(diff(oldTransform, newTransform)))
+    console.log(JSON.stringify(helper.diff(oldTransform, newTransform)))
     if (newTracking && newTracking.lastStatusDetails && compare(oldTracking, newTracking, helper.diff)) { // IF STATUS UPDATED
       try {
         helper.restClient.post(url, { data: newTransform, headers: { "Content-Type": "application/json" } }, (postData) => {
