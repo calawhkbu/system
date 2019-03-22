@@ -5,6 +5,14 @@ function lazadaNotificationHandler () {
     // let signed = hmac.update(new Buffer(encodeURIComponent(message), 'utf-8')).digest("hex");
     return `http://cbestaging.lazada.com/lzdelg-gw/cb-ftt/mawbsub/receive?action=updateStatus&timestamp=${helper.moment().toISOString(true)}&userid=Swivel&signature=6700f708944732491dfebdf559422923c818e3c1fbd9df15e7e6688e097a81d3`;
   }
+  var transform = function (details) {
+    const { lastPort, isAtPort, history, lastActualUpdateDate, billCargoTracking, billContainerTracking, ...other } = details
+    return {
+      ...other,
+      history: history && history.length > 0 ? history.map(({ updatedAt, statusPlaceType, statusDescription_cn, ...status }) => status) : [],
+      billCargoTracking: billCargoTracking
+    }
+  }
   var compare = function (oldTracking, newTracking, diff) {
     console.log(oldTracking.lastStatus, newTracking.lastStatus, oldTracking.lastStatus !== newTracking.lastStatus)
     console.log(oldTracking.lastStatusCode, newTracking.lastStatusCode, oldTracking.lastStatusCode !== newTracking.lastStatusCode)
@@ -30,42 +38,34 @@ function lazadaNotificationHandler () {
     var entity = params.data.modelName;
     var oldTracking = params.data.oldData;
     var newTracking = params.data.data;
+    var oldTransform = transform(oldTracking.lastStatusDetails);
+    var newTransform = transform(newTracking.lastStatusDetails);
+    console.log(JSON.stringify(diff(oldTransform, newTransform)))
     if (newTracking && newTracking.lastStatusDetails && compare(oldTracking, newTracking, helper.diff)) { // IF STATUS UPDATED
-      const { lastPort, isAtPort, history, lastActualUpdateDate, billCargoTracking, billContainerTracking, ...other } = newTracking.lastStatusDetails
-      const mawbObject = {
-        ...other,
-        history: history && history.length > 0 ? history.map(({ updatedAt, statusPlaceType, statusDescription_cn, ...status }) => status) : [],
-        billCargoTracking: billCargoTracking
-      }
-      console.log('[LAZADA] what to sent out', mawbObject)
       try {
-        helper.restClient.post(url, { data: mawbObject, headers: { "Content-Type": "application/json" } }, (postData) => {
+        helper.restClient.post(url, { data: newTransform, headers: { "Content-Type": "application/json" } }, (postData) => {
           if(Buffer.isBuffer(postData)){
             postData = postData.toString('utf8');
           }
-          helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(mawbObject), JSON.stringify(postData), null);
-          helper.emailer.sendFreeMail({
-            to: ["ken.chan@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
-            from: "administrator@swivelsoftware.com",
-            subject: `Success to send Status update to Lazada (MAWB: ${newTracking.masterNo})`,
-            html: `
-              <p>URL: ${url}</p>
-              <p>Data send out: ${JSON.stringify(mawbObject)}</p>
-              <p>Data Return: ${JSON.stringify(postData)}</p>
-            `
-          }, {});
+          if (postData.success) {
+            helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(mawbObject), JSON.stringify(postData), null);
+          } else {
+            helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(mawbObject), null, JSON.stringify(postData));
+            helper.emailer.sendFreeMail({
+              to: ["ken.chan+lazada@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
+              from: "administrator@swivelsoftware.com",
+              subject: `Fial to send data to lazada (MAWB: ${newTracking.masterNo})`,
+              html: `<p>Data Return: ${JSON.stringify(postData)}</p>`
+            }, {});
+          }
         })
       } catch (e) {
         helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(mawbObject), null, JSON.stringify(e));
         helper.emailer.sendFreeMail({
-          to: ["ken.chan@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
+          to: ["ken.chan+lazada@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
           from: "administrator@swivelsoftware.com",
           subject: `Fail to send Status update to Lazada (MAWB: ${newTracking.masterNo})`,
-          html: `
-            <p>URL: ${url}</p>
-            <p>Data send out: ${JSON.stringify(mawbObject)}</p>
-            <p>Data Return: ${JSON.stringify(postData)}</p>
-          `
+          html: `<p>Data Return: ${JSON.stringify(e)}</p>`
         }, {});
       }
     }
