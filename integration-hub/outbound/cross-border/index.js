@@ -13,7 +13,7 @@ function lazadaNotificationHandler () {
     console.log(oldTracking.estimatedArrivalDate, newTracking.estimatedArrivalDate, oldTracking.estimatedArrivalDate !== newTracking.estimatedArrivalDate)
     console.log(oldTracking.actualDepartureDate, newTracking.actualDepartureDate, oldTracking.actualDepartureDate !== newTracking.actualDepartureDate)
     console.log(oldTracking.actualArrivalDate, newTracking.actualArrivalDate, oldTracking.actualArrivalDate !== newTracking.actualArrivalDate)
-    console.log(diff(oldTracking.lastStatusDetails, newTracking.lastStatusDetails))
+    console.log(JSON.stringify(diff(oldTracking.lastStatusDetails, newTracking.lastStatusDetails)))
 
     return oldTracking.lastStatus !== newTracking.lastStatus
     || oldTracking.lastStatusCode !== newTracking.lastStatusCode
@@ -50,8 +50,6 @@ function lazadaNotificationHandler () {
             subject: `Success to send Status update to Lazada (MAWB: ${newTracking.masterNo})`,
             html: `
               <p>URL: ${url}</p>
-              <p>oldTracking: ${JSON.stringify(oldTracking)}</p>
-              <p>newTracking: ${JSON.stringify(newTracking)}</p>
               <p>Data send out: ${JSON.stringify(mawbObject)}</p>
               <p>Data Return: ${JSON.stringify(postData)}</p>
             `
@@ -65,8 +63,6 @@ function lazadaNotificationHandler () {
           subject: `Fail to send Status update to Lazada (MAWB: ${newTracking.masterNo})`,
           html: `
             <p>URL: ${url}</p>
-            <p>oldTracking: ${JSON.stringify(oldTracking)}</p>
-            <p>newTracking: ${JSON.stringify(newTracking)}</p>
             <p>Data send out: ${JSON.stringify(mawbObject)}</p>
             <p>Data Return: ${JSON.stringify(postData)}</p>
           `
