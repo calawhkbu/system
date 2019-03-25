@@ -48,9 +48,9 @@ function lazadaNotificationHandler () {
             postData = postData.toString('utf8');
           }
           if (postData.success) {
-            helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(mawbObject), JSON.stringify(postData), null);
+            helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(newTransform), JSON.stringify(postData), null);
           } else {
-            helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(mawbObject), null, JSON.stringify(postData));
+            helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(newTransform), null, JSON.stringify(postData));
             helper.emailer.sendFreeMail({
               to: ["ken.chan+lazada@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
               from: "administrator@swivelsoftware.com",
@@ -60,7 +60,7 @@ function lazadaNotificationHandler () {
           }
         })
       } catch (e) {
-        helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(mawbObject), null, JSON.stringify(e));
+        helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(newTransform), null, JSON.stringify(e));
         helper.emailer.sendFreeMail({
           to: ["ken.chan+lazada@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
           from: "administrator@swivelsoftware.com",
