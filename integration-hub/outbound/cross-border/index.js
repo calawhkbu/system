@@ -20,7 +20,7 @@ function lazadaNotificationHandler () {
     return diff(oldObject, newObject).reduce(
       (difference, diffValue) => {
         if (diffValue.lhs && diffValue.rhs) {
-          console.log('path', JSON.stringify(path))
+          console.log('path', JSON.stringify(diffValue.path))
           console.log(difference, difference || compareValue(diffValue.lhs, diffValue.rhs))
           difference = difference || compareValue(diffValue.lhs, diffValue.rhs)
         }
