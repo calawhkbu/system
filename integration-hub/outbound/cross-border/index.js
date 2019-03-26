@@ -24,6 +24,7 @@ function lazadaNotificationHandler () {
           console.log(difference, difference || compareValue(diffValue.lhs, diffValue.rhs))
           difference = difference || compareValue(diffValue.lhs, diffValue.rhs)
         }
+        return difference
       },
       false
     )
