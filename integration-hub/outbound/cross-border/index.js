@@ -59,7 +59,7 @@ function lazadaNotificationHandler () {
           if(Buffer.isBuffer(postData)){
             postData = postData.toString('utf8');
           }
-          if (postData && poastData.response && poastData.response.success) {
+          if (postData && postData.response && postData.response.success) {
             helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(newTransform), JSON.stringify(postData), null);
             helper.emailer.sendFreeMail({
               to: ["ken.chan+lazada@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
