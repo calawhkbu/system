@@ -61,12 +61,6 @@ function lazadaNotificationHandler () {
           }
           if (postData && postData.response && postData.response.success) {
             helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(newTransform), JSON.stringify(postData), null);
-            helper.emailer.sendFreeMail({
-              to: ["ken.chan+lazada@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
-              from: "administrator@swivelsoftware.com",
-              subject: `Success to send data to lazada`,
-              html: ``
-            }, {});
           } else {
             helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(newTransform), null, JSON.stringify(postData));
             helper.emailer.sendFreeMail({
