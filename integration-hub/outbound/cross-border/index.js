@@ -16,13 +16,17 @@ function lazadaNotificationHandler () {
     console.log(oldValue, newValue, oldValue !== newValue)
     return oldValue !== newValue
   }
-  var compareObject = function (oldObject, newObject, diff) {
+  var compareObject = function (oldObject, newObject, diff, moment) {
     return diff(oldObject, newObject).reduce(
       (difference, diffValue) => {
         if (diffValue.lhs && diffValue.rhs) {
-          console.log('path', JSON.stringify(diffValue.path))
-          console.log(difference, difference || compareValue(diffValue.lhs, diffValue.rhs))
-          difference = difference || compareValue(diffValue.lhs, diffValue.rhs)
+          if (moment.isDate(diffValue.lhs) || moment.isDate(diffValue.rhs)) {
+            console.log(moment(diffValue.lhs), moment(diffValue.rhs))
+            console.log(moment(diffValue.lhs).isSame(moment(diffValue.rhs)))
+            difference = difference || moment(diffValue.lhs).isSame(moment(diffValue.rhs))
+          } else {
+            difference = difference || compareValue(diffValue.lhs, diffValue.rhs)
+          }
         }
         return difference
       },
@@ -47,7 +51,7 @@ function lazadaNotificationHandler () {
     var newTracking = params.data.data;
     var oldTransform = transform(oldTracking.lastStatusDetails);
     var newTransform = transform(newTracking.lastStatusDetails);
-    console.log('result', compareObject(oldTransform, newTransform, helper.diff))
+    console.log('result', compareObject(oldTransform, newTransform, helper.diff, helper.moment))
     if (
       newTracking
       && newTracking.lastStatusDetails
