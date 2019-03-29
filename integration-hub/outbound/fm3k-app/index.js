@@ -1,5 +1,6 @@
 function fm3kHandler () {
   this.handle = function (appId, params, helper) {
+    console.log('here')
     var booking = params.data;
     helper.persistence.models.customer.findOne({where: {id: booking.customerId}})
         .then(customer => {
