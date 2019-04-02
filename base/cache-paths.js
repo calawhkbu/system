@@ -3,7 +3,7 @@ module.exports = {
 	refreshPaths: [
 		'/reports'
 	],
-	
+
 	paths: [
 		// list of divisions
 		{
@@ -13,11 +13,11 @@ module.exports = {
 		},
 
 		// metadata
-		{
-			pathRegExp: /\/reports\/uber(.*?)\/meta/,
-			method: 'GET',
-			expiryMinutes: 1440
-		},
+		// {
+		// 	pathRegExp: /\/reports\/uber(.*?)\/meta/,
+		// 	method: 'GET',
+		// 	expiryMinutes: 1440
+		// },
 
 		// uber for AdhocTool
 		{
@@ -94,5 +94,3 @@ module.exports = {
 		}
 	]
 };
-	
-
