@@ -5,11 +5,18 @@ function lazadaNotificationHandler () {
     return `http://cbestaging.lazada.com/lzdelg-gw/cb-ftt/mawbsub/receive?action=updateStatus&timestamp=${helper.moment().toISOString(true)}&userid=Swivel&signature=6700f708944732491dfebdf559422923c818e3c1fbd9df15e7e6688e097a81d3`;
   }
   var transform = function (details) {
-    const { lastPort, isAtPort, history, lastActualUpdateDate, billCargoTracking, billContainerTracking, ...other } = details
     return {
-      ...other,
-      history: history && history.length > 0 ? history.map(({ updatedAt, statusPlaceType, statusDescription_cn, ...status }) => status) : [],
-      billCargoTracking: billCargoTracking
+      mawb: details.mawb,
+      isClosed: details.isClosed,
+      lastStatusCode: details.lastStatusCode,
+      lastStatusDate: details.lastStatusDate,
+      flightNo: details.flightNo,
+      estimatedDepartureDate: details.estimatedDepartureDate,
+      actualDepartureDate: details.actualDepartureDate,
+      estimatedArrivalDate: details.estimatedArrivalDate,
+      actualDepartureDate: details.actualDepartureDate,
+      history: details.history && details.history.length > 0 ? details.history.map(({ updatedAt, statusPlaceType, statusDescription_cn, ...status }) => status) : [],
+      billCargoTracking: details.billCargoTracking
     }
   }
   var compareValue = function (oldValue, newValue) {
