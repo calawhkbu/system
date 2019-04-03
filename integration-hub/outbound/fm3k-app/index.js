@@ -1,5 +1,6 @@
 function fm3kHandler () {
   this.handle = function (appId, params, helper) {
+    console.log('here')
     var booking = params.data;
     helper.persistence.models.customer.findOne({where: {id: booking.customerId}})
         .then(customer => {
@@ -14,11 +15,14 @@ function fm3kHandler () {
             })
           }
           console.log(booking)
+          console.log('customer', customer)
           if(customer && customer.configuration && customer.configuration.webService["Booking"]) {
             let api = customer.wsURL + "/" + customer.configuration.webService["Booking"].api;
             try {
               var reqPayLoad = JSON.stringify({ ...booking, isUpdate: params.update });
+              console.log('api', api)
               helper.restClient.post(api, {data: reqPayLoad}, (postData, response) => {
+                console.log('sent to FM3000')
                 if(Buffer.isBuffer(postData)){
                   postData = postData.toString('utf8');
                 }
@@ -35,6 +39,7 @@ function fm3kHandler () {
                 }
               })
             } catch (e) {
+              console.error('fm3000', e)
               helper.saveLog(appId, api, 'booking', booking.id, reqPayLoad, null, JSON.stringify(e));
             }
           }
