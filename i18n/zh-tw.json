@@ -239,6 +239,7 @@
     "officeCountryCode": "分公司國家",
     "salesmanPersonName": "經手人",
     "salesmanCode": "經手人代號",
+    "rSalesmanCode": "顧客經手人代號",
     "shipperParties": "發貨人",
     "shipperShortName": "發貨人（略）",
     "shipperPartyCode": "發貨人代號",
