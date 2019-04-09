@@ -239,6 +239,7 @@
     "officeCountryCode": "支店の国番号",
     "salesmanPersonName": "担当者",
     "salesmanCode": "担当者コード",
+    "rSalesmanCode": "顧客担当者コード",
     "shipperParties": "荷主",
     "shipperShortName": "荷主（略称）",
     "shipperPartyCode": "荷主コード",

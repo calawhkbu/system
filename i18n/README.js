@@ -365,6 +365,7 @@ module.exports = {
     "officeCountryCode": "Office Country",
     "salesmanPersonName": "Salesman",
     "salesmanCode": "Salesman Code",
+    "rSalesmanCode": "Controlling Customer Salesman Code",
     "shipperParties": "Shipper",
     "shipperShortName": "Shipper (abbr)",
     "shipperPartyCode": "Shipper Code",
