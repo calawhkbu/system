@@ -74,52 +74,17 @@ function lazadaNotificationHandler () {
             }
           })
         } catch (e) {
+          console.log(JSON.stringify(e))
           helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(newTransform), null, JSON.stringify(e));
           helper.emailer.sendFreeMail({
             to: ["ken.chan+lazada@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
             from: "administrator@swivelsoftware.com",
-            subject: `Lazada return not success (MAWB: ${newTracking.masterNo})`,
-            html: `<p>Data Return: ${JSON.stringify(e)}</p>`
+            subject: `Lazada error (MAWB: ${newTracking.masterNo})`,
+            html: `<p>Data Error: ${JSON.stringify(e)}</p>`
           }, {});
         }
       }
     }
-
-    // if (
-    //   newTracking
-    //   && newTracking.lastStatusDetails
-    //   // check if status change
-    //   && compare(oldTracking, newTracking, helper.diff)
-    // ) {
-    //   try {
-    //     console.log(url)
-    //     console.log(JSON.stringify(newTransform))
-    //     // helper.restClient.post(url, { data: newTransform, headers: { "Content-Type": "application/json" } }, (postData) => {
-    //     //   if(Buffer.isBuffer(postData)){
-    //     //     postData = postData.toString('utf8');
-    //     //   }
-    //     //   if (postData && postData.response && postData.response.success) {
-    //     //     helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(newTransform), JSON.stringify(postData), null);
-    //     //   } else {
-    //     //     helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(newTransform), null, JSON.stringify(postData));
-    //     //     helper.emailer.sendFreeMail({
-    //     //       to: ["ken.chan+lazada@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
-    //     //       from: "administrator@swivelsoftware.com",
-    //     //       subject: `Lazada return not success (MAWB: ${newTracking.masterNo})`,
-    //     //       html: `<p>Data Return: ${JSON.stringify(postData)}</p>`
-    //     //     }, {});
-    //     //   }
-    //     // })
-    //   } catch (e) {
-    //     helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(newTransform), null, JSON.stringify(e));
-    //     helper.emailer.sendFreeMail({
-    //       to: ["ken.chan+lazada@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
-    //       from: "administrator@swivelsoftware.com",
-    //       subject: `Fail to send Status update to Lazada (MAWB: ${newTracking.masterNo})`,
-    //       html: `<p>Data Return: ${JSON.stringify(e)}</p>`
-    //     }, {});
-    //   }
-    // }
   }
 }
 
