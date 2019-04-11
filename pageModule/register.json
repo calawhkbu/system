@@ -1,0 +1,154 @@
+{
+  "layout": "CardLayout",
+  "components": [
+    {
+      "is": "SimpleForm",
+      "props": {
+        "form": {
+          "lastName": "",
+          "password": "",
+          "username": "",
+          "firstName": "",
+          "confirmPassword": ""
+        },
+        "fields": [
+          {
+            "name": "username",
+            "label": "Auth.username",
+            "props": {
+              "type": "email",
+              "required": true
+            },
+            "component": "v-text-field",
+            "validator": [
+              "required",
+              "isEmail"
+            ]
+          },
+          {
+            "name": "firstName",
+            "class": "xs-6",
+            "label": "Auth.firstName",
+            "component": "v-text-field",
+            "validator": []
+          },
+          {
+            "name": "lastName",
+            "class": "xs-6",
+            "label": "Auth.lastName",
+            "component": "v-text-field",
+            "validator": []
+          },
+          {
+            "name": "password",
+            "label": "Auth.password",
+            "component": "DisplayPasswordInput",
+            "validator": [
+              "required"
+            ]
+          },
+          {
+            "name": "confirmPassword",
+            "label": "Auth.confirmPassword",
+            "component": "DisplayPasswordInput",
+            "validator": [
+              "required",
+              {
+                "type": "compare",
+                "value2": "password"
+              }
+            ]
+          }
+        ],
+        "submitActions": [
+          {
+            "name": "auth/register",
+            "type": "local",
+            "afterActions": [
+              {
+                "type": "redirect"
+              }
+            ]
+          }
+        ]
+      },
+      "slots": [
+        {
+          "is": "DynamicComponent",
+          "name": "pre-form",
+          "props": {
+            "components": [
+              {
+                "is": "v-img",
+                "props": {
+                  "src": "/img/logo/swivel-logo-light.svg",
+                  "style": {
+                    "width": "484px"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "is": "DynamicComponent",
+          "name": "post-form",
+          "props": {
+            "style": {
+              "display": "flex"
+            },
+            "components": [
+              {
+                "is": "RouterButton",
+                "props": {
+                  "flat": true,
+                  "routerMethod": "redirect",
+                  "routerParams": {
+                    "path": "login"
+                  }
+                },
+                "slots": [
+                  {
+                    "is": "i18nText",
+                    "name": "default",
+                    "props": {
+                      "i18nKey": "Cancel"
+                    }
+                  }
+                ]
+              },
+              {
+                "is": "v-spacer"
+              },
+              {
+                "is": "GoogleLoginButton"
+              },
+              {
+                "is": "WechatLoginButton"
+              },
+              {
+                "is": "v-spacer"
+              },
+              {
+                "is": "v-btn",
+                "props": {
+                  "flat": true,
+                  "type": "submit"
+                },
+                "slots": [
+                  {
+                    "is": "i18nText",
+                    "name": "default",
+                    "props": {
+                      "i18nKey": "Auth.Register"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "components": [
+    {
+      "is": "v-card",
+      "props": {
+        "style": {
+          "margin-bottom": "20px"
+        }
+      },
+      "slots": [
+        {
+          "is": "DynamicComponent",
+          "name": "default",
+          "props": {
+            "components": [
+              {
+                "is": "v-card-title",
+                "props": {
+                  "primary-title": true
+                },
+                "slots": [
+                  {
+                    "name": "default",
+                    "is": "I18nText",
+                    "props": {
+                      "class": "title",
+                      "i18nKey": "UserProfilePage.BasicInformation"
+                    }
+                  }
+                ]
+              },
+              {
+                "is": "SimpleForm",
+                "props": {
+                  "form": "auth.userProfile",
+                  "submitActions": [
+                    {
+                      "name": "auth/submitUserProfile",
+                      "afterActions": [
+                        {
+                          "type": "notify",
+                          "notification": "UserProfilePage.UpdateUserProfileSuccess"
+                        }
+                      ]
+                    }
+                  ],
+                  "errorSubmitMessage": "UserProfilePage.UpdateUserProfileFail",
+                  "fields": [
+                    {
+                      "name": "photoURL",
+                      "component": "AvatarInput",
+                      "class": "xs-12",
+                      "props": {
+                        "style": {
+                          "display": "flex",
+                          "justify-content": "center"
+                        }
+                      }
+                    },
+                    {
+                      "name": "userName",
+                      "label": "Auth.username",
+                      "component": "v-text-field",
+                      "class": "xs-12",
+                      "props": {
+                        "type": "email",
+                        "readonly": true
+                      }
+                    },
+                    {
+                      "name": "firstName",
+                      "label": "Auth.firstName",
+                      "component": "v-text-field",
+                      "class": "xs-12 md-4"
+                    },
+                    {
+                      "name": "lastName",
+                      "label": "Auth.lastName",
+                      "component": "v-text-field",
+                      "class": "xs-12 md-4"
+                    },
+                    {
+                      "name": "displayName",
+                      "label": "Auth.displayName",
+                      "component": "v-text-field",
+                      "class": "xs-12 md-4"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

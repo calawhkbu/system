@@ -1,0 +1,48 @@
+{
+  "components": [
+    {
+      "is": "v-card",
+      "props": {
+        "style": {
+          "margin-bottom": "20px"
+        }
+      },
+      "slots": [
+        {
+          "name": "default",
+          "is": "DynamicComponent",
+          "props": {
+            "components": [
+              {
+                "is": "v-card-title",
+                "props": {
+                  "primary-title": true
+                },
+                "slots": [
+                  {
+                    "name": "default",
+                    "is": "I18nText",
+                    "props": {
+                      "class": "title",
+                      "i18nKey": "UserProfilePage.UserPreferences"
+                    }
+                  }
+                ]
+              },
+              {
+                "is": "SimpleForm",
+                "props": {
+                  "form": "auth.userProfile.alertPreferences",
+                  "submitAction": "auth/submitUserProfile",
+                  "fields": [
+
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

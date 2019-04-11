@@ -1,0 +1,101 @@
+{
+  "layout": "CardLayout",
+  "components": [
+    {
+      "is": "i",
+      "props": {
+        "class": "v-icon material-icons",
+        "style": {
+          "flex": 0.6,
+          "font-size": "150px"
+        }
+      },
+      "slots": [
+        {
+          "is": "I18nText",
+          "props": {
+            "i18nKey": "error_outline",
+            "isComponent": "fragment"
+          }
+        }
+      ]
+    },
+    {
+      "is": "p",
+      "props": {
+        "class": "display-1 font-weight-bold text-capitalize center",
+        "style": {
+          "flex": 0.2
+        }
+      },
+      "slots": [
+        {
+          "is": "I18nText",
+          "props": {
+            "i18nKey": "",
+            "dispatchKey": "$route.params.params",
+            "i18nContext": "ErrorLayout"
+          }
+        }
+      ]
+    },
+    {
+      "is": "div",
+      "props": {
+        "class": "center",
+        "style": {
+          "flex": 0.2,
+          "display": "flex",
+          "flex-direction": "column"
+        }
+      },
+      "slots": [
+        {
+          "is": "DynamicComponent",
+          "props": {
+            "components": [
+              {
+                "is": "RouterButton",
+                "props": {
+                  "flat": true,
+                  "block": true,
+                  "routerParams": -1
+                },
+                "slots": [
+                  {
+                    "is": "I18nText",
+                    "name": "default",
+                    "props": {
+                      "i18nKey": "ErrorLayout.Back"
+                    }
+                  }
+                ]
+              },
+              {
+                "is": "v-btn",
+                "props": {
+                  "block": true
+                },
+                "slots": [
+                  {
+                    "is": "I18nText",
+                    "name": "default",
+                    "props": {
+                      "i18nKey": "ErrorLayout.Report"
+                    }
+                  }
+                ],
+                "events": {
+                  "click": [
+                    "console.log('TODO ERROR REPORT API')"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "layoutAsync": true
+}
