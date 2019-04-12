@@ -2,23 +2,14 @@
   "layout": "CardLayout",
   "components": [
     {
-      "is": "i",
+      "is": "Icon",
       "props": {
-        "class": "v-icon material-icons",
+        "icon": "error_outline",
+        "size": 150,
         "style": {
-          "flex": 0.6,
-          "font-size": "150px"
+          "flex": 0.6
         }
-      },
-      "slots": [
-        {
-          "is": "I18nText",
-          "props": {
-            "i18nKey": "error_outline",
-            "isComponent": "fragment"
-          }
-        }
-      ]
+      }
     },
     {
       "is": "p",
@@ -59,17 +50,17 @@
                 "props": {
                   "flat": true,
                   "block": true,
-                  "routerParams": -1
-                },
-                "slots": [
-                  {
-                    "is": "I18nText",
-                    "name": "default",
-                    "props": {
-                      "i18nKey": "ErrorLayout.Back"
+                  "routerParams": -1,
+                  "defaultSlots": [
+                    {
+                      "is": "I18nText",
+                      "name": "default",
+                      "props": {
+                        "i18nKey": "ErrorLayout.Back"
+                      }
                     }
-                  }
-                ]
+                  ]
+                }
               },
               {
                 "is": "v-btn",

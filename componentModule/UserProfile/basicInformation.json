@@ -32,10 +32,11 @@
               {
                 "is": "SimpleForm",
                 "props": {
-                  "form": "auth.userProfile",
+                  "form": "$store.state.auth.userProfile",
                   "submitActions": [
                     {
                       "name": "auth/submitUserProfile",
+                      "errorSubmitMessage": "UserProfilePage.UpdateUserProfileFail",
                       "afterActions": [
                         {
                           "type": "notify",
@@ -44,16 +45,22 @@
                       ]
                     }
                   ],
-                  "errorSubmitMessage": "UserProfilePage.UpdateUserProfileFail",
                   "fields": [
                     {
                       "name": "photoURL",
                       "component": "AvatarInput",
                       "class": "xs-12",
                       "props": {
+                        "convertBase64": true,
+                        "defaultImage": "/img/logo/Swivel.png",
                         "style": {
                           "display": "flex",
                           "justify-content": "center"
+                        },
+                        "imageProps": {
+                          "style": {
+                            "max-height": "150px"
+                          }
                         }
                       }
                     },
@@ -86,7 +93,157 @@
                       "class": "xs-12 md-4"
                     }
                   ]
-                }
+                },
+                "slots": [
+                  {
+                    "name": "post-form",
+                    "is": "DynamicComponent",
+                    "props": {
+                      "style": {
+                        "display": "flex"
+                      },
+                      "components": [
+                        {
+                          "is": "v-btn",
+                          "props": {
+                            "type": "submit",
+                            "flat": true
+                          },
+                          "slots": [
+                            {
+                              "is": "i18nText",
+                              "props": {
+                                "i18nKey": "Save"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "is": "v-spacer"
+                        },
+                        {
+                          "is": "DynamicComponent",
+                          "props": {
+                            "components": [
+                              {
+                                "is": "SimpleDialog",
+                                "props": {
+                                  "buttonProps": {
+                                    "flat": true
+                                  },
+                                  "buttonSlots": [
+                                    {
+                                      "is": "I18nText",
+                                      "props": {
+                                        "i18nKey": "UserProfilePage.ChangePassword"
+                                      }
+                                    }
+                                  ],
+                                  "defaultSlots": [
+                                    {
+                                      "is": "SimpleForm",
+                                      "props": {
+                                        "form": {
+                                          "password": "",
+                                          "confirmPassword": ""
+                                        },
+                                        "style": {
+                                          "min-height": "100%"
+                                        },
+                                        "fields": [
+                                          {
+                                            "name": "password",
+                                            "label": "Auth.password",
+                                            "component": "DisplayPasswordInput",
+                                            "validator": [
+                                              "required"
+                                            ]
+                                          },
+                                          {
+                                            "name": "confirmPassword",
+                                            "label": "Auth.confirmPassword",
+                                            "component": "DisplayPasswordInput",
+                                            "validator": [
+                                              "required",
+                                              {
+                                                "type": "compare",
+                                                "value2": "password"
+                                              }
+                                            ]
+                                          }
+                                        ],
+                                        "submitActions": [
+                                          {
+                                            "name": "auth/changePasswordByToken",
+                                            "afterActions": [
+                                              {
+                                                "type": "notify",
+                                                "notification": "ChangePassword.success",
+                                                "needTranslate": true
+                                              }
+                                            ]
+                                          }
+                                        ],
+                                        "errorSubmitMessage": "ChangePassword.fail"
+                                      },
+                                      "slots": [
+                                        {
+                                          "is": "DynamicComponent",
+                                          "name": "pre-form",
+                                          "props": {
+                                            "layout": "v-card-title",
+                                            "components": [
+                                              {
+                                                "is": "I18nText",
+                                                "props": {
+                                                  "i18nKey": "UserProfilePage.ChangePassword"
+                                                }
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "is": "DynamicComponent",
+                                          "name": "post-form",
+                                          "props": {
+                                            "style": {
+                                              "display": "flex"
+                                            },
+                                            "components": [
+                                              {
+                                                "is": "v-spacer"
+                                              },
+                                              {
+                                                "is": "v-btn",
+                                                "props": {
+                                                  "flat": true,
+                                                  "type": "submit"
+                                                },
+                                                "slots": [
+                                                  {
+                                                    "is": "i18nText",
+                                                    "name": "default",
+                                                    "props": {
+                                                      "i18nKey": "Auth.ChangePassword"
+                                                    }
+                                                  }
+                                                ]
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
               }
             ]
           }

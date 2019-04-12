@@ -1,5 +1,6 @@
 {
   "layout": "CardLayout",
+  "layoutAsync": true,
   "components": [
     {
       "is": "SimpleForm",
@@ -95,17 +96,17 @@
                         "routerMethod": "redirect",
                         "routerParams": {
                           "path": "forget-password"
-                        }
-                      },
-                      "slots": [
-                        {
-                          "is": "i18nText",
-                          "name": "default",
-                          "props": {
-                            "i18nKey": "Auth.ForgetPassword?"
+                        },
+                        "defaultSlots": [
+                          {
+                            "is": "i18nText",
+                            "name": "default",
+                            "props": {
+                              "i18nKey": "Auth.ForgetPassword?"
+                            }
                           }
-                        }
-                      ]
+                        ]
+                      }
                     }
                   ]
                 }
@@ -124,17 +125,17 @@
                         "routerMethod": "redirect",
                         "routerParams": {
                           "path": "register"
-                        }
-                      },
-                      "slots": [
-                        {
-                          "is": "i18nText",
-                          "name": "default",
-                          "props": {
-                            "i18nKey": "Auth.Register"
+                        },
+                        "defaultSlots": [
+                          {
+                            "is": "i18nText",
+                            "name": "default",
+                            "props": {
+                              "i18nKey": "Auth.Register"
+                            }
                           }
-                        }
-                      ]
+                        ]
+                      }
                     },
                     {
                       "is": "v-spacer"
@@ -185,6 +186,5 @@
         }
       ]
     }
-  ],
-  "layoutAsync": true
+  ]
 }

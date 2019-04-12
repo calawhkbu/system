@@ -32,10 +32,61 @@
               {
                 "is": "SimpleForm",
                 "props": {
-                  "form": "auth.userProfile.alertPreferences",
-                  "submitAction": "auth/submitUserProfile",
+                  "form": "$store.state.config",
+                  "submitActions": [
+                    {
+                      "name": "config/updateAll",
+                      "errorSubmitMessage": "UserProfilePage.UpdateUserPreferencesFail",
+                      "afterActions": [
+                        {
+                          "type": "notify",
+                          "notification": "UserProfilePage.UpdateUserPreferencesSuccess"
+                        }
+                      ]
+                    }
+                  ],
                   "fields": [
-
+                    {
+                      "label": "config.locale",
+                      "name": "locale",
+                      "component": "AsyncSelect",
+                      "class": "xs-12 md-6",
+                      "props": {
+                        "item-text": "value",
+                        "item-value": "key",
+                        "url": "api/i18n/available-languages"
+                      }
+                    },
+                    {
+                      "label": "config.timezone",
+                      "name": "timezone",
+                      "component": "AsyncSelect",
+                      "class": "xs-12 md-6",
+                      "props": {
+                        "item-text": "name",
+                        "item-value": "name",
+                        "type": "local",
+                        "url": "$moment.tz.names"
+                      }
+                    },
+                    {
+                      "label": "config.dateFormat",
+                      "name": "dateFormat",
+                      "component": "v-text-field",
+                      "class": "xs-12 md-4"
+                    },
+                    {
+                      "label": "config.timeFormat",
+                      "name": "timeFormat",
+                      "component": "v-text-field",
+                      "class": "xs-12 md-4"
+                    },
+                    {
+                      "label": "config.dateTimeFormat",
+                      "name": "dateTimeFormat",
+                      "component": "v-text-field",
+                      "class": "xs-12 md-4"
+                    }
                   ]
                 }
               }

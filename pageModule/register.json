@@ -1,5 +1,6 @@
 {
   "layout": "CardLayout",
+  "layoutAsync": true,
   "components": [
     {
       "is": "SimpleForm",
@@ -105,17 +106,17 @@
                   "routerMethod": "redirect",
                   "routerParams": {
                     "path": "login"
-                  }
-                },
-                "slots": [
-                  {
-                    "is": "i18nText",
-                    "name": "default",
-                    "props": {
-                      "i18nKey": "Cancel"
+                  },
+                  "defaultSlots": [
+                    {
+                      "is": "i18nText",
+                      "name": "default",
+                      "props": {
+                        "i18nKey": "Cancel"
+                      }
                     }
-                  }
-                ]
+                  ]
+                }
               },
               {
                 "is": "v-spacer"

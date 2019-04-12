@@ -1,0 +1,11 @@
+{
+  "layout": "MainLayout",
+  "components": [
+    {
+      "is": "AdminPage",
+      "props": {
+        "types": ["ADMIN-GENERAL", "ADMIN-TEMPLATE","ADMIN-BOOKING", "ADMIN-PO", "ADMIN-SYSTEM"]
+      }
+    }
+  ]
+}
