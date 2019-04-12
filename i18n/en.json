@@ -572,7 +572,9 @@
     "Remarks": "Remarks",
     "Booking created": "Booking created",
     "Booking updated": "Booking updated",
-    "Sorry, Unable to process booking.": "Sorry, Unable to process booking."
+    "Sorry, Unable to process booking.": "Sorry, Unable to process booking.",
+    "DELIVERY": "Delivery At",
+    "PICKUP": "Pickup At"
   },
   "roleCode": {
     "Shipper": "Shipper",
