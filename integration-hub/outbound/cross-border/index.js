@@ -3,7 +3,7 @@ function lazadaNotificationHandler () {
     var time = helper.moment().utcOffset("+08:00").format('YYYY-MM-DDTHH:mm:ss.SSSZZ')
     var message = encodeURIComponent(`action=updateStatus&timestamp=${time}&userid=Swivel`)
     var signed = helper.crypto.createHmac("sha256", 'LJADLFUADKJLKUW').update(message).digest("hex");
-    return `http://cbestaging.lazada.com/lzdelg-gw/cb-ftt/mawbsub/receive?${message}&signature=${signed}`;
+    return `http://cbestaging.lazada.com/lzdelg-gw/cb-ftt/mawbsub/receive?action=updateStatus&timestamp=${encodeURIComponent(time)}&userid=Swivel&signature=${signed}`;
   }
   var transform = function (details) {
     return {
