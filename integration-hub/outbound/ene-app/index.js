@@ -33,28 +33,39 @@ function ENEAPPHandler () {
           }
         };
         console.log('[ENE]', JSON.stringify(reqPayLoad))
-        return helper.restClient.post(url, reqPayLoad, (postData) => {
-          if (Buffer.isBuffer(postData)) {
-            postData = postData.toString('utf8');
-          }
-          console.log('[ENE]', `return ${JSON.stringify(postData)}`)
-          helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), JSON.stringify(postData), null);
+        try {
+          return helper.restClient.post(url, reqPayLoad, (postData) => {
+            if (Buffer.isBuffer(postData)) {
+              postData = postData.toString('utf8');
+            }
+            console.log('[ENE]', `return ${postData}`)
+            helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), postData, null);
+            helper.emailer.sendFreeMail({
+              to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
+              from: "administrator@swivelsoftware.com",
+              subject: `TEST-ENEAPP [SUCCESS]`,
+              html: `${reqPayLoad.data}`
+            }, {});
+          })
+        } catch (e) {
+          console.error(e)
+          helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), null, JSON.stringify(e));
           helper.emailer.sendFreeMail({
             to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
             from: "administrator@swivelsoftware.com",
-            subject: `TEST-ENEAPP [SUCCESS]`,
-            html: `${JSON.stringify(reqPayLoad.data)}`
+            subject: `TEST-ENEAPP [FAIL]`,
+            html: `${JSON.stringify(e)}`
           }, {});
-        })
+        }
       })
       .catch(e => {
         console.error(e)
-        helper.saveLog(appId, url, entity, newTracking.id, null, null, JSON.stringify(e));
+        helper.saveLog(appId, url, 'booking', booking.id, null, null, JSON.stringify(e));
         helper.emailer.sendFreeMail({
           to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
           from: "administrator@swivelsoftware.com",
           subject: `TEST-ENEAPP [FAIL]`,
-          html: `${JSON.stringify(reqPayLoad.data)}`
+          html: `${JSON.stringify(e)}`
         }, {});
       })
   }
