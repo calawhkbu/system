@@ -1,0 +1,59 @@
+{
+  "layout": "MainLayout",
+  "components": [
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "style": {
+          "width": "100%",
+          "padding": "12px 8px 4px",
+          "z-index": 99,
+          "overflow": "hidden",
+          "flex-wrap": "unset",
+          "font-size": "0.85rem",
+          "min-height": "50px",
+          "align-items": "center",
+          "background-color": "transparent"
+        },
+        "components": [
+          {
+            "is": "i18nText",
+            "props": {
+              "class": "headline",
+              "i18nKey": "MenuItem.UserProfile"
+            }
+          },
+          {
+            "is": "v-spacer"
+          }
+        ]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "layout": "UserProfile/basicInformation",
+        "layoutAsync": true
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "layout": "UserProfile/userPreferences",
+        "layoutAsync": true
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "layout": "UserProfile/notificationPreferences",
+        "layoutAsync": true
+      }
+    }
+  ],
+  "createdDispatchFunctions": [
+    {
+      "name": "auth/getUserProfile"
+    }
+  ]
+}

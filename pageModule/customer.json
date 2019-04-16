@@ -1,0 +1,20 @@
+{
+  "layout": "MainLayout",
+  "components": [
+    {
+      "is": "WidgetPage",
+      "props": {
+        "titleSlots": [
+          {
+            "is": "I18nText",
+            "props": {
+              "i18nKey": "CustomerPage.title"
+            }
+          }
+        ],
+        "defaultSlots": [
+        ]
+      }
+    }
+  ]
+}

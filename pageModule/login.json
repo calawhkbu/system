@@ -1,0 +1,190 @@
+{
+  "layout": "CardLayout",
+  "layoutAsync": true,
+  "components": [
+    {
+      "is": "SimpleForm",
+      "props": {
+        "form": {
+          "password": "",
+          "username": ""
+        },
+        "style": {
+          "min-height": "100%"
+        },
+        "fields": [
+          {
+            "name": "username",
+            "label": "Auth.username",
+            "props": {
+              "type": "email",
+              "browser-autocomplete": "email"
+            },
+            "component": "v-text-field",
+            "validator": [
+              "required",
+              "isEmail"
+            ]
+          },
+          {
+            "name": "password",
+            "label": "Auth.password",
+            "props": {
+              "browser-autocomplete": "password"
+            },
+            "component": "DisplayPasswordInput",
+            "validator": [
+              "required"
+            ]
+          }
+        ],
+        "submitActions": [
+          {
+            "name": "auth/login",
+            "type": "local",
+            "afterActions": [
+              {
+                "type": "router"
+              }
+            ]
+          }
+        ]
+      },
+      "slots": [
+        {
+          "is": "DynamicComponent",
+          "name": "pre-form",
+          "props": {
+            "style": {
+              "margin-bottom": "25px"
+            },
+            "components": [
+              {
+                "is": "v-img",
+                "props": {
+                  "src": "/img/logo/swivel-logo-light.svg",
+                  "style": {
+                    "width": "484px"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "is": "DynamicComponent",
+          "name": "post-form",
+          "props": {
+            "style": {
+              "min-height": "120px"
+            },
+            "components": [
+              {
+                "is": "DynamicComponent",
+                "props": {
+                  "style": {
+                    "display": "flex"
+                  },
+                  "components": [
+                    {
+                      "is": "v-spacer"
+                    },
+                    {
+                      "is": "RouterButton",
+                      "props": {
+                        "flat": true,
+                        "routerMethod": "redirect",
+                        "routerParams": {
+                          "path": "forget-password"
+                        },
+                        "defaultSlots": [
+                          {
+                            "is": "i18nText",
+                            "name": "default",
+                            "props": {
+                              "i18nKey": "Auth.ForgetPassword?"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "is": "DynamicComponent",
+                "props": {
+                  "style": {
+                    "display": "flex"
+                  },
+                  "components": [
+                    {
+                      "is": "RouterButton",
+                      "props": {
+                        "flat": true,
+                        "routerMethod": "redirect",
+                        "routerParams": {
+                          "path": "register"
+                        },
+                        "defaultSlots": [
+                          {
+                            "is": "i18nText",
+                            "name": "default",
+                            "props": {
+                              "i18nKey": "Auth.Register"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "is": "v-spacer"
+                    },
+                    {
+                      "is": "GoogleLoginButton",
+                      "props": {
+                        "successActions": [
+                          {
+                            "name": "auth/login",
+                            "type": "google",
+                            "afterActions": [
+                              {
+                                "type": "router"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "is": "WechatLoginButton"
+                    },
+                    {
+                      "is": "v-spacer"
+                    },
+                    {
+                      "is": "v-btn",
+                      "props": {
+                        "flat": true,
+                        "type": "submit"
+                      },
+                      "slots": [
+                        {
+                          "is": "i18nText",
+                          "name": "default",
+                          "props": {
+                            "i18nKey": "Auth.Login"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
