@@ -56,6 +56,8 @@ function lazadaNotificationHandler () {
       if (compareObject(oldTransform, newTransform, helper.diff, helper.moment)) {
         console.log('[LAZADA] DATA Changed')
         try {
+          console.log(`[LAZADA] URL: ${url}`)
+          console.log(`[LAZADA] Data send out: ${JSON.stringify(newTransform)}`)
           helper.restClient.post(url, { data: newTransform, headers: { "Content-Type": "application/json" } }, (postData) => {
             if (Buffer.isBuffer(postData)) {
               postData = postData.toString('utf8');
