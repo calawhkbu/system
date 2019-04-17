@@ -29,47 +29,43 @@ function ENEAPPHandler () {
         console.log('[ENE]', url)
         console.log('[ENE]', JSON.stringify(reqPayLoad))
         try {
-          var curl = new helper.Curl();
-          curl.setOpt(helper.Curl.option.URL, 'http://tzumimod.com/controllers/API/api.php')
-          curl.setOpt(helper.Curl.option.POSTFIELDS, helper.querystring.stringify(reqPayLoad))
-          curl.setOpt(helper.Curl.option.HTTPHEADER, [
-            'Content-Type:application/json',
-            'Token: Bearer kRXEe3eVDJJw/3bnhtzTOvLf4DlKjM6AzWrUGd+42vU='
-          ]);
-          curl.on( 'end', function( statusCode, body, headers ) {
-            helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), JSON.stringify(body), null);
-            helper.emailer.sendFreeMail({
-              to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
-              from: "administrator@swivelsoftware.com",
-              subject: `TEST-ENEAPP [SUCCESS]`,
-              html: `${JSON.stringify(body)}`
-            }, {});
-            this.close();
-          });
-          curl.on( 'error', function( err, curlErrorCode ) {
-            helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), null, JSON.stringify(e));
-            helper.emailer.sendFreeMail({
-              to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
-              from: "administrator@swivelsoftware.com",
-              subject: `TEST-ENEAPP [FAIL]`,
-              html: `${JSON.stringify(e)}`
-            }, {});
-            this.close();
-          });
-          return curl.perform();
+          helper.request.post(
+            {
+              url,
+              form: reqPayLoad,
+              headers: {
+                "Content-Type": "application/json",
+                "Token": "Bearer kRXEe3eVDJJw/3bnhtzTOvLf4DlKjM6AzWrUGd+42vU="
+              }
+            },
+            function (err, httpResponse, body) {
+              if (err) {
+                console.error('[ENE]', JSON.stringify(err))
+                throw new Error(err)
+              }
+              console.log('[ENE]', body)
+              helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), JSON.stringify(body), null);
+              helper.emailer.sendFreeMail({
+                to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
+                from: "administrator@swivelsoftware.com",
+                subject: `TEST-ENEAPP [SUCCESS]`,
+                html: `<p>return ${JSON.stringify(body)}</p>`
+              }, {});
+            }
+          )
         } catch (e) {
-          console.error(e)
-          helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), null, JSON.stringify(e));
+          console.error(e.message, e.stack)
           helper.emailer.sendFreeMail({
             to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
             from: "administrator@swivelsoftware.com",
             subject: `TEST-ENEAPP [FAIL]`,
-            html: `${JSON.stringify(e)}`
+            html: `<p>return ${JSON.stringify(e)}</p>`
           }, {});
+          helper.saveLog(appId, url, 'booking', booking.id, null, null, JSON.stringify(e));
         }
       })
       .catch(e => {
-        console.error(JSON.stringify(e))
+        console.error('[ENE]', JSON.stringify(e))
         helper.saveLog(appId, url, 'booking', booking.id, null, null, JSON.stringify(e));
         helper.emailer.sendFreeMail({
           to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
