@@ -34,7 +34,9 @@ function ENEAPPHandler () {
         };
         console.log('[ENE]', JSON.stringify(reqPayLoad))
         try {
+          console.log('[ENE] Ready...')
           return helper.restClient.post(url, reqPayLoad, (postData) => {
+            console.log('[ENE] RETURN')
             if (Buffer.isBuffer(postData)) {
               postData = postData.toString('utf8');
             }
@@ -48,7 +50,7 @@ function ENEAPPHandler () {
             }, {});
           })
         } catch (e) {
-          console.error(e)
+          console.error(JSON.stringify(e))
           helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), null, JSON.stringify(e));
           helper.emailer.sendFreeMail({
             to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
@@ -59,7 +61,7 @@ function ENEAPPHandler () {
         }
       })
       .catch(e => {
-        console.error(e)
+        console.error(JSON.stringify(e))
         helper.saveLog(appId, url, 'booking', booking.id, null, null, JSON.stringify(e));
         helper.emailer.sendFreeMail({
           to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
