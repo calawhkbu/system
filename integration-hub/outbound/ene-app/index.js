@@ -40,8 +40,8 @@ function ENEAPPHandler () {
             },
             function (err, httpResponse, body) {
               if (err) {
-                console.error('[ENE]', err)
-                throw new Error('RETURN Error')
+                return console.error('[ENE]', err)
+                // throw new Error('RETURN Error')
               }
               console.log('[ENE]', body)
               helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), JSON.stringify(body), null);
