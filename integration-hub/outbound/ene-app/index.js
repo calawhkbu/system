@@ -29,7 +29,7 @@ function ENEAPPHandler () {
           data: { ...booking, purchaseOrders },
           headers: {
             "Content-Type": "application/json",
-            "Authentication": "Bearer kRXEe3eVDJJw/3bnhtzTOvLf4DlKjM6AzWrUGd+42vU="
+            "Token": "Bearer kRXEe3eVDJJw/3bnhtzTOvLf4DlKjM6AzWrUGd+42vU="
           }
         };
         console.log('[ENE]', JSON.stringify(reqPayLoad))
