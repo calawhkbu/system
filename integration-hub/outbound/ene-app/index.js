@@ -32,7 +32,7 @@ function ENEAPPHandler () {
           helper.request.post(
             {
               url,
-              form: JSON.stringify(reqPayLoad),
+              form: reqPayLoad,
               headers: {
                 "Content-Type": "application/json",
                 "Token": "Bearer kRXEe3eVDJJw/3bnhtzTOvLf4DlKjM6AzWrUGd+42vU="
