@@ -39,18 +39,20 @@ function ENEAPPHandler () {
               }
             },
             function (err, httpResponse, body) {
-              if (err) {
-                return console.error('[ENE]', err)
-                // throw new Error('RETURN Error')
-              }
-              console.log('[ENE]', body)
-              helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), JSON.stringify(body), null);
-              helper.emailer.sendFreeMail({
-                to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
-                from: "administrator@swivelsoftware.com",
-                subject: `TEST-ENEAPP [SUCCESS]`,
-                html: `<p>return ${JSON.stringify(body)}</p>`
-              }, {});
+              console.log('ENE Return')
+              console.log(body)
+              // if (err) {
+              //   return console.error('[ENE]', err)
+              //   // throw new Error('RETURN Error')
+              // }
+              // console.log('[ENE]', body)
+              // helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), JSON.stringify(body), null);
+              // helper.emailer.sendFreeMail({
+              //   to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
+              //   from: "administrator@swivelsoftware.com",
+              //   subject: `TEST-ENEAPP [SUCCESS]`,
+              //   html: `<p>return ${JSON.stringify(body)}</p>`
+              // }, {});
             }
           )
         } catch (e) {
