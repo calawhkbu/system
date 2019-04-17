@@ -32,7 +32,7 @@ function ENEAPPHandler () {
           helper.request.post(
             {
               url,
-              form: reqPayLoad,
+              form: JSON.stringify(reqPayLoad),
               headers: {
                 "Content-Type": "application/json",
                 "Token": "Bearer kRXEe3eVDJJw/3bnhtzTOvLf4DlKjM6AzWrUGd+42vU="
@@ -40,19 +40,24 @@ function ENEAPPHandler () {
             },
             function (err, httpResponse, body) {
               console.log('ENE Return')
-              console.log(body)
-              // if (err) {
-              //   return console.error('[ENE]', err)
-              //   // throw new Error('RETURN Error')
-              // }
-              // console.log('[ENE]', body)
-              // helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), JSON.stringify(body), null);
-              // helper.emailer.sendFreeMail({
-              //   to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
-              //   from: "administrator@swivelsoftware.com",
-              //   subject: `TEST-ENEAPP [SUCCESS]`,
-              //   html: `<p>return ${JSON.stringify(body)}</p>`
-              // }, {});
+              if (err) {
+                helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), null, JSON.stringify(err));
+                helper.emailer.sendFreeMail({
+                  to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
+                  from: "administrator@swivelsoftware.com",
+                  subject: `TEST-ENEAPP [FAIL]`,
+                  html: `<p>return ${JSON.stringify(err)}</p>`
+                }, {});
+                return console.error('[ENE]', JSON.stringify(err))
+              }
+              console.log('[ENE]', body)
+              helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), JSON.stringify(body), null);
+              helper.emailer.sendFreeMail({
+                to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
+                from: "administrator@swivelsoftware.com",
+                subject: `TEST-ENEAPP [SUCCESS]`,
+                html: `<p>return ${JSON.stringify(body)}</p>`
+              }, {});
             }
           )
         } catch (e) {
