@@ -10,5 +10,11 @@ module.exports =[
         tags: {
         },
         type:"pdf"
+    },
+    {
+      name: "Order Info",
+      tags: {
+      },
+      type:"pdf"
     }
 ]
