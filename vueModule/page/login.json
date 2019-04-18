@@ -37,7 +37,7 @@
             "props": {
               "browser-autocomplete": "password"
             },
-            "component": "DisplayPasswordInput",
+            "component": "DisplayPasswordField",
             "validator": [
               "required"
             ]

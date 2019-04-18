@@ -4,15 +4,9 @@
     {
       "is": "Widget",
       "props": {
-        "createdFunctions": [
-          {
-            "type": "dispatch",
-            "otherParams": {
-              "name": "widget/initWidget",
-              "url": "api/partyGroup/{{id}}"
-            }
-          }
-        ],
+        "initUrl": "api/partyGroup/{{id}}",
+        "saveUrl": "api/partyGroup",
+        "primaryKey": "id",
         "topSlots": [
           {
             "is": "RouterButton",
@@ -74,12 +68,17 @@
                     "dispatchreadonly": "$store.state.widget.readOnly",
                     "form": "$store.state.widget.data",
                     "onChangeFunctions": [
-
+                      {
+                        "type": "dispatch",
+                        "otherParams": {
+                          "name": "widget/updateData"
+                        }
+                      }
                     ],
                     "fields": [
                       {
                         "name": "logoURL",
-                        "component": "AvatarInput",
+                        "component": "FileField",
                         "class": "xs-12",
                         "props": {
                           "convertBase64": true,
@@ -93,15 +92,13 @@
                               "max-height": "150px"
                             }
                           }
-                        },
-                        "onChangeDispatch": "widget/updateData"
+                        }
                       },
                       {
                         "component": "v-text-field",
                         "class": "xs-6",
                         "label": "CustomerPage.customerName",
                         "name": "name",
-                        "onChangeDispatch": "widget/updateData",
                         "validator": ["required"]
                       },
                       {
@@ -109,8 +106,13 @@
                         "class": "xs-6",
                         "label": "CustomerPage.customerCode",
                         "name": "code",
-                        "onChangeDispatch": "widget/updateData",
                         "validator": ["nospace"]
+                      },
+                      {
+                        "component": "DateTimePicker",
+                        "class": "xs-6",
+                        "label": "CustomerPage.customerCode",
+                        "name": "createdAt"
                       }
                     ]
                   },
@@ -135,25 +137,30 @@
                   "props": {
                     "dispatchreadonly": "$store.state.widget.readOnly",
                     "form": "$store.state.widget.data.configuration",
+                    "onChangeFunctions": [
+                      {
+                        "type": "dispatch",
+                        "otherParams": {
+                          "name": "widget/updateData",
+                          "path": "configuration"
+                        }
+                      }
+                    ],
                     "fields": [
                       {
                         "label": "config.locale",
-                        "name": "locale",
+                        "name": "defaultLocale",
                         "component": "AsyncSelect",
                         "class": "xs-12 md-6",
                         "props": {
                           "item-text": "value",
                           "item-value": "key",
                           "url": "api/i18n/available-languages"
-                        },
-                        "onChangeDispatch": {
-                          "name": "widget/updateData",
-                          "path": "configuration"
                         }
                       },
                       {
                         "label": "config.timezone",
-                        "name": "timezone",
+                        "name": "defaultTimezone",
                         "component": "AsyncSelect",
                         "class": "xs-12 md-6",
                         "props": {
@@ -165,21 +172,87 @@
                       },
                       {
                         "label": "config.dateFormat",
-                        "name": "dateFormat",
+                        "name": "defaultDateFormat",
                         "component": "v-text-field",
                         "class": "xs-12 md-4"
                       },
                       {
                         "label": "config.timeFormat",
-                        "name": "timeFormat",
+                        "name": "defaultTimeFormat",
                         "component": "v-text-field",
                         "class": "xs-12 md-4"
                       },
                       {
                         "label": "config.dateTimeFormat",
-                        "name": "dateTimeFormat",
+                        "name": "defaultDateTimeFormat",
                         "component": "v-text-field",
                         "class": "xs-12 md-4"
+                      }
+                    ]
+                  },
+                  "slots": [
+                    {
+                      "name": "post-form",
+                      "is": "div"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "Party",
+              "layout": "v-card",
+              "style": {
+                "margin-bottom": "25px"
+              },
+              "components": [
+                {
+                  "is": "SimpleForm",
+                  "props": {
+                    "dispatchreadonly": "$store.state.widget.readOnly",
+                    "form": "$store.state.widget.data",
+                    "onChangeFunctions": [
+                      {
+                        "type": "dispatch",
+                        "otherParams": {
+                          "name": "widget/updateData"
+                        }
+                      }
+                    ],
+                    "fields": [
+                      {
+                        "label": "CustomerPage.party",
+                        "name": "parties",
+                        "component": "TableField",
+                        "class": "xs-12",
+                        "props": {
+                          "fields": [
+                            {
+                              "label": "CustomerPage.partyCode",
+                              "name": "erpCode",
+                              "component": "v-text-field",
+                              "style": {
+                                "width": "25%"
+                              }
+                            },
+                            {
+                              "label": "CustomerPage.partyShortName",
+                              "name": "shortName",
+                              "component": "v-text-field",
+                              "style": {
+                                "width": "25%"
+                              }
+                            },
+                            {
+                              "label": "CustomerPage.partyName",
+                              "name": "name",
+                              "component": "v-text-field",
+                              "style": {
+                                "width": "48%"
+                              }
+                            }
+                          ]
+                        }
                       }
                     ]
                   },

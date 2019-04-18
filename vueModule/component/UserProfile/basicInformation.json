@@ -53,7 +53,7 @@
                   "fields": [
                     {
                       "name": "photoURL",
-                      "component": "AvatarInput",
+                      "component": "FileField",
                       "class": "xs-12",
                       "props": {
                         "convertBase64": true,
@@ -159,7 +159,7 @@
                                           {
                                             "name": "password",
                                             "label": "Auth.password",
-                                            "component": "DisplayPasswordInput",
+                                            "component": "DisplayPasswordField",
                                             "validator": [
                                               "required"
                                             ]
@@ -167,7 +167,7 @@
                                           {
                                             "name": "confirmPassword",
                                             "label": "Auth.confirmPassword",
-                                            "component": "DisplayPasswordInput",
+                                            "component": "DisplayPasswordField",
                                             "validator": [
                                               "required",
                                               {
