@@ -35,12 +35,17 @@
                   "form": "$store.state.auth.userProfile",
                   "submitActions": [
                     {
-                      "name": "auth/submitUserProfile",
-                      "errorSubmitMessage": "UserProfilePage.UpdateUserProfileFail",
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "auth/submitUserProfile"
+                      },
+                      "errorMessage": "UserProfilePage.UpdateUserProfileFail",
                       "afterActions": [
                         {
                           "type": "notify",
-                          "notification": "UserProfilePage.UpdateUserProfileSuccess"
+                          "otherParams": {
+                            "notification": "UserProfilePage.UpdateUserProfileSuccess"
+                          }
                         }
                       ]
                     }

@@ -63,8 +63,11 @@
         ],
         "submitActions": [
           {
-            "name": "auth/register",
-            "type": "local",
+            "type": "dispatch",
+            "otherParams": {
+              "name": "auth/register",
+              "type": "local"
+            },
             "afterActions": [
               {
                 "type": "redirect"
@@ -122,10 +125,42 @@
                 "is": "v-spacer"
               },
               {
-                "is": "GoogleLoginButton"
+                "is": "GoogleLoginButton",
+                "props": {
+                  "successActions": [
+                    {
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "auth/login",
+                        "type": "google"
+                      },
+                      "afterActions": [
+                        {
+                          "type": "router"
+                        }
+                      ]
+                    }
+                  ]
+                }
               },
               {
-                "is": "WechatLoginButton"
+                "is": "WechatLoginButton",
+                "props": {
+                  "successActions": [
+                    {
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "auth/login",
+                        "type": "wechat"
+                      },
+                      "afterActions": [
+                        {
+                          "type": "router"
+                        }
+                      ]
+                    }
+                  ]
+                }
               },
               {
                 "is": "v-spacer"

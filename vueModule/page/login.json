@@ -5,11 +5,16 @@
     {
       "is": "SimpleForm",
       "props": {
+        "showPreFormOnSubmit": true,
+        "showFormOnSubmit": false,
+        "showPostFormOnLoading": false,
         "form": {
           "password": "",
           "username": ""
         },
         "style": {
+          "display": "flex",
+          "flex-direction": "column",
           "min-height": "100%"
         },
         "fields": [
@@ -40,8 +45,11 @@
         ],
         "submitActions": [
           {
-            "name": "auth/login",
-            "type": "local",
+            "type": "dispatch",
+            "otherParams": {
+              "name": "auth/login",
+              "type": "local"
+            },
             "afterActions": [
               {
                 "type": "router"
@@ -56,7 +64,7 @@
           "name": "pre-form",
           "props": {
             "style": {
-              "margin-bottom": "25px"
+              "flex-grow": 1
             },
             "components": [
               {
@@ -145,8 +153,11 @@
                       "props": {
                         "successActions": [
                           {
-                            "name": "auth/login",
-                            "type": "google",
+                            "type": "dispatch",
+                            "otherParams": {
+                              "name": "auth/login",
+                              "type": "google"
+                            },
                             "afterActions": [
                               {
                                 "type": "router"
@@ -157,7 +168,23 @@
                       }
                     },
                     {
-                      "is": "WechatLoginButton"
+                      "is": "WechatLoginButton",
+                      "props": {
+                        "successActions": [
+                          {
+                            "type": "dispatch",
+                            "otherParams": {
+                              "name": "auth/login",
+                              "type": "wechat"
+                            },
+                            "afterActions": [
+                              {
+                                "type": "router"
+                              }
+                            ]
+                          }
+                        ]
+                      }
                     },
                     {
                       "is": "v-spacer"

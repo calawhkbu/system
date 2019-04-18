@@ -1,9 +1,12 @@
 {
   "layout": "MainLayout",
   "components": [],
-  "createdDispatchFunctions": [
+  "createdFunctions": [
     {
-      "name": "auth/logout",
+      "type": "dispatch",
+      "otherParams": {
+        "name": "auth/logout"
+      },
       "afterActions": [
         {
           "type": "router"
@@ -11,9 +14,12 @@
       ]
     }
   ],
-  "updatedDispatchFunctions": [
+  "updatedFunctions": [
     {
-      "name": "auth/logout",
+      "type": "dispatch",
+      "otherParams": {
+        "name": "auth/logout"
+      },
       "afterActions": [
         {
           "type": "router"

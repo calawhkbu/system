@@ -35,12 +35,17 @@
                   "form": "$store.state.config",
                   "submitActions": [
                     {
-                      "name": "config/updateAll",
-                      "errorSubmitMessage": "UserProfilePage.UpdateUserPreferencesFail",
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "config/updateAll"
+                      },
+                      "errorMessage": "UserProfilePage.UpdateUserPreferencesFail",
                       "afterActions": [
                         {
                           "type": "notify",
-                          "notification": "UserProfilePage.UpdateUserPreferencesSuccess"
+                          "otherParams": {
+                            "notification": "UserProfilePage.UpdateUserPreferencesSuccess"
+                          }
                         }
                       ]
                     }

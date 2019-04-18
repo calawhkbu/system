@@ -32,8 +32,24 @@
               {
                 "is": "SimpleForm",
                 "props": {
-                  "form": "auth.userProfile.alertPreferences",
-                  "submitAction": "auth/submitUserProfile",
+                  "form": "$store.state.auth.userProfile",
+                  "submitActions": [
+                    {
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "auth/submitUserProfile"
+                      },
+                      "errorMessage": "UserProfilePage.UpdateUserProfileFail",
+                      "afterActions": [
+                        {
+                          "type": "notify",
+                          "otherParams": {
+                            "notification": "UserProfilePage.UpdateUserProfileSuccess"
+                          }
+                        }
+                      ]
+                    }
+                  ],
                   "fields": []
                 }
               }

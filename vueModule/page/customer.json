@@ -1,0 +1,203 @@
+{
+  "layout": "MainLayout",
+  "components": [
+    {
+      "is": "Widget",
+      "props": {
+        "createdFunctions": [
+          {
+            "type": "dispatch",
+            "otherParams": {
+              "name": "widget/initWidget",
+              "url": "api/partyGroup/{{id}}"
+            }
+          }
+        ],
+        "topSlots": [
+          {
+            "is": "RouterButton",
+            "props": {
+              "routerParams": -1,
+              "flat": true,
+              "icon": true,
+              "defaultSlots": [
+                {
+                  "is": "Icon",
+                  "props": {
+                    "icon": "arrow_back"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "DynamicComponent",
+            "props": {
+              "style": {
+                "align-items": "center",
+                "box-sizing": "border-box",
+                "position": "sticky",
+                "justify-content": "center",
+                "flex-shrink": 0,
+                "display": "flex"
+              },
+              "components": [
+                {
+                  "is": "I18nText",
+                  "props": {
+                    "class": "headline",
+                    "i18nKey": "CustomerPage.title"
+                  }
+                },
+                {
+                  "is": "span",
+                  "props": {
+                    "class": "flex-grow"
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "components": {
+          "root": [
+            {
+              "id": "BasicInformation",
+              "layout": "v-card",
+              "style": {
+                "margin-bottom": "25px"
+              },
+              "components": [
+                {
+                  "is": "SimpleForm",
+                  "props": {
+                    "dispatchreadonly": "$store.state.widget.readOnly",
+                    "form": "$store.state.widget.data",
+                    "onChangeFunctions": [
+
+                    ],
+                    "fields": [
+                      {
+                        "name": "logoURL",
+                        "component": "AvatarInput",
+                        "class": "xs-12",
+                        "props": {
+                          "convertBase64": true,
+                          "defaultImage": "/img/logo/swivel-logo-light.svg",
+                          "style": {
+                            "display": "flex",
+                            "justify-content": "center"
+                          },
+                          "imageProps": {
+                            "style": {
+                              "max-height": "150px"
+                            }
+                          }
+                        },
+                        "onChangeDispatch": "widget/updateData"
+                      },
+                      {
+                        "component": "v-text-field",
+                        "class": "xs-6",
+                        "label": "CustomerPage.customerName",
+                        "name": "name",
+                        "onChangeDispatch": "widget/updateData",
+                        "validator": ["required"]
+                      },
+                      {
+                        "component": "v-text-field",
+                        "class": "xs-6",
+                        "label": "CustomerPage.customerCode",
+                        "name": "code",
+                        "onChangeDispatch": "widget/updateData",
+                        "validator": ["nospace"]
+                      }
+                    ]
+                  },
+                  "slots": [
+                    {
+                      "name": "post-form",
+                      "is": "div"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "Preference",
+              "layout": "v-card",
+              "style": {
+                "margin-bottom": "25px"
+              },
+              "components": [
+                {
+                  "is": "SimpleForm",
+                  "props": {
+                    "dispatchreadonly": "$store.state.widget.readOnly",
+                    "form": "$store.state.widget.data.configuration",
+                    "fields": [
+                      {
+                        "label": "config.locale",
+                        "name": "locale",
+                        "component": "AsyncSelect",
+                        "class": "xs-12 md-6",
+                        "props": {
+                          "item-text": "value",
+                          "item-value": "key",
+                          "url": "api/i18n/available-languages"
+                        },
+                        "onChangeDispatch": {
+                          "name": "widget/updateData",
+                          "path": "configuration"
+                        }
+                      },
+                      {
+                        "label": "config.timezone",
+                        "name": "timezone",
+                        "component": "AsyncSelect",
+                        "class": "xs-12 md-6",
+                        "props": {
+                          "item-text": "name",
+                          "item-value": "name",
+                          "type": "local",
+                          "url": "$moment.tz.names"
+                        }
+                      },
+                      {
+                        "label": "config.dateFormat",
+                        "name": "dateFormat",
+                        "component": "v-text-field",
+                        "class": "xs-12 md-4"
+                      },
+                      {
+                        "label": "config.timeFormat",
+                        "name": "timeFormat",
+                        "component": "v-text-field",
+                        "class": "xs-12 md-4"
+                      },
+                      {
+                        "label": "config.dateTimeFormat",
+                        "name": "dateTimeFormat",
+                        "component": "v-text-field",
+                        "class": "xs-12 md-4"
+                      }
+                    ]
+                  },
+                  "slots": [
+                    {
+                      "name": "post-form",
+                      "is": "div"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "created": [
+
+          ]
+        }
+      }
+    }
+  ]
+}

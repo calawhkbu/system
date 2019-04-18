@@ -51,9 +51,12 @@
       }
     }
   ],
-  "createdDispatchFunctions": [
+  "createdFunctions": [
     {
-      "name": "auth/getUserProfile"
+      "type": "dispatch",
+      "otherParams": {
+        "name": "auth/getUserProfile"
+      }
     }
   ]
 }
