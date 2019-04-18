@@ -32,7 +32,7 @@ function ENEAPPHandler () {
           helper.request.post(
             {
               url,
-              form: reqPayLoad,
+              form: JSON.stringify(JSON.stringify(reqPayLoad)),
               headers: {
                 "Content-Type": "application/json",
                 "Token": "Bearer kRXEe3eVDJJw/3bnhtzTOvLf4DlKjM6AzWrUGd+42vU="
@@ -51,11 +51,21 @@ function ENEAPPHandler () {
                 return console.error('[ENE]', JSON.stringify(err))
               }
               console.log('[ENE]', body)
-              helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), JSON.stringify(body), null);
+              if (body === '<pre>{"msg":"info send"}</pre>') {
+                helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), JSON.stringify(body), null);
+                helper.emailer.sendFreeMail({
+                  to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
+                  from: "administrator@swivelsoftware.com",
+                  subject: `TEST-ENEAPP [SUCCESS]`,
+                  html: `RETURN SUCCESS`
+                }, {});
+                return console.log('[ENE] reutrn success')
+              }
+              helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), null, JSON.stringify(body));
               helper.emailer.sendFreeMail({
                 to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
                 from: "administrator@swivelsoftware.com",
-                subject: `TEST-ENEAPP [SUCCESS]`,
+                subject: `TEST-ENEAPP [FAIL]`,
                 html: `<p>return ${JSON.stringify(body)}</p>`
               }, {});
             }
