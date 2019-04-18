@@ -50,9 +50,11 @@ function lazadaNotificationHandler () {
     var entity = params.data.modelName;
     var oldTracking = params.data.oldData;
     var newTracking = params.data.data;
+    console.log(`oldTracking: ${!!oldTracking}, newTracking: ${!!newTracking}`)
     if (oldTracking && newTracking && oldTracking.lastStatusDetails && newTracking.lastStatusDetails) {
       var oldTransform = transform(oldTracking.lastStatusDetails);
       var newTransform = transform(newTracking.lastStatusDetails);
+      console.log(`'oldTransform: ${JSON.stringify(oldTransform)}'`)
       if (compareObject(oldTransform, newTransform, helper.diff, helper.moment)) {
         console.log('[LAZADA] DATA Changed')
         try {
