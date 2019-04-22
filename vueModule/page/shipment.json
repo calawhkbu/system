@@ -7,6 +7,14 @@
         "initUrl": "api/partyGroup/{{id}}",
         "saveUrl": "api/partyGroup",
         "primaryKey": "id",
+        "onlyRead": true,
+        "bookmark": true,
+        "speedDialButtons": [
+          {
+            "icon": "map",
+            "title": "Shipment.map"
+          }
+        ],
         "topSlots": [
           {
             "is": "v-btn",
@@ -50,7 +58,7 @@
                   "is": "I18nText",
                   "props": {
                     "class": "headline",
-                    "i18nKey": "CustomerPage.title"
+                    "i18nKey": "ShipmentPage.title"
                   }
                 },
                 {
@@ -58,6 +66,9 @@
                   "props": {
                     "class": "flex-grow"
                   }
+                },
+                {
+                  "is": "v-btn"
                 }
               ]
             }
@@ -65,23 +76,8 @@
         ],
         "components": {
           "root": [
-            {
-              "id": "BasicInformation",
-              "layout": "AsyncLocalComponent",
-              "layoutName": "customer/basic-information"
-            },
-            {
-              "id": "Preference",
-              "layout": "AsyncLocalComponent",
-              "layoutName": "customer/default-preference"
-            },
-            {
-              "id": "Party",
-              "layout": "AsyncLocalComponent",
-              "layoutName": "customer/party"
-            }
           ],
-          "created": [
+          "map": [
 
           ]
         }

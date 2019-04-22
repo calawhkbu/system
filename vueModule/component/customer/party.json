@@ -1,0 +1,65 @@
+{
+  "layout": "v-card",
+  "style": {
+    "margin-bottom": "25px"
+  },
+  "components": [
+    {
+      "is": "Form",
+      "props": {
+        "dispatchreadonly": "$store.state.widget.readOnly",
+        "form": "$store.state.widget.data",
+        "onChangeFunctions": [
+          {
+            "type": "dispatch",
+            "otherParams": {
+              "name": "widget/updateData"
+            }
+          }
+        ],
+        "fields": [
+          {
+            "label": "CustomerPage.party",
+            "name": "parties",
+            "component": "TableField",
+            "class": "xs-12",
+            "props": {
+              "fields": [
+                {
+                  "label": "CustomerPage.partyCode",
+                  "name": "erpCode",
+                  "component": "v-text-field",
+                  "style": {
+                    "width": "25%"
+                  }
+                },
+                {
+                  "label": "CustomerPage.partyShortName",
+                  "name": "shortName",
+                  "component": "v-text-field",
+                  "style": {
+                    "width": "25%"
+                  }
+                },
+                {
+                  "label": "CustomerPage.partyName",
+                  "name": "name",
+                  "component": "v-text-field",
+                  "style": {
+                    "width": "48%"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "slots": [
+        {
+          "name": "post-form",
+          "is": "div"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "layout": "v-card",
+  "style": {
+    "margin-bottom": "25px"
+  },
+  "components": [
+    {
+      "is": "Form",
+      "props": {
+        "dispatchreadonly": "$store.state.widget.readOnly",
+        "form": "$store.state.widget.data",
+        "onChangeFunctions": [
+          {
+            "type": "dispatch",
+            "otherParams": {
+              "name": "widget/updateData"
+            }
+          }
+        ],
+        "fields": [
+          {
+            "name": "logoURL",
+            "component": "FileField",
+            "class": "xs-12",
+            "props": {
+              "convertBase64": true,
+              "defaultImage": "/img/logo/swivel-logo-light.svg",
+              "style": {
+                "display": "flex",
+                "justify-content": "center"
+              },
+              "imageProps": {
+                "style": {
+                  "max-height": "150px"
+                }
+              }
+            }
+          },
+          {
+            "component": "v-text-field",
+            "class": "xs-6",
+            "label": "CustomerPage.customerName",
+            "name": "name",
+            "validator": ["required"]
+          },
+          {
+            "component": "v-text-field",
+            "class": "xs-6",
+            "label": "CustomerPage.customerCode",
+            "name": "code",
+            "validator": ["nospace"]
+          }
+        ]
+      },
+      "slots": [
+        {
+          "name": "post-form",
+          "is": "div"
+        }
+      ]
+    }
+  ]
+}

@@ -30,7 +30,7 @@
                 ]
               },
               {
-                "is": "SimpleForm",
+                "is": "Form",
                 "props": {
                   "form": "$store.state.config",
                   "submitActions": [
@@ -93,7 +93,32 @@
                       "class": "xs-12 md-4"
                     }
                   ]
-                }
+                },
+                "slots": [
+                  {
+                    "name": "post-form",
+                    "is": "DynamicComponent",
+                    "props": {
+                      "components": [
+                        {
+                          "is": "v-btn",
+                          "props": {
+                            "type": "submit",
+                            "flat": true
+                          },
+                          "slots": [
+                            {
+                              "is": "i18nText",
+                              "props": {
+                                "i18nKey": "Save"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
               }
             ]
           }

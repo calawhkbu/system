@@ -1,5 +1,6 @@
 {
-  "layout": "CardLayout",
+  "layout": "AsyncLocalComponent",
+  "layoutName": "CardLayout",
   "components": [
     {
       "is": "Icon",
@@ -46,17 +47,27 @@
           "props": {
             "components": [
               {
-                "is": "RouterButton",
+                "is": "v-btn",
                 "props": {
                   "flat": true,
-                  "block": true,
-                  "routerParams": -1,
-                  "defaultSlots": [
+                  "block": true
+                },
+                "slots": [
+                  {
+                    "is": "I18nText",
+                    "name": "default",
+                    "props": {
+                      "i18nKey": "ErrorLayout.Back"
+                    }
+                  }
+                ],
+                "events": {
+                  "click.stop": [
                     {
-                      "is": "I18nText",
-                      "name": "default",
-                      "props": {
-                        "i18nKey": "ErrorLayout.Back"
+                      "type": "router",
+                      "otherParams": {
+                        "func": "go",
+                        "go": -1
                       }
                     }
                   ]
@@ -87,6 +98,5 @@
         }
       ]
     }
-  ],
-  "layoutAsync": true
+  ]
 }

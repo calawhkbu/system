@@ -30,24 +30,21 @@
       }
     },
     {
-      "is": "DynamicComponent",
+      "is": "AsyncLocalComponent",
       "props": {
-        "layout": "UserProfile/basicInformation",
-        "layoutAsync": true
+        "layoutName": "user-profile/basic-information"
       }
     },
     {
-      "is": "DynamicComponent",
+      "is": "AsyncLocalComponent",
       "props": {
-        "layout": "UserProfile/userPreferences",
-        "layoutAsync": true
+        "layoutName": "user-profile/user-preferences"
       }
     },
     {
-      "is": "DynamicComponent",
+      "is": "AsyncLocalComponent",
       "props": {
-        "layout": "UserProfile/notificationPreferences",
-        "layoutAsync": true
+        "layoutName": "user-profile/notification-preferences"
       }
     }
   ],

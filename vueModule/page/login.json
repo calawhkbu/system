@@ -3,7 +3,7 @@
   "layoutAsync": true,
   "components": [
     {
-      "is": "SimpleForm",
+      "is": "Form",
       "props": {
         "showPreFormOnSubmit": true,
         "showFormOnSubmit": false,
@@ -98,23 +98,30 @@
                       "is": "v-spacer"
                     },
                     {
-                      "is": "RouterButton",
+                      "is": "v-btn",
                       "props": {
-                        "flat": true,
-                        "routerMethod": "redirect",
-                        "routerParams": {
-                          "path": "forget-password"
-                        },
-                        "defaultSlots": [
+                        "flat": true
+                      },
+                      "events": {
+                        "click.stop": [
                           {
-                            "is": "i18nText",
-                            "name": "default",
-                            "props": {
-                              "i18nKey": "Auth.ForgetPassword?"
+                            "type": "router",
+                            "otherParams": {
+                              "func": "push",
+                              "path": "forget-password"
                             }
                           }
                         ]
-                      }
+                      },
+                      "slots": [
+                        {
+                          "is": "i18nText",
+                          "name": "default",
+                          "props": {
+                            "i18nKey": "Auth.ForgetPassword?"
+                          }
+                        }
+                      ]
                     }
                   ]
                 }
@@ -127,23 +134,30 @@
                   },
                   "components": [
                     {
-                      "is": "RouterButton",
+                      "is": "v-btn",
                       "props": {
-                        "flat": true,
-                        "routerMethod": "redirect",
-                        "routerParams": {
-                          "path": "register"
-                        },
-                        "defaultSlots": [
+                        "flat": true
+                      },
+                      "events": {
+                        "click.stop": [
                           {
-                            "is": "i18nText",
-                            "name": "default",
-                            "props": {
-                              "i18nKey": "Auth.Register"
+                            "type": "router",
+                            "otherParams": {
+                              "func": "push",
+                              "path": "register"
                             }
                           }
                         ]
-                      }
+                      },
+                      "slots": [
+                        {
+                          "is": "i18nText",
+                          "name": "default",
+                          "props": {
+                            "i18nKey": "Auth.Register"
+                          }
+                        }
+                      ]
                     },
                     {
                       "is": "v-spacer"

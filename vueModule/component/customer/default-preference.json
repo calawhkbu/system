@@ -1,0 +1,73 @@
+{
+  "layout": "v-card",
+  "style": {
+    "margin-bottom": "25px"
+  },
+  "components": [
+    {
+      "is": "Form",
+      "props": {
+        "dispatchreadonly": "$store.state.widget.readOnly",
+        "form": "$store.state.widget.data.configuration",
+        "onChangeFunctions": [
+          {
+            "type": "dispatch",
+            "otherParams": {
+              "name": "widget/updateData",
+              "path": "configuration"
+            }
+          }
+        ],
+        "fields": [
+          {
+            "label": "config.locale",
+            "name": "defaultLocale",
+            "component": "AsyncSelect",
+            "class": "xs-12 md-6",
+            "props": {
+              "item-text": "value",
+              "item-value": "key",
+              "url": "api/i18n/available-languages"
+            }
+          },
+          {
+            "label": "config.timezone",
+            "name": "defaultTimezone",
+            "component": "AsyncSelect",
+            "class": "xs-12 md-6",
+            "props": {
+              "item-text": "name",
+              "item-value": "name",
+              "type": "local",
+              "url": "$moment.tz.names"
+            }
+          },
+          {
+            "label": "config.dateFormat",
+            "name": "defaultDateFormat",
+            "component": "v-text-field",
+            "class": "xs-12 md-4"
+          },
+          {
+            "label": "config.timeFormat",
+            "name": "defaultTimeFormat",
+            "component": "v-text-field",
+            "class": "xs-12 md-4"
+          },
+          {
+            "label": "config.dateTimeFormat",
+            "name": "defaultDateTimeFormat",
+            "component": "v-text-field",
+            "class": "xs-12 md-4"
+          }
+        ]
+      },
+      "slots": [
+        {
+          "name": "post-form",
+          "is": "div"
+        }
+      ]
+    }
+  ]
+}

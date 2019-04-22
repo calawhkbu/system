@@ -3,7 +3,7 @@
   "layoutAsync": true,
   "components": [
     {
-      "is": "SimpleForm",
+      "is": "Form",
       "props": {
         "form": {
           "lastName": "",
@@ -70,7 +70,7 @@
             },
             "afterActions": [
               {
-                "type": "redirect"
+                "type": "router"
               }
             ]
           }
@@ -103,23 +103,30 @@
             },
             "components": [
               {
-                "is": "RouterButton",
+                "is": "v-btn",
                 "props": {
-                  "flat": true,
-                  "routerMethod": "redirect",
-                  "routerParams": {
-                    "path": "login"
-                  },
-                  "defaultSlots": [
+                  "flat": true
+                },
+                "events": {
+                  "click.stop": [
                     {
-                      "is": "i18nText",
-                      "name": "default",
-                      "props": {
-                        "i18nKey": "Cancel"
+                      "type": "router",
+                      "otherParams": {
+                        "func": "push",
+                        "path": "login"
                       }
                     }
                   ]
-                }
+                },
+                "slots": [
+                  {
+                    "is": "i18nText",
+                    "name": "default",
+                    "props": {
+                      "i18nKey": "Cancel"
+                    }
+                  }
+                ]
               },
               {
                 "is": "v-spacer"
