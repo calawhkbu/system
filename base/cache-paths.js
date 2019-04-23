@@ -91,6 +91,18 @@ module.exports = {
 			path: '/api/bill/search',
 			method: 'GET',
 			expiryMinutes: 5
+		},
+
+		// workflow
+		{
+			path: 'workflow/transactionCountsForRole/purchaseOrder',
+			method: 'GET',
+			expiryMinutes: 15
+		},
+		{
+			path: 'workflow/transactionCountsForRole/booking',
+			method: 'GET',
+			expiryMinutes: 15
 		}
 	]
 };
