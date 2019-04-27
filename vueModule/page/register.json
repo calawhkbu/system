@@ -1,6 +1,6 @@
 {
-  "layout": "CardLayout",
-  "layoutAsync": true,
+  "layout": "AsyncLocalComponent",
+  "layoutName": "CardLayout",
   "components": [
     {
       "is": "Form",

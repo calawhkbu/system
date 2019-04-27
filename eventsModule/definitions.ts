@@ -1,7 +1,7 @@
 export default {
   "create_i18n": [
     {
-      "handlerName": "IntegradationHub.ts",
+      "handlerName": "example.ts",
       "otherParameters": {}
     }
   ]

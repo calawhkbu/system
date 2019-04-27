@@ -9,12 +9,6 @@
         "primaryKey": "id",
         "onlyRead": true,
         "bookmark": true,
-        "speedDialButtons": [
-          {
-            "icon": "map",
-            "title": "Shipment.map"
-          }
-        ],
         "topSlots": [
           {
             "is": "v-btn",
@@ -43,42 +37,22 @@
             ]
           },
           {
-            "is": "DynamicComponent",
+            "is": "I18nText",
             "props": {
-              "style": {
-                "align-items": "center",
-                "box-sizing": "border-box",
-                "position": "sticky",
-                "justify-content": "center",
-                "flex-shrink": 0,
-                "display": "flex"
-              },
-              "components": [
-                {
-                  "is": "I18nText",
-                  "props": {
-                    "class": "headline",
-                    "i18nKey": "ShipmentPage.title"
-                  }
-                },
-                {
-                  "is": "span",
-                  "props": {
-                    "class": "flex-grow"
-                  }
-                },
-                {
-                  "is": "v-btn"
-                }
-              ]
+              "class": "headline",
+              "i18nKey": "ShipmentPage.title"
             }
           }
         ],
         "components": {
-          "root": [
+          "assignment": [
           ],
           "map": [
-
+            {
+              "id": "Map",
+              "layout": "AsyncLocalComponent",
+              "layoutName": "shipment/fullmap"
+            }
           ]
         }
       }

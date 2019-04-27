@@ -64,7 +64,7 @@
           }
         ],
         "components": {
-          "root": [
+          "assignment": [
             {
               "id": "BasicInformation",
               "layout": "AsyncLocalComponent",
