@@ -1,0 +1,680 @@
+{
+  "layout": "v-card",
+  "class": "grid",
+  "components": [
+    {
+      "is": "Form",
+      "slots": [
+        {
+          "name": "pre-form",
+          "is": "I18nText",
+          "props": {
+            "class": "title",
+            "i18nKey": "BookingPage.Shipper"
+          }
+        }
+      ],
+      "props": {
+        "class": "xs-12 md-6 pa-2",
+        "dispatchreadonly": "$store.state.widget.readOnly",
+        "form": "$store.state.widget.data",
+        "onChangeFunctions": [
+          {
+            "type": "dispatch",
+            "otherParams": {
+              "name": "widget/updateData"
+            }
+          }
+        ],
+        "fields": [
+          {
+            "name": "shipperPartyId",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12",
+            "props": {
+              "url": "api/party",
+              "searchValueParams": "{\"where\":{\"id\":{{query}}}}",
+              "searchTextParams": {
+                "where": {
+                  "$or": [
+                    { "name": { "$like": "%{{query}}%" } },
+                    { "shortName": { "$like": "%{{query}}%" } },
+                    { "erpCode": { "$like": "%{{query}}%" } }
+                  ]
+                },
+                "limit": 5
+              },
+              "cache-items": true,
+              "hide-no-data": true,
+              "hide-details": true,
+              "item-text": "name",
+              "item-value": "id"
+            }
+          },
+          {
+            "label": "Widget.contactName",
+            "name": "shipperPartyContactName",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "_readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.contactEmail",
+            "name": "shipperPartyContactEmail",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "_readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.contactPhone",
+            "name": "shipperPartyContactPhone",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "_readonlyClass": "hidden"
+          },
+          {
+            "name": "flexData.data.shipperPartyContact",
+            "component": "TableField",
+            "class": "xs-12",
+            "props": {
+              "fields": []
+            }
+          },
+          {
+            "label": "Widget.partyEmail",
+            "name": "shipperEmail",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "xs-12",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyPhone",
+            "name": "shipperPhone",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyFax",
+            "name": "shipperFax",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.address",
+            "name": "shipperAddress",
+            "component": "v-textarea",
+            "props": {
+              "auto-grow": true,
+              "rows": 5
+            },
+            "class": "xs-12",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.city",
+            "name": "shipperCityCode",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "xs-4"
+          },
+          {
+            "label": "Widget.state",
+            "name": "shipperStateCode",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "xs-4"
+          },
+          {
+            "label": "Widget.country",
+            "name": "shipperCountryCode",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "xs-4"
+          },
+          {
+            "label": "Widget.zip",
+            "name": "shipperZip",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "hidden"
+          }
+        ]
+      }
+    },
+    {
+      "is": "Form",
+      "slots": [
+        {
+          "name": "pre-form",
+          "is": "I18nText",
+          "props": {
+            "class": "title",
+            "i18nKey": "BookingPage.Consignee"
+          }
+        }
+      ],
+      "props": {
+        "class": "xs-12 md-6 pa-2",
+        "dispatchreadonly": "$store.state.widget.readOnly",
+        "form": "$store.state.widget.data",
+        "onChangeFunctions": [
+          {
+            "type": "dispatch",
+            "otherParams": {
+              "name": "widget/updateData"
+            }
+          }
+        ],
+        "fields": [
+          {
+            "name": "consigneePartyId",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12",
+            "props": {
+              "url": "api/party",
+              "searchValueParams": "{\"where\":{\"id\":{{query}}}}",
+              "searchTextParams": {
+                "where": {
+                  "$or": [
+                    { "name": { "$like": "%{{query}}%" } },
+                    { "shortName": { "$like": "%{{query}}%" } },
+                    { "erpCode": { "$like": "%{{query}}%" } }
+                  ]
+                },
+                "limit": 5
+              },
+              "cache-items": true,
+              "hide-no-data": true,
+              "hide-details": true,
+              "item-text": "name",
+              "item-value": "id"
+            }
+          },
+          {
+            "label": "Widget.contactName",
+            "name": "consigneePartyContactName",
+            "component": "v-text-field",
+            "class": "hidden"
+          },
+          {
+            "label": "Widget.contactEmail",
+            "name": "consigneePartyContactEmail",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.contactPhone",
+            "name": "consigneePartyContactPhone",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyEmail",
+            "name": "consigneeEmail",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "xs-12",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyPhone",
+            "name": "consigneePhone",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyFax",
+            "name": "consigneeFax",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.address",
+            "name": "consigneeAddress",
+            "component": "v-textarea",
+            "props": {
+              "auto-grow": true,
+              "rows": 5
+            },
+            "class": "xs-12",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.city",
+            "name": "consigneeCityCode",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "xs-4"
+          },
+          {
+            "label": "Widget.state",
+            "name": "consigneeStateCode",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "xs-4"
+          },
+          {
+            "label": "Widget.country",
+            "name": "consigneeCountryCode",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "xs-4"
+          },
+          {
+            "label": "Widget.zip",
+            "name": "consigneeZip",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "hidden"
+          }
+        ]
+      }
+    },
+    {
+      "is": "Form",
+      "slots": [
+        {
+          "name": "pre-form",
+          "is": "I18nText",
+          "props": {
+            "class": "title",
+            "i18nKey": "BookingPage.Consignee"
+          }
+        }
+      ],
+      "props": {
+        "class": "xs-12 md-6 pa-2",
+        "dispatchreadonly": "$store.state.widget.readOnly",
+        "form": "$store.state.widget.data",
+        "onChangeFunctions": [
+          {
+            "type": "dispatch",
+            "otherParams": {
+              "name": "widget/updateData"
+            }
+          }
+        ],
+        "fields": [
+          {
+            "name": "consigneePartyId",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12",
+            "props": {
+              "url": "api/party",
+              "searchValueParams": "{\"where\":{\"id\":{{query}}}}",
+              "searchTextParams": {
+                "where": {
+                  "$or": [
+                    { "name": { "$like": "%{{query}}%" } },
+                    { "shortName": { "$like": "%{{query}}%" } },
+                    { "erpCode": { "$like": "%{{query}}%" } }
+                  ]
+                },
+                "limit": 5
+              },
+              "cache-items": true,
+              "hide-no-data": true,
+              "hide-details": true,
+              "item-text": "name",
+              "item-value": "id"
+            }
+          },
+          {
+            "label": "Widget.contactName",
+            "name": "consigneePartyContactName",
+            "component": "v-text-field",
+            "class": "hidden"
+          },
+          {
+            "label": "Widget.contactEmail",
+            "name": "consigneePartyContactEmail",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.contactPhone",
+            "name": "consigneePartyContactPhone",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyEmail",
+            "name": "consigneeEmail",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "xs-12",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyPhone",
+            "name": "consigneePhone",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyFax",
+            "name": "consigneeFax",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.address",
+            "name": "consigneeAddress",
+            "component": "v-textarea",
+            "props": {
+              "auto-grow": true,
+              "rows": 5
+            },
+            "class": "xs-12",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.city",
+            "name": "consigneeCityCode",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "xs-4"
+          },
+          {
+            "label": "Widget.state",
+            "name": "consigneeStateCode",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "xs-4"
+          },
+          {
+            "label": "Widget.country",
+            "name": "consigneeCountryCode",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "xs-4"
+          },
+          {
+            "label": "Widget.zip",
+            "name": "consigneeZip",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "hidden"
+          }
+        ]
+      }
+    },
+    {
+      "is": "Form",
+      "slots": [
+        {
+          "name": "pre-form",
+          "is": "I18nText",
+          "props": {
+            "class": "title",
+            "i18nKey": "BookingPage.Consignee"
+          }
+        }
+      ],
+      "props": {
+        "class": "xs-12 md-6 pa-2",
+        "dispatchreadonly": "$store.state.widget.readOnly",
+        "form": "$store.state.widget.data",
+        "onChangeFunctions": [
+          {
+            "type": "dispatch",
+            "otherParams": {
+              "name": "widget/updateData"
+            }
+          }
+        ],
+        "fields": [
+          {
+            "name": "consigneePartyId",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12",
+            "props": {
+              "url": "api/party",
+              "searchValueParams": "{\"where\":{\"id\":{{query}}}}",
+              "searchTextParams": {
+                "where": {
+                  "$or": [
+                    { "name": { "$like": "%{{query}}%" } },
+                    { "shortName": { "$like": "%{{query}}%" } },
+                    { "erpCode": { "$like": "%{{query}}%" } }
+                  ]
+                },
+                "limit": 5
+              },
+              "cache-items": true,
+              "hide-no-data": true,
+              "hide-details": true,
+              "item-text": "name",
+              "item-value": "id"
+            }
+          },
+          {
+            "label": "Widget.contactName",
+            "name": "consigneePartyContactName",
+            "component": "v-text-field",
+            "class": "hidden"
+          },
+          {
+            "label": "Widget.contactEmail",
+            "name": "consigneePartyContactEmail",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.contactPhone",
+            "name": "consigneePartyContactPhone",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyEmail",
+            "name": "consigneeEmail",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "xs-12",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyPhone",
+            "name": "consigneePhone",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyFax",
+            "name": "consigneeFax",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.address",
+            "name": "consigneeAddress",
+            "component": "v-textarea",
+            "props": {
+              "auto-grow": true,
+              "rows": 5
+            },
+            "class": "xs-12",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.city",
+            "name": "consigneeCityCode",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "xs-4"
+          },
+          {
+            "label": "Widget.state",
+            "name": "consigneeStateCode",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "xs-4"
+          },
+          {
+            "label": "Widget.country",
+            "name": "consigneeCountryCode",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "xs-4"
+          },
+          {
+            "label": "Widget.zip",
+            "name": "consigneeZip",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "hidden"
+          }
+        ]
+      }
+    },
+    {
+      "is": "Form",
+      "slots": [
+        {
+          "name": "pre-form",
+          "is": "I18nText",
+          "props": {
+            "class": "title",
+            "i18nKey": "BookingPage.Consignee"
+          }
+        }
+      ],
+      "props": {
+        "class": "xs-12 md-6 pa-2",
+        "dispatchreadonly": "$store.state.widget.readOnly",
+        "form": "$store.state.widget.data",
+        "onChangeFunctions": [
+          {
+            "type": "dispatch",
+            "otherParams": {
+              "name": "widget/updateData"
+            }
+          }
+        ],
+        "fields": [
+          {
+            "name": "consigneePartyId",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12",
+            "props": {
+              "url": "api/party",
+              "searchValueParams": "{\"where\":{\"id\":{{query}}}}",
+              "searchTextParams": {
+                "where": {
+                  "$or": [
+                    { "name": { "$like": "%{{query}}%" } },
+                    { "shortName": { "$like": "%{{query}}%" } },
+                    { "erpCode": { "$like": "%{{query}}%" } }
+                  ]
+                },
+                "limit": 5
+              },
+              "cache-items": true,
+              "hide-no-data": true,
+              "hide-details": true,
+              "item-text": "name",
+              "item-value": "id"
+            }
+          },
+          {
+            "label": "Widget.contactName",
+            "name": "consigneePartyContactName",
+            "component": "v-text-field",
+            "class": "hidden"
+          },
+          {
+            "label": "Widget.contactEmail",
+            "name": "consigneePartyContactEmail",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.contactPhone",
+            "name": "consigneePartyContactPhone",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyEmail",
+            "name": "consigneeEmail",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "xs-12",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyPhone",
+            "name": "consigneePhone",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyFax",
+            "name": "consigneeFax",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.address",
+            "name": "consigneeAddress",
+            "component": "v-textarea",
+            "props": {
+              "auto-grow": true,
+              "rows": 5
+            },
+            "class": "xs-12",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.city",
+            "name": "consigneeCityCode",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "xs-4"
+          },
+          {
+            "label": "Widget.state",
+            "name": "consigneeStateCode",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "xs-4"
+          },
+          {
+            "label": "Widget.country",
+            "name": "consigneeCountryCode",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "xs-4"
+          },
+          {
+            "label": "Widget.zip",
+            "name": "consigneeZip",
+            "component": "v-text-field",
+            "class": "xs-12 md-3",
+            "readonlyClass": "hidden"
+          }
+        ]
+      }
+    }
+  ]
+}

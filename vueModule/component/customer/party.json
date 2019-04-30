@@ -1,8 +1,5 @@
 {
   "layout": "v-card",
-  "style": {
-    "margin-bottom": "25px"
-  },
   "components": [
     {
       "is": "Form",

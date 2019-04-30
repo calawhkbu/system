@@ -66,19 +66,25 @@
         "components": {
           "assignment": [
             {
-              "id": "BasicInformation",
-              "layout": "AsyncLocalComponent",
-              "layoutName": "customer/basic-information"
+              "is": "AsyncLocalComponent",
+              "props": {
+                "class": "xs-12",
+                "layoutName": "customer/basic-information"
+              }
             },
             {
-              "id": "Preference",
-              "layout": "AsyncLocalComponent",
-              "layoutName": "customer/default-preference"
+              "is": "AsyncLocalComponent",
+              "props": {
+                "class": "xs-12",
+                "layoutName": "customer/default-preference"
+              }
             },
             {
-              "id": "Party",
-              "layout": "AsyncLocalComponent",
-              "layoutName": "customer/party"
+              "is": "AsyncLocalComponent",
+              "props": {
+                "class": "xs-12",
+                "layoutName": "customer/party"
+              }
             }
           ],
           "created": [

@@ -1,0 +1,22 @@
+{
+  "layout": "v-card",
+  "components": [
+    {
+      "is": "Form",
+      "props": {
+        "dispatchreadonly": "$store.state.widget.readOnly",
+        "form": "$store.state.widget.data",
+        "onChangeFunctions": [
+          {
+            "type": "dispatch",
+            "otherParams": {
+              "name": "widget/updateData"
+            }
+          }
+        ],
+        "fields": [
+        ]
+      }
+    }
+  ]
+}
