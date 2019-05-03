@@ -59,7 +59,7 @@
                       "props": {
                         "item-text": "value",
                         "item-value": "key",
-                        "url": "api/i18n/available-languages"
+                        "url": "i18n/available-languages"
                       }
                     },
                     {
