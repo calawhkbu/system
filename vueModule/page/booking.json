@@ -65,7 +65,24 @@
                         "props": {
                           "class": "xs-12 md-7",
                           "style": {
-                            "padding": "4px"
+                            "padding": "4px 0px"
+                          },
+                          "components": [
+                            {
+                              "is": "AsyncLocalComponent",
+                              "props": {
+                                "layoutName": "booking/generalForm"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-12 md-7",
+                          "style": {
+                            "padding": "4px 4px 4px 0px"
                           },
                           "components": [
                             {
@@ -82,7 +99,7 @@
                         "props": {
                           "class": "xs-12 md-5",
                           "style": {
-                            "padding": "4px"
+                            "padding": "4px 0px 4px 4px"
                           },
                           "components": [
                             {
