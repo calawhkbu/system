@@ -5,18 +5,8 @@
   },
   "components": [
     {
-      "is": "Form",
+      "is": "WidgetForm",
       "props": {
-        "dispatchreadonly": "$store.state.widget.readOnly",
-        "form": "$store.state.widget.data",
-        "onChangeFunctions": [
-          {
-            "type": "dispatch",
-            "otherParams": {
-              "name": "widget/updateData"
-            }
-          }
-        ],
         "fields": [
           {
             "name": "logoURL",
@@ -51,13 +41,7 @@
             "validator": ["nospace"]
           }
         ]
-      },
-      "slots": [
-        {
-          "name": "post-form",
-          "is": "div"
-        }
-      ]
+      }
     }
   ]
 }

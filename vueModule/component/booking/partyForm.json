@@ -1,29 +1,34 @@
 {
   "layout": "v-card",
-  "class": "grid",
+  "style": {
+    "min-height": "75px"
+  },
   "components": [
     {
-      "is": "WidgetForm",
-      "slots": [
-        {
-          "name": "pre-form",
-          "is": "I18nText",
-          "props": {
-            "class": "title",
-            "i18nKey": "BookingPage.Shipper"
-          }
-        }
-      ],
+      "is": "WidgetForms",
       "props": {
-        "class": "xs-12 md-6 pa-2",
+        "mode": "Party",
+        "orderBy": {
+          "shipper": 0,
+          "consignee": 10,
+          "forwarder": 20,
+          "agent": 30,
+          "notifyParty": 40
+        },
+        "formProps": {
+          "class": "xs-12 md-6"
+        },
+        "extraContainerProps": {
+          "class": "xs-12 md-6"
+        },
         "fields": [
           {
-            "name": "shipperPartyId",
+            "name": "{{key}}PartyId",
             "component": "AsyncAutoSuggest",
             "class": "xs-12",
             "props": {
               "url": "api/party",
-              "searchValueParams": "{\"where\":{\"id\":{{query}}}}",
+              "searchValueParams": "{ \"where\": { \"id\": &#123;&#123;query&#125;&#125; } }",
               "searchTextParams": {
                 "where": {
                   "$or": [
@@ -43,27 +48,27 @@
           },
           {
             "label": "Widget.contactName",
-            "name": "shipperPartyContactName",
+            "name": "{{key}}PartyContactName",
             "component": "v-text-field",
             "class": "xs-12 md-4",
             "readonlyClass": "hidden"
           },
           {
             "label": "Widget.contactEmail",
-            "name": "shipperPartyContactEmail",
+            "name": "{{key}}PartyContactEmail",
             "component": "v-text-field",
             "class": "xs-12 md-4",
             "readonlyClass": "hidden"
           },
           {
             "label": "Widget.contactPhone",
-            "name": "shipperPartyContactPhone",
+            "name": "{{key}}PartyContactPhone",
             "component": "v-text-field",
             "class": "xs-12 md-4",
             "readonlyClass": "hidden"
           },
           {
-            "name": "flexData.data.shipperPartyContact",
+            "name": "flexData.data.{{key}}PartyContact",
             "component": "TableField",
             "class": "xs-12",
             "readonlyClass": "hidden",
@@ -96,7 +101,7 @@
           },
           {
             "label": "Widget.partyEmail",
-            "name": "shipperEmail",
+            "name": "{{key}}Email",
             "component": "v-text-field",
             "class": "xs-12 md-4",
             "readonlyClass": "xs-12",
@@ -104,21 +109,21 @@
           },
           {
             "label": "Widget.partyPhone",
-            "name": "shipperPhone",
+            "name": "{{key}}Phone",
             "component": "v-text-field",
             "class": "xs-12 md-4",
             "readonlyClass": "hidden"
           },
           {
             "label": "Widget.partyFax",
-            "name": "shipperFax",
+            "name": "{{key}}Fax",
             "component": "v-text-field",
             "class": "xs-12 md-4",
             "readonlyClass": "hidden"
           },
           {
             "label": "Widget.address",
-            "name": "shipperAddress",
+            "name": "{{key}}Address",
             "component": "v-textarea",
             "props": {
               "auto-grow": true,
@@ -129,7 +134,7 @@
           },
           {
             "label": "Widget.city",
-            "name": "shipperCityCode",
+            "name": "{{key}}CityCode",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
             "readonlyClass": "xs-4",
@@ -160,7 +165,7 @@
           },
           {
             "label": "Widget.state",
-            "name": "shipperStateCode",
+            "name": "{{key}}StateCode",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
             "readonlyClass": "xs-4",
@@ -191,7 +196,7 @@
           },
           {
             "label": "Widget.country",
-            "name": "shipperCountryCode",
+            "name": "{{key}}CountryCode",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
             "readonlyClass": "xs-4",
@@ -222,926 +227,12 @@
           },
           {
             "label": "Widget.zip",
-            "name": "shipperZip",
+            "name": "{{key}}Zip",
             "component": "v-text-field",
             "class": "xs-12 md-6",
             "readonlyClass": "hidden"
           }
         ]
-      }
-    },
-    {
-      "is": "WidgetForm",
-      "slots": [
-        {
-          "name": "pre-form",
-          "is": "I18nText",
-          "props": {
-            "class": "title",
-            "i18nKey": "BookingPage.Consignee"
-          }
-        }
-      ],
-      "props": {
-        "class": "xs-12 md-6 pa-2",
-        "fields": [
-          {
-            "name": "consigneePartyId",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12",
-            "props": {
-              "url": "api/party",
-              "searchValueParams": "{\"where\":{\"id\":{{query}}}}",
-              "searchTextParams": {
-                "where": {
-                  "$or": [
-                    { "name": { "$like": "%{{query}}%" } },
-                    { "shortName": { "$like": "%{{query}}%" } },
-                    { "erpCode": { "$like": "%{{query}}%" } }
-                  ]
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "id"
-            }
-          },
-          {
-            "label": "Widget.contactName",
-            "name": "consigneePartyContactName",
-            "component": "v-text-field",
-            "class": "hidden"
-          },
-          {
-            "label": "Widget.contactEmail",
-            "name": "consigneePartyContactEmail",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.contactPhone",
-            "name": "consigneePartyContactPhone",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "name": "flexData.data.consigneePartyContact",
-            "component": "TableField",
-            "class": "xs-12",
-            "readonlyClass": "hidden",
-            "props": {
-              "overrideRowIndex": 1,
-              "fields": [
-                {
-                  "label": "Widget.contactXName",
-                  "name": "name",
-                  "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "_readonlyClass": "hidden"
-                },
-                {
-                  "label": "Widget.contactXEmail",
-                  "name": "email",
-                  "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "_readonlyClass": "hidden"
-                },
-                {
-                  "label": "Widget.contactXPhone",
-                  "name": "phone",
-                  "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "_readonlyClass": "hidden"
-                }
-              ]
-            }
-          },
-          {
-            "label": "Widget.partyEmail",
-            "name": "consigneeEmail",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "xs-12",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.partyPhone",
-            "name": "consigneePhone",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.partyFax",
-            "name": "consigneeFax",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.address",
-            "name": "consigneeAddress",
-            "component": "v-textarea",
-            "props": {
-              "auto-grow": true,
-              "rows": 5
-            },
-            "class": "xs-12",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.city",
-            "name": "consigneeCityCode",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "readonlyClass": "xs-4",
-            "props": {
-              "url": "api/code",
-              "searchValueParams": {
-                "where": {
-                  "codeType": "location",
-                  "code": "{{query}}"
-                }
-              },
-              "searchTextParams": {
-                "where": {
-                  "codeType": "location",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "code"
-            }
-          },
-          {
-            "label": "Widget.state",
-            "name": "consigneeStateCode",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "readonlyClass": "xs-4",
-            "props": {
-              "url": "api/code",
-              "searchValueParams": {
-                "where": {
-                  "codeType": "state",
-                  "code": "{{query}}"
-                }
-              },
-              "searchTextParams": {
-                "where": {
-                  "codeType": "state",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "code"
-            }
-          },
-          {
-            "label": "Widget.country",
-            "name": "consigneeCountryCode",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "readonlyClass": "xs-4",
-            "props": {
-              "url": "api/code",
-              "searchValueParams": {
-                "where": {
-                  "codeType": "country",
-                  "code": "{{query}}"
-                }
-              },
-              "searchTextParams": {
-                "where": {
-                  "codeType": "country",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "code"
-            }
-          },
-          {
-            "label": "Widget.zip",
-            "name": "consigneeZip",
-            "component": "v-text-field",
-            "class": "xs-12 md-6",
-            "readonlyClass": "hidden"
-          }
-        ]
-      }
-    },
-    {
-      "is": "WidgetForm",
-      "slots": [
-        {
-          "name": "pre-form",
-          "is": "I18nText",
-          "props": {
-            "class": "title",
-            "i18nKey": "BookingPage.Forwarder"
-          }
-        }
-      ],
-      "props": {
-        "class": "xs-12 md-6 pa-2",
-        "fields": [
-          {
-            "name": "forwarderPartyId",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12",
-            "props": {
-              "url": "api/party",
-              "searchValueParams": "{\"where\":{\"id\":{{query}}}}",
-              "searchTextParams": {
-                "where": {
-                  "$or": [
-                    { "name": { "$like": "%{{query}}%" } },
-                    { "shortName": { "$like": "%{{query}}%" } },
-                    { "erpCode": { "$like": "%{{query}}%" } }
-                  ]
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "id"
-            }
-          },
-          {
-            "label": "Widget.contactName",
-            "name": "forwarderPartyContactName",
-            "component": "v-text-field",
-            "class": "hidden"
-          },
-          {
-            "label": "Widget.contactEmail",
-            "name": "forwarderPartyContactEmail",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.contactPhone",
-            "name": "forwarderPartyContactPhone",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "name": "flexData.data.forwarderPartyContact",
-            "component": "TableField",
-            "class": "xs-12",
-            "readonlyClass": "hidden",
-            "props": {
-              "overrideRowIndex": 1,
-              "fields": [
-                {
-                  "label": "Widget.contactXName",
-                  "name": "name",
-                  "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "_readonlyClass": "hidden"
-                },
-                {
-                  "label": "Widget.contactXEmail",
-                  "name": "email",
-                  "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "_readonlyClass": "hidden"
-                },
-                {
-                  "label": "Widget.contactXPhone",
-                  "name": "phone",
-                  "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "_readonlyClass": "hidden"
-                }
-              ]
-            }
-          },
-          {
-            "label": "Widget.partyEmail",
-            "name": "forwarderEmail",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "xs-12",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.partyPhone",
-            "name": "forwarderPhone",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.partyFax",
-            "name": "forwarderFax",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.address",
-            "name": "forwarderAddress",
-            "component": "v-textarea",
-            "props": {
-              "auto-grow": true,
-              "rows": 5
-            },
-            "class": "xs-12",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.city",
-            "name": "forwarderCityCode",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "readonlyClass": "xs-4",
-            "props": {
-              "url": "api/code",
-              "searchValueParams": {
-                "where": {
-                  "codeType": "location",
-                  "code": "{{query}}"
-                }
-              },
-              "searchTextParams": {
-                "where": {
-                  "codeType": "location",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "code"
-            }
-          },
-          {
-            "label": "Widget.state",
-            "name": "forwarderStateCode",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "readonlyClass": "xs-4",
-            "props": {
-              "url": "api/code",
-              "searchValueParams": {
-                "where": {
-                  "codeType": "state",
-                  "code": "{{query}}"
-                }
-              },
-              "searchTextParams": {
-                "where": {
-                  "codeType": "state",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "code"
-            }
-          },
-          {
-            "label": "Widget.country",
-            "name": "forwarderCountryCode",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "readonlyClass": "xs-4",
-            "props": {
-              "url": "api/code",
-              "searchValueParams": {
-                "where": {
-                  "codeType": "country",
-                  "code": "{{query}}"
-                }
-              },
-              "searchTextParams": {
-                "where": {
-                  "codeType": "country",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "code"
-            }
-          },
-          {
-            "label": "Widget.zip",
-            "name": "forwarderZip",
-            "component": "v-text-field",
-            "class": "xs-12 md-6",
-            "readonlyClass": "hidden"
-          }
-        ]
-      }
-    },
-    {
-      "is": "WidgetForm",
-      "slots": [
-        {
-          "name": "pre-form",
-          "is": "I18nText",
-          "props": {
-            "class": "title",
-            "i18nKey": "BookingPage.NotifyParty"
-          }
-        }
-      ],
-      "props": {
-        "class": "xs-12 md-6 pa-2",
-        "fields": [
-          {
-            "name": "notifyPartyPartyId",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12",
-            "props": {
-              "url": "api/party",
-              "searchValueParams": "{\"where\":{\"id\":{{query}}}}",
-              "searchTextParams": {
-                "where": {
-                  "$or": [
-                    { "name": { "$like": "%{{query}}%" } },
-                    { "shortName": { "$like": "%{{query}}%" } },
-                    { "erpCode": { "$like": "%{{query}}%" } }
-                  ]
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "id"
-            }
-          },
-          {
-            "label": "Widget.contactName",
-            "name": "notifyPartyPartyContactName",
-            "component": "v-text-field",
-            "class": "hidden"
-          },
-          {
-            "label": "Widget.contactEmail",
-            "name": "notifyPartyPartyContactEmail",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.contactPhone",
-            "name": "notifyPartyPartyContactPhone",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "name": "flexData.data.notifyPartyPartyContact",
-            "component": "TableField",
-            "class": "xs-12",
-            "readonlyClass": "hidden",
-            "props": {
-              "overrideRowIndex": 1,
-              "fields": [
-                {
-                  "label": "Widget.contactXName",
-                  "name": "name",
-                  "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "_readonlyClass": "hidden"
-                },
-                {
-                  "label": "Widget.contactXEmail",
-                  "name": "email",
-                  "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "_readonlyClass": "hidden"
-                },
-                {
-                  "label": "Widget.contactXPhone",
-                  "name": "phone",
-                  "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "_readonlyClass": "hidden"
-                }
-              ]
-            }
-          },
-          {
-            "label": "Widget.partyEmail",
-            "name": "notifyPartyEmail",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "xs-12",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.partyPhone",
-            "name": "notifyPartyPhone",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.partyFax",
-            "name": "notifyPartyFax",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.address",
-            "name": "notifyPartyAddress",
-            "component": "v-textarea",
-            "props": {
-              "auto-grow": true,
-              "rows": 5
-            },
-            "class": "xs-12",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.city",
-            "name": "notifyPartyCityCode",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "readonlyClass": "xs-4",
-            "props": {
-              "url": "api/code",
-              "searchValueParams": {
-                "where": {
-                  "codeType": "location",
-                  "code": "{{query}}"
-                }
-              },
-              "searchTextParams": {
-                "where": {
-                  "codeType": "location",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "code"
-            }
-          },
-          {
-            "label": "Widget.state",
-            "name": "notifyPartyStateCode",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "readonlyClass": "xs-4",
-            "props": {
-              "url": "api/code",
-              "searchValueParams": {
-                "where": {
-                  "codeType": "state",
-                  "code": "{{query}}"
-                }
-              },
-              "searchTextParams": {
-                "where": {
-                  "codeType": "state",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "code"
-            }
-          },
-          {
-            "label": "Widget.country",
-            "name": "notifyPartyCountryCode",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "readonlyClass": "xs-4",
-            "props": {
-              "url": "api/code",
-              "searchValueParams": {
-                "where": {
-                  "codeType": "country",
-                  "code": "{{query}}"
-                }
-              },
-              "searchTextParams": {
-                "where": {
-                  "codeType": "country",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "code"
-            }
-          },
-          {
-            "label": "Widget.zip",
-            "name": "notifyPartyZip",
-            "component": "v-text-field",
-            "class": "xs-12 md-6",
-            "readonlyClass": "hidden"
-          }
-        ]
-      }
-    },
-    {
-      "is": "WidgetForm",
-      "slots": [
-        {
-          "name": "pre-form",
-          "is": "I18nText",
-          "props": {
-            "class": "title",
-            "i18nKey": "BookingPage.Agent"
-          }
-        }
-      ],
-      "props": {
-        "class": "xs-12 md-6 pa-2",
-        "fields": [
-          {
-            "name": "agentPartyId",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12",
-            "props": {
-              "url": "api/party",
-              "searchValueParams": "{\"where\":{\"id\":{{query}}}}",
-              "searchTextParams": {
-                "where": {
-                  "$or": [
-                    { "name": { "$like": "%{{query}}%" } },
-                    { "shortName": { "$like": "%{{query}}%" } },
-                    { "erpCode": { "$like": "%{{query}}%" } }
-                  ]
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "id"
-            }
-          },
-          {
-            "label": "Widget.contactName",
-            "name": "agentPartyContactName",
-            "component": "v-text-field",
-            "class": "hidden"
-          },
-          {
-            "label": "Widget.contactEmail",
-            "name": "agentPartyContactEmail",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.contactPhone",
-            "name": "agentPartyContactPhone",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "name": "flexData.data.agentPartyContact",
-            "component": "TableField",
-            "class": "xs-12",
-            "readonlyClass": "hidden",
-            "props": {
-              "overrideRowIndex": 1,
-              "fields": [
-                {
-                  "label": "Widget.contactXName",
-                  "name": "name",
-                  "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "_readonlyClass": "hidden"
-                },
-                {
-                  "label": "Widget.contactXEmail",
-                  "name": "email",
-                  "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "_readonlyClass": "hidden"
-                },
-                {
-                  "label": "Widget.contactXPhone",
-                  "name": "phone",
-                  "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "_readonlyClass": "hidden"
-                }
-              ]
-            }
-          },
-          {
-            "label": "Widget.partyEmail",
-            "name": "agentEmail",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "xs-12",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.partyPhone",
-            "name": "agentPhone",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.partyFax",
-            "name": "agentFax",
-            "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.address",
-            "name": "agentAddress",
-            "component": "v-textarea",
-            "props": {
-              "auto-grow": true,
-              "rows": 5
-            },
-            "class": "xs-12",
-            "readonlyClass": "hidden"
-          },
-          {
-            "label": "Widget.city",
-            "name": "agentCityCode",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "readonlyClass": "xs-4",
-            "props": {
-              "url": "api/code",
-              "searchValueParams": {
-                "where": {
-                  "codeType": "location",
-                  "code": "{{query}}"
-                }
-              },
-              "searchTextParams": {
-                "where": {
-                  "codeType": "location",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "code"
-            }
-          },
-          {
-            "label": "Widget.state",
-            "name": "agentStateCode",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "readonlyClass": "xs-4",
-            "props": {
-              "url": "api/code",
-              "searchValueParams": {
-                "where": {
-                  "codeType": "state",
-                  "code": "{{query}}"
-                }
-              },
-              "searchTextParams": {
-                "where": {
-                  "codeType": "state",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "code"
-            }
-          },
-          {
-            "label": "Widget.country",
-            "name": "agentCountryCode",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "readonlyClass": "xs-4",
-            "props": {
-              "url": "api/code",
-              "searchValueParams": {
-                "where": {
-                  "codeType": "country",
-                  "code": "{{query}}"
-                }
-              },
-              "searchTextParams": {
-                "where": {
-                  "codeType": "country",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
-              "item-value": "code"
-            }
-          },
-          {
-            "label": "Widget.zip",
-            "name": "agentZip",
-            "component": "v-text-field",
-            "class": "xs-12 md-6",
-            "readonlyClass": "hidden"
-          }
-        ]
-      }
-    },
-    {
-      "is": "div",
-      "props": {
-        "class": "xs-12 md-6 pa-2"
       }
     }
   ]

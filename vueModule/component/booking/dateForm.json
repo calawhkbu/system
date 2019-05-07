@@ -7,6 +7,9 @@
     {
       "is": "WidgetForms",
       "props": {
+        "formProps": {
+          "class": "xs-12"
+        },
         "mode": "Date",
         "orderBy": ["", "Actual", "Estimated"],
         "orderByType": "value",
@@ -20,10 +23,13 @@
         },
         "fields": [
           {
-            "label": "Widget.{{key}}DateEstimated",
+            "label": "Widget.{{key}}Date",
             "name": "{{key}}Date",
             "component": "DateTimePicker",
             "class": "xs-12 md-8",
+            "hiddenWhen": {
+              "{{key}}Date": null
+            },
             "props": {
               "type": "{{type}}",
               "utc": true
@@ -34,6 +40,9 @@
             "name": "{{key}}DateEstimated",
             "component": "DateTimePicker",
             "class": "xs-12 md-4",
+            "hiddenWhen": {
+              "{{key}}DateEstimated": null
+            },
             "props": {
               "type": "{{type}}",
               "utc": true
@@ -44,6 +53,9 @@
             "name": "{{key}}DateActual",
             "component": "DateTimePicker",
             "class": "xs-12 md-4",
+            "hiddenWhen": {
+              "{{key}}DateActual": null
+            },
             "props": {
               "type": "{{type}}",
               "utc": true

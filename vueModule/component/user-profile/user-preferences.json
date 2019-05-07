@@ -65,13 +65,13 @@
                     {
                       "label": "config.timezone",
                       "name": "timezone",
-                      "component": "AsyncSelect",
+                      "component": "LocalAutoSuggest",
                       "class": "xs-12 md-6",
                       "props": {
-                        "item-text": "name",
-                        "item-value": "name",
-                        "type": "local",
-                        "url": "$moment.tz.names"
+                        "path": "$moment.tz.names",
+                        "cache-items": true,
+                        "hide-no-data": true,
+                        "hide-details": true
                       }
                     },
                     {

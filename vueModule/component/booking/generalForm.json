@@ -112,26 +112,6 @@
             }
           },
           {
-            "label": "Widget.estimatedDepatrueDate",
-            "name": "departureDateEstimated",
-            "component": "DateTimePicker",
-            "class": "xs-12 md-4",
-            "props": {
-              "type": "date",
-              "utc": true
-            }
-          },
-          {
-            "label": "Widget.estimatedArrivalDate",
-            "name": "arrivalDateEstimated",
-            "component": "DateTimePicker",
-            "class": "xs-12 md-4",
-            "props": {
-              "type": "date",
-              "utc": true
-            }
-          },
-          {
             "label": "BookingPage.placeOfReceipt",
             "name": "placeOfReceiptCode",
             "component": "AsyncAutoSuggest",
