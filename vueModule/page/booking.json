@@ -63,7 +63,7 @@
                       {
                         "is": "DynamicComponent",
                         "props": {
-                          "class": "xs-12 md-7",
+                          "class": "xs-12",
                           "style": {
                             "padding": "4px 0px"
                           },
@@ -106,6 +106,40 @@
                               "is": "AsyncLocalComponent",
                               "props": {
                                 "layoutName": "booking/dateForm"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-12",
+                          "style": {
+                            "padding": "4px 0px"
+                          },
+                          "components": [
+                            {
+                              "is": "AsyncLocalComponent",
+                              "props": {
+                                "layoutName": "booking/containerForm"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-12",
+                          "style": {
+                            "padding": "4px 0px"
+                          },
+                          "components": [
+                            {
+                              "is": "AsyncLocalComponent",
+                              "props": {
+                                "layoutName": "booking/referenceForm"
                               }
                             }
                           ]

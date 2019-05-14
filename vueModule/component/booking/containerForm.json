@@ -1,0 +1,86 @@
+{
+  "layout": "v-card",
+  "class": "grid",
+  "components": [
+    {
+      "is": "WidgetForm",
+      "class": "xs-12 md-6",
+      "props": {
+        "fields": [
+          {
+            "label": "BookingPage.BookingContainer",
+            "name": "bookingContainers",
+            "component": "TableField",
+            "props": {
+              "topLabel": true,
+              "fields": [
+                {
+                  "label": "BookingPage.containerNo",
+                  "name": "containerNo",
+                  "component": "v-text-field"
+                },
+                {
+                  "label": "BookingPage.containerTypeCode",
+                  "name": "containerTypeCode",
+                  "component": "AsyncSelect",
+                  "props": {
+                    "url": "api/code",
+                    "item-text": "name",
+                    "item-value": "code",
+                    "params": {
+                      "where": {
+                        "codeType": "containerType"
+                      }
+                    }
+                  }
+                },
+                {
+                  "label": "BookingPage.sealNo",
+                  "name": "sealNo",
+                  "component": "v-text-field"
+                },
+                {
+                  "label": "BookingPage.quantity",
+                  "name": "quantity",
+                  "component": "v-text-field"
+                },
+                {
+                  "label": "BookingPage.quantityUnit",
+                  "name": "quantityUnit",
+                  "component": "AsyncSelect",
+                  "props": {
+                    "url": "api/code",
+                    "item-text": "name",
+                    "item-value": "code",
+                    "params": {
+                      "where": {
+                        "codeType": "quantityUnit"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "WidgetForm",
+      "class": "xs-12 md-6",
+      "props": {
+        "fields": [
+          {
+            "label": "BookingPage.BookingPacking",
+            "name": "",
+            "component": "TableField",
+            "props": {
+              "topLabel": true,
+              "fields": []
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
