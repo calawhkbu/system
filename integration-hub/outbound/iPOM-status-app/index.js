@@ -14,7 +14,7 @@ function iPOMStatusHandler () {
                   console.log(`[iPOM-status-app] have customer`)
                   const api = customer.configuration.webService.purchaseOrder.statusApi
                   let payload = {
-                    data: { bokjson: { bookingNumber: booking.bookingNo, nextStatus: status.nextStatus, remark: status.remark } },
+                    data: { bokjson: JSON.stringify({ bookingNumber: booking.bookingNo, nextStatus: status.nextStatus, remark: status.remark }) },
                     headers: { "Content-Type": "application/json" }
                   }
                   try {
