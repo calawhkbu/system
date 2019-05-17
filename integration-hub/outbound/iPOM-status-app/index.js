@@ -14,7 +14,7 @@ function iPOMStatusHandler () {
                   console.log(`[iPOM-status-app] have customer`)
                   const api = customer.configuration.webService.purchaseOrder.statusApi
                   let payload = {
-                    data: { bookingNumber: booking.bookingNo, nextStatus: status.nextStatus, remark: status.remark },
+                    data: { bkjson: { bookingNumber: booking.bookingNo, nextStatus: status.nextStatus, remark: status.remark } },
                     headers: { "Content-Type": "application/json" }
                   }
                   try {
@@ -22,13 +22,7 @@ function iPOMStatusHandler () {
                       if (Buffer.isBuffer(data)) data = data.toString('utf8').trim()
                       if (data) {
                         console.log('[iPOM-status-app] Send status to iPOM (success)')
-                        helper.emailer.sendFreeMail({
-                          to: ["ken.chan+ipom@swivelsoftware.com"].join(','),  //TODO REMOVE HARD-CODED
-                          from: "administrator@swivelsoftware.com",
-                          subject: `TEST - Fail to post status to iPOM [DATA SENT OUT]`,
-                          html: `<p>Payload:</p><br/><p>${JSON.stringify(payload)}</p><p>Data Returned:</p><br/><p>${JSON.stringify(data)}</p>`
-                        }, {});
-                        helper.saveLog(appId, api, 'status', status.id, JSON.stringify(payload), JSON.stringify(data), null);
+                        helper.saveLog(appId, api, 'booking', booking.id, JSON.stringify(payload), JSON.stringify(data), null);
                       }
                     })
                   }
@@ -40,7 +34,7 @@ function iPOMStatusHandler () {
                       subject: `TEST - Fail to post status to iPOM [ERROR]`,
                       html: `<p>Payload:</p><br/><p>${JSON.stringify(payload)}</p><p>Error:</p><br/><p>${JSON.stringify(e.message)}</p><p>${e.stack}</p>`
                     }, {});
-                    helper.saveLog(appId, api, 'status', status.id, JSON.stringify(payload), null, JSON.stringify(e));
+                    helper.saveLog(appId, api, 'booking', booking.id, JSON.stringify(payload), null, JSON.stringify(e));
                   }
                 }
                 console.error('[IPOM- status-app] no customer')
