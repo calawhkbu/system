@@ -14,7 +14,7 @@ function iPOMStatusHandler () {
                   console.log(`[iPOM-status-app] have customer`)
                   const api = customer.configuration.webService.purchaseOrder.statusApi
                   let payload = {
-                    data: { bkjson: { bookingNumber: booking.bookingNo, nextStatus: status.nextStatus, remark: status.remark } },
+                    data: { bokjson: { bookingNumber: booking.bookingNo, nextStatus: status.nextStatus, remark: status.remark } },
                     headers: { "Content-Type": "application/json" }
                   }
                   try {
@@ -37,7 +37,9 @@ function iPOMStatusHandler () {
                     helper.saveLog(appId, api, 'booking', booking.id, JSON.stringify(payload), null, JSON.stringify(e));
                   }
                 }
-                console.error('[IPOM- status-app] no customer')
+                else {
+                  console.error('[IPOM- status-app] no customer')
+                }
               })
           }
           console.error('[IPOM- status-app] no booking')
