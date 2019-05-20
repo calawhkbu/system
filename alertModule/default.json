@@ -1,0 +1,62 @@
+[
+
+    {
+        "schedule" : "1 15 * * * *",
+
+        "tableName" : "test",
+
+
+        "alertCategory": "Exception",
+        "alertType": "testtest",
+        "severity" : "medium",
+
+        "displayName":"test Alert Test",
+
+        "active": true
+ 
+    },
+
+    {
+        "schedule" : "1 15 * * * *",
+
+        "tableName" : "booking",
+        "sql" : {
+
+            "where" :{
+
+            }
+        },
+
+        "alertCategory": "Exception",
+        "alertType": "bookingtest",
+        "severity" : "medium",
+
+        "displayName":"Booking Alert Test",
+
+        "active": true
+ 
+    },
+
+    {
+
+        "schedule" : "1 15 * * * *",
+
+        "tableName" : "shipment",
+        "sql" : {
+
+            "where" :{
+
+            }
+        },
+
+        "alertCategory": "Exception",
+        "alertType": "shipmenttest",
+        "severity" : "medium",
+
+        "displayName":"Shipment Alert Test",
+        
+        "active": true
+ 
+    }
+
+]
