@@ -1,22 +1,9 @@
 {
   "layout": "v-card",
-  "style": {
-    "margin-bottom": "25px"
-  },
   "components": [
     {
-      "is": "Form",
+      "is": "WidgetForm",
       "props": {
-        "dispatchreadonly": "$store.state.widget.readOnly",
-        "form": "$store.state.widget.data",
-        "onChangeFunctions": [
-          {
-            "type": "dispatch",
-            "otherParams": {
-              "name": "widget/updateData"
-            }
-          }
-        ],
         "fields": [
           {
             "label": "CustomerPage.party",
@@ -53,13 +40,7 @@
             }
           }
         ]
-      },
-      "slots": [
-        {
-          "name": "post-form",
-          "is": "div"
-        }
-      ]
+      }
     }
   ]
 }

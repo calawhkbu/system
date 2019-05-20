@@ -1,0 +1,74 @@
+{
+  "layout": "v-card",
+  "style": {
+    "min-height": "75px"
+  },
+  "components": [
+    {
+      "is": "WidgetForms",
+      "props": {
+        "formProps": {
+          "class": "xs-12"
+        },
+        "mode": "Date",
+        "orderBy": ["", "Actual", "Estimated"],
+        "orderByType": "value",
+        "params": {
+          "type": {
+            "cargoReadyDate": "date",
+            "cYCutOff": "date",
+            "departure": "datetime",
+            "arrival": "datetime"
+          }
+        },
+        "fields": [
+          {
+            "label": "Widget.{{key}}Date",
+            "name": "{{key}}Date",
+            "component": "DateTimePicker",
+            "class": "xs-12 md-8",
+            "hiddenWhen": {
+              "{{key}}Date": null
+            },
+            "props": {
+              "type": "{{type}}",
+              "utc": true
+            }
+          },
+          {
+            "label": "Widget.{{key}}DateEstimated",
+            "name": "{{key}}DateEstimated",
+            "component": "DateTimePicker",
+            "class": "xs-12 md-4",
+            "hiddenWhen": {
+              "{{key}}DateEstimated": null
+            },
+            "props": {
+              "type": "{{type}}",
+              "utc": true
+            }
+          },
+          {
+            "label": "Widget.{{key}}DateActual",
+            "name": "{{key}}DateActual",
+            "component": "DateTimePicker",
+            "class": "xs-12 md-4",
+            "hiddenWhen": {
+              "{{key}}DateActual": null
+            },
+            "props": {
+              "type": "{{type}}",
+              "utc": true
+            }
+          },
+          {
+            "label": "Widget.{{key}}DateRemark",
+            "name": "{{key}}Remark",
+            "component": "v-text-field",
+            "class": "xs-12 md-4"
+          }
+        ]
+      }
+    }
+  ]
+}

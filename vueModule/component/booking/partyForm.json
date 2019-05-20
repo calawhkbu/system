@@ -1,0 +1,239 @@
+{
+  "layout": "v-card",
+  "style": {
+    "min-height": "75px"
+  },
+  "components": [
+    {
+      "is": "WidgetForms",
+      "props": {
+        "mode": "Party",
+        "orderBy": {
+          "shipper": 0,
+          "consignee": 10,
+          "forwarder": 20,
+          "agent": 30,
+          "notifyParty": 40
+        },
+        "formProps": {
+          "class": "xs-12 md-6"
+        },
+        "extraContainerProps": {
+          "class": "xs-12 md-6"
+        },
+        "fields": [
+          {
+            "name": "{{key}}PartyId",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12",
+            "props": {
+              "url": "api/party",
+              "searchValueParams": "{ \"where\": { \"id\": &#123;&#123;query&#125;&#125; } }",
+              "searchTextParams": {
+                "where": {
+                  "$or": [
+                    { "name": { "$like": "%{{query}}%" } },
+                    { "shortName": { "$like": "%{{query}}%" } },
+                    { "erpCode": { "$like": "%{{query}}%" } }
+                  ]
+                },
+                "limit": 5
+              },
+              "cache-items": true,
+              "hide-no-data": true,
+              "hide-details": true,
+              "item-text": "name",
+              "item-value": "id"
+            }
+          },
+          {
+            "label": "Widget.contactName",
+            "name": "{{key}}PartyContactName",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.contactEmail",
+            "name": "{{key}}PartyContactEmail",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.contactPhone",
+            "name": "{{key}}PartyContactPhone",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "name": "flexData.data.{{key}}PartyContact",
+            "component": "TableField",
+            "class": "xs-12",
+            "readonlyClass": "hidden",
+            "props": {
+              "overrideRowIndex": 1,
+              "fields": [
+                {
+                  "label": "Widget.contactXName",
+                  "name": "name",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-4",
+                  "_readonlyClass": "hidden"
+                },
+                {
+                  "label": "Widget.contactXEmail",
+                  "name": "email",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-4",
+                  "_readonlyClass": "hidden"
+                },
+                {
+                  "label": "Widget.contactXPhone",
+                  "name": "phone",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-4",
+                  "_readonlyClass": "hidden"
+                }
+              ]
+            }
+          },
+          {
+            "label": "Widget.partyEmail",
+            "name": "{{key}}Email",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "xs-12",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyPhone",
+            "name": "{{key}}Phone",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.partyFax",
+            "name": "{{key}}Fax",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.address",
+            "name": "{{key}}Address",
+            "component": "v-textarea",
+            "props": {
+              "auto-grow": true,
+              "rows": 5
+            },
+            "class": "xs-12",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.city",
+            "name": "{{key}}CityCode",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-6",
+            "readonlyClass": "xs-4",
+            "props": {
+              "url": "api/code",
+              "searchValueParams": {
+                "where": {
+                  "codeType": "location",
+                  "code": "{{query}}"
+                }
+              },
+              "searchTextParams": {
+                "where": {
+                  "codeType": "location",
+                  "$or": {
+                    "code": "{{query}}",
+                    "name": "{{query}}"
+                  }
+                },
+                "limit": 5
+              },
+              "cache-items": true,
+              "hide-no-data": true,
+              "hide-details": true,
+              "item-text": "name",
+              "item-value": "code"
+            }
+          },
+          {
+            "label": "Widget.state",
+            "name": "{{key}}StateCode",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-6",
+            "readonlyClass": "xs-4",
+            "props": {
+              "url": "api/code",
+              "searchValueParams": {
+                "where": {
+                  "codeType": "state",
+                  "code": "{{query}}"
+                }
+              },
+              "searchTextParams": {
+                "where": {
+                  "codeType": "state",
+                  "$or": {
+                    "code": "{{query}}",
+                    "name": "{{query}}"
+                  }
+                },
+                "limit": 5
+              },
+              "cache-items": true,
+              "hide-no-data": true,
+              "hide-details": true,
+              "item-text": "name",
+              "item-value": "code"
+            }
+          },
+          {
+            "label": "Widget.country",
+            "name": "{{key}}CountryCode",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-6",
+            "readonlyClass": "xs-4",
+            "props": {
+              "url": "api/code",
+              "searchValueParams": {
+                "where": {
+                  "codeType": "country",
+                  "code": "{{query}}"
+                }
+              },
+              "searchTextParams": {
+                "where": {
+                  "codeType": "country",
+                  "$or": {
+                    "code": "{{query}}",
+                    "name": "{{query}}"
+                  }
+                },
+                "limit": 5
+              },
+              "cache-items": true,
+              "hide-no-data": true,
+              "hide-details": true,
+              "item-text": "name",
+              "item-value": "code"
+            }
+          },
+          {
+            "label": "Widget.zip",
+            "name": "{{key}}Zip",
+            "component": "v-text-field",
+            "class": "xs-12 md-6",
+            "readonlyClass": "hidden"
+          }
+        ]
+      }
+    }
+  ]
+}
