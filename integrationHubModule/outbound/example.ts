@@ -1,15 +1,15 @@
+const CONSTANTS = {
+}
+
 export default {
-  method: '', // GET / POST-JSON / POST-SIMPLE
+  method: '', // 'GET'|'POST'|'PUT'|'DELETE'|'HEAD'|'OPTIONS'
   getUrl: (headers: any, body: any) => {
     return ''
   },
-  headersHandler: (headers: any) => {
-    return headers
+  requestHandler: (headers: any, body: any) => {
+    return { headers, body }
   },
-  bodyHandler: (body: any) => {
-    return body
-  },
-  responseHandler: (response: any) => {
+  responseHandler: (response: { responseBody: any, responseOptions: any }) => {
     return response
   }
 }
