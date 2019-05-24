@@ -1,0 +1,22 @@
+{
+  "layout": "MainLayout",
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "showFilterBar": true,
+      "reportingKey": "shipments",
+      "urlFormat": "/shipments{{ id|if('/', '') }}{{ id }}",
+      "newReport": {
+        "configurations": {
+          "i18nContext": "Reporting",
+          "sorting": {},
+          "pagination": {
+            "remote": {},
+            "current": 0,
+            "perPage": 25
+          }
+        }
+      }
+    }
+  }]
+}

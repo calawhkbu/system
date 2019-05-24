@@ -1,4 +1,10 @@
 {
   "layout": "MainLayout",
-  "components": []
+  "components": [{
+    "is": "GridTool",
+    "props": {
+      "showFilterBar": true,
+      "reportingKey": "shipments"
+    }
+  }]
 }
