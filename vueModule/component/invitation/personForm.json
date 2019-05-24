@@ -1,0 +1,123 @@
+{
+    "layout": "v-card",
+    "class": "grid",
+    "components": [
+      {
+        "is": "WidgetForm",
+        "class": "xs-12 md-6",
+        "props": {
+          "fields": [
+
+
+            {
+                "label": "InvitationPage.person.userName",
+                "name": "person.userName",
+                "component": "v-text-field"
+            },
+
+
+            {
+                "label": "InvitationPage.personId",
+                "name": "personId",
+                "component": "v-text-field"
+              },
+
+              {
+                "label": "InvitationPage.firstName",
+                "name": "person.firstName",
+                "component": "v-text-field"
+              },
+
+              {
+                "label": "InvitationPage.lastName",
+                "name": "person.lastName",
+                "component": "v-text-field"
+              },
+
+
+              {
+                "label": "InvitationPage.tokenId",
+                "name": "tokenId",
+                "component": "v-text-field"
+              }
+
+
+
+          ]
+        }
+      },
+
+      {
+        "is": "WidgetForm",
+        "class": "xs-12 md-6",
+        "props": {
+          "fields": [
+            {
+              "label": "InvitationPage.person.contacts",
+              "name": "person.contacts",
+              "component": "TableField",
+              "props": {
+                "topLabel": true,
+                "fields": [
+                  {
+                    "label": "InvitationPage.person.contacts.content",
+                    "name": "content",
+                    "component": "v-text-field"
+                  },
+                  {
+                    "label": "InvitationPage.person.contacts.contactType",
+                    "name": "contactType",
+                    "component": "v-text-field"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+
+      {
+        "is": "WidgetForm",
+        "class": "xs-12 md-6",
+        "props": {
+          "fields": [
+
+
+            {
+              "label": "InvitationPage.parties",
+              "name": "person.parties",
+              "component": "AsyncAutoSuggest",
+              "class": "xs-12 md-6",
+              "props": {
+                "url": "api/party",
+                "searchValueParams": {
+                  "where": {
+                    "isBranch" : 1
+                  }
+                },
+                "searchTextParams": {
+                  "where": {
+                    "isBranch" : 1
+                  },
+                  "limit": 5
+                },
+                "cache-items": true,
+                "hide-no-data": true,
+                "hide-details": true,
+                "item-text": "name",
+                "return-object" : true,
+                "multiple" : true,
+                "chips" : true,
+                "deletable-chips" : true
+              }
+            }
+
+
+          ]
+        }
+      }
+
+
+    ]
+  }
+  

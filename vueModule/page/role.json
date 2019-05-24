@@ -1,0 +1,56 @@
+{
+  "layout": "MainLayout",
+  "components": [
+    {
+      "is": "Widget",
+      "props": {
+        "initUrl": "api/booking/{{id}}",
+        "saveUrl": "api/booking",
+        "primaryKey": "id",
+        "bookmark": true,
+        "topSlots": [
+          {
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true
+            },
+            "events": {
+              "click.stop": [
+                {
+                  "type": "router",
+                  "otherParams": {
+                    "func": "go",
+                    "go": -1
+                  }
+                }
+              ]
+            },
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
+                }
+              }
+            ]
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "class": "headline",
+              "i18nKey": "RolePage.title",
+              "swig": true
+            }
+          }
+        ],
+        "components": {
+          "assignment": [
+          ],
+          "create": [
+          ]
+        }
+      }
+    }
+  ]
+}

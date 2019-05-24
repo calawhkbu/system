@@ -1,0 +1,1 @@
+this is an SMS template : the message is : {{message}}

@@ -4,7 +4,16 @@
   "components": [
     {
       "is": "Form",
+
       "props": {
+        "createdFunctions": [
+          {
+            "type": "dispatch",
+            "otherParams": {
+              "name": "auth/verifyInvitationToken"
+            }
+          }
+        ],
         "form": {
           "lastName": "",
           "password": "",
@@ -18,7 +27,8 @@
             "label": "Auth.username",
             "props": {
               "type": "email",
-              "required": true
+              "required": true,
+              "disabled" : true
             },
             "component": "v-text-field",
             "validator": [
@@ -138,7 +148,7 @@
                     {
                       "type": "dispatch",
                       "otherParams": {
-                        "name": "auth/login",
+                        "name": "auth/register",
                         "type": "google"
                       },
                       "afterActions": [
@@ -157,7 +167,7 @@
                     {
                       "type": "dispatch",
                       "otherParams": {
-                        "name": "auth/login",
+                        "name": "auth/register",
                         "type": "wechat"
                       },
                       "afterActions": [
