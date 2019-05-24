@@ -1,0 +1,112 @@
+{
+    "layout": "MainLayout",
+    "components": [
+      {
+        "is": "Widget",
+        "props": {
+          "initUrl": "api/invitation/{{id}}",
+          "saveUrl": "api/invitation",
+          "primaryKey": "id",
+          "bookmark": true,
+          "topSlots": [
+            {
+              "is": "v-btn",
+              "props": {
+                "flat": true,
+                "icon": true
+              },
+              "events": {
+                "click.stop": [
+                  {
+                    "type": "router",
+                    "otherParams": {
+                      "func": "go",
+                      "go": -1
+                    }
+                  }
+                ]
+              },
+              "slots": [
+                {
+                  "is": "Icon",
+                  "props": {
+                    "icon": "arrow_back"
+                  }
+                }
+              ]
+            },
+            {
+              "is": "I18nText",
+              "props": {
+                "class": "headline",
+                "i18nKey": "InvitationPage.title",
+                "swig": true
+              }
+            }
+          ],
+          "components": {
+            "assignment": [
+              {
+                "is": "div",
+                "props": {
+                  "class": "xs-12 md-9",
+                  "style": {
+                    "padding-right": "4px"
+                  }
+                },
+                "slots": [
+                  {
+                    "is": "DynamicComponent",
+                    "props": {
+                      "class": "grid",
+                      "components": [
+                        {
+                          "is": "DynamicComponent",
+                          "props": {
+                            "class": "xs-12",
+                            "style": {
+                              "padding": "4px 0px"
+                            },
+                            "components": [
+                              {
+                                "is": "AsyncLocalComponent",
+                                "props": {
+                                  "layoutName": "invitation/personForm"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "is": "div",
+                "props": {
+                  "class": "xs-12 md-3",
+                  "style": {
+                    "padding-left": "4px"
+                  }
+                },
+                "slots": [
+                  {
+                    "is": "v-card",
+                    "props": {
+                      "style": {
+                        "min-height": "200px"
+                      }
+                    }
+                  }
+                ]
+              }
+            ],
+            "map": [
+            ]
+          }
+        }
+      }
+    ]
+  }
+  
