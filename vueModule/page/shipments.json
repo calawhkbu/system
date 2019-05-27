@@ -4,11 +4,15 @@
     "is": "TableTool",
     "props": {
       "showFilterBar": true,
+      "enableShare": true,
+      "enableSetting": true,
       "reportingKey": "shipments",
       "urlFormat": "/shipments{{ id|if('/', '') }}{{ id }}",
       "newReport": {
         "configurations": {
           "i18nContext": "Reporting",
+          "clickable": true,
+          "draggable": true,
           "sorting": {},
           "pagination": {
             "remote": {},

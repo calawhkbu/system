@@ -4,7 +4,9 @@
     "is": "GridTool",
     "props": {
       "showFilterBar": true,
-      "reportingKey": "shipments"
+      "enableShare": true,
+      "enableSetting": true,
+      "reportingKey": "dashboard"
     }
   }]
 }
