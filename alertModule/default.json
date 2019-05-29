@@ -1,12 +1,15 @@
 [
 
     {
-        "schedule" : "1 15 * * * *",
+        "schedule" : "0 * * ? * *",
 
         "tableName" : "booking",
         "defaultSql" : {
 
+
             "where" :{
+
+                "forwarderPartyId" : [{{ partyIdList }}]
 
             }
         },
@@ -19,28 +22,22 @@
 
         "templateName":"bookingalerttest",
 
-        "active": true
- 
-    },
+        "contactRoleList" : [
+            "forwarder",
+            "shipper",
+            "consignee"
+        ],
 
-    {
-
-        "schedule" : "1 15 * * * *",
-
-        "tableName" : "shipment",
-        "defaultSql" : {
+        "extraContactPersonSql" :{
 
             "where" :{
 
+                "email" : "marco.lor@swivelsoftware.com"
+
             }
+
         },
 
-        "alertCategory": "Exception",
-        "alertType": "shipmenttest",
-        "severity" : "medium",
-
-        "displayName":"Shipment Alert Test",
-        
         "active": true
  
     }
