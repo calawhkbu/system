@@ -6,21 +6,16 @@
         "tableName" : "booking",
         "defaultSql" : {
 
-
             "where" :{
-
-                "forwarderPartyId" : [{{ partyIdList }}]
-
+                "forwarderPartyId" : [{{ partyIdList }}],
+                "id" : 1
             }
+
         },
 
         "alertCategory": "Exception",
         "alertType": "bookingalerttest",
         "severity" : "medium",
-
-        "displayName":"Booking Alert Test",
-
-        "templateName":"bookingalerttest",
 
         "contactRoleList" : [
             "forwarder",
@@ -32,7 +27,6 @@
 
             "where" :{
 
-                "email" : "marco.lor@swivelsoftware.com"
 
             }
 
