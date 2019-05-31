@@ -6,7 +6,13 @@
       "showFilterBar": true,
       "enableShare": true,
       "enableSetting": true,
-      "reportingKey": "dashboard"
+      "reportingKey": "dashboard",
+      "urlFormat": "/dashboard{{ id|if('/', '') }}{{ id }}",
+      "newReport": {
+        "configurations": {
+          "i18nContext": "Reporting"
+        }
+      }
     }
   }]
 }
