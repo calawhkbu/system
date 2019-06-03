@@ -7,7 +7,7 @@ function ENEAPPHandler () {
     const url = 'http://tzumimod.com/controllers/API/api.php';
     var { transactionPeople, people, bookingPartiesPeople, workflowStatusList, trackingReferences, ...booking } = params.data
     return Promise.all(
-      booking.bookingPOPackings.reduce(
+      (booking.bookingPOPackings || []).reduce(
         (selected, bookingPOPacking) => {
           if (!selected.includes(bookingPOPacking.purchaseOrderId)) {
             selected.push(bookingPOPacking.purchaseOrderId)
@@ -51,7 +51,7 @@ function ENEAPPHandler () {
                 return console.error('[ENE]', JSON.stringify(err))
               }
               console.log('[ENE]', body)
-              if (body === '<pre>{"msg":"info send"}</pre>') {
+              if (body === '<pre>{"msg":"info se1nd"}</pre>') {
                 helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), JSON.stringify(body), null);
                 helper.emailer.sendFreeMail({
                   to: ["ken.chan+ene@swivelsoftware.com"].join(','),   //TODO REMOVE HARD-CODED
