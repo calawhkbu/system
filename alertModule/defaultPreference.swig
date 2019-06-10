@@ -1,7 +1,12 @@
 [
+    {
+        "alertType" : "bookingMessage",
+        "notifyBy" :  "email",
+        "active" : true
+    },
 
     {
-        "alertType" : "testtest",
+        "alertType" : "shipmentMessage",
         "notifyBy" :  "email",
         "active" : true
     },
