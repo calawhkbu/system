@@ -17,7 +17,10 @@
                 {
                   "label": "BookingPage.containerNo",
                   "name": "containerNo",
-                  "component": "v-text-field"
+                  "component": "v-text-field",
+                  "props": {
+                    "color": "blue"
+                  }
                 },
                 {
                   "label": "BookingPage.containerTypeCode",

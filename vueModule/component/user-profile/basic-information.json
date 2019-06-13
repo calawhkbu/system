@@ -127,7 +127,7 @@
                           "is": "v-spacer"
                         },
                         {
-                          "is": "AsyncLocalComponent",
+                          "is": "AsyncComponent",
                           "props": {
                             "layoutName": "user-profile/change-password-dialog"
                           }

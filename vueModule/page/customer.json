@@ -66,21 +66,21 @@
         "components": {
           "assignment": [
             {
-              "is": "AsyncLocalComponent",
+              "is": "AsyncComponent",
               "props": {
                 "class": "xs-12",
                 "layoutName": "customer/basic-information"
               }
             },
             {
-              "is": "AsyncLocalComponent",
+              "is": "AsyncComponent",
               "props": {
                 "class": "xs-12",
                 "layoutName": "customer/default-preference"
               }
             },
             {
-              "is": "AsyncLocalComponent",
+              "is": "AsyncComponent",
               "props": {
                 "class": "xs-12",
                 "layoutName": "customer/party"

@@ -7,7 +7,7 @@ export default {
     headers: { Buffer: any, constants: any },
     body: { carrierCode: string, carrierCode2: string, masterNo: string }
   ) => {
-    return `http://apis.yundangnet.com/api/v1/airbooking-liner?companyid=${headers.constants.companyId}`
+    return `http://apis.yundangnet.com/api/v1/airbookings?companyid=${headers.constants.companyId}`
   },
   requestHandler: (
     headers: { Buffer: any, constants: any },

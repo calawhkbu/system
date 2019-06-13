@@ -4,8 +4,8 @@
     {
       "is": "Widget",
       "props": {
-        "initUrl": "api/booking/{{id}}",
-        "saveUrl": "api/booking",
+        "initUrl": "data/booking/{{id}}",
+        "saveUrl": "data/booking",
         "primaryKey": "id",
         "bookmark": true,
         "topSlots": [
@@ -69,7 +69,7 @@
                           },
                           "components": [
                             {
-                              "is": "AsyncLocalComponent",
+                              "is": "AsyncComponent",
                               "props": {
                                 "layoutName": "booking/generalForm"
                               }
@@ -86,7 +86,7 @@
                           },
                           "components": [
                             {
-                              "is": "AsyncLocalComponent",
+                              "is": "AsyncComponent",
                               "props": {
                                 "layoutName": "booking/partyForm"
                               }
@@ -103,7 +103,7 @@
                           },
                           "components": [
                             {
-                              "is": "AsyncLocalComponent",
+                              "is": "AsyncComponent",
                               "props": {
                                 "layoutName": "booking/dateForm"
                               }
@@ -120,7 +120,7 @@
                           },
                           "components": [
                             {
-                              "is": "AsyncLocalComponent",
+                              "is": "AsyncComponent",
                               "props": {
                                 "layoutName": "booking/containerForm"
                               }
@@ -137,7 +137,7 @@
                           },
                           "components": [
                             {
-                              "is": "AsyncLocalComponent",
+                              "is": "AsyncComponent",
                               "props": {
                                 "layoutName": "booking/referenceForm"
                               }
@@ -160,17 +160,33 @@
               },
               "slots": [
                 {
-                  "is": "v-card",
+                  "is": "WidgetCard",
                   "props": {
-                    "style": {
-                      "min-height": "200px"
-                    }
                   }
                 }
               ]
             }
           ],
           "map": [
+            {
+              "is": "Map",
+              "slots": [
+                {
+                  "is": "Route",
+                  "props": {
+                    "startPoint": [22.39642800, 114.10949700],
+                    "endPoint": [34.40000000, 135.30000000],
+                    "startPoint_": "widget.data.portOfLoadingCode",
+                    "endPoint_": "widget.data.portOfDischargeCode",
+                    "estimatedStartTime": "widget.data.departureDateEstimated",
+                    "actualStartTime": "widget.data.departureDateActual",
+                    "estimatedEndTime": "widget.data.arrivalDateEstimated",
+                    "actualEndTime": "widget.data.arrivalDateActual",
+                    "mode": "widget.data.moduleTypeCode"
+                  }
+                }
+              ]
+            }
           ]
         }
       }
