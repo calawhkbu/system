@@ -30,19 +30,19 @@
       }
     },
     {
-      "is": "AsyncLocalComponent",
+      "is": "AsyncComponent",
       "props": {
         "layoutName": "user-profile/basic-information"
       }
     },
     {
-      "is": "AsyncLocalComponent",
+      "is": "AsyncComponent",
       "props": {
         "layoutName": "user-profile/user-preferences"
       }
     },
     {
-      "is": "AsyncLocalComponent",
+      "is": "AsyncComponent",
       "props": {
         "layoutName": "user-profile/notification-preferences"
       }

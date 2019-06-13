@@ -7,21 +7,24 @@ export default {
     headers: { Buffer: any, constants: any },
     body: { carrierCode: string, carrierCode2: string, masterNo: string }
   ) => {
-    return `http://apis.yundangnet.com/api/v1/airbooking-liner?companyid=${headers.constants.companyId}`
+    return `http://apis.yundangnet.com/api/v1/bookingv2-liner?companyid=${headers.constants.companyId}`
   },
   requestHandler: (
     headers: { Buffer: any, constants: any },
-    body: { carrierCode: string, carrierCode2: string, masterNo: string }
+    body: { carrierCode: string, masterNo2?:string, masterNo: string, isMasterContainer: boolean }
   ) => {
     if (!headers.Buffer) {
-      throw new Error('Pleace post buffer')
+      throw new Error('Please post buffer')
+    }
+    if (body.carrierCode === 'SITC' && !body.masterNo2) {
+      throw new Error('SITC need master no and container no to track')
     }
     const data = [
       {
         keyid: '000',
         carriercd: body.carrierCode,
-        ...(body.carrierCode2 ? { carriercd: body.carrierCode2 } : {}),
-        awbno: body.masterNo.replace('-', ''),
+        [body.isMasterContainer ? 'ctnrno' : 'referenceno']: body.masterNo,
+        ...(body.masterNo2 ? { ctnrno: body.masterNo2 } : {}),
         lstbookingcontract: headers.constants.lstbookingcontract
       }
     ]

@@ -1,0 +1,11 @@
+{
+  "components": [
+    {
+      "is": "I18nText",
+      "name": "default",
+      "props": {
+        "i18nKey": "Auth.Login"
+      }
+    }
+  ]
+}
