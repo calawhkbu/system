@@ -66,19 +66,19 @@ const query = new QueryDef(new Query({
 }))
 
 query.register('userName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['pe', 'userName']) })
+  $where: new LikeExpression({ left: new ColumnExpression(['pe', 'userName']), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('firstName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['pe', 'firstName']) })
+  $where: new LikeExpression({ left: new ColumnExpression(['pe', 'firstName']), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('lastName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['pe', 'lastName']) })
+  $where: new LikeExpression({ left: new ColumnExpression(['pe', 'lastName']), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('displayName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['pe', 'displayName']) })
+  $where: new LikeExpression({ left: new ColumnExpression(['pe', 'displayName']), operator: 'REGEXP' })
 })).register('value', 0)
 
 

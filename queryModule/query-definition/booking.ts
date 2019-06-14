@@ -21,7 +21,7 @@ query.register('partyGroupCode', new Query({
 })).register('value', 0)
 
 query.register('bookingNo', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['b', 'bookingNo']) })
+  $where: new LikeExpression({ left: new ColumnExpression(['b', 'bookingNo']), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('moduleTypeCode', new Query({
