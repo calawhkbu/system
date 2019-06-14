@@ -1,0 +1,11 @@
+{
+  "query": "invitation",
+  "reports": false,
+  "fields": [
+    {
+      "key": "id"
+    }
+  ],
+  "filters": [
+  ]
+}

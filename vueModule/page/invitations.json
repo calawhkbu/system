@@ -1,0 +1,26 @@
+{
+  "layout": "MainLayout",
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": false,
+      "reportingKey": "invitations",
+      "urlFormat": "/invitation{{ id|if('/', '') }}{{ id }}",
+      "newReport": {
+        "configurations": {
+          "i18nContext": "Reporting",
+          "clickable": true,
+          "draggable": true,
+          "sorting": {},
+          "pagination": {
+            "remote": {},
+            "current": 0,
+            "perPage": 25
+          }
+        }
+      }
+    }
+  }]
+}

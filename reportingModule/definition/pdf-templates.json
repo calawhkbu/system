@@ -1,0 +1,11 @@
+{
+  "query": "pdf-template",
+  "reports": true,
+  "fields": [
+    {
+      "key": "id",
+      "hidden": true
+    }
+  ],
+  "filters": []
+}

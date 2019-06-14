@@ -1,0 +1,11 @@
+{
+  "query": "purchase-order",
+  "reports": true,
+  "fields": [
+    {
+      "key": "id",
+      "hidden": true
+    }
+  ],
+  "filters": []
+}

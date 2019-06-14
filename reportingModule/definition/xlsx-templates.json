@@ -1,0 +1,11 @@
+{
+  "query": "excel-template",
+  "reports": true,
+  "fields": [
+    {
+      "key": "id",
+      "hidden": true
+    }
+  ],
+  "filters": []
+}
