@@ -30,13 +30,31 @@
       "name": "moduleType",
       "type": "list",
       "props": {
-        "url": "api/code?where={\"codeType\":\"moduleType\"}",
-        "resolveUrl": "api/code?where={\"codeType\":\"moduleType\",\"code\":\"{{ value }}\"}",
-        "postProcess": {
+        "jql": {
           "$select": [
             { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
             { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
-          ]
+          ],
+          "$from": {
+            "table": {
+              "url": "api/code/query/code_master?subqueries={\"codeType\":{\"value\":\"moduleType\"}}",
+              "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
+            },
+            "$as": "code"
+          }
+        },
+        "resolveJql": {
+          "$select": [
+            { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
+            { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
+          ],
+          "$from": {
+            "table": {
+              "url": "api/code/query/code_master?subqueries={\"codeType\":{\"value\":\"moduleType\"},\"code\":{\"value\":\"{{ value }}\"}}",
+              "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
+            },
+            "$as": "code"
+          }
         }
       }
     },
@@ -122,13 +140,31 @@
       "name": "Airline",
       "type": "autocomplete",
       "props": {
-        "url": "api/code/search?codeType=airline&q={{ q }}",
-        "resolveUrl": "api/code?where={\"codeType\":\"airline\",\"code\":\"{{ value }}\"}",
-        "postProcess": {
+        "jql": {
           "$select": [
             { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
             { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
-          ]
+          ],
+          "$from": {
+            "table": {
+              "url": "api/code/query/code_master?subqueries={\"codeType\":{\"value\":\"airline\"},\"q\":{\"value\":\"{{ q }}\"}}",
+              "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
+            },
+            "$as": "code"
+          }
+        },
+        "resolveJql": {
+          "$select": [
+            { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
+            { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
+          ],
+          "$from": {
+            "table": {
+              "url": "api/code/query/code_master?subqueries={\"codeType\":{\"value\":\"airline\"},\"code\":{\"value\":\"{{ value }}\"}}",
+              "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
+            },
+            "$as": "code"
+          }
         },
         "display": "value",
         "multi": true
