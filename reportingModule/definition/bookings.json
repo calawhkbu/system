@@ -17,6 +17,180 @@
     },
     {
       "key": "serviceCode"
+    },
+    {
+      "key": "incoTermsCode"
+    },
+    {
+      "key": "freightTermsCode"
+    },
+    {
+      "key": "otherTermsCode"
+    },
+    {
+      "key": "vesselName"
+    },
+    {
+      "key": "voyageFlightNumber"
+    },
+    {
+      "key": "commodity"
+    },
+    {
+      "key": "polHScode"
+    },
+    {
+      "key": "podHScode"
+    },
+    {
+      "key": "placeOfReceiptCode"
+    },
+    {
+      "key": "portOfLoadingCode"
+    },
+    {
+      "key": "portOfDischargeCode"
+    },
+    {
+      "key": "placeOfDeliveryCode"
+    },
+    {
+      "key": "finalDestinationCode"
+    },
+    {
+      "key": "cargoReadyDateEstimated"
+    },
+    {
+      "key": "cargoReadyDateActual"
+    },
+    {
+      "key": "cargoReadyDateRemark"
+    },
+    {
+      "key": "cYCutOffDate"
+    },
+    {
+      "key": "cYCutOffDateRemark"
+    },
+    {
+      "key": "departureDateEstimated"
+    },
+    {
+      "key": "departureDateActual"
+    },
+    {
+      "key": "departureDateRemark"
+    },
+    {
+      "key": "arrivalDateEstimated"
+    },
+    {
+      "key": "arrivalDateActual"
+    },
+    {
+      "key": "arrivalDateRemark"
+    },
+    {
+      "key": "createdUserEmail"
+    },
+    {
+      "key": "updatedUserEmail"
+    },
+    {
+      "key": "shipperPartyCode"
+    },
+    {
+      "key": "shipperPartyName"
+    },
+    {
+      "key": "shipperPartyContactEmail"
+    },
+    {
+      "key": "shipperPartyContactName"
+    },
+    {
+      "key": "shipperPartyPhone"
+    },
+    {
+      "key": "shipperPartyEmail"
+    },
+    {
+      "key": "consigneePartyCode"
+    },
+    {
+      "key": "consigneePartyName"
+    },
+    {
+      "key": "consigneePartyContactEmail"
+    },
+    {
+      "key": "consigneePartyContactName"
+    },
+    {
+      "key": "consigneePartyPhone"
+    },
+    {
+      "key": "consigneePartyEmail"
+    },
+    {
+      "key": "forwarderPartyName"
+    },
+    {
+      "key": "forwarderPartyCode"
+    },
+    {
+      "key": "forwarderPartyContactEmail"
+    },
+    {
+      "key": "forwarderPartyContactName"
+    },
+    {
+      "key": "forwarderPartyPhone"
+    },
+    {
+      "key": "forwarderPartyEmail"
+    },
+    {
+      "key": "notifyPartyPartyCode"
+    },
+    {
+      "key": "notifyPartyPartyName"
+    },
+    {
+      "key": "notifyPartyPartyContactEmail"
+    },
+    {
+      "key": "notifyPartyPartyContactName"
+    },
+    {
+      "key": "notifyPartyPartyPhone"
+    },
+    {
+      "key": "notifyPartyPartyEmail"
+    },
+    {
+      "key": "agentPartyCode"
+    },
+    {
+      "key": "agentPartyName"
+    },
+    {
+      "key": "agentPartyContactEmail"
+    },
+    {
+      "key": "agentPartyContactName"
+    },
+    {
+      "key": "agentPartyPhone"
+    },
+    {
+      "key": "agentPartyEmail"
+    },
+    {
+      "key": "createdAt"
+    },
+    {
+      "key": "updatedAt"
     }
   ],
   "filters": [

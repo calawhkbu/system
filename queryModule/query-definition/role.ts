@@ -5,4 +5,8 @@ const query = new QueryDef(new Query({
   $from: new TableOrSubquery(['role', 'r'])
 }))
 
+query.register('name', new Query({
+  $where: new LikeExpression({ left: new ColumnExpression(['r', 'name']), operator: 'REGEXP' })
+})).register('value', 0)
+
 export default query
