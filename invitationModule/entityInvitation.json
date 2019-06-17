@@ -1,0 +1,10 @@
+[
+
+    {
+        "tableName" : "booking",
+        "roleList" : [ "shipper","consignee" ]
+
+    }
+
+
+]
