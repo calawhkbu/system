@@ -1,9 +1,5 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, TableOrSubquery, LikeExpression, ColumnExpression } from 'node-jql'
-
-const query = new QueryDef(new Query({
-  $from: new TableOrSubquery(['party', 'p'])
-}))
+import { Query, TableOrSubquery, LikeExpression, ColumnExpression, JoinedTableOrSubquery, BinaryExpression } from 'node-jql'
 
 const query = new QueryDef(new Query({
   $distinct: true,

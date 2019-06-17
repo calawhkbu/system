@@ -81,6 +81,4 @@ query.register('displayName', new Query({
   $where: new LikeExpression({ left: new ColumnExpression(['pe', 'displayName']), operator: 'REGEXP' })
 })).register('value', 0)
 
-
-
 export default query

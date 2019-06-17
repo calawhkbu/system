@@ -3,8 +3,7 @@
   "reports": true,
   "fields": [
     {
-      "key": "id",
-      "hidden": true
+      "key": "id"
     },
     {
       "key": "bookingNo"
@@ -194,93 +193,5 @@
     }
   ],
   "filters": [
-    {
-      "name": "moduleType",
-      "type": "list",
-      "props": {
-        "url": "api/code?where={\"codeType\":\"moduleType\"}",
-        "resolveUrl": "api/code?where={\"codeType\":\"moduleType\",\"code\":\"{{ value }}\"}",
-        "postProcess": {
-          "$select": [
-            { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
-            { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
-          ]
-        }
-      }
-    },
-    {
-      "name": "jobDate",
-      "type": "date",
-      "props": {
-        "shortcuts": [
-          {
-            "label": "year-to-date",
-            "func": "year-to-date"
-          },
-          {
-            "label": "current",
-            "shortcuts": [
-              {
-                "label": "current year",
-                "func": {
-                  "key": "current",
-                  "args": { "unit": "year" }
-                }
-              },
-              {
-                "label": "current month",
-                "func": {
-                  "key": "current",
-                  "args": { "unit": "month" }
-                }
-              }
-            ]
-          },
-          {
-            "label": "last",
-            "shortcuts": [
-              {
-                "label": "last year",
-                "func": {
-                  "key": "last",
-                  "args": { "unit": "year" }
-                }
-              },
-              {
-                "label": "last 3 month",
-                "func": {
-                  "key": "last",
-                  "args": { "value": 3, "unit": "month" }
-                }
-              }
-            ]
-          },
-          {
-            "label": "coming",
-            "shortcuts": [
-              {
-                "label": "coming 7 days",
-                "func": {
-                  "key": "coming",
-                  "args": { "value": 7, "unit": "day", "startFromNow": true }
-                }
-              }
-            ]
-          },
-          {
-            "label": "past",
-            "shortcuts": [
-              {
-                "label": "past 7 days",
-                "func": {
-                  "key": "past",
-                  "args": { "value": 7, "unit": "day" }
-                }
-              }
-            ]
-          }
-        ]
-      }
-    }
   ]
 }
