@@ -4,10 +4,28 @@
     {
       "is": "Widget",
       "props": {
-        "initUrl": "data/booking/{{id}}",
-        "saveUrl": "data/booking",
+        "initUrl": "api/booking/{{id}}",
+        "saveUrl": "api/booking",
         "primaryKey": "id",
-        "bookmark": true,
+        "canEdit": [
+          "entity",
+          "return true"
+        ],
+        "speedDialButtons": [
+          {
+            "icon": "map",
+            "title": "Widget.map",
+            "action": [
+              {
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "map"
+                }
+              }
+            ]
+          }
+        ],
         "topSlots": [
           {
             "is": "v-btn",
@@ -20,8 +38,8 @@
                 {
                   "type": "router",
                   "otherParams": {
-                    "func": "go",
-                    "go": -1
+                    "func": "push",
+                    "path": "/bookings"
                   }
                 }
               ]
@@ -42,6 +60,12 @@
               "i18nKey": "BookingPage.title",
               "swig": true
             }
+          },
+          {
+            "is": "v-spacer"
+          },
+          {
+            "is": "BookmarkButton"
           }
         ],
         "components": {
@@ -167,6 +191,73 @@
               ]
             }
           ],
+          "edit": [
+            {
+              "is": "WidgetStepper",
+              "props": {
+                "steps": [
+                  {
+                    "id": "BookingForm.GeneralForm",
+                    "components": [
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/generalForm"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "BookingForm.PartyForm",
+                    "components": [
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/partyForm"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "BookingForm.DateForm",
+                    "components": [
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/dateForm"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "BookingForm.ContainerForm",
+                    "components": [
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/containerForm"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "BookingForm.referenceForm",
+                    "components": [
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/referenceForm"
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "initUrl": "api/booking/{{id}}",
+                "saveUrl": "api/booking",
+                "primaryKey": "id"
+              }
+            }
+          ],
           "map": [
             {
               "is": "Map",
@@ -174,10 +265,8 @@
                 {
                   "is": "Route",
                   "props": {
-                    "startPoint": [22.39642800, 114.10949700],
-                    "endPoint": [34.40000000, 135.30000000],
-                    "startPoint_": "widget.data.portOfLoadingCode",
-                    "endPoint_": "widget.data.portOfDischargeCode",
+                    "startPoint": "widget.data.portOfLoadingCode",
+                    "endPoint": "widget.data.portOfDischargeCode",
                     "estimatedStartTime": "widget.data.departureDateEstimated",
                     "actualStartTime": "widget.data.departureDateActual",
                     "estimatedEndTime": "widget.data.arrivalDateEstimated",

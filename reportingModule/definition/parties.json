@@ -1,0 +1,39 @@
+{
+  "query": "party",
+  "reports": false,
+  "fields": [
+    {
+      "key": "id"
+    },
+    {
+      "key": "partyGroupCode"
+    },
+    {
+      "key": "isBranch"
+    },
+    {
+      "key": "erpCode"
+    },
+    {
+      "key": "name"
+    },
+    {
+      "key": "shortName"
+    },
+    {
+      "key": "groupName"
+    },
+    {
+      "key": "email"
+    },
+    {
+      "key": "phone"
+    }
+  ],
+  "filters": [
+    {
+      "name": "name",
+      "type": "text"
+    }
+  ]
+}

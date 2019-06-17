@@ -1,0 +1,17 @@
+{
+  "query": "role",
+  "reports": false,
+  "fields": [
+    {
+      "key": "id",
+      "hidden": true
+    },
+    {
+      "key": "name"
+    },
+    {
+      "key": "group"
+    }
+  ],
+  "filters": []
+}

@@ -4,10 +4,10 @@
     "is": "TableTool",
     "props": {
       "showFilterBar": true,
-      "enableShare": true,
-      "enableSetting": true,
-      "reportingKey": "bookings",
-      "urlFormat": "/bookings{{ id|if('/', '') }}{{ id }}",
+      "enableShare": false,
+      "enableSetting": false,
+      "reportingKey": "roles",
+      "urlFormat": "/role{{ id|if('/', '') }}{{ id }}",
       "newReport": {
         "configurations": {
           "i18nContext": "Reporting",

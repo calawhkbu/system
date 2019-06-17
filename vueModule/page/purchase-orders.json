@@ -6,8 +6,8 @@
       "showFilterBar": true,
       "enableShare": true,
       "enableSetting": true,
-      "reportingKey": "bookings",
-      "urlFormat": "/bookings{{ id|if('/', '') }}{{ id }}",
+      "reportingKey": "purchase-order",
+      "urlFormat": "/purchase-order{{ id|if('/', '') }}{{ id }}",
       "newReport": {
         "configurations": {
           "i18nContext": "Reporting",
