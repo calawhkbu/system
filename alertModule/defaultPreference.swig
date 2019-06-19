@@ -12,13 +12,7 @@
     },
 
     {
-        "alertType" : "bookingalerttest",
-        "notifyBy" :  "email",
-        "active" : true
-    },
-
-    {
-        "alertType" : "shipmenttest",
+        "alertType" : "bookingAlert",
         "notifyBy" :  "email",
         "active" : true
     }

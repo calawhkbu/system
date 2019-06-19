@@ -3,6 +3,7 @@
 
         "alertCategory": "Message",
         "alertType": "bookingMessage",
+        "templatePath":"message/booking-message",
         "severity" : "medium",
 
         "contactRoleList" : [
@@ -28,6 +29,7 @@
 
         "alertCategory": "Message",
         "alertType": "shipmentMessage",
+        "templatePath":"message/shipment-message",
         "severity" : "medium",
 
         "contactRoleList" : [
@@ -64,25 +66,23 @@
         },
 
         "alertCategory": "Exception",
-        "alertType": "bookingalerttest",
+        "alertType": "bookingAlert",
+        "templatePath":"alert/booking-alert",
         "severity" : "medium",
 
         "contactRoleList" : [
-            "forwarder",
-            "shipper",
-            "consignee"
+
         ],
 
         "extraContactPersonSql" :{
 
-            "where" :{
-
-
+            "where":{
+                "userName" : "marco.lor@swivelsoftware.com"
             }
 
         },
 
-        "active": false
+        "active": true
  
     }
 
