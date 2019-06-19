@@ -27,12 +27,12 @@
                   "name": "containerTypeCode",
                   "component": "AsyncSelect",
                   "props": {
-                    "url": "api/code",
+                    "url": "api/code/query/code-master",
                     "item-text": "name",
                     "item-value": "code",
                     "params": {
-                      "where": {
-                        "codeType": "containerType"
+                      "subqueries": {
+                        "value": "containerType"
                       }
                     }
                   }

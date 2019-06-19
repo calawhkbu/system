@@ -27,15 +27,15 @@
             "component": "AsyncAutoSuggest",
             "class": "xs-12",
             "props": {
-              "url": "api/party",
-              "searchValueParams": "{ \"where\": { \"id\": &#123;&#123;query&#125;&#125; } }",
+              "url": "api/party/query/party",
+              "searchValueParams": {
+                
+              },
               "searchTextParams": {
-                "where": {
-                  "$or": [
-                    { "name": { "$like": "%{{query}}%" } },
-                    { "shortName": { "$like": "%{{query}}%" } },
-                    { "erpCode": { "$like": "%{{query}}%" } }
-                  ]
+                "subqueries": {
+                  "q": {
+                    "value": "&#123;&#123;query&#125;&#125;"
+                  }
                 },
                 "limit": 5
               },
@@ -104,7 +104,6 @@
             "name": "{{key}}Email",
             "component": "v-text-field",
             "class": "xs-12 md-4",
-            "readonlyClass": "xs-12",
             "readonlyClass": "hidden"
           },
           {
@@ -139,19 +138,24 @@
             "class": "xs-12 md-6",
             "readonlyClass": "xs-4",
             "props": {
-              "url": "api/code",
+              "url": "api/code/query/code_master",
               "searchValueParams": {
-                "where": {
-                  "codeType": "location",
-                  "code": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "location"
+                  },
+                  "q": {
+                    "value": "{{query}}"
+                  }
                 }
               },
               "searchTextParams": {
-                "where": {
-                  "codeType": "location",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "location"
+                  },
+                  "q": {
+                    "value": "{{query}}"
                   }
                 },
                 "limit": 5
@@ -170,19 +174,24 @@
             "class": "xs-12 md-6",
             "readonlyClass": "xs-4",
             "props": {
-              "url": "api/code",
+              "url": "api/code/query/code_master",
               "searchValueParams": {
-                "where": {
-                  "codeType": "state",
-                  "code": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "state"
+                  },
+                  "q": {
+                    "value": "{{query}}"
+                  }
                 }
               },
               "searchTextParams": {
-                "where": {
-                  "codeType": "state",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "state"
+                  },
+                  "q": {
+                    "value": "{{query}}"
                   }
                 },
                 "limit": 5
@@ -201,19 +210,24 @@
             "class": "xs-12 md-6",
             "readonlyClass": "xs-4",
             "props": {
-              "url": "api/code",
+              "url": "api/code/query/code_master",
               "searchValueParams": {
-                "where": {
-                  "codeType": "country",
-                  "code": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "country"
+                  },
+                  "q": {
+                    "value": "{{query}}"
+                  }
                 }
               },
               "searchTextParams": {
-                "where": {
-                  "codeType": "country",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "country"
+                  },
+                  "q": {
+                    "value": "{{query}}"
                   }
                 },
                 "limit": 5

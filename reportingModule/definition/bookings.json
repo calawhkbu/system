@@ -190,37 +190,5 @@
     }
   ],
   "filters": [
-    {
-      "name": "moduleTypeCode",
-      "type": "list",
-      "props": {
-        "jql": {
-          "$select": [
-            { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
-            { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
-          ],
-          "$from": {
-            "table": {
-              "url": "api/code?where={\"codeType\":\"moduleType\"}",
-              "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
-            },
-            "$as": "code"
-          }
-        },
-        "resolveJql": {
-          "$select": [
-            { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
-            { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
-          ],
-          "$from": {
-            "table": {
-              "url": "api/code?where={\"codeType\":\"moduleType\",\"code\":\"{{ value }}\"}",
-              "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
-            },
-            "$as": "code"
-          }
-        }
-      }
-    }
   ]
 }

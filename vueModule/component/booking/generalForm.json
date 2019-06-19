@@ -11,12 +11,14 @@
             "component": "AsyncSelect",
             "class": "xs-12 md-6",
             "props": {
-              "url": "api/code",
+              "url": "api/code/query/code_master",
               "item-text": "name",
               "item-value": "code",
               "params": {
-                "where": {
-                  "codeType": "moduleType"
+                "subqueries": {
+                  "codeType": {
+                    "value": "moduleType"
+                  }
                 }
               }
             }
@@ -24,31 +26,19 @@
           {
             "label": "BookingPage.boundType",
             "name": "boundTypeCode",
-            "component": "AsyncAutoSuggest",
+            "component": "AsyncSelect",
             "class": "xs-12 md-6",
             "props": {
-              "url": "api/code",
-              "searchValueParams": {
-                "where": {
-                  "codeType": "boundType",
-                  "code": "{{query}}"
-                }
-              },
-              "searchTextParams": {
-                "where": {
-                  "codeType": "boundType",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
+              "url": "api/code/query/code_master",
               "item-text": "name",
-              "item-value": "code"
+              "item-value": "code",
+              "params": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "boundType"
+                  }
+                }
+              }
             }
           },
           {
@@ -57,19 +47,24 @@
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
             "props": {
-              "url": "api/code",
+              "url": "api/code/query/code_master",
               "searchValueParams": {
-                "where": {
-                  "codeType": "location",
-                  "code": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "location"
+                  },
+                  "code": {
+                    "value": "{{query}}"
+                  }
                 }
               },
               "searchTextParams": {
-                "where": {
-                  "codeType": "location",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "location"
+                  },
+                  "q": {
+                    "value": "{{query}}"
                   }
                 },
                 "limit": 5
@@ -87,19 +82,24 @@
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
             "props": {
-              "url": "api/code",
+              "url": "api/code/query/code_master",
               "searchValueParams": {
-                "where": {
-                  "codeType": "location",
-                  "code": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "location"
+                  },
+                  "code": {
+                    "value": "{{query}}"
+                  }
                 }
               },
               "searchTextParams": {
-                "where": {
-                  "codeType": "location",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "location"
+                  },
+                  "q": {
+                    "value": "{{query}}"
                   }
                 },
                 "limit": 5
@@ -118,19 +118,24 @@
             "class": "xs-12 md-6",
             "readonlyClass": "hidden",
             "props": {
-              "url": "api/code",
+              "url": "api/code/query/code_master",
               "searchValueParams": {
-                "where": {
-                  "codeType": "location",
-                  "code": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "location"
+                  },
+                  "code": {
+                    "value": "{{query}}"
+                  }
                 }
               },
               "searchTextParams": {
-                "where": {
-                  "codeType": "location",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "location"
+                  },
+                  "q": {
+                    "value": "{{query}}"
                   }
                 },
                 "limit": 5
@@ -149,19 +154,24 @@
             "readonlyClass": "hidden",
             "class": "xs-12 md-6",
             "props": {
-              "url": "api/code",
+              "url": "api/code/query/code_master",
               "searchValueParams": {
-                "where": {
-                  "codeType": "location",
-                  "code": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "location"
+                  },
+                  "code": {
+                    "value": "{{query}}"
+                  }
                 }
               },
               "searchTextParams": {
-                "where": {
-                  "codeType": "location",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "location"
+                  },
+                  "q": {
+                    "value": "{{query}}"
                   }
                 },
                 "limit": 5
@@ -180,19 +190,24 @@
             "readonlyClass": "hidden",
             "class": "xs-12 md-6",
             "props": {
-              "url": "api/code",
+              "url": "api/code/query/code_master",
               "searchValueParams": {
-                "where": {
-                  "codeType": "location",
-                  "code": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "location"
+                  },
+                  "code": {
+                    "value": "{{query}}"
+                  }
                 }
               },
               "searchTextParams": {
-                "where": {
-                  "codeType": "location",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "location"
+                  },
+                  "q": {
+                    "value": "{{query}}"
                   }
                 },
                 "limit": 5
@@ -211,19 +226,24 @@
             "readonlyClass": "xs-12",
             "class": "xs-12 md-6",
             "props": {
-              "url": "api/code",
+              "url": "api/code/query/code_master",
               "searchValueParams": {
-                "where": {
-                  "codeType": "carrier",
-                  "code": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "carrier"
+                  },
+                  "code": {
+                    "value": "{{query}}"
+                  }
                 }
               },
               "searchTextParams": {
-                "where": {
-                  "codeType": "carrier",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "carrier"
+                  },
+                  "q": {
+                    "value": "{{query}}"
                   }
                 },
                 "limit": 5
@@ -241,19 +261,24 @@
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
             "props": {
-              "url": "api/code",
+              "url": "api/code/query/code_master",
               "searchValueParams": {
-                "where": {
-                  "codeType": "vessel",
-                  "code": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "vessel"
+                  },
+                  "code": {
+                    "value": "{{query}}"
+                  }
                 }
               },
               "searchTextParams": {
-                "where": {
-                  "codeType": "vessel",
-                  "$or": {
-                    "code": "{{query}}",
-                    "name": "{{query}}"
+                "subqueries": {
+                  "codeType": {
+                    "value": "vessel"
+                  },
+                  "q": {
+                    "value": "{{query}}"
                   }
                 },
                 "limit": 5
@@ -287,12 +312,14 @@
             "component": "AsyncSelect",
             "class": "xs-12 md-6",
             "props": {
-              "url": "api/code",
+              "url": "api/code/query/code_master",
               "item-text": "name",
               "item-value": "code",
               "params": {
-                "where": {
-                  "codeType": "service"
+                "subqueries": {
+                  "codeType": {
+                    "value": "service"
+                  }
                 }
               }
             }
@@ -303,12 +330,14 @@
             "component": "AsyncSelect",
             "class": "xs-12 md-6",
             "props": {
-              "url": "api/code",
+              "url": "api/code/query/code_master",
               "item-text": "name",
               "item-value": "code",
               "params": {
-                "where": {
-                  "codeType": "incoTerms"
+                "subqueries": {
+                  "codeType": {
+                    "value": "incoTerms"
+                  }
                 }
               }
             }
@@ -320,12 +349,14 @@
             "readonlyClass": "hidden",
             "class": "xs-12 md-6",
             "props": {
-              "url": "api/code",
+              "url": "api/code/query/code_master",
               "item-text": "name",
               "item-value": "code",
               "params": {
-                "where": {
-                  "codeType": "freightTerms"
+                "subqueries": {
+                  "codeType": {
+                    "value": "freightTerms"
+                  }
                 }
               }
             }
@@ -337,12 +368,14 @@
             "readonlyClass": "hidden",
             "class": "xs-12 md-6",
             "props": {
-              "url": "api/code",
+              "url": "api/code/query/code_master",
               "item-text": "name",
               "item-value": "code",
               "params": {
-                "where": {
-                  "codeType": "otherTerms"
+                "subqueries": {
+                  "codeType": {
+                    "value": "otherTerms"
+                  }
                 }
               }
             }

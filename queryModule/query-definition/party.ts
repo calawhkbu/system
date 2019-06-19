@@ -1,5 +1,5 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, TableOrSubquery, LikeExpression, ColumnExpression, JoinedTableOrSubquery, BinaryExpression, InExpression, IsNullExpression } from 'node-jql'
+import { Query, TableOrSubquery, OrExpressions, LikeExpression, ColumnExpression, JoinedTableOrSubquery, BinaryExpression, InExpression, IsNullExpression } from 'node-jql'
 
 const query = new QueryDef(new Query({
   $distinct: true,
@@ -28,6 +28,10 @@ const query = new QueryDef(new Query({
     ]
   }),
 }))
+
+query.register('id', new Query({
+  $where: new BinaryExpression({ left: new ColumnExpression(['pa', 'id']), operator: '=' })
+})).register('value', 0)
 
 query.register('name', new Query({
   $where: new LikeExpression({ left: new ColumnExpression(['pa', 'name']), operator: 'REGEXP' })
@@ -59,5 +63,18 @@ query.register('isActive', new Query({
     new IsNullExpression({ left: new ColumnExpression(['pa', 'deletedBy']) }),
   ]
 }))
+
+query.register('q', new Query({
+  $where: new OrExpressions({
+    expressions: [
+      new LikeExpression({ left: new ColumnExpression(['pa', 'name']), operator: 'REGEXP' }),
+      new LikeExpression({ left: new ColumnExpression(['pa', 'shortName']), operator: 'REGEXP' }),
+      new LikeExpression({ left: new ColumnExpression(['pa', 'erpCode']), operator: 'REGEXP' })
+    ]
+  })
+}))
+  .register('value', 0)
+  .register('value', 1)
+  .register('value', 2)
 
 export default query
