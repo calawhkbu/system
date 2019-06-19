@@ -9,6 +9,10 @@
       "enableShare": false,
       "enableSetting": false,
       "newReport": {
+        "filters": {
+          "extension": "pdf",
+          "isActive": true
+        },
         "configurations": {
           "i18nContext": "Reporting",
           "clickable": true,

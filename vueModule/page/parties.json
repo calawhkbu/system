@@ -9,6 +9,9 @@
       "enableShare": false,
       "enableSetting": false,
       "newReport": {
+        "filter": {
+          "isActive": true
+        },
         "configurations": {
           "i18nContext": "Reporting",
           "clickable": true,
@@ -26,7 +29,20 @@
           "name": "name",
           "type": "text"
         }
-      ]
+      ],
+      "fieldOptions": [
+        {
+          "key": "id",
+          "sql": "pa.id"
+        }
+      ],
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/booking/{{id}}"
+        }
+      }
     }
   }]
 }

@@ -186,6 +186,25 @@
                 {
                   "is": "WidgetCard",
                   "props": {
+                    "titleI18nKey": "Booking.TrackingStatus"
+                  }
+                },
+                {
+                  "is": "WidgetCard",
+                  "props": {
+                    "titleI18nKey": "Booking.Workflow"
+                  }
+                },
+                {
+                  "is": "WidgetCard",
+                  "props": {
+                    "titleI18nKey": "Booking.Alert"
+                  }
+                },
+                {
+                  "is": "WidgetCard",
+                  "props": {
+                    "titleI18nKey": "Booking.Document"
                   }
                 }
               ]

@@ -103,7 +103,7 @@ export default class BaseAirTrackingService {
     carrierCode2: string
   ): Promise<void> {
     const { trackingModule } = await this.swivelConfigService.get()
-    let newTracking = {
+    const newTracking = {
       source: 'YUNDANG',
       trackingNo: trackingNo,
       batchStatus: 'OPEN',
@@ -120,6 +120,16 @@ export default class BaseAirTrackingService {
         lastStatusUpdateDate: null,
         lastActualUpdateDate: null
       },
+      lastStatus: null,
+      lastStatusCode: null,
+      lastStatusDate: null,
+      estimatedDepartureDate: null,
+      estimatedArrivalDate: null,
+      actualDepartureDate: null,
+      actualArrivalDate: null,
+      isClosed: null,
+      lastStatusUpdateDate: null,
+      lastActualUpdateDate: null,
       detailsRaw: null,
       lastBatchDate: moment.utc().toDate()
     }

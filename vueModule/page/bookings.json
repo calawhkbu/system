@@ -11,6 +11,9 @@
       "enableShare": true,
       "enableSetting": true,
       "newReport": {
+        "filters": {
+          "isActive": true
+        },
         "configurations": {
           "i18nContext": "Reporting",
           "clickable": true,
@@ -23,7 +26,49 @@
           }
         }
       },
-      "filters": []
+      "fieldOptions": [
+        {
+          "key": "id",
+          "sql": "b.id",
+          "hidden": true
+        },
+        {
+          "key": "bookingNo",
+          "width": 150
+        },
+        {
+          "key": "departureDateEstimated",
+          "datetime": "YYYY-MM-DD"
+        },
+        {
+          "key": "departureDateActual",
+          "datetime": "YYYY-MM-DD"
+        },
+        {
+          "key": "arrivalDateEstimated",
+          "datetime": "YYYY-MM-DD"
+        },
+        {
+          "key": "cargoReadyDateEstimated",
+          "datetime": "YYYY-MM-DD"
+        },
+        {
+          "key": "cargoReadyDateActual",
+          "datetime": "YYYY-MM-DD"
+        },
+        {
+          "key": "cYCutOffDate",
+          "datetime": "YYYY-MM-DD"
+        },
+      ],
+      "filters": [],
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/booking/{{id}}"
+        }
+      }
     }
   }]
 }

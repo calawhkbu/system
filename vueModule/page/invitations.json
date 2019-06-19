@@ -9,6 +9,9 @@
       "enableShare": false,
       "enableSetting": false,
       "newReport": {
+        "filters": {
+          "isActive": true
+        },
         "configurations": {
           "i18nContext": "Reporting",
           "clickable": true,
@@ -56,7 +59,14 @@
           "name": "displayName",
           "type": "text"
         }
-      ]
+      ],
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/invitation/{{id}}"
+        }
+      }
     }
   }]
 }

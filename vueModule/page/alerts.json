@@ -4,10 +4,10 @@
     "is": "TableTool",
     "props": {
       "showFilterBar": true,
-      "enableShare": true,
-      "enableSetting": true,
+      "enableShare": false,
+      "enableSetting": false,
       "reportingKey": "alerts",
-      "urlFormat": "/booking{{ id|if('/', '') }}{{ id }}",
+      "urlFormat": "/alerts{{ id|if('/', '') }}{{ id }}",
       "newReport": {
         "configurations": {
           "i18nContext": "Reporting",
@@ -19,6 +19,35 @@
             "current": 0,
             "perPage": 25
           }
+        }
+      },
+      "fieldOptions": [
+        {
+          "key": "id",
+          "hidden": true
+        },
+        {
+          "key": "tableName",
+          "hidden": true
+        },
+        {
+          "key": "primaryKey",
+          "hidden": true
+        },
+        {
+          "key": "createdAt",
+          "datetime": "YYYY-MM-DD HH:mm:ss"
+        },
+        {
+          "key": "updatedAt",
+          "datetime": "YYYY-MM-DD HH:mm:ss"
+        }
+      ],
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/{{tableName}}/{{primaryKey}}"
         }
       }
     }
