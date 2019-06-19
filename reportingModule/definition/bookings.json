@@ -3,16 +3,49 @@
   "reports": true,
   "fields": [
     {
-      "key": "id"
+      "key": "id",
+      "sql": "b.id",
+      "hidden": true
     },
     {
-      "key": "bookingNo"
+      "key": "bookingNo",
+      "width": 150
     },
     {
       "key": "moduleTypeCode"
     },
     {
       "key": "boundTypeCode"
+    },
+    {
+      "key": "departureDateEstimated",
+      "datetime": "YYYY-MM-DD"
+    },
+    {
+      "key": "departureDateActual",
+      "datetime": "YYYY-MM-DD"
+    },
+    {
+      "key": "arrivalDateEstimated",
+      "datetime": "YYYY-MM-DD"
+    },
+    {
+      "key": "arrivalDateActual"
+    },
+    {
+      "key": "placeOfReceiptCode"
+    },
+    {
+      "key": "portOfLoadingCode"
+    },
+    {
+      "key": "portOfDischargeCode"
+    },
+    {
+      "key": "placeOfDeliveryCode"
+    },
+    {
+      "key": "finalDestinationCode"
     },
     {
       "key": "serviceCode"
@@ -42,52 +75,16 @@
       "key": "podHScode"
     },
     {
-      "key": "placeOfReceiptCode"
+      "key": "cargoReadyDateEstimated",
+      "datetime": "YYYY-MM-DD"
     },
     {
-      "key": "portOfLoadingCode"
+      "key": "cargoReadyDateActual",
+      "datetime": "YYYY-MM-DD"
     },
     {
-      "key": "portOfDischargeCode"
-    },
-    {
-      "key": "placeOfDeliveryCode"
-    },
-    {
-      "key": "finalDestinationCode"
-    },
-    {
-      "key": "cargoReadyDateEstimated"
-    },
-    {
-      "key": "cargoReadyDateActual"
-    },
-    {
-      "key": "cargoReadyDateRemark"
-    },
-    {
-      "key": "cYCutOffDate"
-    },
-    {
-      "key": "cYCutOffDateRemark"
-    },
-    {
-      "key": "departureDateEstimated"
-    },
-    {
-      "key": "departureDateActual"
-    },
-    {
-      "key": "departureDateRemark"
-    },
-    {
-      "key": "arrivalDateEstimated"
-    },
-    {
-      "key": "arrivalDateActual"
-    },
-    {
-      "key": "arrivalDateRemark"
+      "key": "cYCutOffDate",
+      "datetime": "YYYY-MM-DD"
     },
     {
       "key": "createdUserEmail"
@@ -193,5 +190,37 @@
     }
   ],
   "filters": [
+    {
+      "name": "moduleTypeCode",
+      "type": "list",
+      "props": {
+        "jql": {
+          "$select": [
+            { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
+            { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
+          ],
+          "$from": {
+            "table": {
+              "url": "api/code?where={\"codeType\":\"moduleType\"}",
+              "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
+            },
+            "$as": "code"
+          }
+        },
+        "resolveJql": {
+          "$select": [
+            { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
+            { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
+          ],
+          "$from": {
+            "table": {
+              "url": "api/code?where={\"codeType\":\"moduleType\",\"code\":\"{{ value }}\"}",
+              "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
+            },
+            "$as": "code"
+          }
+        }
+      }
+    }
   ]
 }

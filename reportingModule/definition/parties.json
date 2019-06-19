@@ -3,7 +3,8 @@
   "reports": false,
   "fields": [
     {
-      "key": "id"
+      "key": "id",
+      "sql": "pa.id"
     },
     {
       "key": "partyGroupCode"

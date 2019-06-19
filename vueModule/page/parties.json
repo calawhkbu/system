@@ -3,12 +3,21 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/booking/{{id}}"
+        }
+      },
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
       "reportingKey": "parties",
-      "urlFormat": "/party{{ id|if('/', '') }}{{ id }}",
       "newReport": {
+        "filter": {
+          "isActive": true
+        },
         "configurations": {
           "i18nContext": "Reporting",
           "clickable": true,

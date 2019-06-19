@@ -9,6 +9,10 @@
       "reportingKey": "template",
       "urlFormat": "/template{{ id|if('/', '') }}{{ id }}",
       "newReport": {
+        "filters": {
+          "extension": "pdf",
+          "isActive": true
+        },
         "configurations": {
           "i18nContext": "Reporting",
           "clickable": true,

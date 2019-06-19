@@ -3,12 +3,21 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/invitation/{{id}}"
+        }
+      },
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
-      "reportingKey": "invitations",
-      "urlFormat": "/invitation{{ id|if('/', '') }}{{ id }}",
+      "reportingKey": "invitation",
       "newReport": {
+        "filters": {
+          "isActive": true
+        },
         "configurations": {
           "i18nContext": "Reporting",
           "clickable": true,

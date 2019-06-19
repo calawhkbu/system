@@ -7,10 +7,10 @@
       "hidden": true
     },
     {
-      "key": "name"
+      "key": "roleName"
     },
     {
-      "key": "group"
+      "key": "roleGroup"
     }
   ],
   "filters": []

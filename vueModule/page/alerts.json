@@ -3,11 +3,18 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/{{tableName}}/{{primaryKey}}"
+        }
+      },
       "showFilterBar": true,
-      "enableShare": true,
-      "enableSetting": true,
+      "enableShare": false,
+      "enableSetting": false,
       "reportingKey": "alerts",
-      "urlFormat": "/booking{{ id|if('/', '') }}{{ id }}",
+      "urlFormat": "/alerts{{ id|if('/', '') }}{{ id }}",
       "newReport": {
         "configurations": {
           "i18nContext": "Reporting",

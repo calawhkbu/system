@@ -1,0 +1,19 @@
+{
+  "query": "template",
+  "reports": false,
+  "fields": [
+    {
+      "key": "id",
+      "hidden": true
+    },
+    {
+      "key": "temlateName"
+    }
+  ],
+  "filters": [
+    {
+      "name": "temlateName",
+      "type": "text"
+    }
+  ]
+}
