@@ -3,17 +3,13 @@
   "components": [{
     "is": "TableTool",
     "props": {
-      "clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/user/{{id}}"
-        }
-      },
+      "reportingKey": "users",
+      "jql": "users",
+      "back": "/admin",
+      "title": "Users",
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
-      "reportingKey": "users",
       "newReport": {
         "configurations": {
           "i18nContext": "Reporting",
@@ -26,7 +22,39 @@
             "perPage": 25
           }
         }
-      }
+      },
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/user/{{id}}"
+        }
+      },
+      "fieldOptions": [
+        {
+          "key": "pe.id",
+          "expression": "pe.id",
+          "hidden": true
+        }
+      ],
+      "filters": [
+        {
+          "name": "userName",
+          "type": "text"
+        },
+        {
+          "name": "firstName",
+          "type": "text"
+        },
+        {
+          "name": "lastName",
+          "type": "text"
+        },
+        {
+          "name": "displayName",
+          "type": "text"
+        }
+      ]
     }
   }]
 }

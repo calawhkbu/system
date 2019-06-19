@@ -3,11 +3,13 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "reportingKey": "shipments",
+      "jql": "shipments",
+      "urlFormat": "/shipments{{ id|if('/', '') }}{{ id }}",
+      "hasReports": true,
       "showFilterBar": true,
       "enableShare": true,
       "enableSetting": true,
-      "reportingKey": "shipments",
-      "urlFormat": "/shipments{{ id|if('/', '') }}{{ id }}",
       "newReport": {
         "configurations": {
           "i18nContext": "Reporting",
@@ -20,7 +22,163 @@
             "perPage": 25
           }
         }
-      }
+      },
+      "fieldOptions": [
+        {
+          "key": "id",
+          "hidden": true
+        },
+        {
+          "key": "jobDate",
+          "datetime": "YYYY-MM-DD"
+        }
+      ],
+      "filters": [
+        {
+          "name": "moduleType",
+          "type": "list",
+          "props": {
+            "jql": {
+              "$select": [
+                { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
+                { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
+              ],
+              "$from": {
+                "table": {
+                  "url": "api/code?where={\"codeType\":\"moduleType\"}",
+                  "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
+                },
+                "$as": "code"
+              }
+            },
+            "resolveJql": {
+              "$select": [
+                { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
+                { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
+              ],
+              "$from": {
+                "table": {
+                  "url": "api/code?where={\"codeType\":\"moduleType\",\"code\":\"{{ value }}\"}",
+                  "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
+                },
+                "$as": "code"
+              }
+            }
+          }
+        },
+        {
+          "name": "salesmanCode",
+          "type": "text"
+        },
+        {
+          "name": "jobDate",
+          "type": "date",
+          "props": {
+            "shortcuts": [
+              {
+                "label": "year-to-date",
+                "func": "year-to-date"
+              },
+              {
+                "label": "current",
+                "shortcuts": [
+                  {
+                    "label": "current year",
+                    "func": {
+                      "key": "current",
+                      "args": { "unit": "year" }
+                    }
+                  },
+                  {
+                    "label": "current month",
+                    "func": {
+                      "key": "current",
+                      "args": { "unit": "month" }
+                    }
+                  }
+                ]
+              },
+              {
+                "label": "last",
+                "shortcuts": [
+                  {
+                    "label": "last year",
+                    "func": {
+                      "key": "last",
+                      "args": { "unit": "year" }
+                    }
+                  },
+                  {
+                    "label": "last 3 month",
+                    "func": {
+                      "key": "last",
+                      "args": { "value": 3, "unit": "month" }
+                    }
+                  }
+                ]
+              },
+              {
+                "label": "coming",
+                "shortcuts": [
+                  {
+                    "label": "coming 7 days",
+                    "func": {
+                      "key": "coming",
+                      "args": { "value": 7, "unit": "day", "startFromNow": true }
+                    }
+                  }
+                ]
+              },
+              {
+                "label": "past",
+                "shortcuts": [
+                  {
+                    "label": "past 7 days",
+                    "func": {
+                      "key": "past",
+                      "args": { "value": 7, "unit": "day" }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "Airline",
+          "type": "autocomplete",
+          "props": {
+            "jql": {
+              "$select": [
+                { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
+                { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
+              ],
+              "$from": {
+                "table": {
+                  "url": "api/code/search?codeType=airline&q={{ q }}",
+                  "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
+                },
+                "$as": "code"
+              }
+            },
+            "resolveJql": {
+              "$select": [
+                { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
+                { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
+              ],
+              "$from": {
+                "table": {
+                  "url": "api/code?where={\"codeType\":\"airline\",\"code\":\"{{ value }}\"}",
+                  "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
+                },
+                "$as": "code"
+              }
+            },
+            "display": "value",
+            "multi": true
+          }
+        }
+      ]
     }
   }]
 }

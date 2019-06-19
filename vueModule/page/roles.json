@@ -3,11 +3,11 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "reportingKey": "roles",
+      "jql": "roles",
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
-      "reportingKey": "roles",
-      "urlFormat": "/role{{ id|if('/', '') }}{{ id }}",
       "newReport": {
         "configurations": {
           "i18nContext": "Reporting",
@@ -20,7 +20,13 @@
             "perPage": 25
           }
         }
-      }
+      },
+      "fieldOptions": [
+        {
+          "key": "id",
+          "hidden": true
+        }
+      ]
     }
   }]
 }

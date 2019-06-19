@@ -3,13 +3,6 @@
   "components": [{
     "is": "TableTool",
     "props": {
-      "clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/{{tableName}}/{{primaryKey}}"
-        }
-      },
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
@@ -26,6 +19,35 @@
             "current": 0,
             "perPage": 25
           }
+        }
+      },
+      "fieldOptions": [
+        {
+          "key": "id",
+          "hidden": true
+        },
+        {
+          "key": "tableName",
+          "hidden": true
+        },
+        {
+          "key": "primaryKey",
+          "hidden": true
+        },
+        {
+          "key": "createdAt",
+          "datetime": "YYYY-MM-DD HH:mm:ss"
+        },
+        {
+          "key": "updatedAt",
+          "datetime": "YYYY-MM-DD HH:mm:ss"
+        }
+      ],
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/{{tableName}}/{{primaryKey}}"
         }
       }
     }

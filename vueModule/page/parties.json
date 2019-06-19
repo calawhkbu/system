@@ -3,17 +3,11 @@
   "components": [{
     "is": "TableTool",
     "props": {
-      "clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/booking/{{id}}"
-        }
-      },
+      "reportingKey": "connections",
+      "jql": "parties",
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
-      "reportingKey": "parties",
       "newReport": {
         "filter": {
           "isActive": true
@@ -28,6 +22,25 @@
             "current": 0,
             "perPage": 25
           }
+        }
+      },
+      "filters": [
+        {
+          "name": "name",
+          "type": "text"
+        }
+      ],
+      "fieldOptions": [
+        {
+          "key": "id",
+          "sql": "pa.id"
+        }
+      ],
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/booking/{{id}}"
         }
       }
     }

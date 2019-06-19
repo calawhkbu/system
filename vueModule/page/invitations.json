@@ -3,17 +3,11 @@
   "components": [{
     "is": "TableTool",
     "props": {
-      "clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/invitation/{{id}}"
-        }
-      },
+      "reportingKey": "invitations",
+      "jql": "invitations",
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
-      "reportingKey": "invitation",
       "newReport": {
         "filters": {
           "isActive": true
@@ -28,6 +22,49 @@
             "current": 0,
             "perPage": 25
           }
+        }
+      },
+      "fieldOptions": [
+        {
+          "key": "userName",
+          "sql": "p.userName"
+        },
+        {
+          "key": "firstName",
+          "sql": "p.firstName"
+        },
+        {
+          "key": "lastName",
+          "sql": "p.lastName"
+        },
+        {
+          "key": "displayName",
+          "sql": "p.displayName"
+        }
+      ],
+      "filters": [
+        {
+          "name": "userName",
+          "type": "text"
+        },
+        {
+          "name": "firstName",
+          "type": "text"
+        },
+        {
+          "name": "lastName",
+          "type": "text"
+        },
+        {
+          "name": "displayName",
+          "type": "text"
+        }
+      ],
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/invitation/{{id}}"
         }
       }
     }
