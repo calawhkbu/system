@@ -11,11 +11,11 @@ const query = new Query({
           type: 'number'
         },
         {
-          name: 'name',
+          name: 'roleName',
           type: 'string'
         },
         {
-          name: 'group',
+          name: 'roleGroup',
           type: 'string'
         }
 			]

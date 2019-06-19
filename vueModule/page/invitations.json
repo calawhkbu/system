@@ -66,7 +66,22 @@
           "func": "push",
           "path": "/invitation/{{id}}"
         }
-      }
+      },
+      "back": "/admin",
+      "icons": [
+        {
+          "icon": "add",
+          "click": [
+            {
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "invitation/create"
+              }
+            }
+          ]
+        }
+      ]
     }
   }]
 }

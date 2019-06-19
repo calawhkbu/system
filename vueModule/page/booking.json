@@ -11,27 +11,13 @@
           "entity",
           "return true"
         ],
-        "speedDialButtons": [
-          {
-            "icon": "map",
-            "title": "Widget.map",
-            "action": [
-              {
-                "type": "dispatch",
-                "otherParams": {
-                  "name": "widget/changeMode",
-                  "mode": "map"
-                }
-              }
-            ]
-          }
-        ],
         "topSlots": [
           {
             "is": "v-btn",
             "props": {
               "flat": true,
-              "icon": true
+              "icon": true,
+              "small": true
             },
             "events": {
               "click.stop": [

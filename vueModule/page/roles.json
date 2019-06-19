@@ -5,6 +5,28 @@
     "props": {
       "reportingKey": "roles",
       "jql": "roles",
+      "back": "/admin",
+      "icons": [
+        {
+          "icon": "add",
+          "click": [
+            {
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "role/create"
+              }
+            }
+          ]
+        }
+      ],
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/role/{{id}}"
+        }
+      },
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
@@ -25,6 +47,12 @@
         {
           "key": "id",
           "hidden": true
+        },
+        {
+          "key": "roleName"
+        },
+        {
+          "key":" roleGroup"
         }
       ]
     }

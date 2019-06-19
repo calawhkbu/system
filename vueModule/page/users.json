@@ -6,11 +6,28 @@
       "reportingKey": "users",
       "jql": "users",
       "back": "/admin",
+      "icons": [
+        {
+          "icon": "add",
+          "click": [
+            {
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "invitation/create"
+              }
+            }
+          ]
+        }
+      ],
       "title": "Users",
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
       "newReport": {
+        "filters": {
+          "isActive": true
+        },
         "configurations": {
           "i18nContext": "Reporting",
           "clickable": true,

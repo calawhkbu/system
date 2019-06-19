@@ -251,11 +251,11 @@ const query = new Query({
           type: 'string'
         },
         {
-          name: 'createdAt',
+          name: 'b.createdAt',
           type: 'Date'
         },
         {
-          name: 'updatedAt',
+          name: 'b.updatedAt',
           type: 'Date'
         }
       ]
