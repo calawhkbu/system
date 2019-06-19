@@ -59,7 +59,7 @@
         {
           "key": "cYCutOffDate",
           "datetime": "YYYY-MM-DD"
-        },
+        }
       ],
       "filters": [],
       "clickFunction": {
