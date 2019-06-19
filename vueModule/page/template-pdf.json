@@ -3,11 +3,11 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "reportingKey": "pdf-templates",
+      "jql": "pdf-templates",
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
-      "reportingKey": "templates",
-      "urlFormat": "/template{{ id|if('/', '') }}{{ id }}",
       "newReport": {
         "configurations": {
           "i18nContext": "Reporting",
@@ -20,7 +20,14 @@
             "perPage": 25
           }
         }
-      }
+      },
+      "fieldOptions": [
+        {
+          "key": "id",
+          "hidden": true
+        }
+      ],
+      "filters": []
     }
   }]
 }

@@ -3,11 +3,13 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "reportingKey": "purchase-orders",
+      "jql": "purchase-orders",
+      "urlFormat": "/purchase-orders{{ id|if('/', '') }}{{ id }}",
+      "hasReports": true,
       "showFilterBar": true,
       "enableShare": true,
       "enableSetting": true,
-      "reportingKey": "purchase-order",
-      "urlFormat": "/purchase-order{{ id|if('/', '') }}{{ id }}",
       "newReport": {
         "configurations": {
           "i18nContext": "Reporting",

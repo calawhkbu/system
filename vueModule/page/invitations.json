@@ -3,11 +3,11 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "reportingKey": "invitations",
+      "jql": "invitations",
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
-      "reportingKey": "invitations",
-      "urlFormat": "/invitation{{ id|if('/', '') }}{{ id }}",
       "newReport": {
         "configurations": {
           "i18nContext": "Reporting",
@@ -20,7 +20,43 @@
             "perPage": 25
           }
         }
-      }
+      },
+      "fieldOptions": [
+        {
+          "key": "userName",
+          "sql": "p.userName"
+        },
+        {
+          "key": "firstName",
+          "sql": "p.firstName"
+        },
+        {
+          "key": "lastName",
+          "sql": "p.lastName"
+        },
+        {
+          "key": "displayName",
+          "sql": "p.displayName"
+        }
+      ],
+      "filters": [
+        {
+          "name": "userName",
+          "type": "text"
+        },
+        {
+          "name": "firstName",
+          "type": "text"
+        },
+        {
+          "name": "lastName",
+          "type": "text"
+        },
+        {
+          "name": "displayName",
+          "type": "text"
+        }
+      ]
     }
   }]
 }

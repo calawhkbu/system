@@ -3,11 +3,11 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "reportingKey": "connections",
+      "jql": "parties",
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
-      "reportingKey": "parties",
-      "urlFormat": "/party{{ id|if('/', '') }}{{ id }}",
       "newReport": {
         "configurations": {
           "i18nContext": "Reporting",
@@ -20,7 +20,13 @@
             "perPage": 25
           }
         }
-      }
+      },
+      "filters": [
+        {
+          "name": "name",
+          "type": "text"
+        }
+      ]
     }
   }]
 }

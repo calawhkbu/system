@@ -3,11 +3,13 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "reportingKey": "bookings",
+      "jql": "bookings",
+      "urlFormat": "/bookings{{ id|if('/', '') }}{{ id }}",
+      "hasReports": true,
       "showFilterBar": true,
       "enableShare": true,
       "enableSetting": true,
-      "reportingKey": "bookings",
-      "urlFormat": "/bookings{{ id|if('/', '') }}{{ id }}",
       "newReport": {
         "configurations": {
           "i18nContext": "Reporting",
@@ -20,7 +22,8 @@
             "perPage": 25
           }
         }
-      }
+      },
+      "filters": []
     }
   }]
 }
