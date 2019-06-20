@@ -59,6 +59,14 @@
         {
           "key": "cYCutOffDate",
           "datetime": "YYYY-MM-DD"
+        },
+        {
+          "key": "createdAt",
+          "sql": "b.createdAt"
+        },
+        {
+          "key": "updatedAt",
+          "sql": "b.updatedAt"
         }
       ],
       "filters": [],
