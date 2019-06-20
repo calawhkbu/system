@@ -1,6 +1,49 @@
 {
   "layout": "MainLayout",
   "components": [
-
+    {
+      "initUrl": "api/user/{{id}}",
+      "saveUrl": "api/user",
+      "primaryKey": "id",
+      "topSlots": [
+        {
+          "is": "v-btn",
+          "props": {
+            "flat": true,
+            "icon": true
+          },
+          "events": {
+            "click.stop": [
+              {
+                "type": "router",
+                "otherParams": {
+                  "func": "go",
+                  "go": -1
+                }
+              }
+            ]
+          },
+          "slots": [
+            {
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }
+          ]
+        },
+        {
+          "is": "I18nText",
+          "props": {
+            "class": "headline",
+            "i18nKey": "UserPage.title",
+            "swig": true
+          }
+        }
+      ],
+      "components": {
+        "assignment": []
+      }
+    }
   ]
 }

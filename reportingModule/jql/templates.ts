@@ -1,35 +1,34 @@
 import { Query, TableOrSubquery } from 'node-jql'
 
 const query = new Query({
-  $distinct: true,
   $from: new TableOrSubquery({
     table: {
       method: 'POST',
-      url: 'q/person',
+      url: 'q/template',
       columns: [
         {
-          name: 'pe.id',
+          name: 'id',
           type: 'number'
         },
         {
-          name: 'userName',
+          name: 'templateName',
           type: 'string'
         },
         {
-          name: 'firstName',
+          name: 'fileType',
           type: 'string'
         },
         {
-          name: 'lastName',
+          name: 'extension',
           type: 'string'
         },
         {
-          name: 'displayName',
+          name: 'format',
           type: 'string'
         }
       ]
     },
-    $as: 'user'
+    $as: 'template'
   })
 })
 

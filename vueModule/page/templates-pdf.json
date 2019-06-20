@@ -3,14 +3,16 @@
   "components": [{
     "is": "TableTool",
     "props": {
-      "reportingKey": "pdf-templates",
-      "jql": "pdf-templates",
+      "reportingKey": "templates",
+      "jql": "templates",
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
       "newReport": {
         "filters": {
-          "extension": "pdf",
+          "fileType": {
+            "value": "pdf"
+          },
           "isActive": true
         },
         "configurations": {
@@ -31,7 +33,19 @@
           "hidden": true
         }
       ],
-      "filters": []
+      "filters": [
+        {
+          "name": "templateName",
+          "type": "text"
+        }
+      ],
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/template/{{id}}"
+        }
+      }
     }
   }]
 }

@@ -2,8 +2,8 @@
   "layout": "MainLayout",
   "components": [
     {
-      "initUrl": "api/role/{{id}}",
-      "saveUrl": "api/role",
+      "initUrl": "api/template/{{id}}",
+      "saveUrl": "api/template",
       "primaryKey": "id",
       "topSlots": [
         {
@@ -36,7 +36,7 @@
           "is": "I18nText",
           "props": {
             "class": "headline",
-            "i18nKey": "UserPage.title",
+            "i18nKey": "TemplatePage.title",
             "swig": true
           }
         }

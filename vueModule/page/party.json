@@ -1,6 +1,54 @@
 {
   "layout": "MainLayout",
   "components": [
-    
+    {
+      "is": "Widget",
+      "props": {
+        "initUrl": "api/party/{{id}}",
+        "saveUrl": "api/party",
+        "primaryKey": "id",
+        "canEdit": false,
+        "topSlots": [
+          {
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true,
+              "small": true
+            },
+            "events": {
+              "click.stop": [
+                {
+                  "type": "router",
+                  "otherParams": {
+                    "func": "push",
+                    "path": "/parties"
+                  }
+                }
+              ]
+            },
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
+                }
+              }
+            ]
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "class": "headline",
+              "i18nKey": "PartyPage.title",
+              "swig": true
+            }
+          }
+        ],
+        "components": {
+          "assignment": []
+        }
+      }
+    }
   ]
 }

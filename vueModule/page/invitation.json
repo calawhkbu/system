@@ -7,7 +7,6 @@
           "initUrl": "api/invitation/{{id}}",
           "saveUrl": "api/invitation",
           "primaryKey": "id",
-          "bookmark": true,
           "topSlots": [
             {
               "is": "v-btn",
@@ -101,12 +100,9 @@
                   }
                 ]
               }
-            ],
-            "map": [
             ]
           }
         }
       }
     ]
   }
-  
