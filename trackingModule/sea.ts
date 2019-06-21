@@ -22,6 +22,12 @@ export default class BaseAirTrackingService {
     partyGroupCode: string,
     trackingForm: { carrierCode: string, masterNo: string, carrierBookingNo?: string[], containerNo?: string[], departureDateEstimated: string }
   ) {
+    const trackingReference = await this.trackingReferenceService.findOne({
+      where: { partyGroupCode, trackingType: 'SEA', masterNo: trackingForm.masterNo }
+    })
+    if (trackingReference) {
+      return trackingReference
+    }
     if (!trackingForm.carrierCode) {
       throw new Error('No Carrier Code')
     }

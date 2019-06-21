@@ -22,24 +22,33 @@ export default class BaseAirTrackingService {
     partyGroupCode: string,
     trackingForm: { carrierCode?: string, masterNo: string, departureDateEstimated: string }
   ) {
-    const split = trackingForm.masterNo.split('-')
-    if (split.length > 2 || (split.length === 2 && trackingForm.masterNo.length !== 12) || (split.length === 1 && trackingForm.masterNo.length !== 11)) {
-      throw new Error('Wrong format in master no')
+    const trackingReference = await this.trackingReferenceService.findOne({
+      where: { partyGroupCode, trackingType: 'AIR', masterNo: trackingForm.masterNo }
+    })
+    if (trackingReference) {
+      return trackingReference
     }
+    const masterNo = trackingForm.masterNo
     let carrierCode1 = null
-    if (split.length === 2 && split[0].length === 3) {
+    if (masterNo.includes('-')) {
+      const split = masterNo.split('-')
+      if (split.length > 2) {
+        throw new Error('Wrong format in master no. (EXAMPLE: XXX-XXXXXXXX OR XXXXXXXXXXX)')
+      }
+      if (trackingForm.masterNo.length !== 12) {
+        throw new Error('mast no should have aleast 12 charachters. (EXAMPLE: XXX-XXXXXXXX OR XXXXXXXXXXX)')
+      }
       carrierCode1 = split[0]
-    }
-    if (split.length === 1) {
-      carrierCode1 = trackingForm.masterNo.substring(0, 3)
+    } else {
+      if (trackingForm.masterNo.length !== 11) {
+        throw new Error('mast no should have aleast 12 charachters. (EXAMPLE: XXX-XXXXXXXX OR XXXXXXXXXXX)')
+      }
+      carrierCode1 = masterNo.substring(0, 2)
     }
     if (!carrierCode1) {
       throw new Error('Carrier not found')
     }
-    console.log(carrierCode1)
-    console.log(typeof carrierCode1)
     const code = await this.codeMasterService.findOne({ where: { codeType: 'yundang-carrier-air', code: carrierCode1 } })
-    console.log(code)
     if (!code) {
       throw new Error('Carrier not support')
     }
@@ -49,17 +58,14 @@ export default class BaseAirTrackingService {
       if (!code2) {
         throw new Error('Carrier not support')
       }
-      if (!trackingForm.masterNo) {
-        throw new Error('No MasterNo')
-      }
     }
     // TODO masterno validation
     return await this.trackingReferenceService.save({
       partyGroupCode,
       trackingType: 'AIR',
       carrierCode: code.name,
-      carrierCode2: code2 ? code2.name : null,
-      masterNo: trackingForm.masterNo,
+      ...(code2 ? { carrierCode2:  code2.name } : {}),
+      masterNo,
       carrierBookingNo: null,
       containerNo: null,
       departureDateEstimated: trackingForm.departureDateEstimated,

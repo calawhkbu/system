@@ -170,27 +170,27 @@
               },
               "slots": [
                 {
-                  "is": "WidgetCard",
+                  "is": "AsyncComponent",
                   "props": {
-                    "titleI18nKey": "Booking.TrackingStatus"
+                    "layoutName": "booking/tracking"
                   }
                 },
                 {
-                  "is": "WidgetCard",
+                  "is": "AsyncComponent",
                   "props": {
-                    "titleI18nKey": "Booking.Workflow"
+                    "layoutName": "booking/alert"
                   }
                 },
                 {
-                  "is": "WidgetCard",
+                  "is": "AsyncComponent",
                   "props": {
-                    "titleI18nKey": "Booking.Alert"
+                    "layoutName": "booking/workflow"
                   }
                 },
                 {
-                  "is": "WidgetCard",
+                  "is": "AsyncComponent",
                   "props": {
-                    "titleI18nKey": "Booking.Document"
+                    "layoutName": "booking/document"
                   }
                 }
               ]

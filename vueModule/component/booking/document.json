@@ -1,3 +1,5 @@
 {
-  
+  "layout": "WidgetCard",
+  "titleI18nKey": "Booking.Document",
+  "widgetKey": "DocumentCard"
 }
