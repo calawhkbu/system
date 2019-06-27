@@ -26,6 +26,11 @@
       },
       "fieldOptions": [
         {
+          "key": "id",
+          "sql": "i.id",
+          "hidden": true
+        },
+        {
           "key": "userName",
           "sql": "p.userName"
         },
@@ -40,6 +45,20 @@
         {
           "key": "displayName",
           "sql": "p.displayName"
+        },
+        {
+          "key": "status",
+          "sql": "i.status"
+        },
+        {
+          "key": "createdAt",
+          "sql": "i.createdAt",
+          "hidden": true
+        },
+        {
+          "key": "updatedAt",
+          "sql": "i.updatedAt",
+          "hidden": true
         }
       ],
       "filters": [

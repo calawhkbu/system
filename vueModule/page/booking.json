@@ -196,9 +196,98 @@
               ]
             }
           ],
+          "create": [
+            {
+              "is": "WidgetPanelStepper",
+              "props": {
+                "steps": [
+                  {
+                    "id": "BookingForm.GeneralForm",
+                    "components": [
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/generalForm"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "BookingForm.PartyForm",
+                    "components": [
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/partyForm"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "BookingForm.DateForm",
+                    "components": [
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/dateForm"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "BookingForm.ContainerForm",
+                    "components": [
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/containerForm"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "BookingForm.referenceForm",
+                    "components": [
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/referenceForm"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "BookingForm.Preview",
+                    "components": [
+                      {
+                        "is": "WidgetPreview",
+                        "props": {
+                          "type": "booking-preview"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "BookingForm.TermAndCondition",
+                    "components": [
+                      {
+                        "is": "WidgetPreview",
+                        "props": {
+                          "type": "booking-term"
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "initUrl": "api/booking/{{id}}",
+                "saveUrl": "api/booking",
+                "primaryKey": "id"
+              }
+            }
+          ],
           "edit": [
             {
-              "is": "WidgetStepper",
+              "is": "WidgetPanelStepper",
               "props": {
                 "steps": [
                   {

@@ -33,6 +33,10 @@ query.register('id', new Query({
   $where: new BinaryExpression({ left: new ColumnExpression(['pa', 'id']), operator: '=' })
 })).register('value', 0)
 
+query.register('isBranch', new Query({
+  $where: new BinaryExpression({ left: new ColumnExpression(['pa', 'isBranch']), operator: '=' })
+})).register('value', 0)
+
 query.register('name', new Query({
   $where: new LikeExpression({ left: new ColumnExpression(['pa', 'name']), operator: 'REGEXP' })
 })).register('value', 0)

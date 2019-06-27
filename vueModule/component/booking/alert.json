@@ -1,5 +1,5 @@
 {
   "layout": "WidgetCard",
-  "titleI18nKey": "Booking.Alert",
+  "titleI18nKey": "BookingPage.Alert",
   "widgetKey": "AlertCard"
 }

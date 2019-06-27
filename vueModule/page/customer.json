@@ -90,7 +90,7 @@
           ],
           "edit": [
             {
-              "is": "WidgetEditForm",
+              "is": "WidgetPanel",
               "props": {
                 "initUrl": "api/partyGroup/{{id}}",
                 "saveUrl": "api/partyGroup",
@@ -132,7 +132,7 @@
 
             }
           ],
-          "created": [
+          "create": [
 
           ]
         }

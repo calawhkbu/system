@@ -44,6 +44,53 @@
             }
           ],
           "components": {
+            "create": [
+              {
+                "is": "WidgetPanel",
+                "props": {
+                  "initUrl": "api/invitation/{{id}}",
+                  "saveUrl": "api/invitation/create/create",
+                  "primaryKey": "id"
+                },
+                "slots": [
+                  {
+                    "name": "default",
+                    "is": "DynamicComponent",
+                    "props": {
+                      "components": [
+                        {
+                          "is": "AsyncComponent",
+                          "props": {
+                            "style": {
+                              "margin-bottom": "25px"
+                            },
+                            "layoutName": "invitation/personForm"
+                          }
+                        },
+                        {
+                          "is": "AsyncComponent",
+                          "props": {
+                            "style": {
+                              "margin-bottom": "25px"
+                            },
+                            "layoutName": "invitation/contactForm"
+                          }
+                        },
+                        {
+                          "is": "AsyncComponent",
+                          "props": {
+                            "style": {
+                              "margin-bottom": "25px"
+                            },
+                            "layoutName": "invitation/partyForm"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ],
             "assignment": [
               {
                 "is": "div",

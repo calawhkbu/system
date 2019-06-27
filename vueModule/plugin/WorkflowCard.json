@@ -1,0 +1,11 @@
+{
+  "layout": "WorkflowCard",
+  "remote": true,
+  "params": [
+    "context",
+    "return { tableName: context.$route.params.page, primaryKey: context.$route.params.params }"
+  ],
+  "axios": {
+    "url": "api/workflow/{{tableName}}/{{primaryKey}}"
+  }
+}

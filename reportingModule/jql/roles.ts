@@ -17,8 +17,12 @@ const query = new Query({
         {
           name: 'roleGroup',
           type: 'string'
+        },
+        {
+          name: 'filter',
+          type: 'string'
         }
-			]
+      ]
     },
     $as: 'role'
   })

@@ -7,20 +7,8 @@
       "jql": "roles",
       "back": "/admin",
       "icons": [
-        {
-          "icon": "add",
-          "click": [
-            {
-              "type": "router",
-              "otherParams": {
-                "func": "push",
-                "path": "role/create"
-              }
-            }
-          ]
-        }
       ],
-      "clickFunction": {
+      "_clickFunction": {
         "type": "router",
         "otherParams": {
           "func": "push",
@@ -53,6 +41,9 @@
         },
         {
           "key":" roleGroup"
+        },
+        {
+          "key": "filter"
         }
       ]
     }

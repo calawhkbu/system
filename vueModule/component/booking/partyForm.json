@@ -7,16 +7,25 @@
     {
       "is": "WidgetForms",
       "props": {
-        "mode": "Party",
-        "orderBy": {
-          "shipper": 0,
-          "consignee": 10,
-          "forwarder": 20,
-          "agent": 30,
-          "notifyParty": 40
-        },
         "formProps": {
           "class": "xs-12 md-6"
+        },
+        "keyProps": {
+          "key": "Party",
+          "fixKey": [
+            "shipper",
+            "consignee",
+            "forwarder",
+            "agent",
+            "notifyParty"
+          ],
+          "orderBy": {
+            "shipper": 0,
+            "consignee": 10,
+            "forwarder": 20,
+            "agent": 30,
+            "notifyParty": 40
+          }
         },
         "extraContainerProps": {
           "class": "xs-12 md-6"
@@ -28,13 +37,11 @@
             "class": "xs-12",
             "props": {
               "url": "api/party/query/party",
-              "searchValueParams": {
-                
-              },
+              "searchValueParams": "{ \"subqueries\": { \"id\": {{query}} } }",
               "searchTextParams": {
                 "subqueries": {
                   "q": {
-                    "value": "&#123;&#123;query&#125;&#125;"
+                    "value": "{{query}}"
                   }
                 },
                 "limit": 5

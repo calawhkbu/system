@@ -1,5 +1,5 @@
 {
   "layout": "WidgetCard",
-  "titleI18nKey": "Booking.Workflow",
+  "titleI18nKey": "BookingPage.Workflow",
   "widgetKey": "WorkflowCard"
 }

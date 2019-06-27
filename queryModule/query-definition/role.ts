@@ -5,6 +5,10 @@ const query = new QueryDef(new Query({
   $from: new TableOrSubquery(['role', 'r'])
 }))
 
+query.register('id', new Query({
+  $where: new BinaryExpression({ left: new ColumnExpression(['r', 'id']), operator: '=' })
+})).register('value', 0)
+
 query.register('partyGroupCode', new Query({
   $where: new BinaryExpression({ left: new ColumnExpression(['r', 'partyGroupCode']), operator: '=' })
 })).register('value', 0)

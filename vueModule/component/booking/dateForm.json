@@ -10,59 +10,69 @@
         "formProps": {
           "class": "xs-12"
         },
-        "mode": "Date",
-        "orderBy": ["", "Actual", "Estimated"],
-        "orderByType": "value",
+        "keyProps": {
+          "key": "Date",
+          "fixKey": [
+            "cargoReady",
+            "cYCutOff",
+            "departure",
+            "arrival"
+          ],
+          "orderBy": ["", "Actual", "Estimated"]
+        },
         "params": {
           "type": {
-            "cargoReadyDate": "date",
+            "cargoReady": "date",
             "cYCutOff": "date",
             "departure": "datetime",
             "arrival": "datetime"
+          },
+          "hiddenFullDate": {
+            "cargoReady": "",
+            "cYCutOff": "",
+            "departure": "hidden",
+            "arrival": "hidden"
+          },
+          "hiddenDateTime": {
+            "cargoReady": "hidden",
+            "cYCutOff": "hidden",
+            "departure": "",
+            "arrival": ""
           }
         },
         "fields": [
           {
-            "label": "Widget.{{key}}Date",
+            "label": "Widget.date",
             "name": "{{key}}Date",
             "component": "DateTimePicker",
-            "class": "xs-12 md-8",
-            "hiddenWhen": {
-              "{{key}}Date": null
-            },
+            "class": "xs-12 md-8 {{hiddenFullDate}}",
             "props": {
               "type": "{{type}}",
               "utc": true
             }
           },
           {
-            "label": "Widget.{{key}}DateEstimated",
+            "label": "Widget.estimatedDate",
             "name": "{{key}}DateEstimated",
             "component": "DateTimePicker",
-            "class": "xs-12 md-4",
-            "hiddenWhen": {
-              "{{key}}DateEstimated": null
-            },
+            "class": "xs-12 md-4 {{hiddenDateTime}}",
             "props": {
               "type": "{{type}}",
               "utc": true
             }
           },
           {
-            "label": "Widget.{{key}}DateActual",
+            "label": "Widget.actualDate",
             "name": "{{key}}DateActual",
             "component": "DateTimePicker",
-            "class": "xs-12 md-4",
-            "hiddenWhen": {
-              "{{key}}DateActual": null
-            },
+            "class": "xs-12 md-4 {{hiddenDateTime}}",
             "props": {
               "type": "{{type}}",
               "utc": true
             }
           },
           {
-            "label": "Widget.{{key}}DateRemark",
+            "label": "Widget.remark",
             "name": "{{key}}Remark",
             "component": "v-text-field",
             "class": "xs-12 md-4"

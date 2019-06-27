@@ -4,7 +4,7 @@
   "components": [
     {
       "is": "WidgetForm",
-      "class": "xs-12 md-6",
+      "class": "xs-12",
       "props": {
         "fields": [
           {
@@ -70,7 +70,7 @@
     },
     {
       "is": "WidgetForm",
-      "class": "xs-12 md-6",
+      "class": "xs-12",
       "props": {
         "fields": [
           {

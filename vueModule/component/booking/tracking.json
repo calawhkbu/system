@@ -1,5 +1,5 @@
 {
   "layout": "WidgetCard",
-  "titleI18nKey": "Booking.TrackingStatus",
+  "titleI18nKey": "BookingPage.TrackingStatus",
   "widgetKey": "TrackingStatusCard"
 }

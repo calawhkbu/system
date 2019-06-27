@@ -4,10 +4,7 @@
     "context",
     "const references = context.$store.state.widget.data ? context.$store.state.widget.data.bookingReference : [];const trackingNo = references.length > 0 ? references.filter((reference) => (reference.refName === 'MAWB' || references.refName === 'masterNo')).map(r => r.refDescription) : [];return { trackingNo }"
   ],
-  "axiosParams": "{ \"url\": \"/tracking/get\", \"method\": \"post\", \"data\": { \"trackingNo\": [\"{{trackingNo|striptags|join('\",\"')}}\"] } }",
-  "components": [
-    {
-      "is": ""
-    }
-  ]
+  "axios": "{ \"url\": \"/tracking/get\", \"method\": \"post\", \"data\": { \"trackingNo\": [\"{{trackingNo|striptags|join('\",\"')}}\"] } }",
+  "showContainer": true,
+  "canManualInput": true
 }
