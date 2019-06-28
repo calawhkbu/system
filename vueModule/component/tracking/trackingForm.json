@@ -1,0 +1,72 @@
+{
+  "layout": "Form",
+  "fields": [
+    {
+      "label": "TrackingPlugin.estimatedDepartureDate",
+      "name": "estimatedDepartureDate",
+      "component": "DateTimePicker",
+      "class": "xs-6"
+    },
+    {
+      "label": "TrackingPlugin.actualDepartureDate",
+      "name": "actualDepartureDate",
+      "component": "DateTimePicker",
+      "class": "xs-6"
+    },
+    {
+      "label": "TrackingPlugin.estimatedArrivalDate",
+      "name": "estimatedArrivalDate",
+      "component": "DateTimePicker",
+      "class": "xs-6"
+    },
+    {
+      "label": "TrackingPlugin.actualArrivalDate",
+      "name": "actualArrivalDate",
+      "component": "DateTimePicker",
+      "class": "xs-6"
+    },
+    {
+      "label": "TrackingPlugin.history",
+      "name": "history",
+      "component": "TableField",
+      "class": "xs-12",
+      "props": {
+        "fields": [
+          {
+            "label": "TrackingPlugin.statusCode",
+            "name": "statusCode",
+            "component": "AsyncSelect",
+            "props": {
+              "url": "api/code/query/code_master",
+              "params": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "trackingStatus"
+                  }
+                }
+              },
+              "item-text": "name",
+              "item-value": "code"
+            }
+          },
+          {
+            "label": "TrackingPlugin.status",
+            "component": "v-text-field"
+          },
+          {
+            "label": "TrackingPlugin.statusDescription",
+            "component": "v-text-field"
+          },
+          {
+            "label": "TrackingPlugin.statusPlace",
+            "component": "v-text-field"
+          },
+          {
+            "label": "TrackingPlugin.pieces",
+            "component": "v-text-field"
+          }
+        ]
+      }
+    }
+  ]
+}

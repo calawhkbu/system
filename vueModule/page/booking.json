@@ -200,6 +200,7 @@
             {
               "is": "WidgetPanelStepper",
               "props": {
+                "haveTerms": true,
                 "steps": [
                   {
                     "id": "BookingForm.GeneralForm",
@@ -273,7 +274,9 @@
                       {
                         "is": "WidgetPreview",
                         "props": {
-                          "type": "booking-term"
+                          "type": "booking-term",
+                          "isTerm": true,
+                          "confirmTermI18nText": "BookingPage.confirmTerm"
                         }
                       }
                     ]
