@@ -1,49 +1,164 @@
 {
-  "layout": "MainLayout",
-  "components": [
-    {
-      "initUrl": "api/user/{{id}}",
-      "saveUrl": "api/user",
-      "primaryKey": "id",
-      "topSlots": [
-        {
-          "is": "v-btn",
-          "props": {
-            "flat": true,
-            "icon": true
-          },
-          "events": {
-            "click.stop": [
-              {
-                "type": "router",
-                "otherParams": {
-                  "func": "go",
-                  "go": -1
-                }
-              }
-            ]
-          },
-          "slots": [
+    "layout": "MainLayout",
+    "components": [
+      {
+        "is": "Widget",
+        "props": {
+          "initUrl": "api/user/{{id}}",
+          "saveUrl": "api/user",
+          "primaryKey": "id",
+          "topSlots": [
             {
-              "is": "Icon",
+              "is": "v-btn",
               "props": {
-                "icon": "arrow_back"
+                "flat": true,
+                "icon": true
+              },
+              "events": {
+                "click.stop": [
+                  {
+                    "type": "router",
+                    "otherParams": {
+                      "func": "go",
+                      "go": -1
+                    }
+                  }
+                ]
+              },
+              "slots": [
+                {
+                  "is": "Icon",
+                  "props": {
+                    "icon": "arrow_back"
+                  }
+                }
+              ]
+            },
+            {
+              "is": "I18nText",
+              "props": {
+                "class": "headline",
+                "i18nKey": "UserPage.title",
+                "swig": true
               }
             }
-          ]
-        },
-        {
-          "is": "I18nText",
-          "props": {
-            "class": "headline",
-            "i18nKey": "UserPage.title",
-            "swig": true
+          ],
+          "components": {
+            "create": [
+              {
+                "is": "WidgetPanel",
+                "props": {
+                  "initUrl": "api/user/{{id}}",
+                  "saveUrl": "api/user",
+                  "primaryKey": "id"
+                },
+                "slots": [
+                  {
+                    "name": "default",
+                    "is": "DynamicComponent",
+                    "props": {
+                      "components": [
+                        {
+                          "is": "AsyncComponent",
+                          "props": {
+                            "style": {
+                              "margin-bottom": "25px"
+                            },
+                            "layoutName": "invitationAndUser/personForm"
+                          }
+                        },
+                        {
+                          "is": "AsyncComponent",
+                          "props": {
+                            "style": {
+                              "margin-bottom": "25px"
+                            },
+                            "layoutName": "invitationAndUser/contactForm"
+                          }
+                        },
+                        {
+                          "is": "AsyncComponent",
+                          "props": {
+                            "style": {
+                              "margin-bottom": "25px"
+                            },
+                            "layoutName": "invitationAndUser/partyForm"
+                          }
+                        },
+                        {
+                          "is": "AsyncComponent",
+                          "props": {
+                            "style": {
+                              "margin-bottom": "25px"
+                            },
+                            "layoutName": "invitationAndUser/roleForm"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ],
+            "assignment": [
+                {
+                  "is": "WidgetPanel",
+                  "props": {
+                    "initUrl": "api/user/{{id}}",
+                    "saveUrl": "api/user",
+                    "primaryKey": "id"
+                  },
+                  "slots": [
+                    {
+                      "name": "default",
+                      "is": "DynamicComponent",
+                      "props": {
+                        "components": [
+                          {
+                            "is": "AsyncComponent",
+                            "props": {
+                              "style": {
+                                "margin-bottom": "25px"
+                              },
+                              "layoutName": "invitationAndUser/personForm"
+                            }
+                          },
+                          {
+                            "is": "AsyncComponent",
+                            "props": {
+                              "style": {
+                                "margin-bottom": "25px"
+                              },
+                              "layoutName": "invitationAndUser/contactForm"
+                            }
+                          },
+                          {
+                            "is": "AsyncComponent",
+                            "props": {
+                              "style": {
+                                "margin-bottom": "25px"
+                              },
+                              "layoutName": "invitationAndUser/partyForm"
+                            }
+                          },
+                          {
+                            "is": "AsyncComponent",
+                            "props": {
+                              "style": {
+                                "margin-bottom": "25px"
+                              },
+                              "layoutName": "invitationAndUser/roleForm"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+
+            ]
           }
         }
-      ],
-      "components": {
-        "assignment": []
       }
-    }
-  ]
-}
+    ]
+  }

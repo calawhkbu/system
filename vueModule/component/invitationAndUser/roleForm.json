@@ -1,0 +1,35 @@
+{
+  "layout": "v-card",
+  "components": [
+    {
+      "is": "WidgetForm",
+      "props": {
+        "fields": [
+          {
+            "label": "InvitationAndUserForm.Roles",
+            "name": "roles",
+            "component": "AsyncAutoSuggest",
+            "props": {
+              "multiple": true,
+              "url": "api/role",
+              "searchValueParams": "{\"where\": { \"id\": {{query}} }}",
+              "searchTextParams": {
+                "where": {
+                  "roleName": {
+                    "$regexp": "{{query}}"
+                  }
+                },
+                "limit": 5
+              },
+              "cache-items": true,
+              "hide-no-data": true,
+              "hide-details": true,
+              "item-text": "roleName",
+              "item-value": "id"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
