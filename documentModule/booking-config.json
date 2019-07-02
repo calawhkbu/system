@@ -1,0 +1,75 @@
+{
+
+    "tableName" : "booking",
+
+    "defaultDocument" : {
+
+        "allowFileType" : ["image/png","image/gif","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+        "allowFillTemplate" : false
+
+    },
+
+    "documentList" : [
+
+        {
+
+            "fileName" : "testDoc",
+            "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+
+            "allowFillTemplate" : true,
+            "templateName" : "testDoc"
+        },
+
+        {
+            "fileName" : "Shipping Advice",
+            "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
+
+
+            "allowFillTemplate" : false
+        },
+        {
+            "fileName" : "Print Invoice",
+            "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
+
+
+            "allowFillTemplate" : false
+        },
+        {
+            "fileName" : "Pro Forma Invoice",
+            "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
+
+
+            "allowFillTemplate" : false
+        },
+        {
+            "fileName" : "Packing List",
+            "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
+
+
+            "allowFillTemplate" : false
+        },
+        {
+            "fileName" : "Load Plan",
+            "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
+
+
+            "allowFillTemplate" : false
+        },
+        {
+            "fileName" : "Shipping Instructions",
+            "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
+
+
+            "allowFillTemplate" : false
+        },
+        {
+            "fileName" : "House Bill",
+            "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
+
+
+            "allowFillTemplate" : false
+        }
+
+    ]
+
+}

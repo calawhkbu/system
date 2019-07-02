@@ -1,0 +1,23 @@
+
+{
+
+    "charLimit" : 50,
+
+    "paginator" : 
+    {
+        "pageLimit" : 10
+    },
+
+    "attribute" :{
+
+        "booking" : ["bookingNo", "moduleTypeCode"],
+
+        "shipment" : [],
+
+        "po" : []
+
+
+    }
+
+
+}

@@ -3,6 +3,7 @@
 
         "alertCategory": "Message",
         "alertType": "bookingMessage",
+        "tableName" : "booking",
         "templatePath":"message/booking-message",
         "severity" : "medium",
 
@@ -29,6 +30,7 @@
 
         "alertCategory": "Message",
         "alertType": "shipmentMessage",
+        "tableName" : "shipment",
         "templatePath":"message/shipment-message",
         "severity" : "medium",
 
@@ -58,9 +60,14 @@
         "tableName" : "booking",
         "defaultSql" : {
 
-            "where" :{
-                "forwarderPartyId" : [{{ partyIdList }}],
-                "id" : 1
+            "conditions" : {
+                "classname": "BinaryExpression",
+                "left": {
+                    "classname": "ColumnExpression",
+                    "name": "b.id"
+                },
+                "operator": "=",
+                "right": 1
             }
 
         },
