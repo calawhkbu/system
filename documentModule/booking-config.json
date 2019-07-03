@@ -2,7 +2,7 @@
 
     "tableName" : "booking",
 
-    "defaultDocument" : {
+    "defaultDocumentConfig" : {
 
         "allowFileType" : ["image/png","image/gif","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
         "allowFillTemplate" : false

@@ -16,12 +16,6 @@ module.exports = {
             handlers:[{name:"Alerts",code:"bookingEmail"}]
         },
         {
-            displayName:"Create Authentication",
-            type: "create_authentication",
-            on:false,
-            handlers:[{name:"Echo data",code:"echoData"}]
-        },
-        {
             displayName:"Update Booking",
             type: "update_booking",
             on:false,
