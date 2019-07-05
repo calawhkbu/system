@@ -1,69 +1,47 @@
 {
 
-    "tableName" : "booking",
+    "tableName" : "shipment",
 
     "defaultDocumentConfig" : {
 
-        "allowFileType" : ["image/png","image/gif","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+        "allowFileType" : ["image/png","image/gif","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
         "allowFillTemplate" : false
 
     },
 
     "documentList" : [
 
-        {
-
-            "fileName" : "testDoc",
-            "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
-
-            "allowFillTemplate" : true,
-            "templateName" : "testDoc"
-        },
 
         {
-            "fileName" : "Shipping Advice",
+            "fileName" : "Invoice",
             "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
 
 
             "allowFillTemplate" : false
         },
         {
-            "fileName" : "Print Invoice",
+            "fileName" : "FCL Document",
             "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
 
 
             "allowFillTemplate" : false
         },
         {
-            "fileName" : "Pro Forma Invoice",
+            "fileName" : "LCL Document",
             "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
 
 
             "allowFillTemplate" : false
         },
         {
-            "fileName" : "Packing List",
+            "fileName" : "MBL begins with KKL and *CL Document",
             "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
 
 
             "allowFillTemplate" : false
         },
         {
-            "fileName" : "Load Plan",
-            "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
-
-
-            "allowFillTemplate" : false
-        },
-        {
-            "fileName" : "Shipping Instructions",
-            "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
-
-
-            "allowFillTemplate" : false
-        },
-        {
-            "fileName" : "House Bill",
+            "fileName" : "MBL begins with MOL Document & CY",
             "allowFileType" : ["image/png","image/gif","image/jpeg","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
 
 
