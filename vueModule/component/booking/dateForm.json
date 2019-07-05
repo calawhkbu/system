@@ -57,7 +57,7 @@
             "component": "DateTimePicker",
             "class": "xs-12 md-4 {{hiddenDateTime}}",
             "props": {
-              "type": "{{type}}",
+              "type": "date",
               "utc": true
             }
           },
@@ -67,7 +67,7 @@
             "component": "DateTimePicker",
             "class": "xs-12 md-4 {{hiddenDateTime}}",
             "props": {
-              "type": "{{type}}",
+              "type": "datetime",
               "utc": true
             }
           },

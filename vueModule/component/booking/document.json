@@ -1,5 +1,61 @@
 {
-  "layout": "WidgetCard",
-  "titleI18nKey": "BookingPage.Documents",
-  "widgetKey": "DocumentCard"
+  "layout": "v-card",
+  "style": {
+    "margin-bottom": "25px"
+  },
+  "components": [
+    {
+      "is": "v-card-title",
+      "props": {
+        "class": "headline",
+        "style": {
+          "padding": "6px"
+        }
+      },
+      "slots": [
+        {
+          "is": "I18nText",
+          "props": {
+            "i18nContext": "Document",
+            "i18nKey": "title"
+          }
+        }
+      ]
+    },
+    {
+      "is": "v-divider"
+    },
+    {
+      "is": "Plugin",
+      "props": {
+        "lazy": true,
+        "summaryContainer": "v-card-text",
+        "summaryContainerProps": {
+          "style": {
+            "padding": "6px"
+          }
+        },
+        "width": "50%",
+        "remote": true,
+        "axios": {
+          "url": "api/document/document/{{tableName}}/{{primaryKey}}"
+        },
+        "i18nContext": "Document",
+        "idKey": "id",
+        "iconType": "",
+        "icon": "alertCategory",
+        "iconMap": {
+          "Exception": "notification_important",
+          "Message": "message"
+        },
+        "titleKey": "alertType",
+        "subTitleKeys": [
+          { "key": "createdAt", "is": "Datetime" }
+        ],
+        "actions": [
+          { "key": "download", "icon": "cloud_download" }
+        ]
+      }
+    }
+  ]
 }

@@ -1,5 +1,67 @@
 {
-  "layout": "WidgetCard",
-  "titleI18nKey": "BookingPage.Alert",
-  "widgetKey": "AlertCard"
+  "layout": "v-card",
+  "style": {
+    "margin-bottom": "25px"
+  },
+  "components": [
+    {
+      "is": "v-card-title",
+      "props": {
+        "class": "headline",
+        "style": {
+          "padding": "6px"
+        }
+      },
+      "slots": [
+        {
+          "is": "I18nText",
+          "props": {
+            "i18nContext": "Alert",
+            "i18nKey": "title"
+          }
+        }
+      ]
+    },
+    {
+      "is": "v-divider"
+    },
+    {
+      "is": "Plugin",
+      "props": {
+        "lazy": true,
+        "transition": "slide-y-reverse-transition",
+        "summaryContainer": "v-card-text",
+        "summaryContainerProps": {
+          "style": {
+            "padding": "6px"
+          }
+        },
+        "content-class": "AlertDialog",
+        "remote": true,
+        "axios": {
+          "method": "POST",
+          "url": "api/alert/list/history",
+          "data": {
+            "tableName": "{{tableName}}",
+            "primaryKey": "{{primaryKey}}",
+            "afterTime": "{{afterTime}}"
+          }
+        },
+        "loop": 6000,
+        "i18nContext": "Alert",
+        "idKey": "id",
+        "iconType": "",
+        "icon": "alertCategory",
+        "iconMap": {
+          "Exception": "notification_important",
+          "Message": "message"
+        },
+        "titleKey": "content.message",
+        "subTitleKeys": [
+          { "key": "createdAt", "is": "Datetime" }
+        ],
+        "detailCustomItem": "AlertDetail"
+      }
+    }
+  ]
 }

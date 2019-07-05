@@ -1,8 +1,12 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, TableOrSubquery, OrExpressions, LikeExpression, ColumnExpression, JoinedTableOrSubquery, BinaryExpression, InExpression, IsNullExpression } from 'node-jql'
+import { Query, ResultColumn, TableOrSubquery, OrExpressions, LikeExpression, ColumnExpression, JoinedTableOrSubquery, BinaryExpression, InExpression, IsNullExpression } from 'node-jql'
 
 const query = new QueryDef(new Query({
   $distinct: true,
+  $select: [
+    new ResultColumn({ expression: new ColumnExpression('*') }),
+    new ResultColumn({ expression: new ColumnExpression(['pa', 'id']), $as: 'partyId' })
+  ],
   $from: new JoinedTableOrSubquery({
     table: 'party',
     $as: 'pa',

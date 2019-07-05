@@ -1,0 +1,12 @@
+[
+  {
+    "field": "boundTypeCode",
+    "validator": "required",
+    "part": "BookingForm.GeneralForm"
+  },
+  {
+    "field": "moduleTypeCode",
+    "validator": "required",
+    "part": "BookingForm.GeneralForm"
+  }
+]

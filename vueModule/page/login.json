@@ -8,6 +8,7 @@
         "showPreFormOnSubmit": true,
         "showFormOnSubmit": false,
         "showPostFormOnLoading": false,
+        "showLoadingOnSubmit": true,
         "form": {
           "password": "",
           "username": ""

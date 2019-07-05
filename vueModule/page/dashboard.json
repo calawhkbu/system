@@ -26,7 +26,7 @@
               ],
               "$from": {
                 "table": {
-                  "url": "api/code/query/code_master?subqueries={\"codeType\":{\"value\":\"moduleType\"}}",
+                  "url": "api/code/query/code_master?subqueries={\"codeType\":{\"value\":\"MODULE\"}}",
                   "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
                 },
                 "$as": "code"
@@ -39,7 +39,7 @@
               ],
               "$from": {
                 "table": {
-                  "url": "api/code/query/code_master?subqueries={\"codeType\":{\"value\":\"moduleType\"},\"code\":{\"value\":\"{{ value }}\"}}",
+                  "url": "api/code/query/code_master?subqueries={\"codeType\":{\"value\":\"MODULE\"},\"code\":{\"value\":\"{{ value }}\"}}",
                   "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
                 },
                 "$as": "code"

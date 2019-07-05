@@ -30,6 +30,9 @@
         "extraContainerProps": {
           "class": "xs-12 md-6"
         },
+        "params": {
+          "query": "{{query}}"
+        },
         "fields": [
           {
             "name": "{{key}}PartyId",
@@ -50,7 +53,7 @@
               "hide-no-data": true,
               "hide-details": true,
               "item-text": "name",
-              "item-value": "id"
+              "item-value": "partyId"
             }
           },
           {

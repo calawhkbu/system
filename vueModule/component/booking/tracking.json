@@ -1,5 +1,97 @@
 {
-  "layout": "WidgetCard",
-  "titleI18nKey": "BookingPage.TrackingStatus",
-  "widgetKey": "TrackingStatusCard"
+  "layout": "v-card",
+  "style": {
+    "margin-bottom": "25px"
+  },
+  "components": [
+    {
+      "is": "v-card-title",
+      "props": {
+        "class": "headline",
+        "style": {
+          "padding": "6px"
+        }
+      },
+      "slots": [
+        {
+          "is": "I18nText",
+          "props": {
+            "i18nContext": "Tracking",
+            "i18nKey": "title"
+          }
+        }
+      ]
+    },
+    {
+      "is": "v-divider"
+    },
+    {
+      "is": "Plugin",
+      "props": {
+        "lazy": true,
+        "summaryContainer": "v-card-text",
+        "summaryContainerProps": {
+          "style": {
+            "padding": "6px"
+          }
+        },
+        "width": "50%",
+        "remote": true,
+        "axios": {
+          "url": "tracking/get/{{tableName}}/{{primaryKey}}"
+        },
+        "summaryFunction": [
+          "pluginData",
+          "const manualTracking = pluginData.find(t => t.source === 'MANUAL');const swivelTracking = pluginData.find(t => t.source !== 'MANUAL');if (swivelTracking) {const history = swivelTracking.details.history;return history[history.length-1];}else{const history = manualTracking.details.history; return history[history.length-1];}"
+        ],
+        "i18nContext": "Tracking",
+        "idKey": "statusCode",
+        "icon": "statusCode",
+        "iconMap": {
+          "MNF": "tracking/airplane-flying.svg",
+          "RWB": "tracking/airplane-flying.svg",
+          "TAR": "tracking/airplane-landing.svg",
+          "ARR": "tracking/airplane-landing.svg",
+          "NFD": "tracking/airplane-landing.svg",
+          "DEP": "tracking/airplane-takeoff.svg",
+          "TDE": "tracking/airplane-takeoff.svg",
+          "DSCH": "tracking/container-on-truck.svg",
+          "PASS": "tracking/customs.svg",
+          "CUS": "tracking/customs.svg",
+          "FCGI": "tracking/hand-loading.svg",
+          "CGGI": "tracking/hand-loading.svg",
+          "LOBD": "tracking/load-ship-crane.svg",
+          "TSLB": "tracking/load-ship-crane.svg",
+          "TSBA": "tracking/load-ship.svg",
+          "BDAR": "tracking/load-ship.svg",
+          "CYTC": "tracking/move-container.svg",
+          "GITM": "tracking/move-container.svg",
+          "TSDC": "tracking/moving-boxes.svg",
+          "RCF": "tracking/moving-boxes.svg",
+          "BKCF": "tracking/open-box.svg",
+          "RCVE": "tracking/open-box.svg",
+          "BKD": "tracking/open-box.svg",
+          "STCS": "tracking/out-for-delivery.svg",
+          "DLV": "tracking/out-for-delivery.svg",
+          "TMPS": "tracking/paperwork.svg",
+          "CUIP": "tracking/paperwork.svg",
+          "CLOD": "tracking/sealed.svg",
+          "DLPT": "tracking/set-sail.svg",
+          "TSDP": "tracking/set-sail.svg",
+          "SUOT": "tracking/set-sail.svg",
+          "EPRL": "tracking/truck.svg",
+          "STSP": "tracking/truck.svg",
+          "RCS": "tracking/truck.svg"
+        },
+        "titleKey": "status",
+        "subTitleKeys": [
+          { "key": "statusDate", "is": "Datetime" },
+          "statusDescription",
+          "statusPlace",
+          "pieces"
+        ],
+        "detailCustomItem": "TrackingDetail"
+      }
+    }
+  ]
 }

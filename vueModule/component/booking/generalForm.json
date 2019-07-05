@@ -10,14 +10,18 @@
             "name": "moduleTypeCode",
             "component": "AsyncSelect",
             "class": "xs-12 md-6",
+            "validator": [
+              "required"
+            ],
             "props": {
+              "required": true,
               "url": "api/code/query/code_master",
               "item-text": "name",
               "item-value": "code",
               "params": {
                 "subqueries": {
                   "codeType": {
-                    "value": "moduleType"
+                    "value": "MODULE"
                   }
                 }
               }
@@ -29,13 +33,14 @@
             "component": "AsyncSelect",
             "class": "xs-12 md-6",
             "props": {
+              "required": true,
               "url": "api/code/query/code_master",
               "item-text": "name",
               "item-value": "code",
               "params": {
                 "subqueries": {
                   "codeType": {
-                    "value": "boundType"
+                    "value": "BOUND"
                   }
                 }
               }
@@ -47,9 +52,14 @@
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
             "props": {
+              "required": true,
               "url": "api/code/query/code_master",
               "searchValueParams": {
                 "subqueries": {
+                  "flexDataData": {
+                    "flexDataKey": "$.moduleType",
+                    "value": "{{form.moduleTypeCode}}"
+                  },
                   "codeType": {
                     "value": "location"
                   },
@@ -60,6 +70,10 @@
               },
               "searchTextParams": {
                 "subqueries": {
+                  "flexDataData": {
+                    "flexDataKey": "$.moduleType",
+                    "value": "{{form.moduleTypeCode}}"
+                  },
                   "codeType": {
                     "value": "location"
                   },
@@ -82,6 +96,7 @@
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
             "props": {
+              "required": true,
               "url": "api/code/query/code_master",
               "searchValueParams": {
                 "subqueries": {
@@ -312,13 +327,14 @@
             "component": "AsyncSelect",
             "class": "xs-12 md-6",
             "props": {
+              "required": true,
               "url": "api/code/query/code_master",
               "item-text": "name",
               "item-value": "code",
               "params": {
                 "subqueries": {
                   "codeType": {
-                    "value": "service"
+                    "value": "SERVTYPE"
                   }
                 }
               }
@@ -336,7 +352,7 @@
               "params": {
                 "subqueries": {
                   "codeType": {
-                    "value": "incoTerms"
+                    "value": "INCOTERMS"
                   }
                 }
               }
@@ -355,7 +371,7 @@
               "params": {
                 "subqueries": {
                   "codeType": {
-                    "value": "freightTerms"
+                    "value": "PAYTERMS"
                   }
                 }
               }
@@ -374,7 +390,7 @@
               "params": {
                 "subqueries": {
                   "codeType": {
-                    "value": "otherTerms"
+                    "value": "PAYTERMS"
                   }
                 }
               }
@@ -394,7 +410,10 @@
             "label": "BookingPage.commodity",
             "name": "commodity",
             "component": "v-text-field",
-            "class": "xs-12"
+            "class": "xs-12",
+            "props": {
+              "required": true
+            }
           },
           {
             "label": "BookingPage.shipMarks",

@@ -12,7 +12,7 @@ export default {
       onEnterValidation: [
         {
           rules: async (entity: any, user: { roles: { name: string }[] }) => {
-            if (user.roles.filter((role) => ['Admin', 'User'].filter((r) => r === role.name))) {
+            if (user && user.roles.filter((role) => ['Admin', 'User'].filter((r) => r === role.name))) {
               return true
             }
             return false
@@ -51,7 +51,7 @@ export default {
       onEnterValidation: [
         {
           rules: async (entity: any, user: { roles: { name: string }[] }) => {
-            if (user.roles.filter((role) => ['Admin', 'User'].filter((r) => r === role.name))) {
+            if (user && user.roles.filter((role) => ['Admin', 'User'].filter((r) => r === role.name))) {
               return true
             }
             const documents = entity.documents.find(doc => doc.fileName === 'Shipping Advice')
