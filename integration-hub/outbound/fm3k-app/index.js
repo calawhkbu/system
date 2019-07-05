@@ -27,12 +27,15 @@ function fm3kHandler () {
                   postData = postData.toString('utf8');
                 }
                 if(postData && postData.trim().length > 0) {
-                  helper.emailer.sendMail({
-                    to: ["ken.chan@swivelsoftware.com"],   //TODO REMOVE HARD-CODED
-                    from: "alert@swivelsoftware.com",
-                    subject: "TEST - Failed to post booking to Swivel ERP {{booking.portOfLoading.portCode}} -> {{booking.portOfDischarge.portCode}} [{{booking.bookingNo}}]",
-                    text: "Please contact system administrator. {{error}}"
-                  }, {booking: booking, error: postData});
+                  try {
+                    helper.emailer.sendMail({
+                      to: ["ken.chan@swivelsoftware.com"],   //TODO REMOVE HARD-CODED
+                      from: "alert@swivelsoftware.com",
+                      subject: "TEST - Failed to post booking to Swivel ERP",
+                      text: "Please contact system administrator."
+                    }, {booking: booking, error: postData});
+                  } catch (e) {
+                  }
                   helper.saveLog(appId, api, 'booking', booking.id, reqPayLoad, null, JSON.stringify(postData));
                 } else {
                   helper.saveLog(appId, api, 'booking', booking.id, reqPayLoad, JSON.stringify(postData), null);

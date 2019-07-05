@@ -2,9 +2,9 @@
 
     "tableName" : "shipment",
 
-    "defaultDocument" : {
+    "defaultDocumentConfig" : {
 
-        "allowFileType" : ["image/png","image/gif","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"],
+        "allowFileType" : ["image/png","image/gif","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
         "allowFillTemplate" : false
 
     },

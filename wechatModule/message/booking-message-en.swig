@@ -15,7 +15,7 @@
 
     "keyword2": {
 
-      "value" : "booking message : {{message}} customMessage : {{customMessage}}",
+      "value" : "booking message : {{message}}",
       "color" : "#173177"
 
     },
