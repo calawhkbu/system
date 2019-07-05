@@ -12,9 +12,16 @@
     },
 
     {
-        "alertType" : "bookingAlert",
+        "alertType" : "shipmentEtaChanged",
+        "notifyBy" :  "email",
+        "active" : true
+    },
+
+    {
+        "alertType" : "shipmentEtdChanged",
         "notifyBy" :  "email",
         "active" : true
     }
+
 
 ]
