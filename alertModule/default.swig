@@ -42,7 +42,7 @@
 
     "severity": "medium",
 
-    "contactRoleList": [],
+    "contactRoleList": ["shipper","forwarder"],
 
     "extraContactPersonSql": null,
 
@@ -56,7 +56,7 @@
 
     "severity": "medium",
 
-    "contactRoleList": [],
+    "contactRoleList": ["shipper","forwarder"],
 
     "extraContactPersonSql": null,
 
@@ -135,7 +135,7 @@
 
     "severity": "medium",
 
-    "contactRoleList": [],
+    "contactRoleList": ["shipper","forwarder"],
 
     "extraContactPersonSql": null,
 
@@ -149,7 +149,7 @@
 
     "severity": "medium",
 
-    "contactRoleList": [],
+    "contactRoleList": ["shipper","forwarder"],
 
     "extraContactPersonSql": null,
 
@@ -163,7 +163,7 @@
 
     "severity": "medium",
 
-    "contactRoleList": [],
+    "contactRoleList": ["shipper","forwarder"],
 
     "extraContactPersonSql": null,
 
@@ -177,7 +177,7 @@
 
     "severity": "medium",
 
-    "contactRoleList": [],
+    "contactRoleList": ["shipper","forwarder"],
 
     "extraContactPersonSql": null,
 
