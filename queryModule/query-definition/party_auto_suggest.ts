@@ -4,7 +4,21 @@ import { Query, ResultColumn, TableOrSubquery, OrExpressions, LikeExpression, Co
 const query = new QueryDef(new Query({
   $distinct: true,
   $select: [
-    new ResultColumn({ expression: new ColumnExpression('*') }),
+    new ResultColumn({ expression: new ColumnExpression(['pa', 'id']), $as: 'partyId' }),
+    new ResultColumn({ expression: new ColumnExpression(['pa', 'name']), $as: 'partyName' }),
+    new ResultColumn({ expression: new ColumnExpression(['pa', 'erpCode']), $as: 'partyCode' }),
+    new ResultColumn({ expression: new ColumnExpression(['pa', 'phone']), $as: 'partyPhone' }),
+    new ResultColumn({ expression: new ColumnExpression(['pa', 'fax']), $as: 'partyFax' }),
+    new ResultColumn({ expression: new ColumnExpression(['pa', 'email']), $as: 'partyEmail' }),
+    new ResultColumn({ expression: new ColumnExpression(['pa', 'address']), $as: 'partyAddress' }),
+    new ResultColumn({ expression: new ColumnExpression(['pa', 'cityCode']), $as: 'partyCityCode' }),
+    new ResultColumn({ expression: new ColumnExpression(['pa', 'stateCode']), $as: 'partyStateCode' }),
+    new ResultColumn({ expression: new ColumnExpression(['pa', 'countryCode']), $as: 'partyCountryCode' }),
+    new ResultColumn({ expression: new ColumnExpression(['pa', 'zip']), $as: 'partyZip' }),
+    new ResultColumn({ expression: new ColumnExpression(['pe', 'id']), $as: 'contactPersonId' }),
+    new ResultColumn({ expression: new ColumnExpression(['pe', 'displayName']), $as: 'contactPersonName' }),
+    new ResultColumn({ expression: 'TODO', $as: 'contactPersonPhone' }),
+    new ResultColumn({ expression: new ColumnExpression(['pe', 'userName']), $as: 'contactPersonEmail' })
   ],
   $from: new JoinedTableOrSubquery({
     table: 'party',
@@ -83,5 +97,18 @@ query.register('isActive', new Query({
 query.register('partyTypes', new Query({
   $where: new InExpression({ left: new ColumnExpression(['pt', 'type']) })
 })).register('value', 0)
+
+query.register('q', new Query({
+  $where: new OrExpressions({
+    expressions: [
+      new LikeExpression({ left: new ColumnExpression(['pa', 'name']), operator: 'REGEXP' }),
+      new LikeExpression({ left: new ColumnExpression(['pa', 'shortName']), operator: 'REGEXP' }),
+      new LikeExpression({ left: new ColumnExpression(['pa', 'erpCode']), operator: 'REGEXP' })
+    ]
+  })
+}))
+  .register('value', 0)
+  .register('value', 1)
+  .register('value', 2)
 
 export default query

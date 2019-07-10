@@ -13,6 +13,7 @@
             "validator": [
               "required"
             ],
+            "relation": "moduleType",
             "props": {
               "required": true,
               "url": "api/code/query/code_master",
@@ -32,6 +33,7 @@
             "name": "boundTypeCode",
             "component": "AsyncSelect",
             "class": "xs-12 md-6",
+            "relation": "boundType",
             "props": {
               "required": true,
               "url": "api/code/query/code_master",
@@ -51,6 +53,7 @@
             "name": "portOfLoadingCode",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
+            "relation": "portOfLoading",
             "props": {
               "required": true,
               "url": "api/code/query/code_master",
@@ -83,9 +86,6 @@
                 },
                 "limit": 5
               },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
               "item-text": "name",
               "item-value": "code"
             }
@@ -95,11 +95,16 @@
             "name": "portOfDischargeCode",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
+            "relation": "portOfDischarge",
             "props": {
               "required": true,
               "url": "api/code/query/code_master",
               "searchValueParams": {
                 "subqueries": {
+                  "flexDataData": {
+                    "flexDataKey": "$.moduleType",
+                    "value": "{{form.moduleTypeCode}}"
+                  },
                   "codeType": {
                     "value": "location"
                   },
@@ -110,6 +115,10 @@
               },
               "searchTextParams": {
                 "subqueries": {
+                  "flexDataData": {
+                    "flexDataKey": "$.moduleType",
+                    "value": "{{form.moduleTypeCode}}"
+                  },
                   "codeType": {
                     "value": "location"
                   },
@@ -119,9 +128,9 @@
                 },
                 "limit": 5
               },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
+
+
+
               "item-text": "name",
               "item-value": "code"
             }
@@ -132,10 +141,15 @@
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
             "readonlyClass": "hidden",
+            "relation": "placeOfReceipt",
             "props": {
               "url": "api/code/query/code_master",
               "searchValueParams": {
                 "subqueries": {
+                  "flexDataData": {
+                    "flexDataKey": "$.moduleType",
+                    "value": "{{form.moduleTypeCode}}"
+                  },
                   "codeType": {
                     "value": "location"
                   },
@@ -146,6 +160,10 @@
               },
               "searchTextParams": {
                 "subqueries": {
+                  "flexDataData": {
+                    "flexDataKey": "$.moduleType",
+                    "value": "{{form.moduleTypeCode}}"
+                  },
                   "codeType": {
                     "value": "location"
                   },
@@ -155,9 +173,9 @@
                 },
                 "limit": 5
               },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
+
+
+
               "item-text": "name",
               "item-value": "code"
             }
@@ -168,10 +186,15 @@
             "component": "AsyncAutoSuggest",
             "readonlyClass": "hidden",
             "class": "xs-12 md-6",
+            "relation": "placeOfDelivery",
             "props": {
               "url": "api/code/query/code_master",
               "searchValueParams": {
                 "subqueries": {
+                  "flexDataData": {
+                    "flexDataKey": "$.moduleType",
+                    "value": "{{form.moduleTypeCode}}"
+                  },
                   "codeType": {
                     "value": "location"
                   },
@@ -182,6 +205,10 @@
               },
               "searchTextParams": {
                 "subqueries": {
+                  "flexDataData": {
+                    "flexDataKey": "$.moduleType",
+                    "value": "{{form.moduleTypeCode}}"
+                  },
                   "codeType": {
                     "value": "location"
                   },
@@ -191,9 +218,9 @@
                 },
                 "limit": 5
               },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
+
+
+
               "item-text": "name",
               "item-value": "code"
             }
@@ -204,10 +231,15 @@
             "component": "AsyncAutoSuggest",
             "readonlyClass": "hidden",
             "class": "xs-12 md-6",
+            "relation": "finalDestination",
             "props": {
               "url": "api/code/query/code_master",
               "searchValueParams": {
                 "subqueries": {
+                  "flexDataData": {
+                    "flexDataKey": "$.moduleType",
+                    "value": "{{form.moduleTypeCode}}"
+                  },
                   "codeType": {
                     "value": "location"
                   },
@@ -218,6 +250,10 @@
               },
               "searchTextParams": {
                 "subqueries": {
+                  "flexDataData": {
+                    "flexDataKey": "$.moduleType",
+                    "value": "{{form.moduleTypeCode}}"
+                  },
                   "codeType": {
                     "value": "location"
                   },
@@ -227,9 +263,9 @@
                 },
                 "limit": 5
               },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
+
+
+
               "item-text": "name",
               "item-value": "code"
             }
@@ -263,9 +299,9 @@
                 },
                 "limit": 5
               },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
+
+
+
               "item-text": "name",
               "item-value": "code"
             }
@@ -298,9 +334,9 @@
                 },
                 "limit": 5
               },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
+
+
+
               "item-text": "name",
               "item-value": "code"
             }
