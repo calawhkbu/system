@@ -15,15 +15,7 @@ const query = new Query({
           type: 'string'
         },
         {
-          name: 'fileType',
-          type: 'string'
-        },
-        {
           name: 'extension',
-          type: 'string'
-        },
-        {
-          name: 'format',
           type: 'string'
         }
       ]

@@ -5,10 +5,10 @@ const query = new Query({
   $from: new TableOrSubquery({
     table: {
       method: 'POST',
-      url: 'q/person',
+      url: 'q/invitation',
       columns: [
         {
-          name: 'pe.id',
+          name: 'personId',
           type: 'number'
         },
         {
