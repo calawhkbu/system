@@ -21,9 +21,9 @@
                 },
                 "limit": 5
               },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
+              
+              
+              
               "item-text": "roleName",
               "item-value": "id"
             }

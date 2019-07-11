@@ -14,8 +14,6 @@ function fm3kHandler () {
               booking.bookingParties[p1].email = booking.bookingParties[p1].email.substring(0, 50)
             })
           }
-          console.log(booking)
-          console.log('customer', customer)
           if(customer && customer.configuration && customer.configuration.webService["Booking"]) {
             let api = customer.wsURL + "/" + customer.configuration.webService["Booking"].api;
             try {

@@ -25,9 +25,9 @@
                 },
                 "limit": 5
               },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
+              
+              
+              
               "item-text": "name",
               "item-value": "id"
             }

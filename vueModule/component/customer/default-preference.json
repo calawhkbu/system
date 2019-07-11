@@ -26,8 +26,8 @@
             "class": "xs-12 md-6",
             "props": {
               "path": "$moment.tz.names",
-              "cache-items": true,
-              "hide-no-data": true,
+              
+              
               "hide-details": true
             }
           },

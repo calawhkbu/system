@@ -31,28 +31,92 @@
           "class": "xs-12 md-6"
         },
         "params": {
-          "query": "{{query}}"
+          "autoSuggestModel": "{{autoSuggestModel}}"
         },
         "fields": [
           {
             "name": "{{key}}PartyId",
             "component": "AsyncAutoSuggest",
             "class": "xs-12",
+            "relation": "{{key}}Party",
+            "relationMore": [
+              {
+                "name": "{{key}}PartyId",
+                "selector": "partyId"
+              },
+              {
+                "name": "{{key}}PartyName",
+                "selector": "partyName"
+              },
+              {
+                "name": "{{key}}PartyPhone",
+                "selector": "partyPhone"
+              },
+              {
+                "name": "{{key}}PartyFax",
+                "selector": "partyFax"
+              },
+              {
+                "name": "{{key}}PartyEmail",
+                "selector": "partyEmail"
+              },
+              {
+                "name": "{{key}}PartyAddress",
+                "selector": "partyAddress"
+              },
+              {
+                "name": "{{key}}PartyCityCode",
+                "selector": "partyCityCode"
+              },
+              {
+                "name": "{{key}}PartyStateCode",
+                "selector": "partyStateCode"
+              },
+              {
+                "name": "{{key}}PartyCountryCode",
+                "selector": "partyCountryCode"
+              },
+              {
+                "name": "{{key}}PartyZip",
+                "selector": "partyZip"
+              },
+              {
+                "name": "{{key}}PartyContactPersonId",
+                "selector": "contactPersonId"
+              },
+              {
+                "name": "{{key}}PartyContactPersonId",
+                "selector": "contactPersonId"
+              },
+              {
+                "name": "{{key}}PartyContactPersonId",
+                "selector": "contactPersonId"
+              },
+              {
+                "name": "{{key}}PartyContactPersonId",
+                "selector": "contactPersonId"
+              }
+            ],
             "props": {
-              "url": "api/party/query/party",
-              "searchValueParams": "{ \"subqueries\": { \"id\": {{query}} } }",
+              "canCreate": true,
+              "canCreateValue": {
+                "partyId": null,
+                "partyName": "{{autoSuggestModel|default(null)}}"
+              },
+              "url": "api/party/query/party_auto_suggest",
+              "searchValueParams": "{ \"subqueries\": { \"id\": {{query}}, \"partyTypes\": {\"value\": [\"{{key}}\"]} } }",
               "searchTextParams": {
                 "subqueries": {
                   "q": {
                     "value": "{{query}}"
+                  },
+                  "partyTypes": {
+                    "value": ["{{key}}"]
                   }
                 },
                 "limit": 5
               },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
-              "item-text": "name",
+              "item-text": "partyName",
               "item-value": "partyId"
             }
           },
@@ -111,28 +175,28 @@
           },
           {
             "label": "Widget.partyEmail",
-            "name": "{{key}}Email",
+            "name": "{{key}}PartyEmail",
             "component": "v-text-field",
             "class": "xs-12 md-4",
             "readonlyClass": "hidden"
           },
           {
             "label": "Widget.partyPhone",
-            "name": "{{key}}Phone",
+            "name": "{{key}}PartyPhone",
             "component": "v-text-field",
             "class": "xs-12 md-4",
             "readonlyClass": "hidden"
           },
           {
             "label": "Widget.partyFax",
-            "name": "{{key}}Fax",
+            "name": "{{key}}PartyFax",
             "component": "v-text-field",
             "class": "xs-12 md-4",
             "readonlyClass": "hidden"
           },
           {
             "label": "Widget.address",
-            "name": "{{key}}Address",
+            "name": "{{key}}PartyAddress",
             "component": "v-textarea",
             "props": {
               "auto-grow": true,
@@ -143,7 +207,7 @@
           },
           {
             "label": "Widget.city",
-            "name": "{{key}}CityCode",
+            "name": "{{key}}PartyCityCode",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
             "readonlyClass": "xs-4",
@@ -170,16 +234,16 @@
                 },
                 "limit": 5
               },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
+
+
+
               "item-text": "name",
               "item-value": "code"
             }
           },
           {
             "label": "Widget.state",
-            "name": "{{key}}StateCode",
+            "name": "{{key}}PartyStateCode",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
             "readonlyClass": "xs-4",
@@ -206,16 +270,16 @@
                 },
                 "limit": 5
               },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
+
+
+
               "item-text": "name",
               "item-value": "code"
             }
           },
           {
             "label": "Widget.country",
-            "name": "{{key}}CountryCode",
+            "name": "{{key}}PartyCountryCode",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
             "readonlyClass": "xs-4",
@@ -242,16 +306,16 @@
                 },
                 "limit": 5
               },
-              "cache-items": true,
-              "hide-no-data": true,
-              "hide-details": true,
+
+
+
               "item-text": "name",
               "item-value": "code"
             }
           },
           {
             "label": "Widget.zip",
-            "name": "{{key}}Zip",
+            "name": "{{key}}PartyZip",
             "component": "v-text-field",
             "class": "xs-12 md-6",
             "readonlyClass": "hidden"

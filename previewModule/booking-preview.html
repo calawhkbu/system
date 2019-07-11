@@ -252,45 +252,52 @@ a[x-apple-data-detectors=true] {
         </td>
         <td class="tg-us36" rowspan="18" colspan="2" width="50%" style="border-left:1px solid #bfbfbf;border-right:1px solid #bfbfbf;">
           <center style="position:relative;top:30px;">
-            <img class="center  autowidth  fullwidth" align="center" border="0" src="https://static.wixstatic.com/media/47186a_945e6c3508f343e8965d7f650b4a3bf9~mv2.png/v1/fill/w_634,h_174,al_c,lg_1/47186a_945e6c3508f343e8965d7f650b4a3bf9~mv2.png"
-                 alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: 0;height: auto;float: none;width: 100%;max-width: 320px" />
-                  <h2>{{booking.bookingParties.Forwarder.name}}</h2>
-                  <h4>{{booking.bookingParties.Forwarder.address1}}</h4>
-                  <h4>{{booking.bookingParties.Forwarder.address2}}</h4>
-                  <h4>{{booking.bookingParties.Forwarder.address3}}</h4>
-                  <h4>Shipping Order</h4>
-                  <div style="font-size:12px;line-height:14px;color:#555555;font-family:Georgia, Times, 'Times New Roman', serif;text-align:left;"><p style="margin: 0;line-height: 22px;font-size: 18px;text-align: center"><a style="color:#0068A5;text-decoration: underline;" href="{{finalURL}}" target="_blank">{% if booking.bookingNo %} Booking No. {{booking.bookingNo}}  {% endif %}</a></p></div>
+            <img
+              class="center  autowidth  fullwidth"
+              align="center"
+              border="0"
+              src="https://static.wixstatic.com/media/47186a_945e6c3508f343e8965d7f650b4a3bf9~mv2.png/v1/fill/w_634,h_174,al_c,lg_1/47186a_945e6c3508f343e8965d7f650b4a3bf9~mv2.png"
+              alt="Image"
+              title="Image"
+              style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: 0;height: auto;float: none;width: 100%;max-width: 320px"
+            />
+            <h2>{{forwarderPartyName}}</h2>
+            <h4>{{forwarderAddress}}</h4>
+            <h4>Shipping Order</h4>
+            <div
+              style="font-size:12px;line-height:14px;color:#555555;font-family:Georgia, Times, 'Times New Roman', serif;text-align:left;"
+            >
+              <p style="margin: 0;line-height: 22px;font-size: 18px;text-align: center">
+                <a style="color:#0068A5;text-decoration: underline;" href="{{finalURL}}" target="_blank">
+                  {% if booking.bookingNo %} Booking No. {{booking.bookingNo}}  {% endif %}
+                </a>
+              </p>
+            </div>
           </center>
         </td>
       </tr>
       <tr>
         <td class="tg-us36" width="8%" style="border-left:1px solid #bfbfbf;">Name:</td>
-        <td class="tg-us36" width="">{{booking.bookingParties.Shipper.name}}</td>
+        <td class="tg-us36" width="">{{shipperPartyName}}</td>
       </tr>
       <tr>
         <td class="tg-us36" rowspan="3" style="border-left:1px solid #bfbfbf;">Address:</td>
-        <td class="tg-us36">{{booking.bookingParties.Shipper.address1}}</td>
-      </tr>
-      <tr>
-        <td class="tg-us36">{{booking.bookingParties.Shipper.address2}}</td>
-      </tr>
-      <tr>
-        <td class="tg-us36">{{booking.bookingParties.Shipper.address3}}</td>
+        <td class="tg-us36">{{shipperPartyAddress}}</td>
       </tr>
 
       <tr>
         <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Tel:</td>
-        <td class="tg-us36">{{booking.bookingParties.Shipper.phone}}</td>
+        <td class="tg-us36">{{shipperPartyPhone}}</td>
       </tr>
 
       <tr>
         <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Email:</td>
-        <td class="tg-us36">{{booking.bookingParties.Shipper.email}}</td>
+        <td class="tg-us36">{{shipperPartyEmail}}</td>
       </tr>
 
       <tr>
         <td class="tg-us36" style="border-left:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;">Contact:</td>
-        <td class="tg-us36" style="padding-bottom:7px;">{{booking.bookingParties.Shipper.contact}}</td>
+        <td class="tg-us36" style="padding-bottom:7px;">{{shipperPartyContactName}}</td>
       </tr>
 
       <tr>
