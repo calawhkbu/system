@@ -113,7 +113,7 @@
 
     "alertCategory": "Exception",
     "alertType": "lateShip",
-    "templatePath": "alert/shipment-alert",
+    "templatePath": "alert/booking-alert",
 
     "severity": "medium",
 

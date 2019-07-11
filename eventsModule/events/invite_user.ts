@@ -3,9 +3,14 @@ import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload';
 import { Transaction } from 'sequelize';
-import { AlertDbService } from '../../../../swivel-backend-new/src/modules/sequelize/alert/service';
 
 
+import { InvitationDbService } from 'modules/sequelize/invitation/service'
+
+
+// // used in development for syntaxt hightlighting
+// import { BaseEvent } from '../../../../swivel-backend-new/src/modules/events/base-event'
+// import { InvitationDbService } from '../../../../swivel-backend-new/src/modules/sequelize/invitation/service'
 
 
 class ExampleEvent extends BaseEvent {
@@ -29,27 +34,21 @@ class ExampleEvent extends BaseEvent {
 
   public async mainFunction(parameters: any) {
 
+    const person = parameters.person
+    const partyGroupCode = parameters.partyGroupCode
 
-    console.log(JSON.stringify(parameters), 'parameters')
-    console.log('in main Excecute of Example')
+    const invitationDbService = this.allService['InvitationDbService'] as InvitationDbService
 
-    const alertDbService = this.allService['AlertDbService'] as AlertDbService
+    // create a new Invitation
+    const newInvitation = await invitationDbService.createInvitation(person,partyGroupCode,this.user,this.transaction)
 
-    const option = { where : {tableName : 'shipment'}, ...(this.transaction ? {transaction : this.transaction} : {})}
-
-    await alertDbService.find(option,this.user)
-
-    console.log('in main Excecute of Example Finish')
-
-
-    return {
-      'exampleResult': 'exampleValue'
-    }
+    return newInvitation
   }
 }
 
 
 export default {
+
 
 
   execute: async (parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {

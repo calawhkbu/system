@@ -3,12 +3,15 @@ import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload';
 import { Transaction } from 'sequelize';
-import { AlertDbService } from '../../../../swivel-backend-new/src/modules/sequelize/alert/service';
+
+import { DocumentDbService } from 'modules/sequelize/document/service';
 
 
+// // debug 
+// import { DocumentDbService } from '../../../../swivel-backend-new/src/modules/sequelize/document/service';
 
 
-class ExampleEvent extends BaseEvent {
+class FillTemplateEvent extends BaseEvent {
 
   constructor(
 
@@ -30,21 +33,16 @@ class ExampleEvent extends BaseEvent {
   public async mainFunction(parameters: any) {
 
 
-    console.log(JSON.stringify(parameters), 'parameters')
-    console.log('in main Excecute of Example')
+    const tableName = parameters.tableName
+    const primaryKey = parameters.primaryKey
+    const fileName = parameters.fileName
+    const outputFileType = parameters.outputFileType
+    
 
-    const alertDbService = this.allService['AlertDbService'] as AlertDbService
+    const doucmentDbService = this.allService['DocumentDbService'] as DocumentDbService
+    const newDocument = await doucmentDbService.fillTemplate(tableName,primaryKey,fileName,outputFileType,this.user)
 
-    const option = { where : {tableName : 'shipment'}, ...(this.transaction ? {transaction : this.transaction} : {})}
-
-    await alertDbService.find(option,this.user)
-
-    console.log('in main Excecute of Example Finish')
-
-
-    return {
-      'exampleResult': 'exampleValue'
-    }
+    return newDocument
   }
 }
 
@@ -52,9 +50,10 @@ class ExampleEvent extends BaseEvent {
 export default {
 
 
+
   execute: async (parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
 
-    const event = new ExampleEvent(parameters, eventConfig, repo, eventService, allService,user,transaction)
+    const event = new FillTemplateEvent(parameters, eventConfig, repo, eventService, allService,user,transaction)
     return await event.execute()
 
   }

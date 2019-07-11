@@ -6,9 +6,7 @@ import { Transaction } from 'sequelize';
 import { AlertDbService } from '../../../../swivel-backend-new/src/modules/sequelize/alert/service';
 
 
-
-
-class ExampleEvent extends BaseEvent {
+class CreateAlertEvent extends BaseEvent {
 
   constructor(
 
@@ -29,32 +27,27 @@ class ExampleEvent extends BaseEvent {
 
   public async mainFunction(parameters: any) {
 
-
     console.log(JSON.stringify(parameters), 'parameters')
-    console.log('in main Excecute of Example')
+    
+    const tableName = parameters.tableName
+    const primaryKey = parameters.primaryKey
+    const alertType = parameters.alertType
+    const customMessage = parameters.customMessage
+
 
     const alertDbService = this.allService['AlertDbService'] as AlertDbService
 
-    const option = { where : {tableName : 'shipment'}, ...(this.transaction ? {transaction : this.transaction} : {})}
+    return await alertDbService.createAlert(tableName,primaryKey,alertType,customMessage,this.user)
 
-    await alertDbService.find(option,this.user)
-
-    console.log('in main Excecute of Example Finish')
-
-
-    return {
-      'exampleResult': 'exampleValue'
-    }
   }
 }
 
 
 export default {
 
-
   execute: async (parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
 
-    const event = new ExampleEvent(parameters, eventConfig, repo, eventService, allService,user,transaction)
+    const event = new CreateAlertEvent(parameters, eventConfig, repo, eventService, allService,user,transaction)
     return await event.execute()
 
   }
