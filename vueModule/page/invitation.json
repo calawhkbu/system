@@ -49,7 +49,7 @@
                 "is": "WidgetPanel",
                 "props": {
                   "initUrl": "api/invitation/{{id}}",
-                  "saveUrl": "api/invitation/create/create",
+                  "saveUrl": "api/invitation",
                   "primaryKey": "id"
                 },
                 "slots": [
@@ -101,6 +101,62 @@
               }
             ],
             "assignment": [
+              {
+                "is": "div",
+                "props": {
+                  "style": {
+                    "padding-right": "4px"
+                  }
+                },
+                "slots": [
+                  {
+                    "name": "default",
+                    "is": "DynamicComponent",
+                    "props": {
+                      "components": [
+                        {
+                          "is": "AsyncComponent",
+                          "props": {
+                            "style": {
+                              "margin-bottom": "25px"
+                            },
+                            "layoutName": "invitationAndUser/personForm"
+                          }
+                        },
+                        {
+                          "is": "AsyncComponent",
+                          "props": {
+                            "style": {
+                              "margin-bottom": "25px"
+                            },
+                            "layoutName": "invitationAndUser/contactForm"
+                          }
+                        },
+                        {
+                          "is": "AsyncComponent",
+                          "props": {
+                            "style": {
+                              "margin-bottom": "25px"
+                            },
+                            "layoutName": "invitationAndUser/partyForm"
+                          }
+                        },
+                        {
+                          "is": "AsyncComponent",
+                          "props": {
+                            "style": {
+                              "margin-bottom": "25px"
+                            },
+                            "layoutName": "invitationAndUser/roleForm"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ],
+            "edit": [
                 {
                   "is": "WidgetPanel",
                   "props": {

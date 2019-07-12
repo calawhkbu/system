@@ -64,7 +64,7 @@
                     "value": "{{form.moduleTypeCode}}"
                   },
                   "codeType": {
-                    "value": "location"
+                    "value": "LOCATION"
                   },
                   "code": {
                     "value": "{{query}}"
@@ -78,7 +78,7 @@
                     "value": "{{form.moduleTypeCode}}"
                   },
                   "codeType": {
-                    "value": "location"
+                    "value": "LOCATION"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -106,7 +106,7 @@
                     "value": "{{form.moduleTypeCode}}"
                   },
                   "codeType": {
-                    "value": "location"
+                    "value": "LOCATION"
                   },
                   "code": {
                     "value": "{{query}}"
@@ -120,7 +120,7 @@
                     "value": "{{form.moduleTypeCode}}"
                   },
                   "codeType": {
-                    "value": "location"
+                    "value": "LOCATION"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -151,7 +151,7 @@
                     "value": "{{form.moduleTypeCode}}"
                   },
                   "codeType": {
-                    "value": "location"
+                    "value": "LOCATION"
                   },
                   "code": {
                     "value": "{{query}}"
@@ -165,7 +165,7 @@
                     "value": "{{form.moduleTypeCode}}"
                   },
                   "codeType": {
-                    "value": "location"
+                    "value": "LOCATION"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -196,7 +196,7 @@
                     "value": "{{form.moduleTypeCode}}"
                   },
                   "codeType": {
-                    "value": "location"
+                    "value": "LOCATION"
                   },
                   "code": {
                     "value": "{{query}}"
@@ -210,7 +210,7 @@
                     "value": "{{form.moduleTypeCode}}"
                   },
                   "codeType": {
-                    "value": "location"
+                    "value": "LOCATION"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -241,7 +241,7 @@
                     "value": "{{form.moduleTypeCode}}"
                   },
                   "codeType": {
-                    "value": "location"
+                    "value": "LOCATION"
                   },
                   "code": {
                     "value": "{{query}}"
@@ -255,7 +255,7 @@
                     "value": "{{form.moduleTypeCode}}"
                   },
                   "codeType": {
-                    "value": "location"
+                    "value": "LOCATION"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -281,7 +281,7 @@
               "searchValueParams": {
                 "subqueries": {
                   "codeType": {
-                    "value": "carrier"
+                    "value": "CARRIER"
                   },
                   "code": {
                     "value": "{{query}}"
@@ -291,7 +291,7 @@
               "searchTextParams": {
                 "subqueries": {
                   "codeType": {
-                    "value": "carrier"
+                    "value": "CARRIER"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -316,7 +316,7 @@
               "searchValueParams": {
                 "subqueries": {
                   "codeType": {
-                    "value": "vessel"
+                    "value": "VESSEL"
                   },
                   "code": {
                     "value": "{{query}}"
@@ -326,7 +326,7 @@
               "searchTextParams": {
                 "subqueries": {
                   "codeType": {
-                    "value": "vessel"
+                    "value": "VESSEL"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -334,11 +334,8 @@
                 },
                 "limit": 5
               },
-
-
-
               "item-text": "name",
-              "item-value": "code"
+              "item-value": "name"
             }
           },
           {

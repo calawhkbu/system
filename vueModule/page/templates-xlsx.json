@@ -3,6 +3,7 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "back": "/admin",
       "reportingKey": "templates",
       "jql": "templates",
       "showFilterBar": true,
@@ -10,7 +11,7 @@
       "enableSetting": false,
       "newReport": {
         "filters": {
-          "fileType": {
+          "extension": {
             "value": "excel"
           },
           "isActive": true
