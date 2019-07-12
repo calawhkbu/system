@@ -50,6 +50,7 @@ export default {
 
     {
       handlerName: "fill_template.ts"
+      
     }
   ],
 
@@ -71,10 +72,9 @@ export default {
                 value: 689
               }
             },
-
+            
             {
               checkerFunctionName: "isNull",
-
             },
 
             {
@@ -102,18 +102,18 @@ export default {
       },
 
       afterEvent : [
-        // {
-        //   condition : true,
-        //   eventName : 'fill_template',
-        //   previousParameters : {
+        {
+          condition : true,
+          eventName : 'fill_template',
+          previousParameters : {
 
-        //     tableName : 'booking',
-        //     fileName : 'Shipping Order',
-        //     primaryKey : (parameters) => {
-        //       return parameters.data.id
-        //     }
-        //   }
-        // },
+            tableName : 'booking',
+            fileName : 'Shipping Order',
+            primaryKey : (result) => {
+              return result.data.id
+            }
+          }
+        },
         {
           condition : (result) => {
 

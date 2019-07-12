@@ -110,11 +110,13 @@ class CheckerEvent extends BaseEvent {
 
     console.log(key,'key')
     console.log(parameters,'parameters')
+
+
     const variable = this.getVariable(parameters,key)
 
     console.log(variable,'variable')
 
-    let result:boolean = checkerFunction(variable,checkerOption.checkerParam)
+    let result:any = checkerFunction(variable,checkerOption.checkerParam)
 
     return {
       checkerFunctionName,
