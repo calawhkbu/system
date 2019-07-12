@@ -1,6 +1,7 @@
 import { Query, TableOrSubquery } from 'node-jql'
 
-const query = new Query({
+const tempQuery = new Query({
+	$createTempTable: 'temp',
   $from: new TableOrSubquery({
     table: {
       url: 'demo/table',
@@ -23,4 +24,11 @@ const query = new Query({
   })
 })
 
-export default query.toJson()
+const query = new Query({
+	$from: 'temp'
+})
+
+export default [
+	tempQuery.toJson(),
+	query.toJson()
+]

@@ -3,12 +3,19 @@ import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload';
 import { Transaction } from 'sequelize';
-import { AlertDbService } from '../../../../swivel-backend-new/src/modules/sequelize/alert/service';
+
+
+
+// import { OutboundService } from 'modules/integration-hub/services/outbound';
+
+
+// debug
+import { OutboundService } from '../../../../swivel-backend-new/src/modules/integration-hub/services/outbound';
 
 
 
 
-class ExampleEvent extends BaseEvent {
+class SendOutboundEvent extends BaseEvent {
 
   constructor(
 
@@ -30,21 +37,17 @@ class ExampleEvent extends BaseEvent {
   public async mainFunction(parameters: any) {
 
 
-    console.log(JSON.stringify(parameters), 'parameters')
-    console.log('in main Excecute of Example')
-
-    const alertDbService = this.allService['AlertDbService'] as AlertDbService
-
-    const option = { where : {tableName : 'shipment'}, ...(this.transaction ? {transaction : this.transaction} : {})}
-
-    await alertDbService.find(option,this.user)
-
-    console.log('in main Excecute of Example Finish')
+    const id = parameters.id
+    const headers = parameters.headers
+    const body = parameters.body
 
 
-    return {
-      'exampleResult': 'exampleValue'
-    }
+    const outboundService = this.allService['OutboundService'] as OutboundService
+    const result = await outboundService.send(this.repo,id,headers,body)
+
+
+    return result
+
   }
 }
 
@@ -52,9 +55,10 @@ class ExampleEvent extends BaseEvent {
 export default {
 
 
+
   execute: async (parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
 
-    const event = new ExampleEvent(parameters, eventConfig, repo, eventService, allService,user,transaction)
+    const event = new SendOutboundEvent(parameters, eventConfig, repo, eventService, allService,user,transaction)
     return await event.execute()
 
   }
