@@ -5,6 +5,7 @@ import { JwtPayload } from 'modules/auth/interfaces/jwt-payload';
 import { Transaction } from 'sequelize';
 
 import { DocumentDbService } from 'modules/sequelize/document/service';
+import { Transaction } from 'sequelize'
 
 
 // // debug 
@@ -37,10 +38,10 @@ class FillTemplateEvent extends BaseEvent {
     const primaryKey = parameters.primaryKey
     const fileName = parameters.fileName
     const outputFileType = parameters.outputFileType
-    
+
 
     const doucmentDbService = this.allService['DocumentDbService'] as DocumentDbService
-    const newDocument = await doucmentDbService.fillTemplate(tableName,primaryKey,fileName,outputFileType,this.user)
+    const newDocument = await doucmentDbService.fillTemplate(tableName, primaryKey, fileName, outputFileType, this.user, this.transaction)
 
     return newDocument
   }
@@ -53,11 +54,9 @@ export default {
 
   execute: async (parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
 
-    const event = new FillTemplateEvent(parameters, eventConfig, repo, eventService, allService,user,transaction)
+
+    const event = new FillTemplateEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
     return await event.execute()
 
   }
-
-
-
 }
