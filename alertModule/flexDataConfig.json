@@ -1,0 +1,10 @@
+[
+  {
+    "tableName": "booking",
+    "variableList": ["partyGroupCode", "bookingNo", "moduleType"]
+  },
+  {
+    "tableName": "shipment",
+    "variableList": ["partyGroupCode"]
+  }
+]
