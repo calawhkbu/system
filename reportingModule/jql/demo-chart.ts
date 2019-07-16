@@ -1,26 +1,23 @@
-import { Query, TableOrSubquery } from 'node-jql'
+import { Query, FromTable } from 'node-jql'
 
 const query = new Query({
-  $from: new TableOrSubquery({
-    table: {
-      url: 'demo/chart',
-      columns: [
-				{
-					name: 'group',
-					type: 'string'
-				},
-				{
-					name: 'month',
-					type: 'string'
-				},
-				{
-					name: 'value',
-					type: 'number'
-				}
-			]
-    },
-    $as: 'Test'
-  })
+  $from: new FromTable({
+		url: 'demo/chart',
+		columns: [
+			{
+				name: 'group',
+				type: 'string'
+			},
+			{
+				name: 'month',
+				type: 'string'
+			},
+			{
+				name: 'value',
+				type: 'number'
+			}
+		]
+	}, 'Test')
 })
 
 export default query.toJson()

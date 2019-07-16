@@ -1,23 +1,20 @@
-import { Query, TableOrSubquery, ResultColumn } from 'node-jql'
+import { Query, FromTable } from 'node-jql'
 
 const query = new Query({
-  $from: new TableOrSubquery({
-    table: {
-      method: 'POST',
-      url: 'api/booking/query/booking',
-      columns: [
-        {
-          name: 'portOfLoadingCode',
-          type: 'string'
-        },
-        {
-          name: 'noOfBookings',
-          type: 'number'
-        }
-      ]
-    },
-    $as: 'Map'
-  })
+  $from: new FromTable({
+    method: 'POST',
+    url: 'api/booking/query/booking',
+    columns: [
+      {
+        name: 'portOfLoadingCode',
+        type: 'string'
+      },
+      {
+        name: 'noOfBookings',
+        type: 'number'
+      }
+    ]
+  }, 'Map')
 })
 
 export default query.toJson()

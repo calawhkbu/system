@@ -1,11 +1,12 @@
-import { Query, TableOrSubquery } from 'node-jql'
+import { Query, FromTable, CreateTableJQL } from 'node-jql'
 
-const tempQuery = new Query({
-	$createTempTable: 'temp',
-  $from: new TableOrSubquery({
-    table: {
-      url: 'demo/table',
-      columns: [
+const tempQuery = new CreateTableJQL({
+	$temporary: true,
+	name: 'temp',
+	$as: new Query({
+		$from: new FromTable({
+			url: 'demo/table',
+			columns: [
 				{
 					name: 'header 1',
 					type: 'string'
@@ -19,14 +20,11 @@ const tempQuery = new Query({
 					type: 'string'
 				}
 			]
-    },
-    $as: 'Test'
-  })
+		}, 'Test')
+	})
 })
 
-const query = new Query({
-	$from: 'temp'
-})
+const query = new Query({ $from: 'temp' })
 
 export default [
 	tempQuery.toJson(),

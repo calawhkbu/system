@@ -1,4 +1,4 @@
-import { Query, TableOrSubquery } from 'node-jql'
+import { Query } from 'node-jql'
 
 const query = new Query({
 })
