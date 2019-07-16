@@ -59,7 +59,7 @@
             {
               "is": "div",
               "props": {
-                "class": "xs-12 md-9",
+                "class": "xs-9",
                 "style": {
                   "padding-right": "4px"
                 }
@@ -163,7 +163,7 @@
             {
               "is": "div",
               "props": {
-                "class": "xs-12 md-3",
+                "class": "xs-3",
                 "style": {
                   "padding-left": "4px"
                 }
@@ -179,12 +179,6 @@
                   "is": "AsyncComponent",
                   "props": {
                     "layoutName": "booking/alert"
-                  }
-                },
-                {
-                  "is": "AsyncComponent",
-                  "props": {
-                    "layoutName": "booking/workflow"
                   }
                 },
                 {

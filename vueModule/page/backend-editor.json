@@ -1,0 +1,8 @@
+{
+  "layout": "MainLayout",
+  "components": [
+    {
+      "is": "CustomEditor"
+    }
+  ]
+}

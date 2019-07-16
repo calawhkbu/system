@@ -26,6 +26,24 @@
       },
       "fieldOptions": [
         {
+          "isComponent": {
+            "is": "ClickableCell",
+            "props": {
+              "clickFunction": {
+
+              }
+            },
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "close"
+                }
+              }
+            ]
+          }
+        },
+        {
           "key": "id",
           "sql": "i.id",
           "hidden": true

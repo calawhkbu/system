@@ -6,20 +6,6 @@
       "reportingKey": "users",
       "jql": "users",
       "back": "/admin",
-      "icons": [
-        {
-          "icon": "add",
-          "click": [
-            {
-              "type": "router",
-              "otherParams": {
-                "func": "push",
-                "path": "invitation/create"
-              }
-            }
-          ]
-        }
-      ],
       "title": "Users",
       "showFilterBar": true,
       "enableShare": false,
@@ -44,13 +30,13 @@
         "type": "router",
         "otherParams": {
           "func": "push",
-          "path": "/user/{{id}}"
+          "path": "/user/{{personId}}"
         }
       },
       "fieldOptions": [
         {
-          "key": "pe.id",
-          "expression": "pe.id",
+          "key": "personId",
+          "expression": "personId",
           "hidden": true
         }
       ],

@@ -5,53 +5,27 @@
   },
   "components": [
     {
-      "is": "v-card-title",
-      "props": {
-        "class": "headline",
-        "style": {
-          "padding": "6px"
-        }
-      },
-      "slots": [
-        {
-          "is": "I18nText",
-          "props": {
-            "i18nContext": "Workflow",
-            "i18nKey": "title"
-          }
-        }
-      ]
-    },
-    {
-      "is": "v-divider"
-    },
-    {
       "is": "Plugin",
       "props": {
         "lazy": true,
-        "summaryContainer": "v-card-text",
-        "summaryContainerProps": {
-          "style": {
-            "padding": "6px"
-          }
-        },
         "width": "50%",
+        "name": "Workflow",
         "remote": true,
-        "axios": {
+        "axiosBaseParams": {
           "url": "api/workflow/{{tableName}}/{{primaryKey}}"
         },
-        "i18nContext": "Workflow",
-        "idKey": "id",
-        "iconType": "",
-        "icon": "alertCategory",
-        "iconMap": {
-          "Exception": "notification_important",
-          "Message": "message"
+        "shareProps": {
+          "idKey": "id",
+          "iconType": "",
+          "titleKey": "alertType",
+          "subTitleKeys": [
+            { "key": "createdAt", "is": "Datetime" }
+          ]
         },
-        "titleKey": "alertType",
-        "subTitleKeys": [
-          { "key": "createdAt", "is": "Datetime" }
-        ]
+        "baseSummaryProps": {
+        },
+        "baseDetailProps": {
+        }
       }
     }
   ]

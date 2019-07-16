@@ -23,7 +23,7 @@
         {
 
             "fileName" : "Shipping Order",
-            "allowFileType" : ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf"],
+            "allowFileType" : ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf","image/gif"],
 
             "allowFillTemplate" : true,
             "templateName" : "shippingOrder-{{moduleTypeCode}}"

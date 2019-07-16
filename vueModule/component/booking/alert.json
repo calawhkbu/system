@@ -1,44 +1,17 @@
 {
   "layout": "v-card",
   "style": {
-    "margin-bottom": "25px"
+    "margin-bottom": "4px"
   },
   "components": [
-    {
-      "is": "v-card-title",
-      "props": {
-        "class": "headline",
-        "style": {
-          "padding": "6px"
-        }
-      },
-      "slots": [
-        {
-          "is": "I18nText",
-          "props": {
-            "i18nContext": "Alert",
-            "i18nKey": "title"
-          }
-        }
-      ]
-    },
-    {
-      "is": "v-divider"
-    },
     {
       "is": "Plugin",
       "props": {
         "lazy": true,
         "transition": "slide-y-reverse-transition",
-        "summaryContainer": "v-card-text",
-        "summaryContainerProps": {
-          "style": {
-            "padding": "6px"
-          }
-        },
-        "content-class": "AlertDialog",
+        "name": "Alert",
         "remote": true,
-        "axios": {
+        "axiosBaseParams": {
           "method": "POST",
           "url": "api/alert/list/history",
           "data": {
@@ -47,20 +20,24 @@
             "afterTime": "{{afterTime}}"
           }
         },
-        "loop": 6000,
-        "i18nContext": "Alert",
-        "idKey": "id",
-        "iconType": "",
-        "icon": "alertCategory",
-        "iconMap": {
-          "Exception": "notification_important",
-          "Message": "message"
+        "loopGetData": 6000,
+        "shareProps": {
+          "iconType": "",
+          "icon": "alertCategory",
+          "iconMap": {
+            "Exception": "notification_important",
+            "Message": "message"
+          },
+          "titleKey": "content.title",
+          "subTitleKeys": ["content.message"],
+          "noIcon": "notifications_none"
         },
-        "titleKey": "content.message",
-        "subTitleKeys": [
-          { "key": "createdAt", "is": "Datetime" }
-        ],
-        "detailCustomItem": "AlertDetail"
+        "baseSummaryProps": {
+          "size": -3
+        },
+        "baseDetailProps": {
+          "showCargoOrContainer": true
+        }
       }
     }
   ]
