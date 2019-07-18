@@ -54,11 +54,21 @@ export default {
     }
   ],
 
+  afterCreate_document : [
+
+    {
+      handlerName: "afterCreate_document.ts"
+
+    }
+
+
+  ],
+
 
   afterCreate_booking: [
     {
 
-      condition: true,
+      condition: false,
       handlerName: "checker.ts",
       otherParameters: {
 

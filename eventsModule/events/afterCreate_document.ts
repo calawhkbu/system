@@ -5,15 +5,16 @@ import { JwtPayload } from 'modules/auth/interfaces/jwt-payload';
 import { Transaction } from 'sequelize';
 
 import { DocumentDbService } from 'modules/sequelize/document/service';
-import { Transaction } from 'sequelize'
+import { Document } from 'models/main/document';
 
-
-// // debug 
-
+// debug
+// import { Document } from '../../../../swivel-backend-new/src/models/main/document';
 // import { DocumentDbService } from '../../../../swivel-backend-new/src/modules/sequelize/document/service';
 
 
-class FillTemplateEvent extends BaseEvent {
+
+
+class AfterCreateDocumentEvent extends BaseEvent {
 
   constructor(
 
@@ -35,16 +36,16 @@ class FillTemplateEvent extends BaseEvent {
   public async mainFunction(parameters: any) {
 
 
-    const tableName = parameters.tableName
-    const primaryKey = parameters.primaryKey
-    const fileName = parameters.fileName
-    const outputFileType = parameters.outputFileType
 
+    const documentService = this.allService['DocumentDbService'] as DocumentDbService
 
-    const doucmentDbService = this.allService['DocumentDbService'] as DocumentDbService
-    const newDocument = await doucmentDbService.fillTemplate(tableName, primaryKey, fileName, outputFileType, this.user, this.transaction)
+    const document = parameters.data as Document
 
-    return newDocument
+    await documentService.updateDocumentPreviewImage(document.tableName,document.primaryKey,document.fileName,this.user)
+
+    return {
+    }
+
   }
 }
 
@@ -52,12 +53,11 @@ class FillTemplateEvent extends BaseEvent {
 export default {
 
 
-
   execute: async (parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
 
-
-    const event = new FillTemplateEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
+    const event = new AfterCreateDocumentEvent(parameters, eventConfig, repo, eventService, allService,user,transaction)
     return await event.execute()
 
   }
+
 }
