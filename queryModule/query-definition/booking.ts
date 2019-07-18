@@ -1,5 +1,9 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, FromTable, BinaryExpression, ColumnExpression, FunctionExpression, ParameterExpression, LikeExpression, InExpression, IsNullExpression } from 'node-jql'
+import { Query, JoinedTableOrSubquery,
+  BinaryExpression, ColumnExpression, TableOrSubquery,
+  FunctionExpression, ParameterExpression, LikeExpression, InExpression, IsNullExpression,
+  OrExpressions
+} from 'node-jql'
 
 const query = new QueryDef(new Query({
   $distinct: true,
