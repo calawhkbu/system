@@ -2,7 +2,7 @@ import { QueryDef } from 'classes/query/QueryDef'
 import { Query, JoinedTableOrSubquery,
   BinaryExpression, ColumnExpression, TableOrSubquery,
   FunctionExpression, ParameterExpression, LikeExpression, InExpression, IsNullExpression,
-  OrExpressions
+  OrExpressions, FromTable
 } from 'node-jql'
 
 const query = new QueryDef(new Query({

@@ -1,4 +1,4 @@
 booking alert from sms english!
 message : {{message}}
-entity : {{entity}}
+bookingNo : {{entity.bookingNo}}
 url : {{url}}
