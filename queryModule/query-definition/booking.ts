@@ -1,9 +1,5 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, JoinedTableOrSubquery,
-  BinaryExpression, ColumnExpression, TableOrSubquery,
-  FunctionExpression, ParameterExpression, LikeExpression, InExpression, IsNullExpression,
-  OrExpressions, FromTable
-} from 'node-jql'
+import { Query, FromTable, BinaryExpression, ColumnExpression, FunctionExpression, ParameterExpression, LikeExpression, InExpression, IsNullExpression } from 'node-jql'
 
 const query = new QueryDef(new Query({
   $distinct: true,
@@ -95,7 +91,7 @@ query.register('moduleTypeCode', new Query({
 })).register('value', 0)
 
 query.register('moduleTypeCodes', new Query({
-  $where: new InExpression(new ColumnExpression('b', 'moduleTypeCode'))
+  $where: new InExpression(new ColumnExpression('b', 'moduleTypeCode'), false)
 })).register('value', 0)
 
 query.register('boundTypeCode', new Query({
@@ -103,7 +99,7 @@ query.register('boundTypeCode', new Query({
 })).register('value', 0)
 
 query.register('boundTypeCodes', new Query({
-  $where: new InExpression(new ColumnExpression('b', 'boundTypeCode'))
+  $where: new InExpression(new ColumnExpression('b', 'boundTypeCode'), false)
 })).register('value', 0)
 
 query.register('shipperPartyName', new Query({
@@ -128,24 +124,24 @@ query.register('agentPartyName', new Query({
 
 query.register('isActive', new Query({
   $where: [
-    new IsNullExpression(new ColumnExpression('b', 'deletedAt')),
-    new IsNullExpression(new ColumnExpression('b', 'deletedBy')),
-    new IsNullExpression(new ColumnExpression('fd', 'deletedAt')),
-    new IsNullExpression(new ColumnExpression('fd', 'deletedBy')),
-    new IsNullExpression(new ColumnExpression('ba', 'deletedAt')),
-    new IsNullExpression(new ColumnExpression('ba', 'deletedBy')),
-    new IsNullExpression(new ColumnExpression('bafd', 'deletedAt')),
-    new IsNullExpression(new ColumnExpression('bafd', 'deletedBy')),
-    new IsNullExpression(new ColumnExpression('bc', 'deletedAt')),
-    new IsNullExpression(new ColumnExpression('bc', 'deletedBy')),
-    new IsNullExpression(new ColumnExpression('bcfd', 'deletedAt')),
-    new IsNullExpression(new ColumnExpression('bcfd', 'deletedBy')),
-    new IsNullExpression(new ColumnExpression('bpp', 'deletedAt')),
-    new IsNullExpression(new ColumnExpression('bppfd', 'deletedBy')),
-    new IsNullExpression(new ColumnExpression('br', 'deletedAt')),
-    new IsNullExpression(new ColumnExpression('br', 'deletedBy')),
-    new IsNullExpression(new ColumnExpression('brfd', 'deletedAt')),
-    new IsNullExpression(new ColumnExpression('brfd', 'deletedBy')),
+    new IsNullExpression(new ColumnExpression('b', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('b', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('fd', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('fd', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('ba', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('ba', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('bafd', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('bafd', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('bc', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('bc', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('bcfd', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('bcfd', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('bpp', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('bppfd', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('br', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('br', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('brfd', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('brfd', 'deletedBy'), false),
   ]
 }))
 
