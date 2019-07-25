@@ -8,7 +8,7 @@ const query = new Query({
   ],
   $from: new FromTable({
     method: 'POST',
-    url: 'api/shipment/query/fm3k-joblockrpt',
+    url: 'api/shipment/query/job',
     columns: [
       {
         name: 'officePartyCode',

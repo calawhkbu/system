@@ -1,4 +1,4 @@
-import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, Value } from 'node-jql'
+import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression } from 'node-jql'
 
 function prepareTable(name: string): CreateTableJQL {
   return new CreateTableJQL({
@@ -6,15 +6,14 @@ function prepareTable(name: string): CreateTableJQL {
     name,
     $as: new Query({
       $select: [
-        new ResultColumn(new Value(name), 'type'),
         new ResultColumn(new FunctionExpression('YEAR', new ColumnExpression('jobMonth'), 'YYYY-MM'), 'year'),
         new ResultColumn(new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'), 'month'),
         new ResultColumn('currency'),
-        new ResultColumn(new FunctionExpression('ROUND', new ColumnExpression(name), 0), 'value'),
+        new ResultColumn(new FunctionExpression('ROUND', new ColumnExpression('grossProfit'), 0), 'grossProfit'),
       ],
       $from: new FromTable({
         method: 'POST',
-        url: 'api/shipment/query/fm3k-vsiteanalysis',
+        url: 'api/shipment/query/profit',
         columns: [
           {
             name: 'officePartyCode',
@@ -29,7 +28,7 @@ function prepareTable(name: string): CreateTableJQL {
             type: 'string'
           },
           {
-            name,
+            name: 'grossProfit',
             type: 'number'
           }
         ]
@@ -39,7 +38,7 @@ function prepareTable(name: string): CreateTableJQL {
 }
 
 export default [
-  [function (require, params) {
+  [function (require, session, params) {
     const moment = require('moment')
     const subqueries = params.subqueries
     if (subqueries && subqueries.jobDate) {
@@ -48,19 +47,19 @@ export default [
       subqueries.jobDate.to = moment().year(year).endOf('year').format('YYYY-MM-DD')
     }
     return params
-  }, prepareTable('grossProfit')],
-  [function (require, params) {
+  }, prepareTable('current')],
+  [function (require, session, params) {
     const moment = require('moment')
     const subqueries = params.subqueries
     if (subqueries && subqueries.jobDate) {
-      const year = moment(subqueries.jobDate.from, 'YYYY-MM-DD').year()
+      const year = moment(subqueries.jobDate.from, 'YYYY-MM-DD').year() - 1
       subqueries.jobDate.from = moment().year(year).startOf('year').format('YYYY-MM-DD')
       subqueries.jobDate.to = moment().year(year).endOf('year').format('YYYY-MM-DD')
     }
     return params
-  }, prepareTable('revenue')],
+  }, prepareTable('last')],
   new Query({
-    $from: 'grossProfit',
-    $union: new Query('revenue')
+    $from: 'last',
+    $union: new Query('current')
   })
 ]

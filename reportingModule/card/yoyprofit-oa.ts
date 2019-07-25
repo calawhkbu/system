@@ -1,4 +1,4 @@
-import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, JoinClause, BinaryExpression, MathExpression, Value, CreateFunctionJQL } from 'node-jql'
+import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, MathExpression, CreateFunctionJQL } from 'node-jql'
 
 function parseCode(code): Function {
   code = code.trim()
@@ -16,7 +16,7 @@ function parseCode(code): Function {
 }
 
 function prepareParams(thisYear: boolean, nominatedType_: 'F'|'R'): Function {
-  const fn = function (require, params) {
+  const fn = function (require, session, params) {
     const moment = require('moment')
     const subqueries = params.subqueries
     if (subqueries && subqueries.jobDate) {
@@ -48,7 +48,7 @@ function prepareTable(name: string): CreateTableJQL {
       ],
       $from: new FromTable({
         method: 'POST',
-        url: 'api/shipment/query/fm3k-vsiteanalysis',
+        url: 'api/shipment/query/profit',
         columns: [
           {
             name: 'officePartyCode',
@@ -85,7 +85,7 @@ export default [
   [prepareParams(true, 'R'), prepareTable('current_R')],
   [prepareParams(false, 'F'), prepareTable('last_F')],
   [prepareParams(false, 'R'), prepareTable('last_R')],
-  function (require, params) {
+  function (require, session, params) {
     const { Query, FromTable, ResultColumn, ColumnExpression, FunctionExpression, JoinClause, BinaryExpression } = require('node-jql')
     const query = new Query({
       $select: [

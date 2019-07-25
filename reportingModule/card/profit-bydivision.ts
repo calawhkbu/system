@@ -1,4 +1,5 @@
 import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, Value } from 'node-jql'
+import { BadRequestException } from '@nestjs/common'
 
 function prepareTable(name: string): CreateTableJQL {
   return new CreateTableJQL({
@@ -14,7 +15,7 @@ function prepareTable(name: string): CreateTableJQL {
       ],
       $from: new FromTable({
         method: 'POST',
-        url: 'api/shipment/query/fm3k-vsiteanalysis',
+        url: 'api/shipment/query/profit',
         columns: [
           {
             name: 'officePartyCode',
@@ -39,27 +40,27 @@ function prepareTable(name: string): CreateTableJQL {
 }
 
 export default [
-  [function (require, params) {
+  [function (require, session, params) {
     const subqueries = params.subqueries
-    if (!subqueries || !subqueries.division) throw new Error('MISSING_DIVISION')
+    if (!subqueries || !subqueries.division) throw new BadRequestException('MISSING_DIVISION')
     if (subqueries && subqueries.division) {
       if (subqueries.division.value !== 'SE' && subqueries.division.value !== 'SI') throw new Error('DIVISION_NOT_SUPPORTED')
       subqueries.division.value += ' FCL'
     }
     return params
   }, prepareTable('FCL')],
-  [function (require, params) {
+  [function (require, session, params) {
     const subqueries = params.subqueries
-    if (!subqueries || !subqueries.division) throw new Error('MISSING_DIVISION')
+    if (!subqueries || !subqueries.division) throw new BadRequestException('MISSING_DIVISION')
     if (subqueries && subqueries.division) {
       if (subqueries.division.value !== 'SE' && subqueries.division.value !== 'SI') throw new Error('DIVISION_NOT_SUPPORTED')
       subqueries.division.value += ' LCL'
     }
     return params
   }, prepareTable('LCL')],
-  [function (require, params) {
+  [function (require, session, params) {
     const subqueries = params.subqueries
-    if (!subqueries || !subqueries.division) throw new Error('MISSING_DIVISION')
+    if (!subqueries || !subqueries.division) throw new BadRequestException('MISSING_DIVISION')
     if (subqueries && subqueries.division) {
       if (subqueries.division.value !== 'SE' && subqueries.division.value !== 'SI') throw new Error('DIVISION_NOT_SUPPORTED')
       subqueries.division.value += ' Consol'
