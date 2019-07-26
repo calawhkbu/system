@@ -83,7 +83,7 @@ module.exports = {
 		{
 			path: '/fm3k/',
 			method: 'GET',
-			expiryMinutes: 60
+			expiryMinutes: 120
 		},
 
 		// public API for tracking

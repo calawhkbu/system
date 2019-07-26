@@ -30,8 +30,8 @@ class CheckerEvent extends BaseEvent {
       const firstKey = key.substr(0,key.indexOf('.'))
       const subKey = key.substr(key.indexOf('.') +1 )
       
-      console.log(firstKey,'firstKey')
-      console.log(subKey,'subKey')
+      // console.log(firstKey,'firstKey')
+      // console.log(subKey,'subKey')
 
       return this.getVariable(parameters[firstKey],subKey)
 
@@ -108,18 +108,19 @@ class CheckerEvent extends BaseEvent {
     }
 
 
-    console.log(key,'key')
-    console.log(parameters,'parameters')
+    // console.log(key,'key')
+    // console.log(parameters,'parameters')
 
 
     const variable = this.getVariable(parameters,key)
 
-    console.log(variable,'variable')
+    // console.log(variable,'variable')
 
     let result:any = checkerFunction(variable,checkerOption.checkerParam)
 
     return {
       checkerFunctionName,
+      variable : variable,
       result
     }
 
@@ -156,10 +157,7 @@ class CheckerEvent extends BaseEvent {
 
     }
 
-
-
-
-    console.log(checkerResult,'checkerResult')
+    // console.log(checkerResult,'checkerResult')
 
     delete parameters['checker']
 

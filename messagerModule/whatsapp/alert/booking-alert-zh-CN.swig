@@ -1,4 +1,3 @@
-booking alert from sms zh-CN!
+booking alert from whatsapp zh-CN!
 message : {{message}}
-entity : {{entity}}
 url : {{url}}

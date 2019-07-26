@@ -163,6 +163,23 @@
             "flexData": {
                 "data": null
             }
+        },
+
+        {
+            "id": 1,
+            "bookingId": 1,
+            "amountName": "test",
+            "currencyCode": "USD",
+            "amount": "10000.000000",
+            "createdAt": "2019-05-06T07:52:52.000Z",
+            "updatedAt": "2019-06-19T09:18:24.000Z",
+            "deletedAt": null,
+            "createdBy": "360@swivelsoftware.com",
+            "updatedBy": "360@swivelsoftware.com",
+            "deletedBy": null,
+            "flexData": {
+                "data": null
+            }
         }
     ],
     "bookingContainers": [
@@ -170,6 +187,7 @@
             "id": 1,
             "bookingId": 1,
             "containerTypeCode": "20'GP",
+            "carrierContainerCode": "carrierContainerCode",
             "containerNo": "123456",
             "sealNo": "654321",
             "quantity": 1,

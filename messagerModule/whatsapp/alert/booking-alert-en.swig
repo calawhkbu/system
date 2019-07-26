@@ -1,4 +1,3 @@
-booking alert from sms english!
+booking alert from whatsapp english!
 message : {{message}}
-entity : {{entity}}
 url : {{url}}

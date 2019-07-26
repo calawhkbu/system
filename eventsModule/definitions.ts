@@ -45,6 +45,16 @@ export default {
   ],
 
 
+
+  create_tracking : [
+
+    {
+      handlerName: "create_tracking.ts"
+    }
+
+  ],
+
+
   // should not be called directly, should be called after an event
   fill_template: [
 
@@ -52,6 +62,16 @@ export default {
       handlerName: "fill_template.ts"
       
     }
+  ],
+
+  afterCreate_document : [
+
+    {
+      handlerName: "afterCreate_document.ts"
+
+    }
+
+
   ],
 
 
@@ -79,7 +99,8 @@ export default {
 
             {
               checkerFunctionName: "isEmpty",
-            }
+            },
+
           ],
 
 
@@ -102,8 +123,21 @@ export default {
       },
 
       afterEvent : [
+
         {
-          condition : true,
+
+          condition : false,
+          eventName : 'create_tracking',
+          previousParameters : {
+
+          }
+
+
+        },
+
+        
+        {
+          condition : false,
           eventName : 'fill_template',
           previousParameters : {
 
@@ -116,9 +150,7 @@ export default {
         },
         {
           condition : (result) => {
-
             // return result["checkerResult"]["data.id"] as boolean
-
             return true
           },
 
