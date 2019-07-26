@@ -1,0 +1,36 @@
+{
+  "layout": "v-card",
+  "style": {
+    "min-height": "300px"
+  },
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [{
+        "label": "CustomerPage.AlertPreference",
+        "name": "alertPreference.details",
+        "component": "TableField",
+        "class": "xs-12",
+        "props": {
+          "fields": [{
+              "label": "CustomerPage.alertType",
+              "name": "alertType",
+              "component": "v-text-field",
+              "props": {
+                "readonly": true
+              }
+            },
+            {
+              "label": "CustomerPage.notifyBy",
+              "name": "notifyBy",
+              "component": "AsyncAutoSuggest",
+              "props": {
+                "url": ""
+              }
+            }
+          ]
+        }
+      }]
+    }
+  }]
+}

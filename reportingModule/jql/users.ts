@@ -4,12 +4,8 @@ const query = new Query({
   $distinct: true,
   $from: new FromTable({
     method: 'POST',
-    url: 'q/invitation',
+    url: 'api/person/query/person',
     columns: [
-      {
-        name: 'personId',
-        type: 'number'
-      },
       {
         name: 'userName',
         type: 'string'

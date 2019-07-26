@@ -1,129 +1,107 @@
 {
-  "components": [
-    {
-      "is": "v-card",
-      "props": {
-        "style": {
-          "margin-bottom": "20px"
-        }
-      },
-      "slots": [
-        {
-          "name": "default",
-          "is": "DynamicComponent",
+  "layout": "v-card",
+  "style": {
+    "min-height": "350px"
+  },
+  "components": [{
+    "is": "DynamicComponent",
+    "props": {
+      "components": [{
+          "is": "v-card-title",
           "props": {
-            "components": [
-              {
-                "is": "v-card-title",
+            "primary-title": true
+          },
+          "slots": [{
+            "name": "default",
+            "is": "I18nText",
+            "props": {
+              "class": "title",
+              "i18nKey": "UserProfilePage.UserPreferences"
+            }
+          }]
+        },
+        {
+          "is": "Form",
+          "props": {
+            "form": "$store.state.config",
+            "submitActions": [{
+              "type": "dispatch",
+              "otherParams": {
+                "name": "config/updateAll"
+              },
+              "errorMessage": "UserProfilePage.UpdateUserPreferencesFail",
+              "afterActions": [{
+                "type": "notify",
+                "otherParams": {
+                  "notification": "UserProfilePage.UpdateUserPreferencesSuccess"
+                }
+              }]
+            }],
+            "fields": [{
+                "label": "config.locale",
+                "name": "locale",
+                "component": "AsyncSelect",
+                "class": "xs-12 md-6",
                 "props": {
-                  "primary-title": true
-                },
-                "slots": [
-                  {
-                    "name": "default",
-                    "is": "I18nText",
-                    "props": {
-                      "class": "title",
-                      "i18nKey": "UserProfilePage.UserPreferences"
-                    }
-                  }
-                ]
+                  "item-text": "value",
+                  "item-value": "key",
+                  "url": "i18n/available-languages"
+                }
               },
               {
-                "is": "Form",
+                "label": "config.timezone",
+                "name": "timezone",
+                "component": "LocalAutoSuggest",
+                "class": "xs-12 md-6",
                 "props": {
-                  "form": "$store.state.config",
-                  "submitActions": [
-                    {
-                      "type": "dispatch",
-                      "otherParams": {
-                        "name": "config/updateAll"
-                      },
-                      "errorMessage": "UserProfilePage.UpdateUserPreferencesFail",
-                      "afterActions": [
-                        {
-                          "type": "notify",
-                          "otherParams": {
-                            "notification": "UserProfilePage.UpdateUserPreferencesSuccess"
-                          }
-                        }
-                      ]
-                    }
-                  ],
-                  "fields": [
-                    {
-                      "label": "config.locale",
-                      "name": "locale",
-                      "component": "AsyncSelect",
-                      "class": "xs-12 md-6",
-                      "props": {
-                        "item-text": "value",
-                        "item-value": "key",
-                        "url": "i18n/available-languages"
-                      }
-                    },
-                    {
-                      "label": "config.timezone",
-                      "name": "timezone",
-                      "component": "LocalAutoSuggest",
-                      "class": "xs-12 md-6",
-                      "props": {
-                        "path": "$moment.tz.names",
-                        
-                        
-                        "hide-details": true
-                      }
-                    },
-                    {
-                      "label": "config.dateFormat",
-                      "name": "dateFormat",
-                      "component": "v-text-field",
-                      "class": "xs-12 md-4"
-                    },
-                    {
-                      "label": "config.timeFormat",
-                      "name": "timeFormat",
-                      "component": "v-text-field",
-                      "class": "xs-12 md-4"
-                    },
-                    {
-                      "label": "config.dateTimeFormat",
-                      "name": "dateTimeFormat",
-                      "component": "v-text-field",
-                      "class": "xs-12 md-4"
-                    }
-                  ]
-                },
-                "slots": [
-                  {
-                    "name": "post-form",
-                    "is": "DynamicComponent",
-                    "props": {
-                      "components": [
-                        {
-                          "is": "v-btn",
-                          "props": {
-                            "type": "submit",
-                            "flat": true
-                          },
-                          "slots": [
-                            {
-                              "is": "i18nText",
-                              "props": {
-                                "i18nKey": "Save"
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  }
-                ]
+                  "path": "$moment.tz.names",
+                  "hide-details": true
+                }
+              },
+              {
+                "label": "config.dateFormat",
+                "name": "dateFormat",
+                "component": "v-text-field",
+                "class": "xs-12 md-6",
+                "hint": "config.dateFormatHint"
+              },
+              {
+                "label": "config.timeFormat",
+                "name": "timeFormat",
+                "component": "v-text-field",
+                "class": "xs-12 md-6",
+                "hint": "config.timeFormatHint"
+              },
+              {
+                "label": "config.dateTimeFormat",
+                "name": "dateTimeFormat",
+                "component": "v-text-field",
+                "class": "xs-12",
+                "hint": "config.dateTimeFormatHint"
               }
             ]
-          }
+          },
+          "slots": [{
+            "name": "post-form",
+            "is": "DynamicComponent",
+            "props": {
+              "components": [{
+                "is": "v-btn",
+                "props": {
+                  "type": "submit",
+                  "flat": true
+                },
+                "slots": [{
+                  "is": "i18nText",
+                  "props": {
+                    "i18nKey": "Save"
+                  }
+                }]
+              }]
+            }
+          }]
         }
       ]
     }
-  ]
+  }]
 }

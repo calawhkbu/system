@@ -1,146 +1,118 @@
 {
-  "components": [
-    {
-      "is": "v-card",
+  "layout": "v-card",
+  "style": {
+    "min-height": "728px"
+  },
+  "components": [{
+    "name": "pre-form",
+    "is": "v-card-title",
+    "props": {
+      "primary-title": true
+    },
+    "slots": [{
+      "name": "default",
+      "is": "I18nText",
       "props": {
-        "style": {
-          "margin-bottom": "20px"
-        }
-      },
-      "slots": [
-        {
-          "is": "DynamicComponent",
-          "name": "default",
-          "props": {
-            "components": [
-              {
-                "is": "v-card-title",
-                "props": {
-                  "primary-title": true
-                },
-                "slots": [
-                  {
-                    "name": "default",
-                    "is": "I18nText",
-                    "props": {
-                      "class": "title",
-                      "i18nKey": "UserProfilePage.BasicInformation"
-                    }
-                  }
-                ]
-              },
-              {
-                "is": "Form",
-                "props": {
-                  "form": "$store.state.auth.userProfile",
-                  "submitActions": [
-                    {
-                      "type": "dispatch",
-                      "otherParams": {
-                        "name": "auth/submitUserProfile"
-                      },
-                      "errorMessage": "UserProfilePage.UpdateUserProfileFail",
-                      "afterActions": [
-                        {
-                          "type": "notify",
-                          "otherParams": {
-                            "notification": "UserProfilePage.UpdateUserProfileSuccess"
-                          }
-                        }
-                      ]
-                    }
-                  ],
-                  "fields": [
-                    {
-                      "name": "photoURL",
-                      "component": "FileField",
-                      "class": "xs-12",
-                      "props": {
-                        "convertBase64": true,
-                        "defaultImage": "/img/logo/Swivel.png",
-                        "style": {
-                          "display": "flex",
-                          "justify-content": "center"
-                        },
-                        "imageProps": {
-                          "style": {
-                            "max-height": "150px"
-                          }
-                        }
-                      }
-                    },
-                    {
-                      "name": "userName",
-                      "label": "Auth.username",
-                      "component": "v-text-field",
-                      "class": "xs-12",
-                      "props": {
-                        "type": "email",
-                        "readonly": true
-                      }
-                    },
-                    {
-                      "name": "firstName",
-                      "label": "Auth.firstName",
-                      "component": "v-text-field",
-                      "class": "xs-12 md-4"
-                    },
-                    {
-                      "name": "lastName",
-                      "label": "Auth.lastName",
-                      "component": "v-text-field",
-                      "class": "xs-12 md-4"
-                    },
-                    {
-                      "name": "displayName",
-                      "label": "Auth.displayName",
-                      "component": "v-text-field",
-                      "class": "xs-12 md-4"
-                    }
-                  ]
-                },
-                "slots": [
-                  {
-                    "name": "post-form",
-                    "is": "DynamicComponent",
-                    "props": {
-                      "style": {
-                        "display": "flex"
-                      },
-                      "components": [
-                        {
-                          "is": "v-btn",
-                          "props": {
-                            "type": "submit",
-                            "flat": true
-                          },
-                          "slots": [
-                            {
-                              "is": "i18nText",
-                              "props": {
-                                "i18nKey": "Save"
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "is": "v-spacer"
-                        },
-                        {
-                          "is": "AsyncComponent",
-                          "props": {
-                            "layoutName": "user-profile/change-password-dialog"
-                          }
-                        }
-                      ]
-                    }
-                  }
-                ]
-              }
-            ]
+        "class": "title",
+        "i18nKey": "UserProfilePage.BasicInformation"
+      }
+    }]
+  }, {
+    "is": "Form",
+    "props": {
+      "form": "$store.state.auth.userProfile",
+      "submitActions": [{
+        "type": "dispatch",
+        "otherParams": {
+          "name": "auth/submitUserProfile"
+        },
+        "errorMessage": "UserProfilePage.UpdateUserProfileFail",
+        "afterActions": [{
+          "type": "notify",
+          "otherParams": {
+            "notification": "UserProfilePage.UpdateUserProfileSuccess"
           }
+        }]
+      }],
+      "fields": [{
+          "name": "photoURL",
+          "component": "FileField",
+          "class": "xs-12",
+          "props": {
+            "convertBase64": true,
+            "defaultImage": "/img/logo/Swivel.png",
+            "style": {
+              "display": "flex",
+              "justify-content": "center"
+            },
+            "imageProps": {
+              "style": {
+                "max-height": "150px"
+              }
+            }
+          }
+        },
+        {
+          "name": "userName",
+          "label": "Auth.username",
+          "component": "v-text-field",
+          "class": "xs-12",
+          "props": {
+            "type": "email",
+            "readonly": true
+          }
+        },
+        {
+          "name": "firstName",
+          "label": "Auth.firstName",
+          "component": "v-text-field",
+          "class": "xs-12 md-6"
+        },
+        {
+          "name": "lastName",
+          "label": "Auth.lastName",
+          "component": "v-text-field",
+          "class": "xs-12 md-6"
+        },
+        {
+          "name": "displayName",
+          "label": "Auth.displayName",
+          "component": "v-text-field",
+          "class": "xs-12"
         }
       ]
-    }
-  ]
+    },
+    "slots": [{
+      "name": "post-form",
+      "is": "DynamicComponent",
+      "props": {
+        "style": {
+          "display": "flex"
+        },
+        "components": [{
+            "is": "v-btn",
+            "props": {
+              "type": "submit",
+              "flat": true
+            },
+            "slots": [{
+              "is": "i18nText",
+              "props": {
+                "i18nKey": "Save"
+              }
+            }]
+          },
+          {
+            "is": "v-spacer"
+          },
+          {
+            "is": "AsyncComponent",
+            "props": {
+              "layoutName": "user-profile/change-password-dialog"
+            }
+          }
+        ]
+      }
+    }]
+  }]
 }

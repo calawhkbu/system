@@ -12,6 +12,9 @@
       "enableSetting": false,
       "newReport": {
         "filters": {
+          "invitationStatus": {
+            "value": "used"
+          },
           "isActive": true
         },
         "configurations": {
@@ -33,15 +36,12 @@
           "path": "/user/{{personId}}"
         }
       },
-      "fieldOptions": [
-        {
-          "key": "personId",
-          "expression": "personId",
-          "hidden": true
-        }
-      ],
-      "filters": [
-        {
+      "fieldOptions": [{
+        "key": "personId",
+        "expression": "person.id",
+        "hidden": true
+      }],
+      "filters": [{
           "name": "userName",
           "type": "text"
         },

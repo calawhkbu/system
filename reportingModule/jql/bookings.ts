@@ -250,11 +250,11 @@ const query = new Query({
         type: 'string'
       },
       {
-        name: 'b.createdAt',
+        name: 'booking.createdAt',
         type: 'Date'
       },
       {
-        name: 'b.updatedAt',
+        name: 'booking.updatedAt',
         type: 'Date'
       }
     ]

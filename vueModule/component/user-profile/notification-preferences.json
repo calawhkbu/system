@@ -1,87 +1,65 @@
 {
-  "components": [
-    {
-      "is": "v-card",
-      "props": {
-        "style": {
-          "margin-bottom": "20px"
-        }
-      },
-      "slots": [
-        {
-          "name": "default",
-          "is": "DynamicComponent",
+  "layout": "v-card",
+  "style": {
+    "min-height": "350px"
+  },
+  "components": [{
+    "is": "DynamicComponent",
+    "props": {
+      "components": [{
+          "is": "v-card-title",
           "props": {
-            "components": [
-              {
-                "is": "v-card-title",
-                "props": {
-                  "primary-title": true
-                },
-                "slots": [
-                  {
-                    "name": "default",
-                    "is": "I18nText",
-                    "props": {
-                      "class": "title",
-                      "i18nKey": "UserProfilePage.NotiicationPreferences"
-                    }
-                  }
-                ]
+            "primary-title": true
+          },
+          "slots": [{
+            "name": "default",
+            "is": "I18nText",
+            "props": {
+              "class": "title",
+              "i18nKey": "UserProfilePage.NotiicationPreferences"
+            }
+          }]
+        },
+        {
+          "is": "Form",
+          "props": {
+            "form": "$store.state.auth.userProfile",
+            "submitActions": [{
+              "type": "dispatch",
+              "otherParams": {
+                "name": "auth/submitUserProfile"
               },
-              {
-                "is": "Form",
+              "errorMessage": "UserProfilePage.UpdateUserProfileFail",
+              "afterActions": [{
+                "type": "notify",
+                "otherParams": {
+                  "notification": "UserProfilePage.UpdateUserProfileSuccess"
+                }
+              }]
+            }],
+            "fields": []
+          },
+          "slots": [{
+            "name": "post-form",
+            "is": "DynamicComponent",
+            "props": {
+              "components": [{
+                "is": "v-btn",
                 "props": {
-                  "form": "$store.state.auth.userProfile",
-                  "submitActions": [
-                    {
-                      "type": "dispatch",
-                      "otherParams": {
-                        "name": "auth/submitUserProfile"
-                      },
-                      "errorMessage": "UserProfilePage.UpdateUserProfileFail",
-                      "afterActions": [
-                        {
-                          "type": "notify",
-                          "otherParams": {
-                            "notification": "UserProfilePage.UpdateUserProfileSuccess"
-                          }
-                        }
-                      ]
-                    }
-                  ],
-                  "fields": []
+                  "type": "submit",
+                  "flat": true
                 },
-                "slots": [
-                  {
-                    "name": "post-form",
-                    "is": "DynamicComponent",
-                    "props": {
-                      "components": [
-                        {
-                          "is": "v-btn",
-                          "props": {
-                            "type": "submit",
-                            "flat": true
-                          },
-                          "slots": [
-                            {
-                              "is": "i18nText",
-                              "props": {
-                                "i18nKey": "Save"
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    }
+                "slots": [{
+                  "is": "i18nText",
+                  "props": {
+                    "i18nKey": "Save"
                   }
-                ]
-              }
-            ]
-          }
+                }]
+              }]
+            }
+          }]
         }
       ]
     }
-  ]
+  }]
 }

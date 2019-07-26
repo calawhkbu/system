@@ -26,10 +26,9 @@
           }
         }
       },
-      "fieldOptions": [
-        {
+      "fieldOptions": [{
           "key": "id",
-          "sql": "b.id",
+          "sql": "booking.id",
           "hidden": true
         },
         {
@@ -68,7 +67,17 @@
           "func": "push",
           "path": "/booking/{{id}}"
         }
-      }
+      },
+      "icons": [{
+        "icon": "add",
+        "click": [{
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "booking/create"
+          }
+        }]
+      }]
     }
   }]
 }

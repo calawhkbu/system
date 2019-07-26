@@ -24,18 +24,14 @@
           }
         }
       },
-      "filters": [
-        {
-          "name": "name",
-          "type": "text"
-        }
-      ],
-      "fieldOptions": [
-        {
-          "key": "id",
-          "sql": "pa.id"
-        }
-      ],
+      "filters": [{
+        "name": "name",
+        "type": "text"
+      }],
+      "fieldOptions": [{
+        "key": "id",
+        "sql": "party.id"
+      }],
       "_clickFunction": {
         "type": "router",
         "otherParams": {

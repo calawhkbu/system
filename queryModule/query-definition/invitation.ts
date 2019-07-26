@@ -3,56 +3,56 @@ import { Query, FromTable, BinaryExpression, ColumnExpression, InExpression, Lik
 
 const query = new QueryDef(new Query({
   $distinct: true,
-  $from: new FromTable('invitation', 'i',
+  $from: new FromTable('invitation', 'invitation',
     {
       operator: 'LEFT',
-      table: new FromTable('person', 'p'),
+      table: new FromTable('person', 'person'),
       $on: [
-        new BinaryExpression(new ColumnExpression('p', 'id'), '=', new ColumnExpression('i', 'personId')),
-        new IsNullExpression(new ColumnExpression('p', 'deletedAt')),
-        new IsNullExpression(new ColumnExpression('p', 'deletedBy'))
+        new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('invitation', 'personId'))
       ]
     },
     {
       operator: 'LEFT',
-      table: new FromTable('token', 't'),
+      table: new FromTable('token', 'token'),
       $on: [
-        new BinaryExpression(new ColumnExpression('t', 'id'), '=', new ColumnExpression('i', 'tokenId')),
-        new IsNullExpression(new ColumnExpression('t', 'deletedAt')),
-        new IsNullExpression(new ColumnExpression('t', 'deletedBy'))
+        new BinaryExpression(new ColumnExpression('token', 'id'), '=', new ColumnExpression('invitation', 'tokenId'))
       ]
     }
   ),
 }))
 
 query.register('status', new Query({
-  $where: new BinaryExpression(new ColumnExpression('i', 'status'), '=')
+  $where: new BinaryExpression(new ColumnExpression('invitation', 'status'), '=')
 })).register('value', 0)
 
 query.register('statuses', new Query({
-  $where: new InExpression(new ColumnExpression('i', 'status'))
+  $where: new InExpression(new ColumnExpression('invitation', 'status'), false)
 })).register('value', 0)
 
 query.register('userName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('p', 'userName'), operator: 'REGEXP' })
+  $where: new LikeExpression({ left: new ColumnExpression('person', 'userName'), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('firstName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('p', 'firstName'), operator: 'REGEXP' })
+  $where: new LikeExpression({ left: new ColumnExpression('person', 'firstName'), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('lastName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('p', 'lastName'), operator: 'REGEXP' })
+  $where: new LikeExpression({ left: new ColumnExpression('person', 'lastName'), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('displayName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('p', 'displayName'), operator: 'REGEXP' })
+  $where: new LikeExpression({ left: new ColumnExpression('person', 'displayName'), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('isActive', new Query({
   $where: [
-    new IsNullExpression(new ColumnExpression('i', 'deletedAt')),
-    new IsNullExpression(new ColumnExpression('i', 'deletedBy')),
+    new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('person', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('person', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('token', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('token', 'deletedBy'), false),
   ]
 }))
 
