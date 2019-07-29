@@ -25,7 +25,6 @@
           "draggable": true,
           "sorting": {},
           "pagination": {
-            "remote": {},
             "current": 0,
             "perPage": 25
           }

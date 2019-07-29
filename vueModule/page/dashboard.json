@@ -55,6 +55,7 @@
           "name": "jobDate",
           "type": "date",
           "props": {
+            "required": true,
             "shortcuts": [
               {
                 "label": "year-to-date",
