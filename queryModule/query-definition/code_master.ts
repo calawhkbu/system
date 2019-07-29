@@ -1,5 +1,5 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, FromTable, FunctionExpression, Unknown, BinaryExpression, ColumnExpression, OrExpressions, LikeExpression, IsNullExpression } from 'node-jql'
+import { Query, FromTable, FunctionExpression, Unknown, BinaryExpression, ColumnExpression, OrExpressions, RegexpExpression, IsNullExpression } from 'node-jql'
 
 const query = new QueryDef(new Query({
   $distinct: true,
@@ -32,8 +32,8 @@ query.register('flexDataData', new Query({
 
 query.register('q', new Query({
   $where: new OrExpressions([
-    new LikeExpression({ left: new ColumnExpression('code_master', 'code'), operator: 'REGEXP' }),
-    new LikeExpression({ left: new ColumnExpression('code_master', 'name'), operator: 'REGEXP' })
+    new RegexpExpression(new ColumnExpression('code_master', 'code'), false),
+    new RegexpExpression(new ColumnExpression('code_master', 'name'), false)
   ])
 })).register('value', 0).register('value', 1)
 

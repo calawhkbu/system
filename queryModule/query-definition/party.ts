@@ -1,5 +1,5 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, ResultColumn, FromTable, LikeExpression, ColumnExpression, BinaryExpression, InExpression, IsNullExpression } from 'node-jql'
+import { Query, ResultColumn, FromTable, RegexpExpression, ColumnExpression, BinaryExpression, InExpression, IsNullExpression } from 'node-jql'
 
 const query = new QueryDef(new Query({
   $distinct: true,
@@ -22,23 +22,23 @@ query.register('isBranch', new Query({
 })).register('value', 0)
 
 query.register('name', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('party', 'name'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('party', 'name'), false)
 })).register('value', 0)
 
 query.register('customCode', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('party', 'erpCode'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('party', 'erpCode'), false)
 })).register('value', 0)
 
 query.register('shortName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('party', 'shortName'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('party', 'shortName'), false)
 })).register('value', 0)
 
 query.register('groupName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('party', 'groupName'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('party', 'groupName'), false)
 })).register('value', 0)
 
 query.register('email', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('party', 'email'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('party', 'email'), false)
 })).register('value', 0)
 
 query.register('isActive', new Query({
