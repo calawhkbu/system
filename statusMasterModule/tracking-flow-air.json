@@ -1,6 +1,6 @@
 [
   {
-    "name": "Not in Track",
+    "group": "Not in Track",
     "status": [
       "Returned",
       "Restock",
@@ -13,7 +13,7 @@
     ]
   },
   {
-    "name": "Processing",
+    "group": "Processing",
     "status": [
       "Empty out for booking",
       "New, no tracking yet",
@@ -21,7 +21,7 @@
     ]
   },
   {
-    "name": "Cargo Ready",
+    "group": "Cargo Ready",
     "status": [
       "Loaded in container",
       "Sent to Shipper",
@@ -33,7 +33,7 @@
     ]
   },
   {
-    "name": "Departure",
+    "group": "Departure",
     "status": [
       "Load onboard",
       "Departure from port of loading",
@@ -41,7 +41,7 @@
     ]
   },
   {
-    "name": "In Transit",
+    "group": "In Transit",
     "status": [
       "Departure from transfer station",
       "Loaded at transfer station",
@@ -53,7 +53,7 @@
     ]
   },
   {
-    "name": "Arrival",
+    "group": "Arrival",
     "status": [
       "Arrived at port of discharge",
       "Discharged from vessel",
@@ -65,7 +65,7 @@
     ]
   },
   {
-    "name": "Delivered",
+    "group": "Delivered",
     "status": [
       "Sent to consignee",
       "Empty container returned",
