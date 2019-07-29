@@ -18,10 +18,6 @@ const query = new Query({
         type: 'boolean'
       },
       {
-        name: 'erpCode',
-        type: 'string'
-      },
-      {
         name: 'name',
         type: 'string'
       },

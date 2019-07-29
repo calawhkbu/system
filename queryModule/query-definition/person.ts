@@ -1,82 +1,97 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, FromTable, BinaryExpression, ColumnExpression, LikeExpression, IsNullExpression } from 'node-jql'
+import { Query, FromTable, BinaryExpression, ColumnExpression, LikeExpression, IsNullExpression, InExpression } from 'node-jql'
 
 const query = new QueryDef(new Query({
   $distinct: true,
-  $from: new FromTable('person', 'pe',
+  $from: new FromTable('person', 'person',
     {
       operator: 'LEFT',
-      table: new FromTable('parties_person', 'pp'),
+      table: new FromTable('invitation', 'invitation'),
       $on: [
-        new BinaryExpression(new ColumnExpression('pe', 'id'), '=', new ColumnExpression('pp', 'personId')),
-        new IsNullExpression(new ColumnExpression('pp', 'deletedAt')),
-        new IsNullExpression(new ColumnExpression('pp', 'deletedBy'))
+        new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('invitation', 'personId'))
       ]
     },
     {
       operator: 'LEFT',
-      table: new FromTable('party', 'pa'),
+      table: new FromTable('parties_person', 'parties_person'),
       $on: [
-        new BinaryExpression(new ColumnExpression('pa', 'id'), '=', new ColumnExpression('pp', 'partyId')),
-        new IsNullExpression(new ColumnExpression('pa', 'deletedAt')),
-        new IsNullExpression(new ColumnExpression('pa', 'deletedBy'))
+        new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('parties_person', 'personId'))
       ]
     },
     {
       operator: 'LEFT',
-      table: new FromTable('party_group', 'pg'),
+      table: new FromTable('party', 'party'),
       $on: [
-        new BinaryExpression(new ColumnExpression('pg', 'code'), '=', new ColumnExpression('pa', 'partyGroupCode')),
-        new IsNullExpression(new ColumnExpression('pg', 'deletedAt')),
-        new IsNullExpression(new ColumnExpression('pg', 'deletedBy'))
+        new BinaryExpression(new ColumnExpression('party', 'id'), '=', new ColumnExpression('parties_person', 'partyId'))
       ]
     },
     {
       operator: 'LEFT',
-      table: new FromTable('person_role', 'pr'),
-      $on: new BinaryExpression(new ColumnExpression('pr', 'personId'), '=', new ColumnExpression('pe', 'id'))
-    },
-    {
-      operator: 'LEFT',
-      table: new FromTable('role', 'r'),
+      table: new FromTable('party_group', 'party_group'),
       $on: [
-        new BinaryExpression(new ColumnExpression('r', 'id'), '=', new ColumnExpression('pr', 'roleId')),
-        new IsNullExpression(new ColumnExpression('r', 'deletedAt')),
-        new IsNullExpression(new ColumnExpression('r', 'deletedBy'))
+        new BinaryExpression(new ColumnExpression('party_group', 'code'), '=', new ColumnExpression('party', 'partyGroupCode'))
       ]
     },
     {
       operator: 'LEFT',
-      table: new FromTable('person_contact', 'pc'),
+      table: new FromTable('person_role', 'person_role'),
+      $on: new BinaryExpression(new ColumnExpression('person_role', 'personId'), '=', new ColumnExpression('person', 'id'))
+    },
+    {
+      operator: 'LEFT',
+      table: new FromTable('role', 'role'),
       $on: [
-        new BinaryExpression(new ColumnExpression('pe', 'id'), '=', new ColumnExpression('pc', 'personId')),
-        new IsNullExpression(new ColumnExpression('pc', 'deletedAt')),
-        new IsNullExpression(new ColumnExpression('pc', 'deletedBy'))
+        new BinaryExpression(new ColumnExpression('role', 'id'), '=', new ColumnExpression('person_role', 'roleId'))
+      ]
+    },
+    {
+      operator: 'LEFT',
+      table: new FromTable('person_contact', 'person_contact'),
+      $on: [
+        new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('person_contact', 'personId'))
       ]
     }
   ),
 }))
 
+query.register('invitationStatus', new Query({
+  $where: new BinaryExpression(new ColumnExpression('invitation', 'status'), '=')
+})).register('value', 0)
+
+query.register('invitationStatuses', new Query({
+  $where: new InExpression(new ColumnExpression('invitation', 'status'), false)
+})).register('value', 0)
+
 query.register('userName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('pe', 'userName'), operator: 'REGEXP' })
+  $where: new LikeExpression({ left: new ColumnExpression('person', 'userName'), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('firstName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('pe', 'firstName'), operator: 'REGEXP' })
+  $where: new LikeExpression({ left: new ColumnExpression('person', 'firstName'), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('lastName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('pe', 'lastName'), operator: 'REGEXP' })
+  $where: new LikeExpression({ left: new ColumnExpression('person', 'lastName'), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('displayName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('pe', 'displayName'), operator: 'REGEXP' })
+  $where: new LikeExpression({ left: new ColumnExpression('person', 'displayName'), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('isActive', new Query({
   $where: [
-    new IsNullExpression(new ColumnExpression('pe', 'deletedAt')),
-    new IsNullExpression(new ColumnExpression('pe', 'deletedBy')),
+    new IsNullExpression(new ColumnExpression('person', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('person', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('parties_person', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('parties_person', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('party', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('party', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('party_group', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('party_group', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('person_contact', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('person_contact', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('role', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('role', 'deletedBy'), false),
   ]
 }))
 

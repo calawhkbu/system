@@ -1,142 +1,148 @@
 {
   "layout": "MainLayout",
-  "components": [
-    {
-      "is": "Widget",
-      "props": {
-        "initUrl": "api/partyGroup/{{id}}",
-        "saveUrl": "api/partyGroup",
-        "primaryKey": "id",
-        "canEdit": true,
-        "topSlots": [
-          {
-            "is": "v-btn",
+  "components": [{
+    "is": "Widget",
+    "props": {
+      "initUrl": "api/partyGroup/{{id}}",
+      "saveUrl": "api/partyGroup",
+      "primaryKey": "id",
+      "canEdit": true,
+      "topSlots": [{
+          "is": "v-btn",
+          "props": {
+            "flat": true,
+            "icon": true
+          },
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "/admin"
+              }
+            }]
+          },
+          "slots": [{
+            "is": "Icon",
             "props": {
-              "flat": true,
-              "icon": true
+              "icon": "arrow_back"
+            }
+          }]
+        },
+        {
+          "is": "DynamicComponent",
+          "props": {
+            "style": {
+              "align-items": "center",
+              "box-sizing": "border-box",
+              "position": "sticky",
+              "justify-content": "center",
+              "flex-shrink": 0,
+              "display": "flex"
             },
-            "events": {
-              "click.stop": [
-                {
-                  "type": "router",
-                  "otherParams": {
-                    "func": "go",
-                    "go": -1
-                  }
-                }
-              ]
-            },
-            "slots": [
-              {
-                "is": "Icon",
+            "components": [{
+                "is": "I18nText",
                 "props": {
-                  "icon": "arrow_back"
+                  "class": "headline",
+                  "i18nKey": "CustomerPage.title"
+                }
+              },
+              {
+                "is": "span",
+                "props": {
+                  "class": "flex-grow"
                 }
               }
             ]
+          }
+        }
+      ],
+      "components": {
+        "assignment": [{
+            "is": "DynamicComponent",
+            "props": {
+              "class": "grid grid-full",
+              "components": [{
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "xs-12 md-4",
+                    "style": {
+                      "padding-right": "4px",
+                      "padding-bottom": "4px"
+                    },
+                    "components": [{
+                      "is": "AsyncComponent",
+                      "props": {
+                        "class": "xs-12",
+                        "layoutName": "customer/basic-information"
+                      }
+                    }]
+                  }
+                },
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "xs-12 md-8",
+                    "style": {
+                      "padding-left": "4px",
+                      "padding-bottom": "4px"
+                    },
+                    "components": [{
+                      "is": "AsyncComponent",
+                      "props": {
+                        "class": "xs-12",
+                        "layoutName": "customer/party"
+                      }
+                    }]
+                  }
+                }
+              ]
+            }
           },
           {
             "is": "DynamicComponent",
             "props": {
-              "style": {
-                "align-items": "center",
-                "box-sizing": "border-box",
-                "position": "sticky",
-                "justify-content": "center",
-                "flex-shrink": 0,
-                "display": "flex"
-              },
-              "components": [
-                {
-                  "is": "I18nText",
+              "class": "grid grid-full",
+              "components": [{
+                  "is": "DynamicComponent",
                   "props": {
-                    "class": "headline",
-                    "i18nKey": "CustomerPage.title"
+                    "class": "xs-12 md-4",
+                    "style": {
+                      "padding-right": "4px",
+                      "padding-bottom": "4px"
+                    },
+                    "components": [{
+                      "is": "AsyncComponent",
+                      "props": {
+                        "class": "xs-12",
+                        "layoutName": "customer/default-preference"
+                      }
+                    }]
                   }
                 },
                 {
-                  "is": "span",
+                  "is": "DynamicComponent",
                   "props": {
-                    "class": "flex-grow"
+                    "class": "xs-12 md-8",
+                    "style": {
+                      "padding-left": "4px",
+                      "padding-bottom": "4px"
+                    },
+                    "components": [{
+                      "is": "AsyncComponent",
+                      "props": {
+                        "class": "xs-12",
+                        "layoutName": "customer/alert-preference"
+                      }
+                    }]
                   }
                 }
               ]
             }
           }
         ],
-        "components": {
-          "assignment": [
-            {
-              "is": "AsyncComponent",
-              "props": {
-                "class": "xs-12",
-                "layoutName": "customer/basic-information"
-              }
-            },
-            {
-              "is": "AsyncComponent",
-              "props": {
-                "class": "xs-12",
-                "layoutName": "customer/default-preference"
-              }
-            },
-            {
-              "is": "AsyncComponent",
-              "props": {
-                "class": "xs-12",
-                "layoutName": "customer/party"
-              }
-            }
-          ],
-          "edit": [
-            {
-              "is": "WidgetPanel",
-              "props": {
-                "initUrl": "api/partyGroup/{{id}}",
-                "saveUrl": "api/partyGroup",
-                "primaryKey": "id"
-              },
-              "slots": [
-                {
-                  "name": "default",
-                  "is": "DynamicComponent",
-                  "props": {
-                    "components": [
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "class": "xs-12",
-                          "layoutName": "customer/basic-information"
-                        }
-                      },
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "class": "xs-12",
-                          "layoutName": "customer/default-preference"
-                        }
-                      },
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "class": "xs-12",
-                          "layoutName": "customer/party"
-                        }
-                      }
-                    ]
-                  }
-                }
-              ]
-            },
-            {
-
-            }
-          ],
-          "create": [
-
-          ]
-        }
+        "edit": "assignment"
       }
     }
-  ]
+  }]
 }

@@ -113,6 +113,9 @@
 
     "alertCategory": "Exception",
     "alertType": "lateShip",
+
+    "variableList" : ["shipperPartyCode"],
+
     "templatePath": "alert/booking-alert",
 
     "severity": "medium",

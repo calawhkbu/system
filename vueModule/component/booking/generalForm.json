@@ -1,11 +1,9 @@
 {
   "layout": "v-card",
-  "components": [
-    {
+  "components": [{
       "is": "WidgetForm",
       "props": {
-        "fields": [
-          {
+        "fields": [{
             "label": "BookingPage.moduleType",
             "name": "moduleTypeCode",
             "component": "AsyncSelect",
@@ -54,6 +52,10 @@
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
             "relation": "portOfLoading",
+            "relationMore": [{
+              "name": "portOfLoadingCode",
+              "selector": "code"
+            }],
             "props": {
               "required": true,
               "url": "api/code/query/code_master",
@@ -96,6 +98,10 @@
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
             "relation": "portOfDischarge",
+            "relationMore": [{
+              "name": "portOfDischargeCode",
+              "selector": "code"
+            }],
             "props": {
               "required": true,
               "url": "api/code/query/code_master",
@@ -142,6 +148,10 @@
             "class": "xs-12 md-6",
             "readonlyClass": "hidden",
             "relation": "placeOfReceipt",
+            "relationMore": [{
+              "name": "placeOfReceiptCode",
+              "selector": "code"
+            }],
             "props": {
               "url": "api/code/query/code_master",
               "searchValueParams": {
@@ -187,6 +197,10 @@
             "readonlyClass": "hidden",
             "class": "xs-12 md-6",
             "relation": "placeOfDelivery",
+            "relationMore": [{
+              "name": "placeOfDeliveryCode",
+              "selector": "code"
+            }],
             "props": {
               "url": "api/code/query/code_master",
               "searchValueParams": {
@@ -232,6 +246,10 @@
             "readonlyClass": "hidden",
             "class": "xs-12 md-6",
             "relation": "finalDestination",
+            "relationMore": [{
+              "name": "finalDestinationCode",
+              "selector": "code"
+            }],
             "props": {
               "url": "api/code/query/code_master",
               "searchValueParams": {
@@ -276,6 +294,11 @@
             "component": "AsyncAutoSuggest",
             "readonlyClass": "xs-12",
             "class": "xs-12 md-6",
+            "relation": "carrier",
+            "relationMore": [{
+              "name": "carrier",
+              "selector": "code"
+            }],
             "props": {
               "url": "api/code/query/code_master",
               "searchValueParams": {
@@ -353,8 +376,7 @@
     {
       "is": "WidgetForm",
       "props": {
-        "fields": [
-          {
+        "fields": [{
             "label": "BookingPage.serviceCode",
             "name": "serviceCode",
             "component": "AsyncSelect",
@@ -438,8 +460,7 @@
     {
       "is": "WidgetForm",
       "props": {
-        "fields": [
-          {
+        "fields": [{
             "label": "BookingPage.commodity",
             "name": "commodity",
             "component": "v-text-field",

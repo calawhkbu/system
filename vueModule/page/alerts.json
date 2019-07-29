@@ -21,26 +21,15 @@
           }
         }
       },
-      "fieldOptions": [
-        {
-          "key": "id",
-          "hidden": true
-        },
-        {
+      "fieldOptions": [{
           "key": "tableName",
+          "sql": "alert.tableName",
           "hidden": true
         },
         {
           "key": "primaryKey",
+          "sql": "alert.primaryKey",
           "hidden": true
-        },
-        {
-          "key": "createdAt",
-          "datetime": "YYYY-MM-DD HH:mm:ss"
-        },
-        {
-          "key": "updatedAt",
-          "datetime": "YYYY-MM-DD HH:mm:ss"
         }
       ],
       "clickFunction": {

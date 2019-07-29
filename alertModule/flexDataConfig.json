@@ -1,7 +1,16 @@
-[
-  {
+[{
     "tableName": "booking",
-    "variableList": ["partyGroupCode", "bookingNo", "moduleType"]
+    "variableList": [
+      "partyGroupCode",
+      "bookingNo",
+      "moduleTypeCode",
+      "boundTypeCode",
+      "agentPartyId",
+      "forwarderPartyId",
+      "notifyPartyPartyId",
+      "shipperPartyId",
+      "consigneePartyId"
+    ]
   },
   {
     "tableName": "shipment",

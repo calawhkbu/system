@@ -10,6 +10,9 @@
       "enableSetting": false,
       "newReport": {
         "filters": {
+          "status": {
+            "value": "sent"
+          },
           "isActive": true
         },
         "configurations": {
@@ -23,63 +26,43 @@
           }
         }
       },
-      "fieldOptions": [
-        {
-          "isComponent": {
-            "is": "ClickableCell",
-            "props": {
-              "clickFunction": {
-
-              }
-            },
-            "slots": [
-              {
-                "is": "Icon",
-                "props": {
-                  "icon": "close"
-                }
-              }
-            ]
-          }
-        },
-        {
+      "fieldOptions": [{
           "key": "id",
-          "sql": "i.id",
+          "sql": "invitation.id",
           "hidden": true
         },
         {
           "key": "userName",
-          "sql": "p.userName"
+          "sql": "person.userName"
         },
         {
           "key": "firstName",
-          "sql": "p.firstName"
+          "sql": "person.firstName"
         },
         {
           "key": "lastName",
-          "sql": "p.lastName"
+          "sql": "person.lastName"
         },
         {
           "key": "displayName",
-          "sql": "p.displayName"
+          "sql": "person.displayName"
         },
         {
           "key": "status",
-          "sql": "i.status"
+          "sql": "invitation.status"
         },
         {
           "key": "createdAt",
-          "sql": "i.createdAt",
+          "sql": "invitation.createdAt",
           "hidden": true
         },
         {
           "key": "updatedAt",
-          "sql": "i.updatedAt",
+          "sql": "invitation.updatedAt",
           "hidden": true
         }
       ],
-      "filters": [
-        {
+      "filters": [{
           "name": "userName",
           "type": "text"
         },
@@ -104,20 +87,16 @@
         }
       },
       "back": "/admin",
-      "icons": [
-        {
-          "icon": "add",
-          "click": [
-            {
-              "type": "router",
-              "otherParams": {
-                "func": "push",
-                "path": "invitation/create"
-              }
-            }
-          ]
-        }
-      ]
+      "icons": [{
+        "icon": "add",
+        "click": [{
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "invitation/create"
+          }
+        }]
+      }]
     }
   }]
 }

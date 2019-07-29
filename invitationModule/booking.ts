@@ -67,7 +67,7 @@ export default async function entityCreateInvitaion (that:any,entity: any, table
         party = {
 
           isBranch: false,
-          partyGroupCode: entity['PartyGroupCode'],
+          partyGroupCode: entity['partyGroupCode'],
           erpCode: entity[role + 'PartyCode'],
           shortName: '',
           groupName: '',

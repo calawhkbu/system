@@ -4,62 +4,52 @@ import { Query, ResultColumn, FromTable, LikeExpression, ColumnExpression, Binar
 const query = new QueryDef(new Query({
   $distinct: true,
   $select: new ResultColumn('*'),
-  $from: new FromTable('party', 'pa',
+  $from: new FromTable('party', 'party',
     {
       operator: 'LEFT',
-      table: new FromTable('party_type', 'pt'),
-      $on: new BinaryExpression(new ColumnExpression('pa', 'id'), '=', new ColumnExpression('pt', 'partyId'))
-    },
-    {
-      operator: 'LEFT',
-      table: new FromTable('parties_person', 'pp'),
-      $on: new BinaryExpression(new ColumnExpression('pa', 'id'), '=', new ColumnExpression('pp', 'partyId'))
-    },
-    {
-      operator: 'LEFT',
-      table: new FromTable('person', 'pe'),
-      $on: new BinaryExpression(new ColumnExpression('pe', 'id'), '=', new ColumnExpression('pp', 'personId'))
+      table: new FromTable('party_type', 'party_type'),
+      $on: new BinaryExpression(new ColumnExpression('party', 'id'), '=', new ColumnExpression('party_type', 'partyId'))
     }
   ),
 }))
 
 query.register('id', new Query({
-  $where: new BinaryExpression(new ColumnExpression('pa', 'id'), '=')
+  $where: new BinaryExpression(new ColumnExpression('party', 'id'), '=')
 })).register('value', 0)
 
 query.register('isBranch', new Query({
-  $where: new BinaryExpression(new ColumnExpression('pa', 'isBranch'), '=')
+  $where: new BinaryExpression(new ColumnExpression('party', 'isBranch'), '=')
 })).register('value', 0)
 
 query.register('name', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('pa', 'name'), operator: 'REGEXP' })
+  $where: new LikeExpression({ left: new ColumnExpression('party', 'name'), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('customCode', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('pa', 'erpCode'), operator: 'REGEXP' })
+  $where: new LikeExpression({ left: new ColumnExpression('party', 'erpCode'), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('shortName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('pa', 'shortName'), operator: 'REGEXP' })
+  $where: new LikeExpression({ left: new ColumnExpression('party', 'shortName'), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('groupName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('pa', 'groupName'), operator: 'REGEXP' })
+  $where: new LikeExpression({ left: new ColumnExpression('party', 'groupName'), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('email', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('pa', 'email'), operator: 'REGEXP' })
+  $where: new LikeExpression({ left: new ColumnExpression('party', 'email'), operator: 'REGEXP' })
 })).register('value', 0)
 
 query.register('isActive', new Query({
   $where: [
-    new IsNullExpression(new ColumnExpression('pa', 'deletedAt')),
-    new IsNullExpression(new ColumnExpression('pa', 'deletedBy')),
+    new IsNullExpression(new ColumnExpression('party', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('party', 'deletedBy'), false),
   ]
 }))
 
 query.register('partyTypes', new Query({
-  $where: new InExpression(new ColumnExpression('pt', 'type'))
+  $where: new InExpression(new ColumnExpression('party_type', 'type'), false)
 })).register('value', 0)
 
 export default query
