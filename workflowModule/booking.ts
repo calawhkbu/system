@@ -45,7 +45,7 @@ export default {
         },
         {
           rules: async (entity: any, user: { roles: { name: string }[] }) => {
-            const documents = entity.documents.find(doc => doc.fileName === 'Shipping Advice')
+            const documents = (entity.documents || []).find(doc => doc.fileName === 'Shipping Advice')
             if (documents.length > 0) {
               return true
             }
@@ -86,6 +86,7 @@ export default {
       onEnterValidation: [
         {
           rules: async (entity: any, user: { roles: { name: string }[] }) => {
+            console.log(user.roles)
             if (user && user.roles.filter((role) => ['Admin', 'User'].filter((r) => r === role.name))) {
               return true
             }
@@ -99,14 +100,18 @@ export default {
         },
         {
           rules: async (entity: any, user: { roles: { name: string }[] }) => {
-            const documents = entity.documents.find(doc => doc.fileName === 'Shipping Advice')
-            if (documents.length > 0) {
+            const documents = (entity.documents || []).find((doc : { fileName: string }) => doc.fileName === 'Shipping Advice')
+            if (documents) {
               return true
             }
             return false
           },
           onError: async (entity: any, workflow: any) => {
             return {
+              error: 'Workflow.MissingDocument',
+              components: [
+                
+              ]
             }
           }
         },

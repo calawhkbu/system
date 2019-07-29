@@ -77,6 +77,15 @@
             "path": "booking/create"
           }
         }]
+      }, {
+        "icon": "fas fa-file-import",
+        "click": [{
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "booking/import"
+          }
+        }]
       }]
     }
   }]

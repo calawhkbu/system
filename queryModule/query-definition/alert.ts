@@ -17,11 +17,11 @@ query.register('entityType', new Query({
 })).register('value', 0)
 
 query.register('categories', new Query({
-  $where: new InExpression(new ColumnExpression('alert', 'alertCategory'))
+  $where: new InExpression(new ColumnExpression('alert', 'alertCategory'), false)
 })).register('value', 0)
 
 query.register('severity', new Query({
-  $where: new InExpression(new ColumnExpression('alert', 'severity'))
+  $where: new InExpression(new ColumnExpression('alert', 'severity'), false)
 })).register('value', 0)
 
 query.register('flexDataData', new Query({
