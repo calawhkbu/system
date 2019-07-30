@@ -32,6 +32,9 @@
             "component": "AsyncSelect",
             "class": "xs-12 md-6",
             "relation": "boundType",
+            "validator": [
+              "required"
+            ],
             "props": {
               "required": true,
               "url": "api/code/query/code_master",
@@ -47,12 +50,59 @@
             }
           },
           {
-            "label": "BookingPage.portOfLoading",
-            "name": "portOfLoadingCode",
+            "label": "BookingPage.placeOfReceipt",
+            "name": "placeOfReceipt",
             "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "relation": "portOfLoading",
-            "relationMore": [{
+            "class": "xs-12 md-2",
+            "readonlyClass": "hidden",
+            "more": [{
+              "name": "placeOfReceiptCode",
+              "selector": "code"
+            }],
+            "props": {
+              "url": "api/code/query/code_master",
+              "searchValueParams": {
+                "subqueries": {
+                  "flexDataData": {
+                    "flexDataKey": "$.moduleType",
+                    "value": "{{form.moduleTypeCode}}"
+                  },
+                  "codeType": {
+                    "value": "LOCATION"
+                  },
+                  "code": {
+                    "value": "{{query}}"
+                  }
+                }
+              },
+              "searchTextParams": {
+                "subqueries": {
+                  "flexDataData": {
+                    "flexDataKey": "$.moduleType",
+                    "value": "{{form.moduleTypeCode}}"
+                  },
+                  "codeType": {
+                    "value": "LOCATION"
+                  },
+                  "q": {
+                    "value": "{{query}}"
+                  }
+                },
+                "limit": 5
+              },
+              "item-text": "name",
+              "item-value": "code"
+            }
+          },
+          {
+            "label": "BookingPage.portOfLoading",
+            "name": "portOfLoading",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-3",
+            "validator": [
+              "required"
+            ],
+            "more": [{
               "name": "portOfLoadingCode",
               "selector": "code"
             }],
@@ -94,11 +144,13 @@
           },
           {
             "label": "BookingPage.portOfDischarge",
-            "name": "portOfDischargeCode",
+            "name": "portOfDischarge",
             "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "relation": "portOfDischarge",
-            "relationMore": [{
+            "class": "xs-12 md-3",
+            "validator": [
+              "required"
+            ],
+            "more": [{
               "name": "portOfDischargeCode",
               "selector": "code"
             }],
@@ -134,70 +186,17 @@
                 },
                 "limit": 5
               },
-
-
-
-              "item-text": "name",
-              "item-value": "code"
-            }
-          },
-          {
-            "label": "BookingPage.placeOfReceipt",
-            "name": "placeOfReceiptCode",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "readonlyClass": "hidden",
-            "relation": "placeOfReceipt",
-            "relationMore": [{
-              "name": "placeOfReceiptCode",
-              "selector": "code"
-            }],
-            "props": {
-              "url": "api/code/query/code_master",
-              "searchValueParams": {
-                "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
-                    "value": "{{form.moduleTypeCode}}"
-                  },
-                  "codeType": {
-                    "value": "LOCATION"
-                  },
-                  "code": {
-                    "value": "{{query}}"
-                  }
-                }
-              },
-              "searchTextParams": {
-                "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
-                    "value": "{{form.moduleTypeCode}}"
-                  },
-                  "codeType": {
-                    "value": "LOCATION"
-                  },
-                  "q": {
-                    "value": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-
-
-
               "item-text": "name",
               "item-value": "code"
             }
           },
           {
             "label": "BookingPage.placeOfDelivery",
-            "name": "placeOfDeliveryCode",
+            "name": "placeOfDelivery",
             "component": "AsyncAutoSuggest",
             "readonlyClass": "hidden",
-            "class": "xs-12 md-6",
-            "relation": "placeOfDelivery",
-            "relationMore": [{
+            "class": "xs-12 md-2",
+            "more": [{
               "name": "placeOfDeliveryCode",
               "selector": "code"
             }],
@@ -232,21 +231,17 @@
                 },
                 "limit": 5
               },
-
-
-
               "item-text": "name",
               "item-value": "code"
             }
           },
           {
             "label": "BookingPage.finalDestination",
-            "name": "finalDestinationCode",
+            "name": "finalDestination",
             "component": "AsyncAutoSuggest",
             "readonlyClass": "hidden",
-            "class": "xs-12 md-6",
-            "relation": "finalDestination",
-            "relationMore": [{
+            "class": "xs-12 md-2",
+            "more": [{
               "name": "finalDestinationCode",
               "selector": "code"
             }],
@@ -281,9 +276,6 @@
                 },
                 "limit": 5
               },
-
-
-
               "item-text": "name",
               "item-value": "code"
             }
@@ -295,8 +287,8 @@
             "readonlyClass": "xs-12",
             "class": "xs-12 md-6",
             "relation": "carrier",
-            "relationMore": [{
-              "name": "carrier",
+            "more": [{
+              "name": "carrierCode",
               "selector": "code"
             }],
             "props": {
@@ -334,6 +326,11 @@
             "name": "vesselName",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
+            "more": [{
+              "name": "vesselName",
+              "selector": "name"
+            }],
+            "checkDisplayWhen": "return form && form.moduleTypeCode === 'SEA'",
             "props": {
               "url": "api/code/query/code_master",
               "searchValueParams": {
@@ -365,7 +362,12 @@
             "label": "BookingPage.voyageFlightNumber",
             "name": "voyageFlightNumber",
             "component": "v-text-field",
-            "class": "xs-12 md-6"
+            "class": "xs-12 md-6",
+            "checkDisplayWhen": "return form && form.moduleTypeCode === 'AIR'"
+          },
+          {
+            "class": "xs-12 md-6",
+            "checkDisplayWhen": "return form && (!form.moduleTypeCode || form.moduleTypeCode === 'ROAD')"
           }
         ]
       }
@@ -381,6 +383,9 @@
             "name": "serviceCode",
             "component": "AsyncSelect",
             "class": "xs-12 md-6",
+            "validator": [
+              "required"
+            ],
             "props": {
               "required": true,
               "url": "api/code/query/code_master",
@@ -400,11 +405,23 @@
             "name": "incoTermsCode",
             "component": "AsyncSelect",
             "class": "xs-12 md-6",
+            "relation": "incoTerms",
+            "relationMore": [{
+              "name": "freightTermsCode",
+              "selector": "data.freightTermsCode"
+            }, {
+              "name": "otherTermsCode",
+              "selector": "data.otherTermsCode"
+            }],
             "props": {
               "url": "api/code/query/code_master",
               "item-text": "name",
               "item-value": "code",
               "params": {
+                "fields": [
+                  "code_master.*",
+                  "flex_data.data"
+                ],
                 "subqueries": {
                   "codeType": {
                     "value": "INCOTERMS"
@@ -465,6 +482,9 @@
             "name": "commodity",
             "component": "v-text-field",
             "class": "xs-12",
+            "validator": [
+              "required"
+            ],
             "props": {
               "required": true
             }

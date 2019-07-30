@@ -20,7 +20,7 @@ export default class BaseAirTrackingService {
   ) {}
   async registerNew (
     partyGroupCode: string,
-    trackingForm: { carrierCode: string, masterNo: string, carrierBookingNo?: string[], containerNo?: string[], departureDateEstimated: string }
+    trackingForm: { carrierCode: string, masterNo: string, soNo?: string[], containerNo?: string[], departureDateEstimated: string }
   ) {
     const trackingReference = await this.trackingReferenceService.findOne({
       where: { partyGroupCode, trackingType: 'SEA', masterNo: trackingForm.masterNo }
@@ -31,15 +31,16 @@ export default class BaseAirTrackingService {
     if (!trackingForm.carrierCode) {
       throw new Error('No Carrier Code')
     }
-    const code = this.codeMasterService.findOne({ where: { codeType: 'yundang-carrier-sea', code: trackingForm.carrierCode } })
+    const code = await this.codeMasterService.findOne({ where: { codeType: 'CARRIER_SWIVEL_TO_YD', code: trackingForm.carrierCode } })
     if (!code) {
       throw new Error('Carrier not support')
     }
+    console.log(code)
     if (!trackingForm.masterNo) {
       throw new Error('No MasterNo')
     }
-    (trackingForm.carrierBookingNo || []).forEach(carrierBookingNo => {
-      if (typeof carrierBookingNo !== 'string') {
+    (trackingForm.soNo || []).forEach(soNo => {
+      if (typeof soNo !== 'string') {
         throw new Error('carrier booking no is not correct')
       }
     });
@@ -47,15 +48,15 @@ export default class BaseAirTrackingService {
       if (typeof containerNo !== 'string') {
         throw new Error('carrier booking no is not correct')
       }
-    });
+    })
     // TODO masterno validation
     return await this.trackingReferenceService.save({
       partyGroupCode,
       trackingType: 'SEA',
       carrierCode: code.name,
       masterNo: trackingForm.masterNo,
-      carrierBookingNo: trackingForm.carrierBookingNo,
-      containerNo: trackingForm.carrierBookingNo,
+      soNo: trackingForm.soNo,
+      containerNo: trackingForm.containerNo,
       departureDateEstimated: trackingForm.departureDateEstimated,
       mode: 'masterNo'
     })
@@ -63,36 +64,40 @@ export default class BaseAirTrackingService {
   async track (
     trackingReference: TrackingReference
   ): Promise<boolean> {
-    const { trackingModule } = await this.swivelConfigService.get()
-    let trackingNos: string|string[] = trackingReference[trackingReference.mode] || null
-    if (!Array.isArray(trackingNos)) {
-      trackingNos = [trackingNos]
-    }
-    if (!trackingNos.length) {
-      console.warn('No Tracking No')
-      return
-    }
-    return Promise.all(trackingNos.map((trackingNo: string) => {
-      return this.trackingService.findOne({
-        where: { source: 'YUNDANG', trackingNo }
-      })
-        .then((oldTracking) => {
-          if (oldTracking) {
-            if (oldTracking.batchRetry > trackingModule.retryTime.sea) {
-              throw new Error()
+    try {
+      const { trackingModule } = await this.swivelConfigService.get()
+      let trackingNos: string|string[] = trackingReference[trackingReference.mode] || null
+      if (!Array.isArray(trackingNos)) {
+        trackingNos = [trackingNos]
+      }
+      if (!trackingNos.length) {
+        console.warn('No Tracking No')
+        return
+      }
+      for (const trackingNo of trackingNos) {
+        const oldTracking = await this.trackingService.findOne({ where: { source: 'YUNDANG', trackingNo } })
+        if (oldTracking) {
+          if (oldTracking.batchRetry > trackingModule.retryTime.sea) {
+            if (trackingReference.mode === 'masterNo') {
+              const newRef = await this.trackingReferenceService.save({ ...trackingReference, mode: 'soNo' })
+              return this.track(newRef)
+            } else if (trackingReference.mode === 'soNo') {
+              const newRef = await this.trackingReferenceService.save({ ...trackingReference, mode: 'containerNo' })
+              return this.track(newRef)
+            } else {
+              throw new Error('Tracking NO is not correct')
             }
-            let trackingNo2 = {}
-            return this.get(trackingNo, trackingReference, trackingReference.carrierCode, oldTracking)
           }
-          return this.register(trackingNo, trackingReference, trackingReference.carrierCode)
-        })
-        .catch((e: any) => { throw e })
-    }))
-      .then(() => true)
-      .catch((e: any) => {
-        console.error(e, e.stack, 'BaseAirTrackingService')
-        throw e
-      })
+          await this.get(trackingNo, trackingReference, trackingReference.carrierCode, oldTracking)
+        } else {
+          await this.register(trackingNo, trackingReference, trackingReference.carrierCode)
+        }
+      }
+      return true
+    } catch (e) {
+      console.error(e, e.stack, 'BaseSeaTrackingService')
+      throw e
+    }
   }
   async register (
     trackingNo: string,
@@ -100,9 +105,9 @@ export default class BaseAirTrackingService {
     carrierCode: string
   ): Promise<void> {
     const { trackingModule } = await this.swivelConfigService.get()
-    let newTracking = {
+    const newTracking = {
       source: 'YUNDANG',
-      trackingNo: trackingNo,
+      trackingNo,
       batchStatus: 'OPEN',
       batchRetry: 0,
       details: {
@@ -125,7 +130,7 @@ export default class BaseAirTrackingService {
     if (carrierCode === 'SITC') {
       if (trackingReference.mode === 'masterNo') {
         masterNo2 = trackingReference.containerNo[0]
-      } else if (trackingReference.mode === 'carrierBookingNo') {
+      } else if (trackingReference.mode === 'soNo') {
         masterNo2 = trackingReference.containerNo[0]
       } else if (trackingReference.mode === 'containerNo') {
         masterNo2 = trackingReference.masterNo
@@ -178,7 +183,7 @@ export default class BaseAirTrackingService {
       if (carrierCode === 'SITC') {
         if (trackingReference.mode === 'masterNo') {
           masterNo2 = trackingReference.containerNo[0]
-        } else if (trackingReference.mode === 'carrierBookingNo') {
+        } else if (trackingReference.mode === 'soNo') {
           masterNo2 = trackingReference.containerNo[0]
         } else if (trackingReference.mode === 'containerNo') {
           masterNo2 = trackingReference.masterNo
