@@ -1,9 +1,5 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import {
-  Query, FromTable, ResultColumn, GroupBy,
-  BinaryExpression, ColumnExpression, FunctionExpression, ParameterExpression,
-  LikeExpression, InExpression, IsNullExpression, OrExpressions, AndExpressions,
-} from 'node-jql'
+import { Query, FromTable, ResultColumn, GroupBy, BinaryExpression, RegexpExpression, ColumnExpression, FunctionExpression, ParameterExpression, InExpression, IsNullExpression, OrExpressions, AndExpressions } from 'node-jql'
 
 const query = new QueryDef(new Query({
   $distinct: true,
@@ -233,7 +229,7 @@ query.register('partyGroupCode', new Query({
 })).register('value', 0)
 
 query.register('bookingNo', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('booking', 'bookingNo'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('booking', 'bookingNo'), false)
 })).register('value', 0)
 
 query.register('moduleTypeCode', new Query({
@@ -253,55 +249,55 @@ query.register('boundTypeCodes', new Query({
 })).register('value', 0)
 
 query.register('shipperPartyName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('booking', 'shipperPartyName'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('booking', 'shipperPartyName'), false)
 })).register('value', 0)
 
 query.register('consigneePartyName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('booking', 'consigneePartyName'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('booking', 'consigneePartyName'), false)
 })).register('value', 0)
 
 query.register('forwarderPartyName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('booking', 'forwarderPartyName'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('booking', 'forwarderPartyName'), false)
 })).register('value', 0)
 
 query.register('notifyPartyPartyName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('booking', 'notifyPartyPartyName'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('booking', 'notifyPartyPartyName'), false)
 })).register('value', 0)
 
 query.register('agentPartyName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('booking', 'agentPartyName'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('booking', 'agentPartyName'), false)
 })).register('value', 0)
 
 query.register('q', new Query({
   $where: new OrExpressions({
     expressions: [
-      new LikeExpression({ left: new ColumnExpression('booking', 'bookingNo'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'carrierCode'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'vesselName'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'voyageFlightNumber'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'commodity'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'polHSCode'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'podHSCode'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'placeOfReceiptCode'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'portOfLoadingCode'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'portOfDischargeCode'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'placeOfDeliveryCode'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'finalDestinationCode'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'shipperPartyName'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'shipperPartyContactName'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'consigneePartyName'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'consigneePartyContactName'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'forwarderPartyName'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'forwarderPartyContactName'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'notifyPartyPartyName'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'notifyPartyPartyContactName'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'agentPartyName'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking', 'agentPartyContactName'), operator: 'REGEXP' }),
-      // new LikeExpression({ left: new ColumnExpression('booking_amount', 'amountName'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking_container', 'containerNo'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking_container', 'sealNo'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking_reference', 'refName'), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression('booking_reference', 'refDescription'), operator: 'REGEXP' })
+      new RegexpExpression(new ColumnExpression('booking', 'bookingNo'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'carrierCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'vesselName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'voyageFlightNumber'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'commodity'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'polHSCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'podHSCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'placeOfReceiptCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'portOfLoadingCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'portOfDischargeCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'placeOfDeliveryCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'finalDestinationCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'shipperPartyName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'shipperPartyContactName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'consigneePartyName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'consigneePartyContactName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'forwarderPartyName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'forwarderPartyContactName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'notifyPartyPartyName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'notifyPartyPartyContactName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'agentPartyName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'agentPartyContactName'), false),
+      // new RegexpExpression(new ColumnExpression('booking_amount', 'amountName'), false),
+      new RegexpExpression(new ColumnExpression('booking_container', 'containerNo'), false),
+      new RegexpExpression(new ColumnExpression('booking_container', 'sealNo'), false),
+      new RegexpExpression(new ColumnExpression('booking_reference', 'refName'), false),
+      new RegexpExpression(new ColumnExpression('booking_reference', 'refDescription'), false)
     ]
   })
 }))

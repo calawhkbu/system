@@ -1,5 +1,5 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, ResultColumn, FromTable, OrExpressions, LikeExpression, ColumnExpression, BinaryExpression, InExpression, IsNullExpression, AndExpressions } from 'node-jql'
+import { Query, ResultColumn, FromTable, OrExpressions, RegexpExpression, ColumnExpression, BinaryExpression, InExpression, IsNullExpression, AndExpressions } from 'node-jql'
 
 const query = new QueryDef(new Query({
   $distinct: true,
@@ -71,9 +71,9 @@ query.register('isActive', new Query({
 
 query.register('q', new Query({
   $where: new OrExpressions([
-    new LikeExpression({ left: new ColumnExpression('party', 'name'), operator: 'REGEXP' }),
-    new LikeExpression({ left: new ColumnExpression('party', 'shortName'), operator: 'REGEXP' }),
-    new LikeExpression({ left: new ColumnExpression('party', 'erpCode'), operator: 'REGEXP' })
+    new RegexpExpression(new ColumnExpression('party', 'name'), false),
+    new RegexpExpression(new ColumnExpression('party', 'shortName'), false),
+    new RegexpExpression(new ColumnExpression('party', 'erpCode'), false)
   ])
 })).register('value', 0).register('value', 1).register('value', 2)
 

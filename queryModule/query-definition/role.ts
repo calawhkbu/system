@@ -1,5 +1,5 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, FromTable, LikeExpression, ColumnExpression, InExpression, BinaryExpression, IsNullExpression } from 'node-jql'
+import { Query, FromTable, RegexpExpression, ColumnExpression, InExpression, BinaryExpression, IsNullExpression } from 'node-jql'
 
 const query = new QueryDef(new Query({
   $from: new FromTable('role', 'role', {
@@ -21,7 +21,7 @@ query.register('partyGroupCode', new Query({
 })).register('value', 0)
 
 query.register('name', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('role', 'roleName'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('role', 'roleName'), false)
 })).register('value', 0)
 
 query.register('group', new Query({

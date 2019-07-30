@@ -1,5 +1,5 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, FromTable, BinaryExpression, ColumnExpression, LikeExpression, IsNullExpression, InExpression } from 'node-jql'
+import { Query, FromTable, BinaryExpression, ColumnExpression, RegexpExpression, IsNullExpression, InExpression } from 'node-jql'
 
 const query = new QueryDef(new Query({
   $distinct: true,
@@ -63,19 +63,19 @@ query.register('invitationStatuses', new Query({
 })).register('value', 0)
 
 query.register('userName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('person', 'userName'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('person', 'userName'), false)
 })).register('value', 0)
 
 query.register('firstName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('person', 'firstName'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('person', 'firstName'), false)
 })).register('value', 0)
 
 query.register('lastName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('person', 'lastName'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('person', 'lastName'), false)
 })).register('value', 0)
 
 query.register('displayName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('person', 'displayName'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('person', 'displayName'), false)
 })).register('value', 0)
 
 query.register('isActive', new Query({

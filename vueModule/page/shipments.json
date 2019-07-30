@@ -17,7 +17,6 @@
           "draggable": true,
           "sorting": {},
           "pagination": {
-            "remote": {},
             "current": 0,
             "perPage": 25
           }
@@ -45,8 +44,16 @@
               ],
               "$from": {
                 "table": {
-                  "url": "api/code?where={\"codeType\":\"moduleType\"}",
-                  "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }],
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "moduleType"
+                      }
+                    }
+                  }
                 },
                 "$as": "code"
               }
@@ -58,8 +65,19 @@
               ],
               "$from": {
                 "table": {
-                  "url": "api/code?where={\"codeType\":\"moduleType\",\"code\":\"{{ value }}\"}",
-                  "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }],
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "moduleType"
+                      },
+                      "code": {
+                        "value": "{{ value }}"
+                      }
+                    }
+                  }
                 },
                 "$as": "code"
               }
@@ -74,6 +92,7 @@
           "name": "jobDate",
           "type": "date",
           "props": {
+            "required": true,
             "shortcuts": [
               {
                 "label": "year-to-date",
@@ -155,8 +174,19 @@
               ],
               "$from": {
                 "table": {
-                  "url": "api/code/search?codeType=airline&q={{ q }}",
-                  "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }],
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "airline"
+                      },
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    }
+                  }
                 },
                 "$as": "code"
               }
@@ -168,8 +198,19 @@
               ],
               "$from": {
                 "table": {
-                  "url": "api/code?where={\"codeType\":\"airline\",\"code\":\"{{ value }}\"}",
-                  "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }]
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }],
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "airline"
+                      },
+                      "code": {
+                        "value": "{{ value }}"
+                      }
+                    }
+                  }
                 },
                 "$as": "code"
               }

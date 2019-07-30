@@ -1,5 +1,5 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, FromTable, BinaryExpression, ColumnExpression, LikeExpression, IsNullExpression } from 'node-jql'
+import { Query, FromTable, BinaryExpression, ColumnExpression, RegexpExpression, IsNullExpression } from 'node-jql'
 
 const query = new QueryDef(new Query({
   $from: new FromTable('template', 'template')
@@ -14,7 +14,7 @@ query.register('fileType', new Query({
 })).register('value', 0)
 
 query.register('templateName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression('template', 'templateName'), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('template', 'templateName'), false)
 })).register('value', 0)
 
 query.register('isActive', new Query({
