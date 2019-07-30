@@ -55,6 +55,34 @@ export default {
   ],
 
 
+  // update entity(booking) with a tracking
+  tracking_update_data : [
+
+    {
+      handlerName: "tracking_update_data.ts"
+    }
+
+  ],
+
+
+
+  afterCreate_tracking : [
+
+    {
+      handlerName: "tracking_update_data"
+    }
+
+  ],
+
+  afterUpdate_tracking : [
+
+    {
+      handlerName: "tracking_update_data"
+    }
+
+  ],
+
+
   // should not be called directly, should be called after an event
   fill_template: [
 
@@ -64,52 +92,124 @@ export default {
     }
   ],
 
+  update_document_preview : [
+    
+    {
+      handlerName: "update_document_preview.ts"
+    }
+
+  ],
+
   afterCreate_document : [
 
     {
-      handlerName: "afterCreate_document.ts"
-
+      eventName: "update_document_preview"
     }
 
+  ],
+
+  afterUpdate_document : [
+
+    {
+      eventName: "update_document_preview.ts"
+    }
 
   ],
 
 
   afterCreate_booking: [
+
+    // create alert of new Booking
+    {
+      condition : true,
+      eventName : 'create_alert',
+      otherParameters : {
+        alertType : 'newBooking',
+        tableName : 'booking',
+        primaryKey : (parameters) => {
+
+          // use booking.id as primaryKey
+          return parameters.data.id
+        }
+      
+      }
+    },
+
+
+    // update personId / create Invitation 
+    {
+      condition : false,
+      handlerName : 'entity_create_invitation.ts',
+      otherParameters : {
+        tableName : 'booking',      
+      }
+    },
+
+    // create booking tracking
+    {
+      condition : false,
+      eventName : 'create_tracking',
+    },
+
+
+    // fill template of the booking
+    {
+      condition : false,
+      eventName : 'fill_template',
+      otherParameters : {
+
+        tableName : 'booking',
+        fileName : 'Shipping Order',
+
+        // use booking .id as primaryKey
+        primaryKey : (result) => {
+          return result.data.id
+        }
+      }
+    },
+
+  ],
+
+  afterCreate_booking2: [
+
     {
 
-      condition: true,
+      condition : true,
       handlerName: "checker.ts",
       otherParameters: {
 
         checker: {
-          "data.id": [
+
+          id: [
+
             {
+
               // warning: checkFunctionName should be unqiue so that the next event can extract back the result based on the name
-              checkerFunctionName: "isMatch",
+              checkerFunctionName: "isEqual",
               checkerParam: {
-                operator : "=",
                 value: 689
               }
-            },
-            
-            {
-              checkerFunctionName: "isNull",
             },
 
             {
               checkerFunctionName: "isEmpty",
             },
 
+            {
+              checkerFunctionName: "isNull",
+            }
           ],
 
 
-          "data.bookingNo": [
-            {
-              checkerFunctionName: "mytest",
-              checkerFunction: (variable, checkerParam) => {
+          bookingNo: [
 
-                const bookingNo = variable as string
+            {
+
+              checkerFunctionName: "mytest",
+              checkerFunction: (parameters, checkerParam) => {
+
+                const bookingNo = parameters.data.bookingNo as string
+
                 return bookingNo.startsWith(checkerParam["value"])
 
               },
@@ -117,154 +217,43 @@ export default {
                 value: "777"
               }
             },
+
           ]
         }
 
       },
-
-      afterEvent : [
+      afterEvent: [
 
         {
 
-          condition : false,
-          eventName : 'create_tracking',
-          previousParameters : {
+          eventName: "fill_template",
 
-          }
-
-
-        },
-
-        
-        {
-          condition : false,
-          eventName : 'fill_template',
-          previousParameters : {
-
-            tableName : 'booking',
+          previousParameters: {
             fileName : 'Shipping Order',
-            primaryKey : (result) => {
-              return result.data.id
-            }
-          }
-        },
-        {
-          condition : (result) => {
-            // return result["checkerResult"]["data.id"] as boolean
-            return true
+
+            primaryKey : (parameters) => {
+              return parameters['data']['id']
+            },
+            tableName : 'booking'
           },
 
-          eventName : 'create_alert',
-          previousParameters : {
-            alertType : 'lateShip',
-            tableName : 'booking',
-            primaryKey : (parameters) => {
-              return parameters.data.id
-            }
-          
-          }
-        },
+          condition : false
+        }
 
 
- 
+
+
+
+
       ]
     }
 
 
   ],
 
-  // afterCreate_booking2: [
-
-  //   {
-
-  //     "condition" : true,
-  //     "handlerName": "checker.ts",
-  //     "otherParameters": {
-
-  //       "checker": {
-
-  //         "id": [
-
-  //           {
-
-  //             // warning: checkFunctionName should be unqiue so that the next event can extract back the result based on the name
-  //             "checkerFunctionName": "isEqual",
-  //             "checkerParam": {
-  //               "value": 689
-  //             }
-  //           },
-
-  //           {
-  //             "checkerFunctionName": "isEmpty",
-  //           },
-
-  //           {
-  //             "checkerFunctionName": "isNull",
-  //           }
-  //         ],
-
-
-  //         "bookingNo": [
-
-  //           {
-
-  //             "checkerFunctionName": "mytest",
-  //             "checkerFunction": (parameters, checkerParam) => {
-
-  //               const bookingNo = parameters.data.bookingNo as string
-
-  //               return bookingNo.startsWith(checkerParam["value"])
-
-  //             },
-  //             "checkerParam": {
-  //               "value": "777"
-  //             }
-  //           },
-
-  //         ]
-  //       }
-
-  //     },
-  //     "afterEvent": [
-
-  //       {
-
-  //         "handlerName": "fill_template.ts",
-
-  //         "otherParameters": {
-  //           "fileName" : 'Shipping Order',
-  //           'primaryKey' : (parameters) => {
-
-  //             return parameters['data']['id']
-
-  //           },
-  //           "tableName" : 'booking'
-
-  //         },
-
-  //         "condition" : false,
-  //         "afterEvent": []
-  //       }
 
 
 
-
-
-
-  //     ]
-  //   }
-
-
-  // ],
-
-
-
-
-
-  afterCreate_alert: [
-
-
-  ]
 
 } as {
   [eventName: string]: EventConfig[]
