@@ -1,11 +1,25 @@
-[
-  {
+[{
     "field": "boundTypeCode",
     "validator": "required",
     "part": "BookingForm.GeneralForm"
   },
   {
     "field": "moduleTypeCode",
+    "validator": "required",
+    "part": "BookingForm.GeneralForm"
+  },
+  {
+    "field": "portOfLoading",
+    "validator": "required",
+    "part": "BookingForm.GeneralForm"
+  },
+  {
+    "field": "portOfDischarge",
+    "validator": "required",
+    "part": "BookingForm.GeneralForm"
+  },
+  {
+    "field": "commodity",
     "validator": "required",
     "part": "BookingForm.GeneralForm"
   }

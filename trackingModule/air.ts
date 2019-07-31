@@ -48,13 +48,13 @@ export default class BaseAirTrackingService {
     if (!carrierCode1) {
       throw new Error('Carrier not found')
     }
-    const code = await this.codeMasterService.findOne({ where: { codeType: 'yundang-carrier-air', code: carrierCode1 } })
+    const code = await this.codeMasterService.findOne({ where: { codeType: 'CARRIER_SWIVEL_TO_YD', code: carrierCode1 } })
     if (!code) {
       throw new Error('Carrier not support')
     }
     let code2 = null
     if (trackingForm.carrierCode) {
-      code2 = await this.codeMasterService.findOne({ where: { codeType: 'yundang-carrier-air', code: trackingForm.carrierCode } })
+      code2 = await this.codeMasterService.findOne({ where: { codeType: 'CARRIER_SWIVEL_TO_YD', code: trackingForm.carrierCode } })
       if (!code2) {
         throw new Error('Carrier not support')
       }
@@ -66,7 +66,7 @@ export default class BaseAirTrackingService {
       carrierCode: code.name,
       ...(code2 ? { carrierCode2:  code2.name } : {}),
       masterNo,
-      carrierBookingNo: null,
+      soNo: null,
       containerNo: null,
       departureDateEstimated: trackingForm.departureDateEstimated,
       mode: 'masterNo'

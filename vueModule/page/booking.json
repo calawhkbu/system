@@ -50,127 +50,133 @@
       ],
       "components": {
         "assignment": [{
-            "is": "div",
-            "props": {
-              "class": "xs-12 md-8",
-              "style": {
-                "padding-right": "4px"
-              }
-            },
-            "slots": [{
-              "is": "DynamicComponent",
-              "props": {
-                "class": "grid",
-                "components": [{
-                    "is": "DynamicComponent",
-                    "props": {
-                      "class": "xs-12",
-                      "style": {
-                        "padding": "4px 0px"
-                      },
-                      "components": [{
-                        "is": "AsyncComponent",
-                        "props": {
-                          "layoutName": "booking/generalForm"
-                        }
-                      }]
-                    }
-                  },
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "class": "xs-12 md-7",
-                      "style": {
-                        "padding": "4px 4px 4px 0px"
-                      },
-                      "components": [{
-                        "is": "AsyncComponent",
-                        "props": {
-                          "layoutName": "booking/partyForm"
-                        }
-                      }]
-                    }
-                  },
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "class": "xs-12 md-5",
-                      "style": {
-                        "padding": "4px 0px 4px 4px"
-                      },
-                      "components": [{
-                        "is": "AsyncComponent",
-                        "props": {
-                          "layoutName": "booking/dateForm"
-                        }
-                      }]
-                    }
-                  },
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "class": "xs-12",
-                      "style": {
-                        "padding": "4px 0px"
-                      },
-                      "components": [{
-                        "is": "AsyncComponent",
-                        "props": {
-                          "layoutName": "booking/containerForm"
-                        }
-                      }]
-                    }
-                  },
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "class": "xs-12",
-                      "style": {
-                        "padding": "4px 0px"
-                      },
-                      "components": [{
-                        "is": "AsyncComponent",
-                        "props": {
-                          "layoutName": "booking/referenceForm"
-                        }
-                      }]
-                    }
+          "is": "DynamicComponent",
+          "props": {
+            "class": "grid",
+            "components": [{
+                "is": "div",
+                "props": {
+                  "class": "xs-8",
+                  "style": {
+                    "padding-right": "4px"
                   }
-                ]
+                },
+                "slots": [{
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "grid",
+                    "components": [{
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-12",
+                          "style": {
+                            "padding": "4px 0px"
+                          },
+                          "components": [{
+                            "is": "AsyncComponent",
+                            "props": {
+                              "layoutName": "booking/generalForm"
+                            }
+                          }]
+                        }
+                      },
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-12 md-7",
+                          "style": {
+                            "padding": "4px 4px 4px 0px"
+                          },
+                          "components": [{
+                            "is": "AsyncComponent",
+                            "props": {
+                              "layoutName": "booking/partyForm"
+                            }
+                          }]
+                        }
+                      },
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-12 md-5",
+                          "style": {
+                            "padding": "4px 0px 4px 4px"
+                          },
+                          "components": [{
+                            "is": "AsyncComponent",
+                            "props": {
+                              "layoutName": "booking/dateForm"
+                            }
+                          }]
+                        }
+                      },
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-12",
+                          "style": {
+                            "padding": "4px 0px"
+                          },
+                          "components": [{
+                            "is": "AsyncComponent",
+                            "props": {
+                              "layoutName": "booking/containerForm"
+                            }
+                          }]
+                        }
+                      },
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-12",
+                          "style": {
+                            "padding": "4px 0px"
+                          },
+                          "components": [{
+                            "is": "AsyncComponent",
+                            "props": {
+                              "layoutName": "booking/referenceForm"
+                            }
+                          }]
+                        }
+                      }
+                    ]
+                  }
+                }]
+              },
+              {
+                "is": "div",
+                "props": {
+                  "class": "xs-4",
+                  "style": {
+                    "padding-left": "4px"
+                  }
+                },
+                "slots": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "booking/tracking"
+                  }
+                }, {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "booking/workflow"
+                  }
+                }, {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "booking/alert"
+                  }
+                }, {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "booking/document"
+                  }
+                }]
               }
-            }]
-          },
-          {
-            "is": "div",
-            "props": {
-              "class": "xs-12 md-4",
-              "style": {
-                "padding-left": "4px"
-              }
-            },
-            "slots": [{
-              "is": "AsyncComponent",
-              "props": {
-                "layoutName": "booking/tracking"
-              }
-            }, {
-              "is": "AsyncComponent",
-              "props": {
-                "layoutName": "booking/workflow"
-              }
-            }, {
-              "is": "AsyncComponent",
-              "props": {
-                "layoutName": "booking/alert"
-              }
-            }, {
-              "is": "AsyncComponent",
-              "props": {
-                "layoutName": "booking/document"
-              }
-            }]
+            ]
           }
-        ],
+        }],
         "create": [{
           "is": "WidgetPanelStepper",
           "props": {

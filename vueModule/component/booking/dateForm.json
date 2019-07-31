@@ -3,82 +3,84 @@
   "style": {
     "min-height": "75px"
   },
-  "components": [
-    {
-      "is": "WidgetForms",
-      "props": {
-        "formProps": {
-          "class": "xs-12"
+  "components": [{
+    "is": "WidgetForms",
+    "props": {
+      "formProps": {
+        "class": "xs-12"
+      },
+      "keyProps": {
+        "key": "Date",
+        "fixKey": [
+          "cargoReady",
+          "cYCutOff",
+          "departure",
+          "arrival"
+        ],
+        "orderBy": {
+          "cargoReady": 0,
+          "cYCutOff": 10,
+          "departure": 20,
+          "arrival": 30
+        }
+      },
+      "params": {
+        "hiddenFullDate": {
+          "cargoReady": "",
+          "cYCutOff": "",
+          "departure": "hidden",
+          "arrival": "hidden"
         },
-        "keyProps": {
-          "key": "Date",
-          "fixKey": [
-            "cargoReady",
-            "cYCutOff",
-            "departure",
-            "arrival"
-          ],
-          "orderBy": ["", "Actual", "Estimated"]
-        },
-        "params": {
-          "type": {
-            "cargoReady": "date",
-            "cYCutOff": "date",
-            "departure": "datetime",
-            "arrival": "datetime"
-          },
-          "hiddenFullDate": {
-            "cargoReady": "",
-            "cYCutOff": "",
-            "departure": "hidden",
-            "arrival": "hidden"
-          },
-          "hiddenDateTime": {
-            "cargoReady": "hidden",
-            "cYCutOff": "hidden",
-            "departure": "",
-            "arrival": ""
+        "hiddenDateTime": {
+          "cargoReady": "hidden",
+          "cYCutOff": "hidden",
+          "departure": "",
+          "arrival": ""
+        }
+      },
+      "fields": [{
+          "label": "Widget.date",
+          "name": "{{key}}Date",
+          "component": "DateTimePicker",
+          "class": "xs-12 md-8 {{hiddenFullDate}}",
+          "props": {
+            "type": "datetime",
+            "utc": true,
+            "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+            "useOwnFormat": true
           }
         },
-        "fields": [
-          {
-            "label": "Widget.date",
-            "name": "{{key}}Date",
-            "component": "DateTimePicker",
-            "class": "xs-12 md-8 {{hiddenFullDate}}",
-            "props": {
-              "type": "{{type}}",
-              "utc": true
-            }
-          },
-          {
-            "label": "Widget.estimatedDate",
-            "name": "{{key}}DateEstimated",
-            "component": "DateTimePicker",
-            "class": "xs-12 md-4 {{hiddenDateTime}}",
-            "props": {
-              "type": "date",
-              "utc": true
-            }
-          },
-          {
-            "label": "Widget.actualDate",
-            "name": "{{key}}DateActual",
-            "component": "DateTimePicker",
-            "class": "xs-12 md-4 {{hiddenDateTime}}",
-            "props": {
-              "type": "datetime",
-              "utc": true
-            }
-          },
-          {
-            "label": "Widget.remark",
-            "name": "{{key}}Remark",
-            "component": "v-text-field",
-            "class": "xs-12 md-4"
+        {
+          "label": "Widget.estimatedDate",
+          "name": "{{key}}DateEstimated",
+          "component": "DateTimePicker",
+          "class": "xs-12 md-4 {{hiddenDateTime}}",
+          "props": {
+            "type": "datetime",
+            "utc": true,
+            "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+            "useOwnFormat": true
           }
-        ]
-      }
+        },
+        {
+          "label": "Widget.actualDate",
+          "name": "{{key}}DateActual",
+          "component": "DateTimePicker",
+          "class": "xs-12 md-4 {{hiddenDateTime}}",
+          "props": {
+            "type": "datetime",
+            "utc": true,
+            "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+            "useOwnFormat": true
+          }
+        },
+        {
+          "label": "Widget.remark",
+          "name": "{{key}}Remark",
+          "component": "v-text-field",
+          "class": "xs-12 md-4"
+        }
+      ]
     }
-  ]
+  }]
 }
