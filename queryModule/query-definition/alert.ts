@@ -2,9 +2,9 @@ import { QueryDef } from 'classes/query/QueryDef'
 import { Query, FromTable, BinaryExpression, ColumnExpression, InExpression, FunctionExpression, Unknown, IsNullExpression } from 'node-jql'
 
 const query = new QueryDef(new Query({
-  $from: new FromTable('alert', 'alert', {
+  $from: new FromTable('alert', {
     operator: 'LEFT',
-    table: new FromTable('flex_data', 'flex_data'),
+    table: 'flex_data',
     $on: [
       new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'alert'),
       new BinaryExpression(new ColumnExpression('alert', 'id'), '=', new ColumnExpression('flex_data', 'primaryKey'))

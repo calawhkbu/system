@@ -3,9 +3,9 @@ import { Query, FromTable, FunctionExpression, Unknown, BinaryExpression, Column
 
 const query = new QueryDef(new Query({
   $distinct: true,
-  $from: new FromTable('code_master', 'code_master', {
+  $from: new FromTable('code_master', {
     operator: 'LEFT',
-    table: new FromTable('flex_data', 'flex_data'),
+    table: 'flex_data',
     $on: [
       new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'code_master'),
       new BinaryExpression(new ColumnExpression('code_master', 'id'), '=', new ColumnExpression('flex_data', 'primaryKey'))

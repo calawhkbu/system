@@ -4,10 +4,10 @@ import { BetweenExpression, BinaryExpression, ColumnExpression, FromTable, Funct
 
 const query = new QueryDef(new Query({
   $from: new FromTable('tracking',
-    new JoinClause('LEFT', new FromTable('tracking_reference'), new BinaryExpression(
+    new JoinClause('LEFT', 'tracking_reference', new BinaryExpression(
       new ColumnExpression('tracking', 'id'), '=', new ColumnExpression('tracking_reference', 'id')
     )),
-    new JoinClause('LEFT', new FromTable('flex_data'), new BinaryExpression(
+    new JoinClause('LEFT', 'flex_data', new BinaryExpression(
       new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'tracking'),
       new BinaryExpression(new ColumnExpression('tracking', 'id'), '=', new ColumnExpression('flex_data', 'primaryKey'))
     ))

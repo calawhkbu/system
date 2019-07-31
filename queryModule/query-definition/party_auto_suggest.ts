@@ -22,25 +22,25 @@ const query = new QueryDef(new Query({
     // TODO new ResultColumn({ expression: 'TODO', $as: 'contactPersonPhone' }),
     new ResultColumn(new ColumnExpression('person', 'userName'), 'contactPersonEmail')
   ],
-  $from: new FromTable('party', 'party',
+  $from: new FromTable('party',
     {
       operator: 'LEFT',
-      table: new FromTable('party_type', 'party_type'),
+      table: 'party_type',
       $on: new BinaryExpression(new ColumnExpression('party', 'id'), '=', new ColumnExpression('party_type', 'partyId'))
     },
     {
       operator: 'LEFT',
-      table: new FromTable('party_group', 'party_group'),
+      table: 'party_group',
       $on: new BinaryExpression(new ColumnExpression('party_group', 'code'), '=', new ColumnExpression('party', 'partyGroupCode')),
     },
     {
       operator: 'LEFT',
-      table: new FromTable('parties_person', 'parties_person'),
+      table: 'parties_person',
       $on: new BinaryExpression(new ColumnExpression('party', 'id'), '=', new ColumnExpression('parties_person', 'partyId')),
     },
     {
       operator: 'LEFT',
-      table: new FromTable('person', 'person'),
+      table: 'person',
       $on: new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('parties_person', 'personId')),
     }
   ),

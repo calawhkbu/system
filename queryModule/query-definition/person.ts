@@ -3,10 +3,10 @@ import { Query, FromTable, BinaryExpression, ColumnExpression, RegexpExpression,
 
 const query = new QueryDef(new Query({
   $distinct: true,
-  $from: new FromTable('person', 'person',
+  $from: new FromTable('person',
     {
       operator: 'LEFT',
-      table: new FromTable('invitation', 'invitation'),
+      table: 'invitation',
       $on: [
         new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('invitation', 'personId'))
       ]

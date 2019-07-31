@@ -1,9 +1,7 @@
 import { QueryDef } from 'classes/query/QueryDef'
 import { Query, FromTable, BinaryExpression, ColumnExpression, RegexpExpression, IsNullExpression } from 'node-jql'
 
-const query = new QueryDef(new Query({
-  $from: new FromTable('template', 'template')
-}))
+const query = new QueryDef(new Query('template'))
 
 query.register('partyGroupCode', new Query({
   $where: new BinaryExpression(new ColumnExpression('template', 'partyGroupCode'), '=')
