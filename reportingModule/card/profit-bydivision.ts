@@ -1,5 +1,24 @@
 import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, Value } from 'node-jql'
-import { BadRequestException } from '@nestjs/common'
+import { parseCode } from 'utils/function'
+
+function prepareParams(type: string): Function {
+  const fn = function (require, session, params) {
+    // import
+    const { BadRequestException } = require('@nestjs/common')
+
+    // script
+    const subqueries = params.subqueries = params.subqueries || {}
+    if (!subqueries.division) throw new BadRequestException('MISSING_DIVISION')
+    if (subqueries.division) {
+      if (subqueries.division.value !== 'SE' && subqueries.division.value !== 'SI') throw new Error('DIVISION_NOT_SUPPORTED')
+      subqueries.division.value += ' ' + type
+    }
+    return params
+  }
+  let code = fn.toString()
+  code = code.replace(new RegExp('type', 'g'), `'${type}'`)
+  return parseCode(code)
+}
 
 function prepareTable(name: string): CreateTableJQL {
   return new CreateTableJQL({
@@ -40,33 +59,9 @@ function prepareTable(name: string): CreateTableJQL {
 }
 
 export default [
-  [function (require, session, params) {
-    const subqueries = params.subqueries
-    if (!subqueries || !subqueries.division) throw new BadRequestException('MISSING_DIVISION')
-    if (subqueries && subqueries.division) {
-      if (subqueries.division.value !== 'SE' && subqueries.division.value !== 'SI') throw new Error('DIVISION_NOT_SUPPORTED')
-      subqueries.division.value += ' FCL'
-    }
-    return params
-  }, prepareTable('FCL')],
-  [function (require, session, params) {
-    const subqueries = params.subqueries
-    if (!subqueries || !subqueries.division) throw new BadRequestException('MISSING_DIVISION')
-    if (subqueries && subqueries.division) {
-      if (subqueries.division.value !== 'SE' && subqueries.division.value !== 'SI') throw new Error('DIVISION_NOT_SUPPORTED')
-      subqueries.division.value += ' LCL'
-    }
-    return params
-  }, prepareTable('LCL')],
-  [function (require, session, params) {
-    const subqueries = params.subqueries
-    if (!subqueries || !subqueries.division) throw new BadRequestException('MISSING_DIVISION')
-    if (subqueries && subqueries.division) {
-      if (subqueries.division.value !== 'SE' && subqueries.division.value !== 'SI') throw new Error('DIVISION_NOT_SUPPORTED')
-      subqueries.division.value += ' Consol'
-    }
-    return params
-  }, prepareTable('Consol')],
+  [prepareParams('FCL'), prepareTable('FCL')],
+  [prepareParams('LCL'), prepareTable('LCL')],
+  [prepareParams('Consol'), prepareTable('Consol')],
   new Query({
     $from: 'FCL',
     $union: new Query({

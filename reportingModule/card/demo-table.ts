@@ -8,15 +8,15 @@ const tempQuery = new CreateTableJQL({
 			url: 'demo/table',
 			columns: [
 				{
-					name: 'header 1',
+					name: 'header1',
 					type: 'string'
 				},
 				{
-					name: 'header 2',
+					name: 'header2',
 					type: 'string'
 				},
 				{
-					name: 'header 3',
+					name: 'header3',
 					type: 'string'
 				}
 			]
