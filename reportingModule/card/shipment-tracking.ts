@@ -7,7 +7,7 @@ function prepareParams(): Function {
 
     // script
     const subqueries = params.subqueries || {}
-    if (!subqueries.lastStatusDate) throw new BadRequestException('MISSING_LAST_STATUS_DATE')
+    if (!subqueries.date) throw new BadRequestException('MISSING_DATE')
     if (!subqueries.moduleType) throw new BadRequestException('MISSING_MODULE_TYPE')
     return params
   }

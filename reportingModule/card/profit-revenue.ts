@@ -7,10 +7,10 @@ function prepareParams(): Function {
 
     // script
     const subqueries = params.subqueries = params.subqueries || {}
-    if (subqueries.jobDate) {
-      const year = moment(subqueries.jobDate.from, 'YYYY-MM-DD').year()
-      subqueries.jobDate.from = moment().year(year).startOf('year').format('YYYY-MM-DD')
-      subqueries.jobDate.to = moment().year(year).endOf('year').format('YYYY-MM-DD')
+    if (subqueries.date) {
+      const year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
+      subqueries.date.from = moment().year(year).startOf('year').format('YYYY-MM-DD')
+      subqueries.date.to = moment().year(year).endOf('year').format('YYYY-MM-DD')
     }
     return params
   }

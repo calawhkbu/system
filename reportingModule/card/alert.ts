@@ -9,7 +9,7 @@ function prepareParams(): Function {
     const subqueries = params.subqueries = params.subqueries || {}
     if (!subqueries.entityType) throw new BadRequestException('MISSING_ENTITY_TYPE')
     if (['shipment', 'booking', 'purchase-order'].indexOf(subqueries.entityType.value) === -1) throw new BadRequestException(`INVALID_ENTITY_TYPE_${String(subqueries.type.value).toLocaleUpperCase()}`)
-    if (!subqueries.lastStatusDate) throw new BadRequestException('MISSING_LAST_STATUS_DATE')
+    if (!subqueries.date) throw new BadRequestException('MISSING_DATE')
     if (!subqueries.moduleType) throw new BadRequestException('MISSING_MODULE_TYPE')
     return params
   }

@@ -24,7 +24,7 @@ query.register('branch', arrayMap(value => new BinaryExpression(
   1
 )))
 
-query.register('jobDate', new Query({
+query.register('data', new Query({
   $where: new BetweenExpression(new ColumnExpression('tracking', 'lastStatusDate'), false)
 })).register('from', 0).register('to', 0)
 

@@ -5,11 +5,11 @@ function prepareParams(thisYear: boolean, nominatedType_: 'F'|'R'): Function {
   const fn = function (require, session, params) {
     const moment = require('moment')
     const subqueries = params.subqueries = params.subqueries || {}
-    if (subqueries.jobDate) {
-      let year = moment(subqueries.jobDate.from, 'YYYY-MM-DD').year()
+    if (subqueries.date) {
+      let year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
       if (!thisYear) year -= 1
-      subqueries.jobDate.from = moment().year(year).startOf('year').format('YYYY-MM-DD')
-      subqueries.jobDate.to = moment().year(year).endOf('year').format('YYYY-MM-DD')
+      subqueries.date.from = moment().year(year).startOf('year').format('YYYY-MM-DD')
+      subqueries.date.to = moment().year(year).endOf('year').format('YYYY-MM-DD')
     }
     if (subqueries) subqueries.nominatedType = { value: nominatedType_ }
     return params
