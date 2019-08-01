@@ -6,27 +6,30 @@ function prepareParams(): Function {
     const { BadRequestException } = require('@nestjs/common')
 
     // script
-    const subqueries = params.subqueries = params.subqueries || {}
+    const subqueries = params.subqueries || {}
     if (!subqueries.lastStatusDate) throw new BadRequestException('MISSING_LAST_STATUS_DATE')
-    subqueries.moduleType = { value: 'SEA' }
+    if (!subqueries.moduleType) throw new BadRequestException('MISSING_MODULE_TYPE')
     return params
   }
 }
 
 export default [
-  [prepareParams(), new CreateTableJQL({
-    $temporary: true,
-    name: 'status_master',
-    $as: new Query({
-      $from: new FromTable({
-        url: 'api/statusMaster/query/tracking-flow-sea',
-        columns: [
-          { name: 'group', type: 'string' },
-          { name: 'status', type: 'string' }
-        ]
-      }, 'status_master')
+  [prepareParams(), function (require, session, params) {
+    const subqueries = params.subqueries || {}
+    return new CreateTableJQL({
+      $temporary: true,
+      name: 'status_master',
+      $as: new Query({
+        $from: new FromTable({
+          url: `api/statusMaster/query/tracking-flow-${subqueries.moduleType.value}`,
+          columns: [
+            { name: 'group', type: 'string' },
+            { name: 'status', type: 'string' }
+          ]
+        }, 'status_master')
+      })
     })
-  })],
+  }],
   [prepareParams(), new CreateTableJQL({
     $temporary: true,
     name: 'tracking',

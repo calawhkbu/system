@@ -10,7 +10,7 @@ function prepareParams(): Function {
     if (!subqueries.entityType) throw new BadRequestException('MISSING_ENTITY_TYPE')
     if (['shipment', 'booking', 'purchase-order'].indexOf(subqueries.entityType.value) === -1) throw new BadRequestException(`INVALID_ENTITY_TYPE_${String(subqueries.type.value).toLocaleUpperCase()}`)
     if (!subqueries.lastStatusDate) throw new BadRequestException('MISSING_LAST_STATUS_DATE')
-    subqueries.moduleType = { value: 'AIR' }
+    if (!subqueries.moduleType) throw new BadRequestException('MISSING_MODULE_TYPE')
     return params
   }
 }
