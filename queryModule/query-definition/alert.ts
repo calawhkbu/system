@@ -24,6 +24,15 @@ query.register('severity', new Query({
   $where: new InExpression(new ColumnExpression('alert', 'severity'), false)
 })).register('value', 0)
 
+query.register('moduleType', new Query({
+  $where: new BinaryExpression(
+    new FunctionExpression('JSON_UNQUOTE',
+      new FunctionExpression('JSON_EXTRACT', new ColumnExpression('flex_data', 'data'), '$.entity.moduleType.code')
+    ),
+    '='
+  )
+})).register('value', 1)
+
 query.register('flexDataData', new Query({
   $where: new BinaryExpression(
     new FunctionExpression('JSON_UNQUOTE',
