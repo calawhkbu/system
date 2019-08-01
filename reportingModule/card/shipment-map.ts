@@ -8,7 +8,8 @@ export default [
 
     // script
     const subqueries = params.subqueries || {}
-    if (!subqueries.pol && !subqueries.pod) throw new BadRequestException('MISSING_POD_POL')
+    if (!subqueries.type) throw new BadRequestException('MISSING_TYPE')
+    if (subqueries.type.value !== 'pod' && subqueries.type.value !== 'pol') throw new BadRequestException(`INVALID_TYPE_${String(subqueries.type.value).toLocaleUpperCase()}`)
     return params
   }, function (require, session, params) {
     // import
@@ -16,7 +17,7 @@ export default [
 
     // script
     const subqueries = params.subqueries || {}
-    let portColumn = subqueries.pod ? 'pol' : 'pod'
+    let portColumn = subqueries.type.value
     return new CreateTableJQL({
       $temporary: true,
       name: 'shipment',
