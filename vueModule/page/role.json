@@ -1,92 +1,61 @@
 {
   "layout": "MainLayout",
   "components": [{
-    "initUrl": "api/role/{{id}}",
-    "saveUrl": "api/role",
-    "primaryKey": "id",
-    "topSlots": [{
-        "is": "v-btn",
-        "props": {
-          "flat": true,
-          "icon": true
-        },
-        "events": {
-          "click.stop": [{
-            "type": "router",
-            "otherParams": {
-              "func": "push",
-              "path": "/roles"
+    "is": "Widget",
+    "props": {
+      "initUrl": "api/role/{{id}}",
+      "saveUrl": "api/role",
+      "primaryKey": "id",
+      "top": {
+        "assignment": [{
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true
+            },
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/roles"
+                }
+              }]
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }]
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "class": "headline",
+              "i18nKey": "RolePage.title",
+              "swig": true
+            }
+          }
+        ]
+      },
+      "components": {
+        "assignment": [{
+          "is": "div",
+          "props": {
+            "style": {
+              "padding-right": "4px"
+            }
+          },
+          "slots": [{
+            "name": "default",
+            "is": "DynamicComponent",
+            "props": {
+              "components": []
             }
           }]
-        },
-        "slots": [{
-          "is": "Icon",
-          "props": {
-            "icon": "arrow_back"
-          }
         }]
-      },
-      {
-        "is": "I18nText",
-        "props": {
-          "class": "headline",
-          "i18nKey": "UserPage.title",
-          "swig": true
-        }
       }
-    ],
-    "components": {
-      "assignment": [{
-        "is": "div",
-        "props": {
-          "style": {
-            "padding-right": "4px"
-          }
-        },
-        "slots": [{
-          "name": "default",
-          "is": "DynamicComponent",
-          "props": {
-            "components": [{
-                "is": "AsyncComponent",
-                "props": {
-                  "style": {
-                    "margin-bottom": "25px"
-                  },
-                  "layoutName": "invitationAndUser/personForm"
-                }
-              },
-              {
-                "is": "AsyncComponent",
-                "props": {
-                  "style": {
-                    "margin-bottom": "25px"
-                  },
-                  "layoutName": "invitationAndUser/contactForm"
-                }
-              },
-              {
-                "is": "AsyncComponent",
-                "props": {
-                  "style": {
-                    "margin-bottom": "25px"
-                  },
-                  "layoutName": "invitationAndUser/partyForm"
-                }
-              },
-              {
-                "is": "AsyncComponent",
-                "props": {
-                  "style": {
-                    "margin-bottom": "25px"
-                  },
-                  "layoutName": "invitationAndUser/roleForm"
-                }
-              }
-            ]
-          }
-        }]
-      }]
     }
   }]
 }

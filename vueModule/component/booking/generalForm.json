@@ -53,36 +53,29 @@
             "label": "BookingPage.placeOfReceipt",
             "name": "placeOfReceipt",
             "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-2",
+            "class": "xs-12 md-3",
             "readonlyClass": "hidden",
             "more": [{
               "name": "placeOfReceiptCode",
-              "selector": "code"
+              "selector": "portCode"
             }],
             "props": {
-              "url": "api/code/query/code_master",
+              "method": "POST",
+              "url": "api/location/query/location",
               "searchValueParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
                   },
-                  "codeType": {
-                    "value": "LOCATION"
-                  },
-                  "code": {
+                  "ports": {
                     "value": "{{query}}"
                   }
                 }
               },
               "searchTextParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
-                  },
-                  "codeType": {
-                    "value": "LOCATION"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -91,7 +84,7 @@
                 "limit": 5
               },
               "item-text": "name",
-              "item-value": "code"
+              "item-value": "portCode"
             }
           },
           {
@@ -104,33 +97,26 @@
             ],
             "more": [{
               "name": "portOfLoadingCode",
-              "selector": "code"
+              "selector": "portCode"
             }],
             "props": {
+              "method": "POST",
               "required": true,
-              "url": "api/code/query/code_master",
+              "url": "api/location/query/location",
               "searchValueParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
                   },
-                  "codeType": {
-                    "value": "LOCATION"
-                  },
-                  "code": {
+                  "ports": {
                     "value": "{{query}}"
                   }
                 }
               },
               "searchTextParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
-                  },
-                  "codeType": {
-                    "value": "LOCATION"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -139,7 +125,7 @@
                 "limit": 5
               },
               "item-text": "name",
-              "item-value": "code"
+              "item-value": "portCode"
             }
           },
           {
@@ -152,33 +138,26 @@
             ],
             "more": [{
               "name": "portOfDischargeCode",
-              "selector": "code"
+              "selector": "portCode"
             }],
             "props": {
+              "method": "POST",
               "required": true,
-              "url": "api/code/query/code_master",
+              "url": "api/location/query/location",
               "searchValueParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
                   },
-                  "codeType": {
-                    "value": "LOCATION"
-                  },
-                  "code": {
+                  "ports": {
                     "value": "{{query}}"
                   }
                 }
               },
               "searchTextParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
-                  },
-                  "codeType": {
-                    "value": "LOCATION"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -187,7 +166,7 @@
                 "limit": 5
               },
               "item-text": "name",
-              "item-value": "code"
+              "item-value": "portCode"
             }
           },
           {
@@ -195,35 +174,28 @@
             "name": "placeOfDelivery",
             "component": "AsyncAutoSuggest",
             "readonlyClass": "hidden",
-            "class": "xs-12 md-2",
+            "class": "xs-12 md-3",
             "more": [{
               "name": "placeOfDeliveryCode",
-              "selector": "code"
+              "selector": "portCode"
             }],
             "props": {
-              "url": "api/code/query/code_master",
+              "method": "POST",
+              "url": "api/location/query/location",
               "searchValueParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
                   },
-                  "codeType": {
-                    "value": "LOCATION"
-                  },
-                  "code": {
+                  "ports": {
                     "value": "{{query}}"
                   }
                 }
               },
               "searchTextParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
-                  },
-                  "codeType": {
-                    "value": "LOCATION"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -232,7 +204,7 @@
                 "limit": 5
               },
               "item-text": "name",
-              "item-value": "code"
+              "item-value": "portCode"
             }
           },
           {
@@ -240,35 +212,28 @@
             "name": "finalDestination",
             "component": "AsyncAutoSuggest",
             "readonlyClass": "hidden",
-            "class": "xs-12 md-2",
+            "class": "xs-12 md-6",
             "more": [{
               "name": "finalDestinationCode",
-              "selector": "code"
+              "selector": "portCode"
             }],
             "props": {
-              "url": "api/code/query/code_master",
+              "method": "POST",
+              "url": "api/location/query/location",
               "searchValueParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
                   },
-                  "codeType": {
-                    "value": "LOCATION"
-                  },
-                  "code": {
+                  "ports": {
                     "value": "{{query}}"
                   }
                 }
               },
               "searchTextParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
-                  },
-                  "codeType": {
-                    "value": "LOCATION"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -277,7 +242,7 @@
                 "limit": 5
               },
               "item-text": "name",
-              "item-value": "code"
+              "item-value": "portCode"
             }
           },
           {
@@ -330,7 +295,7 @@
               "name": "vesselName",
               "selector": "name"
             }],
-            "checkDisplayWhen": "return form && form.moduleTypeCode === 'SEA'",
+            "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA'",
             "props": {
               "url": "api/code/query/code_master",
               "searchValueParams": {
@@ -363,11 +328,11 @@
             "name": "voyageFlightNumber",
             "component": "v-text-field",
             "class": "xs-12 md-6",
-            "checkDisplayWhen": "return form && form.moduleTypeCode === 'AIR'"
+            "checkDisplayWhen": "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA')"
           },
           {
             "class": "xs-12 md-6",
-            "checkDisplayWhen": "return form && (!form.moduleTypeCode || form.moduleTypeCode === 'ROAD')"
+            "checkDisplayWhen": "return form && (form.moduleTypeCode || form.moduleTypeCode === 'AIR')"
           }
         ]
       }

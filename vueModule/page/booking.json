@@ -10,44 +10,153 @@
         "entity",
         "return true"
       ],
-      "topSlots": [{
-          "is": "v-btn",
-          "props": {
-            "flat": true,
-            "icon": true,
-            "small": true
-          },
-          "events": {
-            "click.stop": [{
-              "type": "router",
-              "otherParams": {
-                "func": "push",
-                "path": "/bookings"
+      "top": {
+        "assignment": [{
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true,
+              "small": true
+            },
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/bookings"
+                }
+              }]
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
               }
             }]
           },
-          "slots": [{
-            "is": "Icon",
+          {
+            "is": "I18nText",
             "props": {
-              "icon": "arrow_back"
+              "class": "headline",
+              "i18nKey": "BookingPage.title",
+              "swig": true
             }
-          }]
-        },
-        {
-          "is": "I18nText",
-          "props": {
-            "class": "headline",
-            "i18nKey": "BookingPage.title",
-            "swig": true
+          },
+          {
+            "is": "v-spacer"
+          },
+          {
+            "is": "BookmarkButton"
           }
-        },
-        {
-          "is": "v-spacer"
-        },
-        {
-          "is": "BookmarkButton"
-        }
-      ],
+        ],
+        "edit": "assignment",
+        "map": "assignment",
+        "create": [{
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true,
+              "small": true
+            },
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/bookings"
+                }
+              }]
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }]
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "class": "headline",
+              "i18nKey": "BookingPage.createTitle",
+              "swig": true
+            }
+          },
+          {
+            "is": "v-spacer"
+          }
+        ],
+        "import": [{
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true,
+              "small": true
+            },
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/bookings"
+                }
+              }]
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }]
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "class": "headline",
+              "i18nKey": "BookingPage.importTitle",
+              "swig": true
+            }
+          },
+          {
+            "is": "v-spacer"
+          }
+        ],
+        "copy": [{
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true,
+              "small": true
+            },
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/bookings"
+                }
+              }]
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }]
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "class": "headline",
+              "i18nKey": "BookingPage.copyTitle",
+              "swig": true
+            }
+          },
+          {
+            "is": "v-spacer"
+          }
+        ]
+      },
       "components": {
         "assignment": [{
           "is": "DynamicComponent",
@@ -320,7 +429,13 @@
               "mode": "widget.data.moduleTypeCode"
             }
           }]
-        }]
+        }],
+        "import": [
+
+        ],
+        "copy": [
+
+        ]
       }
     }
   }]

@@ -6,37 +6,41 @@
       "initUrl": "api/invitation/{{id}}",
       "saveUrl": "api/invitation",
       "primaryKey": "id",
-      "topSlots": [{
-          "is": "v-btn",
-          "props": {
-            "flat": true,
-            "icon": true
-          },
-          "events": {
-            "click.stop": [{
-              "type": "router",
-              "otherParams": {
-                "func": "push",
-                "path": "/invitations"
+      "top": {
+        "assignment": [{
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true
+            },
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/invitations"
+                }
+              }]
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
               }
             }]
           },
-          "slots": [{
-            "is": "Icon",
+          {
+            "is": "I18nText",
             "props": {
-              "icon": "arrow_back"
+              "class": "headline",
+              "i18nKey": "InvitationPage.title",
+              "swig": true
             }
-          }]
-        },
-        {
-          "is": "I18nText",
-          "props": {
-            "class": "headline",
-            "i18nKey": "InvitationPage.title",
-            "swig": true
           }
-        }
-      ],
+        ],
+        "edit": "assignment",
+        "create": "assignment"
+      },
       "components": {
         "create": [{
           "is": "WidgetPanel",

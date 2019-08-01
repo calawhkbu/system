@@ -20,54 +20,27 @@ export default class BaseAirTrackingService {
   ) {}
   async registerNew (
     partyGroupCode: string,
-    trackingForm: { carrierCode?: string, masterNo: string, departureDateEstimated: string }
+    trackingForm: { carrierCode?: string, carrierCode2?: string, masterNo: string, departureDateEstimated: string }
   ) {
     const trackingReference = await this.trackingReferenceService.findOne({
-      where: { partyGroupCode, trackingType: 'AIR', masterNo: trackingForm.masterNo }
+      where: {
+        partyGroupCode,
+        trackingType: 'AIR',
+        masterNo: trackingForm.masterNo
+      }
     })
     if (trackingReference) {
       return trackingReference
-    }
-    const masterNo = trackingForm.masterNo
-    let carrierCode1 = null
-    if (masterNo.includes('-')) {
-      const split = masterNo.split('-')
-      if (split.length > 2) {
-        throw new Error('Wrong format in master no. (EXAMPLE: XXX-XXXXXXXX OR XXXXXXXXXXX)')
-      }
-      if (trackingForm.masterNo.length !== 12) {
-        throw new Error('mast no should have aleast 12 charachters. (EXAMPLE: XXX-XXXXXXXX OR XXXXXXXXXXX)')
-      }
-      carrierCode1 = split[0]
-    } else {
-      if (trackingForm.masterNo.length !== 11) {
-        throw new Error('mast no should have aleast 12 charachters. (EXAMPLE: XXX-XXXXXXXX OR XXXXXXXXXXX)')
-      }
-      carrierCode1 = masterNo.substring(0, 2)
-    }
-    if (!carrierCode1) {
-      throw new Error('Carrier not found')
-    }
-    const code = await this.codeMasterService.findOne({ where: { codeType: 'CARRIER_SWIVEL_TO_YD', code: carrierCode1 } })
-    if (!code) {
-      throw new Error('Carrier not support')
-    }
-    let code2 = null
-    if (trackingForm.carrierCode) {
-      code2 = await this.codeMasterService.findOne({ where: { codeType: 'CARRIER_SWIVEL_TO_YD', code: trackingForm.carrierCode } })
-      if (!code2) {
-        throw new Error('Carrier not support')
-      }
     }
     // TODO masterno validation
     return await this.trackingReferenceService.save({
       partyGroupCode,
       trackingType: 'AIR',
-      carrierCode: code.name,
-      ...(code2 ? { carrierCode2:  code2.name } : {}),
-      masterNo,
-      soNo: null,
-      containerNo: null,
+      carrierCode: trackingForm.carrierCode,
+      ...(trackingForm.carrierCode2 ? { carrierCode2:  trackingForm.carrierCode2 } : {}),
+      masterNo: trackingForm.masterNo,
+      soNo: [],
+      containerNo: [],
       departureDateEstimated: trackingForm.departureDateEstimated,
       mode: 'masterNo'
     })
