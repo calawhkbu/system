@@ -2,7 +2,12 @@ import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, Funct
 
 function prepareParams(): Function {
   return function (require, session, params) {
+    // import
+    const { BadRequestException } = require('@nestjs/common')
+
+    // script
     const subqueries = params.subqueries = params.subqueries || {}
+    if (!subqueries.lastStatusDate) throw new BadRequestException('MISSING_LAST_STATUS_DATE')
     subqueries.moduleType = { value: 'AIR' }
     return params
   }
