@@ -55,6 +55,7 @@ export default {
   ],
 
 
+
   // update entity(booking) with a tracking
   tracking_update_data : [
 
@@ -65,19 +66,18 @@ export default {
   ],
 
 
-
   afterCreate_tracking : [
 
     {
-      handlerName: "tracking_update_data"
-    }
+      eventName: "tracking_update_data"
+    },
 
   ],
 
   afterUpdate_tracking : [
 
     {
-      handlerName: "tracking_update_data"
+      eventName: "tracking_update_data"
     }
 
   ],
@@ -138,7 +138,7 @@ export default {
 
     // update personId / create Invitation 
     {
-      condition : false,
+      condition : true,
       handlerName : 'entity_create_invitation.ts',
       otherParameters : {
         tableName : 'booking',      
@@ -147,14 +147,14 @@ export default {
 
     // create booking tracking
     {
-      condition : false,
+      condition : true,
       eventName : 'create_tracking',
     },
 
 
     // fill template of the booking
     {
-      condition : false,
+      condition : true,
       eventName : 'fill_template',
       otherParameters : {
 
