@@ -123,8 +123,8 @@
               },
               "limit": 5
             },
-            "item-text": "partyName",
-            "item-value": "partyId"
+            "item-text": "name",
+            "item-value": "id"
           }
         },
         {
