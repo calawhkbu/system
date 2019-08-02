@@ -4,12 +4,22 @@ import { JwtPayload } from 'modules/auth/interfaces/jwt-payload';
 import { Transaction } from 'sequelize';
 import deepdiff = require('deep-diff')
 
+
+// what role need to be handled
 const entityInvitationDetail = {
 
-  roleList : ["shipper","consignee","forwarder"]
+  roleList: ["shipper", "consignee", "forwarder"]
 }
 
-export default async function entityCreateInvitaion (that:any,entity: any, tableName: string, user?: JwtPayload, transaction?: Transaction) {
+export default async function entityCreateInvitaion(that: any, entity: any, tableName: string, user?: JwtPayload, transaction?: Transaction) {
+
+
+  // change back into normal json
+
+  if (entity.hasOwnProperty('dataValues')) {
+    entity = JSON.parse(JSON.stringify(entity.dataValues))
+
+  }
 
   console.log('start entityCreateInvitaion')
   const partyGroupCode = entity.partyGroupCode
@@ -22,7 +32,7 @@ export default async function entityCreateInvitaion (that:any,entity: any, table
 
   const roleList = entityInvitationDetail.roleList
 
-  // used to check if this email is processed
+  // used to check if this person email is processed
   const personMap = {} as {
     [email: string]: Person
   }
@@ -44,19 +54,17 @@ export default async function entityCreateInvitaion (that:any,entity: any, table
 
   // findOrCreate a Party, for party that are created before, they will be stored in partyMap
 
-  async function processParty (role: string)
-  {
+  async function processParty(role: string) {
 
-    if (entity[role + 'PartyName'] && entity[role + 'PartyName'].length)
-    {
+    if (entity[role + 'PartyName'] && entity[role + 'PartyName'].length) {
 
       const partyName = entity[role + 'PartyName'] as string
       let party = createPartyMap[partyName.trim()]
 
-      if (party){
+      if (party) {
 
         party.types.push({
-          type : role
+          type: role
         } as PartyType)
 
         createPartyMap[partyName.trim()] = party
@@ -79,9 +87,9 @@ export default async function entityCreateInvitaion (that:any,entity: any, table
           fax: entity[role + 'PartyFax'],
 
           address: entity[role + 'PartyAddress'],
-          types : [
+          types: [
             {
-              type : role
+              type: role
             }
           ],
 
@@ -104,33 +112,29 @@ export default async function entityCreateInvitaion (that:any,entity: any, table
 
   }
 
-  async function createParty ()
-  {
+  async function createParty() {
 
     // create all party in the createPartyMap
 
     for (const [partyName, partyData] of Object.entries(createPartyMap)) {
 
-      if (partyData !== undefined)
-      {
+      if (partyData !== undefined) {
         const party = await that.partyService.save(partyData, user, transaction)
         createPartyMap[partyName] = party
       }
     }
 
     // map createPartyMap into partyIdMap
-    console.log(roleList, 'roleList')
-    for (const role of roleList)
-    {
+    // console.log(roleList, 'roleList')
+    for (const role of roleList) {
 
       const partyId = entity[role + 'PartyId'] as number
 
-      if (partyId && partyId != null)
-      {
+      if (partyId && partyId != null) {
         partyIdMap[role] = partyId
       }
 
-      else if (entity[role + 'PartyName'] && entity[role + 'PartyName'].length){
+      else if (entity[role + 'PartyName'] && entity[role + 'PartyName'].length) {
 
         const partyName = entity[role + 'PartyName']
         const party = createPartyMap[partyName.trim()]
@@ -142,7 +146,7 @@ export default async function entityCreateInvitaion (that:any,entity: any, table
   }
 
   // change the entity Contact into a Person data
-  async function processPerson (rolePartyId: number, contactEmail: string, contactName: string, contactPhone?: string) {
+  async function processPerson(rolePartyId: number, contactEmail: string, contactName: string, contactPhone?: string) {
     let firstName: string, lastName: string, displayName: string
 
     let person = personMap[contactEmail]
@@ -189,6 +193,44 @@ export default async function entityCreateInvitaion (that:any,entity: any, table
         )
       }
 
+
+
+      const partyGroup = await that.partyGroupService.findOne({
+
+        where: {
+          code: entity.partyGroupCode
+        },
+        transaction
+      }, user
+      ) as PartyGroup
+
+      const defaultConfiguration = partyGroup.configuration
+
+
+      // hardcode
+      const configuration = {
+        locale : 'defaultLocale',
+        timeFormat : 'defaultTimeFormat',
+        dateFormat : 'defaultDateFormat',
+        dateTimeFormat : 'defaultDateTimeFormat',
+        timezone : 'defaultTimezone'
+      }      
+
+      // clone from partyGroup
+      for (let [key, value] of Object.entries(configuration)) {
+        configuration[key] = defaultConfiguration[value]
+      }
+
+
+      const { frontendUrl } = await that.swivelConfigService.get()
+
+
+      // hardcode 
+      configuration['url'] = `${frontendUrl}${tableName}/${entity.id}`
+
+      // console.log(configuration['url'],'configuration[url]')
+
+
       person = {
 
         userName: contactEmail,
@@ -200,7 +242,8 @@ export default async function entityCreateInvitaion (that:any,entity: any, table
           {
             id: rolePartyId
           }
-        ]
+        ],
+        configuration
 
       } as Person
 
@@ -211,12 +254,11 @@ export default async function entityCreateInvitaion (that:any,entity: any, table
 
   }
 
-  async function createPerson () {
+  async function createPerson() {
 
     for (const [email, personData] of Object.entries(personMap)) {
 
-      if (personData !== undefined)
-      {
+      if (personData !== undefined) {
         const invitation = await that.createInvitation(personData, partyGroupCode, user, transaction)
         personMap[email] = invitation.person
       }
@@ -230,8 +272,7 @@ export default async function entityCreateInvitaion (that:any,entity: any, table
   for (const role of roleList) {
 
     const rolePartyId = entity[role + 'PartyId']
-    if (!rolePartyId)
-    {
+    if (!rolePartyId) {
       await processParty(role)
     }
 
@@ -290,8 +331,8 @@ export default async function entityCreateInvitaion (that:any,entity: any, table
 
     const rolePartyId = entity[role + 'PartyId']
 
-    // map party Id
-    if (!(rolePartyId && rolePartyId !== null)) {
+    // if entity rolePartyId is empty, get it from partyIdMap
+    if (!(rolePartyId && rolePartyId != null)) {
 
       returnEntity[role + 'PartyId'] = partyIdMap[role]
 
@@ -335,35 +376,27 @@ export default async function entityCreateInvitaion (that:any,entity: any, table
 
   const jsondiffpatch = require('jsondiffpatch').create()
 
-  console.log(returnEntity,'returnEntity')
 
-  const checkEntity = {...(entity.dataValues),...returnEntity}
+  for (let [key, value] of Object.entries(returnEntity)) {
 
-  console.log(checkEntity,'checkEntity')
+    if (value === undefined) {
+      delete returnEntity[key]
+    }
+
+  }
+
+
+  const checkEntity = { ...entity, ...returnEntity }
+
+  // console.log(entity,'entity')
+  // console.log(checkEntity,'checkEntity')
+
   const diff = jsondiffpatch.diff(entity, checkEntity)
-  if (diff)
-  {
+  if (diff) {
     return returnEntity
   }
 
+  // warning: very important !!! must return undefined if nothing is changed
   return undefined
 
 }
-
-// export default async function (
-
-
-//   booking: {
-//     partyGroupCode: string
-//   },
-
-//   helper: {
-//     dataService: any
-//   }
-// ) {
-
-
-
-
-
-// }
