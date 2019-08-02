@@ -6,89 +6,41 @@
       "initUrl": "api/person/{{id}}",
       "saveUrl": "api/person",
       "primaryKey": "id",
-      "topSlots": [{
-          "is": "v-btn",
-          "props": {
-            "flat": true,
-            "icon": true
-          },
-          "events": {
-            "click.stop": [{
-              "type": "router",
-              "otherParams": {
-                "func": "push",
-                "path": "/users"
+      "top": {
+        "assignment": [{
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true
+            },
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/users"
+                }
+              }]
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
               }
             }]
           },
-          "slots": [{
-            "is": "Icon",
+          {
+            "is": "I18nText",
             "props": {
-              "icon": "arrow_back"
+              "class": "headline",
+              "i18nKey": "UserPage.title",
+              "swig": true
             }
-          }]
-        },
-        {
-          "is": "I18nText",
-          "props": {
-            "class": "headline",
-            "i18nKey": "UserPage.title",
-            "swig": true
           }
-        }
-      ],
+        ],
+        "edit": "assignment"
+      },
       "components": {
-        "create": [{
-          "is": "WidgetPanel",
-          "props": {
-            "initUrl": "api/person/{{id}}",
-            "saveUrl": "api/person",
-            "primaryKey": "id"
-          },
-          "slots": [{
-            "name": "default",
-            "is": "DynamicComponent",
-            "props": {
-              "components": [{
-                  "is": "AsyncComponent",
-                  "props": {
-                    "style": {
-                      "margin-bottom": "25px"
-                    },
-                    "layoutName": "invitationAndUser/personForm"
-                  }
-                },
-                {
-                  "is": "AsyncComponent",
-                  "props": {
-                    "style": {
-                      "margin-bottom": "25px"
-                    },
-                    "layoutName": "invitationAndUser/contactForm"
-                  }
-                },
-                {
-                  "is": "AsyncComponent",
-                  "props": {
-                    "style": {
-                      "margin-bottom": "25px"
-                    },
-                    "layoutName": "invitationAndUser/partyForm"
-                  }
-                },
-                {
-                  "is": "AsyncComponent",
-                  "props": {
-                    "style": {
-                      "margin-bottom": "25px"
-                    },
-                    "layoutName": "invitationAndUser/roleForm"
-                  }
-                }
-              ]
-            }
-          }]
-        }],
         "assignment": [{
           "is": "div",
           "props": {

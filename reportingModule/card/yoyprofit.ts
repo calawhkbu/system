@@ -1,4 +1,22 @@
 import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression } from 'node-jql'
+import { parseCode } from 'utils/function'
+
+function prepareParams(thisYear: boolean): Function {
+  const fn = function (require, session, params) {
+    const moment = require('moment')
+    const subqueries = params.subqueries = params.subqueries || {}
+    if (subqueries.date) {
+      let year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
+      if (!thisYear) year -= 1
+      subqueries.date.from = moment().year(year).startOf('year').format('YYYY-MM-DD')
+      subqueries.date.to = moment().year(year).endOf('year').format('YYYY-MM-DD')
+    }
+    return params
+  }
+  let code = fn.toString()
+  code = code.replace(new RegExp('thisYear', 'g'), String(thisYear))
+  return parseCode(code)
+}
 
 function prepareTable(name: string): CreateTableJQL {
   return new CreateTableJQL({
@@ -38,26 +56,8 @@ function prepareTable(name: string): CreateTableJQL {
 }
 
 export default [
-  [function (require, session, params) {
-    const moment = require('moment')
-    const subqueries = params.subqueries
-    if (subqueries && subqueries.jobDate) {
-      const year = moment(subqueries.jobDate.from, 'YYYY-MM-DD').year()
-      subqueries.jobDate.from = moment().year(year).startOf('year').format('YYYY-MM-DD')
-      subqueries.jobDate.to = moment().year(year).endOf('year').format('YYYY-MM-DD')
-    }
-    return params
-  }, prepareTable('current')],
-  [function (require, session, params) {
-    const moment = require('moment')
-    const subqueries = params.subqueries
-    if (subqueries && subqueries.jobDate) {
-      const year = moment(subqueries.jobDate.from, 'YYYY-MM-DD').year() - 1
-      subqueries.jobDate.from = moment().year(year).startOf('year').format('YYYY-MM-DD')
-      subqueries.jobDate.to = moment().year(year).endOf('year').format('YYYY-MM-DD')
-    }
-    return params
-  }, prepareTable('last')],
+  [prepareParams(true), prepareTable('current')],
+  [prepareParams(false), prepareTable('last')],
   new Query({
     $from: 'last',
     $union: new Query('current')

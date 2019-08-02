@@ -6,9 +6,17 @@
   "components": [{
     "is": "WidgetForms",
     "props": {
-      "class": "required",
       "formProps": {
         "class": "xs-12 md-6"
+      },
+      "labelProps": {},
+      "nonFixedLabelProps": {
+        "shipper": {
+          "class": "required form-label"
+        },
+        "consignee": {
+          "class": "required form-label"
+        }
       },
       "keyProps": {
         "key": "Party",
@@ -115,8 +123,8 @@
               },
               "limit": 5
             },
-            "item-text": "partyName",
-            "item-value": "partyId"
+            "item-text": "name",
+            "item-value": "id"
           }
         },
         {

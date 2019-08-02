@@ -23,42 +23,39 @@ export default class BaseAirTrackingService {
     trackingForm: { carrierCode: string, masterNo: string, soNo?: string[], containerNo?: string[], departureDateEstimated: string }
   ) {
     const trackingReference = await this.trackingReferenceService.findOne({
-      where: { partyGroupCode, trackingType: 'SEA', masterNo: trackingForm.masterNo }
+      where: {
+        partyGroupCode,
+        trackingType: 'SEA',
+        masterNo: trackingForm.masterNo,
+      }
     })
     if (trackingReference) {
       return trackingReference
     }
-    if (!trackingForm.carrierCode) {
-      throw new Error('No Carrier Code')
+    let mode = 'masterNo'
+    if (trackingForm.masterNo) {
+      mode = 'masterNo'
     }
-    const code = await this.codeMasterService.findOne({ where: { codeType: 'CARRIER_SWIVEL_TO_YD', code: trackingForm.carrierCode } })
-    if (!code) {
-      throw new Error('Carrier not support')
-    }
-    console.log(code)
-    if (!trackingForm.masterNo) {
-      throw new Error('No MasterNo')
-    }
-    (trackingForm.soNo || []).forEach(soNo => {
-      if (typeof soNo !== 'string') {
-        throw new Error('carrier booking no is not correct')
+    if (trackingForm.soNo) {
+      if (!trackingForm.masterNo) {
+        mode = 'soNo'
       }
-    });
-    (trackingForm.containerNo || []).forEach(containerNo => {
-      if (typeof containerNo !== 'string') {
-        throw new Error('carrier booking no is not correct')
+    }
+    if (trackingForm.containerNo) {
+      if (!trackingForm.masterNo && (!trackingForm.soNo || trackingForm.soNo.length === 0)) {
+        mode = 'containerNo'
       }
-    })
+    }
     // TODO masterno validation
     return await this.trackingReferenceService.save({
       partyGroupCode,
       trackingType: 'SEA',
-      carrierCode: code.name,
+      carrierCode: trackingForm.carrierCode,
       masterNo: trackingForm.masterNo,
       soNo: trackingForm.soNo,
       containerNo: trackingForm.containerNo,
       departureDateEstimated: trackingForm.departureDateEstimated,
-      mode: 'masterNo'
+      mode
     })
   }
   async track (

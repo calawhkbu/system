@@ -3,17 +3,17 @@ import { Query, FromTable, BinaryExpression, ColumnExpression, InExpression, Reg
 
 const query = new QueryDef(new Query({
   $distinct: true,
-  $from: new FromTable('invitation', 'invitation',
+  $from: new FromTable('invitation',
     {
       operator: 'LEFT',
-      table: new FromTable('person', 'person'),
+      table: 'person',
       $on: [
         new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('invitation', 'personId'))
       ]
     },
     {
       operator: 'LEFT',
-      table: new FromTable('token', 'token'),
+      table: 'token',
       $on: [
         new BinaryExpression(new ColumnExpression('token', 'id'), '=', new ColumnExpression('invitation', 'tokenId'))
       ]

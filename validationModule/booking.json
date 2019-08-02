@@ -22,5 +22,20 @@
     "field": "commodity",
     "validator": "required",
     "part": "BookingForm.GeneralForm"
+  },
+  {
+    "field": "shipperParty",
+    "validator": "required",
+    "part": "BookingForm.partyForm"
+  },
+  {
+    "field": "consigneeParty",
+    "validator": "required",
+    "part": "BookingForm.partyForm"
+  },
+  {
+    "field": "departureDateEstimated",
+    "validator": "required",
+    "part": "BookingForm.dateForm"
   }
 ]

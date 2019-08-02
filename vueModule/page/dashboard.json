@@ -71,7 +71,7 @@
           "type": "text"
         },
         {
-          "name": "jobDate",
+          "name": "date",
           "type": "date",
           "props": {
             "required": true,

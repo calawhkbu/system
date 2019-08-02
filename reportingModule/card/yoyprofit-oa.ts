@@ -1,29 +1,15 @@
+import { parseCode } from 'utils/function'
 import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, MathExpression, CreateFunctionJQL } from 'node-jql'
-
-function parseCode(code): Function {
-  code = code.trim()
-  if (!code.startsWith('function')) throw new SyntaxError(`Position 0: Keyword 'function' is missing`)
-  const argsIndex = [code.indexOf('(') + 1, code.indexOf(')')]
-  const bodyIndex = [code.indexOf('{') + 1, code.lastIndexOf('}')]
-  if (argsIndex[1] > bodyIndex[0]) throw new SyntaxError(`Position ${bodyIndex[0]}: Curved bracket '{}' is not allowed in argument section 'function()'`)
-  if (bodyIndex[1] - bodyIndex[0] === 1) throw new SyntaxError(`Position ${bodyIndex[0]}: Empty function`)
-  let args = []
-  if (argsIndex[1] - argsIndex[0] > 1) {
-    args = code.substring(argsIndex[0], argsIndex[1]).split(',').map(pc => pc.trim())
-  }
-  args.push(code.substring(bodyIndex[0], bodyIndex[1]))
-  return new Function(...args)
-}
 
 function prepareParams(thisYear: boolean, nominatedType_: 'F'|'R'): Function {
   const fn = function (require, session, params) {
     const moment = require('moment')
-    const subqueries = params.subqueries
-    if (subqueries && subqueries.jobDate) {
-      let year = moment(subqueries.jobDate.from, 'YYYY-MM-DD').year()
+    const subqueries = params.subqueries = params.subqueries || {}
+    if (subqueries.date) {
+      let year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
       if (!thisYear) year -= 1
-      subqueries.jobDate.from = moment().year(year).startOf('year').format('YYYY-MM-DD')
-      subqueries.jobDate.to = moment().year(year).endOf('year').format('YYYY-MM-DD')
+      subqueries.date.from = moment().year(year).startOf('year').format('YYYY-MM-DD')
+      subqueries.date.to = moment().year(year).endOf('year').format('YYYY-MM-DD')
     }
     if (subqueries) subqueries.nominatedType = { value: nominatedType_ }
     return params
@@ -77,14 +63,19 @@ function prepareTable(name: string): CreateTableJQL {
 }
 
 export default [
+  // prepare function
   new CreateFunctionJQL('PERCENT_CHANGE', function (currValue: number, lastValue: number) {
     if (currValue === 0 || lastValue === 0 || isNaN(currValue) || isNaN(lastValue)) return NaN
     return (currValue - lastValue) / Math.abs(lastValue)
   }, 'number', 'number', 'number'),
+
+  // prepare tables
   [prepareParams(true, 'F'), prepareTable('current_F')],
   [prepareParams(true, 'R'), prepareTable('current_R')],
   [prepareParams(false, 'F'), prepareTable('last_F')],
   [prepareParams(false, 'R'), prepareTable('last_R')],
+
+  // finalize
   function (require, session, params) {
     const { Query, FromTable, ResultColumn, ColumnExpression, FunctionExpression, JoinClause, BinaryExpression } = require('node-jql')
     const query = new Query({

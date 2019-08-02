@@ -3,10 +3,10 @@ import { Query, FromTable, ResultColumn, GroupBy, BinaryExpression, RegexpExpres
 
 const query = new QueryDef(new Query({
   $distinct: true,
-  $from: new FromTable('booking', 'booking',
+  $from: new FromTable('booking',
     {
       operator: 'LEFT',
-      table: new FromTable('flex_data', 'flex_data'),
+      table: 'flex_data',
       $on: [
         new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'booking'),
         new BinaryExpression(new ColumnExpression('booking', 'id'), '=', new ColumnExpression('flex_data', 'primaryKey'))
@@ -71,10 +71,10 @@ const query = new QueryDef(new Query({
             new ResultColumn(new FunctionExpression(
               'group_concat',
               new ParameterExpression({
-                expression: new ColumnExpression('booking_container', 'carrierBookingNo'),
+                expression: new ColumnExpression('booking_container', 'soNo'),
                 suffix: 'SEPARATOR \', \''
               })
-            ), 'carrierBookingNo'),
+            ), 'soNo'),
             new ResultColumn(new FunctionExpression(
               'group_concat',
               new ParameterExpression({
@@ -82,17 +82,10 @@ const query = new QueryDef(new Query({
                 suffix: 'SEPARATOR \', \''
               })
             ), 'sealNo'),
-            new ResultColumn(new FunctionExpression(
-              'SUM',
-              new ColumnExpression('booking_container', 'quantity')
-            ), 'quantity'),
-            new ResultColumn(new FunctionExpression(
-              'group_concat',
-              new ParameterExpression({
-                expression: new ColumnExpression('booking_container', 'sealNo'),
-                suffix: 'SEPARATOR \', \''
-              })
-            )),
+            // new ResultColumn(new FunctionExpression(
+            //   'SUM',
+            //   new ColumnExpression('booking_container', 'quantity')
+            // ), 'quantity'),
           ],
           $from: new FromTable('booking_container', 'booking_container', {
             operator: 'LEFT',
