@@ -68,7 +68,7 @@ class CreateTrackingEvent extends BaseEvent {
 
 
 
-  
+
   public async createTrackingAir(booking: Booking) {
 
     const moduleTypeCode = booking.moduleTypeCode
@@ -78,6 +78,7 @@ class CreateTrackingEvent extends BaseEvent {
 
     // hardcode
     const masterNo = this.getMasterNo(booking, "MAWB")
+    console.log(masterNo, "================")
 
     if (masterNo) {
 
@@ -85,7 +86,7 @@ class CreateTrackingEvent extends BaseEvent {
 
       const trackingInformation = {
 
-        carrierCode,
+        // carrierCode,
         masterNo,
         departureDateEstimated
 
@@ -107,14 +108,14 @@ class CreateTrackingEvent extends BaseEvent {
     const partyGroupCode = booking.partyGroupCode
 
     // hardcode
-    const masterNo = this.getMasterNo(booking, "MLB")
+    const masterNo = this.getMasterNo(booking, "MBL")
     const containerNo = this.getCotainerNo(booking)
     const soNo = this.getSoNo(booking)
 
 
 
     // if masterNo and conatinerNo is both not found
-    if (masterNo || containerNo.length > 0 || soNo.length) {
+    if (carrierCode || masterNo || containerNo.length > 0 || soNo.length) {
 
       const trackService = this.allService['TrackService'] as TrackService
       const trackingInformation = {
@@ -135,12 +136,14 @@ class CreateTrackingEvent extends BaseEvent {
 
   // parameters should be booking
   public async mainFunction(parameters: any) {
+    console.log("======================")
 
     const booking = parameters.data as Booking
 
     // etd, carrier and ModuleType is required
-    if (booking.carrierCode && booking.moduleTypeCode && booking.departureDateEstimated) {
 
+    if (booking.moduleTypeCode && booking.departureDateEstimated) {
+      console.log("here")
 
       switch (booking.moduleTypeCode) {
         case 'AIR':

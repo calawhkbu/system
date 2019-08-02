@@ -254,43 +254,43 @@ img.fullwidth, img.fullwidthOnMobile {
         <center style="position:relative;top:30px;">
           <img class="center  autowidth  fullwidth" align="center" border="0" src="https://static.wixstatic.com/media/47186a_945e6c3508f343e8965d7f650b4a3bf9~mv2.png/v1/fill/w_634,h_174,al_c,lg_1/47186a_945e6c3508f343e8965d7f650b4a3bf9~mv2.png"
                alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: 0;height: auto;float: none;width: 100%;max-width: 320px" />
-                <h2>{{entity.forwarderPartyName}}</h2>
-                <h4>{{ entity.forwarderPartyAddress | splitLineBreak(0) }}</h4>
-                <h4>{{ entity.forwarderPartyAddress | splitLineBreak(1) }}</h4>
-                <h4>{{ entity.forwarderPartyAddress | splitLineBreak(2) }}</h4>
+                <h2>{{forwarderPartyName}}</h2>
+                <h4>{{ forwarderPartyAddress | splitLineBreak(0) }}</h4>
+                <h4>{{ forwarderPartyAddress | splitLineBreak(1) }}</h4>
+                <h4>{{ forwarderPartyAddress | splitLineBreak(2) }}</h4>
                 <h4>Shipping Order</h4>
-                <div style="font-size:12px;line-height:14px;color:#555555;font-family:Georgia, Times, 'Times New Roman', serif;text-align:left;"><p style="margin: 0;line-height: 22px;font-size: 18px;text-align: center"><a style="color:#0068A5;text-decoration: underline;" href="{{url}}" target="_blank">{% if entity.bookingNo %} Booking No. {{entity.bookingNo}}  {% endif %}</a></p></div>
+                <div style="font-size:12px;line-height:14px;color:#555555;font-family:Georgia, Times, 'Times New Roman', serif;text-align:left;"><p style="margin: 0;line-height: 22px;font-size: 18px;text-align: center"><a style="color:#0068A5;text-decoration: underline;" href="{{url}}" target="_blank">{% if bookingNo %} Booking No. {{bookingNo}}  {% endif %}</a></p></div>
         </center>
       </td>
     </tr>
     <tr>
       <td class="tg-us36" width="8%" style="border-left:1px solid #bfbfbf;">Name:</td>
-      <td class="tg-us36" width="">{{entity.shipperPartyName}}</td>
+      <td class="tg-us36" width="">{{shipperPartyName}}</td>
     </tr>
     <tr>
       <td class="tg-us36" rowspan="3" style="border-left:1px solid #bfbfbf;">Address:</td>
-      <td class="tg-us36">{{ entity.shipperPartyAddress | splitLineBreak(0) }}</td>
+      <td class="tg-us36">{{ shipperPartyAddress | splitLineBreak(0) }}</td>
     </tr>
     <tr>
-      <td class="tg-us36">{{ entity.shipperPartyAddress | splitLineBreak(1) }}</td>
+      <td class="tg-us36">{{ shipperPartyAddress | splitLineBreak(1) }}</td>
     </tr>
     <tr>
-      <td class="tg-us36">{{ entity.shipperPartyAddress | splitLineBreak(2) }}</td>
+      <td class="tg-us36">{{ shipperPartyAddress | splitLineBreak(2) }}</td>
     </tr>
 
     <tr>
       <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Tel:</td>
-      <td class="tg-us36">{{entity.shipperPartyContactPhone}}</td>
+      <td class="tg-us36">{{shipperPartyContactPhone}}</td>
     </tr>
 
     <tr>
       <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Email:</td>
-      <td class="tg-us36">{{entity.shipperPartyEmail}}</td>
+      <td class="tg-us36">{{shipperPartyEmail}}</td>
     </tr>
 
     <tr>
       <td class="tg-us36" style="border-left:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;">Contact:</td>
-      <td class="tg-us36" style="padding-bottom:7px;">{{entity.shipperPartyContactName}}</td>
+      <td class="tg-us36" style="padding-bottom:7px;">{{shipperPartyContactName}}</td>
     </tr>
 
     <tr>
@@ -300,32 +300,32 @@ img.fullwidth, img.fullwidthOnMobile {
     </tr>
     <tr>
       <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Name:</td>
-      <td class="tg-us36">{{entity.consigneePartyName}}</td>
+      <td class="tg-us36">{{consigneePartyName}}</td>
     </tr>
     <tr>
       <td class="tg-us36" rowspan="3" style="border-left:1px solid #bfbfbf;">Address:</td>
-      <td class="tg-us36">{{ entity.consigneePartyAddress | splitLineBreak(0) }}</td>
+      <td class="tg-us36">{{ consigneePartyAddress | splitLineBreak(0) }}</td>
     </tr>
     <tr>
-      <td class="tg-us36">{{ entity.consigneePartyAddress | splitLineBreak(1) }}</td>
+      <td class="tg-us36">{{ consigneePartyAddress | splitLineBreak(1) }}</td>
     </tr>
     <tr>
-      <td class="tg-us36">{{ entity.consigneePartyAddress | splitLineBreak(2) }}</td>
+      <td class="tg-us36">{{ consigneePartyAddress | splitLineBreak(2) }}</td>
     </tr>
 
     <tr>
       <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Tel:</td>
-      <td class="tg-us36">{{entity.consigneePartyContactPhone}}</td>
+      <td class="tg-us36">{{consigneePartyContactPhone}}</td>
     </tr>
 
     <tr>
       <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Email:</td>
-      <td class="tg-us36">{{entity.consigneePartyContactEmail}}</td>
+      <td class="tg-us36">{{consigneePartyContactEmail}}</td>
     </tr>
 
     <tr>
       <td class="tg-us36" style="border-left:1px solid #bfbfbf; border-bottom:1px solid #bfbfbf;">Contact:</td>
-      <td class="tg-us36" style="padding-bottom:7px;">{{entity.consigneePartyContactName}}</td>
+      <td class="tg-us36" style="padding-bottom:7px;">{{consigneePartyContactName}}</td>
     </tr>
 
     <tr>
@@ -335,42 +335,42 @@ img.fullwidth, img.fullwidthOnMobile {
     </tr>
     <tr>
       <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Name:</td>
-      <td class="tg-us36" style="border-right:1px solid #bfbfbf;">{{entity.notifyPartyPartyName}}</td>
+      <td class="tg-us36" style="border-right:1px solid #bfbfbf;">{{notifyPartyPartyName}}</td>
     </tr>
     <tr>
       <td class="tg-us36" rowspan="3" style="border-left:1px solid #bfbfbf;">Address:</td>
-      <td class="tg-us36">{{ entity.notifyPartyAddress | splitLineBreak(0) }}</td>
+      <td class="tg-us36">{{ notifyPartyAddress | splitLineBreak(0) }}</td>
       <td class="tg-us36" rowspan="3" width="10%" style="border-left:1px solid #bfbfbf;">Address:</td>
-      <td width="40%" style="border-right:1px solid #bfbfbf;">{{ entity.forwarderPartyAddress | splitLineBreak(0) }}</td>
+      <td width="40%" style="border-right:1px solid #bfbfbf;">{{ forwarderPartyAddress | splitLineBreak(0) }}</td>
     </tr>
     <tr>
-      <td class="tg-us36">{{ entity.notifyPartyAddress | splitLineBreak(1) }}</td>
-      <td style="border-right:1px solid #bfbfbf;">{{ entity.forwarderPartyAddress | splitLineBreak(1) }}</td>
+      <td class="tg-us36">{{ notifyPartyAddress | splitLineBreak(1) }}</td>
+      <td style="border-right:1px solid #bfbfbf;">{{ forwarderPartyAddress | splitLineBreak(1) }}</td>
     </tr>
     <tr>
-      <td class="tg-us36">{{ entity.notifyPartyAddress | splitLineBreak(2) }}</td>
-      <td style="border-right:1px solid #bfbfbf;">{{ entity.forwarderPartyAddress | splitLineBreak(2) }}</td>
+      <td class="tg-us36">{{ notifyPartyAddress | splitLineBreak(2) }}</td>
+      <td style="border-right:1px solid #bfbfbf;">{{ forwarderPartyAddress | splitLineBreak(2) }}</td>
     </tr>
 
     <tr>
       <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Tel:</td>
-      <td class="tg-us36">{{entity.notifyPartyPartyContactPhone}}</td>
+      <td class="tg-us36">{{notifyPartyPartyContactPhone}}</td>
       <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Tel:</td>
-      <td style="border-right:1px solid #bfbfbf;">{{entity.forwarderPartyContactPhone}}</td>
+      <td style="border-right:1px solid #bfbfbf;">{{forwarderPartyContactPhone}}</td>
     </tr>
 
     <tr>
       <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Email:</td>
-      <td class="tg-us36">{{entity.notifyPartyPartyContactEmail}}</td>
+      <td class="tg-us36">{{notifyPartyPartyContactEmail}}</td>
       <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Email:</td>
-      <td style="border-right:1px solid #bfbfbf;">{{entity.forwarderPartyContactEmail}}</td>
+      <td style="border-right:1px solid #bfbfbf;">{{forwarderPartyContactEmail}}</td>
     </tr>
 
     <tr style="border-bottom:1px solid #bfbfbf;">
       <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Contact:</td>
-      <td class="tg-us36">{{entity.notifyPartyPartyContactName}}</td>
+      <td class="tg-us36">{{notifyPartyPartyContactName}}</td>
       <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Contact:</td>
-      <td style="border-right:1px solid #bfbfbf; padding-bottom:7px;">{{entity.forwarderPartyContactName}}</td>
+      <td style="border-right:1px solid #bfbfbf; padding-bottom:7px;">{{forwarderPartyContactName}}</td>
     </tr>
     <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
       <td>Port Of Loading:</td>
@@ -380,45 +380,45 @@ img.fullwidth, img.fullwidthOnMobile {
     </tr>
     <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
       <td>ETD:</td>
-      <td style="border-right:1px solid #bfbfbf;">{% if entity.departureDateEstimated %} {{entity.departureDateEstimated | date('d M Y')}} {% endif %}</td>
+      <td style="border-right:1px solid #bfbfbf;">{% if departureDateEstimated %} {{departureDateEstimated | date('d M Y')}} {% endif %}</td>
       <td>ETA:</td>
-      <td>{% if entity.arrivalDateEstimated %} {{entity.arrivalDateEstimated | date('d M Y')}} {% endif %}</td>
+      <td>{% if arrivalDateEstimated %} {{arrivalDateEstimated | date('d M Y')}} {% endif %}</td>
     </tr>
     <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
       <td>Transport Mode:</td>
-      <td style="border-right:1px solid #bfbfbf;">{{entity.moduleTypeCode}}</td>
+      <td style="border-right:1px solid #bfbfbf;">{{moduleTypeCode}}</td>
       <td>Bound:</td>
-      <td>{{entity.boundTypeCode}}</td>
+      <td>{{boundTypeCode}}</td>
     </tr>
     <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
       <td>Service Type:</td>
-      <td style="border-right:1px solid #bfbfbf;">{{entity.serviceCode}}</td>
+      <td style="border-right:1px solid #bfbfbf;">{{serviceCode}}</td>
       <td>IncoTerms:</td>
-      <td>{{entity.incoTermsCode}}</td>
+      <td>{{incoTermsCode}}</td>
     </tr>
     <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
       <td>Fright Terms:</td>
-      <td style="border-right:1px solid #bfbfbf;">{{entity.freightTermsCode}}</td>
+      <td style="border-right:1px solid #bfbfbf;">{{freightTermsCode}}</td>
       <td>Final Destination:</td>
-      <td>{{entity.finalDestinationCode}}</td>
+      <td>{{finalDestinationCode}}</td>
     </tr>
     <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
       <td>Cargo Ready Date:</td>
-      <td style="border-right:1px solid #bfbfbf;">{{entity.cargoReadyDateEstimated}}</td>
+      <td style="border-right:1px solid #bfbfbf;">{{cargoReadyDateEstimated}}</td>
       <td>Carrier:</td>
-      <td>{{entity.carrierCode}}</td>
+      <td>{{carrierCode}}</td>
     </tr>
     <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
       <td>Vessel Name:</td>
-      <td style="border-right:1px solid #bfbfbf;">{{entity.vesselName}}</td>
+      <td style="border-right:1px solid #bfbfbf;">{{vesselName}}</td>
       <td>Voyage Number:</td>
-      <td>{{entity.voyageFlightNumber}}</td>
+      <td>{{voyageFlightNumber}}</td>
     </tr>
     <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
       <td>Commodity:</td>
-      <td style="border-right:1px solid #bfbfbf;">{{entity.commodity}}</td>
+      <td style="border-right:1px solid #bfbfbf;">{{commodity}}</td>
       <td>Goods Description:</td>
-      <td>{{entity.goodsDescription}}</td>
+      <td>{{goodsDescription}}</td>
     </tr>
   </table>
 
