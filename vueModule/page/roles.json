@@ -6,8 +6,7 @@
       "reportingKey": "roles",
       "jql": "roles",
       "back": "/admin",
-      "icons": [
-      ],
+      "icons": [],
       "_clickFunction": {
         "type": "router",
         "otherParams": {
@@ -25,25 +24,25 @@
           "draggable": true,
           "sorting": {},
           "pagination": {
-            "remote": {},
             "current": 0,
             "perPage": 25
           }
         }
       },
-      "fieldOptions": [
-        {
+      "filters": [{
+        "name": "roleName",
+        "type": "text"
+      }],
+      "fieldOptions": [{
           "key": "id",
+          "sql": "role.id",
           "hidden": true
         },
         {
           "key": "roleName"
         },
         {
-          "key":" roleGroup"
-        },
-        {
-          "key": "filter"
+          "key": "roleGroup"
         }
       ]
     }

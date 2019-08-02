@@ -20,16 +20,14 @@
           "draggable": true,
           "sorting": {},
           "pagination": {
-            "remote": {},
             "current": 0,
             "perPage": 25
           }
         }
       },
-      "fieldOptions": [
-        {
+      "fieldOptions": [{
           "key": "id",
-          "sql": "b.id",
+          "sql": "booking.id",
           "hidden": true
         },
         {
@@ -68,7 +66,35 @@
           "func": "push",
           "path": "/booking/{{id}}"
         }
-      }
+      },
+      "icons": [{
+        "icon": "add",
+        "click": [{
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "booking/create"
+          }
+        }]
+      }, {
+        "icon": "fas fa-file-import",
+        "click": [{
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "booking/import"
+          }
+        }]
+      }, {
+        "icon": "fas fa-copy",
+        "click": [{
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "booking/copy"
+          }
+        }]
+      }]
     }
   }]
 }

@@ -3,56 +3,27 @@
   "style": {
     "margin-bottom": "25px"
   },
-  "components": [
-    {
-      "is": "v-card-title",
-      "props": {
-        "class": "headline",
-        "style": {
-          "padding": "6px"
-        }
+  "components": [{
+    "is": "Plugin",
+    "props": {
+      "lazy": true,
+      "width": "50%",
+      "name": "Workflow",
+      "remote": true,
+      "axiosBaseParams": {
+        "url": "api/workflow/{{tableName}}/{{primaryKey}}"
       },
-      "slots": [
-        {
-          "is": "I18nText",
-          "props": {
-            "i18nContext": "Workflow",
-            "i18nKey": "title"
-          }
-        }
-      ]
-    },
-    {
-      "is": "v-divider"
-    },
-    {
-      "is": "Plugin",
-      "props": {
-        "lazy": true,
-        "summaryContainer": "v-card-text",
-        "summaryContainerProps": {
-          "style": {
-            "padding": "6px"
-          }
-        },
-        "width": "50%",
-        "remote": true,
-        "axios": {
-          "url": "api/workflow/{{tableName}}/{{primaryKey}}"
-        },
-        "i18nContext": "Workflow",
+      "shareProps": {
         "idKey": "id",
         "iconType": "",
-        "icon": "alertCategory",
-        "iconMap": {
-          "Exception": "notification_important",
-          "Message": "message"
-        },
-        "titleKey": "alertType",
-        "subTitleKeys": [
-          { "key": "createdAt", "is": "Datetime" }
-        ]
-      }
+        "titleKey": "statusName",
+        "subTitleKeys": [{
+          "key": "statusDate",
+          "is": "Datetime"
+        }]
+      },
+      "baseSummaryProps": {},
+      "baseDetailProps": {}
     }
-  ]
+  }]
 }

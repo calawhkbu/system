@@ -1,15 +1,14 @@
 {
   "layout": "MainLayout",
-  "components": [
-    {
-      "is": "Widget",
-      "props": {
-        "initUrl": "api/party/{{id}}",
-        "saveUrl": "api/party",
-        "primaryKey": "id",
-        "canEdit": false,
-        "topSlots": [
-          {
+  "components": [{
+    "is": "Widget",
+    "props": {
+      "initUrl": "api/party/{{id}}",
+      "saveUrl": "api/party",
+      "primaryKey": "id",
+      "canEdit": false,
+      "top": {
+        "assignment": [{
             "is": "v-btn",
             "props": {
               "flat": true,
@@ -17,24 +16,20 @@
               "small": true
             },
             "events": {
-              "click.stop": [
-                {
-                  "type": "router",
-                  "otherParams": {
-                    "func": "push",
-                    "path": "/parties"
-                  }
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/parties"
                 }
-              ]
+              }]
             },
-            "slots": [
-              {
-                "is": "Icon",
-                "props": {
-                  "icon": "arrow_back"
-                }
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
               }
-            ]
+            }]
           },
           {
             "is": "I18nText",
@@ -45,10 +40,12 @@
             }
           }
         ],
-        "components": {
-          "assignment": []
-        }
+        "edit": "assignment"
+      },
+      "components": {
+        "assignment": [],
+        "edit": []
       }
     }
-  ]
+  }]
 }

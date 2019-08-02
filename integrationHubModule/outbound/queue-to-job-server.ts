@@ -11,7 +11,21 @@ export default {
       headers: {
         'content-type': 'application/json'
       },
-      body: JSON.stringify(body)
+      body: {
+        ...body,
+        data: {
+          partyGroupCode: body.data.partyGroupCode,
+          trackingType: body.data.trackingType,
+          carrierCode: body.data.carrierCode,
+          carrierCode2: body.data.carrierCode2,
+          masterNo: body.data.masterNo,
+          soNo: body.data.soNo,
+          containerNo: body.data.containerNo,
+          departureDateEstimated: body.data.departureDateEstimated,
+          mode: body.data.mode
+        }
+      },
+      json: true
     }
   },
   responseHandler: (response: { responseBody: any, responseOptions: any }) => {

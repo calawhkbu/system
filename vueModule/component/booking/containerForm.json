@@ -85,8 +85,18 @@
                   "name": "volume",
                   "component": "v-text-field",
                   "props": {
-                    "type": "number"
-                  }
+                    "type": "number",
+                    "min": 0
+                  },
+                  "slots": [
+                    {
+                      "name": "append",
+                      "is": "I18nText",
+                      "props": {
+                        "i18nKey": "CBM"
+                      }
+                    }
+                  ]
                 },
                 {
                   "label": "BookingPage.length",

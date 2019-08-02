@@ -6,26 +6,15 @@
       "reportingKey": "users",
       "jql": "users",
       "back": "/admin",
-      "icons": [
-        {
-          "icon": "add",
-          "click": [
-            {
-              "type": "router",
-              "otherParams": {
-                "func": "push",
-                "path": "invitation/create"
-              }
-            }
-          ]
-        }
-      ],
       "title": "Users",
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
       "newReport": {
         "filters": {
+          "invitationStatus": {
+            "value": "used"
+          },
           "isActive": true
         },
         "configurations": {
@@ -34,7 +23,6 @@
           "draggable": true,
           "sorting": {},
           "pagination": {
-            "remote": {},
             "current": 0,
             "perPage": 25
           }
@@ -44,18 +32,15 @@
         "type": "router",
         "otherParams": {
           "func": "push",
-          "path": "/user/{{id}}"
+          "path": "/user/{{personId}}"
         }
       },
-      "fieldOptions": [
-        {
-          "key": "pe.id",
-          "expression": "pe.id",
-          "hidden": true
-        }
-      ],
-      "filters": [
-        {
+      "fieldOptions": [{
+        "key": "personId",
+        "expression": "person.id",
+        "hidden": true
+      }],
+      "filters": [{
           "name": "userName",
           "type": "text"
         },

@@ -11,11 +11,6 @@
               "component": "v-text-field"
             },
             {
-              "label": "InvitationPage.fm3kUsername",
-              "name": "person.thirdPartyUserName.fm3k",
-              "component": "v-text-field"
-            },
-            {
               "label": "InvitationPage.firstName",
               "name": "person.firstName",
               "component": "v-text-field",

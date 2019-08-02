@@ -1,0 +1,75 @@
+[
+  {
+    "group": "Not in Track",
+    "status": [
+      "Returned",
+      "Restock",
+      "Sealed",
+      "Exit",
+      "Checked",
+      "Carrier not supported currently",
+      "Exception raised while tracking",
+      "No Status"
+    ]
+  },
+  {
+    "group": "Processing",
+    "status": [
+      "Empty out for booking",
+      "New, no tracking yet",
+      "Booked"
+    ]
+  },
+  {
+    "group": "Cargo Ready",
+    "status": [
+      "Loaded in container",
+      "Sent to Shipper",
+      "At port",
+      "Gate in",
+      "Terminal clearance",
+      "Cargo Ready",
+      "Cargo Receipt"
+    ]
+  },
+  {
+    "group": "Departure",
+    "status": [
+      "Load onboard",
+      "Departure from port of loading",
+      "Loading"
+    ]
+  },
+  {
+    "group": "In Transit",
+    "status": [
+      "Departure from transfer station",
+      "Loaded at transfer station",
+      "Arrive at transfer station",
+      "Discharged at transfer station",
+      "Departure",
+      "Transit Arrival",
+      "Transit Departure"
+    ]
+  },
+  {
+    "group": "Arrival",
+    "status": [
+      "Arrived at port of discharge",
+      "Discharged from vessel",
+      "Arrival",
+      "Acquiring",
+      "Discharged",
+      "Customs Clearance",
+      "Arrival Notice"
+    ]
+  },
+  {
+    "group": "Delivered",
+    "status": [
+      "Sent to consignee",
+      "Empty container returned",
+      "Delivered"
+    ]
+  }
+]

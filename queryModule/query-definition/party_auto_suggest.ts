@@ -1,114 +1,80 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, ResultColumn, TableOrSubquery, OrExpressions, LikeExpression, ColumnExpression, JoinedTableOrSubquery, BinaryExpression, InExpression, IsNullExpression } from 'node-jql'
+import { Query, ResultColumn, FromTable, OrExpressions, RegexpExpression, ColumnExpression, BinaryExpression, InExpression, IsNullExpression, AndExpressions } from 'node-jql'
 
 const query = new QueryDef(new Query({
   $distinct: true,
   $select: [
-    new ResultColumn({ expression: new ColumnExpression(['pa', 'id']), $as: 'partyId' }),
-    new ResultColumn({ expression: new ColumnExpression(['pa', 'name']), $as: 'partyName' }),
-    new ResultColumn({ expression: new ColumnExpression(['pa', 'erpCode']), $as: 'partyCode' }),
-    new ResultColumn({ expression: new ColumnExpression(['pa', 'phone']), $as: 'partyPhone' }),
-    new ResultColumn({ expression: new ColumnExpression(['pa', 'fax']), $as: 'partyFax' }),
-    new ResultColumn({ expression: new ColumnExpression(['pa', 'email']), $as: 'partyEmail' }),
-    new ResultColumn({ expression: new ColumnExpression(['pa', 'address']), $as: 'partyAddress' }),
-    new ResultColumn({ expression: new ColumnExpression(['pa', 'cityCode']), $as: 'partyCityCode' }),
-    new ResultColumn({ expression: new ColumnExpression(['pa', 'stateCode']), $as: 'partyStateCode' }),
-    new ResultColumn({ expression: new ColumnExpression(['pa', 'countryCode']), $as: 'partyCountryCode' }),
-    new ResultColumn({ expression: new ColumnExpression(['pa', 'zip']), $as: 'partyZip' }),
-    new ResultColumn({ expression: new ColumnExpression(['pe', 'id']), $as: 'contactPersonId' }),
-    new ResultColumn({ expression: new ColumnExpression(['pe', 'displayName']), $as: 'contactPersonName' }),
-    new ResultColumn({ expression: 'TODO', $as: 'contactPersonPhone' }),
-    new ResultColumn({ expression: new ColumnExpression(['pe', 'userName']), $as: 'contactPersonEmail' })
+    new ResultColumn(new ColumnExpression('party', 'id'), 'id'),
+    new ResultColumn(new ColumnExpression('party', 'name'), 'name'),
+    new ResultColumn(new ColumnExpression('party', 'id'), 'partyId'),
+    new ResultColumn(new ColumnExpression('party', 'name'), 'partyName'),
+    new ResultColumn(new ColumnExpression('party', 'erpCode'), 'partyCode'),
+    new ResultColumn(new ColumnExpression('party', 'phone'), 'partyPhone'),
+    new ResultColumn(new ColumnExpression('party', 'fax'), 'partyFax'),
+    new ResultColumn(new ColumnExpression('party', 'email'), 'partyEmail'),
+    new ResultColumn(new ColumnExpression('party', 'address'), 'partyAddress'),
+    new ResultColumn(new ColumnExpression('party', 'cityCode'), 'partyCityCode'),
+    new ResultColumn(new ColumnExpression('party', 'stateCode'), 'partyStateCode'),
+    new ResultColumn(new ColumnExpression('party', 'countryCode'), 'partyCountryCode'),
+    new ResultColumn(new ColumnExpression('party', 'zip'), 'partyZip'),
+    new ResultColumn(new ColumnExpression('person', 'id'), 'contactPersonId'),
+    new ResultColumn(new ColumnExpression('person', 'displayName'), 'contactPersonName'),
+    // TODO new ResultColumn({ expression: 'TODO', $as: 'contactPersonPhone' }),
+    new ResultColumn(new ColumnExpression('person', 'userName'), 'contactPersonEmail')
   ],
-  $from: new JoinedTableOrSubquery({
-    table: 'party',
-    $as: 'pa',
-    joinClauses: [
-      {
-        operator: 'LEFT',
-        tableOrSubquery: new TableOrSubquery(['party_type', 'pt']),
-        $on: [
-          new BinaryExpression({
-            left: new ColumnExpression(['pa', 'id']),
-            operator: '=',
-            right: new ColumnExpression(['pt', 'partyId'])
-          })
-        ]
-      },
-      {
-        operator: 'LEFT',
-        tableOrSubquery: new TableOrSubquery(['parties_person', 'pp']),
-        $on: [
-          new BinaryExpression({ left: new ColumnExpression(['pa', 'id']),
-          operator: '=',
-          right: new ColumnExpression(['pp', 'partyId']) }),
-        ]
-      },
-      {
-        operator: 'LEFT',
-        tableOrSubquery: new TableOrSubquery(['person', 'pe']),
-        $on: [
-          new BinaryExpression({
-            left: new ColumnExpression(['pe', 'id']),
-            operator: '=',
-            right: new ColumnExpression(['pp', 'personId']),
-          }),
-        ]
-      }
-    ]
-  }),
+  $from: new FromTable('party',
+    {
+      operator: 'LEFT',
+      table: 'party_type',
+      $on: new BinaryExpression(new ColumnExpression('party', 'id'), '=', new ColumnExpression('party_type', 'partyId'))
+    },
+    {
+      operator: 'LEFT',
+      table: 'party_group',
+      $on: new BinaryExpression(new ColumnExpression('party_group', 'code'), '=', new ColumnExpression('party', 'partyGroupCode')),
+    },
+    {
+      operator: 'LEFT',
+      table: 'parties_person',
+      $on: new BinaryExpression(new ColumnExpression('party', 'id'), '=', new ColumnExpression('parties_person', 'partyId')),
+    },
+    {
+      operator: 'LEFT',
+      table: 'person',
+      $on: new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('parties_person', 'personId')),
+    }
+  ),
 }))
 
 query.register('id', new Query({
-  $where: new BinaryExpression({ left: new ColumnExpression(['pa', 'id']), operator: '=' })
+  $where: new BinaryExpression(new ColumnExpression('party', 'id'), '=')
 })).register('value', 0)
 
 query.register('isBranch', new Query({
-  $where: new BinaryExpression({ left: new ColumnExpression(['pa', 'isBranch']), operator: '=' })
+  $where: new BinaryExpression(new ColumnExpression('party', 'isBranch'), '=')
 })).register('value', 0)
 
-query.register('name', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['pa', 'name']), operator: 'REGEXP' })
+query.register('partyTypes', new Query({
+  $where: new InExpression(new ColumnExpression('party_type', 'type'), false)
 })).register('value', 0)
 
-query.register('customCode', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['pa', 'erpCode']), operator: 'REGEXP' })
-})).register('value', 0)
-
-query.register('shortName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['pa', 'shortName']), operator: 'REGEXP' })
-})).register('value', 0)
-
-query.register('groupName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['pa', 'groupName']), operator: 'REGEXP' })
-})).register('value', 0)
-
-query.register('email', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['pa', 'email']), operator: 'REGEXP' })
+query.register('partyGroupCode', new Query({
+  $where: new BinaryExpression(new ColumnExpression('party', 'partyGroupCode'), '=')
 })).register('value', 0)
 
 query.register('isActive', new Query({
-  $where: [
-    new IsNullExpression({ left: new ColumnExpression(['pa', 'deletedAt']) }),
-    new IsNullExpression({ left: new ColumnExpression(['pa', 'deletedBy']) }),
-  ]
+  $where: new AndExpressions({expressions: [
+    new IsNullExpression(new ColumnExpression('party', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('party', 'deletedBy'), false),
+  ]})
 }))
-
-query.register('partyTypes', new Query({
-  $where: new InExpression({ left: new ColumnExpression(['pt', 'type']) })
-})).register('value', 0)
 
 query.register('q', new Query({
-  $where: new OrExpressions({
-    expressions: [
-      new LikeExpression({ left: new ColumnExpression(['pa', 'name']), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression(['pa', 'shortName']), operator: 'REGEXP' }),
-      new LikeExpression({ left: new ColumnExpression(['pa', 'erpCode']), operator: 'REGEXP' })
-    ]
-  })
-}))
-  .register('value', 0)
-  .register('value', 1)
-  .register('value', 2)
+  $where: new OrExpressions([
+    new RegexpExpression(new ColumnExpression('party', 'name'), false),
+    new RegexpExpression(new ColumnExpression('party', 'shortName'), false),
+    new RegexpExpression(new ColumnExpression('party', 'erpCode'), false)
+  ])
+})).register('value', 0).register('value', 1).register('value', 2)
 
 export default query

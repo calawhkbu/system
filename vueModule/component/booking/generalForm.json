@@ -1,11 +1,9 @@
 {
   "layout": "v-card",
-  "components": [
-    {
+  "components": [{
       "is": "WidgetForm",
       "props": {
-        "fields": [
-          {
+        "fields": [{
             "label": "BookingPage.moduleType",
             "name": "moduleTypeCode",
             "component": "AsyncSelect",
@@ -34,6 +32,9 @@
             "component": "AsyncSelect",
             "class": "xs-12 md-6",
             "relation": "boundType",
+            "validator": [
+              "required"
+            ],
             "props": {
               "required": true,
               "url": "api/code/query/code_master",
@@ -49,36 +50,32 @@
             }
           },
           {
-            "label": "BookingPage.portOfLoading",
-            "name": "portOfLoadingCode",
+            "label": "BookingPage.placeOfReceipt",
+            "name": "placeOfReceipt",
             "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "relation": "portOfLoading",
+            "class": "xs-12 md-3",
+            "readonlyClass": "hidden",
+            "more": [{
+              "name": "placeOfReceiptCode",
+              "selector": "portCode"
+            }],
             "props": {
-              "required": true,
-              "url": "api/code/query/code_master",
+              "method": "POST",
+              "url": "api/location/query/location",
               "searchValueParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
                   },
-                  "codeType": {
-                    "value": "location"
-                  },
-                  "code": {
+                  "ports": {
                     "value": "{{query}}"
                   }
                 }
               },
               "searchTextParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
-                  },
-                  "codeType": {
-                    "value": "location"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -87,40 +84,80 @@
                 "limit": 5
               },
               "item-text": "name",
-              "item-value": "code"
+              "item-value": "portCode"
+            }
+          },
+          {
+            "label": "BookingPage.portOfLoading",
+            "name": "portOfLoading",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-3",
+            "validator": [
+              "required"
+            ],
+            "more": [{
+              "name": "portOfLoadingCode",
+              "selector": "portCode"
+            }],
+            "props": {
+              "method": "POST",
+              "required": true,
+              "url": "api/location/query/location",
+              "searchValueParams": {
+                "subqueries": {
+                  "moduleType": {
+                    "value": "{{form.moduleTypeCode}}"
+                  },
+                  "ports": {
+                    "value": "{{query}}"
+                  }
+                }
+              },
+              "searchTextParams": {
+                "subqueries": {
+                  "moduleType": {
+                    "value": "{{form.moduleTypeCode}}"
+                  },
+                  "q": {
+                    "value": "{{query}}"
+                  }
+                },
+                "limit": 5
+              },
+              "item-text": "name",
+              "item-value": "portCode"
             }
           },
           {
             "label": "BookingPage.portOfDischarge",
-            "name": "portOfDischargeCode",
+            "name": "portOfDischarge",
             "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "relation": "portOfDischarge",
+            "class": "xs-12 md-3",
+            "validator": [
+              "required"
+            ],
+            "more": [{
+              "name": "portOfDischargeCode",
+              "selector": "portCode"
+            }],
             "props": {
+              "method": "POST",
               "required": true,
-              "url": "api/code/query/code_master",
+              "url": "api/location/query/location",
               "searchValueParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
                   },
-                  "codeType": {
-                    "value": "location"
-                  },
-                  "code": {
+                  "ports": {
                     "value": "{{query}}"
                   }
                 }
               },
               "searchTextParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
-                  },
-                  "codeType": {
-                    "value": "location"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -128,89 +165,37 @@
                 },
                 "limit": 5
               },
-
-
-
               "item-text": "name",
-              "item-value": "code"
-            }
-          },
-          {
-            "label": "BookingPage.placeOfReceipt",
-            "name": "placeOfReceiptCode",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "readonlyClass": "hidden",
-            "relation": "placeOfReceipt",
-            "props": {
-              "url": "api/code/query/code_master",
-              "searchValueParams": {
-                "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
-                    "value": "{{form.moduleTypeCode}}"
-                  },
-                  "codeType": {
-                    "value": "location"
-                  },
-                  "code": {
-                    "value": "{{query}}"
-                  }
-                }
-              },
-              "searchTextParams": {
-                "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
-                    "value": "{{form.moduleTypeCode}}"
-                  },
-                  "codeType": {
-                    "value": "location"
-                  },
-                  "q": {
-                    "value": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-
-
-
-              "item-text": "name",
-              "item-value": "code"
+              "item-value": "portCode"
             }
           },
           {
             "label": "BookingPage.placeOfDelivery",
-            "name": "placeOfDeliveryCode",
+            "name": "placeOfDelivery",
             "component": "AsyncAutoSuggest",
             "readonlyClass": "hidden",
-            "class": "xs-12 md-6",
-            "relation": "placeOfDelivery",
+            "class": "xs-12 md-3",
+            "more": [{
+              "name": "placeOfDeliveryCode",
+              "selector": "portCode"
+            }],
             "props": {
-              "url": "api/code/query/code_master",
+              "method": "POST",
+              "url": "api/location/query/location",
               "searchValueParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
                   },
-                  "codeType": {
-                    "value": "location"
-                  },
-                  "code": {
+                  "ports": {
                     "value": "{{query}}"
                   }
                 }
               },
               "searchTextParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
-                  },
-                  "codeType": {
-                    "value": "location"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -218,44 +203,37 @@
                 },
                 "limit": 5
               },
-
-
-
               "item-text": "name",
-              "item-value": "code"
+              "item-value": "portCode"
             }
           },
           {
             "label": "BookingPage.finalDestination",
-            "name": "finalDestinationCode",
+            "name": "finalDestination",
             "component": "AsyncAutoSuggest",
             "readonlyClass": "hidden",
             "class": "xs-12 md-6",
-            "relation": "finalDestination",
+            "more": [{
+              "name": "finalDestinationCode",
+              "selector": "portCode"
+            }],
             "props": {
-              "url": "api/code/query/code_master",
+              "method": "POST",
+              "url": "api/location/query/location",
               "searchValueParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
                   },
-                  "codeType": {
-                    "value": "location"
-                  },
-                  "code": {
+                  "ports": {
                     "value": "{{query}}"
                   }
                 }
               },
               "searchTextParams": {
                 "subqueries": {
-                  "flexDataData": {
-                    "flexDataKey": "$.moduleType",
+                  "moduleType": {
                     "value": "{{form.moduleTypeCode}}"
-                  },
-                  "codeType": {
-                    "value": "location"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -263,11 +241,8 @@
                 },
                 "limit": 5
               },
-
-
-
               "item-text": "name",
-              "item-value": "code"
+              "item-value": "portCode"
             }
           },
           {
@@ -276,12 +251,17 @@
             "component": "AsyncAutoSuggest",
             "readonlyClass": "xs-12",
             "class": "xs-12 md-6",
+            "relation": "carrier",
+            "more": [{
+              "name": "carrierCode",
+              "selector": "code"
+            }],
             "props": {
               "url": "api/code/query/code_master",
               "searchValueParams": {
                 "subqueries": {
                   "codeType": {
-                    "value": "carrier"
+                    "value": "CARRIER"
                   },
                   "code": {
                     "value": "{{query}}"
@@ -291,7 +271,7 @@
               "searchTextParams": {
                 "subqueries": {
                   "codeType": {
-                    "value": "carrier"
+                    "value": "CARRIER"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -311,12 +291,17 @@
             "name": "vesselName",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
+            "more": [{
+              "name": "vesselName",
+              "selector": "name"
+            }],
+            "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA'",
             "props": {
               "url": "api/code/query/code_master",
               "searchValueParams": {
                 "subqueries": {
                   "codeType": {
-                    "value": "vessel"
+                    "value": "VESSEL"
                   },
                   "code": {
                     "value": "{{query}}"
@@ -326,7 +311,7 @@
               "searchTextParams": {
                 "subqueries": {
                   "codeType": {
-                    "value": "vessel"
+                    "value": "VESSEL"
                   },
                   "q": {
                     "value": "{{query}}"
@@ -334,18 +319,20 @@
                 },
                 "limit": 5
               },
-
-
-
               "item-text": "name",
-              "item-value": "code"
+              "item-value": "name"
             }
           },
           {
             "label": "BookingPage.voyageFlightNumber",
             "name": "voyageFlightNumber",
             "component": "v-text-field",
-            "class": "xs-12 md-6"
+            "class": "xs-12 md-6",
+            "checkDisplayWhen": "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA')"
+          },
+          {
+            "class": "xs-12 md-6",
+            "checkDisplayWhen": "return form && (form.moduleTypeCode || form.moduleTypeCode === 'AIR')"
           }
         ]
       }
@@ -356,12 +343,14 @@
     {
       "is": "WidgetForm",
       "props": {
-        "fields": [
-          {
+        "fields": [{
             "label": "BookingPage.serviceCode",
             "name": "serviceCode",
             "component": "AsyncSelect",
             "class": "xs-12 md-6",
+            "validator": [
+              "required"
+            ],
             "props": {
               "required": true,
               "url": "api/code/query/code_master",
@@ -381,11 +370,23 @@
             "name": "incoTermsCode",
             "component": "AsyncSelect",
             "class": "xs-12 md-6",
+            "relation": "incoTerms",
+            "relationMore": [{
+              "name": "freightTermsCode",
+              "selector": "data.freightTermsCode"
+            }, {
+              "name": "otherTermsCode",
+              "selector": "data.otherTermsCode"
+            }],
             "props": {
               "url": "api/code/query/code_master",
               "item-text": "name",
               "item-value": "code",
               "params": {
+                "fields": [
+                  "code_master.*",
+                  "flex_data.data"
+                ],
                 "subqueries": {
                   "codeType": {
                     "value": "INCOTERMS"
@@ -441,12 +442,14 @@
     {
       "is": "WidgetForm",
       "props": {
-        "fields": [
-          {
+        "fields": [{
             "label": "BookingPage.commodity",
             "name": "commodity",
             "component": "v-text-field",
             "class": "xs-12",
+            "validator": [
+              "required"
+            ],
             "props": {
               "required": true
             }

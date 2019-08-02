@@ -1,49 +1,61 @@
 {
   "layout": "MainLayout",
-  "components": [
-    {
+  "components": [{
+    "is": "Widget",
+    "props": {
       "initUrl": "api/role/{{id}}",
       "saveUrl": "api/role",
       "primaryKey": "id",
-      "topSlots": [
-        {
-          "is": "v-btn",
-          "props": {
-            "flat": true,
-            "icon": true
-          },
-          "events": {
-            "click.stop": [
-              {
+      "top": {
+        "assignment": [{
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true
+            },
+            "events": {
+              "click.stop": [{
                 "type": "router",
                 "otherParams": {
-                  "func": "go",
-                  "go": -1
+                  "func": "push",
+                  "path": "/roles"
                 }
-              }
-            ]
-          },
-          "slots": [
-            {
+              }]
+            },
+            "slots": [{
               "is": "Icon",
               "props": {
                 "icon": "arrow_back"
               }
+            }]
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "class": "headline",
+              "i18nKey": "RolePage.title",
+              "swig": true
             }
-          ]
-        },
-        {
-          "is": "I18nText",
-          "props": {
-            "class": "headline",
-            "i18nKey": "UserPage.title",
-            "swig": true
           }
-        }
-      ],
+        ]
+      },
       "components": {
-        "assignment": []
+        "assignment": [{
+          "is": "div",
+          "props": {
+            "style": {
+              "padding-right": "4px"
+            }
+          },
+          "slots": [{
+            "name": "default",
+            "is": "DynamicComponent",
+            "props": {
+              "components": []
+            }
+          }]
+        }]
       }
     }
-  ]
+  }]
 }

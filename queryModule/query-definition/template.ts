@@ -1,26 +1,24 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, TableOrSubquery, BinaryExpression, ColumnExpression, InExpression, LikeExpression, IsNullExpression } from 'node-jql'
+import { Query, FromTable, BinaryExpression, ColumnExpression, RegexpExpression, IsNullExpression } from 'node-jql'
 
-const query = new QueryDef(new Query({
-  $from: new TableOrSubquery(['template', 't'])
-}))
+const query = new QueryDef(new Query('template'))
 
 query.register('partyGroupCode', new Query({
-  $where: new BinaryExpression({ left: new ColumnExpression(['t', 'partyGroupCode']), operator: '=' })
+  $where: new BinaryExpression(new ColumnExpression('template', 'partyGroupCode'), '=')
 })).register('value', 0)
 
 query.register('fileType', new Query({
-  $where: new BinaryExpression({ left: new ColumnExpression(['t', 'fileType']), operator: '=' })
+  $where: new BinaryExpression(new ColumnExpression('template', 'fileType'), '=')
 })).register('value', 0)
 
 query.register('templateName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['t', 'templateName']), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('template', 'templateName'), false)
 })).register('value', 0)
 
 query.register('isActive', new Query({
   $where: [
-    new IsNullExpression({ left: new ColumnExpression(['t', 'deletedAt']) }),
-    new IsNullExpression({ left: new ColumnExpression(['t', 'deletedBy']) }),
+    new IsNullExpression(new ColumnExpression('template', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false),
   ]
 }))
 

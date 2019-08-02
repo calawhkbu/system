@@ -1,140 +1,209 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, JoinedTableOrSubquery,
-  BinaryExpression, ColumnExpression, TableOrSubquery, FunctionExpression, ParameterExpression, LikeExpression, InExpression, IsNullExpression
-} from 'node-jql'
+import { Query, FromTable, ResultColumn, GroupBy, BinaryExpression, RegexpExpression, ColumnExpression, FunctionExpression, ParameterExpression, InExpression, IsNullExpression, OrExpressions, AndExpressions } from 'node-jql'
 
 const query = new QueryDef(new Query({
   $distinct: true,
-  $from: new JoinedTableOrSubquery({
-    table: 'booking',
-    $as: 'b',
-    joinClauses: [
-      {
-        operator: 'LEFT',
-        tableOrSubquery: new TableOrSubquery(['flex_data', 'fd']),
-        $on: [
-          new BinaryExpression({
-            left: new ColumnExpression(['fd', 'tableName']),
-            operator: '=',
-            right: 'booking'
+  $from: new FromTable('booking',
+    {
+      operator: 'LEFT',
+      table: 'flex_data',
+      $on: [
+        new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'booking'),
+        new BinaryExpression(new ColumnExpression('booking', 'id'), '=', new ColumnExpression('flex_data', 'primaryKey'))
+      ]
+    },
+    // {
+    //   operator: 'LEFT',
+    //   table: new FromTable({
+    //     table: new Query({
+    //       $select: [
+    //         new ResultColumn(new ColumnExpression('booking_amount', 'bookingId'), 'bookingId'),
+    //         new ResultColumn(
+    //           new FunctionExpression(
+    //             'group_concat',
+    //             new ParameterExpression({
+    //               expression: new ColumnExpression('booking_amount', 'amountName'),
+    //               suffix: 'SEPARTOR \',\''
+    //             })
+    //           )
+    //         ),
+    //         new ResultColumn(
+    //           new FunctionExpression(
+    //             'group_concat',
+    //             new ParameterExpression({
+    //               expression: new ColumnExpression('booking_amount', 'currecyCode'),
+    //               suffix: 'SEPARTOR \',\''
+    //             })
+    //           )
+    //         ),
+    //         new ResultColumn(new FunctionExpression('SUM', 'amount'), 'amount'),
+    //       ],
+    //       $from: new FromTable('booking_amount', 'booking_amount'),
+    //       $group: new GroupBy([
+    //         new ColumnExpression('bookingId')
+    //       ])
+    //     }),
+    //     $as: 'booking_amount'
+    //   }),
+    //   $on: new BinaryExpression(new ColumnExpression('booking', 'id'), '=', new ColumnExpression('booking_amount', 'bookingId'))
+    // },
+    // {
+    //   operator: 'LEFT',
+    //   table: new FromTable('flex_data', 'booking_amount_flex_data'),
+    //   $on: [
+    //     new BinaryExpression(new ColumnExpression('booking_amount_flex_data', 'tableName'), '=', 'booking_amount'),
+    //     new BinaryExpression(new ColumnExpression('booking_amount', 'id'), '=', new ColumnExpression('booking_amount_flex_data', 'primaryKey'))
+    //   ]
+    // },
+    {
+      operator: 'LEFT',
+      table: new FromTable({
+        table: new Query({
+          $select: [
+            new ResultColumn(new ColumnExpression('booking_container', 'bookingId')),
+            new ResultColumn(new FunctionExpression(
+              'group_concat',
+              new ParameterExpression({
+                expression: new ColumnExpression('booking_container', 'containerTypeCode'),
+                suffix: 'SEPARATOR \', \''
+              })
+            ), 'containerTypeCode'),
+            new ResultColumn(new FunctionExpression(
+              'group_concat',
+              new ParameterExpression({
+                expression: new ColumnExpression('booking_container', 'soNo'),
+                suffix: 'SEPARATOR \', \''
+              })
+            ), 'soNo'),
+            new ResultColumn(new FunctionExpression(
+              'group_concat',
+              new ParameterExpression({
+                expression: new ColumnExpression('booking_container', 'sealNo'),
+                suffix: 'SEPARATOR \', \''
+              })
+            ), 'sealNo'),
+            // new ResultColumn(new FunctionExpression(
+            //   'SUM',
+            //   new ColumnExpression('booking_container', 'quantity')
+            // ), 'quantity'),
+          ],
+          $from: new FromTable('booking_container', 'booking_container', {
+            operator: 'LEFT',
+            table: new FromTable('flex_data', 'flex_data'),
+            $on: [
+              new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'booking_container'),
+              new BinaryExpression(new ColumnExpression('flex_data', 'primaryKey'), '=', new ColumnExpression('booking_container', 'id'))
+            ]
           }),
-          new BinaryExpression({
-            left: new ColumnExpression(['b', 'id']),
-            operator: '=',
-            right: new ColumnExpression(['fd', 'primaryKey'])
-          })
-        ]
-      },
-      {
-        operator: 'LEFT',
-        tableOrSubquery: new TableOrSubquery(['booking_amount', 'ba']),
-        $on: [
-          new BinaryExpression({
-            left: new ColumnExpression(['b', 'id']),
-            operator: '=',
-            right: new ColumnExpression(['ba', 'bookingId'])
-          })
-        ]
-      },
-      {
-        operator: 'LEFT',
-        tableOrSubquery: new TableOrSubquery(['flex_data', 'bafd']),
-        $on: [
-          new BinaryExpression({
-            left: new ColumnExpression(['bafd', 'tableName']),
-            operator: '=',
-            right: 'booking_amount'
+          $where: new AndExpressions({
+            expressions: [
+              new IsNullExpression(new ColumnExpression('booking_container', 'deletedAt'), false),
+              new IsNullExpression(new ColumnExpression('booking_container', 'deletedBy'), false),
+              new IsNullExpression(new ColumnExpression('flex_data', 'deletedAt'), false),
+              new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
+            ]
           }),
-          new BinaryExpression({
-            left: new ColumnExpression(['ba', 'id']),
-            operator: '=',
-            right: new ColumnExpression(['bafd', 'primaryKey'])
-          })
-        ]
-      },
-      {
-        operator: 'LEFT',
-        tableOrSubquery: new TableOrSubquery(['booking_container', 'bc']),
-        $on: [
-          new BinaryExpression({
-            left: new ColumnExpression(['b', 'id']),
-            operator: '=',
-            right: new ColumnExpression(['bc', 'bookingId'])
-          })
-        ]
-      },
-      {
-        operator: 'LEFT',
-        tableOrSubquery: new TableOrSubquery(['flex_data', 'bcfd']),
-        $on: [
-          new BinaryExpression({
-            left: new ColumnExpression(['bcfd', 'tableName']),
-            operator: '=',
-            right: 'booking_container'
+          $group: new GroupBy([
+            new ColumnExpression('booking_container', 'bookingId')
+          ])
+        }),
+        $as: 'booking_container'
+      }),
+      $on: new BinaryExpression(new ColumnExpression('booking', 'id'), '=', new ColumnExpression('booking_container', 'bookingId'))
+    },
+    {
+      operator: 'LEFT',
+      table: new FromTable({
+        table: new Query({
+          $select: [
+            new ResultColumn(new ColumnExpression('booking_popacking', 'bookingId')),
+            new ResultColumn(new FunctionExpression(
+              'SUM',
+              new ColumnExpression('booking_popacking', 'volume')
+            ), 'volume'),
+            new ResultColumn(new FunctionExpression(
+              'SUM',
+              new ColumnExpression('booking_popacking', 'weight')
+            ), 'weight'),
+            new ResultColumn(new FunctionExpression(
+              'SUM',
+              new ColumnExpression('booking_popacking', 'ctns')
+            ), 'ctns'),
+            new ResultColumn(new FunctionExpression(
+              'SUM',
+              new ColumnExpression('booking_popacking', 'quantity')
+            ), 'quantity'),
+          ],
+          $from: new FromTable('booking_popacking', 'booking_popacking', {
+            operator: 'LEFT',
+            table: new FromTable('flex_data', 'flex_data'),
+            $on: [
+              new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'booking_popacking'),
+              new BinaryExpression(new ColumnExpression('flex_data', 'primaryKey'), '=', new ColumnExpression('booking_popacking', 'id'))
+            ]
           }),
-          new BinaryExpression({
-            left: new ColumnExpression(['bc', 'id']),
-            operator: '=',
-            right: new ColumnExpression(['bcfd', 'primaryKey'])
-          })
-        ]
-      },
-      {
-        operator: 'LEFT',
-        tableOrSubquery: new TableOrSubquery(['booking_popacking', 'bpp']),
-        $on: [
-          new BinaryExpression({
-            left: new ColumnExpression(['b', 'id']),
-            operator: '=',
-            right: new ColumnExpression(['bpp', 'bookingId'])
-          })
-        ]
-      },
-      {
-        operator: 'LEFT',
-        tableOrSubquery: new TableOrSubquery(['flex_data', 'bppfd']),
-        $on: [
-          new BinaryExpression({
-            left: new ColumnExpression(['bppfd', 'tableName']),
-            operator: '=',
-            right: 'booking_popacking'
+          $where: new AndExpressions({
+            expressions: [
+              new IsNullExpression(new ColumnExpression('booking_popacking', 'deletedAt'), false),
+              new IsNullExpression(new ColumnExpression('booking_popacking', 'deletedBy'), false),
+              new IsNullExpression(new ColumnExpression('flex_data', 'deletedAt'), false),
+              new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
+            ]
           }),
-          new BinaryExpression({
-            left: new ColumnExpression(['bpp', 'id']),
-            operator: '=',
-            right: new ColumnExpression(['bppfd', 'primaryKey'])
-          })
-        ]
-      },
-      {
-        operator: 'LEFT',
-        tableOrSubquery: new TableOrSubquery(['booking_reference', 'br']),
-        $on: [
-          new BinaryExpression({
-            left: new ColumnExpression(['b', 'id']),
-            operator: '=',
-            right: new ColumnExpression(['br', 'bookingId'])
-          })
-        ]
-      },
-      {
-        operator: 'LEFT',
-        tableOrSubquery: new TableOrSubquery(['flex_data', 'brfd']),
-        $on: [
-          new BinaryExpression({
-            left: new ColumnExpression(['brfd', 'tableName']),
-            operator: '=',
-            right: 'booking_reference'
+          $group: new GroupBy([
+            new ColumnExpression('booking_popacking', 'bookingId')
+          ])
+        }),
+        $as: 'booking_popacking'
+      }),
+      $on: new BinaryExpression(new ColumnExpression('booking', 'id'), '=', new ColumnExpression('booking_popacking', 'bookingId'))
+    },
+    {
+      operator: 'LEFT',
+      table: new FromTable({
+        table: new Query({
+          $select: [
+            new ResultColumn(new ColumnExpression('booking_reference', 'bookingId')),
+            new ResultColumn(new FunctionExpression(
+              'group_concat',
+              new ParameterExpression({
+                expression: new ColumnExpression('booking_reference', 'refName'),
+                suffix: 'SEPARATOR \', \''
+              })
+            ), 'refName'),
+            new ResultColumn(new FunctionExpression(
+              'group_concat',
+              new ParameterExpression({
+                expression: new ColumnExpression('booking_reference', 'refDescription'),
+                suffix: 'SEPARATOR \', \''
+              })
+            ), 'refDescription'),
+          ],
+          $from: new FromTable('booking_reference', 'booking_reference', {
+            operator: 'LEFT',
+            table: new FromTable('flex_data', 'flex_data'),
+            $on: [
+              new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', ''),
+              new BinaryExpression(new ColumnExpression('flex_data', 'primaryKey'), '=', new ColumnExpression('booking_reference', 'id'))
+            ]
           }),
-          new BinaryExpression({
-            left: new ColumnExpression(['br', 'id']),
-            operator: '=',
-            right: new ColumnExpression(['brfd', 'primaryKey'])
-          })
-        ]
-      }
-    ]
-  }),
+          $where: new AndExpressions({
+            expressions: [
+              new IsNullExpression(new ColumnExpression('booking_reference', 'deletedAt'), false),
+              new IsNullExpression(new ColumnExpression('booking_reference', 'deletedBy'), false),
+              new IsNullExpression(new ColumnExpression('flex_data', 'deletedAt'), false),
+              new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
+            ]
+          }),
+          $group: new GroupBy([
+            new ColumnExpression('booking_reference', 'bookingId')
+          ])
+        }),
+        $as: 'booking_reference'
+      }),
+      $on: new BinaryExpression(new ColumnExpression('booking', 'id'), '=', new ColumnExpression('booking_reference', 'bookingId'))
+    }
+  ),
 }))
 
 query.register('noOfBookings', {
@@ -149,70 +218,135 @@ query.register('noOfBookings', {
 })
 
 query.register('partyGroupCode', new Query({
-  $where: new BinaryExpression({ left: new ColumnExpression(['b', 'partyGroupCode']), operator: '=' })
+  $where: new BinaryExpression(new ColumnExpression('booking', 'partyGroupCode'), '=')
 })).register('value', 0)
 
 query.register('bookingNo', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['b', 'bookingNo']), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('booking', 'bookingNo'), false)
 })).register('value', 0)
 
 query.register('moduleTypeCode', new Query({
-  $where: new BinaryExpression({ left: new ColumnExpression(['b', 'moduleTypeCode']), operator: '=' })
+  $where: new BinaryExpression(new ColumnExpression('booking', 'moduleTypeCode'), '=')
 })).register('value', 0)
 
 query.register('moduleTypeCodes', new Query({
-  $where: new InExpression({ left: new ColumnExpression(['b', 'moduleTypeCode']) })
+  $where: new InExpression(new ColumnExpression('booking', 'moduleTypeCode'), false)
 })).register('value', 0)
 
 query.register('boundTypeCode', new Query({
-  $where: new BinaryExpression({ left: new ColumnExpression(['b', 'boundTypeCode']), operator: '=' })
+  $where: new BinaryExpression(new ColumnExpression('booking', 'boundTypeCode'), '=')
 })).register('value', 0)
 
 query.register('boundTypeCodes', new Query({
-  $where: new InExpression({ left: new ColumnExpression(['b', 'boundTypeCode']) })
+  $where: new InExpression(new ColumnExpression('booking', 'boundTypeCode'), false)
 })).register('value', 0)
 
 query.register('shipperPartyName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['b', 'shipperPartyName']), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('booking', 'shipperPartyName'), false)
 })).register('value', 0)
 
 query.register('consigneePartyName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['b', 'consigneePartyName']), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('booking', 'consigneePartyName'), false)
 })).register('value', 0)
 
 query.register('forwarderPartyName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['b', 'forwarderPartyName']), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('booking', 'forwarderPartyName'), false)
 })).register('value', 0)
 
 query.register('notifyPartyPartyName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['b', 'notifyPartyPartyName']), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('booking', 'notifyPartyPartyName'), false)
 })).register('value', 0)
 
 query.register('agentPartyName', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['b', 'agentPartyName']), operator: 'REGEXP' })
+  $where: new RegexpExpression(new ColumnExpression('booking', 'agentPartyName'), false)
 })).register('value', 0)
 
+query.register('q', new Query({
+  $where: new OrExpressions({
+    expressions: [
+      new RegexpExpression(new ColumnExpression('booking', 'bookingNo'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'carrierCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'vesselName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'voyageFlightNumber'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'commodity'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'polHSCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'podHSCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'placeOfReceiptCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'portOfLoadingCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'portOfDischargeCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'placeOfDeliveryCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'finalDestinationCode'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'shipperPartyName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'shipperPartyContactName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'consigneePartyName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'consigneePartyContactName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'forwarderPartyName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'forwarderPartyContactName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'notifyPartyPartyName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'notifyPartyPartyContactName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'agentPartyName'), false),
+      new RegexpExpression(new ColumnExpression('booking', 'agentPartyContactName'), false),
+      // new RegexpExpression(new ColumnExpression('booking_amount', 'amountName'), false),
+      new RegexpExpression(new ColumnExpression('booking_container', 'containerNo'), false),
+      new RegexpExpression(new ColumnExpression('booking_container', 'sealNo'), false),
+      new RegexpExpression(new ColumnExpression('booking_reference', 'refName'), false),
+      new RegexpExpression(new ColumnExpression('booking_reference', 'refDescription'), false)
+    ]
+  })
+}))
+.register('value', 0)
+.register('value', 1)
+.register('value', 2)
+.register('value', 3)
+.register('value', 4)
+.register('value', 5)
+.register('value', 6)
+.register('value', 7)
+.register('value', 8)
+.register('value', 9)
+.register('value', 10)
+.register('value', 11)
+.register('value', 12)
+.register('value', 13)
+.register('value', 14)
+.register('value', 15)
+.register('value', 16)
+.register('value', 17)
+.register('value', 18)
+.register('value', 19)
+.register('value', 20)
+.register('value', 21)
+.register('value', 22)
+.register('value', 23)
+.register('value', 24)
+.register('value', 25)
+// .register('value', 26)
+
 query.register('isActive', new Query({
-  $where: [
-    new IsNullExpression({ left: new ColumnExpression(['b', 'deletedAt']) }),
-    new IsNullExpression({ left: new ColumnExpression(['b', 'deletedBy']) }),
-    new IsNullExpression({ left: new ColumnExpression(['fd', 'deletedAt']) }),
-    new IsNullExpression({ left: new ColumnExpression(['fd', 'deletedBy']) }),
-    new IsNullExpression({ left: new ColumnExpression(['ba', 'deletedAt']) }),
-    new IsNullExpression({ left: new ColumnExpression(['ba', 'deletedBy']) }),
-    new IsNullExpression({ left: new ColumnExpression(['bafd', 'deletedAt']) }),
-    new IsNullExpression({ left: new ColumnExpression(['bafd', 'deletedBy']) }),
-    new IsNullExpression({ left: new ColumnExpression(['bc', 'deletedAt']) }),
-    new IsNullExpression({ left: new ColumnExpression(['bc', 'deletedBy']) }),
-    new IsNullExpression({ left: new ColumnExpression(['bcfd', 'deletedAt']) }),
-    new IsNullExpression({ left: new ColumnExpression(['bcfd', 'deletedBy']) }),
-    new IsNullExpression({ left: new ColumnExpression(['bpp', 'deletedAt']) }),
-    new IsNullExpression({ left: new ColumnExpression(['bppfd', 'deletedBy']) }),
-    new IsNullExpression({ left: new ColumnExpression(['br', 'deletedAt']) }),
-    new IsNullExpression({ left: new ColumnExpression(['br', 'deletedBy']) }),
-    new IsNullExpression({ left: new ColumnExpression(['brfd', 'deletedAt']) }),
-    new IsNullExpression({ left: new ColumnExpression(['brfd', 'deletedBy']) }),
-  ]
+  $where: new AndExpressions({
+    expressions: [
+      new IsNullExpression(new ColumnExpression('booking', 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression('booking', 'deletedBy'), false),
+      new IsNullExpression(new ColumnExpression('flex_data', 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
+      // new IsNullExpression(new ColumnExpression('booking_amount', 'deletedAt'), false),
+      // new IsNullExpression(new ColumnExpression('booking_amount', 'deletedBy'), false),
+      // new IsNullExpression(new ColumnExpression('booking_amount_flex_data', 'deletedAt'), false),
+      // new IsNullExpression(new ColumnExpression('booking_amount_flex_data', 'deletedBy'), false),
+      // new IsNullExpression(new ColumnExpression('booking_container', 'deletedAt'), false),
+      // new IsNullExpression(new ColumnExpression('booking_container', 'deletedBy'), false),
+      // new IsNullExpression(new ColumnExpression('booking_container_flex_data', 'deletedAt'), false),
+      // new IsNullExpression(new ColumnExpression('booking_container_flex_data', 'deletedBy'), false),
+      // new IsNullExpression(new ColumnExpression('booking_popacking', 'deletedAt'), false),
+      // new IsNullExpression(new ColumnExpression('booking_popacking', 'deletedBy'), false),
+      // new IsNullExpression(new ColumnExpression('booking_popacking_flex_data', 'deletedAt'), false),
+      // new IsNullExpression(new ColumnExpression('booking_popacking_flex_data', 'deletedBy'), false),
+      // new IsNullExpression(new ColumnExpression('booking_reference', 'deletedAt'), false),
+      // new IsNullExpression(new ColumnExpression('booking_reference', 'deletedBy'), false),
+      // new IsNullExpression(new ColumnExpression('booking_reference_flex_data', 'deletedAt'), false),
+      // new IsNullExpression(new ColumnExpression('booking_reference_flex_data', 'deletedBy'), false),
+    ]
+  })
 }))
 
 export default query
