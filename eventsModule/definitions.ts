@@ -88,12 +88,12 @@ export default {
 
     {
       handlerName: "fill_template.ts"
-      
+
     }
   ],
 
   update_document_preview : [
-    
+
     {
       handlerName: "update_document_preview.ts"
     }
@@ -116,6 +116,13 @@ export default {
 
   ],
 
+  afterUpdate_booking: [
+    {
+      condition : true,
+      eventName : 'create_tracking',
+    }
+  ],
+
 
   afterCreate_booking: [
 
@@ -131,17 +138,17 @@ export default {
           // use booking.id as primaryKey
           return parameters.data.id
         }
-      
+
       }
     },
 
 
-    // update personId / create Invitation 
+    // update personId / create Invitation
     {
       condition : true,
       handlerName : 'entity_create_invitation.ts',
       otherParameters : {
-        tableName : 'booking',      
+        tableName : 'booking',
       }
     },
 
