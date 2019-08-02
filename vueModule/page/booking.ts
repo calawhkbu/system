@@ -47,39 +47,35 @@ export default {
           },
           {
             'is': 'BookmarkButton'
-          },
-          {
-            'is': 'DispatchButton',
-            'props': {
-              'slot': `
-                const icon = 'bookmark_border';
-                const title = 'AddBookmark';
-                if (context.$store.state.auth.isLogined) {
-                  const {
-                    hotList = []
-                  } = context.$store.state.auth.userProfile
-                  const bookmarked = hotList.filter((item: {
-                    entity: string,
-                    entityId: number
-                  }) => {
-                    return item.entity === context.$route.params.page && item.entityId.toString() === context.$route.params.params
-                  })
-                  icon = bookmarked.length > 0 ? 'bookmark' : 'bookmark_border'
-                  title = bookmarked.length > 0 ? 'RemoveBookmark' : 'AddBookmark'
-                }
-                return {
-                  layout: 'Icon',
-                  icon: icon
-                }
-              `,
-              'showFunction': `
-                
-              `,
-              'function': [
-
-              ]
-            }
           }
+          // },
+          // {
+          //   'is': 'DispatchButton',
+          //   'props': {
+          //     'slotProps': `
+          //       let icon = 'bookmark_border';
+          //       let title = 'AddBookmark';
+          //       if (context.$store.state.auth.isLogined) {
+          //         const { hotList = [] } = context.$store.state.auth.userProfile;
+          //         const bookmarked = hotList.filter((item) => {
+          //           return item.entity === context.$route.params.page && item.entityId.toString() === context.$route.params.params
+          //         });
+          //         icon = bookmarked.length > 0 ? 'bookmark' : 'bookmark_border';
+          //         title = bookmarked.length > 0 ? 'RemoveBookmark' : 'AddBookmark';
+          //       };
+          //       return {
+          //         layout: 'Icon',
+          //         icon: icon
+          //       };
+          //     `,
+          //     'showFunction': `
+          //       return context.$route.params.params !== 'create'
+          //     `,
+          //     'functions': [
+          //
+          //     ]
+          //   }
+          // }
         ],
         'edit': 'assignment',
         'map': 'assignment',

@@ -71,10 +71,10 @@ const query = new QueryDef(new Query({
             new ResultColumn(new FunctionExpression(
               'group_concat',
               new ParameterExpression({
-                expression: new ColumnExpression('booking_container', 'carrierBookingNo'),
+                expression: new ColumnExpression('booking_container', 'soNo'),
                 suffix: 'SEPARATOR \', \''
               })
-            ), 'carrierBookingNo'),
+            ), 'soNo'),
             new ResultColumn(new FunctionExpression(
               'group_concat',
               new ParameterExpression({
@@ -82,17 +82,10 @@ const query = new QueryDef(new Query({
                 suffix: 'SEPARATOR \', \''
               })
             ), 'sealNo'),
-            new ResultColumn(new FunctionExpression(
-              'SUM',
-              new ColumnExpression('booking_container', 'quantity')
-            ), 'quantity'),
-            new ResultColumn(new FunctionExpression(
-              'group_concat',
-              new ParameterExpression({
-                expression: new ColumnExpression('booking_container', 'sealNo'),
-                suffix: 'SEPARATOR \', \''
-              })
-            )),
+            // new ResultColumn(new FunctionExpression(
+            //   'SUM',
+            //   new ColumnExpression('booking_container', 'quantity')
+            // ), 'quantity'),
           ],
           $from: new FromTable('booking_container', 'booking_container', {
             operator: 'LEFT',
