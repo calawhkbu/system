@@ -110,7 +110,7 @@ export default {
             return {
               error: 'Workflow.MissingDocument',
               components: [
-                
+
               ]
             }
           }
@@ -381,7 +381,8 @@ export default {
       ],
       nextStatus: async (entity: any) => {
         return []
-      }
+      },
+      canRevert: true
     }
   ]
 }

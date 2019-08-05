@@ -18,6 +18,6 @@ query.register('q', new Query({
       new RegexpExpression(new ColumnExpression('name'), false),
     ]
   })
-})).register('value', 0)
+})).register('value', 0).register('value', 1)
 
 export default query
