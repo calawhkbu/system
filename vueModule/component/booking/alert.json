@@ -1,44 +1,34 @@
 {
-  "layout": "v-card",
-  "style": {
-    "margin-bottom": "4px"
-  },
-  "components": [
-    {
-      "is": "Plugin",
-      "props": {
-        "lazy": true,
-        "transition": "slide-y-reverse-transition",
-        "name": "Alert",
-        "remote": true,
-        "axiosBaseParams": {
-          "method": "POST",
-          "url": "api/alert/list/history",
-          "data": {
-            "tableName": "{{tableName}}",
-            "primaryKey": "{{primaryKey}}",
-            "afterTime": "{{afterTime}}"
-          }
-        },
-        "loopGetData": 6000,
-        "shareProps": {
-          "iconType": "",
-          "icon": "alertCategory",
-          "iconMap": {
-            "Exception": "notification_important",
-            "Message": "message"
-          },
-          "titleKey": "content.title",
-          "subTitleKeys": ["content.message"],
-          "noIcon": "notifications_none"
-        },
-        "baseSummaryProps": {
-          "size": -3
-        },
-        "baseDetailProps": {
-          "showCargoOrContainer": true
-        }
-      }
+  "layout": "Plugin",
+  "lazy": true,
+  "transition": "slide-y-reverse-transition",
+  "name": "Alert",
+  "remote": true,
+  "axiosBaseParams": {
+    "method": "POST",
+    "url": "api/alert/list/history",
+    "data": {
+      "tableName": "{{tableName}}",
+      "primaryKey": "{{primaryKey}}",
+      "afterTime": "{{afterTime}}"
     }
-  ]
+  },
+  "loopGetData": 60000,
+  "shareProps": {
+    "iconType": "",
+    "icon": "alertCategory",
+    "iconMap": {
+      "Exception": "notification_important",
+      "Message": "message"
+    },
+    "titleKey": "content.title",
+    "subTitleKeys": ["content.message"],
+    "noIcon": "notifications_none"
+  },
+  "baseSummaryProps": {
+    "size": -3
+  },
+  "baseDetailProps": {
+    "showCargoOrContainer": true
+  }
 }
