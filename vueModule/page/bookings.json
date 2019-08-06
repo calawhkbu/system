@@ -31,6 +31,18 @@
           "hidden": true
         },
         {
+          "key": "createdAt",
+          "sql": "booking.createdAt",
+          "width": 150,
+          "datetime": "YYYY-MM-DD"
+        },
+        {
+          "key": "updatedAt",
+          "sql": "booking.updatedAt",
+          "width": 150,
+          "datetime": "YYYY-MM-DD"
+        },
+        {
           "key": "bookingNo",
           "width": 150
         },

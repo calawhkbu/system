@@ -6,6 +6,14 @@ const query = new Query({
     url: 'api/booking/query/booking',
     columns: [
       {
+        name: 'createdAt',
+        type: 'Date'
+      },
+      {
+        name: 'updatedAt',
+        type: 'Date'
+      },
+      {
         name: 'id',
         type: 'number'
       },
@@ -249,14 +257,6 @@ const query = new Query({
         name: 'agentPartyEmail',
         type: 'string'
       },
-      {
-        name: 'booking.createdAt',
-        type: 'Date'
-      },
-      {
-        name: 'booking.updatedAt',
-        type: 'Date'
-      }
     ]
   }, 'booking')
 })

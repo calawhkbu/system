@@ -1,29 +1,19 @@
 {
-  "layout": "v-card",
-  "style": {
-    "margin-bottom": "4px"
+  "layout": "Plugin",
+  "lazy": true,
+  "axiosBaseParams": {
+    "url": "api/document/document/{{tableName}}/{{primaryKey}}"
   },
-  "components": [
-    {
-      "is": "Plugin",
-      "props": {
-        "lazy": true,
-        "axiosBaseParams": {
-          "url": "api/document/document/{{tableName}}/{{primaryKey}}"
-        },
-        "name": "Document",
-        "shareProps": {
-          "titleKey": "fileName",
-          "subTitleKeys": [
-            { "key": "updatedAt", "is": "Datetime" }
-          ]
-        },
-        "baseSummaryProps": {
-          "size": -3
-        },
-        "baseDetailProps": {
-        }
-      }
-    }
-  ]
+  "name": "Document",
+  "shareProps": {
+    "titleKey": "fileName",
+    "subTitleKeys": [{
+      "key": "updatedAt",
+      "is": "Datetime"
+    }]
+  },
+  "baseSummaryProps": {
+    "size": -3
+  },
+  "baseDetailProps": {}
 }
