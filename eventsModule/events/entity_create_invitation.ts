@@ -43,13 +43,8 @@ class EntityCreateInvitationEvent extends BaseEvent {
     const entityService = this.allService[`BookingService`] as BookingService
 
     const invitationUpdatedEntity = await invitationDbService.entityCreateInvitaion(entity, 'booking', this.user, this.transaction) as Booking
-<<<<<<< HEAD
   
     // console.log(invitationUpdatedEntity,'invitationUpdatedEntity')
-=======
-
-    console.log(invitationUpdatedEntity, 'invitationUpdatedEntity')
->>>>>>> 1fd53866bede47b35eb1cf51a5e17de098d10acc
 
 
     if (invitationUpdatedEntity)
