@@ -10,7 +10,12 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es2017",
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": "./",
+    "paths": {
+      "models/**/*": ["../../swivel-backend-new/src/models/**/*"],
+      "modules/**/*": ["../../swivel-backend-new/src/modules/**/*"]
+    }
   },
   "include": [
     "**/*",

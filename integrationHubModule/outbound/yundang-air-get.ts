@@ -1,5 +1,5 @@
 const sha1 = require('sha1')
-const moment = require('moment');
+const moment = require('moment')
 
 export default {
   method: 'POST', // GET / POST-JSON / POST-SIMPLE
@@ -25,11 +25,11 @@ export default {
         lstbookingcontract: headers.constants.lstbookingcontract
       }
     ]
-    const timestamp = moment().utcOffset(8).format('YYYY-MM-DD HH:mm:ss');
+    const timestamp = moment().utcOffset(8).format('YYYY-MM-DD HH:mm:ss')
     const hashIt = sha1([`companyid=${headers.constants.companyId}`, `data=${JSON.stringify(data)}&timestamp=${timestamp}`, headers.constants.secret].join('||'), { asBytes: true })
     return {
       headers: {
-        "content-type": "application/x-www-form-urlencoded"
+        'content-type': 'application/x-www-form-urlencoded'
       },
       formData: {
         data: JSON.stringify(data),

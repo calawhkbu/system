@@ -1,7 +1,7 @@
 import { Column, ColumnExpression, CreateTableJQL, FunctionExpression, JoinClause, Query, ResultColumn } from 'node-jql'
 import { Session } from 'node-jql-core'
 
-function prepareParams(check?: boolean): Function {
+function prepareParams (check?: boolean): Function {
   if (check) {
     return function (require, session, params) {
       // import
@@ -49,7 +49,7 @@ export default [
   [prepareParams(), function (require, session, params) {
     // import
     const { BinaryExpression, ColumnExpression, CreateTableJQL, FromTable, Query } = require('node-jql')
-    
+
     // script
     return new CreateTableJQL({
       $temporary: true,

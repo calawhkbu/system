@@ -100,7 +100,7 @@ export default {
         },
         {
           rules: async (entity: any, user: { roles: { name: string }[] }) => {
-            const documents = (entity.documents || []).find((doc : { fileName: string }) => doc.fileName === 'Shipping Advice')
+            const documents = (entity.documents || []).find((doc: { fileName: string }) => doc.fileName === 'Shipping Advice')
             if (documents) {
               return true
             }

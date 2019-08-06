@@ -1,6 +1,6 @@
 import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, Value } from 'node-jql'
 
-function prepareParams(check?: boolean): Function {
+function prepareParams (check?: boolean): Function {
   if (check) {
     return function (require, session, params) {
       // import
@@ -21,7 +21,7 @@ function prepareParams(check?: boolean): Function {
   }
 }
 
-function prepareTable(name: string): CreateTableJQL {
+function prepareTable (name: string): CreateTableJQL {
   return new CreateTableJQL({
     $temporary: true,
     name,

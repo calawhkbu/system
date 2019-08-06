@@ -1,7 +1,7 @@
 import { parseCode } from 'utils/function'
 import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, MathExpression, CreateFunctionJQL } from 'node-jql'
 
-function prepareParams(thisYear: boolean, nominatedType_: 'F'|'R'): Function {
+function prepareParams (thisYear: boolean, nominatedType_: 'F'|'R'): Function {
   const fn = function (require, session, params) {
     const moment = require('moment')
     const subqueries = params.subqueries = params.subqueries || {}
@@ -20,7 +20,7 @@ function prepareParams(thisYear: boolean, nominatedType_: 'F'|'R'): Function {
   return parseCode(code)
 }
 
-function prepareTable(name: string): CreateTableJQL {
+function prepareTable (name: string): CreateTableJQL {
   return new CreateTableJQL({
     $temporary: true,
     name,

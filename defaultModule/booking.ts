@@ -1,4 +1,4 @@
-import { Person } from 'models/main/Person'
+import { Person } from 'models/main/person'
 
 export default (user: Person) => {
   console.log(user)

@@ -1,18 +1,15 @@
 
-
-import { JwtPayload } from 'modules/auth/interfaces/jwt-payload';
-import { Transaction } from 'sequelize';
+import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
+import { Transaction } from 'sequelize'
 import deepdiff = require('deep-diff')
-
 
 // what role need to be handled
 const entityInvitationDetail = {
 
-  roleList: ["shipper", "consignee", "forwarder"]
+  roleList: ['shipper', 'consignee', 'forwarder']
 }
 
-export default async function entityCreateInvitaion(that: any, entity: any, tableName: string, user?: JwtPayload, transaction?: Transaction) {
-
+export default async function entityCreateInvitaion (that: any, entity: any, tableName: string, user?: JwtPayload, transaction?: Transaction) {
 
   // change back into normal json
 
@@ -54,7 +51,7 @@ export default async function entityCreateInvitaion(that: any, entity: any, tabl
 
   // findOrCreate a Party, for party that are created before, they will be stored in partyMap
 
-  async function processParty(role: string) {
+  async function processParty (role: string) {
 
     if (entity[role + 'PartyName'] && entity[role + 'PartyName'].length) {
 
@@ -112,7 +109,7 @@ export default async function entityCreateInvitaion(that: any, entity: any, tabl
 
   }
 
-  async function createParty() {
+  async function createParty () {
 
     // create all party in the createPartyMap
 
@@ -146,7 +143,7 @@ export default async function entityCreateInvitaion(that: any, entity: any, tabl
   }
 
   // change the entity Contact into a Person data
-  async function processPerson(rolePartyId: number, contactEmail: string, contactName: string, contactPhone?: string) {
+  async function processPerson (rolePartyId: number, contactEmail: string, contactName: string, contactPhone?: string) {
     let firstName: string, lastName: string, displayName: string
 
     let person = personMap[contactEmail]
@@ -193,8 +190,6 @@ export default async function entityCreateInvitaion(that: any, entity: any, tabl
         )
       }
 
-
-
       const partyGroup = await that.partyGroupService.findOne({
 
         where: {
@@ -206,7 +201,6 @@ export default async function entityCreateInvitaion(that: any, entity: any, tabl
 
       const defaultConfiguration = partyGroup.configuration
 
-
       // hardcode
       const configuration = {
         locale : 'defaultLocale',
@@ -214,22 +208,19 @@ export default async function entityCreateInvitaion(that: any, entity: any, tabl
         dateFormat : 'defaultDateFormat',
         dateTimeFormat : 'defaultDateTimeFormat',
         timezone : 'defaultTimezone'
-      }      
+      }
 
       // clone from partyGroup
-      for (let [key, value] of Object.entries(configuration)) {
+      for (const [key, value] of Object.entries(configuration)) {
         configuration[key] = defaultConfiguration[value]
       }
 
-
       const { frontendUrl } = await that.swivelConfigService.get()
 
-
-      // hardcode 
+      // hardcode
       configuration['url'] = `${frontendUrl}${tableName}/${entity.id}`
 
       // console.log(configuration['url'],'configuration[url]')
-
 
       person = {
 
@@ -254,7 +245,7 @@ export default async function entityCreateInvitaion(that: any, entity: any, tabl
 
   }
 
-  async function createPerson() {
+  async function createPerson () {
 
     for (const [email, personData] of Object.entries(personMap)) {
 
@@ -372,19 +363,15 @@ export default async function entityCreateInvitaion(that: any, entity: any, tabl
 
   }
 
-
-
   const jsondiffpatch = require('jsondiffpatch').create()
 
-
-  for (let [key, value] of Object.entries(returnEntity)) {
+  for (const [key, value] of Object.entries(returnEntity)) {
 
     if (value === undefined) {
       delete returnEntity[key]
     }
 
   }
-
 
   const checkEntity = { ...entity, ...returnEntity }
 

@@ -1,6 +1,6 @@
 import { ColumnExpression, CreateTableJQL, FromTable, FunctionExpression, GroupBy, Query, ResultColumn } from 'node-jql'
 
-function prepareParams(): Function {
+function prepareParams (): Function {
   return function (require, session, params) {
     // import
     const { BadRequestException } = require('@nestjs/common')

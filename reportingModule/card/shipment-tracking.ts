@@ -1,6 +1,6 @@
-import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, GroupBy, JoinClause, BinaryExpression, ParameterExpression } from "node-jql"
+import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, GroupBy, JoinClause, BinaryExpression, ParameterExpression } from 'node-jql'
 
-function prepareParams(check?: boolean): Function {
+function prepareParams (check?: boolean): Function {
   if (check) {
     return function (require, session, params) {
       // import
