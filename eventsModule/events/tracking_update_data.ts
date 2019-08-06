@@ -226,7 +226,8 @@ class TrackingUpdateDataEvent extends BaseEvent {
       })
 
       // update booking
-      await bookingService.save(resultList, this.user, this.transaction)
+      //warning: isautosave = true
+      await bookingService.save(resultList, this.user, this.transaction,true)
 
 
       // send alert

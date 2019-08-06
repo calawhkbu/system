@@ -54,14 +54,14 @@ class EntityCreateInvitationEvent extends BaseEvent {
 
     const invitationUpdatedEntity = await invitationDbService.entityCreateInvitaion(entity, 'booking', this.user, this.transaction) as Booking
   
-    console.log(invitationUpdatedEntity,'invitationUpdatedEntity')
+    // console.log(invitationUpdatedEntity,'invitationUpdatedEntity')
 
-    // console.log({...entity,...invitationUpdatedEntity})
 
-    // if (invitationUpdatedEntity)
-    // {
-    //   return await entityService.save({...entity,...invitationUpdatedEntity},this.user,this.transaction)
-    // }
+    if (invitationUpdatedEntity)
+    {
+      // warning: autoSave = true
+      return await entityService.save({...entity,...invitationUpdatedEntity},this.user,this.transaction,true)
+    }
 
   }
 }
