@@ -1,0 +1,28 @@
+{
+  "name": "system",
+  "version": "1.0.0",
+  "description": "This the base custom config",
+  "main": "config.ts",
+  "dependencies": {
+    "moment": "^2.24.0",
+    "node-jql": "^2.0.0-rc.51",
+    "node-jql-core": "^v2.0.0-rc.40"
+  },
+  "devDependencies": {
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3"
+  },
+  "scripts": {
+    "lint": "tslint -p tsconfig.json -c tslint.json --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://admin-swivel:66b0a1f969ee4c99f9e8e743d52470402333dc4c@github.com/swivelsoftware-config/system.git"
+  },
+  "author": "Swivel Software Limited (360 Team)",
+  "bugs": {
+    "url": "https://github.com/swivelsoftware-config/system/issues"
+  },
+  "homepage": "https://github.com/swivelsoftware-config/system#readme"
+}
