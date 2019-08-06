@@ -107,8 +107,8 @@
             "showValue": false,
             "canCreate": true,
             "canCreateValue": {
-              "partyId": null,
-              "partyName": "{{autoSuggestModel|default(null)}}"
+              "id": null,
+              "name": "{{autoSuggestModel|default(null)}}"
             },
             "url": "api/party/query/party_auto_suggest",
             "searchValueParams": "{ \"subqueries\": { \"id\": {{query}}, \"partyTypes\": {\"value\": [\"{{key}}\"]} } }",
