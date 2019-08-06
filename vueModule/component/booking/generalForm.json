@@ -373,7 +373,7 @@
             "relation": "incoTerms",
             "relationMore": [{
               "name": "freightTermsCode",
-              "selector": "data.freightTermsCode"
+              "selector": "data.frieghtTermsCode"
             }, {
               "name": "otherTermsCode",
               "selector": "data.otherTermsCode"

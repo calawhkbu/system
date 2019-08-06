@@ -54,10 +54,18 @@ class CreateTrackingEvent extends BaseEvent {
   }
 
   public getCotainerNo(booking: Booking): string[] {
-    const containerNo = booking.bookingContainers.map((x: BookingContainer) => x.containerNo)
-    return containerNo
+    const containerNoList = booking.bookingContainers.filter((x: BookingContainer) => x.containerNo && x.containerNo.length)
+    return containerNoList
 
   }
+
+  public getSoNo(booking: Booking): string[] {
+
+    const soNoList = booking.bookingContainers.filter((x: BookingContainer) => x.soNo && x.soNo.length)
+    return soNoList
+  }
+
+
 
 
 
@@ -68,7 +76,9 @@ class CreateTrackingEvent extends BaseEvent {
     const departureDateEstimated = booking.departureDateEstimated
     const partyGroupCode = booking.partyGroupCode
 
+    // hardcode
     const masterNo = this.getMasterNo(booking, "MAWB")
+    console.log(masterNo, "================")
 
     if (masterNo) {
 
@@ -76,7 +86,7 @@ class CreateTrackingEvent extends BaseEvent {
 
       const trackingInformation = {
 
-        carrierCode,
+        // carrierCode,
         masterNo,
         departureDateEstimated
 
@@ -97,14 +107,15 @@ class CreateTrackingEvent extends BaseEvent {
     const departureDateEstimated = booking.departureDateEstimated
     const partyGroupCode = booking.partyGroupCode
 
-    const masterNo = this.getMasterNo(booking, "MLB")
+    // hardcode
+    const masterNo = this.getMasterNo(booking, "MBL")
     const containerNo = this.getCotainerNo(booking)
+    const soNo = this.getSoNo(booking)
 
-    // todo : what is this
-    const carrierBookingNo = []
+
 
     // if masterNo and conatinerNo is both not found
-    if (masterNo || containerNo.length > 0) {
+    if (carrierCode || masterNo || containerNo.length > 0 || soNo.length) {
 
       const trackService = this.allService['TrackService'] as TrackService
       const trackingInformation = {
@@ -112,7 +123,7 @@ class CreateTrackingEvent extends BaseEvent {
         carrierCode,
         masterNo,
         containerNo,
-        carrierBookingNo,
+        soNo,
         departureDateEstimated
 
       }
@@ -125,12 +136,14 @@ class CreateTrackingEvent extends BaseEvent {
 
   // parameters should be booking
   public async mainFunction(parameters: any) {
+    console.log("======================")
 
     const booking = parameters.data as Booking
 
     // etd, carrier and ModuleType is required
-    if (booking.carrierCode && booking.moduleTypeCode && booking.departureDateEstimated) {
 
+    if (booking.moduleTypeCode && booking.departureDateEstimated) {
+      console.log("here")
 
       switch (booking.moduleTypeCode) {
         case 'AIR':

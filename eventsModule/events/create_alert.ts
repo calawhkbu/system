@@ -33,11 +33,12 @@ class CreateAlertEvent extends BaseEvent {
     const primaryKey = parameters.primaryKey
     const alertType = parameters.alertType
     const customMessage = parameters.customMessage
+    const extraParam = parameters.extraParam
 
 
     const alertDbService = this.allService['AlertDbService'] as AlertDbService
 
-    return await alertDbService.createAlert(tableName,primaryKey,alertType,customMessage,this.user)
+    return await alertDbService.createAlert(tableName,primaryKey,alertType,customMessage,extraParam,this.user)
 
   }
 }

@@ -26,7 +26,7 @@
             "allowFileType" : ["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/pdf","image/gif"],
 
             "allowFillTemplate" : true,
-            "templateName" : "shippingOrder-{{moduleTypeCode}}"
+            "templateName" : "shippingOrder"
 
         },
 

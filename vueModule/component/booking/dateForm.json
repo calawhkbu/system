@@ -20,8 +20,10 @@
         "orderBy": {
           "cargoReady": 0,
           "cYCutOff": 10,
+          "pickup": 15,
           "departure": 20,
-          "arrival": 30
+          "arrival": 30,
+          "finalDoorDelivery": 35
         }
       },
       "params": {
@@ -42,7 +44,7 @@
           "label": "Widget.date",
           "name": "{{key}}Date",
           "component": "DateTimePicker",
-          "class": "xs-12 md-8 {{hiddenFullDate}}",
+          "class": "xs-12 md-10 {{hiddenFullDate}}",
           "props": {
             "type": "datetime",
             "utc": true,
@@ -54,7 +56,7 @@
           "label": "Widget.estimatedDate",
           "name": "{{key}}DateEstimated",
           "component": "DateTimePicker",
-          "class": "xs-12 md-4 {{hiddenDateTime}}",
+          "class": "xs-12 md-5 {{hiddenDateTime}}",
           "props": {
             "type": "datetime",
             "utc": true,
@@ -66,7 +68,7 @@
           "label": "Widget.actualDate",
           "name": "{{key}}DateActual",
           "component": "DateTimePicker",
-          "class": "xs-12 md-4 {{hiddenDateTime}}",
+          "class": "xs-12 md-5 {{hiddenDateTime}}",
           "props": {
             "type": "datetime",
             "utc": true,
@@ -78,7 +80,7 @@
           "label": "Widget.remark",
           "name": "{{key}}Remark",
           "component": "v-text-field",
-          "class": "xs-12 md-4"
+          "class": "xs-12 md-2"
         }
       ]
     }
