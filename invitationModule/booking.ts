@@ -79,10 +79,6 @@ export default async function entityCreateInvitaion (that: any, entity: any, tab
 
           name: entity[role + 'PartyName'],
 
-          email: entity[role + 'PartyEmail'],
-          phone: entity[role + 'PartyPhone'],
-          fax: entity[role + 'PartyFax'],
-
           address: entity[role + 'PartyAddress'],
           types: [
             {

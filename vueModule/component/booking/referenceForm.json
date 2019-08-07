@@ -1,45 +1,51 @@
 {
   "layout": "v-card",
-  "components": [
-    {
-      "is": "WidgetForm",
-      "props": {
-        "fields": [
-          {
-            "label": "BookingPage.references",
-            "name": "bookingReference",
-            "component": "TableField",
-            "class": "xs-12",
-            "props": {
-              "fields": [
-                {
-                  "label": "BookingPage.sequence",
-                  "name": "sequence",
-                  "component": "v-text-field",
-                  "props": {
-                    "type": "number"
-                  }
-                },
-                {
-                  "label": "BookingPage.refName",
-                  "name": "refName",
-                  "component": "v-text-field"
-                },
-                {
-                  "label": "BookingPage.refDescription",
-                  "name": "refDescription",
-                  "component": "v-text-field"
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [{
+          "label": "BookingPage.references",
+          "name": "bookingReference",
+          "component": "TableField",
+          "class": "xs-12",
+          "props": {
+            "fields": [{
+                "label": "BookingPage.refName",
+                "name": "refName",
+                "class": "xs-12 md-5",
+                "component": "LocalAutoSuggest",
+                "props": {
+                  "canCreate": true,
+                  "funcItems": ["MBL", "PoNo", "MAWB"]
                 }
-              ]
-            }
-          },
-          {
-            "label": "BookingPage.remark",
-            "name": "remark",
-            "component": "v-textarea"
+              },
+              {
+                "label": "BookingPage.refDescription",
+                "name": "refDescription",
+                "class": "xs-12 md-5",
+                "component": "v-text-field"
+              },
+              {
+                "label": "BookingPage.DocDate",
+                "name": "docDate",
+                "component": "DateTimePicker",
+                "class": "xs-12 md-2",
+                "props": {
+                  "type": "datetime",
+                  "utc": true,
+                  "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                  "useOwnFormat": true
+                }
+              }
+            ]
           }
-        ]
-      }
+        },
+        {
+          "label": "BookingPage.remark",
+          "name": "remark",
+          "component": "v-textarea"
+        }
+      ]
     }
-  ]
+  }]
 }

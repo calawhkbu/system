@@ -1,8 +1,5 @@
 {
   "layout": "v-card",
-  "style": {
-    "min-height": "75px"
-  },
   "components": [{
     "is": "WidgetForms",
     "props": {
@@ -14,49 +11,25 @@
         "fixKey": [
           "cargoReady",
           "cYCutOff",
+          "pickup",
           "departure",
-          "arrival"
+          "arrival",
+          "finalDoorDelivery"
         ],
         "orderBy": {
           "cargoReady": 0,
           "cYCutOff": 10,
-          "pickup": 15,
-          "departure": 20,
-          "arrival": 30,
-          "finalDoorDelivery": 35
-        }
-      },
-      "params": {
-        "hiddenFullDate": {
-          "cargoReady": "",
-          "cYCutOff": "",
-          "departure": "hidden",
-          "arrival": "hidden"
-        },
-        "hiddenDateTime": {
-          "cargoReady": "hidden",
-          "cYCutOff": "hidden",
-          "departure": "",
-          "arrival": ""
+          "pickup": 20,
+          "departure": 30,
+          "arrival": 40,
+          "finalDoorDelivery": 50
         }
       },
       "fields": [{
-          "label": "Widget.date",
-          "name": "{{key}}Date",
-          "component": "DateTimePicker",
-          "class": "xs-12 md-10 {{hiddenFullDate}}",
-          "props": {
-            "type": "datetime",
-            "utc": true,
-            "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
-            "useOwnFormat": true
-          }
-        },
-        {
           "label": "Widget.estimatedDate",
           "name": "{{key}}DateEstimated",
           "component": "DateTimePicker",
-          "class": "xs-12 md-5 {{hiddenDateTime}}",
+          "class": "xs-12 md-5",
           "props": {
             "type": "datetime",
             "utc": true,
@@ -68,7 +41,7 @@
           "label": "Widget.actualDate",
           "name": "{{key}}DateActual",
           "component": "DateTimePicker",
-          "class": "xs-12 md-5 {{hiddenDateTime}}",
+          "class": "xs-12 md-5",
           "props": {
             "type": "datetime",
             "utc": true,

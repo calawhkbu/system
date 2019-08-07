@@ -67,7 +67,11 @@
           "datetime": "YYYY-MM-DD"
         },
         {
-          "key": "cYCutOffDate",
+          "key": "cYCutOffDateEstimated",
+          "datetime": "YYYY-MM-DD"
+        },
+        {
+          "key": "cYCutOffDateActual",
           "datetime": "YYYY-MM-DD"
         }
       ],

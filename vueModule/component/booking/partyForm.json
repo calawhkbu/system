@@ -6,10 +6,33 @@
   "components": [{
     "is": "WidgetForms",
     "props": {
-      "formProps": {
+      "canAdd": false,
+      "canAddProps": {
+        "class": "xs-12 md-6",
+        "style": {
+          "display": "flex",
+          "align-items": "center",
+          "width": "calc(100% - 4px)",
+          "height": "calc(100% - 4px)",
+          "margin": "auto"
+        }
+      },
+      "addObject": {},
+      "extraContainerProps": {
         "class": "xs-12 md-6"
       },
-      "labelProps": {},
+      "formProps": {
+        "class": "xs-12 md-6",
+        "style": {
+          "padding": "4px"
+        }
+      },
+      "labelProps": {
+        "style": {
+          "font-size": "1.2rem",
+          "font-weight": "bold"
+        }
+      },
       "nonFixedLabelProps": {
         "shipper": {
           "class": "required form-label"
@@ -34,9 +57,6 @@
           "agent": 30,
           "notifyParty": 40
         }
-      },
-      "extraContainerProps": {
-        "class": "xs-12 md-6"
       },
       "params": {
         "autoSuggestModel": "{{autoSuggestModel}}"

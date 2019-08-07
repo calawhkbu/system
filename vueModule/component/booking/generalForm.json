@@ -7,7 +7,7 @@
             "label": "BookingPage.moduleType",
             "name": "moduleTypeCode",
             "component": "AsyncSelect",
-            "class": "xs-12 md-6",
+            "class": "xs-12 md-4",
             "validator": [
               "required"
             ],
@@ -30,7 +30,7 @@
             "label": "BookingPage.boundType",
             "name": "boundTypeCode",
             "component": "AsyncSelect",
-            "class": "xs-12 md-6",
+            "class": "xs-12 md-4",
             "relation": "boundType",
             "validator": [
               "required"
@@ -44,6 +44,28 @@
                 "subqueries": {
                   "codeType": {
                     "value": "BOUND"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "label": "BookingPage.serviceCode",
+            "name": "serviceCode",
+            "component": "AsyncSelect",
+            "class": "xs-12 md-4",
+            "validator": [
+              "required"
+            ],
+            "props": {
+              "required": true,
+              "url": "api/code/query/code_master",
+              "item-text": "name",
+              "item-value": "code",
+              "params": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "SERVTYPE"
                   }
                 }
               }
@@ -208,44 +230,6 @@
             }
           },
           {
-            "label": "BookingPage.finalDestination",
-            "name": "finalDestination",
-            "component": "AsyncAutoSuggest",
-            "readonlyClass": "hidden",
-            "class": "xs-12 md-6",
-            "more": [{
-              "name": "finalDestinationCode",
-              "selector": "portCode"
-            }],
-            "props": {
-              "method": "POST",
-              "url": "api/location/query/location",
-              "searchValueParams": {
-                "subqueries": {
-                  "moduleType": {
-                    "value": "{{form.moduleTypeCode}}"
-                  },
-                  "ports": {
-                    "value": "{{query}}"
-                  }
-                }
-              },
-              "searchTextParams": {
-                "subqueries": {
-                  "moduleType": {
-                    "value": "{{form.moduleTypeCode}}"
-                  },
-                  "q": {
-                    "value": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-              "item-text": "name",
-              "item-value": "portCode"
-            }
-          },
-          {
             "label": "BookingPage.carrier",
             "name": "carrier",
             "component": "AsyncAutoSuggest",
@@ -279,9 +263,6 @@
                 },
                 "limit": 5
               },
-
-
-
               "item-text": "name",
               "item-value": "code"
             }
@@ -290,7 +271,7 @@
             "label": "BookingPage.vesselName",
             "name": "vesselName",
             "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
+            "class": "xs-12 md-3",
             "more": [{
               "name": "vesselName",
               "selector": "name"
@@ -327,12 +308,16 @@
             "label": "BookingPage.voyageFlightNumber",
             "name": "voyageFlightNumber",
             "component": "v-text-field",
-            "class": "xs-12 md-6",
+            "class": "xs-12 md-3",
             "checkDisplayWhen": "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA')"
           },
           {
             "class": "xs-12 md-6",
-            "checkDisplayWhen": "return form && (form.moduleTypeCode || form.moduleTypeCode === 'AIR')"
+            "checkDisplayWhen": "return form && !(form.moduleTypeCode || form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA')"
+          },
+          {
+            "class": "xs-12 md-3",
+            "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'AIR'"
           }
         ]
       }
@@ -344,28 +329,6 @@
       "is": "WidgetForm",
       "props": {
         "fields": [{
-            "label": "BookingPage.serviceCode",
-            "name": "serviceCode",
-            "component": "AsyncSelect",
-            "class": "xs-12 md-6",
-            "validator": [
-              "required"
-            ],
-            "props": {
-              "required": true,
-              "url": "api/code/query/code_master",
-              "item-text": "name",
-              "item-value": "code",
-              "params": {
-                "subqueries": {
-                  "codeType": {
-                    "value": "SERVTYPE"
-                  }
-                }
-              }
-            }
-          },
-          {
             "label": "BookingPage.incoTermsCode",
             "name": "incoTermsCode",
             "component": "AsyncSelect",
@@ -400,7 +363,7 @@
             "name": "freightTermsCode",
             "component": "AsyncSelect",
             "readonlyClass": "hidden",
-            "class": "xs-12 md-6",
+            "class": "xs-12 md-3",
             "props": {
               "url": "api/code/query/code_master",
               "item-text": "name",
@@ -419,7 +382,7 @@
             "name": "otherTermsCode",
             "component": "AsyncSelect",
             "readonlyClass": "hidden",
-            "class": "xs-12 md-6",
+            "class": "xs-12 md-3",
             "props": {
               "url": "api/code/query/code_master",
               "item-text": "name",
@@ -446,13 +409,22 @@
             "label": "BookingPage.commodity",
             "name": "commodity",
             "component": "v-text-field",
-            "class": "xs-12",
+            "class": "xs-12 md-6",
             "validator": [
               "required"
             ],
             "props": {
               "required": true
             }
+          },
+          {
+            "label": "BookingPage.polHScode",
+            "name": "polHScode",
+            "component": "v-text-field",
+            "class": "xs-12 md-6",
+            "more": [
+              "podHScode"
+            ]
           },
           {
             "label": "BookingPage.shipMarks",
