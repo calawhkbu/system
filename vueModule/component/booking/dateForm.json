@@ -17,7 +17,7 @@
           "finalDoorDelivery"
         ],
         "orderBy": {
-          "cargoReady": 0,
+          "cargoReady": 5,
           "cYCutOff": 10,
           "pickup": 20,
           "departure": 30,
