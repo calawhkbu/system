@@ -3,6 +3,8 @@ import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
+import { Booking } from 'models/main/booking'
+
 import { AlertDbService } from '../../../../swivel-backend-new/src/modules/sequelize/alert/service'
 import { InvitationDbService } from '../../../../swivel-backend-new/src/modules/sequelize/invitation/service'
 import { BookingService } from '../../../../swivel-backend-new/src/modules/sequelize/booking/service'
@@ -43,9 +45,6 @@ class EntityCreateInvitationEvent extends BaseEvent {
     const entityService = this.allService[`BookingService`] as BookingService
 
     const invitationUpdatedEntity = await invitationDbService.entityCreateInvitaion(entity, 'booking', this.user, this.transaction) as Booking
-  
-    // console.log(invitationUpdatedEntity,'invitationUpdatedEntity')
-
 
     if (invitationUpdatedEntity)
     {
