@@ -107,6 +107,13 @@ export default {
     {
       condition : true,
       eventName : 'create_tracking',
+    },
+    {
+      condition : true,
+      handlerName : 'entity_create_invitation.ts',
+      otherParameters : {
+        tableName : 'booking',
+      }
     }
   ],
 
