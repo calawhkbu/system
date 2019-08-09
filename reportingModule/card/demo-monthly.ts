@@ -2,7 +2,7 @@ import { Query, FromTable } from 'node-jql'
 
 const query = new Query({
   $from: new FromTable({
-		url: 'demo/chart',
+		url: 'demo',
 		columns: [
 			{
 				name: 'group',
