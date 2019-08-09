@@ -2,7 +2,6 @@ import { QueryDef } from 'classes/query/QueryDef'
 import { Query, FromTable, BinaryExpression, ColumnExpression, RegexpExpression, IsNullExpression, InExpression } from 'node-jql'
 
 const query = new QueryDef(new Query({
-  $distinct: true,
   $from: new FromTable('person',
     {
       operator: 'LEFT',
@@ -13,40 +12,28 @@ const query = new QueryDef(new Query({
     },
     {
       operator: 'LEFT',
-      table: new FromTable('parties_person', 'parties_person'),
+      table: 'parties_person',
       $on: [
         new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('parties_person', 'personId'))
       ]
     },
     {
       operator: 'LEFT',
-      table: new FromTable('party', 'party'),
+      table: 'party',
       $on: [
         new BinaryExpression(new ColumnExpression('party', 'id'), '=', new ColumnExpression('parties_person', 'partyId'))
       ]
     },
     {
       operator: 'LEFT',
-      table: new FromTable('party_group', 'party_group'),
+      table: 'party_group',
       $on: [
         new BinaryExpression(new ColumnExpression('party_group', 'code'), '=', new ColumnExpression('party', 'partyGroupCode'))
       ]
     },
     {
       operator: 'LEFT',
-      table: new FromTable('person_role', 'person_role'),
-      $on: new BinaryExpression(new ColumnExpression('person_role', 'personId'), '=', new ColumnExpression('person', 'id'))
-    },
-    {
-      operator: 'LEFT',
-      table: new FromTable('role', 'role'),
-      $on: [
-        new BinaryExpression(new ColumnExpression('role', 'id'), '=', new ColumnExpression('person_role', 'roleId'))
-      ]
-    },
-    {
-      operator: 'LEFT',
-      table: new FromTable('person_contact', 'person_contact'),
+      table: 'person_contact',
       $on: [
         new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('person_contact', 'personId'))
       ]
@@ -78,6 +65,17 @@ query.register('displayName', new Query({
   $where: new RegexpExpression(new ColumnExpression('person', 'displayName'), false)
 })).register('value', 0)
 
+query.register('role', new Query({
+  $where: new InExpression(new ColumnExpression('person', 'id'), false, new Query({
+    $select: 'personId',
+    $from: 'person_role',
+    $where: [
+      new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('person_role', 'personId')),
+      new InExpression(new ColumnExpression('roleId'), false)
+    ]
+  }))
+})).register('value', 0)
+
 query.register('isActive', new Query({
   $where: [
     new IsNullExpression(new ColumnExpression('person', 'deletedAt'), false),
@@ -89,9 +87,7 @@ query.register('isActive', new Query({
     new IsNullExpression(new ColumnExpression('party_group', 'deletedAt'), false),
     new IsNullExpression(new ColumnExpression('party_group', 'deletedBy'), false),
     new IsNullExpression(new ColumnExpression('person_contact', 'deletedAt'), false),
-    new IsNullExpression(new ColumnExpression('person_contact', 'deletedBy'), false),
-    new IsNullExpression(new ColumnExpression('role', 'deletedAt'), false),
-    new IsNullExpression(new ColumnExpression('role', 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression('person_contact', 'deletedBy'), false)
   ]
 }))
 
