@@ -1,5 +1,6 @@
 {
   "layout": "Plugin",
+  "class": "xs-12 margin-topbottom-4",
   "lazy": true,
   "transition": "slide-y-reverse-transition",
   "name": "Alert",

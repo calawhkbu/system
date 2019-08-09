@@ -1,8 +1,4 @@
 {
-  "layout": "v-card",
-  "style": {
-    "min-height": "75px"
-  },
   "components": [{
     "is": "WidgetForms",
     "props": {

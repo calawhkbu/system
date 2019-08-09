@@ -12,8 +12,8 @@
           "props": {
             "topLabel": true,
             "fields": [{
-                "label": "BookingPage.volume",
-                "name": "volume",
+                "label": "BookingPage.ctns",
+                "name": "ctns",
                 "component": "v-text-field",
                 "props": {
                   "type": "number",
@@ -23,99 +23,17 @@
                   "name": "append",
                   "is": "I18nText",
                   "props": {
-                    "i18nKey": "CBM"
+                    "i18nKey": "CTNS"
                   }
                 }]
-              },
-              {
-                "label": "BookingPage.length",
-                "name": "length",
-                "component": "v-text-field",
-                "props": {
-                  "type": "number"
-                }
-              },
-              {
-                "label": "BookingPage.width",
-                "name": "width",
-                "component": "v-text-field",
-                "props": {
-                  "type": "number"
-                }
-              },
-              {
-                "label": "BookingPage.height",
-                "name": "height",
-                "component": "v-text-field",
-                "props": {
-                  "type": "number"
-                }
-              },
-              {
-                "label": "BookingPage.lwhUnit",
-                "name": "lwhUnit",
-                "component": "v-select",
-                "props": {
-                  "items": [{
-                      "text": "CM",
-                      "value": "CM"
-                    },
-                    {
-                      "text": "IN",
-                      "value": "IN"
-                    }
-                  ]
-                }
-              },
-              {
-                "label": "BookingPage.weight",
-                "name": "weight",
-                "component": "v-text-field",
-                "props": {
-                  "type": "number"
-                }
-              },
-              {
-                "label": "BookingPage.weightUnit",
-                "name": "weightUnit",
-                "component": "v-select",
-                "props": {
-                  "items": [{
-                      "text": "KGs",
-                      "value": "KGs"
-                    },
-                    {
-                      "text": "LBs",
-                      "value": "LBs"
-                    }
-                  ]
-                }
-              },
-              {
-                "label": "BookingPage.ctns",
-                "name": "ctns",
-                "component": "v-text-field",
-                "props": {
-                  "type": "number"
-                }
-              },
-              {
-                "label": "BookingPage.ctnsUnit",
-                "name": "ctnsUnit",
-                "component": "v-select",
-                "props": {
-                  "items": [{
-                    "text": "CTNS",
-                    "value": "CTNS"
-                  }]
-                }
               },
               {
                 "label": "BookingPage.pieces",
                 "name": "pieces",
                 "component": "v-text-field",
                 "props": {
-                  "type": "number"
+                  "type": "number",
+                  "min": 0
                 }
               },
               {
@@ -158,6 +76,102 @@
                     {
                       "text": "CTN",
                       "value": "CTN"
+                    }
+                  ]
+                }
+              }, {
+                "label": "BookingPage.volume",
+                "name": "volume",
+                "component": "v-text-field",
+                "props": {
+                  "type": "number",
+                  "min": 0
+                },
+                "slots": [{
+                  "name": "append",
+                  "is": "I18nText",
+                  "props": {
+                    "i18nKey": "CBM"
+                  }
+                }]
+              },
+              {
+                "label": "BookingPage.length",
+                "name": "length",
+                "component": "v-text-field",
+                "props": {
+                  "type": "number",
+                  "min": 0
+                },
+                "slots": [{
+                  "name": "append",
+                  "is": "I18nText",
+                  "props": {
+                    "i18nKey": "X"
+                  }
+                }]
+              },
+              {
+                "label": "BookingPage.width",
+                "name": "width",
+                "component": "v-text-field",
+                "props": {
+                  "type": "number",
+                  "min": 0
+                },
+                "slots": [{
+                  "name": "append",
+                  "is": "I18nText",
+                  "props": {
+                    "i18nKey": "X"
+                  }
+                }]
+              },
+              {
+                "label": "BookingPage.height",
+                "name": "height",
+                "component": "v-text-field",
+                "props": {
+                  "type": "number",
+                  "min": 0
+                }
+              },
+              {
+                "label": "BookingPage.lwhUnit",
+                "name": "lwhUnit",
+                "component": "v-select",
+                "props": {
+                  "items": [{
+                      "text": "CM",
+                      "value": "CM"
+                    },
+                    {
+                      "text": "IN",
+                      "value": "IN"
+                    }
+                  ]
+                }
+              },
+              {
+                "label": "BookingPage.weight",
+                "name": "weight",
+                "component": "v-text-field",
+                "props": {
+                  "type": "number"
+                }
+              },
+              {
+                "label": "BookingPage.weightUnit",
+                "name": "weightUnit",
+                "component": "v-select",
+                "props": {
+                  "items": [{
+                      "text": "KGs",
+                      "value": "KGs"
+                    },
+                    {
+                      "text": "LBs",
+                      "value": "LBs"
                     }
                   ]
                 }

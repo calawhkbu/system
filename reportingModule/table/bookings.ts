@@ -6,10 +6,6 @@ const query = new Query({
     url: 'api/booking/query/booking',
     columns: [
       {
-        name: 'createdAt',
-        type: 'Date'
-      },
-      {
         name: 'updatedAt',
         type: 'Date'
       },

@@ -1,5 +1,4 @@
 {
-  "layout": "v-card",
   "components": [{
     "is": "WidgetForms",
     "props": {
