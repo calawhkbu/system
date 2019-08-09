@@ -6,7 +6,11 @@
       "initUrl": "api/partyGroup/{{id}}",
       "saveUrl": "api/partyGroup",
       "primaryKey": "id",
-      "canEdit": true,
+      "type": "partyGroup",
+      "modes": [
+        "assignment",
+        "edit"
+      ],
       "top": {
         "assignment": [{
             "is": "v-btn",
@@ -42,11 +46,7 @@
                 "display": "flex"
               },
               "components": [{
-                  "is": "I18nText",
-                  "props": {
-                    "class": "headline",
-                    "i18nKey": "CustomerPage.title"
-                  }
+
                 },
                 {
                   "is": "span",
@@ -61,89 +61,7 @@
         "edit": "assignment"
       },
       "components": {
-        "assignment": [{
-            "is": "DynamicComponent",
-            "props": {
-              "class": "grid grid-full",
-              "components": [{
-                  "is": "DynamicComponent",
-                  "props": {
-                    "class": "xs-12 md-4",
-                    "style": {
-                      "padding-right": "4px",
-                      "padding-bottom": "4px"
-                    },
-                    "components": [{
-                      "is": "AsyncComponent",
-                      "props": {
-                        "class": "xs-12",
-                        "layoutName": "customer/basic-information"
-                      }
-                    }]
-                  }
-                },
-                {
-                  "is": "DynamicComponent",
-                  "props": {
-                    "class": "xs-12 md-8",
-                    "style": {
-                      "padding-left": "4px",
-                      "padding-bottom": "4px"
-                    },
-                    "components": [{
-                      "is": "AsyncComponent",
-                      "props": {
-                        "class": "xs-12",
-                        "layoutName": "customer/party"
-                      }
-                    }]
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "is": "DynamicComponent",
-            "props": {
-              "class": "grid grid-full",
-              "components": [{
-                  "is": "DynamicComponent",
-                  "props": {
-                    "class": "xs-12 md-4",
-                    "style": {
-                      "padding-right": "4px",
-                      "padding-bottom": "4px"
-                    },
-                    "components": [{
-                      "is": "AsyncComponent",
-                      "props": {
-                        "class": "xs-12",
-                        "layoutName": "customer/default-preference"
-                      }
-                    }]
-                  }
-                },
-                {
-                  "is": "DynamicComponent",
-                  "props": {
-                    "class": "xs-12 md-8",
-                    "style": {
-                      "padding-left": "4px",
-                      "padding-bottom": "4px"
-                    },
-                    "components": [{
-                      "is": "AsyncComponent",
-                      "props": {
-                        "class": "xs-12",
-                        "layoutName": "customer/alert-preference"
-                      }
-                    }]
-                  }
-                }
-              ]
-            }
-          }
-        ],
+        "assignment": [],
         "edit": "assignment"
       }
     }
