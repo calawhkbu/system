@@ -1,75 +1,63 @@
 
-// import { EventService, EventConfig } from 'modules/events/service'
-
-import { EventService, EventConfig } from '../../../swivel-backend-new/src/modules/events/service'
-
+import { EventService, EventConfig } from 'modules/events/service'
 
 export default {
   afterCreate_i18n: [
     {
-      handlerName: "example.ts",
+      handlerName: 'example.ts',
       otherParameters: {},
       afterEvent: []
     }
   ],
 
-
-
   example: [
 
     {
-      handlerName: "example.ts",
+      handlerName: 'example.ts',
       otherParameters: {},
       afterEvent: [
 
         {
-          eventName: "example2",
+          eventName: 'example2',
           previousParameters: {}
         }
       ]
     }
   ],
 
-
   example2: [
 
   ],
-
 
  // should not be called directly, should be called after an event
   create_alert: [
 
     {
-      handlerName: "create_alert.ts"
+      handlerName: 'create_alert.ts'
     }
   ],
-
-
 
   create_tracking : [
 
     {
-      handlerName: "create_tracking.ts"
+      handlerName: 'create_tracking.ts'
     }
 
   ],
-
-
 
   // update entity(booking) with a tracking
   tracking_update_data : [
 
     {
-      handlerName: "tracking_update_data.ts"
+      handlerName: 'tracking_update_data.ts'
     }
 
   ],
 
-
   afterCreate_tracking : [
 
     {
-      eventName: "tracking_update_data"
+      eventName: 'tracking_update_data'
     },
 
   ],
@@ -77,17 +65,16 @@ export default {
   afterUpdate_tracking : [
 
     {
-      eventName: "tracking_update_data"
+      eventName: 'tracking_update_data'
     }
 
   ],
-
 
   // should not be called directly, should be called after an event
   fill_template: [
 
     {
-      handlerName: "fill_template.ts"
+      handlerName: 'fill_template.ts'
 
     }
   ],
@@ -95,7 +82,7 @@ export default {
   update_document_preview : [
 
     {
-      handlerName: "update_document_preview.ts"
+      handlerName: 'update_document_preview.ts'
     }
 
   ],
@@ -103,7 +90,7 @@ export default {
   afterCreate_document : [
 
     {
-      eventName: "update_document_preview"
+      eventName: 'update_document_preview'
     }
 
   ],
@@ -111,7 +98,7 @@ export default {
   afterUpdate_document : [
 
     {
-      eventName: "update_document_preview.ts"
+      eventName: 'update_document_preview.ts'
     }
 
   ],
@@ -120,9 +107,15 @@ export default {
     {
       condition : true,
       eventName : 'create_tracking',
+    },
+    {
+      condition : true,
+      handlerName : 'entity_create_invitation.ts',
+      otherParameters : {
+        tableName : 'booking',
+      }
     }
   ],
-
 
   afterCreate_booking: [
 
@@ -142,7 +135,6 @@ export default {
       }
     },
 
-
     // update personId / create Invitation
     {
       condition : true,
@@ -157,7 +149,6 @@ export default {
       condition : true,
       eventName : 'create_tracking',
     },
-
 
     // fill template of the booking
     {
@@ -182,7 +173,7 @@ export default {
     {
 
       condition : true,
-      handlerName: "checker.ts",
+      handlerName: 'checker.ts',
       otherParameters: {
 
         checker: {
@@ -192,36 +183,35 @@ export default {
             {
 
               // warning: checkFunctionName should be unqiue so that the next event can extract back the result based on the name
-              checkerFunctionName: "isEqual",
+              checkerFunctionName: 'isEqual',
               checkerParam: {
                 value: 689
               }
             },
 
             {
-              checkerFunctionName: "isEmpty",
+              checkerFunctionName: 'isEmpty',
             },
 
             {
-              checkerFunctionName: "isNull",
+              checkerFunctionName: 'isNull',
             }
           ],
-
 
           bookingNo: [
 
             {
 
-              checkerFunctionName: "mytest",
+              checkerFunctionName: 'mytest',
               checkerFunction: (parameters, checkerParam) => {
 
                 const bookingNo = parameters.data.bookingNo as string
 
-                return bookingNo.startsWith(checkerParam["value"])
+                return bookingNo.startsWith(checkerParam['value'])
 
               },
               checkerParam: {
-                value: "777"
+                value: '777'
               }
             },
 
@@ -233,7 +223,7 @@ export default {
 
         {
 
-          eventName: "fill_template",
+          eventName: 'fill_template',
 
           previousParameters: {
             fileName : 'Shipping Order',
@@ -247,20 +237,10 @@ export default {
           condition : false
         }
 
-
-
-
-
-
       ]
     }
 
-
   ],
-
-
-
-
 
 } as {
   [eventName: string]: EventConfig[]

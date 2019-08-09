@@ -6,10 +6,6 @@ const query = new Query({
     url: 'api/booking/query/booking',
     columns: [
       {
-        name: 'createdAt',
-        type: 'Date'
-      },
-      {
         name: 'updatedAt',
         type: 'Date'
       },
@@ -98,7 +94,11 @@ const query = new Query({
         type: 'string'
       },
       {
-        name: 'cYCutOffDate',
+        name: 'cYCutOffDateEstimated',
+        type: 'Date'
+      },
+      {
+        name: 'cYCutOffDateActual',
         type: 'Date'
       },
       {
@@ -154,14 +154,6 @@ const query = new Query({
         type: 'string'
       },
       {
-        name: 'shipperPartyPhone',
-        type: 'string'
-      },
-      {
-        name: 'shipperPartyEmail',
-        type: 'string'
-      },
-      {
         name: 'consigneePartyCode',
         type: 'string'
       },
@@ -175,14 +167,6 @@ const query = new Query({
       },
       {
         name: 'consigneePartyContactName',
-        type: 'string'
-      },
-      {
-        name: 'consigneePartyPhone',
-        type: 'string'
-      },
-      {
-        name: 'consigneePartyEmail',
         type: 'string'
       },
       {
@@ -202,14 +186,6 @@ const query = new Query({
         type: 'string'
       },
       {
-        name: 'forwarderPartyPhone',
-        type: 'string'
-      },
-      {
-        name: 'forwarderPartyEmail',
-        type: 'string'
-      },
-      {
         name: 'notifyPartyPartyCode',
         type: 'string'
       },
@@ -223,14 +199,6 @@ const query = new Query({
       },
       {
         name: 'notifyPartyPartyContactName',
-        type: 'string'
-      },
-      {
-        name: 'notifyPartyPartyPhone',
-        type: 'string'
-      },
-      {
-        name: 'notifyPartyPartyEmail',
         type: 'string'
       },
       {
@@ -248,15 +216,7 @@ const query = new Query({
       {
         name: 'agentPartyContactName',
         type: 'string'
-      },
-      {
-        name: 'agentPartyPhone',
-        type: 'string'
-      },
-      {
-        name: 'agentPartyEmail',
-        type: 'string'
-      },
+      }
     ]
   }, 'booking')
 })

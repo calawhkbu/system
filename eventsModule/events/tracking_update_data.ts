@@ -1,23 +1,20 @@
 
 import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
-import { JwtPayload } from 'modules/auth/interfaces/jwt-payload';
-import { Transaction, Sequelize } from 'sequelize';
+import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
+import { Transaction, Sequelize } from 'sequelize'
 import { IFindOptions } from 'sequelize-typescript'
 import moment = require('moment')
 
-import { BookingService } from '../../../../swivel-backend-new/src/modules/sequelize/booking/service';
+import { BookingService } from '../../../../swivel-backend-new/src/modules/sequelize/booking/service'
 
-import { TrackingService } from '../../../../swivel-backend-new/src/modules/sequelize/tracking/service';
-import { TrackingReferenceService } from '../../../../swivel-backend-new/src/modules/sequelize/trackingReference/service';
-import { AlertDbService } from '../../../../swivel-backend-new/src/modules/sequelize/alert/service';
+import { TrackingService } from '../../../../swivel-backend-new/src/modules/sequelize/tracking/service'
+import { TrackingReferenceService } from '../../../../swivel-backend-new/src/modules/sequelize/trackingReference/service'
+import { AlertDbService } from '../../../../swivel-backend-new/src/modules/sequelize/alert/service'
 
-import { Tracking } from '../../../../swivel-backend-new/src/models/main/tracking';
-import { Booking } from '../../../../swivel-backend-new/src/models/main/booking';
-import { TrackingReference } from '../../../../swivel-backend-new/src/models/main/trackingReference';
-
-
-
+import { Tracking } from '../../../../swivel-backend-new/src/models/main/tracking'
+import { Booking } from '../../../../swivel-backend-new/src/models/main/booking'
+import { TrackingReference } from '../../../../swivel-backend-new/src/models/main/trackingReference'
 
 // config the timeRange that need to send alert
 
@@ -32,15 +29,11 @@ const deplayAlertTimeRange = {
 
   }
 
-
 }
-
-
-
 
 class TrackingUpdateDataEvent extends BaseEvent {
 
-  constructor(
+  constructor (
 
     protected readonly parameters: any,
     protected readonly eventConfig: EventConfig,
@@ -51,30 +44,24 @@ class TrackingUpdateDataEvent extends BaseEvent {
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
 
-
   ) {
     super(parameters, eventConfig, repo, eventService, allService, user, transaction)
   }
 
-
-  public async mainFunction(parameters: any) {
+  public async mainFunction (parameters: any) {
 
     const tracking = parameters.data as Tracking
 
-
-
     const rawQueryOption = { raw: true, type: Sequelize.QueryTypes.SELECT, transaction: this.transaction }
-
 
     // todo: find all tracking reference related to this tracking
     // find all booking related to this booking
 
     // update eted/eta in booking
-    // check if it changed too much 
+    // check if it changed too much
 
     console.log(JSON.stringify(parameters), 'parameters')
     console.log('in main Excecute of TrackingUpdateData')
-
 
     const trackingService = this.allService['TrackingService'] as TrackingService
 
@@ -83,11 +70,10 @@ class TrackingUpdateDataEvent extends BaseEvent {
 
     const bookingService = this.allService['BookingService'] as BookingService
 
-
     let trackingNo = tracking.trackingNo
     trackingNo = '123'
 
-    const queryString = 'SELECT `tracking_reference`.`partyGroupCode`, `tracking_reference`.`trackingNo`, `tracking_reference`.`type` FROM (SELECT  `tracking_reference`.*,  `masterNo` AS trackingNo, \'masterNo\' as `type` FROM `tracking_reference` UNION SELECT  `tracking_reference`.*, `soTable`.`trackingNo`, \'soNo\' as `type` FROM  `tracking_reference`,  JSON_TABLE( `soNo`, \"$[*]\" COLUMNS (`trackingNo` VARCHAR(100) PATH \"$\")) `soTable`\n\tUNION\n\t\tSELECT  `tracking_reference`.* , `containerTable`.`trackingNo`, \'containerNo\' as `type`\n\t\tFROM `tracking_reference`,  JSON_TABLE( `containerNo`, \"$[*]\" COLUMNS (`trackingNo` VARCHAR(100) PATH \"$\")) `containerTable`\n) `tracking_reference`\nWHERE `tracking_reference`.`trackingNo` is not null \nAND `tracking_reference`.`trackingNo` = \"' + `${trackingNo}` + '\"';
+    const queryString = 'SELECT `tracking_reference`.`partyGroupCode`, `tracking_reference`.`trackingNo`, `tracking_reference`.`type` FROM (SELECT  `tracking_reference`.*,  `masterNo` AS trackingNo, \'masterNo\' as `type` FROM `tracking_reference` UNION SELECT  `tracking_reference`.*, `soTable`.`trackingNo`, \'soNo\' as `type` FROM  `tracking_reference`,  JSON_TABLE( `soNo`, \"$[*]\" COLUMNS (`trackingNo` VARCHAR(100) PATH \"$\")) `soTable`\n\tUNION\n\t\tSELECT  `tracking_reference`.* , `containerTable`.`trackingNo`, \'containerNo\' as `type`\n\t\tFROM `tracking_reference`,  JSON_TABLE( `containerNo`, \"$[*]\" COLUMNS (`trackingNo` VARCHAR(100) PATH \"$\")) `containerTable`\n) `tracking_reference`\nWHERE `tracking_reference`.`trackingNo` is not null \nAND `tracking_reference`.`trackingNo` = \"' + `${trackingNo}` + '\"'
     const trackingReferenceList = await trackingReferenceService.query(queryString, rawQueryOption) as { partyGroupCode: string, trackingNo: string, type: 'masterNo' | 'soNo' | 'containerNo' }[]
 
     let bookingList: Booking[]
@@ -96,7 +82,6 @@ class TrackingUpdateDataEvent extends BaseEvent {
 
       let bookingIdListQueryString: string
       let bookingIdList: number[]
-
 
       if (trackingReference.type == 'masterNo') {
 
@@ -110,7 +95,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
       }
 
       else if (trackingReference.type == 'soNo') {
-        bookingIdListQueryString = `SELECT 
+        bookingIdListQueryString = `SELECT
           booking_container.bookingId
           FROM booking_container
           WHERE booking_container.soNo = '${trackingNo}'
@@ -119,7 +104,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
 
       else if (trackingReference.type == 'containerNo') {
 
-        bookingIdListQueryString = `SELECT 
+        bookingIdListQueryString = `SELECT
           booking_container.bookingId
           FROM booking_container
           WHERE booking_container.containerNo = '${trackingNo}'
@@ -138,7 +123,6 @@ class TrackingUpdateDataEvent extends BaseEvent {
         },
         transaction: this.transaction
       }, this.user) as Booking[]
-
 
       const alertMap = [
         {
@@ -165,7 +149,6 @@ class TrackingUpdateDataEvent extends BaseEvent {
 
       ]
 
-
       const alertResult = [] as {
         tableName: string,
         primaryKey: string,
@@ -174,12 +157,9 @@ class TrackingUpdateDataEvent extends BaseEvent {
       // process the tracking information into booking
       const resultList = bookingList.map(booking => {
 
-
-
         const result = {
           id: booking.id,
         } as any
-
 
         for (const iterator of alertMap) {
 
@@ -191,7 +171,6 @@ class TrackingUpdateDataEvent extends BaseEvent {
           // console.log(iterator.bookingVariable)
           // console.log(`trackingTime : ${trackingTime} type : ${typeof trackingTime}`)
           // console.log(`bookingTime : ${bookingTime} type : ${typeof bookingTime}`)
-
 
           // put the updated variable into result
           if (trackingTime) {
@@ -207,7 +186,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
 
                 alertResult.push({
 
-                  //hardcode
+                  // hardcode
                   tableName: 'booking',
                   primaryKey: booking.id.toString(),
                   alertType: iterator.alertType
@@ -218,16 +197,13 @@ class TrackingUpdateDataEvent extends BaseEvent {
             }
           }
 
-
         }
-
 
         return result
       })
 
       // update booking
       await bookingService.save(resultList, this.user, this.transaction)
-
 
       // send alert
       for (const iterator of alertResult) {
@@ -236,22 +212,18 @@ class TrackingUpdateDataEvent extends BaseEvent {
 
       }
 
-
     })
     )
-
 
     console.log('in main Excecute of TrackingUpdateData Finish')
 
     return {
-      'exampleResult': 'exampleValue'
+      exampleResult: 'exampleValue'
     }
   }
 }
 
-
 export default {
-
 
   execute: async (parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
 

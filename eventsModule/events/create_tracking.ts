@@ -1,18 +1,14 @@
 
 import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
-import { JwtPayload } from 'modules/auth/interfaces/jwt-payload';
-import { Transaction } from 'sequelize';
+import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
+import { Transaction } from 'sequelize'
 
+import { TrackService } from 'modules/tracking/service'
 
-
-import { TrackService } from 'modules/tracking/service';
-
-import { Booking } from 'models/main/booking';
-import { BookingReference } from 'models/main/bookingReference';
-import { BookingContainer } from 'models/main/bookingContainer';
-
-
+import { Booking } from 'models/main/booking'
+import { BookingReference } from 'models/main/bookingReference'
+import { BookingContainer } from 'models/main/bookingContainer'
 
 // // debug
 // import { TrackService } from '../../../../swivel-backend-new/src/modules/tracking/service';
@@ -21,12 +17,9 @@ import { BookingContainer } from 'models/main/bookingContainer';
 // import { BookingReference } from '../../../../swivel-backend-new/src/models/main/bookingReference';
 // import { BookingContainer } from '../../../../swivel-backend-new/src/models/main/bookingContainer';
 
-
-
-
 class CreateTrackingEvent extends BaseEvent {
 
-  constructor(
+  constructor (
 
     protected readonly parameters: any,
     protected readonly eventConfig: EventConfig,
@@ -37,12 +30,11 @@ class CreateTrackingEvent extends BaseEvent {
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
 
-
   ) {
     super(parameters, eventConfig, repo, eventService, allService, user, transaction)
   }
 
-  public getMasterNo(booking: Booking, refName: string): string {
+  public getMasterNo (booking: Booking, refName: string): string {
 
     const bookingReference = booking.bookingReference.find((x: BookingReference) => x.refName == refName)
 
@@ -50,26 +42,21 @@ class CreateTrackingEvent extends BaseEvent {
       return bookingReference.refDescription
     }
 
-
   }
 
-  public getCotainerNo(booking: Booking): string[] {
+  public getCotainerNo (booking: Booking): string[] {
     const containerNoList = booking.bookingContainers.filter((x: BookingContainer) => x.containerNo && x.containerNo.length)
     return containerNoList
 
   }
 
-  public getSoNo(booking: Booking): string[] {
+  public getSoNo (booking: Booking): string[] {
 
     const soNoList = booking.bookingContainers.filter((x: BookingContainer) => x.soNo && x.soNo.length)
     return soNoList
   }
 
-
-
-
-
-  public async createTrackingAir(booking: Booking) {
+  public async createTrackingAir (booking: Booking) {
 
     const moduleTypeCode = booking.moduleTypeCode
     const carrierCode = booking.carrierCode
@@ -77,8 +64,8 @@ class CreateTrackingEvent extends BaseEvent {
     const partyGroupCode = booking.partyGroupCode
 
     // hardcode
-    const masterNo = this.getMasterNo(booking, "MAWB")
-    console.log(masterNo, "================")
+    const masterNo = this.getMasterNo(booking, 'MAWB')
+    console.log(masterNo, '================')
 
     if (masterNo) {
 
@@ -96,11 +83,9 @@ class CreateTrackingEvent extends BaseEvent {
 
     }
 
-
   }
 
-  public async createTrackingSea(booking: Booking) {
-
+  public async createTrackingSea (booking: Booking) {
 
     const moduleTypeCode = booking.moduleTypeCode
     const carrierCode = booking.carrierCode
@@ -108,11 +93,9 @@ class CreateTrackingEvent extends BaseEvent {
     const partyGroupCode = booking.partyGroupCode
 
     // hardcode
-    const masterNo = this.getMasterNo(booking, "MBL")
+    const masterNo = this.getMasterNo(booking, 'MBL')
     const containerNo = this.getCotainerNo(booking)
     const soNo = this.getSoNo(booking)
-
-
 
     // if masterNo and conatinerNo is both not found
     if (carrierCode || masterNo || containerNo.length > 0 || soNo.length) {
@@ -135,15 +118,15 @@ class CreateTrackingEvent extends BaseEvent {
   }
 
   // parameters should be booking
-  public async mainFunction(parameters: any) {
-    console.log("======================")
+  public async mainFunction (parameters: any) {
+    console.log('======================')
 
     const booking = parameters.data as Booking
 
     // etd, carrier and ModuleType is required
 
     if (booking.moduleTypeCode && booking.departureDateEstimated) {
-      console.log("here")
+      console.log('here')
 
       switch (booking.moduleTypeCode) {
         case 'AIR':
@@ -154,17 +137,13 @@ class CreateTrackingEvent extends BaseEvent {
           return await this.createTrackingSea(booking)
 
         default:
-          break;
+          break
       }
-
 
     }
 
-
-
   }
 }
-
 
 export default {
 
@@ -172,7 +151,6 @@ export default {
 
     const event = new CreateTrackingEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
     return await event.execute()
-
 
   }
 

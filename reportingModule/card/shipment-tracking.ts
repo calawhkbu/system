@@ -1,6 +1,6 @@
 import { BinaryExpression, ColumnExpression, CreateTableJQL, FromTable, FunctionExpression, GroupBy, IsNullExpression, JoinClause, ParameterExpression, Query, ResultColumn } from 'node-jql'
 
-function prepareParams(check?: boolean): Function {
+function prepareParams (check?: boolean): Function {
   if (check) {
     return function (require, session, params) {
       // import

@@ -17,7 +17,7 @@ export default [
 
     // script
     const subqueries = params.subqueries || {}
-    let portColumn = subqueries.type.value
+    const portColumn = subqueries.type.value
     return new CreateTableJQL({
       $temporary: true,
       name: 'shipment',

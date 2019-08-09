@@ -1,6 +1,6 @@
 import { BinaryExpression, ColumnExpression, FunctionExpression, Query } from 'node-jql'
 
-function prepareParams(check?: boolean): Function {
+function prepareParams (check?: boolean): Function {
   if (check) {
     return function (require, session, params) {
       // import

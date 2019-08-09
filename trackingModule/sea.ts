@@ -138,7 +138,7 @@ export default class BaseAirTrackingService {
         'system',
         'yundang-sea-register',
         { Buffer: this.buffer, constants: trackingModule.yundang },
-        { masterNo: trackingNo, carrierCode, isMasterContainer, ...(masterNo2 ? { masterNo2 }: {}) }
+        { masterNo: trackingNo, carrierCode, isMasterContainer, ...(masterNo2 ? { masterNo2 } : {}) }
       )
       newTracking.detailsRaw = newDetailsRaw
       if (newDetailsRaw.success && newDetailsRaw.result[0].success) {
@@ -163,7 +163,7 @@ export default class BaseAirTrackingService {
     if (oldTracking.trackingNo !== trackingNo) {
       return
     }
-    let newTracking = {
+    const newTracking = {
       id: oldTracking.id,
       source: 'YUNDANG',
       trackingNo: oldTracking.trackingNo,
@@ -190,7 +190,7 @@ export default class BaseAirTrackingService {
         'system',
         'yundang-sea-get',
         { Buffer: this.buffer, constants: trackingModule.yundang },
-        { masterNo: trackingNo, carrierCode, isMasterContainer, ...(masterNo2 ? { masterNo2 }: {}) }
+        { masterNo: trackingNo, carrierCode, isMasterContainer, ...(masterNo2 ? { masterNo2 } : {}) }
       ))
       newDetailsRaw = Array.isArray(newDetailsRaw) ? newDetailsRaw[0] : null
       newTracking.detailsRaw = newDetailsRaw
@@ -200,7 +200,7 @@ export default class BaseAirTrackingService {
       newDetailsRaw = newDetailsRaw.objlinertracking
       newTracking.batchStatus = 'OPEN'
       const status = [] // TODO get from codeMaster
-      let newDetails = oldDetails
+      const newDetails = oldDetails
       newDetails.isClosed = newDetailsRaw.endTime || newDetailsRaw.isendforce === 'Y'
       newDetails.lastStatusCode = newDetailsRaw.currentnode
       newDetails.lastStatus = status[newDetailsRaw.currentnode] || newDetailsRaw.currentnode
@@ -214,7 +214,7 @@ export default class BaseAirTrackingService {
       }
       newDetails.lastPort = newDetailsRaw.currentnodeplace
       newDetails.vesselName = newDetailsRaw.vslname
-      let trackingHistory: any[] = newDetailsRaw.lstlinertrackingstatus || []
+      const trackingHistory: any[] = newDetailsRaw.lstlinertrackingstatus || []
       const departure = trackingHistory.filter(h => h.statuscd === 'DEP')
       departure.forEach(d => {
         if (d.isest) {
@@ -246,11 +246,11 @@ export default class BaseAirTrackingService {
         statusDate: new Date(item.statustime),
         statusPlace: item.statusplace,
         updatedAt: new Date(item.updatetime),
-        isEstimated: item.isest == "Y" ? true : false
+        isEstimated: item.isest == 'Y' ? true : false
       }))
       newDetails.billCargoTracking = []
       if (newDetailsRaw.objbillinfo && newDetailsRaw.objbillinfo.lstctnrinfos && newDetailsRaw.objbillinfo.lstctnrinfos.length > 0) {
-        newDetails.billContainerTracking = newDetailsRaw.objbillinfo.lstctnrinfos.map((item : any) => {
+        newDetails.billContainerTracking = newDetailsRaw.objbillinfo.lstctnrinfos.map((item: any) => {
           return {
             containerNo: item.conno,
             sealNo: item.sealno,
