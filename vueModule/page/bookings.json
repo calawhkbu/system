@@ -18,7 +18,10 @@
           "i18nContext": "Reporting",
           "clickable": true,
           "draggable": true,
-          "sorting": {},
+          "sorting": {
+            "direction": "DESC",
+            "key": "updatedAt"
+          },
           "pagination": {
             "current": 0,
             "perPage": 25
@@ -34,13 +37,13 @@
           "key": "createdAt",
           "sql": "booking.createdAt",
           "width": 150,
-          "datetime": "YYYY-MM-DD"
+          "format": "YYYY-MM-DD"
         },
         {
           "key": "updatedAt",
           "sql": "booking.updatedAt",
           "width": 150,
-          "datetime": "YYYY-MM-DD"
+          "format": "YYYY-MM-DD"
         },
         {
           "key": "bookingNo",
@@ -48,27 +51,31 @@
         },
         {
           "key": "departureDateEstimated",
-          "datetime": "YYYY-MM-DD"
+          "format": "YYYY-MM-DD"
         },
         {
           "key": "departureDateActual",
-          "datetime": "YYYY-MM-DD"
+          "format": "YYYY-MM-DD"
         },
         {
           "key": "arrivalDateEstimated",
-          "datetime": "YYYY-MM-DD"
+          "format": "YYYY-MM-DD"
         },
         {
           "key": "cargoReadyDateEstimated",
-          "datetime": "YYYY-MM-DD"
+          "format": "YYYY-MM-DD"
         },
         {
           "key": "cargoReadyDateActual",
-          "datetime": "YYYY-MM-DD"
+          "format": "YYYY-MM-DD"
         },
         {
-          "key": "cYCutOffDate",
-          "datetime": "YYYY-MM-DD"
+          "key": "cYCutOffDateEstimated",
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "cYCutOffDateActual",
+          "format": "YYYY-MM-DD"
         }
       ],
       "filters": [],

@@ -50,4 +50,8 @@ query.register('masterNo', new Query({
   $where: new InExpression(new ColumnExpression('tracking_reference', 'masterNo'), false)
 })).register('value', 0)
 
+query.register('lastStatus', new Query({
+  $where: new BinaryExpression(new ColumnExpression('tracking', 'lastStatus'), '=')
+})).register('value', 0)
+
 export default query

@@ -84,7 +84,7 @@ export default class BaseAirTrackingService {
     const { trackingModule } = await this.swivelConfigService.get()
     const newTracking = {
       source: 'YUNDANG',
-      trackingNo: trackingNo,
+      trackingNo,
       batchStatus: 'OPEN',
       batchRetry: 0,
       details: {
@@ -142,7 +142,7 @@ export default class BaseAirTrackingService {
     if (oldTracking.trackingNo !== trackingNo) {
       return
     }
-    let newTracking = {
+    const newTracking = {
       id: oldTracking.id,
       source: 'YUNDANG',
       trackingNo: oldTracking.trackingNo,
@@ -169,7 +169,7 @@ export default class BaseAirTrackingService {
       newDetailsRaw = newDetailsRaw.objairlinertracking
       newTracking.batchStatus = 'OPEN'
       const status = [] // TODO get from codeMaster
-      let newDetails = oldDetails
+      const newDetails = oldDetails
       newDetails.isClosed = newDetailsRaw.endTime || newDetailsRaw.isendforce === 'Y'
       newDetails.lastStatusCode = newDetailsRaw.currentnode
       newDetails.lastStatus = status[newDetailsRaw.currentnode] || newDetailsRaw.currentnode
@@ -184,7 +184,7 @@ export default class BaseAirTrackingService {
       ) {
         newDetails.lastStatusUpdateDate = moment.utc().toDate()
       }
-      let trackingHistory: any[] = newDetailsRaw.lstairlinertrackingstatus || []
+      const trackingHistory: any[] = newDetailsRaw.lstairlinertrackingstatus || []
       const departure = trackingHistory.filter(h => h.statuscd === 'DEP')
       departure.forEach(d => {
         if (d.isest) {
@@ -209,7 +209,7 @@ export default class BaseAirTrackingService {
         newDetails.lastActualUpdateDate = moment.utc().toDate()
       }
       newDetails.history = trackingHistory.map((item) => ({
-        flightNo:item.flightno,
+        flightNo: item.flightno,
         statusCode: item.statuscd,
         status: status[item.statuscd] || item.statuscd,
         statusDescription: item.statedescription_en,
@@ -219,15 +219,15 @@ export default class BaseAirTrackingService {
         // statusPlaceType: airports[item.statusplace] ? 'airport' : 'other',
         // statusPlaceDescription: airports[item.statusplace] ? airports[item.statusplace].locationNameClean : item.statusplace,
         updatedAt: new Date(item.updatetime),
-        isEstimated: item.isest == "Y" ? true : false,
+        isEstimated: item.isest == 'Y' ? true : false,
         pieces: item.pieces,
         weight: item.weight,
         volume: item.volume
       }))
-      newDetails.billContainerTracking = [];
+      newDetails.billContainerTracking = []
       if (newDetailsRaw.lstBookingInfo && newDetailsRaw.lstBookingInfo.length > 0) {
-        newDetails.billContainerTracking = newDetailsRaw.lstBookingInfo.map((item : any) => {
-          let flightDetails = [];
+        newDetails.billContainerTracking = newDetailsRaw.lstBookingInfo.map((item: any) => {
+          let flightDetails = []
           if (item.lstflightinfo && item.lstflightinfo.length > 0) {
             flightDetails = item.lstflightinfo.map((flight: any) => ({
               flightNo: flight.flightno,
@@ -240,8 +240,8 @@ export default class BaseAirTrackingService {
               ata: flight.ata ? new Date(flight.ata) : null,
               statusCode: flight.status,
               status: status[flight.status] || flight.status,
-              statusDescription:flight.statusdescription,
-              goodsDetails:{
+              statusDescription: flight.statusdescription,
+              goodsDetails: {
                 name: flight.goodsname,
                 pieces: flight.pieces,
                 weight: flight.weight,
@@ -257,7 +257,7 @@ export default class BaseAirTrackingService {
               pieces: item.pieces,
               weight: item.weight
             },
-            flightDetails: flightDetails,
+            flightDetails,
             history: item.lstcargostatus.map((history: any) => ({
               flightNo: history.flightno,
               statusCode: history.status,
@@ -268,7 +268,7 @@ export default class BaseAirTrackingService {
               // statusPlaceType: airports[history.station] ? 'airport' : 'other',
               // statusPlaceDescription: airports[history.station] ? airports[history.station].locationNameClean : history.station,
               updatedAt: new Date(history.updatetime),
-              isEstimated: history.isest == "Y" ? true : false,
+              isEstimated: history.isest == 'Y' ? true : false,
               pieces: history.pieces,
               weight: history.weight
             }))

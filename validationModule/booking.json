@@ -32,10 +32,5 @@
     "field": "consigneeParty",
     "validator": "required",
     "part": "BookingForm.partyForm"
-  },
-  {
-    "field": "departureDateEstimated",
-    "validator": "required",
-    "part": "BookingForm.dateForm"
   }
 ]

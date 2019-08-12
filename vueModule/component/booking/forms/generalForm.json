@@ -1,5 +1,4 @@
 {
-  "layout": "v-card",
   "components": [{
       "is": "WidgetForm",
       "props": {
@@ -7,7 +6,7 @@
             "label": "BookingPage.moduleType",
             "name": "moduleTypeCode",
             "component": "AsyncSelect",
-            "class": "xs-12 md-6",
+            "class": "xs-12 md-2",
             "validator": [
               "required"
             ],
@@ -30,7 +29,7 @@
             "label": "BookingPage.boundType",
             "name": "boundTypeCode",
             "component": "AsyncSelect",
-            "class": "xs-12 md-6",
+            "class": "xs-12 md-2",
             "relation": "boundType",
             "validator": [
               "required"
@@ -50,11 +49,60 @@
             }
           },
           {
+            "label": "BookingPage.serviceCode",
+            "name": "serviceCode",
+            "component": "AsyncSelect",
+            "class": "xs-12 md-2",
+            "validator": [
+              "required"
+            ],
+            "props": {
+              "required": true,
+              "url": "api/code/query/code_master",
+              "item-text": "name",
+              "item-value": "code",
+              "params": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "SERVTYPE"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "label": "BookingPage.vas",
+            "name": "vas",
+            "component": "v-select",
+            "class": "xs-12 md-6",
+            "props": {
+              "multiple": true,
+              "items": [{
+                  "text": "Pick-up",
+                  "value": {
+                    "name": "pickup"
+                  }
+                },
+                {
+                  "text": "Door Delivery",
+                  "value": {
+                    "name": "delivery"
+                  }
+                },
+                {
+                  "text": "Insurance",
+                  "value": {
+                    "name": "insurance"
+                  }
+                }
+              ]
+            }
+          },
+          {
             "label": "BookingPage.placeOfReceipt",
             "name": "placeOfReceipt",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-3",
-            "readonlyClass": "hidden",
             "more": [{
               "name": "placeOfReceiptCode",
               "selector": "portCode"
@@ -173,7 +221,6 @@
             "label": "BookingPage.placeOfDelivery",
             "name": "placeOfDelivery",
             "component": "AsyncAutoSuggest",
-            "readonlyClass": "hidden",
             "class": "xs-12 md-3",
             "more": [{
               "name": "placeOfDeliveryCode",
@@ -208,48 +255,9 @@
             }
           },
           {
-            "label": "BookingPage.finalDestination",
-            "name": "finalDestination",
-            "component": "AsyncAutoSuggest",
-            "readonlyClass": "hidden",
-            "class": "xs-12 md-6",
-            "more": [{
-              "name": "finalDestinationCode",
-              "selector": "portCode"
-            }],
-            "props": {
-              "method": "POST",
-              "url": "api/location/query/location",
-              "searchValueParams": {
-                "subqueries": {
-                  "moduleType": {
-                    "value": "{{form.moduleTypeCode}}"
-                  },
-                  "ports": {
-                    "value": "{{query}}"
-                  }
-                }
-              },
-              "searchTextParams": {
-                "subqueries": {
-                  "moduleType": {
-                    "value": "{{form.moduleTypeCode}}"
-                  },
-                  "q": {
-                    "value": "{{query}}"
-                  }
-                },
-                "limit": 5
-              },
-              "item-text": "name",
-              "item-value": "portCode"
-            }
-          },
-          {
             "label": "BookingPage.carrier",
             "name": "carrier",
             "component": "AsyncAutoSuggest",
-            "readonlyClass": "xs-12",
             "class": "xs-12 md-6",
             "relation": "carrier",
             "more": [{
@@ -279,9 +287,6 @@
                 },
                 "limit": 5
               },
-
-
-
               "item-text": "name",
               "item-value": "code"
             }
@@ -290,7 +295,7 @@
             "label": "BookingPage.vesselName",
             "name": "vesselName",
             "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
+            "class": "xs-12 md-3",
             "more": [{
               "name": "vesselName",
               "selector": "name"
@@ -327,12 +332,16 @@
             "label": "BookingPage.voyageFlightNumber",
             "name": "voyageFlightNumber",
             "component": "v-text-field",
-            "class": "xs-12 md-6",
+            "class": "xs-12 md-3",
             "checkDisplayWhen": "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA')"
           },
           {
             "class": "xs-12 md-6",
-            "checkDisplayWhen": "return form && (form.moduleTypeCode || form.moduleTypeCode === 'AIR')"
+            "checkDisplayWhen": "return form && !(form.moduleTypeCode || form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA')"
+          },
+          {
+            "class": "xs-12 md-3",
+            "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'AIR'"
           }
         ]
       }
@@ -344,28 +353,6 @@
       "is": "WidgetForm",
       "props": {
         "fields": [{
-            "label": "BookingPage.serviceCode",
-            "name": "serviceCode",
-            "component": "AsyncSelect",
-            "class": "xs-12 md-6",
-            "validator": [
-              "required"
-            ],
-            "props": {
-              "required": true,
-              "url": "api/code/query/code_master",
-              "item-text": "name",
-              "item-value": "code",
-              "params": {
-                "subqueries": {
-                  "codeType": {
-                    "value": "SERVTYPE"
-                  }
-                }
-              }
-            }
-          },
-          {
             "label": "BookingPage.incoTermsCode",
             "name": "incoTermsCode",
             "component": "AsyncSelect",
@@ -399,8 +386,7 @@
             "label": "BookingPage.freightTermsCode",
             "name": "freightTermsCode",
             "component": "AsyncSelect",
-            "readonlyClass": "hidden",
-            "class": "xs-12 md-6",
+            "class": "xs-12 md-3",
             "props": {
               "url": "api/code/query/code_master",
               "item-text": "name",
@@ -418,8 +404,7 @@
             "label": "BookingPage.otherTerms",
             "name": "otherTermsCode",
             "component": "AsyncSelect",
-            "readonlyClass": "hidden",
-            "class": "xs-12 md-6",
+            "class": "xs-12 md-3",
             "props": {
               "url": "api/code/query/code_master",
               "item-text": "name",
@@ -446,7 +431,7 @@
             "label": "BookingPage.commodity",
             "name": "commodity",
             "component": "v-text-field",
-            "class": "xs-12",
+            "class": "xs-12 md-6",
             "validator": [
               "required"
             ],
@@ -455,16 +440,11 @@
             }
           },
           {
-            "label": "BookingPage.shipMarks",
-            "name": "shipMarks",
-            "component": "v-textarea",
-            "class": "xs-12 md-6"
-          },
-          {
-            "label": "BookingPage.goodsDescription",
-            "name": "goodsDescription",
-            "component": "v-textarea",
-            "class": "xs-12 md-6"
+            "label": "BookingPage.polHSCode",
+            "name": "polHScode",
+            "component": "v-text-field",
+            "class": "xs-12 md-6",
+            "more": ["podHScode"]
           }
         ]
       }

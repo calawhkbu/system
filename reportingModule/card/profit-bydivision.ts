@@ -1,7 +1,7 @@
 import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, Value } from 'node-jql'
 import { parseCode } from 'utils/function'
 
-function prepareParams(type: string): Function {
+function prepareParams (type: string): Function {
   const fn = function (require, session, params) {
     // import
     const { BadRequestException } = require('@nestjs/common')
@@ -20,7 +20,7 @@ function prepareParams(type: string): Function {
   return parseCode(code)
 }
 
-function prepareTable(name: string): CreateTableJQL {
+function prepareTable (name: string): CreateTableJQL {
   return new CreateTableJQL({
     $temporary: true,
     name,
