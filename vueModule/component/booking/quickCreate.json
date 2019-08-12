@@ -13,10 +13,10 @@
             },
             "events": {
               "click.stop": [{
-                "type": "dispatch",
+                "type": "router",
                 "otherParams": {
-                  "name": "widget/changeMode",
-                  "mode": "assignment"
+                  "func": "push",
+                  "path": "/bookings"
                 }
               }]
             },
