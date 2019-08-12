@@ -3,7 +3,7 @@
   "components": [{
       "is": "DynamicComponent",
       "props": {
-        "class": "xs-12 grid align-item-center full-width",
+        "class": "flex align-item-center full-width",
         "components": [{
             "is": "v-btn",
             "props": {
@@ -31,7 +31,7 @@
             "is": "I18nText",
             "props": {
               "class": "headline",
-              "i18nKey": "BookingPage.createTitle",
+              "i18nKey": "BookingPage.quickCreate",
               "swig": true
             }
           }
@@ -411,6 +411,7 @@
             "is": "WidgetForm",
             "props": {
               "fields": [{
+                  "label": "BookingPage.shipper",
                   "name": "shipperParty",
                   "component": "AsyncAutoSuggest",
                   "class": "xs-12 md-4",
@@ -497,6 +498,7 @@
                   }
                 },
                 {
+                  "label": "BookingPage.consignee",
                   "name": "consigneeParty",
                   "component": "AsyncAutoSuggest",
                   "class": "xs-12 md-4",
@@ -583,6 +585,7 @@
                   }
                 },
                 {
+                  "label": "BookingPage.forwarder",
                   "name": "forwarderParty",
                   "component": "AsyncAutoSuggest",
                   "class": "xs-12 md-4",
@@ -678,9 +681,9 @@
             "is": "WidgetForm",
             "props": {
               "fields": [{
-                  "label": "BookingForm.pcs",
+                  "label": "BookingPage.pcs",
                   "name": "flexData.data.pcs",
-                  "component": "v-text-feild",
+                  "component": "v-text-field",
                   "class": "xs-12 md-6",
                   "props": {
                     "type": "number",
@@ -688,7 +691,7 @@
                   }
                 },
                 {
-                  "label": "BookingForm.cargoReadyDateEstimated",
+                  "label": "BookingPage.cargoReadyDateEstimated",
                   "name": "cargoReadyDateEstimated",
                   "component": "DateTimePicker",
                   "class": "xs-12 md-6",
@@ -727,24 +730,52 @@
       }
     },
     {
-      "is": "v-btn",
+      "is": "DynamicComponent",
       "props": {
-        "fab": true,
-        "class": ""
-      },
-      "slots": [{
-        "is": "Icon",
-        "props": {
-          "icon": "save"
-        }
-      }],
-      "events": {
-        "click.stop": [{
-          "type": "dispatch",
-          "otherParams": {
-            "name": "widget/save",
-            "url": "api/booking",
-            "primaryKey": "id"
+        "class": "flex absolute-bottomleft full-width",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "fab": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "navigate_next",
+              "small": true
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "dispatch",
+              "otherParams": {
+                "name": "widget/changeMode",
+                "mode": "create"
+              }
+            }]
+          }
+        }, {
+          "is": "v-spacer"
+        }, {
+          "is": "v-btn",
+          "props": {
+            "fab": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "save"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "dispatch",
+              "otherParams": {
+                "name": "widget/save",
+                "url": "api/booking",
+                "primaryKey": "id"
+              }
+            }]
           }
         }]
       }
