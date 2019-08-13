@@ -302,9 +302,6 @@
             }
           },
           {
-            "is": "v-divider"
-          },
-          {
             "is": "WidgetForm",
             "props": {
               "fields": [{
@@ -377,9 +374,6 @@
             }
           },
           {
-            "is": "v-divider"
-          },
-          {
             "is": "WidgetForm",
             "props": {
               "fields": [{
@@ -403,9 +397,6 @@
                 }
               ]
             }
-          },
-          {
-            "is": "v-divider"
           },
           {
             "is": "WidgetForm",
@@ -675,9 +666,6 @@
             }
           },
           {
-            "is": "v-divider"
-          },
-          {
             "is": "WidgetForm",
             "props": {
               "fields": [{
@@ -706,9 +694,6 @@
             }
           },
           {
-            "is": "v-divider"
-          },
-          {
             "is": "WidgetForm",
             "props": {
               "fields": [{
@@ -722,6 +707,12 @@
                   "name": "goodsDescription",
                   "component": "v-textarea",
                   "class": "xs-12 md-6"
+                },
+                {
+                  "label": "BookingPage.remark",
+                  "name": "remark",
+                  "component": "v-textarea",
+                  "class": "xs-12"
                 }
               ]
             }
