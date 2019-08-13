@@ -292,6 +292,17 @@ query.register('agentPartyName', new Query({
   $where: new RegexpExpression(new ColumnExpression('booking', 'agentPartyName'), false)
 })).register('value', 0)
 
+
+// used createdAt as jobMonth
+query.register('jobMonth', {
+  expression: new FunctionExpression({
+    name: 'DATE_FORMAT',
+    parameters: [new ColumnExpression('booking','createdAt'), "%y-%m"]
+  }),
+  $as: 'jobMonth'
+})
+
+
 query.register('q', new Query({
   $where: new OrExpressions({
     expressions: [

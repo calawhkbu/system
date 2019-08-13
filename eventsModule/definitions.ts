@@ -108,14 +108,15 @@ export default {
       condition : true,
       eventName : 'create_tracking',
     },
-    {
-      condition : true,
-      handlerName : 'entity_create_invitation.ts',
-      otherParameters : {
-        tableName : 'booking',
-      }
-    }
+    // {
+    //   condition : true,
+    //   handlerName : 'entity_create_invitation.ts',
+    //   otherParameters : {
+    //     tableName : 'booking',
+    //   }
+    // }
   ],
+
 
   afterCreate_booking: [
 
@@ -135,14 +136,17 @@ export default {
       }
     },
 
-    // update personId / create Invitation
-    {
-      condition : true,
-      handlerName : 'entity_create_invitation.ts',
-      otherParameters : {
-        tableName : 'booking',
-      }
-    },
+
+    // // update personId / create Invitation
+    // {
+    //   condition : true,
+    //   handlerName : 'entity_create_invitation.ts',
+    //   otherParameters : {
+    //     tableName : 'booking',
+    //   }
+    // },
+
+  
 
     // create booking tracking
     {
