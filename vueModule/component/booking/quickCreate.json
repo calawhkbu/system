@@ -461,16 +461,16 @@
                       "selector": "contactPersonId"
                     },
                     {
-                      "name": "shipperPartyContactPersonId",
-                      "selector": "contactPersonId"
+                      "name": "shipperPartyContactPersonEmail",
+                      "selector": "contactPersonEmail"
                     },
                     {
-                      "name": "shipperPartyContactPersonId",
-                      "selector": "contactPersonId"
+                      "name": "shipperPartyContactPersonName",
+                      "selector": "contactPersonName"
                     },
                     {
-                      "name": "shipperPartyContactPersonId",
-                      "selector": "contactPersonId"
+                      "name": "shipperPartyContactPersonPhone",
+                      "selector": "contactPersonPhone"
                     }
                   ],
                   "props": {
@@ -544,20 +544,20 @@
                       "selector": "partyZip"
                     },
                     {
-                      "name": "consigneePartyContactPersonId",
+                      "name": "shipperPartyContactPersonId",
                       "selector": "contactPersonId"
                     },
                     {
-                      "name": "consigneePartyContactPersonId",
-                      "selector": "contactPersonId"
+                      "name": "shipperPartyContactPersonEmail",
+                      "selector": "contactPersonEmail"
                     },
                     {
-                      "name": "consigneePartyContactPersonId",
-                      "selector": "contactPersonId"
+                      "name": "shipperPartyContactPersonName",
+                      "selector": "contactPersonName"
                     },
                     {
-                      "name": "consigneePartyContactPersonId",
-                      "selector": "contactPersonId"
+                      "name": "shipperPartyContactPersonPhone",
+                      "selector": "contactPersonPhone"
                     }
                   ],
                   "props": {
@@ -631,20 +631,20 @@
                       "selector": "partyZip"
                     },
                     {
-                      "name": "forwarderPartyContactPersonId",
+                      "name": "shipperPartyContactPersonId",
                       "selector": "contactPersonId"
                     },
                     {
-                      "name": "forwarderPartyContactPersonId",
-                      "selector": "contactPersonId"
+                      "name": "shipperPartyContactPersonEmail",
+                      "selector": "contactPersonEmail"
                     },
                     {
-                      "name": "forwarderPartyContactPersonId",
-                      "selector": "contactPersonId"
+                      "name": "shipperPartyContactPersonName",
+                      "selector": "contactPersonName"
                     },
                     {
-                      "name": "forwarderPartyContactPersonId",
-                      "selector": "contactPersonId"
+                      "name": "shipperPartyContactPersonPhone",
+                      "selector": "contactPersonPhone"
                     }
                   ],
                   "props": {

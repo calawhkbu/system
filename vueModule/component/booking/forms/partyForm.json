@@ -103,20 +103,20 @@
               "selector": "partyZip"
             },
             {
-              "name": "{{key}}PartyContactPersonId",
+              "name": "shipperPartyContactPersonId",
               "selector": "contactPersonId"
             },
             {
-              "name": "{{key}}PartyContactPersonId",
-              "selector": "contactPersonId"
+              "name": "shipperPartyContactPersonEmail",
+              "selector": "contactPersonEmail"
             },
             {
-              "name": "{{key}}PartyContactPersonId",
-              "selector": "contactPersonId"
+              "name": "shipperPartyContactPersonName",
+              "selector": "contactPersonName"
             },
             {
-              "name": "{{key}}PartyContactPersonId",
-              "selector": "contactPersonId"
+              "name": "shipperPartyContactPersonPhone",
+              "selector": "contactPersonPhone"
             }
           ],
           "props": {
