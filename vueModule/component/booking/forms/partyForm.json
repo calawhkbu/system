@@ -64,11 +64,11 @@
           "relation": "{{key}}Party",
           "relationMore": [{
               "name": "{{key}}PartyId",
-              "selector": "partyId"
+              "selector": "id"
             },
             {
               "name": "{{key}}PartyName",
-              "selector": "partyName"
+              "selector": "name"
             },
             {
               "name": "{{key}}PartyPhone",
