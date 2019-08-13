@@ -418,11 +418,11 @@
                   "relation": "shipperParty",
                   "relationMore": [{
                       "name": "shipperPartyId",
-                      "selector": "partyId"
+                      "selector": "id"
                     },
                     {
                       "name": "shipperPartyName",
-                      "selector": "partyName"
+                      "selector": "name"
                     },
                     {
                       "name": "shipperPartyPhone",
@@ -505,11 +505,11 @@
                   "relation": "consigneeParty",
                   "relationMore": [{
                       "name": "consigneePartyId",
-                      "selector": "partyId"
+                      "selector": "id"
                     },
                     {
                       "name": "consigneePartyName",
-                      "selector": "partyName"
+                      "selector": "name"
                     },
                     {
                       "name": "consigneePartyPhone",
@@ -592,11 +592,11 @@
                   "relation": "forwarderParty",
                   "relationMore": [{
                       "name": "forwarderPartyId",
-                      "selector": "partyId"
+                      "selector": "id"
                     },
                     {
                       "name": "forwarderPartyName",
-                      "selector": "partyName"
+                      "selector": "name"
                     },
                     {
                       "name": "forwarderPartyPhone",

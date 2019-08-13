@@ -13,6 +13,9 @@ export default {
     headers: { Buffer: any, constants: any },
     body: { carrierCode: string, carrierCode2: string, masterNo: string }
   ) => {
+    if (process.env.NODE_ENV !== 'production') {
+      throw new Error('Only send data on production')
+    }
     if (!headers.Buffer) {
       throw new Error('Pleace post buffer')
     }
