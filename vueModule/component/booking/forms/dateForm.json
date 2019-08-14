@@ -24,6 +24,32 @@
           "finalDoorDelivery": 50
         }
       },
+      "formProps": {
+        "class": "xs-12 padding-4"
+      },
+      "labelProps": {
+        "class": "font-110"
+      },
+      "nonFixedLabelProps": {
+        "cargoReady": {
+          "class": "font-110 blue--text"
+        },
+        "cYCutOff": {
+          "class": "font-110 teal--text"
+        },
+        "pickup": {
+          "class": "font-110 green--text"
+        },
+        "departure": {
+          "class": "font-110 brown--text"
+        },
+        "arrival": {
+          "class": "font-110 indigo--text"
+        },
+        "finalDoorDelivery": {
+          "class": "font-110 pink--text"
+        }
+      },
       "fields": [{
           "label": "Widget.estimatedDate",
           "name": "{{key}}DateEstimated",
