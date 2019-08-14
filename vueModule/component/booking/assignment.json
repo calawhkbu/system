@@ -99,12 +99,11 @@
     }, {
       "is": "div",
       "props": {
-        "class": "xs-12 md-8 padding-right-4"
+        "class": "xs-12 md-8 padding-left-8 padding-right-8"
       },
       "slots": [{
           "is": "DynamicComponent",
           "props": {
-            "class": "padding-topbottom-4 margin-topbottom-4",
             "components": [{
               "is": "WidgetCard",
               "slots": [{
@@ -164,14 +163,9 @@
             "components": [{
               "is": "DynamicComponent",
               "props": {
-                "class": "padding-right-2 xs-12 md-6",
+                "class": "padding-right-4 xs-12 md-6",
                 "components": [{
                   "is": "WidgetCard",
-                  "props": {
-                    "style": {
-                      "min-height": "600px"
-                    }
-                  },
                   "slots": [{
                     "name": "top",
                     "is": "DynamicComponent",
@@ -223,14 +217,9 @@
             }, {
               "is": "DynamicComponent",
               "props": {
-                "class": "padding-left-2 xs-12 md-6",
+                "class": "padding-left-4 xs-12 md-6",
                 "components": [{
                   "is": "WidgetCard",
-                  "props": {
-                    "style": {
-                      "min-height": "600px"
-                    }
-                  },
                   "slots": [{
                     "name": "top",
                     "is": "DynamicComponent",
@@ -397,7 +386,7 @@
     {
       "is": "div",
       "props": {
-        "class": "xs-12 md-4 padding-left-4"
+        "class": "xs-12 md-4 padding-left-8 padding-right-8"
       },
       "slots": [{
         "is": "DynamicComponent",

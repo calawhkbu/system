@@ -42,6 +42,7 @@
       "is": "DynamicComponent",
       "props": {
         "layout": "v-card",
+        "class": "full-width",
         "components": [{
             "is": "WidgetForm",
             "props": {

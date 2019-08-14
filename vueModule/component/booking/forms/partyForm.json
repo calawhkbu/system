@@ -18,23 +18,26 @@
         "class": "xs-12 md-6"
       },
       "formProps": {
-        "class": "xs-12 md-6",
-        "style": {
-          "padding": "4px"
-        }
+        "class": "xs-12 md-6 padding-4"
       },
       "labelProps": {
-        "style": {
-          "font-size": "1.2rem",
-          "font-weight": "bold"
-        }
+        "class": "font-110"
       },
       "nonFixedLabelProps": {
         "shipper": {
-          "class": "required form-label"
+          "class": "font-110 teal--text required form-label"
         },
         "consignee": {
-          "class": "required form-label"
+          "class": "font-110 green--text required form-label"
+        },
+        "forwarder": {
+          "class": "font-110 blue--text"
+        },
+        "agent": {
+          "class": "font-110 brown--text"
+        },
+        "notifyParty": {
+          "class": "font-110 pink--text"
         }
       },
       "keyProps": {
