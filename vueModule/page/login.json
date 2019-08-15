@@ -21,7 +21,6 @@
           "name": "username",
           "label": "Auth.username",
           "props": {
-            "type": "email",
             "browser-autocomplete": "username",
             "autocomplete": "username"
           },
