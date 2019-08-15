@@ -21,6 +21,8 @@
           "name": "username",
           "label": "Auth.username",
           "props": {
+            "required": true,
+            "type": "email"
             "browser-autocomplete": "username",
             "autocomplete": "username"
           },
@@ -34,6 +36,7 @@
           "name": "password",
           "label": "Auth.password",
           "props": {
+            "required": true,
             "browser-autocomplete": "password",
             "autocomplete": "password"
           },
