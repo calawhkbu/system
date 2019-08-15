@@ -22,7 +22,8 @@
           "label": "Auth.username",
           "props": {
             "type": "email",
-            "browser-autocomplete": "username"
+            "browser-autocomplete": "on",
+            "autocomplete": "email"
           },
           "component": "v-text-field",
           "validator": [
@@ -34,7 +35,8 @@
           "name": "password",
           "label": "Auth.password",
           "props": {
-            "browser-autocomplete": "password"
+            "browser-autocomplete": "on",
+            "autocomplete": "password"
           },
           "component": "DisplayPasswordField",
           "validator": [
