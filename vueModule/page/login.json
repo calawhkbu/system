@@ -22,7 +22,7 @@
           "label": "Auth.username",
           "props": {
             "required": true,
-            "type": "email"
+            "type": "email",
             "browser-autocomplete": "username",
             "autocomplete": "username"
           },
