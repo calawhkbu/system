@@ -23,8 +23,10 @@
           "props": {
             "required": true,
             "type": "email",
-            "browser-autocomplete": "username",
-            "autocomplete": "username"
+            "id": "email",
+            "browser-autocomplete": "email",
+            "autocomplete": "email",
+            "aria-invalid": false
           },
           "component": "v-text-field",
           "validator": [
