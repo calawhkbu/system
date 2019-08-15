@@ -22,7 +22,7 @@
           "label": "Auth.username",
           "props": {
             "type": "email",
-            "browser-autocomplete": "on",
+            "browser-autocomplete": "email",
             "autocomplete": "email"
           },
           "component": "v-text-field",
@@ -35,7 +35,7 @@
           "name": "password",
           "label": "Auth.password",
           "props": {
-            "browser-autocomplete": "on",
+            "browser-autocomplete": "password",
             "autocomplete": "password"
           },
           "component": "DisplayPasswordField",
