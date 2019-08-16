@@ -79,21 +79,23 @@
             "multiple": true,
             "items": [{
                 "text": "Pick-up",
-                "value": {
-                  "name": "pickup"
-                }
+                "value": "pickup"
               },
               {
                 "text": "Door Delivery",
-                "value": {
-                  "name": "delivery"
-                }
+                "value": "delivery"
               },
               {
                 "text": "Insurance",
-                "value": {
-                  "name": "insurance"
-                }
+                "value": "insurance"
+              },
+              {
+                "text": "Customs Clearance",
+                "value": "customs-clearance"
+              },
+              {
+                "text": "warehouse",
+                "value": "warehouse"
               }
             ]
           }
