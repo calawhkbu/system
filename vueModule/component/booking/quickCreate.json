@@ -441,7 +441,7 @@
                 "label": "BookingPage.commodity",
                 "name": "commodity",
                 "component": "v-text-field",
-                "class": "xs-12 md-6",
+                "class": "xs-12 md-4",
                 "validator": [
                   "required"
                 ],
@@ -453,8 +453,14 @@
                 "label": "BookingPage.polHSCode",
                 "name": "polHScode",
                 "component": "v-text-field",
-                "class": "xs-12 md-6",
+                "class": "xs-12 md-4",
                 "more": ["podHScode"]
+              },
+              {
+                "label": "BookingPage.countryOfOrigin",
+                "name": "flexData.data.countryOfOrigin",
+                "component": "-text-field",
+                "class": "xs-12 md-4"
               },
               {
                 "label": "BookingPage.shipper",
@@ -595,19 +601,19 @@
                     "selector": "partyZip"
                   },
                   {
-                    "name": "shipperPartyContactPersonId",
+                    "name": "consigneePartyContactPersonId",
                     "selector": "contactPersonId"
                   },
                   {
-                    "name": "shipperPartyContactPersonEmail",
+                    "name": "consigneePartyContactPersonEmail",
                     "selector": "contactPersonEmail"
                   },
                   {
-                    "name": "shipperPartyContactPersonName",
+                    "name": "consigneePartyContactPersonName",
                     "selector": "contactPersonName"
                   },
                   {
-                    "name": "shipperPartyContactPersonPhone",
+                    "name": "consigneePartyContactPersonPhone",
                     "selector": "contactPersonPhone"
                   }
                 ],
@@ -687,19 +693,19 @@
                     "selector": "partyZip"
                   },
                   {
-                    "name": "shipperPartyContactPersonId",
+                    "name": "forwarderPartyContactPersonId",
                     "selector": "contactPersonId"
                   },
                   {
-                    "name": "shipperPartyContactPersonEmail",
+                    "name": "forwarderPartyContactPersonEmail",
                     "selector": "contactPersonEmail"
                   },
                   {
-                    "name": "shipperPartyContactPersonName",
+                    "name": "forwarderPartyContactPersonName",
                     "selector": "contactPersonName"
                   },
                   {
-                    "name": "shipperPartyContactPersonPhone",
+                    "name": "forwarderPartyContactPersonPhone",
                     "selector": "contactPersonPhone"
                   }
                 ],

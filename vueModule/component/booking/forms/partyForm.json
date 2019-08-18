@@ -57,9 +57,7 @@
           "notifyParty": 40
         }
       },
-      "params": {
-        "autoSuggestModel": "{{autoSuggestModel}}"
-      },
+      "params": {},
       "fields": [{
           "name": "{{key}}Party",
           "component": "AsyncAutoSuggest",
@@ -106,19 +104,19 @@
               "selector": "partyZip"
             },
             {
-              "name": "shipperPartyContactPersonId",
+              "name": "{{key}}PartyContactPersonId",
               "selector": "contactPersonId"
             },
             {
-              "name": "shipperPartyContactPersonEmail",
+              "name": "{{key}}PartyContactPersonEmail",
               "selector": "contactPersonEmail"
             },
             {
-              "name": "shipperPartyContactPersonName",
+              "name": "{{key}}PartyContactPersonName",
               "selector": "contactPersonName"
             },
             {
-              "name": "shipperPartyContactPersonPhone",
+              "name": "{{key}}PartyContactPersonPhone",
               "selector": "contactPersonPhone"
             }
           ],
@@ -129,18 +127,23 @@
               "id": null,
               "name": "{{autoSuggestModel|default(null)}}"
             },
-            "url": "api/party/query/party_auto_suggest",
-            "searchValueParams": "{ \"subqueries\": { \"id\": {{query}}, \"partyTypes\": {\"value\": [\"{{key}}\"]} } }",
+            "searchValueParams": {
+              "url": "api/party/{{context.autoSuggestModel}}"
+            },
             "searchTextParams": {
-              "subqueries": {
-                "q": {
-                  "value": "{{query}}"
+              "url": "api/party/query/party_auto_suggest",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "q": {
+                    "value": "{{context.search}}"
+                  },
+                  "partyTypes": {
+                    "value": ["{{key}}"]
+                  }
                 },
-                "partyTypes": {
-                  "value": ["{{key}}"]
-                }
-              },
-              "limit": 5
+                "limit": 5
+              }
             },
             "item-text": "name",
             "item-value": "id"
@@ -168,7 +171,7 @@
           "readonlyClass": "hidden"
         },
         {
-          "name": "flexData.data.{{key}}PartyContact",
+          "name": "{{key}}PartyContact",
           "component": "TableField",
           "class": "xs-12",
           "readonlyClass": "hidden",
@@ -331,9 +334,6 @@
               },
               "limit": 5
             },
-
-
-
             "item-text": "name",
             "item-value": "code"
           }

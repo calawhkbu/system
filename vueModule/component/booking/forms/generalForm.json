@@ -13,16 +13,19 @@
           "relation": "moduleType",
           "props": {
             "required": true,
-            "url": "api/code/query/code_master",
-            "item-text": "name",
-            "item-value": "code",
-            "params": {
-              "subqueries": {
-                "codeType": {
-                  "value": "MODULE"
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "MODULE"
+                  }
                 }
               }
-            }
+            },
+            "item-text": "name",
+            "item-value": "code"
           }
         },
         {
@@ -36,16 +39,19 @@
           ],
           "props": {
             "required": true,
-            "url": "api/code/query/code_master",
-            "item-text": "name",
-            "item-value": "code",
-            "params": {
-              "subqueries": {
-                "codeType": {
-                  "value": "BOUND"
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "BOUND"
+                  }
                 }
               }
-            }
+            },
+            "item-text": "name",
+            "item-value": "code"
           }
         },
         {
