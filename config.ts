@@ -1,10 +1,7 @@
-
-const config = {
-
-    bookingContainer : {
-        calculateCtns : true
-    }
-
+export default {
+  dataSetting: {
+  },
+  bookingContainer : {
+    calculateCtns : false
+  }
 }
-
-export default config

@@ -57,9 +57,7 @@
           "notifyParty": 40
         }
       },
-      "params": {
-        "autoSuggestModel": "{{autoSuggestModel}}"
-      },
+      "params": {},
       "fields": [{
           "name": "{{key}}Party",
           "component": "AsyncAutoSuggest",
@@ -106,19 +104,19 @@
               "selector": "partyZip"
             },
             {
-              "name": "shipperPartyContactPersonId",
+              "name": "{{key}}PartyContactPersonId",
               "selector": "contactPersonId"
             },
             {
-              "name": "shipperPartyContactPersonEmail",
+              "name": "{{key}}PartyContactPersonEmail",
               "selector": "contactPersonEmail"
             },
             {
-              "name": "shipperPartyContactPersonName",
+              "name": "{{key}}PartyContactPersonName",
               "selector": "contactPersonName"
             },
             {
-              "name": "shipperPartyContactPersonPhone",
+              "name": "{{key}}PartyContactPersonPhone",
               "selector": "contactPersonPhone"
             }
           ],
@@ -127,20 +125,25 @@
             "canCreate": true,
             "canCreateValue": {
               "id": null,
-              "name": "{{autoSuggestModel|default(null)}}"
+              "name": "{{autoSuggestModel}}"
             },
-            "url": "api/party/query/party_auto_suggest",
-            "searchValueParams": "{ \"subqueries\": { \"id\": {{query}}, \"partyTypes\": {\"value\": [\"{{key}}\"]} } }",
+            "searchValueParams": {
+              "url": "api/party/{{context.autoSuggestModel}}"
+            },
             "searchTextParams": {
-              "subqueries": {
-                "q": {
-                  "value": "{{query}}"
+              "url": "api/party/query/party_auto_suggest",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "q": {
+                    "value": "{{context.search}}"
+                  },
+                  "partyTypes": {
+                    "value": ["{{key}}"]
+                  }
                 },
-                "partyTypes": {
-                  "value": ["{{key}}"]
-                }
-              },
-              "limit": 5
+                "limit": 5
+              }
             },
             "item-text": "name",
             "item-value": "id"
@@ -168,7 +171,7 @@
           "readonlyClass": "hidden"
         },
         {
-          "name": "flexData.data.{{key}}PartyContact",
+          "name": "{{key}}PartyContact",
           "component": "TableField",
           "class": "xs-12",
           "readonlyClass": "hidden",
@@ -199,27 +202,6 @@
           }
         },
         {
-          "label": "Widget.partyEmail",
-          "name": "{{key}}PartyEmail",
-          "component": "v-text-field",
-          "class": "xs-12 md-4",
-          "readonlyClass": "hidden"
-        },
-        {
-          "label": "Widget.partyPhone",
-          "name": "{{key}}PartyPhone",
-          "component": "v-text-field",
-          "class": "xs-12 md-4",
-          "readonlyClass": "hidden"
-        },
-        {
-          "label": "Widget.partyFax",
-          "name": "{{key}}PartyFax",
-          "component": "v-text-field",
-          "class": "xs-12 md-4",
-          "readonlyClass": "hidden"
-        },
-        {
           "label": "Widget.address",
           "name": "{{key}}PartyAddress",
           "component": "v-textarea",
@@ -234,70 +216,81 @@
           "label": "Widget.city",
           "name": "{{key}}PartyCityCode",
           "component": "AsyncAutoSuggest",
-          "class": "xs-12 md-6",
-          "readonlyClass": "xs-4",
+          "class": "xs-12 md-4",
+          "readonlyClass": "xs-12 md-4",
+          "more": [{
+            "name": "{{key}}PartyCityCode",
+            "selector": "code"
+          }],
           "props": {
-            "url": "api/code/query/code_master",
             "searchValueParams": {
-              "subqueries": {
-                "codeType": {
-                  "value": "LOCATION"
-                },
-                "q": {
-                  "value": "{{query}}"
+              "url": "api/location/query/location",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "q": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
                 }
               }
             },
             "searchTextParams": {
-              "subqueries": {
-                "codeType": {
-                  "value": "LOCATION"
+              "url": "api/location/query/location",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
                 },
-                "q": {
-                  "value": "{{query}}"
-                }
-              },
-              "limit": 5
+                "limit": 5
+              }
             },
-
-
-
             "item-text": "name",
-            "item-value": "code"
+            "item-value": "locationCode"
           }
         },
         {
           "label": "Widget.state",
           "name": "{{key}}PartyStateCode",
           "component": "AsyncAutoSuggest",
-          "class": "xs-12 md-6",
-          "readonlyClass": "xs-4",
+          "class": "xs-12 md-4",
+          "readonlyClass": "xs-12 md-4",
+          "relation": "{{key}}PartyStateCode",
+          "relationMore": [{
+            "name": "{{key}}PartyStateCode",
+            "selector": "code"
+          }],
           "props": {
-            "url": "api/code/query/code_master",
             "searchValueParams": {
-              "subqueries": {
-                "codeType": {
-                  "value": "STATE-PROVINCE"
-                },
-                "q": {
-                  "value": "{{query}}"
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "STATE-PROVINCE"
+                  },
+                  "q": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
                 }
               }
             },
             "searchTextParams": {
-              "subqueries": {
-                "codeType": {
-                  "value": "STATE-PROVINCE"
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "STATE-PROVINCE"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
                 },
-                "q": {
-                  "value": "{{query}}"
-                }
-              },
-              "limit": 5
+                "limit": 5
+              }
             },
-
-
-
             "item-text": "name",
             "item-value": "code"
           }
@@ -306,34 +299,42 @@
           "label": "Widget.country",
           "name": "{{key}}PartyCountryCode",
           "component": "AsyncAutoSuggest",
-          "class": "xs-12 md-6",
-          "readonlyClass": "xs-4",
+          "class": "xs-12 md-4",
+          "readonlyClass": "xs-12 md-4",
+          "more": [{
+            "name": "{{key}}PartyCountryCode",
+            "selector": "code"
+          }],
           "props": {
-            "url": "api/code/query/code_master",
             "searchValueParams": {
-              "subqueries": {
-                "codeType": {
-                  "value": "COUNTRY"
-                },
-                "q": {
-                  "value": "{{query}}"
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "COUNTRY"
+                  },
+                  "q": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
                 }
               }
             },
             "searchTextParams": {
-              "subqueries": {
-                "codeType": {
-                  "value": "country"
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "COUNTRY"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
                 },
-                "q": {
-                  "value": "{{query}}"
-                }
-              },
-              "limit": 5
+                "limit": 5
+              }
             },
-
-
-
             "item-text": "name",
             "item-value": "code"
           }
