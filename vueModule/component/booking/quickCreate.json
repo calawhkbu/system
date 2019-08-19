@@ -34,31 +34,6 @@
               "i18nKey": "BookingPage.quickCreate",
               "swig": true
             }
-          },
-          {
-            "is": "v-spacer"
-          }, {
-            "is": "v-btn",
-            "props": {
-              "fab": true,
-              "small": true
-            },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "navigate_next",
-                "small": true
-              }
-            }],
-            "events": {
-              "click.stop": [{
-                "type": "dispatch",
-                "otherParams": {
-                  "name": "widget/changeMode",
-                  "mode": "create"
-                }
-              }]
-            }
           }
         ]
       }
@@ -365,7 +340,7 @@
               {
                 "label": "BookingPage.incoTermsCode",
                 "name": "incoTermsCode",
-                "component": "AsyncSelect",
+                "component": "AsyncAutoSuggest",
                 "class": "xs-12 md-6",
                 "relation": "incoTerms",
                 "relationMore": [{
@@ -376,7 +351,7 @@
                   "selector": "data.otherTermsCode"
                 }],
                 "props": {
-                  "axiosParams": {
+                  "searchValueParams": {
                     "url": "api/code/query/code_master",
                     "method": "POST",
                     "data": {
@@ -387,6 +362,28 @@
                       "subqueries": {
                         "codeType": {
                           "value": "INCOTERMS"
+                        },
+                        "code": {
+                          "value": "{{context.autoSuggestModel}}"
+                        }
+                      },
+                      "limit": 5
+                    }
+                  },
+                  "searchTextParams": {
+                    "url": "api/code/query/code_master",
+                    "method": "POST",
+                    "data": {
+                      "fields": [
+                        "code_master.*",
+                        "flex_data.data"
+                      ],
+                      "subqueries": {
+                        "codeType": {
+                          "value": "INCOTERMS"
+                        },
+                        "q": {
+                          "value": "{{context.search}}"
                         }
                       }
                     }
@@ -459,7 +456,7 @@
               {
                 "label": "BookingPage.countryOfOrigin",
                 "name": "flexData.data.countryOfOrigin",
-                "component": "-text-field",
+                "component": "v-text-field",
                 "class": "xs-12 md-4"
               },
               {
@@ -763,55 +760,91 @@
                 "label": "BookingPage.shipMarks",
                 "name": "shipMarks",
                 "component": "v-textarea",
-                "class": "xs-12 md-6"
+                "class": "xs-12 md-6",
+                "props": {
+                  "rows": 2
+                }
               },
               {
                 "label": "BookingPage.goodsDescription",
                 "name": "goodsDescription",
                 "component": "v-textarea",
-                "class": "xs-12 md-6"
+                "class": "xs-12 md-6",
+                "props": {
+                  "rows": 2
+                }
               },
               {
                 "label": "BookingPage.remark",
                 "name": "remark",
                 "component": "v-textarea",
-                "class": "xs-6"
+                "class": "xs-12 md-6",
+                "props": {
+                  "rows": 2
+                }
               },
               {
                 "label": "BookingPage.specialInstruction",
                 "name": "flexData.data.specialInstruction",
                 "component": "v-textarea",
-                "class": "xs-6"
+                "class": "xs-12 md-6",
+                "props": {
+                  "rows": 2
+                }
               },
               {
-                "component": "WidgetTerm",
+                "name": "Term",
+                "component": "Term",
                 "class": "xs-12",
                 "props": {
-                  "confirmTermI18nText": "BookingPage.confirmTerm"
+                  "type": "booking-term",
+                  "confirmTermI18nText": "BookingPage.confirmTerm",
+                  "termProps": {
+                    "class": "margin-leftright-4 padding-leftright-4 max-height-70 overflow-auto"
+                  }
                 }
               }
             ]
+          }
+        }]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "class": "flex",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "fab": true
           },
           "slots": [{
-            "name": "post-form",
-            "is": "DynamicComponent",
+            "is": "Icon",
             "props": {
-              "class": "flex absolute-bottomright",
-              "components": [{
-                "is": "v-btn",
-                "props": {
-                  "type": "submit",
-                  "fab": true
-                },
-                "slots": [{
-                  "is": "Icon",
-                  "props": {
-                    "icon": "save"
-                  }
-                }]
-              }]
+              "icon": "navigate_next",
+              "small": true
             }
-          }]
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "dispatch",
+              "otherParams": {
+                "name": "widget/changeMode",
+                "mode": "create"
+              }
+            }]
+          }
+        }, {
+          "is": "v-spacer"
+        }, {
+          "is": "WidgetSave",
+          "props": {
+            "fab": true,
+            "color": "primary",
+            "initUrl": "api/booking/{{id}}",
+            "primaryKey": "id",
+            "saveUrl": "api/booking"
+          }
         }]
       }
     }

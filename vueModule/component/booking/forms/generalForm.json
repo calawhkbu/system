@@ -64,16 +64,19 @@
           ],
           "props": {
             "required": true,
-            "url": "api/code/query/code_master",
-            "item-text": "name",
-            "item-value": "code",
-            "params": {
-              "subqueries": {
-                "codeType": {
-                  "value": "SERVTYPE"
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "SERVTYPE"
+                  }
                 }
               }
-            }
+            },
+            "item-text": "name",
+            "item-value": "code"
           }
         },
         {
@@ -83,27 +86,19 @@
           "class": "xs-12 md-6",
           "props": {
             "multiple": true,
-            "items": [{
-                "text": "Pick-up",
-                "value": "pickup"
-              },
-              {
-                "text": "Door Delivery",
-                "value": "delivery"
-              },
-              {
-                "text": "Insurance",
-                "value": "insurance"
-              },
-              {
-                "text": "Customs Clearance",
-                "value": "customs-clearance"
-              },
-              {
-                "text": "warehouse",
-                "value": "warehouse"
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "VAS"
+                  }
+                }
               }
-            ]
+            },
+            "item-text": "name",
+            "item-value": "code"
           }
         },
         {
@@ -116,28 +111,34 @@
             "selector": "portCode"
           }],
           "props": {
-            "method": "POST",
-            "url": "api/location/query/location",
             "searchValueParams": {
-              "subqueries": {
-                "moduleType": {
-                  "value": "{{form.moduleTypeCode}}"
-                },
-                "ports": {
-                  "value": "{{query}}"
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleType": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "ports": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
                 }
               }
             },
             "searchTextParams": {
-              "subqueries": {
-                "moduleType": {
-                  "value": "{{form.moduleTypeCode}}"
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleType": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
                 },
-                "q": {
-                  "value": "{{query}}"
-                }
-              },
-              "limit": 5
+                "limit": 5
+              }
             },
             "item-text": "name",
             "item-value": "portCode"
@@ -156,29 +157,35 @@
             "selector": "portCode"
           }],
           "props": {
-            "method": "POST",
             "required": true,
-            "url": "api/location/query/location",
             "searchValueParams": {
-              "subqueries": {
-                "moduleType": {
-                  "value": "{{form.moduleTypeCode}}"
-                },
-                "ports": {
-                  "value": "{{query}}"
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleType": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "ports": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
                 }
               }
             },
             "searchTextParams": {
-              "subqueries": {
-                "moduleType": {
-                  "value": "{{form.moduleTypeCode}}"
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleType": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
                 },
-                "q": {
-                  "value": "{{query}}"
-                }
-              },
-              "limit": 5
+                "limit": 5
+              }
             },
             "item-text": "name",
             "item-value": "portCode"
@@ -197,29 +204,35 @@
             "selector": "portCode"
           }],
           "props": {
-            "method": "POST",
             "required": true,
-            "url": "api/location/query/location",
             "searchValueParams": {
-              "subqueries": {
-                "moduleType": {
-                  "value": "{{form.moduleTypeCode}}"
-                },
-                "ports": {
-                  "value": "{{query}}"
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleType": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "ports": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
                 }
               }
             },
             "searchTextParams": {
-              "subqueries": {
-                "moduleType": {
-                  "value": "{{form.moduleTypeCode}}"
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleType": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
                 },
-                "q": {
-                  "value": "{{query}}"
-                }
-              },
-              "limit": 5
+                "limit": 5
+              }
             },
             "item-text": "name",
             "item-value": "portCode"
@@ -235,28 +248,34 @@
             "selector": "portCode"
           }],
           "props": {
-            "method": "POST",
-            "url": "api/location/query/location",
             "searchValueParams": {
-              "subqueries": {
-                "moduleType": {
-                  "value": "{{form.moduleTypeCode}}"
-                },
-                "ports": {
-                  "value": "{{query}}"
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleType": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "ports": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
                 }
               }
             },
             "searchTextParams": {
-              "subqueries": {
-                "moduleType": {
-                  "value": "{{form.moduleTypeCode}}"
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleType": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
                 },
-                "q": {
-                  "value": "{{query}}"
-                }
-              },
-              "limit": 5
+                "limit": 5
+              }
             },
             "item-text": "name",
             "item-value": "portCode"
@@ -266,38 +285,51 @@
           "label": "BookingPage.carrier",
           "name": "carrier",
           "component": "AsyncAutoSuggest",
-          "class": "xs-12 md-6",
+          "class": "xs-12 md-3",
           "relation": "carrier",
           "more": [{
             "name": "carrierCode",
             "selector": "code"
           }],
           "props": {
-            "url": "api/code/query/code_master",
             "searchValueParams": {
-              "subqueries": {
-                "codeType": {
-                  "value": "CARRIER"
-                },
-                "code": {
-                  "value": "{{query}}"
+              "method": "POST",
+              "url": "api/code/query/code_master",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "CARRIER"
+                  },
+                  "code": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
                 }
               }
             },
             "searchTextParams": {
-              "subqueries": {
-                "codeType": {
-                  "value": "CARRIER"
+              "method": "POST",
+              "url": "api/code/query/code_master",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "CARRIER"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
                 },
-                "q": {
-                  "value": "{{query}}"
-                }
-              },
-              "limit": 5
+                "limit": 5
+              }
             },
             "item-text": "name",
             "item-value": "code"
           }
+        },
+        {
+          "label": "BookingPage.contractNo",
+          "name": "flexData.data.contractNo",
+          "component": "v-text-field",
+          "class": "xs-12 md-3"
         },
         {
           "label": "BookingPage.vesselName",
@@ -310,27 +342,34 @@
           }],
           "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA'",
           "props": {
-            "url": "api/code/query/code_master",
             "searchValueParams": {
-              "subqueries": {
-                "codeType": {
-                  "value": "VESSEL"
-                },
-                "code": {
-                  "value": "{{query}}"
+              "method": "POST",
+              "url": "api/code/query/code_master",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "VESSEL"
+                  },
+                  "code": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
                 }
               }
             },
             "searchTextParams": {
-              "subqueries": {
-                "codeType": {
-                  "value": "VESSEL"
+              "method": "POST",
+              "url": "api/code/query/code_master",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "VESSEL"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
                 },
-                "q": {
-                  "value": "{{query}}"
-                }
-              },
-              "limit": 5
+                "limit": 5
+              }
             },
             "item-text": "name",
             "item-value": "name"
@@ -353,10 +392,13 @@
         },
         {
           "label": "BookingPage.incoTermsCode",
-          "name": "incoTermsCode",
-          "component": "AsyncSelect",
+          "name": "incoTerms",
+          "component": "AsyncAutoSuggest",
           "class": "xs-12 md-6",
-          "relation": "incoTerms",
+          "more": [{
+            "name": "incoTermsCode",
+            "selector": "code"
+          }],
           "relationMore": [{
             "name": "freightTermsCode",
             "selector": "data.frieghtTermsCode"
@@ -365,20 +407,45 @@
             "selector": "data.otherTermsCode"
           }],
           "props": {
-            "url": "api/code/query/code_master",
-            "item-text": "name",
-            "item-value": "code",
-            "params": {
-              "fields": [
-                "code_master.*",
-                "flex_data.data"
-              ],
-              "subqueries": {
-                "codeType": {
-                  "value": "INCOTERMS"
+            "searchValueParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "fields": [
+                  "code_master.*",
+                  "flex_data.data"
+                ],
+                "subqueries": {
+                  "codeType": {
+                    "value": "INCOTERMS"
+                  },
+                  "code": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
                 }
               }
-            }
+            },
+            "searchTextParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "fields": [
+                  "code_master.*",
+                  "flex_data.data"
+                ],
+                "subqueries": {
+                  "codeType": {
+                    "value": "INCOTERMS"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "name",
+            "item-value": "code"
           }
         },
         {
@@ -387,16 +454,19 @@
           "component": "AsyncSelect",
           "class": "xs-12 md-3",
           "props": {
-            "url": "api/code/query/code_master",
-            "item-text": "name",
-            "item-value": "code",
-            "params": {
-              "subqueries": {
-                "codeType": {
-                  "value": "PAYTERMS"
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "PAYTERMS"
+                  }
                 }
               }
-            }
+            },
+            "item-text": "name",
+            "item-value": "code"
           }
         },
         {
@@ -405,16 +475,19 @@
           "component": "AsyncSelect",
           "class": "xs-12 md-3",
           "props": {
-            "url": "api/code/query/code_master",
-            "item-text": "name",
-            "item-value": "code",
-            "params": {
-              "subqueries": {
-                "codeType": {
-                  "value": "PAYTERMS"
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "PAYTERMS"
+                  }
                 }
               }
-            }
+            },
+            "item-text": "name",
+            "item-value": "code"
           }
         },
         {

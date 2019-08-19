@@ -2,6 +2,6 @@ export default {
   dataSetting: {
   },
   bookingContainer : {
-    calculateCtns : true
+    calculateCtns : false
   }
 }
