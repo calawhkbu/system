@@ -82,7 +82,7 @@
         {
           "label": "BookingPage.vas",
           "name": "vas",
-          "component": "v-select",
+          "component": "AsyncSelect",
           "class": "xs-12 md-6",
           "props": {
             "multiple": true,
