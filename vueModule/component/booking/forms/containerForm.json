@@ -208,6 +208,14 @@
                 }
               },
               {
+                "label": "BookingPage.soNo",
+                "name": "soNo",
+                "component": "v-text-field",
+                "props": {
+                  "color": "blue"
+                }
+              },
+              {
                 "label": "BookingPage.containerTypeCode",
                 "name": "containerTypeCode",
                 "component": "AsyncSelect",
