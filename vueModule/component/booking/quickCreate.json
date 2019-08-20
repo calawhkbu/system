@@ -339,10 +339,13 @@
               },
               {
                 "label": "BookingPage.incoTermsCode",
-                "name": "incoTermsCode",
+                "name": "incoTerms",
                 "component": "AsyncAutoSuggest",
                 "class": "xs-12 md-6",
-                "relation": "incoTerms",
+                "more": [{
+                  "name": "incoTermsCode",
+                  "selector": "code"
+                }],
                 "relationMore": [{
                   "name": "freightTermsCode",
                   "selector": "data.frieghtTermsCode"
@@ -351,25 +354,7 @@
                   "selector": "data.otherTermsCode"
                 }],
                 "props": {
-                  "searchValueParams": {
-                    "url": "api/code/query/code_master",
-                    "method": "POST",
-                    "data": {
-                      "fields": [
-                        "code_master.*",
-                        "flex_data.data"
-                      ],
-                      "subqueries": {
-                        "codeType": {
-                          "value": "INCOTERMS"
-                        },
-                        "code": {
-                          "value": "{{context.autoSuggestModel}}"
-                        }
-                      },
-                      "limit": 5
-                    }
-                  },
+                  "initList": true,
                   "searchTextParams": {
                     "url": "api/code/query/code_master",
                     "method": "POST",
