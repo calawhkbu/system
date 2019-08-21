@@ -19,7 +19,7 @@ function prepareTable (name: string): CreateTableJQL {
         $select: [
 
             new ResultColumn(new ColumnExpression(name,'agentPartyId')),
-            new ResultColumn(new FunctionExpression('IFNULL',new FunctionExpression('SUM', new ColumnExpression(name,'weight')),0),'weight'),
+            new ResultColumn(new FunctionExpression('IFNULL',new FunctionExpression('SUM', new ColumnExpression(name,'volume')),0),'volume'),
         ],
         $from: new FromTable({
           method: 'POST',
@@ -27,7 +27,7 @@ function prepareTable (name: string): CreateTableJQL {
           columns: [
 
             {
-              name: 'weight',
+              name: 'volume',
               type: 'number'
             },
             {
@@ -61,7 +61,7 @@ function prepareTable (name: string): CreateTableJQL {
 
 
         $order : [
-          new OrderBy('weight', 'DESC')
+          new OrderBy('volume', 'DESC')
         ]
 
         $limit : 10
@@ -127,7 +127,7 @@ export default [
 
 
     $order : [
-      new OrderBy(new ColumnExpression('tempTable','weight'), 'DESC')
+      new OrderBy(new ColumnExpression('tempTable','volume'), 'DESC')
     ]
 
     $limit : 10
