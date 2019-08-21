@@ -56,7 +56,13 @@
           "label": "BookingPage.remark",
           "name": "remark",
           "component": "v-textarea",
-          "class": "xs-12"
+          "class": "xs-12 md-6"
+        },
+        {
+          "label": "BookingPage.specialInstruction",
+          "name": "flexData.data.specialInstruction",
+          "component": "v-textarea",
+          "class": "xs-12 md-6"
         }
       ]
     }

@@ -8,7 +8,7 @@ const query = new QueryDef(new Query({
     new ResultColumn(new ColumnExpression('party', 'name'), 'name'),
     new ResultColumn(new ColumnExpression('party', 'id'), 'partyId'),
     new ResultColumn(new ColumnExpression('party', 'name'), 'partyName'),
-    new ResultColumn(new ColumnExpression('party', 'erpCode'), 'partyCode'),
+    // new ResultColumn(new ColumnExpression('party', 'erpCode'), 'partyCode'),
     new ResultColumn(new ColumnExpression('party', 'phone'), 'partyPhone'),
     new ResultColumn(new ColumnExpression('party', 'fax'), 'partyFax'),
     new ResultColumn(new ColumnExpression('party', 'email'), 'partyEmail'),
@@ -73,8 +73,8 @@ query.register('q', new Query({
   $where: new OrExpressions([
     new RegexpExpression(new ColumnExpression('party', 'name'), false),
     new RegexpExpression(new ColumnExpression('party', 'shortName'), false),
-    new RegexpExpression(new ColumnExpression('party', 'erpCode'), false)
+    // new RegexpExpression(new ColumnExpression('party', 'erpCode'), false)
   ])
-})).register('value', 0).register('value', 1).register('value', 2)
+})).register('value', 0).register('value', 1)// .register('value', 2)
 
 export default query

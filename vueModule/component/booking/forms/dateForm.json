@@ -9,16 +9,16 @@
         "key": "Date",
         "fixKey": [
           "cargoReady",
-          "cYCutOff",
           "pickup",
+          "cYCutOff",
           "departure",
           "arrival",
           "finalDoorDelivery"
         ],
         "orderBy": {
           "cargoReady": 5,
-          "cYCutOff": 10,
-          "pickup": 20,
+          "pickup": 10,
+          "cYCutOff": 20,
           "departure": 30,
           "arrival": 40,
           "finalDoorDelivery": 50
