@@ -2,7 +2,6 @@ import { Query, FromTable, CreateTableJQL,GroupBy, ResultColumn, ColumnExpressio
 import { parseCode } from 'utils/function'
 
 
-
 function prepareParams(currentMonth?: boolean): Function {
     const fn = function (require, session, params) {
 

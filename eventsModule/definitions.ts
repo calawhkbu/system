@@ -147,8 +147,7 @@ export default {
     // },
 
   
-
-    // create booking tracking
+    // // create booking tracking
     {
       condition : true,
       eventName : 'create_tracking',

@@ -1,5 +1,5 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, FromTable, ResultColumn, GroupBy, BinaryExpression, RegexpExpression, ColumnExpression, FunctionExpression, ParameterExpression, InExpression, IsNullExpression, OrExpressions, AndExpressions } from 'node-jql'
+import { Query, FromTable, ResultColumn, GroupBy, BinaryExpression,BetweenExpression, RegexpExpression, ColumnExpression, FunctionExpression, ParameterExpression, InExpression, IsNullExpression, OrExpressions, AndExpressions } from 'node-jql'
 
 const query = new QueryDef(new Query({
   $distinct: true,
@@ -301,6 +301,10 @@ query.register('jobMonth', {
   }),
   $as: 'jobMonth'
 })
+
+query.register('date', new Query({
+  $where: new BetweenExpression(new ColumnExpression('booking', 'createdAt'), false)
+})).register('from', 0).register('to', 1)
 
 
 query.register('q', new Query({
