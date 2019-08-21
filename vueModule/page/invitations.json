@@ -22,7 +22,7 @@
           "sorting": {},
           "pagination": {
             "current": 0,
-            "perPage": 25
+            "perPage": 20
           }
         }
       },
