@@ -14,9 +14,5 @@
     "outDir": "./dist-new",
     "baseUrl": "../../swivel-backend-new/src"
   },
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts",
-    ".temp"
-  ]
+  "exclude": ["node_modules", "**/*.spec.ts", ".temp"]
 }

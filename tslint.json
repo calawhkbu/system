@@ -1,8 +1,6 @@
 {
   "defaultSeverity": "warning",
-  "extends": [
-    "tslint:recommended"
-  ],
+  "extends": ["tslint:recommended"],
   "jsRules": {
     "no-unused-expression": true,
     "semicolon": false,
@@ -22,36 +20,15 @@
   "rules": {
     "no-string-literal": false,
     "no-bitwise": false,
-    "no-console": [
-      true,
-      "never"
-    ],
-    "semicolon": [
-      true,
-      "never"
-    ],
-    "trailing-comma": [
-      true,
-      "never"
-    ],
-    "indent": [
-      true,
-      "spaces",
-      2
-    ],
+    "no-console": [true, "never"],
+    "semicolon": [true, "never"],
+    "trailing-comma": [true, "never"],
+    "indent": [true, "spaces", 2],
     "no-eval": true,
-    "align": [
-      true
-    ],
-    "space-before-function-paren": [
-      true,
-      "always"
-    ],
+    "align": [true],
+    "space-before-function-paren": [true, "never"],
     "eofline": true,
-    "quotemark": [
-      true,
-      "single"
-    ],
+    "quotemark": [true, "single"],
     "member-access": false,
     "ordered-imports": false,
     "max-line-length": false,
@@ -64,10 +41,7 @@
     "arrow-parens": false,
     "object-literal-sort-keys": false,
     "no-unused-expression": false,
-    "max-classes-per-file": [
-      false,
-      1
-    ],
+    "max-classes-per-file": [false, 1],
     "variable-name": false,
     "one-line": false,
     "one-variable-per-declaration": false,
