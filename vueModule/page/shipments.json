@@ -40,14 +40,23 @@
             "props": {
               "jql": {
                 "$select": [
-                  { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
-                  { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
+                  {
+                    "expression": { "classname": "ColumnExpression", "name": "code" },
+                    "$as": "value"
+                  },
+                  {
+                    "expression": { "classname": "ColumnExpression", "name": "name" },
+                    "$as": "label"
+                  }
                 ],
                 "$from": {
                   "table": {
                     "method": "POST",
                     "url": "api/code/query/code_master",
-                    "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }],
+                    "columns": [
+                      { "name": "code", "type": "string" },
+                      { "name": "name", "type": "string" }
+                    ],
                     "data": {
                       "subqueries": {
                         "codeType": {
@@ -61,14 +70,23 @@
               },
               "resolveJql": {
                 "$select": [
-                  { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
-                  { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
+                  {
+                    "expression": { "classname": "ColumnExpression", "name": "code" },
+                    "$as": "value"
+                  },
+                  {
+                    "expression": { "classname": "ColumnExpression", "name": "name" },
+                    "$as": "label"
+                  }
                 ],
                 "$from": {
                   "table": {
                     "method": "POST",
                     "url": "api/code/query/code_master",
-                    "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }],
+                    "columns": [
+                      { "name": "code", "type": "string" },
+                      { "name": "name", "type": "string" }
+                    ],
                     "data": {
                       "subqueries": {
                         "codeType": {
@@ -170,14 +188,23 @@
             "props": {
               "jql": {
                 "$select": [
-                  { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
-                  { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
+                  {
+                    "expression": { "classname": "ColumnExpression", "name": "code" },
+                    "$as": "value"
+                  },
+                  {
+                    "expression": { "classname": "ColumnExpression", "name": "name" },
+                    "$as": "label"
+                  }
                 ],
                 "$from": {
                   "table": {
                     "method": "POST",
                     "url": "api/code/query/code_master",
-                    "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }],
+                    "columns": [
+                      { "name": "code", "type": "string" },
+                      { "name": "name", "type": "string" }
+                    ],
                     "data": {
                       "subqueries": {
                         "codeType": {
@@ -194,14 +221,23 @@
               },
               "resolveJql": {
                 "$select": [
-                  { "expression": { "classname": "ColumnExpression", "name": "code" }, "$as": "value" },
-                  { "expression": { "classname": "ColumnExpression", "name": "name" }, "$as": "label" }
+                  {
+                    "expression": { "classname": "ColumnExpression", "name": "code" },
+                    "$as": "value"
+                  },
+                  {
+                    "expression": { "classname": "ColumnExpression", "name": "name" },
+                    "$as": "label"
+                  }
                 ],
                 "$from": {
                   "table": {
                     "method": "POST",
                     "url": "api/code/query/code_master",
-                    "columns": [{ "name": "code", "type": "string" }, { "name": "name", "type": "string" }],
+                    "columns": [
+                      { "name": "code", "type": "string" },
+                      { "name": "name", "type": "string" }
+                    ],
                     "data": {
                       "subqueries": {
                         "codeType": {

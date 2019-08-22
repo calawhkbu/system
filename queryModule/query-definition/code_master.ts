@@ -1,5 +1,15 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, FromTable, FunctionExpression, Unknown, BinaryExpression, ColumnExpression, OrExpressions, RegexpExpression, IsNullExpression } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  FunctionExpression,
+  Unknown,
+  BinaryExpression,
+  ColumnExpression,
+  OrExpressions,
+  RegexpExpression,
+  IsNullExpression,
+} from 'node-jql'
 
 const query = new QueryDef(
   new Query({
@@ -9,7 +19,11 @@ const query = new QueryDef(
       table: 'flex_data',
       $on: [
         new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'code_master'),
-        new BinaryExpression(new ColumnExpression('code_master', 'id'), '=', new ColumnExpression('flex_data', 'primaryKey')),
+        new BinaryExpression(
+          new ColumnExpression('code_master', 'id'),
+          '=',
+          new ColumnExpression('flex_data', 'primaryKey')
+        ),
       ],
     }),
   })
@@ -37,7 +51,17 @@ query
   .register(
     'flexDataData',
     new Query({
-      $where: new BinaryExpression(new FunctionExpression('JSON_UNQUOTE', new FunctionExpression('JSON_EXTRACT', new ColumnExpression('flex_data', 'data'), new Unknown('string'))), '='),
+      $where: new BinaryExpression(
+        new FunctionExpression(
+          'JSON_UNQUOTE',
+          new FunctionExpression(
+            'JSON_EXTRACT',
+            new ColumnExpression('flex_data', 'data'),
+            new Unknown('string')
+          )
+        ),
+        '='
+      ),
     })
   )
   .register('flexDataKey', 0)
@@ -47,7 +71,10 @@ query
   .register(
     'q',
     new Query({
-      $where: new OrExpressions([new RegexpExpression(new ColumnExpression('code_master', 'code'), false), new RegexpExpression(new ColumnExpression('code_master', 'name'), false)]),
+      $where: new OrExpressions([
+        new RegexpExpression(new ColumnExpression('code_master', 'code'), false),
+        new RegexpExpression(new ColumnExpression('code_master', 'name'), false),
+      ]),
     })
   )
   .register('value', 0)

@@ -108,7 +108,11 @@ export default class BaseAirTrackingService {
       throw e
     }
   }
-  async register(trackingNo: string, trackingReference: TrackingReference, carrierCode: string): Promise<void> {
+  async register(
+    trackingNo: string,
+    trackingReference: TrackingReference,
+    carrierCode: string
+  ): Promise<void> {
     const { trackingModule } = await this.swivelConfigService.get()
     const newTracking = {
       source: 'YUNDANG',
@@ -166,7 +170,12 @@ export default class BaseAirTrackingService {
       console.error(e, e.stack, 'BaseAirTrackingService')
     }
   }
-  async get(trackingNo: string, trackingReference: TrackingReference, carrierCode: string, oldTracking: Tracking): Promise<void> {
+  async get(
+    trackingNo: string,
+    trackingReference: TrackingReference,
+    carrierCode: string,
+    oldTracking: Tracking
+  ): Promise<void> {
     const { trackingModule } = await this.swivelConfigService.get()
     if (oldTracking.trackingNo !== trackingNo) {
       return
@@ -217,8 +226,14 @@ export default class BaseAirTrackingService {
       newDetails.isClosed = newDetailsRaw.endTime || newDetailsRaw.isendforce === 'Y'
       newDetails.lastStatusCode = newDetailsRaw.currentnode
       newDetails.lastStatus = status[newDetailsRaw.currentnode] || newDetailsRaw.currentnode
-      newDetails.lastStatusDate = newDetailsRaw.currentnodetime ? new Date(newDetailsRaw.currentnodetime) : null
-      if (newDetails.lastStatusCode !== oldDetails.lastStatusCode || newDetails.lastStatus !== oldDetails.lastStatus || moment(oldDetails.lastStatusDate).isSame(moment(newDetails.lastStatusDate))) {
+      newDetails.lastStatusDate = newDetailsRaw.currentnodetime
+        ? new Date(newDetailsRaw.currentnodetime)
+        : null
+      if (
+        newDetails.lastStatusCode !== oldDetails.lastStatusCode ||
+        newDetails.lastStatus !== oldDetails.lastStatus ||
+        moment(oldDetails.lastStatusDate).isSame(moment(newDetails.lastStatusDate))
+      ) {
         newDetails.lastStatusUpdateDate = moment.utc().toDate()
       }
       newDetails.lastPort = newDetailsRaw.currentnodeplace
@@ -240,7 +255,9 @@ export default class BaseAirTrackingService {
         newDetails.actualArrivalDate = newDetails.actualArrivalDate || d.statustime
       })
       if (
-        moment(oldDetails.estimatedDepartureDate).isSame(moment(newDetails.estimatedDepartureDate)) ||
+        moment(oldDetails.estimatedDepartureDate).isSame(
+          moment(newDetails.estimatedDepartureDate)
+        ) ||
         moment(oldDetails.actualDepartureDate).isSame(moment(newDetails.actualDepartureDate)) ||
         moment(oldDetails.estimatedArrivalDate).isSame(moment(newDetails.estimatedArrivalDate)) ||
         moment(oldDetails.actualArrivalDate).isSame(moment(newDetails.actualArrivalDate))
@@ -258,27 +275,33 @@ export default class BaseAirTrackingService {
         isEstimated: item.isest === 'Y' ? true : false,
       }))
       newDetails.billCargoTracking = []
-      if (newDetailsRaw.objbillinfo && newDetailsRaw.objbillinfo.lstctnrinfos && newDetailsRaw.objbillinfo.lstctnrinfos.length > 0) {
-        newDetails.billContainerTracking = newDetailsRaw.objbillinfo.lstctnrinfos.map((item: any) => {
-          return {
-            containerNo: item.conno,
-            sealNo: item.sealno,
-            containerType: item.ctype,
-            containerSize: item.csize,
-            history: item.lstctnrstatus.map((item: any) => {
-              return {
-                vessel: item.vslname,
-                voyage: item.voy,
-                statusCode: item.status,
-                status: status[item.status] || item.status,
-                statusDescription: item.statedescription,
-                statusDate: new Date(item.eventtime),
-                statusPlace: item.station,
-                updatedAt: new Date(item.updatetime),
-              }
-            }),
+      if (
+        newDetailsRaw.objbillinfo &&
+        newDetailsRaw.objbillinfo.lstctnrinfos &&
+        newDetailsRaw.objbillinfo.lstctnrinfos.length > 0
+      ) {
+        newDetails.billContainerTracking = newDetailsRaw.objbillinfo.lstctnrinfos.map(
+          (item: any) => {
+            return {
+              containerNo: item.conno,
+              sealNo: item.sealno,
+              containerType: item.ctype,
+              containerSize: item.csize,
+              history: item.lstctnrstatus.map((item: any) => {
+                return {
+                  vessel: item.vslname,
+                  voyage: item.voy,
+                  statusCode: item.status,
+                  status: status[item.status] || item.status,
+                  statusDescription: item.statedescription,
+                  statusDate: new Date(item.eventtime),
+                  statusPlace: item.station,
+                  updatedAt: new Date(item.updatetime),
+                }
+              }),
+            }
           }
-        })
+        )
       } else {
         newDetails.billContainerTracking = []
       }

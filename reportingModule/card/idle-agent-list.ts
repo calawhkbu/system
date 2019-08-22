@@ -1,4 +1,14 @@
-import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, GroupBy, BinaryExpression, AndExpressions } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  CreateTableJQL,
+  ResultColumn,
+  ColumnExpression,
+  FunctionExpression,
+  GroupBy,
+  BinaryExpression,
+  AndExpressions,
+} from 'node-jql'
 import { parseCode } from 'utils/function'
 
 function prepareParams(): Function {
@@ -49,7 +59,11 @@ function prepareTempTable2(name: string): CreateTableJQL {
         name
       ),
 
-      $where: new BinaryExpression(new FunctionExpression('ISNULL', new ColumnExpression(name, 'agentPartyId')), '=', '0'),
+      $where: new BinaryExpression(
+        new FunctionExpression('ISNULL', new ColumnExpression(name, 'agentPartyId')),
+        '=',
+        '0'
+      ),
     }),
   })
 }
@@ -102,7 +116,11 @@ function prepareTempTable(name: string): CreateTableJQL {
 export default [
   [prepareParams(), prepareTempTable2('tempTable2')],
   new Query({
-    $select: [new ResultColumn(new ColumnExpression('party', 'partyId')), new ResultColumn(new ColumnExpression('party', 'name')), new ResultColumn(new ColumnExpression('party', 'type'))],
+    $select: [
+      new ResultColumn(new ColumnExpression('party', 'partyId')),
+      new ResultColumn(new ColumnExpression('party', 'name')),
+      new ResultColumn(new ColumnExpression('party', 'type')),
+    ],
 
     $from: new FromTable(
       {

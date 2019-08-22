@@ -8,7 +8,15 @@ function testingOutboundHandler() {
     helper
       .rp(reqOptions)
       .then(response => {
-        helper.saveLog(appId, url, null, null, JSON.stringify(reqOptions), JSON.stringify(response), null)
+        helper.saveLog(
+          appId,
+          url,
+          null,
+          null,
+          JSON.stringify(reqOptions),
+          JSON.stringify(response),
+          null
+        )
       })
       .catch(e => {
         helper.saveLog(appId, url, null, null, null, null, JSON.stringify(e))

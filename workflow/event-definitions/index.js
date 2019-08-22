@@ -127,7 +127,8 @@ module.exports = {
             DELAY: {
               name: 'sendNotification',
               parameters: {
-                subject: "{{modelName}}# {{data.id}} ETA has been changed from {{oldData.estimatedArrivalDate | date('d M Y')}} to {{data.estimatedArrivalDate | date('d M Y')}} ",
+                subject:
+                  "{{modelName}}# {{data.id}} ETA has been changed from {{oldData.estimatedArrivalDate | date('d M Y')}} to {{data.estimatedArrivalDate | date('d M Y')}} ",
                 primaryKey: 'id',
                 customerId: 'customerId',
                 tableName: 'booking',
@@ -146,7 +147,8 @@ module.exports = {
             DELAY: {
               name: 'sendNotification',
               parameters: {
-                subject: "{{modelName}}# {{data.id}} ETD has been changed from {{oldData.estimatedDepartureDate | date('d M Y')}} to {{data.estimatedDepartureDate | date('d M Y')}} ",
+                subject:
+                  "{{modelName}}# {{data.id}} ETD has been changed from {{oldData.estimatedDepartureDate | date('d M Y')}} to {{data.estimatedDepartureDate | date('d M Y')}} ",
                 primaryKey: 'id',
                 customerId: 'customerId',
                 tableName: 'booking',

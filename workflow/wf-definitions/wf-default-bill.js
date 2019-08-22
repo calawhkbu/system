@@ -25,7 +25,8 @@ module.exports = {
           },
         },
         {
-          script: 'result = (date(bill.estimatedDepartureDate) <= now().addDays(bill.maxDays + 4));',
+          script:
+            'result = (date(bill.estimatedDepartureDate) <= now().addDays(bill.maxDays + 4));',
           error: 'shippingAdviceNotFound',
         },
       ],

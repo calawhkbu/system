@@ -5,7 +5,14 @@ function ENEAPPHandler() {
     // purchaseOrder.hasMany(purchaseOrderItem);
     console.log('[ENE]', 'Sending Data...')
     const url = 'http://tzumimod.com/controllers/API/api.php'
-    var { transactionPeople, people, bookingPartiesPeople, workflowStatusList, trackingReferences, ...booking } = params.data
+    var {
+      transactionPeople,
+      people,
+      bookingPartiesPeople,
+      workflowStatusList,
+      trackingReferences,
+      ...booking
+    } = params.data
     return Promise.all(
       (booking.bookingPOPackings || [])
         .reduce((selected, bookingPOPacking) => {
@@ -40,7 +47,15 @@ function ENEAPPHandler() {
             function(err, httpResponse, body) {
               console.log('ENE Return')
               if (err) {
-                helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), null, JSON.stringify(err))
+                helper.saveLog(
+                  appId,
+                  url,
+                  'booking',
+                  booking.id,
+                  JSON.stringify(reqPayLoad),
+                  null,
+                  JSON.stringify(err)
+                )
                 helper.emailer.sendFreeMail(
                   {
                     to: ['ken.chan+ene@swivelsoftware.com'].join(','), //TODO REMOVE HARD-CODED
@@ -54,7 +69,15 @@ function ENEAPPHandler() {
               }
               console.log('[ENE]', body)
               if (body === '<pre>{"msg":"info se1nd"}</pre>') {
-                helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), JSON.stringify(body), null)
+                helper.saveLog(
+                  appId,
+                  url,
+                  'booking',
+                  booking.id,
+                  JSON.stringify(reqPayLoad),
+                  JSON.stringify(body),
+                  null
+                )
                 helper.emailer.sendFreeMail(
                   {
                     to: ['ken.chan+ene@swivelsoftware.com'].join(','), //TODO REMOVE HARD-CODED
@@ -66,7 +89,15 @@ function ENEAPPHandler() {
                 )
                 return console.log('[ENE] reutrn success')
               }
-              helper.saveLog(appId, url, 'booking', booking.id, JSON.stringify(reqPayLoad), null, JSON.stringify(body))
+              helper.saveLog(
+                appId,
+                url,
+                'booking',
+                booking.id,
+                JSON.stringify(reqPayLoad),
+                null,
+                JSON.stringify(body)
+              )
               helper.emailer.sendFreeMail(
                 {
                   to: ['ken.chan+ene@swivelsoftware.com'].join(','), //TODO REMOVE HARD-CODED

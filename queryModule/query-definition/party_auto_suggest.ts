@@ -1,5 +1,16 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, ResultColumn, FromTable, OrExpressions, RegexpExpression, ColumnExpression, BinaryExpression, InExpression, IsNullExpression, AndExpressions } from 'node-jql'
+import {
+  Query,
+  ResultColumn,
+  FromTable,
+  OrExpressions,
+  RegexpExpression,
+  ColumnExpression,
+  BinaryExpression,
+  InExpression,
+  IsNullExpression,
+  AndExpressions,
+} from 'node-jql'
 
 const query = new QueryDef(
   new Query({
@@ -28,22 +39,38 @@ const query = new QueryDef(
       {
         operator: 'LEFT',
         table: 'party_type',
-        $on: new BinaryExpression(new ColumnExpression('party', 'id'), '=', new ColumnExpression('party_type', 'partyId')),
+        $on: new BinaryExpression(
+          new ColumnExpression('party', 'id'),
+          '=',
+          new ColumnExpression('party_type', 'partyId')
+        ),
       },
       {
         operator: 'LEFT',
         table: 'party_group',
-        $on: new BinaryExpression(new ColumnExpression('party_group', 'code'), '=', new ColumnExpression('party', 'partyGroupCode')),
+        $on: new BinaryExpression(
+          new ColumnExpression('party_group', 'code'),
+          '=',
+          new ColumnExpression('party', 'partyGroupCode')
+        ),
       },
       {
         operator: 'LEFT',
         table: 'parties_person',
-        $on: new BinaryExpression(new ColumnExpression('party', 'id'), '=', new ColumnExpression('parties_person', 'partyId')),
+        $on: new BinaryExpression(
+          new ColumnExpression('party', 'id'),
+          '=',
+          new ColumnExpression('parties_person', 'partyId')
+        ),
       },
       {
         operator: 'LEFT',
         table: 'person',
-        $on: new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('parties_person', 'personId')),
+        $on: new BinaryExpression(
+          new ColumnExpression('person', 'id'),
+          '=',
+          new ColumnExpression('parties_person', 'personId')
+        ),
       }
     ),
   })
@@ -89,7 +116,10 @@ query.register(
   'isActive',
   new Query({
     $where: new AndExpressions({
-      expressions: [new IsNullExpression(new ColumnExpression('party', 'deletedAt'), false), new IsNullExpression(new ColumnExpression('party', 'deletedBy'), false)],
+      expressions: [
+        new IsNullExpression(new ColumnExpression('party', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('party', 'deletedBy'), false),
+      ],
     }),
   })
 )

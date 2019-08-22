@@ -53,7 +53,8 @@ module.exports = {
   // the text shown in 404 page
   NotFoundPage: {
     'Page Not Found': 'Page Not Found', // 404 primary message
-    '... or you do not have the right to access this page': '... or you do not have the right to access this page', // 404 secondary message
+    '... or you do not have the right to access this page':
+      '... or you do not have the right to access this page', // 404 secondary message
   },
 
   // the text shown in 500 page
@@ -86,7 +87,8 @@ module.exports = {
     Phone: 'Phone',
     'Enter your phone number': 'Enter Your Tel. #',
     'WeChat ID': 'WeChat ID',
-    'Please click on the wechat button to login to Wechat': 'Please click on the WeChat button to login to WeChat',
+    'Please click on the wechat button to login to Wechat':
+      'Please click on the WeChat button to login to WeChat',
   },
 
   // the text shown in alert preference table
@@ -172,10 +174,14 @@ module.exports = {
     Delivered: 'Delivered',
 
     // the title of outstanding status cards
-    'Sea Export Freight Outstanding Status in 72 hours': 'Sea Export Freight Outstanding Status within 72 hours',
-    'Sea Import Freight Outstanding Status in 72 hours': 'Sea Import Freight Outstanding Status within 72 hours',
-    'Air Export Freight Outstanding Status in 48 hours': 'Air Export Freight Outstanding Status within 48 hours',
-    'Air Import Freight Outstanding Status in 48 hours': 'Air Import Freight Outstanding Status within 48 hours',
+    'Sea Export Freight Outstanding Status in 72 hours':
+      'Sea Export Freight Outstanding Status within 72 hours',
+    'Sea Import Freight Outstanding Status in 72 hours':
+      'Sea Import Freight Outstanding Status within 72 hours',
+    'Air Export Freight Outstanding Status in 48 hours':
+      'Air Export Freight Outstanding Status within 48 hours',
+    'Air Import Freight Outstanding Status in 48 hours':
+      'Air Import Freight Outstanding Status within 48 hours',
 
     // dropdown options
     // show alerts within the following range

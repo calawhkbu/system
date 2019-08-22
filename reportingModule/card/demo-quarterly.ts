@@ -1,10 +1,25 @@
-import { BinaryExpression, ColumnExpression, FunctionExpression, GroupBy, Query, ResultColumn, FromTable, CreateTableJQL } from 'node-jql'
+import {
+  BinaryExpression,
+  ColumnExpression,
+  FunctionExpression,
+  GroupBy,
+  Query,
+  ResultColumn,
+  FromTable,
+  CreateTableJQL,
+} from 'node-jql'
 
 const tempQuery = new CreateTableJQL({
   $temporary: true,
   name: 'temp',
   $as: new Query({
-    $select: [new ResultColumn('*'), new ResultColumn(new FunctionExpression('QUARTER', new ColumnExpression('month'), 'YYYY-MM'), 'quarter')],
+    $select: [
+      new ResultColumn('*'),
+      new ResultColumn(
+        new FunctionExpression('QUARTER', new ColumnExpression('month'), 'YYYY-MM'),
+        'quarter'
+      ),
+    ],
     $from: new FromTable(
       {
         url: 'demo',
@@ -30,7 +45,10 @@ const tempQuery = new CreateTableJQL({
 })
 
 const query = new Query({
-  $select: [new ResultColumn('quarter'), new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('value')), 'value')],
+  $select: [
+    new ResultColumn('quarter'),
+    new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('value')), 'value'),
+  ],
   $from: 'temp',
   $group: 'quarter',
 })

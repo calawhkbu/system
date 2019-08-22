@@ -29,13 +29,36 @@ class CreateAlertEvent extends BaseEvent {
 
     const alertDbService = this.allService['AlertDbService'] as AlertDbService
 
-    return await alertDbService.createAlert(tableName, primaryKey, alertType, customMessage, extraParam, this.user)
+    return await alertDbService.createAlert(
+      tableName,
+      primaryKey,
+      alertType,
+      customMessage,
+      extraParam,
+      this.user
+    )
   }
 }
 
 export default {
-  execute: async(parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
-    const event = new CreateAlertEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
+  execute: async (
+    parameters: any,
+    eventConfig: EventConfig,
+    repo: string,
+    eventService: any,
+    allService: any,
+    user?: JwtPayload,
+    transaction?: Transaction
+  ) => {
+    const event = new CreateAlertEvent(
+      parameters,
+      eventConfig,
+      repo,
+      eventService,
+      allService,
+      user,
+      transaction
+    )
     return await event.execute()
   },
 }

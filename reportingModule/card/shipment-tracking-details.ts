@@ -12,7 +12,8 @@ function prepareParams(check?: boolean): Function {
       if (!subqueries.date) throw new BadRequestException('MISSING_DATE')
       const datefr = moment(subqueries.date.from, 'YYYY-MM-DD')
       const dateto = moment(subqueries.date.to, 'YYYY-MM-DD')
-      if (dateto.diff(datefr, 'months', true) > 1) throw new BadRequestException('DATE_RANGE_TOO_LARGE')
+      if (dateto.diff(datefr, 'months', true) > 1)
+        throw new BadRequestException('DATE_RANGE_TOO_LARGE')
       if (!subqueries.boundType) throw new BadRequestException('MISSING_BOUND_TYPE')
       if (!subqueries.lastStatus) throw new BadRequestException('MISSING_LAST_STATUS')
       return params
@@ -39,7 +40,9 @@ export default [
         $as: new Query({
           $from: new FromTable(
             {
-              url: `api/statusMaster/query/shipment-tracking-flow-${subqueries.boundType.value === 'O' ? 'export' : 'import'}`,
+              url: `api/statusMaster/query/shipment-tracking-flow-${
+                subqueries.boundType.value === 'O' ? 'export' : 'import'
+              }`,
               columns: [{ name: 'group', type: 'string' }],
             },
             'status_master'
@@ -140,7 +143,12 @@ export default [
               new FunctionExpression('NOW')
             ),
             new BinaryExpression(
-              new FunctionExpression('TIMESTAMPDIFF', 'HOUR', new ColumnExpression('calcuatedEstimatedDepatureDate'), new ColumnExpression('transactionActualArrivalDate')),
+              new FunctionExpression(
+                'TIMESTAMPDIFF',
+                'HOUR',
+                new ColumnExpression('calcuatedEstimatedDepatureDate'),
+                new ColumnExpression('transactionActualArrivalDate')
+              ),
               '>',
               subqueries.lateDeparturesAlert.value
             ),
@@ -198,7 +206,12 @@ export default [
               new FunctionExpression('NOW')
             ),
             new BinaryExpression(
-              new FunctionExpression('TIMESTAMPDIFF', 'HOUR', new ColumnExpression('calcuatedEstimatedArrivalDate'), new ColumnExpression('transactionActualArrivalDate')),
+              new FunctionExpression(
+                'TIMESTAMPDIFF',
+                'HOUR',
+                new ColumnExpression('calcuatedEstimatedArrivalDate'),
+                new ColumnExpression('transactionActualArrivalDate')
+              ),
               '>',
               subqueries.lateArrivalsAlert.value
             ),
@@ -235,7 +248,11 @@ export default [
     function(require, session, params) {
       return new Query({
         $from: 'shipment',
-        $where: new BinaryExpression(new ColumnExpression('group'), '=', params.subqueries.lastStatus.value),
+        $where: new BinaryExpression(
+          new ColumnExpression('group'),
+          '=',
+          params.subqueries.lastStatus.value
+        ),
       })
     },
   ],

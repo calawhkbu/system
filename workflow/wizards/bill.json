@@ -152,7 +152,12 @@
                     "displayDate": {
                       "top": ["DEPARTURE", "ARRIVAL"]
                     },
-                    "actualOnlyFields": ["OCEANBILL", "PPSALESINVOICE", "CCSALESINVOICE", "CYCUTOFF"]
+                    "actualOnlyFields": [
+                      "OCEANBILL",
+                      "PPSALESINVOICE",
+                      "CCSALESINVOICE",
+                      "CYCUTOFF"
+                    ]
                   }
                 ]
               }

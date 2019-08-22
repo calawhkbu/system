@@ -1,5 +1,13 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, FromTable, RegexpExpression, ColumnExpression, InExpression, BinaryExpression, IsNullExpression } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  RegexpExpression,
+  ColumnExpression,
+  InExpression,
+  BinaryExpression,
+  IsNullExpression,
+} from 'node-jql'
 
 const query = new QueryDef(
   new Query({
@@ -8,7 +16,11 @@ const query = new QueryDef(
       table: 'flex_data',
       $on: [
         new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'role'),
-        new BinaryExpression(new ColumnExpression('role', 'id'), '=', new ColumnExpression('flex_data', 'primaryKey')),
+        new BinaryExpression(
+          new ColumnExpression('role', 'id'),
+          '=',
+          new ColumnExpression('flex_data', 'primaryKey')
+        ),
       ],
     }),
   })

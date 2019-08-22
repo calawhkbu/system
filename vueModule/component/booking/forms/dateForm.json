@@ -8,7 +8,14 @@
         },
         "keyProps": {
           "key": "Date",
-          "fixKey": ["cargoReady", "pickup", "cYCutOff", "departure", "arrival", "finalDoorDelivery"],
+          "fixKey": [
+            "cargoReady",
+            "pickup",
+            "cYCutOff",
+            "departure",
+            "arrival",
+            "finalDoorDelivery"
+          ],
           "orderBy": {
             "cargoReady": 5,
             "pickup": 10,

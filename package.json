@@ -3,6 +3,7 @@
   "description": "This the base custom config",
   "scripts": {
     "lint": "tslint -p tsconfig.json -c tslint.json",
+    "format": "yarn format:ts && yarn format:json",
     "format:ts": "prettier \"**/*.{ts,js}\" --config .prettierrc.ts.json --write",
     "format:json": "prettier \"**/*.json\" --config .prettierrc.json.json --write"
   }

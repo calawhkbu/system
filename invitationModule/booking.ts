@@ -7,7 +7,13 @@ const entityInvitationDetail = {
   roleList: ['shipper', 'consignee', 'forwarder'],
 }
 
-export default async function entityCreateInvitaion(that: any, entity: any, tableName: string, user?: JwtPayload, transaction?: Transaction) {
+export default async function entityCreateInvitaion(
+  that: any,
+  entity: any,
+  tableName: string,
+  user?: JwtPayload,
+  transaction?: Transaction
+) {
   // change back into normal json
 
   if (entity.hasOwnProperty('dataValues')) {
@@ -116,7 +122,12 @@ export default async function entityCreateInvitaion(that: any, entity: any, tabl
   }
 
   // change the entity Contact into a Person data
-  async function processPerson(rolePartyId: number, contactEmail: string, contactName: string, contactPhone?: string) {
+  async function processPerson(
+    rolePartyId: number,
+    contactEmail: string,
+    contactName: string,
+    contactPhone?: string
+  ) {
     let firstName: string, lastName: string, displayName: string
 
     let person = personMap[contactEmail]
@@ -134,7 +145,7 @@ export default async function entityCreateInvitaion(that: any, entity: any, tabl
         lastName = contactName.split(' ')[1]
         displayName = contactName
       } else {
-        (firstName = contactName), (displayName = contactName)
+        ;(firstName = contactName), (displayName = contactName)
       }
 
       contacts.push({
@@ -205,7 +216,12 @@ export default async function entityCreateInvitaion(that: any, entity: any, tabl
   async function createPerson() {
     for (const [email, personData] of Object.entries(personMap)) {
       if (personData !== undefined) {
-        const invitation = await that.createInvitation(personData, partyGroupCode, user, transaction)
+        const invitation = await that.createInvitation(
+          personData,
+          partyGroupCode,
+          user,
+          transaction
+        )
         personMap[email] = invitation.person
       }
     }
@@ -238,7 +254,12 @@ export default async function entityCreateInvitaion(that: any, entity: any, tabl
       const roleFirstContactPhone = entity[role + 'PartyContactPhone'] as string
 
       // invitation created
-      await processPerson(roleParyId, roleFirstContactEmail, roleFirstContactName, roleFirstContactPhone)
+      await processPerson(
+        roleParyId,
+        roleFirstContactEmail,
+        roleFirstContactName,
+        roleFirstContactPhone
+      )
     }
 
     // find the rest
@@ -250,7 +271,12 @@ export default async function entityCreateInvitaion(that: any, entity: any, tabl
         // if id is given will not do anthing
         if (!(rolecontact['PersonId'] && rolecontact['PersonId'] !== null)) {
           // invitation created
-          await processPerson(roleParyId, rolecontact['Email'], rolecontact['Name'], rolecontact['Phone'])
+          await processPerson(
+            roleParyId,
+            rolecontact['Email'],
+            rolecontact['Name'],
+            rolecontact['Phone']
+          )
         }
       }
     }
@@ -275,7 +301,11 @@ export default async function entityCreateInvitaion(that: any, entity: any, tabl
     const roleFirstContactEmail = entity[role + 'PartyContactEmail'] as string
 
     // only will perform update if Id is empty and email exist
-    if (!(roleFirstContactPersonId && roleFirstContactPersonId !== null) && roleFirstContactEmail && roleFirstContactEmail.length) {
+    if (
+      !(roleFirstContactPersonId && roleFirstContactPersonId !== null) &&
+      roleFirstContactEmail &&
+      roleFirstContactEmail.length
+    ) {
       returnEntity[role + 'PartyContactPersonId'] = personMap[roleFirstContactEmail].id
     }
 
@@ -287,7 +317,14 @@ export default async function entityCreateInvitaion(that: any, entity: any, tabl
       for (const rolecontact of roleContactList) {
         // if id is given will not do anthing
         // only will perform update if Id is empty and email exist
-        if (!(rolecontact['PersonId'] && rolecontact['PersonId'] !== null && rolecontact['Email'] && rolecontact['Email'].length)) {
+        if (
+          !(
+            rolecontact['PersonId'] &&
+            rolecontact['PersonId'] !== null &&
+            rolecontact['Email'] &&
+            rolecontact['Email'].length
+          )
+        ) {
           rolecontact['PersonId'] = personMap[rolecontact['Email']].id
         }
 

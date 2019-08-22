@@ -7,7 +7,8 @@ module.exports = {
       validationRules: [],
       tags: {},
       roles: ['SwivelAdmin', 'Admin', 'User'],
-      generatedDate: 'gDate = date(purchaseOrder.createdAt); var aDate=date(purchaseOrder.createdAt)',
+      generatedDate:
+        'gDate = date(purchaseOrder.createdAt); var aDate=date(purchaseOrder.createdAt)',
       actualDate: 'aDate = date(purchaseOrder.createdAt);',
       trackingStatus: 'New Order',
     },
@@ -25,7 +26,8 @@ module.exports = {
           },
         },
         {
-          script: 'result = (purchaseOrder.referenceNumber && purchaseOrder.referenceNumber.length>0)',
+          script:
+            'result = (purchaseOrder.referenceNumber && purchaseOrder.referenceNumber.length>0)',
           error: 'Reference Number should not be empty.',
           action: '/widgets/booking-cards/RemoteComponent.js',
           parameters: {
@@ -35,7 +37,8 @@ module.exports = {
         },
       ],
       tags: {},
-      onEnterRule: "isSent =  sendNotifications(purchaseOrder,{entityName:'purchaseOrder',rolesToEmail:['Factory', 'Buyer'],useMeta:false})",
+      onEnterRule:
+        "isSent =  sendNotifications(purchaseOrder,{entityName:'purchaseOrder',rolesToEmail:['Factory', 'Buyer'],useMeta:false})",
       roles: ['SwivelAdmin', 'Admin', 'User'],
       action: '',
       generatedDate: 'gDate = date(purchaseOrder.createdAt); gDate= gDate.addDays(2)',
@@ -56,7 +59,8 @@ module.exports = {
       ],
       generatedDate: 'gDate = date(purchaseOrder.createdAt); gDate= gDate.addDays(5)',
       tags: {},
-      onEnterRule: "isSent =  sendNotifications(purchaseOrder,{entityName:'purchaseOrder',rolesToEmail:['Consignee','Shipper'],useMeta:false})",
+      onEnterRule:
+        "isSent =  sendNotifications(purchaseOrder,{entityName:'purchaseOrder',rolesToEmail:['Consignee','Shipper'],useMeta:false})",
       roles: ['SwivelAdmin', 'Admin', 'User'],
       action: '',
     },
@@ -65,7 +69,8 @@ module.exports = {
       validationRules: [],
       generatedDate: 'gDate = date(purchaseOrder.createdAt); gDate= gDate.addDays(10)',
       tags: {},
-      onEnterRule: "isSent =  sendNotifications(purchaseOrder,{entityName:'purchaseOrder',rolesToEmail:['Consignee','Shipper'],useMeta:false})",
+      onEnterRule:
+        "isSent =  sendNotifications(purchaseOrder,{entityName:'purchaseOrder',rolesToEmail:['Consignee','Shipper'],useMeta:false})",
       roles: ['SwivelAdmin', 'Admin', 'User'],
       action: '',
     },
@@ -74,7 +79,8 @@ module.exports = {
       validationRules: [],
       generatedDate: 'gDate = date(purchaseOrder.createdAt); gDate= gDate.addDays(15)',
       tags: {},
-      onEnterRule: "isSent =  sendNotifications(purchaseOrder,{entityName:'purchaseOrder',rolesToEmail:['Factory','Shipper'],useMeta:false})",
+      onEnterRule:
+        "isSent =  sendNotifications(purchaseOrder,{entityName:'purchaseOrder',rolesToEmail:['Factory','Shipper'],useMeta:false})",
       roles: ['SwivelAdmin', 'Admin', 'User'],
       action: '',
     },
@@ -83,7 +89,8 @@ module.exports = {
       validationRules: [],
       generatedDate: 'gDate = date(purchaseOrder.createdAt); gDate= gDate.addDays(18)',
       tags: {},
-      onEnterRule: "isSent =  sendNotifications(purchaseOrder,{entityName:'purchaseOrder',rolesToEmail:['Factory','Shipper'],useMeta:false})",
+      onEnterRule:
+        "isSent =  sendNotifications(purchaseOrder,{entityName:'purchaseOrder',rolesToEmail:['Factory','Shipper'],useMeta:false})",
       roles: ['SwivelAdmin', 'Admin', 'User'],
       action: '',
     },

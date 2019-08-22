@@ -30,15 +30,36 @@ class ExampleEvent extends BaseEvent {
     const invitationDbService = this.allService['InvitationDbService'] as InvitationDbService
 
     // create a new Invitation
-    const newInvitation = await invitationDbService.createInvitation(person, partyGroupCode, this.user, this.transaction)
+    const newInvitation = await invitationDbService.createInvitation(
+      person,
+      partyGroupCode,
+      this.user,
+      this.transaction
+    )
 
     return newInvitation
   }
 }
 
 export default {
-  execute: async(parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
-    const event = new ExampleEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
+  execute: async (
+    parameters: any,
+    eventConfig: EventConfig,
+    repo: string,
+    eventService: any,
+    allService: any,
+    user?: JwtPayload,
+    transaction?: Transaction
+  ) => {
+    const event = new ExampleEvent(
+      parameters,
+      eventConfig,
+      repo,
+      eventService,
+      allService,
+      user,
+      transaction
+    )
     return await event.execute()
   },
 }

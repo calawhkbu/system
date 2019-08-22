@@ -26,7 +26,11 @@ const query = new QueryDef(
         table: 'flex_data',
         $on: [
           new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'booking'),
-          new BinaryExpression(new ColumnExpression('booking', 'id'), '=', new ColumnExpression('flex_data', 'primaryKey')),
+          new BinaryExpression(
+            new ColumnExpression('booking', 'id'),
+            '=',
+            new ColumnExpression('flex_data', 'primaryKey')
+          ),
         ],
       },
       // {
@@ -83,7 +87,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'containerTypeCode'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'containerTypeCode'
@@ -93,7 +97,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'soNo'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'soNo'
@@ -103,19 +107,33 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'sealNo'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'sealNo'
               ),
-              new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('booking_container', 'quantity')), 'quantity'),
+              new ResultColumn(
+                new FunctionExpression(
+                  'SUM',
+                  new ColumnExpression('booking_container', 'quantity')
+                ),
+                'quantity'
+              ),
             ],
             $from: new FromTable('booking_container', 'booking_container', {
               operator: 'LEFT',
               table: new FromTable('flex_data', 'flex_data'),
               $on: [
-                new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'booking_container'),
-                new BinaryExpression(new ColumnExpression('flex_data', 'primaryKey'), '=', new ColumnExpression('booking_container', 'id')),
+                new BinaryExpression(
+                  new ColumnExpression('flex_data', 'tableName'),
+                  '=',
+                  'booking_container'
+                ),
+                new BinaryExpression(
+                  new ColumnExpression('flex_data', 'primaryKey'),
+                  '=',
+                  new ColumnExpression('booking_container', 'id')
+                ),
               ],
             }),
             $where: new AndExpressions({
@@ -130,7 +148,11 @@ const query = new QueryDef(
           }),
           $as: 'booking_container',
         }),
-        $on: new BinaryExpression(new ColumnExpression('booking', 'id'), '=', new ColumnExpression('booking_container', 'bookingId')),
+        $on: new BinaryExpression(
+          new ColumnExpression('booking', 'id'),
+          '=',
+          new ColumnExpression('booking_container', 'bookingId')
+        ),
       },
       {
         operator: 'LEFT',
@@ -138,17 +160,40 @@ const query = new QueryDef(
           table: new Query({
             $select: [
               new ResultColumn(new ColumnExpression('booking_popacking', 'bookingId')),
-              new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('booking_popacking', 'volume')), 'volume'),
-              new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('booking_popacking', 'weight')), 'weight'),
-              new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('booking_popacking', 'ctns')), 'ctns'),
-              new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('booking_popacking', 'quantity')), 'quantity'),
+              new ResultColumn(
+                new FunctionExpression('SUM', new ColumnExpression('booking_popacking', 'volume')),
+                'volume'
+              ),
+              new ResultColumn(
+                new FunctionExpression('SUM', new ColumnExpression('booking_popacking', 'weight')),
+                'weight'
+              ),
+              new ResultColumn(
+                new FunctionExpression('SUM', new ColumnExpression('booking_popacking', 'ctns')),
+                'ctns'
+              ),
+              new ResultColumn(
+                new FunctionExpression(
+                  'SUM',
+                  new ColumnExpression('booking_popacking', 'quantity')
+                ),
+                'quantity'
+              ),
             ],
             $from: new FromTable('booking_popacking', 'booking_popacking', {
               operator: 'LEFT',
               table: new FromTable('flex_data', 'flex_data'),
               $on: [
-                new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'booking_popacking'),
-                new BinaryExpression(new ColumnExpression('flex_data', 'primaryKey'), '=', new ColumnExpression('booking_popacking', 'id')),
+                new BinaryExpression(
+                  new ColumnExpression('flex_data', 'tableName'),
+                  '=',
+                  'booking_popacking'
+                ),
+                new BinaryExpression(
+                  new ColumnExpression('flex_data', 'primaryKey'),
+                  '=',
+                  new ColumnExpression('booking_popacking', 'id')
+                ),
               ],
             }),
             $where: new AndExpressions({
@@ -163,7 +208,11 @@ const query = new QueryDef(
           }),
           $as: 'booking_popacking',
         }),
-        $on: new BinaryExpression(new ColumnExpression('booking', 'id'), '=', new ColumnExpression('booking_popacking', 'bookingId')),
+        $on: new BinaryExpression(
+          new ColumnExpression('booking', 'id'),
+          '=',
+          new ColumnExpression('booking_popacking', 'bookingId')
+        ),
       },
       {
         operator: 'LEFT',
@@ -176,7 +225,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_reference', 'refName'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'refName'
@@ -186,7 +235,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_reference', 'refDescription'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'refDescription'
@@ -196,8 +245,16 @@ const query = new QueryDef(
               operator: 'LEFT',
               table: new FromTable('flex_data', 'flex_data'),
               $on: [
-                new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'booking_reference'),
-                new BinaryExpression(new ColumnExpression('flex_data', 'primaryKey'), '=', new ColumnExpression('booking_reference', 'id')),
+                new BinaryExpression(
+                  new ColumnExpression('flex_data', 'tableName'),
+                  '=',
+                  'booking_reference'
+                ),
+                new BinaryExpression(
+                  new ColumnExpression('flex_data', 'primaryKey'),
+                  '=',
+                  new ColumnExpression('booking_reference', 'id')
+                ),
               ],
             }),
             $where: new AndExpressions({
@@ -212,7 +269,11 @@ const query = new QueryDef(
           }),
           $as: 'booking_reference',
         }),
-        $on: new BinaryExpression(new ColumnExpression('booking', 'id'), '=', new ColumnExpression('booking_reference', 'bookingId')),
+        $on: new BinaryExpression(
+          new ColumnExpression('booking', 'id'),
+          '=',
+          new ColumnExpression('booking_reference', 'bookingId')
+        ),
       },
       {
         operator: 'LEFT',
@@ -222,23 +283,42 @@ const query = new QueryDef(
               new ResultColumn(new ColumnExpression('workflow', 'tableName')),
               new ResultColumn(new ColumnExpression('workflow', 'primaryKey')),
               new ResultColumn(new ColumnExpression('workflow', 'statusName')),
-              new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('workflow', 'statusDate')), 'statusDate'),
+              new ResultColumn(
+                new FunctionExpression('MAX', new ColumnExpression('workflow', 'statusDate')),
+                'statusDate'
+              ),
             ],
             $from: new FromTable('workflow', 'workflow', {
               operator: 'LEFT',
               table: new FromTable('flex_data', 'flex_data'),
               $on: [
-                new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'workflow'),
-                new BinaryExpression(new ColumnExpression('flex_data', 'primaryKey'), '=', new ColumnExpression('workflow', 'id')),
+                new BinaryExpression(
+                  new ColumnExpression('flex_data', 'tableName'),
+                  '=',
+                  'workflow'
+                ),
+                new BinaryExpression(
+                  new ColumnExpression('flex_data', 'primaryKey'),
+                  '=',
+                  new ColumnExpression('workflow', 'id')
+                ),
               ],
             }),
-            $group: new GroupBy([new ColumnExpression('workflow', 'tableName'), new ColumnExpression('workflow', 'primaryKey'), new ColumnExpression('workflow', 'statusName')]),
+            $group: new GroupBy([
+              new ColumnExpression('workflow', 'tableName'),
+              new ColumnExpression('workflow', 'primaryKey'),
+              new ColumnExpression('workflow', 'statusName'),
+            ]),
           }),
           $as: 'workflow',
         }),
         $on: [
           new BinaryExpression(new ColumnExpression('workflow', 'tableName'), '=', 'workflow'),
-          new BinaryExpression(new ColumnExpression('workflow', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
+          new BinaryExpression(
+            new ColumnExpression('workflow', 'primaryKey'),
+            '=',
+            new ColumnExpression('booking', 'id')
+          ),
         ],
       }
     ),
@@ -399,7 +479,10 @@ query
           new RegexpExpression(new ColumnExpression('booking', 'forwarderPartyName'), false),
           new RegexpExpression(new ColumnExpression('booking', 'forwarderPartyContactName'), false),
           new RegexpExpression(new ColumnExpression('booking', 'notifyPartyPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking', 'notifyPartyPartyContactName'), false),
+          new RegexpExpression(
+            new ColumnExpression('booking', 'notifyPartyPartyContactName'),
+            false
+          ),
           new RegexpExpression(new ColumnExpression('booking', 'agentPartyName'), false),
           new RegexpExpression(new ColumnExpression('booking', 'agentPartyContactName'), false),
           // new RegexpExpression(new ColumnExpression('booking_amount', 'amountName'), false),

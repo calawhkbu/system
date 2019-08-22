@@ -1,4 +1,14 @@
-import { Query, FromTable, CreateTableJQL, GroupBy, ResultColumn, ColumnExpression, FunctionExpression, AndExpressions, BinaryExpression } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  CreateTableJQL,
+  GroupBy,
+  ResultColumn,
+  ColumnExpression,
+  FunctionExpression,
+  AndExpressions,
+  BinaryExpression,
+} from 'node-jql'
 import { parseCode } from 'utils/function'
 
 function prepareParams(currentMonth?: boolean): Function {
@@ -43,7 +53,14 @@ function prepareTable(name: string): CreateTableJQL {
       $select: [
         new ResultColumn(new ColumnExpression(name, 'moduleTypeCode')),
         new ResultColumn(new ColumnExpression(name, 'jobMonth')),
-        new ResultColumn(new FunctionExpression('IFNULL', new FunctionExpression('SUM', new ColumnExpression(name, 'quantity')), 0), 'quantity'),
+        new ResultColumn(
+          new FunctionExpression(
+            'IFNULL',
+            new FunctionExpression('SUM', new ColumnExpression(name, 'quantity')),
+            0
+          ),
+          'quantity'
+        ),
       ],
       $from: new FromTable(
         {
@@ -104,8 +121,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'January'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'moduleTypeCode'), '=', new ColumnExpression('moduleTypeCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'January'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'moduleTypeCode'),
+                '=',
+                new ColumnExpression('moduleTypeCode')
+              ),
             ]),
             new ColumnExpression('quantity')
           ),
@@ -121,8 +150,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'February'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'moduleTypeCode'), '=', new ColumnExpression('moduleTypeCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'February'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'moduleTypeCode'),
+                '=',
+                new ColumnExpression('moduleTypeCode')
+              ),
             ]),
             new ColumnExpression('quantity')
           ),
@@ -138,8 +179,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'March'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'moduleTypeCode'), '=', new ColumnExpression('moduleTypeCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'March'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'moduleTypeCode'),
+                '=',
+                new ColumnExpression('moduleTypeCode')
+              ),
             ]),
             new ColumnExpression('quantity')
           ),
@@ -155,8 +208,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'April'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'moduleTypeCode'), '=', new ColumnExpression('moduleTypeCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'April'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'moduleTypeCode'),
+                '=',
+                new ColumnExpression('moduleTypeCode')
+              ),
             ]),
             new ColumnExpression('quantity')
           ),
@@ -172,8 +237,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'May'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'moduleTypeCode'), '=', new ColumnExpression('moduleTypeCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'May'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'moduleTypeCode'),
+                '=',
+                new ColumnExpression('moduleTypeCode')
+              ),
             ]),
             new ColumnExpression('quantity')
           ),
@@ -189,8 +266,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'June'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'moduleTypeCode'), '=', new ColumnExpression('moduleTypeCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'June'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'moduleTypeCode'),
+                '=',
+                new ColumnExpression('moduleTypeCode')
+              ),
             ]),
             new ColumnExpression('quantity')
           ),
@@ -206,8 +295,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'July'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'moduleTypeCode'), '=', new ColumnExpression('moduleTypeCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'July'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'moduleTypeCode'),
+                '=',
+                new ColumnExpression('moduleTypeCode')
+              ),
             ]),
             new ColumnExpression('quantity')
           ),
@@ -222,8 +323,20 @@ export default [
           new FunctionExpression(
             'FIND',
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'August'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'moduleTypeCode'), '=', new ColumnExpression('moduleTypeCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'August'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'moduleTypeCode'),
+                '=',
+                new ColumnExpression('moduleTypeCode')
+              ),
             ]),
             new ColumnExpression('quantity')
           ),
@@ -239,8 +352,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'September'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'moduleTypeCode'), '=', new ColumnExpression('moduleTypeCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'September'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'moduleTypeCode'),
+                '=',
+                new ColumnExpression('moduleTypeCode')
+              ),
             ]),
             new ColumnExpression('quantity')
           ),
@@ -256,8 +381,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'October'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'moduleTypeCode'), '=', new ColumnExpression('moduleTypeCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'October'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'moduleTypeCode'),
+                '=',
+                new ColumnExpression('moduleTypeCode')
+              ),
             ]),
             new ColumnExpression('quantity')
           ),
@@ -273,8 +410,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'November'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'moduleTypeCode'), '=', new ColumnExpression('moduleTypeCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'November'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'moduleTypeCode'),
+                '=',
+                new ColumnExpression('moduleTypeCode')
+              ),
             ]),
             new ColumnExpression('quantity')
           ),
@@ -290,8 +439,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'December'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'moduleTypeCode'), '=', new ColumnExpression('moduleTypeCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'December'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'moduleTypeCode'),
+                '=',
+                new ColumnExpression('moduleTypeCode')
+              ),
             ]),
             new ColumnExpression('quantity')
           ),

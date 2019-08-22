@@ -588,7 +588,13 @@
                                 "children": {
                                   "empty": ""
                                 },
-                                "field": ["address1", "address2", "address3", "address4", "address5"]
+                                "field": [
+                                  "address1",
+                                  "address2",
+                                  "address3",
+                                  "address4",
+                                  "address5"
+                                ]
                               }
                             }
                           },
@@ -861,7 +867,12 @@
                         }
                       ]
                     },
-                    "actualOnlyFields": ["OCEANBILL", "PPSALESINVOICE", "CCSALESINVOICE", "CYCUTOFF"],
+                    "actualOnlyFields": [
+                      "OCEANBILL",
+                      "PPSALESINVOICE",
+                      "CCSALESINVOICE",
+                      "CYCUTOFF"
+                    ],
                     "grid": {
                       "spacing": 8,
                       "children": {

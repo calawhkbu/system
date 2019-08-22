@@ -29,15 +29,36 @@ class UpdateDocumentPreviewEvent extends BaseEvent {
 
     const document = parameters.data as Document
 
-    await documentService.updateDocumentPreviewImage(document.tableName, document.primaryKey, document.fileName, this.user)
+    await documentService.updateDocumentPreviewImage(
+      document.tableName,
+      document.primaryKey,
+      document.fileName,
+      this.user
+    )
 
     return {}
   }
 }
 
 export default {
-  execute: async(parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
-    const event = new UpdateDocumentPreviewEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
+  execute: async (
+    parameters: any,
+    eventConfig: EventConfig,
+    repo: string,
+    eventService: any,
+    allService: any,
+    user?: JwtPayload,
+    transaction?: Transaction
+  ) => {
+    const event = new UpdateDocumentPreviewEvent(
+      parameters,
+      eventConfig,
+      repo,
+      eventService,
+      allService,
+      user,
+      transaction
+    )
     return await event.execute()
   },
 }

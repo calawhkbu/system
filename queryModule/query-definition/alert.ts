@@ -1,5 +1,14 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, FromTable, BinaryExpression, ColumnExpression, InExpression, FunctionExpression, Unknown, IsNullExpression } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  BinaryExpression,
+  ColumnExpression,
+  InExpression,
+  FunctionExpression,
+  Unknown,
+  IsNullExpression,
+} from 'node-jql'
 
 const query = new QueryDef(
   new Query({
@@ -8,7 +17,11 @@ const query = new QueryDef(
       table: 'flex_data',
       $on: [
         new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'alert'),
-        new BinaryExpression(new ColumnExpression('alert', 'id'), '=', new ColumnExpression('flex_data', 'primaryKey')),
+        new BinaryExpression(
+          new ColumnExpression('alert', 'id'),
+          '=',
+          new ColumnExpression('flex_data', 'primaryKey')
+        ),
       ],
     }),
   })
@@ -45,7 +58,17 @@ query
   .register(
     'moduleType',
     new Query({
-      $where: new BinaryExpression(new FunctionExpression('JSON_UNQUOTE', new FunctionExpression('JSON_EXTRACT', new ColumnExpression('flex_data', 'data'), '$.entity.moduleType.code')), '='),
+      $where: new BinaryExpression(
+        new FunctionExpression(
+          'JSON_UNQUOTE',
+          new FunctionExpression(
+            'JSON_EXTRACT',
+            new ColumnExpression('flex_data', 'data'),
+            '$.entity.moduleType.code'
+          )
+        ),
+        '='
+      ),
     })
   )
   .register('value', 1)
@@ -54,7 +77,17 @@ query
   .register(
     'flexDataData',
     new Query({
-      $where: new BinaryExpression(new FunctionExpression('JSON_UNQUOTE', new FunctionExpression('JSON_EXTRACT', new ColumnExpression('flex_data', 'data'), new Unknown('string'))), '='),
+      $where: new BinaryExpression(
+        new FunctionExpression(
+          'JSON_UNQUOTE',
+          new FunctionExpression(
+            'JSON_EXTRACT',
+            new ColumnExpression('flex_data', 'data'),
+            new Unknown('string')
+          )
+        ),
+        '='
+      ),
     })
   )
   .register('flexDataKey', 0)

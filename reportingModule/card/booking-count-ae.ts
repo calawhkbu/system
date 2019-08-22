@@ -1,4 +1,14 @@
-import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, GroupBy, BinaryExpression, AndExpressions } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  CreateTableJQL,
+  ResultColumn,
+  ColumnExpression,
+  FunctionExpression,
+  GroupBy,
+  BinaryExpression,
+  AndExpressions,
+} from 'node-jql'
 import { parseCode } from 'utils/function'
 
 function prepareParams(): Function {
@@ -47,7 +57,10 @@ function prepareTempTable(name: string): CreateTableJQL {
       $select: [
         new ResultColumn(new ColumnExpression(name, 'jobMonth'), 'jobMonth'),
         new ResultColumn(new ColumnExpression(name, 'carrierCode'), 'carrierCode'),
-        new ResultColumn(new FunctionExpression('COUNT', new ColumnExpression(name, 'carrierCode')), 'count'),
+        new ResultColumn(
+          new FunctionExpression('COUNT', new ColumnExpression(name, 'carrierCode')),
+          'count'
+        ),
       ],
       $from: new FromTable(
         {
@@ -76,7 +89,10 @@ function prepareTempTable(name: string): CreateTableJQL {
         name
       ),
 
-      $group: new GroupBy([new ColumnExpression(name, 'carrierCode'), new ColumnExpression(name, 'jobMonth')]),
+      $group: new GroupBy([
+        new ColumnExpression(name, 'carrierCode'),
+        new ColumnExpression(name, 'jobMonth'),
+      ]),
     }),
   })
 }
@@ -96,8 +112,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'January'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'carrierCode'), '=', new ColumnExpression('carrierCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'January'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'carrierCode'),
+                '=',
+                new ColumnExpression('carrierCode')
+              ),
             ]),
             new ColumnExpression('count')
           ),
@@ -113,8 +141,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'February'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'carrierCode'), '=', new ColumnExpression('carrierCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'February'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'carrierCode'),
+                '=',
+                new ColumnExpression('carrierCode')
+              ),
             ]),
             new ColumnExpression('count')
           ),
@@ -130,8 +170,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'March'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'carrierCode'), '=', new ColumnExpression('carrierCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'March'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'carrierCode'),
+                '=',
+                new ColumnExpression('carrierCode')
+              ),
             ]),
             new ColumnExpression('count')
           ),
@@ -147,8 +199,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'April'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'carrierCode'), '=', new ColumnExpression('carrierCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'April'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'carrierCode'),
+                '=',
+                new ColumnExpression('carrierCode')
+              ),
             ]),
             new ColumnExpression('count')
           ),
@@ -164,8 +228,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'May'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'carrierCode'), '=', new ColumnExpression('carrierCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'May'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'carrierCode'),
+                '=',
+                new ColumnExpression('carrierCode')
+              ),
             ]),
             new ColumnExpression('count')
           ),
@@ -181,8 +257,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'June'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'carrierCode'), '=', new ColumnExpression('carrierCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'June'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'carrierCode'),
+                '=',
+                new ColumnExpression('carrierCode')
+              ),
             ]),
             new ColumnExpression('count')
           ),
@@ -198,8 +286,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'July'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'carrierCode'), '=', new ColumnExpression('carrierCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'July'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'carrierCode'),
+                '=',
+                new ColumnExpression('carrierCode')
+              ),
             ]),
             new ColumnExpression('count')
           ),
@@ -214,8 +314,20 @@ export default [
           new FunctionExpression(
             'FIND',
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'August'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'carrierCode'), '=', new ColumnExpression('carrierCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'August'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'carrierCode'),
+                '=',
+                new ColumnExpression('carrierCode')
+              ),
             ]),
             new ColumnExpression('count')
           ),
@@ -231,8 +343,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'September'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'carrierCode'), '=', new ColumnExpression('carrierCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'September'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'carrierCode'),
+                '=',
+                new ColumnExpression('carrierCode')
+              ),
             ]),
             new ColumnExpression('count')
           ),
@@ -248,8 +372,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'October'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'carrierCode'), '=', new ColumnExpression('carrierCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'October'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'carrierCode'),
+                '=',
+                new ColumnExpression('carrierCode')
+              ),
             ]),
             new ColumnExpression('count')
           ),
@@ -265,8 +401,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'November'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'carrierCode'), '=', new ColumnExpression('carrierCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'November'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'carrierCode'),
+                '=',
+                new ColumnExpression('carrierCode')
+              ),
             ]),
             new ColumnExpression('count')
           ),
@@ -282,8 +430,20 @@ export default [
             'FIND',
 
             new AndExpressions([
-              new BinaryExpression(new FunctionExpression('MONTHNAME', new ColumnExpression('tempTable', 'jobMonth'), 'YYYY-MM'), '=', 'December'),
-              new BinaryExpression(new ColumnExpression('tempTable', 'carrierCode'), '=', new ColumnExpression('carrierCode')),
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression('tempTable', 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                'December'
+              ),
+              new BinaryExpression(
+                new ColumnExpression('tempTable', 'carrierCode'),
+                '=',
+                new ColumnExpression('carrierCode')
+              ),
             ]),
             new ColumnExpression('count')
           ),

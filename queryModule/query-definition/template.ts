@@ -1,5 +1,12 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, FromTable, BinaryExpression, ColumnExpression, RegexpExpression, IsNullExpression } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  BinaryExpression,
+  ColumnExpression,
+  RegexpExpression,
+  IsNullExpression,
+} from 'node-jql'
 
 const query = new QueryDef(new Query('template'))
 
@@ -33,7 +40,10 @@ query
 query.register(
   'isActive',
   new Query({
-    $where: [new IsNullExpression(new ColumnExpression('template', 'deletedAt'), false), new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false)],
+    $where: [
+      new IsNullExpression(new ColumnExpression('template', 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false),
+    ],
   })
 )
 

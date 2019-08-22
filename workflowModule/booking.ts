@@ -6,14 +6,14 @@ export default {
   statusList: [
     {
       name: 'Booked',
-      expiryDate: async(entity: any, now: Date) => {
+      expiryDate: async (entity: any, now: Date) => {
         return moment(now)
           .add(2, 'days')
           .toDate()
       },
       onEnterValidation: [],
       afterEnterEvents: [],
-      nextStatus: async(entity: any) => {
+      nextStatus: async (entity: any) => {
         if (entity.moduleTypeCode === 'SEA') {
           return ['Shipping Advice Ready (SEA)', 'Cancelled']
         } else if (entity.moduleTypeCode === 'AIR') {
@@ -24,7 +24,7 @@ export default {
     },
     {
       name: 'Shipping Advice Ready (SEA)',
-      expiryDate: async(entity: any, now: Date) => {
+      expiryDate: async (entity: any, now: Date) => {
         if (entity.departureDateEstimated) {
           return moment(entity.departureDateEstimated)
             .add(-2, 'days')
@@ -34,50 +34,52 @@ export default {
       },
       onEnterValidation: [
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
             if (user && user.roles.filter(role => ['Admin', 'User'].filter(r => r === role.name))) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {
               error: 'Workflow.NotAllowByRole',
             }
           },
         },
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
-            const documents = (entity.documents || []).find(doc => doc.fileName === 'Shipping Advice')
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
+            const documents = (entity.documents || []).find(
+              doc => doc.fileName === 'Shipping Advice'
+            )
             if (documents.length > 0) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {}
           },
         },
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
             if (entity.commodity) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {}
           },
         },
       ],
       afterEnterEvents: [],
-      nextStatus: async(entity: any) => {
+      nextStatus: async (entity: any) => {
         return ['Shipping Advice Confirmed', 'Cancelled']
       },
     },
     {
       name: 'Shipping Advice Ready (AIR)',
-      expiryDate: async(entity: any, now: Date) => {
+      expiryDate: async (entity: any, now: Date) => {
         if (entity.departureDateEstimated) {
           return moment(entity.departureDateEstimated)
             .add(-2, 'days')
@@ -87,28 +89,30 @@ export default {
       },
       onEnterValidation: [
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
             console.log(user.roles)
             if (user && user.roles.filter(role => ['Admin', 'User'].filter(r => r === role.name))) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {
               error: 'Workflow.NotAllowByRole',
             }
           },
         },
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
-            const documents = (entity.documents || []).find((doc: { fileName: string }) => doc.fileName === 'Shipping Advice')
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
+            const documents = (entity.documents || []).find(
+              (doc: { fileName: string }) => doc.fileName === 'Shipping Advice'
+            )
             if (documents) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {
               error: 'Workflow.MissingDocument',
               components: [],
@@ -116,25 +120,25 @@ export default {
           },
         },
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
             if (entity.commodity) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {}
           },
         },
       ],
       afterEnterEvents: [],
-      nextStatus: async(entity: any) => {
+      nextStatus: async (entity: any) => {
         return ['Shipping Advice Confirmed', 'Cancelled']
       },
     },
     {
       name: 'Shipping Advice Confirmed',
-      expiryDate: async(entity: any, now: Date) => {
+      expiryDate: async (entity: any, now: Date) => {
         if (entity.departureDateEstimated) {
           return moment(entity.departureDateEstimated)
             .add(-1, 'days')
@@ -144,39 +148,39 @@ export default {
       },
       onEnterValidation: [
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
             if (user && user.roles.filter(role => ['Admin', 'User'].filter(r => r === role.name))) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {
               error: 'Workflow.NotAllowByRole',
             }
           },
         },
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
             const documents = entity.documents.find(doc => doc.fileName === 'Shipping Instructions')
             if (documents.length > 0) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {}
           },
         },
       ],
       afterEnterEvents: [],
-      nextStatus: async(entity: any) => {
+      nextStatus: async (entity: any) => {
         return ['Shipping Instructions Ready']
       },
     },
     {
       name: 'Shipping Instructions Ready',
-      expiryDate: async(entity: any, now: Date) => {
+      expiryDate: async (entity: any, now: Date) => {
         if (entity.departureDateEstimated) {
           return moment(entity.departureDateEstimated).toDate()
         }
@@ -184,50 +188,50 @@ export default {
       },
       onEnterValidation: [
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
             if (user && user.roles.filter(role => ['Admin', 'User'].filter(r => r === role.name))) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {
               error: 'Workflow.NotAllowByRole',
             }
           },
         },
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
             const documents = entity.documents.find(doc => doc.fileName === 'Shipping Instructions')
             if (documents.length > 0) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {}
           },
         },
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
             if (entity.portOfLoadingCode && entity.portOfDischargeCode) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {}
           },
         },
       ],
       afterEnterEvents: [],
-      nextStatus: async(entity: any) => {
+      nextStatus: async (entity: any) => {
         return ['HBL Ready']
       },
     },
     {
       name: 'HBL Ready',
-      expiryDate: async(entity: any, now: Date) => {
+      expiryDate: async (entity: any, now: Date) => {
         if (entity.departureDateEstimated) {
           return moment(entity.departureDateEstimated)
             .add(2, 'days')
@@ -237,13 +241,13 @@ export default {
       },
       onEnterValidation: [
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
             if (user && user.roles.filter(role => ['Admin', 'User'].filter(r => r === role.name))) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {
               error: 'Workflow.NotAllowByRole',
             }
@@ -251,13 +255,13 @@ export default {
         },
       ],
       afterEnterEvents: [],
-      nextStatus: async(entity: any) => {
+      nextStatus: async (entity: any) => {
         return ['ASN Ready']
       },
     },
     {
       name: 'ASN Ready',
-      expiryDate: async(entity: any, now: Date) => {
+      expiryDate: async (entity: any, now: Date) => {
         if (entity.departureDateEstimated) {
           return moment(entity.departureDateEstimated)
             .add(3, 'days')
@@ -267,13 +271,13 @@ export default {
       },
       onEnterValidation: [
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
             if (user && user.roles.filter(role => ['Admin', 'User'].filter(r => r === role.name))) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {
               error: 'Workflow.NotAllowByRole',
             }
@@ -281,13 +285,13 @@ export default {
         },
       ],
       afterEnterEvents: [],
-      nextStatus: async(entity: any) => {
+      nextStatus: async (entity: any) => {
         return ['ASN Doc Checked']
       },
     },
     {
       name: 'ASN Doc Checked',
-      expiryDate: async(entity: any, now: Date) => {
+      expiryDate: async (entity: any, now: Date) => {
         if (entity.departureDateEstimated) {
           return moment(entity.departureDateEstimated)
             .add(4, 'days')
@@ -297,13 +301,13 @@ export default {
       },
       onEnterValidation: [
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
             if (user && user.roles.filter(role => ['Admin', 'User'].filter(r => r === role.name))) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {
               error: 'Workflow.NotAllowByRole',
             }
@@ -311,13 +315,13 @@ export default {
         },
       ],
       afterEnterEvents: [],
-      nextStatus: async(entity: any) => {
+      nextStatus: async (entity: any) => {
         return ['ASN Doc Approved']
       },
     },
     {
       name: 'ASN Doc Approved',
-      expiryDate: async(entity: any, now: Date) => {
+      expiryDate: async (entity: any, now: Date) => {
         if (entity.departureDateEstimated) {
           return moment(entity.departureDateEstimated)
             .add(4, 'days')
@@ -327,13 +331,13 @@ export default {
       },
       onEnterValidation: [
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
             if (user && user.roles.filter(role => ['Admin', 'User'].filter(r => r === role.name))) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {
               error: 'Workflow.NotAllowByRole',
             }
@@ -341,7 +345,7 @@ export default {
         },
       ],
       afterEnterEvents: [],
-      nextStatus: async(entity: any) => {
+      nextStatus: async (entity: any) => {
         return ['Completed']
       },
     },
@@ -349,13 +353,13 @@ export default {
       name: 'Completed',
       onEnterValidation: [
         {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
+          rules: async (entity: any, user: { roles: { name: string }[] }) => {
             if (user && user.roles.filter(role => ['Admin', 'User'].filter(r => r === role.name))) {
               return true
             }
             return false
           },
-          onError: async(entity: any, workflow: any) => {
+          onError: async (entity: any, workflow: any) => {
             return {
               error: 'Workflow.NotAllowByRole',
             }
@@ -363,20 +367,20 @@ export default {
         },
       ],
       afterEnterEvents: [],
-      expiryDate: async(entity: any, now: Date) => {
+      expiryDate: async (entity: any, now: Date) => {
         return null
       },
-      nextStatus: async(entity: any) => {
+      nextStatus: async (entity: any) => {
         return []
       },
     },
     {
       name: 'Cancelled',
-      expiryDate: async(entity: any, now: Date) => {
+      expiryDate: async (entity: any, now: Date) => {
         return null
       },
       afterEnterEvents: [],
-      nextStatus: async(entity: any) => {
+      nextStatus: async (entity: any) => {
         return []
       },
       canRevert: true,

@@ -18,7 +18,15 @@ function testingAppHandler() {
       res.send = function(resData) {
         // handle inbound response from here
         handleResponse(appId, res, resData, helper)
-        helper.saveLog(appId, req.url, null, null, thirdPartyRequestPayLoad, JSON.stringify(resData), null) // uncomment to save log
+        helper.saveLog(
+          appId,
+          req.url,
+          null,
+          null,
+          thirdPartyRequestPayLoad,
+          JSON.stringify(resData),
+          null
+        ) // uncomment to save log
         oldSend.apply(res, arguments)
       }
     } catch (e) {

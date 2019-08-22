@@ -1,5 +1,12 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { BinaryExpression, ColumnExpression, InExpression, Query, OrExpressions, RegexpExpression } from 'node-jql'
+import {
+  BinaryExpression,
+  ColumnExpression,
+  InExpression,
+  Query,
+  OrExpressions,
+  RegexpExpression,
+} from 'node-jql'
 
 const query = new QueryDef(new Query('location'))
 
@@ -26,7 +33,10 @@ query
     'q',
     new Query({
       $where: new OrExpressions({
-        expressions: [new RegexpExpression(new ColumnExpression('portCode'), false), new RegexpExpression(new ColumnExpression('name'), false)],
+        expressions: [
+          new RegexpExpression(new ColumnExpression('portCode'), false),
+          new RegexpExpression(new ColumnExpression('name'), false),
+        ],
       }),
     })
   )

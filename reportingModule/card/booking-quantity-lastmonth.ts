@@ -1,4 +1,14 @@
-import { Query, FromTable, CreateTableJQL, GroupBy, ResultColumn, ColumnExpression, FunctionExpression, AndExpressions, BinaryExpression } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  CreateTableJQL,
+  GroupBy,
+  ResultColumn,
+  ColumnExpression,
+  FunctionExpression,
+  AndExpressions,
+  BinaryExpression,
+} from 'node-jql'
 import { parseCode } from 'utils/function'
 
 function prepareParams(currentMonth?: boolean): Function {
@@ -44,7 +54,14 @@ function prepareTable(name: string): CreateTableJQL {
       $select: [
         new ResultColumn(new ColumnExpression(name, 'moduleTypeCode')),
         new ResultColumn(new ColumnExpression(name, 'jobMonth')),
-        new ResultColumn(new FunctionExpression('IFNULL', new FunctionExpression('SUM', new ColumnExpression(name, 'quantity')), 0), 'quantity'),
+        new ResultColumn(
+          new FunctionExpression(
+            'IFNULL',
+            new FunctionExpression('SUM', new ColumnExpression(name, 'quantity')),
+            0
+          ),
+          'quantity'
+        ),
       ],
       $from: new FromTable(
         {

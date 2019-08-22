@@ -6,7 +6,8 @@ module.exports = {
       name: 'Booked',
       validationRules: [],
       tags: {},
-      onEnterRule: "isSent = sendNotifications(booking,{entityName:'booking',rolesToEmail:['ConsigneeUser'],useMeta:false})",
+      onEnterRule:
+        "isSent = sendNotifications(booking,{entityName:'booking',rolesToEmail:['ConsigneeUser'],useMeta:false})",
       roles: ['SwivelAdmin', 'Admin', 'User'],
       generatedDate: 'gDate = date(booking.createdAt); var aDate=date(booking.createdAt)',
       actualDate: 'aDate = date(booking.createdAt);',
@@ -38,7 +39,8 @@ module.exports = {
       tags: {
         moduleType: 'SEA',
       },
-      onEnterRule: "isSent =  sendNotifications(booking,{entityName:'booking',rolesToEmail:['ConsigneeUser','ShipperUser'],useMeta:false})",
+      onEnterRule:
+        "isSent =  sendNotifications(booking,{entityName:'booking',rolesToEmail:['ConsigneeUser','ShipperUser'],useMeta:false})",
       roles: ['SwivelAdmin', 'Admin', 'User'],
       action: '/document/create/shippingAdvice',
       generatedDate: 'gDate = date(booking.estimatedDepartureDate); gDate= gDate.addDays(-2)',
@@ -69,7 +71,8 @@ module.exports = {
       tags: {
         moduleType: 'AIR',
       },
-      onEnterRule: "isSent =  sendNotifications(booking,{entityName:'booking',rolesToEmail:['ConsigneeUser','ShipperUser'],useMeta:false})",
+      onEnterRule:
+        "isSent =  sendNotifications(booking,{entityName:'booking',rolesToEmail:['ConsigneeUser','ShipperUser'],useMeta:false})",
       roles: ['SwivelAdmin', 'Admin', 'User'],
       action: '/document/create/shippingAdvice',
       generatedDate: 'gDate = date(booking.estimatedDepartureDate); gDate= gDate.addDays(-2)',
@@ -89,7 +92,8 @@ module.exports = {
         },
       ],
       tags: {},
-      onEnterRule: "isSent = sendNotifications(booking,{entityName:'booking',rolesToEmail:['ConsigneeUser', 'AgentUser', 'ShipperUser', 'ForwarderUser'],useMeta:false})",
+      onEnterRule:
+        "isSent = sendNotifications(booking,{entityName:'booking',rolesToEmail:['ConsigneeUser', 'AgentUser', 'ShipperUser', 'ForwarderUser'],useMeta:false})",
       roles: ['SwivelAdmin', 'Admin', 'User'],
       action: '/document/confirm/shippingAdvice',
       generatedDate: 'gDate = date(booking.estimatedDepartureDate); gDate= gDate.addDays(-1)',
@@ -118,7 +122,8 @@ module.exports = {
         },
       ],
       tags: {},
-      onEnterRule: "isSent = sendNotifications(booking,{entityName:'booking',rolesToEmail:['ConsigneeUser', 'AgentUser', 'ShipperUser', 'ForwarderUser'],useMeta:false})",
+      onEnterRule:
+        "isSent = sendNotifications(booking,{entityName:'booking',rolesToEmail:['ConsigneeUser', 'AgentUser', 'ShipperUser', 'ForwarderUser'],useMeta:false})",
       roles: ['SwivelAdmin', 'Admin', 'User'],
       generatedDate: 'gDate = date(booking.estimatedDepartureDate);',
       action: '',

@@ -1,8 +1,14 @@
 module.exports = {
   hints: {
-    schedule: 'Seconds(0-59) Minutes(0-59) Hours(0-23) Day of Month(1-31) Months(0-11) Day of Week(0-6)',
+    schedule:
+      'Seconds(0-59) Minutes(0-59) Hours(0-23) Day of Month(1-31) Months(0-11) Day of Week(0-6)',
   },
-  defaultHandlers: [{ name: 'Email', code: 'email' }, { name: 'WeChat', code: 'weChat' }, { name: 'SMS', code: 'sms' }, { name: 'No Notification', code: 'noNotifaction' }],
+  defaultHandlers: [
+    { name: 'Email', code: 'email' },
+    { name: 'WeChat', code: 'weChat' },
+    { name: 'SMS', code: 'sms' },
+    { name: 'No Notification', code: 'noNotifaction' },
+  ],
   alerts: [
     {
       displayName: 'New Booking',
@@ -109,7 +115,11 @@ module.exports = {
       ],
       definition: 'alerts-bill',
       message: 'Prepaid Invoice Missing for bill id # {{id}}',
-      filters: [{ etdDaysFromNow: 3 }, { alertType: 'Prepaid Invoice Missing' }, { transactionStatus: 'Create Prepaid Sales Invoice' }],
+      filters: [
+        { etdDaysFromNow: 3 },
+        { alertType: 'Prepaid Invoice Missing' },
+        { transactionStatus: 'Create Prepaid Sales Invoice' },
+      ],
       limit: 1000,
       roles: ['ShipperUser', 'ShipperAdmin', 'ForwarderAdmin'],
       defaultFilters: {},
@@ -175,7 +185,11 @@ module.exports = {
       ],
       definition: 'alerts-bill',
       message: 'Missing MBL for bill id # {{id}}',
-      filters: [{ etdDaysFromNow: 3 }, { transactionStatus: 'Create Sample Ocean Bill' }, { alertType: 'Missing MBL' }],
+      filters: [
+        { etdDaysFromNow: 3 },
+        { transactionStatus: 'Create Sample Ocean Bill' },
+        { alertType: 'Missing MBL' },
+      ],
       limit: 1000,
       roles: ['ShipperUser', 'ShipperAdmin', 'ForwarderAdmin'],
       defaultFilters: {},
@@ -225,7 +239,12 @@ module.exports = {
       ],
       definition: 'alerts-transactionStatus',
       message: 'Booking delayed for id# {{id}}.',
-      filters: [{ tableName: ['booking'] }, { booking: 'booking' }, { trackingStatus: 'Delayed' }, { alertType: 'Booking delayed' }],
+      filters: [
+        { tableName: ['booking'] },
+        { booking: 'booking' },
+        { trackingStatus: 'Delayed' },
+        { alertType: 'Booking delayed' },
+      ],
       limit: 1000,
       roles: ['ShipperUser', 'ShipperAdmin', 'ForwarderAdmin'],
       defaultFilters: {},

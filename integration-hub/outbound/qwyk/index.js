@@ -14,7 +14,15 @@ function qwykHandler() {
       .rp(reqOptions)
       .then(json => {
         console.log('json response ', json)
-        helper.saveLog(appId, url, null, null, JSON.stringify(reqOptions), JSON.stringify(json), null)
+        helper.saveLog(
+          appId,
+          url,
+          null,
+          null,
+          JSON.stringify(reqOptions),
+          JSON.stringify(json),
+          null
+        )
         helper.redisClient.set('token', json.token, helper.redis.print)
       })
       .catch(e => {

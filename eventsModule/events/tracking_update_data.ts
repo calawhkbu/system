@@ -62,7 +62,9 @@ class TrackingUpdateDataEvent extends BaseEvent {
 
     const trackingService = this.allService['TrackingService'] as TrackingService
 
-    const trackingReferenceService = this.allService['TrackingReferenceService'] as TrackingReferenceService
+    const trackingReferenceService = this.allService[
+      'TrackingReferenceService'
+    ] as TrackingReferenceService
     const alertDbService = this.allService['AlertDbService'] as AlertDbService
 
     const bookingService = this.allService['BookingService'] as BookingService
@@ -74,7 +76,10 @@ class TrackingUpdateDataEvent extends BaseEvent {
       'SELECT `tracking_reference`.`partyGroupCode`, `tracking_reference`.`trackingNo`, `tracking_reference`.`type` FROM (SELECT  `tracking_reference`.*,  `masterNo` AS trackingNo, \'masterNo\' as `type` FROM `tracking_reference` UNION SELECT  `tracking_reference`.*, `soTable`.`trackingNo`, \'soNo\' as `type` FROM  `tracking_reference`,  JSON_TABLE( `soNo`, "$[*]" COLUMNS (`trackingNo` VARCHAR(100) PATH "$")) `soTable`\n\tUNION\n\t\tSELECT  `tracking_reference`.* , `containerTable`.`trackingNo`, \'containerNo\' as `type`\n\t\tFROM `tracking_reference`,  JSON_TABLE( `containerNo`, "$[*]" COLUMNS (`trackingNo` VARCHAR(100) PATH "$")) `containerTable`\n) `tracking_reference`\nWHERE `tracking_reference`.`trackingNo` is not null \nAND `tracking_reference`.`trackingNo` = "' +
       `${trackingNo}` +
       '"'
-    const trackingReferenceList = (await trackingReferenceService.query(queryString, rawQueryOption)) as {
+    const trackingReferenceList = (await trackingReferenceService.query(
+      queryString,
+      rawQueryOption
+    )) as {
       partyGroupCode: string
       trackingNo: string
       type: 'masterNo' | 'soNo' | 'containerNo'
@@ -106,7 +111,10 @@ class TrackingUpdateDataEvent extends BaseEvent {
           `
         }
 
-        const bookingIdListQueryResult = (await bookingService.query(bookingIdListQueryString, rawQueryOption)) as { bookingId: number }[]
+        const bookingIdListQueryResult = (await bookingService.query(
+          bookingIdListQueryString,
+          rawQueryOption
+        )) as { bookingId: number }[]
         bookingIdList = bookingIdListQueryResult.map(x => x.bookingId)
 
         const bookingList = (await bookingService.find(
@@ -176,10 +184,16 @@ class TrackingUpdateDataEvent extends BaseEvent {
               if (bookingTime) {
                 const minTime = moment(bookingTime)
                   .utc()
-                  .subtract(deplayAlertTimeRange[booking.moduleTypeCode].value, deplayAlertTimeRange[booking.moduleTypeCode].unit)
+                  .subtract(
+                    deplayAlertTimeRange[booking.moduleTypeCode].value,
+                    deplayAlertTimeRange[booking.moduleTypeCode].unit
+                  )
                 const maxTime = moment(bookingTime)
                   .utc()
-                  .add(deplayAlertTimeRange[booking.moduleTypeCode].value, deplayAlertTimeRange[booking.moduleTypeCode].unit)
+                  .add(
+                    deplayAlertTimeRange[booking.moduleTypeCode].value,
+                    deplayAlertTimeRange[booking.moduleTypeCode].unit
+                  )
 
                 if (trackingTime < minTime || trackingTime > maxTime) {
                   console.log(`need to send ${iterator.alertType}`)
@@ -203,7 +217,15 @@ class TrackingUpdateDataEvent extends BaseEvent {
 
         // send alert
         for (const iterator of alertResult) {
-          await alertDbService.createAlert(iterator.tableName, iterator.primaryKey, iterator.alertType, undefined, undefined, this.user, this.transaction)
+          await alertDbService.createAlert(
+            iterator.tableName,
+            iterator.primaryKey,
+            iterator.alertType,
+            undefined,
+            undefined,
+            this.user,
+            this.transaction
+          )
         }
       })
     )
@@ -217,8 +239,24 @@ class TrackingUpdateDataEvent extends BaseEvent {
 }
 
 export default {
-  execute: async(parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
-    const event = new TrackingUpdateDataEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
+  execute: async (
+    parameters: any,
+    eventConfig: EventConfig,
+    repo: string,
+    eventService: any,
+    allService: any,
+    user?: JwtPayload,
+    transaction?: Transaction
+  ) => {
+    const event = new TrackingUpdateDataEvent(
+      parameters,
+      eventConfig,
+      repo,
+      eventService,
+      allService,
+      user,
+      transaction
+    )
     return await event.execute()
   },
 }

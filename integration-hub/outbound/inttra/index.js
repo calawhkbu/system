@@ -30,7 +30,9 @@ function intrraHandler() {
     var partyDetails = booker.bookingParties
     Object.keys(partyDetails).forEach(partyRole => {
       let bookingParty = partyDetails[partyRole]
-      let partyComponent = JSON.stringify(INTTRA_Metadata.message.MessageBody.MessageProperties.Party)
+      let partyComponent = JSON.stringify(
+        INTTRA_Metadata.message.MessageBody.MessageProperties.Party
+      )
       let partyObject = swig.render(partyComponent, { locals: bookingParty })
       partyObject = JSON.parse(partyObject)
       partyObject.Role = partyRole
@@ -54,7 +56,9 @@ function intrraHandler() {
     var equipmentList = []
     var bookingContainers = booker['bookingContainers']
     bookingContainers.forEach(continer => {
-      let containersInfo = JSON.stringify(INTTRA_Metadata.message.MessageBody.MessageDetails.EquipmentDetails)
+      let containersInfo = JSON.stringify(
+        INTTRA_Metadata.message.MessageBody.MessageDetails.EquipmentDetails
+      )
       let partyObject = swig.render(containersInfo, { locals: continer })
       partyObject = partyObject.replace('&#39;', "'")
       partyObject = JSON.parse(partyObject)
@@ -84,7 +88,15 @@ function intrraHandler() {
       // 4. save into DB
       helper.saveLog(appId, url, params.entity, params.entityId, reqPayLoad, null, null)
     } catch (e) {
-      helper.saveLog(appId, url, params.entity, params.entityId, reqPayLoad, null, JSON.stringify(e))
+      helper.saveLog(
+        appId,
+        url,
+        params.entity,
+        params.entityId,
+        reqPayLoad,
+        null,
+        JSON.stringify(e)
+      )
     }
   }
 }

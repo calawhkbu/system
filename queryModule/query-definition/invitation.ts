@@ -1,5 +1,13 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, FromTable, BinaryExpression, ColumnExpression, InExpression, RegexpExpression, IsNullExpression } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  BinaryExpression,
+  ColumnExpression,
+  InExpression,
+  RegexpExpression,
+  IsNullExpression,
+} from 'node-jql'
 
 const query = new QueryDef(
   new Query({
@@ -9,12 +17,24 @@ const query = new QueryDef(
       {
         operator: 'LEFT',
         table: 'person',
-        $on: [new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('invitation', 'personId'))],
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('person', 'id'),
+            '=',
+            new ColumnExpression('invitation', 'personId')
+          ),
+        ],
       },
       {
         operator: 'LEFT',
         table: 'token',
-        $on: [new BinaryExpression(new ColumnExpression('token', 'id'), '=', new ColumnExpression('invitation', 'tokenId'))],
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('token', 'id'),
+            '=',
+            new ColumnExpression('invitation', 'tokenId')
+          ),
+        ],
       }
     ),
   })

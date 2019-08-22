@@ -1,5 +1,14 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, ResultColumn, FromTable, RegexpExpression, ColumnExpression, BinaryExpression, InExpression, IsNullExpression } from 'node-jql'
+import {
+  Query,
+  ResultColumn,
+  FromTable,
+  RegexpExpression,
+  ColumnExpression,
+  BinaryExpression,
+  InExpression,
+  IsNullExpression,
+} from 'node-jql'
 
 const query = new QueryDef(
   new Query({
@@ -7,7 +16,11 @@ const query = new QueryDef(
     $from: new FromTable('party', {
       operator: 'LEFT',
       table: 'party_type',
-      $on: new BinaryExpression(new ColumnExpression('party', 'id'), '=', new ColumnExpression('party_type', 'partyId')),
+      $on: new BinaryExpression(
+        new ColumnExpression('party', 'id'),
+        '=',
+        new ColumnExpression('party_type', 'partyId')
+      ),
     }),
   })
 )
@@ -78,7 +91,10 @@ query
 query.register(
   'isActive',
   new Query({
-    $where: [new IsNullExpression(new ColumnExpression('party', 'deletedAt'), false), new IsNullExpression(new ColumnExpression('party', 'deletedBy'), false)],
+    $where: [
+      new IsNullExpression(new ColumnExpression('party', 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression('party', 'deletedBy'), false),
+    ],
   })
 )
 

@@ -1,7 +1,17 @@
 [
   {
     "tableName": "booking",
-    "variableList": ["partyGroupCode", "bookingNo", "moduleTypeCode", "boundTypeCode", "agentPartyId", "forwarderPartyId", "notifyPartyPartyId", "shipperPartyId", "consigneePartyId"]
+    "variableList": [
+      "partyGroupCode",
+      "bookingNo",
+      "moduleTypeCode",
+      "boundTypeCode",
+      "agentPartyId",
+      "forwarderPartyId",
+      "notifyPartyPartyId",
+      "shipperPartyId",
+      "consigneePartyId"
+    ]
   },
   {
     "tableName": "shipment",

@@ -1,7 +1,18 @@
-import { Query, FromTable, ResultColumn, FunctionExpression, ColumnExpression, GroupBy } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  ResultColumn,
+  FunctionExpression,
+  ColumnExpression,
+  GroupBy,
+} from 'node-jql'
 
 const query = new Query({
-  $select: [new ResultColumn('officePartyCode', '__id'), new ResultColumn('officePartyCode', '__value'), new ResultColumn(new FunctionExpression('ROWS', new ColumnExpression('*')), '__rows')],
+  $select: [
+    new ResultColumn('officePartyCode', '__id'),
+    new ResultColumn('officePartyCode', '__value'),
+    new ResultColumn(new FunctionExpression('ROWS', new ColumnExpression('*')), '__rows'),
+  ],
   $from: new FromTable(
     {
       method: 'POST',

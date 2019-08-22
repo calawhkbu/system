@@ -69,9 +69,18 @@ export default class BaseAirTrackingService {
               if (oldTracking.batchRetry > trackingModule.retryTime.air) {
                 throw new Error()
               }
-              return this.get(trackingNo, trackingReference.carrierCode, trackingReference.carrierCode2, oldTracking)
+              return this.get(
+                trackingNo,
+                trackingReference.carrierCode,
+                trackingReference.carrierCode2,
+                oldTracking
+              )
             }
-            return this.register(trackingNo, trackingReference.carrierCode, trackingReference.carrierCode2)
+            return this.register(
+              trackingNo,
+              trackingReference.carrierCode,
+              trackingReference.carrierCode2
+            )
           })
           .catch((e: any) => {
             throw e
@@ -136,7 +145,12 @@ export default class BaseAirTrackingService {
       console.error(e, e.stack, 'BaseAirTrackingService')
     }
   }
-  async get(trackingNo: string, carrierCode: string, carrierCode2: string, oldTracking: Tracking): Promise<void> {
+  async get(
+    trackingNo: string,
+    carrierCode: string,
+    carrierCode2: string,
+    oldTracking: Tracking
+  ): Promise<void> {
     const { trackingModule } = await this.swivelConfigService.get()
     if (oldTracking.trackingNo !== trackingNo) {
       return
@@ -153,7 +167,12 @@ export default class BaseAirTrackingService {
     }
     try {
       const oldDetails = oldTracking.details
-      let newDetailsRaw = await this.outboundService.send('system', 'yundang-air-get', { Buffer: this.buffer, constants: trackingModule.yundang }, { masterNo: trackingNo, carrierCode, carrierCode2 })
+      let newDetailsRaw = await this.outboundService.send(
+        'system',
+        'yundang-air-get',
+        { Buffer: this.buffer, constants: trackingModule.yundang },
+        { masterNo: trackingNo, carrierCode, carrierCode2 }
+      )
       newDetailsRaw = Array.isArray(newDetailsRaw) ? newDetailsRaw[0] : null
       console.log(newDetailsRaw)
       newTracking.detailsRaw = newDetailsRaw
@@ -167,11 +186,17 @@ export default class BaseAirTrackingService {
       newDetails.isClosed = newDetailsRaw.endTime || newDetailsRaw.isendforce === 'Y'
       newDetails.lastStatusCode = newDetailsRaw.currentnode
       newDetails.lastStatus = status[newDetailsRaw.currentnode] || newDetailsRaw.currentnode
-      newDetails.lastStatusDate = newDetailsRaw.currentnodetime ? new Date(newDetailsRaw.currentnodetime) : null
+      newDetails.lastStatusDate = newDetailsRaw.currentnodetime
+        ? new Date(newDetailsRaw.currentnodetime)
+        : null
       console.log([newDetails.lastStatusCode, oldDetails.lastStatusCode])
       console.log([newDetails.lastStatus, oldDetails.lastStatus])
       console.log([moment(oldDetails.lastStatusDate), moment(newDetails.lastStatusDate)])
-      if (newDetails.lastStatusCode !== oldDetails.lastStatusCode || newDetails.lastStatus !== oldDetails.lastStatus || moment(oldDetails.lastStatusDate).isSame(moment(newDetails.lastStatusDate))) {
+      if (
+        newDetails.lastStatusCode !== oldDetails.lastStatusCode ||
+        newDetails.lastStatus !== oldDetails.lastStatus ||
+        moment(oldDetails.lastStatusDate).isSame(moment(newDetails.lastStatusDate))
+      ) {
         newDetails.lastStatusUpdateDate = moment.utc().toDate()
       }
       const trackingHistory: any[] = newDetailsRaw.lstairlinertrackingstatus || []
@@ -191,7 +216,9 @@ export default class BaseAirTrackingService {
         newDetails.actualArrivalDate = newDetails.actualArrivalDate || d.statustime
       })
       if (
-        moment(oldDetails.estimatedDepartureDate).isSame(moment(newDetails.estimatedDepartureDate)) ||
+        moment(oldDetails.estimatedDepartureDate).isSame(
+          moment(newDetails.estimatedDepartureDate)
+        ) ||
         moment(oldDetails.actualDepartureDate).isSame(moment(newDetails.actualDepartureDate)) ||
         moment(oldDetails.estimatedArrivalDate).isSame(moment(newDetails.estimatedArrivalDate)) ||
         moment(oldDetails.actualArrivalDate).isSame(moment(newDetails.actualArrivalDate))

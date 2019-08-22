@@ -1,4 +1,15 @@
-import { ColumnExpression, CreateTableJQL, FromTable, FunctionExpression, GroupBy, Query, ResultColumn, OrderBy, JoinClause, BinaryExpression } from 'node-jql'
+import {
+  ColumnExpression,
+  CreateTableJQL,
+  FromTable,
+  FunctionExpression,
+  GroupBy,
+  Query,
+  ResultColumn,
+  OrderBy,
+  JoinClause,
+  BinaryExpression,
+} from 'node-jql'
 
 function prepareParams(): Function {
   return function(require, session, params) {
@@ -18,7 +29,14 @@ function prepareTable(name: string): CreateTableJQL {
     $as: new Query({
       $select: [
         new ResultColumn(new ColumnExpression(name, 'shipperPartyId')),
-        new ResultColumn(new FunctionExpression('IFNULL', new FunctionExpression('SUM', new ColumnExpression(name, 'volume')), 0), 'volume'),
+        new ResultColumn(
+          new FunctionExpression(
+            'IFNULL',
+            new FunctionExpression('SUM', new ColumnExpression(name, 'volume')),
+            0
+          ),
+          'volume'
+        ),
       ],
       $from: new FromTable(
         {
@@ -106,7 +124,15 @@ export default [
     $from: new FromTable(
       'tempTable',
       'tempTable',
-      new JoinClause('INNER', new FromTable('party', 'party'), new BinaryExpression(new ColumnExpression('tempTable', 'shipperPartyId'), '=', new ColumnExpression('party', 'id')))
+      new JoinClause(
+        'INNER',
+        new FromTable('party', 'party'),
+        new BinaryExpression(
+          new ColumnExpression('tempTable', 'shipperPartyId'),
+          '=',
+          new ColumnExpression('party', 'id')
+        )
+      )
     ),
 
     $order: [new OrderBy(new ColumnExpression('tempTable', 'volume'), 'DESC')],

@@ -1,5 +1,13 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, FromTable, BinaryExpression, ColumnExpression, RegexpExpression, IsNullExpression, InExpression } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  BinaryExpression,
+  ColumnExpression,
+  RegexpExpression,
+  IsNullExpression,
+  InExpression,
+} from 'node-jql'
 
 const query = new QueryDef(
   new Query({
@@ -8,27 +16,57 @@ const query = new QueryDef(
       {
         operator: 'LEFT',
         table: 'invitation',
-        $on: [new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('invitation', 'personId'))],
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('person', 'id'),
+            '=',
+            new ColumnExpression('invitation', 'personId')
+          ),
+        ],
       },
       {
         operator: 'LEFT',
         table: 'parties_person',
-        $on: [new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('parties_person', 'personId'))],
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('person', 'id'),
+            '=',
+            new ColumnExpression('parties_person', 'personId')
+          ),
+        ],
       },
       {
         operator: 'LEFT',
         table: 'party',
-        $on: [new BinaryExpression(new ColumnExpression('party', 'id'), '=', new ColumnExpression('parties_person', 'partyId'))],
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('party', 'id'),
+            '=',
+            new ColumnExpression('parties_person', 'partyId')
+          ),
+        ],
       },
       {
         operator: 'LEFT',
         table: 'party_group',
-        $on: [new BinaryExpression(new ColumnExpression('party_group', 'code'), '=', new ColumnExpression('party', 'partyGroupCode'))],
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('party_group', 'code'),
+            '=',
+            new ColumnExpression('party', 'partyGroupCode')
+          ),
+        ],
       },
       {
         operator: 'LEFT',
         table: 'person_contact',
-        $on: [new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('person_contact', 'personId'))],
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('person', 'id'),
+            '=',
+            new ColumnExpression('person_contact', 'personId')
+          ),
+        ],
       }
     ),
   })
@@ -98,7 +136,14 @@ query
         new Query({
           $select: 'personId',
           $from: 'person_role',
-          $where: [new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('person_role', 'personId')), new InExpression(new ColumnExpression('roleId'), false)],
+          $where: [
+            new BinaryExpression(
+              new ColumnExpression('person', 'id'),
+              '=',
+              new ColumnExpression('person_role', 'personId')
+            ),
+            new InExpression(new ColumnExpression('roleId'), false),
+          ],
         })
       ),
     })

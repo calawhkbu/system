@@ -38,18 +38,44 @@ class EntityCreateInvitationEvent extends BaseEvent {
 
     const entityService = this.allService[`BookingService`] as BookingService
 
-    const invitationUpdatedEntity = (await invitationDbService.entityCreateInvitaion(entity, 'booking', this.user, this.transaction)) as Booking
+    const invitationUpdatedEntity = (await invitationDbService.entityCreateInvitaion(
+      entity,
+      'booking',
+      this.user,
+      this.transaction
+    )) as Booking
 
     if (invitationUpdatedEntity) {
       // warning: autoSave = true
-      return await entityService.save({ ...entity, ...invitationUpdatedEntity }, this.user, this.transaction, true)
+      return await entityService.save(
+        { ...entity, ...invitationUpdatedEntity },
+        this.user,
+        this.transaction,
+        true
+      )
     }
   }
 }
 
 export default {
-  execute: async(parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
-    const event = new EntityCreateInvitationEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
+  execute: async (
+    parameters: any,
+    eventConfig: EventConfig,
+    repo: string,
+    eventService: any,
+    allService: any,
+    user?: JwtPayload,
+    transaction?: Transaction
+  ) => {
+    const event = new EntityCreateInvitationEvent(
+      parameters,
+      eventConfig,
+      repo,
+      eventService,
+      allService,
+      user,
+      transaction
+    )
     return await event.execute()
   },
 }

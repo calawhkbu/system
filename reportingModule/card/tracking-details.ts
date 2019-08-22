@@ -1,4 +1,12 @@
-import { Column, ColumnExpression, CreateTableJQL, FunctionExpression, JoinClause, Query, ResultColumn } from 'node-jql'
+import {
+  Column,
+  ColumnExpression,
+  CreateTableJQL,
+  FunctionExpression,
+  JoinClause,
+  Query,
+  ResultColumn,
+} from 'node-jql'
 import { Session } from 'node-jql-core'
 
 function prepareParams(check?: boolean): Function {
@@ -13,7 +21,8 @@ function prepareParams(check?: boolean): Function {
       if (!subqueries.date) throw new BadRequestException('MISSING_DATE')
       const datefr = moment(subqueries.date.from, 'YYYY-MM-DD')
       const dateto = moment(subqueries.date.to, 'YYYY-MM-DD')
-      if (dateto.diff(datefr, 'months', true) > 1) throw new BadRequestException('DATE_RANGE_TOO_LARGE')
+      if (dateto.diff(datefr, 'months', true) > 1)
+        throw new BadRequestException('DATE_RANGE_TOO_LARGE')
       if (!subqueries.moduleType) throw new BadRequestException('MISSING_MODULE_TYPE')
       if (!subqueries.lastStatus) throw new BadRequestException('MISSING_LAST_STATUS')
       return params
@@ -53,7 +62,13 @@ export default [
     prepareParams(),
     function(require, session, params) {
       // import
-      const { BinaryExpression, ColumnExpression, CreateTableJQL, FromTable, Query } = require('node-jql')
+      const {
+        BinaryExpression,
+        ColumnExpression,
+        CreateTableJQL,
+        FromTable,
+        Query,
+      } = require('node-jql')
 
       // script
       return new CreateTableJQL({
@@ -98,9 +113,21 @@ export default [
               ],
             },
             'tracking',
-            new JoinClause('LEFT', 'status_master', new BinaryExpression(new ColumnExpression('tracking', 'lastStatus'), '=', new ColumnExpression('status_master', 'status')))
+            new JoinClause(
+              'LEFT',
+              'status_master',
+              new BinaryExpression(
+                new ColumnExpression('tracking', 'lastStatus'),
+                '=',
+                new ColumnExpression('status_master', 'status')
+              )
+            )
           ),
-          $where: new BinaryExpression(new ColumnExpression('status_master', 'group'), '=', params.lastStatus.value),
+          $where: new BinaryExpression(
+            new ColumnExpression('status_master', 'group'),
+            '=',
+            params.lastStatus.value
+          ),
         }),
       })
     },
@@ -128,7 +155,14 @@ export default [
       // script
       const result = [] as any[]
       const trackings = new Resultset(await session.query(new Query('tracking'))).toArray() as any[]
-      for (const { trackingNo, lastStatus, lastStatusDate, masterNo, bookingNo = [], containerNo = [] } of trackings) {
+      for (const {
+        trackingNo,
+        lastStatus,
+        lastStatusDate,
+        masterNo,
+        bookingNo = [],
+        containerNo = [],
+      } of trackings) {
         const shipments = new Resultset(
           await session.query(
             new Query({
@@ -179,7 +213,14 @@ export default [
       // script
       const result = [] as any[]
       const trackings = new Resultset(await session.query(new Query('tracking'))).toArray() as any[]
-      for (const { trackingNo, lastStatus, lastStatusDate, masterNo, bookingNo = [], containerNo = [] } of trackings) {
+      for (const {
+        trackingNo,
+        lastStatus,
+        lastStatusDate,
+        masterNo,
+        bookingNo = [],
+        containerNo = [],
+      } of trackings) {
         const bookings = new Resultset(
           await session.query(
             new Query({
@@ -222,7 +263,11 @@ export default [
 
   // finalize
   new Query({
-    $select: [new ResultColumn('trackingNo', '__id'), new ResultColumn('trackingNo', '__value'), new ResultColumn(new FunctionExpression('ROWS', new ColumnExpression('*')), '__rows')],
+    $select: [
+      new ResultColumn('trackingNo', '__id'),
+      new ResultColumn('trackingNo', '__value'),
+      new ResultColumn(new FunctionExpression('ROWS', new ColumnExpression('*')), '__rows'),
+    ],
     $from: 'entities',
     $group: 'trackingNo',
   }),

@@ -82,7 +82,12 @@ class CheckerEvent extends BaseEvent {
     return functionMap
   }
 
-  processCheckerFunction(key: string, parameters: any, checkerOption: any, checkerFunctionMap: Map<string, Function>) {
+  processCheckerFunction(
+    key: string,
+    parameters: any,
+    checkerOption: any,
+    checkerFunctionMap: Map<string, Function>
+  ) {
     let checkerFunction = checkerOption['checkerFunction'] as Function
     const checkerFunctionName = checkerOption['checkerFunctionName'] as string
 
@@ -124,7 +129,12 @@ class CheckerEvent extends BaseEvent {
       const variableResult = []
 
       for (let index = 0; index < checkerList.length; index++) {
-        variableResult[index] = this.processCheckerFunction(key, parameters, checkerList[index], checkerFunctionMap)
+        variableResult[index] = this.processCheckerFunction(
+          key,
+          parameters,
+          checkerList[index],
+          checkerFunctionMap
+        )
       }
 
       checkerResult[key] = variableResult
@@ -139,8 +149,24 @@ class CheckerEvent extends BaseEvent {
 }
 
 export default {
-  execute: async(parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
-    const event = new CheckerEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
+  execute: async (
+    parameters: any,
+    eventConfig: EventConfig,
+    repo: string,
+    eventService: any,
+    allService: any,
+    user?: JwtPayload,
+    transaction?: Transaction
+  ) => {
+    const event = new CheckerEvent(
+      parameters,
+      eventConfig,
+      repo,
+      eventService,
+      allService,
+      user,
+      transaction
+    )
     return await event.execute()
   },
 }

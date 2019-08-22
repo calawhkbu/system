@@ -1,5 +1,14 @@
 import { parseCode } from 'utils/function'
-import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, MathExpression, CreateFunctionJQL } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  CreateTableJQL,
+  ResultColumn,
+  ColumnExpression,
+  FunctionExpression,
+  MathExpression,
+  CreateFunctionJQL,
+} from 'node-jql'
 
 function prepareParams(thisYear: boolean, nominatedType_: 'F' | 'R'): Function {
   const fn = function(require, session, params) {
@@ -32,11 +41,24 @@ function prepareTable(name: string): CreateTableJQL {
     name,
     $as: new Query({
       $select: [
-        new ResultColumn(new FunctionExpression('YEAR', new ColumnExpression('jobMonth'), 'YYYY-MM'), 'year'),
-        new ResultColumn(new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'), 'month'),
+        new ResultColumn(
+          new FunctionExpression('YEAR', new ColumnExpression('jobMonth'), 'YYYY-MM'),
+          'year'
+        ),
+        new ResultColumn(
+          new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
+          'month'
+        ),
         new ResultColumn('currency'),
         new ResultColumn('grossProfit'),
-        new ResultColumn(new MathExpression(new ColumnExpression('grossProfit'), '/', new ColumnExpression('revenue')), 'margin'),
+        new ResultColumn(
+          new MathExpression(
+            new ColumnExpression('grossProfit'),
+            '/',
+            new ColumnExpression('revenue')
+          ),
+          'margin'
+        ),
       ],
       $from: new FromTable(
         {
@@ -92,39 +114,116 @@ export default [
 
   // finalize
   function(require, session, params) {
-    const { Query, FromTable, ResultColumn, ColumnExpression, FunctionExpression, JoinClause, BinaryExpression } = require('node-jql')
+    const {
+      Query,
+      FromTable,
+      ResultColumn,
+      ColumnExpression,
+      FunctionExpression,
+      JoinClause,
+      BinaryExpression,
+    } = require('node-jql')
     const query = new Query({
       $select: [
-        new ResultColumn(new FunctionExpression('ROUND', new ColumnExpression('cf', 'grossProfit'), 0), 'grossProfit_F'),
-        new ResultColumn(new FunctionExpression('ROUND', new ColumnExpression('cr', 'grossProfit'), 0), 'grossProfit_R'),
-        new ResultColumn(new FunctionExpression('NUMBER_FORMAT', new ColumnExpression('cf', 'margin'), '0.00%'), 'margin_F'),
-        new ResultColumn(new FunctionExpression('NUMBER_FORMAT', new ColumnExpression('cr', 'margin'), '0.00%'), 'margin_R'),
         new ResultColumn(
-          new FunctionExpression('NUMBER_FORMAT', new FunctionExpression('PERCENT_CHANGE', new ColumnExpression('cf', 'grossProfit'), new ColumnExpression('lf', 'grossProfit')), '0.00%'),
+          new FunctionExpression('ROUND', new ColumnExpression('cf', 'grossProfit'), 0),
+          'grossProfit_F'
+        ),
+        new ResultColumn(
+          new FunctionExpression('ROUND', new ColumnExpression('cr', 'grossProfit'), 0),
+          'grossProfit_R'
+        ),
+        new ResultColumn(
+          new FunctionExpression('NUMBER_FORMAT', new ColumnExpression('cf', 'margin'), '0.00%'),
+          'margin_F'
+        ),
+        new ResultColumn(
+          new FunctionExpression('NUMBER_FORMAT', new ColumnExpression('cr', 'margin'), '0.00%'),
+          'margin_R'
+        ),
+        new ResultColumn(
+          new FunctionExpression(
+            'NUMBER_FORMAT',
+            new FunctionExpression(
+              'PERCENT_CHANGE',
+              new ColumnExpression('cf', 'grossProfit'),
+              new ColumnExpression('lf', 'grossProfit')
+            ),
+            '0.00%'
+          ),
           'pc_grossProfit_F'
         ),
         new ResultColumn(
-          new FunctionExpression('NUMBER_FORMAT', new FunctionExpression('PERCENT_CHANGE', new ColumnExpression('cr', 'grossProfit'), new ColumnExpression('lr', 'grossProfit')), '0.00%'),
+          new FunctionExpression(
+            'NUMBER_FORMAT',
+            new FunctionExpression(
+              'PERCENT_CHANGE',
+              new ColumnExpression('cr', 'grossProfit'),
+              new ColumnExpression('lr', 'grossProfit')
+            ),
+            '0.00%'
+          ),
           'pc_grossProfit_R'
         ),
         new ResultColumn(
-          new FunctionExpression('NUMBER_FORMAT', new FunctionExpression('PERCENT_CHANGE', new ColumnExpression('cf', 'margin'), new ColumnExpression('lf', 'margin')), '0.00%'),
+          new FunctionExpression(
+            'NUMBER_FORMAT',
+            new FunctionExpression(
+              'PERCENT_CHANGE',
+              new ColumnExpression('cf', 'margin'),
+              new ColumnExpression('lf', 'margin')
+            ),
+            '0.00%'
+          ),
           'pc_margin_F'
         ),
         new ResultColumn(
-          new FunctionExpression('NUMBER_FORMAT', new FunctionExpression('PERCENT_CHANGE', new ColumnExpression('cr', 'margin'), new ColumnExpression('lr', 'margin')), '0.00%'),
+          new FunctionExpression(
+            'NUMBER_FORMAT',
+            new FunctionExpression(
+              'PERCENT_CHANGE',
+              new ColumnExpression('cr', 'margin'),
+              new ColumnExpression('lr', 'margin')
+            ),
+            '0.00%'
+          ),
           'pc_margin_R'
         ),
       ],
       $from: new FromTable(
         'current_F',
         'cf',
-        new JoinClause('LEFT', new FromTable('current_R', 'cr'), new BinaryExpression(new ColumnExpression('cf', 'month'), '=', new ColumnExpression('cr', 'month'))),
-        new JoinClause('LEFT', new FromTable('last_F', 'lf'), new BinaryExpression(new ColumnExpression('cf', 'month'), '=', new ColumnExpression('lf', 'month'))),
-        new JoinClause('LEFT', new FromTable('last_R', 'lr'), new BinaryExpression(new ColumnExpression('cf', 'month'), '=', new ColumnExpression('lr', 'month')))
+        new JoinClause(
+          'LEFT',
+          new FromTable('current_R', 'cr'),
+          new BinaryExpression(
+            new ColumnExpression('cf', 'month'),
+            '=',
+            new ColumnExpression('cr', 'month')
+          )
+        ),
+        new JoinClause(
+          'LEFT',
+          new FromTable('last_F', 'lf'),
+          new BinaryExpression(
+            new ColumnExpression('cf', 'month'),
+            '=',
+            new ColumnExpression('lf', 'month')
+          )
+        ),
+        new JoinClause(
+          'LEFT',
+          new FromTable('last_R', 'lr'),
+          new BinaryExpression(
+            new ColumnExpression('cf', 'month'),
+            '=',
+            new ColumnExpression('lr', 'month')
+          )
+        )
       ),
     })
-    if (params.subqueries && params.subqueries.showMonth) query.$select.unshift(new ResultColumn(new ColumnExpression('cf', 'month'), 'month'))
+    if (params.subqueries && params.subqueries.showMonth)
+      query.$select.unshift(new ResultColumn(new ColumnExpression('cf', 'month'), 'month'))
     return query
   },
 ]

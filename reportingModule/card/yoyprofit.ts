@@ -1,4 +1,11 @@
-import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  CreateTableJQL,
+  ResultColumn,
+  ColumnExpression,
+  FunctionExpression,
+} from 'node-jql'
 import { parseCode } from 'utils/function'
 
 function prepareParams(thisYear?: boolean): Function {
@@ -30,10 +37,19 @@ function prepareTable(name: string): CreateTableJQL {
     name,
     $as: new Query({
       $select: [
-        new ResultColumn(new FunctionExpression('YEAR', new ColumnExpression('jobMonth'), 'YYYY-MM'), 'year'),
-        new ResultColumn(new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'), 'month'),
+        new ResultColumn(
+          new FunctionExpression('YEAR', new ColumnExpression('jobMonth'), 'YYYY-MM'),
+          'year'
+        ),
+        new ResultColumn(
+          new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
+          'month'
+        ),
         new ResultColumn('currency'),
-        new ResultColumn(new FunctionExpression('ROUND', new ColumnExpression('grossProfit'), 0), 'grossProfit'),
+        new ResultColumn(
+          new FunctionExpression('ROUND', new ColumnExpression('grossProfit'), 0),
+          'grossProfit'
+        ),
       ],
       $from: new FromTable(
         {

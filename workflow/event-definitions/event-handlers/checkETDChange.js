@@ -1,7 +1,10 @@
 function CheckETD() {
   this.returns = ['DATESET', 'DELAY', 'CHANGED']
   this.handle = function(definition, data, handlerParameters, helper) {
-    if (data.data.estimatedDepartureDate != null && helper.moment.isDate(data.data.estimatedDepartureDate)) {
+    if (
+      data.data.estimatedDepartureDate != null &&
+      helper.moment.isDate(data.data.estimatedDepartureDate)
+    ) {
       return data.oldData.estimatedDepartureDate === null
         ? // Compare ETA from FM3000 and ETA from YunDang this time
           new Promise(resolve => {

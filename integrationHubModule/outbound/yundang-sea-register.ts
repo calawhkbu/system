@@ -3,7 +3,10 @@ import moment = require('moment')
 
 export default {
   method: 'POST', // GET / POST-JSON / POST-SIMPLE
-  getUrl: (headers: { Buffer: any; constants: any }, body: { carrierCode: string; carrierCode2: string; masterNo: string }) => {
+  getUrl: (
+    headers: { Buffer: any; constants: any },
+    body: { carrierCode: string; carrierCode2: string; masterNo: string }
+  ) => {
     return `http://apis.yundangnet.com/api/v1/bookingsv2?companyid=${headers.constants.companyId}`
   },
   requestHandler: (
@@ -36,7 +39,14 @@ export default {
     const timestamp = moment()
       .utcOffset(8)
       .format('YYYY-MM-DD HH:mm:ss')
-    const hashIt = sha1([`companyid=${headers.constants.companyId}`, `data=${JSON.stringify(data)}&timestamp=${timestamp}`, headers.constants.secret].join('||'), { asBytes: true })
+    const hashIt = sha1(
+      [
+        `companyid=${headers.constants.companyId}`,
+        `data=${JSON.stringify(data)}&timestamp=${timestamp}`,
+        headers.constants.secret,
+      ].join('||'),
+      { asBytes: true }
+    )
     return {
       headers: {
         'content-type': 'application/x-www-form-urlencoded',

@@ -1,4 +1,16 @@
-import { BinaryExpression, ColumnExpression, CreateTableJQL, FromTable, FunctionExpression, GroupBy, IsNullExpression, JoinClause, ParameterExpression, Query, ResultColumn } from 'node-jql'
+import {
+  BinaryExpression,
+  ColumnExpression,
+  CreateTableJQL,
+  FromTable,
+  FunctionExpression,
+  GroupBy,
+  IsNullExpression,
+  JoinClause,
+  ParameterExpression,
+  Query,
+  ResultColumn,
+} from 'node-jql'
 
 function prepareParams(check?: boolean): Function {
   if (check) {
@@ -12,7 +24,8 @@ function prepareParams(check?: boolean): Function {
       if (!subqueries.date) throw new BadRequestException('MISSING_DATE')
       const datefr = moment(subqueries.date.from, 'YYYY-MM-DD')
       const dateto = moment(subqueries.date.to, 'YYYY-MM-DD')
-      if (dateto.diff(datefr, 'months', true) > 1) throw new BadRequestException('DATE_RANGE_TOO_LARGE')
+      if (dateto.diff(datefr, 'months', true) > 1)
+        throw new BadRequestException('DATE_RANGE_TOO_LARGE')
       if (!subqueries.boundType) throw new BadRequestException('MISSING_BOUND_TYPE')
       return params
     }
@@ -39,7 +52,9 @@ export default [
           $distinct: true,
           $from: new FromTable(
             {
-              url: `api/statusMaster/query/shipment-tracking-flow-${subqueries.boundType.value === 'O' ? 'export' : 'import'}`,
+              url: `api/statusMaster/query/shipment-tracking-flow-${
+                subqueries.boundType.value === 'O' ? 'export' : 'import'
+              }`,
               columns: [{ name: 'group', type: 'string' }],
             },
             'status_master'
@@ -141,7 +156,12 @@ export default [
               new FunctionExpression('NOW')
             ),
             new BinaryExpression(
-              new FunctionExpression('TIMESTAMPDIFF', 'HOUR', new ColumnExpression('calcuatedEstimatedDepatureDate'), new ColumnExpression('transactionActualArrivalDate')),
+              new FunctionExpression(
+                'TIMESTAMPDIFF',
+                'HOUR',
+                new ColumnExpression('calcuatedEstimatedDepatureDate'),
+                new ColumnExpression('transactionActualArrivalDate')
+              ),
               '>',
               subqueries.lateDeparturesAlert.value
             ),
@@ -199,7 +219,12 @@ export default [
               new FunctionExpression('NOW')
             ),
             new BinaryExpression(
-              new FunctionExpression('TIMESTAMPDIFF', 'HOUR', new ColumnExpression('calcuatedEstimatedArrivalDate'), new ColumnExpression('transactionActualArrivalDate')),
+              new FunctionExpression(
+                'TIMESTAMPDIFF',
+                'HOUR',
+                new ColumnExpression('calcuatedEstimatedArrivalDate'),
+                new ColumnExpression('transactionActualArrivalDate')
+              ),
               '>',
               subqueries.lateArrivalsAlert.value
             ),
@@ -249,7 +274,15 @@ export default [
       $from: new FromTable(
         'shipment',
         's',
-        new JoinClause('INNER', new FromTable('status_master', 'sm'), new BinaryExpression(new ColumnExpression('s', 'group'), '=', new ColumnExpression('sm', 'group')))
+        new JoinClause(
+          'INNER',
+          new FromTable('status_master', 'sm'),
+          new BinaryExpression(
+            new ColumnExpression('s', 'group'),
+            '=',
+            new ColumnExpression('sm', 'group')
+          )
+        )
       ),
       $where: new IsNullExpression(new ColumnExpression('s', 'group'), true),
       $group: new GroupBy(new ColumnExpression('s', 'group')),
@@ -260,23 +293,63 @@ export default [
   new Query({
     $select: [
       new ResultColumn(
-        new FunctionExpression('IFNULL', new FunctionExpression('FIND', new BinaryExpression(new ColumnExpression('group'), '=', 'notYetReceived'), new ColumnExpression('count')), 0),
+        new FunctionExpression(
+          'IFNULL',
+          new FunctionExpression(
+            'FIND',
+            new BinaryExpression(new ColumnExpression('group'), '=', 'notYetReceived'),
+            new ColumnExpression('count')
+          ),
+          0
+        ),
         'notYetReceived'
       ),
       new ResultColumn(
-        new FunctionExpression('IFNULL', new FunctionExpression('FIND', new BinaryExpression(new ColumnExpression('group'), '=', 'notYetDeparted'), new ColumnExpression('count')), 0),
+        new FunctionExpression(
+          'IFNULL',
+          new FunctionExpression(
+            'FIND',
+            new BinaryExpression(new ColumnExpression('group'), '=', 'notYetDeparted'),
+            new ColumnExpression('count')
+          ),
+          0
+        ),
         'notYetDeparted'
       ),
       new ResultColumn(
-        new FunctionExpression('IFNULL', new FunctionExpression('FIND', new BinaryExpression(new ColumnExpression('group'), '=', 'lateDepartures'), new ColumnExpression('count')), 0),
+        new FunctionExpression(
+          'IFNULL',
+          new FunctionExpression(
+            'FIND',
+            new BinaryExpression(new ColumnExpression('group'), '=', 'lateDepartures'),
+            new ColumnExpression('count')
+          ),
+          0
+        ),
         'lateDepartures'
       ),
       new ResultColumn(
-        new FunctionExpression('IFNULL', new FunctionExpression('FIND', new BinaryExpression(new ColumnExpression('group'), '=', 'notYetArrived'), new ColumnExpression('count')), 0),
+        new FunctionExpression(
+          'IFNULL',
+          new FunctionExpression(
+            'FIND',
+            new BinaryExpression(new ColumnExpression('group'), '=', 'notYetArrived'),
+            new ColumnExpression('count')
+          ),
+          0
+        ),
         'notYetArrived'
       ),
       new ResultColumn(
-        new FunctionExpression('IFNULL', new FunctionExpression('FIND', new BinaryExpression(new ColumnExpression('group'), '=', 'lateArrivals'), new ColumnExpression('count')), 0),
+        new FunctionExpression(
+          'IFNULL',
+          new FunctionExpression(
+            'FIND',
+            new BinaryExpression(new ColumnExpression('group'), '=', 'lateArrivals'),
+            new ColumnExpression('count')
+          ),
+          0
+        ),
         'lateArrivals'
       ),
     ],

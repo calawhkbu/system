@@ -9,7 +9,9 @@ function lazadaNotificationHandler() {
       .createHmac('sha256', 'LJADLFUADKJLKUW')
       .update(message)
       .digest('hex')
-    return `http://cbestaging.lazada.com/lzdelg-gw/cb-ftt/mawbsub/receive?action=updateStatus&timestamp=${encodeURIComponent(time)}&userid=Swivel&signature=${signed}`
+    return `http://cbestaging.lazada.com/lzdelg-gw/cb-ftt/mawbsub/receive?action=updateStatus&timestamp=${encodeURIComponent(
+      time
+    )}&userid=Swivel&signature=${signed}`
   }
   var transform = function(details) {
     return {
@@ -22,7 +24,12 @@ function lazadaNotificationHandler() {
       actualDepartureDate: details.actualDepartureDate,
       estimatedArrivalDate: details.estimatedArrivalDate,
       actualDepartureDate: details.actualDepartureDate,
-      history: details.history && details.history.length > 0 ? details.history.map(({ updatedAt, statusPlaceType, statusDescription_cn, ...status }) => status) : [],
+      history:
+        details.history && details.history.length > 0
+          ? details.history.map(
+              ({ updatedAt, statusPlaceType, statusDescription_cn, ...status }) => status
+            )
+          : [],
       billCargoTracking: details.billCargoTracking,
     }
   }
@@ -54,7 +61,12 @@ function lazadaNotificationHandler() {
     var oldTracking = params.data.oldData
     var newTracking = params.data.data
     console.log(`oldTracking: ${!!oldTracking}, newTracking: ${!!newTracking}`)
-    if (oldTracking && newTracking && oldTracking.lastStatusDetails && newTracking.lastStatusDetails) {
+    if (
+      oldTracking &&
+      newTracking &&
+      oldTracking.lastStatusDetails &&
+      newTracking.lastStatusDetails
+    ) {
       var oldTransform = transform(oldTracking.lastStatusDetails)
       var newTransform = transform(newTracking.lastStatusDetails)
       console.log(`'oldTransform: ${JSON.stringify(oldTransform)}'`)
@@ -75,9 +87,25 @@ function lazadaNotificationHandler() {
               }
               console.log(`[LAZADA] return ${JSON.stringify(postData)}`)
               if (postData && postData.response && postData.response.success) {
-                helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(newTransform), JSON.stringify(postData), null)
+                helper.saveLog(
+                  appId,
+                  url,
+                  entity,
+                  newTracking.id,
+                  JSON.stringify(newTransform),
+                  JSON.stringify(postData),
+                  null
+                )
               } else {
-                helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(newTransform), null, JSON.stringify(postData))
+                helper.saveLog(
+                  appId,
+                  url,
+                  entity,
+                  newTracking.id,
+                  JSON.stringify(newTransform),
+                  null,
+                  JSON.stringify(postData)
+                )
                 helper.emailer.sendFreeMail(
                   {
                     to: ['ken.chan+lazada@swivelsoftware.com'].join(','), //TODO REMOVE HARD-CODED
@@ -92,7 +120,15 @@ function lazadaNotificationHandler() {
           )
         } catch (e) {
           console.log(JSON.stringify(e))
-          helper.saveLog(appId, url, entity, newTracking.id, JSON.stringify(newTransform), null, JSON.stringify(e))
+          helper.saveLog(
+            appId,
+            url,
+            entity,
+            newTracking.id,
+            JSON.stringify(newTransform),
+            null,
+            JSON.stringify(e)
+          )
           helper.emailer.sendFreeMail(
             {
               to: ['ken.chan+lazada@swivelsoftware.com'].join(','), //TODO REMOVE HARD-CODED

@@ -1,4 +1,12 @@
-import { ColumnExpression, CreateTableJQL, FromTable, FunctionExpression, GroupBy, Query, ResultColumn } from 'node-jql'
+import {
+  ColumnExpression,
+  CreateTableJQL,
+  FromTable,
+  FunctionExpression,
+  GroupBy,
+  Query,
+  ResultColumn,
+} from 'node-jql'
 
 function prepareParams(): Function {
   return function(require, session, params) {
@@ -8,7 +16,10 @@ function prepareParams(): Function {
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
     if (!subqueries.entityType) throw new BadRequestException('MISSING_ENTITY_TYPE')
-    if (['shipment', 'booking', 'purchase-order'].indexOf(subqueries.entityType.value) === -1) throw new BadRequestException(`INVALID_ENTITY_TYPE_${String(subqueries.type.value).toLocaleUpperCase()}`)
+    if (['shipment', 'booking', 'purchase-order'].indexOf(subqueries.entityType.value) === -1)
+      throw new BadRequestException(
+        `INVALID_ENTITY_TYPE_${String(subqueries.type.value).toLocaleUpperCase()}`
+      )
     if (!subqueries.date) throw new BadRequestException('MISSING_DATE')
     if (!subqueries.moduleType) throw new BadRequestException('MISSING_MODULE_TYPE')
     return params
@@ -19,7 +30,14 @@ export default [
   [
     prepareParams(),
     new Query({
-      $select: [new ResultColumn('alertCategory'), new ResultColumn('alertType'), new ResultColumn(new FunctionExpression('COUNT', new ColumnExpression('alertType')), 'count')],
+      $select: [
+        new ResultColumn('alertCategory'),
+        new ResultColumn('alertType'),
+        new ResultColumn(
+          new FunctionExpression('COUNT', new ColumnExpression('alertType')),
+          'count'
+        ),
+      ],
       $from: new FromTable(
         {
           method: 'POST',
@@ -35,7 +53,10 @@ export default [
         },
         'alert'
       ),
-      $group: new GroupBy([new ColumnExpression('alertCategory'), new ColumnExpression('alertType')]),
+      $group: new GroupBy([
+        new ColumnExpression('alertCategory'),
+        new ColumnExpression('alertType'),
+      ]),
     }),
   ],
 ]

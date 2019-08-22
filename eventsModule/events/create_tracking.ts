@@ -31,7 +31,9 @@ class CreateTrackingEvent extends BaseEvent {
   }
 
   public getMasterNo(booking: Booking, refName: string): string {
-    const bookingReference = booking.bookingReference.find((x: BookingReference) => x.refName === refName)
+    const bookingReference = booking.bookingReference.find(
+      (x: BookingReference) => x.refName === refName
+    )
 
     if (bookingReference) {
       return bookingReference.refDescription
@@ -39,12 +41,16 @@ class CreateTrackingEvent extends BaseEvent {
   }
 
   public getCotainerNo(booking: Booking): string[] {
-    const containerNoList = booking.bookingContainers.filter((x: BookingContainer) => x.containerNo && x.containerNo.length)
+    const containerNoList = booking.bookingContainers.filter(
+      (x: BookingContainer) => x.containerNo && x.containerNo.length
+    )
     return containerNoList
   }
 
   public getSoNo(booking: Booking): string[] {
-    const soNoList = booking.bookingContainers.filter((x: BookingContainer) => x.soNo && x.soNo.length)
+    const soNoList = booking.bookingContainers.filter(
+      (x: BookingContainer) => x.soNo && x.soNo.length
+    )
     return soNoList
   }
 
@@ -123,8 +129,24 @@ class CreateTrackingEvent extends BaseEvent {
 }
 
 export default {
-  execute: async(parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
-    const event = new CreateTrackingEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
+  execute: async (
+    parameters: any,
+    eventConfig: EventConfig,
+    repo: string,
+    eventService: any,
+    allService: any,
+    user?: JwtPayload,
+    transaction?: Transaction
+  ) => {
+    const event = new CreateTrackingEvent(
+      parameters,
+      eventConfig,
+      repo,
+      eventService,
+      allService,
+      user,
+      transaction
+    )
     return await event.execute()
   },
 }
