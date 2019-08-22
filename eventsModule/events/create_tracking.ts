@@ -1,4 +1,3 @@
-
 import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
@@ -18,9 +17,7 @@ import { BookingContainer } from 'models/main/bookingContainer'
 // import { BookingContainer } from '../../../../swivel-backend-new/src/models/main/bookingContainer';
 
 class CreateTrackingEvent extends BaseEvent {
-
-  constructor (
-
+  constructor(
     protected readonly parameters: any,
     protected readonly eventConfig: EventConfig,
     protected readonly repo: string,
@@ -29,35 +26,29 @@ class CreateTrackingEvent extends BaseEvent {
 
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
-
   ) {
     super(parameters, eventConfig, repo, eventService, allService, user, transaction)
   }
 
-  public getMasterNo (booking: Booking, refName: string): string {
-
+  public getMasterNo(booking: Booking, refName: string): string {
     const bookingReference = booking.bookingReference.find((x: BookingReference) => x.refName === refName)
 
     if (bookingReference) {
       return bookingReference.refDescription
     }
-
   }
 
-  public getCotainerNo (booking: Booking): string[] {
+  public getCotainerNo(booking: Booking): string[] {
     const containerNoList = booking.bookingContainers.filter((x: BookingContainer) => x.containerNo && x.containerNo.length)
     return containerNoList
-
   }
 
-  public getSoNo (booking: Booking): string[] {
-
+  public getSoNo(booking: Booking): string[] {
     const soNoList = booking.bookingContainers.filter((x: BookingContainer) => x.soNo && x.soNo.length)
     return soNoList
   }
 
-  public async createTrackingAir (booking: Booking) {
-
+  public async createTrackingAir(booking: Booking) {
     const moduleTypeCode = booking.moduleTypeCode
     const carrierCode = booking.carrierCode
     const departureDateEstimated = booking.departureDateEstimated
@@ -68,25 +59,19 @@ class CreateTrackingEvent extends BaseEvent {
     console.log(masterNo, '================')
 
     if (masterNo) {
-
       const trackService = this.allService['TrackService'] as TrackService
 
       const trackingInformation = {
-
         // carrierCode,
         masterNo,
-        departureDateEstimated
-
+        departureDateEstimated,
       }
 
       return await trackService.register(partyGroupCode, moduleTypeCode, trackingInformation)
-
     }
-
   }
 
-  public async createTrackingSea (booking: Booking) {
-
+  public async createTrackingSea(booking: Booking) {
     const moduleTypeCode = booking.moduleTypeCode
     const carrierCode = booking.carrierCode
     const departureDateEstimated = booking.departureDateEstimated
@@ -99,26 +84,21 @@ class CreateTrackingEvent extends BaseEvent {
 
     // if masterNo and conatinerNo is both not found
     if (carrierCode || masterNo || containerNo.length > 0 || soNo.length) {
-
       const trackService = this.allService['TrackService'] as TrackService
       const trackingInformation = {
-
         carrierCode,
         masterNo,
         containerNo,
         soNo,
-        departureDateEstimated
-
+        departureDateEstimated,
       }
 
       return await trackService.register(partyGroupCode, moduleTypeCode, trackingInformation)
-
     }
-
   }
 
   // parameters should be booking
-  public async mainFunction (parameters: any) {
+  public async mainFunction(parameters: any) {
     console.log('======================')
 
     const booking = parameters.data as Booking
@@ -133,25 +113,18 @@ class CreateTrackingEvent extends BaseEvent {
           return await this.createTrackingAir(booking)
 
         case 'SEA':
-
           return await this.createTrackingSea(booking)
 
         default:
           break
       }
-
     }
-
   }
 }
 
 export default {
-
-  execute: async (parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
-
+  execute: async(parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
     const event = new CreateTrackingEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
     return await event.execute()
-
-  }
-
+  },
 }

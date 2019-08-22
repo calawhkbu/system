@@ -1,49 +1,56 @@
 {
   "layout": "MainLayout",
-  "components": [{
-    "is": "Widget",
-    "props": {
-      "initUrl": "api/template/{{id}}",
-      "saveUrl": "api/template",
-      "primaryKey": "id",
-      "top": {
-        "assignment": [{
-            "is": "v-btn",
-            "props": {
-              "flat": true,
-              "icon": true
-            },
-            "events": {
-              "click.stop": [{
-                "type": "router",
-                "otherParams": {
-                  "func": "go",
-                  "go": -1
-                }
-              }]
-            },
-            "slots": [{
-              "is": "Icon",
+  "components": [
+    {
+      "is": "Widget",
+      "props": {
+        "initUrl": "api/template/{{id}}",
+        "saveUrl": "api/template",
+        "primaryKey": "id",
+        "top": {
+          "assignment": [
+            {
+              "is": "v-btn",
               "props": {
-                "icon": "arrow_back"
+                "flat": true,
+                "icon": true
+              },
+              "events": {
+                "click.stop": [
+                  {
+                    "type": "router",
+                    "otherParams": {
+                      "func": "go",
+                      "go": -1
+                    }
+                  }
+                ]
+              },
+              "slots": [
+                {
+                  "is": "Icon",
+                  "props": {
+                    "icon": "arrow_back"
+                  }
+                }
+              ]
+            },
+            {
+              "is": "I18nText",
+              "props": {
+                "class": "headline",
+                "i18nKey": "TemplatePage.title",
+                "swig": true
               }
-            }]
-          },
-          {
-            "is": "I18nText",
-            "props": {
-              "class": "headline",
-              "i18nKey": "TemplatePage.title",
-              "swig": true
             }
-          }
-        ],
-        "edit": "assignment"
-      },
-      "components": {
-        "assignment": [],
-        "edit": []
+          ],
+          "edit": "assignment"
+        },
+        "components": {
+          "assignment": [],
+          "edit": []
+        }
       }
     }
-  }]
+  ]
 }

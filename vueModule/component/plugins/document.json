@@ -7,10 +7,12 @@
   "name": "Document",
   "shareProps": {
     "titleKey": "fileName",
-    "subTitleKeys": [{
-      "key": "updatedAt",
-      "is": "Datetime"
-    }]
+    "subTitleKeys": [
+      {
+        "key": "updatedAt",
+        "is": "Datetime"
+      }
+    ]
   },
   "baseSummaryProps": {
     "size": -3

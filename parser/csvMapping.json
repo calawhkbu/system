@@ -156,7 +156,7 @@
     "code": "purchaseOrderItems.flexData.Per Package Qty"
   },
   "transactionDate": {
-    "postProcess":true,
+    "postProcess": true,
     "codes": {
       "PO Date": "PO Date",
       "Shipping Date": "DEPARTURE",
@@ -166,23 +166,12 @@
       "Do Not Ship After": "Do Not Ship After",
       "Delivery Date": "Delivery Date"
     },
-    "actualDatesList": [
-      "PO Date",
-      "Do Not Ship Before",
-      "Do Not Ship After"
-    ]
+    "actualDatesList": ["PO Date", "Do Not Ship Before", "Do Not Ship After"]
   },
   "purchaseOrderParties": {
-    "postProcess":true,
-    "roles": [
-      "Buyer",
-      "Shipper",
-      "Consignee",
-      "Factory"
-    ],
-    "arrayTypes": [
-      "email"
-    ],
+    "postProcess": true,
+    "roles": ["Buyer", "Shipper", "Consignee", "Factory"],
+    "arrayTypes": ["email"],
     "hint": "While parsing we are using jspath there mapping elementValues like .BuyerName/.ConsigneeEmail etc..",
     "elements": {
       "primaryText": "Name",

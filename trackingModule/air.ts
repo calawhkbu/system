@@ -10,24 +10,29 @@ import { CodeMasterService } from 'modules/sequelize/codeMaster/service'
 import { SwivelConfigService } from 'modules/swivel-config/service'
 
 export default class BaseAirTrackingService {
-  constructor (
+  constructor(
     private readonly swivelConfigService: SwivelConfigService,
     private readonly trackingService: TrackingService,
     private readonly trackingReferenceService: TrackingReferenceService,
     private readonly outboundService: OutboundService,
     private readonly codeMasterService: CodeMasterService,
-    private readonly buffer?: any,
+    private readonly buffer?: any
   ) {}
-  async registerNew (
+  async registerNew(
     partyGroupCode: string,
-    trackingForm: { carrierCode?: string, carrierCode2?: string, masterNo: string, departureDateEstimated: string }
+    trackingForm: {
+      carrierCode?: string
+      carrierCode2?: string
+      masterNo: string
+      departureDateEstimated: string
+    }
   ) {
     const trackingReference = await this.trackingReferenceService.findOne({
       where: {
         partyGroupCode,
         trackingType: 'AIR',
-        masterNo: trackingForm.masterNo
-      }
+        masterNo: trackingForm.masterNo,
+      },
     })
     if (trackingReference) {
       return trackingReference
@@ -37,19 +42,17 @@ export default class BaseAirTrackingService {
       partyGroupCode,
       trackingType: 'AIR',
       carrierCode: trackingForm.carrierCode,
-      ...(trackingForm.carrierCode2 ? { carrierCode2:  trackingForm.carrierCode2 } : {}),
+      ...(trackingForm.carrierCode2 ? { carrierCode2: trackingForm.carrierCode2 } : {}),
       masterNo: trackingForm.masterNo,
       soNo: [],
       containerNo: [],
       departureDateEstimated: trackingForm.departureDateEstimated,
-      mode: 'masterNo'
+      mode: 'masterNo',
     })
   }
-  async track (
-    trackingReference: TrackingReference
-  ): Promise<boolean> {
+  async track(trackingReference: TrackingReference): Promise<boolean> {
     const { trackingModule } = await this.swivelConfigService.get()
-    let trackingNos: string|string[] = trackingReference[trackingReference.mode] || null
+    let trackingNos: string | string[] = trackingReference[trackingReference.mode] || null
     if (!Array.isArray(trackingNos)) {
       trackingNos = [trackingNos]
     }
@@ -57,30 +60,31 @@ export default class BaseAirTrackingService {
       console.warn('No Tracking No')
       return
     }
-    return Promise.all(trackingNos.map((trackingNo: string) => {
-      return this.trackingService.findOne({ where: { source: 'YUNDANG', trackingNo } })
-        .then((oldTracking) => {
-          if (oldTracking) {
-            if (oldTracking.batchRetry > trackingModule.retryTime.air) {
-              throw new Error()
+    return Promise.all(
+      trackingNos.map((trackingNo: string) => {
+        return this.trackingService
+          .findOne({ where: { source: 'YUNDANG', trackingNo } })
+          .then(oldTracking => {
+            if (oldTracking) {
+              if (oldTracking.batchRetry > trackingModule.retryTime.air) {
+                throw new Error()
+              }
+              return this.get(trackingNo, trackingReference.carrierCode, trackingReference.carrierCode2, oldTracking)
             }
-            return this.get(trackingNo, trackingReference.carrierCode, trackingReference.carrierCode2, oldTracking)
-          }
-          return this.register(trackingNo, trackingReference.carrierCode, trackingReference.carrierCode2)
-        })
-        .catch((e: any) => { throw e })
-    }))
+            return this.register(trackingNo, trackingReference.carrierCode, trackingReference.carrierCode2)
+          })
+          .catch((e: any) => {
+            throw e
+          })
+      })
+    )
       .then(() => true)
       .catch((e: any) => {
         console.error(e, e.stack, 'BaseAirTrackingService')
         throw e
       })
   }
-  async register (
-    trackingNo: string,
-    carrierCode: string,
-    carrierCode2: string
-  ): Promise<void> {
+  async register(trackingNo: string, carrierCode: string, carrierCode2: string): Promise<void> {
     const { trackingModule } = await this.swivelConfigService.get()
     const newTracking = {
       source: 'YUNDANG',
@@ -97,7 +101,7 @@ export default class BaseAirTrackingService {
         actualArrivalDate: null,
         isClosed: null,
         lastStatusUpdateDate: null,
-        lastActualUpdateDate: null
+        lastActualUpdateDate: null,
       },
       lastStatus: null,
       lastStatusCode: null,
@@ -110,7 +114,7 @@ export default class BaseAirTrackingService {
       lastStatusUpdateDate: null,
       lastActualUpdateDate: null,
       detailsRaw: null,
-      lastBatchDate: moment.utc().toDate()
+      lastBatchDate: moment.utc().toDate(),
     }
     try {
       const newDetailsRaw = await this.outboundService.send(
@@ -132,12 +136,7 @@ export default class BaseAirTrackingService {
       console.error(e, e.stack, 'BaseAirTrackingService')
     }
   }
-  async get (
-    trackingNo: string,
-    carrierCode: string,
-    carrierCode2: string,
-    oldTracking: Tracking
-  ): Promise<void> {
+  async get(trackingNo: string, carrierCode: string, carrierCode2: string, oldTracking: Tracking): Promise<void> {
     const { trackingModule } = await this.swivelConfigService.get()
     if (oldTracking.trackingNo !== trackingNo) {
       return
@@ -150,16 +149,11 @@ export default class BaseAirTrackingService {
       details: oldTracking.details,
       detailsRaw: oldTracking.detailsRaw,
       batchRetry: oldTracking.batchRetry,
-      lastBatchDate: moment.utc().toDate()
+      lastBatchDate: moment.utc().toDate(),
     }
     try {
       const oldDetails = oldTracking.details
-      let newDetailsRaw = (await this.outboundService.send(
-        'system',
-        'yundang-air-get',
-        { Buffer: this.buffer, constants: trackingModule.yundang },
-        { masterNo: trackingNo, carrierCode, carrierCode2 }
-      ))
+      let newDetailsRaw = await this.outboundService.send('system', 'yundang-air-get', { Buffer: this.buffer, constants: trackingModule.yundang }, { masterNo: trackingNo, carrierCode, carrierCode2 })
       newDetailsRaw = Array.isArray(newDetailsRaw) ? newDetailsRaw[0] : null
       console.log(newDetailsRaw)
       newTracking.detailsRaw = newDetailsRaw
@@ -177,11 +171,7 @@ export default class BaseAirTrackingService {
       console.log([newDetails.lastStatusCode, oldDetails.lastStatusCode])
       console.log([newDetails.lastStatus, oldDetails.lastStatus])
       console.log([moment(oldDetails.lastStatusDate), moment(newDetails.lastStatusDate)])
-      if (
-        newDetails.lastStatusCode !== oldDetails.lastStatusCode ||
-        newDetails.lastStatus !== oldDetails.lastStatus ||
-        (moment(oldDetails.lastStatusDate).isSame(moment(newDetails.lastStatusDate)))
-      ) {
+      if (newDetails.lastStatusCode !== oldDetails.lastStatusCode || newDetails.lastStatus !== oldDetails.lastStatus || moment(oldDetails.lastStatusDate).isSame(moment(newDetails.lastStatusDate))) {
         newDetails.lastStatusUpdateDate = moment.utc().toDate()
       }
       const trackingHistory: any[] = newDetailsRaw.lstairlinertrackingstatus || []
@@ -201,14 +191,14 @@ export default class BaseAirTrackingService {
         newDetails.actualArrivalDate = newDetails.actualArrivalDate || d.statustime
       })
       if (
-        (moment(oldDetails.estimatedDepartureDate).isSame(moment(newDetails.estimatedDepartureDate))) ||
-        (moment(oldDetails.actualDepartureDate).isSame(moment(newDetails.actualDepartureDate))) ||
-        (moment(oldDetails.estimatedArrivalDate).isSame(moment(newDetails.estimatedArrivalDate))) ||
-        (moment(oldDetails.actualArrivalDate).isSame(moment(newDetails.actualArrivalDate)))
+        moment(oldDetails.estimatedDepartureDate).isSame(moment(newDetails.estimatedDepartureDate)) ||
+        moment(oldDetails.actualDepartureDate).isSame(moment(newDetails.actualDepartureDate)) ||
+        moment(oldDetails.estimatedArrivalDate).isSame(moment(newDetails.estimatedArrivalDate)) ||
+        moment(oldDetails.actualArrivalDate).isSame(moment(newDetails.actualArrivalDate))
       ) {
         newDetails.lastActualUpdateDate = moment.utc().toDate()
       }
-      newDetails.history = trackingHistory.map((item) => ({
+      newDetails.history = trackingHistory.map(item => ({
         flightNo: item.flightno,
         statusCode: item.statuscd,
         status: status[item.statuscd] || item.statuscd,
@@ -222,7 +212,7 @@ export default class BaseAirTrackingService {
         isEstimated: item.isest === 'Y' ? true : false,
         pieces: item.pieces,
         weight: item.weight,
-        volume: item.volume
+        volume: item.volume,
       }))
       newDetails.billContainerTracking = []
       if (newDetailsRaw.lstBookingInfo && newDetailsRaw.lstBookingInfo.length > 0) {
@@ -245,8 +235,8 @@ export default class BaseAirTrackingService {
                 name: flight.goodsname,
                 pieces: flight.pieces,
                 weight: flight.weight,
-                volume: flight.volume
-              }
+                volume: flight.volume,
+              },
             }))
           }
           return {
@@ -255,7 +245,7 @@ export default class BaseAirTrackingService {
             goodsDetails: {
               name: item.goodsname,
               pieces: item.pieces,
-              weight: item.weight
+              weight: item.weight,
             },
             flightDetails,
             history: item.lstcargostatus.map((history: any) => ({
@@ -270,8 +260,8 @@ export default class BaseAirTrackingService {
               updatedAt: new Date(history.updatetime),
               isEstimated: history.isest === 'Y' ? true : false,
               pieces: history.pieces,
-              weight: history.weight
-            }))
+              weight: history.weight,
+            })),
           }
         })
       } else {

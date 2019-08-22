@@ -1,27 +1,33 @@
 import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, Value } from 'node-jql'
 
-function prepareParams (check?: boolean): Function {
+function prepareParams(check?: boolean): Function {
   if (check) {
-    return function (require, session, params) {
+    return function(require, session, params) {
       // import
       const moment = require('moment')
 
       // script
-      const subqueries = params.subqueries = params.subqueries || {}
+      const subqueries = (params.subqueries = params.subqueries || {})
       if (subqueries.date) {
         const year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
-        subqueries.date.from = moment().year(year).startOf('year').format('YYYY-MM-DD')
-        subqueries.date.to = moment().year(year).endOf('year').format('YYYY-MM-DD')
+        subqueries.date.from = moment()
+          .year(year)
+          .startOf('year')
+          .format('YYYY-MM-DD')
+        subqueries.date.to = moment()
+          .year(year)
+          .endOf('year')
+          .format('YYYY-MM-DD')
       }
       return params
     }
   }
-  return function (require, session, params) {
+  return function(require, session, params) {
     return params
   }
 }
 
-function prepareTable (name: string): CreateTableJQL {
+function prepareTable(name: string): CreateTableJQL {
   return new CreateTableJQL({
     $temporary: true,
     name,
@@ -33,29 +39,32 @@ function prepareTable (name: string): CreateTableJQL {
         new ResultColumn('currency'),
         new ResultColumn(new FunctionExpression('ROUND', new ColumnExpression(name), 0), 'value'),
       ],
-      $from: new FromTable({
-        method: 'POST',
-        url: 'api/shipment/query/profit',
-        columns: [
-          {
-            name: 'officePartyCode',
-            type: 'string'
-          },
-          {
-            name: 'currency',
-            type: 'string'
-          },
-          {
-            name: 'jobMonth',
-            type: 'string'
-          },
-          {
-            name,
-            type: 'number'
-          }
-        ]
-      }, name),
-    })
+      $from: new FromTable(
+        {
+          method: 'POST',
+          url: 'api/shipment/query/profit',
+          columns: [
+            {
+              name: 'officePartyCode',
+              type: 'string',
+            },
+            {
+              name: 'currency',
+              type: 'string',
+            },
+            {
+              name: 'jobMonth',
+              type: 'string',
+            },
+            {
+              name,
+              type: 'number',
+            },
+          ],
+        },
+        name
+      ),
+    }),
   })
 }
 
@@ -64,6 +73,6 @@ export default [
   [prepareParams(), prepareTable('revenue')],
   new Query({
     $from: 'grossProfit',
-    $union: new Query('revenue')
-  })
+    $union: new Query('revenue'),
+  }),
 ]

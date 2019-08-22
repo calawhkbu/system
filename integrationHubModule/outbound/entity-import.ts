@@ -1,5 +1,4 @@
-const CONSTANTS = {
-}
+const CONSTANTS = {}
 
 export default {
   method: 'POST', // 'GET'|'POST'|'PUT'|'DELETE'|'HEAD'|'OPTIONS'
@@ -9,15 +8,15 @@ export default {
   requestHandler: (headers: any, body: any) => {
     return {
       headers: {
-        'content-type': 'application/json'
+        'content-type': 'application/json',
       },
       body: {
-        ...body
+        ...body,
       },
-      json: true
+      json: true,
     }
   },
-  responseHandler: (response: { responseBody: any, responseOptions: any }) => {
+  responseHandler: (response: { responseBody: any; responseOptions: any }) => {
     return response
-  }
+  },
 }

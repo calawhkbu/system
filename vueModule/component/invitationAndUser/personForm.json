@@ -5,29 +5,29 @@
       "is": "WidgetForm",
       "props": {
         "fields": [
-            {
-              "label": "InvitationPage.email",
-              "name": "person.userName",
-              "component": "v-text-field"
-            },
-            {
-              "label": "InvitationPage.firstName",
-              "name": "person.firstName",
-              "component": "v-text-field",
-              "class": "xs-6"
-            },
-            {
-              "label": "InvitationPage.lastName",
-              "name": "person.lastName",
-              "component": "v-text-field",
-              "class": "xs-6"
-            },
-            {
-              "label": "InvitationPage.displayName",
-              "name": "person.displayName",
-              "component": "v-text-field"
-            }
-          ]
+          {
+            "label": "InvitationPage.email",
+            "name": "person.userName",
+            "component": "v-text-field"
+          },
+          {
+            "label": "InvitationPage.firstName",
+            "name": "person.firstName",
+            "component": "v-text-field",
+            "class": "xs-6"
+          },
+          {
+            "label": "InvitationPage.lastName",
+            "name": "person.lastName",
+            "component": "v-text-field",
+            "class": "xs-6"
+          },
+          {
+            "label": "InvitationPage.displayName",
+            "name": "person.displayName",
+            "component": "v-text-field"
+          }
+        ]
       }
     }
   ]

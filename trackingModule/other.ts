@@ -10,23 +10,18 @@ import { CodeMasterService } from 'modules/sequelize/codeMaster/service'
 import { SwivelConfigService } from 'modules/swivel-config/service'
 
 export default class BaseAirTrackingService {
-  constructor (
+  constructor(
     private readonly swivelConfigService: SwivelConfigService,
     private readonly trackingService: TrackingService,
     private readonly trackingReferenceService: TrackingReferenceService,
     private readonly outboundService: OutboundService,
     private readonly codeMasterService: CodeMasterService,
-    private readonly buffer?: any,
+    private readonly buffer?: any
   ) {}
-  async registerNew (
-    partyGroupId: number,
-    trackingForm: any
-  ) {
+  async registerNew(partyGroupId: number, trackingForm: any) {
     return null
   }
-  async track (
-    trackingReference: TrackingReference
-  ): Promise<boolean> {
+  async track(trackingReference: TrackingReference): Promise<boolean> {
     return false
   }
 }

@@ -1,6 +1,7 @@
 {
   "layout": "MainLayout",
-  "components": [{
+  "components": [
+    {
       "is": "DynamicComponent",
       "props": {
         "style": {
@@ -14,7 +15,8 @@
           "align-items": "center",
           "background-color": "transparent"
         },
-        "components": [{
+        "components": [
+          {
             "is": "i18nText",
             "props": {
               "class": "headline",
@@ -31,19 +33,22 @@
       "is": "DynamicComponent",
       "props": {
         "class": "grid",
-        "components": [{
+        "components": [
+          {
             "is": "DynamicComponent",
             "props": {
               "class": "xs-12 md-5",
               "style": {
                 "padding": "4px"
               },
-              "components": [{
-                "is": "AsyncComponent",
-                "props": {
-                  "layoutName": "user-profile/basic-information"
+              "components": [
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "user-profile/basic-information"
+                  }
                 }
-              }]
+              ]
             }
           },
           {
@@ -53,7 +58,8 @@
               "style": {
                 "padding": "4px"
               },
-              "components": [{
+              "components": [
+                {
                   "is": "AsyncComponent",
                   "props": {
                     "layoutName": "user-profile/user-preferences",
@@ -75,10 +81,12 @@
       }
     }
   ],
-  "createdFunctions": [{
-    "type": "dispatch",
-    "otherParams": {
-      "name": "auth/getUserProfile"
+  "createdFunctions": [
+    {
+      "type": "dispatch",
+      "otherParams": {
+        "name": "auth/getUserProfile"
+      }
     }
-  }]
+  ]
 }

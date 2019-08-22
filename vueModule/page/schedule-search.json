@@ -1,12 +1,16 @@
 {
   "layout": "MainLayout",
-  "components": [{
-    "is": "p",
-    "slots": [{
-      "is": "I18nText",
-      "props": {
-        "i18nKey": "Coming soon"
-      }
-    }]
-  }]
+  "components": [
+    {
+      "is": "p",
+      "slots": [
+        {
+          "is": "I18nText",
+          "props": {
+            "i18nKey": "Coming soon"
+          }
+        }
+      ]
+    }
+  ]
 }

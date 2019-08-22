@@ -33,9 +33,7 @@
                       },
                       "field": {
                         "type": "ReadOnlyField",
-                        "field": [
-                          "bookingNo"
-                        ]
+                        "field": ["bookingNo"]
                       }
                     }
                   }
@@ -58,9 +56,7 @@
                         "type": "CodeMasterField",
                         "codeType": "MODULE",
                         "required": true,
-                        "field": [
-                          "moduleType"
-                        ]
+                        "field": ["moduleType"]
                       }
                     }
                   },
@@ -78,9 +74,7 @@
                         "type": "CodeMasterField",
                         "codeType": "BOUND",
                         "required": true,
-                        "field": [
-                          "boundType"
-                        ]
+                        "field": ["boundType"]
                       }
                     }
                   },
@@ -100,9 +94,7 @@
                         "required": true,
                         "isUTC": true,
                         "disablePastDays": true,
-                        "field": [
-                          "estimatedDepartureDate"
-                        ]
+                        "field": ["estimatedDepartureDate"]
                       }
                     }
                   },
@@ -121,9 +113,7 @@
                         "formatKey": "ddd MMM DD YYYY",
                         "required": true,
                         "isUTC": true,
-                        "field": [
-                          "estimatedArrivalDate"
-                        ]
+                        "field": ["estimatedArrivalDate"]
                       }
                     }
                   },
@@ -140,9 +130,7 @@
                         "displaytype": "ApiAutoSuggestField",
                         "type": "ApiAutoSuggestField",
                         "required": true,
-                        "field": [
-                          "portOfLoading"
-                        ],
+                        "field": ["portOfLoading"],
                         "keyKey": "locationCode",
                         "primaryTextKey": "locationName",
                         "secondaryTextKey": "portCode",
@@ -170,9 +158,7 @@
                         "displaytype": "ApiAutoSuggestField",
                         "type": "ApiAutoSuggestField",
                         "required": true,
-                        "field": [
-                          "portOfDischarge"
-                        ],
+                        "field": ["portOfDischarge"],
                         "keyKey": "locationCode",
                         "primaryTextKey": "locationName",
                         "secondaryTextKey": "portCode",
@@ -201,9 +187,7 @@
                         "displaytype": "ApiAutoSuggestField",
                         "type": "ApiAutoSuggestField",
                         "required": true,
-                        "field": [
-                          "placeOfReceipt"
-                        ],
+                        "field": ["placeOfReceipt"],
                         "keyKey": "locationCode",
                         "primaryTextKey": "locationName",
                         "secondaryTextKey": "portCode",
@@ -232,9 +216,7 @@
                         "displaytype": "ApiAutoSuggestField",
                         "type": "ApiAutoSuggestField",
                         "required": true,
-                        "field": [
-                          "placeOfDelivery"
-                        ],
+                        "field": ["placeOfDelivery"],
                         "keyKey": "locationCode",
                         "primaryTextKey": "locationName",
                         "secondaryTextKey": "portCode",
@@ -262,9 +244,7 @@
                         "displaytype": "ApiAutoSuggestField",
                         "type": "ApiAutoSuggestField",
                         "required": true,
-                        "field": [
-                          "carrier"
-                        ],
+                        "field": ["carrier"],
                         "keyKey": "carrierCode",
                         "primaryTextKey": "carrierName",
                         "secondaryTextKey": "carrierCode",
@@ -293,9 +273,7 @@
                         "displaytype": "ApiAutoSuggestField",
                         "type": "ApiAutoSuggestField",
                         "required": true,
-                        "field": [
-                          "finalDestination"
-                        ],
+                        "field": ["finalDestination"],
                         "keyKey": "locationCode",
                         "primaryTextKey": "locationName",
                         "secondaryTextKey": "portCode",
@@ -323,9 +301,7 @@
                         "displaytype": "ApiAutoSuggestField",
                         "type": "ApiAutoSuggestField",
                         "required": true,
-                        "field": [
-                          "vesselName"
-                        ],
+                        "field": ["vesselName"],
                         "keyKey": "vesselCode",
                         "primaryTextKey": "vesselName",
                         "secondaryTextKey": "vesselCode",
@@ -350,9 +326,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "voyageFlightNumber"
-                        ]
+                        "field": ["voyageFlightNumber"]
                       }
                     }
                   }
@@ -376,9 +350,7 @@
                         "type": "CodeMasterField",
                         "codeType": "SERVTYPE",
                         "required": true,
-                        "field": [
-                          "service"
-                        ]
+                        "field": ["service"]
                       }
                     }
                   },
@@ -395,9 +367,7 @@
                         "displaytype": "CodeMasterField",
                         "type": "CodeMasterField",
                         "codeType": "INCOTERMS",
-                        "field": [
-                          "incoTerms"
-                        ]
+                        "field": ["incoTerms"]
                       }
                     }
                   },
@@ -414,9 +384,7 @@
                         "displaytype": "CodeMasterField",
                         "type": "CodeMasterField",
                         "codeType": "PAYTERMS",
-                        "field": [
-                          "freightTerms"
-                        ]
+                        "field": ["freightTerms"]
                       }
                     }
                   },
@@ -433,9 +401,7 @@
                         "displaytype": "CodeMasterField",
                         "type": "CodeMasterField",
                         "codeType": "PAYTERMS",
-                        "field": [
-                          "otherTerms"
-                        ]
+                        "field": ["otherTerms"]
                       }
                     }
                   }
@@ -454,9 +420,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "commodity"
-                        ]
+                        "field": ["commodity"]
                       }
                     }
                   }
@@ -479,9 +443,7 @@
                         "children": {
                           "rows": 5
                         },
-                        "field": [
-                          "shipMarks"
-                        ]
+                        "field": ["shipMarks"]
                       }
                     }
                   },
@@ -499,9 +461,7 @@
                         "children": {
                           "rows": 5
                         },
-                        "field": [
-                          "goodsDescription"
-                        ]
+                        "field": ["goodsDescription"]
                       }
                     }
                   }
@@ -529,18 +489,8 @@
                     "component": "TransactionPartyDetail",
                     "canEdit": true,
                     "sort": {
-                      "top": [
-                        "SHP",
-                        "CGN",
-                        "FWD"
-                      ],
-                      "add": [
-                        "SHP",
-                        "CGN",
-                        "FWD",
-                        "NT1",
-                        "AGT"
-                      ]
+                      "top": ["SHP", "CGN", "FWD"],
+                      "add": ["SHP", "CGN", "FWD", "NT1", "AGT"]
                     },
                     "partyGrid": {
                       "xs": 6
@@ -559,12 +509,7 @@
                                 }
                               },
                               "field": {
-                                "field": [
-                                  [
-                                    "name",
-                                    "party.partyName"
-                                  ]
-                                ]
+                                "field": [["name", "party.partyName"]]
                               }
                             }
                           },
@@ -578,10 +523,7 @@
                                 }
                               },
                               "field": {
-                                "field": [
-                                  "cityCode",
-                                  "country"
-                                ]
+                                "field": ["cityCode", "country"]
                               }
                             }
                           },
@@ -595,9 +537,7 @@
                                 }
                               },
                               "field": {
-                                "field": [
-                                  "email"
-                                ]
+                                "field": ["email"]
                               }
                             }
                           }
@@ -617,12 +557,7 @@
                                 }
                               },
                               "field": {
-                                "field": [
-                                  [
-                                    "name",
-                                    "party.partyName"
-                                  ]
-                                ]
+                                "field": [["name", "party.partyName"]]
                               }
                             }
                           },
@@ -636,10 +571,7 @@
                                 }
                               },
                               "field": {
-                                "field": [
-                                  "country",
-                                  "city"
-                                ]
+                                "field": ["country", "city"]
                               }
                             }
                           },
@@ -656,13 +588,7 @@
                                 "children": {
                                   "empty": ""
                                 },
-                                "field": [
-                                  "address1",
-                                  "address2",
-                                  "address3",
-                                  "address4",
-                                  "address5"
-                                ]
+                                "field": ["address1", "address2", "address3", "address4", "address5"]
                               }
                             }
                           },
@@ -679,9 +605,7 @@
                                 "children": {
                                   "empty": ""
                                 },
-                                "field": [
-                                  "contact"
-                                ]
+                                "field": ["contact"]
                               }
                             }
                           },
@@ -698,9 +622,7 @@
                                 "children": {
                                   "empty": ""
                                 },
-                                "field": [
-                                  "phone"
-                                ]
+                                "field": ["phone"]
                               }
                             }
                           },
@@ -717,9 +639,7 @@
                                 "children": {
                                   "empty": ""
                                 },
-                                "field": [
-                                  "email"
-                                ]
+                                "field": ["email"]
                               }
                             }
                           }
@@ -798,9 +718,7 @@
                                             "displaytype": "ApiAutoSuggestField",
                                             "type": "ApiAutoSuggestField",
                                             "required": true,
-                                            "field": [
-                                              "cityCode"
-                                            ],
+                                            "field": ["cityCode"],
                                             "keyKey": "portCode",
                                             "primaryTextKey": "locationName",
                                             "secondaryTextKey": "portCode",
@@ -834,9 +752,7 @@
                                             "displaytype": "ApiAutoSuggestField",
                                             "type": "ApiAutoSuggestField",
                                             "required": true,
-                                            "field": [
-                                              "state"
-                                            ],
+                                            "field": ["state"],
                                             "keyKey": "stateCode",
                                             "primaryTextKey": "name",
                                             "secondaryTextKey": "stateCode",
@@ -870,9 +786,7 @@
                                             "displaytype": "ApiAutoSuggestField",
                                             "type": "ApiAutoSuggestField",
                                             "required": true,
-                                            "field": [
-                                              "country"
-                                            ],
+                                            "field": ["country"],
                                             "keyKey": "countryCode",
                                             "primaryTextKey": "countryName",
                                             "secondaryTextKey": "countryCode",
@@ -935,10 +849,7 @@
                     "component": "TransactionDateDetail",
                     "canEdit": true,
                     "sort": {
-                      "top": [
-                        "DEPARTURE",
-                        "ARRIVAL"
-                      ],
+                      "top": ["DEPARTURE", "ARRIVAL"],
                       "add": [
                         {
                           "dateCode": "CARGO",
@@ -950,12 +861,7 @@
                         }
                       ]
                     },
-                    "actualOnlyFields": [
-                      "OCEANBILL",
-                      "PPSALESINVOICE",
-                      "CCSALESINVOICE",
-                      "CYCUTOFF"
-                    ],
+                    "actualOnlyFields": ["OCEANBILL", "PPSALESINVOICE", "CCSALESINVOICE", "CYCUTOFF"],
                     "grid": {
                       "spacing": 8,
                       "children": {
@@ -974,7 +880,6 @@
           {
             "component": "BookingContainerDetailCard",
             "containerDetailKey": "bookingContainerDetails"
-
           }
         ]
       },

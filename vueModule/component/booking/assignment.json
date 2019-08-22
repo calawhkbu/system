@@ -1,10 +1,12 @@
 {
   "class": "grid",
-  "components": [{
+  "components": [
+    {
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 grid align-item-center full-width",
-        "components": [{
+        "components": [
+          {
             "is": "v-btn",
             "props": {
               "flat": true,
@@ -12,20 +14,24 @@
               "small": true
             },
             "events": {
-              "click.stop": [{
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "/bookings"
+              "click.stop": [
+                {
+                  "type": "router",
+                  "otherParams": {
+                    "func": "push",
+                    "path": "/bookings"
+                  }
                 }
-              }]
+              ]
             },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "arrow_back"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
+                }
               }
-            }]
+            ]
           },
           {
             "is": "I18nText",
@@ -48,27 +54,33 @@
               "small": true,
               "flat": true
             },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "edit"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "edit"
+                }
               }
-            }],
+            ],
             "events": {
-              "click.stop": [{
-                "type": "dispatch",
-                "otherParams": {
-                  "name": "widget/changeMode",
-                  "mode": "edit"
-                },
-                "afterActions": [{
+              "click.stop": [
+                {
                   "type": "dispatch",
                   "otherParams": {
-                    "name": "widget/changeStepper",
-                    "value": 0
-                  }
-                }]
-              }]
+                    "name": "widget/changeMode",
+                    "mode": "edit"
+                  },
+                  "afterActions": [
+                    {
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "widget/changeStepper",
+                        "value": 0
+                      }
+                    }
+                  ]
+                }
+              ]
             }
           },
           {
@@ -78,307 +90,386 @@
               "small": true,
               "flat": true
             },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "map"
-              }
-            }],
-            "events": {
-              "click.stop": [{
-                "type": "dispatch",
-                "otherParams": {
-                  "name": "widget/changeMode",
-                  "mode": "map"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "map"
                 }
-              }]
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "map"
+                  }
+                }
+              ]
             }
           }
         ]
       }
-    }, {
+    },
+    {
       "is": "div",
       "props": {
         "class": "xs-12 md-8 padding-left-8 padding-right-8"
       },
-      "slots": [{
+      "slots": [
+        {
           "is": "DynamicComponent",
           "props": {
-            "components": [{
-              "is": "WidgetCard",
-              "slots": [{
-                "name": "top",
-                "is": "DynamicComponent",
-                "props": {
-                  "class": "flex",
-                  "components": [{
-                    "is": "v-spacer"
-                  }, {
-                    "is": "v-btn",
+            "components": [
+              {
+                "is": "WidgetCard",
+                "slots": [
+                  {
+                    "name": "top",
+                    "is": "DynamicComponent",
                     "props": {
-                      "icon": true,
-                      "small": true,
-                      "flat": true,
-                      "class": "no-margin zindex-10"
-                    },
-                    "slots": [{
-                      "is": "Icon",
-                      "props": {
-                        "small": true,
-                        "icon": "edit"
-                      }
-                    }],
-                    "events": {
-                      "click.stop": [{
-                        "type": "dispatch",
-                        "otherParams": {
-                          "name": "widget/changeMode",
-                          "mode": "edit"
+                      "class": "flex",
+                      "components": [
+                        {
+                          "is": "v-spacer"
                         },
-                        "afterActions": [{
-                          "type": "dispatch",
-                          "otherParams": {
-                            "name": "widget/changeStepper",
-                            "value": 0
+                        {
+                          "is": "v-btn",
+                          "props": {
+                            "icon": true,
+                            "small": true,
+                            "flat": true,
+                            "class": "no-margin zindex-10"
+                          },
+                          "slots": [
+                            {
+                              "is": "Icon",
+                              "props": {
+                                "small": true,
+                                "icon": "edit"
+                              }
+                            }
+                          ],
+                          "events": {
+                            "click.stop": [
+                              {
+                                "type": "dispatch",
+                                "otherParams": {
+                                  "name": "widget/changeMode",
+                                  "mode": "edit"
+                                },
+                                "afterActions": [
+                                  {
+                                    "type": "dispatch",
+                                    "otherParams": {
+                                      "name": "widget/changeStepper",
+                                      "value": 0
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
                           }
-                        }]
-                      }]
+                        }
+                      ]
                     }
-                  }]
-                }
-              }, {
-                "name": "default",
-                "is": "AsyncComponent",
-                "props": {
-                  "layoutName": "booking/forms/generalForm"
-                }
-              }]
-            }]
+                  },
+                  {
+                    "name": "default",
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "booking/forms/generalForm"
+                    }
+                  }
+                ]
+              }
+            ]
           }
         },
         {
           "is": "DynamicComponent",
           "props": {
             "class": "grid padding-topbottom-4 margin-topbottom-4",
-            "components": [{
-              "is": "DynamicComponent",
-              "props": {
-                "class": "padding-right-4 xs-12 md-6",
-                "components": [{
-                  "is": "WidgetCard",
-                  "slots": [{
-                    "name": "top",
-                    "is": "DynamicComponent",
-                    "props": {
-                      "class": "flex",
-                      "components": [{
-                        "is": "v-spacer"
-                      }, {
-                        "is": "v-btn",
-                        "props": {
-                          "icon": true,
-                          "small": true,
-                          "flat": true,
-                          "class": "no-margin zindex-10"
-                        },
-                        "slots": [{
-                          "is": "Icon",
+            "components": [
+              {
+                "is": "DynamicComponent",
+                "props": {
+                  "class": "padding-right-4 xs-12 md-6",
+                  "components": [
+                    {
+                      "is": "WidgetCard",
+                      "slots": [
+                        {
+                          "name": "top",
+                          "is": "DynamicComponent",
                           "props": {
-                            "small": true,
-                            "icon": "edit"
-                          }
-                        }],
-                        "events": {
-                          "click.stop": [{
-                            "type": "dispatch",
-                            "otherParams": {
-                              "name": "widget/changeMode",
-                              "mode": "edit"
-                            },
-                            "afterActions": [{
-                              "type": "dispatch",
-                              "otherParams": {
-                                "name": "widget/changeStepper",
-                                "value": 1
+                            "class": "flex",
+                            "components": [
+                              {
+                                "is": "v-spacer"
+                              },
+                              {
+                                "is": "v-btn",
+                                "props": {
+                                  "icon": true,
+                                  "small": true,
+                                  "flat": true,
+                                  "class": "no-margin zindex-10"
+                                },
+                                "slots": [
+                                  {
+                                    "is": "Icon",
+                                    "props": {
+                                      "small": true,
+                                      "icon": "edit"
+                                    }
+                                  }
+                                ],
+                                "events": {
+                                  "click.stop": [
+                                    {
+                                      "type": "dispatch",
+                                      "otherParams": {
+                                        "name": "widget/changeMode",
+                                        "mode": "edit"
+                                      },
+                                      "afterActions": [
+                                        {
+                                          "type": "dispatch",
+                                          "otherParams": {
+                                            "name": "widget/changeStepper",
+                                            "value": 1
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
                               }
-                            }]
-                          }]
-                        }
-                      }]
-                    }
-                  }, {
-                    "is": "AsyncComponent",
-                    "props": {
-                      "layoutName": "booking/forms/partyForm"
-                    }
-                  }]
-                }]
-              }
-            }, {
-              "is": "DynamicComponent",
-              "props": {
-                "class": "padding-left-4 xs-12 md-6",
-                "components": [{
-                  "is": "WidgetCard",
-                  "slots": [{
-                    "name": "top",
-                    "is": "DynamicComponent",
-                    "props": {
-                      "class": "flex",
-                      "components": [{
-                        "is": "v-spacer"
-                      }, {
-                        "is": "v-btn",
-                        "props": {
-                          "icon": true,
-                          "small": true,
-                          "flat": true,
-                          "class": "no-margin zindex-10"
+                            ]
+                          }
                         },
-                        "slots": [{
-                          "is": "Icon",
+                        {
+                          "is": "AsyncComponent",
                           "props": {
-                            "small": true,
-                            "icon": "edit"
+                            "layoutName": "booking/forms/partyForm"
                           }
-                        }],
-                        "events": {
-                          "click.stop": [{
-                            "type": "dispatch",
-                            "otherParams": {
-                              "name": "widget/changeMode",
-                              "mode": "edit"
-                            },
-                            "afterActions": [{
-                              "type": "dispatch",
-                              "otherParams": {
-                                "name": "widget/changeStepper",
-                                "value": 2
-                              }
-                            }]
-                          }]
                         }
-                      }]
+                      ]
                     }
-                  }, {
-                    "is": "AsyncComponent",
-                    "props": {
-                      "layoutName": "booking/forms/dateForm"
+                  ]
+                }
+              },
+              {
+                "is": "DynamicComponent",
+                "props": {
+                  "class": "padding-left-4 xs-12 md-6",
+                  "components": [
+                    {
+                      "is": "WidgetCard",
+                      "slots": [
+                        {
+                          "name": "top",
+                          "is": "DynamicComponent",
+                          "props": {
+                            "class": "flex",
+                            "components": [
+                              {
+                                "is": "v-spacer"
+                              },
+                              {
+                                "is": "v-btn",
+                                "props": {
+                                  "icon": true,
+                                  "small": true,
+                                  "flat": true,
+                                  "class": "no-margin zindex-10"
+                                },
+                                "slots": [
+                                  {
+                                    "is": "Icon",
+                                    "props": {
+                                      "small": true,
+                                      "icon": "edit"
+                                    }
+                                  }
+                                ],
+                                "events": {
+                                  "click.stop": [
+                                    {
+                                      "type": "dispatch",
+                                      "otherParams": {
+                                        "name": "widget/changeMode",
+                                        "mode": "edit"
+                                      },
+                                      "afterActions": [
+                                        {
+                                          "type": "dispatch",
+                                          "otherParams": {
+                                            "name": "widget/changeStepper",
+                                            "value": 2
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "is": "AsyncComponent",
+                          "props": {
+                            "layoutName": "booking/forms/dateForm"
+                          }
+                        }
+                      ]
                     }
-                  }]
-                }]
+                  ]
+                }
               }
-            }]
+            ]
           }
         },
         {
           "is": "DynamicComponent",
           "props": {
             "class": "padding-topbottom-4 margin-topbottom-4",
-            "components": [{
-              "is": "WidgetCard",
-              "slots": [{
-                "name": "top",
-                "is": "DynamicComponent",
-                "props": {
-                  "class": "flex",
-                  "components": [{
-                    "is": "v-spacer"
-                  }, {
-                    "is": "v-btn",
+            "components": [
+              {
+                "is": "WidgetCard",
+                "slots": [
+                  {
+                    "name": "top",
+                    "is": "DynamicComponent",
                     "props": {
-                      "icon": true,
-                      "small": true,
-                      "flat": true,
-                      "class": "no-margin zindex-10"
-                    },
-                    "slots": [{
-                      "is": "Icon",
-                      "props": {
-                        "small": true,
-                        "icon": "edit"
-                      }
-                    }],
-                    "events": {
-                      "click.stop": [{
-                        "type": "dispatch",
-                        "otherParams": {
-                          "name": "widget/changeMode",
-                          "mode": "edit"
+                      "class": "flex",
+                      "components": [
+                        {
+                          "is": "v-spacer"
                         },
-                        "afterActions": [{
-                          "type": "dispatch",
-                          "otherParams": {
-                            "name": "widget/changeStepper",
-                            "value": 3
+                        {
+                          "is": "v-btn",
+                          "props": {
+                            "icon": true,
+                            "small": true,
+                            "flat": true,
+                            "class": "no-margin zindex-10"
+                          },
+                          "slots": [
+                            {
+                              "is": "Icon",
+                              "props": {
+                                "small": true,
+                                "icon": "edit"
+                              }
+                            }
+                          ],
+                          "events": {
+                            "click.stop": [
+                              {
+                                "type": "dispatch",
+                                "otherParams": {
+                                  "name": "widget/changeMode",
+                                  "mode": "edit"
+                                },
+                                "afterActions": [
+                                  {
+                                    "type": "dispatch",
+                                    "otherParams": {
+                                      "name": "widget/changeStepper",
+                                      "value": 3
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
                           }
-                        }]
-                      }]
+                        }
+                      ]
                     }
-                  }]
-                }
-              }, {
-                "is": "AsyncComponent",
-                "props": {
-                  "layoutName": "booking/forms/containerForm"
-                }
-              }]
-            }]
+                  },
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "booking/forms/containerForm"
+                    }
+                  }
+                ]
+              }
+            ]
           }
         },
         {
           "is": "DynamicComponent",
           "props": {
             "class": "padding-topbottom-4 margin-topbottom-4",
-            "components": [{
-              "is": "WidgetCard",
-              "slots": [{
-                "name": "top",
-                "is": "DynamicComponent",
-                "props": {
-                  "class": "flex",
-                  "components": [{
-                    "is": "v-spacer"
-                  }, {
-                    "is": "v-btn",
+            "components": [
+              {
+                "is": "WidgetCard",
+                "slots": [
+                  {
+                    "name": "top",
+                    "is": "DynamicComponent",
                     "props": {
-                      "icon": true,
-                      "small": true,
-                      "flat": true,
-                      "class": "no-margin zindex-10"
-                    },
-                    "slots": [{
-                      "is": "Icon",
-                      "props": {
-                        "small": true,
-                        "icon": "edit"
-                      }
-                    }],
-                    "events": {
-                      "click.stop": [{
-                        "type": "dispatch",
-                        "otherParams": {
-                          "name": "widget/changeMode",
-                          "mode": "edit"
+                      "class": "flex",
+                      "components": [
+                        {
+                          "is": "v-spacer"
                         },
-                        "afterActions": [{
-                          "type": "dispatch",
-                          "otherParams": {
-                            "name": "widget/changeStepper",
-                            "value": 4
+                        {
+                          "is": "v-btn",
+                          "props": {
+                            "icon": true,
+                            "small": true,
+                            "flat": true,
+                            "class": "no-margin zindex-10"
+                          },
+                          "slots": [
+                            {
+                              "is": "Icon",
+                              "props": {
+                                "small": true,
+                                "icon": "edit"
+                              }
+                            }
+                          ],
+                          "events": {
+                            "click.stop": [
+                              {
+                                "type": "dispatch",
+                                "otherParams": {
+                                  "name": "widget/changeMode",
+                                  "mode": "edit"
+                                },
+                                "afterActions": [
+                                  {
+                                    "type": "dispatch",
+                                    "otherParams": {
+                                      "name": "widget/changeStepper",
+                                      "value": 4
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
                           }
-                        }]
-                      }]
+                        }
+                      ]
                     }
-                  }]
-                }
-              }, {
-                "is": "AsyncComponent",
-                "props": {
-                  "layoutName": "booking/forms/referenceForm"
-                }
-              }]
-            }]
+                  },
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "booking/forms/referenceForm"
+                    }
+                  }
+                ]
+              }
+            ]
           }
         }
       ]
@@ -388,37 +479,44 @@
       "props": {
         "class": "xs-12 md-4 padding-left-8 padding-right-8"
       },
-      "slots": [{
-        "is": "DynamicComponent",
-        "props": {
-          "class": "grid",
-          "components": [{
-            "is": "AsyncComponent",
-            "props": {
-              "class": "xs-12 margin-topbottom-4",
-              "layoutName": "plugins/tracking"
-            }
-          }, {
-            "is": "AsyncComponent",
-            "props": {
-              "class": "xs-12 margin-topbottom-4",
-              "layoutName": "plugins/workflow"
-            }
-          }, {
-            "is": "AsyncComponent",
-            "props": {
-              "class": "xs-12 margin-topbottom-4",
-              "layoutName": "plugins/alert"
-            }
-          }, {
-            "is": "AsyncComponent",
-            "props": {
-              "class": "xs-12 margin-topbottom-4",
-              "layoutName": "plugins/document"
-            }
-          }]
+      "slots": [
+        {
+          "is": "DynamicComponent",
+          "props": {
+            "class": "grid",
+            "components": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-topbottom-4",
+                  "layoutName": "plugins/tracking"
+                }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-topbottom-4",
+                  "layoutName": "plugins/workflow"
+                }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-topbottom-4",
+                  "layoutName": "plugins/alert"
+                }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-topbottom-4",
+                  "layoutName": "plugins/document"
+                }
+              }
+            ]
+          }
         }
-      }]
+      ]
     }
   ]
 }

@@ -3,63 +3,78 @@
   "style": {
     "min-height": "350px"
   },
-  "components": [{
-    "is": "DynamicComponent",
-    "props": {
-      "components": [{
-          "is": "v-card-title",
-          "props": {
-            "primary-title": true
-          },
-          "slots": [{
-            "name": "default",
-            "is": "I18nText",
+  "components": [
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "components": [
+          {
+            "is": "v-card-title",
             "props": {
-              "class": "title",
-              "i18nKey": "UserProfilePage.NotiicationPreferences"
-            }
-          }]
-        },
-        {
-          "is": "Form",
-          "props": {
-            "form": "$store.state.auth.userProfile",
-            "submitActions": [{
-              "type": "dispatch",
-              "otherParams": {
-                "name": "auth/submitUserProfile"
-              },
-              "errorMessage": "UserProfilePage.UpdateUserProfileFail",
-              "afterActions": [{
-                "type": "notify",
-                "otherParams": {
-                  "notification": "UserProfilePage.UpdateUserProfileSuccess"
-                }
-              }]
-            }],
-            "fields": []
-          },
-          "slots": [{
-            "name": "post-form",
-            "is": "DynamicComponent",
-            "props": {
-              "components": [{
-                "is": "v-btn",
+              "primary-title": true
+            },
+            "slots": [
+              {
+                "name": "default",
+                "is": "I18nText",
                 "props": {
-                  "type": "submit",
-                  "flat": true
-                },
-                "slots": [{
-                  "is": "i18nText",
-                  "props": {
-                    "i18nKey": "Save"
-                  }
-                }]
-              }]
-            }
-          }]
-        }
-      ]
+                  "class": "title",
+                  "i18nKey": "UserProfilePage.NotiicationPreferences"
+                }
+              }
+            ]
+          },
+          {
+            "is": "Form",
+            "props": {
+              "form": "$store.state.auth.userProfile",
+              "submitActions": [
+                {
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "auth/submitUserProfile"
+                  },
+                  "errorMessage": "UserProfilePage.UpdateUserProfileFail",
+                  "afterActions": [
+                    {
+                      "type": "notify",
+                      "otherParams": {
+                        "notification": "UserProfilePage.UpdateUserProfileSuccess"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "fields": []
+            },
+            "slots": [
+              {
+                "name": "post-form",
+                "is": "DynamicComponent",
+                "props": {
+                  "components": [
+                    {
+                      "is": "v-btn",
+                      "props": {
+                        "type": "submit",
+                        "flat": true
+                      },
+                      "slots": [
+                        {
+                          "is": "i18nText",
+                          "props": {
+                            "i18nKey": "Save"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
     }
-  }]
+  ]
 }

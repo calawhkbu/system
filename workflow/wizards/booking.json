@@ -191,7 +191,6 @@
       "mandatory": true,
       "important": true,
       "codeType": "BOUND"
-
     },
     {
       "name": "portOfLoading",
@@ -267,7 +266,7 @@
       "type": "text",
       "mandatory": false,
       "visibility": {
-        "moduleType":"SEA,ROAD,null"
+        "moduleType": "SEA,ROAD,null"
       },
       "important": true
     },
@@ -277,7 +276,7 @@
       "type": "text",
       "mandatory": false,
       "visibility": {
-        "moduleType":"AIR"
+        "moduleType": "AIR"
       },
       "important": true
     }
@@ -340,7 +339,6 @@
       "mandatory": false,
       "important": true
     }
-
   ],
   "transactionDateDetails": [
     {

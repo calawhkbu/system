@@ -1,56 +1,62 @@
 {
   "layout": "v-card",
-  "components": [{
-    "is": "WidgetForm",
-    "props": {
-      "fields": [{
-        "label": "InvitationPage.Contacts",
-        "name": "person.contacts",
-        "component": "TableField",
-        "props": {
-          "topLabel": true,
-          "fields": [{
-              "label": "InvitationPage.contactType",
-              "name": "contactType",
-              "component": "v-select",
-              "class": "xs-12 md-6",
-              "props": {
-                "items": [{
-                    "code": "email",
-                    "name": "E-mail"
-                  },
-                  {
-                    "code": "phone",
-                    "name": "Phone"
-                  },
-                  {
-                    "code": "fax",
-                    "name": "Fax"
-                  },
-                  {
-                    "code": "address",
-                    "name": "Address"
-                  }
-                ],
-                "item-text": "name",
-                "item-value": "code",
-                "params": {
-                  "subqueries": {
-                    "codeType": {
-                      "value": "contactType"
+  "components": [
+    {
+      "is": "WidgetForm",
+      "props": {
+        "fields": [
+          {
+            "label": "InvitationPage.Contacts",
+            "name": "person.contacts",
+            "component": "TableField",
+            "props": {
+              "topLabel": true,
+              "fields": [
+                {
+                  "label": "InvitationPage.contactType",
+                  "name": "contactType",
+                  "component": "v-select",
+                  "class": "xs-12 md-6",
+                  "props": {
+                    "items": [
+                      {
+                        "code": "email",
+                        "name": "E-mail"
+                      },
+                      {
+                        "code": "phone",
+                        "name": "Phone"
+                      },
+                      {
+                        "code": "fax",
+                        "name": "Fax"
+                      },
+                      {
+                        "code": "address",
+                        "name": "Address"
+                      }
+                    ],
+                    "item-text": "name",
+                    "item-value": "code",
+                    "params": {
+                      "subqueries": {
+                        "codeType": {
+                          "value": "contactType"
+                        }
+                      }
                     }
                   }
+                },
+                {
+                  "label": "InvitationPage.contentContent",
+                  "name": "content",
+                  "component": "v-text-field"
                 }
-              }
-            },
-            {
-              "label": "InvitationPage.contentContent",
-              "name": "content",
-              "component": "v-text-field"
+              ]
             }
-          ]
-        }
-      }]
+          }
+        ]
+      }
     }
-  }]
+  ]
 }

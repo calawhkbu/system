@@ -1,10 +1,10 @@
 export default {
   dataSetting: {
     shipment: {
-      internal: false
-    }
+      internal: false,
+    },
   },
-  bookingContainer : {
-    calculateCtns : false
-  }
+  bookingContainer: {
+    calculateCtns: false,
+  },
 }
