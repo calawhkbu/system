@@ -25,6 +25,7 @@ function prepareTable (name: string): CreateTableJQL {
           method: 'POST',
           url: 'api/booking/query/booking',
           columns: [
+
             {
               name: 'volume',
               type: 'number'
@@ -33,6 +34,11 @@ function prepareTable (name: string): CreateTableJQL {
                 name: 'shipperPartyId',
                 type: 'number'
             },
+
+            {
+              name: 'shipperPartyName',
+              type: 'string'
+          },
           ],
 
           data: {
@@ -46,14 +52,18 @@ function prepareTable (name: string): CreateTableJQL {
 
 
         }, name),
+
         $group: new GroupBy([
 
             new ColumnExpression(name, 'shipperPartyId')
 
         ]),
+
+
         $order : [
           new OrderBy('volume', 'DESC')
         ]
+
         $limit : 10
 
       })
@@ -109,26 +119,17 @@ export default [
 
   new Query({
 
-    $select : [
-
-      new ResultColumn(new ColumnExpression('party','id')),
-      new ResultColumn(new ColumnExpression('party','name')),
-      new ResultColumn(new ColumnExpression('tempTable','volume')),
-
-
-    ],
-
-    $from : new FromTable('party','party')
-
-
     $from : new FromTable('tempTable','tempTable',
     new JoinClause('INNER', new FromTable('party','party'),
     new BinaryExpression(new ColumnExpression('tempTable', 'shipperPartyId'), '=', new ColumnExpression('party', 'id'))
     )),
 
+
+
     $order : [
       new OrderBy(new ColumnExpression('tempTable','volume'), 'DESC')
     ]
+
     $limit : 10
 
 

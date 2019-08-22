@@ -18,8 +18,8 @@ function prepareTable (name: string): CreateTableJQL {
       $as: new Query({
         $select: [
 
-            new ResultColumn(new ColumnExpression(name,'shipperPartyId')),
-            new ResultColumn(new FunctionExpression('IFNULL',new FunctionExpression('SUM', new ColumnExpression(name,'weight')),0),'weight'),
+            new ResultColumn(new ColumnExpression(name,'agentPartyId')),
+            new ResultColumn(new FunctionExpression('IFNULL',new FunctionExpression('SUM', new ColumnExpression(name,'volume')),0),'volume'),
         ],
         $from: new FromTable({
           method: 'POST',
@@ -27,16 +27,16 @@ function prepareTable (name: string): CreateTableJQL {
           columns: [
 
             {
-              name: 'weight',
+              name: 'volume',
               type: 'number'
             },
             {
-                name: 'shipperPartyId',
+                name: 'agentPartyId',
                 type: 'number'
             },
 
             {
-              name: 'shipperPartyName',
+              name: 'agentPartyName',
               type: 'string'
           },
           ],
@@ -55,13 +55,13 @@ function prepareTable (name: string): CreateTableJQL {
 
         $group: new GroupBy([
 
-            new ColumnExpression(name, 'shipperPartyId')
+            new ColumnExpression(name, 'agentPartyId')
 
         ]),
 
 
         $order : [
-          new OrderBy('weight', 'DESC')
+          new OrderBy('volume', 'DESC')
         ]
 
         $limit : 10
@@ -103,7 +103,7 @@ function prepareTable (name: string): CreateTableJQL {
                 }
               },  name)
 
-              $where : new BinaryExpression(new ColumnExpression('type'), '=','shipper')
+              $where : new BinaryExpression(new ColumnExpression('type'), '=','agent')
               
           })
 
@@ -121,13 +121,13 @@ export default [
 
     $from : new FromTable('tempTable','tempTable',
     new JoinClause('INNER', new FromTable('party','party'),
-    new BinaryExpression(new ColumnExpression('tempTable', 'shipperPartyId'), '=', new ColumnExpression('party', 'id'))
+    new BinaryExpression(new ColumnExpression('tempTable', 'agentPartyId'), '=', new ColumnExpression('party', 'id'))
     )),
 
 
 
     $order : [
-      new OrderBy(new ColumnExpression('tempTable','weight'), 'DESC')
+      new OrderBy(new ColumnExpression('tempTable','volume'), 'DESC')
     ]
 
     $limit : 10

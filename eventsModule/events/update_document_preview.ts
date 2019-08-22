@@ -11,7 +11,7 @@ import { Document } from 'models/main/document'
 // import { Document } from '../../../../swivel-backend-new/src/models/main/document';
 // import { DocumentDbService } from '../../../../swivel-backend-new/src/modules/sequelize/document/service';
 
-class AfterCreateDocumentEvent extends BaseEvent {
+class UpdateDocumentPreviewEvent extends BaseEvent {
 
   constructor (
 
@@ -46,7 +46,7 @@ export default {
 
   execute: async (parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
 
-    const event = new AfterCreateDocumentEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
+    const event = new UpdateDocumentPreviewEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
     return await event.execute()
 
   }
