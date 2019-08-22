@@ -1,13 +1,8 @@
 {
   "name": "system",
   "description": "This the base custom config",
-  "dependencies": {
-    "moment": "^2.24.0",
-    "node-jql": "^2.0.0-rc.51",
-    "node-jql-core": "^v2.0.0-rc.40"
-  },
   "devDependencies": {
-    "tslint": "^5.18.0",
+    "tslint": "^5.19.0",
     "typescript": "^3.5.3"
   },
   "scripts": {

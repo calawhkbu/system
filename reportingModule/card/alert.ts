@@ -16,27 +16,23 @@ function prepareParams (): Function {
 }
 
 export default [
-  [prepareParams(), new CreateTableJQL({
-    $temporary: true,
-    name: 'alert',
-    $as: new Query({
-      $select: [
-        new ResultColumn('alertCategory'),
-        new ResultColumn('alertType'),
-        new ResultColumn(new FunctionExpression('COUNT', new ColumnExpression('alertType')), 'count')
-      ],
-      $from: new FromTable({
-        method: 'POST',
-        url: 'api/alert/query/alert',
-        columns: [
-          { name: 'alert.alertCategory', type: 'string', $as: 'alertCategory' },
-          { name: 'alert.alertType', type: 'string', $as: 'alertType' }
-        ]
-      }, 'alert'),
-      $group: new GroupBy([
-        new ColumnExpression('alertCategory'),
-        new ColumnExpression('alertType')
-      ])
-    })
+  [prepareParams(), new Query({
+    $select: [
+      new ResultColumn('alertCategory'),
+      new ResultColumn('alertType'),
+      new ResultColumn(new FunctionExpression('COUNT', new ColumnExpression('alertType')), 'count')
+    ],
+    $from: new FromTable({
+      method: 'POST',
+      url: 'api/alert/query/alert',
+      columns: [
+        { name: 'alert.alertCategory', type: 'string', $as: 'alertCategory' },
+        { name: 'alert.alertType', type: 'string', $as: 'alertType' }
+      ]
+    }, 'alert'),
+    $group: new GroupBy([
+      new ColumnExpression('alertCategory'),
+      new ColumnExpression('alertType')
+    ])
   })]
 ]
