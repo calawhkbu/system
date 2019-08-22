@@ -3,7 +3,7 @@ import { Query, FromTable } from 'node-jql'
 const query = new Query({
   $from: new FromTable({
     method: 'POST',
-    url: 'q/template',
+    url: 'api/template',
     columns: [
       {
         name: 'id',

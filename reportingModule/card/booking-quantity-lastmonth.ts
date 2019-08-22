@@ -1,13 +1,11 @@
-import { Query, FromTable, CreateTableJQL,GroupBy, ResultColumn, ColumnExpression, FunctionExpression,AndExpressions,BinaryExpression } from 'node-jql'
+import { Query, FromTable, CreateTableJQL, GroupBy, ResultColumn, ColumnExpression, FunctionExpression, AndExpressions, BinaryExpression } from 'node-jql'
 import { parseCode } from 'utils/function'
 
-
-function prepareParams(currentMonth?: boolean): Function {
+function prepareParams (currentMonth?: boolean): Function {
     const fn = function (require, session, params) {
 
         const moment = require('moment')
         const subqueries = params.subqueries = params.subqueries || {}
-
 
         // get the year part of the "from date"
         let month = moment().month()
@@ -24,9 +22,8 @@ function prepareParams(currentMonth?: boolean): Function {
         subqueries.date.from = moment().month(month).startOf('month').format('YYYY-MM-DD')
         subqueries.date.to = moment().month(month).endOf('month').format('YYYY-MM-DD')
 
-        console.log('subqueries.date.from',subqueries.date.from)
-        console.log('subqueries.date.to',subqueries.date.to)
-
+        console.log('subqueries.date.from', subqueries.date.from)
+        console.log('subqueries.date.to', subqueries.date.to)
 
         return params
     }
@@ -42,9 +39,9 @@ function prepareTable (name: string): CreateTableJQL {
       $as: new Query({
         $select: [
 
-        new ResultColumn(new ColumnExpression(name,'moduleTypeCode')),
-        new ResultColumn(new ColumnExpression(name,'jobMonth')),
-        new ResultColumn(new FunctionExpression('IFNULL',new FunctionExpression('SUM', new ColumnExpression(name,'quantity')),0),'quantity'),
+        new ResultColumn(new ColumnExpression(name, 'moduleTypeCode')),
+        new ResultColumn(new ColumnExpression(name, 'jobMonth')),
+        new ResultColumn(new FunctionExpression('IFNULL', new FunctionExpression('SUM', new ColumnExpression(name, 'quantity')), 0), 'quantity'),
         ],
         $from: new FromTable({
           method: 'POST',
@@ -70,9 +67,8 @@ function prepareTable (name: string): CreateTableJQL {
                 jobMonth: true
             },
             // include jobMonth from the table
-            fields: ['jobMonth', 'booking.*','booking_popacking.*']
+            fields: ['jobMonth', 'booking.*', 'booking_popacking.*']
             }
-
 
         }, name),
         $group: new GroupBy([
@@ -87,10 +83,8 @@ function prepareTable (name: string): CreateTableJQL {
   }
 
 export default [
-    [prepareParams(),prepareTable('lastMonth')],
-    [prepareParams(true),prepareTable('currentMonth')],
-
-
+    [prepareParams(), prepareTable('lastMonth')],
+    [prepareParams(true), prepareTable('currentMonth')],
 
     new Query({
         $from: 'lastMonth',

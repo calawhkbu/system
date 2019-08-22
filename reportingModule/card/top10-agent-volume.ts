@@ -1,4 +1,4 @@
-import { ColumnExpression, CreateTableJQL, FromTable, FunctionExpression, GroupBy, Query, ResultColumn,OrderBy,JoinClause,BinaryExpression } from 'node-jql'
+import { ColumnExpression, CreateTableJQL, FromTable, FunctionExpression, GroupBy, Query, ResultColumn, OrderBy, JoinClause, BinaryExpression } from 'node-jql'
 
 function prepareParams (): Function {
   return function (require, session, params) {
@@ -18,8 +18,8 @@ function prepareTable (name: string): CreateTableJQL {
       $as: new Query({
         $select: [
 
-            new ResultColumn(new ColumnExpression(name,'agentPartyId')),
-            new ResultColumn(new FunctionExpression('IFNULL',new FunctionExpression('SUM', new ColumnExpression(name,'volume')),0),'volume'),
+            new ResultColumn(new ColumnExpression(name, 'agentPartyId')),
+            new ResultColumn(new FunctionExpression('IFNULL', new FunctionExpression('SUM', new ColumnExpression(name, 'volume')), 0), 'volume'),
         ],
         $from: new FromTable({
           method: 'POST',
@@ -47,9 +47,8 @@ function prepareTable (name: string): CreateTableJQL {
                 jobMonth: true
             },
             // include jobMonth from the table
-            fields: ['jobMonth', 'booking.*','booking_popacking.*']
+            fields: ['jobMonth', 'booking.*', 'booking_popacking.*']
             }
-
 
         }, name),
 
@@ -58,7 +57,6 @@ function prepareTable (name: string): CreateTableJQL {
             new ColumnExpression(name, 'agentPartyId')
 
         ]),
-
 
         $order : [
           new OrderBy('volume', 'DESC')
@@ -69,8 +67,6 @@ function prepareTable (name: string): CreateTableJQL {
       })
     })
   }
-
-
 
   function preparePartyTable (name: string): CreateTableJQL {
     return new CreateTableJQL({
@@ -99,39 +95,33 @@ function prepareTable (name: string): CreateTableJQL {
 
               data: {
                 // include jobMonth from the table
-                fields: ['party_type.*','party.*']
+                fields: ['party_type.*', 'party.*']
                 }
               },  name)
 
-              $where : new BinaryExpression(new ColumnExpression('type'), '=','agent')
-              
+              $where : new BinaryExpression(new ColumnExpression('type'), '=', 'agent')
+
           })
 
     })
   }
 
-
-
-
 export default [
   [prepareParams(), prepareTable('tempTable')],
-  [prepareParams(),preparePartyTable('party')],
+  [prepareParams(), preparePartyTable('party')],
 
   new Query({
 
-    $from : new FromTable('tempTable','tempTable',
-    new JoinClause('INNER', new FromTable('party','party'),
+    $from : new FromTable('tempTable', 'tempTable',
+    new JoinClause('INNER', new FromTable('party', 'party'),
     new BinaryExpression(new ColumnExpression('tempTable', 'agentPartyId'), '=', new ColumnExpression('party', 'id'))
     )),
 
-
-
     $order : [
-      new OrderBy(new ColumnExpression('tempTable','volume'), 'DESC')
+      new OrderBy(new ColumnExpression('tempTable', 'volume'), 'DESC')
     ]
 
     $limit : 10
-
 
   })
 

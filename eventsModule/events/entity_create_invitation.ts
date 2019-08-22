@@ -49,7 +49,7 @@ class EntityCreateInvitationEvent extends BaseEvent {
     if (invitationUpdatedEntity)
     {
       // warning: autoSave = true
-      return await entityService.save({...entity,...invitationUpdatedEntity},this.user,this.transaction,true)
+      return await entityService.save({...entity, ...invitationUpdatedEntity}, this.user, this.transaction, true)
     }
 
   }

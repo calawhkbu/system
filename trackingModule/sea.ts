@@ -246,7 +246,7 @@ export default class BaseAirTrackingService {
         statusDate: new Date(item.statustime),
         statusPlace: item.statusplace,
         updatedAt: new Date(item.updatetime),
-        isEstimated: item.isest == 'Y' ? true : false
+        isEstimated: item.isest === 'Y' ? true : false
       }))
       newDetails.billCargoTracking = []
       if (newDetailsRaw.objbillinfo && newDetailsRaw.objbillinfo.lstctnrinfos && newDetailsRaw.objbillinfo.lstctnrinfos.length > 0) {

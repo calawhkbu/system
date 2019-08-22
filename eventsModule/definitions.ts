@@ -117,7 +117,6 @@ export default {
     // }
   ],
 
-
   afterCreate_booking: [
 
     // create alert of new Booking
@@ -136,7 +135,6 @@ export default {
       }
     },
 
-
     // // update personId / create Invitation
     // {
     //   condition : true,
@@ -146,7 +144,6 @@ export default {
     //   }
     // },
 
-  
     // // create booking tracking
     {
       condition : true,

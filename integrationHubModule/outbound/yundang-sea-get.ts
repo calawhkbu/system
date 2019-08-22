@@ -1,5 +1,5 @@
-const sha1 = require('sha1')
-const moment = require('moment')
+import sha1 = require('sha1')
+import moment = require('moment')
 
 export default {
   method: 'POST', // GET / POST-JSON / POST-SIMPLE

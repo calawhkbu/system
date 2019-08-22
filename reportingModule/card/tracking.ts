@@ -54,7 +54,7 @@ export default [
       ],
       $from: new FromTable({
         method: 'POST',
-        url: 'q/tracking',
+        url: 'api/tracking',
         columns: [
           { name: 'tracking.trackingNo', type: 'string', $as: 'trackingNo' },
           { name: 'tracking.lastStatus', type: 'string', $as: 'lastStatus' }

@@ -76,14 +76,12 @@ class TrackingUpdateDataEvent extends BaseEvent {
     const queryString = 'SELECT `tracking_reference`.`partyGroupCode`, `tracking_reference`.`trackingNo`, `tracking_reference`.`type` FROM (SELECT  `tracking_reference`.*,  `masterNo` AS trackingNo, \'masterNo\' as `type` FROM `tracking_reference` UNION SELECT  `tracking_reference`.*, `soTable`.`trackingNo`, \'soNo\' as `type` FROM  `tracking_reference`,  JSON_TABLE( `soNo`, \"$[*]\" COLUMNS (`trackingNo` VARCHAR(100) PATH \"$\")) `soTable`\n\tUNION\n\t\tSELECT  `tracking_reference`.* , `containerTable`.`trackingNo`, \'containerNo\' as `type`\n\t\tFROM `tracking_reference`,  JSON_TABLE( `containerNo`, \"$[*]\" COLUMNS (`trackingNo` VARCHAR(100) PATH \"$\")) `containerTable`\n) `tracking_reference`\nWHERE `tracking_reference`.`trackingNo` is not null \nAND `tracking_reference`.`trackingNo` = \"' + `${trackingNo}` + '\"'
     const trackingReferenceList = await trackingReferenceService.query(queryString, rawQueryOption) as { partyGroupCode: string, trackingNo: string, type: 'masterNo' | 'soNo' | 'containerNo' }[]
 
-    let bookingList: Booking[]
-
     await Promise.all(trackingReferenceList.map(async trackingReference => {
 
       let bookingIdListQueryString: string
       let bookingIdList: number[]
 
-      if (trackingReference.type == 'masterNo') {
+      if (trackingReference.type === 'masterNo') {
 
         // hardcode
         bookingIdListQueryString = `
@@ -94,7 +92,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
 
       }
 
-      else if (trackingReference.type == 'soNo') {
+      else if (trackingReference.type === 'soNo') {
         bookingIdListQueryString = `SELECT
           booking_container.bookingId
           FROM booking_container
@@ -102,7 +100,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
           `
       }
 
-      else if (trackingReference.type == 'containerNo') {
+      else if (trackingReference.type === 'containerNo') {
 
         bookingIdListQueryString = `SELECT
           booking_container.bookingId

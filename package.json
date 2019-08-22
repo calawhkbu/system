@@ -1,12 +1,7 @@
 {
   "name": "system",
   "description": "This the base custom config",
-  "devDependencies": {
-    "tslint": "^5.19.0",
-    "typescript": "^3.5.3"
-  },
   "scripts": {
-    "lint": "tslint -p tsconfig.json -c tslint.json",
-    "lint:fix": "tslint -p tsconfig.json -c tslint.json --fix"
+    "lint": "tslint -p tsconfig.json -c tslint.json"
   }
 }

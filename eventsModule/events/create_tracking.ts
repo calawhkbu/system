@@ -36,7 +36,7 @@ class CreateTrackingEvent extends BaseEvent {
 
   public getMasterNo (booking: Booking, refName: string): string {
 
-    const bookingReference = booking.bookingReference.find((x: BookingReference) => x.refName == refName)
+    const bookingReference = booking.bookingReference.find((x: BookingReference) => x.refName === refName)
 
     if (bookingReference) {
       return bookingReference.refDescription

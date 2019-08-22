@@ -219,7 +219,7 @@ export default class BaseAirTrackingService {
         // statusPlaceType: airports[item.statusplace] ? 'airport' : 'other',
         // statusPlaceDescription: airports[item.statusplace] ? airports[item.statusplace].locationNameClean : item.statusplace,
         updatedAt: new Date(item.updatetime),
-        isEstimated: item.isest == 'Y' ? true : false,
+        isEstimated: item.isest === 'Y' ? true : false,
         pieces: item.pieces,
         weight: item.weight,
         volume: item.volume
@@ -268,7 +268,7 @@ export default class BaseAirTrackingService {
               // statusPlaceType: airports[history.station] ? 'airport' : 'other',
               // statusPlaceDescription: airports[history.station] ? airports[history.station].locationNameClean : history.station,
               updatedAt: new Date(history.updatetime),
-              isEstimated: history.isest == 'Y' ? true : false,
+              isEstimated: history.isest === 'Y' ? true : false,
               pieces: history.pieces,
               weight: history.weight
             }))

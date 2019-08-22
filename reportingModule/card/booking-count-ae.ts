@@ -1,14 +1,13 @@
 import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, GroupBy, BinaryExpression, AndExpressions } from 'node-jql'
 import { parseCode } from 'utils/function'
 
-
-function prepareParams(): Function {
+function prepareParams (): Function {
     const fn = function (require, session, params) {
         const moment = require('moment')
         const subqueries = params.subqueries = params.subqueries || {}
         if (subqueries.date) {
             // get the year part of the "from date"
-            let year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
+            const year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
 
             // reset the date.from and date.to depending on date.from YEAR
             subqueries.date.from = moment().year(year).startOf('year').format('YYYY-MM-DD')
@@ -17,12 +16,12 @@ function prepareParams(): Function {
         }
         return params
     }
-    let code = fn.toString()
+    const code = fn.toString()
     return parseCode(code)
 }
 
 // template Table group by carrierCod and jobMonth
-function prepareFinalTable(name: string): CreateTableJQL {
+function prepareFinalTable (name: string): CreateTableJQL {
     return new CreateTableJQL({
         $temporary: true,
         name,
@@ -36,11 +35,8 @@ function prepareFinalTable(name: string): CreateTableJQL {
     })
 }
 
-
-
-
 // a temp table that Group by carrierCode and JobMonth
-function prepareTempTable(name: string): CreateTableJQL {
+function prepareTempTable (name: string): CreateTableJQL {
     return new CreateTableJQL({
         $temporary: true,
         name,
@@ -81,9 +77,6 @@ function prepareTempTable(name: string): CreateTableJQL {
     })
 }
 
-
-
-
 export default [
     [prepareParams(), prepareTempTable('tempTable')],
     new Query({
@@ -93,7 +86,6 @@ export default [
             // hard code 12 months
 
             // new ResultColumn(new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),'monthName'),
-
 
             new ResultColumn(
                 new FunctionExpression('IFNULL',
@@ -121,7 +113,6 @@ export default [
                     ), 0),
                 'Feb'),
 
-
             new ResultColumn(
                 new FunctionExpression('IFNULL',
                     new FunctionExpression('FIND',
@@ -134,7 +125,6 @@ export default [
                         new ColumnExpression('count')
                     ), 0),
                 'Mar'),
-
 
             new ResultColumn(
                 new FunctionExpression('IFNULL',
@@ -149,7 +139,6 @@ export default [
                     ), 0),
                 'Apr'),
 
-
             new ResultColumn(
                 new FunctionExpression('IFNULL',
                     new FunctionExpression('FIND',
@@ -162,7 +151,6 @@ export default [
                         new ColumnExpression('count')
                     ), 0),
                 'May'),
-
 
             new ResultColumn(
                 new FunctionExpression('IFNULL',
@@ -190,7 +178,6 @@ export default [
                     ), 0),
                 'Jul'),
 
-
             new ResultColumn(
                 new FunctionExpression('IFNULL',
                     new FunctionExpression('FIND',
@@ -201,7 +188,6 @@ export default [
                         new ColumnExpression('count')
                     ), 0),
                 'Aug'),
-
 
             new ResultColumn(
                 new FunctionExpression('IFNULL',
@@ -216,7 +202,6 @@ export default [
                     ), 0),
                 'Sep'),
 
-
             new ResultColumn(
                 new FunctionExpression('IFNULL',
                     new FunctionExpression('FIND',
@@ -230,7 +215,6 @@ export default [
                     ), 0),
                 'Oct'),
 
-
             new ResultColumn(
                 new FunctionExpression('IFNULL',
                     new FunctionExpression('FIND',
@@ -243,8 +227,6 @@ export default [
                         new ColumnExpression('count')
                     ), 0),
                 'Nov'),
-
-
 
             new ResultColumn(
                 new FunctionExpression('IFNULL',

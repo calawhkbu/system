@@ -3,7 +3,7 @@ function CheckETA() {
 	this.returns = ["DATESET", "DELAY"];
 	this.handle = function(definition, data, handlerParameters, helper) {
 		if (data.data.estimatedArrivalDate != null && helper.moment.isDate(data.data.estimatedArrivalDate)) {
-			return data.oldData.estimatedArrivalDate == null
+			return data.oldData.estimatedArrivalDate === null
 				? (// Compare ETA from FM3000 and ETA from YunDang this time
 					new Promise((resolve) => {
 						helper.persistence.models.bill.findOne({ where:{ customerId: data.data.customerId, masterNo: data.data.masterNo } })
