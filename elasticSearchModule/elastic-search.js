@@ -1,5 +1,3 @@
 module.exports = {
-	"should": [
-		{"match": {"entity.masterNo": {"query": "$eString", "boost": 2}} }
-	]
+  should: [{ match: { 'entity.masterNo': { query: '$eString', boost: 2 } } }],
 }

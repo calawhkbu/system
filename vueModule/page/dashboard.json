@@ -51,9 +51,52 @@
                         "value": "MODULE"
                       }
                     }
+                  },
+                  "$as": "code"
+                }
+              },
+              "resolveJql": {
+                "$select": [{
+                    "expression": {
+                      "classname": "ColumnExpression",
+                      "name": "code"
+                    },
+                    "$as": "value"
+                  },
+                  {
+                    "expression": {
+                      "classname": "ColumnExpression",
+                      "name": "name"
+                    },
+                    "$as": "label"
                   }
-                },
-                "$as": "code"
+                ],
+                "$from": {
+                  "table": {
+                    "method": "POST",
+                    "url": "api/code/query/code_master",
+                    "columns": [{
+                        "name": "code",
+                        "type": "string"
+                      },
+                      {
+                        "name": "name",
+                        "type": "string"
+                      }
+                    ],
+                    "data": {
+                      "subqueries": {
+                        "codeType": {
+                          "value": "moduleType"
+                        },
+                        "code": {
+                          "value": "{{ value }}"
+                        }
+                      }
+                    }
+                  },
+                  "$as": "code"
+                }
               }
             },
             "resolveJql": {
@@ -92,10 +135,59 @@
                         "value": "{{ value }}"
                       }
                     }
-                  }
+                  ]
                 },
-                "$as": "code"
-              }
+                {
+                  "label": "last",
+                  "shortcuts": [{
+                      "label": "last year",
+                      "func": {
+                        "key": "last",
+                        "args": {
+                          "unit": "year"
+                        }
+                      }
+                    },
+                    {
+                      "label": "last 3 month",
+                      "func": {
+                        "key": "last",
+                        "args": {
+                          "value": 3,
+                          "unit": "month"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "label": "coming",
+                  "shortcuts": [{
+                    "label": "coming 7 days",
+                    "func": {
+                      "key": "coming",
+                      "args": {
+                        "value": 7,
+                        "unit": "day",
+                        "startFromNow": true
+                      }
+                    }
+                  }]
+                },
+                {
+                  "label": "past",
+                  "shortcuts": [{
+                    "label": "past 7 days",
+                    "func": {
+                      "key": "past",
+                      "args": {
+                        "value": 7,
+                        "unit": "day"
+                      }
+                    }
+                  }]
+                }
+              ]
             }
           }
         },
@@ -276,8 +368,8 @@
             "display": "value",
             "multi": true
           }
-        }
-      ]
+        ]
+      }
     }
   }]
 }

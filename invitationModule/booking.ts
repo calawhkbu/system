@@ -83,7 +83,6 @@ export default async function entityCreateInvitaion (that: any, entity: any, tab
         const invitation = await that.createInvitation(person, partyGroup.code, user, transaction)
         savedPerson = invitation.person
       }
-      console.log(savedPerson, '======')
       if (content.flexData) {
         if (entityFlexData[`${partyType}PartyContactPersonEmail`] === savedPerson.username) {
           entityFlexData[`${partyType}PartyContactPersonId`] = savedPerson.id
@@ -96,11 +95,11 @@ export default async function entityCreateInvitaion (that: any, entity: any, tab
           }, entityFlexData[`${partyType}PartyContacts`])
         }
       } else {
-        if (entityData[`${partyType}PartyContactPersonEmail`] === savedPerson.username) {
+        if (entityData[`${partyType}PartyContactPersonEmail`] === savedPerson.userName) {
           entityData[`${partyType}PartyContactPersonId`] = savedPerson.id
         } else {
           entityData[`${partyType}PartyContacts`] = entityData[`${partyType}PartyContacts`].reduce((all: any, one: any) => {
-            if (one['Email'] === savedPerson.username) {
+            if (one['Email'] === savedPerson.userName) {
               one['PersonId'] = savedPerson.id
             }
             return all
@@ -143,10 +142,10 @@ const handlePartyAndPerson = (
   if (data[`${type}PartyContactPersonId`] || data[`${type}PartyContactEmail`]) {
     const displayName = data[`${type}PartyContactContactName`] || null
     const firstName = (displayName || '').indexOf(' ') >= 0
-      ? contactName.split(' ')[0]
+      ? data[`${type}PartyContactContactName`].split(' ')[0]
       : displayName
     const lastName = (displayName || '').indexOf(' ') >= 0
-      ? contactName.split(' ')[1]
+      ? data[`${type}PartyContactContactName`].split(' ')[1]
       : null
     const contacts = []
     if (data[`${type}PartyContactContactEmail`]) {

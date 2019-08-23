@@ -3,9 +3,9 @@ export default {
     shipment: {
       internal: false,
       override: {}
-    }
+    },
   },
-  bookingContainer : {
-    calculateCtns : false
-  }
+  bookingContainer: {
+    calculateCtns: false,
+  },
 }

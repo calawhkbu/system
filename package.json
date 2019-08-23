@@ -1,17 +1,19 @@
 {
   "name": "system",
   "description": "This the base custom config",
-  "dependencies": {
-    "moment": "^2.24.0",
-    "node-jql": "^2.0.0-rc.51",
-    "node-jql-core": "^v2.0.0-rc.40"
-  },
   "devDependencies": {
-    "tslint": "^5.18.0",
+    "@nestjs/common": "6.3.0",
+    "moment": "^2.24.0",
+    "node-jql": "^2.0.0-rc.55",
+    "node-jql-core": "^2.0.0-rc.57",
+    "prettier": "^1.18.2",
+    "tslint": "5.19.0",
     "typescript": "^3.5.3"
   },
   "scripts": {
     "lint": "tslint -p tsconfig.json -c tslint.json",
-    "lint:fix": "tslint -p tsconfig.json -c tslint.json --fix"
+    "format": "yarn format:ts && yarn format:json",
+    "format:ts": "prettier \"**/*.{ts,js}\" --config .prettierrc.ts.json --write",
+    "format:json": "prettier \"**/*.json\" --config .prettierrc.json.json --write"
   }
 }

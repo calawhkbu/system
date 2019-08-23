@@ -1,4 +1,3 @@
-
 import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
@@ -11,10 +10,8 @@ import { Document } from 'models/main/document'
 // import { Document } from '../../../../swivel-backend-new/src/models/main/document';
 // import { DocumentDbService } from '../../../../swivel-backend-new/src/modules/sequelize/document/service';
 
-class AfterCreateDocumentEvent extends BaseEvent {
-
-  constructor (
-
+class UpdateDocumentPreviewEvent extends BaseEvent {
+  constructor(
     protected readonly parameters: any,
     protected readonly eventConfig: EventConfig,
     protected readonly repo: string,
@@ -23,32 +20,45 @@ class AfterCreateDocumentEvent extends BaseEvent {
 
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
-
   ) {
     super(parameters, eventConfig, repo, eventService, allService, user, transaction)
   }
 
-  public async mainFunction (parameters: any) {
-
+  public async mainFunction(parameters: any) {
     const documentService = this.allService['DocumentDbService'] as DocumentDbService
 
     const document = parameters.data as Document
 
-    await documentService.updateDocumentPreviewImage(document.tableName, document.primaryKey, document.fileName, this.user)
+    await documentService.updateDocumentPreviewImage(
+      document.tableName,
+      document.primaryKey,
+      document.fileName,
+      this.user
+    )
 
-    return {
-    }
-
+    return {}
   }
 }
 
 export default {
-
-  execute: async (parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
-
-    const event = new AfterCreateDocumentEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
+  execute: async (
+    parameters: any,
+    eventConfig: EventConfig,
+    repo: string,
+    eventService: any,
+    allService: any,
+    user?: JwtPayload,
+    transaction?: Transaction
+  ) => {
+    const event = new UpdateDocumentPreviewEvent(
+      parameters,
+      eventConfig,
+      repo,
+      eventService,
+      allService,
+      user,
+      transaction
+    )
     return await event.execute()
-
-  }
-
+  },
 }

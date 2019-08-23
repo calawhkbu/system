@@ -1,39 +1,39 @@
-module.exports =[
-    {
-        name: "Invoice",
-        tags: {
-            moduleType: "SEA"
-        },
-        type:"pdf"
+module.exports = [
+  {
+    name: 'Invoice',
+    tags: {
+      moduleType: 'SEA',
     },
-    {
-        name: "FCL Document",
-        tags: {
-            service: ["FCL/FCL"]
-        },
-        type:"pdf"
+    type: 'pdf',
+  },
+  {
+    name: 'FCL Document',
+    tags: {
+      service: ['FCL/FCL'],
     },
-    {
-        name: "LCL Document",
-        tags: {
-            service: ["LCL/LC*"]
-        },
-        type:"pdf"
+    type: 'pdf',
+  },
+  {
+    name: 'LCL Document',
+    tags: {
+      service: ['LCL/LC*'],
     },
-    {
-        name: "MBL begins with KKL and *CL Document",
-        tags: {
-            masterNo: ["KKL*"],
-            service: "*CL"
-        },
-        type:"pdf"
+    type: 'pdf',
+  },
+  {
+    name: 'MBL begins with KKL and *CL Document',
+    tags: {
+      masterNo: ['KKL*'],
+      service: '*CL',
     },
-    {
-        name: "MBL begins with MOL Document & CY",
-        tags: {
-            masterNo: ["MOL*"],
-            service: ["CY*"]
-        },
-        type:"pdf"
-    }
+    type: 'pdf',
+  },
+  {
+    name: 'MBL begins with MOL Document & CY',
+    tags: {
+      masterNo: ['MOL*'],
+      service: ['CY*'],
+    },
+    type: 'pdf',
+  },
 ]

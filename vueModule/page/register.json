@@ -28,13 +28,10 @@
             "props": {
               "type": "email",
               "required": true,
-              "disabled" : true
+              "disabled": true
             },
             "component": "v-text-field",
-            "validator": [
-              "required",
-              "isEmail"
-            ]
+            "validator": ["required", "isEmail"]
           },
           {
             "name": "firstName",
@@ -54,9 +51,7 @@
             "name": "password",
             "label": "Auth.password",
             "component": "DisplayPasswordField",
-            "validator": [
-              "required"
-            ]
+            "validator": ["required"]
           },
           {
             "name": "confirmPassword",

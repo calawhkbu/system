@@ -11,10 +11,13 @@
     "idKey": "id",
     "iconType": "",
     "titleKey": "statusName",
-    "subTitleKeys": [{
-      "key": "statusDate",
-      "is": "Datetime"
-    }, "remark"]
+    "subTitleKeys": [
+      {
+        "key": "statusDate",
+        "is": "Datetime"
+      },
+      "remark"
+    ]
   },
   "baseSummaryProps": {},
   "baseDetailProps": {}

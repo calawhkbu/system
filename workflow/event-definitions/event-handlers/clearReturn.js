@@ -1,9 +1,8 @@
-
 function clearReturn() {
-	this.returns = [""];
-	this.handle = function(definition, data, handlerParameters, helper) {
-    return ""
-	}
+  this.returns = ['']
+  this.handle = function(definition, data, handlerParameters, helper) {
+    return ''
+  }
 }
 
-module.exports = new clearReturn();
+module.exports = new clearReturn()

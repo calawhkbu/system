@@ -1,151 +1,166 @@
 {
   "layout": "MainLayout",
-  "components": [{
-    "is": "Widget",
-    "props": {
-      "initUrl": "api/person/{{id}}",
-      "saveUrl": "api/person",
-      "primaryKey": "id",
-      "top": {
-        "assignment": [{
-            "is": "v-btn",
-            "props": {
-              "flat": true,
-              "icon": true
-            },
-            "events": {
-              "click.stop": [{
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "/users"
-                }
-              }]
-            },
-            "slots": [{
-              "is": "Icon",
+  "components": [
+    {
+      "is": "Widget",
+      "props": {
+        "initUrl": "api/person/{{id}}",
+        "saveUrl": "api/person",
+        "primaryKey": "id",
+        "top": {
+          "assignment": [
+            {
+              "is": "v-btn",
               "props": {
-                "icon": "arrow_back"
+                "flat": true,
+                "icon": true
+              },
+              "events": {
+                "click.stop": [
+                  {
+                    "type": "router",
+                    "otherParams": {
+                      "func": "push",
+                      "path": "/users"
+                    }
+                  }
+                ]
+              },
+              "slots": [
+                {
+                  "is": "Icon",
+                  "props": {
+                    "icon": "arrow_back"
+                  }
+                }
+              ]
+            },
+            {
+              "is": "I18nText",
+              "props": {
+                "class": "headline",
+                "i18nKey": "UserPage.title",
+                "swig": true
               }
-            }]
-          },
-          {
-            "is": "I18nText",
-            "props": {
-              "class": "headline",
-              "i18nKey": "UserPage.title",
-              "swig": true
             }
-          }
-        ],
-        "edit": "assignment"
-      },
-      "components": {
-        "assignment": [{
-          "is": "div",
-          "props": {
-            "style": {
-              "padding-right": "4px"
-            }
-          },
-          "slots": [{
-            "name": "default",
-            "is": "DynamicComponent",
-            "props": {
-              "components": [{
-                  "is": "AsyncComponent",
-                  "props": {
-                    "style": {
-                      "margin-bottom": "25px"
-                    },
-                    "layoutName": "invitationAndUser/personForm"
-                  }
-                },
+          ],
+          "edit": "assignment"
+        },
+        "components": {
+          "assignment": [
+            {
+              "is": "div",
+              "props": {
+                "style": {
+                  "padding-right": "4px"
+                }
+              },
+              "slots": [
                 {
-                  "is": "AsyncComponent",
+                  "name": "default",
+                  "is": "DynamicComponent",
                   "props": {
-                    "style": {
-                      "margin-bottom": "25px"
-                    },
-                    "layoutName": "invitationAndUser/contactForm"
-                  }
-                },
-                {
-                  "is": "AsyncComponent",
-                  "props": {
-                    "style": {
-                      "margin-bottom": "25px"
-                    },
-                    "layoutName": "invitationAndUser/partyForm"
-                  }
-                },
-                {
-                  "is": "AsyncComponent",
-                  "props": {
-                    "style": {
-                      "margin-bottom": "25px"
-                    },
-                    "layoutName": "invitationAndUser/roleForm"
+                    "components": [
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "style": {
+                            "margin-bottom": "25px"
+                          },
+                          "layoutName": "invitationAndUser/personForm"
+                        }
+                      },
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "style": {
+                            "margin-bottom": "25px"
+                          },
+                          "layoutName": "invitationAndUser/contactForm"
+                        }
+                      },
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "style": {
+                            "margin-bottom": "25px"
+                          },
+                          "layoutName": "invitationAndUser/partyForm"
+                        }
+                      },
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "style": {
+                            "margin-bottom": "25px"
+                          },
+                          "layoutName": "invitationAndUser/roleForm"
+                        }
+                      }
+                    ]
                   }
                 }
               ]
             }
-          }]
-        }],
-        "edit": [{
-            "is": "WidgetPanel",
-            "props": {
-              "initUrl": "api/user/{{id}}",
-              "saveUrl": "api/user",
-              "primaryKey": "id"
-            },
-            "slots": [{
-              "name": "default",
-              "is": "DynamicComponent",
+          ],
+          "edit": [
+            {
+              "is": "WidgetPanel",
               "props": {
-                "components": [{
-                    "is": "AsyncComponent",
-                    "props": {
-                      "style": {
-                        "margin-bottom": "25px"
+                "initUrl": "api/user/{{id}}",
+                "saveUrl": "api/user",
+                "primaryKey": "id"
+              },
+              "slots": [
+                {
+                  "name": "default",
+                  "is": "DynamicComponent",
+                  "props": {
+                    "components": [
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "style": {
+                            "margin-bottom": "25px"
+                          },
+                          "layoutName": "invitationAndUser/personForm"
+                        }
                       },
-                      "layoutName": "invitationAndUser/personForm"
-                    }
-                  },
-                  {
-                    "is": "AsyncComponent",
-                    "props": {
-                      "style": {
-                        "margin-bottom": "25px"
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "style": {
+                            "margin-bottom": "25px"
+                          },
+                          "layoutName": "invitationAndUser/contactForm"
+                        }
                       },
-                      "layoutName": "invitationAndUser/contactForm"
-                    }
-                  },
-                  {
-                    "is": "AsyncComponent",
-                    "props": {
-                      "style": {
-                        "margin-bottom": "25px"
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "style": {
+                            "margin-bottom": "25px"
+                          },
+                          "layoutName": "invitationAndUser/partyForm"
+                        }
                       },
-                      "layoutName": "invitationAndUser/partyForm"
-                    }
-                  },
-                  {
-                    "is": "AsyncComponent",
-                    "props": {
-                      "style": {
-                        "margin-bottom": "25px"
-                      },
-                      "layoutName": "invitationAndUser/roleForm"
-                    }
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "style": {
+                            "margin-bottom": "25px"
+                          },
+                          "layoutName": "invitationAndUser/roleForm"
+                        }
+                      }
+                    ]
                   }
-                ]
-              }
-            }]
-          }
-
-        ]
+                }
+              ]
+            }
+          ]
+        }
       }
     }
-  }]
+  ]
 }

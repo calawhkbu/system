@@ -1,13 +1,11 @@
 {
   "booking": {
     "internal": true,
-    "override": {
-    }
+    "override": {}
   },
 
   "code": {
     "internal": true,
-    "override": {
-    }
+    "override": {}
   }
 }

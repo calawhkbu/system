@@ -6,9 +6,9 @@ export default (user: Person) => {
     boundTypeCode: 'O',
     forwarderParty: {
       id: 1,
-      name: 'Development Team'
+      name: 'Development Team',
     },
     forwarderPartyId: 1,
-    forwarderPartyName: 'Development Team'
+    forwarderPartyName: 'Development Team',
   }
 }

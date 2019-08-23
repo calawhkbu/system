@@ -2,6 +2,7 @@
   "compilerOptions": {
     "lib": ["es2017"],
     "module": "commonjs",
+    "target": "es2017",
     "declaration": true,
     "noImplicitAny": false,
     "removeComments": true,
@@ -9,20 +10,9 @@
     "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es2017",
     "sourceMap": true,
-    "baseUrl": "./",
-    "paths": {
-      "models/**/*": ["../../swivel-backend-new/src/models/**/*"],
-      "modules/**/*": ["../../swivel-backend-new/src/modules/**/*"]
-    }
+    "outDir": "./dist-new",
+    "baseUrl": "../../swivel-backend-new/src"
   },
-  "include": [
-    "**/*",
-    "../../swivel-backend-new/src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+  "exclude": ["node_modules", "**/*.spec.ts", ".temp"]
 }

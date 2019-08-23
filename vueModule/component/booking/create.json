@@ -1,117 +1,138 @@
 {
   "class": "grid",
-  "components": [{
-    "is": "DynamicComponent",
-    "props": {
-      "class": "xs-12 grid align-item-center full-width",
-      "components": [{
-          "is": "v-btn",
-          "props": {
-            "flat": true,
-            "icon": true,
-            "small": true
-          },
-          "events": {
-            "click.stop": [{
-              "type": "router",
-              "otherParams": {
-                "func": "push",
-                "path": "/bookings"
+  "components": [
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid align-item-center full-width",
+        "components": [
+          {
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true,
+              "small": true
+            },
+            "events": {
+              "click.stop": [
+                {
+                  "type": "router",
+                  "otherParams": {
+                    "func": "push",
+                    "path": "/bookings"
+                  }
+                }
+              ]
+            },
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
+                }
               }
-            }]
+            ]
           },
-          "slots": [{
-            "is": "Icon",
+          {
+            "is": "I18nText",
             "props": {
-              "icon": "arrow_back"
+              "class": "headline",
+              "i18nKey": "BookingPage.createTitle",
+              "swig": true
             }
-          }]
-        },
-        {
-          "is": "I18nText",
-          "props": {
-            "class": "headline",
-            "i18nKey": "BookingPage.createTitle",
-            "swig": true
           }
-        }
-      ]
+        ]
+      }
+    },
+    {
+      "is": "WidgetPanelStepper",
+      "props": {
+        "haveTerms": true,
+        "steps": [
+          {
+            "id": "BookingForm.GeneralForm",
+            "components": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "booking/forms/generalForm"
+                }
+              }
+            ]
+          },
+          {
+            "id": "BookingForm.PartyForm",
+            "components": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "booking/forms/partyForm"
+                }
+              }
+            ]
+          },
+          {
+            "id": "BookingForm.DateForm",
+            "components": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "booking/forms/dateForm"
+                }
+              }
+            ]
+          },
+          {
+            "id": "BookingForm.ContainerForm",
+            "components": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "booking/forms/containerForm"
+                }
+              }
+            ]
+          },
+          {
+            "id": "BookingForm.referenceForm",
+            "components": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "booking/forms/referenceForm"
+                }
+              }
+            ]
+          },
+          {
+            "id": "BookingForm.Preview",
+            "components": [
+              {
+                "is": "WidgetPreview",
+                "props": {
+                  "type": "booking-preview"
+                }
+              }
+            ]
+          },
+          {
+            "id": "BookingForm.TermAndCondition",
+            "components": [
+              {
+                "is": "WidgetPreview",
+                "props": {
+                  "type": "booking-term",
+                  "isTerm": true,
+                  "confirmTermI18nText": "BookingPage.confirmTerm"
+                }
+              }
+            ]
+          }
+        ],
+        "initUrl": "api/booking/{{id}}",
+        "saveUrl": "api/booking",
+        "primaryKey": "id"
+      }
     }
-  }, {
-
-    "is": "WidgetPanelStepper",
-    "props": {
-      "haveTerms": true,
-      "steps": [{
-          "id": "BookingForm.GeneralForm",
-          "components": [{
-            "is": "AsyncComponent",
-            "props": {
-              "layoutName": "booking/forms/generalForm"
-            }
-          }]
-        },
-        {
-          "id": "BookingForm.PartyForm",
-          "components": [{
-            "is": "AsyncComponent",
-            "props": {
-              "layoutName": "booking/forms/partyForm"
-            }
-          }]
-        },
-        {
-          "id": "BookingForm.DateForm",
-          "components": [{
-            "is": "AsyncComponent",
-            "props": {
-              "layoutName": "booking/forms/dateForm"
-            }
-          }]
-        },
-        {
-          "id": "BookingForm.ContainerForm",
-          "components": [{
-            "is": "AsyncComponent",
-            "props": {
-              "layoutName": "booking/forms/containerForm"
-            }
-          }]
-        },
-        {
-          "id": "BookingForm.referenceForm",
-          "components": [{
-            "is": "AsyncComponent",
-            "props": {
-              "layoutName": "booking/forms/referenceForm"
-            }
-          }]
-        },
-        {
-          "id": "BookingForm.Preview",
-          "components": [{
-            "is": "WidgetPreview",
-            "props": {
-              "type": "booking-preview"
-            }
-          }]
-        },
-        {
-          "id": "BookingForm.TermAndCondition",
-          "components": [{
-            "is": "WidgetPreview",
-            "props": {
-              "type": "booking-term",
-              "isTerm": true,
-              "confirmTermI18nText": "BookingPage.confirmTerm"
-            }
-          }]
-        }
-      ],
-      "initUrl": "api/booking/{{id}}",
-      "saveUrl": "api/booking",
-      "primaryKey": "id"
-    }
-
-  }]
+  ]
 }

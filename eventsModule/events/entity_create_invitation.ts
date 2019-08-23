@@ -1,4 +1,3 @@
-
 import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
@@ -10,9 +9,7 @@ import { InvitationDbService } from '../../../../swivel-backend-new/src/modules/
 import { BookingService } from '../../../../swivel-backend-new/src/modules/sequelize/booking/service'
 
 class EntityCreateInvitationEvent extends BaseEvent {
-
-  constructor (
-
+  constructor(
     protected readonly parameters: any,
     protected readonly eventConfig: EventConfig,
     protected readonly repo: string,
@@ -21,13 +18,11 @@ class EntityCreateInvitationEvent extends BaseEvent {
 
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
-
   ) {
     super(parameters, eventConfig, repo, eventService, allService, user, transaction)
   }
 
-  public async mainFunction (parameters: any) {
-
+  public async mainFunction(parameters: any) {
     console.log(JSON.stringify(parameters), 'parameters')
     console.log('in main Excecute of EntityCreateInvitation')
 
@@ -37,31 +32,50 @@ class EntityCreateInvitationEvent extends BaseEvent {
 
     if (entity.hasOwnProperty('dataValues')) {
       entity = JSON.parse(JSON.stringify(entity.dataValues))
-
     }
 
     const tableName = parameters.tableName
 
     const entityService = this.allService[`BookingService`] as BookingService
 
-    const invitationUpdatedEntity = await invitationDbService.entityCreateInvitaion(entity, 'booking', this.user, this.transaction) as Booking
+    const invitationUpdatedEntity = (await invitationDbService.entityCreateInvitaion(
+      entity,
+      'booking',
+      this.user,
+      this.transaction
+    )) as Booking
 
-    if (invitationUpdatedEntity)
-    {
+    if (invitationUpdatedEntity) {
       // warning: autoSave = true
-      return await entityService.save({...entity,...invitationUpdatedEntity},this.user,this.transaction,true)
+      return await entityService.save(
+        { ...entity, ...invitationUpdatedEntity },
+        this.user,
+        this.transaction,
+        true
+      )
     }
-
   }
 }
 
 export default {
-
-  execute: async (parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
-
-    const event = new EntityCreateInvitationEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
+  execute: async (
+    parameters: any,
+    eventConfig: EventConfig,
+    repo: string,
+    eventService: any,
+    allService: any,
+    user?: JwtPayload,
+    transaction?: Transaction
+  ) => {
+    const event = new EntityCreateInvitationEvent(
+      parameters,
+      eventConfig,
+      repo,
+      eventService,
+      allService,
+      user,
+      transaction
+    )
     return await event.execute()
-
-  }
-
+  },
 }
