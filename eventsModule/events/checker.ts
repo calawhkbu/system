@@ -149,7 +149,7 @@ class CheckerEvent extends BaseEvent {
 }
 
 export default {
-  execute: async (
+  execute: async(
     parameters: any,
     eventConfig: EventConfig,
     repo: string,

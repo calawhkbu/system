@@ -2,7 +2,7 @@ export default {
   dataSetting: {
     shipment: {
       internal: false,
-      override: {}
+      override: {},
     },
   },
   bookingContainer: {
