@@ -172,46 +172,18 @@ export default {
   ],
 
   afterCreate_booking2: [
-
     {
-
       condition : true,
       handlerName: 'checker.ts',
       otherParameters: {
 
         checker: {
-
-          id: [
-
-            {
-
-              // warning: checkFunctionName should be unqiue so that the next event can extract back the result based on the name
-              checkerFunctionName: 'isEqual',
-              checkerParam: {
-                value: 689
-              }
-            },
-
-            {
-              checkerFunctionName: 'isEmpty',
-            },
-
-            {
-              checkerFunctionName: 'isNull',
-            }
-          ],
-
           bookingNo: [
-
             {
-
               checkerFunctionName: 'mytest',
               checkerFunction: (parameters, checkerParam) => {
-
                 const bookingNo = parameters.data.bookingNo as string
-
                 return bookingNo.startsWith(checkerParam['value'])
-
               },
               checkerParam: {
                 value: '777'
@@ -223,9 +195,7 @@ export default {
 
       },
       afterEvent: [
-
         {
-
           eventName: 'fill_template',
 
           previousParameters: {
@@ -236,10 +206,8 @@ export default {
             },
             tableName : 'booking'
           },
-
           condition : false
         }
-
       ]
     }
 

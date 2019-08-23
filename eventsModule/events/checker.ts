@@ -24,6 +24,8 @@ class CheckerEvent extends BaseEvent {
 
   getVariable (parameters: any, key: string)
   {
+
+    // warning : cannot handle list object
     if (key.indexOf('.') >= 0 )
     {
       const firstKey = key.substr(0, key.indexOf('.'))
@@ -60,9 +62,7 @@ class CheckerEvent extends BaseEvent {
       '>' (x, y) { return x >= y },
       '<=' (x, y) { return x <= y },
       '<' (x, y) { return x <= y },
-
    }​​​​​​​
-
    // find the function correctly
    const operatorFunction = operatorFunctionMap[checkerParam.operator]
 
@@ -148,6 +148,7 @@ class CheckerEvent extends BaseEvent {
 
     // console.log(checkerResult,'checkerResult')
 
+    // remove checkerParam from parameters
     delete parameters['checker']
 
     return {...parameters, ...{checkerResult}}

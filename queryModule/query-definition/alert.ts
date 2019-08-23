@@ -1,7 +1,13 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, FromTable, BinaryExpression, ColumnExpression, InExpression, FunctionExpression, Unknown, IsNullExpression } from 'node-jql'
+import { Query, FromTable, BinaryExpression, ColumnExpression,BetweenExpression, InExpression, FunctionExpression, Unknown, IsNullExpression } from 'node-jql'
 
 const query = new QueryDef(new Query({
+
+  $select : [
+    'alert.*',
+    'flex_data.data'
+  ],
+
   $from: new FromTable('alert', {
     operator: 'LEFT',
     table: 'flex_data',
@@ -9,8 +15,21 @@ const query = new QueryDef(new Query({
       new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'alert'),
       new BinaryExpression(new ColumnExpression('alert', 'id'), '=', new ColumnExpression('flex_data', 'primaryKey'))
     ]
-  })
+
+
+  }),
+
 }))
+
+
+query.register('alertType', new Query({
+  $where: new BinaryExpression(new ColumnExpression('alert', 'alertType'), '=')
+})).register('value', 0)
+
+
+query.register('createdAt', new Query({
+  $where: new BetweenExpression(new ColumnExpression('alert', 'createdAt'), false)
+})).register('from', 0).register('to', 1)
 
 query.register('entityType', new Query({
   $where: new BinaryExpression(new ColumnExpression('alert', 'tableName'), '=')
