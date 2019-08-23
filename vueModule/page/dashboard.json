@@ -1,73 +1,33 @@
 {
   "layout": "MainLayout",
-  "components": [{
-    "is": "GridTool",
-    "props": {
-      "reportingKey": "dashboard",
-      "urlFormat": "/dashboard{{ id|if('/', '') }}{{ id }}",
-      "hasReports": true,
-      "showFilterBar": true,
-      "enableShare": true,
-      "enableSetting": true,
-      "newReport": {
-        "configurations": {
-          "i18nContext": "Reporting"
-        }
-      },
-      "filters": [{
-          "name": "moduleType",
-          "type": "list",
-          "props": {
-            "jql": {
-              "$select": [{
-                  "expression": {
-                    "classname": "ColumnExpression",
-                    "name": "code"
-                  },
-                  "$as": "value"
-                },
-                {
-                  "expression": {
-                    "classname": "ColumnExpression",
-                    "name": "name"
-                  },
-                  "$as": "label"
-                }
-              ],
-              "$from": {
-                "table": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "columns": [{
-                    "name": "code",
-                    "type": "string"
-                  }, {
-                    "name": "name",
-                    "type": "string"
-                  }],
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "MODULE"
-                      }
-                    }
-                  },
-                  "$as": "code"
-                }
-              },
-              "resolveJql": {
-                "$select": [{
-                    "expression": {
-                      "classname": "ColumnExpression",
-                      "name": "code"
-                    },
+  "components": [
+    {
+      "is": "GridTool",
+      "props": {
+        "reportingKey": "dashboard",
+        "urlFormat": "/dashboard{{ id|if('/', '') }}{{ id }}",
+        "hasReports": true,
+        "showFilterBar": true,
+        "enableShare": true,
+        "enableSetting": true,
+        "newReport": {
+          "configurations": {
+            "i18nContext": "Reporting"
+          }
+        },
+        "filters": [
+          {
+            "name": "moduleTypeCode",
+            "type": "list",
+            "props": {
+              "jql": {
+                "$select": [
+                  {
+                    "expression": { "classname": "ColumnExpression", "name": "code" },
                     "$as": "value"
                   },
                   {
-                    "expression": {
-                      "classname": "ColumnExpression",
-                      "name": "name"
-                    },
+                    "expression": { "classname": "ColumnExpression", "name": "name" },
                     "$as": "label"
                   }
                 ],
@@ -75,14 +35,39 @@
                   "table": {
                     "method": "POST",
                     "url": "api/code/query/code_master",
-                    "columns": [{
-                        "name": "code",
-                        "type": "string"
-                      },
-                      {
-                        "name": "name",
-                        "type": "string"
+                    "columns": [
+                      { "name": "code", "type": "string" },
+                      { "name": "name", "type": "string" }
+                    ],
+                    "data": {
+                      "subqueries": {
+                        "codeType": {
+                          "value": "moduleType"
+                        }
                       }
+                    }
+                  },
+                  "$as": "code"
+                }
+              },
+              "resolveJql": {
+                "$select": [
+                  {
+                    "expression": { "classname": "ColumnExpression", "name": "code" },
+                    "$as": "value"
+                  },
+                  {
+                    "expression": { "classname": "ColumnExpression", "name": "name" },
+                    "$as": "label"
+                  }
+                ],
+                "$from": {
+                  "table": {
+                    "method": "POST",
+                    "url": "api/code/query/code_master",
+                    "columns": [
+                      { "name": "code", "type": "string" },
+                      { "name": "name", "type": "string" }
                     ],
                     "data": {
                       "subqueries": {
@@ -98,278 +83,163 @@
                   "$as": "code"
                 }
               }
-            },
-            "resolveJql": {
-              "$select": [{
-                  "expression": {
-                    "classname": "ColumnExpression",
-                    "name": "code"
-                  },
-                  "$as": "value"
+            }
+          },
+          {
+            "name": "salesmanCode",
+            "type": "text"
+          },
+          {
+            "name": "date",
+            "type": "date",
+            "props": {
+              "required": true,
+              "shortcuts": [
+                {
+                  "label": "year-to-date",
+                  "func": "year-to-date"
                 },
                 {
-                  "expression": {
-                    "classname": "ColumnExpression",
-                    "name": "name"
-                  },
-                  "$as": "label"
-                }
-              ],
-              "$from": {
-                "table": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "columns": [{
-                    "name": "code",
-                    "type": "string"
-                  }, {
-                    "name": "name",
-                    "type": "string"
-                  }],
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "moduleType"
-                      },
-                      "code": {
-                        "value": "{{ value }}"
+                  "label": "current",
+                  "shortcuts": [
+                    {
+                      "label": "current year",
+                      "func": {
+                        "key": "current",
+                        "args": { "unit": "year" }
+                      }
+                    },
+                    {
+                      "label": "current month",
+                      "func": {
+                        "key": "current",
+                        "args": { "unit": "month" }
                       }
                     }
                   ]
                 },
                 {
                   "label": "last",
-                  "shortcuts": [{
+                  "shortcuts": [
+                    {
                       "label": "last year",
                       "func": {
                         "key": "last",
-                        "args": {
-                          "unit": "year"
-                        }
+                        "args": { "unit": "year" }
                       }
                     },
                     {
                       "label": "last 3 month",
                       "func": {
                         "key": "last",
-                        "args": {
-                          "value": 3,
-                          "unit": "month"
-                        }
+                        "args": { "value": 3, "unit": "month" }
                       }
                     }
                   ]
                 },
                 {
                   "label": "coming",
-                  "shortcuts": [{
-                    "label": "coming 7 days",
-                    "func": {
-                      "key": "coming",
-                      "args": {
-                        "value": 7,
-                        "unit": "day",
-                        "startFromNow": true
+                  "shortcuts": [
+                    {
+                      "label": "coming 7 days",
+                      "func": {
+                        "key": "coming",
+                        "args": { "value": 7, "unit": "day", "startFromNow": true }
                       }
                     }
-                  }]
+                  ]
                 },
                 {
                   "label": "past",
-                  "shortcuts": [{
-                    "label": "past 7 days",
-                    "func": {
-                      "key": "past",
-                      "args": {
-                        "value": 7,
-                        "unit": "day"
+                  "shortcuts": [
+                    {
+                      "label": "past 7 days",
+                      "func": {
+                        "key": "past",
+                        "args": { "value": 7, "unit": "day" }
                       }
                     }
-                  }]
+                  ]
                 }
               ]
             }
-          }
-        },
-        {
-          "name": "salesmanCode",
-          "type": "text"
-        },
-        {
-          "name": "date",
-          "type": "date",
-          "props": {
-            "required": true,
-            "shortcuts": [{
-                "label": "year-to-date",
-                "func": "year-to-date"
-              },
-              {
-                "label": "current",
-                "shortcuts": [{
-                    "label": "current year",
-                    "func": {
-                      "key": "current",
-                      "args": {
-                        "unit": "year"
-                      }
-                    }
+          },
+          {
+            "name": "Airline",
+            "type": "autocomplete",
+            "props": {
+              "jql": {
+                "$select": [
+                  {
+                    "expression": { "classname": "ColumnExpression", "name": "code" },
+                    "$as": "value"
                   },
                   {
-                    "label": "current month",
-                    "func": {
-                      "key": "current",
-                      "args": {
-                        "unit": "month"
-                      }
-                    }
+                    "expression": { "classname": "ColumnExpression", "name": "name" },
+                    "$as": "label"
                   }
-                ]
-              },
-              {
-                "label": "last",
-                "shortcuts": [{
-                    "label": "last year",
-                    "func": {
-                      "key": "last",
-                      "args": {
-                        "unit": "year"
+                ],
+                "$from": {
+                  "table": {
+                    "method": "POST",
+                    "url": "api/code/query/code_master",
+                    "columns": [
+                      { "name": "code", "type": "string" },
+                      { "name": "name", "type": "string" }
+                    ],
+                    "data": {
+                      "subqueries": {
+                        "codeType": {
+                          "value": "airline"
+                        },
+                        "q": {
+                          "value": "{{ q }}"
+                        }
                       }
                     }
+                  },
+                  "$as": "code"
+                }
+              },
+              "resolveJql": {
+                "$select": [
+                  {
+                    "expression": { "classname": "ColumnExpression", "name": "code" },
+                    "$as": "value"
                   },
                   {
-                    "label": "last 3 month",
-                    "func": {
-                      "key": "last",
-                      "args": {
-                        "value": 3,
-                        "unit": "month"
+                    "expression": { "classname": "ColumnExpression", "name": "name" },
+                    "$as": "label"
+                  }
+                ],
+                "$from": {
+                  "table": {
+                    "method": "POST",
+                    "url": "api/code/query/code_master",
+                    "columns": [
+                      { "name": "code", "type": "string" },
+                      { "name": "name", "type": "string" }
+                    ],
+                    "data": {
+                      "subqueries": {
+                        "codeType": {
+                          "value": "airline"
+                        },
+                        "code": {
+                          "value": "{{ value }}"
+                        }
                       }
                     }
-                  }
-                ]
-              },
-              {
-                "label": "coming",
-                "shortcuts": [{
-                  "label": "coming 7 days",
-                  "func": {
-                    "key": "coming",
-                    "args": {
-                      "value": 7,
-                      "unit": "day",
-                      "startFromNow": true
-                    }
-                  }
-                }]
-              },
-              {
-                "label": "past",
-                "shortcuts": [{
-                  "label": "past 7 days",
-                  "func": {
-                    "key": "past",
-                    "args": {
-                      "value": 7,
-                      "unit": "day"
-                    }
-                  }
-                }]
-              }
-            ]
-          }
-        },
-        {
-          "name": "Airline",
-          "type": "autocomplete",
-          "props": {
-            "jql": {
-              "$select": [{
-                  "expression": {
-                    "classname": "ColumnExpression",
-                    "name": "code"
                   },
-                  "$as": "value"
-                },
-                {
-                  "expression": {
-                    "classname": "ColumnExpression",
-                    "name": "name"
-                  },
-                  "$as": "label"
+                  "$as": "code"
                 }
-              ],
-              "$from": {
-                "table": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "columns": [{
-                    "name": "code",
-                    "type": "string"
-                  }, {
-                    "name": "name",
-                    "type": "string"
-                  }],
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "airline"
-                      },
-                      "q": {
-                        "value": "{{ q }}"
-                      }
-                    }
-                  }
-                },
-                "$as": "code"
-              }
-            },
-            "resolveJql": {
-              "$select": [{
-                  "expression": {
-                    "classname": "ColumnExpression",
-                    "name": "code"
-                  },
-                  "$as": "value"
-                },
-                {
-                  "expression": {
-                    "classname": "ColumnExpression",
-                    "name": "name"
-                  },
-                  "$as": "label"
-                }
-              ],
-              "$from": {
-                "table": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "columns": [{
-                    "name": "code",
-                    "type": "string"
-                  }, {
-                    "name": "name",
-                    "type": "string"
-                  }],
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "airline"
-                      },
-                      "code": {
-                        "value": "{{ value }}"
-                      }
-                    }
-                  }
-                },
-                "$as": "code"
-              }
-            },
-            "display": "value",
-            "multi": true
+              },
+              "display": "value",
+              "multi": true
+            }
           }
         ]
       }
     }
-  }]
+  ]
 }
