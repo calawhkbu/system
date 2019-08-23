@@ -11,25 +11,20 @@ import {
   ParameterExpression,
 } from 'node-jql'
 
-function prepareParams(check?: boolean): Function {
-  if (check) {
-    return function(require, session, params) {
-      // import
-      const { BadRequestException } = require('@nestjs/common')
-      const moment = require('moment')
-
-      // script
-      const subqueries = params.subqueries || {}
-      if (!subqueries.date) throw new BadRequestException('MISSING_DATE')
-      const datefr = moment(subqueries.date.from, 'YYYY-MM-DD')
-      const dateto = moment(subqueries.date.to, 'YYYY-MM-DD')
-      if (dateto.diff(datefr, 'months', true) > 1)
-        throw new BadRequestException('DATE_RANGE_TOO_LARGE')
-      if (!subqueries.moduleType) throw new BadRequestException('MISSING_MODULE_TYPE')
-      return params
-    }
-  }
+function prepareParams(): Function {
   return function(require, session, params) {
+    // import
+    const { BadRequestException } = require('@nestjs/common')
+    const moment = require('moment')
+
+    // script
+    const subqueries = params.subqueries || {}
+    if (!subqueries.date) throw new BadRequestException('MISSING_DATE')
+    const datefr = moment(subqueries.date.from, 'YYYY-MM-DD')
+    const dateto = moment(subqueries.date.to, 'YYYY-MM-DD')
+    if (dateto.diff(datefr, 'months', true) > 1)
+      throw new BadRequestException('DATE_RANGE_TOO_LARGE')
+    if (!subqueries.moduleTypeCode) throw new BadRequestException('MISSING_MODULE_TYPE_CODE')
     return params
   }
 }
@@ -37,7 +32,7 @@ function prepareParams(check?: boolean): Function {
 export default [
   // prepare tables
   [
-    prepareParams(true),
+    prepareParams(),
     function(require, session, params) {
       // import
       const { CreateTableJQL, FromTable, Query } = require('node-jql')
@@ -50,7 +45,7 @@ export default [
         $as: new Query({
           $from: new FromTable(
             {
-              url: `api/statusMaster/query/tracking-flow-${subqueries.moduleType.value}`,
+              url: `api/statusMaster/query/tracking-flow-${subqueries.moduleTypeCode.value}`,
               columns: [{ name: 'group', type: 'string' }, { name: 'status', type: 'string' }],
             },
             'status_master'
@@ -59,44 +54,41 @@ export default [
       })
     },
   ],
-  [
-    prepareParams(),
-    new CreateTableJQL({
-      $temporary: true,
-      name: 'tracking',
-      $as: new Query({
-        $select: [
-          new ResultColumn(new ColumnExpression('lastStatus')),
-          new ResultColumn(
-            new FunctionExpression(
-              'COUNT',
-              new ParameterExpression({
-                prefix: 'DISTINCT',
-                expression: new ColumnExpression('trackingNo'),
-              })
-            ),
-            'count'
+  new CreateTableJQL({
+    $temporary: true,
+    name: 'tracking',
+    $as: new Query({
+      $select: [
+        new ResultColumn(new ColumnExpression('lastStatus')),
+        new ResultColumn(
+          new FunctionExpression(
+            'COUNT',
+            new ParameterExpression({
+              prefix: 'DISTINCT',
+              expression: new ColumnExpression('trackingNo'),
+            })
           ),
-        ],
-        $from: new FromTable(
-          {
-            method: 'POST',
-            url: 'api/tracking',
-            columns: [
-              {
-                name: 'tracking.trackingNo',
-                type: 'string',
-                $as: 'trackingNo',
-              },
-              { name: 'tracking.lastStatus', type: 'string', $as: 'lastStatus' },
-            ],
-          },
-          'tracking'
+          'count'
         ),
-        $group: 'lastStatus',
-      }),
+      ],
+      $from: new FromTable(
+        {
+          method: 'POST',
+          url: 'api/tracking',
+          columns: [
+            {
+              name: 'tracking.trackingNo',
+              type: 'string',
+              $as: 'trackingNo',
+            },
+            { name: 'tracking.lastStatus', type: 'string', $as: 'lastStatus' },
+          ],
+        },
+        'tracking'
+      ),
+      $group: 'lastStatus',
     }),
-  ],
+  }),
   new CreateTableJQL({
     $temporary: true,
     name: 'intermediate',

@@ -70,7 +70,7 @@ query
 
 query
   .register(
-    'moduleType',
+    'moduleTypeCode',
     new Query({
       $where: new BinaryExpression(
         new FunctionExpression(
@@ -78,7 +78,7 @@ query
           new FunctionExpression(
             'JSON_EXTRACT',
             new ColumnExpression('flex_data', 'data'),
-            '$.moduleType'
+            '$.moduleTypeCode'
           )
         ),
         '='
