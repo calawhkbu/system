@@ -1,11 +1,15 @@
-[
-  {
+[{
     "field": "boundTypeCode",
     "validator": "required",
     "part": "BookingForm.GeneralForm"
   },
   {
     "field": "moduleTypeCode",
+    "validator": "required",
+    "part": "BookingForm.GeneralForm"
+  },
+  {
+    "field": "serviceCode",
     "validator": "required",
     "part": "BookingForm.GeneralForm"
   },
@@ -23,15 +27,5 @@
     "field": "commodity",
     "validator": "required",
     "part": "BookingForm.GeneralForm"
-  },
-  {
-    "field": "shipperParty",
-    "validator": "required",
-    "part": "BookingForm.partyForm"
-  },
-  {
-    "field": "consigneeParty",
-    "validator": "required",
-    "part": "BookingForm.partyForm"
   }
 ]

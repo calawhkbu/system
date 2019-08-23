@@ -12,8 +12,8 @@
   },
   "scripts": {
     "lint": "tslint -p tsconfig.json -c tslint.json",
-    "format": "yarn format:ts && yarn format:json",
-    "format:ts": "prettier \"**/*.{ts,js}\" --config .prettierrc.ts.json --write",
-    "format:json": "prettier \"**/*.json\" --config .prettierrc.json.json --write"
+    "format": "yarn format:ts \"**/*.{ts,js}\" && yarn format:json \"**/*.json\"",
+    "format:ts": "prettier --config .prettierrc.ts.json --write",
+    "format:json": "prettier --config .prettierrc.json.json --write"
   }
 }
