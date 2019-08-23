@@ -104,7 +104,6 @@ export default [
       // hard code 12 months
 
       // new ResultColumn(new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),'monthName'),
-
       new ResultColumn(
         new FunctionExpression(
           'IFNULL',

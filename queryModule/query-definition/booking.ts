@@ -87,7 +87,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'containerTypeCode'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'containerTypeCode'
@@ -97,7 +97,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'soNo'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'soNo'
@@ -107,7 +107,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'sealNo'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'sealNo'
@@ -225,7 +225,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_reference', 'refName'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'refName'
@@ -235,7 +235,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_reference', 'refDescription'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'refDescription'
@@ -444,7 +444,15 @@ query.register('jobMonth', {
   $as: 'jobMonth',
 })
 
-// used createdAt for date filter
+query
+  .register(
+    'idList',
+    new Query({
+      $where: new InExpression(new ColumnExpression('booking', 'id'), false),
+    })
+  )
+  .register('value', 0)
+
 query
   .register(
     'date',

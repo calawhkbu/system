@@ -142,6 +142,7 @@ class CheckerEvent extends BaseEvent {
 
     // console.log(checkerResult,'checkerResult')
 
+    // remove checkerParam from parameters
     delete parameters['checker']
 
     return { ...parameters, ...{ checkerResult } }
