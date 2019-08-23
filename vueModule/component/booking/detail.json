@@ -64,8 +64,10 @@
                 "afterActions": [{
                   "type": "dispatch",
                   "otherParams": {
-                    "name": "widget/changeStepper",
-                    "value": 0
+                    "name": "widget/updateComponentSetting",
+                    "value": {
+                      "stepper": 0
+                    }
                   }
                 }]
               }]
@@ -104,13 +106,14 @@
       "slots": [{
           "is": "DynamicComponent",
           "props": {
+            "layout": "v-card",
             "components": [{
-              "is": "WidgetCard",
+              "is": "MouseHidden",
               "slots": [{
-                "name": "top",
+                "name": "hidden",
                 "is": "DynamicComponent",
                 "props": {
-                  "class": "flex",
+                  "class": "flex max-height-0",
                   "components": [{
                     "is": "v-spacer"
                   }, {
@@ -138,8 +141,10 @@
                         "afterActions": [{
                           "type": "dispatch",
                           "otherParams": {
-                            "name": "widget/changeStepper",
-                            "value": 0
+                            "name": "widget/updateComponentSetting",
+                            "value": {
+                              "stepper": 0
+                            }
                           }
                         }]
                       }]
@@ -163,14 +168,15 @@
             "components": [{
               "is": "DynamicComponent",
               "props": {
-                "class": "padding-right-4 xs-12 md-6",
+                "layout": "v-card",
+                "class": "xs-12 md-6",
                 "components": [{
-                  "is": "WidgetCard",
+                  "is": "MouseHidden",
                   "slots": [{
-                    "name": "top",
+                    "name": "hidden",
                     "is": "DynamicComponent",
                     "props": {
-                      "class": "flex",
+                      "class": "flex max-height-0",
                       "components": [{
                         "is": "v-spacer"
                       }, {
@@ -198,8 +204,10 @@
                             "afterActions": [{
                               "type": "dispatch",
                               "otherParams": {
-                                "name": "widget/changeStepper",
-                                "value": 1
+                                "name": "widget/updateComponentSetting",
+                                "value": {
+                                  "stepper": 1
+                                }
                               }
                             }]
                           }]
@@ -217,14 +225,15 @@
             }, {
               "is": "DynamicComponent",
               "props": {
-                "class": "padding-left-4 xs-12 md-6",
+                "layout": "v-card",
+                "class": "xs-12 md-6",
                 "components": [{
-                  "is": "WidgetCard",
+                  "is": "MouseHidden",
                   "slots": [{
-                    "name": "top",
+                    "name": "hidden",
                     "is": "DynamicComponent",
                     "props": {
-                      "class": "flex",
+                      "class": "flex max-height-0",
                       "components": [{
                         "is": "v-spacer"
                       }, {
@@ -252,8 +261,10 @@
                             "afterActions": [{
                               "type": "dispatch",
                               "otherParams": {
-                                "name": "widget/changeStepper",
-                                "value": 2
+                                "name": "widget/updateComponentSetting",
+                                "value": {
+                                  "stepper": 2
+                                }
                               }
                             }]
                           }]
@@ -274,14 +285,15 @@
         {
           "is": "DynamicComponent",
           "props": {
+            "layout": "v-card",
             "class": "padding-topbottom-4 margin-topbottom-4",
             "components": [{
-              "is": "WidgetCard",
+              "is": "MouseHidden",
               "slots": [{
-                "name": "top",
+                "name": "hidden",
                 "is": "DynamicComponent",
                 "props": {
-                  "class": "flex",
+                  "class": "flex max-height-0",
                   "components": [{
                     "is": "v-spacer"
                   }, {
@@ -309,8 +321,10 @@
                         "afterActions": [{
                           "type": "dispatch",
                           "otherParams": {
-                            "name": "widget/changeStepper",
-                            "value": 3
+                            "name": "widget/updateComponentSetting",
+                            "value": {
+                              "stepper": 3
+                            }
                           }
                         }]
                       }]
@@ -329,14 +343,15 @@
         {
           "is": "DynamicComponent",
           "props": {
+            "layout": "v-card",
             "class": "padding-topbottom-4 margin-topbottom-4",
             "components": [{
-              "is": "WidgetCard",
+              "is": "MouseHidden",
               "slots": [{
-                "name": "top",
+                "name": "hidden",
                 "is": "DynamicComponent",
                 "props": {
-                  "class": "flex",
+                  "class": "flex max-height-0",
                   "components": [{
                     "is": "v-spacer"
                   }, {
@@ -364,8 +379,10 @@
                         "afterActions": [{
                           "type": "dispatch",
                           "otherParams": {
-                            "name": "widget/changeStepper",
-                            "value": 4
+                            "name": "widget/updateComponentSetting",
+                            "value": {
+                              "stepper": 4
+                            }
                           }
                         }]
                       }]

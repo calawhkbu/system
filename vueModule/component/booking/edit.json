@@ -40,6 +40,8 @@
   }, {
     "is": "WidgetPanelStepper",
     "props": {
+      "topClick": true,
+      "validateBeforeStepChange": false,
       "steps": [{
           "id": "BookingForm.GeneralForm",
           "components": [{
@@ -85,10 +87,7 @@
             }
           }]
         }
-      ],
-      "initUrl": "api/booking/{{id}}",
-      "saveUrl": "api/booking",
-      "primaryKey": "id"
+      ]
     }
   }]
 }

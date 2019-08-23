@@ -2,7 +2,7 @@
   "components": [{
     "is": "WidgetForms",
     "props": {
-      "canAdd": false,
+      "canAdd": true,
       "canAddProps": {
         "class": "xs-12 md-6",
         "style": {
