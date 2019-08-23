@@ -12,7 +12,7 @@ const query = new QueryDef(new Query('location'))
 
 query
   .register(
-    'moduleType',
+    'moduleTypeCode',
     new Query({
       $where: new BinaryExpression(new ColumnExpression('moduleTypeCode'), '='),
     })

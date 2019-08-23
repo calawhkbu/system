@@ -142,6 +142,7 @@ class CheckerEvent extends BaseEvent {
 
     // console.log(checkerResult,'checkerResult')
 
+    // remove checkerParam from parameters
     delete parameters['checker']
 
     return { ...parameters, ...{ checkerResult } }
@@ -149,7 +150,7 @@ class CheckerEvent extends BaseEvent {
 }
 
 export default {
-  execute: async (
+  execute: async(
     parameters: any,
     eventConfig: EventConfig,
     repo: string,

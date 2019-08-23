@@ -32,11 +32,11 @@ const query = new Query({
         },
         {
           name: 'createdAt',
-          type: 'Date',
+          type: 'string',
         },
         {
           name: 'updatedAt',
-          type: 'Date',
+          type: 'string',
         },
       ],
     },

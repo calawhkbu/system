@@ -446,6 +446,15 @@ query.register('jobMonth', {
 
 query
   .register(
+    'idList',
+    new Query({
+      $where: new InExpression(new ColumnExpression('booking', 'id'), false),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
     'date',
     new Query({
       $where: new BetweenExpression(new ColumnExpression('booking', 'createdAt'), false),

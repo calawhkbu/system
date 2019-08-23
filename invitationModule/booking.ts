@@ -5,43 +5,56 @@ import { Party } from 'models/main/Party'
 import { PartyGroup } from 'models/main/partyGroup'
 import { Role } from 'models/main/Role'
 
-export default async function entityCreateInvitaion (that: any, entity: any, tableName: string, user?: JwtPayload, transaction?: Transaction) {
+export default async function entityCreateInvitaion(
+  that: any,
+  entity: any,
+  tableName: string,
+  user?: JwtPayload,
+  transaction?: Transaction
+) {
   const { frontendUrl } = await that.swivelConfigService.get()
   const entityData = entity.hasOwnProperty('dataValues')
     ? JSON.parse(JSON.stringify(entity.dataValues))
     : entity || {}
-  const entityFlexData = entityData.flexData && entityData.flexData.data ? entityData.flexData.data : {}
+  const entityFlexData =
+    entityData.flexData && entityData.flexData.data ? entityData.flexData.data : {}
   const url = `${frontendUrl}${tableName}/${entity.id}`
   const roles = await that.roleService.find({ where: { roleName: { $in: ['USER'] } } }, user)
   console.debug(`Create Invitation to ${tableName} [ID: ${entity.id}]`)
   const partyGroupCode = entityData.partyGroupCode
-  const partyGroup: PartyGroup = await that.partyGroupService.findOne({ where: { code: partyGroupCode }, transaction }, user)
+  const partyGroup: PartyGroup = await that.partyGroupService.findOne(
+    { where: { code: partyGroupCode }, transaction },
+    user
+  )
   if (!partyGroup) {
     throw new Error('Party Group Not found')
   }
-  const parties = Object.keys(entityFlexData).reduce((partiesMap: any, key: string) => {
-    if (key !== 'moreParty' && key.includes('Party')) {
-      const type = key.substring(0, key.lastIndexOf('Party'))
-      if (!Object.keys([partiesMap]).includes(type)) {
-        return {
-          ...partiesMap,
-          [type]: handlePartyAndPerson(entityFlexData, type, partyGroup, url, roles, true)
+  const parties = Object.keys(entityFlexData).reduce(
+    (partiesMap: any, key: string) => {
+      if (key !== 'moreParty' && key.includes('Party')) {
+        const type = key.substring(0, key.lastIndexOf('Party'))
+        if (!Object.keys([partiesMap]).includes(type)) {
+          return {
+            ...partiesMap,
+            [type]: handlePartyAndPerson(entityFlexData, type, partyGroup, url, roles, true),
+          }
         }
       }
-    }
-    return partiesMap
-  }, Object.keys(entityData).reduce((partiesMap: any, key: string) => {
-    if (key.includes('Party')) {
-      const type = key.substring(0, key.lastIndexOf('Party'))
-      if (!Object.keys([partiesMap]).includes(type)) {
-        return {
-          ...partiesMap,
-          [type]: handlePartyAndPerson(entityData, type, partyGroup, url, roles, false)
+      return partiesMap
+    },
+    Object.keys(entityData).reduce((partiesMap: any, key: string) => {
+      if (key.includes('Party')) {
+        const type = key.substring(0, key.lastIndexOf('Party'))
+        if (!Object.keys([partiesMap]).includes(type)) {
+          return {
+            ...partiesMap,
+            [type]: handlePartyAndPerson(entityData, type, partyGroup, url, roles, false),
+          }
         }
       }
-    }
-    return partiesMap
-  }, {}))
+      return partiesMap
+    }, {})
+  )
   for (const partyType of Object.keys(parties)) {
     const content = parties[partyType]
     const party = content.party
@@ -87,7 +100,9 @@ export default async function entityCreateInvitaion (that: any, entity: any, tab
         if (entityFlexData[`${partyType}PartyContactPersonEmail`] === savedPerson.username) {
           entityFlexData[`${partyType}PartyContactPersonId`] = savedPerson.id
         } else {
-          entityFlexData[`${partyType}PartyContacts`] = entityFlexData[`${partyType}PartyContacts`].reduce((all: any, one: any) => {
+          entityFlexData[`${partyType}PartyContacts`] = entityFlexData[
+            `${partyType}PartyContacts`
+          ].reduce((all: any, one: any) => {
             if (one['Email'] === savedPerson.username) {
               one['PersonId'] = savedPerson.id
             }
@@ -98,12 +113,15 @@ export default async function entityCreateInvitaion (that: any, entity: any, tab
         if (entityData[`${partyType}PartyContactPersonEmail`] === savedPerson.userName) {
           entityData[`${partyType}PartyContactPersonId`] = savedPerson.id
         } else {
-          entityData[`${partyType}PartyContacts`] = entityData[`${partyType}PartyContacts`].reduce((all: any, one: any) => {
-            if (one['Email'] === savedPerson.userName) {
-              one['PersonId'] = savedPerson.id
-            }
-            return all
-          }, entityData[`${partyType}PartyContacts`])
+          entityData[`${partyType}PartyContacts`] = entityData[`${partyType}PartyContacts`].reduce(
+            (all: any, one: any) => {
+              if (one['Email'] === savedPerson.userName) {
+                one['PersonId'] = savedPerson.id
+              }
+              return all
+            },
+            entityData[`${partyType}PartyContacts`]
+          )
         }
       }
     }
@@ -112,8 +130,8 @@ export default async function entityCreateInvitaion (that: any, entity: any, tab
     ...entityData,
     flexData: {
       ...entityData.flexData,
-      data: entityFlexData
-    }
+      data: entityFlexData,
+    },
   }
 }
 
@@ -125,28 +143,30 @@ const handlePartyAndPerson = (
   roles: Role[],
   isFlexData: boolean = false
 ): {
-  flexData: boolean,
-  party: any,
+  flexData: boolean
+  party: any
   people: any[]
 } => {
   const defaultConfiguration = partyGroup.configuration
   const configuration = {
     url,
     locale: defaultConfiguration.defaultLocale,
-    timeFormat : defaultConfiguration.defaultTimeFormat,
-    dateFormat : defaultConfiguration.defaultDateFormat,
-    dateTimeFormat : defaultConfiguration.defaultDateTimeFormat,
-    timezone : defaultConfiguration.defaultTimezone
+    timeFormat: defaultConfiguration.defaultTimeFormat,
+    dateFormat: defaultConfiguration.defaultDateFormat,
+    dateTimeFormat: defaultConfiguration.defaultDateTimeFormat,
+    timezone: defaultConfiguration.defaultTimezone,
   }
   const people = []
   if (data[`${type}PartyContactPersonId`] || data[`${type}PartyContactEmail`]) {
     const displayName = data[`${type}PartyContactContactName`] || null
-    const firstName = (displayName || '').indexOf(' ') >= 0
-      ? data[`${type}PartyContactContactName`].split(' ')[0]
-      : displayName
-    const lastName = (displayName || '').indexOf(' ') >= 0
-      ? data[`${type}PartyContactContactName`].split(' ')[1]
-      : null
+    const firstName =
+      (displayName || '').indexOf(' ') >= 0
+        ? data[`${type}PartyContactContactName`].split(' ')[0]
+        : displayName
+    const lastName =
+      (displayName || '').indexOf(' ') >= 0
+        ? data[`${type}PartyContactContactName`].split(' ')[1]
+        : null
     const contacts = []
     if (data[`${type}PartyContactContactEmail`]) {
       contacts.push({ contactType: 'email', content: data[`${type}PartyContactEmail`] })
@@ -163,18 +183,18 @@ const handlePartyAndPerson = (
       parties: [],
       roles,
       configuration,
-      contacts
+      contacts,
     })
   }
   if (data[`${type}PartyContacts`] && data[`${type}PartyContacts`].length) {
     for (const contact of data[`${type}PartyContacts`]) {
       const contactDisplayName = contact['Name'] || null
-      const contactFirstName = (contactDisplayName || '').indexOf(' ') >= 0
-        ? contactDisplayName.split(' ')[0]
-        : contactDisplayName
-      const contactLastName = (contactDisplayName || '').indexOf(' ') >= 0
-        ? contactDisplayName.split(' ')[1]
-        : null
+      const contactFirstName =
+        (contactDisplayName || '').indexOf(' ') >= 0
+          ? contactDisplayName.split(' ')[0]
+          : contactDisplayName
+      const contactLastName =
+        (contactDisplayName || '').indexOf(' ') >= 0 ? contactDisplayName.split(' ')[1] : null
       const contactContacts = []
       if (contact[`Email`]) {
         contactContacts.push({ contactType: 'email', content: contact[`Email`] })
@@ -191,7 +211,7 @@ const handlePartyAndPerson = (
         parties: [],
         roles,
         configuration,
-        contacts: contactContacts
+        contacts: contactContacts,
       })
     }
   }
@@ -210,8 +230,8 @@ const handlePartyAndPerson = (
       countryCode: data[`${type}PartyCountryCode`] || null,
       stateCode: data[`${type}PartyStateCode`] || null,
       cityCode: data[`${type}PartyCityCode`] || null,
-      zip: data[`${type}PartyZip`] || null
+      zip: data[`${type}PartyZip`] || null,
     },
-    people
+    people,
   }
 }

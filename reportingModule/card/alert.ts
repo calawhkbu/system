@@ -21,7 +21,7 @@ function prepareParams(): Function {
         `INVALID_ENTITY_TYPE_${String(subqueries.type.value).toLocaleUpperCase()}`
       )
     if (!subqueries.date) throw new BadRequestException('MISSING_DATE')
-    if (!subqueries.moduleType) throw new BadRequestException('MISSING_MODULE_TYPE')
+    if (!subqueries.moduleTypeCode) throw new BadRequestException('MISSING_MODULE_TYPE_CODE')
     return params
   }
 }

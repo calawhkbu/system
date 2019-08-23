@@ -8,7 +8,7 @@ const query = new Query({
       columns: [
         {
           name: 'updatedAt',
-          type: 'Date',
+          type: 'string',
         },
         {
           name: 'id',
@@ -84,11 +84,11 @@ const query = new Query({
         },
         {
           name: 'cargoReadyDateEstimated',
-          type: 'Date',
+          type: 'string',
         },
         {
           name: 'cargoReadyDateActual',
-          type: 'Date',
+          type: 'string',
         },
         {
           name: 'cargoReadyDateRemark',
@@ -96,11 +96,11 @@ const query = new Query({
         },
         {
           name: 'cYCutOffDateEstimated',
-          type: 'Date',
+          type: 'string',
         },
         {
           name: 'cYCutOffDateActual',
-          type: 'Date',
+          type: 'string',
         },
         {
           name: 'cYCutOffDateRemark',
@@ -108,11 +108,11 @@ const query = new Query({
         },
         {
           name: 'departureDateEstimated',
-          type: 'Date',
+          type: 'string',
         },
         {
           name: 'departureDateActual',
-          type: 'Date',
+          type: 'string',
         },
         {
           name: 'departureDateRemark',
@@ -120,11 +120,11 @@ const query = new Query({
         },
         {
           name: 'arrivalDateEstimated',
-          type: 'Date',
+          type: 'string',
         },
         {
           name: 'arrivalDateActual',
-          type: 'Date',
+          type: 'string',
         },
         {
           name: 'arrivalDateRemark',

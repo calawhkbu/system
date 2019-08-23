@@ -8,29 +8,24 @@ import {
   Value,
 } from 'node-jql'
 
-function prepareParams(check?: boolean): Function {
-  if (check) {
-    return function(require, session, params) {
-      // import
-      const moment = require('moment')
-
-      // script
-      const subqueries = (params.subqueries = params.subqueries || {})
-      if (subqueries.date) {
-        const year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
-        subqueries.date.from = moment()
-          .year(year)
-          .startOf('year')
-          .format('YYYY-MM-DD')
-        subqueries.date.to = moment()
-          .year(year)
-          .endOf('year')
-          .format('YYYY-MM-DD')
-      }
-      return params
-    }
-  }
+function prepareParams(): Function {
   return function(require, session, params) {
+    // import
+    const moment = require('moment')
+
+    // script
+    const subqueries = (params.subqueries = params.subqueries || {})
+    if (subqueries.date) {
+      const year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
+      subqueries.date.from = moment()
+        .year(year)
+        .startOf('year')
+        .format('YYYY-MM-DD')
+      subqueries.date.to = moment()
+        .year(year)
+        .endOf('year')
+        .format('YYYY-MM-DD')
+    }
     return params
   }
 }
@@ -83,8 +78,8 @@ function prepareTable(name: string): CreateTableJQL {
 }
 
 export default [
-  [prepareParams(true), prepareTable('grossProfit')],
-  [prepareParams(), prepareTable('revenue')],
+  [prepareParams(), prepareTable('grossProfit')],
+  prepareTable('revenue'),
   new Query({
     $from: 'grossProfit',
     $union: new Query('revenue'),

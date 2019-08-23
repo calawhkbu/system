@@ -170,7 +170,6 @@ export default {
               checkerFunctionName: 'mytest',
               checkerFunction: (parameters, checkerParam) => {
                 const bookingNo = parameters.data.bookingNo as string
-
                 return bookingNo.startsWith(checkerParam['value'])
               },
               checkerParam: {
