@@ -1,139 +1,146 @@
-import { ColumnExpression, CreateTableJQL, FromTable, InExpression, BetweenExpression, FunctionExpression, BinaryExpression, GroupBy, Query, ResultColumn } from 'node-jql'
+import {
+  ColumnExpression,
+  CreateTableJQL,
+  FromTable,
+  InExpression,
+  BetweenExpression,
+  FunctionExpression,
+  BinaryExpression,
+  GroupBy,
+  Query,
+  ResultColumn,
+} from 'node-jql'
 import { parseCode } from 'utils/function'
 
 function prepareAlertParams(): Function {
+  return function(require, session, params) {
+    // import
+    const { BadRequestException } = require('@nestjs/common')
+    const moment = require('moment')
 
-    return function (require, session, params) {
+    // script
+    const subqueries = (params.subqueries = params.subqueries || {})
 
-        // import
-        const { BadRequestException } = require('@nestjs/common')
-        const moment = require('moment')
+    // this should be getting from previous card
+    if (!subqueries.withinHours) throw new BadRequestException('MISSING_withinHours')
 
-        // script
-        const subqueries = params.subqueries = params.subqueries || {}
-
-        // this should be getting from previous card
-        if (!subqueries.withinHours) throw new BadRequestException('MISSING_withinHours')
-
-        const withinHours = params.subqueries.withinHours
-        subqueries.createdAt = {
-            from : moment().subtract(withinHours.value, 'hours');
-            to : moment()
-        }
-
-        subqueries.entityType = { value  : 'booking' }
-
-        console.log('subqueries',subqueries)
-
-        return params
+    const withinHours = params.subqueries.withinHours
+    subqueries.createdAt = {
+      from: moment().subtract(withinHours.value, 'hours'),
+      to: moment(),
     }
+
+    subqueries.entityType = { value: 'booking' }
+
+    console.log('subqueries', subqueries)
+
+    return params
+  }
 }
 
 function prepareAlertTable(name: string): CreateTableJQL {
-    return new CreateTableJQL({
-        $temporary: true,
-        name,
-        $as: new Query({
+  return new CreateTableJQL({
+    $temporary: true,
+    name,
+    $as: new Query({
+      $select: [new ResultColumn('id'), new ResultColumn('primaryKey')],
 
-            $select: [
-                new ResultColumn('id'),
-                new ResultColumn('primaryKey'),
-            ],
-
-
-            $from: new FromTable({
-                method: 'POST',
-                url: 'api/alert/query/alert',
-                columns: [
-
-                    { name: 'id', type: 'number' }
-                    { name: 'alertType', type: 'string' }
-                    { name: 'primaryKey', type: 'string' }
-                    { name: 'tableName', type: 'string' }
-                ],
-            }, name)
-        })
-    })
-
+      $from: new FromTable(
+        {
+          method: 'POST',
+          url: 'api/alert/query/alert',
+          columns: [
+            { name: 'id', type: 'number' },
+            { name: 'alertType', type: 'string' },
+            { name: 'primaryKey', type: 'string' },
+            { name: 'tableName', type: 'string' },
+          ],
+        },
+        name
+      ),
+    }),
+  })
 }
 
-
-
 function prepareBookingParams(): Function {
+  const fn = async function(require, session, params) {
+    const { Resultset } = require('node-jql-core')
+    const {
+      ColumnExpression,
+      CreateTableJQL,
+      FromTable,
+      InExpression,
+      BetweenExpression,
+      FunctionExpression,
+      BinaryExpression,
+      GroupBy,
+      Query,
+      ResultColumn,
+    } = require('node-jql')
 
-    const fn = async function (require, session, params) {
-        const { Resultset } = require('node-jql-core')
-        const { ColumnExpression, CreateTableJQL, FromTable, InExpression, BetweenExpression, FunctionExpression, BinaryExpression, GroupBy, Query, ResultColumn } = require('node-jql')
+    const resultSet = new Resultset(
+      await session.query(
+        new Query({
+          $select: [
+            // new ResultColumn(new ColumnExpression('alert','id')),
+            new ResultColumn(new ColumnExpression('alert', 'primaryKey')),
+          ],
+          $from: 'alert',
+        })
+      )
+    ).toArray()
 
-        const resultSet = new Resultset(await session.query(new Query({
+    // get the idList from the alertTable result set
+    const idList = resultSet.map(({ primaryKey }) => primaryKey)
 
-            $select: [
-                // new ResultColumn(new ColumnExpression('alert','id')),
-                new ResultColumn(new ColumnExpression('alert','primaryKey')),
-            ],
-            $from:'alert'
-        }))).toArray()
-   
+    // import
+    const { BadRequestException } = require('@nestjs/common')
+    const moment = require('moment')
 
-        // get the idList from the alertTable result set
-        const idList = resultSet.map(({ primaryKey }) => primaryKey)
+    // script
+    const subqueries = (params.subqueries = params.subqueries || {})
 
-        // import
-        const { BadRequestException } = require('@nestjs/common')
-        const moment = require('moment')
+    let month = moment().month()
 
-        // script
-        const subqueries = params.subqueries = params.subqueries || {}
-
-        let month = moment().month()
-
-        // get the idList
-        subqueries.idList = {
-            value: idList
-        }
-
-        return params
+    // get the idList
+    subqueries.idList = {
+      value: idList,
     }
 
-    let code = fn.toString()
-    return parseCode(code)
+    return params
+  }
+
+  let code = fn.toString()
+  return parseCode(code)
 }
 
 function prepareBookingable(name: string): CreateTableJQL {
-    return new CreateTableJQL({
-        $temporary: true,
-        name,
-        $as: new Query({
+  return new CreateTableJQL({
+    $temporary: true,
+    name,
+    $as: new Query({
+      $select: [new ResultColumn('moduleTypeCode'), new ResultColumn('bookingNo')],
 
-            $select: [
-                new ResultColumn('moduleTypeCode'),
-                new ResultColumn('bookingNo'),
-            ],
-
-            $from: new FromTable({
-                method: 'POST',
-                url: 'api/booking/query/booking',
-                columns: [
-                    { name: 'moduleTypeCode', type: 'string' }
-                    { name: 'bookingNo', type: 'string' }
-
-                ],
-            }, name)
-        })
-    })
-
+      $from: new FromTable(
+        {
+          method: 'POST',
+          url: 'api/booking/query/booking',
+          columns: [
+            { name: 'moduleTypeCode', type: 'string' },
+            { name: 'bookingNo', type: 'string' },
+          ],
+        },
+        name
+      ),
+    }),
+  })
 }
 
-
 export default [
+  [prepareAlertParams(), prepareAlertTable('alert')],
+  [prepareBookingParams(), prepareBookingable('booking')],
 
-    [prepareAlertParams(),prepareAlertTable('alert')],
-    [prepareBookingParams(), prepareBookingable('booking')],
-
-    new Query({
-
-        $from: 'booking'
-    })
-
-
+  new Query({
+    $from: 'booking',
+  }),
 ]
