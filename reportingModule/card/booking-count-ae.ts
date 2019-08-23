@@ -1,88 +1,101 @@
-import { Query, FromTable, CreateTableJQL, ResultColumn, ColumnExpression, FunctionExpression, GroupBy, BinaryExpression, AndExpressions } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  CreateTableJQL,
+  ResultColumn,
+  ColumnExpression,
+  FunctionExpression,
+  GroupBy,
+  BinaryExpression,
+  AndExpressions,
+} from 'node-jql'
 import { parseCode } from 'utils/function'
 
-
 function prepareParams(): Function {
-    const fn = function (require, session, params) {
-        const moment = require('moment')
-        const subqueries = params.subqueries = params.subqueries || {}
-        if (subqueries.date) {
-            // get the year part of the "from date"
-            let year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
+  const fn = function(require, session, params) {
+    const moment = require('moment')
+    const subqueries = (params.subqueries = params.subqueries || {})
+    if (subqueries.date) {
+      // get the year part of the "from date"
+      const year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
 
-            // reset the date.from and date.to depending on date.from YEAR
-            subqueries.date.from = moment().year(year).startOf('year').format('YYYY-MM-DD')
-            subqueries.date.to = moment().year(year).endOf('year').format('YYYY-MM-DD')
-
-        }
-        return params
+      // reset the date.from and date.to depending on date.from YEAR
+      subqueries.date.from = moment()
+        .year(year)
+        .startOf('year')
+        .format('YYYY-MM-DD')
+      subqueries.date.to = moment()
+        .year(year)
+        .endOf('year')
+        .format('YYYY-MM-DD')
     }
-    let code = fn.toString()
-    return parseCode(code)
+    return params
+  }
+  const code = fn.toString()
+  return parseCode(code)
 }
 
 // template Table group by carrierCod and jobMonth
 function prepareFinalTable(name: string): CreateTableJQL {
-    return new CreateTableJQL({
-        $temporary: true,
-        name,
-        $as: new Query({
+  return new CreateTableJQL({
+    $temporary: true,
+    name,
+    $as: new Query({
+      $from: new FromTable('tempTable'),
 
-            $from: new FromTable('tempTable'),
-
-            $group: new GroupBy([new ColumnExpression('carrierCode')])
-
-        })
-    })
+      $group: new GroupBy([new ColumnExpression('carrierCode')]),
+    }),
+  })
 }
-
-
-
 
 // a temp table that Group by carrierCode and JobMonth
 function prepareTempTable(name: string): CreateTableJQL {
-    return new CreateTableJQL({
-        $temporary: true,
-        name,
-        $as: new Query({
-            $select: [
-                new ResultColumn(new ColumnExpression(name, 'jobMonth'), 'jobMonth')
-                new ResultColumn(new ColumnExpression(name, 'carrierCode'), 'carrierCode')
-                new ResultColumn(new FunctionExpression('COUNT', new ColumnExpression(name, 'carrierCode')), 'count')
-            ],
-            $from: new FromTable({
-                method: 'POST',
-                url: 'api/booking/query/booking',
-                columns: [
-                    {
-                        name: 'carrierCode',
-                        type: 'string'
-                    },
-                    {
-                        name: 'jobMonth',
-                        type: 'string'
-                    },
-                ],
+  return new CreateTableJQL({
+    $temporary: true,
+    name,
+    $as: new Query({
+      $select: [
+        new ResultColumn(new ColumnExpression(name, 'jobMonth'), 'jobMonth'),
+        new ResultColumn(new ColumnExpression(name, 'carrierCode'), 'carrierCode'),
+        new ResultColumn(
+          new FunctionExpression('COUNT', new ColumnExpression(name, 'carrierCode')),
+          'count'
+        ),
+      ],
+      $from: new FromTable(
+        {
+          method: 'POST',
+          url: 'api/booking/query/booking',
+          columns: [
+            {
+              name: 'carrierCode',
+              type: 'string',
+            },
+            {
+              name: 'jobMonth',
+              type: 'string',
+            },
+          ],
 
-                data: {
+          data: {
+            subqueries: {
+              jobMonth: true,
+            },
 
-                    subqueries: {
-                        jobMonth: true
-                    },
+            // include jobMonth from the table
+            fields: ['jobMonth', 'booking.*'],
+          },
+        },
+        name
+      ),
 
-                    // include jobMonth from the table
-                    fields: ['jobMonth', 'booking.*']
-                }
-            }, name),
-
-            $group: new GroupBy([new ColumnExpression(name, 'carrierCode'), new ColumnExpression(name, 'jobMonth')])
-
-        })
-    })
+      $group: new GroupBy([
+        new ColumnExpression(name, 'carrierCode'),
+        new ColumnExpression(name, 'jobMonth'),
+      ]),
+    }),
+  })
 }
-
-
-
 
 export default [
     [prepareParams(), prepareTempTable('tempTable')],

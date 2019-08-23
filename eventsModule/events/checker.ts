@@ -1,4 +1,3 @@
-
 import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
@@ -6,9 +5,7 @@ import { Transaction } from 'sequelize'
 import { stringify } from 'querystring'
 
 class CheckerEvent extends BaseEvent {
-
-  constructor (
-
+  constructor(
     protected readonly parameters: any,
     protected readonly eventConfig: EventConfig,
     protected readonly repo: string,
@@ -17,67 +14,65 @@ class CheckerEvent extends BaseEvent {
 
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
-
   ) {
     super(parameters, eventConfig, repo, eventService, allService, user, transaction)
   }
 
-  getVariable (parameters: any, key: string)
-  {
-
-    // warning : cannot handle list object
-    if (key.indexOf('.') >= 0 )
-    {
+  getVariable(parameters: any, key: string) {
+    if (key.indexOf('.') >= 0) {
       const firstKey = key.substr(0, key.indexOf('.'))
-      const subKey = key.substr(key.indexOf('.') + 1 )
+      const subKey = key.substr(key.indexOf('.') + 1)
 
       // console.log(firstKey,'firstKey')
       // console.log(subKey,'subKey')
 
       return this.getVariable(parameters[firstKey], subKey)
-
     }
 
     const result = parameters[key]
     return result
-
   }
 
-  isNull (variable: any, checkerParam: any) {
-
+  isNull(variable: any, checkerParam: any) {
     return !(variable && variable != null)
   }
 
-  isEmpty (variable: any, checkerParam: any) {
-
-    return (!(variable && variable != null) && variable.length)
+  isEmpty(variable: any, checkerParam: any) {
+    return !(variable && variable != null) && variable.length
   }
 
-  isMatch (variable: any, checkerParam: {operator: string, value?: any }){
-
+  isMatch(variable: any, checkerParam: { operator: string; value?: any }) {
     const operatorFunctionMap = {
-      '=' (x, y) { return x === y },
-      '!=' (x, y) { return x !== y },
-      '>=' (x, y) { return x >= y },
-      '>' (x, y) { return x >= y },
-      '<=' (x, y) { return x <= y },
-      '<' (x, y) { return x <= y },
-   }​​​​​​​
-   // find the function correctly
-   const operatorFunction = operatorFunctionMap[checkerParam.operator]
+      '='(x, y) {
+        return x === y
+      },
+      '!='(x, y) {
+        return x !== y
+      },
+      '>='(x, y) {
+        return x >= y
+      },
+      '>'(x, y) {
+        return x >= y
+      },
+      '<='(x, y) {
+        return x <= y
+      },
+      '<'(x, y) {
+        return x <= y
+      },
+    }
+    // find the function correctly
+    const operatorFunction = operatorFunctionMap[checkerParam.operator]
 
-   if (!operatorFunction)
-   {
-     throw new Error('operatorFunction not found')
-   }
+    if (!operatorFunction) {
+      throw new Error('operatorFunction not found')
+    }
 
-   return operatorFunction(variable, checkerParam.value)
-
+    return operatorFunction(variable, checkerParam.value)
   }
 
-  initCheckerFunctionMap ()
-  {
-
+  initCheckerFunctionMap() {
     const functionMap = new Map<string, Function>()
 
     functionMap.set('isMatch', this.isMatch)
@@ -85,21 +80,22 @@ class CheckerEvent extends BaseEvent {
     functionMap.set('isEmpty', this.isEmpty)
 
     return functionMap
-
   }
 
-  processCheckerFunction (key: string, parameters: any, checkerOption: any, checkerFunctionMap: Map<string, Function>)
-  {
+  processCheckerFunction(
+    key: string,
+    parameters: any,
+    checkerOption: any,
+    checkerFunctionMap: Map<string, Function>
+  ) {
     let checkerFunction = checkerOption['checkerFunction'] as Function
     const checkerFunctionName = checkerOption['checkerFunctionName'] as string
 
-    if (!checkerFunction)
-    {
+    if (!checkerFunction) {
       checkerFunction = checkerFunctionMap.get(checkerFunctionName)
     }
 
-    if (!checkerFunction)
-    {
+    if (!checkerFunction) {
       throw new Error('checkerFunction is not found')
     }
 
@@ -115,35 +111,33 @@ class CheckerEvent extends BaseEvent {
     return {
       checkerFunctionName,
       variable,
-      result
+      result,
     }
-
   }
 
-  public async mainFunction (parameters: any) {
-
+  public async mainFunction(parameters: any) {
     const checkerResult = {}
 
     const checkerFunctionMap = this.initCheckerFunctionMap()
 
-    if (!parameters.checker)
-    {
+    if (!parameters.checker) {
       throw new Error('checker param is not found in checker Event')
     }
 
     for (const [key, checkerList] of Object.entries<any[]>(parameters['checker'])) {
-
       // clone variableResult from checkerList
       const variableResult = []
 
       for (let index = 0; index < checkerList.length; index++) {
-
-        variableResult[index] = this.processCheckerFunction(key, parameters, checkerList[index], checkerFunctionMap)
-
+        variableResult[index] = this.processCheckerFunction(
+          key,
+          parameters,
+          checkerList[index],
+          checkerFunctionMap
+        )
       }
 
       checkerResult[key] = variableResult
-
     }
 
     // console.log(checkerResult,'checkerResult')
@@ -151,18 +145,29 @@ class CheckerEvent extends BaseEvent {
     // remove checkerParam from parameters
     delete parameters['checker']
 
-    return {...parameters, ...{checkerResult}}
-
+    return { ...parameters, ...{ checkerResult } }
   }
 }
 
 export default {
-
-  execute: async (parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
-
-    const event = new CheckerEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
+  execute: async (
+    parameters: any,
+    eventConfig: EventConfig,
+    repo: string,
+    eventService: any,
+    allService: any,
+    user?: JwtPayload,
+    transaction?: Transaction
+  ) => {
+    const event = new CheckerEvent(
+      parameters,
+      eventConfig,
+      repo,
+      eventService,
+      allService,
+      user,
+      transaction
+    )
     return await event.execute()
-
-  }
-
+  },
 }

@@ -88,9 +88,7 @@
                   }
                 ],
                 "events": {
-                  "click": [
-                    "console.log('TODO ERROR REPORT API')"
-                  ]
+                  "click": ["console.log('TODO ERROR REPORT API')"]
                 }
               }
             ]

@@ -1,45 +1,49 @@
 {
   "class": "grid",
   "components": [{
-    "is": "DynamicComponent",
-    "props": {
-      "class": "xs-12 grid align-item-center full-width",
-      "components": [{
-          "is": "v-btn",
-          "props": {
-            "flat": true,
-            "icon": true,
-            "small": true
-          },
-          "events": {
-            "click.stop": [{
-              "type": "dispatch",
-              "otherParams": {
-                "name": "widget/changeMode",
-                "mode": "assignment"
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid align-item-center full-width",
+        "components": [{
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true,
+              "small": true
+            },
+            "events": {
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "assignment"
+                }
+              }]
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
               }
             }]
           },
-          "slots": [{
-            "is": "Icon",
+          {
+            "is": "I18nText",
             "props": {
-              "icon": "arrow_back"
+              "class": "headline",
+              "i18nKey": "BookingPage.updateTitle",
+              "swig": true
             }
-          }]
-        },
-        {
-          "is": "I18nText",
-          "props": {
-            "class": "headline",
-            "i18nKey": "BookingPage.updateTitle",
-            "swig": true
           }
         }
       ]
     }
-  }, {
+  },
+  {
     "is": "WidgetPanelStepper",
     "props": {
+      "topClick": true,
+      "validateBeforeStepChange": false,
       "steps": [{
           "id": "BookingForm.GeneralForm",
           "components": [{
@@ -85,10 +89,7 @@
             }
           }]
         }
-      ],
-      "initUrl": "api/booking/{{id}}",
-      "saveUrl": "api/booking",
-      "primaryKey": "id"
+      ]
     }
-  }]
+  ]
 }

@@ -1,102 +1,110 @@
 {
   "layout": "MainLayout",
-  "components": [{
-    "is": "TableTool",
-    "props": {
-      "reportingKey": "invitations",
-      "jql": "invitations",
-      "showFilterBar": true,
-      "enableShare": false,
-      "enableSetting": false,
-      "newReport": {
-        "filters": {
-          "status": {
-            "value": "sent"
+  "components": [
+    {
+      "is": "TableTool",
+      "props": {
+        "reportingKey": "invitations",
+        "jql": "invitations",
+        "showFilterBar": true,
+        "enableShare": false,
+        "enableSetting": false,
+        "newReport": {
+          "filters": {
+            "status": {
+              "value": "sent"
+            },
+            "isActive": true
           },
-          "isActive": true
-        },
-        "configurations": {
-          "i18nContext": "Reporting",
-          "clickable": true,
-          "draggable": true,
-          "sorting": {},
-          "pagination": {
-            "current": 0,
-            "perPage": 20
+          "configurations": {
+            "i18nContext": "Reporting",
+            "clickable": true,
+            "draggable": true,
+            "sorting": {},
+            "pagination": {
+              "current": 0,
+              "perPage": 20
+            }
           }
-        }
-      },
-      "fieldOptions": [{
-          "key": "id",
-          "sql": "invitation.id",
-          "hidden": true
         },
-        {
-          "key": "userName",
-          "sql": "person.userName"
-        },
-        {
-          "key": "firstName",
-          "sql": "person.firstName"
-        },
-        {
-          "key": "lastName",
-          "sql": "person.lastName"
-        },
-        {
-          "key": "displayName",
-          "sql": "person.displayName"
-        },
-        {
-          "key": "status",
-          "sql": "invitation.status"
-        },
-        {
-          "key": "createdAt",
-          "sql": "invitation.createdAt",
-          "hidden": true
-        },
-        {
-          "key": "updatedAt",
-          "sql": "invitation.updatedAt",
-          "hidden": true
-        }
-      ],
-      "filters": [{
-          "name": "userName",
-          "type": "text"
-        },
-        {
-          "name": "firstName",
-          "type": "text"
-        },
-        {
-          "name": "lastName",
-          "type": "text"
-        },
-        {
-          "name": "displayName",
-          "type": "text"
-        }
-      ],
-      "clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/invitation/{{id}}"
-        }
-      },
-      "back": "/admin",
-      "icons": [{
-        "icon": "add",
-        "click": [{
+        "fieldOptions": [
+          {
+            "key": "id",
+            "sql": "invitation.id",
+            "hidden": true
+          },
+          {
+            "key": "userName",
+            "sql": "person.userName"
+          },
+          {
+            "key": "firstName",
+            "sql": "person.firstName"
+          },
+          {
+            "key": "lastName",
+            "sql": "person.lastName"
+          },
+          {
+            "key": "displayName",
+            "sql": "person.displayName"
+          },
+          {
+            "key": "status",
+            "sql": "invitation.status"
+          },
+          {
+            "key": "createdAt",
+            "sql": "invitation.createdAt",
+            "hidden": true
+          },
+          {
+            "key": "updatedAt",
+            "sql": "invitation.updatedAt",
+            "hidden": true
+          }
+        ],
+        "filters": [
+          {
+            "name": "userName",
+            "type": "text"
+          },
+          {
+            "name": "firstName",
+            "type": "text"
+          },
+          {
+            "name": "lastName",
+            "type": "text"
+          },
+          {
+            "name": "displayName",
+            "type": "text"
+          }
+        ],
+        "clickFunction": {
           "type": "router",
           "otherParams": {
             "func": "push",
-            "path": "invitation/create"
+            "path": "/invitation/{{id}}"
           }
-        }]
-      }]
+        },
+        "back": "/admin",
+        "icons": [
+          {
+            "icon": "add",
+            "click": [
+              {
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "invitation/create"
+                }
+              }
+            ]
+          }
+        ]
+      }
     }
-  }]
+  ]
 }

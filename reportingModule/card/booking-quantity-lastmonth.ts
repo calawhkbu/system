@@ -1,100 +1,112 @@
-import { Query, FromTable, CreateTableJQL,GroupBy, ResultColumn, ColumnExpression, FunctionExpression,AndExpressions,BinaryExpression } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  CreateTableJQL,
+  GroupBy,
+  ResultColumn,
+  ColumnExpression,
+  FunctionExpression,
+  AndExpressions,
+  BinaryExpression,
+} from 'node-jql'
 import { parseCode } from 'utils/function'
 
-
 function prepareParams(currentMonth?: boolean): Function {
-    const fn = function (require, session, params) {
+  const fn = function(require, session, params) {
+    const moment = require('moment')
+    const subqueries = (params.subqueries = params.subqueries || {})
 
-        const moment = require('moment')
-        const subqueries = params.subqueries = params.subqueries || {}
+    // get the year part of the "from date"
+    let month = moment().month()
 
-
-        // get the year part of the "from date"
-        let month = moment().month()
-
-        // change the from / to date
-        if (!currentMonth)
-        {
-            month -= 1
-        }
-
-        subqueries.date = {}
-
-        // reset the date.from and date.to depending on date.from YEAR
-        subqueries.date.from = moment().month(month).startOf('month').format('YYYY-MM-DD')
-        subqueries.date.to = moment().month(month).endOf('month').format('YYYY-MM-DD')
-
-        console.log('subqueries.date.from',subqueries.date.from)
-        console.log('subqueries.date.to',subqueries.date.to)
-
-
-        return params
+    // change the from / to date
+    if (!currentMonth) {
+      month -= 1
     }
-    let code = fn.toString()
-    code = code.replace(new RegExp('currentMonth', 'g'), String(currentMonth))
-    return parseCode(code)
+
+    subqueries.date = {}
+
+    // reset the date.from and date.to depending on date.from YEAR
+    subqueries.date.from = moment()
+      .month(month)
+      .startOf('month')
+      .format('YYYY-MM-DD')
+    subqueries.date.to = moment()
+      .month(month)
+      .endOf('month')
+      .format('YYYY-MM-DD')
+
+    console.log('subqueries.date.from', subqueries.date.from)
+    console.log('subqueries.date.to', subqueries.date.to)
+
+    return params
+  }
+  let code = fn.toString()
+  code = code.replace(new RegExp('currentMonth', 'g'), String(currentMonth))
+  return parseCode(code)
 }
 
-function prepareTable (name: string): CreateTableJQL {
-    return new CreateTableJQL({
-      $temporary: true,
-      name,
-      $as: new Query({
-        $select: [
-
-        new ResultColumn(new ColumnExpression(name,'moduleTypeCode')),
-        new ResultColumn(new ColumnExpression(name,'jobMonth')),
-        new ResultColumn(new FunctionExpression('IFNULL',new FunctionExpression('SUM', new ColumnExpression(name,'quantity')),0),'quantity'),
-        ],
-        $from: new FromTable({
+function prepareTable(name: string): CreateTableJQL {
+  return new CreateTableJQL({
+    $temporary: true,
+    name,
+    $as: new Query({
+      $select: [
+        new ResultColumn(new ColumnExpression(name, 'moduleTypeCode')),
+        new ResultColumn(new ColumnExpression(name, 'jobMonth')),
+        new ResultColumn(
+          new FunctionExpression(
+            'IFNULL',
+            new FunctionExpression('SUM', new ColumnExpression(name, 'quantity')),
+            0
+          ),
+          'quantity'
+        ),
+      ],
+      $from: new FromTable(
+        {
           method: 'POST',
           url: 'api/booking/query/booking',
           columns: [
             {
-                name: 'moduleTypeCode',
-                type: 'string'
+              name: 'moduleTypeCode',
+              type: 'string',
             },
             {
               name: 'quantity',
-              type: 'number'
+              type: 'number',
             },
             {
-                name: 'jobMonth',
-                type: 'string'
-            }
+              name: 'jobMonth',
+              type: 'string',
+            },
           ],
 
           data: {
-
             subqueries: {
-                jobMonth: true
+              jobMonth: true,
             },
             // include jobMonth from the table
-            fields: ['jobMonth', 'booking.*','booking_popacking.*']
-            }
-
-
-        }, name),
-        $group: new GroupBy([
-
-            new ColumnExpression(name, 'moduleTypeCode'),
-            new ColumnExpression(name, 'jobMonth')
-            // new ColumnExpression(name, 'year')
-
-          ])
-      })
-    })
-  }
+            fields: ['jobMonth', 'booking.*', 'booking_popacking.*'],
+          },
+        },
+        name
+      ),
+      $group: new GroupBy([
+        new ColumnExpression(name, 'moduleTypeCode'),
+        new ColumnExpression(name, 'jobMonth'),
+        // new ColumnExpression(name, 'year')
+      ]),
+    }),
+  })
+}
 
 export default [
-    [prepareParams(),prepareTable('lastMonth')],
-    [prepareParams(true),prepareTable('currentMonth')],
+  [prepareParams(), prepareTable('lastMonth')],
+  [prepareParams(true), prepareTable('currentMonth')],
 
-
-
-    new Query({
-        $from: 'lastMonth',
-        $union: new Query('currentMonth')
-      })
-
+  new Query({
+    $from: 'lastMonth',
+    $union: new Query('currentMonth'),
+  }),
 ]

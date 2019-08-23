@@ -1,138 +1,142 @@
-import { ColumnExpression, CreateTableJQL, FromTable, FunctionExpression, GroupBy, Query, ResultColumn,OrderBy,JoinClause,BinaryExpression } from 'node-jql'
+import {
+  ColumnExpression,
+  CreateTableJQL,
+  FromTable,
+  FunctionExpression,
+  GroupBy,
+  Query,
+  ResultColumn,
+  OrderBy,
+  JoinClause,
+  BinaryExpression,
+} from 'node-jql'
 
-function prepareParams (): Function {
-  return function (require, session, params) {
+function prepareParams(): Function {
+  return function(require, session, params) {
     // import
     const { BadRequestException } = require('@nestjs/common')
 
     // script
-    const subqueries = params.subqueries = params.subqueries || {}
+    const subqueries = (params.subqueries = params.subqueries || {})
     return params
   }
 }
 
-function prepareTable (name: string): CreateTableJQL {
-    return new CreateTableJQL({
-      $temporary: true,
-      name,
-      $as: new Query({
-        $select: [
-
-            new ResultColumn(new ColumnExpression(name,'agentPartyId')),
-            new ResultColumn(new FunctionExpression('IFNULL',new FunctionExpression('SUM', new ColumnExpression(name,'weight')),0),'weight'),
-        ],
-        $from: new FromTable({
+function prepareTable(name: string): CreateTableJQL {
+  return new CreateTableJQL({
+    $temporary: true,
+    name,
+    $as: new Query({
+      $select: [
+        new ResultColumn(new ColumnExpression(name, 'agentPartyId')),
+        new ResultColumn(
+          new FunctionExpression(
+            'IFNULL',
+            new FunctionExpression('SUM', new ColumnExpression(name, 'weight')),
+            0
+          ),
+          'weight'
+        ),
+      ],
+      $from: new FromTable(
+        {
           method: 'POST',
           url: 'api/booking/query/booking',
           columns: [
-
             {
               name: 'weight',
-              type: 'number'
+              type: 'number',
             },
             {
-                name: 'agentPartyId',
-                type: 'number'
+              name: 'agentPartyId',
+              type: 'number',
             },
 
             {
               name: 'agentPartyName',
-              type: 'string'
-          },
+              type: 'string',
+            },
           ],
 
           data: {
-
             subqueries: {
-                jobMonth: true
+              jobMonth: true,
             },
             // include jobMonth from the table
-            fields: ['jobMonth', 'booking.*','booking_popacking.*']
-            }
+            fields: ['jobMonth', 'booking.*', 'booking_popacking.*'],
+          },
+        },
+        name
+      ),
 
+      $group: new GroupBy([new ColumnExpression(name, 'agentPartyId')]),
 
-        }, name),
+      $order: [new OrderBy('weight', 'DESC')],
 
-        $group: new GroupBy([
+      $limit: 10,
+    }),
+  })
+}
 
-            new ColumnExpression(name, 'agentPartyId')
+function preparePartyTable(name: string): CreateTableJQL {
+  return new CreateTableJQL({
+    $temporary: true,
+    name,
 
-        ]),
+    $as: new Query({
+      $from: new FromTable(
+        {
+          method: 'POST',
+          url: 'api/party/query/party',
+          columns: [
+            {
+              name: 'id',
+              type: 'number',
+            },
+            {
+              name: 'name',
+              type: 'string',
+            },
+            {
+              name: 'type',
+              type: 'string',
+            },
+          ],
 
+          data: {
+            // include jobMonth from the table
+            fields: ['party_type.*', 'party.*'],
+          },
+        },
+        name
+      ),
 
-        $order : [
-          new OrderBy('weight', 'DESC')
-        ]
-
-        $limit : 10
-
-      })
-    })
-  }
-
-
-
-  function preparePartyTable (name: string): CreateTableJQL {
-    return new CreateTableJQL({
-      $temporary: true,
-      name,
-
-      $as : new Query({
-
-          $from : new FromTable({
-                method: 'POST',
-                url: 'api/party/query/party',
-                columns: [
-                  {
-                    name: 'id',
-                    type: 'number'
-                  },
-                  {
-                    name: 'name',
-                    type: 'string'
-                  },
-                  {
-                    name: 'type',
-                    type: 'string'
-                  },
-                ],
-
-              data: {
-                // include jobMonth from the table
-                fields: ['party_type.*','party.*']
-                }
-              },  name)
-
-              $where : new BinaryExpression(new ColumnExpression('type'), '=','agent')
-              
-          })
-
-    })
-  }
-
-
-
+      $where: new BinaryExpression(new ColumnExpression('type'), '=', 'agent'),
+    }),
+  })
+}
 
 export default [
   [prepareParams(), prepareTable('tempTable')],
-  [prepareParams(),preparePartyTable('party')],
+  [prepareParams(), preparePartyTable('party')],
 
   new Query({
+    $from: new FromTable(
+      'tempTable',
+      'tempTable',
+      new JoinClause(
+        'INNER',
+        new FromTable('party', 'party'),
+        new BinaryExpression(
+          new ColumnExpression('tempTable', 'agentPartyId'),
+          '=',
+          new ColumnExpression('party', 'id')
+        )
+      )
+    ),
 
-    $from : new FromTable('tempTable','tempTable',
-    new JoinClause('INNER', new FromTable('party','party'),
-    new BinaryExpression(new ColumnExpression('tempTable', 'agentPartyId'), '=', new ColumnExpression('party', 'id'))
-    )),
+    $order: [new OrderBy(new ColumnExpression('tempTable', 'weight'), 'DESC')],
 
-
-
-    $order : [
-      new OrderBy(new ColumnExpression('tempTable','weight'), 'DESC')
-    ]
-
-    $limit : 10
-
-
-  })
-
+    $limit: 10,
+  }),
 ]

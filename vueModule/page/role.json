@@ -1,61 +1,72 @@
 {
   "layout": "MainLayout",
-  "components": [{
-    "is": "Widget",
-    "props": {
-      "initUrl": "api/role/{{id}}",
-      "saveUrl": "api/role",
-      "primaryKey": "id",
-      "top": {
-        "assignment": [{
-            "is": "v-btn",
-            "props": {
-              "flat": true,
-              "icon": true
-            },
-            "events": {
-              "click.stop": [{
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "/roles"
-                }
-              }]
-            },
-            "slots": [{
-              "is": "Icon",
+  "components": [
+    {
+      "is": "Widget",
+      "props": {
+        "initUrl": "api/role/{{id}}",
+        "saveUrl": "api/role",
+        "primaryKey": "id",
+        "top": {
+          "assignment": [
+            {
+              "is": "v-btn",
               "props": {
-                "icon": "arrow_back"
+                "flat": true,
+                "icon": true
+              },
+              "events": {
+                "click.stop": [
+                  {
+                    "type": "router",
+                    "otherParams": {
+                      "func": "push",
+                      "path": "/roles"
+                    }
+                  }
+                ]
+              },
+              "slots": [
+                {
+                  "is": "Icon",
+                  "props": {
+                    "icon": "arrow_back"
+                  }
+                }
+              ]
+            },
+            {
+              "is": "I18nText",
+              "props": {
+                "class": "headline",
+                "i18nKey": "RolePage.title",
+                "swig": true
               }
-            }]
-          },
-          {
-            "is": "I18nText",
-            "props": {
-              "class": "headline",
-              "i18nKey": "RolePage.title",
-              "swig": true
             }
-          }
-        ]
-      },
-      "components": {
-        "assignment": [{
-          "is": "div",
-          "props": {
-            "style": {
-              "padding-right": "4px"
+          ]
+        },
+        "components": {
+          "assignment": [
+            {
+              "is": "div",
+              "props": {
+                "style": {
+                  "padding-right": "4px"
+                }
+              },
+              "slots": [
+                {
+                  "name": "default",
+                  "is": "DynamicComponent",
+                  "props": {
+                    "components": []
+                  }
+                }
+              ]
             }
-          },
-          "slots": [{
-            "name": "default",
-            "is": "DynamicComponent",
-            "props": {
-              "components": []
-            }
-          }]
-        }]
+          ]
+        }
       }
     }
-  }]
+  ]
 }

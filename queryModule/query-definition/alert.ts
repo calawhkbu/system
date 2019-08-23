@@ -50,24 +50,66 @@ query.register('moduleType', new Query({
     ),
     '='
   )
-})).register('value', 1)
+  .register('value', 0)
 
-query.register('flexDataData', new Query({
-  $where: new BinaryExpression(
-    new FunctionExpression('JSON_UNQUOTE',
-      new FunctionExpression('JSON_EXTRACT', new ColumnExpression('flex_data', 'data'), new Unknown('string'))
-    ),
-    '='
+query
+  .register(
+    'severity',
+    new Query({
+      $where: new InExpression(new ColumnExpression('alert', 'severity'), false),
+    })
   )
-})).register('flexDataKey', 0).register('value', 1)
+  .register('value', 0)
 
-query.register('isActive', new Query({
-  $where: [
-    new IsNullExpression(new ColumnExpression('code_master', 'deletedAt'), false),
-    new IsNullExpression(new ColumnExpression('code_master', 'deletedBy'), false),
-    new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
-    new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
-  ]
-}))
+query
+  .register(
+    'moduleTypeCode',
+    new Query({
+      $where: new BinaryExpression(
+        new FunctionExpression(
+          'JSON_UNQUOTE',
+          new FunctionExpression(
+            'JSON_EXTRACT',
+            new ColumnExpression('flex_data', 'data'),
+            '$.entity.moduleTypeCode'
+          )
+        ),
+        '='
+      ),
+    })
+  )
+  .register('value', 1)
+
+query
+  .register(
+    'flexDataData',
+    new Query({
+      $where: new BinaryExpression(
+        new FunctionExpression(
+          'JSON_UNQUOTE',
+          new FunctionExpression(
+            'JSON_EXTRACT',
+            new ColumnExpression('flex_data', 'data'),
+            new Unknown('string')
+          )
+        ),
+        '='
+      ),
+    })
+  )
+  .register('flexDataKey', 0)
+  .register('value', 1)
+
+query.register(
+  'isActive',
+  new Query({
+    $where: [
+      new IsNullExpression(new ColumnExpression('code_master', 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression('code_master', 'deletedBy'), false),
+      new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
+      new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
+    ],
+  })
+)
 
 export default query

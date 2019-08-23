@@ -3,48 +3,51 @@
   "style": {
     "min-height": "300px"
   },
-  "components": [{
-    "is": "WidgetForm",
-    "props": {
-      "fields": [{
-          "label": "config.locale",
-          "name": "configuration.defaultLocale",
-          "component": "AsyncSelect",
-          "class": "xs-12 md-6",
-          "props": {
-            "item-text": "value",
-            "item-value": "key",
-            "url": "i18n/available-languages"
+  "components": [
+    {
+      "is": "WidgetForm",
+      "props": {
+        "fields": [
+          {
+            "label": "config.locale",
+            "name": "configuration.defaultLocale",
+            "component": "AsyncSelect",
+            "class": "xs-12 md-6",
+            "props": {
+              "item-text": "value",
+              "item-value": "key",
+              "url": "i18n/available-languages"
+            }
+          },
+          {
+            "label": "config.timezone",
+            "name": "configuration.defaultTimezone",
+            "component": "LocalAutoSuggest",
+            "class": "xs-12 md-6",
+            "props": {
+              "funcItems": "return context.$moment.tz.names()"
+            }
+          },
+          {
+            "label": "config.dateFormat",
+            "name": "configuration.defaultDateFormat",
+            "component": "v-text-field",
+            "class": "xs-12 md-6"
+          },
+          {
+            "label": "config.timeFormat",
+            "name": "configuration.defaultTimeFormat",
+            "component": "v-text-field",
+            "class": "xs-12 md-6"
+          },
+          {
+            "label": "config.dateTimeFormat",
+            "name": "configuration.defaultDateTimeFormat",
+            "component": "v-text-field",
+            "class": "xs-12"
           }
-        },
-        {
-          "label": "config.timezone",
-          "name": "configuration.defaultTimezone",
-          "component": "LocalAutoSuggest",
-          "class": "xs-12 md-6",
-          "props": {
-            "funcItems": "return context.$moment.tz.names()"
-          }
-        },
-        {
-          "label": "config.dateFormat",
-          "name": "configuration.defaultDateFormat",
-          "component": "v-text-field",
-          "class": "xs-12 md-6"
-        },
-        {
-          "label": "config.timeFormat",
-          "name": "configuration.defaultTimeFormat",
-          "component": "v-text-field",
-          "class": "xs-12 md-6"
-        },
-        {
-          "label": "config.dateTimeFormat",
-          "name": "configuration.defaultDateTimeFormat",
-          "component": "v-text-field",
-          "class": "xs-12"
-        }
-      ]
+        ]
+      }
     }
-  }]
+  ]
 }
