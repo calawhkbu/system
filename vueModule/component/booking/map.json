@@ -1,4 +1,32 @@
 {
+<<<<<<< HEAD
+  "components": [{
+    "is": "DynamicComponent",
+    "props": {
+      "class": "xs-12 grid align-item-center full-width",
+      "style": {
+        "position": "absolute",
+        "top": "8px",
+        "left": "8px",
+        "z-index": "999",
+        "background-color": "#fff",
+        "width": "700px",
+        "border-radius": "4px"
+      },
+      "components": [{
+          "is": "v-btn",
+          "props": {
+            "flat": true,
+            "icon": true,
+            "small": true
+          },
+          "events": {
+            "click.stop": [{
+              "type": "dispatch",
+              "otherParams": {
+                "name": "widget/changeMode",
+                "mode": "detail"
+=======
   "components": [
     {
       "is": "DynamicComponent",
@@ -38,6 +66,7 @@
                 "props": {
                   "icon": "arrow_back"
                 }
+>>>>>>> 8e3faa9b46f8a6e3fe9c753765a76dfa7c9d6526
               }
             ]
           },
