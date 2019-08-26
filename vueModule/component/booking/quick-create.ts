@@ -60,8 +60,8 @@ export default {
             validator: ['required'],
             relation: 'moduleType',
             props: {
-              "required": true,
-              "axiosParams": {
+              'required': true,
+              'axiosParams': {
                 url: 'api/code/query/code_master',
                 method: 'POST',
                 data: {
@@ -88,8 +88,8 @@ export default {
             relation: 'boundType',
             validator: ['required'],
             props: {
-              "required": true,
-              "axiosParams": {
+              'required': true,
+              'axiosParams': {
                 url: 'api/code/query/code_master',
                 method: 'POST',
                 data: {
@@ -115,8 +115,8 @@ export default {
             class: 'xs-12 md-3',
             validator: ['required'],
             props: {
-              "required": true,
-              "axiosParams": {
+              'required': true,
+              'axiosParams': {
                 url: 'api/code/query/code_master',
                 method: 'POST',
                 data: {
@@ -129,7 +129,7 @@ export default {
               },
               'item-text': 'name',
               'item-value': 'code',
-              "showValue": false,
+              'showValue': false,
             },
           },
           {
@@ -142,8 +142,8 @@ export default {
             component: 'AsyncSelect',
             class: 'xs-12 md-3',
             props: {
-              "multiple": true,
-              "axiosParams": {
+              'multiple': true,
+              'axiosParams': {
                 url: 'api/code/query/code_master',
                 method: 'POST',
                 data: {
@@ -156,9 +156,9 @@ export default {
               },
               'item-text': 'name',
               'item-value': 'code',
-              "showValue": false,
-              "showSpacer": false,
-              "selectedProps": {
+              'showValue': false,
+              'showSpacer': false,
+              'selectedProps': {
                 class: 'multiple',
               },
             },
@@ -179,7 +179,7 @@ export default {
               },
             ],
             props: {
-              "searchValueParams": {
+              'searchValueParams': {
                 method: 'POST',
                 url: 'api/location/query/location',
                 data: {
@@ -193,12 +193,12 @@ export default {
                   },
                 },
               },
-              "searchTextParams": {
+              'searchTextParams': {
                 method: 'POST',
                 url: 'api/location/query/location',
                 data: {
                   subqueries: {
-                    moduleType: {
+                    moduleTypeCode: {
                       value: '{{context.form.moduleTypeCode}}',
                     },
                     q: {
@@ -229,13 +229,13 @@ export default {
               },
             ],
             props: {
-              "required": true,
-              "searchValueParams": {
+              'required': true,
+              'searchValueParams': {
                 method: 'POST',
                 url: 'api/location/query/location',
                 data: {
                   subqueries: {
-                    moduleType: {
+                    moduleTypeCode: {
                       value: '{{context.form.moduleTypeCode}}',
                     },
                     ports: {
@@ -244,12 +244,12 @@ export default {
                   },
                 },
               },
-              "searchTextParams": {
+              'searchTextParams': {
                 method: 'POST',
                 url: 'api/location/query/location',
                 data: {
                   subqueries: {
-                    moduleType: {
+                    moduleTypeCode: {
                       value: '{{context.form.moduleTypeCode}}',
                     },
                     q: {
@@ -280,13 +280,13 @@ export default {
               },
             ],
             props: {
-              "required": true,
-              "searchValueParams": {
+              'required': true,
+              'searchValueParams': {
                 method: 'POST',
                 url: 'api/location/query/location',
                 data: {
                   subqueries: {
-                    moduleType: {
+                    moduleTypeCode: {
                       value: '{{context.form.moduleTypeCode}}',
                     },
                     ports: {
@@ -295,7 +295,7 @@ export default {
                   },
                 },
               },
-              "searchTextParams": {
+              'searchTextParams': {
                 method: 'POST',
                 url: 'api/location/query/location',
                 data: {
@@ -330,7 +330,7 @@ export default {
               },
             ],
             props: {
-              "searchValueParams": {
+              'searchValueParams': {
                 method: 'POST',
                 url: 'api/location/query/location',
                 data: {
@@ -344,7 +344,7 @@ export default {
                   },
                 },
               },
-              "searchTextParams": {
+              'searchTextParams': {
                 method: 'POST',
                 url: 'api/location/query/location',
                 data: {
@@ -380,7 +380,7 @@ export default {
               },
             ],
             props: {
-              "searchValueParams": {
+              'searchValueParams': {
                 method: 'POST',
                 url: 'api/code/query/code_master',
                 data: {
@@ -394,7 +394,7 @@ export default {
                   },
                 },
               },
-              "searchTextParams": {
+              'searchTextParams': {
                 method: 'POST',
                 url: 'api/code/query/code_master',
                 data: {
@@ -463,8 +463,8 @@ export default {
               },
             ],
             props: {
-              "initList": true,
-              "searchTextParams": {
+              'initList': true,
+              'searchTextParams': {
                 url: 'api/code/query/code_master',
                 method: 'POST',
                 data: {
@@ -481,7 +481,7 @@ export default {
               },
               'item-text': 'name',
               'item-value': 'code',
-              "onInit": true,
+              'onInit': true,
             },
           },
           {
@@ -494,7 +494,7 @@ export default {
             component: 'AsyncSelect',
             class: 'xs-12 md-1',
             props: {
-              "axiosParams": {
+              'axiosParams': {
                 url: 'api/code/query/code_master',
                 method: 'POST',
                 data: {
@@ -507,7 +507,7 @@ export default {
               },
               'item-text': 'code',
               'item-value': 'code',
-              "showValue": false,
+              'showValue': false,
             },
           },
           {

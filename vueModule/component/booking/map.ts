@@ -5,12 +5,12 @@ export default {
       props: {
         class: 'xs-12 grid align-item-center full-width',
         style: {
-          "position": 'absolute',
-          "top": '8px',
-          "left": '8px',
+          'position': 'absolute',
+          'top': '8px',
+          'left': '8px',
           'z-index': '999',
           'background-color': '#fff',
-          "width": '700px',
+          'width': '700px',
           'border-radius': '4px',
         },
         components: [
