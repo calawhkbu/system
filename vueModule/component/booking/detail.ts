@@ -97,133 +97,138 @@ export default {
           is: 'DynamicComponent',
           props: {
             layout: 'v-card',
-            components: {
-              is: 'MouseHidden',
-              slots: [
-                {
-                  name: 'hidden',
-                  is: 'DynamicComponent',
-                  props: {
-                    class: 'flex max-height-0',
-                    components: [
-                      {
-                        is: 'v-spacer',
-                      },
-                      {
-                        is: 'v-btn',
-                        props: {
-                          icon: true,
-                          flat: true,
-                          small: true,
-                          class: 'no-margin zindex-10',
+            class: 'margin-topbottom-8',
+            components: [
+              {
+                is: 'MouseHidden',
+                slots: [
+                  {
+                    name: 'hidden',
+                    is: 'DynamicComponent',
+                    props: {
+                      class: 'flex max-height-0',
+                      components: [
+                        {
+                          is: 'v-spacer',
                         },
-                        slots: [{ is: 'Icon', props: { small: true, icon: 'edit' } }],
-                        events: {
-                          'click.stop': [
-                            {
-                              type: 'dispatch',
-                              otherParams: {
-                                name: 'widget/changeMode',
-                                mode: 'edit',
-                              },
-                              afterActions: [
-                                {
-                                  type: 'dispatch',
-                                  otherParams: {
-                                    name: 'widget/updateComponentSetting',
-                                    value: {
-                                      stepper: 0,
+                        {
+                          is: 'v-btn',
+                          props: {
+                            icon: true,
+                            flat: true,
+                            small: true,
+                            class: 'no-margin zindex-10',
+                          },
+                          slots: [{ is: 'Icon', props: { small: true, icon: 'edit' } }],
+                          events: {
+                            'click.stop': [
+                              {
+                                type: 'dispatch',
+                                otherParams: {
+                                  name: 'widget/changeMode',
+                                  mode: 'edit',
+                                },
+                                afterActions: [
+                                  {
+                                    type: 'dispatch',
+                                    otherParams: {
+                                      name: 'widget/updateComponentSetting',
+                                      value: {
+                                        stepper: 0,
+                                      },
                                     },
                                   },
-                                },
-                              ],
-                            },
-                          ],
+                                ],
+                              },
+                            ],
+                          },
                         },
-                      },
-                    ],
+                      ],
+                    },
                   },
-                },
-                {
-                  is: 'AsyncComponent',
-                  props: {
-                    layoutName: 'booking/forms/generalForm',
+                  {
+                    is: 'AsyncComponent',
+                    props: {
+                      layoutName: 'booking/forms/generalForm',
+                    },
                   },
-                },
-              ],
-            },
+                ],
+              },
+            ]
           },
         },
         {
           is: 'DynamicComponent',
           props: {
-            class: 'grid',
+            class: 'grid margin-topbottom-8',
             components: [
               {
                 is: 'div',
                 props: {
-                  class: 'padding-right-4',
+                  class: 'xs-12 md-6 padding-right-4',
                 },
                 slots: [
                   {
                     is: 'DynamicComponent',
                     props: {
                       layout: 'v-card',
-                      components: {
-                        is: 'MouseHidden',
-                        slots: [
-                          {
-                            name: 'hidden',
-                            is: 'DynamicComponent',
-                            props: {
-                              class: 'flex max-height-0',
-                              components: [
-                                {
-                                  is: 'v-spacer',
-                                },
-                                {
-                                  is: 'v-btn',
-                                  props: {
-                                    icon: true,
-                                    flat: true,
-                                    small: true,
-                                    class: 'no-margin zindex-10',
+                      components: [
+                        {
+                          is: 'MouseHidden',
+                          slots: [
+                            {
+                              name: 'hidden',
+                              is: 'DynamicComponent',
+                              props: {
+                                class: 'flex max-height-0',
+                                components: [
+                                  {
+                                    is: 'v-spacer',
                                   },
-                                  slots: [{ is: 'Icon', props: { small: true, icon: 'edit' } }],
-                                  events: {
-                                    'click.stop': [
-                                      {
-                                        type: 'dispatch',
-                                        otherParams: {
-                                          name: 'widget/changeMode',
-                                          mode: 'edit',
-                                        },
-                                        afterActions: [
-                                          {
-                                            type: 'dispatch',
-                                            otherParams: {
-                                              name: 'widget/updateComponentSetting',
-                                              value: {
-                                                stepper: 1,
+                                  {
+                                    is: 'v-btn',
+                                    props: {
+                                      icon: true,
+                                      flat: true,
+                                      small: true,
+                                      class: 'no-margin zindex-10',
+                                    },
+                                    slots: [{ is: 'Icon', props: { small: true, icon: 'edit' } }],
+                                    events: {
+                                      'click.stop': [
+                                        {
+                                          type: 'dispatch',
+                                          otherParams: {
+                                            name: 'widget/changeMode',
+                                            mode: 'edit',
+                                          },
+                                          afterActions: [
+                                            {
+                                              type: 'dispatch',
+                                              otherParams: {
+                                                name: 'widget/updateComponentSetting',
+                                                value: {
+                                                  stepper: 1,
+                                                },
                                               },
                                             },
-                                          },
-                                        ],
-                                      },
-                                    ],
+                                          ],
+                                        },
+                                      ],
+                                    },
                                   },
-                                },
-                              ],
+                                ],
+                              },
                             },
-                          },
-                          {
-                            is: 'AsyncComponent',
-                            props: {
-                              layoutName: 'booking/forms/partyForm',
+                            {
+                              is: 'AsyncComponent',
+                              props: {
+                                layoutName: 'booking/forms/partyForm',
+                              },
                             },
-                          },
-                        ],
-                      },
+                          ],
+                        },
+                      ]
                     },
                   },
                 ],
@@ -231,68 +236,70 @@ export default {
               {
                 is: 'div',
                 props: {
-                  class: 'padding-left-4',
+                  class: 'xs-12 md-6 padding-left-4',
                 },
                 slots: [
                   {
                     is: 'DynamicComponent',
                     props: {
                       layout: 'v-card',
-                      components: {
-                        is: 'MouseHidden',
-                        slots: [
-                          {
-                            name: 'hidden',
-                            is: 'DynamicComponent',
-                            props: {
-                              class: 'flex max-height-0',
-                              components: [
-                                {
-                                  is: 'v-spacer',
-                                },
-                                {
-                                  is: 'v-btn',
-                                  props: {
-                                    icon: true,
-                                    flat: true,
-                                    small: true,
-                                    class: 'no-margin zindex-10',
+                      components: [
+                        {
+                          is: 'MouseHidden',
+                          slots: [
+                            {
+                              name: 'hidden',
+                              is: 'DynamicComponent',
+                              props: {
+                                class: 'flex max-height-0',
+                                components: [
+                                  {
+                                    is: 'v-spacer',
                                   },
-                                  slots: [{ is: 'Icon', props: { small: true, icon: 'edit' } }],
-                                  events: {
-                                    'click.stop': [
-                                      {
-                                        type: 'dispatch',
-                                        otherParams: {
-                                          name: 'widget/changeMode',
-                                          mode: 'edit',
-                                        },
-                                        afterActions: [
-                                          {
-                                            type: 'dispatch',
-                                            otherParams: {
-                                              name: 'widget/updateComponentSetting',
-                                              value: {
-                                                stepper: 2,
+                                  {
+                                    is: 'v-btn',
+                                    props: {
+                                      icon: true,
+                                      flat: true,
+                                      small: true,
+                                      class: 'no-margin zindex-10',
+                                    },
+                                    slots: [{ is: 'Icon', props: { small: true, icon: 'edit' } }],
+                                    events: {
+                                      'click.stop': [
+                                        {
+                                          type: 'dispatch',
+                                          otherParams: {
+                                            name: 'widget/changeMode',
+                                            mode: 'edit',
+                                          },
+                                          afterActions: [
+                                            {
+                                              type: 'dispatch',
+                                              otherParams: {
+                                                name: 'widget/updateComponentSetting',
+                                                value: {
+                                                  stepper: 2,
+                                                },
                                               },
                                             },
-                                          },
-                                        ],
-                                      },
-                                    ],
+                                          ],
+                                        },
+                                      ],
+                                    },
                                   },
-                                },
-                              ],
+                                ],
+                              },
                             },
-                          },
-                          {
-                            is: 'AsyncComponent',
-                            props: {
-                              layoutName: 'booking/forms/dateForm',
+                            {
+                              is: 'AsyncComponent',
+                              props: {
+                                layoutName: 'booking/forms/dateForm',
+                              },
                             },
-                          },
-                        ],
-                      },
+                          ],
+                        },
+                      ]
                     },
                   },
                 ],
@@ -304,122 +311,128 @@ export default {
           is: 'DynamicComponent',
           props: {
             layout: 'v-card',
-            components: {
-              is: 'MouseHidden',
-              slots: [
-                {
-                  name: 'hidden',
-                  is: 'DynamicComponent',
-                  props: {
-                    class: 'flex max-height-0',
-                    components: [
-                      {
-                        is: 'v-spacer',
-                      },
-                      {
-                        is: 'v-btn',
-                        props: {
-                          icon: true,
-                          flat: true,
-                          small: true,
-                          class: 'no-margin zindex-10',
+            class: 'margin-topbottom-8',
+            components: [
+              {
+                is: 'MouseHidden',
+                slots: [
+                  {
+                    name: 'hidden',
+                    is: 'DynamicComponent',
+                    props: {
+                      class: 'flex max-height-0',
+                      components: [
+                        {
+                          is: 'v-spacer',
                         },
-                        slots: [{ is: 'Icon', props: { small: true, icon: 'edit' } }],
-                        events: {
-                          'click.stop': [
-                            {
-                              type: 'dispatch',
-                              otherParams: {
-                                name: 'widget/changeMode',
-                                mode: 'edit',
-                              },
-                              afterActions: [
-                                {
-                                  type: 'dispatch',
-                                  otherParams: {
-                                    name: 'widget/updateComponentSetting',
-                                    value: {
-                                      stepper: 3,
+                        {
+                          is: 'v-btn',
+                          props: {
+                            icon: true,
+                            flat: true,
+                            small: true,
+                            class: 'no-margin zindex-10',
+                          },
+                          slots: [{ is: 'Icon', props: { small: true, icon: 'edit' } }],
+                          events: {
+                            'click.stop': [
+                              {
+                                type: 'dispatch',
+                                otherParams: {
+                                  name: 'widget/changeMode',
+                                  mode: 'edit',
+                                },
+                                afterActions: [
+                                  {
+                                    type: 'dispatch',
+                                    otherParams: {
+                                      name: 'widget/updateComponentSetting',
+                                      value: {
+                                        stepper: 3,
+                                      },
                                     },
                                   },
-                                },
-                              ],
-                            },
-                          ],
+                                ],
+                              },
+                            ],
+                          },
                         },
-                      },
-                    ],
+                      ],
+                    },
                   },
-                },
-                {
-                  is: 'AsyncComponent',
-                  props: {
-                    layoutName: 'booking/forms/containerForm',
+                  {
+                    is: 'AsyncComponent',
+                    props: {
+                      layoutName: 'booking/forms/containerForm',
+                    },
                   },
-                },
-              ],
-            },
+                ],
+              },
+            ]
           },
         },
         {
           is: 'DynamicComponent',
           props: {
             layout: 'v-card',
-            components: {
-              is: 'MouseHidden',
-              slots: [
-                {
-                  name: 'hidden',
-                  is: 'DynamicComponent',
-                  props: {
-                    class: 'flex max-height-0',
-                    components: [
-                      {
-                        is: 'v-spacer',
-                      },
-                      {
-                        is: 'v-btn',
-                        props: {
-                          icon: true,
-                          flat: true,
-                          small: true,
-                          class: 'no-margin zindex-10',
+            class: 'margin-topbottom-8',
+            components: [
+              {
+                is: 'MouseHidden',
+                slots: [
+                  {
+                    name: 'hidden',
+                    is: 'DynamicComponent',
+                    props: {
+                      class: 'flex max-height-0',
+                      components: [
+                        {
+                          is: 'v-spacer',
                         },
-                        slots: [{ is: 'Icon', props: { small: true, icon: 'edit' } }],
-                        events: {
-                          'click.stop': [
-                            {
-                              type: 'dispatch',
-                              otherParams: {
-                                name: 'widget/changeMode',
-                                mode: 'edit',
-                              },
-                              afterActions: [
-                                {
-                                  type: 'dispatch',
-                                  otherParams: {
-                                    name: 'widget/updateComponentSetting',
-                                    value: {
-                                      stepper: 4,
+                        {
+                          is: 'v-btn',
+                          props: {
+                            icon: true,
+                            flat: true,
+                            small: true,
+                            class: 'no-margin zindex-10',
+                          },
+                          slots: [{ is: 'Icon', props: { small: true, icon: 'edit' } }],
+                          events: {
+                            'click.stop': [
+                              {
+                                type: 'dispatch',
+                                otherParams: {
+                                  name: 'widget/changeMode',
+                                  mode: 'edit',
+                                },
+                                afterActions: [
+                                  {
+                                    type: 'dispatch',
+                                    otherParams: {
+                                      name: 'widget/updateComponentSetting',
+                                      value: {
+                                        stepper: 4,
+                                      },
                                     },
                                   },
-                                },
-                              ],
-                            },
-                          ],
+                                ],
+                              },
+                            ],
+                          },
                         },
-                      },
-                    ],
+                      ],
+                    },
                   },
-                },
-                {
-                  is: 'AsyncComponent',
-                  props: {
-                    layoutName: 'booking/forms/referenceForm',
+                  {
+                    is: 'AsyncComponent',
+                    props: {
+                      layoutName: 'booking/forms/referenceForm',
+                    },
                   },
-                },
-              ],
-            },
+                ],
+              },
+            ]
           },
         },
       ],

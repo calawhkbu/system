@@ -29,7 +29,7 @@ export default async function entityCreateInvitaion(
   if (!partyGroup) {
     throw new Error('Party Group Not found')
   }
-  const parties = Object.keys(entityFlexData).reduce(
+  const parties = Object.keys(entityFlexData || {}).reduce(
     (partiesMap: any, key: string) => {
       if (key !== 'moreParty' && key.includes('Party')) {
         const type = key.substring(0, key.lastIndexOf('Party'))
@@ -42,7 +42,7 @@ export default async function entityCreateInvitaion(
       }
       return partiesMap
     },
-    Object.keys(entityData).reduce((partiesMap: any, key: string) => {
+    Object.keys(entityData || {}).reduce((partiesMap: any, key: string) => {
       if (key.includes('Party')) {
         const type = key.substring(0, key.lastIndexOf('Party'))
         if (!Object.keys([partiesMap]).includes(type)) {
@@ -59,26 +59,26 @@ export default async function entityCreateInvitaion(
     const content = parties[partyType]
     const party = content.party
     // find party in database
-    let savedParty: Party = party.id
-      ? await that.partyService.findOne({ where: { id: party.id }, transaction }, user)
+    let savedParty = party.id
+      ? { id: party.id }
       : null
     if (!savedParty) {
       // create party if party not find
       delete party.id // avoid update
       if (party.name) {
         savedParty = await that.partyService.save(party, user, transaction)
-      }
-    }
-    if (savedParty) {
-      if (content.flexData) {
-        entityFlexData[`${partyType}PartyId`] = savedParty.id
-      } else {
-        entityData[`${partyType}PartyId`] = savedParty.id
+        if (content.flexData) {
+          entityFlexData[`${partyType}Party`] = savedParty
+          entityFlexData[`${partyType}PartyId`] = savedParty.id
+        } else {
+          entityData[`${partyType}Party`] = savedParty
+          entityData[`${partyType}PartyId`] = savedParty.id
+        }
       }
     }
 
     for (const person of content.people) {
-      let savedPerson: Person = person.id
+      let savedPerson = person.id
         ? await that.personService.findOne({ where: { id: person.id }, transaction }, user)
         : null
       if (savedPerson) {
@@ -86,24 +86,23 @@ export default async function entityCreateInvitaion(
           ? JSON.parse(JSON.stringify(savedPerson.dataValues))
           : savedPerson
         if (!savedPerson.parties.find(party => party.id === savedParty.id)) {
-          savedPerson.parties.push(savedParty)
+          savedPerson.parties.push(savedParty as Party)
         }
         await that.personService.save(savedPerson, user, transaction)
       } else {
         delete person.id
         person.parties.push(savedParty)
-        // savedPerson = await that.personService.save(person, user, transaction)
         const invitation = await that.createInvitation(person, partyGroup.code, user, transaction)
         savedPerson = invitation.person
       }
       if (content.flexData) {
-        if (entityFlexData[`${partyType}PartyContactPersonEmail`] === savedPerson.username) {
+        if (entityFlexData[`${partyType}PartyContactPersonEmail`] === savedPerson.userName) {
           entityFlexData[`${partyType}PartyContactPersonId`] = savedPerson.id
         } else {
-          entityFlexData[`${partyType}PartyContacts`] = entityFlexData[
+          entityFlexData[`${partyType}PartyContacts`] = (entityFlexData[
             `${partyType}PartyContacts`
-          ].reduce((all: any, one: any) => {
-            if (one['Email'] === savedPerson.username) {
+          ] || []).reduce((all: any, one: any) => {
+            if (one['Email'] === savedPerson.userName) {
               one['PersonId'] = savedPerson.id
             }
             return all
@@ -113,7 +112,7 @@ export default async function entityCreateInvitaion(
         if (entityData[`${partyType}PartyContactPersonEmail`] === savedPerson.userName) {
           entityData[`${partyType}PartyContactPersonId`] = savedPerson.id
         } else {
-          entityData[`${partyType}PartyContacts`] = entityData[`${partyType}PartyContacts`].reduce(
+          entityData[`${partyType}PartyContacts`] = (entityData[`${partyType}PartyContacts`] || []).reduce(
             (all: any, one: any) => {
               if (one['Email'] === savedPerson.userName) {
                 one['PersonId'] = savedPerson.id

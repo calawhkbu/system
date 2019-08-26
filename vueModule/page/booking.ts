@@ -19,7 +19,7 @@ export default {
             method: 'post',
             url: 'api/booking',
           },
-          primaryKey: '"id"',
+          primaryKey: 'id',
           modeFunction: `
           const modes = [
             'assignment', 'quick-create', 'create', 'detail',
@@ -27,17 +27,23 @@ export default {
           ]
           const selectedMode = isNaN(Number(mode)) ? mode : 'detail'
           if (!modes.includes(selectedMode)) {
-            throw new Error('Not this mode')
+            throw new Error('This mode (' + selectedMode + ') is not allowed')
           }
           return selectedMode
         `,
           haveTermOnCreate: true,
           haveTermOnEdit: false,
           widgetComponentSetting: {
-            detail: {
+            'quick-create': {
+              readonly: false,
+            },
+            'create': {
+              readonly: false
+            },
+            'detail': {
               readonly: true,
             },
-            edit: {
+            'edit': {
               readonly: false,
               stepper: 0,
               saveIcon: 'save',

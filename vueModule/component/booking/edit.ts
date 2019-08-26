@@ -35,9 +35,12 @@ export default {
       props: {
         topClick: true,
         validateBeforeStepChange: false,
+        preview: 'booking-preview',
         steps: [
           {
-            id: 'BookingForm.GeneralForm',
+            id: 'BookingPage.GeneralForm',
+            layout: 'v-card',
+            class: 'margin-4 full-width',
             components: [
               {
                 is: 'AsyncComponent',
@@ -48,7 +51,7 @@ export default {
             ],
           },
           {
-            id: 'BookingForm.PartyForm',
+            id: 'BookingPage.PartyForm',
             components: [
               {
                 is: 'AsyncComponent',
@@ -59,7 +62,7 @@ export default {
             ],
           },
           {
-            id: 'BookingForm.DateForm',
+            id: 'BookingPage.DateForm',
             components: [
               {
                 is: 'AsyncComponent',
@@ -70,7 +73,7 @@ export default {
             ],
           },
           {
-            id: 'BookingForm.ContainerForm',
+            id: 'BookingPage.ContainerForm',
             components: [
               {
                 is: 'AsyncComponent',
@@ -81,7 +84,7 @@ export default {
             ],
           },
           {
-            id: 'BookingForm.referenceForm',
+            id: 'BookingPage.referenceForm',
             components: [
               {
                 is: 'AsyncComponent',
