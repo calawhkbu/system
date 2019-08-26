@@ -30,109 +30,9 @@ class CheckerEvent extends BaseEvent {
     super(parameters, eventConfig, repo, eventService, allService, user, transaction)
   }
 
-  extractObject(inputObject: any, includeKeyList?: string[], excludeKeyList?: string[])
-  {
-
-    const cloned = JSON.parse(JSON.stringify(inputObject))
-
-    for (const [key, value] of Object.entries(cloned)) {
-
-      console.log(`${key}: ${value}`)
-
-      if ((includeKeyList && includeKeyList.length && !includeKeyList.includes(key)) || (excludeKeyList && excludeKeyList.length && excludeKeyList.includes(key)))
-      {
-        delete cloned[key]
-      }
-    }
-
-    return cloned
-
-  }
-
-  // get variable based on key
-  getVariable(parameters: any, key: string) {
-    if (key.indexOf('.') >= 0) {
-      const firstKey = key.substr(0, key.indexOf('.'))
-      const subKey = key.substr(key.indexOf('.') + 1)
-
-      return this.getVariable(parameters[firstKey], subKey)
-    }
-
-    const result = parameters[key]
-    return result
-  }
-
-  isNull(variable: any) {
-    return !(variable && variable != null)
-  }
-
-  isEmpty(variable: any) {
-    console.log('in is Empty')
-    return !(variable && variable != null) && variable.length
-  }
-
-  isMatch(variable: any, checkerParam: { operator: string; value?: any }) {
-    const operatorFunctionMap = {
-      '='(x, y) {
-        return x === y
-      },
-      '!='(x, y) {
-        return x !== y
-      },
-      '>='(x, y) {
-        return x >= y
-      },
-      '>'(x, y) {
-        return x >= y
-      },
-      '<='(x, y) {
-        return x <= y
-      },
-      '<'(x, y) {
-        return x <= y
-      },
-    }
-    // find the function correctly
-    const operatorFunction = operatorFunctionMap[checkerParam.operator]
-
-    if (!operatorFunction) {
-      throw new Error('operatorFunction not found')
-    }
-
-    return operatorFunction(variable, checkerParam.value)
-  }
-
-  diff(left: any, right: any, includeKeyList?: string[], excludeKeyList?: string[]) {
-
-    const jsondiffpatch = require('jsondiffpatch').create()
-
-    let clonedLeft = JSON.parse(JSON.stringify(left))
-    let clonedRight = JSON.parse(JSON.stringify(right))
-
-    clonedLeft = this.extractObject(clonedLeft, includeKeyList, excludeKeyList)
-    clonedRight = this.extractObject(clonedRight, includeKeyList, excludeKeyList)
-
-    const diff =  jsondiffpatch.diff(clonedLeft, clonedRight)
-    return diff
-
-  }
-
-  initCheckerFunctionMap() {
-    const functionMap = new Map<string, Function>()
-
-    functionMap.set('isMatch', this.isMatch)
-    functionMap.set('isNull', this.isNull)
-    functionMap.set('isEmpty', this.isEmpty)
-    functionMap.set('extractObject', this.extractObject)
-    functionMap.set('diff', this.diff)
-
-    return functionMap
-  }
-
   runCheckerFunction(
     checkerObject: CheckerObject,
-    parameters: any,
-    checkerFunctionMap: Map<string, Function>
+    parameters: any
   ) {
     const checkerFunction = checkerObject.checkerFunction as Function
     const resultName = checkerObject.resultName as string
@@ -143,7 +43,7 @@ class CheckerEvent extends BaseEvent {
       throw new Error('checkerFunction / checkerFunctionName  is not provided')
     }
 
-    result = checkerFunction(parameters, checkerFunctionMap)
+    result = checkerFunction(parameters)
 
     return {
       resultName,
@@ -154,9 +54,6 @@ class CheckerEvent extends BaseEvent {
   public async mainFunction(parameters: any) {
 
     const checkerResult = {}
-
-    const checkerFunctionMap = this.initCheckerFunctionMap()
-
     if (!parameters.checker) {
       throw new Error('checker param is not found in checker Event')
     }
@@ -165,7 +62,7 @@ class CheckerEvent extends BaseEvent {
 
     checkerList.forEach((checkerObject: CheckerObject) => {
 
-      const checkerObjectResult = this.runCheckerFunction(checkerObject, parameters, checkerFunctionMap) as CheckerObjectResult
+      const checkerObjectResult = this.runCheckerFunction(checkerObject, parameters) as CheckerObjectResult
       checkerResult[checkerObjectResult.resultName] = checkerObjectResult.result
 
     })

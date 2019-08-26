@@ -48,7 +48,7 @@ function prepareAlertTable(name: string): CreateTableJQL {
       $from: new FromTable(
         {
           method: 'POST',
-          url: 'api/alert/query/alert',
+          url: 'api/alert/query/alert_booking',
           columns: [
             { name: 'id', type: 'number' },
             { name: 'alertType', type: 'string' },

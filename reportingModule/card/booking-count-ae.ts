@@ -8,6 +8,7 @@ import {
   GroupBy,
   BinaryExpression,
   AndExpressions,
+  IsNullExpression,
 } from 'node-jql'
 import { parseCode } from 'utils/function'
 
@@ -29,23 +30,15 @@ function prepareParams(): Function {
         .endOf('year')
         .format('YYYY-MM-DD')
     }
+
+    subqueries.moduleTypeCode = {
+      value : 'AIR'
+    }
+
     return params
   }
   const code = fn.toString()
   return parseCode(code)
-}
-
-// template Table group by carrierCod and jobMonth
-function prepareFinalTable(name: string): CreateTableJQL {
-  return new CreateTableJQL({
-    $temporary: true,
-    name,
-    $as: new Query({
-      $from: new FromTable('tempTable'),
-
-      $group: new GroupBy([new ColumnExpression('carrierCode')]),
-    }),
-  })
 }
 
 // a temp table that Group by carrierCode and JobMonth
@@ -72,6 +65,10 @@ function prepareTempTable(name: string): CreateTableJQL {
               type: 'string',
             },
             {
+              name: 'moduleTypeCode',
+              type: 'string',
+            },
+            {
               name: 'jobMonth',
               type: 'string',
             },
@@ -93,6 +90,12 @@ function prepareTempTable(name: string): CreateTableJQL {
         new ColumnExpression(name, 'carrierCode'),
         new ColumnExpression(name, 'jobMonth'),
       ]),
+
+      $where:
+       [new BinaryExpression(new ColumnExpression(name, 'moduleTypeCode'), '=', 'AIR'),
+      //  new IsNullExpression(new ColumnExpression(name, 'carrierCode'), true),
+      ]
+
     }),
   })
 }

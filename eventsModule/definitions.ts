@@ -1,4 +1,5 @@
 import { EventService, EventConfig } from 'modules/events/service'
+import { extractObject, diff } from 'modules/events/checkerFunction'
 
 export default {
   afterCreate_i18n: [
@@ -81,21 +82,7 @@ export default {
     },
   ],
 
-  afterUpdate_booking2: [
-    {
-      condition: true,
-      eventName: 'create_tracking',
-    },
-    // {
-    //   condition : true,
-    //   handlerName : 'entity_create_invitation.ts',
-    //   otherParameters : {
-    //     tableName : 'booking',
-    //   }
-    // }
-  ],
-
-  afterCreate_booking2: [
+  afterCreate_booking: [
     // create alert of new Booking
     {
       condition: true,
@@ -145,21 +132,24 @@ export default {
 
     {
       condition: true,
+      eventName: 'create_tracking',
+    },
+
+    {
+      condition: true,
       handlerName: 'checker.ts',
       otherParameters: {
         checker: [
           {
-            resultName: 'bookingNo_isDiff',
-            checkerFunction: (parameters: any, functionMap: Map<string, Function>) => {
-              return functionMap.get('diff')(parameters.oldData, parameters.data,
-                [
-                  'bookingNo',
-                  'moduleTypeCode',
-                  'boundTypeCode',
-                  'serviceCode'
-                ]
+            resultName: 'haveDiff',
+            checkerFunction: (parameters: any) => {
 
-              )
+              const difference = diff(parameters.oldData, parameters.data, undefined, undefined, ['createdAt', 'createdBy', 'updatedAt', 'updatedBy'])
+
+              console.log('difference')
+              console.log(difference)
+
+              return (difference) ? true : false
 
             }
           },
@@ -168,21 +158,22 @@ export default {
       },
       afterEvent: [
         {
-          eventName: 'example',
-          previousParameters: {},
-
+          eventName: 'fill_template',
+          previousParameters: {
+            tableName: 'booking',
+            fileName: 'Shipping Order',
+            primaryKey: parameters => {
+              return parameters.data.id
+            },
+          },
           condition(parameters: any) {
-            console.log('condition in afterEvent')
-
-            return true
+            return parameters.checkerResult['haveDiff']
           },
         },
       ],
     }
 
-  ],
-
-  afterCreate_booking: [],
+  ]
 } as {
   [eventName: string]: EventConfig[]
 }

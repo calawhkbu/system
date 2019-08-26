@@ -49,7 +49,7 @@ const query = new Query({
   $from: new FromTable(
     {
       method: 'POST',
-      url: 'api/alert/query/alert',
+      url: 'api/alert/query/alert_booking',
       columns: [
 
         { name: 'alertType', type: 'string' },

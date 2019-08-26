@@ -22,15 +22,6 @@ class ExampleEvent extends BaseEvent {
     console.log(JSON.stringify(parameters), 'parameters')
     console.log('in main Excecute of Example')
 
-    const alertDbService = this.allService['AlertDbService'] as AlertDbService
-
-    const option = {
-      where: { tableName: 'shipment' },
-      ...(this.transaction ? { transaction: this.transaction } : {}),
-    }
-
-    await alertDbService.find(option, this.user)
-
     console.log('in main Excecute of Example Finish')
 
     return {
@@ -40,7 +31,7 @@ class ExampleEvent extends BaseEvent {
 }
 
 export default {
-  execute: async (
+  execute: async(
     parameters: any,
     eventConfig: EventConfig,
     repo: string,
