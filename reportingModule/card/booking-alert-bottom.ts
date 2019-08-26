@@ -100,7 +100,7 @@ function prepareBookingParams(): Function {
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    let month = moment().month()
+    const month = moment().month()
 
     // get the idList
     subqueries.idList = {
@@ -110,7 +110,7 @@ function prepareBookingParams(): Function {
     return params
   }
 
-  let code = fn.toString()
+  const code = fn.toString()
   return parseCode(code)
 }
 
@@ -119,15 +119,24 @@ function prepareBookingable(name: string): CreateTableJQL {
     $temporary: true,
     name,
     $as: new Query({
-      $select: [new ResultColumn('moduleTypeCode'), new ResultColumn('bookingNo')],
+      $select: [
+
+        new ResultColumn(new ColumnExpression(name, 'id')),
+        new ResultColumn(new ColumnExpression(name, 'moduleTypeCode')),
+        new ResultColumn(new ColumnExpression(name, 'bookingNo'))
+
+      ],
 
       $from: new FromTable(
         {
           method: 'POST',
           url: 'api/booking/query/booking',
           columns: [
+
+            { name: 'bookingId', type: 'number', $as : 'id'},
             { name: 'moduleTypeCode', type: 'string' },
             { name: 'bookingNo', type: 'string' },
+
           ],
         },
         name

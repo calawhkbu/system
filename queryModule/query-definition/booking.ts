@@ -18,6 +18,19 @@ import {
 
 const query = new QueryDef(
   new Query({
+
+    $select : [
+      new ResultColumn(new ColumnExpression('booking', '*')),
+
+      // avoid id being overwritten
+      new ResultColumn(new ColumnExpression('booking', 'id'), 'bookingId'),
+
+      new ResultColumn(new ColumnExpression('flex_data', 'data')),
+      new ResultColumn(new ColumnExpression('booking_container', '*')),
+      new ResultColumn(new ColumnExpression('booking_popacking', '*')),
+      new ResultColumn(new ColumnExpression('workflow', '*')),
+    ],
+
     $distinct: true,
     $from: new FromTable(
       'booking',
@@ -81,13 +94,13 @@ const query = new QueryDef(
         table: new FromTable({
           table: new Query({
             $select: [
-              new ResultColumn(new ColumnExpression('booking_container', 'bookingId')),
+              new ResultColumn(new ColumnExpression('booking_container', 'bookingId'), 'booking_container_bookingId'),
               new ResultColumn(
                 new FunctionExpression(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'containerTypeCode'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'containerTypeCode'
@@ -97,7 +110,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'soNo'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'soNo'
@@ -107,7 +120,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'sealNo'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'sealNo'
@@ -151,7 +164,7 @@ const query = new QueryDef(
         $on: new BinaryExpression(
           new ColumnExpression('booking', 'id'),
           '=',
-          new ColumnExpression('booking_container', 'bookingId')
+          new ColumnExpression('booking_container', 'booking_container_bookingId')
         ),
       },
       {
@@ -159,7 +172,7 @@ const query = new QueryDef(
         table: new FromTable({
           table: new Query({
             $select: [
-              new ResultColumn(new ColumnExpression('booking_popacking', 'bookingId')),
+              new ResultColumn(new ColumnExpression('booking_popacking', 'bookingId'), 'booking_popacking_bookingId'),
               new ResultColumn(
                 new FunctionExpression('SUM', new ColumnExpression('booking_popacking', 'volume')),
                 'volume'
@@ -211,7 +224,7 @@ const query = new QueryDef(
         $on: new BinaryExpression(
           new ColumnExpression('booking', 'id'),
           '=',
-          new ColumnExpression('booking_popacking', 'bookingId')
+          new ColumnExpression('booking_popacking', 'booking_popacking_bookingId')
         ),
       },
       {
@@ -219,13 +232,13 @@ const query = new QueryDef(
         table: new FromTable({
           table: new Query({
             $select: [
-              new ResultColumn(new ColumnExpression('booking_reference', 'bookingId')),
+              new ResultColumn(new ColumnExpression('booking_reference', 'bookingId'), 'booking_reference_bookingId'),
               new ResultColumn(
                 new FunctionExpression(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_reference', 'refName'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'refName'
@@ -235,7 +248,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_reference', 'refDescription'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'refDescription'
@@ -253,7 +266,7 @@ const query = new QueryDef(
                 new BinaryExpression(
                   new ColumnExpression('flex_data', 'primaryKey'),
                   '=',
-                  new ColumnExpression('booking_reference', 'id')
+                  new ColumnExpression('booking_reference', 'bookingId')
                 ),
               ],
             }),
@@ -272,7 +285,7 @@ const query = new QueryDef(
         $on: new BinaryExpression(
           new ColumnExpression('booking', 'id'),
           '=',
-          new ColumnExpression('booking_reference', 'bookingId')
+          new ColumnExpression('booking_reference', 'booking_reference_bookingId')
         ),
       },
       {

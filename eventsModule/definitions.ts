@@ -81,7 +81,7 @@ export default {
     },
   ],
 
-  afterUpdate_booking: [
+  afterUpdate_booking2: [
     {
       condition: true,
       eventName: 'create_tracking',
@@ -95,7 +95,7 @@ export default {
     // }
   ],
 
-  afterCreate_booking: [
+  afterCreate_booking2: [
     // create alert of new Booking
     {
       condition: true,
@@ -141,62 +141,48 @@ export default {
     },
   ],
 
-  afterCreate_booking2: [
+  afterUpdate_booking: [
+
     {
       condition: true,
       handlerName: 'checker.ts',
       otherParameters: {
-        checker: {
-          id: [
-            {
-              // warning: checkFunctionName should be unqiue so that the next event can extract back the result based on the name
-              checkerFunctionName: 'isEqual',
-              checkerParam: {
-                value: 689,
-              },
-            },
+        checker: [
+          {
+            resultName: 'bookingNo_isDiff',
+            checkerFunction: (parameters: any, functionMap: Map<string, Function>) => {
+              return functionMap.get('diff')(parameters.oldData, parameters.data,
+                [
+                  'bookingNo',
+                  'moduleTypeCode',
+                  'boundTypeCode',
+                  'serviceCode'
+                ]
 
-            {
-              checkerFunctionName: 'isEmpty',
-            },
+              )
 
-            {
-              checkerFunctionName: 'isNull',
-            },
-          ],
+            }
+          },
 
-          bookingNo: [
-            {
-              checkerFunctionName: 'mytest',
-              checkerFunction: (parameters, checkerParam) => {
-                const bookingNo = parameters.data.bookingNo as string
-                return bookingNo.startsWith(checkerParam['value'])
-              },
-              checkerParam: {
-                value: '777',
-              },
-            },
-          ],
-        },
+        ],
       },
       afterEvent: [
         {
-          eventName: 'fill_template',
+          eventName: 'example',
+          previousParameters: {},
 
-          previousParameters: {
-            fileName: 'Shipping Order',
+          condition(parameters: any) {
+            console.log('condition in afterEvent')
 
-            primaryKey: parameters => {
-              return parameters['data']['id']
-            },
-            tableName: 'booking',
+            return true
           },
-
-          condition: false,
         },
       ],
-    },
+    }
+
   ],
+
+  afterCreate_booking: [],
 } as {
   [eventName: string]: EventConfig[]
 }

@@ -35,8 +35,6 @@ function prepareParams(): Function {
     return params
   }
 
-  const code = fn.toString()
-  return parseCode(code)
 }
 
 const query = new Query({
@@ -52,7 +50,10 @@ const query = new Query({
     {
       method: 'POST',
       url: 'api/alert/query/alert',
-      columns: [{ name: 'alertType', type: 'string' }, { name: 'tableName', type: 'string' }],
+      columns: [
+
+        { name: 'alertType', type: 'string' },
+        { name: 'tableName', type: 'string' }],
     },
     'alert'
   ),

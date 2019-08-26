@@ -4,6 +4,18 @@ import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import { stringify } from 'querystring'
 
+interface CheckerObject {
+
+  resultName: string
+  checkerFunction: Function
+}
+
+interface CheckerObjectResult {
+
+  resultName: string
+  result: any
+}
+
 class CheckerEvent extends BaseEvent {
   constructor(
     protected readonly parameters: any,
@@ -18,13 +30,30 @@ class CheckerEvent extends BaseEvent {
     super(parameters, eventConfig, repo, eventService, allService, user, transaction)
   }
 
+  extractObject(inputObject: any, includeKeyList?: string[], excludeKeyList?: string[])
+  {
+
+    const cloned = JSON.parse(JSON.stringify(inputObject))
+
+    for (const [key, value] of Object.entries(cloned)) {
+
+      console.log(`${key}: ${value}`)
+
+      if ((includeKeyList && includeKeyList.length && !includeKeyList.includes(key)) || (excludeKeyList && excludeKeyList.length && excludeKeyList.includes(key)))
+      {
+        delete cloned[key]
+      }
+    }
+
+    return cloned
+
+  }
+
+  // get variable based on key
   getVariable(parameters: any, key: string) {
     if (key.indexOf('.') >= 0) {
       const firstKey = key.substr(0, key.indexOf('.'))
       const subKey = key.substr(key.indexOf('.') + 1)
-
-      // console.log(firstKey,'firstKey')
-      // console.log(subKey,'subKey')
 
       return this.getVariable(parameters[firstKey], subKey)
     }
@@ -33,11 +62,12 @@ class CheckerEvent extends BaseEvent {
     return result
   }
 
-  isNull(variable: any, checkerParam: any) {
+  isNull(variable: any) {
     return !(variable && variable != null)
   }
 
-  isEmpty(variable: any, checkerParam: any) {
+  isEmpty(variable: any) {
+    console.log('in is Empty')
     return !(variable && variable != null) && variable.length
   }
 
@@ -72,50 +102,57 @@ class CheckerEvent extends BaseEvent {
     return operatorFunction(variable, checkerParam.value)
   }
 
+  diff(left: any, right: any, includeKeyList?: string[], excludeKeyList?: string[]) {
+
+    const jsondiffpatch = require('jsondiffpatch').create()
+
+    let clonedLeft = JSON.parse(JSON.stringify(left))
+    let clonedRight = JSON.parse(JSON.stringify(right))
+
+    clonedLeft = this.extractObject(clonedLeft, includeKeyList, excludeKeyList)
+    clonedRight = this.extractObject(clonedRight, includeKeyList, excludeKeyList)
+
+    const diff =  jsondiffpatch.diff(clonedLeft, clonedRight)
+    return diff
+
+  }
+
   initCheckerFunctionMap() {
     const functionMap = new Map<string, Function>()
 
     functionMap.set('isMatch', this.isMatch)
     functionMap.set('isNull', this.isNull)
     functionMap.set('isEmpty', this.isEmpty)
+    functionMap.set('extractObject', this.extractObject)
+    functionMap.set('diff', this.diff)
 
     return functionMap
   }
 
-  processCheckerFunction(
-    key: string,
+  runCheckerFunction(
+    checkerObject: CheckerObject,
     parameters: any,
-    checkerOption: any,
     checkerFunctionMap: Map<string, Function>
   ) {
-    let checkerFunction = checkerOption['checkerFunction'] as Function
-    const checkerFunctionName = checkerOption['checkerFunctionName'] as string
+    const checkerFunction = checkerObject.checkerFunction as Function
+    const resultName = checkerObject.resultName as string
+    // if checkerFunction is not provided, use checkerFunctionName is find function from checkerFunctionMap
+    let result: any
 
     if (!checkerFunction) {
-      checkerFunction = checkerFunctionMap.get(checkerFunctionName)
+      throw new Error('checkerFunction / checkerFunctionName  is not provided')
     }
 
-    if (!checkerFunction) {
-      throw new Error('checkerFunction is not found')
-    }
-
-    // console.log(key,'key')
-    // console.log(parameters,'parameters')
-
-    const variable = this.getVariable(parameters, key)
-
-    // console.log(variable,'variable')
-
-    const result: any = checkerFunction(variable, checkerOption.checkerParam)
+    result = checkerFunction(parameters, checkerFunctionMap)
 
     return {
-      checkerFunctionName,
-      variable,
+      resultName,
       result,
     }
   }
 
   public async mainFunction(parameters: any) {
+
     const checkerResult = {}
 
     const checkerFunctionMap = this.initCheckerFunctionMap()
@@ -124,33 +161,25 @@ class CheckerEvent extends BaseEvent {
       throw new Error('checker param is not found in checker Event')
     }
 
-    for (const [key, checkerList] of Object.entries<any[]>(parameters['checker'])) {
-      // clone variableResult from checkerList
-      const variableResult = []
+    const checkerList = parameters['checker']
 
-      for (let index = 0; index < checkerList.length; index++) {
-        variableResult[index] = this.processCheckerFunction(
-          key,
-          parameters,
-          checkerList[index],
-          checkerFunctionMap
-        )
-      }
+    checkerList.forEach((checkerObject: CheckerObject) => {
 
-      checkerResult[key] = variableResult
-    }
+      const checkerObjectResult = this.runCheckerFunction(checkerObject, parameters, checkerFunctionMap) as CheckerObjectResult
+      checkerResult[checkerObjectResult.resultName] = checkerObjectResult.result
 
-    // console.log(checkerResult,'checkerResult')
+    })
 
-    // remove checkerParam from parameters
+    // remove checker from parameters
     delete parameters['checker']
 
+    // add checkerResult into the result
     return { ...parameters, ...{ checkerResult } }
   }
 }
 
 export default {
-  execute: async (
+  execute: async(
     parameters: any,
     eventConfig: EventConfig,
     repo: string,
