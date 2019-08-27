@@ -7,9 +7,7 @@
           "name": "moduleTypeCode",
           "component": "AsyncSelect",
           "class": "xs-12 md-2",
-          "validator": [
-            "required"
-          ],
+          "validator": ["required"],
           "relation": "moduleType",
           "props": {
             "required": true,
@@ -34,9 +32,7 @@
           "component": "AsyncSelect",
           "class": "xs-12 md-2",
           "relation": "boundType",
-          "validator": [
-            "required"
-          ],
+          "validator": ["required"],
           "props": {
             "required": true,
             "axiosParams": {
@@ -59,9 +55,7 @@
           "name": "serviceCode",
           "component": "AsyncSelect",
           "class": "xs-12 md-2",
-          "validator": [
-            "required"
-          ],
+          "validator": ["required"],
           "props": {
             "required": true,
             "axiosParams": {
@@ -76,7 +70,8 @@
               }
             },
             "item-text": "name",
-            "item-value": "code"
+            "item-value": "code",
+            "showValue": false
           }
         },
         {
@@ -149,9 +144,7 @@
           "name": "portOfLoading",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-3",
-          "validator": [
-            "required"
-          ],
+          "validator": ["required"],
           "more": [{
             "name": "portOfLoadingCode",
             "selector": "portCode"
@@ -196,9 +189,7 @@
           "name": "portOfDischarge",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-3",
-          "validator": [
-            "required"
-          ],
+          "validator": ["required"],
           "more": [{
             "name": "portOfDischargeCode",
             "selector": "portCode"
@@ -400,21 +391,20 @@
             "selector": "code"
           }],
           "relationMore": [{
-            "name": "freightTermsCode",
-            "selector": "data.frieghtTermsCode"
-          }, {
-            "name": "otherTermsCode",
-            "selector": "data.otherTermsCode"
-          }],
+              "name": "freightTermsCode",
+              "selector": "data.frieghtTermsCode"
+            },
+            {
+              "name": "otherTermsCode",
+              "selector": "data.otherTermsCode"
+            }
+          ],
           "props": {
             "searchValueParams": {
               "url": "api/code/query/code_master",
               "method": "POST",
               "data": {
-                "fields": [
-                  "code_master.*",
-                  "flex_data.data"
-                ],
+                "fields": ["code_master.*", "flex_data.data"],
                 "subqueries": {
                   "codeType": {
                     "value": "INCOTERMS"
@@ -429,10 +419,7 @@
               "url": "api/code/query/code_master",
               "method": "POST",
               "data": {
-                "fields": [
-                  "code_master.*",
-                  "flex_data.data"
-                ],
+                "fields": ["code_master.*", "flex_data.data"],
                 "subqueries": {
                   "codeType": {
                     "value": "INCOTERMS"

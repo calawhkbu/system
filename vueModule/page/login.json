@@ -23,16 +23,11 @@
           "props": {
             "required": true,
             "type": "email",
-            "id": "email",
-            "browser-autocomplete": "email",
-            "autocomplete": "email",
-            "aria-invalid": false
+            "browser-autocomplete": "username",
+            "autocomplete": "username"
           },
           "component": "v-text-field",
-          "validator": [
-            "required",
-            "isEmail"
-          ]
+          "validator": ["required", "isEmail"]
         },
         {
           "name": "password",
@@ -43,9 +38,7 @@
             "autocomplete": "password"
           },
           "component": "DisplayPasswordField",
-          "validator": [
-            "required"
-          ]
+          "validator": ["required"]
         }
       ],
       "submitActions": [{

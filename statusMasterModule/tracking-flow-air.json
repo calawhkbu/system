@@ -14,11 +14,7 @@
   },
   {
     "group": "Processing",
-    "status": [
-      "Empty out for booking",
-      "New, no tracking yet",
-      "Booked"
-    ]
+    "status": ["Empty out for booking", "New, no tracking yet", "Booked"]
   },
   {
     "group": "Cargo Ready",
@@ -34,11 +30,7 @@
   },
   {
     "group": "Departure",
-    "status": [
-      "Load onboard",
-      "Departure from port of loading",
-      "Loading"
-    ]
+    "status": ["Load onboard", "Departure from port of loading", "Loading"]
   },
   {
     "group": "In Transit",
@@ -66,10 +58,6 @@
   },
   {
     "group": "Delivered",
-    "status": [
-      "Sent to consignee",
-      "Empty container returned",
-      "Delivered"
-    ]
+    "status": ["Sent to consignee", "Empty container returned", "Delivered"]
   }
 ]

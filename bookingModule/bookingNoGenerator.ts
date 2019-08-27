@@ -1,8 +1,8 @@
 import moment = require('moment')
 
-export default async function bookingNoGeneraror (booking: any) {
+export default async function bookingNoGeneraror(booking: any) {
   const date = moment.utc().format('YYMMDD')
-  let random = (Math.floor(Math.random() * 9999)).toString()
+  let random = Math.floor(Math.random() * 9999).toString()
   if (random.length === 3) {
     random = `0${random}`
   } else if (random.length === 2) {

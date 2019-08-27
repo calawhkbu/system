@@ -22,10 +22,7 @@
                   {
                     "component": "TransactionPartyDetail",
                     "displaySetting": {
-                      "top": [
-                        "SHP",
-                        "CGN"
-                      ]
+                      "top": ["SHP", "CGN"]
                     },
                     "field": {
                       "card": [
@@ -34,12 +31,7 @@
                             "children": {
                               "empty": ""
                             },
-                            "field": [
-                              [
-                                "name",
-                                "party.partyName"
-                              ]
-                            ]
+                            "field": [["name", "party.partyName"]]
                           }
                         },
                         {
@@ -47,10 +39,7 @@
                             "children": {
                               "empty": ""
                             },
-                            "field": [
-                              "cityCode",
-                              "country"
-                            ]
+                            "field": ["cityCode", "country"]
                           }
                         },
                         {
@@ -58,9 +47,7 @@
                             "children": {
                               "empty": ""
                             },
-                            "field": [
-                              "email"
-                            ]
+                            "field": ["email"]
                           }
                         }
                       ],
@@ -76,12 +63,7 @@
                             "children": {
                               "empty": ""
                             },
-                            "field": [
-                              [
-                                "name",
-                                "party.partyName"
-                              ]
-                            ]
+                            "field": [["name", "party.partyName"]]
                           }
                         },
                         {
@@ -95,10 +77,7 @@
                             "children": {
                               "empty": ""
                             },
-                            "field": [
-                              "country",
-                              "city"
-                            ]
+                            "field": ["country", "city"]
                           }
                         },
                         {
@@ -112,13 +91,7 @@
                             "children": {
                               "empty": ""
                             },
-                            "field": [
-                              "address1",
-                              "address2",
-                              "address3",
-                              "address4",
-                              "address5"
-                            ]
+                            "field": ["address1", "address2", "address3", "address4", "address5"]
                           }
                         },
                         {
@@ -132,9 +105,7 @@
                             "children": {
                               "empty": ""
                             },
-                            "field": [
-                              "contact"
-                            ]
+                            "field": ["contact"]
                           }
                         },
                         {
@@ -148,9 +119,7 @@
                             "children": {
                               "empty": ""
                             },
-                            "field": [
-                              "phone"
-                            ]
+                            "field": ["phone"]
                           }
                         },
                         {
@@ -164,9 +133,7 @@
                             "children": {
                               "empty": ""
                             },
-                            "field": [
-                              "email"
-                            ]
+                            "field": ["email"]
                           }
                         }
                       ]
@@ -183,10 +150,7 @@
                   {
                     "component": "TransactionDateDetail",
                     "displayDate": {
-                      "top": [
-                        "DEPARTURE",
-                        "ARRIVAL"
-                      ]
+                      "top": ["DEPARTURE", "ARRIVAL"]
                     },
                     "actualOnlyFields": [
                       "OCEANBILL",
@@ -217,9 +181,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "houseNo"
-                        ]
+                        "field": ["houseNo"]
                       }
                     }
                   },
@@ -233,9 +195,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "masterNo"
-                        ]
+                        "field": ["masterNo"]
                       }
                     }
                   },
@@ -249,9 +209,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "estimatedDepartureDate"
-                        ],
+                        "field": ["estimatedDepartureDate"],
                         "children": {
                           "type": "momentdate-utc"
                         }
@@ -268,9 +226,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "estimatedArrivalDate"
-                        ],
+                        "field": ["estimatedArrivalDate"],
                         "children": {
                           "type": "momentdate-utc"
                         }
@@ -294,9 +250,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "placeOfReceipt"
-                        ]
+                        "field": ["placeOfReceipt"]
                       }
                     }
                   },
@@ -310,9 +264,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "placeOfDelivery"
-                        ]
+                        "field": ["placeOfDelivery"]
                       }
                     }
                   },
@@ -326,9 +278,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "portOfLoading"
-                        ]
+                        "field": ["portOfLoading"]
                       }
                     }
                   },
@@ -342,9 +292,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "portOfDischarge"
-                        ]
+                        "field": ["portOfDischarge"]
                       }
                     }
                   },
@@ -358,9 +306,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "finalDestination"
-                        ]
+                        "field": ["finalDestination"]
                       }
                     }
                   }
@@ -381,9 +327,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "billTransports[0].carrierCode"
-                        ]
+                        "field": ["billTransports[0].carrierCode"]
                       }
                     }
                   },
@@ -397,9 +341,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "billTransports[0].transport"
-                        ]
+                        "field": ["billTransports[0].transport"]
                       }
                     },
                     "hiddenWhen": {
@@ -416,9 +358,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "billTransports[0].transport"
-                        ]
+                        "field": ["billTransports[0].transport"]
                       }
                     },
                     "hiddenWhen": {
@@ -435,9 +375,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "service"
-                        ]
+                        "field": ["service"]
                       }
                     }
                   },
@@ -451,9 +389,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "incoTerms"
-                        ]
+                        "field": ["incoTerms"]
                       }
                     }
                   },
@@ -467,9 +403,7 @@
                         }
                       },
                       "field": {
-                        "field": [
-                          "issuingAgent"
-                        ]
+                        "field": ["issuingAgent"]
                       },
                       "hiddenWhen": {
                         "moduleType": "SEA"
@@ -488,9 +422,7 @@
                       },
                       "field": {
                         "type": "display-empty",
-                        "field": [
-                          "valueForCarriage"
-                        ]
+                        "field": ["valueForCarriage"]
                       },
                       "hiddenWhen": {
                         "moduleType": "SEA"
@@ -509,9 +441,7 @@
                       },
                       "field": {
                         "displaytype": "display-empty",
-                        "field": [
-                          "valueForCustoms"
-                        ]
+                        "field": ["valueForCustoms"]
                       },
                       "hiddenWhen": {
                         "moduleType": "SEA"
@@ -530,9 +460,7 @@
                       },
                       "field": {
                         "type": "display-empty",
-                        "field": [
-                          "amountOfInsurance"
-                        ]
+                        "field": ["amountOfInsurance"]
                       },
                       "hiddenWhen": {
                         "moduleType": "SEA"
@@ -551,9 +479,7 @@
                       },
                       "field": {
                         "type": "display-empty",
-                        "field": [
-                          "issueAt"
-                        ]
+                        "field": ["issueAt"]
                       }
                     }
                   }
@@ -572,9 +498,7 @@
                   }
                 },
                 "field": {
-                  "field": [
-                    "commodity"
-                  ],
+                  "field": ["commodity"],
                   "children": {
                     "empty": "unavailable"
                   }
@@ -588,10 +512,7 @@
                   }
                 },
                 "field": {
-                  "field": [
-                    "quantity",
-                    "quantityUnit"
-                  ],
+                  "field": ["quantity", "quantityUnit"],
                   "children": {
                     "empty": "unavailable"
                   }
@@ -606,10 +527,7 @@
                   "isDisplay": true
                 },
                 "field": {
-                  "field": [
-                    "grossWeight",
-                    "weightUnit"
-                  ],
+                  "field": ["grossWeight", "weightUnit"],
                   "children": {
                     "empty": "unavailable"
                   }
@@ -623,9 +541,7 @@
                   }
                 },
                 "field": {
-                  "field": [
-                    "cbm"
-                  ],
+                  "field": ["cbm"],
                   "children": {
                     "empty": "unavailable"
                   }
@@ -641,9 +557,7 @@
                   }
                 },
                 "field": {
-                  "field": [
-                    "shipMarks"
-                  ],
+                  "field": ["shipMarks"],
                   "children": {
                     "empty": "unavailable",
                     "type": "ellipsis",
@@ -662,9 +576,7 @@
                   }
                 },
                 "field": {
-                  "field": [
-                    "goodsDescription"
-                  ],
+                  "field": ["goodsDescription"],
                   "children": {
                     "empty": "unavailable",
                     "type": "ellipsis",
@@ -684,9 +596,7 @@
                   "isDisplay": true
                 },
                 "field": {
-                  "field": [
-                    "dimension"
-                  ],
+                  "field": ["dimension"],
                   "type": "display-empty",
                   "children": {
                     "empty": "unavailable",
@@ -711,9 +621,7 @@
                   }
                 },
                 "field": {
-                  "field": [
-                    "containerNo"
-                  ],
+                  "field": ["containerNo"],
                   "children": {
                     "empty": "unavailable"
                   }
@@ -731,9 +639,7 @@
                   }
                 },
                 "field": {
-                  "field": [
-                    "carrierBookingNo"
-                  ],
+                  "field": ["carrierBookingNo"],
                   "children": {
                     "empty": "unavailable"
                   }
@@ -748,9 +654,7 @@
                   "isDisplay": true
                 },
                 "field": {
-                  "field": [
-                    "sealNo1"
-                  ],
+                  "field": ["sealNo1"],
                   "children": {
                     "empty": "unavailable"
                   }
@@ -764,9 +668,7 @@
                   }
                 },
                 "field": {
-                  "field": [
-                    "containerType"
-                  ],
+                  "field": ["containerType"],
                   "children": {
                     "empty": "unavailable"
                   }
@@ -780,10 +682,7 @@
                   }
                 },
                 "field": {
-                  "field": [
-                    "quantity",
-                    "quantityUnit"
-                  ],
+                  "field": ["quantity", "quantityUnit"],
                   "children": {
                     "empty": "unavailable"
                   }
@@ -797,10 +696,7 @@
                   }
                 },
                 "field": {
-                  "field": [
-                    "grossWeight",
-                    "weightUnit"
-                  ],
+                  "field": ["grossWeight", "weightUnit"],
                   "children": {
                     "empty": "unavailable"
                   }
@@ -814,9 +710,7 @@
                   }
                 },
                 "field": {
-                  "field": [
-                    "cbm"
-                  ],
+                  "field": ["cbm"],
                   "children": {
                     "empty": "unavailable"
                   }

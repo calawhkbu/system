@@ -27,16 +27,16 @@ module.exports = {
   // SUOT: "", // "Exit",
   // CUIP: "", // "Checked",
   // For Air Only
-  BKD: "preadvice", // "Booked"
-  RCS: "received_by_origin_cto", // "Cargo Receipt"
-  MNF: "loaded", // "Loading"
-  DEP: "uplifted", // "Departure"
-  TAR: "transit_arrived", // "Transit Arrival"
-  TDE: "transit_uplifted", // "Transit Departure"
-  ARR: "arrived", // "Arrival"
+  BKD: 'preadvice', // "Booked"
+  RCS: 'received_by_origin_cto', // "Cargo Receipt"
+  MNF: 'loaded', // "Loading"
+  DEP: 'uplifted', // "Departure"
+  TAR: 'transit_arrived', // "Transit Arrival"
+  TDE: 'transit_uplifted', // "Transit Departure"
+  ARR: 'arrived', // "Arrival"
   // RWB: "", // "Acquiring"
-  RCF: "unloaded", // "Discharged"
-  CUS: "import_custom_clearance_success", // "Customs Clearance"
-  NFD: "ready_in_cto", // "Arrival Notice"
-  DLV: "handover to the lastmile" // "Delivered"
+  RCF: 'unloaded', // "Discharged"
+  CUS: 'import_custom_clearance_success', // "Customs Clearance"
+  NFD: 'ready_in_cto', // "Arrival Notice"
+  DLV: 'handover to the lastmile', // "Delivered"
 }

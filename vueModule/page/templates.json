@@ -1,51 +1,53 @@
 {
   "layout": "MainLayout",
-  "components": [{
-    "is": "TableTool",
-    "props": {
-      "back": "/admin",
-      "reportingKey": "templates",
-      "jql": "templates",
-      "showFilterBar": true,
-      "enableShare": false,
-      "enableSetting": false,
-      "newReport": {
-        "filters": {
-          "extension": {
-            "value": "pdf"
+  "components": [
+    {
+      "is": "TableTool",
+      "props": {
+        "back": "/admin",
+        "reportingKey": "templates",
+        "jql": "templates",
+        "showFilterBar": true,
+        "enableShare": false,
+        "enableSetting": false,
+        "newReport": {
+          "filters": {
+            "extension": {
+              "value": "pdf"
+            },
+            "isActive": true
           },
-          "isActive": true
-        },
-        "configurations": {
-          "i18nContext": "Reporting",
-          "clickable": true,
-          "draggable": true,
-          "sorting": {},
-          "pagination": {
-            "current": 0,
-            "perPage": 20
+          "configurations": {
+            "i18nContext": "Reporting",
+            "clickable": true,
+            "draggable": true,
+            "sorting": {},
+            "pagination": {
+              "current": 0,
+              "perPage": 20
+            }
           }
-        }
-      },
-      "fieldOptions": [
-        {
-          "key": "id",
-          "hidden": true
-        }
-      ],
-      "filters": [
-        {
-          "name": "templateName",
-          "type": "text"
-        }
-      ],
-      "clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/template/{{id}}"
+        },
+        "fieldOptions": [
+          {
+            "key": "id",
+            "hidden": true
+          }
+        ],
+        "filters": [
+          {
+            "name": "templateName",
+            "type": "text"
+          }
+        ],
+        "clickFunction": {
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "/template/{{id}}"
+          }
         }
       }
     }
-  }]
+  ]
 }

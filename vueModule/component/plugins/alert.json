@@ -16,6 +16,7 @@
   },
   "loopGetData": 60000,
   "shareProps": {
+    "i18nContext": "Alert",
     "iconType": "",
     "icon": "alertCategory",
     "iconMap": {

@@ -10,24 +10,30 @@ import { CodeMasterService } from 'modules/sequelize/codeMaster/service'
 import { SwivelConfigService } from 'modules/swivel-config/service'
 
 export default class BaseAirTrackingService {
-  constructor (
+  constructor(
     private readonly swivelConfigService: SwivelConfigService,
     private readonly trackingService: TrackingService,
     private readonly trackingReferenceService: TrackingReferenceService,
     private readonly outboundService: OutboundService,
     private readonly codeMasterService: CodeMasterService,
-    private readonly buffer?: any,
+    private readonly buffer?: any
   ) {}
-  async registerNew (
+  async registerNew(
     partyGroupCode: string,
-    trackingForm: { carrierCode: string, masterNo: string, soNo?: string[], containerNo?: string[], departureDateEstimated: string }
+    trackingForm: {
+      carrierCode: string
+      masterNo: string
+      soNo?: string[]
+      containerNo?: string[]
+      departureDateEstimated: string
+    }
   ) {
     const trackingReference = await this.trackingReferenceService.findOne({
       where: {
         partyGroupCode,
         trackingType: 'SEA',
         masterNo: trackingForm.masterNo,
-      }
+      },
     })
     if (trackingReference) {
       return trackingReference
@@ -55,15 +61,13 @@ export default class BaseAirTrackingService {
       soNo: trackingForm.soNo,
       containerNo: trackingForm.containerNo,
       departureDateEstimated: trackingForm.departureDateEstimated,
-      mode
+      mode,
     })
   }
-  async track (
-    trackingReference: TrackingReference
-  ): Promise<boolean> {
+  async track(trackingReference: TrackingReference): Promise<boolean> {
     try {
       const { trackingModule } = await this.swivelConfigService.get()
-      let trackingNos: string|string[] = trackingReference[trackingReference.mode] || null
+      let trackingNos: string | string[] = trackingReference[trackingReference.mode] || null
       if (!Array.isArray(trackingNos)) {
         trackingNos = [trackingNos]
       }
@@ -72,18 +76,20 @@ export default class BaseAirTrackingService {
         return
       }
       for (const trackingNo of trackingNos) {
-        const oldTracking = await this.trackingService.findOne({ where: { source: 'YUNDANG', trackingNo } })
+        const oldTracking = await this.trackingService.findOne({
+          where: { source: 'YUNDANG', trackingNo },
+        })
         if (oldTracking) {
           if (oldTracking.batchRetry > trackingModule.retryTime.sea) {
             if (trackingReference.mode === 'masterNo') {
-              const newRef = await this.trackingReferenceService.save({ ...trackingReference, mode: 'soNo' })
-              return this.track(newRef)
+              await this.trackingReferenceService.save({ id: trackingReference.id, mode: 'soNo' } as TrackingReference)
             } else if (trackingReference.mode === 'soNo') {
-              const newRef = await this.trackingReferenceService.save({ ...trackingReference, mode: 'containerNo' })
-              return this.track(newRef)
-            } else {
-              throw new Error('Tracking NO is not correct')
+              await this.trackingReferenceService.save({ id: trackingReference.id, mode: 'containerNo' } as TrackingReference)
             }
+            return
+          }
+          if (oldTracking.isClosed && oldTracking.isClosed === 'true') {
+            throw new Error('CLOSED')
           }
           await this.get(trackingNo, trackingReference, trackingReference.carrierCode, oldTracking)
         } else {
@@ -96,11 +102,11 @@ export default class BaseAirTrackingService {
       throw e
     }
   }
-  async register (
+  async register(
     trackingNo: string,
     trackingReference: TrackingReference,
     carrierCode: string
-  ): Promise<void> {
+  ): Promise<Tracking> {
     const { trackingModule } = await this.swivelConfigService.get()
     const newTracking = {
       source: 'YUNDANG',
@@ -117,12 +123,12 @@ export default class BaseAirTrackingService {
         actualArrivalDate: null,
         isClosed: null,
         lastStatusUpdateDate: null,
-        lastActualUpdateDate: null
+        lastActualUpdateDate: null,
       },
       detailsRaw: null,
-      lastBatchDate: moment.utc().toDate()
+      lastBatchDate: moment.utc().toDate(),
     }
-    const isMasterContainer = (trackingReference.mode === 'containerNo')
+    const isMasterContainer = trackingReference.mode === 'containerNo'
     let masterNo2 = null
     if (carrierCode === 'SITC') {
       if (trackingReference.mode === 'masterNo') {
@@ -138,7 +144,12 @@ export default class BaseAirTrackingService {
         'system',
         'yundang-sea-register',
         { Buffer: this.buffer, constants: trackingModule.yundang },
-        { masterNo: trackingNo, carrierCode, isMasterContainer, ...(masterNo2 ? { masterNo2 } : {}) }
+        {
+          masterNo: trackingNo,
+          carrierCode,
+          isMasterContainer,
+          ...(masterNo2 ? { masterNo2 } : {}),
+        }
       )
       newTracking.detailsRaw = newDetailsRaw
       if (newDetailsRaw.success && newDetailsRaw.result[0].success) {
@@ -148,12 +159,12 @@ export default class BaseAirTrackingService {
         newTracking.batchStatus = 'ERROR'
         newTracking.batchRetry = 1
       }
-      await this.trackingService.save(newTracking)
+      return await this.trackingService.save(newTracking as Tracking)
     } catch (e) {
       console.error(e, e.stack, 'BaseAirTrackingService')
     }
   }
-  async get (
+  async get(
     trackingNo: string,
     trackingReference: TrackingReference,
     carrierCode: string,
@@ -171,11 +182,11 @@ export default class BaseAirTrackingService {
       details: oldTracking.details,
       detailsRaw: oldTracking.detailsRaw,
       batchRetry: oldTracking.batchRetry,
-      lastBatchDate: moment.utc().toDate()
+      lastBatchDate: moment.utc().toDate(),
     }
     try {
       const oldDetails = oldTracking.details
-      const isMasterContainer = (trackingReference.mode === 'containerNo')
+      const isMasterContainer = trackingReference.mode === 'containerNo'
       let masterNo2 = null
       if (carrierCode === 'SITC') {
         if (trackingReference.mode === 'masterNo') {
@@ -186,12 +197,17 @@ export default class BaseAirTrackingService {
           masterNo2 = trackingReference.masterNo
         }
       }
-      let newDetailsRaw = (await this.outboundService.send(
+      let newDetailsRaw = await this.outboundService.send(
         'system',
         'yundang-sea-get',
         { Buffer: this.buffer, constants: trackingModule.yundang },
-        { masterNo: trackingNo, carrierCode, isMasterContainer, ...(masterNo2 ? { masterNo2 } : {}) }
-      ))
+        {
+          masterNo: trackingNo,
+          carrierCode,
+          isMasterContainer,
+          ...(masterNo2 ? { masterNo2 } : {}),
+        }
+      )
       newDetailsRaw = Array.isArray(newDetailsRaw) ? newDetailsRaw[0] : null
       newTracking.detailsRaw = newDetailsRaw
       if (!(newDetailsRaw && newDetailsRaw.success && newDetailsRaw.objlinertracking)) {
@@ -204,11 +220,13 @@ export default class BaseAirTrackingService {
       newDetails.isClosed = newDetailsRaw.endTime || newDetailsRaw.isendforce === 'Y'
       newDetails.lastStatusCode = newDetailsRaw.currentnode
       newDetails.lastStatus = status[newDetailsRaw.currentnode] || newDetailsRaw.currentnode
-      newDetails.lastStatusDate = newDetailsRaw.currentnodetime ? new Date(newDetailsRaw.currentnodetime) : null
+      newDetails.lastStatusDate = newDetailsRaw.currentnodetime
+        ? new Date(newDetailsRaw.currentnodetime)
+        : null
       if (
         newDetails.lastStatusCode !== oldDetails.lastStatusCode ||
         newDetails.lastStatus !== oldDetails.lastStatus ||
-        (moment(oldDetails.lastStatusDate).isSame(moment(newDetails.lastStatusDate)))
+        moment(oldDetails.lastStatusDate).isSame(moment(newDetails.lastStatusDate))
       ) {
         newDetails.lastStatusUpdateDate = moment.utc().toDate()
       }
@@ -231,14 +249,16 @@ export default class BaseAirTrackingService {
         newDetails.actualArrivalDate = newDetails.actualArrivalDate || d.statustime
       })
       if (
-        (moment(oldDetails.estimatedDepartureDate).isSame(moment(newDetails.estimatedDepartureDate))) ||
-        (moment(oldDetails.actualDepartureDate).isSame(moment(newDetails.actualDepartureDate))) ||
-        (moment(oldDetails.estimatedArrivalDate).isSame(moment(newDetails.estimatedArrivalDate))) ||
-        (moment(oldDetails.actualArrivalDate).isSame(moment(newDetails.actualArrivalDate)))
+        moment(oldDetails.estimatedDepartureDate).isSame(
+          moment(newDetails.estimatedDepartureDate)
+        ) ||
+        moment(oldDetails.actualDepartureDate).isSame(moment(newDetails.actualDepartureDate)) ||
+        moment(oldDetails.estimatedArrivalDate).isSame(moment(newDetails.estimatedArrivalDate)) ||
+        moment(oldDetails.actualArrivalDate).isSame(moment(newDetails.actualArrivalDate))
       ) {
         newDetails.lastActualUpdateDate = moment.utc().toDate()
       }
-      newDetails.history = trackingHistory.map((item) => ({
+      newDetails.history = trackingHistory.map(item => ({
         statusCode: item.statuscd,
         status: status[item.statuscd] || item.statuscd,
         statusDescription: item.statedescription_en,
@@ -246,18 +266,23 @@ export default class BaseAirTrackingService {
         statusDate: new Date(item.statustime),
         statusPlace: item.statusplace,
         updatedAt: new Date(item.updatetime),
-        isEstimated: item.isest == 'Y' ? true : false
+        isEstimated: item.isest === 'Y' ? true : false,
       }))
       newDetails.billCargoTracking = []
-      if (newDetailsRaw.objbillinfo && newDetailsRaw.objbillinfo.lstctnrinfos && newDetailsRaw.objbillinfo.lstctnrinfos.length > 0) {
-        newDetails.billContainerTracking = newDetailsRaw.objbillinfo.lstctnrinfos.map((item: any) => {
-          return {
-            containerNo: item.conno,
-            sealNo: item.sealno,
-            containerType: item.ctype,
-            containerSize: item.csize,
-            history: item.lstctnrstatus.map((item: any) => {
-              return {
+      if (
+        newDetailsRaw.objbillinfo &&
+        newDetailsRaw.objbillinfo.lstctnrinfos &&
+        newDetailsRaw.objbillinfo.lstctnrinfos.length > 0
+      ) {
+        newDetails.billContainerTracking = newDetailsRaw.objbillinfo.lstctnrinfos.map(
+          (item: any) => {
+            return {
+              containerNo: item.conno,
+              sealNo: item.sealno,
+              containerType: item.ctype,
+              containerSize: item.csize,
+              history: item.lstctnrstatus.map((item: any) => {
+                return {
                   vessel: item.vslname,
                   voyage: item.voy,
                   statusCode: item.status,
@@ -265,11 +290,12 @@ export default class BaseAirTrackingService {
                   statusDescription: item.statedescription,
                   statusDate: new Date(item.eventtime),
                   statusPlace: item.station,
-                  updatedAt: new Date(item.updatetime)
-               }
-            })
+                  updatedAt: new Date(item.updatetime),
+                }
+              }),
+            }
           }
-        })
+        )
       } else {
         newDetails.billContainerTracking = []
       }
@@ -281,6 +307,6 @@ export default class BaseAirTrackingService {
       newTracking.batchRetry = oldTracking.batchRetry + 1
       console.error(e, e.stack, 'BaseSeaTrackingService')
     }
-    await this.trackingService.save(newTracking)
+    return await this.trackingService.save(newTracking as Tracking)
   }
 }

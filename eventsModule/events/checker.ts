@@ -1,14 +1,23 @@
-
 import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import { stringify } from 'querystring'
 
+interface CheckerObject {
+
+  resultName: string
+  checkerFunction: Function
+}
+
+interface CheckerObjectResult {
+
+  resultName: string
+  result: any
+}
+
 class CheckerEvent extends BaseEvent {
-
-  constructor (
-
+  constructor(
     protected readonly parameters: any,
     protected readonly eventConfig: EventConfig,
     protected readonly repo: string,
@@ -17,151 +26,74 @@ class CheckerEvent extends BaseEvent {
 
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
-
   ) {
     super(parameters, eventConfig, repo, eventService, allService, user, transaction)
   }
 
-  getVariable (parameters: any, key: string)
-  {
-    if (key.indexOf('.') >= 0 )
-    {
-      const firstKey = key.substr(0, key.indexOf('.'))
-      const subKey = key.substr(key.indexOf('.') + 1 )
+  runCheckerFunction(
+    checkerObject: CheckerObject,
+    parameters: any
+  ) {
+    const checkerFunction = checkerObject.checkerFunction as Function
+    const resultName = checkerObject.resultName as string
+    // if checkerFunction is not provided, use checkerFunctionName is find function from checkerFunctionMap
+    let result: any
 
-      // console.log(firstKey,'firstKey')
-      // console.log(subKey,'subKey')
-
-      return this.getVariable(parameters[firstKey], subKey)
-
+    if (!checkerFunction) {
+      throw new Error('checkerFunction / checkerFunctionName  is not provided')
     }
 
-    const result = parameters[key]
-    return result
-
-  }
-
-  isNull (variable: any, checkerParam: any) {
-
-    return !(variable && variable != null)
-  }
-
-  isEmpty (variable: any, checkerParam: any) {
-
-    return (!(variable && variable != null) && variable.length)
-  }
-
-  isMatch (variable: any, checkerParam: {operator: string, value?: any }){
-
-    const operatorFunctionMap = {
-      '=' (x, y) { return x === y },
-      '!=' (x, y) { return x !== y },
-      '>=' (x, y) { return x >= y },
-      '>' (x, y) { return x >= y },
-      '<=' (x, y) { return x <= y },
-      '<' (x, y) { return x <= y },
-
-   }​​​​​​​
-
-   // find the function correctly
-   const operatorFunction = operatorFunctionMap[checkerParam.operator]
-
-   if (!operatorFunction)
-   {
-     throw new Error('operatorFunction not found')
-   }
-
-   return operatorFunction(variable, checkerParam.value)
-
-  }
-
-  initCheckerFunctionMap ()
-  {
-
-    const functionMap = new Map<string, Function>()
-
-    functionMap.set('isMatch', this.isMatch)
-    functionMap.set('isNull', this.isNull)
-    functionMap.set('isEmpty', this.isEmpty)
-
-    return functionMap
-
-  }
-
-  processCheckerFunction (key: string, parameters: any, checkerOption: any, checkerFunctionMap: Map<string, Function>)
-  {
-    let checkerFunction = checkerOption['checkerFunction'] as Function
-    const checkerFunctionName = checkerOption['checkerFunctionName'] as string
-
-    if (!checkerFunction)
-    {
-      checkerFunction = checkerFunctionMap.get(checkerFunctionName)
-    }
-
-    if (!checkerFunction)
-    {
-      throw new Error('checkerFunction is not found')
-    }
-
-    // console.log(key,'key')
-    // console.log(parameters,'parameters')
-
-    const variable = this.getVariable(parameters, key)
-
-    // console.log(variable,'variable')
-
-    const result: any = checkerFunction(variable, checkerOption.checkerParam)
+    result = checkerFunction(parameters)
 
     return {
-      checkerFunctionName,
-      variable,
-      result
+      resultName,
+      result,
     }
-
   }
 
-  public async mainFunction (parameters: any) {
+  public async mainFunction(parameters: any) {
 
     const checkerResult = {}
-
-    const checkerFunctionMap = this.initCheckerFunctionMap()
-
-    if (!parameters.checker)
-    {
+    if (!parameters.checker) {
       throw new Error('checker param is not found in checker Event')
     }
 
-    for (const [key, checkerList] of Object.entries<any[]>(parameters['checker'])) {
+    const checkerList = parameters['checker']
 
-      // clone variableResult from checkerList
-      const variableResult = []
+    checkerList.forEach((checkerObject: CheckerObject) => {
 
-      for (let index = 0; index < checkerList.length; index++) {
+      const checkerObjectResult = this.runCheckerFunction(checkerObject, parameters) as CheckerObjectResult
+      checkerResult[checkerObjectResult.resultName] = checkerObjectResult.result
 
-        variableResult[index] = this.processCheckerFunction(key, parameters, checkerList[index], checkerFunctionMap)
+    })
 
-      }
-
-      checkerResult[key] = variableResult
-
-    }
-
-    // console.log(checkerResult,'checkerResult')
-
+    // remove checker from parameters
     delete parameters['checker']
 
-    return {...parameters, ...{checkerResult}}
-
+    // add checkerResult into the result
+    return { ...parameters, ...{ checkerResult } }
   }
 }
 
 export default {
-
-  execute: async (parameters: any, eventConfig: EventConfig, repo: string, eventService: any, allService: any, user?: JwtPayload, transaction?: Transaction) => {
-
-    const event = new CheckerEvent(parameters, eventConfig, repo, eventService, allService, user, transaction)
+  execute: async(
+    parameters: any,
+    eventConfig: EventConfig,
+    repo: string,
+    eventService: any,
+    allService: any,
+    user?: JwtPayload,
+    transaction?: Transaction
+  ) => {
+    const event = new CheckerEvent(
+      parameters,
+      eventConfig,
+      repo,
+      eventService,
+      allService,
+      user,
+      transaction
+    )
     return await event.execute()
-
-  }
-
+  },
 }

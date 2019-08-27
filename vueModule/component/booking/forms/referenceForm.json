@@ -1,5 +1,4 @@
 {
-  "layout": "v-card",
   "components": [{
     "is": "WidgetForm",
     "props": {
@@ -26,7 +25,7 @@
                 "component": "v-text-field"
               },
               {
-                "label": "BookingPage.DocDate",
+                "label": "BookingPage.docDate",
                 "name": "docDate",
                 "component": "DateTimePicker",
                 "class": "xs-12 md-2",

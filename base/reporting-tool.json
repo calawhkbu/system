@@ -106,10 +106,7 @@
       "map": {
         "id": "ClusterMapView",
         "props": {
-          "center": [
-            0,
-            0
-          ],
+          "center": [0, 0],
           "doubleClickZoom": false,
           "dragging": true,
           "minZoom": 2,
@@ -125,10 +122,7 @@
           },
           "startPointIconOptions": {
             "iconUrl": "/images/factory.png",
-            "iconSize": [
-              15,
-              15
-            ]
+            "iconSize": [15, 15]
           },
           "middlePointOptions": {
             "weight": 1.5,
@@ -137,10 +131,7 @@
           },
           "middlePointIconOptions": {
             "iconUrl": "/images/map/SEA.svg",
-            "iconSize": [
-              15,
-              15
-            ]
+            "iconSize": [15, 15]
           },
           "endPointOptions": {
             "weight": 1.5,
@@ -149,10 +140,7 @@
           },
           "endPointIconOptions": {
             "iconUrl": "/images/destination.svg",
-            "iconSize": [
-              15,
-              15
-            ]
+            "iconSize": [15, 15]
           },
           "travelledRouteStyle": {},
           "notTravelRouteStyle": {
@@ -195,24 +183,18 @@
             "countUrl": "/reports/{{ entity }}/count",
             "maxCount": 50000,
             "params": {
-              "fields": [
-                "id"
-              ],
+              "fields": ["id"],
               "filter": {}
             },
             "click": {
               "args": {
                 "url": "{current}/details",
                 "process": {
-                  "_plugins": [
-                    "from-string"
-                  ],
+                  "_plugins": ["from-string"],
                   "from-string": "{\"{{ key }}\":{\"{{ key }}\":[\"{{ value }}\"]}}"
                 },
                 "cardProcess": {
-                  "_plugins": [
-                    "selection-by-row"
-                  ],
+                  "_plugins": ["selection-by-row"],
                   "selection-by-row": {
                     "key": "entity",
                     "cards": {

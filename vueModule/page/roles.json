@@ -1,50 +1,55 @@
 {
   "layout": "MainLayout",
-  "components": [{
-    "is": "TableTool",
-    "props": {
-      "reportingKey": "roles",
-      "jql": "roles",
-      "back": "/admin",
-      "icons": [],
-      "_clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/role/{{id}}"
-        }
-      },
-      "showFilterBar": true,
-      "enableShare": false,
-      "enableSetting": false,
-      "newReport": {
-        "configurations": {
-          "i18nContext": "Reporting",
-          "clickable": true,
-          "draggable": true,
-          "sorting": {},
-          "pagination": {
-            "current": 0,
-            "perPage": 20
+  "components": [
+    {
+      "is": "TableTool",
+      "props": {
+        "reportingKey": "roles",
+        "jql": "roles",
+        "back": "/admin",
+        "icons": [],
+        "_clickFunction": {
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "/role/{{id}}"
           }
-        }
-      },
-      "filters": [{
-        "name": "roleName",
-        "type": "text"
-      }],
-      "fieldOptions": [{
-          "key": "id",
-          "sql": "role.id",
-          "hidden": true
         },
-        {
-          "key": "roleName"
+        "showFilterBar": true,
+        "enableShare": false,
+        "enableSetting": false,
+        "newReport": {
+          "configurations": {
+            "i18nContext": "Reporting",
+            "clickable": true,
+            "draggable": true,
+            "sorting": {},
+            "pagination": {
+              "current": 0,
+              "perPage": 20
+            }
+          }
         },
-        {
-          "key": "roleGroup"
-        }
-      ]
+        "filters": [
+          {
+            "name": "roleName",
+            "type": "text"
+          }
+        ],
+        "fieldOptions": [
+          {
+            "key": "id",
+            "sql": "role.id",
+            "hidden": true
+          },
+          {
+            "key": "roleName"
+          },
+          {
+            "key": "roleGroup"
+          }
+        ]
+      }
     }
-  }]
+  ]
 }
