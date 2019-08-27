@@ -117,8 +117,8 @@ query.register(
   'isActive',
   new Query({
     $where: [
-      new IsNullExpression(new ColumnExpression('code_master', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('code_master', 'deletedBy'), false),
+      new IsNullExpression(new ColumnExpression('alert', 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression('alert', 'deletedBy'), false),
       new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
       new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
     ],
