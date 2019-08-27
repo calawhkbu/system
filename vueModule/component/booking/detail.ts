@@ -440,7 +440,7 @@ export default {
     {
       is: 'div',
       props: {
-        class: 'xs-12 md-4 padding-left-8 padding-right-8',
+        class: 'xs-12 md-4 padding-8',
       },
       slots: [
         {

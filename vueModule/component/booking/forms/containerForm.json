@@ -1,6 +1,4 @@
 {
-  "layout": "v-card",
-  "class": "grid",
   "components": [{
       "is": "WidgetForm",
       "class": "xs-12",
@@ -210,22 +208,6 @@
           "props": {
             "topLabel": true,
             "fields": [{
-                "label": "BookingPage.containerNo",
-                "name": "containerNo",
-                "component": "v-text-field",
-                "props": {
-                  "color": "blue"
-                }
-              },
-              {
-                "label": "BookingPage.soNo",
-                "name": "soNo",
-                "component": "v-text-field",
-                "props": {
-                  "color": "blue"
-                }
-              },
-              {
                 "label": "BookingPage.containerTypeCode",
                 "name": "containerTypeCode",
                 "component": "AsyncSelect",
@@ -244,6 +226,13 @@
                     }
                   }
                 }
+              }, {
+                "label": "BookingPage.containerNo",
+                "name": "containerNo",
+                "component": "v-text-field",
+                "props": {
+                  "color": "blue"
+                }
               },
               {
                 "label": "BookingPage.sealNo",
@@ -251,25 +240,25 @@
                 "component": "v-text-field"
               },
               {
-                "label": "BookingPage.quantity",
-                "name": "quantity",
+                "label": "BookingPage.soNo",
+                "name": "soNo",
+                "component": "v-text-field"
+              },
+              {
+                "label": "BookingPage.ctns",
+                "name": "ctns",
                 "component": "v-text-field",
                 "props": {
                   "type": "number",
-                  "step": 1,
                   "min": 0
-                }
-              },
-              {
-                "label": "BookingPage.quantityUnit",
-                "name": "quantityUnit",
-                "component": "v-select",
-                "props": {
-                  "items": [{
-                    "text": "CTNS",
-                    "value": "CTNS"
-                  }]
-                }
+                },
+                "slots": [{
+                  "name": "append",
+                  "is": "I18nText",
+                  "props": {
+                    "i18nKey": "CTNS"
+                  }
+                }]
               }
             ]
           }

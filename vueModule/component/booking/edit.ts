@@ -52,6 +52,8 @@ export default {
           },
           {
             id: 'BookingPage.PartyForm',
+            layout: 'v-card',
+            class: 'margin-4 full-width',
             components: [
               {
                 is: 'AsyncComponent',
@@ -63,6 +65,8 @@ export default {
           },
           {
             id: 'BookingPage.DateForm',
+            layout: 'v-card',
+            class: 'margin-4 full-width',
             components: [
               {
                 is: 'AsyncComponent',
@@ -74,6 +78,8 @@ export default {
           },
           {
             id: 'BookingPage.ContainerForm',
+            layout: 'v-card',
+            class: 'margin-4 full-width',
             components: [
               {
                 is: 'AsyncComponent',
@@ -85,6 +91,8 @@ export default {
           },
           {
             id: 'BookingPage.referenceForm',
+            layout: 'v-card',
+            class: 'margin-4 full-width',
             components: [
               {
                 is: 'AsyncComponent',
