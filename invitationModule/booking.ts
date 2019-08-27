@@ -19,7 +19,7 @@ export default async function entityCreateInvitaion(
   const entityFlexData =
     entityData.flexData && entityData.flexData.data ? entityData.flexData.data : {}
   const url = `${frontendUrl}${tableName}/${entity.id}`
-  const roles = await that.roleService.find({ where: { roleName: { $in: ['USER'] } } }, user)
+  const roles = await that.roleService.find({ where: { roleName: { $in: ['USER', tableName.toLocaleUpperCase()] } } }, user)
   console.debug(`Create Invitation to ${tableName} [ID: ${entity.id}]`)
   const partyGroupCode = entityData.partyGroupCode
   const partyGroup: PartyGroup = await that.partyGroupService.findOne(

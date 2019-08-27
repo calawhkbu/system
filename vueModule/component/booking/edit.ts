@@ -4,7 +4,7 @@ export default {
     {
       is: 'DynamicComponent',
       props: {
-        class: 'xs-12 grid align-item-center full-width',
+        class: 'xs-12 grid align-item-center',
         components: [
           {
             is: 'v-btn',
@@ -40,7 +40,7 @@ export default {
           {
             id: 'BookingPage.GeneralForm',
             layout: 'v-card',
-            class: 'margin-4 full-width',
+            class: 'margin-8',
             components: [
               {
                 is: 'AsyncComponent',
@@ -53,7 +53,7 @@ export default {
           {
             id: 'BookingPage.PartyForm',
             layout: 'v-card',
-            class: 'margin-4 full-width',
+            class: 'margin-8',
             components: [
               {
                 is: 'AsyncComponent',
@@ -66,7 +66,7 @@ export default {
           {
             id: 'BookingPage.DateForm',
             layout: 'v-card',
-            class: 'margin-4 full-width',
+            class: 'margin-8',
             components: [
               {
                 is: 'AsyncComponent',
@@ -79,7 +79,7 @@ export default {
           {
             id: 'BookingPage.ContainerForm',
             layout: 'v-card',
-            class: 'margin-4 full-width',
+            class: 'margin-8',
             components: [
               {
                 is: 'AsyncComponent',
@@ -92,7 +92,7 @@ export default {
           {
             id: 'BookingPage.referenceForm',
             layout: 'v-card',
-            class: 'margin-4 full-width',
+            class: 'margin-8',
             components: [
               {
                 is: 'AsyncComponent',
