@@ -82,20 +82,14 @@ export default class BaseAirTrackingService {
         if (oldTracking) {
           if (oldTracking.batchRetry > trackingModule.retryTime.sea) {
             if (trackingReference.mode === 'masterNo') {
-              const newRef = await this.trackingReferenceService.save({
-                ...trackingReference,
-                mode: 'soNo',
-              })
-              return this.track(newRef)
+              await this.trackingReferenceService.save({ id: trackingReference.id, mode: 'soNo' } as TrackingReference)
             } else if (trackingReference.mode === 'soNo') {
-              const newRef = await this.trackingReferenceService.save({
-                ...trackingReference,
-                mode: 'containerNo',
-              })
-              return this.track(newRef)
-            } else {
-              throw new Error('Tracking NO is not correct')
+              await this.trackingReferenceService.save({ id: trackingReference.id, mode: 'containerNo' } as TrackingReference)
             }
+            return
+          }
+          if (oldTracking.isClosed && oldTracking.isClosed === 'true') {
+            throw new Error('CLOSED')
           }
           await this.get(trackingNo, trackingReference, trackingReference.carrierCode, oldTracking)
         } else {
@@ -112,7 +106,7 @@ export default class BaseAirTrackingService {
     trackingNo: string,
     trackingReference: TrackingReference,
     carrierCode: string
-  ): Promise<void> {
+  ): Promise<Tracking> {
     const { trackingModule } = await this.swivelConfigService.get()
     const newTracking = {
       source: 'YUNDANG',
@@ -165,7 +159,7 @@ export default class BaseAirTrackingService {
         newTracking.batchStatus = 'ERROR'
         newTracking.batchRetry = 1
       }
-      await this.trackingService.save(newTracking)
+      return await this.trackingService.save(newTracking as Tracking)
     } catch (e) {
       console.error(e, e.stack, 'BaseAirTrackingService')
     }
@@ -313,6 +307,6 @@ export default class BaseAirTrackingService {
       newTracking.batchRetry = oldTracking.batchRetry + 1
       console.error(e, e.stack, 'BaseSeaTrackingService')
     }
-    await this.trackingService.save(newTracking)
+    return await this.trackingService.save(newTracking as Tracking)
   }
 }

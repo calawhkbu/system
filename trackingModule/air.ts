@@ -60,38 +60,26 @@ export default class BaseAirTrackingService {
       console.warn('No Tracking No')
       return
     }
-    return Promise.all(
-      trackingNos.map((trackingNo: string) => {
-        return this.trackingService
-          .findOne({ where: { source: 'YUNDANG', trackingNo } })
-          .then(oldTracking => {
-            if (oldTracking) {
-              if (oldTracking.batchRetry > trackingModule.retryTime.air) {
-                throw new Error()
-              }
-              return this.get(
-                trackingNo,
-                trackingReference.carrierCode,
-                trackingReference.carrierCode2,
-                oldTracking
-              )
-            }
-            return this.register(
-              trackingNo,
-              trackingReference.carrierCode,
-              trackingReference.carrierCode2
-            )
-          })
-          .catch((e: any) => {
-            throw e
-          })
-      })
-    )
-      .then(() => true)
-      .catch((e: any) => {
-        console.error(e, e.stack, 'BaseAirTrackingService')
-        throw e
-      })
+    try {
+      for (const trackingNo of trackingNos) {
+        const oldTracking = await this.trackingService.findOne({ where: { source: 'YUNDANG', trackingNo } })
+        if (oldTracking) {
+          if (oldTracking.batchRetry > trackingModule.retryTime.air) {
+            throw new Error('Incorrect tracking no')
+          }
+          if (oldTracking.isClosed && oldTracking.isClosed === 'true') {
+            throw new Error('CLOSED')
+          }
+          await this.get(trackingNo, trackingReference.carrierCode, trackingReference.carrierCode2, oldTracking)
+        } else {
+          await this.register(trackingNo, trackingReference.carrierCode, trackingReference.carrierCode2)
+        }
+      }
+      return true
+    } catch (e) {
+      console.error(e, e.stack, 'BaseAirTrackingService')
+      throw e
+    }
   }
   async register(trackingNo: string, carrierCode: string, carrierCode2: string): Promise<void> {
     const { trackingModule } = await this.swivelConfigService.get()
