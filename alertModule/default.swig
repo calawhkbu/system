@@ -39,7 +39,7 @@
 
 
   {
-    "alertCategory": "message",
+    "alertCategory": "Message",
     "alertType": "newBooking",
     "tableName": "booking",
     "templatePath": "message/new-booking-preview",

@@ -8,6 +8,8 @@ import {
   FunctionExpression,
   AndExpressions,
   BinaryExpression,
+  InsertJQL,
+  Column,
 } from 'node-jql'
 import { parseCode } from 'utils/function'
 
@@ -53,7 +55,7 @@ function prepareTable(name: string): CreateTableJQL {
     $as: new Query({
       $select: [
         new ResultColumn(new ColumnExpression(name, 'moduleTypeCode')),
-        new ResultColumn(new ColumnExpression(name, 'jobMonth')),
+        new ResultColumn(new ColumnExpression(name, 'jobMonth'), name),
         new ResultColumn(
           new FunctionExpression(
             'IFNULL',
@@ -94,19 +96,65 @@ function prepareTable(name: string): CreateTableJQL {
       ),
       $group: new GroupBy([
         new ColumnExpression(name, 'moduleTypeCode'),
-        new ColumnExpression(name, 'jobMonth'),
         // new ColumnExpression(name, 'year')
       ]),
     }),
   })
 }
 
+function prepareModuleCodeTable(name: string): CreateTableJQL {
+  return new CreateTableJQL({
+    $temporary: true,
+    name,
+    columns: [
+      new Column('moduleTypeCode', 'string'),
+    ]
+  })
+}
+
+function insertModuleCodeTable(name: string): InsertJQL {
+  return new InsertJQL(
+    name,
+    { moduleTypeCode: 'AIR' },
+    { moduleTypeCode: 'SEA' },
+    { moduleTypeCode: 'ROAD' }
+  )
+}
+
 export default [
+
+  prepareModuleCodeTable('module'),
+  insertModuleCodeTable('module'),
   [prepareParams(), prepareTable('lastMonth')],
   [prepareParams(true), prepareTable('currentMonth')],
 
   new Query({
-    $from: 'lastMonth',
-    $union: new Query('currentMonth'),
+
+    $select : [
+
+      new ResultColumn(new ColumnExpression('module', 'moduleTypeCode')),
+      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('currentMonth', 'quantity'), 0), 'currentMonthQuantity'),
+      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('lastMonth', 'quantity'), 0), 'lastMonthQuantity'),
+    ],
+
+    $from: new FromTable('module', 'module',
+      {
+
+        operator: 'LEFT',
+        table: 'lastMonth',
+        $on: new BinaryExpression(new ColumnExpression('lastMonth', 'moduleTypeCode'), '=', new ColumnExpression('module', 'moduleTypeCode'))
+
+      },
+
+      {
+
+        operator: 'LEFT',
+        table: 'currentMonth',
+        $on: new BinaryExpression(new ColumnExpression('currentMonth', 'moduleTypeCode'), '=', new ColumnExpression('module', 'moduleTypeCode'))
+
+      }
+
+    )
+
   }),
 ]

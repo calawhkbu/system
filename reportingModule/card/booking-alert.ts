@@ -32,6 +32,10 @@ function prepareParams(): Function {
       value: 'booking',
     }
 
+    subqueries.categories = {
+      value: ['Exception'],
+    }
+
     return params
   }
 
@@ -40,11 +44,12 @@ function prepareParams(): Function {
 const query = new Query({
   $select: [
     new ResultColumn(
-      new FunctionExpression('CONCAT', new ColumnExpression('alertType'), 'Title'),
+      new FunctionExpression('CONCAT', new ColumnExpression('alert', 'alertType'), 'Title'),
       'alertTypeTitle'
     ),
     new ResultColumn('alertType'),
-    new ResultColumn(new FunctionExpression('COUNT', new ColumnExpression('alertType')), 'count'),
+    new ResultColumn(new FunctionExpression('COUNT', new ColumnExpression('alert', 'alertType')), 'count'),
+    new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ColumnExpression('alert', 'primaryKey')), 'idListString')
   ],
   $from: new FromTable(
     {
@@ -53,7 +58,10 @@ const query = new Query({
       columns: [
 
         { name: 'alertType', type: 'string' },
-        { name: 'tableName', type: 'string' }],
+        { name: 'tableName', type: 'string' },
+        { name: 'primaryKey', type: 'number' }
+
+      ],
     },
     'alert'
   ),

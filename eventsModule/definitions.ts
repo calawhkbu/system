@@ -78,7 +78,7 @@ export default {
 
   afterUpdate_document: [
     {
-      eventName: 'update_document_preview.ts',
+      eventName: 'update_document_preview',
     },
   ],
 
@@ -184,7 +184,16 @@ export default {
       ],
     }
 
+  ],
+
+  fm3k_booking : [
+    {
+      condition : true,
+      handlerName : 'fm3k_booking.ts'
+    }
+
   ]
+
 } as {
   [eventName: string]: EventConfig[]
 }

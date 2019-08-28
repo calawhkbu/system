@@ -2,68 +2,108 @@ import {
   Query,
   FromTable,
   CreateTableJQL,
-  GroupBy,
   ResultColumn,
   ColumnExpression,
   FunctionExpression,
-  AndExpressions,
+  GroupBy,
   BinaryExpression,
-  InsertJQL,
-  Column,
-  JoinClause,
-  IConditionalExpression,
+  AndExpressions,
+  IsNullExpression,
 } from 'node-jql'
 import { parseCode } from 'utils/function'
 
-function prepareParams(currentMonth?: boolean): Function {
+function prepareParams(): Function {
   const fn = function(require, session, params) {
     const moment = require('moment')
     const subqueries = (params.subqueries = params.subqueries || {})
-
     if (subqueries.date) {
       // get the year part of the "from date"
-      let month = moment(subqueries.date.from, 'YYYY-MM-DD').month()
+      const year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
 
-      // change the from / to date
-      if (!currentMonth) {
-        month -= 1
-      }
       // reset the date.from and date.to depending on date.from YEAR
       subqueries.date.from = moment()
-        .month(month)
-        .startOf('month')
+        .year(year)
+        .startOf('year')
         .format('YYYY-MM-DD')
       subqueries.date.to = moment()
-        .month(month)
-        .endOf('month')
+        .year(year)
+        .endOf('year')
         .format('YYYY-MM-DD')
+    }
 
-      console.log('subqueries.date.from', subqueries.date.from)
-      console.log('subqueries.date.to', subqueries.date.to)
+    subqueries.moduleTypeCode = {
+      value : 'AIR'
     }
 
     return params
   }
-  let code = fn.toString()
-  code = code.replace(new RegExp('currentMonth', 'g'), String(currentMonth))
+  const code = fn.toString()
   return parseCode(code)
 }
 
-function prepareTable(name: string): CreateTableJQL {
+function prepareCodeMasterParams(): Function {
+
+  const fn = function(require, session, params) {
+    const subqueries = (params.subqueries = params.subqueries || {})
+
+    subqueries.codeType = {
+      value : 'carrier'
+    }
+
+    return params
+  }
+  const code = fn.toString()
+  return parseCode(code)
+
+}
+
+function prepareCodeMasterTable(name: string): CreateTableJQL {
+
+  return new CreateTableJQL({
+
+    $temporary: true,
+    name,
+
+    $as: new Query({
+      $from: new FromTable(
+        {
+          method: 'POST',
+          url: 'api/code/query/code_master',
+          columns: [
+            {
+              name: 'id',
+              type: 'number',
+            },
+            {
+              name: 'code',
+              type: 'string',
+            },
+            {
+              name: 'codeType',
+              type: 'string',
+            },
+          ],
+        },
+        name
+      )
+    }),
+
+  })
+
+}
+
+// a temp table that Group by carrierCode and JobMonth
+function prepareTempTable(name: string): CreateTableJQL {
   return new CreateTableJQL({
     $temporary: true,
     name,
     $as: new Query({
       $select: [
-        new ResultColumn(new ColumnExpression(name, 'moduleTypeCode')),
-        new ResultColumn(new ColumnExpression(name, 'jobMonth')),
+        new ResultColumn(new ColumnExpression(name, 'jobMonth'), 'jobMonth'),
+        new ResultColumn(new ColumnExpression(name, 'carrierCode'), 'carrierCode'),
         new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression('SUM', new ColumnExpression(name, 'quantity')),
-            0
-          ),
-          'quantity'
+          new FunctionExpression('COUNT', new ColumnExpression(name, 'carrierCode')),
+          'count'
         ),
       ],
       $from: new FromTable(
@@ -72,12 +112,12 @@ function prepareTable(name: string): CreateTableJQL {
           url: 'api/booking/query/booking',
           columns: [
             {
-              name: 'moduleTypeCode',
+              name: 'carrierCode',
               type: 'string',
             },
             {
-              name: 'quantity',
-              type: 'number',
+              name: 'moduleTypeCode',
+              type: 'string',
             },
             {
               name: 'jobMonth',
@@ -89,48 +129,39 @@ function prepareTable(name: string): CreateTableJQL {
             subqueries: {
               jobMonth: true,
             },
+
             // include jobMonth from the table
-            fields: ['jobMonth', 'booking.*', 'booking_popacking.*'],
+            fields: ['jobMonth', 'booking.*'],
           },
         },
         name
       ),
+
       $group: new GroupBy([
-        new ColumnExpression(name, 'moduleTypeCode'),
+        new ColumnExpression(name, 'carrierCode'),
         new ColumnExpression(name, 'jobMonth'),
-        // new ColumnExpression(name, 'year')
       ]),
+
+      $where:
+       [new BinaryExpression(new ColumnExpression(name, 'moduleTypeCode'), '=', 'AIR'),
+      //  new IsNullExpression(new ColumnExpression(name, 'carrierCode'), true),
+      ]
+
     }),
   })
 }
 
-function prepareModuleCodeTable(name: string): CreateTableJQL {
-  return new CreateTableJQL({
-    $temporary: true,
-    name,
-    columns: [
-      new Column('moduleTypeCode', 'string'),
-    ]
-  })
-}
-
-function insertModuleCodeTable(name: string): InsertJQL {
-  return new InsertJQL(
-    name,
-    { moduleTypeCode: 'AIR' },
-    { moduleTypeCode: 'SEA' },
-    { moduleTypeCode: 'ROAD' }
-  )
-}
-
-function prepareMonthTable(name: string): CreateTableJQL {
+function prepareMonthTable(name: string)
+{
 
   return new CreateTableJQL({
-    $temporary: true,
+
+    $temporary : true,
     name,
-    $as: new Query({
+    $as :   new Query({
       $select: [
         // hard code 12 months
+
         // new ResultColumn(new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),'monthName'),
         new ResultColumn(
           new FunctionExpression(
@@ -149,12 +180,12 @@ function prepareMonthTable(name: string): CreateTableJQL {
                   'January'
                 ),
                 new BinaryExpression(
-                  new ColumnExpression('tempTable', 'moduleTypeCode'),
+                  new ColumnExpression('tempTable', 'carrierCode'),
                   '=',
-                  new ColumnExpression('moduleTypeCode')
+                  new ColumnExpression('carrierCode')
                 ),
               ]),
-              new ColumnExpression('quantity')
+              new ColumnExpression('count')
             ),
             0
           ),
@@ -178,12 +209,12 @@ function prepareMonthTable(name: string): CreateTableJQL {
                   'February'
                 ),
                 new BinaryExpression(
-                  new ColumnExpression('tempTable', 'moduleTypeCode'),
+                  new ColumnExpression('tempTable', 'carrierCode'),
                   '=',
-                  new ColumnExpression('moduleTypeCode')
+                  new ColumnExpression('carrierCode')
                 ),
               ]),
-              new ColumnExpression('quantity')
+              new ColumnExpression('count')
             ),
             0
           ),
@@ -207,12 +238,12 @@ function prepareMonthTable(name: string): CreateTableJQL {
                   'March'
                 ),
                 new BinaryExpression(
-                  new ColumnExpression('tempTable', 'moduleTypeCode'),
+                  new ColumnExpression('tempTable', 'carrierCode'),
                   '=',
-                  new ColumnExpression('moduleTypeCode')
+                  new ColumnExpression('carrierCode')
                 ),
               ]),
-              new ColumnExpression('quantity')
+              new ColumnExpression('count')
             ),
             0
           ),
@@ -236,12 +267,12 @@ function prepareMonthTable(name: string): CreateTableJQL {
                   'April'
                 ),
                 new BinaryExpression(
-                  new ColumnExpression('tempTable', 'moduleTypeCode'),
+                  new ColumnExpression('tempTable', 'carrierCode'),
                   '=',
-                  new ColumnExpression('moduleTypeCode')
+                  new ColumnExpression('carrierCode')
                 ),
               ]),
-              new ColumnExpression('quantity')
+              new ColumnExpression('count')
             ),
             0
           ),
@@ -265,12 +296,12 @@ function prepareMonthTable(name: string): CreateTableJQL {
                   'May'
                 ),
                 new BinaryExpression(
-                  new ColumnExpression('tempTable', 'moduleTypeCode'),
+                  new ColumnExpression('tempTable', 'carrierCode'),
                   '=',
-                  new ColumnExpression('moduleTypeCode')
+                  new ColumnExpression('carrierCode')
                 ),
               ]),
-              new ColumnExpression('quantity')
+              new ColumnExpression('count')
             ),
             0
           ),
@@ -294,12 +325,12 @@ function prepareMonthTable(name: string): CreateTableJQL {
                   'June'
                 ),
                 new BinaryExpression(
-                  new ColumnExpression('tempTable', 'moduleTypeCode'),
+                  new ColumnExpression('tempTable', 'carrierCode'),
                   '=',
-                  new ColumnExpression('moduleTypeCode')
+                  new ColumnExpression('carrierCode')
                 ),
               ]),
-              new ColumnExpression('quantity')
+              new ColumnExpression('count')
             ),
             0
           ),
@@ -323,12 +354,12 @@ function prepareMonthTable(name: string): CreateTableJQL {
                   'July'
                 ),
                 new BinaryExpression(
-                  new ColumnExpression('tempTable', 'moduleTypeCode'),
+                  new ColumnExpression('tempTable', 'carrierCode'),
                   '=',
-                  new ColumnExpression('moduleTypeCode')
+                  new ColumnExpression('carrierCode')
                 ),
               ]),
-              new ColumnExpression('quantity')
+              new ColumnExpression('count')
             ),
             0
           ),
@@ -351,12 +382,12 @@ function prepareMonthTable(name: string): CreateTableJQL {
                   'August'
                 ),
                 new BinaryExpression(
-                  new ColumnExpression('tempTable', 'moduleTypeCode'),
+                  new ColumnExpression('tempTable', 'carrierCode'),
                   '=',
-                  new ColumnExpression('moduleTypeCode')
+                  new ColumnExpression('carrierCode')
                 ),
               ]),
-              new ColumnExpression('quantity')
+              new ColumnExpression('count')
             ),
             0
           ),
@@ -380,12 +411,12 @@ function prepareMonthTable(name: string): CreateTableJQL {
                   'September'
                 ),
                 new BinaryExpression(
-                  new ColumnExpression('tempTable', 'moduleTypeCode'),
+                  new ColumnExpression('tempTable', 'carrierCode'),
                   '=',
-                  new ColumnExpression('moduleTypeCode')
+                  new ColumnExpression('carrierCode')
                 ),
               ]),
-              new ColumnExpression('quantity')
+              new ColumnExpression('count')
             ),
             0
           ),
@@ -409,12 +440,12 @@ function prepareMonthTable(name: string): CreateTableJQL {
                   'October'
                 ),
                 new BinaryExpression(
-                  new ColumnExpression('tempTable', 'moduleTypeCode'),
+                  new ColumnExpression('tempTable', 'carrierCode'),
                   '=',
-                  new ColumnExpression('moduleTypeCode')
+                  new ColumnExpression('carrierCode')
                 ),
               ]),
-              new ColumnExpression('quantity')
+              new ColumnExpression('count')
             ),
             0
           ),
@@ -438,12 +469,12 @@ function prepareMonthTable(name: string): CreateTableJQL {
                   'November'
                 ),
                 new BinaryExpression(
-                  new ColumnExpression('tempTable', 'moduleTypeCode'),
+                  new ColumnExpression('tempTable', 'carrierCode'),
                   '=',
-                  new ColumnExpression('moduleTypeCode')
+                  new ColumnExpression('carrierCode')
                 ),
               ]),
-              new ColumnExpression('quantity')
+              new ColumnExpression('count')
             ),
             0
           ),
@@ -467,12 +498,12 @@ function prepareMonthTable(name: string): CreateTableJQL {
                   'December'
                 ),
                 new BinaryExpression(
-                  new ColumnExpression('tempTable', 'moduleTypeCode'),
+                  new ColumnExpression('tempTable', 'carrierCode'),
                   '=',
-                  new ColumnExpression('moduleTypeCode')
+                  new ColumnExpression('carrierCode')
                 ),
               ]),
-              new ColumnExpression('quantity')
+              new ColumnExpression('count')
             ),
             0
           ),
@@ -480,28 +511,29 @@ function prepareMonthTable(name: string): CreateTableJQL {
         ),
         // new ResultColumn('*'),
 
-        new ResultColumn(new ColumnExpression('tempTable', 'moduleTypeCode'), 'moduleTypeCode'),
+        new ResultColumn(new ColumnExpression('tempTable', 'carrierCode'), 'carrierCode'),
       ],
 
       $from: 'tempTable',
+      $group: 'carrierCode',
 
-      $group: 'moduleTypeCode',
-    }),
+      // $order: 'carrierCode'
+    })
+
   })
 
 }
 
 export default [
-  [prepareParams(), prepareTable('tempTable')],
+  [prepareParams(), prepareTempTable('tempTable')],
+  [prepareCodeMasterParams(), prepareCodeMasterTable('code_master')],
   prepareMonthTable('month'),
-  prepareModuleCodeTable('module'),
-  insertModuleCodeTable('module'),
 
   new Query({
 
-    $select: [
+    $select : [
 
-      new ResultColumn(new ColumnExpression('module', 'moduleTypeCode')),
+      new ResultColumn(new ColumnExpression('code_master', 'code'), 'carrierCode'),
       new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jan'), 0), 'Jan'),
       new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Feb'), 0), 'Feb'),
       new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Mar'), 0), 'Mar'),
@@ -517,13 +549,24 @@ export default [
 
     ],
 
-    $from: new FromTable(
-      'module', new JoinClause(
-        'LEFT',
-        'month',
-        new BinaryExpression(new ColumnExpression('module', 'moduleTypeCode'), '=', new ColumnExpression('month', 'moduleTypeCode'))
-      ))
+    $from : new FromTable('code_master', 'code_master',
+    {
+      operator : 'LEFT',
+
+      table : 'month',
+
+      $on : [
+
+        new BinaryExpression(new ColumnExpression('code_master', 'code'), '=', new ColumnExpression('month', 'carrierCode'))
+
+      ]
+
+    }
+
+    )
 
   })
 
 ]
+
+// export default query.toJson()
