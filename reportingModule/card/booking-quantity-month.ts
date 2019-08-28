@@ -522,7 +522,7 @@ export default [
         'LEFT',
         'month',
         new BinaryExpression(new ColumnExpression('module', 'moduleTypeCode'), '=', new ColumnExpression('month', 'moduleTypeCode'))
-      )
+      ))
 
   })
 

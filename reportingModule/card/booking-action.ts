@@ -8,6 +8,8 @@ import {
     GroupBy,
     Query,
     ResultColumn,
+    Column,
+    InsertJQL,
 } from 'node-jql'
 import { parseCode } from 'utils/function'
 
@@ -20,6 +22,7 @@ function prepareParams(): Function {
         // script
         const subqueries = (params.subqueries = params.subqueries || {})
 
+        // hardcode testing
         subqueries.createdAt = {
             from: moment().subtract(10, 'days'),
             to: moment(),
@@ -262,7 +265,7 @@ function prepareBookingTable(name: string): CreateTableJQL {
     })
 }
 
-function prepareFinalQuery() {
+function prepareWorkflowQuery() {
 
     const fn = async function(require, session, params) {
         const { Resultset } = require('node-jql-core')
@@ -306,7 +309,7 @@ function prepareFinalQuery() {
                             },
                             {
                                 name: 'expiryDate',
-                                type: 'string',
+                                type: 'date',
                             },
                         ],
                     },
@@ -322,14 +325,94 @@ function prepareFinalQuery() {
 
 }
 
+function createNextStatusTable(): CreateTableJQL {
+
+    return new CreateTableJQL(true, 'nextStatus', [
+        new Column('tableName', 'string'),
+        new Column('primaryKey', 'number'),
+        new Column('statusName', 'string'),
+        new Column('expiryDate', 'date', true),
+        new Column('expired', 'boolean'),
+    ])
+
+}
+
+function insertNextStatusTable() {
+
+    const fn = async function(require, session, params) {
+        const { Resultset } = require('node-jql-core')
+        const {
+            ColumnExpression,
+            CreateTableJQL,
+            InsertJQL,
+            FromTable,
+            InExpression,
+            BetweenExpression,
+            FunctionExpression,
+            BinaryExpression,
+            GroupBy,
+            Query,
+            ResultColumn,
+        } = require('node-jql')
+        const moment = require('moment')
+
+        const result = [] as any[]
+
+        const workflowList = new Resultset(await session.query(new Query('workflow'))).toArray() as any[]
+
+        workflowList.forEach(workflow => {
+
+            const expiryDate = moment(workflow.expiryDate)
+
+            let expired = false
+            if (expiryDate && expiryDate != null) {
+                if (moment().diff(expiryDate) > 0) {
+                    expired = true
+                }
+            }
+
+            result.push({
+                expired,
+                ...workflow
+            })
+
+        })
+
+        return new InsertJQL('nextStatus', ...result)
+
+    }
+
+    const code = fn.toString()
+    return parseCode(code)
+
+}
+
 export default [
+
     [prepareParams(), prepareBookingTable('booking')],
 
-    prepareFinalQuery(),
+    // get the expireDate from API
+    prepareWorkflowQuery(),
+
+    // insert the api result into table
+    createNextStatusTable(),
+    insertNextStatusTable(),
 
     new Query({
 
-        $from: 'workflow'
+        $select: [
+
+            new ResultColumn(new ColumnExpression('nextStatus', 'statusName')),
+            new ResultColumn(new ColumnExpression('nextStatus', 'statusName')),
+            new ResultColumn(new FunctionExpression('IFNULL', new FunctionExpression('SUM', new FunctionExpression('if', new ColumnExpression('nextStatus', 'expired'), 1, 0)), 0), 'expiredTotal'),
+            new ResultColumn(new FunctionExpression('COUNT', new ColumnExpression('nextStatus', 'primaryKey')), 'total'),
+            new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ColumnExpression('nextStatus', 'primaryKey')), 'idListString')
+
+        ],
+
+        $from: 'nextStatus',
+
+        $group: new GroupBy(new ColumnExpression('nextStatus', 'statusName'))
 
     })
 
