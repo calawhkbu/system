@@ -5,6 +5,7 @@
     "tableName": "booking",
     "templatePath": "message/booking-message",
     "severity": "medium",
+    "variableList": [],
 
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
@@ -23,6 +24,7 @@
     "tableName": "shipment",
     "templatePath": "message/shipment-message",
     "severity": "medium",
+    "variableList": [],
 
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
@@ -42,10 +44,10 @@
     "tableName": "booking",
     "templatePath": "message/new-booking-preview",
     "severity": "medium",
-
+    "resend": true,
     "variableList" : "all",
 
-    "contactRoleList": ["forwarder", "shipper", "consignee"],
+    "contactRoleList": "all",
 
     "extraContactPersonSql": {
       "where": {
@@ -64,6 +66,8 @@
 
     "severity": "medium",
 
+    "variableList": [],
+
     "contactRoleList": ["shipper", "forwarder"],
 
     "extraContactPersonSql": null,
@@ -79,6 +83,7 @@
 
     "severity": "medium",
 
+    "variableList": [],
     "contactRoleList": ["shipper", "forwarder"],
 
     "extraContactPersonSql": null,
@@ -93,6 +98,8 @@
     "templatePath": "alert/booking-alert",
 
     "severity": "medium",
+
+    "variableList": [],
 
     "contactRoleList": ["shipper", "forwarder"],
 
@@ -109,6 +116,8 @@
 
     "severity": "medium",
 
+    "variableList": [],
+
     "contactRoleList": ["shipper", "forwarder"],
 
     "extraContactPersonSql": null,
@@ -123,6 +132,8 @@
 
     "severity": "medium",
 
+    "variableList": [],
+
     "contactRoleList": ["shipper", "forwarder"],
 
     "extraContactPersonSql": null,
@@ -136,6 +147,8 @@
     "templatePath": "alert/shipment-alert",
 
     "severity": "medium",
+
+    "variableList": [],
 
     "contactRoleList": ["shipper", "forwarder"],
 
@@ -154,6 +167,7 @@
     "severity": "medium",
     "contactRoleList": ["shipper", "forwarder"],
 
+    "variableList": [],
     "extraContactPersonSql": null,
 
     "active": false
@@ -169,6 +183,8 @@
     "contactRoleList": ["shipper", "forwarder"],
 
     "extraContactPersonSql": null,
+
+    "variableList": [],
 
     "active": false
   },
@@ -247,6 +263,7 @@
 
     "severity": "medium",
 
+    "variableList": [],
     "contactRoleList": ["shipper", "forwarder"],
 
     "extraContactPersonSql": null,
@@ -261,6 +278,7 @@
 
     "severity": "medium",
 
+    "variableList": [],
     "contactRoleList": ["shipper", "forwarder"],
 
     "extraContactPersonSql": null,
@@ -273,6 +291,7 @@
     "alertType": "MblMissing",
     "templatePath": "alert/shipment-alert",
 
+    "variableList": [],
     "severity": "medium",
 
     "contactRoleList": ["shipper", "forwarder"],
@@ -289,6 +308,7 @@
 
     "severity": "medium",
 
+    "variableList": [],
     "contactRoleList": ["shipper", "forwarder"],
 
     "extraContactPersonSql": null,
@@ -305,6 +325,7 @@
     "templatePath": "message/booking-alert",
     "severity": "medium",
 
+    "variableList": [],
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
     "extraContactPersonSql": null,
@@ -318,6 +339,7 @@
     "templatePath": "message/booking-alert",
     "severity": "medium",
 
+    "variableList": [],
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
     "extraContactPersonSql": null,
@@ -331,6 +353,7 @@
     "templatePath": "message/booking-alert",
     "severity": "medium",
 
+    "variableList": [],
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
     "extraContactPersonSql": null,
@@ -346,6 +369,7 @@
 
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
+    "variableList": [],
     "extraContactPersonSql": null,
 
     "active": false
@@ -358,6 +382,7 @@
     "templatePath": "message/shipment-alert",
     "severity": "medium",
 
+    "variableList": [],
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
     "extraContactPersonSql": null,
@@ -371,6 +396,7 @@
     "templatePath": "message/shipment-alert",
     "severity": "medium",
 
+    "variableList": [],
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
     "extraContactPersonSql": null,
@@ -384,6 +410,7 @@
     "templatePath": "message/shipment-alert",
     "severity": "medium",
 
+    "variableList": [],
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
     "extraContactPersonSql": null,
@@ -397,6 +424,7 @@
     "templatePath": "message/shipment-alert",
     "severity": "medium",
 
+    "variableList": [],
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
     "extraContactPersonSql": null,

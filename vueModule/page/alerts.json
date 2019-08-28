@@ -39,12 +39,17 @@
           "hidden": true
         },
         {
-          "key": "alertCategory",
-          "i18nContext": "Alert"
+          "key": "alertCategory"
         },
         {
           "key": "alertType",
-          "i18nContext": "Alert"
+          "i18nContext": "Alert",
+          "sql": "concat(alert.alertType, 'Title') as alertType"
+        },
+        {
+          "key": "alertContent",
+          "i18nContext": "Alert",
+          "sql": "IFNULL(JSON_UNQUOTE(JSON_EXTRACT(flex_data.data, '$.customMessage')), concat(alert.alertType, 'Message')) as alertContent"
         }
       ],
       "filters": [],

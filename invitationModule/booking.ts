@@ -4,22 +4,21 @@ import { Person } from 'models/main/Person'
 import { Party } from 'models/main/Party'
 import { PartyGroup } from 'models/main/partyGroup'
 import { Role } from 'models/main/Role'
+import { GetPartyAndPersonFromStandardEntityResult } from 'utils/party'
 
 export default async function entityCreateInvitaion(
   that: any,
   entity: any,
   tableName: string,
   user?: JwtPayload,
-  transaction?: Transaction
+  transaction?: Transaction,
+  getPartyAndPersonFromStandardEntity?: (entity: any) => Promise<GetPartyAndPersonFromStandardEntityResult>
 ) {
   const { frontendUrl } = await that.swivelConfigService.get()
   const entityData = entity.hasOwnProperty('dataValues')
     ? JSON.parse(JSON.stringify(entity.dataValues))
     : entity || {}
-  const entityFlexData =
-    entityData.flexData && entityData.flexData.data ? entityData.flexData.data : {}
-  const url = `${frontendUrl}${tableName}/${entity.id}`
-  const roles = await that.roleService.find({ where: { roleName: { $in: ['USER', tableName.toLocaleUpperCase()] } } }, user)
+  const entityFlexData = entityData.flexData && entityData.flexData.data ? entityData.flexData.data : {}
   console.debug(`Create Invitation to ${tableName} [ID: ${entity.id}]`)
   const partyGroupCode = entityData.partyGroupCode
   const partyGroup: PartyGroup = await that.partyGroupService.findOne(
@@ -29,98 +28,92 @@ export default async function entityCreateInvitaion(
   if (!partyGroup) {
     throw new Error('Party Group Not found')
   }
-  const parties = Object.keys(entityFlexData || {}).reduce(
-    (partiesMap: any, key: string) => {
-      if (key !== 'moreParty' && key.includes('Party')) {
-        const type = key.substring(0, key.lastIndexOf('Party'))
-        if (!Object.keys([partiesMap]).includes(type)) {
-          return {
-            ...partiesMap,
-            [type]: handlePartyAndPerson(entityFlexData, type, partyGroup, url, roles, true),
-          }
-        }
-      }
-      return partiesMap
+  const defaulConfiguration = partyGroup.configuration || {}
+  const url = `${frontendUrl}${tableName}/${entity.id}`
+  const roles = await that.roleService.find({ where: { roleName: { $in: ['USER', tableName.toLocaleUpperCase()] } } }, user)
+  const basePerson = {
+    configuration: {
+      dateFomat: defaulConfiguration.defaultDateFormat || 'YYYY-MM-DD',
+      dateTimeFormat: defaulConfiguration.defaultDateTimeFormat || 'YYYY-MM-DD HH:mm:ss',
+      timeFormat: defaulConfiguration.defaultTimeFormat || 'HH:mm:ss',
+      timezone: defaulConfiguration.defaultTimezone || 'Asia/Hong_Kong',
+      locale: defaulConfiguration.defaultLocale || 'en'
     },
-    Object.keys(entityData || {}).reduce((partiesMap: any, key: string) => {
-      if (key.includes('Party')) {
-        const type = key.substring(0, key.lastIndexOf('Party'))
-        if (!Object.keys([partiesMap]).includes(type)) {
-          return {
-            ...partiesMap,
-            [type]: handlePartyAndPerson(entityData, type, partyGroup, url, roles, false),
-          }
-        }
-      }
-      return partiesMap
-    }, {})
-  )
+    roles: roles.map((role: any) => ({ id: role.id }))
+  }
+  console.log(basePerson, 'p')
+  const parties = await getPartyAndPersonFromStandardEntity(entity)
   for (const partyType of Object.keys(parties)) {
+    console.log(partyType, 'p')
     const content = parties[partyType]
-    const party = content.party
-    // find party in database
-    let savedParty = party.id
-      ? { id: party.id }
-      : null
-    if (!savedParty) {
-      // create party if party not find
-      delete party.id // avoid update
+    let party = content.party
+    if (!party.id) {
+      // create a new party in db
       if (party.name) {
-        savedParty = await that.partyService.save(party, user, transaction)
-        if (content.flexData) {
-          entityFlexData[`${partyType}Party`] = savedParty
-          entityFlexData[`${partyType}PartyId`] = savedParty.id
+        delete party.id // avoid update
+        party = await that.partyService.save(party, user, transaction)
+        if (content.fromFlexData) {
+          entityFlexData[`${partyType}Party`] = party
+          entityFlexData[`${partyType}Party`] = party.id
         } else {
-          entityData[`${partyType}Party`] = savedParty
-          entityData[`${partyType}PartyId`] = savedParty.id
+          entityData[`${partyType}Party`] = party
+          entityData[`${partyType}PartyId`] = party.id
         }
       }
-    }
 
+    }
     for (const person of content.people) {
-      let savedPerson = person.id
-        ? await that.personService.findOne({ where: { id: person.id }, transaction }, user)
-        : null
+      let savedPerson = await that.personService.findOne(
+        {
+          where: { $or: [{ id: person.id }, { userName: { $regexp: person.userName } }] },
+          transaction
+        },
+        user
+      )
       if (savedPerson) {
-        savedPerson = savedPerson.hasOwnProperty('dataValues')
+        const savedPersonValue = savedPerson.hasOwnProperty('dataValues')
           ? JSON.parse(JSON.stringify(savedPerson.dataValues))
           : savedPerson
-        if (!savedPerson.parties.find(party => party.id === savedParty.id)) {
-          savedPerson.parties.push(savedParty as Party)
-        }
-        await that.personService.save(savedPerson, user, transaction)
+          // if (savedPerson) {
+          //
+          //   const personParty = savedPersonValue.parties
+          //   if (!personParty.find(p => p.id === party.id)) {
+          //     personParty.push({ id: party.id })
+          //     await this.personService.save({ id: savedPersonValue.id, parties: personParty }, transaction, user)
+          //   }
+          // } else {
       } else {
         delete person.id
-        person.parties.push(savedParty)
-        const invitation = await that.createInvitation(person, partyGroup.code, user, transaction)
-        savedPerson = invitation.person
-      }
-      if (content.flexData) {
-        if (entityFlexData[`${partyType}PartyContactPersonEmail`] === savedPerson.userName) {
-          entityFlexData[`${partyType}PartyContactPersonId`] = savedPerson.id
-        } else {
-          entityFlexData[`${partyType}PartyContacts`] = (entityFlexData[
-            `${partyType}PartyContacts`
-          ] || []).reduce((all: any, one: any) => {
-            if (one['Email'] === savedPerson.userName) {
-              one['PersonId'] = savedPerson.id
+        const saveperson = { ...person, ...basePerson, flexData: { data: { test: 123 } } }
+        if (saveperson.userName) {
+          const invitation = await that.save({
+            person: saveperson,
+            partyGroupCode: partyGroup.code
+          }, user, transaction)
+          savedPerson = invitation.person
+          if (content.fromFlexData) {
+            if (entityFlexData[`${partyType}PartyContactPersonEmail`] === savedPerson.userName) {
+              entityFlexData[`${partyType}PartyContactPersonId`] = savedPerson.id
+            } else {
+              entityFlexData[`${partyType}PartyContacts`] = (entityFlexData[`${partyType}PartyContacts`] || []).reduce((all: any, one: any) => {
+                if (one['Email'] === savedPerson.userName) {
+                  one['PersonId'] = savedPerson.id
+                }
+                return all
+              }, entityFlexData[`${partyType}PartyContacts`])
             }
-            return all
-          }, entityFlexData[`${partyType}PartyContacts`])
-        }
-      } else {
-        if (entityData[`${partyType}PartyContactPersonEmail`] === savedPerson.userName) {
-          entityData[`${partyType}PartyContactPersonId`] = savedPerson.id
-        } else {
-          entityData[`${partyType}PartyContacts`] = (entityData[`${partyType}PartyContacts`] || []).reduce(
-            (all: any, one: any) => {
-              if (one['Email'] === savedPerson.userName) {
-                one['PersonId'] = savedPerson.id
-              }
-              return all
-            },
-            entityData[`${partyType}PartyContacts`]
-          )
+          } else {
+            if (entityData[`${partyType}PartyContactPersonEmail`] === savedPerson.userName) {
+              entityData[`${partyType}PartyContactPersonId`] = savedPerson.id
+            } else {
+              entityData[`${partyType}PartyContacts`] = (entityData[`${partyType}PartyContacts`] || []).reduce((all: any, one: any) => {
+                if (one['Email'] === savedPerson.userName) {
+                  one['PersonId'] = savedPerson.id
+                }
+                return all
+              }, entityData[`${partyType}PartyContacts`])
+            }
+          }
         }
       }
     }
@@ -131,106 +124,5 @@ export default async function entityCreateInvitaion(
       ...entityData.flexData,
       data: entityFlexData,
     },
-  }
-}
-
-const handlePartyAndPerson = (
-  data: any,
-  type: string,
-  partyGroup: PartyGroup,
-  url: string,
-  roles: Role[],
-  isFlexData: boolean = false
-): {
-  flexData: boolean
-  party: any
-  people: any[]
-} => {
-  const defaultConfiguration = partyGroup.configuration
-  const configuration = {
-    url,
-    locale: defaultConfiguration.defaultLocale,
-    timeFormat: defaultConfiguration.defaultTimeFormat,
-    dateFormat: defaultConfiguration.defaultDateFormat,
-    dateTimeFormat: defaultConfiguration.defaultDateTimeFormat,
-    timezone: defaultConfiguration.defaultTimezone,
-  }
-  const people = []
-  if (data[`${type}PartyContactPersonId`] || data[`${type}PartyContactEmail`]) {
-    const displayName = data[`${type}PartyContactContactName`] || null
-    const firstName =
-      (displayName || '').indexOf(' ') >= 0
-        ? data[`${type}PartyContactContactName`].split(' ')[0]
-        : displayName
-    const lastName =
-      (displayName || '').indexOf(' ') >= 0
-        ? data[`${type}PartyContactContactName`].split(' ')[1]
-        : null
-    const contacts = []
-    if (data[`${type}PartyContactContactEmail`]) {
-      contacts.push({ contactType: 'email', content: data[`${type}PartyContactEmail`] })
-    }
-    if (data[`${type}PartyContactContactPhone`]) {
-      contacts.push({ contactType: 'phone', content: data[`${type}PartyContactPhone`] })
-    }
-    people.push({
-      id: data[`${type}PartyContactPersonId`] || null,
-      userName: data[`${type}PartyContactEmail`] || null,
-      firstName,
-      lastName,
-      displayName,
-      parties: [],
-      roles,
-      configuration,
-      contacts,
-    })
-  }
-  if (data[`${type}PartyContacts`] && data[`${type}PartyContacts`].length) {
-    for (const contact of data[`${type}PartyContacts`]) {
-      const contactDisplayName = contact['Name'] || null
-      const contactFirstName =
-        (contactDisplayName || '').indexOf(' ') >= 0
-          ? contactDisplayName.split(' ')[0]
-          : contactDisplayName
-      const contactLastName =
-        (contactDisplayName || '').indexOf(' ') >= 0 ? contactDisplayName.split(' ')[1] : null
-      const contactContacts = []
-      if (contact[`Email`]) {
-        contactContacts.push({ contactType: 'email', content: contact[`Email`] })
-      }
-      if (data[`${type}PartyContactContactPhone`]) {
-        contactContacts.push({ contactType: 'phone', content: contact[`Phone`] })
-      }
-      people.push({
-        id: contact[`PersonId`] || null,
-        userName: contact[`Email`] || null,
-        firstName: contactFirstName,
-        lastName: contactLastName,
-        displayName: contactDisplayName,
-        parties: [],
-        roles,
-        configuration,
-        contacts: contactContacts,
-      })
-    }
-  }
-  return {
-    flexData: true,
-    party: {
-      isBranch: false,
-      types: [{ type }],
-      thirdPartyCode: null,
-      shortName: null,
-      groupName: null,
-      partyGroupCode: partyGroup.code,
-      id: data[`${type}PartyId`] || null,
-      name: data[`${type}PartyName`] || null,
-      address: data[`${type}PartyAddress`] || null,
-      countryCode: data[`${type}PartyCountryCode`] || null,
-      stateCode: data[`${type}PartyStateCode`] || null,
-      cityCode: data[`${type}PartyCityCode`] || null,
-      zip: data[`${type}PartyZip`] || null,
-    },
-    people,
   }
 }

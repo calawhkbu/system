@@ -134,7 +134,18 @@ export default {
       condition: true,
       eventName: 'create_tracking',
     },
-
+    {
+      condition: true,
+      eventName: 'create_alert',
+      otherParameters: {
+        alertType: 'newBooking',
+        tableName: 'booking',
+        primaryKey: parameters => {
+          // use booking.id as primaryKey
+          return parameters.data.id
+        },
+      },
+    },
     {
       condition: true,
       handlerName: 'checker.ts',
