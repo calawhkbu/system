@@ -32,6 +32,10 @@ function prepareParams(): Function {
       value: 'booking',
     }
 
+    subqueries.categories = {
+      value: ['exception'],
+    }
+
     return params
   }
 
