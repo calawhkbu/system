@@ -23,14 +23,12 @@
       "Exception": "notification_important",
       "Message": "message"
     },
-    "titleKey": "content.title",
-    "subTitleKeys": ["content.message"],
+    "titleKey": "alertType",
+    "subTitleKeys": ["alertContent"],
     "noIcon": "notifications_none"
   },
   "baseSummaryProps": {
     "size": -3
   },
-  "baseDetailProps": {
-    "showCargoOrContainer": true
-  }
+  "baseDetailProps": {}
 }

@@ -31,7 +31,9 @@ function prepareAlertParams(): Function {
     }
 
     subqueries.entityType = { value: 'booking' }
-
+    subqueries.categories = {
+      value: ['exception'],
+    }
     console.log('subqueries', subqueries)
 
     return params

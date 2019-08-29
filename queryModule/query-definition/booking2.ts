@@ -19,7 +19,7 @@ import {
 const query = new QueryDef(
   new Query({
 
-    $select: [
+    $select : [
       new ResultColumn(new ColumnExpression('booking', '*')),
 
       // avoid id being overwritten
@@ -28,7 +28,7 @@ const query = new QueryDef(
       new ResultColumn(new ColumnExpression('flex_data', 'data')),
       new ResultColumn(new ColumnExpression('booking_container', '*')),
       new ResultColumn(new ColumnExpression('booking_popacking', '*')),
-      new ResultColumn(new ColumnExpression('finalWorkflow', '*')),
+      new ResultColumn(new ColumnExpression('workflow', '*')),
     ],
 
     $distinct: true,
@@ -292,78 +292,43 @@ const query = new QueryDef(
         operator: 'LEFT',
         table: new FromTable({
           table: new Query({
-
             $select: [
               new ResultColumn(new ColumnExpression('workflow', 'tableName')),
               new ResultColumn(new ColumnExpression('workflow', 'primaryKey')),
-              new ResultColumn(new ColumnExpression('workflow', 'statusName'), 'lastStatus'),
-              new ResultColumn(new ColumnExpression('workflow', 'statusDate'), 'lastStatusDate'),
-              new ResultColumn(new ColumnExpression('flex_data', 'data')),
+              new ResultColumn(new ColumnExpression('workflow', 'statusName')),
+              new ResultColumn(
+                new FunctionExpression('MAX', new ColumnExpression('workflow', 'statusDate')),
+                'statusDate'
+              ),
             ],
-
-            $from: new FromTable(new Query({
-
-              $select: [
-                new ResultColumn(new ColumnExpression('workflow', 'tableName')),
-                new ResultColumn(new ColumnExpression('workflow', 'primaryKey')),
-                new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('workflow', 'statusDate')), 'lastStatusDate')
-
+            $from: new FromTable('workflow', 'workflow', {
+              operator: 'LEFT',
+              table: new FromTable('flex_data', 'flex_data'),
+              $on: [
+                new BinaryExpression(
+                  new ColumnExpression('flex_data', 'tableName'),
+                  '=',
+                  'workflow'
+                ),
+                new BinaryExpression(
+                  new ColumnExpression('flex_data', 'primaryKey'),
+                  '=',
+                  new ColumnExpression('workflow', 'id')
+                ),
               ],
-              $from: new FromTable('workflow'),
-              $group: new GroupBy([
-                new ColumnExpression('workflow', 'tableName'),
-                new ColumnExpression('workflow', 'primaryKey'),
-                // new ColumnExpression('workflow', 'statusName'),
-              ])
-
-            }), 't1',
-
-              {
-                operator: 'LEFT',
-                table: new FromTable('workflow', 'workflow'),
-
-                $on: [
-                  new BinaryExpression(
-                    new ColumnExpression('t1', 'tableName'), '=', new ColumnExpression('workflow', 'tableName')
-                  ),
-                  new BinaryExpression(
-                    new ColumnExpression('t1', 'lastStatusDate'), '=', new ColumnExpression('workflow', 'statusDate')
-                  ),
-                  new BinaryExpression(
-                    new ColumnExpression('t1', 'primaryKey'), '=', new ColumnExpression('workflow', 'primaryKey')
-                  ),
-                ],
-              },
-              {
-                operator: 'LEFT',
-                table: new FromTable('flex_data', 'flex_data'),
-                $on: [
-                  new BinaryExpression(
-                    new ColumnExpression('flex_data', 'tableName'),
-                    '=',
-                    'workflow'
-                  ),
-                  new BinaryExpression(
-                    new ColumnExpression('flex_data', 'primaryKey'),
-                    '=',
-                    new ColumnExpression('workflow', 'id')
-                  ),
-                ],
-              }
-
-            ),
-
+            }),
             $group: new GroupBy([
               new ColumnExpression('workflow', 'tableName'),
-              new ColumnExpression('workflow', 'primaryKey')
+              new ColumnExpression('workflow', 'primaryKey'),
+              new ColumnExpression('workflow', 'statusName'),
             ]),
           }),
-          $as: 'finalWorkflow',
+          $as: 'workflow',
         }),
         $on: [
-          new BinaryExpression(new ColumnExpression('finalWorkflow', 'tableName'), '=', 'booking'),
+          new BinaryExpression(new ColumnExpression('workflow', 'tableName'), '=', 'workflow'),
           new BinaryExpression(
-            new ColumnExpression('finalWorkflow', 'primaryKey'),
+            new ColumnExpression('workflow', 'primaryKey'),
             '=',
             new ColumnExpression('booking', 'id')
           ),

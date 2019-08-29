@@ -2,9 +2,11 @@ import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
-import { AlertDbService } from '../../../../swivel-backend-new/src/modules/sequelize/alert/service'
+import { OutboundService } from 'modules/integration-hub/services/outbound'
 
-class CreateAlertEvent extends BaseEvent {
+// import { Booking } from 'models/main/booking';
+
+class Fm3kBookingEvent extends BaseEvent {
   constructor(
     protected readonly parameters: any,
     protected readonly eventConfig: EventConfig,
@@ -20,22 +22,21 @@ class CreateAlertEvent extends BaseEvent {
 
   public async mainFunction(parameters: any) {
 
-    const tableName = parameters.tableName
-    const primaryKey = parameters.primaryKey
-    const alertType = parameters.alertType
-    const customMessage = parameters.customMessage
-    const extraParam = parameters.extraParam
+    const booking = parameters.data as Booking
 
-    const alertDbService = this.allService['AlertDbService'] as AlertDbService
+    const outboundService = this.allService['OutboundService'] as OutboundService
 
-    return await alertDbService.createAlert(
-      tableName,
-      primaryKey,
-      alertType,
-      customMessage,
-      extraParam,
-      this.user
-    )
+    const repo = 'system'
+
+    const response = await outboundService.send(repo, 'fm3k-booking')
+
+    console.log('response')
+    console.log(response)
+
+    return {
+        response: 'response',
+    }
+
   }
 }
 
@@ -49,7 +50,7 @@ export default {
     user?: JwtPayload,
     transaction?: Transaction
   ) => {
-    const event = new CreateAlertEvent(
+    const event = new Fm3kBookingEvent(
       parameters,
       eventConfig,
       repo,

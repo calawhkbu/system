@@ -269,6 +269,7 @@ export default [
       $as: new Query({
         $from: new FromTable(
           {
+
             method: 'POST',
             url: 'api/workflow/booking/next',
             columns: [

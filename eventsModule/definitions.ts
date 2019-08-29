@@ -78,7 +78,7 @@ export default {
 
   afterUpdate_document: [
     {
-      eventName: 'update_document_preview.ts',
+      eventName: 'update_document_preview',
     },
   ],
 
@@ -134,7 +134,18 @@ export default {
       condition: true,
       eventName: 'create_tracking',
     },
-
+    {
+      condition: true,
+      eventName: 'create_alert',
+      otherParameters: {
+        alertType: 'newBooking',
+        tableName: 'booking',
+        primaryKey: parameters => {
+          // use booking.id as primaryKey
+          return parameters.data.id
+        },
+      },
+    },
     {
       condition: true,
       handlerName: 'checker.ts',
@@ -173,7 +184,16 @@ export default {
       ],
     }
 
+  ],
+
+  fm3k_booking : [
+    {
+      condition : true,
+      handlerName : 'fm3k_booking.ts'
+    }
+
   ]
+
 } as {
   [eventName: string]: EventConfig[]
 }

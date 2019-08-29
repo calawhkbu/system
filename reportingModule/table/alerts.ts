@@ -10,6 +10,7 @@ const query = new Query({
         { name: 'primaryKey', type: 'string' },
         { name: 'alertCategory', type: 'string' },
         { name: 'alertType', type: 'string' },
+        { name: 'alertContent', type: 'string' },
         { name: 'severity', type: 'string' },
         { name: 'status', type: 'string' },
       ],
