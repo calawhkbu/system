@@ -48,6 +48,7 @@ export default {
       canAddProps: {
         class: 'xs-12 md-6 padding-20 min-height-200 margin-auto'
       },
+      addItemsOrFunc: ['Trucker', 'Broker', 'Factory', 'Warehouse'],
       fields: [{
           name: '{{flex}}{{key}}Party',
           component: 'AsyncAutoSuggest',

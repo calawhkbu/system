@@ -38,7 +38,10 @@ export default {
               readonly: false,
             },
             'create': {
-              readonly: false
+              readonly: false,
+              stepper: 0,
+              next: false,
+              saveIcon: 'create',
             },
             'detail': {
               readonly: true,
