@@ -6,7 +6,7 @@
       "reportingKey": "alerts",
       "jql": "alerts",
       "urlFormat": "/alerts{{ id|if('/', '') }}{{ id }}",
-      "hasReports": true,
+      "hasReports": false,
       "showFilterBar": true,
       "enableShare": true,
       "enableSetting": true,
@@ -39,17 +39,18 @@
           "hidden": true
         },
         {
-          "key": "alertCategory"
+          "key": "alertCategory",
+          "i18nContext": "Alert"
         },
         {
           "key": "alertType",
           "i18nContext": "Alert",
-          "sql": "concat(alert.alertType, 'Title') as alertType"
+          "sql": "concat(alert.alertType, 'Title')"
         },
         {
           "key": "alertContent",
           "i18nContext": "Alert",
-          "sql": "IFNULL(JSON_UNQUOTE(JSON_EXTRACT(flex_data.data, '$.customMessage')), concat(alert.alertType, 'Message')) as alertContent"
+          "sql": "IFNULL(JSON_UNQUOTE(JSON_EXTRACT(flex_data.data, '$.customMessage')), concat(alert.alertType, 'Message'))"
         }
       ],
       "filters": [],

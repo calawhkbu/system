@@ -58,10 +58,10 @@ const query = new Query({
           name: 'polHScode',
           type: 'string',
         },
-        {
-          name: 'podHScode',
-          type: 'string',
-        },
+        // {
+        //   name: 'podHScode',
+        //   type: 'string',
+        // },
         {
           name: 'placeOfReceiptCode',
           type: 'string',
@@ -78,10 +78,10 @@ const query = new Query({
           name: 'placeOfDeliveryCode',
           type: 'string',
         },
-        {
-          name: 'finalDestinationCode',
-          type: 'string',
-        },
+        // {
+        //   name: 'finalDestinationCode',
+        //   type: 'string',
+        // },
         {
           name: 'cargoReadyDateEstimated',
           type: 'string',
