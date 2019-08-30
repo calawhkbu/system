@@ -14,6 +14,7 @@ import {
   IsNullExpression,
   OrExpressions,
   AndExpressions,
+  CreateFunctionJQL,
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -296,9 +297,9 @@ const query = new QueryDef(
             $select: [
               new ResultColumn(new ColumnExpression('workflow', 'tableName')),
               new ResultColumn(new ColumnExpression('workflow', 'primaryKey')),
-              new ResultColumn(new ColumnExpression('workflow', 'statusName'), 'lastStatus'),
-              new ResultColumn(new ColumnExpression('workflow', 'statusDate'), 'lastStatusDate'),
-              new ResultColumn(new ColumnExpression('flex_data', 'data')),
+              new ResultColumn(new FunctionExpression('ANY_VALUE', new ColumnExpression('workflow', 'statusName')), 'lastStatus'),
+              new ResultColumn(new FunctionExpression('ANY_VALUE', new ColumnExpression('workflow', 'statusDate')), 'lastStatusDate'),
+              new ResultColumn(new FunctionExpression('ANY_VALUE', new ColumnExpression('flex_data', 'data')), 'data'),
             ],
 
             $from: new FromTable(new Query({
