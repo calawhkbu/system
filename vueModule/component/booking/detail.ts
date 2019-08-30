@@ -147,12 +147,35 @@ export default {
                     },
                   },
                   {
-                    is: 'AsyncComponent',
+                    is: 'DynamicComponent',
                     props: {
-                      layoutName: 'booking/forms/generalForm',
-                    },
-                  },
-                ],
+                      components: [
+                        {
+                          is: 'v-card-title',
+                          props: {
+                            'primary-title': true,
+                            'class': 'padding-4'
+                          },
+                          slots: [
+                            {
+                              is: 'I18nText',
+                              props: {
+                                i18nContext: 'BookingPage',
+                                i18nKey: 'GeneralForm'
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          is: 'AsyncComponent',
+                          props: {
+                            layoutName: 'booking/forms/generalForm',
+                          },
+                        },
+                      ]
+                    }
+                  }
+                ]
               },
             ]
           },
@@ -221,11 +244,34 @@ export default {
                               },
                             },
                             {
-                              is: 'AsyncComponent',
+                              is: 'DynamicComponent',
                               props: {
-                                layoutName: 'booking/forms/partyForm',
-                              },
-                            },
+                                components: [
+                                  {
+                                    is: 'v-card-title',
+                                    props: {
+                                      'primary-title': true,
+                                      'class': 'padding-4'
+                                    },
+                                    slots: [
+                                      {
+                                        is: 'I18nText',
+                                        props: {
+                                          i18nContext: 'BookingPage',
+                                          i18nKey: 'PartyForm'
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    is: 'AsyncComponent',
+                                    props: {
+                                      layoutName: 'booking/forms/partyForm',
+                                    },
+                                  },
+                                ]
+                              }
+                            }
                           ],
                         },
                       ]
@@ -292,10 +338,33 @@ export default {
                               },
                             },
                             {
-                              is: 'AsyncComponent',
+                              is: 'DynamicComponent',
                               props: {
-                                layoutName: 'booking/forms/dateForm',
-                              },
+                                components: [
+                                  {
+                                    is: 'v-card-title',
+                                    props: {
+                                      'primary-title': true,
+                                      'class': 'padding-4'
+                                    },
+                                    slots: [
+                                      {
+                                        is: 'I18nText',
+                                        props: {
+                                          i18nContext: 'BookingPage',
+                                          i18nKey: 'DateForm'
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    is: 'AsyncComponent',
+                                    props: {
+                                      layoutName: 'booking/forms/dateForm',
+                                    },
+                                  },
+                                ]
+                              }
                             },
                           ],
                         },
@@ -361,11 +430,34 @@ export default {
                     },
                   },
                   {
-                    is: 'AsyncComponent',
+                    is: 'DynamicComponent',
                     props: {
-                      layoutName: 'booking/forms/containerForm',
-                    },
-                  },
+                      components: [
+                        {
+                          is: 'v-card-title',
+                          props: {
+                            'primary-title': true,
+                            'class': 'padding-4'
+                          },
+                          slots: [
+                            {
+                              is: 'I18nText',
+                              props: {
+                                i18nContext: 'BookingPage',
+                                i18nKey: 'ContainerForm'
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          is: 'AsyncComponent',
+                          props: {
+                            layoutName: 'booking/forms/containerForm',
+                          },
+                        },
+                      ]
+                    }
+                  }
                 ],
               },
             ]
@@ -425,11 +517,34 @@ export default {
                     },
                   },
                   {
-                    is: 'AsyncComponent',
+                    is: 'DynamicComponent',
                     props: {
-                      layoutName: 'booking/forms/referenceForm',
-                    },
-                  },
+                      components: [
+                        {
+                          is: 'v-card-title',
+                          props: {
+                            'primary-title': true,
+                            'class': 'padding-4'
+                          },
+                          slots: [
+                            {
+                              is: 'I18nText',
+                              props: {
+                                i18nContext: 'BookingPage',
+                                i18nKey: 'Reference'
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          is: 'AsyncComponent',
+                          props: {
+                            layoutName: 'booking/forms/referenceForm',
+                          },
+                        },
+                      ]
+                    }
+                  }
                 ],
               },
             ]
