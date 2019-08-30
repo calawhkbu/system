@@ -10,14 +10,6 @@
     },
 
     "documentList" : [
-
-        {
-
-            "fileName" : "testDoc",
-            "allowFillTemplate" : true,
-            "templateName" : "testDoc"
-        },
-
         {
 
             "fileName" : "Shipping Order",
