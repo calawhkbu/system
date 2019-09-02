@@ -4,7 +4,7 @@ export default {
     {
       is: 'DynamicComponent',
       props: {
-        class: 'xs-12 grid align-item-center full-width',
+        class: 'xs-12 grid align-item-center padding-8',
         components: [
           {
             is: 'v-btn',
@@ -52,25 +52,6 @@ export default {
               icon: true,
               flat: true,
             },
-            slots: [{ is: 'Icon', props: { icon: 'edit' } }],
-            events: {
-              'click.stop': [
-                {
-                  type: 'dispatch',
-                  otherParams: {
-                    name: 'widget/changeMode',
-                    mode: 'edit',
-                  },
-                },
-              ],
-            },
-          },
-          {
-            is: 'v-btn',
-            props: {
-              icon: true,
-              flat: true,
-            },
             slots: [{ is: 'Icon', props: { icon: 'map' } }],
             events: {
               'click.stop': [
@@ -84,6 +65,26 @@ export default {
               ],
             },
           },
+          {
+            is: 'v-btn',
+            props: {
+              icon: true,
+              flat: true,
+              class: 'primary white-text',
+            },
+            slots: [{ is: 'Icon', props: { icon: 'edit' } }],
+            events: {
+              'click.stop': [
+                {
+                  type: 'dispatch',
+                  otherParams: {
+                    name: 'widget/changeMode',
+                    mode: 'edit',
+                  },
+                },
+              ],
+            },
+          }
         ],
       },
     },
@@ -114,12 +115,12 @@ export default {
                         {
                           is: 'v-btn',
                           props: {
-                            icon: true,
-                            flat: true,
                             small: true,
-                            class: 'no-margin zindex-10',
+                            fab: true,
+                            color: 'primary',
+                            class: 'no-margin zindex-10 no-padding margin-right-4 margin-top-4',
                           },
-                          slots: [{ is: 'Icon', props: { small: true, icon: 'edit' } }],
+                          slots: [{ is: 'Icon', props: { icon: 'edit' } }],
                           events: {
                             'click.stop': [
                               {
@@ -154,7 +155,7 @@ export default {
                           is: 'v-card-title',
                           props: {
                             'primary-title': true,
-                            'class': 'padding-4'
+                            'class': 'padding-4 min-height-48 bold uppercase'
                           },
                           slots: [
                             {
@@ -165,6 +166,9 @@ export default {
                               }
                             }
                           ]
+                        },
+                        {
+                          is: 'v-divider'
                         },
                         {
                           is: 'AsyncComponent',
@@ -211,12 +215,12 @@ export default {
                                   {
                                     is: 'v-btn',
                                     props: {
-                                      icon: true,
-                                      flat: true,
                                       small: true,
-                                      class: 'no-margin zindex-10',
+                                      fab: true,
+                                      color: 'primary',
+                                      class: 'no-margin zindex-10 no-padding margin-right-4 margin-top-4',
                                     },
-                                    slots: [{ is: 'Icon', props: { small: true, icon: 'edit' } }],
+                                    slots: [{ is: 'Icon', props: { icon: 'edit' } }],
                                     events: {
                                       'click.stop': [
                                         {
@@ -251,7 +255,7 @@ export default {
                                     is: 'v-card-title',
                                     props: {
                                       'primary-title': true,
-                                      'class': 'padding-4'
+                                      'class': 'padding-4 min-height-48 bold uppercase'
                                     },
                                     slots: [
                                       {
@@ -262,6 +266,9 @@ export default {
                                         }
                                       }
                                     ]
+                                  },
+                                  {
+                                    is: 'v-divider'
                                   },
                                   {
                                     is: 'AsyncComponent',
@@ -305,12 +312,12 @@ export default {
                                   {
                                     is: 'v-btn',
                                     props: {
-                                      icon: true,
-                                      flat: true,
                                       small: true,
-                                      class: 'no-margin zindex-10',
+                                      fab: true,
+                                      color: 'primary',
+                                      class: 'no-margin zindex-10 no-padding margin-right-4 margin-top-4',
                                     },
-                                    slots: [{ is: 'Icon', props: { small: true, icon: 'edit' } }],
+                                    slots: [{ is: 'Icon', props: { icon: 'edit' } }],
                                     events: {
                                       'click.stop': [
                                         {
@@ -345,7 +352,7 @@ export default {
                                     is: 'v-card-title',
                                     props: {
                                       'primary-title': true,
-                                      'class': 'padding-4'
+                                      'class': 'padding-4 min-height-48 bold uppercase'
                                     },
                                     slots: [
                                       {
@@ -356,6 +363,9 @@ export default {
                                         }
                                       }
                                     ]
+                                  },
+                                  {
+                                    is: 'v-divider'
                                   },
                                   {
                                     is: 'AsyncComponent',
@@ -397,12 +407,12 @@ export default {
                         {
                           is: 'v-btn',
                           props: {
-                            icon: true,
-                            flat: true,
                             small: true,
-                            class: 'no-margin zindex-10',
+                            fab: true,
+                            color: 'primary',
+                            class: 'no-margin zindex-10 no-padding margin-right-4 margin-top-4',
                           },
-                          slots: [{ is: 'Icon', props: { small: true, icon: 'edit' } }],
+                          slots: [{ is: 'Icon', props: { icon: 'edit' } }],
                           events: {
                             'click.stop': [
                               {
@@ -437,7 +447,7 @@ export default {
                           is: 'v-card-title',
                           props: {
                             'primary-title': true,
-                            'class': 'padding-4'
+                            'class': 'padding-4 min-height-48 bold uppercase'
                           },
                           slots: [
                             {
@@ -448,6 +458,9 @@ export default {
                               }
                             }
                           ]
+                        },
+                        {
+                          is: 'v-divider'
                         },
                         {
                           is: 'AsyncComponent',
@@ -484,12 +497,12 @@ export default {
                         {
                           is: 'v-btn',
                           props: {
-                            icon: true,
-                            flat: true,
                             small: true,
-                            class: 'no-margin zindex-10',
+                            fab: true,
+                            color: 'primary',
+                            class: 'no-margin zindex-10 no-padding margin-right-4 margin-top-4',
                           },
-                          slots: [{ is: 'Icon', props: { small: true, icon: 'edit' } }],
+                          slots: [{ is: 'Icon', props: { icon: 'edit' } }],
                           events: {
                             'click.stop': [
                               {
@@ -524,7 +537,7 @@ export default {
                           is: 'v-card-title',
                           props: {
                             'primary-title': true,
-                            'class': 'padding-4'
+                            'class': 'padding-4 min-height-48 bold uppercase'
                           },
                           slots: [
                             {
@@ -535,6 +548,9 @@ export default {
                               }
                             }
                           ]
+                        },
+                        {
+                          is: 'v-divider'
                         },
                         {
                           is: 'AsyncComponent',
@@ -565,27 +581,27 @@ export default {
             layoutName: 'plugins/tracking',
           },
         },
-        {
-          is: 'AsyncComponent',
-          props: {
-            class: 'xs-12 margin-topbottom-4',
-            layoutName: 'plugins/workflow',
-          },
-        },
-        {
-          is: 'AsyncComponent',
-          props: {
-            class: 'xs-12 margin-topbottom-4',
-            layoutName: 'plugins/alert',
-          },
-        },
-        {
-          is: 'AsyncComponent',
-          props: {
-            class: 'xs-12 margin-topbottom-4',
-            layoutName: 'plugins/document',
-          },
-        },
+        // {
+        //   is: 'AsyncComponent',
+        //   props: {
+        //     class: 'xs-12 margin-topbottom-4',
+        //     layoutName: 'plugins/workflow',
+        //   },
+        // },
+        // {
+        //   is: 'AsyncComponent',
+        //   props: {
+        //     class: 'xs-12 margin-topbottom-4',
+        //     layoutName: 'plugins/alert',
+        //   },
+        // },
+        // {
+        //   is: 'AsyncComponent',
+        //   props: {
+        //     class: 'xs-12 margin-topbottom-4',
+        //     layoutName: 'plugins/document',
+        //   },
+        // },
       ],
     },
   ],
