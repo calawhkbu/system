@@ -9,31 +9,32 @@ export default class EdiParser850 extends BaseEdiParser {
 
     constructor(
         protected readonly type: string,
-        protected readonly format: any,
+        protected readonly formatJson: any,
         protected readonly storageService: StorageService,
         protected readonly outboundService: OutboundService,
         protected readonly codeMasterService: CodeMasterService,
         protected readonly productDbService: ProductDbService
 
     ) {
-        super(type, format, storageService, outboundService, codeMasterService, productDbService)
+        super(type, formatJson, storageService, outboundService, codeMasterService, productDbService)
     }
 
-    async import(): Promise<any> {
+    async import(base64EdiContent: string, jsonFormat: any): Promise<any> {
 
         console.log(`import type  : ${this.type}`)
 
-        const result = {}
+        const result = await this.callImportOutbound()
 
         return result
 
     }
 
-    async export(): Promise<any> {
+    async export(jsonFormat: any): Promise<any> {
 
         console.log(`export type  : ${this.type}`)
 
-        const result = ''
+        const result = await this.callExportOutbound()
+
         return result
 
     }
