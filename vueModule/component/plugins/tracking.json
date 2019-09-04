@@ -63,7 +63,8 @@
     "showCargoOrContainer": true,
     "subTitleKeys": [
       "statusDescription",
-      "statusPlace"
+      "statusPlace",
+      "pieces"
     ]
   }
 }
