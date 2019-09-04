@@ -1,6 +1,5 @@
 
 import { BaseEdiParser } from 'modules/edi/baseEdiParser'
-import { StorageService } from 'modules/storage/service'
 import { CodeMasterService } from 'modules/sequelize/codeMaster/service'
 import { ProductDbService } from 'modules/sequelize/product/service'
 import { OutboundService } from 'modules/integration-hub/services/outbound'
@@ -10,13 +9,12 @@ export default class EdiParser850 extends BaseEdiParser {
     constructor(
         protected readonly type: string,
         protected readonly formatJson: any,
-        protected readonly storageService: StorageService,
         protected readonly outboundService: OutboundService,
         protected readonly codeMasterService: CodeMasterService,
         protected readonly productDbService: ProductDbService
 
     ) {
-        super(type, formatJson, storageService, outboundService, codeMasterService, productDbService)
+        super(type, formatJson, outboundService, codeMasterService, productDbService)
     }
 
     async import(base64EdiContent: string, jsonFormat: any): Promise<any> {
