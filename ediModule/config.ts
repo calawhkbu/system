@@ -7,205 +7,29 @@ export default [
         ediType : '850',
         schedule : '0 * * * *',
 
+        // very important !!!!!! must use absolute path and end with slash
+        searchPath : '/home/ec2-user/ftptest/',
+
+        // searchPath : 'C:\\home\\ec2-user\\ftptest\\',
+
+        inboundStorage : {
+
+            handlerName : 'sftp',
+            config: {
+
+                os : 'linux',
+
+                host: '13.229.70.248',
+                port: '22',
+                username: 'ec2-user',
+
+                privateKey : `privateKey`
+              }
+
+        },
+
         outbound : 'someOutbound'
 
     }
 
 ] as EdiConfig[]
-
-// export default {
-//   afterCreate_i18n: [
-//     {
-//       handlerName: 'example.ts',
-//       otherParameters: {},
-//       afterEvent: [],
-//     },
-//   ],
-
-//   example: [
-//     {
-//       handlerName: 'example.ts',
-//       otherParameters: {},
-//       afterEvent: [
-//         {
-//           eventName: 'example2',
-//           previousParameters: {},
-//         },
-//       ],
-//     },
-//   ],
-
-//   example2: [],
-
-//   // should not be called directly, should be called after an event
-//   create_alert: [
-//     {
-//       handlerName: 'create_alert.ts',
-//     },
-//   ],
-
-//   create_tracking: [
-//     {
-//       handlerName: 'create_tracking.ts',
-//     },
-//   ],
-
-//   // update entity(booking) with a tracking
-//   tracking_update_data: [
-//     {
-//       handlerName: 'tracking_update_data.ts',
-//     },
-//   ],
-
-//   afterCreate_tracking: [
-//     {
-//       eventName: 'tracking_update_data',
-//     },
-//   ],
-
-//   afterUpdate_tracking: [
-//     {
-//       eventName: 'tracking_update_data',
-//     },
-//   ],
-
-//   // should not be called directly, should be called after an event
-//   fill_template: [
-//     {
-//       handlerName: 'fill_template.ts',
-//     },
-//   ],
-
-//   update_document_preview: [
-//     {
-//       handlerName: 'update_document_preview.ts',
-//     },
-//   ],
-
-//   afterCreate_document: [
-//     {
-//       eventName: 'update_document_preview',
-//     },
-//   ],
-
-//   afterUpdate_document: [
-//     {
-//       eventName: 'update_document_preview',
-//     },
-//   ],
-
-//   afterCreate_booking: [
-//     // create alert of new Booking
-//     {
-//       condition: true,
-//       eventName: 'create_alert',
-//       otherParameters: {
-//         alertType: 'newBooking',
-//         tableName: 'booking',
-//         primaryKey: parameters => {
-//           // use booking.id as primaryKey
-//           return parameters.data.id
-//         },
-//       },
-//     },
-
-//     // // update personId / create Invitation
-//     // {
-//     //   condition : true,
-//     //   handlerName : 'entity_create_invitation.ts',
-//     //   otherParameters : {
-//     //     tableName : 'booking',
-//     //   }
-//     // },
-
-//     // // create booking tracking
-//     {
-//       condition: true,
-//       eventName: 'create_tracking',
-//     },
-
-//     // fill template of the booking
-//     {
-//       condition: true,
-//       eventName: 'fill_template',
-//       otherParameters: {
-//         tableName: 'booking',
-//         fileName: 'Shipping Order',
-
-//         // use booking .id as primaryKey
-//         primaryKey: result => {
-//           return result.data.id
-//         },
-//       },
-//     },
-//   ],
-
-//   afterUpdate_booking: [
-
-//     {
-//       condition: true,
-//       eventName: 'create_tracking',
-//     },
-//     {
-//       condition: true,
-//       eventName: 'create_alert',
-//       otherParameters: {
-//         alertType: 'newBooking',
-//         tableName: 'booking',
-//         primaryKey: parameters => {
-//           // use booking.id as primaryKey
-//           return parameters.data.id
-//         },
-//       },
-//     },
-//     {
-//       condition: true,
-//       handlerName: 'checker.ts',
-//       otherParameters: {
-//         checker: [
-//           {
-//             resultName: 'haveDiff',
-//             checkerFunction: (parameters: any) => {
-
-//               const difference = diff(parameters.oldData, parameters.data, undefined, undefined, ['createdAt', 'createdBy', 'updatedAt', 'updatedBy'])
-
-//               console.log('difference')
-//               console.log(difference)
-
-//               return (difference) ? true : false
-
-//             }
-//           },
-
-//         ],
-//       },
-//       afterEvent: [
-//         {
-//           eventName: 'fill_template',
-//           previousParameters: {
-//             tableName: 'booking',
-//             fileName: 'Shipping Order',
-//             primaryKey: parameters => {
-//               return parameters.data.id
-//             },
-//           },
-//           condition(parameters: any) {
-//             return parameters.checkerResult['haveDiff']
-//           },
-//         },
-//       ],
-//     }
-
-//   ],
-
-//   fm3k_booking : [
-//     {
-//       condition : true,
-//       handlerName : 'fm3k_booking.ts'
-//     }
-
-//   ]
-
-// } as {
-//   [eventName: string]: EventConfig[]
-// }
