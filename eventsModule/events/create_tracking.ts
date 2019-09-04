@@ -62,7 +62,6 @@ class CreateTrackingEvent extends BaseEvent {
 
     // hardcode
     const masterNo = this.getMasterNo(booking, 'MAWB')
-    console.log(masterNo, '================')
 
     if (masterNo) {
       const trackService = this.allService['TrackService'] as TrackService
@@ -105,26 +104,28 @@ class CreateTrackingEvent extends BaseEvent {
 
   // parameters should be booking
   public async mainFunction(parameters: any) {
-    console.log('======================')
+    console.log('Start Create Tracking Event ....', 'tracking')
 
     const booking = parameters.data as Booking
 
     // etd, carrier and ModuleType is required
 
     if (booking.moduleTypeCode && booking.departureDateEstimated) {
-      console.log('here')
 
       switch (booking.moduleTypeCode) {
         case 'AIR':
+          console.log('AIR BOOKING', 'tracking')
           return await this.createTrackingAir(booking)
 
         case 'SEA':
+          console.log('SEA BOOKING', 'tracking')
           return await this.createTrackingSea(booking)
 
         default:
           break
       }
     }
+    console.log('End Create Tracking Event ....', 'tracking')
   }
 }
 

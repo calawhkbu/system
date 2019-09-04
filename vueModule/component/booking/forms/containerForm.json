@@ -10,10 +10,40 @@
             "class": "xs-12 md-6"
           },
           {
-            "label": "BookingPage.containerOrCargoValue",
-            "name": "containerOrCargoValue",
+            "label": "BookingPage.cargoValueCurrencyCode",
+            "name": "cargoValueCurrencyCode",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-2",
+            "more": [{
+              "name": "cargoValueCurrencyCode",
+              "selector": "code"
+            }],
+            "props": {
+              "searchTextParams": {
+                "url": "api/code/query/code_master",
+                "method": "POST",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "CURRENCY"
+                    },
+                    "q": {
+                      "value": "{{context.search}}"
+                    }
+                  }
+                }
+              },
+              "onInit": true,
+              "item-text": "code",
+              "item-value": "code",
+              "showValue": false
+            }
+          },
+          {
+            "label": "BookingPage.cargoValue",
+            "name": "cargoValue",
             "component": "v-text-field",
-            "class": "xs-12 md-6",
+            "class": "xs-12 md-4",
             "props": {
               "type": "number",
               "min": 0

@@ -43,8 +43,9 @@
       "EPRL": "tracking/truck.svg",
       "STSP": "tracking/truck.svg",
       "RCS": "tracking/truck.svg"
-    },
-    "itemClassKey": "isEstimated",
+    }
+  },
+  "baseSummaryProps": {
     "icon": "statusCode",
     "titleKey": "status",
     "subTitleKeys": [
@@ -55,12 +56,14 @@
         "is": "Datetime",
         "format": "YYYY-MM-DD HH:mm:ss"
       }
-    ]
-  },
-  "baseSummaryProps": {
+    ],
     "size": -1
   },
   "baseDetailProps": {
-    "showCargoOrContainer": true
+    "showCargoOrContainer": true,
+    "subTitleKeys": [
+      "statusDescription",
+      "statusPlace"
+    ]
   }
 }
