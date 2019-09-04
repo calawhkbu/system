@@ -8,6 +8,8 @@ import {
   BinaryExpression,
   InExpression,
   IsNullExpression,
+  FunctionExpression,
+  Unknown,
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -24,6 +26,26 @@ const query = new QueryDef(
     }),
   })
 )
+
+query
+  .register(
+    'thirdPartyCodeKey',
+    new Query({
+      $where: new BinaryExpression(
+        new FunctionExpression(
+          'JSON_UNQUOTE',
+          new FunctionExpression(
+            'JSON_EXTRACT',
+            new ColumnExpression('party', 'thirdPartyCode'),
+            new Unknown('string')
+          )
+        ),
+        '='
+      ),
+    })
+  )
+  .register('key', 0)
+  .register('value', 1)
 
 query
   .register(
