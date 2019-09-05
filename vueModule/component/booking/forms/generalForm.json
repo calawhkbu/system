@@ -93,7 +93,12 @@
               }
             },
             "item-text": "name",
-            "item-value": "code"
+            "item-value": "code",
+            "showValue": false,
+            "showSpacer": false,
+            "selectedProps": {
+              "class": "multiple"
+            }
           }
         },
         {
@@ -488,7 +493,7 @@
           }
         },
         {
-          "label": "BookingPage.polHSCode",
+          "label": "BookingPage.polHScode",
           "name": "polHScode",
           "component": "v-text-field",
           "class": "xs-12 md-6",
