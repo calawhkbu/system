@@ -28,14 +28,14 @@ function prepareTable(name: string): CreateTableJQL {
     name,
     $as: new Query({
       $select: [
-        new ResultColumn(new ColumnExpression(name, 'agentPartyId')),
+        new ResultColumn(new ColumnExpression(name, 'shipperPartyId')),
         new ResultColumn(
           new FunctionExpression(
             'IFNULL',
-            new FunctionExpression('SUM', new ColumnExpression(name, 'weight')),
+            new FunctionExpression('SUM', new ColumnExpression(name, 'volume')),
             0
           ),
-          'weight'
+          'totalVolume'
         ),
       ],
       $from: new FromTable(
@@ -44,16 +44,16 @@ function prepareTable(name: string): CreateTableJQL {
           url: 'api/booking/query/booking',
           columns: [
             {
-              name: 'weight',
+              name: 'volume',
               type: 'number',
             },
             {
-              name: 'agentPartyId',
+              name: 'shipperPartyId',
               type: 'number',
             },
 
             {
-              name: 'agentPartyName',
+              name: 'shipperPartyName',
               type: 'string',
             },
           ],
@@ -69,9 +69,9 @@ function prepareTable(name: string): CreateTableJQL {
         name
       ),
 
-      $group: new GroupBy([new ColumnExpression(name, 'agentPartyId')]),
+      $group: new GroupBy([new ColumnExpression(name, 'shipperPartyId')]),
 
-      $order: [new OrderBy('weight', 'DESC')],
+      $order: [new OrderBy('totalVolume', 'DESC')],
 
       $limit: 10,
     }),
@@ -111,7 +111,7 @@ function preparePartyTable(name: string): CreateTableJQL {
         name
       ),
 
-      $where: new BinaryExpression(new ColumnExpression('type'), '=', 'agent'),
+      $where: new BinaryExpression(new ColumnExpression('type'), '=', 'shipper'),
     }),
   })
 }
@@ -128,15 +128,11 @@ export default [
         'INNER',
         new FromTable('party', 'party'),
         new BinaryExpression(
-          new ColumnExpression('tempTable', 'agentPartyId'),
+          new ColumnExpression('tempTable', 'shipperPartyId'),
           '=',
           new ColumnExpression('party', 'id')
         )
       )
     ),
-
-    $order: [new OrderBy(new ColumnExpression('tempTable', 'weight'), 'DESC')],
-
-    $limit: 10,
   }),
 ]
