@@ -74,7 +74,7 @@ export default [
       $from: new FromTable(
         {
           method: 'POST',
-          url: 'api/tracking',
+          url: 'api/tracking/query/tracking',
           columns: [
             {
               name: 'tracking.trackingNo',

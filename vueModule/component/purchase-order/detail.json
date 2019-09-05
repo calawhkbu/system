@@ -549,6 +549,12 @@
         "is": "AsyncComponent",
         "props": {
           "class": "xs-12 margin-topbottom-4",
+          "layoutName": "plugins/workflow"
+        }
+      }, {
+        "is": "AsyncComponent",
+        "props": {
+          "class": "xs-12 margin-topbottom-4",
           "layoutName": "plugins/alert"
         }
       }, {

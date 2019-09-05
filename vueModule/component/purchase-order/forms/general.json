@@ -1,0 +1,197 @@
+{
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [{
+          "label": "PurchaseOrderPage.poNo",
+          "name": "poNo",
+          "component": "v-text-field",
+          "class": "xs-12 md-6",
+          "validator": ["required"],
+          "props": {
+            "required": true
+          }
+        }, {
+          "label": "PurchaseOrderPage.moduleType",
+          "name": "moduleTypeCode",
+          "component": "AsyncSelect",
+          "class": "xs-12 md-6",
+          "validator": ["required"],
+          "relation": "moduleType",
+          "props": {
+            "required": true,
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "MODULE"
+                  }
+                }
+              }
+            },
+            "item-text": "name",
+            "item-value": "code"
+          }
+        },
+        {
+          "label": "PurchaseOrderPage.portOfLoading",
+          "name": "portOfLoading",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12 md-6",
+          "more": [{
+            "name": "portOfLoadingCode",
+            "selector": "portCode"
+          }],
+          "props": {
+            "searchValueParams": {
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleTypeCode": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "ports": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
+                }
+              }
+            },
+            "searchTextParams": {
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleTypeCode": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "name",
+            "item-value": "portCode"
+          }
+        },
+        {
+          "label": "PurchaseOrderPage.portOfDischarge",
+          "name": "portOfDischarge",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12 md-6",
+          "more": [{
+            "name": "portOfDischargeCode",
+            "selector": "portCode"
+          }],
+          "props": {
+            "searchValueParams": {
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleTypeCode": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "ports": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
+                }
+              }
+            },
+            "searchTextParams": {
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleTypeCode": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "name",
+            "item-value": "portCode"
+          }
+        },
+        {
+          "label": "PurchaseOrderPage.incoTermsCode",
+          "name": "incoTerms",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12 md-6",
+          "more": [{
+            "name": "incoTermsCode",
+            "selector": "code"
+          }],
+          "relationMore": [{
+            "name": "freightTermsCode",
+            "selector": "data.frieghtTermsCode"
+          }],
+          "props": {
+            "searchValueParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "fields": ["code_master.*", "flex_data.data"],
+                "subqueries": {
+                  "codeType": {
+                    "value": "INCOTERMS"
+                  },
+                  "code": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
+                }
+              }
+            },
+            "searchTextParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "fields": ["code_master.*", "flex_data.data"],
+                "subqueries": {
+                  "codeType": {
+                    "value": "INCOTERMS"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "name",
+            "item-value": "code"
+          }
+        },
+        {
+          "label": "PurchaseOrderPage.freightTermsCode",
+          "name": "freightTermsCode",
+          "component": "AsyncSelect",
+          "class": "xs-12 md-6",
+          "props": {
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "PAYTERMS"
+                  }
+                }
+              }
+            },
+            "item-text": "name",
+            "item-value": "code"
+          }
+        }
+      ]
+    }
+  }]
+}

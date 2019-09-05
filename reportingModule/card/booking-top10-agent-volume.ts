@@ -35,7 +35,7 @@ function prepareTable(name: string): CreateTableJQL {
             new FunctionExpression('SUM', new ColumnExpression(name, 'volume')),
             0
           ),
-          'volume'
+          'totalVolume'
         ),
       ],
       $from: new FromTable(
@@ -71,7 +71,7 @@ function prepareTable(name: string): CreateTableJQL {
 
       $group: new GroupBy([new ColumnExpression(name, 'agentPartyId')]),
 
-      $order: [new OrderBy('volume', 'DESC')],
+      $order: [new OrderBy('totalVolume', 'DESC')],
 
       $limit: 10,
     }),
@@ -134,9 +134,5 @@ export default [
         )
       )
     ),
-
-    $order: [new OrderBy(new ColumnExpression('tempTable', 'volume'), 'DESC')],
-
-    $limit: 10,
   }),
 ]

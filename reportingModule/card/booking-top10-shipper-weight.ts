@@ -35,7 +35,7 @@ function prepareTable(name: string): CreateTableJQL {
             new FunctionExpression('SUM', new ColumnExpression(name, 'weight')),
             0
           ),
-          'weight'
+          'totalWeight'
         ),
       ],
       $from: new FromTable(
@@ -71,7 +71,7 @@ function prepareTable(name: string): CreateTableJQL {
 
       $group: new GroupBy([new ColumnExpression(name, 'shipperPartyId')]),
 
-      $order: [new OrderBy('weight', 'DESC')],
+      $order: [new OrderBy('totalWeight', 'DESC')],
 
       $limit: 10,
     }),
@@ -135,8 +135,5 @@ export default [
       )
     ),
 
-    $order: [new OrderBy(new ColumnExpression('tempTable', 'weight'), 'DESC')],
-
-    $limit: 10,
   }),
 ]
