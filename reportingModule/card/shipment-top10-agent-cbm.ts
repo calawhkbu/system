@@ -103,6 +103,10 @@ function prepareTop10table(): CreateTableJQL
 
             $group: new GroupBy([new ColumnExpression('shipment', 'agentPartyCode')]),
 
+            $order: [new OrderBy(new ColumnExpression('totalCbm'), 'DESC')],
+
+            $limit : 10
+
         })
 
     })
@@ -111,7 +115,7 @@ function prepareTop10table(): CreateTableJQL
 
 function preparePartyParams(): Function {
 
-    return function(require, session, params)
+    return async function(require, session, params)
     {
 
         const { Resultset } = require('node-jql-core')
@@ -130,14 +134,16 @@ function preparePartyParams(): Function {
         } = require('node-jql')
         const moment = require('moment')
 
+        const top10Result = new Resultset(await session.query(new Query('top10'))).toArray()
+
         // script
         const subqueries = (params.subqueries = params.subqueries || {})
 
-        subqueries.thirdPartyCodeKey = {
-            key : '$.erp',
-            value : 'abc'
+        // subqueries.thirdPartyCodeKey = {
+        //     key : '$.erp',
+        //     value : 'abc'
 
-        }
+        // }
 
         return params
 
@@ -176,7 +182,9 @@ function preparePartyTable(): Function
 
                 $select: [
 
+                    new ResultColumn(new ColumnExpression('party', 'id')),
                     new ResultColumn(new ColumnExpression('party', 'name')),
+                    new ResultColumn(new ColumnExpression('party', 'thirdPartyCode')),
 
                 ],
                 $from: new FromTable(
@@ -186,7 +194,17 @@ function preparePartyTable(): Function
                         columns: [
 
                             {
+                                name: 'id',
+                                type: 'number',
+                            },
+
+                            {
                                 name: 'name',
+                                type: 'string',
+                            },
+
+                            {
+                                name: 'thirdPartyCode',
                                 type: 'string',
                             },
 
@@ -206,16 +224,19 @@ function preparePartyTable(): Function
 
 export default [
 
-    // [prepareTop10Params(), prepareTop10table()],
+    [prepareTop10Params(), prepareTop10table()],
     [preparePartyParams(), preparePartyTable()],
 
     new Query({
 
-        $from : 'partyTemp',
+        $select : [
 
-        // $order: [new OrderBy(new ColumnExpression('top10', 'totalChargeableWeight'), 'DESC')],
+            new ResultColumn(new ColumnExpression('top10', 'totalCbm')),
+            new ResultColumn(new ColumnExpression('top10', 'agentPartyCode')),
+            new ResultColumn(new ColumnExpression('top10', 'agentPartyCode')),
 
-        // $limit : 10
+        ],
+
     })
 
 ]

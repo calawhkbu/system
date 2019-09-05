@@ -100,6 +100,10 @@ function prepareTop10table(): CreateTableJQL
 
             $group: new GroupBy([new ColumnExpression('shipment', 'carrierCode')]),
 
+            $order: [new OrderBy(new ColumnExpression('totalCbm'), 'DESC')],
+
+            $limit : 10
+
         })
 
     })
