@@ -111,7 +111,7 @@
               "url": "api/location/query/location",
               "data": {
                 "subqueries": {
-                  "moduleType": {
+                  "moduleTypeCode": {
                     "value": "{{context.form.moduleTypeCode}}"
                   },
                   "ports": {
@@ -125,7 +125,7 @@
               "url": "api/location/query/location",
               "data": {
                 "subqueries": {
-                  "moduleType": {
+                  "moduleTypeCode": {
                     "value": "{{context.form.moduleTypeCode}}"
                   },
                   "q": {
@@ -156,7 +156,7 @@
               "url": "api/location/query/location",
               "data": {
                 "subqueries": {
-                  "moduleType": {
+                  "moduleTypeCode": {
                     "value": "{{context.form.moduleTypeCode}}"
                   },
                   "ports": {
@@ -170,7 +170,7 @@
               "url": "api/location/query/location",
               "data": {
                 "subqueries": {
-                  "moduleType": {
+                  "moduleTypeCode": {
                     "value": "{{context.form.moduleTypeCode}}"
                   },
                   "q": {
@@ -201,7 +201,7 @@
               "url": "api/location/query/location",
               "data": {
                 "subqueries": {
-                  "moduleType": {
+                  "moduleTypeCode": {
                     "value": "{{context.form.moduleTypeCode}}"
                   },
                   "ports": {
@@ -215,7 +215,7 @@
               "url": "api/location/query/location",
               "data": {
                 "subqueries": {
-                  "moduleType": {
+                  "moduleTypeCode": {
                     "value": "{{context.form.moduleTypeCode}}"
                   },
                   "q": {
@@ -244,7 +244,7 @@
               "url": "api/location/query/location",
               "data": {
                 "subqueries": {
-                  "moduleType": {
+                  "moduleTypeCode": {
                     "value": "{{context.form.moduleTypeCode}}"
                   },
                   "ports": {
@@ -258,7 +258,7 @@
               "url": "api/location/query/location",
               "data": {
                 "subqueries": {
-                  "moduleType": {
+                  "moduleTypeCode": {
                     "value": "{{context.form.moduleTypeCode}}"
                   },
                   "q": {

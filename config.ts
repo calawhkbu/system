@@ -1,7 +1,7 @@
 export default {
   dataSetting: {
     shipment: {
-      internal: false,
+      internal: true,
       override: {},
     },
   },
