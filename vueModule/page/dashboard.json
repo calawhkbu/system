@@ -12,7 +12,14 @@
         "enableSetting": true,
         "newReport": {
           "configurations": {
-            "i18nContext": "Reporting"
+            "i18nContext": "Reporting",
+            "colors": [
+              "#4bc0c0",
+              "#ff6384",
+              "#ffcd56",
+              "#c9cbcf",
+              "#36a2eb"
+            ]
           }
         },
         "filters": [
@@ -20,67 +27,35 @@
             "name": "moduleTypeCode",
             "type": "list",
             "props": {
-              "jql": {
-                "$select": [
-                  {
-                    "expression": { "classname": "ColumnExpression", "name": "code" },
-                    "$as": "value"
-                  },
-                  {
-                    "expression": { "classname": "ColumnExpression", "name": "name" },
-                    "$as": "label"
-                  }
-                ],
-                "$from": {
-                  "table": {
-                    "method": "POST",
-                    "url": "api/code/query/code_master",
-                    "columns": [
-                      { "name": "code", "type": "string" },
-                      { "name": "name", "type": "string" }
-                    ],
-                    "data": {
-                      "subqueries": {
-                        "codeType": {
-                          "value": "moduleType"
-                        }
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "moduleType"
                       }
                     }
                   },
-                  "$as": "code"
-                }
-              },
-              "resolveJql": {
-                "$select": [
-                  {
-                    "expression": { "classname": "ColumnExpression", "name": "code" },
-                    "$as": "value"
-                  },
-                  {
-                    "expression": { "classname": "ColumnExpression", "name": "name" },
-                    "$as": "label"
-                  }
-                ],
-                "$from": {
-                  "table": {
-                    "method": "POST",
-                    "url": "api/code/query/code_master",
-                    "columns": [
-                      { "name": "code", "type": "string" },
-                      { "name": "name", "type": "string" }
-                    ],
-                    "data": {
-                      "subqueries": {
-                        "codeType": {
-                          "value": "moduleType"
-                        },
-                        "code": {
-                          "value": "{{ value }}"
-                        }
+                  "valueKey": "code",
+                  "labelKey": "name"
+                },
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "moduleType"
+                      },
+                      "code": {
+                        "value": "{{ value }}"
                       }
                     }
                   },
-                  "$as": "code"
+                  "valueKey": "code",
+                  "labelKey": "name"
                 }
               }
             }
@@ -168,70 +143,38 @@
             "name": "Airline",
             "type": "autocomplete",
             "props": {
-              "jql": {
-                "$select": [
-                  {
-                    "expression": { "classname": "ColumnExpression", "name": "code" },
-                    "$as": "value"
-                  },
-                  {
-                    "expression": { "classname": "ColumnExpression", "name": "name" },
-                    "$as": "label"
-                  }
-                ],
-                "$from": {
-                  "table": {
-                    "method": "POST",
-                    "url": "api/code/query/code_master",
-                    "columns": [
-                      { "name": "code", "type": "string" },
-                      { "name": "name", "type": "string" }
-                    ],
-                    "data": {
-                      "subqueries": {
-                        "codeType": {
-                          "value": "airline"
-                        },
-                        "q": {
-                          "value": "{{ q }}"
-                        }
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "airline"
+                      },
+                      "q": {
+                        "value": "{{ q }}"
                       }
                     }
                   },
-                  "$as": "code"
-                }
-              },
-              "resolveJql": {
-                "$select": [
-                  {
-                    "expression": { "classname": "ColumnExpression", "name": "code" },
-                    "$as": "value"
-                  },
-                  {
-                    "expression": { "classname": "ColumnExpression", "name": "name" },
-                    "$as": "label"
-                  }
-                ],
-                "$from": {
-                  "table": {
-                    "method": "POST",
-                    "url": "api/code/query/code_master",
-                    "columns": [
-                      { "name": "code", "type": "string" },
-                      { "name": "name", "type": "string" }
-                    ],
-                    "data": {
-                      "subqueries": {
-                        "codeType": {
-                          "value": "airline"
-                        },
-                        "code": {
-                          "value": "{{ value }}"
-                        }
+                  "valueKey": "code",
+                  "labelKey": "name"
+                },
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "airline"
+                      },
+                      "code": {
+                        "value": "{{ value }}"
                       }
                     }
                   },
-                  "$as": "code"
+                  "valueKey": "code",
+                  "labelKey": "name"
                 }
               },
               "display": "value",
