@@ -25,6 +25,7 @@ class FillTemplateEvent extends BaseEvent {
   }
 
   public async mainFunction(parameters: any) {
+    console.log('fill template', 'template')
     const tableName = parameters.tableName
     const primaryKey = parameters.primaryKey
     const fileName = parameters.fileName
