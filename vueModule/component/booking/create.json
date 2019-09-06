@@ -552,7 +552,7 @@
           {
             "is": "DynamicComponent",
             "props": {
-              "class": "flex absolute-bottomright full-width",
+              "class": "flex padding-leftright-8",
               "components": [{
                   "is": "v-btn",
                   "props": {
@@ -578,7 +578,10 @@
                   }
                 },
                 {
-                  "is": "v-spacer"
+                  "is": "div",
+                  "props": {
+                    "class": "width-20"
+                  }
                 },
                 {
                   "is": "WidgetSave",
