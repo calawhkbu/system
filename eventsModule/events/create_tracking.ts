@@ -71,7 +71,7 @@ class CreateTrackingEvent extends BaseEvent {
         masterNo,
         departureDateEstimated,
       }
-
+      console.log(trackingInformation, 'tracking')
       return await trackService.register(partyGroupCode, moduleTypeCode, trackingInformation)
     }
   }
@@ -97,6 +97,7 @@ class CreateTrackingEvent extends BaseEvent {
         soNo,
         departureDateEstimated,
       }
+      console.log(trackingInformation, 'tracking')
 
       return await trackService.register(partyGroupCode, moduleTypeCode, trackingInformation)
     }
@@ -111,14 +112,12 @@ class CreateTrackingEvent extends BaseEvent {
     // etd, carrier and ModuleType is required
 
     if (booking.moduleTypeCode && booking.departureDateEstimated) {
-
+      console.log(`${booking.moduleTypeCode}`, 'tracking')
       switch (booking.moduleTypeCode) {
         case 'AIR':
-          console.log('AIR BOOKING', 'tracking')
           return await this.createTrackingAir(booking)
 
         case 'SEA':
-          console.log('SEA BOOKING', 'tracking')
           return await this.createTrackingSea(booking)
 
         default:
