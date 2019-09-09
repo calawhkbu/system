@@ -55,6 +55,11 @@ function prepareTop10Params(): Function {
 
         }
 
+        subqueries.moduleType = {
+
+            value : 'AIR'
+        }
+
         return params
     }
 }
@@ -75,10 +80,10 @@ function prepareTop10table(): CreateTableJQL
                 new ResultColumn(
                     new FunctionExpression(
                         'IFNULL',
-                        new FunctionExpression('SUM', new ColumnExpression('shipment', 'cbm')),
+                        new FunctionExpression('SUM', new ColumnExpression('shipment', 'chargeableWeight')),
                         0
                     ),
-                    'totalCbm'
+                    'totalChargeableWeight'
                 ),
             ],
             $from: new FromTable(
@@ -92,7 +97,7 @@ function prepareTop10table(): CreateTableJQL
                             type: 'string',
                         },
                         {
-                            name: 'cbm',
+                            name: 'chargeableWeight',
                             type: 'number',
                         },
                     ],
@@ -103,7 +108,7 @@ function prepareTop10table(): CreateTableJQL
 
             $group: new GroupBy([new ColumnExpression('shipment', 'agentPartyCode')]),
 
-            $order: [new OrderBy(new ColumnExpression('totalCbm'), 'DESC')],
+            $order: [new OrderBy(new ColumnExpression('totalChargeableWeight'), 'DESC')],
 
             $limit : 10
 
@@ -139,12 +144,6 @@ function preparePartyParams(): Function {
         // script
         const subqueries = (params.subqueries = params.subqueries || {})
 
-        // subqueries.thirdPartyCodeKey = {
-        //     key : '$.erp',
-        //     value : 'abc'
-
-        // }
-
         return params
 
     }
@@ -177,14 +176,14 @@ function preparePartyTable(): Function
 
             $temporary : true,
 
-            name : 'partyTemp',
+            name : 'party',
             $as : new Query({
 
                 $select: [
 
                     new ResultColumn(new ColumnExpression('party', 'id')),
                     new ResultColumn(new ColumnExpression('party', 'name')),
-                    new ResultColumn(new ColumnExpression('party', 'thirdPartyCode')),
+                    new ResultColumn(new ColumnExpression('party', 'erpCode')),
 
                 ],
                 $from: new FromTable(
@@ -208,7 +207,22 @@ function preparePartyTable(): Function
                                 type: 'string',
                             },
 
+                            {
+                                name: 'erpCode',
+                                type: 'string',
+                            },
+
                         ],
+
+                        data: {
+                            subqueries: {
+
+                                erpCode: true,
+
+                            },
+                            // include jobMonth from the table
+                            fields: ['erpCode', 'party.*'],
+                        },
 
                     },
                     'party'
@@ -231,11 +245,21 @@ export default [
 
         $select : [
 
-            new ResultColumn(new ColumnExpression('top10', 'totalCbm')),
-            new ResultColumn(new ColumnExpression('top10', 'agentPartyCode')),
-            new ResultColumn(new ColumnExpression('top10', 'agentPartyCode')),
-
+            new ResultColumn(new ColumnExpression('top10', 'totalChargeableWeight')),
+            new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('party', 'name'), new ColumnExpression('top10', 'agentPartyCode')), 'partyName')
         ],
+
+        $from : new FromTable('top10', {
+
+            operator : 'LEFT',
+            table : 'party',
+            $on : [
+
+                new BinaryExpression(new ColumnExpression('top10', 'agentPartyCode'), '=', new ColumnExpression('party', 'erpCode'))
+
+            ]
+
+        })
 
     })
 
