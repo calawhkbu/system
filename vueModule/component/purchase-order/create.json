@@ -135,7 +135,7 @@
             }
           },
           {
-            "is": "WidgetPanelStepper",
+            "is": "WidgetStepper",
             "props": {
               "topClick": false,
               "validateBeforeStepChange": true,

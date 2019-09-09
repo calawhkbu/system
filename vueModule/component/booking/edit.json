@@ -40,7 +40,7 @@
       }
     },
     {
-      "is": "WidgetPanelStepper",
+      "is": "WidgetStepper",
       "props": {
         "topClick": true,
         "validateBeforeStepChange": false,
