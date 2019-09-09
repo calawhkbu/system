@@ -27,6 +27,18 @@ const query = new QueryDef(
   })
 )
 
+query.register('erpCode', {
+  expression: new FunctionExpression(
+    'JSON_UNQUOTE',
+    new FunctionExpression(
+      'JSON_EXTRACT',
+      new ColumnExpression('party', 'thirdPartyCode'),
+      '$.erp'
+    )
+  ),
+  $as: 'erpCode',
+})
+
 query
   .register(
     'thirdPartyCodeKey',

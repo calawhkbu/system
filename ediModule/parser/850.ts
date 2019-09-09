@@ -1890,21 +1890,17 @@ export const schedulerConfig = {
 } as EdiSchedulerConfig
 
 export default class EdiParser850 extends BaseEdiParser {
-
-    constructor(
-        protected readonly type: string,
-        protected readonly formatJson: any,
-        protected readonly allService: any
-
-    ) {
-        super(type, formatJson, allService)
-    }
-
-    async import(ediContent: string, partyGroupCode: string): Promise<any> {
-
-        console.log(`import type  : ${this.type}`)
-
-        const response = await this.callImportOutbound(ediContent, partyGroupCode)
+  constructor(
+    protected readonly partyGroupCode: string,
+    protected readonly type: string,
+    protected readonly formatJson: any,
+    protected readonly allService: any
+  ) {
+    super(partyGroupCode, type, formatJson, allService)
+  }
+  async import(base64EdiString: string): Promise<any> {
+    console.log(`import type  : ${this.type}`)
+    const response = super.import(base64EdiString)
 
         // const products = []
 
@@ -2059,19 +2055,12 @@ export default class EdiParser850 extends BaseEdiParser {
 
         //   poList.push(po)
         // }
-
-        return response
-
-    }
-
-    async export(partyGroupCode: string): Promise<any> {
-
-        console.log(`export type  : ${this.type}`)
-
-        const result = await this.callExportOutbound(partyGroupCode)
-
-        return result
-
-    }
+    return response
+  }
+  async export(entityJSON: any): Promise<any> {
+    console.log(`export type  : ${this.type}`)
+    const result = await super.export(entityJSON)
+    return result
+  }
 
 }
