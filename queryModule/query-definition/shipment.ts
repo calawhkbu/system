@@ -8,18 +8,19 @@ import {
   IsNullExpression,
   ResultColumn,
   BetweenExpression,
+  FunctionExpression,
 } from 'node-jql'
 
 const query = new QueryDef(new Query({
 
-    $distinct: true,
+  $distinct: true,
 
-    $select : [
+  $select: [
 
-        new ResultColumn(new ColumnExpression('shipment', '*')),
-    ],
+    new ResultColumn(new ColumnExpression('shipment', '*')),
+  ],
 
-    $from : new FromTable('shipment'),
+  $from: new FromTable('shipment'),
 }))
 
 query
@@ -32,7 +33,16 @@ query
   .register('from', 0)
   .register('to', 1)
 
-  query
+// used createdAt as jobMonth
+query.register('jobMonth', {
+  expression: new FunctionExpression({
+    name: 'DATE_FORMAT',
+    parameters: [new ColumnExpression('shipment', 'jobDate'), '%y-%m'],
+  }),
+  $as: 'jobMonth',
+})
+
+query
   .register(
     'moduleType',
     new Query({
