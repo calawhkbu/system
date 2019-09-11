@@ -4,7 +4,7 @@ import { extractObject, diff } from 'modules/events/checkerFunction'
 export default {
   afterCreate_i18n: [
     {
-      handlerName: 'example.ts',
+      handlerName: 'example',
       otherParameters: {},
       afterEvent: [],
     },
@@ -12,7 +12,7 @@ export default {
 
   example: [
     {
-      handlerName: 'example.ts',
+      handlerName: 'example',
       otherParameters: {},
       afterEvent: [
         {
@@ -28,20 +28,20 @@ export default {
   // should not be called directly, should be called after an event
   create_alert: [
     {
-      handlerName: 'create_alert.ts',
+      handlerName: 'create_alert',
     },
   ],
 
   create_tracking: [
     {
-      handlerName: 'create_tracking.ts',
+      handlerName: 'create_tracking',
     },
   ],
 
   // update entity(booking) with a tracking
   tracking_update_data: [
     {
-      handlerName: 'tracking_update_data.ts',
+      handlerName: 'tracking_update_data',
     },
   ],
 
@@ -60,13 +60,13 @@ export default {
   // should not be called directly, should be called after an event
   fill_template: [
     {
-      handlerName: 'fill_template.ts',
+      handlerName: 'fill_template',
     },
   ],
 
   update_document_preview: [
     {
-      handlerName: 'update_document_preview.ts',
+      handlerName: 'update_document_preview',
     },
   ],
 
@@ -100,7 +100,7 @@ export default {
     // // update personId / create Invitation
     // {
     //   condition : true,
-    //   handlerName : 'entity_create_invitation.ts',
+    //   handlerName : 'entity_create_invitation',
     //   otherParameters : {
     //     tableName : 'booking',
     //   }
@@ -148,7 +148,7 @@ export default {
     },
     {
       condition: true,
-      handlerName: 'checker.ts',
+      handlerName: 'checker',
       otherParameters: {
         checker: [
           {
@@ -189,7 +189,7 @@ export default {
   fm3k_booking : [
     {
       condition : true,
-      handlerName : 'fm3k_booking.ts'
+      handlerName : 'fm3k_booking'
     }
 
   ]

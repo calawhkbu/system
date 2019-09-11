@@ -35,10 +35,6 @@ function prepareTop10Params(): Function {
         const subqueries = (params.subqueries = params.subqueries || {})
 
         // set daterange be this year if date is not given
-
-        console.log('before')
-        console.log(params)
-
         if (!subqueries.date)
         {
             const year = moment().year()
