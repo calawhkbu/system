@@ -10,11 +10,22 @@ import {
   IsNullExpression,
   FunctionExpression,
   Unknown,
+  ExistsExpression,
 } from 'node-jql'
+
 
 const query = new QueryDef(
   new Query({
     $distinct: true,
+
+    $select : [
+
+      new ResultColumn(new ColumnExpression('party', '*')),
+      new ResultColumn(new ColumnExpression('party', 'id'), 'partyId'),
+      new ResultColumn(new ColumnExpression('party_type', 'type')),
+
+    ],
+
     $from: new FromTable('party', {
       operator: 'LEFT',
       table: 'party_type',
