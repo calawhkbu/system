@@ -9,6 +9,7 @@ import {
   ResultColumn,
   BetweenExpression,
   FunctionExpression,
+  InExpression,
 } from 'node-jql'
 
 const query = new QueryDef(new Query({
@@ -22,6 +23,16 @@ const query = new QueryDef(new Query({
 
   $from: new FromTable('shipment'),
 }))
+
+// use houseNo as primarykey list
+query
+  .register(
+    'primaryKeyList',
+    new Query({
+      $where: new InExpression(new ColumnExpression('shipment', 'houseNo'), false),
+    })
+  )
+  .register('value', 0)
 
 query
   .register(
@@ -47,6 +58,15 @@ query
     'moduleType',
     new Query({
       $where: new BinaryExpression(new ColumnExpression('shipment', 'moduleType'), '='),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
+    'carrierCode',
+    new Query({
+      $where: new BinaryExpression(new ColumnExpression('shipment', 'carrierCode'), '='),
     })
   )
   .register('value', 0)

@@ -9,27 +9,30 @@ import {
     BinaryExpression,
     AndExpressions,
     IsNullExpression,
+    OrderBy,
+    ExistsExpression,
+    InExpression,
 } from 'node-jql'
 import { parseCode } from 'utils/function'
 import { stringify } from 'querystring'
 
-    const monthMap = new Map<string, string>(
-        [
-            ['Jan', 'January'],
-            ['Feb', 'February'],
-            ['Mar', 'March'],
-            ['Apr', 'April'],
-            ['May', 'May'],
-            ['Jun', 'June'],
-            ['Jul', 'July'],
-            ['Aug', 'August'],
-            ['Sep', 'September'],
-            ['Oct', 'October'],
-            ['Nov', 'November'],
-            ['Dec', 'December'],
+const monthMap = new Map<string, string>(
+    [
+        ['Jan', 'January'],
+        ['Feb', 'February'],
+        ['Mar', 'March'],
+        ['Apr', 'April'],
+        ['May', 'May'],
+        ['Jun', 'June'],
+        ['Jul', 'July'],
+        ['Aug', 'August'],
+        ['Sep', 'September'],
+        ['Oct', 'October'],
+        ['Nov', 'November'],
+        ['Dec', 'December'],
 
-        ]
-    )
+    ]
+)
 
 function prepareParams(): Function {
     const fn = function(require, session, params) {
@@ -53,6 +56,12 @@ function prepareParams(): Function {
         subqueries.moduleType = {
             value: 'AIR'
         }
+
+        subqueries.carrierCode = {
+            value: 'AA'
+        }
+
+        params.fields = ['jobMonth', 'shipment.*']
 
         return params
     }
@@ -116,88 +125,231 @@ function prepareCodeMasterTable(name: string): CreateTableJQL {
 
 }
 
-// a temp table that Group by carrierCode and JobMonth
-function prepareTempTable(name: string): CreateTableJQL {
+function preparePartyTable() {
+
+    const name = 'party' as string
+
+    const queryParam = {
+
+        $from: new FromTable(
+            {
+                method: 'POST',
+                url: 'api/party/query/party',
+                columns: [
+                    {
+                        name: 'partyId',
+                        type: 'number',
+                    },
+
+                    {
+                        name: 'name',
+                        type: 'string',
+                    },
+
+                    {
+                        name: 'type',
+                        type: 'string',
+                    },
+
+                    {
+                        name: 'erpCode',
+                        type: 'string',
+                    },
+
+                ],
+
+            }, name)
+
+    }
+
     return new CreateTableJQL({
         $temporary: true,
         name,
-        $as: new Query({
-
-            $select: [
-                new ResultColumn(new ColumnExpression(name, 'jobMonth'), 'jobMonth'),
-                new ResultColumn(new ColumnExpression(name, 'carrierCode'), 'carrierCode'),
-                new ResultColumn(
-                    new FunctionExpression('SUM', new ColumnExpression(name, 'chargeableWeight')),
-                    'chargeableWeightTotal'
-                ),
-
-                new ResultColumn(
-                    new FunctionExpression('SUM', new ColumnExpression(name, 'grossWeight')),
-                    'grossWeightTotal'
-                ),
-
-            ],
-            $from: new FromTable(
-                {
-                    method: 'POST',
-                    url: 'api/shipment/query/shipment',
-                    columns: [
-                        {
-                            name: 'carrierCode',
-                            type: 'string',
-                        },
-                        {
-                            name: 'moduleType',
-                            type: 'string',
-                        },
-                        {
-                            name: 'chargeableWeight',
-                            type: 'number',
-                        },
-
-                        {
-                            name: 'grossWeight',
-                            type: 'number',
-                        },
-                        {
-                            name: 'jobMonth',
-                            type: 'string',
-                        },
-
-                    ],
-
-                    data: {
-                        subqueries: {
-                            jobMonth: true,
-                        },
-
-                        // include jobMonth from the table
-                        fields: ['jobMonth', 'shipment.*'],
-                    },
-                },
-                name
-            ),
-
-            $group: new GroupBy([
-                new ColumnExpression(name, 'carrierCode'),
-                new ColumnExpression(name, 'jobMonth'),
-            ]),
-
-        }),
+        $as: new Query(queryParam)
     })
+
 }
 
-function prepareMonthTable(sourceTable: { name: string, groupBy: string }, summary: { columnName: string, summaryBy: string }[], name: string) {
+function prepareRawTable(name: string = 'raw') {
 
-    const queryObject = {
+    const queryParam = {
+
+        // hardcode
+        $limit: 100,
+
+        $from: new FromTable(
+            {
+                method: 'POST',
+                url: 'api/shipment/query/shipment',
+                columns: [
+                    {
+                        name: 'carrierCode',
+                        type: 'string',
+                    },
+                    {
+                        name: 'moduleType',
+                        type: 'string',
+                    },
+                    {
+                        name: 'nominatedType',
+                        type: 'string',
+                    },
+
+                    {
+                        name: 'controllingCustomerPartyCode',
+                        type: 'string',
+                    },
+
+                    {
+                        name: 'chargeableWeight',
+                        type: 'number',
+                    },
+
+                    {
+                        name: 'grossWeight',
+                        type: 'number',
+                    },
+                    {
+                        name: 'jobMonth',
+                        type: 'string',
+                    },
+
+                ],
+
+            },
+            name
+        ),
+
+    }
+
+    // queryParam.$group()
+
+    return new CreateTableJQL({
+        $temporary: true,
+        name,
+        $as: new Query(queryParam)
+    })
+
+}
+
+function prepareFullTable(name: string = 'full') {
+
+    // preform all hardCode middle column, very hardcode
+    const queryParam = {
 
         $select: [
 
-            new ResultColumn(new ColumnExpression(sourceTable.name, sourceTable.groupBy), sourceTable.groupBy),
+            new ResultColumn(new ColumnExpression('raw', '*')),
+
+            new ResultColumn(new FunctionExpression('If', new ExistsExpression(new Query({
+
+                $from: 'party',
+                $where: new AndExpressions([
+
+                    new BinaryExpression(new ColumnExpression('raw', 'controllingCustomerPartyCode'), '=', new ColumnExpression('party', 'erpCode')),
+                    new BinaryExpression(new ColumnExpression('party', 'type'), '=', 'forwarder'),
+
+                ])
+
+            }), false),
+
+                new FunctionExpression('IF', new BinaryExpression(new ColumnExpression('raw', 'nominatedType'), '=', 'F'), 'F', 'R'),
+
+                'C'),
+
+                'shipmentType')
 
         ],
-        $from: sourceTable.name,
-        $group: new GroupBy(new ColumnExpression(sourceTable.name, sourceTable.groupBy))
+
+        $from: new FromTable('raw'),
+    }
+
+    return new CreateTableJQL({
+        $temporary: true,
+        name,
+        $as: new Query(queryParam)
+    })
+
+}
+
+// a temp table that Group by carrierCode and JobMonth
+function prepareInitTable(fromTableName: string, group: { majorGroup: string, minorGroup: { columnName: string, option: string[] }[] }, summary: { columnName: string, summaryBy: string }[], name: string): CreateTableJQL {
+
+    const groupByColumnList = group.minorGroup.map(({ columnName }) => columnName).concat(group.majorGroup)
+
+    const groupByList = groupByColumnList.map((columnName: string) => new ColumnExpression(fromTableName, columnName)).concat(new ColumnExpression(fromTableName, 'jobMonth'))
+
+    const selectList = [new ResultColumn(new ColumnExpression(fromTableName, 'jobMonth'), 'jobMonth')]
+
+    groupByColumnList.forEach((columnName: string) => {
+
+        selectList.push(new ResultColumn(new ColumnExpression(fromTableName, columnName), columnName))
+
+    })
+
+    summary.forEach(({ columnName, summaryBy }) => {
+
+        selectList.push(
+            new ResultColumn(
+                new FunctionExpression('IFNULL', new FunctionExpression(summaryBy, new ColumnExpression(fromTableName, columnName)), 0),
+                `${columnName}Total`
+            ))
+
+    })
+
+    const queryParam = {
+
+        $select: selectList,
+        $from: fromTableName,
+
+        $group: new GroupBy(groupByList)
+
+    }
+
+    return new CreateTableJQL({
+        $temporary: true,
+        name,
+        $as: new Query(queryParam)
+    })
+}
+
+function prepareMonthTable(fromTableName: string, group: { majorGroup: string, minorGroup: { columnName: string, option: string[] }[] }, summary: { columnName: string, summaryBy: string }[], name: string) {
+
+    const fullGroupByColumnList = group.minorGroup.map(({ columnName }) => columnName).concat(group.majorGroup)
+
+    const queryObject = {
+
+        $select: fullGroupByColumnList.map((column) => new ResultColumn(new ColumnExpression(fromTableName, column), column)),
+
+        $from: fromTableName,
+        $group: new GroupBy(fullGroupByColumnList.map((columnName) => new ColumnExpression(fromTableName, columnName)))
+
+    }
+
+    const findCondition = (monthName: string) => {
+
+        const result = [
+            new BinaryExpression(
+                new FunctionExpression(
+                    'MONTHNAME',
+                    new ColumnExpression(fromTableName, 'jobMonth'),
+                    'YYYY-MM'
+                ),
+                '=',
+                monthName
+            )]
+
+        fullGroupByColumnList.forEach((column) => {
+
+            result.push(
+                new BinaryExpression(
+                    new ColumnExpression(fromTableName, column),
+                    '=',
+                    new ColumnExpression(column)
+                ))
+        })
+
+        return result
 
     }
 
@@ -208,11 +360,10 @@ function prepareMonthTable(sourceTable: { name: string, groupBy: string }, summa
             new ResultColumn(
                 new FunctionExpression(
                     'IFNULL',
-                    new FunctionExpression('SUM', new ColumnExpression(sourceTable.name, `${columnName}Total`)),
+                    new FunctionExpression('SUM', new ColumnExpression(fromTableName, `${columnName}Total`)),
                     0),
 
                 `${columnName}Total`)
-
         )
 
         for (const [monthkey, monthName] of monthMap.entries()) {
@@ -223,22 +374,8 @@ function prepareMonthTable(sourceTable: { name: string, groupBy: string }, summa
                         'IFNULL',
                         new FunctionExpression(
                             'FIND',
-                            new AndExpressions([
-                                new BinaryExpression(
-                                    new FunctionExpression(
-                                        'MONTHNAME',
-                                        new ColumnExpression(sourceTable.name, 'jobMonth'),
-                                        'YYYY-MM'
-                                    ),
-                                    '=',
-                                    monthName
-                                ),
-                                new BinaryExpression(
-                                    new ColumnExpression(sourceTable.name, sourceTable.groupBy),
-                                    '=',
-                                    new ColumnExpression(sourceTable.groupBy)
-                                ),
-                            ]),
+                            new AndExpressions(findCondition(monthName)),
+
                             new ColumnExpression(`${columnName}Total`)
                         ),
                         0
@@ -260,105 +397,157 @@ function prepareMonthTable(sourceTable: { name: string, groupBy: string }, summa
 
 }
 
-function prepareQuery(sourceTable: { name: string, groupBy: string }, summary: { columnName: string, summaryBy: string }[])
-{
+function prepareSummaryTable(
+    fromTableName: string,
+    group: { majorGroup: string, minorGroup: { columnName: string, option: string[] }[] },
+    summary: { columnName: string, summaryBy: string }[], name: string
 
-    const queryObject = {
-        $select : [
-            new ResultColumn(new ColumnExpression(sourceTable.name, sourceTable.groupBy), sourceTable.groupBy)
-        ],
+) {
 
-        $from : new FromTable('code_master', {
+    function getSelectList(
+        reminaingMinorGroup: { columnName: string, option: string[] }[],
+        previousCondition?: BinaryExpression[],
+        result?: ResultColumn[],
+        prefix: string = '',
+    ) {
+        if (!result) {
+            // handle the f
+            result = []
+        }
 
-            operator : 'LEFT',
-            table : sourceTable.name,
-            $on : new BinaryExpression(new ColumnExpression('code_master', 'code'), '=', new ColumnExpression(sourceTable.name, sourceTable.groupBy))
-        })
-    }
+        if (!previousCondition) {
+            previousCondition = []
+        }
 
-    summary.forEach(({ columnName, summaryBy }) => {
+        if (!(reminaingMinorGroup && reminaingMinorGroup.length)) {
+            return result
+        }
 
-        queryObject.$select.push(new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression(sourceTable.name, `${columnName}Total`), 0), `${columnName}Total`), )
+        const currentMinorGroup = reminaingMinorGroup.pop()
 
-        for (const [monthkey, monthName] of monthMap.entries()) {
+        const findSummaryCondition = (columnName, optionValue) => {
 
-            queryObject.$select.push(new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression(sourceTable.name, `${columnName}${monthkey}Total`), 0), `${columnName}${monthkey}Total`), )
+            const result = JSON.parse(JSON.stringify(previousCondition))
+
+            // ensure that
+            reminaingMinorGroup.forEach(({ columnName, option }) => {
+
+                result.push(new InExpression(new ColumnExpression(fromTableName, columnName), false, option))
+
+            })
+
+            result.push(new BinaryExpression(new ColumnExpression(fromTableName, columnName), '=', optionValue))
+
+            return result
 
         }
 
+        summary.forEach(({ columnName, summaryBy }) => {
+
+            currentMinorGroup.option.forEach((optionValue: string) => {
+
+                const currentPrefix = `${prefix}${currentMinorGroup.columnName}_${optionValue}_`
+
+                const currentConditionList = findSummaryCondition(currentMinorGroup.columnName, optionValue)
+
+                for (const [monthkey, monthName] of monthMap.entries()) {
+
+                    const monthSubTotalColumnName = `${currentPrefix}${columnName}${monthkey}Total`
+
+                    result.push(
+                        new ResultColumn(
+
+                            new FunctionExpression('IFNULL',
+                                new FunctionExpression('SUM', new FunctionExpression('IF', new AndExpressions(currentConditionList), new ColumnExpression(fromTableName, `${columnName}${monthkey}Total`), 0)),
+                                0), monthSubTotalColumnName)
+
+                    )
+
+                }
+
+                const subTotalColumnName = `${currentPrefix}${columnName}Total`
+
+                result.push(
+                    new ResultColumn(
+
+                        new FunctionExpression('IFNULL', new FunctionExpression('SUM',
+                            new FunctionExpression('IF', new AndExpressions(currentConditionList), new ColumnExpression(fromTableName, `${columnName}Total`), 0)), 0)
+                        , subTotalColumnName)
+                )
+
+                result = getSelectList(reminaingMinorGroup, currentConditionList, result, currentPrefix)
+
+            })
+
+        })
+
+        return result
+
+    }
+
+    const queryObject = {
+
+        $select: getSelectList(group.minorGroup),
+
+        // $select : [
+
+        //     new ResultColumn(new ColumnExpression(fromTableName, group.majorGroup), group.majorGroup),
+        //     new ResultColumn(new FunctionExpression('SUM', new ColumnExpression(fromTableName, 'chargeableWeightTotal')), 'total')
+
+        // ],
+
+        // only group by carrierCode
+        $group: new GroupBy(new ColumnExpression(fromTableName, group.majorGroup)),
+        $from: fromTableName,
+
+    }
+
+    return new CreateTableJQL({
+
+        $temporary: true,
+        name,
+        $as: new Query(queryObject)
+
     })
 
-    return new Query(queryObject)
+}
+
+const group = {
+
+    majorGroup: 'carrierCode',
+
+    // in minorGroup, order is important
+    minorGroup: [
+        {
+            columnName: 'shipmentType',
+            option: ['F', 'R', 'C']
+        }
+
+    ]
 
 }
 
 const summary = [
-    { columnName: 'grossWeight', summaryBy: 'SUM' },
+    // { columnName: 'grossWeight', summaryBy: 'SUM' },
     { columnName: 'chargeableWeight', summaryBy: 'SUM' }
 ]
 
 export default [
-    [prepareParams(), prepareTempTable('tempTable')],
-    [prepareCodeMasterParams(), prepareCodeMasterTable('code_master')],
 
-    prepareMonthTable({ name: 'tempTable', groupBy: 'carrierCode' }, summary, 'month'),
+    // prepare the full table conatining all requiredData first
+    [prepareParams(), prepareRawTable()],
+    preparePartyTable(),
+    prepareFullTable(),
 
-    // new Query({
+    // convert it into summay table
+    prepareInitTable('full', group, summary, 'init'),
+    prepareMonthTable('init', group, summary, 'month'),
+    prepareSummaryTable('month', group, summary, 'summary'),
 
-    //     $select : [
-    //         new ResultColumn(new ColumnExpression('code_master', 'code'), 'carrierCode'),
-    //     ],
+    new Query({
 
-    //     $from : new FromTable('code_master', {
+        $from: 'month',
 
-    //         operator : 'LEFT',
-    //         table : 'month',
-    //         $on : new BinaryExpression(new ColumnExpression('code_master', 'code'), '=', new ColumnExpression('month', 'carrierCode'))
-    //     })
-    // })
-
-    prepareQuery({ name: 'month', groupBy: 'carrierCode' }, summary)
-
-    // new Query({
-
-    //     $select: [
-
-    //         new ResultColumn(new ColumnExpression('code_master', 'code'), 'carrierCode'),
-    //         new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'grossWeightTotal'), 0), 'grossWeightTotal'),
-    //         new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'chargeableWeightTotal'), 0), 'chargeableWeightTotal'),
-    //         new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jan'), 0), 'Jan'),
-    //         new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Feb'), 0), 'Feb'),
-    //         new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Mar'), 0), 'Mar'),
-    //         new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Apr'), 0), 'Apr'),
-    //         new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'May'), 0), 'May'),
-    //         new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jun'), 0), 'Jun'),
-    //         new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jul'), 0), 'Jul'),
-    //         new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Aug'), 0), 'Aug'),
-    //         new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Sep'), 0), 'Sep'),
-    //         new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Oct'), 0), 'Oct'),
-    //         new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Nov'), 0), 'Nov'),
-    //         new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Dec'), 0), 'Dec'),
-
-    //     ],
-
-    //     $from: new FromTable('code_master', 'code_master',
-    //         {
-    //             operator: 'LEFT',
-
-    //             table: 'month',
-
-    //             $on: [
-
-    //                 new BinaryExpression(new ColumnExpression('code_master', 'code'), '=', new ColumnExpression('month', 'carrierCode'))
-
-    //             ]
-
-    //         }
-
-    //     )
-
-    // })
+    })
 
 ]
-
-  // export default query.toJson()

@@ -53,7 +53,7 @@ function prepareBookingTable(name: string): CreateTableJQL {
                 new ResultColumn(new ColumnExpression(name, 'moduleTypeCode'), 'moduleTypeCode'),
 
                 new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ColumnExpression(name, 'bookingId')),
-                    'idListString'
+                    'primaryKeyListString'
                 ),
 
                 new ResultColumn(
@@ -119,7 +119,7 @@ export default [
 
             new ResultColumn(new ColumnExpression('module', 'moduleTypeCode'), 'moduleTypeCode'),
             new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('booking', 'count'), 0), 'count'),
-            new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('booking', 'idListString'), ''), 'idListString'),
+            new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('booking', 'primaryKeyListString'), ''), 'primaryKeyListString'),
         ],
 
         $from: new FromTable('module', 'module',

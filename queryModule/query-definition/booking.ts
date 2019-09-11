@@ -495,7 +495,7 @@ query.register('jobMonth', {
 
 query
   .register(
-    'idList',
+    'primaryKeyList',
     new Query({
       $where: new InExpression(new ColumnExpression('booking', 'id'), false),
     })
