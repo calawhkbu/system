@@ -9,11 +9,6 @@
 
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
-    "extraContactPersonSql": {
-      "where": {
-        "userName": "marco.lor@swivelsoftware.com"
-      }
-    },
 
     "active": true
   },
@@ -28,11 +23,6 @@
 
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
-    "extraContactPersonSql": {
-      "where": {
-        "userName": "marco.lor@swivelsoftware.com"
-      }
-    },
 
     "active": true
   },
@@ -48,12 +38,6 @@
     "variableList" : "all",
 
     "contactRoleList": "all",
-
-    "extraContactPersonSql": {
-      "where": {
-        "userName": "marco.lor@swivelsoftware.com"
-      }
-    },
 
     "active": true
   },
