@@ -9,11 +9,6 @@
 
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
-    "extraContactPersonSql": {
-      "where": {
-        "userName": "marco.lor@swivelsoftware.com"
-      }
-    },
 
     "active": true
   },
@@ -28,18 +23,13 @@
 
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
-    "extraContactPersonSql": {
-      "where": {
-        "userName": "marco.lor@swivelsoftware.com"
-      }
-    },
 
     "active": true
   },
 
 
   {
-    "alertCategory": "Message",
+    "alertCategory": "Notification",
     "alertType": "newBooking",
     "tableName": "booking",
     "templatePath": "message/new-booking-preview",
@@ -48,12 +38,6 @@
     "variableList" : "all",
 
     "contactRoleList": "all",
-
-    "extraContactPersonSql": {
-      "where": {
-        "userName": "marco.lor@swivelsoftware.com"
-      }
-    },
 
     "active": true
   },
