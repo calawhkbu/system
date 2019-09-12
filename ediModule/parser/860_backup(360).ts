@@ -10,6 +10,7 @@ import { ProductDefinitionField, Product } from 'models/main/product'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { EdiSchedulerConfig, EdiFormatJson } from 'modules/edi/service'
 import { PurchaseOrderService } from 'modules/sequelize/purchaseOrder/service'
+import { FlexData } from 'models/main/flexData'
 
 const moment = require('moment')
 const _ = require('lodash')
@@ -1304,8 +1305,9 @@ export default class EdiParser850 extends BaseEdiParser {
         return ediJson
       }
 
-      if (Array.isArray(ediJson['ST']))
+      if (ediJson['ST'] && Array.isArray(ediJson['ST']))
       {
+
         for (const ST of ediJson['ST']) {
           const po: PurchaseOrder = {
             flexData: {
@@ -1324,13 +1326,11 @@ export default class EdiParser850 extends BaseEdiParser {
           {
             po.flexData.data[`${missingDateName1}DateEstimated`] = null
             po.flexData.data[`${missingDateName1}DateActual`] = moment.utc(
-              `${_.get(ediJson, 'ISA.createdDate')} ${_.get(ediJson, 'ISA.createdTime')}`
-            )
+              `${_.get(ediJson, 'ISA.createdDate')} ${_.get(ediJson, 'ISA.createdTime')}`)
 
             po.flexData.data[`${missingDateName2}DateEstimated`] = null
             po.flexData.data[`${missingDateName2}DateActual`] = moment.utc(
-              `${_.get(ediJson, 'ISA.createdDate')} ${_.get(ediJson, 'ISA.createdTime')}`
-          )
+              `${_.get(ediJson, 'ISA.createdDate')} ${_.get(ediJson, 'ISA.createdTime')}`)
           }
           po.flexData.data['moreDate'].push(missingDateName1)
           po.flexData.data['moreDate'].push(missingDateName2)
@@ -1355,6 +1355,7 @@ export default class EdiParser850 extends BaseEdiParser {
           if (_.get(ST, 'DTM.requestedShipDateFromSupplierWarehouse')){
             po.exitFactoryDateActual = moment.utc(_.get(ST, 'DTM.requestedShipDateFromSupplierWarehouse')).toDate()
           }
+
           // console.log("Value:"+ST['N1'][i]['organizationIdentifier'])
           // console.log(`True or False: ${ST['N1'][i]['organizationIdentifier']==='Ship from'}`)
           // console.log(`Length ${ST['N1'].length}`)
@@ -1398,29 +1399,53 @@ export default class EdiParser850 extends BaseEdiParser {
             for (const POC of ST['POC'])
             {
               const poItem = {} as PurchaseOrderItem
-              const product = {} as Product
+              const ProductDefinitionField1 = {} as ProductDefinitionField
+              ProductDefinitionField1.fieldName = 'colour'
+              let product = products.find(
+                product => product.productCode === _.get(POC['productId1'] || '')
+              )
+              if (!product) {
+                product = await (this.allService.productDbService as ProductDbService).findOne(
+                  {
+                    where: {
+                      productCode: POC['productId1']
+                    },
+                  },
+                  user
+                )
                 // console.log(`check product type ${typeof product}`)
-              product['sea'] = null
-              product['style'] = null
-              product['styleDesc'] = _.get(POC, 'PID.description', '').substr(0, 20).replace(/^[ ]+|[ ]+$/g, '')
-              product['piece'] = null
-              product['pieceDesc'] = _.get(POC, 'PID.description', '').substr(40, 20).replace(/^[ ]+|[ ]+$/g, '')
-              product['color'] = null
-              product['colorDesc'] =  _.get(POC, 'PID.description', '').substr(20, 20).replace(/^[ ]+|[ ]+$/g, '')
-              product['pack'] = null
-              product['packing'] = ''
-              product['size'] = _.get(POC, 'SLN.productId3')
-              product['upcen'] = _.get(POC, 'SLN.productId2')
+                if (!product) {
+                  product = {} as Product
+                  product.productCode = _.get(POC, 'productId1', '')
+                  if (POC['PID'])
+                  {
+                    product.name = _.get(POC, 'PID.description', '').substr(0, 20).replace(/^[ ]+|[ ]+$/g, '')
+                    ProductDefinitionField1.type = 'string'
+                    ProductDefinitionField1.values = _.get(POC, 'ProductId4')
+                    // console.log(`ProductDefinitionField: ${ProductDefinitionField1.values}`)
+                    // console.log(`Type: ${typeof product.definition}`)
+
+                    product.definition = []
+                    product.definition.push(ProductDefinitionField1)
+                  }
+                } else {
+                  products.push(product)
+                }
+              }
+
               poItem.itemKey = _.get(POC, 'assignedIdentification')
               poItem['change'] = _.get(POC, 'lineItemChange')
-              poItem['perPackageQuantity'] =  _.get(POC, 'PO4.pack')
               poItem.quantity = _.get(POC, 'quantityOrdered')
               poItem.quantityUnit = _.get(POC, 'unitOfMeasureCode')
               poItem['quantityChange'] = _.get(POC, 'quantityChange')
               poItem.volume = _.get(POC, 'PO4.grossVolumePerPack')
               poItem.htsCode = _.get(POC, 'SLN.productId2')
+              const flexData = {data: {}} as FlexData
+              flexData.data[ProductDefinitionField1.fieldName] = (POC['productId1'] || '').substr(15, 3)
               poItem.product = product
+              poItem.flexData = flexData
               poItemList.push(poItem)
+
             }
           }
 
