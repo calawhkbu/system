@@ -1,16 +1,20 @@
 {
   "layout": "MainLayout",
-  "createdFunctions": [
-    {
-      "type": "dispatch",
-      "otherParams": {
-        "name": "auth/getMenu"
-      }
-    }
-  ],
   "components": [
     {
-      "is": "AdminPage"
+      "is": "GridTool",
+      "props": {
+        "reportingKey": "admin",
+        "showFilterBar": false,
+        "reportUrl": "report/admin",
+        "noAnimation": true,
+        "newReport": {
+          "configurations": {
+            "i18nContext": "Admin"
+          }
+        },
+        "filters": []
+      }
     }
   ]
 }

@@ -49,7 +49,7 @@ const query = new Query({
     ),
     new ResultColumn('alertType'),
     new ResultColumn(new FunctionExpression('COUNT', new ColumnExpression('alert', 'alertType')), 'count'),
-    new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ColumnExpression('alert', 'primaryKey')), 'idListString')
+    new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ColumnExpression('alert', 'primaryKey')), 'primaryKeyListString')
   ],
   $from: new FromTable(
     {

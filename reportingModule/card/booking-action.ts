@@ -406,7 +406,7 @@ export default [
             new ResultColumn(new ColumnExpression('nextStatus', 'statusName')),
             new ResultColumn(new FunctionExpression('IFNULL', new FunctionExpression('SUM', new FunctionExpression('if', new ColumnExpression('nextStatus', 'expired'), 1, 0)), 0), 'expiredTotal'),
             new ResultColumn(new FunctionExpression('COUNT', new ColumnExpression('nextStatus', 'primaryKey')), 'total'),
-            new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ColumnExpression('nextStatus', 'primaryKey')), 'idListString')
+            new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ColumnExpression('nextStatus', 'primaryKey')), 'primaryKeyListString')
 
         ],
 

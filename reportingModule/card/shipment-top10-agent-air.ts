@@ -216,9 +216,7 @@ function preparePartyTable(): Function
 
                         data: {
                             subqueries: {
-
                                 erpCode: true,
-
                             },
                             // include jobMonth from the table
                             fields: ['erpCode', 'party.*'],

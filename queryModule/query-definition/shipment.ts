@@ -8,19 +8,31 @@ import {
   IsNullExpression,
   ResultColumn,
   BetweenExpression,
+  FunctionExpression,
+  InExpression,
 } from 'node-jql'
 
 const query = new QueryDef(new Query({
 
-    $distinct: true,
+  $distinct: true,
 
-    $select : [
+  $select: [
 
-        new ResultColumn(new ColumnExpression('shipment', '*')),
-    ],
+    new ResultColumn(new ColumnExpression('shipment', '*')),
+  ],
 
-    $from : new FromTable('shipment'),
+  $from: new FromTable('shipment'),
 }))
+
+// use houseNo as primarykey list
+query
+  .register(
+    'primaryKeyList',
+    new Query({
+      $where: new InExpression(new ColumnExpression('shipment', 'houseNo'), false),
+    })
+  )
+  .register('value', 0)
 
 query
   .register(
@@ -32,11 +44,29 @@ query
   .register('from', 0)
   .register('to', 1)
 
-  query
+// used createdAt as jobMonth
+query.register('jobMonth', {
+  expression: new FunctionExpression({
+    name: 'DATE_FORMAT',
+    parameters: [new ColumnExpression('shipment', 'jobDate'), '%y-%m'],
+  }),
+  $as: 'jobMonth',
+})
+
+query
   .register(
     'moduleType',
     new Query({
       $where: new BinaryExpression(new ColumnExpression('shipment', 'moduleType'), '='),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
+    'carrierCode',
+    new Query({
+      $where: new BinaryExpression(new ColumnExpression('shipment', 'carrierCode'), '='),
     })
   )
   .register('value', 0)
