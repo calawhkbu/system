@@ -9,16 +9,14 @@ import { LocationService } from 'modules/sequelize/location/service'
 import { ProductDefinitionField, Product } from 'models/main/product'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { EdiSchedulerConfig, EdiFormatJson } from 'modules/edi/service'
+import { PurchaseOrderService } from 'modules/sequelize/purchaseOrder/service'
 
 const moment = require('moment')
 
 export const formatJson = {
-  removeCharacter: [],
-  segmentSeperator : ['\n', '\r'],
-  elementSeperator : ['*'],
-
-  // segmentSeperator : ['?'],
-  // elementSeperator : '',
+  removeCharacter: ['\n', '\r', '\r\n', ''],
+  segmentSeperator : ['?'],
+  elementSeperator : [''],
 
   rootSegmentFormat : {
     type: 'object',
@@ -132,7 +130,7 @@ export const formatJson = {
           {
             index: 14,
             name: 'Acknowledgement Requested',
-            key: 'acknowledgementRequested ',
+            key: 'acknowledgement Requested ',
             type: 'string'
           },
           {
@@ -162,6 +160,7 @@ export const formatJson = {
             key: 'subElementSeparator',
             type: 'string'
           }
+
         ]
       },
       {
@@ -240,7 +239,9 @@ export const formatJson = {
             key: 'versionId',
             type: 'string'
           }
+
         ]
+
       },
       {
         key: 'ST',
@@ -267,8 +268,8 @@ export const formatJson = {
         ],
         segmentFormatList: [
           {
-            key: 'BEG',
-            code: 'BEG',
+            key: 'BCH',
+            code: 'BCH',
             name: 'Beginning Segement',
             type: 'object',
             mandatory: false,
@@ -280,14 +281,14 @@ export const formatJson = {
                 allowableValues: {
                   valueOptions: [
                     {
-                      value: '00',
-                      name: 'Original',
-                      overrideValue: 'Original'
+                      value: '01',
+                      name: 'Cancellation',
+                      overrideValue: 'Cancellation'
                     },
                     {
-                      value: '07',
-                      name: 'Duplicate',
-                      overrideValue: 'Duplicate'
+                      value: '04',
+                      name: 'Change',
+                      overrideValue: 'Change'
                     }
                   ],
                   allowAny: true
@@ -305,28 +306,7 @@ export const formatJson = {
                       value: 'SA',
                       name: 'Stand-alone',
                       overrideValue: 'Stand-alone'
-                    },
-                    {
-                      value: 'DS',
-                      name: 'Drop Ship',
-                      overrideValue: 'Drop Ship'
-                    },
-                    {
-                      value: 'DR',
-                      name: 'Direct Ship',
-                      overrideValue: 'Direct Ship'
-                    },
-                    {
-                      value: 'PE',
-                      name: 'Port of Entry',
-                      overrideValue: 'Port of Entry'
-                    },
-                    {
-                      value: 'RE',
-                      name: 'Replenishment',
-                      overrideValue: 'Replenishment'
                     }
-
                   ],
                   allowAny: true
                 },
@@ -340,427 +320,21 @@ export const formatJson = {
                 type: 'string'
               },
               {
-                index: 4,
-
-                name: 'Release Number',
-                key: 'releaseNumber',
-                mandatory: false,
-                type: 'string'
-              },
-              {
-                index: 5,
-
+                index: 6,
                 name: 'Purchase Order Date',
                 key: 'purchaseOrderDate',
+                type: 'date',
+                format: 'yyyyMMdd'
+              },
+              {
+                index: 11,
+                name: 'Po Change Request Date',
+                key: 'poChangeRequestDate',
                 type: 'date',
                 format: 'yyyyMMdd'
               }
             ]
           },
-          {
-            key: 'REF',
-            code: 'REF',
-            name: 'Reference Number',
-            type: 'object',
-            mandatory: false,
-
-            elementFormatList: [
-              {
-                index: 1,
-                name: 'Reference Number Qualifier',
-                key: 'referenceNumberQualifier',
-                allowableValues: {
-                valueOptions: [
-                    {
-                      value: 'DP',
-                      name: 'Dept Number',
-                      overrideValue: 'Dept Number'
-                    },
-                    {
-                      value: 'IA',
-                      name: 'Vendor',
-                      overrideValue: 'Vendor'
-                    },
-                    {
-                      value: '19',
-                      name: 'Division ID',
-                      overrideValue: 'DivisionID'
-                    },
-                    {
-                      value: 'CO',
-                      name: 'Customer Order',
-                      overrideValue: 'Customer Order'
-                    }
-                  ],
-                  allowAny: true
-                },
-                type: 'string'
-              },
-              {
-                index: 2,
-                name: 'Reference Number',
-                key: 'referenceNumber',
-                type: 'string'
-              }
-            ]
-          },
-          {
-            code: 'PER',
-            key: 'PER',
-            name: 'Admin Contact',
-            type: 'object',
-            mandatory: false,
-            elementFormatList: [
-              {
-                index: 1,
-                name: 'Contact function code',
-                key: 'contactFunctionCode',
-                type: 'string'
-              },
-
-              {
-                index: 2,
-                name: 'Name',
-                key: 'name',
-                mandatory: false,
-                type: 'string'
-              }
-            ]
-          },
-          {
-            code: 'FOB',
-            key: 'FOB',
-            name: 'F.O.B. Instructions',
-            type: 'object',
-            mandatory: false,
-
-            elementFormatList: [
-              {
-                index: 1,
-                name: 'Shipment Method of Payment',
-                key: 'shipmentMethodOfPayment',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'CA',
-                      name: 'Advance Collect',
-                      overrideValue: 'Advance Collect'
-                    },
-                    {
-                      value: 'PA',
-                      name: 'Advance Prepay',
-                      overrideValue: 'Advance Prepay'
-                    },
-                    {
-                      value: 'CC',
-                      name: 'Collect',
-                      overrideValue: 'Collect'
-                    },
-                    {
-                      value: 'PP',
-                      name: 'Prepaid',
-                      overrideValue: 'Prepaid'
-                    },
-                    {
-                      value: 'MX',
-                      name: 'Mixed',
-                      overrideValue: 'Mixed'
-                    },
-                    {
-                      value: 'BP',
-                      name: 'Paid by Buyer',
-                      overrideValue: 'Paid by Buyer'
-                    },
-                    {
-                      value: 'AC',
-                      name: 'Air Collect',
-                      overrideValue: 'Air Collect'
-                    },
-                    {
-                      value: 'AP',
-                      name: 'Air Prepaid',
-                      overrideValue: 'Air Prepaid'
-                    }
-                  ],
-
-                  allowAny: true
-                },
-                type: 'string'
-              },
-
-              {
-                index: 2,
-
-                name: 'Location Qualifier1',
-                key: 'locationQualifier1',
-                mandatory: false,
-
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'DE',
-                      name: 'Destination (Shipping)',
-                      overrideValue: 'Destination (Shipping)'
-                    },
-                    {
-                      value: 'OR',
-                      name: 'Origin (Shipping Point)',
-                      overrideValue: 'Origin (Shipping Point)'
-                    },
-                    {
-                      value: 'OV',
-                      name: 'On vessel',
-                      overrideValue: 'On vessel'
-                    },
-                    {
-                      value: 'OF',
-                      name: 'Other FOB Point',
-                      overrideValue: 'Other FOB Point'
-                    }
-                  ],
-                  allowAny: true
-                },
-
-                type: 'string'
-              },
-              {
-                index: 3,
-                name: 'description1',
-                key: 'description1',
-                type: 'string'
-              },
-              {
-                index: 6,
-                name: 'Location Qualifier2',
-                key: 'locationQualifier2',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'CA',
-                      name: 'Country of Origin',
-                      overrideValue: 'Country of Origin'
-                    }
-                  ],
-                  allowAny: true
-                },
-                type: 'string'
-              },
-              {
-                index: 7,
-                name: 'Description2',
-                key: 'description2',
-                type: 'string'
-              }
-            ]
-          },
-          {
-            key: 'SAC',
-            code: 'SAC',
-            name: 'Service, Promotion, Allowance or Charge',
-            type: 'list',
-            mandatory: false,
-            elementFormatList: [
-              {
-                index: 1,
-                name: 'Allowance or Charge Ind.',
-                key: 'allowanceOrChargeInd.',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'N',
-                      name: 'No Allowance/Chrg',
-                      overrideValue: 'No Allowance/Chrg'
-                    }
-                  ],
-                  allowAny: true
-                },
-                type: 'string'
-              },
-              {
-                index: 3,
-                name: 'Agency Qualifier Code',
-                key: 'agencyQualifiercode',
-                type: 'string'
-              },
-              {
-                index: 4,
-                name: 'Agency Services,Promotion Allowance/Charge Code',
-                key: 'agencyServices,PromotionAllowance/ChargeCode',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'OHRO',
-                      name: 'Rush Order',
-                      overrideValue: 'Rush Order'
-                    },
-                    {
-                      value: 'OHPR',
-                      name: 'Promo Order',
-                      overrideValue: 'Promo Order'
-                    },
-                    {
-                      value: 'OHSO',
-                      name: 'Custom Express',
-                      overrideValue: 'Custom Express'
-                    }
-                  ],
-                  allowAny: true
-                },
-                type: 'string'
-              }
-            ]
-          },
-          {
-            code: 'TD5',
-            key: 'TD5',
-            name: 'Carrier Details',
-            mandatory: false,
-            elementFormatList: [
-              {
-                index: 4,
-                name: 'Transportation Method/Type',
-                key: 'transportationMethod/Type',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'A',
-                      name: 'Air',
-                      overrideValue: 'Air'
-                    },
-                    {
-                      value: 'S',
-                      name: 'Ocean',
-                      overrideValue: 'Ocean'
-                    }
-                  ],
-                  allowAny: true
-                },
-                type: 'string'
-              },
-              {
-                index: 5,
-                name: 'Routing',
-                key: 'routing',
-                type: 'string'
-              }
-            ]
-          },
-          {
-            key: 'N9',
-            code: 'N9',
-            name: 'Reference Number',
-            type: 'list',
-            mandatory: false,
-            elementFormatList: [
-              {
-
-                index: 1,
-                name: 'Reference Number Qual',
-                key: 'referenceNumberQual',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'AH',
-                      name: 'Agreement',
-                      overrideValue: 'Agreement'
-                    },
-                    {
-                      value: 'KD',
-                      name: 'Special Services',
-                      overrideValue: 'Special Services'
-                    },
-                    {
-                      value: 'SH',
-                      name: 'Gift Message',
-                      overrideValue: 'Gift Message'
-                    },
-                    {
-                      value: 'DP',
-                      name: 'Department',
-                      overrideValue: 'Department'
-                    },
-                    {
-                      value: 'MR',
-                      name: 'MIC',
-                      overrideValue: 'MIC'
-                    },
-                    {
-                      value: 'BT',
-                      name: 'Group Code',
-                      overrideValue: 'Group Code'
-                    },
-                    {
-                      value: 'JH',
-                      name: 'Label Code',
-                      overrideValue: 'Label Code'
-                    },
-                    {
-                      value: 'OIC',
-                      name: 'Label Type',
-                      overrideValue: 'Label Type'
-                    },
-                    {
-                      value: 'E9',
-                      name: 'Hangtag Type',
-                      overrideValue: 'Hangtag Type'
-                    },
-                    {
-                      value: '2I',
-                      name: 'Tracking',
-                      overrideValue: 'Tracking'
-                    },
-                    {
-                      value: 'PM',
-                      name: 'Concatenated Style',
-                      overrideValue: 'Concatenated Style'
-                    },
-                    {
-                      value: 'TS',
-                      name: 'HTS',
-                      overrideValue: 'HTS'
-                    },
-                    {
-                      value: 'W9',
-                      name: 'Special Packageing',
-                      overrideValue: 'Special Packageing'
-                    }
-
-                  ],
-                  allowAny: true
-                },
-                type: 'string'
-              },
-              {
-                index: 2,
-                name: 'Reference Number',
-                key: 'referenceNumber',
-                type: 'string'
-              },
-              {
-                index: 3,
-                name: 'Free-form Description',
-                key: 'free-formDescription',
-                type: 'string'
-              }
-            ],
-            segmentFormatList: [
-              {
-                code: 'MTX',
-                key: 'MTX',
-                type: 'list',
-                name: 'Message Text',
-                mandatory: false,
-                elementFormatList: [
-                  {
-                    index: 2,
-                    name: 'Message Text',
-                    key: 'messageText'
-                  }
-                ]
-              }
-            ]
-          },
-
           {
             code: 'DTM',
             key: 'DTM',
@@ -777,46 +351,14 @@ export const formatJson = {
                   valueOptions: [
                     {
                       value: '037',
-                      name: 'Ship Not Before',
-                      overrideKey: 'shipNotBefore'
-
+                      name: 'Start Ship',
+                      overrideKey: 'startShip'
                     },
                     {
                       value: '038',
-                      name: 'Do Not Ship After',
-                      overrideKey: 'doNotShipAfter'
-                    },
-                    {
-                      value: '015',
-                      name: 'Promo start',
-                      overrideKey: 'promoStart'
-                    },
-                    {
-                      value: '071',
-                      name: 'First Arrive',
-                      overrideKey: 'firstArrive'
-                    },
-                    {
-                      value: '074',
-                      name: 'Last Arrive',
-                      overrideKey: 'lastArrive'
-                    },
-                    {
-                      value: '063',
-                      name: 'Do Not Deliver After',
-                      overrideKey: 'doNotDeliverAfter'
-                    },
-                    {
-                      value: '064',
-                      name: 'Do Not Ship Before',
-                      overrideKey: 'doNotShipBefore'
-                    },
-                    {
-                      value: '010',
-                      name: 'Requested Ship Date From Supplier Warehouse',
-                      overrideKey: 'requestedShipDateFromSupplierWarehouse'
+                      name: 'Last Ship',
+                      overrideKey: 'lastShip'
                     }
-
                   ],
                   allowAny: true
                 },
@@ -829,71 +371,6 @@ export const formatJson = {
                 type: 'date',
                 format: 'yyyyMMdd'
               }
-            ]
-          },
-          {
-            key: 'ITD',
-            code: 'ITD',
-            name: 'Term of Sales/Deferred Term of Sales',
-            type: 'object',
-            mandatory: false,
-            elementFormatList: [
-              {
-                index: 1,
-                name: 'Terms Type Code',
-                key: 'termsTypeCode',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: '08',
-                      name: 'Basic Discount',
-                      overrideValue: 'Basic Discount'
-                    },
-                    {
-                      value: '05',
-                      name: 'No Discount',
-                      overrideValue: 'No Discount'
-                    }
-                  ],
-                  allowAny: true
-                },
-                type: 'string'
-              },
-              {
-                index: 2,
-                name: 'Terms Basis Date Code',
-                key: 'termsBasisDateCode',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: '2',
-                      name: 'Delivery date',
-                      overrideValue: 'Delivery date'
-                    }
-                  ],
-                  allowAny: true
-                },
-                type: 'string'
-              },
-              {
-                index: 3,
-                name: 'Terms Discount Percent',
-                key: 'termsDiscountPercent',
-                type: 'integer'
-              },
-              {
-                index: 5,
-                name: 'Terms Discount Days Due ',
-                key: 'termsDiscountDaysDue',
-                type: 'integer'
-              },
-              {
-                index: 7,
-                name: 'Terms Net Days',
-                key: 'termsNetDays',
-                type: 'integer'
-              }
-
             ]
           },
           {
@@ -911,26 +388,6 @@ export const formatJson = {
                 allowableValues: {
                   valueOptions: [
                     {
-                      value: 'BY',
-                      name: 'Buying party',
-                      overrideValue: 'Buying party'
-                    },
-                    {
-                      value: 'BT',
-                      name: 'Bill to party',
-                      overrideValue: 'Bill to party'
-                    },
-                    {
-                      value: 'SE',
-                      name: 'Selling party',
-                      overrideValue: 'Selling Party'
-                    },
-                    {
-                      value: 'RI',
-                      name: 'Remit-to',
-                      overrideValue: 'Remit-to'
-                    },
-                    {
                       value: 'ST',
                       name: 'Ship to',
                       overrideValue: 'Ship To'
@@ -941,24 +398,9 @@ export const formatJson = {
                       overrideValue: 'Vendor'
                     },
                     {
-                      value: 'MA',
-                      name: 'Party to Ship To',
-                      overrideValue: 'Party To Ship To'
-                    },
-                    {
-                      value: 'AG',
-                      name: 'Agent',
-                      overrideValue: 'Agent'
-                    },
-                    {
                       value: 'SU',
                       name: 'Factory (Supplier)',
                       overrideValue: 'Factory (Supplier)'
-                    },
-                    {
-                      value: 'MP',
-                      name: 'Ship from',
-                      overrideValue: 'Ship From'
                     }
 
                   ],
@@ -968,8 +410,8 @@ export const formatJson = {
               },
               {
                 index : 2,
-                name: 'name',
-                key: 'name',
+                name: 'Organization Name ',
+                key: 'organizationName',
                 type: 'string'
               },
               {
@@ -995,10 +437,8 @@ export const formatJson = {
                 name: 'Identification Code',
                 key: 'identificationCode',
                 type: 'string'
-
               }
             ],
-
             segmentFormatList: [
               {
                 code: 'N2',
@@ -1009,14 +449,14 @@ export const formatJson = {
                 elementFormatList: [
                   {
                     index: 1,
-                    name: 'Additional Name Information1',
-                    key: 'additionalNameInformation1',
+                    name: 'Additional Name Information',
+                    key: 'additionalNameInformation',
                     type: 'string'
                   },
                   {
                     index: 2,
-                    name: 'Additional Name Information2',
-                    key: 'additionalNameInformation2',
+                    name: 'Additional Name Information',
+                    key: 'additional Name Information',
                     type: 'string'
                   }
                 ]
@@ -1042,6 +482,7 @@ export const formatJson = {
                   }
                 ]
               },
+
               {
                 code: 'N4',
                 key: 'N4',
@@ -1077,163 +518,99 @@ export const formatJson = {
             ]
           },
           {
-            key: 'CTP',
-            code: 'CTP',
-            name: 'Pricing Information',
-            type: 'object',
-            mandatory: false,
-            elementFormatList: [
-              {
-                index: 1,
-                name: 'Class of Trade',
-                key: 'classOfTrade',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'RS',
-                      name: 'Resale',
-                      overrideValue: 'Resale'
-                    }
-                  ],
-                  allowAny: true
-                },
-                type: 'string'
-              },
-              {
-                index: 2,
-                name: 'Price Code Qualifier',
-                key: 'priceCodeQualifier',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'RTL',
-                      name: 'Resale Price',
-                      overrideValue: 'Resale Price'
-                    }
-                  ],
-                  allowAny: true
-                },
-                type: 'string'
-              },
-              {
-                index: 3,
-                name: 'Unit Price',
-                key: 'UnitPrice',
-                type: 'decimal'
-              }
-
-            ],
-            segmentFormatList: [
-            ]
-          },
-          {
-            key: 'MEA',
-            code: 'MEA',
-            name: 'Measurements',
-            type: 'Object',
-            mandatory: false,
-            elementFormatList: [
-              {
-                index: 1,
-                name: 'Class of Trade',
-                key: 'classOfTrade',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'SH',
-                      name: 'Shipping Tolerance',
-                      overrideValue: 'Shipping Tolerance'
-                    }
-                  ],
-                  allowAny: true
-                },
-                type: 'string'
-              },
-              {
-                index: 2,
-                name: 'Price Code Qualifier',
-                key: 'priceCodeQualifier',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'PO',
-                      name: 'Percent of Order',
-                      overrideValue: 'Percent of Order'
-                    }
-                  ],
-                  allowAny: true
-                },
-                type: 'string'
-              },
-              {
-                index: 3,
-                name: 'Unit Price',
-                key: 'UnitPrice',
-                type: 'decimal'
-              }
-            ]
-          },
-          {
-            code: 'PO1',
-            key: 'PO1',
-            name: 'Purchase Order Baseline Item Data',
+            code: 'POC',
+            key: 'POC',
+            name: 'Line Item Change',
             type: 'list',
             mandatory: false,
             elementFormatList: [
               {
                 index: 1,
-                name: 'PO Line Number',
-                key: 'poLineNumber',
+                name: 'Assigned Identification',
+                key: 'assignedIdentification',
                 type: 'string'
               },
               {
                 index: 2,
+                name: 'Line Item Change',
+                key: 'lineItemChange',
+                allowableValues: {
+                  valueOptions: [
+                    {
+                    value: 'QI',
+                    name: 'Quantity Increase',
+                    overrideValue: 'Quantity Increase'
+                    },
+                    {
+                      value: 'QD',
+                      name: 'Quantity Decrease',
+                      overrideValue: 'Quantity Decrease'
+                    },
+                    {
+                      value: 'AI',
+                      name: 'Add Item',
+                      overrideValue: 'Add Item'
+                    },
+                    {
+                      value: 'DI',
+                      name: 'Delete Item',
+                      overrideValue: 'Delete Item'
+                    },
+                    {
+                      value: 'PC',
+                      name: 'Price Change',
+                      overrideValue: 'Price Change'
+                    },
+                    {
+                      value: 'CA',
+                      name: 'Changes to line items',
+                      overrideValue: 'Changes to line items'
+                    }
+
+                  ],
+                  allowAny: true
+                },
+                type: 'string'
+              },
+              {
+                index: 3,
                 name: 'Quantity Ordered',
                 key: 'quantityOrdered',
                 type: 'integer'
               },
               {
-                index: 3,
-                name: 'Unit Of Measure Code',
-                key: 'unitOfMeasureCode',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                    value: 'EA',
-                    name: 'Each(Unit)',
-                    overrideValue: 'Each(Unit)'
-                    },
-                    {
-                      value: 'CA',
-                      name: 'Case(Prepack)',
-                      overrideValue: 'Case(Prepack)'
-                    }
-                  ],
-                  allowAny: true
-                },
-                  type: 'string'
+                index: 4,
+                name: 'Quantity Change',
+                key: 'quantityChange',
+                type: 'integer'
               },
               {
-                index: 4,
+                index: 5,
+                name: 'Unit of Measure Code',
+                key: 'unitOfMeasureCode',
+                type: 'string'
+              },
+              {
+                index: 6,
                 name: 'Unit Price',
                 key: 'unitPrice',
                 type: 'decimal'
               },
               {
-                index: 5,
-                name: 'Basis of Unit Price',
-                key: 'basisofUnitPrice',
+                index: 7,
+                name: 'Basis of unit Price Code',
+                key: 'basisOfUnitPriceCode',
                 allowableValues: {
                   valueOptions: [
                     {
-                    value: 'LE',
-                    name: 'Catalog Price Each',
-                    overrideValue: 'Catalog Price Each'
+                      value: 'WE',
+                      name: 'Wholesale/Each',
+                      overrideValue: 'Wholesale/Each'
                     },
                     {
-                      value: 'NC',
-                      name: 'No Charge',
-                      overrideValue: 'No Charge'
+                      value: 'RE',
+                      name: 'Retail/Each',
+                      overrideValue: 'Retail/Each'
                     }
                   ],
                   allowAny: true
@@ -1241,150 +618,144 @@ export const formatJson = {
                 type: 'string'
               },
               {
-                index: 6,
+                index: 8,
                 name: 'Product ID Qualifier1',
                 key: 'productIdQualifier1',
                 type: 'string'
               },
               {
-                index: 7,
+                index: 9,
                 name: 'Product ID1',
                 key: 'productId1',
                 type: 'string'
               },
               {
-                index: 8,
-                name: 'Product/Service ID Qualifier2',
-                key: 'productIdQualifier2',
-                type: 'string'
-              },
-              {
-                index: 9,
-                name: 'Product/Service ID2',
-                key: 'productId2',
-                type: 'string'
-              },
-              {
                 index: 10,
-                name: 'Product/Service ID Qualifier3',
-                key: 'Product/ServiceIdQualifier3',
+                name: 'Product ID Qualifier2',
+                key: 'ProductIdQualifier2',
                 type: 'string'
               },
               {
                 index: 11,
-                name: 'Product/Service ID3',
-                key: 'Product/ServiceId3',
+                name: 'Product ID2',
+                key: 'ProductId2',
                 type: 'string'
               },
               {
                 index: 12,
-                name: 'Product/Service ID Qualifier4',
-                key: 'Product/ServiceIdQualifier4',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'BO',
-                      name: 'OR',
-                      overrideValue: 'OR'
-                    }
-                  ],
-                  allowAny: true
-                },
+                name: 'Product ID Qualifier3',
+                key: 'ProductIdQualifier3',
                 type: 'string'
               },
               {
                 index: 13,
-                name: 'Product/Service ID4',
-                key: 'Product/ServiceId4',
+                name: 'Product ID3',
+                key: 'ProductId3',
                 type: 'string'
               },
               {
                 index: 14,
-                name: 'Product/Service ID Qualifier5',
-                key: 'Product/ServiceIDQualifier5',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                    value: 'VA',
-                    name: 'VA'
-                    }
-                  ],
-                  allowAny: true
-                },
+                name: 'Product ID Qualifier4',
+                key: 'ProductIdQualifier4',
                 type: 'string'
               },
               {
                 index: 15,
-                name: 'Product/Service ID5',
-                key: 'Product/ServiceId5',
+                name: 'Product ID4',
+                key: 'ProductId4',
                 type: 'string'
               },
               {
                 index: 16,
-                name: 'Product/Service ID Qualifier6',
-                key: 'Product/ServiceIdQualifier6',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                    value: 'JP',
-                    name: 'Pre-pack',
-                    overrideValue: 'Pre-pack'
-                    }
-                  ],
-                  allowAny: true
-                },
+                name: 'Product ID Qualifier5',
+                key: 'ProductIdQualifier5',
                 type: 'string'
               },
               {
                 index: 17,
-                name: 'Product/Service ID6',
-                key: 'Product/ServiceID6',
+                name: 'Product ID5',
+                key: 'ProductId5',
                 type: 'string'
               },
               {
                 index: 18,
-                name: 'Product/Service ID Qualifier7',
-                key: 'Product/ServiceIDQualifier7',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                    value: 'CG',
-                    name: 'Coordinate Group',
-                    overrideValue: 'Coordinate Group'
-                    }
-                  ],
-                  allowAny: true
-                },
+                name: 'Product ID Qualifier6',
+                key: 'ProductIdQualifier6',
                 type: 'string'
               },
               {
                 index: 19,
-                name: 'Product/Service ID8',
-                key: 'Product/ServiceID8',
+                name: 'Product ID6',
+                key: 'ProductId6',
+                type: 'string'
+              },
+              {
+                index: 20,
+                name: 'Product ID Qualifier7',
+                key: 'ProductIdQualifier7',
+                type: 'string'
+              },
+              {
+                index: 21,
+                name: 'Product ID7',
+                key: 'ProductId7',
                 type: 'string'
               }
+
             ],
             segmentFormatList: [
               {
-                key: 'CUR',
-                code: 'CUR',
-                name: 'Currency',
+                key: 'CTP',
+                code: 'CTP',
+                name: 'Pricing Information',
                 type: 'object',
                 mandatory: false,
                 elementFormatList: [
                   {
                     index: 1,
-                    name: 'Entity Identifier Code',
-                    key: 'entityIdentifierCode',
+                    name: 'Class of Trade',
+                    key: 'classOfTrade',
+                    allowableValues: {
+                      valueOptions: [
+                        {
+                          value: 'RS',
+                          name: 'Resale',
+                          overrideValue: 'Resale'
+                        }
+                      ],
+                      allowAny: true
+                    },
                     type: 'string'
                   },
                   {
                     index: 2,
-                    name: 'Currency Code',
-                    key: 'currencyCode',
+                    name: 'Price Code Qualifier',
+                    key: 'priceCodeQualifier',
+                    allowableValues: {
+                      valueOptions: [
+                        {
+                          value: 'UCP',
+                          name: 'Cost',
+                          overrideValue: 'Cost'
+                        },
+                        {
+                          value: 'RTL',
+                          name: 'Resale Price',
+                          overrideValue: 'Resale Price'
+                        }
+                      ],
+                      allowAny: true
+                    },
                     type: 'string'
+                  },
+                  {
+                    index: 3,
+                    name: 'Unit Price',
+                    key: 'UnitPrice',
+                    type: 'decimal'
                   }
-                ]
+
+                ],
               },
               {
                 code: 'PID',
@@ -1402,8 +773,8 @@ export const formatJson = {
                   valueOptions: [
                     {
                       value: 'F',
-                      name: 'Free Form',
-                      overrideValue: 'Free Form'
+                      name: 'Freeform',
+                      overrideValue: 'Freeform'
                     }
                   ],
                   allowAny: true
@@ -1418,20 +789,14 @@ export const formatJson = {
                   valueOptions: [
                     {
                       value: '08',
-                      name: 'Product Description',
-                      overrideValue: 'Product Description'
-                    },
-                    {
-                      value: '75',
-                      name: 'Buyers Color Desc',
-                      overrideValue: 'Buyers Color Desc'
+                      name: 'Product',
+                      overrideValue: 'Product'
                     }
                   ],
                   allowAny: true
                 },
                   type: 'string'
                 },
-
                 {
                   index: 5,
                   name: 'Description',
@@ -1462,7 +827,7 @@ export const formatJson = {
                     },
                     {
                       index: 3,
-                      name: 'Unit of Measure Code1',
+                      name: 'Unit of Measure Code',
                       key: 'unitOfMeasureCode1',
                       allowableValues: {
                         valueOptions: [
@@ -1479,7 +844,7 @@ export const formatJson = {
                     {
                       index: 4,
                       name: 'Packing Code',
-                      key: 'PackingCode',
+                      key: 'packingCode',
                       type: 'string'
                     },
                     {
@@ -1490,8 +855,17 @@ export const formatJson = {
                     },
                     {
                       index: 9,
-                      name: 'Unit of Measure Code2',
+                      name: 'Unit of Measure Code',
                       key: 'unitOfMeasureCode2',
+                      allowableValues: {
+                        valueOptions: [
+                          {
+                            value: 'EA',
+                            name: 'EA'
+                          }
+                        ],
+                        allowAny: true
+                      },
                       type: 'string'
                     },
                     {
@@ -1588,9 +962,14 @@ export const formatJson = {
                   allowableValues: {
                     valueOptions: [
                       {
-                        value: 'LE',
-                        name: 'Catalog Price Each',
-                        overrideValue: 'Catalog Price Each'
+                        value: 'WE',
+                        name: 'Wholesale/Each',
+                        overrideValue: 'Wholesale/Each'
+                      },
+                      {
+                        value: 'RE',
+                        name: 'Retail/Each',
+                        overrideValue: 'Retail/Each'
                       }
                     ],
                     allowAny: true
@@ -1606,12 +985,12 @@ export const formatJson = {
                 {
                   index: 10,
                   name: 'Product ID',
-                  key: 'ProductId1',
+                  key: 'productId1',
                   type: 'string'
                 },
                 {
                   index: 11,
-                  name: 'Product/Service ID Qualifier',
+                  name: 'Product ID Qualifier',
                   key: 'productIdQualifier2',
                   type: 'string'
                 },
@@ -1629,8 +1008,7 @@ export const formatJson = {
                     valueOptions: [
                       {
                         value: 'JP',
-                        name: 'PrepackNameSize',
-                        overrideValue: 'Prepack Name Size'
+                        name: 'JP'
                       }
                     ],
                     allowAny: true
@@ -1639,24 +1017,12 @@ export const formatJson = {
                 },
                 {
                   index: 14,
-                  name: 'Product/Service ID',
+                  name: 'Product/Service ID ',
                   key: 'productId3',
-                  type: 'string'
-                },
-                {
-                  index: 17,
-                  name: 'Product/Service ID Qualifier',
-                  key: 'productIdQualifier4',
-                  type: 'string'
-                },
-                {
-                  index: 14,
-                  name: 'Product/Service ID',
-                  key: 'productId4',
                   type: 'string'
                 }
               ]
-              }
+              },
             ]
           },
           {
@@ -1711,7 +1077,91 @@ export const formatJson = {
               {
                 index: 4,
                 name: 'Quantity',
-                key: 'quantity',
+                key: 'Quantity',
+                type: 'integer'
+              }
+            ]
+          },
+          {
+            key: 'N9',
+            code: 'N9',
+            name: 'Reference Number',
+            type: 'object',
+            mandatory: false,
+            elementFormatList: [
+              {
+
+                index: 1,
+                name: 'Reference Number Qual',
+                key: 'referenceNumberQual',
+                allowableValues: {
+                  valueOptions: [
+                    {
+                      value: 'DP',
+                      name: 'Department',
+                      overrideValue: 'Department'
+                    },
+                    {
+                      value: 'MR',
+                      name: 'MIC',
+                      overrideValue: 'MIC'
+                    },
+                    {
+                      value: 'BT',
+                      name: 'Group Code',
+                      overrideValue: 'Group Code'
+                    },
+                    {
+                      value: 'JH',
+                      name: 'Label Code',
+                      overrideValue: 'Label Code'
+                    },
+                    {
+                      value: 'OIC',
+                      name: 'Label Type',
+                      overrideValue: 'Label Type'
+                    },
+                    {
+                      value: 'E9',
+                      name: 'Hangtag Type',
+                      overrideValue: 'Hangtag Type'
+                    },
+                    {
+                      value: 'W9',
+                      name: 'Special Packageing',
+                      overrideValue: 'Special Packageing'
+                    }
+
+                  ],
+                  allowAny: true
+                },
+                type: 'string'
+              },
+              {
+                index: 2,
+                name: 'Reference Number',
+                key: 'referenceNumber',
+                type: 'string'
+              },
+              {
+                index: 3,
+                name: 'Free-form Description',
+                key: 'free-formDescription',
+                type: 'string'
+              }
+            ]
+          },
+          {
+            code: 'CTT',
+            key: 'CTT',
+            name: 'Transaction Total',
+            type: 'object',
+            mandatory: false,
+            elementFormatList: [
+              {
+                index: 1,
+                name: 'Number of Line Items',
+                key: 'numberofLineItems',
                 type: 'integer'
               }
             ]
@@ -1734,21 +1184,6 @@ export const formatJson = {
                 name: 'Transaction Set Control Num',
                 key: 'transactionSetControlNum',
                 type: 'string'
-              }
-            ]
-          },
-          {
-            code: 'CTT',
-            key: 'CTT',
-            name: 'Transaction Total',
-            type: 'object',
-            mandatory: false,
-            elementFormatList: [
-              {
-                index: 1,
-                name: 'Number of Line Items',
-                key: 'numberofLineItems',
-                type: 'integer'
               }
             ]
           }
@@ -1799,7 +1234,9 @@ export const formatJson = {
           }
         ]
       }
+
     ]
+
   }
 
 } as EdiFormatJson
@@ -1849,9 +1286,7 @@ export default class EdiParser850 extends BaseEdiParser {
   }
   async import(base64EdiString: string): Promise<any> {
     // console.log(`import type  : ${this.type}`)
-    const response = await super.import(base64EdiString)
-
-      const products = []
+      const response = await super.import(base64EdiString)
 
       const ediJson = response['jsonData']
       // hardcode
@@ -1859,12 +1294,18 @@ export default class EdiParser850 extends BaseEdiParser {
 
       const poList = [] as PurchaseOrder[]
 
+      const products = []
+
+      // console.log(_.get(response, 'ST[0].BCH'))
+
       if (!ediJson)
       {
         return ediJson
       }
+
       if (ediJson['ST'] && Array.isArray(ediJson['ST']))
       {
+
         for (const ST of ediJson['ST']) {
           const po: PurchaseOrder = {
             flexData: {
@@ -1879,7 +1320,6 @@ export default class EdiParser850 extends BaseEdiParser {
 
           const missingDateName1 = 'ediCreated'
           const missingDateName2 = 'dataInterchange'
-          po.flexData.data[`${missingDateName1} DateEstimated`] = null
           if (ediJson['ISA'])
           {
             if ((ediJson['ISA']['createdDate']) && (ediJson['ISA']['createdTime']))
@@ -1897,11 +1337,17 @@ export default class EdiParser850 extends BaseEdiParser {
             po.flexData.data['moreDate'].push(missingDateName1)
             po.flexData.data['moreDate'].push(missingDateName2)
           }
-          if (ST['BEG']){
-            po.poNo = ST['BEG']['purchaseOrderNumber']
-            if (ST['BEG']['purchaseOrderDate'])
+          if (ST['BCH']){
+            po['purpose'] = ST['BCH']['transactionSetPurpose']
+            po['poNo'] = ST['BCH']['purchaseOrderNumber']
+            if (ST['BCH']['purchaseOrderDate'])
             {
-              po.poDate = moment.utc(ST['BEG']['purchaseOrderDate']).toDate()
+              po.poDate = moment.utc(ST['BCH']['purchaseOrderDate']).toDate()
+            }
+            if (ST['BCH']['poChangeRequestDate'])
+            {
+              po.flexData.data['changeRequestDate'] =  moment.utc(ST['BCH']['poChangeRequestDate']).toDate()
+              po.flexData.data['moreDate'].push('changeRequestDate')
             }
           }
           if (ST['DTM'])
@@ -1921,96 +1367,82 @@ export default class EdiParser850 extends BaseEdiParser {
           // console.log("Value:"+ST['N1'][i]['organizationIdentifier'])
           // console.log(`True or False: ${ST['N1'][i]['organizationIdentifier']==='Ship from'}`)
           // console.log(`Length ${ST['N1'].length}`)
+          if (ST['N1'])
+          {
+            for (const N1 of ST['N1']) {
+              // console.log("Value:"+N1['organizationIdentifier'])
 
-          for (const N1 of ST['N1']) {
-            // console.log("Value:"+N1['organizationIdentifier'])
-
-            let name
-
-            let city = null
-
-            if (N1['organizationIdentifier'] === 'Ship From') {
-              name = 'shipper'
-            } else if (N1['organizationIdentifier'] === 'Ship To') {
-              name = 'shipTo'
-            } else {
-              name = N1['organizationIdentifier']
-              po.flexData.data[`${name}PartyCode`] = N1['identificationCode']
-              po.flexData.data[`${name}PartyName`] = N1['name']
-              if (N1['N3'])
-              {
-                po.flexData.data[`${name}PartyAddress`] =
-                  `${N1['N3']['addressInformation']} ${N1['N3']['additionalAddressInformation']}`
-              }
+              let name
+              let city = null
               if (N1['N4'])
               {
                 city = await (this.allService.locationService as LocationService).findOne(
-                  {
-                      where: {
-                        name: (N1['N4']['cityName'] || ''),
-                      },
-                  },
-                  user
-                )
-                if (city)
-                {
-                  po.flexData.data[`${name}PartyCityCode`] = city.locationCode
-                }
-                po.flexData.data[`${name}PartyStateCode`] = N1['N4']['stateOrProvinceCode']
-                po.flexData.data[`${name}PartyZip`] = N1['N4']['postalCode']
-                po.flexData.data[`${name}PartyCountryCode`] = N1['N4']['countryCode']
-                po.flexData.data['moreParty'].push(name)
-              }
-              continue
-            }
-
-            po[`${name}PartyCode`] = N1['identificationCode']
-            po[`${name}PartyName`] = N1['name']
-            if (N1['N3'])
-            {
-              po[`${name}PartyAddress`] =
-                N1['N3']['addressInformation'] + ' ' + N1['N3']['additionalAddressInformation']
-            }
-            if (N1['N4'])
-            {
-              city = await (this.allService.locationService as LocationService).findOne(
                 {
                     where: {
                       name: (N1['N4']['cityName'] || ''),
                     },
                 },
                 user
-              )
-              if (city)
-              {
-                po[`${name}PartyCityCode`] = city.locationCode
+                )
               }
 
-                po[`${name}PartyStateCode`] = N1['N4']['stateOrProvinceCode']
-                po[`${name}PartyZip`] = N1['N4']['postalCode']
-                po[`${name}PartyCountryCode`] = N1['N4']['countryCode']
-            }
+              if (N1['organizationIdentifier'] === 'Ship From') {
+                name = 'shipper'
+              } else if (N1['organizationIdentifier'] === 'Ship To') {
+                name = 'shipTo'
+              } else {
+                name = N1['organizationIdentifier']
+                po.flexData.data[`${name}PartyCode`] = N1['identificationCode']
+                po.flexData.data[`${name}PartyName`] = N1['name']
+                if (N1['N3'])
+                {
+                  po.flexData.data[`${name}PartyAddress`] =
+                    `${N1['N3']['addressInformation']} ${N1['N3']['additionalAddressInformation']}`
+                }
+                if (city)
+                {
+                  po.flexData.data[`${name}PartyCityCode`] = city.locationCode
+                  po.flexData.data[`${name}PartyStateCode`] = N1['N4']['stateOrProvinceCode']
+                  po.flexData.data[`${name}PartyZip`] = N1['N4']['postalCode']
+                  po.flexData.data[`${name}PartyCountryCode`] = N1['N4']['countryCode']
+                  po.flexData.data['moreParty'].push(name)
+                }
+                continue
+              }
 
+              po[`${name}  PartyCode`] = N1['identificationCode']
+              po[`${name} PartyName`] = N1['name']
+              if (N1['N3'])
+              {
+                po[`${name} PartyAddress`] =
+                  N1['N3']['addressInformation'] + ' ' + N1['N3']['additionalAddressInformation']
+              }
+              if (N1['N4'])
+              {
+                if (city)
+                {
+                  po[`${name}PartyCityCode`] = city.locationCode
+                }
+                  po[`${name}PartyStateCode`] = N1['N4']['stateOrProvinceCode']
+                  po[`${name}PartyZip`] = N1['N4']['postalCode']
+                  po[`${name}PartyCountryCode`] = N1['N4']['countryCode']
+              }
+            }
           }
-          // return response
-          if (ST['PO1'])
+          if (ST['POC'])
           {
-            for (const PO1 of ST['PO1']) // k<ST['PO1'].length
+            for (const POC of ST['POC'])
             {
               const poItem = {} as PurchaseOrderItem
               const ProductDefinitionField1 = {} as ProductDefinitionField
-              const ProductDefinitionField2 = {} as ProductDefinitionField
-              // console.log(`check product code ${PO1['productId'].substr(3,11)}`)
               let product = products.find(
-                product => product.productCode === (PO1['productId1'] || '').substr(3, 12).trim()
+                product => product.productCode === (POC['productId1'] || '').substr(3, 12).trim()
               )
-
-              // console.log(`producttype: ${typeof product}`)
               if (!product) {
                 product = await (this.allService.productDbService as ProductDbService).findOne(
                   {
                     where: {
-                      productCode: (PO1['productId1'] || '').substr(3, 12).trim(),
+                      productCode: POC['productId1']
                     },
                   },
                   user
@@ -2018,10 +1450,10 @@ export default class EdiParser850 extends BaseEdiParser {
                 // console.log(`check product type ${typeof product}`)
                 if (!product) {
                   product = {} as Product
-                  product.productCode = (PO1['productId1'] || '').substr(3, 11)
-                  if (PO1['PID'])
+                  product.productCode = POC['productId1']
+                  if (POC['PID'])
                   {
-                    const descriptionName = PO1['PID']['description']
+                    const descriptionName = POC['PID']['description']
                     // console.log(`Description: ${descriptionName}`)
                     const nameIndex = (descriptionName || '').indexOf(' ')
                     if (nameIndex > 0)
@@ -2030,37 +1462,34 @@ export default class EdiParser850 extends BaseEdiParser {
                     }
                     ProductDefinitionField1.fieldName = 'colour'
                     ProductDefinitionField1.type = 'string'
-                    ProductDefinitionField1.values = (PO1['productId1'] || '').substr(15, 3)
+                    ProductDefinitionField1.values = POC['ProductId4']
                     // console.log(`ProductDefinitionField: ${ProductDefinitionField1.values}`)
                     // console.log(`Type: ${typeof product.definition}`)
 
                     product.definition = []
                     product.definition.push(ProductDefinitionField1)
-
-                    ProductDefinitionField2.fieldName = 'material'
-                    ProductDefinitionField2.type = 'string'
-                    ProductDefinitionField2.values = (PO1['productId1'] || '').substr(18, 6)
-                    // console.log(`ProductDefinitionField: ${ProductDefinitionField2.values}`)
-                    product.definition.push(ProductDefinitionField2)
                   }
                 } else {
                   products.push(product)
                 }
               }
-              poItem.itemKey = PO1['poLineNumber']
-              poItem.quantity = PO1['quantityOrdered']
-              poItem.quantityUnit = PO1['unitOfMeasureCode']
-              if (PO1['PO4'])
-              {
-                poItem.volume = PO1['PO4']['grossVolumePerPack']
-              }
-              if (PO1['SLN'])
-              {
-                poItem.htsCode = PO1['SLN']['productId2']
-              }
 
+              poItem.itemKey = POC['assignedIdentification']
+              poItem['change'] = POC['lineItemChange']
+              poItem.quantity = POC['quantityOrdered']
+              poItem.quantityUnit = POC['unitOfMeasureCode']
+              poItem['quantityChange'] = POC['quantityChange']
+              if (POC['PO4'])
+              {
+                poItem.volume = POC['PO4']['grossVolumePerPack']
+              }
+              if (POC['SLN'])
+              {
+                poItem.htsCode = POC['SLN']['productId2']
+              }
               poItem.product = product
               poItemList.push(poItem)
+
             }
           }
 
