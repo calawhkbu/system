@@ -1367,8 +1367,21 @@ export default class EdiParser850 extends BaseEdiParser {
 
               if (_.get(N1, 'organizationIdentifier') === 'Ship From') {
                 name = 'shipper'
+                po[`${name}PartyCode`] = _.get(N1, 'identificationCode')
+                po[`${name}PartyName`] = _.get(N1, 'name')
               } else if (_.get(N1, 'organizationIdentifier') === 'Ship To') {
                 name = 'shipTo'
+                const index = _.get(N1, 'name').indexOf('#')
+                if (index > 0)
+                {
+                  po[`${name}PartyCode`] = `${_.get(N1, 'name').substr(index + 1)} ${_.get(N1, 'identificationCode').substr(0, 9)}`
+                  po[`${name}PartyName`] = _.get(N1, 'name').substr(0, index)
+                }
+                else
+                {
+                  po[`${name}PartyCode`] = _.get(N1, 'identificationCode').substr(0, 9)
+                  po[`${name}PartyName`] = _.get(N1, 'name')
+                }
               } else {
                 name = _.get(N1, 'organizationIdentifier')
                 po.flexData.data[`${name}PartyCode`] = _.get(N1, 'identificationCode')
@@ -1382,9 +1395,6 @@ export default class EdiParser850 extends BaseEdiParser {
                 po.flexData.data['moreParty'].push(name)
                 continue
               }
-
-              po[`${name}  PartyCode`] = _.get(N1, 'identificationCode')
-              po[`${name} PartyName`] = _.get(N1, 'name')
               po[`${name} PartyAddress`] =
                 `${_.get(N1, 'N3.addressInformation')} ${_.get(N1, 'N3.additionalAddressInformation')}`
               po[`${name}PartyCityCode`] = _.get(N1, 'N4.cityName')
@@ -1400,6 +1410,10 @@ export default class EdiParser850 extends BaseEdiParser {
               const poItem = {} as PurchaseOrderItem
               const product = {} as Product
                 // console.log(`check product type ${typeof product}`)
+              product['subLine'] = _.get(POC, 'SLN.assignedIdentification')
+              product['poLineNo'] = null
+              product['price'] = _.get(POC, 'unitPrice')
+              product['priceUnit'] = _.get(POC, 'basisOfUnitPrice')
               product['sea'] = null
               product['style'] = null
               product['styleDesc'] = _.get(POC, 'PID.description', '').substr(0, 20).replace(/^[ ]+|[ ]+$/g, '')

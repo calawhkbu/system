@@ -9,6 +9,7 @@ import { LocationService } from 'modules/sequelize/location/service'
 import { ProductDefinitionField, Product } from 'models/main/product'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { EdiSchedulerConfig, EdiFormatJson } from 'modules/edi/service'
+import { SubQueryDef } from 'classes/query/SubQueryDef'
 
 const moment = require('moment')
 const _ = require('lodash')
@@ -1223,7 +1224,7 @@ export const formatJson = {
               {
                 index: 5,
                 name: 'Basis of Unit Price',
-                key: 'basisofUnitPrice',
+                key: 'basisOfUnitPrice',
                 allowableValues: {
                   valueOptions: [
                     {
@@ -1919,8 +1920,21 @@ export default class EdiParser850 extends BaseEdiParser {
               let name
               if (_.get(N1, 'organizationIdentifier') === 'Ship From') {
                 name = 'shipper'
+                po[`${name}PartyCode`] = _.get(N1, 'identificationCode')
+                po[`${name}PartyName`] = _.get(N1, 'name')
               } else if (_.get(N1, 'organizationIdentifier') === 'Ship To') {
                 name = 'shipTo'
+                const index = _.get(N1, 'name').indexOf('#')
+                if (index > 0)
+                {
+                  po[`${name}PartyCode`] = `${_.get(N1, 'name').substr(index + 1)} ${_.get(N1, 'identificationCode').substr(0, 9)}`
+                  po[`${name}PartyName`] = _.get(N1, 'name').substr(0, index)
+                }
+                else
+                {
+                  po[`${name}PartyCode`] = _.get(N1, 'identificationCode').substr(0, 9)
+                  po[`${name}PartyName`] = _.get(N1, 'name')
+                }
               } else {
                 name = _.get(N1, 'organizationIdentifier')
                 po.flexData.data[`${name}PartyCode`] = _.get(N1, 'identificationCode')
@@ -1934,9 +1948,6 @@ export default class EdiParser850 extends BaseEdiParser {
                 po.flexData.data['moreParty'].push(name)
                 continue
               }
-
-              po[`${name}PartyCode`] = _.get(N1, 'identificationCode')
-              po[`${name}PartyName`] = _.get(N1, 'name')
               po[`${name}PartyAddress`] =
                 `${_.get(N1, 'N3.addressInformation')} ${_.get(N1, 'N3.additionalAddressInformation')}`
               po[`${name}PartyCityCode`] = _.get(N1, 'N4.cityName')
@@ -1957,7 +1968,10 @@ export default class EdiParser850 extends BaseEdiParser {
 
               // console.log(`producttype: ${typeof product}`)
               // console.log(`check product type ${typeof product}`)
-
+              product['subLine'] = _.get(PO1, 'SLN.assignedIdentification')
+              product['poLineNo'] = _.get(PO1, 'productId1', '').substr(24, 3)
+              product['price'] = _.get(PO1, 'unitPrice')
+              product['priceUnit'] = _.get(PO1, 'basisOfUnitPrice')
               product['sea'] = _.get(PO1, 'productId1', '').substr(0, 3)
               product['style'] = _.get(PO1, 'productId1', '').substr(3, 12).trim()
               product['styleDesc'] = _.get(PO1, 'PID.description', '').substr(0, 20).replace(/^[ ]+|[ ]+$/g, '')
