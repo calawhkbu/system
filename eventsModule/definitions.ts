@@ -157,8 +157,8 @@ export default {
 
               const difference = diff(parameters.oldData, parameters.data, undefined, undefined, ['createdAt', 'createdBy', 'updatedAt', 'updatedBy'])
 
-              console.log('difference')
-              console.log(difference)
+              // console.log('difference')
+              // console.log(difference)
 
               return (difference) ? true : false
 
