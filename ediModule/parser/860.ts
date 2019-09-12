@@ -1386,8 +1386,8 @@ export default class EdiParser850 extends BaseEdiParser {
                 name = _.get(N1, 'organizationIdentifier')
                 po.flexData.data[`${name}PartyCode`] = _.get(N1, 'identificationCode')
                 po.flexData.data[`${name}PartyName`] = _.get(N1, 'name')
-                po.flexData.data[`${name}PartyAddress`] =
-                  `${_.get(N1, 'N3.addressInformation')} ${_.get(N1, 'N3.additionalAddressInformation')}`
+                po.flexData.data[`${name}PartyAddress1`] =  _.get(N1, 'N3.addressInformation')
+                po.flexData.data[`${name}PartyAddress1`] = _.get(N1, 'N3.additionalAddressInformation')
                 po.flexData.data[`${name}PartyCityCode`] = _.get(N1, 'N4.cityName')
                 po.flexData.data[`${name}PartyStateCode`] = _.get(N1, 'N4.stateOrProvinceCode')
                 po.flexData.data[`${name}PartyZip`] = _.get(N1, 'N4.postalCode')
@@ -1395,8 +1395,8 @@ export default class EdiParser850 extends BaseEdiParser {
                 po.flexData.data['moreParty'].push(name)
                 continue
               }
-              po[`${name} PartyAddress`] =
-                `${_.get(N1, 'N3.addressInformation')} ${_.get(N1, 'N3.additionalAddressInformation')}`
+              po[`${name} PartyAddress1`] = _.get(N1, 'N3.addressInformation')
+              po[`${name} PartyAddress2`] = _.get(N1, 'N3.additionalAddressInformation')
               po[`${name}PartyCityCode`] = _.get(N1, 'N4.cityName')
               po[`${name}PartyStateCode`] = _.get(N1, 'N4.stateOrProvinceCode')
               po[`${name}PartyZip`] = _.get(N1, 'N4.postalCode')
@@ -1448,7 +1448,7 @@ export default class EdiParser850 extends BaseEdiParser {
     return poList
   }
   async export(entityJSON: any): Promise<any> {
-    console.log(`export type  : ${this.type}`)
+    console.log(`export type  : ${entityJSON}`)
     const result = await super.export(entityJSON)
     return result
   }
