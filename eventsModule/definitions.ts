@@ -83,7 +83,19 @@ export default {
   ],
 
   afterCreate_booking: [
+
+    // warning: not using !!!!!!!
     // create alert of new Booking
+
+    // // update personId / create Invitation
+    // {
+    //   condition : true,
+    //   handlerName : 'entity_create_invitation',
+    //   otherParameters : {
+    //     tableName : 'booking',
+    //   }
+    // },
+
     {
       condition: true,
       eventName: 'create_alert',
@@ -97,16 +109,7 @@ export default {
       },
     },
 
-    // // update personId / create Invitation
-    // {
-    //   condition : true,
-    //   handlerName : 'entity_create_invitation',
-    //   otherParameters : {
-    //     tableName : 'booking',
-    //   }
-    // },
-
-    // // create booking tracking
+    // create booking tracking
     {
       condition: true,
       eventName: 'create_tracking',
@@ -126,6 +129,7 @@ export default {
         },
       },
     },
+
   ],
 
   afterUpdate_booking: [
@@ -134,6 +138,7 @@ export default {
       condition: true,
       eventName: 'create_tracking',
     },
+
     {
       condition: true,
       eventName: 'create_alert',
@@ -146,6 +151,7 @@ export default {
         },
       },
     },
+
     {
       condition: true,
       handlerName: 'checker',
@@ -168,7 +174,18 @@ export default {
         ],
       },
       afterEvent: [
+
+        // warning: not using !!!!!!!
+        // // update personId / create Invitation
+        // {
+        //   condition : true,
+        //   handlerName : 'entity_create_invitation',
+        //   previousParameters : {
+        //     tableName : 'booking'
+        //   }
+        // },
         {
+
           eventName: 'fill_template',
           previousParameters: {
             tableName: 'booking',
