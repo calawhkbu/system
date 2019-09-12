@@ -18,7 +18,6 @@ const query = new QueryDef(
       new ResultColumn(new ColumnExpression('flex_data', 'data')),
     ],
 
-    $limit : 100,
     $from: new FromTable('alert', {
       operator: 'LEFT',
       table: 'flex_data',

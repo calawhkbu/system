@@ -38,6 +38,7 @@ export default async function entityCreateInvitaion(
     roles: roles.map((role: any) => ({ id: role.id }))
   }
   const parties = await getPartyAndPersonFromStandardEntity(entity)
+
   for (const partyType of Object.keys(parties)) {
     const content = parties[partyType]
     let party = content.party
@@ -64,7 +65,7 @@ export default async function entityCreateInvitaion(
           },
           user
         )
-        console.log(savedPerson, 'invitation')
+
         if (savedPerson) {
           const savedPersonValue = savedPerson.hasOwnProperty('dataValues')
             ? JSON.parse(JSON.stringify(savedPerson.dataValues))
@@ -84,8 +85,9 @@ export default async function entityCreateInvitaion(
             }, user, transaction)
             console.log('=========', 'invitation')
             savedPerson = invitation.person
+
               if (content.fromFlexData) {
-                if (entityFlexData[`${partyType}PartyContactPersonEmail`] === savedPerson.userName) {
+                if (entityFlexData[`${partyType}PartyContactEmail`] === savedPerson.userName) {
                   entityFlexData[`${partyType}PartyContactPersonId`] = savedPerson.id
                 } else {
                   entityFlexData[`${partyType}PartyContacts`] = (entityFlexData[`${partyType}PartyContacts`] || []).reduce((all: any, one: any) => {
@@ -96,9 +98,15 @@ export default async function entityCreateInvitaion(
                   }, entityFlexData[`${partyType}PartyContacts`])
                 }
               } else {
-                if (entityData[`${partyType}PartyContactPersonEmail`] === savedPerson.userName) {
+
+                console.log(entityData[`${partyType}PartyContactEmail`])
+                console.log(partyType)
+
+                if (entityData[`${partyType}PartyContactEmail`] === savedPerson.userName) {
+
                   entityData[`${partyType}PartyContactPersonId`] = savedPerson.id
                 } else {
+
                   entityData[`${partyType}PartyContacts`] = (entityData[`${partyType}PartyContacts`] || []).reduce((all: any, one: any) => {
                     if (one['Email'] === savedPerson.userName) {
                       one['PersonId'] = savedPerson.id
@@ -112,11 +120,16 @@ export default async function entityCreateInvitaion(
       }
     }
   }
-  return {
+
+  console.log(entityData, 'entityData')
+
+  const finalResult = {
     ...entityData,
     flexData: {
       ...entityData.flexData,
       data: entityFlexData,
     },
   }
+
+  return finalResult
 }
