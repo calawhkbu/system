@@ -218,17 +218,41 @@ export default [
         'partyName'
       ),
     ],
+    $from: new FromTable(
+      {
+        method: 'POST',
+        url: 'api/party/query/party',
+        columns: [
+          {
+            name: 'id',
+            type: 'number',
+          },
 
-    $from: new FromTable('top10', {
-      operator: 'LEFT',
-      table: 'party',
-      $on: [
-        new BinaryExpression(
-          new ColumnExpression('top10', 'agentPartyCode'),
-          '=',
-          new ColumnExpression('party', 'erpCode')
-        ),
-      ],
-    }),
+          {
+            name: 'name',
+            type: 'string',
+          },
+
+          {
+            name: 'thirdPartyCode',
+            type: 'string',
+          },
+
+          {
+            name: 'erpCode',
+            type: 'string',
+          },
+        ],
+
+        data: {
+          subqueries: {
+            erpCode: true,
+          },
+          // include jobMonth from the table
+          fields: ['erpCode', 'party.*'],
+        },
+      },
+      'party'
+    ),
   }),
 ]

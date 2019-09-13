@@ -53,7 +53,7 @@ const query = new Query({
     ),
     new ResultColumn(
       new FunctionExpression('GROUP_CONCAT', new ColumnExpression('alert', 'primaryKey')),
-      'idListString'
+      'primaryKeyListString'
     ),
   ],
   $from: new FromTable(

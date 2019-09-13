@@ -59,19 +59,21 @@ function prepareBookingable(name: string): CreateTableJQL {
     name,
     $as: new Query({
       $select: [
-        new ResultColumn(new ColumnExpression(name, 'id')),
-        new ResultColumn(new ColumnExpression(name, 'moduleTypeCode')),
-        new ResultColumn(new ColumnExpression(name, 'bookingNo')),
+        new ResultColumn(new ColumnExpression(name, 'houseNo')),
+        new ResultColumn(new ColumnExpression(name, 'jobNo')),
+        new ResultColumn(new ColumnExpression(name, 'moduleType')),
+        new ResultColumn(new ColumnExpression(name, 'jobDate')),
       ],
 
       $from: new FromTable(
         {
           method: 'POST',
-          url: 'api/booking/query/booking',
+          url: 'api/shipment/query/shipment',
           columns: [
-            { name: 'bookingId', type: 'number', $as: 'id' },
-            { name: 'moduleTypeCode', type: 'string' },
-            { name: 'bookingNo', type: 'string' },
+            { name: 'houseNo', type: 'string' },
+            { name: 'jobNo', type: 'string' },
+            { name: 'moduleType', type: 'string' },
+            { name: 'jobDate', type: 'Date' },
           ],
         },
         name

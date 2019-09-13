@@ -52,7 +52,7 @@ function prepareBookingTable(name: string): CreateTableJQL {
 
         new ResultColumn(
           new FunctionExpression('GROUP_CONCAT', new ColumnExpression(name, 'bookingId')),
-          'idListString'
+          'primaryKeyListString'
         ),
 
         new ResultColumn(
@@ -116,8 +116,12 @@ export default [
         'count'
       ),
       new ResultColumn(
-        new FunctionExpression('IFNULL', new ColumnExpression('booking', 'idListString'), ''),
-        'idListString'
+        new FunctionExpression(
+          'IFNULL',
+          new ColumnExpression('booking', 'primaryKeyListString'),
+          ''
+        ),
+        'primaryKeyListString'
       ),
     ],
 

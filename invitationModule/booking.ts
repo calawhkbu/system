@@ -1,9 +1,6 @@
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
-import { Person } from 'models/main/Person'
-import { Party } from 'models/main/Party'
 import { PartyGroup } from 'models/main/partyGroup'
-import { Role } from 'models/main/Role'
 import { GetPartyAndPersonFromStandardEntityResult } from 'utils/party'
 
 export default async function entityCreateInvitaion(
@@ -47,6 +44,7 @@ export default async function entityCreateInvitaion(
     roles: roles.map((role: any) => ({ id: role.id })),
   }
   const parties = await getPartyAndPersonFromStandardEntity(entity)
+
   for (const partyType of Object.keys(parties)) {
     const content = parties[partyType]
     let party = content.party
@@ -65,15 +63,15 @@ export default async function entityCreateInvitaion(
       }
     }
     if (party.id) {
-      console.log(party, 'invitation')
       for (const person of content.people) {
         let savedPerson = await that.personService.findOne(
           {
-            where: { $or: [{ id: person.id }, { userName: { $regexp: person.userName } }] },
+            where: { $or: [{ id: person.id }, { userName: person.userName }] },
             transaction,
           },
           user
         )
+
         if (savedPerson) {
           const savedPersonValue = savedPerson.hasOwnProperty('dataValues')
             ? JSON.parse(JSON.stringify(savedPerson.dataValues))
@@ -84,20 +82,22 @@ export default async function entityCreateInvitaion(
           }
           //     await this.personService.save({ id: savedPersonValue.id, parties: personParty }, transaction, user)
         } else {
-          delete person.id
-          const saveperson = { ...person, ...basePerson, parties: [{ id: party.id }] }
-          if (saveperson.userName) {
+          if (person.userName) {
+            delete person.id
+            console.log('=========', 'invitation')
             const invitation = await that.save(
               {
-                person: saveperson,
+                person: { ...person, ...basePerson, parties: [{ id: party.id }] },
                 partyGroupCode: partyGroup.code,
               },
               user,
               transaction
             )
+            console.log('=========', 'invitation')
             savedPerson = invitation.person
+
             if (content.fromFlexData) {
-              if (entityFlexData[`${partyType}PartyContactPersonEmail`] === savedPerson.userName) {
+              if (entityFlexData[`${partyType}PartyContactEmail`] === savedPerson.userName) {
                 entityFlexData[`${partyType}PartyContactPersonId`] = savedPerson.id
               } else {
                 entityFlexData[`${partyType}PartyContacts`] = (
@@ -110,7 +110,10 @@ export default async function entityCreateInvitaion(
                 }, entityFlexData[`${partyType}PartyContacts`])
               }
             } else {
-              if (entityData[`${partyType}PartyContactPersonEmail`] === savedPerson.userName) {
+              console.log(entityData[`${partyType}PartyContactEmail`])
+              console.log(partyType)
+
+              if (entityData[`${partyType}PartyContactEmail`] === savedPerson.userName) {
                 entityData[`${partyType}PartyContactPersonId`] = savedPerson.id
               } else {
                 entityData[`${partyType}PartyContacts`] = (
@@ -128,11 +131,16 @@ export default async function entityCreateInvitaion(
       }
     }
   }
-  return {
+
+  console.log(entityData, 'entityData')
+
+  const finalResult = {
     ...entityData,
     flexData: {
       ...entityData.flexData,
       data: entityFlexData,
     },
   }
+
+  return finalResult
 }

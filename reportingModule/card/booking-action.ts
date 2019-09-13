@@ -408,7 +408,7 @@ export default [
       ),
       new ResultColumn(
         new FunctionExpression('GROUP_CONCAT', new ColumnExpression('nextStatus', 'primaryKey')),
-        'idListString'
+        'primaryKeyListString'
       ),
     ],
 
