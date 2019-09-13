@@ -106,9 +106,7 @@ function prepareModuleCodeTable(name: string): CreateTableJQL {
   return new CreateTableJQL({
     $temporary: true,
     name,
-    columns: [
-      new Column('moduleTypeCode', 'string'),
-    ]
+    columns: [new Column('moduleTypeCode', 'string')],
   })
 }
 
@@ -122,39 +120,46 @@ function insertModuleCodeTable(name: string): InsertJQL {
 }
 
 export default [
-
   prepareModuleCodeTable('module'),
   insertModuleCodeTable('module'),
   [prepareParams(), prepareTable('lastMonth')],
   [prepareParams(true), prepareTable('currentMonth')],
 
   new Query({
-
-    $select : [
-
+    $select: [
       new ResultColumn(new ColumnExpression('module', 'moduleTypeCode')),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('currentMonth', 'quantity'), 0), 'currentMonthQuantity'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('lastMonth', 'quantity'), 0), 'lastMonthQuantity'),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('currentMonth', 'quantity'), 0),
+        'currentMonthQuantity'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('lastMonth', 'quantity'), 0),
+        'lastMonthQuantity'
+      ),
     ],
 
-    $from: new FromTable('module', 'module',
+    $from: new FromTable(
+      'module',
+      'module',
       {
-
         operator: 'LEFT',
         table: 'lastMonth',
-        $on: new BinaryExpression(new ColumnExpression('lastMonth', 'moduleTypeCode'), '=', new ColumnExpression('module', 'moduleTypeCode'))
-
+        $on: new BinaryExpression(
+          new ColumnExpression('lastMonth', 'moduleTypeCode'),
+          '=',
+          new ColumnExpression('module', 'moduleTypeCode')
+        ),
       },
 
       {
-
         operator: 'LEFT',
         table: 'currentMonth',
-        $on: new BinaryExpression(new ColumnExpression('currentMonth', 'moduleTypeCode'), '=', new ColumnExpression('module', 'moduleTypeCode'))
-
+        $on: new BinaryExpression(
+          new ColumnExpression('currentMonth', 'moduleTypeCode'),
+          '=',
+          new ColumnExpression('module', 'moduleTypeCode')
+        ),
       }
-
-    )
-
+    ),
   }),
 ]

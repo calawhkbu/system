@@ -16,7 +16,7 @@ const query = new Query({
         },
         {
           name: 'poNo',
-          type: 'string'
+          type: 'string',
         },
         {
           name: 'referenceNumber',
@@ -249,7 +249,7 @@ const query = new Query({
         {
           name: 'totalQuantity',
           type: 'number',
-        }
+        },
       ],
     },
     'purchase_order'

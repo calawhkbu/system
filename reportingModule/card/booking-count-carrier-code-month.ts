@@ -32,7 +32,7 @@ function prepareParams(): Function {
     }
 
     subqueries.moduleTypeCode = {
-      value : 'AIR'
+      value: 'AIR',
     }
 
     return params
@@ -42,25 +42,21 @@ function prepareParams(): Function {
 }
 
 function prepareCodeMasterParams(): Function {
-
   const fn = function(require, session, params) {
     const subqueries = (params.subqueries = params.subqueries || {})
 
     subqueries.codeType = {
-      value : 'carrier'
+      value: 'carrier',
     }
 
     return params
   }
   const code = fn.toString()
   return parseCode(code)
-
 }
 
 function prepareCodeMasterTable(name: string): CreateTableJQL {
-
   return new CreateTableJQL({
-
     $temporary: true,
     name,
 
@@ -85,11 +81,9 @@ function prepareCodeMasterTable(name: string): CreateTableJQL {
           ],
         },
         name
-      )
+      ),
     }),
-
   })
-
 }
 
 // a temp table that Group by carrierCode and JobMonth
@@ -142,23 +136,19 @@ function prepareTempTable(name: string): CreateTableJQL {
         new ColumnExpression(name, 'jobMonth'),
       ]),
 
-      $where:
-       [new BinaryExpression(new ColumnExpression(name, 'moduleTypeCode'), '=', 'AIR'),
-      //  new IsNullExpression(new ColumnExpression(name, 'carrierCode'), true),
-      ]
-
+      $where: [
+        new BinaryExpression(new ColumnExpression(name, 'moduleTypeCode'), '=', 'AIR'),
+        //  new IsNullExpression(new ColumnExpression(name, 'carrierCode'), true),
+      ],
     }),
   })
 }
 
-function prepareMonthTable(name: string)
-{
-
+function prepareMonthTable(name: string) {
   return new CreateTableJQL({
-
-    $temporary : true,
+    $temporary: true,
     name,
-    $as :   new Query({
+    $as: new Query({
       $select: [
         // hard code 12 months
 
@@ -518,10 +508,8 @@ function prepareMonthTable(name: string)
       $group: 'carrierCode',
 
       // $order: 'carrierCode'
-    })
-
+    }),
   })
-
 }
 
 export default [
@@ -530,43 +518,72 @@ export default [
   prepareMonthTable('month'),
 
   new Query({
-
-    $select : [
-
+    $select: [
       new ResultColumn(new ColumnExpression('code_master', 'code'), 'carrierCode'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jan'), 0), 'Jan'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Feb'), 0), 'Feb'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Mar'), 0), 'Mar'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Apr'), 0), 'Apr'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'May'), 0), 'May'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jun'), 0), 'Jun'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jul'), 0), 'Jul'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Aug'), 0), 'Aug'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Sep'), 0), 'Sep'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Oct'), 0), 'Oct'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Nov'), 0), 'Nov'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Dec'), 0), 'Dec'),
-
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jan'), 0),
+        'Jan'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Feb'), 0),
+        'Feb'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Mar'), 0),
+        'Mar'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Apr'), 0),
+        'Apr'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'May'), 0),
+        'May'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jun'), 0),
+        'Jun'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jul'), 0),
+        'Jul'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Aug'), 0),
+        'Aug'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Sep'), 0),
+        'Sep'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Oct'), 0),
+        'Oct'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Nov'), 0),
+        'Nov'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Dec'), 0),
+        'Dec'
+      ),
     ],
 
-    $from : new FromTable('code_master', 'code_master',
-    {
-      operator : 'LEFT',
+    $from: new FromTable('code_master', 'code_master', {
+      operator: 'LEFT',
 
-      table : 'month',
+      table: 'month',
 
-      $on : [
-
-        new BinaryExpression(new ColumnExpression('code_master', 'code'), '=', new ColumnExpression('month', 'carrierCode'))
-
-      ]
-
-    }
-
-    )
-
-  })
-
+      $on: [
+        new BinaryExpression(
+          new ColumnExpression('code_master', 'code'),
+          '=',
+          new ColumnExpression('month', 'carrierCode')
+        ),
+      ],
+    }),
+  }),
 ]
 
 // export default query.toJson()

@@ -10,17 +10,15 @@ import {
   BetweenExpression,
 } from 'node-jql'
 
-const query = new QueryDef(new Query({
-
+const query = new QueryDef(
+  new Query({
     $distinct: true,
 
-    $select : [
+    $select: [new ResultColumn(new ColumnExpression('shipment', '*'))],
 
-        new ResultColumn(new ColumnExpression('shipment', '*')),
-    ],
-
-    $from : new FromTable('shipment'),
-}))
+    $from: new FromTable('shipment'),
+  })
+)
 
 query
   .register(
@@ -32,7 +30,7 @@ query
   .register('from', 0)
   .register('to', 1)
 
-  query
+query
   .register(
     'moduleType',
     new Query({

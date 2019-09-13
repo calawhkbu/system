@@ -1,0 +1,16 @@
+{
+  "layout": "MainLayout",
+  "createdFunctions": [
+    {
+      "type": "dispatch",
+      "otherParams": {
+        "name": "auth/getMenu"
+      }
+    }
+  ],
+  "components": [
+    {
+      "is": "AdminPage"
+    }
+  ]
+}

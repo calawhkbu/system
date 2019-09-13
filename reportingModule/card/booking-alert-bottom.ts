@@ -122,11 +122,9 @@ function prepareBookingable(name: string): CreateTableJQL {
     name,
     $as: new Query({
       $select: [
-
         new ResultColumn(new ColumnExpression(name, 'id')),
         new ResultColumn(new ColumnExpression(name, 'moduleTypeCode')),
-        new ResultColumn(new ColumnExpression(name, 'bookingNo'))
-
+        new ResultColumn(new ColumnExpression(name, 'bookingNo')),
       ],
 
       $from: new FromTable(
@@ -134,11 +132,9 @@ function prepareBookingable(name: string): CreateTableJQL {
           method: 'POST',
           url: 'api/booking/query/booking',
           columns: [
-
-            { name: 'bookingId', type: 'number', $as : 'id'},
+            { name: 'bookingId', type: 'number', $as: 'id' },
             { name: 'moduleTypeCode', type: 'string' },
             { name: 'bookingNo', type: 'string' },
-
           ],
         },
         name

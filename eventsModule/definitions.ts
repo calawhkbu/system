@@ -129,7 +129,6 @@ export default {
   ],
 
   afterUpdate_booking: [
-
     {
       condition: true,
       eventName: 'create_tracking',
@@ -154,17 +153,19 @@ export default {
           {
             resultName: 'haveDiff',
             checkerFunction: (parameters: any) => {
-
-              const difference = diff(parameters.oldData, parameters.data, undefined, undefined, ['createdAt', 'createdBy', 'updatedAt', 'updatedBy'])
+              const difference = diff(parameters.oldData, parameters.data, undefined, undefined, [
+                'createdAt',
+                'createdBy',
+                'updatedAt',
+                'updatedBy',
+              ])
 
               console.log('difference')
               console.log(difference)
 
-              return (difference) ? true : false
-
-            }
+              return difference ? true : false
+            },
           },
-
         ],
       },
       afterEvent: [
@@ -182,18 +183,15 @@ export default {
           },
         },
       ],
-    }
-
+    },
   ],
 
-  fm3k_booking : [
+  fm3k_booking: [
     {
-      condition : true,
-      handlerName : 'fm3k_booking.ts'
-    }
-
-  ]
-
+      condition: true,
+      handlerName: 'fm3k_booking.ts',
+    },
+  ],
 } as {
   [eventName: string]: EventConfig[]
 }

@@ -38,7 +38,6 @@ function prepareParams(): Function {
 
     return params
   }
-
 }
 
 const query = new Query({
@@ -48,19 +47,23 @@ const query = new Query({
       'alertTypeTitle'
     ),
     new ResultColumn('alertType'),
-    new ResultColumn(new FunctionExpression('COUNT', new ColumnExpression('alert', 'alertType')), 'count'),
-    new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ColumnExpression('alert', 'primaryKey')), 'idListString')
+    new ResultColumn(
+      new FunctionExpression('COUNT', new ColumnExpression('alert', 'alertType')),
+      'count'
+    ),
+    new ResultColumn(
+      new FunctionExpression('GROUP_CONCAT', new ColumnExpression('alert', 'primaryKey')),
+      'idListString'
+    ),
   ],
   $from: new FromTable(
     {
       method: 'POST',
       url: 'api/alert/query/alert_booking',
       columns: [
-
         { name: 'alertType', type: 'string' },
         { name: 'tableName', type: 'string' },
-        { name: 'primaryKey', type: 'number' }
-
+        { name: 'primaryKey', type: 'number' },
       ],
     },
     'alert'

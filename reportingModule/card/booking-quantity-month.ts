@@ -108,9 +108,7 @@ function prepareModuleCodeTable(name: string): CreateTableJQL {
   return new CreateTableJQL({
     $temporary: true,
     name,
-    columns: [
-      new Column('moduleTypeCode', 'string'),
-    ]
+    columns: [new Column('moduleTypeCode', 'string')],
   })
 }
 
@@ -124,7 +122,6 @@ function insertModuleCodeTable(name: string): InsertJQL {
 }
 
 function prepareMonthTable(name: string): CreateTableJQL {
-
   return new CreateTableJQL({
     $temporary: true,
     name,
@@ -488,7 +485,6 @@ function prepareMonthTable(name: string): CreateTableJQL {
       $group: 'moduleTypeCode',
     }),
   })
-
 }
 
 export default [
@@ -498,32 +494,69 @@ export default [
   insertModuleCodeTable('module'),
 
   new Query({
-
     $select: [
-
       new ResultColumn(new ColumnExpression('module', 'moduleTypeCode')),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jan'), 0), 'Jan'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Feb'), 0), 'Feb'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Mar'), 0), 'Mar'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Apr'), 0), 'Apr'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'May'), 0), 'May'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jun'), 0), 'Jun'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jul'), 0), 'Jul'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Aug'), 0), 'Aug'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Sep'), 0), 'Sep'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Oct'), 0), 'Oct'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Nov'), 0), 'Nov'),
-      new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('month', 'Dec'), 0), 'Dec'),
-
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jan'), 0),
+        'Jan'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Feb'), 0),
+        'Feb'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Mar'), 0),
+        'Mar'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Apr'), 0),
+        'Apr'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'May'), 0),
+        'May'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jun'), 0),
+        'Jun'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jul'), 0),
+        'Jul'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Aug'), 0),
+        'Aug'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Sep'), 0),
+        'Sep'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Oct'), 0),
+        'Oct'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Nov'), 0),
+        'Nov'
+      ),
+      new ResultColumn(
+        new FunctionExpression('IFNULL', new ColumnExpression('month', 'Dec'), 0),
+        'Dec'
+      ),
     ],
 
     $from: new FromTable(
-      'module', new JoinClause(
+      'module',
+      new JoinClause(
         'LEFT',
         'month',
-        new BinaryExpression(new ColumnExpression('module', 'moduleTypeCode'), '=', new ColumnExpression('month', 'moduleTypeCode'))
-      ))
-
-  })
-
+        new BinaryExpression(
+          new ColumnExpression('module', 'moduleTypeCode'),
+          '=',
+          new ColumnExpression('month', 'moduleTypeCode')
+        )
+      )
+    ),
+  }),
 ]

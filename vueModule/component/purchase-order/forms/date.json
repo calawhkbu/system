@@ -1,132 +1,132 @@
 {
-  "components": [{
-    "is": "WidgetMoreForm",
-    "props": {
-      "mainKey": "Date",
-      "formProps": {
-        "z": {
-          "class": "xs-12 padding-4"
-        }
-      },
-      "fieldProps": {
-        "z": {
-          "actualOnly": "hidden",
-          "notActualOnly": ""
-        },
-        "po": {
-          "actualOnly": "",
-          "notActualOnly": "hidden"
-        },
-        "shipping": {
-          "actualOnly": "hidden",
-          "notActualOnly": ""
-        },
-        "arrival": {
-          "actualOnly": "hidden",
-          "notActualOnly": ""
-        },
-        "exitFactory": {
-          "actualOnly": "",
-          "notActualOnly": "hidden"
-        },
-        "doNotShipAfter": {
-          "actualOnly": "",
-          "notActualOnly": "hidden"
-        },
-        "delivery": {
-          "actualOnly": "hidden",
-          "notActualOnly": ""
-        }
-      },
-      "labelProps": {
-        "z": {
-          "isComponent": "v-label",
-          "i18nContext": "Widget",
-          "class": "font-110"
-        },
-        "po": {
-          "class": "font-110 blue--text"
-        },
-        "shipping": {
-          "class": "font-110 teal--text"
-        },
-        "arrival": {
-          "class": "font-110 green--text"
-        },
-        "exitFactory": {
-          "class": "font-110 brown--text"
-        },
-        "doNotShipAfter": {
-          "class": "font-110 indigo--text"
-        },
-        "delivery": {
-          "class": "font-110 pink--text"
-        }
-      },
-      "fixedKeys": [
-        "po",
-        "shipping",
-        "arrival",
-        "exitFactory",
-        "doNotShipBefore",
-        "doNotShipAfter",
-        "delivery"
-      ],
-      "alwaysShowKeys": [
-        "po",
-        "shipping",
-        "exitFactory",
-        "delivery"
-      ],
-      "canAdd": true,
-      "canAddProps": {
-        "class": "xs-12 padding-20 min-height-200 margin-auto"
-      },
-      "fields": [{
-          "class": "xs-12 md-6 {{actualOnly}}"
-        }, {
-          "label": "Widget.estimatedDate",
-          "name": "{{flex}}{{key}}Date",
-          "component": "DateTimePicker",
-          "class": "xs-12 md-6 {{actualOnly}}",
-          "props": {
-            "type": "datetime",
-            "utc": true,
-            "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
-            "useOwnFormat": true
-          }
-        }, {
-          "label": "Widget.estimatedDate",
-          "name": "{{flex}}{{key}}DateEstimated",
-          "component": "DateTimePicker",
-          "class": "xs-12 md-6 {{notActualOnly}}",
-          "props": {
-            "type": "datetime",
-            "utc": true,
-            "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
-            "useOwnFormat": true
+  "components": [
+    {
+      "is": "WidgetMoreForm",
+      "props": {
+        "mainKey": "Date",
+        "formProps": {
+          "z": {
+            "class": "xs-12 padding-4"
           }
         },
-        {
-          "label": "Widget.actualDate",
-          "name": "{{flex}}{{key}}DateActual",
-          "component": "DateTimePicker",
-          "class": "xs-12 md-6 {{notActualOnly}}",
-          "props": {
-            "type": "datetime",
-            "utc": true,
-            "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
-            "useOwnFormat": true
+        "fieldProps": {
+          "z": {
+            "actualOnly": "hidden",
+            "notActualOnly": ""
+          },
+          "po": {
+            "actualOnly": "",
+            "notActualOnly": "hidden"
+          },
+          "shipping": {
+            "actualOnly": "hidden",
+            "notActualOnly": ""
+          },
+          "arrival": {
+            "actualOnly": "hidden",
+            "notActualOnly": ""
+          },
+          "exitFactory": {
+            "actualOnly": "",
+            "notActualOnly": "hidden"
+          },
+          "doNotShipAfter": {
+            "actualOnly": "",
+            "notActualOnly": "hidden"
+          },
+          "delivery": {
+            "actualOnly": "hidden",
+            "notActualOnly": ""
           }
         },
-        {
-          "label": "Widget.remark",
-          "name": "{{flex}}{{key}}Remark",
-          "component": "v-text-field",
-          "class": "xs-12 md-12",
-          "readonlyClass": "hidden"
-        }
-      ]
+        "labelProps": {
+          "z": {
+            "isComponent": "v-label",
+            "i18nContext": "Widget",
+            "class": "font-110"
+          },
+          "po": {
+            "class": "font-110 blue--text"
+          },
+          "shipping": {
+            "class": "font-110 teal--text"
+          },
+          "arrival": {
+            "class": "font-110 green--text"
+          },
+          "exitFactory": {
+            "class": "font-110 brown--text"
+          },
+          "doNotShipAfter": {
+            "class": "font-110 indigo--text"
+          },
+          "delivery": {
+            "class": "font-110 pink--text"
+          }
+        },
+        "fixedKeys": [
+          "po",
+          "shipping",
+          "arrival",
+          "exitFactory",
+          "doNotShipBefore",
+          "doNotShipAfter",
+          "delivery"
+        ],
+        "alwaysShowKeys": ["po", "shipping", "exitFactory", "delivery"],
+        "canAdd": true,
+        "canAddProps": {
+          "class": "xs-12 padding-20 min-height-200 margin-auto"
+        },
+        "fields": [
+          {
+            "class": "xs-12 md-6 {{actualOnly}}"
+          },
+          {
+            "label": "Widget.estimatedDate",
+            "name": "{{flex}}{{key}}Date",
+            "component": "DateTimePicker",
+            "class": "xs-12 md-6 {{actualOnly}}",
+            "props": {
+              "type": "datetime",
+              "utc": true,
+              "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+              "useOwnFormat": true
+            }
+          },
+          {
+            "label": "Widget.estimatedDate",
+            "name": "{{flex}}{{key}}DateEstimated",
+            "component": "DateTimePicker",
+            "class": "xs-12 md-6 {{notActualOnly}}",
+            "props": {
+              "type": "datetime",
+              "utc": true,
+              "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+              "useOwnFormat": true
+            }
+          },
+          {
+            "label": "Widget.actualDate",
+            "name": "{{flex}}{{key}}DateActual",
+            "component": "DateTimePicker",
+            "class": "xs-12 md-6 {{notActualOnly}}",
+            "props": {
+              "type": "datetime",
+              "utc": true,
+              "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+              "useOwnFormat": true
+            }
+          },
+          {
+            "label": "Widget.remark",
+            "name": "{{flex}}{{key}}Remark",
+            "component": "v-text-field",
+            "class": "xs-12 md-12",
+            "readonlyClass": "hidden"
+          }
+        ]
+      }
     }
-  }]
+  ]
 }

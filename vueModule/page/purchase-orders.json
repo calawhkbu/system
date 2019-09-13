@@ -1,69 +1,76 @@
 {
   "layout": "MainLayout",
-  "components": [{
-    "is": "TableTool",
-    "props": {
-      "reportingKey": "purchase-orders",
-      "jql": "purchase-orders",
-      "urlFormat": "/purchase-orders{{ id|if('/', '') }}{{ id }}",
-      "hasReports": true,
-      "showFilterBar": true,
-      "enableShare": true,
-      "enableSetting": true,
-      "newReport": {
-        "filters": {
-          "isActive": true
-        },
-        "configurations": {
-          "i18nContext": "PurchaseOrderPage",
-          "clickable": true,
-          "draggable": true,
-          "sorting": {
-            "direction": "DESC",
-            "key": "updatedAt"
+  "components": [
+    {
+      "is": "TableTool",
+      "props": {
+        "reportingKey": "purchase-orders",
+        "jql": "purchase-orders",
+        "urlFormat": "/purchase-orders{{ id|if('/', '') }}{{ id }}",
+        "hasReports": true,
+        "showFilterBar": true,
+        "enableShare": true,
+        "enableSetting": true,
+        "newReport": {
+          "filters": {
+            "isActive": true
           },
-          "pagination": {
-            "current": 0,
-            "perPage": 20
+          "configurations": {
+            "i18nContext": "PurchaseOrderPage",
+            "clickable": true,
+            "draggable": true,
+            "sorting": {
+              "direction": "DESC",
+              "key": "updatedAt"
+            },
+            "pagination": {
+              "current": 0,
+              "perPage": 20
+            }
           }
-        }
-      },
-      "fieldOptions": [{
-          "key": "id",
-          "sql": "purchase_order.id",
-          "hidden": true
         },
-        {
-          "key": "createdAt",
-          "sql": "purchase_order.createdAt",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "updatedAt",
-          "sql": "purchase_order.updatedAt",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        }
-      ],
-      "filters": [],
-      "clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/purchase-order/{{id}}"
-        }
-      },
-      "icons": [{
-        "icon": "add",
-        "click": [{
+        "fieldOptions": [
+          {
+            "key": "id",
+            "sql": "purchase_order.id",
+            "hidden": true
+          },
+          {
+            "key": "createdAt",
+            "sql": "purchase_order.createdAt",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "updatedAt",
+            "sql": "purchase_order.updatedAt",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          }
+        ],
+        "filters": [],
+        "clickFunction": {
           "type": "router",
           "otherParams": {
             "func": "push",
-            "path": "purchase-order/create"
+            "path": "/purchase-order/{{id}}"
           }
-        }]
-      }]
+        },
+        "icons": [
+          {
+            "icon": "add",
+            "click": [
+              {
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "purchase-order/create"
+                }
+              }
+            ]
+          }
+        ]
+      }
     }
-  }]
+  ]
 }
