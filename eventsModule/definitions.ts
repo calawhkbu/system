@@ -83,7 +83,6 @@ export default {
   ],
 
   afterCreate_booking: [
-
     // warning: not using !!!!!!!
     // create alert of new Booking
 
@@ -129,11 +128,9 @@ export default {
         },
       },
     },
-
   ],
 
   afterUpdate_booking: [
-
     {
       condition: true,
       eventName: 'create_tracking',
@@ -160,21 +157,22 @@ export default {
           {
             resultName: 'haveDiff',
             checkerFunction: (parameters: any) => {
-
-              const difference = diff(parameters.oldData, parameters.data, undefined, undefined, ['createdAt', 'createdBy', 'updatedAt', 'updatedBy'])
+              const difference = diff(parameters.oldData, parameters.data, undefined, undefined, [
+                'createdAt',
+                'createdBy',
+                'updatedAt',
+                'updatedBy',
+              ])
 
               // console.log('difference')
               // console.log(difference)
 
-              return (difference) ? true : false
-
-            }
+              return difference ? true : false
+            },
           },
-
         ],
       },
       afterEvent: [
-
         // warning: not using !!!!!!!
         // // update personId / create Invitation
         // {
@@ -185,7 +183,6 @@ export default {
         //   }
         // },
         {
-
           eventName: 'fill_template',
           previousParameters: {
             tableName: 'booking',
@@ -199,18 +196,15 @@ export default {
           },
         },
       ],
-    }
-
+    },
   ],
 
-  fm3k_booking : [
+  fm3k_booking: [
     {
-      condition : true,
-      handlerName : 'fm3k_booking'
-    }
-
-  ]
-
+      condition: true,
+      handlerName: 'fm3k_booking',
+    },
+  ],
 } as {
   [eventName: string]: EventConfig[]
 }

@@ -19,7 +19,6 @@ class CreateAlertEvent extends BaseEvent {
   }
 
   public async mainFunction(parameters: any) {
-
     const tableName = parameters.tableName
     const primaryKey = parameters.primaryKey
     const alertType = parameters.alertType
@@ -40,7 +39,7 @@ class CreateAlertEvent extends BaseEvent {
 }
 
 export default {
-  execute: async(
+  execute: async (
     parameters: any,
     eventConfig: EventConfig,
     repo: string,

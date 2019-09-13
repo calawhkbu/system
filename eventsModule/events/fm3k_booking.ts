@@ -21,7 +21,6 @@ class Fm3kBookingEvent extends BaseEvent {
   }
 
   public async mainFunction(parameters: any) {
-
     const booking = parameters.data as Booking
 
     const outboundService = this.allService['OutboundService'] as OutboundService
@@ -34,14 +33,13 @@ class Fm3kBookingEvent extends BaseEvent {
     console.log(response)
 
     return {
-        response: 'response',
+      response: 'response',
     }
-
   }
 }
 
 export default {
-  execute: async(
+  execute: async (
     parameters: any,
     eventConfig: EventConfig,
     repo: string,

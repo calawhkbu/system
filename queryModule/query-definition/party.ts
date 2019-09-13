@@ -13,17 +13,14 @@ import {
   ExistsExpression,
 } from 'node-jql'
 
-
 const query = new QueryDef(
   new Query({
     $distinct: true,
 
-    $select : [
-
+    $select: [
       new ResultColumn(new ColumnExpression('party', '*')),
       new ResultColumn(new ColumnExpression('party', 'id'), 'partyId'),
       new ResultColumn(new ColumnExpression('party_type', 'type')),
-
     ],
 
     $from: new FromTable('party', {
@@ -41,11 +38,7 @@ const query = new QueryDef(
 query.register('erpCode', {
   expression: new FunctionExpression(
     'JSON_UNQUOTE',
-    new FunctionExpression(
-      'JSON_EXTRACT',
-      new ColumnExpression('party', 'thirdPartyCode'),
-      '$.erp'
-    )
+    new FunctionExpression('JSON_EXTRACT', new ColumnExpression('party', 'thirdPartyCode'), '$.erp')
   ),
   $as: 'erpCode',
 })

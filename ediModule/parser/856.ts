@@ -1,4 +1,3 @@
-
 import { BaseEdiParser } from 'modules/edi/baseEdiParser'
 import { CodeMasterService } from 'modules/sequelize/codeMaster/service'
 import { ProductDbService } from 'modules/sequelize/product/service'
@@ -256,25 +255,25 @@ export const schedulerConfig = {
       path: '/home/ec2-user/ftptest/',
       extensions: ['edi', 'txt'],
       storageConfig: {
-  
+
         handlerName : 'sftp',
         config: {
-  
+
             os : 'linux',
-  
+
             host: '13.229.70.248',
             port: '22',
             username: 'ec2-user',
-  
+
             privateKey : `privateKey`
           }
       }
     },
     // the oubound name after parsing the edi
     outbound : 'someOutbound'
-  
+
   } as EdiSchedulerConfig
-  
+
 export default class EdiParser856 extends BaseEdiParser {
   constructor(
     protected readonly partyGroupCode: string,
@@ -285,167 +284,173 @@ export default class EdiParser856 extends BaseEdiParser {
     super(partyGroupCode, type, formatJson, allService)
   }
   async import(base64EdiString: string): Promise<any> {
-    console.log(`import type  : ${this.type}`)
-    const response = super.import(base64EdiString)
+    // console.log(`import type  : ${this.type}`)
+      const response = await super.import(base64EdiString)
 
-        // const products = []
+      const ediJson = response['jsonData']
+      // hardcode
+      const user = { username : 'ediImport' , selectedPartyGroup : { code : this.partyGroupCode } } as JwtPayload
 
-        // const ediJson = response['jsonData']
+      const poList = [] as PurchaseOrder[]
 
-        // // hardcode
-        // const user = { username : 'ediImport' , selectedPartyGroup : { code : partyGroupCode } } as JwtPayload
+      const products = []
 
-        // const poList = [] as PurchaseOrder[]
-        // for (const ST of ediJson['ST']) {
-        //   const po: PurchaseOrder = {
-        //     flexData: {
-        //       data: {},
-        //     },
-        //   } as PurchaseOrder
+      // console.log(_.get(response, 'ST[0].BCH'))
 
-        //   const poItemList = [] as PurchaseOrderItem[]
+      if (!ediJson)
+      {
+        return ediJson
+      }
 
-        //   const missingDateName1 = 'ediCreated'
-        //   po.flexData.data[missingDateName1 + 'DateEstimated'] = null
-        //   console.log(
-        //     `Time: ${moment(ediJson['ISA']['createdDate'] + ' ' + ediJson['ISA']['createdTime'])}`
-        //   )
-        //   po.flexData.data[missingDateName1 + 'DateActual'] = moment(
-        //     ediJson['ISA']['createdDate'] + ' ' + ediJson['ISA']['createdTime']
-        //   )
+      if (Array.isArray(ediJson['ST']))
+      {
+        for (const ST of ediJson['ST']) {
+          const po: PurchaseOrder = {
+            flexData: {
+              data: {},
+            },
+          } as PurchaseOrder
 
-        //   const missingDateName2 = 'dataInterchange'
-        //   po.flexData.data[missingDateName2 + 'DateEstimated'] = null
-        //   po.flexData.data[missingDateName2 + 'DateActual'] = moment(
-        //     ediJson['ISA']['createdDate'] + ' ' + ediJson['ISA']['createdTime']
-        //   )
+          const poItemList = [] as PurchaseOrderItem[]
+          po.edi = true
+          po.flexData.data['moreParty'] = []
+          po.flexData.data['moreDate'] = []
 
-        //   po.poNo = ST['BEG']['purchaseOrderNumber']
-        //   po.poDate = moment(ST['BEG']['purchaseOrderDate']).toDate()
-        //   po.dontShipBeforeDate = moment(ST['DTM']['doNotShipBefore']).toDate()
-        //   po.dontShipAfterDate = moment(ST['DTM']['doNotDeliverAfter']).toDate()
-        //   po.exitFactoryDateActual = moment(
-        //     ST['DTM']['requestedShipDateFromSupplierWarehouse']
-        //   ).toDate()
+          const missingDateName1 = 'ediCreated'
+          const missingDateName2 = 'dataInterchange'
+          if (_.get(ediJson, 'ISA.createdDate') && _.get(ediJson, 'ISA.createdTime'))
+          {
+            po.flexData.data[`${missingDateName1}DateEstimated`] = null
+            po.flexData.data[`${missingDateName1}DateActual`] = moment.utc(
+              `${_.get(ediJson, 'ISA.createdDate')} ${_.get(ediJson, 'ISA.createdTime')}`
+            )
 
-        //   // console.log("Value:"+ST['N1'][i]['organizationIdentifier'])
-        //   // console.log(`True or False: ${ST['N1'][i]['organizationIdentifier']==='Ship from'}`)
-        //   // console.log(`Length ${ST['N1'].length}`)
+            po.flexData.data[`${missingDateName2}DateEstimated`] = null
+            po.flexData.data[`${missingDateName2}DateActual`] = moment.utc(
+              `${_.get(ediJson, 'ISA.createdDate')} ${_.get(ediJson, 'ISA.createdTime')}`
+          )
+          }
+          po.flexData.data['moreDate'].push(missingDateName1)
+          po.flexData.data['moreDate'].push(missingDateName2)
+          po['purpose'] = _.get(ST, 'BCH.transactionSetPurpose')
+          po['poNo'] = _.get(ST, 'BCH.purchaseOrderNumber')
+          if (_.get(ST, 'BCH.purchaseOrderDate'))
+          {
+            po.poDate = moment.utc(_.get(ST, 'BCH.purchaseOrderDate')).toDate()
+          }
+          if (_.get(ST, 'BCH.poChangeRequestDate'))
+          {
+            po.flexData.data['changeRequestDate'] =  moment.utc(_.get(ST, 'BCH.poChangeRequestDate')).toDate()
+            po.flexData.data['moreDate'].push('changeRequestDate')
+          }
+          if (_.get(ST, 'DTM.doNotShipBefore'))
+          {
+            po.dontShipBeforeDate = moment.utc(ST['DTM']['doNotShipBefore']).toDate()
+          }
+          if (_.get(ST, 'DTM.doNotDeliverAfter')){
+            po.dontShipAfterDate = moment.utc(ST['DTM']['doNotDeliverAfter']).toDate()
+          }
+          if (_.get(ST, 'DTM.requestedShipDateFromSupplierWarehouse')){
+            po.exitFactoryDateActual = moment.utc(_.get(ST, 'DTM.requestedShipDateFromSupplierWarehouse')).toDate()
+          }
+          // console.log("Value:"+ST['N1'][i]['organizationIdentifier'])
+          // console.log(`True or False: ${ST['N1'][i]['organizationIdentifier']==='Ship from'}`)
+          // console.log(`Length ${ST['N1'].length}`)
+          if (Array.isArray(ST['N1']))
+          {
+            for (const N1 of ST['N1']) {
+              // console.log("Value:"+N1['organizationIdentifier'])
 
-        //   for (const N1 of ST['N1']) {
-        //     // console.log("Value:"+N1['organizationIdentifier'])
+              let name
 
-        //     let name
-        //     const city = await (this.allService.LocationService as LocationService).findOne(
-        //       {
-        //         where: {
-        //           name: N1['N4']['cityName'],
-        //         },
-        //       },
-        //       user
-        //     )
+              if (_.get(N1, 'organizationIdentifier') === 'Ship From') {
+                name = 'shipper'
+                po[`${name}PartyCode`] = _.get(N1, 'identificationCode')
+                po[`${name}PartyName`] = _.get(N1, 'name')
+              } else if (_.get(N1, 'organizationIdentifier') === 'Ship To') {
+                name = 'shipTo'
+                const index = _.get(N1, 'name').indexOf('#')
+                if (index > 0)
+                {
+                  po[`${name}PartyCode`] = `${_.get(N1, 'name').substr(index + 1)} ${_.get(N1, 'identificationCode').substr(0, 9)}`
+                  po[`${name}PartyName`] = _.get(N1, 'name').substr(0, index)
+                }
+                else
+                {
+                  po[`${name}PartyCode`] = _.get(N1, 'identificationCode').substr(0, 9)
+                  po[`${name}PartyName`] = _.get(N1, 'name')
+                }
+              } else {
+                name = _.get(N1, 'organizationIdentifier')
+                po.flexData.data[`${name}PartyCode`] = _.get(N1, 'identificationCode')
+                po.flexData.data[`${name}PartyName`] = _.get(N1, 'name')
+                po.flexData.data[`${name}PartyAddress1`] =  _.get(N1, 'N3.addressInformation')
+                po.flexData.data[`${name}PartyAddress1`] = _.get(N1, 'N3.additionalAddressInformation')
+                po.flexData.data[`${name}PartyCityCode`] = _.get(N1, 'N4.cityName')
+                po.flexData.data[`${name}PartyStateCode`] = _.get(N1, 'N4.stateOrProvinceCode')
+                po.flexData.data[`${name}PartyZip`] = _.get(N1, 'N4.postalCode')
+                po.flexData.data[`${name}PartyCountryCode`] = _.get(N1, 'N4.countryCode')
+                po.flexData.data['moreParty'].push(name)
+                continue
+              }
+              po[`${name} PartyAddress1`] = _.get(N1, 'N3.addressInformation')
+              po[`${name} PartyAddress2`] = _.get(N1, 'N3.additionalAddressInformation')
+              po[`${name}PartyCityCode`] = _.get(N1, 'N4.cityName')
+              po[`${name}PartyStateCode`] = _.get(N1, 'N4.stateOrProvinceCode')
+              po[`${name}PartyZip`] = _.get(N1, 'N4.postalCode')
+              po[`${name}PartyCountryCode`] = _.get(N1, 'N4.countryCode')
+            }
+          }
+          if (Array.isArray(ST['POC']))
+          {
+            for (const POC of ST['POC'])
+            {
+              const poItem = {} as PurchaseOrderItem
+              const product = {} as Product
+                // console.log(`check product type ${typeof product}`)
+              product['subLine'] = _.get(POC, 'SLN.assignedIdentification')
+              product['poLineNo'] = null
+              product['price'] = _.get(POC, 'unitPrice')
+              product['priceUnit'] = _.get(POC, 'basisOfUnitPrice')
+              product['sea'] = null
+              product['style'] = null
+              product['styleDesc'] = _.get(POC, 'PID.description', '').substr(0, 20).replace(/^[ ]+|[ ]+$/g, '')
+              product['piece'] = null
+              product['pieceDesc'] = _.get(POC, 'PID.description', '').substr(40, 20).replace(/^[ ]+|[ ]+$/g, '')
+              product['color'] = null
+              product['colorDesc'] =  _.get(POC, 'PID.description', '').substr(20, 20).replace(/^[ ]+|[ ]+$/g, '')
+              product['pack'] = null
+              product['packing'] = ''
+              product['size'] = _.get(POC, 'SLN.productId3')
+              product['upcen'] = _.get(POC, 'SLN.productId2')
+              poItem.itemKey = _.get(POC, 'assignedIdentification')
+              poItem['change'] = _.get(POC, 'lineItemChange')
+              poItem['perPackageQuantity'] =  _.get(POC, 'PO4.pack')
+              poItem.quantity = _.get(POC, 'quantityOrdered')
+              poItem.quantityUnit = _.get(POC, 'unitOfMeasureCode')
+              poItem['quantityChange'] = _.get(POC, 'quantityChange')
+              poItem.volume = _.get(POC, 'PO4.grossVolumePerPack')
+              poItem.htsCode = _.get(POC, 'SLN.productId2')
+              poItem.product = product
+              poItemList.push(poItem)
+            }
+          }
 
-        //     if (N1['organizationIdentifier'] === 'Ship From') {
-        //       name = 'shipper'
-        //     } else if (N1['organizationIdentifier'] === 'Ship To') {
-        //       name = 'shipTo'
-        //     } else {
-        //       name = N1['organizationIdentifier']
-        //       po.flexData.data[name + 'PartyCode'] = N1['identificationCode']
-        //       po.flexData.data[name + 'PartyName'] = N1['name']
-        //       po.flexData.data[name + 'PartyAddress'] =
-        //         N1['N3']['addressInformation'] + ' ' + N1['N3']['additionalAddressInformation']
-        //       if (typeof city !== 'undefined') {
-        //         po.flexData.data[name + 'PartyCityCode'] = city.locationCode
-        //       }
-        //       po.flexData.data[name + 'PartyStateCode'] = N1['N4']['stateOrProvinceCode']
-        //       po.flexData.data[name + 'PartyZip'] = N1['N4']['postalCode']
-        //       po.flexData.data[name + 'PartyCountryCode'] = N1['N4']['countryCode']
-        //       po.flexData.data['moreParty'] = []
-        //       po.flexData.data['moreParty'].push(name)
-        //       continue
-        //     }
+          po.purchaseOrderItems = poItemList
 
-        //     po[name + 'PartyCode'] = N1['identificationCode']
-        //     po[name + 'PartyName'] = N1['name']
-        //     po[name + 'PartyAddress'] =
-        //       N1['N3']['addressInformation'] + ' ' + N1['N3']['additionalAddressInformation']
-        //     if (typeof city !== 'undefined') {
-        //       po[name + 'PartyCityCode'] = city.locationCode
-        //     }
-        //     po[name + 'PartyStateCode'] = N1['N4']['stateOrProvinceCode']
-        //     po[name + 'PartyZip'] = N1['N4']['postalCode']
-        //     po[name + 'PartyCountryCode'] = N1['N4']['countryCode']
-        //   }
-        //   po.flexData.data['moreDate'] = []
-        //   po.flexData.data['moreDate'].push(missingDateName1)
-        //   po.flexData.data['moreDate'].push(missingDateName2)
+          po.errors = response['errorList']
 
-        //   for (const PO1 of ST['PO1']) // k<ST['PO1'].length
-        //   {
-        //     const poItem = {} as PurchaseOrderItem
-        //     const ProductDefinitionField1 = {} as ProductDefinitionField
-        //     const ProductDefinitionField2 = {} as ProductDefinitionField
-        //     // console.log(`check product code ${PO1['productId'].substr(3,11)}`)
-        //     let product = products.find(
-        //       product => product.productCode === PO1['productId'].substr(3, 12).trim()
-        //     )
-
-        //     // console.log(`producttype: ${typeof product}`)
-
-        //     if (!product) {
-        //       product = await (this.allService.ProductDbService as ProductDbService).findOne(
-        //         {
-        //           where: {
-        //             productCode: PO1['productId'].substr(3, 12).trim(),
-        //           },
-        //         },
-        //         user
-        //       )
-        //       // console.log(`check product type ${typeof product}`)
-        //       if (!product) {
-        //         product = {} as Product
-        //         product.productCode = PO1['productId'].substr(3, 11)
-        //         const descriptionName = PO1['PID'][0]['description']
-        //         // console.log(`Description: ${descriptionName}`)
-        //         const nameIndex = descriptionName.indexOf(' ')
-        //         product.name = descriptionName.substr(0, nameIndex)
-        //         ProductDefinitionField1.fieldName = 'colour'
-        //         ProductDefinitionField1.type = 'string'
-        //         ProductDefinitionField1.values = PO1['productId'].substr(15, 3)
-        //         // console.log(`ProductDefinitionField: ${ProductDefinitionField1.values}`)
-        //         // console.log(`Type: ${typeof product.definition}`)
-
-        //         product.definition = []
-        //         product.definition.push(ProductDefinitionField1)
-
-        //         ProductDefinitionField2.fieldName = 'material'
-        //         ProductDefinitionField2.type = 'string'
-        //         ProductDefinitionField2.values = PO1['productId'].substr(18, 6)
-        //         // console.log(`ProductDefinitionField: ${ProductDefinitionField2.values}`)
-        //         product.definition.push(ProductDefinitionField2)
-        //       } else {
-        //         products.push(product)
-        //       }
-        //     }
-
-        //     poItem.quantity = PO1['quantityOrdered']
-        //     poItem.quantityUnit = PO1['unitOfMeasureCode']
-        //     poItem.htsCode = PO1['SLN']['productId2']
-
-        //     poItem.product = product
-        //     poItemList.push(poItem)
-        //   }
-
-        //   po.purchaseOrderItems = poItemList
-
-        //   poList.push(po)
-        // }
-    return response
+          poList.push(po)
+        }
+      }
+    return poList
   }
   async export(entityJSON: any): Promise<any> {
-    console.log(`export type  : ${this.type}`)
+    console.log(`export type  : ${entityJSON}`)
+    console.log('=========================')
     const result = await super.export(entityJSON)
+
+    console.log('.........................')
     return result
   }
 
