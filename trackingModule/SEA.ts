@@ -82,9 +82,15 @@ export default class BaseAirTrackingService {
         if (oldTracking) {
           if (oldTracking.batchRetry > trackingModule.retryTime.sea) {
             if (trackingReference.mode === 'masterNo') {
-              await this.trackingReferenceService.save({ id: trackingReference.id, mode: 'soNo' } as TrackingReference)
+              await this.trackingReferenceService.save({
+                id: trackingReference.id,
+                mode: 'soNo',
+              } as TrackingReference)
             } else if (trackingReference.mode === 'soNo') {
-              await this.trackingReferenceService.save({ id: trackingReference.id, mode: 'containerNo' } as TrackingReference)
+              await this.trackingReferenceService.save({
+                id: trackingReference.id,
+                mode: 'containerNo',
+              } as TrackingReference)
             }
             return
           }

@@ -61,10 +61,6 @@
   },
   "baseDetailProps": {
     "showCargoOrContainer": true,
-    "subTitleKeys": [
-      "statusDescription",
-      "statusPlace",
-      "pieces"
-    ]
+    "subTitleKeys": ["statusDescription", "statusPlace", "pieces"]
   }
 }

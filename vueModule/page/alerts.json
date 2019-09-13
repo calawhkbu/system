@@ -1,67 +1,70 @@
 {
   "layout": "MainLayout",
-  "components": [{
-    "is": "TableTool",
-    "props": {
-      "reportingKey": "alerts",
-      "jql": "alerts",
-      "urlFormat": "/alerts{{ id|if('/', '') }}{{ id }}",
-      "hasReports": false,
-      "showFilterBar": true,
-      "enableShare": true,
-      "enableSetting": true,
-      "newReport": {
-        "filters": {
-          "isActive": true
-        },
-        "configurations": {
-          "i18nContext": "Alert",
-          "clickable": true,
-          "draggable": true,
-          "sorting": {
-            "direction": "DESC",
-            "key": "alert.updatedAt"
+  "components": [
+    {
+      "is": "TableTool",
+      "props": {
+        "reportingKey": "alerts",
+        "jql": "alerts",
+        "urlFormat": "/alerts{{ id|if('/', '') }}{{ id }}",
+        "hasReports": false,
+        "showFilterBar": true,
+        "enableShare": true,
+        "enableSetting": true,
+        "newReport": {
+          "filters": {
+            "isActive": true
           },
-          "pagination": {
-            "current": 0,
-            "perPage": 20
+          "configurations": {
+            "i18nContext": "Alert",
+            "clickable": true,
+            "draggable": true,
+            "sorting": {
+              "direction": "DESC",
+              "key": "alert.updatedAt"
+            },
+            "pagination": {
+              "current": 0,
+              "perPage": 20
+            }
           }
-        }
-      },
-      "fieldOptions": [{
-          "key": "tableName",
-          "sql": "alert.tableName",
-          "hidden": true
         },
-        {
-          "key": "primaryKey",
-          "sql": "alert.primaryKey",
-          "hidden": true
+        "fieldOptions": [
+          {
+            "key": "tableName",
+            "sql": "alert.tableName",
+            "hidden": true
+          },
+          {
+            "key": "primaryKey",
+            "sql": "alert.primaryKey",
+            "hidden": true
+          },
+          {
+            "key": "alertCategory",
+            "i18nContext": "Alert"
+          },
+          {
+            "key": "alertType",
+            "i18nContext": "Alert",
+            "sql": "concat(alert.alertType, 'Title')"
+          },
+          {
+            "key": "alertContent",
+            "i18nContext": "Alert",
+            "sql": "IFNULL(JSON_UNQUOTE(JSON_EXTRACT(flex_data.data, '$.customMessage')), concat(alert.alertType, 'Message'))"
+          }
+        ],
+        "filters": [],
+        "clickFunction": {
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "/booking/{{id}}"
+          }
         },
-        {
-          "key": "alertCategory",
-          "i18nContext": "Alert"
-        },
-        {
-          "key": "alertType",
-          "i18nContext": "Alert",
-          "sql": "concat(alert.alertType, 'Title')"
-        },
-        {
-          "key": "alertContent",
-          "i18nContext": "Alert",
-          "sql": "IFNULL(JSON_UNQUOTE(JSON_EXTRACT(flex_data.data, '$.customMessage')), concat(alert.alertType, 'Message'))"
-        }
-      ],
-      "filters": [],
-      "clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/booking/{{id}}"
-        }
-      },
-      "icons": []
+        "icons": []
+      }
     }
-  }]
+  ]
 }

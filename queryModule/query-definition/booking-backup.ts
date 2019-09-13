@@ -18,8 +18,7 @@ import {
 
 const query = new QueryDef(
   new Query({
-
-    $select : [
+    $select: [
       new ResultColumn(new ColumnExpression('booking', '*')),
 
       // avoid id being overwritten
@@ -94,13 +93,16 @@ const query = new QueryDef(
         table: new FromTable({
           table: new Query({
             $select: [
-              new ResultColumn(new ColumnExpression('booking_container', 'bookingId'), 'booking_container_bookingId'),
+              new ResultColumn(
+                new ColumnExpression('booking_container', 'bookingId'),
+                'booking_container_bookingId'
+              ),
               new ResultColumn(
                 new FunctionExpression(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'containerTypeCode'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'containerTypeCode'
@@ -110,7 +112,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'soNo'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'soNo'
@@ -120,7 +122,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'sealNo'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'sealNo'
@@ -172,7 +174,10 @@ const query = new QueryDef(
         table: new FromTable({
           table: new Query({
             $select: [
-              new ResultColumn(new ColumnExpression('booking_popacking', 'bookingId'), 'booking_popacking_bookingId'),
+              new ResultColumn(
+                new ColumnExpression('booking_popacking', 'bookingId'),
+                'booking_popacking_bookingId'
+              ),
               new ResultColumn(
                 new FunctionExpression('SUM', new ColumnExpression('booking_popacking', 'volume')),
                 'volume'
@@ -232,13 +237,16 @@ const query = new QueryDef(
         table: new FromTable({
           table: new Query({
             $select: [
-              new ResultColumn(new ColumnExpression('booking_reference', 'bookingId'), 'booking_reference_bookingId'),
+              new ResultColumn(
+                new ColumnExpression('booking_reference', 'bookingId'),
+                'booking_reference_bookingId'
+              ),
               new ResultColumn(
                 new FunctionExpression(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_reference', 'refName'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'refName'
@@ -248,7 +256,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_reference', 'refDescription'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'refDescription'

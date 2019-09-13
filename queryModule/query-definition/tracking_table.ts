@@ -8,9 +8,10 @@ import {
   Query,
 } from 'node-jql'
 
-const query = new QueryDef(new Query({
-  $from: new FromTable({
-    table: `
+const query = new QueryDef(
+  new Query({
+    $from: new FromTable({
+      table: `
     (SELECT \`tracking_reference\`.*, \`masterNo\` AS \`trackingNo\`, 'masterNo' AS \`type\`
     FROM \`tracking_reference\`
     UNION
@@ -20,22 +21,23 @@ const query = new QueryDef(new Query({
     SELECT  \`tracking_reference\`.* , \`containerTable\`.\`trackingNo\`, 'containerNo' as \`type\`
     FROM \`tracking_reference\`,  JSON_TABLE(\`containerNo\`, "$[*]" COLUMNS (\`trackingNo\` VARCHAR(100) PATH "$")) \`containerTable\`)
     `,
-    $as: 'tracking_reference',
-    joinClauses: [
-      new JoinClause(
-        'LEFT',
-        'tracking',
-        new BinaryExpression(
+      $as: 'tracking_reference',
+      joinClauses: [
+        new JoinClause(
+          'LEFT',
+          'tracking',
           new BinaryExpression(
-            new ColumnExpression('tracking', 'trackingNo'),
-            '=',
-            new ColumnExpression('tracking_reference', 'trackingNo'),
+            new BinaryExpression(
+              new ColumnExpression('tracking', 'trackingNo'),
+              '=',
+              new ColumnExpression('tracking_reference', 'trackingNo')
+            )
           )
-        )
-      )
-    ]
+        ),
+      ],
+    }),
   })
-}))
+)
 
 query
   .register(
@@ -50,7 +52,10 @@ query
   .register(
     'partyGroupCode',
     new Query({
-      $where: new BinaryExpression(new ColumnExpression('tracking_reference', 'partyGroupCode'), '='),
+      $where: new BinaryExpression(
+        new ColumnExpression('tracking_reference', 'partyGroupCode'),
+        '='
+      ),
     })
   )
   .register('value', 0)

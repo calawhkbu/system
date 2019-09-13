@@ -12,17 +12,15 @@ import {
   InExpression,
 } from 'node-jql'
 
-const query = new QueryDef(new Query({
+const query = new QueryDef(
+  new Query({
+    $distinct: true,
 
-  $distinct: true,
+    $select: [new ResultColumn(new ColumnExpression('shipment', '*'))],
 
-  $select: [
-
-    new ResultColumn(new ColumnExpression('shipment', '*')),
-  ],
-
-  $from: new FromTable('shipment'),
-}))
+    $from: new FromTable('shipment'),
+  })
+)
 
 // use houseNo as primarykey list
 query

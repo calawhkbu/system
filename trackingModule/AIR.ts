@@ -62,7 +62,9 @@ export default class BaseAirTrackingService {
     }
     try {
       for (const trackingNo of trackingNos) {
-        const oldTracking = await this.trackingService.findOne({ where: { source: 'YUNDANG', trackingNo } })
+        const oldTracking = await this.trackingService.findOne({
+          where: { source: 'YUNDANG', trackingNo },
+        })
         if (oldTracking) {
           if (oldTracking.batchRetry > trackingModule.retryTime.air) {
             throw new Error('Incorrect tracking no')
@@ -70,9 +72,18 @@ export default class BaseAirTrackingService {
           if (oldTracking.isClosed && oldTracking.isClosed === 'true') {
             throw new Error('CLOSED')
           }
-          await this.get(trackingNo, trackingReference.carrierCode, trackingReference.carrierCode2, oldTracking)
+          await this.get(
+            trackingNo,
+            trackingReference.carrierCode,
+            trackingReference.carrierCode2,
+            oldTracking
+          )
         } else {
-          await this.register(trackingNo, trackingReference.carrierCode, trackingReference.carrierCode2)
+          await this.register(
+            trackingNo,
+            trackingReference.carrierCode,
+            trackingReference.carrierCode2
+          )
         }
       }
       return true

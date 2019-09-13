@@ -8,7 +8,6 @@ export default {
   },
 
   requestHandler: (headers: any, body: any) => {
-
     return {
       headers: {
         ...headers,
