@@ -8,7 +8,7 @@ import { PurchaseOrderItem } from 'models/main/purchaseOrderItem'
 import { LocationService } from 'modules/sequelize/location/service'
 import { ProductDefinitionField, Product } from 'models/main/product'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
-import { EdiSchedulerConfig, EdiFormatJson } from 'modules/edi/service'
+import { EdiSchedulerConfig, EdiFormatJson } from 'modules/edi/interface'
 import { SubQueryDef } from 'classes/query/SubQueryDef'
 
 const moment = require('moment')
@@ -1791,29 +1791,25 @@ export const formatJson = {
 
 export const schedulerConfig = {
   active: true,
-
   schedule: '0 * * ? * *',
+  ediFile: {
+    path: '/home/ec2-user/ftptest/',
+    extensions: ['edi', 'txt'],
+    storageConfig: {
 
-  // very important !!!!!! must use absolute path and end with slash
-  searchPath: '/home/ec2-user/ftptest/',
+      handlerName : 'sftp',
+      config: {
 
-  searchExtension: ['edi', 'txt'],
+          os : 'linux',
 
-  // searchPath : 'C:\\home\\ec2-user\\ftptest\\',
+          host: '13.229.70.248',
+          port: '22',
+          username: 'ec2-user',
 
-  searchStorage: {
-    handlerName: 'sftp',
-    config: {
-      os: 'linux',
-
-      host: '13.229.70.248',
-      port: '22',
-      username: 'ec2-user',
-
-      privateKey: `privateKey`,
-    },
+          privateKey : `privateKey`
+        }
+    }
   },
-
   // the oubound name after parsing the edi
   outbound: 'someOutbound',
 } as EdiSchedulerConfig

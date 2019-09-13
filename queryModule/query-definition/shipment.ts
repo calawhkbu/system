@@ -10,6 +10,7 @@ import {
   BetweenExpression,
   FunctionExpression,
   InExpression,
+  GroupBy,
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -68,5 +69,13 @@ query
     })
   )
   .register('value', 0)
+
+  query
+  .register(
+    'chargeableWeightTotal',
+
+    new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('shipment', 'chargeableWeight')), 'chargeableWeightTotal')
+
+  )
 
 export default query
