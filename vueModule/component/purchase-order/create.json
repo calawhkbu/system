@@ -3,7 +3,6 @@
   "components": [
     {
       "is": "DynamicComponent",
-      "if": "\n        const setting = context.$store.state.widget.componentSetting || {}\n        return !setting.next\n      ",
       "props": {
         "class": "grid full-width",
         "components": [
@@ -46,14 +45,17 @@
                     "i18nKey": "quickCreate"
                   }
                 }
-              ]
-            }
+              }]
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }]
           },
           {
-            "is": "DynamicComponent"
-          },
-          {
-            "is": "DynamicComponent",
+            "is": "I18nText",
             "props": {
               "class": "flex absolute-bottomright full-width",
               "components": [
@@ -102,8 +104,7 @@
       }
     },
     {
-      "is": "DynamicComponent",
-      "if": "\n        const setting = context.$store.state.widget.componentSetting || {}\n        return setting.next\n      ",
+      "is": "WidgetStepper",
       "props": {
         "class": "grid full-width",
         "components": [

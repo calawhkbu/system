@@ -1,0 +1,91 @@
+{
+  "class": "grid full-width",
+  "components": [{
+      "is": "DynamicComponent",
+      "props": {
+        "class": "flex align-item-center full-width",
+        "components": [{
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true
+            },
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/purchase-orders"
+                }
+              }]
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }]
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "class": "headline",
+              "i18nContext": "PurchaseOrderPage",
+              "i18nKey": "import"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "class": "flex full-width flex-grow",
+        "components": [{
+          "is": "WidgetImport",
+          "props": {
+            "tableName": "purchase-order",
+            "importKey": "poNo",
+            "importTypes": ["xlsx", "edi"],
+            "importAccepts": [
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              "application/octet-stream"
+            ]
+          },
+          "slots": [{
+            "name": "default",
+            "is": "DynamicComponent",
+            "props": {
+              "components": [{
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "purchase-order/forms/general"
+                }
+              }, {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "purchase-order/forms/party"
+                }
+              }, {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "purchase-order/forms/date"
+                }
+              }, {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "purchase-order/forms/po-items"
+                }
+              }, {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "purchase-order/forms/reference"
+                }
+              }]
+            }
+          }]
+        }]
+      }
+    }
+  ]
+}
