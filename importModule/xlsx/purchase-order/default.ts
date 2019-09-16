@@ -1,7 +1,5 @@
 import { BaseExcelParser } from 'modules/parser/parser/excel'
-export const templateFormat =  {
-
-}
+export const templateFormat = {}
 
 export default class DefaultParser extends BaseExcelParser {
   async import(base64String: string) {

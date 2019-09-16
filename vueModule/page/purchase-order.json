@@ -1,47 +1,49 @@
 {
   "layout": "MainLayout",
-  "components": [{
-    "is": "Widget",
-    "props": {
-      "settingProp": {
-        "initAxiosParams": {
-          "url": "api/booking/{{context.$route.params.params}}"
-        },
-        "defaultAxiosParams": {
-          "url": "default/booking"
-        },
-        "validateAxiosParams": {
-          "method": "post",
-          "url": "api/booking/validate/{{id}}"
-        },
-        "saveAxiosParams": {
-          "method": "post",
-          "url": "api/booking"
-        },
-        "primaryKey": "id",
-        "modeFunction": "const modes = ['assignment', 'quick-create', 'create', 'detail', 'edit', 'create-import'];const selectedMode = isNaN(Number(mode)) ? mode : 'detail'\n          if (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
-        "haveTermOnCreate": true,
-        "haveTermOnEdit": false,
-        "widgetComponentSetting": {
-          "quick-create": {
-            "readonly": false
+  "components": [
+    {
+      "is": "Widget",
+      "props": {
+        "settingProp": {
+          "initAxiosParams": {
+            "url": "api/booking/{{context.$route.params.params}}"
           },
-          "create": {
-            "readonly": false,
-            "stepper": 0,
-            "next": false,
-            "saveIcon": "create"
+          "defaultAxiosParams": {
+            "url": "default/booking"
           },
-          "detail": {
-            "readonly": true
+          "validateAxiosParams": {
+            "method": "post",
+            "url": "api/booking/validate/{{id}}"
           },
-          "edit": {
-            "readonly": false,
-            "stepper": 0,
-            "saveIcon": "save"
+          "saveAxiosParams": {
+            "method": "post",
+            "url": "api/booking"
+          },
+          "primaryKey": "id",
+          "modeFunction": "const modes = ['assignment', 'quick-create', 'create', 'detail', 'edit', 'create-import'];const selectedMode = isNaN(Number(mode)) ? mode : 'detail'\n          if (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
+          "haveTermOnCreate": true,
+          "haveTermOnEdit": false,
+          "widgetComponentSetting": {
+            "quick-create": {
+              "readonly": false
+            },
+            "create": {
+              "readonly": false,
+              "stepper": 0,
+              "next": false,
+              "saveIcon": "create"
+            },
+            "detail": {
+              "readonly": true
+            },
+            "edit": {
+              "readonly": false,
+              "stepper": 0,
+              "saveIcon": "save"
+            }
           }
         }
       }
     }
-  }]
+  ]
 }

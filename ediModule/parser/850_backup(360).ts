@@ -1952,7 +1952,8 @@ export default class EdiParser850 extends BaseEdiParser {
         }
         // return response
         if (Array.isArray(ST['PO1'])) {
-          for (const PO1 of ST['PO1']) { // k<ST['PO1'].length
+          for (const PO1 of ST['PO1']) {
+            // k<ST['PO1'].length
             const poItem = {} as PurchaseOrderItem
             const ProductDefinitionField1 = {} as ProductDefinitionField
             const ProductDefinitionField2 = {} as ProductDefinitionField
