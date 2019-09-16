@@ -103,7 +103,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'containerTypeCode'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'containerTypeCode'
@@ -113,7 +113,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'soNo'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'soNo'
@@ -123,7 +123,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'sealNo'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'sealNo'
@@ -247,7 +247,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_reference', 'refName'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'refName'
@@ -257,7 +257,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('booking_reference', 'refDescription'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'refDescription'
@@ -401,12 +401,30 @@ query.register('noOfBookings', {
   expression: new FunctionExpression({
     name: 'COUNT',
     parameters: new ParameterExpression({
-      prefix: 'DISTINCT',
+
+      // cannot use distinct while using *
+      // prefix: 'DISTINCT',
       expression: new ColumnExpression('*'),
     }),
   }),
   $as: 'noOfBookings',
 })
+
+// used createdAt as jobMonth
+query.register('jobMonth', {
+  expression: new FunctionExpression({
+    name: 'DATE_FORMAT',
+    parameters: [new ColumnExpression('booking', 'createdAt'), '%y-%m'],
+  }),
+  $as: 'jobMonth',
+})
+
+query
+  .register(
+    'primaryKeyListString',
+    new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ColumnExpression('booking', 'id')), 'primaryKeyListString'))
+
+// ------------- register filter
 
 query
   .register(
@@ -506,15 +524,6 @@ query
     })
   )
   .register('value', 0)
-
-// used createdAt as jobMonth
-query.register('jobMonth', {
-  expression: new FunctionExpression({
-    name: 'DATE_FORMAT',
-    parameters: [new ColumnExpression('booking', 'createdAt'), '%y-%m'],
-  }),
-  $as: 'jobMonth',
-})
 
 query
   .register(

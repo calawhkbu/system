@@ -23,7 +23,34 @@ const query = new QueryDef(
   })
 )
 
-// use houseNo as primarykey list
+// -------- register field
+query
+  .register(
+    'cbmTotal',
+    new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('shipment', 'cbm')), 'cbmTotal')
+  )
+
+query
+  .register(
+    'grossWeightTotal',
+    new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('shipment', 'grossWeight')), 'grossWeightTotal')
+  )
+
+query
+  .register(
+    'chargeableWeightTotal',
+
+    new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('shipment', 'chargeableWeight')), 'chargeableWeightTotal')
+
+  )
+
+query
+  .register(
+    'primaryKeyListString',
+    new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ColumnExpression('shipment', 'houseNo')), 'primaryKeyListString'))
+
+// -------- register filter
+
 query
   .register(
     'primaryKeyList',
@@ -69,13 +96,5 @@ query
     })
   )
   .register('value', 0)
-
-  query
-  .register(
-    'chargeableWeightTotal',
-
-    new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('shipment', 'chargeableWeight')), 'chargeableWeightTotal')
-
-  )
 
 export default query

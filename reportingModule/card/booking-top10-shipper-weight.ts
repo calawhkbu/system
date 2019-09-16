@@ -13,11 +13,37 @@ import {
 
 function prepareParams(): Function {
   return function(require, session, params) {
+
+    const { Resultset } = require('node-jql-core')
+    const {
+
+      OrderBy,
+      ColumnExpression,
+      CreateTableJQL,
+      InsertJQL,
+      FromTable,
+      InExpression,
+      BetweenExpression,
+      FunctionExpression,
+      BinaryExpression,
+      GroupBy,
+      Query,
+      ResultColumn,
+    } = require('node-jql')
     // import
     const { BadRequestException } = require('@nestjs/common')
 
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
+
+    // subqueries.fields = ['booking.*', 'booking_popacking.*']
+
+    subqueries.fields = ['bookingId']
+
+    // subqueries.groupBy = ['shipperPartyId']
+    // subqueries.sorting = [ new OrderBy('weight', 'DESC') ]
+    // subqueries.limit = 9
+
     return params
   }
 }
@@ -29,14 +55,7 @@ function prepareTable(name: string): CreateTableJQL {
     $as: new Query({
       $select: [
         new ResultColumn(new ColumnExpression(name, 'shipperPartyId')),
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression('SUM', new ColumnExpression(name, 'weight')),
-            0
-          ),
-          'totalWeight'
-        ),
+        new ResultColumn(new ColumnExpression(name, 'weight')),
       ],
       $from: new FromTable(
         {
@@ -57,23 +76,10 @@ function prepareTable(name: string): CreateTableJQL {
               type: 'string',
             },
           ],
-
-          data: {
-            subqueries: {
-              jobMonth: true,
-            },
-            // include jobMonth from the table
-            fields: ['jobMonth', 'booking.*', 'booking_popacking.*'],
-          },
         },
         name
       ),
 
-      $group: new GroupBy([new ColumnExpression(name, 'shipperPartyId')]),
-
-      $order: [new OrderBy('totalWeight', 'DESC')],
-
-      $limit: 10,
     }),
   })
 }
@@ -104,7 +110,6 @@ function preparePartyTable(name: string): CreateTableJQL {
           ],
 
           data: {
-            // include jobMonth from the table
             fields: ['party_type.*', 'party.*'],
           },
         },
@@ -118,21 +123,28 @@ function preparePartyTable(name: string): CreateTableJQL {
 
 export default [
   [prepareParams(), prepareTable('tempTable')],
-  [prepareParams(), preparePartyTable('party')],
+
+  // [prepareParams(), preparePartyTable('party')],
 
   new Query({
-    $from: new FromTable(
-      'tempTable',
-      'tempTable',
-      new JoinClause(
-        'INNER',
-        new FromTable('party', 'party'),
-        new BinaryExpression(
-          new ColumnExpression('tempTable', 'shipperPartyId'),
-          '=',
-          new ColumnExpression('party', 'id')
-        )
-      )
-    ),
-  }),
+
+    $from : 'tempTable'
+  })
+
+  // new Query({
+  //   $from: new FromTable(
+  //     'tempTable',
+  //     'tempTable',
+  //     new JoinClause(
+  //       'INNER',
+  //       new FromTable('party', 'party'),
+  //       new BinaryExpression(
+  //         new ColumnExpression('tempTable', 'shipperPartyId'),
+  //         '=',
+  //         new ColumnExpression('party', 'id')
+  //       )
+  //     )
+  //   ),
+  // }),
+
 ]
