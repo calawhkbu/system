@@ -103,7 +103,6 @@ function prepareTop10table(): CreateTableJQL {
     })
 
   })
-
 }
 
 export default [

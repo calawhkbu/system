@@ -45,7 +45,7 @@
                     "i18nKey": "quickCreate"
                   }
                 }
-              }]
+              ]
             },
             "slots": [{
               "is": "Icon",

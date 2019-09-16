@@ -26,5 +26,5 @@ export default [
 
     // the oubound name after parsing the edi
     outbound: 'someOutbound',
-  }
+  },
 ]

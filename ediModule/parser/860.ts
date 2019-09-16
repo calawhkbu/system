@@ -1225,26 +1225,23 @@ export const formatJson = {
 } as EdiFormatJson
 
 export const schedulerConfig = {
-
   active: true,
   schedule: '0 * * ? * *',
   ediFile: {
     path: '/home/ec2-user/ftptest/',
     extensions: ['edi', 'txt'],
     storageConfig: {
-
-      handlerName : 'sftp',
+      handlerName: 'sftp',
       config: {
+        os: 'linux',
 
-          os : 'linux',
+        host: '13.229.70.248',
+        port: '22',
+        username: 'ec2-user',
 
-          host: '13.229.70.248',
-          port: '22',
-          username: 'ec2-user',
-
-          privateKey : `privateKey`
-        }
-    }
+        privateKey: `privateKey`,
+      },
+    },
   },
   // the oubound name after parsing the edi
   outbound: 'someOutbound',
