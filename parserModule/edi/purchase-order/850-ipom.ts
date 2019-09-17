@@ -1950,13 +1950,16 @@ export default class Edi850Parser extends BaseEdiParser {
           moreDate.push('ediCreated')
           _.set(flexData, 'data.ediCreatedDateActual', datetime)
         }
-        if (_.get(jsonData, 'GS.createdDate') && _.get(jsonData, 'GS.createdTime')) {
-          const datetime = moment.utc(`${_.get(jsonData, 'GS.createdDate')} ${_.get(jsonData, 'GS.createdTime')}`)
+        if (_.get(jsonData, 'GS.dataInterchangeDate') && _.get(jsonData, 'GS.dataInterchangeTime')) {
+          const datetime = moment.utc(`${_.get(jsonData, 'GS.dataInterchangeDate')} ${_.get(jsonData, 'GS.dataInterchangeTime')}`)
           moreDate.push('dataInterchange')
           _.set(flexData, 'data.dataInterchangeDateActual', datetime)
         }
         if (Object.keys(flexData).length > 0) {
           _.set(po, `flexData`, flexData)
+        }
+        if (moreDate.length) {
+          _.set(flexData, 'data.moreDate', moreDate)
         }
 
         poList.push(po)
