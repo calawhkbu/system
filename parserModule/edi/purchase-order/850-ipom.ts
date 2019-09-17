@@ -1,25 +1,21 @@
-import { BaseEdiParser } from 'modules/parser/parser/edi'
-import { EdiFormatJson } from 'modules/edi/interface'
 import { SwivelConfigService } from 'modules/swivel-config/service'
 import { OutboundService } from 'modules/integration-hub/services/outbound'
 
-import { PurchaseOrder } from 'models/main/purchaseOrder'
-import { PurchaseOrderItem } from 'models/main/purchaseOrderItem'
-import { Product } from 'models/main/product'
-
+import { BaseEdiParser } from 'modules/parser/parser/edi'
+import { EdiFormatJson } from 'modules/edi/interface'
 
 const moment = require('moment')
 const _ = require('lodash')
 
-const partyGroupCode = '';
+const partyGroupCode = ''
 
 export const formatJson = {
-  removeCharacter: ['\r', '\n', '\r\n', '='],
-  segmentSeperator : ['?'],
-  elementSeperator : [''],
-  // removeCharacter: [],
-  // segmentSeperator : ['\r', '\n'],
-  // elementSeperator : ['*'],
+  removeCharacter: [],
+  segmentSeperator: ['\n', '\r'],
+  elementSeperator: ['*'],
+
+  // segmentSeperator : ['?'],
+  // elementSeperator : '',
 
   rootSegmentFormat: {
     type: 'object',
@@ -1210,7 +1206,7 @@ export const formatJson = {
               {
                 index: 5,
                 name: 'Basis of Unit Price',
-                key: 'basisOfUnitPrice',
+                key: 'basisofUnitPrice',
                 allowableValues: {
                   valueOptions: [
                     {
@@ -1801,7 +1797,7 @@ export default class Edi850Parser extends BaseEdiParser {
     // console.log(`import type  : ${this.type}`)
     const { jsonData, errorList } = await super.import(ediString)
 
-    const poList = [] as PurchaseOrder[]
+    const poList: any[] = []
     if (!jsonData || jsonData.length === 0) {// undefined or empty array
       throw new Error(errorList)
     }
