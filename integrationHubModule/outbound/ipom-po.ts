@@ -1,4 +1,3 @@
-
 export default {
   method: 'POST', // 'GET'|'POST'|'PUT'|'DELETE'|'HEAD'|'OPTIONS'
   getUrl: (headers: any, body: any) => {
@@ -7,7 +6,7 @@ export default {
   requestHandler: (headers: any, body: any) => {
     return {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       data: {
         pojson: body

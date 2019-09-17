@@ -1796,19 +1796,17 @@ export const schedulerConfig = {
     path: '/home/ec2-user/ftptest/',
     extensions: ['edi', 'txt'],
     storageConfig: {
-
-      handlerName : 'sftp',
+      handlerName: 'sftp',
       config: {
+        os: 'linux',
 
-          os : 'linux',
+        host: '13.229.70.248',
+        port: '22',
+        username: 'ec2-user',
 
-          host: '13.229.70.248',
-          port: '22',
-          username: 'ec2-user',
-
-          privateKey : `privateKey`
-        }
-    }
+        privateKey: `privateKey`,
+      },
+    },
   },
   // the oubound name after parsing the edi
   outbound: 'someOutbound',
@@ -1933,7 +1931,8 @@ export default class EdiParser850 extends BaseEdiParser {
         }
         // return response
         if (Array.isArray(ST['PO1'])) {
-          for (const PO1 of ST['PO1']) { // k<ST['PO1'].length
+          for (const PO1 of ST['PO1']) {
+            // k<ST['PO1'].length
             const poItem = {} as PurchaseOrderItem
             // console.log(`check product code ${PO1['productId'].substr(3, 11)}`)
             const product = {} as Product

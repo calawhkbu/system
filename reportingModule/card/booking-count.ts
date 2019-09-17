@@ -13,7 +13,24 @@ import {
 } from 'node-jql'
 import { parseCode } from 'utils/function'
 
-function prepareBookingParams(currentMonth?: boolean): Function {
+function prepareModuleCodeTable(name: string): CreateTableJQL {
+  return new CreateTableJQL({
+    $temporary: true,
+    name,
+    columns: [new Column('moduleTypeCode', 'string')],
+  })
+}
+
+function insertModuleCodeTable(name: string): InsertJQL {
+  return new InsertJQL(
+    name,
+    { moduleTypeCode: 'AIR' },
+    { moduleTypeCode: 'SEA' },
+    { moduleTypeCode: 'ROAD' }
+  )
+}
+
+function prepareBookingParams(): Function {
   const fn = function(require, session, params) {
     const { BadRequestException } = require('@nestjs/common')
     const moment = require('moment')
@@ -35,80 +52,71 @@ function prepareBookingParams(currentMonth?: boolean): Function {
         .format('YYYY-MM-DD')
     }
 
+    params.fields = ['carrierCode', 'noOfBookings', 'primaryKeyListString']
+
+    params.groupBy = ['carrierCode']
+
     return params
   }
-  let code = fn.toString()
-  code = code.replace(new RegExp('currentMonth', 'g'), String(currentMonth))
+  const code = fn.toString()
   return parseCode(code)
 }
 
-function prepareBookingTable(name: string): CreateTableJQL {
+function prepareBookingTable(): CreateTableJQL {
+
+  const name = 'booking'
+
   return new CreateTableJQL({
     $temporary: true,
     name,
     $as: new Query({
       $select: [
+
         new ResultColumn(new ColumnExpression(name, 'moduleTypeCode'), 'moduleTypeCode'),
+        new ResultColumn(new ColumnExpression(name, 'noOfBookings'), 'count'), // rename noOfBookings into Count
+        new ResultColumn(new ColumnExpression(name, 'primaryKeyListString'), 'primaryKeyListString'),
 
-        new ResultColumn(
-          new FunctionExpression('GROUP_CONCAT', new ColumnExpression(name, 'bookingId')),
-          'primaryKeyListString'
-        ),
-
-        new ResultColumn(
-          new FunctionExpression('count', new ColumnExpression(name, 'bookingId')),
-          'count'
-        ),
       ],
       $from: new FromTable(
         {
           method: 'POST',
           url: 'api/booking/query/booking',
           columns: [
-            {
-              name: 'bookingId',
-              type: 'string',
-            },
 
             {
               name: 'moduleTypeCode',
               type: 'string',
             },
+
+            {
+              name: 'noOfBookings',
+              type: 'number',
+            },
+
+            {
+              name: 'primaryKeyListString',
+              type: 'string',
+            },
+
           ],
         },
         name
-      ),
-      $group: new GroupBy([
-        new ColumnExpression(name, 'moduleTypeCode'),
-        // new ColumnExpression(name, 'year')
-      ]),
+      )
     }),
   })
-}
 
-function prepareModuleCodeTable(name: string): CreateTableJQL {
-  return new CreateTableJQL({
-    $temporary: true,
-    name,
-    columns: [new Column('moduleTypeCode', 'string')],
-  })
-}
-
-function insertModuleCodeTable(name: string): InsertJQL {
-  return new InsertJQL(
-    name,
-    { moduleTypeCode: 'AIR' },
-    { moduleTypeCode: 'SEA' },
-    { moduleTypeCode: 'ROAD' }
-  )
 }
 
 export default [
+
+  // hardcode the module table
   prepareModuleCodeTable('module'),
   insertModuleCodeTable('module'),
-  [prepareBookingParams(), prepareBookingTable('booking')],
+
+  [prepareBookingParams(), prepareBookingTable()],
 
   new Query({
+
     $select: [
       new ResultColumn(new ColumnExpression('module', 'moduleTypeCode'), 'moduleTypeCode'),
       new ResultColumn(
@@ -134,5 +142,7 @@ export default [
         new ColumnExpression('module', 'moduleTypeCode')
       ),
     }),
-  }),
+
+  })
+
 ]
