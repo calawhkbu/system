@@ -9,8 +9,12 @@ import { LocationService } from 'modules/sequelize/location/service'
 import { ProductDefinitionField, Product } from 'models/main/product'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { EdiSchedulerConfig, EdiFormatJson } from 'modules/edi/interface'
+import { stringify } from 'querystring'
+import { type } from 'os'
+import { createTracing } from 'trace_events'
 
 const moment = require('moment')
+const _ = require('lodash')
 
 export const formatJson = {
 
@@ -274,6 +278,11 @@ export const schedulerConfig = {
 
   } as EdiSchedulerConfig
 
+interface JSONObject {
+  segement?: string,
+  elementList?: string[]
+}
+
 export default class EdiParser856 extends BaseEdiParser {
   constructor(
     protected readonly partyGroupCode: string,
@@ -285,12 +294,204 @@ export default class EdiParser856 extends BaseEdiParser {
   }
 
   async export(entityJSON: any): Promise<any> {
-    console.log(`export type  : ${entityJSON}`)
-    console.log('=========================')
+    const returnJSON = {}
+    returnJSON['data'] = []
+    const data = returnJSON['data']
+
+    for (const element of entityJSON)
+    {
+      const ST: JSONObject = {
+
+      }
+      ST.segement = 'ST'
+      ST.elementList = []
+      ST.elementList.push('856')
+      ST.elementList.push(`0000${(entityJSON.findIndex(x => x.id = element.id) + 1).toString()}`)
+      data.push(ST)
+      const BSN: JSONObject = {
+
+      }
+      BSN.segement = 'BSN'
+      BSN.elementList = []
+      BSN.elementList.push('00')
+      BSN.elementList.push(_.get(element, 'bookingNo'))
+      BSN.elementList.push('')
+      BSN.elementList.push('')
+      BSN.elementList.push('')
+
+      data.push(BSN)
+
+      const loopObjectList = []
+      const getNumOfLoopItem = 1 + this.getNumOfPo(_.get(element, 'bookingPopacking')) + (_.get(element, 'bookingPopacking').length)
+      console.log('================================')
+      // console.log(_.get(element, 'bookingPopacking').length)
+      console.log(getNumOfLoopItem)
+      loopObjectList.push(this.getLoopObject(loopObjectList, getNumOfLoopItem, element))
+
+      const CTT: JSONObject = {}
+      CTT.segement = 'CTT'
+      CTT.elementList = []
+
+      const SE: JSONObject = {}
+      SE.segement = 'SE'
+      SE.elementList = []
+      // SE.elementList.push((loopObjectList.length + 1).toString)
+      SE.elementList.push(`0000${(entityJSON.findIndex(x => x.id = element.id) + 1).toString()}`)
+      data.push(SE)
+
+    data.push(loopObjectList)
+    }
+    return returnJSON
     const result = await super.export(entityJSON)
 
     console.log('.........................')
     return result
+  }
+  async getLoopObject(loopObjectList, getNumOfLoopItem, element)
+  {
+    if (getNumOfLoopItem === 1)
+    {
+      const V1: JSONObject = {}
+      V1.segement = 'V1'
+      V1.elementList = []
+      V1.elementList.push(_.get(element, 'carrierCode'))
+      V1.elementList.push(_.get(element, 'vesselName'))
+      V1.elementList.push(_.get(element, 'voyageFlightNumber'))
+      loopObjectList.unshift(V1)
+      if (_.get(element, 'arrivalDateActual'))
+      {
+        const DTM: JSONObject = {}
+        DTM.segement = 'DTM'
+        DTM.elementList = []
+        DTM.elementList.push('371')
+        DTM.elementList.push(_.get(element, 'departureDateActual'))
+        loopObjectList.unshift(DTM)
+      }
+      if (_.get(element, 'departureDateActual'))
+      {
+        const DTM: JSONObject = {}
+        DTM.segement = 'DTM'
+        DTM.elementList = []
+        DTM.elementList.push('370')
+        DTM.elementList.push(moment(_.get(element, 'departureDateActual')).format('YYYYMMDD'))
+        loopObjectList.unshift(DTM)
+      }
+      if (_.get(element, 'placeOfDeliveryCode'))
+      {
+        const TD5: JSONObject = {}
+        TD5.segement = 'TD5'
+        TD5.elementList = []
+        TD5.elementList.push('')
+        TD5.elementList.push('')
+        TD5.elementList.push('')
+        TD5.elementList.push('')
+        TD5.elementList.push('')
+        TD5.elementList.push('')
+        TD5.elementList.push('KL')
+        TD5.elementList.push(_.get(element, 'placeOfDeliveryCode'))
+        loopObjectList.unshift(TD5)
+      }
+      if (_.get(element, 'portOfDischargeCode'))
+      {
+        const TD5: JSONObject = {}
+        TD5.segement = 'TD5'
+        TD5.elementList = []
+        TD5.elementList.push('')
+        TD5.elementList.push('')
+        TD5.elementList.push('')
+        TD5.elementList.push('')
+        TD5.elementList.push('')
+        TD5.elementList.push('')
+        TD5.elementList.push('PB')
+        TD5.elementList.push(_.get(element, 'portOfDischargeCode'))
+        loopObjectList.unshift(TD5)
+      }
+      if (_.get(element, 'portOfLoadingCode'))
+      {
+        const TD5: JSONObject = {}
+        TD5.segement = 'TD5'
+        TD5.elementList = []
+        TD5.elementList.push('')
+        TD5.elementList.push('')
+        TD5.elementList.push('')
+        TD5.elementList.push('')
+        TD5.elementList.push('')
+        TD5.elementList.push('')
+        TD5.elementList.push('OA')
+        TD5.elementList.push(_.get(element, 'portOfLoadingCode'))
+        loopObjectList.unshift(TD5)
+      }
+      const HL: JSONObject = {}
+      HL.segement = 'HL'
+      HL.elementList = []
+      HL.elementList.push(getNumOfLoopItem.toString)
+      HL.elementList.push('')
+      if (_.get(element, 'moduleTypeCode') === 'SHIPMENT')
+      {
+        HL.elementList.push('S')
+      }
+      else if (_.get(element, 'moduleTypeCode') === 'AIR')
+      {
+        HL.elementList.push('A')
+      }
+      else
+      {
+        HL.elementList.push(_.get(element, 'moduleTypeCode'))
+      }
+      loopObjectList.unshift(HL)
+      return loopObjectList
+    }
+    else
+    {
+      const Item = _.get(element, 'bookingPopacking')
+      const lastGroupOfItem = Item[Item.length - 1]
+      const poNo = _.get(lastGroupOfItem, 'purchaseOrderItem.purchaseOrder.poNo')
+      const indexOfFirstMatch = Item.findIndex(x => x.purchaseOrderItem.purchaseOrder.poNo === poNo)
+      const totalItemNo = Item.length - indexOfFirstMatch
+      console.log(totalItemNo)
+      console.log('===========================')
+      for (let i = 0; i < totalItemNo; i++)
+      {
+        const HL: JSONObject = {}
+        HL.segement = 'HL'
+        HL.elementList = []
+        HL.elementList.push((getNumOfLoopItem - i).toString())
+        HL.elementList.push((getNumOfLoopItem - totalItemNo).toString())
+        HL.elementList.push('I')
+        loopObjectList.unshift(HL)
+      }
+      const PRF: JSONObject = {}
+      PRF.segement = 'PRF'
+      PRF.elementList = []
+      PRF.elementList.push(poNo)
+      PRF.elementList.push('')
+      PRF.elementList.push('')
+      PRF.elementList.push(moment(_.get(lastGroupOfItem, 'purchaseOrderItem.purchaseOrder.poDate')).format('YYYYMMDD'))
+      loopObjectList.unshift(PRF)
+      const HLO: JSONObject = {}
+      HLO.segement = 'HL'
+      HLO.elementList = []
+      HLO.elementList.push((getNumOfLoopItem - totalItemNo).toString())
+      HLO.elementList.push('1')
+      HLO.elementList.push('O')
+      loopObjectList.unshift(HLO)
+      Item.splice(indexOfFirstMatch, totalItemNo)
+      this.getLoopObject(loopObjectList, (getNumOfLoopItem - 1 - totalItemNo), element)
+    }
+  }
+  getNumOfPo(Item)
+  {
+    const uniquePo = []
+    for (const po of Item)
+    {
+      if (!uniquePo.includes(po.purchaseOrderItem.purchaseOrder.poNo))
+      {
+        uniquePo.push(po.purchaseOrderItem.purchaseOrder.poNo)
+      }
+    }
+    // console.log('---------------------------')
+    // console.log(uniquePo.length)
+    return uniquePo.length
   }
 
 }

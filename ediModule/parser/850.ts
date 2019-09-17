@@ -15,9 +15,9 @@ const moment = require('moment')
 const _ = require('lodash')
 
 export const formatJson = {
-  removeCharacter: [],
-  segmentSeperator: ['\n', '\r'],
-  elementSeperator: ['*'],
+  removeCharacter: ['\r', '\n', '\r\n', '=', 'o'],
+  segmentSeperator : ['?'],
+  elementSeperator : [''],
 
   // segmentSeperator : ['?'],
   // elementSeperator : '',
@@ -360,7 +360,7 @@ export const formatJson = {
             key: 'REF',
             code: 'REF',
             name: 'Reference Number',
-            type: 'object',
+            type: 'repeatObject',
             mandatory: false,
 
             elementFormatList: [
@@ -368,27 +368,28 @@ export const formatJson = {
                 index: 1,
                 name: 'Reference Number Qualifier',
                 key: 'referenceNumberQualifier',
+                overrideValueIndex: 2,
                 allowableValues: {
                   valueOptions: [
                     {
                       value: 'DP',
                       name: 'Dept Number',
-                      overrideValue: 'Dept Number',
+                      overrideKey: 'Dept Number',
                     },
                     {
                       value: 'IA',
                       name: 'Vendor',
-                      overrideValue: 'Vendor',
+                      overrideKey: 'Vendor',
                     },
                     {
                       value: '19',
                       name: 'Division ID',
-                      overrideValue: 'DivisionID',
+                      overrideKey: 'DivisionID',
                     },
                     {
                       value: 'CO',
                       name: 'Customer Order',
-                      overrideValue: 'Customer Order',
+                      overrideKey: 'Customer Order',
                     },
                   ],
                   allowAny: true,
@@ -648,7 +649,7 @@ export const formatJson = {
             key: 'N9',
             code: 'N9',
             name: 'Reference Number',
-            type: 'list',
+            type: 'specialObject',
             mandatory: false,
             elementFormatList: [
               {
@@ -671,57 +672,7 @@ export const formatJson = {
                       value: 'SH',
                       name: 'Gift Message',
                       overrideValue: 'Gift Message',
-                    },
-                    {
-                      value: 'DP',
-                      name: 'Department',
-                      overrideValue: 'Department',
-                    },
-                    {
-                      value: 'MR',
-                      name: 'MIC',
-                      overrideValue: 'MIC',
-                    },
-                    {
-                      value: 'BT',
-                      name: 'Group Code',
-                      overrideValue: 'Group Code',
-                    },
-                    {
-                      value: 'JH',
-                      name: 'Label Code',
-                      overrideValue: 'Label Code',
-                    },
-                    {
-                      value: 'OIC',
-                      name: 'Label Type',
-                      overrideValue: 'Label Type',
-                    },
-                    {
-                      value: 'E9',
-                      name: 'Hangtag Type',
-                      overrideValue: 'Hangtag Type',
-                    },
-                    {
-                      value: '2I',
-                      name: 'Tracking',
-                      overrideValue: 'Tracking',
-                    },
-                    {
-                      value: 'PM',
-                      name: 'Concatenated Style',
-                      overrideValue: 'Concatenated Style',
-                    },
-                    {
-                      value: 'TS',
-                      name: 'HTS',
-                      overrideValue: 'HTS',
-                    },
-                    {
-                      value: 'W9',
-                      name: 'Special Packageing',
-                      overrideValue: 'Special Packageing',
-                    },
+                    }
                   ],
                   allowAny: true,
                 },
@@ -752,9 +703,25 @@ export const formatJson = {
                     index: 2,
                     name: 'Message Text',
                     key: 'messageText',
+                    type: 'string',
                   },
                 ],
               },
+              {
+                code: 'MSG',
+                key: 'MSG',
+                type: 'list',
+                name: 'Message Text',
+                mandatory: false,
+                elementFormatList: [
+                  {
+                    index: 1,
+                    name: 'Message Text',
+                    key: 'messageText',
+                    type: 'string',
+                  },
+                ],
+              }
             ],
           },
 
@@ -1116,53 +1083,6 @@ export const formatJson = {
             segmentFormatList: [],
           },
           {
-            key: 'MEA',
-            code: 'MEA',
-            name: 'Measurements',
-            type: 'Object',
-            mandatory: false,
-            elementFormatList: [
-              {
-                index: 1,
-                name: 'Class of Trade',
-                key: 'classOfTrade',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'SH',
-                      name: 'Shipping Tolerance',
-                      overrideValue: 'Shipping Tolerance',
-                    },
-                  ],
-                  allowAny: true,
-                },
-                type: 'string',
-              },
-              {
-                index: 2,
-                name: 'Price Code Qualifier',
-                key: 'priceCodeQualifier',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'PO',
-                      name: 'Percent of Order',
-                      overrideValue: 'Percent of Order',
-                    },
-                  ],
-                  allowAny: true,
-                },
-                type: 'string',
-              },
-              {
-                index: 3,
-                name: 'Unit Price',
-                key: 'UnitPrice',
-                type: 'decimal',
-              },
-            ],
-          },
-          {
             code: 'PO1',
             key: 'PO1',
             name: 'Purchase Order Baseline Item Data',
@@ -1376,6 +1296,53 @@ export const formatJson = {
                 ],
               },
               {
+                key: 'MEA',
+                code: 'MEA',
+                name: 'Measurements',
+                type: 'Object',
+                mandatory: false,
+                elementFormatList: [
+                  {
+                    index: 1,
+                    name: 'Class of Trade',
+                    key: 'classOfTrade',
+                    allowableValues: {
+                      valueOptions: [
+                        {
+                          value: 'SH',
+                          name: 'Shipping Tolerance',
+                          overrideValue: 'Shipping Tolerance',
+                        },
+                      ],
+                      allowAny: true,
+                    },
+                    type: 'string',
+                  },
+                  {
+                    index: 2,
+                    name: 'Price Code Qualifier',
+                    key: 'priceCodeQualifier',
+                    allowableValues: {
+                      valueOptions: [
+                        {
+                          value: 'PO',
+                          name: 'Percent of Order',
+                          overrideValue: 'Percent of Order',
+                        },
+                      ],
+                      allowAny: true,
+                    },
+                    type: 'string',
+                  },
+                  {
+                    index: 3,
+                    name: 'Unit Price',
+                    key: 'UnitPrice',
+                    type: 'decimal',
+                  },
+                ],
+              },
+              {
                 code: 'PID',
                 key: 'PID',
                 name: 'product/Item Description',
@@ -1514,6 +1481,145 @@ export const formatJson = {
                 ],
               },
               {
+                code: 'SDQ',
+                key: 'SDQ',
+                name: 'Destination/Quantity Data',
+                mandatory: false,
+                elementFormatList: [
+                  {
+                    index: 1,
+                    name: 'Unit of Measurement Code',
+                    key: 'unitOfMeasurementCode',
+                    allowableValues: {
+                      valueOptions: [
+                        {
+                          value: 'EA',
+                          name: 'Each',
+                          overrideValue: 'Each',
+                        },
+                        {
+                          value: 'CA',
+                          name: 'Prepack',
+                          overrideValue: 'Prepack',
+                        },
+                      ],
+                      allowAny: true,
+                    },
+                    type: 'string',
+                  },
+                  {
+                    index: 2,
+                    name: 'Location Qualifier',
+                    key: 'locationQualifier',
+                    allowableValues: {
+                      valueOptions: [
+                        {
+                          value: '92',
+                          name: 'Pack by Store',
+                          overrideValue: 'Pack by Store',
+                        },
+                      ],
+                      allowAny: true,
+                    },
+                    type: 'string',
+                  },
+                  {
+                    index: 3,
+                    name: 'Location Identifier',
+                    key: 'locationIdentifier',
+                    type: 'string',
+                  },
+                  {
+                    index: 4,
+                    name: 'Quantity',
+                    key: 'quantity',
+                    type: 'integer',
+                  },
+                ],
+              },
+              {
+                key: 'N9',
+                code: 'N9',
+                name: 'Reference Number',
+                type: 'list',
+                mandatory: false,
+                elementFormatList: [
+                  {
+                    index: 1,
+                    name: 'Reference Number Qual',
+                    key: 'referenceNumberQual',
+                    allowableValues: {
+                      valueOptions: [
+                        {
+                          value: 'DP',
+                          name: 'Department',
+                          overrideValue: 'Department',
+                        },
+                        {
+                          value: 'MR',
+                          name: 'MIC',
+                          overrideValue: 'MIC',
+                        },
+                        {
+                          value: 'BT',
+                          name: 'Group Code',
+                          overrideValue: 'Group Code',
+                        },
+                        {
+                          value: 'JH',
+                          name: 'Label Code',
+                          overrideValue: 'Label Code',
+                        },
+                        {
+                          value: 'OIC',
+                          name: 'Label Type',
+                          overrideValue: 'Label Type',
+                        },
+                        {
+                          value: 'E9',
+                          name: 'Hangtag Type',
+                          overrideValue: 'Hangtag Type',
+                        },
+                        {
+                          value: '2I',
+                          name: 'Tracking',
+                          overrideValue: 'Tracking',
+                        },
+                        {
+                          value: 'PM',
+                          name: 'Concatenated Style',
+                          overrideValue: 'Concatenated Style',
+                        },
+                        {
+                          value: 'TS',
+                          name: 'HTS',
+                          overrideValue: 'HTS',
+                        },
+                        {
+                          value: 'W9',
+                          name: 'Special Packageing',
+                          overrideValue: 'Special Packageing',
+                        },
+                      ],
+                      allowAny: true,
+                    },
+                    type: 'string',
+                  },
+                  {
+                    index: 2,
+                    name: 'Reference Number',
+                    key: 'referenceNumber',
+                    type: 'string',
+                  },
+                  {
+                    index: 3,
+                    name: 'Free-form Description',
+                    key: 'free-formDescription',
+                    type: 'string',
+                  },
+                ],
+              },
+              {
                 code: 'SLN',
                 key: 'SLN',
                 name: 'Subline Item Detail',
@@ -1639,69 +1745,12 @@ export const formatJson = {
                     type: 'string',
                   },
                   {
-                    index: 14,
+                    index: 18,
                     name: 'Product/Service ID',
                     key: 'productId4',
                     type: 'string',
                   },
                 ],
-              },
-            ],
-          },
-          {
-            code: 'SDQ',
-            key: 'SDQ',
-            name: 'Destination/Quantity Data',
-            mandatory: false,
-            elementFormatList: [
-              {
-                index: 1,
-                name: 'Unit of Measurement Code',
-                key: 'unitOfMeasurementCode',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'EA',
-                      name: 'Each',
-                      overrideValue: 'Each',
-                    },
-                    {
-                      value: 'CA',
-                      name: 'Prepack',
-                      overrideValue: 'Prepack',
-                    },
-                  ],
-                  allowAny: true,
-                },
-                type: 'string',
-              },
-              {
-                index: 2,
-                name: 'Location Qualifier',
-                key: 'locationQualifier',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: '92',
-                      name: 'Pack by Store',
-                      overrideValue: 'Pack by Store',
-                    },
-                  ],
-                  allowAny: true,
-                },
-                type: 'string',
-              },
-              {
-                index: 3,
-                name: 'Location Identifier',
-                key: 'locationIdentifier',
-                type: 'string',
-              },
-              {
-                index: 4,
-                name: 'Quantity',
-                key: 'quantity',
-                type: 'integer',
               },
             ],
           },
@@ -1827,8 +1876,6 @@ export default class EdiParser850 extends BaseEdiParser {
     // console.log(`import type  : ${this.type}`)
     const response = await super.import(base64EdiString)
 
-    const products = []
-
     const ediJson = response['jsonData']
     // hardcode
     const user = {
@@ -1837,7 +1884,6 @@ export default class EdiParser850 extends BaseEdiParser {
     } as JwtPayload
 
     const poList = [] as PurchaseOrder[]
-
     if (!ediJson) {
       return ediJson
     }
@@ -1856,7 +1902,7 @@ export default class EdiParser850 extends BaseEdiParser {
 
         const missingDateName1 = 'ediCreated'
         const missingDateName2 = 'dataInterchange'
-        po.flexData.data[`${missingDateName1} DateEstimated`] = null
+        po.flexData.data[`${missingDateName1}DateEstimated`] = null
         if (_.get(ediJson, 'ISA.createdDate') && _.get(ediJson, 'ISA.createdTime')) {
           po.flexData.data[`${missingDateName1}DateEstimated`] = null
           po.flexData.data[`${missingDateName1}DateActual`] = moment.utc(
@@ -1865,7 +1911,7 @@ export default class EdiParser850 extends BaseEdiParser {
 
           po.flexData.data[`${missingDateName2}DateEstimated`] = null
           po.flexData.data[`${missingDateName2}DateActual`] = moment.utc(
-            `${_.get(ediJson, 'ISA.createdDate')} ${_.get(ediJson, 'ISA.createdTime')}`
+            `${_.get(ediJson, 'GS.dataInterchangeDate')} ${_.get(ediJson, 'GS.dataInterchangeTime')}`
           )
         }
         po.flexData.data['moreDate'].push(missingDateName1)
@@ -1896,7 +1942,7 @@ export default class EdiParser850 extends BaseEdiParser {
               po[`${name}PartyName`] = _.get(N1, 'name')
             } else if (_.get(N1, 'organizationIdentifier') === 'Ship To') {
               name = 'shipTo'
-              const index = _.get(N1, 'name').indexOf('#')
+              const index = (_.get(N1, 'name') || '').indexOf('#')
               if (index > 0) {
                 po[`${name}PartyCode`] = `${_.get(N1, 'name').substr(index + 1)} ${_.get(
                   N1,
