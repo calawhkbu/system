@@ -8,9 +8,9 @@ export default {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: {
-        pojson: body,
-      },
+      data: {
+        pojson: body
+      }
     }
   },
   responseHandler: (response: { responseBody: any; responseOptions: any }) => {
