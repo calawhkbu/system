@@ -1845,19 +1845,17 @@ export const schedulerConfig = {
     path: '/home/ec2-user/ftptest/',
     extensions: ['edi', 'txt'],
     storageConfig: {
-
-      handlerName : 'sftp',
+      handlerName: 'sftp',
       config: {
+        os: 'linux',
 
-          os : 'linux',
+        host: '13.229.70.248',
+        port: '22',
+        username: 'ec2-user',
 
-          host: '13.229.70.248',
-          port: '22',
-          username: 'ec2-user',
-
-          privateKey : `privateKey`
-        }
-    }
+        privateKey: `privateKey`,
+      },
+    },
   },
   // the oubound name after parsing the edi
   outbound: 'someOutbound',
@@ -1955,17 +1953,17 @@ export default class EdiParser850 extends BaseEdiParser {
               }
             } else {
               name = _.get(N1, 'organizationIdentifier')
-              po.flexData.data[`${name}PartyCode`] = _.get(N1, 'identificationCode')
-              po.flexData.data[`${name}PartyName`] = _.get(N1, 'name')
-              po.flexData.data[`${name}PartyAddress1`] = _.get(N1, 'N3.addressInformation')
-              po.flexData.data[`${name}PartyAddress2`] = _.get(
+              po.flexData.data[`${name.replace(/\s/g, '')}PartyCode`] = _.get(N1, 'identificationCode')
+              po.flexData.data[`${name.replace(/\s/g, '')}PartyName`] = _.get(N1, 'name')
+              po.flexData.data[`${name.replace(/\s/g, '')}PartyAddress1`] = _.get(N1, 'N3.addressInformation')
+              po.flexData.data[`${name.replace(/\s/g, '')}PartyAddress2`] = _.get(
                 N1,
                 'N3.additionalAddressInformation'
               )
-              po.flexData.data[`${name}PartyCityCode`] = _.get(N1, 'N4.cityName')
-              po.flexData.data[`${name}PartyStateCode`] = _.get(N1, 'N4.stateOrProvinceCode')
-              po.flexData.data[`${name}PartyZip`] = _.get(N1, 'N4.postalCode')
-              po.flexData.data[`${name}PartyCountryCode`] = _.get(N1, 'N4.countryCode')
+              po.flexData.data[`${name.replace(/\s/g, '')}PartyCityCode`] = _.get(N1, 'N4.cityName')
+              po.flexData.data[`${name.replace(/\s/g, '')}PartyStateCode`] = _.get(N1, 'N4.stateOrProvinceCode')
+              po.flexData.data[`${name.replace(/\s/g, '')}PartyZip`] = _.get(N1, 'N4.postalCode')
+              po.flexData.data[`${name.replace(/\s/g, '')}PartyCountryCode`] = _.get(N1, 'N4.countryCode')
               po.flexData.data['moreParty'].push(name)
               continue
             }
@@ -1979,7 +1977,8 @@ export default class EdiParser850 extends BaseEdiParser {
         }
         // return response
         if (Array.isArray(ST['PO1'])) {
-          for (const PO1 of ST['PO1']) { // k<ST['PO1'].length
+          for (const PO1 of ST['PO1']) {
+            // k<ST['PO1'].length
             const poItem = {} as PurchaseOrderItem
             // console.log(`check product code ${PO1['productId'].substr(3, 11)}`)
             const product = {} as Product

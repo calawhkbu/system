@@ -14,9 +14,13 @@ import {
 import { parseCode } from 'utils/function'
 
 function prepareTop10Params(): Function {
+
   return function(require, session, params) {
+
     const { Resultset } = require('node-jql-core')
     const {
+
+      OrderBy,
       ColumnExpression,
       CreateTableJQL,
       InsertJQL,
@@ -29,15 +33,14 @@ function prepareTop10Params(): Function {
       Query,
       ResultColumn,
     } = require('node-jql')
+
+    // import
+    const { BadRequestException } = require('@nestjs/common')
     const moment = require('moment')
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
 
     // set daterange be this year if date is not given
-
-    console.log('before')
-    console.log(params)
-
     if (!subqueries.date) {
       const year = moment().year()
       subqueries.date = {}
@@ -53,56 +56,19 @@ function prepareTop10Params(): Function {
     }
 
     subqueries.moduleType = {
-      value: 'AIR',
+      value: 'AIR'
     }
+
+    params.fields = ['controllingCustomerPartyCode', 'chargeableWeightTotal']
+
+    params.sorting = new OrderBy('chargeableWeightTotal', 'DESC')
+
+    params.groupBy = ['controllingCustomerPartyCode']
+    params.limit = 10
 
     return params
   }
-}
 
-function prepareTop10table(): CreateTableJQL {
-  return new CreateTableJQL({
-    $temporary: true,
-
-    name: 'top10',
-    $as: new Query({
-      $select: [
-        new ResultColumn(new ColumnExpression('shipment', 'controllingCustomerPartyCode')),
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression('SUM', new ColumnExpression('shipment', 'chargeableWeight')),
-            0
-          ),
-          'totalChargeableWeight'
-        ),
-      ],
-      $from: new FromTable(
-        {
-          method: 'POST',
-          url: 'api/shipment/query/shipment',
-          columns: [
-            {
-              name: 'controllingCustomerPartyCode',
-              type: 'string',
-            },
-            {
-              name: 'chargeableWeight',
-              type: 'number',
-            },
-          ],
-        },
-        'shipment'
-      ),
-
-      $group: new GroupBy([new ColumnExpression('shipment', 'controllingCustomerPartyCode')]),
-
-      $order: [new OrderBy(new ColumnExpression('totalChargeableWeight'), 'DESC')],
-
-      $limit: 10,
-    }),
-  })
 }
 
 function preparePartyParams(): Function {
@@ -202,13 +168,48 @@ function preparePartyTable(): Function {
   }
 }
 
+function prepareTop10Table() {
+
+  return new CreateTableJQL({
+
+    $temporary: true,
+    name: 'test',
+
+    $as: new Query({
+
+      $from: new FromTable(
+        {
+          method: 'POST',
+          url: 'api/shipment/query/shipment',
+          columns: [
+
+            {
+              name: 'controllingCustomerPartyCode',
+              type: 'string',
+            },
+            {
+              name: 'chargeableWeightTotal',
+              type: 'number',
+            },
+          ],
+
+        },
+        'shipment'
+      ),
+
+    })
+
+  })
+
+}
+
 export default [
-  [prepareTop10Params(), prepareTop10table()],
+  [prepareTop10Params(), prepareTop10Table()],
   [preparePartyParams(), preparePartyTable()],
 
   new Query({
     $select: [
-      new ResultColumn(new ColumnExpression('top10', 'totalChargeableWeight')),
+      new ResultColumn(new ColumnExpression('top10', 'chargeableWeightTotal')),
       new ResultColumn(
         new FunctionExpression(
           'IFNULL',

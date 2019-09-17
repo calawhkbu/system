@@ -55,22 +55,72 @@
             "func": "push",
             "path": "/purchase-order/{{id}}"
           }
-        },
-        "icons": [
-          {
-            "icon": "add",
-            "click": [
+        }
+      },
+      "slots": [
+        {
+          "name": "middle-button",
+          "is": "DynamicComponent",
+          "props": {
+            "components": [
               {
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "purchase-order/create"
+                "is": "v-btn",
+                "props": {
+                  "small": true,
+                  "flat": true,
+                  "icon": true
+                },
+                "slots": [
+                  {
+                    "is": "Icon",
+                    "props": {
+                      "icon": "add"
+                    }
+                  }
+                ],
+                "events": {
+                  "click.stop": [
+                    {
+                      "type": "router",
+                      "otherParams": {
+                        "func": "push",
+                        "path": "purchase-order/create"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "is": "v-btn",
+                "props": {
+                  "small": true,
+                  "flat": true,
+                  "icon": true
+                },
+                "slots": [
+                  {
+                    "is": "Icon",
+                    "props": {
+                      "icon": "fas fa-file-import"
+                    }
+                  }
+                ],
+                "events": {
+                  "click.stop": [
+                    {
+                      "type": "router",
+                      "otherParams": {
+                        "func": "push",
+                        "path": "purchase-order/create-import"
+                      }
+                    }
+                  ]
                 }
               }
             ]
           }
-        ]
-      }
+        }
+      ]
     }
   ]
 }
