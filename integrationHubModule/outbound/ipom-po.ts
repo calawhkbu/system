@@ -9,7 +9,7 @@ export default {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: {
+      data: {
         pojson: body
       }
     }
