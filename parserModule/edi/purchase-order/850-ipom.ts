@@ -10,7 +10,7 @@ const _ = require('lodash')
 const partyGroupCode = ''
 
 export const formatJson = {
-  removeCharacter: ['\r', '\n', '\r\n', '=', 'o'],
+  removeCharacter: ['\r', '\n', '\r\n', '=', 'o', ''],
   segmentSeperator : ['�'],
   elementSeperator : [''],
 
@@ -1171,19 +1171,19 @@ export const formatJson = {
               {
                 index: 10,
                 name: 'Product/Service ID Qualifier3',
-                key: 'Product/ServiceIdQualifier3',
+                key: 'productIdQualifier3',
                 type: 'string',
               },
               {
                 index: 11,
                 name: 'Product/Service ID3',
-                key: 'Product/ServiceId3',
+                key: 'productId3',
                 type: 'string',
               },
               {
                 index: 12,
                 name: 'Product/Service ID Qualifier4',
-                key: 'Product/ServiceIdQualifier4',
+                key: 'productIdQualifier4',
                 allowableValues: {
                   valueOptions: [
                     {
@@ -1199,13 +1199,13 @@ export const formatJson = {
               {
                 index: 13,
                 name: 'Product/Service ID4',
-                key: 'Product/ServiceId4',
+                key: 'productId4',
                 type: 'string',
               },
               {
                 index: 14,
                 name: 'Product/Service ID Qualifier5',
-                key: 'Product/ServiceIDQualifier5',
+                key: 'productIdQualifier5',
                 allowableValues: {
                   valueOptions: [
                     {
@@ -1220,13 +1220,13 @@ export const formatJson = {
               {
                 index: 15,
                 name: 'Product/Service ID5',
-                key: 'Product/ServiceId5',
+                key: 'productId5',
                 type: 'string',
               },
               {
                 index: 16,
                 name: 'Product/Service ID Qualifier6',
-                key: 'Product/ServiceIdQualifier6',
+                key: 'productIdQualifier6',
                 allowableValues: {
                   valueOptions: [
                     {
@@ -1242,13 +1242,13 @@ export const formatJson = {
               {
                 index: 17,
                 name: 'Product/Service ID6',
-                key: 'Product/ServiceID6',
+                key: 'productId6',
                 type: 'string',
               },
               {
                 index: 18,
                 name: 'Product/Service ID Qualifier7',
-                key: 'Product/ServiceIDQualifier7',
+                key: 'productIdQualifier7',
                 allowableValues: {
                   valueOptions: [
                     {
@@ -1264,7 +1264,7 @@ export const formatJson = {
               {
                 index: 19,
                 name: 'Product/Service ID8',
-                key: 'Product/ServiceID8',
+                key: 'productId7',
                 type: 'string',
               },
             ],
@@ -1842,10 +1842,10 @@ export default class Edi850Parser extends BaseEdiParser {
   ) {
     super(allService, {}, { import: { formatJson, ediType: '850' } })
   }
+
   async import(ediString: string): Promise<any> {
     // console.log(`import type  : ${this.type}`)
     const { jsonData, errorList } = await super.import(ediString)
-
     const poList: any[] = []
     if (!jsonData || jsonData.length === 0) {// undefined or empty array
       throw new Error(errorList)
@@ -1878,27 +1878,21 @@ export default class Edi850Parser extends BaseEdiParser {
           const poItemList: any[] = []
           for (const PO1 of po1) { // k<ST['PO1'].length
             poItemList.push({
-              itemKey: _.get(PO1, 'poLineNumber'),
               perPackageQuantity: _.get(PO1, 'PO4.pack'),
               quantity: _.get(PO1, 'quantityOrdered'),
               quantityUnit: _.get(PO1, 'unitOfMeasureCode'),
               volume: _.get(PO1, 'PO4.grossVolumePerPack'),
               product: {
-                subLine: _.get(PO1, 'SLN.assignedIdentification'),
-                poLineNo: _.get(PO1, 'productId1', '').substr(24, 3),
-                price:  _.get(PO1, 'unitPrice'),
-                priceUnit: _.get(PO1, 'basisOfUnitPrice'),
-                sea: _.get(PO1, 'productId1', '').substr(0, 3).trim(),
-                style: _.get(PO1, 'productId1', '').substr(3, 12).trim(),
-                styleDesc: _.get(PO1, 'PID.description', '').substr(0, 20).trim(),
-                piece: _.get(PO1, 'productId1', '').substr(18, 6).trim(),
-                pieceDesc: _.get(PO1, 'PID.description', '').substr(40, 20).trim(),
-                color: _.get(PO1, 'productId1', '').substr(15, 3).trim(),
-                colorDesc: _.get(PO1, 'PID.description', '').substr(20, 20).trim(),
-                pack: _.get(PO1, 'productId1', '').substr(24, 3).trim(),
-                packing: '',
-                size: _.get(PO1, 'SLN.productId3'),
-                upcen: _.get(PO1, 'SLN.productId2')
+                'subLine': _.get(PO1, 'SLN.assignedIdentification'),
+                'poLineNo': _.get(PO1, 'poLineNumber'),
+                'unitPrice':  _.get(PO1, 'unitPrice'),
+                'priceUnit': _.get(PO1, 'basisOfUnitPrice'),
+                'UPC/EN': _.get(PO1, 'productId1').trim(),
+                'size': (_.get(PO1, 'productId2') || '').substr(0, 3),
+                'colorDesc': _.get(PO1, 'productId4'),
+                'pack': _.get(PO1, 'poLineNumber'),
+                'buyerSKU': _.get(PO1, 'productId3'),
+                'style': _.get(PO1, 'productId5')
               }
             })
           }
@@ -1916,23 +1910,33 @@ export default class Edi850Parser extends BaseEdiParser {
           const moreParty = []
           for (const N1 of n1s) {
             const role = _.get(N1, 'organizationIdentifier')
-            let address = _.get(N1, 'N3.addressInformation')
-            if (_.get(N1, 'N3.additionalAddressInformation')) {
-              address = `${address}\n${_.get(N1, 'N3.additionalAddressInformation')}`
-            }
             if (partyMapper[role]) {
-              _.set(po, `${role}PartyName`, _.get(N1, 'name'))
-              _.set(po, `${role}PartyAddress`, address)
-              _.set(po, `${role}PartyStateCode`, _.get(N1, 'N4.stateOrProvinceCode'))
-              _.set(po, `${role}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
-              _.set(po, `${role}PartyStateZip`, _.get(N1, 'N4.postalCode'))
+              const newRole = partyMapper[role]
+              if (newRole === 'shipper')
+              {
+                _.set(po, `${newRole}PartyCode` , _.get(N1, 'identificationCode'))
+                _.set(po, `${newRole}PartyName`, _.get(N1, 'name'))
+              }
+              if (newRole === 'shipTo')
+              {
+                const index = (_.get(N1, 'name') || '').indexOf('#')
+                _.set(po, `${newRole}PartyCode`, `${(_.get(N1, 'name') || '').substr(index + 1)} ${_.get(N1, 'identificationCode').substr(0, 9)}`.trim())
+                _.set(po, `${newRole}PartyName`, (_.get(N1, 'name') || '').substr(0, index) ||  _.get(N1, 'name'))
+              }
+              _.set(po, `${newRole}PartyAddress1`, _.get(N1, 'N3.addressInformation'))
+              _.set(po, `${newRole}PartyAddress2`, _.get(N1, 'N3.additionalAddressInformation'))
+              _.set(po, `${newRole}PartyStateCode`, _.get(N1, 'N4.stateOrProvinceCode'))
+              _.set(po, `${newRole}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
+              _.set(po, `${newRole}PartyStateZip`, _.get(N1, 'N4.postalCode'))
             } else {
-              moreParty.push(role)
-              _.set(flexData, `data.${role}PartyName`, _.get(N1, 'name'))
-              _.set(flexData, `data.${role}PartyAddress`, address)
-              _.set(flexData, `data.${role}PartyStateCode`, _.get(N1, 'N4.stateOrProvinceCode'))
-              _.set(flexData, `data.${role}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
-              _.set(flexData, `data.${role}PartyStateZip`, _.get(N1, 'N4.postalCode'))
+              moreParty.push(role.replace(/\s/g, ''))
+              _.set(flexData, `data.${role.replace(/\s/g, '')}PartyName`, _.get(N1, 'name'))
+              _.set(flexData, `data.${role.replace(/\s/g, '')}PartyCode` , _.get(N1, 'identificationCode'))
+              _.set(flexData, `data.${role.replace(/\s/g, '')}PartyAddress1`, _.get(N1, 'N3.addressInformation'))
+              _.set(flexData, `data.${role.replace(/\s/g, '')}PartyAddress2`, _.get(N1, 'N3.additionalAddressInformation'))
+              _.set(flexData, `data.${role.replace(/\s/g, '')}PartyStateCode`, _.get(N1, 'N4.stateOrProvinceCode'))
+              _.set(flexData, `data.${role.replace(/\s/g, '')}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
+              _.set(flexData, `data.${role.replace(/\s/g, '')}PartyStateZip`, _.get(N1, 'N4.postalCode'))
             }
           }
           if (moreParty.length) {
