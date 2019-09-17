@@ -1883,16 +1883,16 @@ export default class Edi850Parser extends BaseEdiParser {
               quantityUnit: _.get(PO1, 'unitOfMeasureCode'),
               volume: _.get(PO1, 'PO4.grossVolumePerPack'),
               product: {
-                'subLine': _.get(PO1, 'SLN.assignedIdentification'),
-                'poLineNo': _.get(PO1, 'poLineNumber'),
-                'unitPrice':  _.get(PO1, 'unitPrice'),
-                'priceUnit': _.get(PO1, 'basisOfUnitPrice'),
-                'UPC/EN': _.get(PO1, 'productId1').trim(),
-                'size': (_.get(PO1, 'productId2') || '').substr(0, 3),
-                'colorDesc': _.get(PO1, 'productId4'),
-                'pack': _.get(PO1, 'poLineNumber'),
-                'buyerSKU': _.get(PO1, 'productId3'),
-                'style': _.get(PO1, 'productId5')
+                subLine: _.get(PO1, 'SLN.assignedIdentification'),
+                poLineNo: _.get(PO1, 'poLineNumber'),
+                unitPrice:  _.get(PO1, 'unitPrice'),
+                priceUnit: _.get(PO1, 'basisOfUnitPrice'),
+                upcen: _.get(PO1, 'productId1').trim(),
+                size: (_.get(PO1, 'productId2') || '').substr(0, 3),
+                colorDesc: _.get(PO1, 'productId4'),
+                pack: _.get(PO1, 'poLineNumber'),
+                buyerSKU: _.get(PO1, 'productId3'),
+                style: _.get(PO1, 'productId5')
               }
             })
           }
