@@ -1861,14 +1861,14 @@ export default class Edi850Parser extends BaseEdiParser {
           poDate: _.get(ST, 'BEG.purchaseOrderDate')
             ? moment.utc(_.get(ST, 'BEG.purchaseOrderDate')).toDate()
             : null,
-          dontShipBeforeDate: _.get(ST, 'DTM.doNotShipBefore')
-            ? moment.utc(_.get(ST, 'DTM.doNotShipBefore')).toDate()
+          dontShipBeforeDate: _.get(ST, 'DTM.shipNotBefore')
+            ? moment.utc(_.get(ST, 'DTM.shipNotBefore')).toDate()
             : null,
-          dontShipAfterDate: _.get(ST, 'DTM.doNotDeliverAfter')
-            ? moment.utc(_.get(ST, 'DTM.doNotDeliverAfter')).toDate()
+          dontShipAfterDate: _.get(ST, 'DTM.doNotShipAfter')
+            ? moment.utc(_.get(ST, 'DTM.doNotShipAfter')).toDate()
             : null,
-          exitFactoryDateActual: _.get(ST, 'DTM.requestedShipDateFromSupplierWarehouse')
-            ? moment.utc(_.get(ST, 'DTM.requestedShipDateFromSupplierWarehouse')).toDate()
+          exitFactoryDateActual: _.get(ST, 'DTM.firstArrive')
+            ? moment.utc(_.get(ST, 'DTM.firstArrive')).toDate()
             : null,
           Department: _.get(ST, 'REF.referenceNumber')
         }
@@ -1943,7 +1943,6 @@ export default class Edi850Parser extends BaseEdiParser {
             _.set(flexData, 'data.moreParty', moreParty)
           }
         }
-
         const moreDate = []
         if (_.get(jsonData, 'ISA.createdDate') && _.get(jsonData, 'ISA.createdTime')) {
           const datetime = moment.utc(`${_.get(jsonData, 'ISA.createdDate')} ${_.get(jsonData, 'ISA.createdTime')}`)
@@ -1954,6 +1953,18 @@ export default class Edi850Parser extends BaseEdiParser {
           const datetime = moment.utc(`${_.get(jsonData, 'GS.dataInterchangeDate')} ${_.get(jsonData, 'GS.dataInterchangeTime')}`)
           moreDate.push('dataInterchange')
           _.set(flexData, 'data.dataInterchangeDateActual', datetime)
+        }
+        if (_.get(ST, 'DTM.promoStart'))
+        {
+          const datetime = moment.utc(_.get(ST, 'DTM.promoStart'))
+          moreDate.push('promoStart')
+          _.set(flexData, 'data.promoStart', datetime)
+        }
+        if (_.get(ST, 'DTM.lastArrive'))
+        {
+          const datetime = moment.utc(_.get(ST, 'DTM.lastArrive'))
+          moreDate.push('lastArrive')
+          _.set(flexData, 'data.lastArrive', datetime)
         }
         if (Object.keys(flexData).length > 0) {
           _.set(po, `flexData`, flexData)
