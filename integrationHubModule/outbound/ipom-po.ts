@@ -6,11 +6,10 @@ export default {
   requestHandler: (headers: any, body: any) => {
     return {
       headers: {
+        ...headers,
         'Content-Type': 'application/json',
       },
-      data: {
-        pojson: body
-      }
+      data: body
     }
   },
   responseHandler: (response: { responseBody: any; responseOptions: any }) => {
