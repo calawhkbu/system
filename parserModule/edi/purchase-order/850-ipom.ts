@@ -1900,14 +1900,12 @@ export default class Edi850Parser extends BaseEdiParser {
             _.set(po, 'purchaseOrderItems', poItemList)
           }
         }
-        const flexData = {}
         const n1s = _.get(ST, 'N1', []) || []
         if (n1s.length) {
           const partyMapper = {
             'Ship From': 'shipper',
             'Ship To': 'shipTo'
           }
-          const moreParty = []
           for (const N1 of n1s) {
             const role = _.get(N1, 'organizationIdentifier')
             if (partyMapper[role]) {
@@ -1929,48 +1927,33 @@ export default class Edi850Parser extends BaseEdiParser {
               _.set(po, `${newRole}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
               _.set(po, `${newRole}PartyStateZip`, _.get(N1, 'N4.postalCode'))
             } else {
-              moreParty.push(role.replace(/\s/g, ''))
-              _.set(flexData, `data.${role.replace(/\s/g, '')}PartyName`, _.get(N1, 'name'))
-              _.set(flexData, `data.${role.replace(/\s/g, '')}PartyCode` , _.get(N1, 'identificationCode'))
-              _.set(flexData, `data.${role.replace(/\s/g, '')}PartyAddress1`, _.get(N1, 'N3.addressInformation'))
-              _.set(flexData, `data.${role.replace(/\s/g, '')}PartyAddress2`, _.get(N1, 'N3.additionalAddressInformation'))
-              _.set(flexData, `data.${role.replace(/\s/g, '')}PartyStateCode`, _.get(N1, 'N4.stateOrProvinceCode'))
-              _.set(flexData, `data.${role.replace(/\s/g, '')}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
-              _.set(flexData, `data.${role.replace(/\s/g, '')}PartyStateZip`, _.get(N1, 'N4.postalCode'))
+              _.set(po, `${role.replace(/\s/g, '')}PartyName`, _.get(N1, 'name'))
+              _.set(po, `${role.replace(/\s/g, '')}PartyCode` , _.get(N1, 'identificationCode'))
+              _.set(po, `${role.replace(/\s/g, '')}PartyAddress1`, _.get(N1, 'N3.addressInformation'))
+              _.set(po, `${role.replace(/\s/g, '')}PartyAddress2`, _.get(N1, 'N3.additionalAddressInformation'))
+              _.set(po, `${role.replace(/\s/g, '')}PartyStateCode`, _.get(N1, 'N4.stateOrProvinceCode'))
+              _.set(po, `${role.replace(/\s/g, '')}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
+              _.set(po, `${role.replace(/\s/g, '')}PartyStateZip`, _.get(N1, 'N4.postalCode'))
             }
           }
-          if (moreParty.length) {
-            _.set(flexData, 'data.moreParty', moreParty)
-          }
         }
-        const moreDate = []
         if (_.get(jsonData, 'ISA.createdDate') && _.get(jsonData, 'ISA.createdTime')) {
           const datetime = moment.utc(`${_.get(jsonData, 'ISA.createdDate')} ${_.get(jsonData, 'ISA.createdTime')}`)
-          moreDate.push('ediCreated')
-          _.set(flexData, 'data.ediCreatedDateActual', datetime)
+          _.set(po, 'ediCreatedDateActual', datetime)
         }
         if (_.get(jsonData, 'GS.dataInterchangeDate') && _.get(jsonData, 'GS.dataInterchangeTime')) {
           const datetime = moment.utc(`${_.get(jsonData, 'GS.dataInterchangeDate')} ${_.get(jsonData, 'GS.dataInterchangeTime')}`)
-          moreDate.push('dataInterchange')
-          _.set(flexData, 'data.dataInterchangeDateActual', datetime)
+          _.set(po, 'dataInterchangeDateActual', datetime)
         }
-        if (_.get(ST, 'DTM.promoStart'))
+        if (_.get(ST, 'promoStart'))
         {
           const datetime = moment.utc(_.get(ST, 'DTM.promoStart'))
-          moreDate.push('promoStart')
-          _.set(flexData, 'data.promoStart', datetime)
+          _.set(po, 'promoStart', datetime)
         }
         if (_.get(ST, 'DTM.lastArrive'))
         {
           const datetime = moment.utc(_.get(ST, 'DTM.lastArrive'))
-          moreDate.push('lastArrive')
-          _.set(flexData, 'data.lastArrive', datetime)
-        }
-        if (Object.keys(flexData).length > 0) {
-          _.set(po, `flexData`, flexData)
-        }
-        if (moreDate.length) {
-          _.set(flexData, 'data.moreDate', moreDate)
+          _.set(po, 'lastArrive', datetime)
         }
 
         poList.push(po)
