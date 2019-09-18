@@ -19,7 +19,6 @@ import {
 
 const query = new QueryDef(
   new Query({
-
     $select: [
       new ResultColumn(new ColumnExpression('booking', '*')),
 
@@ -95,7 +94,10 @@ const query = new QueryDef(
         table: new FromTable({
           table: new Query({
             $select: [
-              new ResultColumn(new ColumnExpression('booking_container', 'bookingId'), 'booking_container_bookingId'),
+              new ResultColumn(
+                new ColumnExpression('booking_container', 'bookingId'),
+                'booking_container_bookingId'
+              ),
               new ResultColumn(
                 new FunctionExpression(
                   'group_concat',
@@ -173,7 +175,10 @@ const query = new QueryDef(
         table: new FromTable({
           table: new Query({
             $select: [
-              new ResultColumn(new ColumnExpression('booking_popacking', 'bookingId'), 'booking_popacking_bookingId'),
+              new ResultColumn(
+                new ColumnExpression('booking_popacking', 'bookingId'),
+                'booking_popacking_bookingId'
+              ),
               new ResultColumn(
                 new FunctionExpression('SUM', new ColumnExpression('booking_popacking', 'volume')),
                 'volume'
@@ -233,7 +238,10 @@ const query = new QueryDef(
         table: new FromTable({
           table: new Query({
             $select: [
-              new ResultColumn(new ColumnExpression('booking_reference', 'bookingId'), 'booking_reference_bookingId'),
+              new ResultColumn(
+                new ColumnExpression('booking_reference', 'bookingId'),
+                'booking_reference_bookingId'
+              ),
               new ResultColumn(
                 new FunctionExpression(
                   'group_concat',
@@ -293,31 +301,41 @@ const query = new QueryDef(
         operator: 'LEFT',
         table: new FromTable({
           table: new Query({
-
             $select: [
               new ResultColumn(new ColumnExpression('workflow', 'tableName')),
               new ResultColumn(new ColumnExpression('workflow', 'primaryKey')),
-              new ResultColumn(new FunctionExpression('ANY_VALUE', new ColumnExpression('workflow', 'statusName')), 'lastStatus'),
-              new ResultColumn(new FunctionExpression('ANY_VALUE', new ColumnExpression('workflow', 'statusDate')), 'lastStatusDate'),
-              new ResultColumn(new FunctionExpression('ANY_VALUE', new ColumnExpression('flex_data', 'data')), 'data'),
+              new ResultColumn(
+                new FunctionExpression('ANY_VALUE', new ColumnExpression('workflow', 'statusName')),
+                'lastStatus'
+              ),
+              new ResultColumn(
+                new FunctionExpression('ANY_VALUE', new ColumnExpression('workflow', 'statusDate')),
+                'lastStatusDate'
+              ),
+              new ResultColumn(
+                new FunctionExpression('ANY_VALUE', new ColumnExpression('flex_data', 'data')),
+                'data'
+              ),
             ],
 
-            $from: new FromTable(new Query({
-
-              $select: [
-                new ResultColumn(new ColumnExpression('workflow', 'tableName')),
-                new ResultColumn(new ColumnExpression('workflow', 'primaryKey')),
-                new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('workflow', 'statusDate')), 'lastStatusDate')
-
-              ],
-              $from: new FromTable('workflow'),
-              $group: new GroupBy([
-                new ColumnExpression('workflow', 'tableName'),
-                new ColumnExpression('workflow', 'primaryKey'),
-                // new ColumnExpression('workflow', 'statusName'),
-              ])
-
-            }), 't1',
+            $from: new FromTable(
+              new Query({
+                $select: [
+                  new ResultColumn(new ColumnExpression('workflow', 'tableName')),
+                  new ResultColumn(new ColumnExpression('workflow', 'primaryKey')),
+                  new ResultColumn(
+                    new FunctionExpression('MAX', new ColumnExpression('workflow', 'statusDate')),
+                    'lastStatusDate'
+                  ),
+                ],
+                $from: new FromTable('workflow'),
+                $group: new GroupBy([
+                  new ColumnExpression('workflow', 'tableName'),
+                  new ColumnExpression('workflow', 'primaryKey'),
+                  // new ColumnExpression('workflow', 'statusName'),
+                ]),
+              }),
+              't1',
 
               {
                 operator: 'LEFT',
@@ -325,13 +343,19 @@ const query = new QueryDef(
 
                 $on: [
                   new BinaryExpression(
-                    new ColumnExpression('t1', 'tableName'), '=', new ColumnExpression('workflow', 'tableName')
+                    new ColumnExpression('t1', 'tableName'),
+                    '=',
+                    new ColumnExpression('workflow', 'tableName')
                   ),
                   new BinaryExpression(
-                    new ColumnExpression('t1', 'lastStatusDate'), '=', new ColumnExpression('workflow', 'statusDate')
+                    new ColumnExpression('t1', 'lastStatusDate'),
+                    '=',
+                    new ColumnExpression('workflow', 'statusDate')
                   ),
                   new BinaryExpression(
-                    new ColumnExpression('t1', 'primaryKey'), '=', new ColumnExpression('workflow', 'primaryKey')
+                    new ColumnExpression('t1', 'primaryKey'),
+                    '=',
+                    new ColumnExpression('workflow', 'primaryKey')
                   ),
                 ],
               },
@@ -351,12 +375,11 @@ const query = new QueryDef(
                   ),
                 ],
               }
-
             ),
 
             $group: new GroupBy([
               new ColumnExpression('workflow', 'tableName'),
-              new ColumnExpression('workflow', 'primaryKey')
+              new ColumnExpression('workflow', 'primaryKey'),
             ]),
           }),
           $as: 'finalWorkflow',
@@ -378,12 +401,30 @@ query.register('noOfBookings', {
   expression: new FunctionExpression({
     name: 'COUNT',
     parameters: new ParameterExpression({
-      prefix: 'DISTINCT',
+
+      // cannot use distinct while using *
+      // prefix: 'DISTINCT',
       expression: new ColumnExpression('*'),
     }),
   }),
   $as: 'noOfBookings',
 })
+
+// used createdAt as jobMonth
+query.register('jobMonth', {
+  expression: new FunctionExpression({
+    name: 'DATE_FORMAT',
+    parameters: [new ColumnExpression('booking', 'createdAt'), '%y-%m'],
+  }),
+  $as: 'jobMonth',
+})
+
+query
+  .register(
+    'primaryKeyListString',
+    new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ColumnExpression('booking', 'id')), 'primaryKeyListString'))
+
+// ------------- register filter
 
 query
   .register(
@@ -483,15 +524,6 @@ query
     })
   )
   .register('value', 0)
-
-// used createdAt as jobMonth
-query.register('jobMonth', {
-  expression: new FunctionExpression({
-    name: 'DATE_FORMAT',
-    parameters: [new ColumnExpression('booking', 'createdAt'), '%y-%m'],
-  }),
-  $as: 'jobMonth',
-})
 
 query
   .register(

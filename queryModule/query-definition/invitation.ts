@@ -25,17 +25,6 @@ const query = new QueryDef(
           ),
         ],
       },
-      {
-        operator: 'LEFT',
-        table: 'token',
-        $on: [
-          new BinaryExpression(
-            new ColumnExpression('token', 'id'),
-            '=',
-            new ColumnExpression('invitation', 'tokenId')
-          ),
-        ],
-      }
     ),
   })
 )
@@ -102,8 +91,6 @@ query.register(
       new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
       new IsNullExpression(new ColumnExpression('person', 'deletedBy'), false),
       new IsNullExpression(new ColumnExpression('person', 'deletedBy'), false),
-      new IsNullExpression(new ColumnExpression('token', 'deletedBy'), false),
-      new IsNullExpression(new ColumnExpression('token', 'deletedBy'), false),
     ],
   })
 )

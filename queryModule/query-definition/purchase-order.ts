@@ -24,7 +24,7 @@ const query = new QueryDef(
       new ResultColumn(new ColumnExpression('flex_data', 'data')),
       new ResultColumn(new ColumnExpression('purchase_order_item', '*')),
       // avoid id being overwritten
-      new ResultColumn(new ColumnExpression('purchase_order', 'id'), 'purchaseOrderId')
+      new ResultColumn(new ColumnExpression('purchase_order', 'id'), 'purchaseOrderId'),
     ],
     $distinct: true,
     $from: new FromTable(
@@ -33,7 +33,11 @@ const query = new QueryDef(
         operator: 'LEFT',
         table: 'flex_data',
         $on: [
-          new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'purchase_order'),
+          new BinaryExpression(
+            new ColumnExpression('flex_data', 'tableName'),
+            '=',
+            'purchase_order'
+          ),
           new BinaryExpression(
             new ColumnExpression('purchase_order', 'id'),
             '=',
@@ -52,7 +56,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('product', 'productCode'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'productCode'
@@ -62,7 +66,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('product', 'name'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'productName'
@@ -72,7 +76,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('product', 'skuCode'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'productSkuCode'
@@ -82,7 +86,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('product', 'description'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'productDesctiption'
@@ -92,7 +96,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('product_category', 'name'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'productCategoryName'
@@ -102,7 +106,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('product_category', 'description'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'productCategoryDesctiption'
@@ -112,7 +116,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('purchase_order_item', 'htsCode'),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'htsCode'
@@ -130,9 +134,9 @@ const query = new QueryDef(
                       new ColumnExpression('purchase_order_item', 'lwhUnit'),
                       ' x ',
                       new ColumnExpression('purchase_order_item', 'height'),
-                      new ColumnExpression('purchase_order_item', 'lwhUnit'),
+                      new ColumnExpression('purchase_order_item', 'lwhUnit')
                     ),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'lwh'
@@ -145,18 +149,15 @@ const query = new QueryDef(
                       'concat',
                       new ColumnExpression('purchase_order_item', 'ctnFrom'),
                       ' - ',
-                      new ColumnExpression('purchase_order_item', 'ctnTo'),
+                      new ColumnExpression('purchase_order_item', 'ctnTo')
                     ),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'ctn'
               ),
               new ResultColumn(
-                new FunctionExpression(
-                  'SUM',
-                  new ColumnExpression('purchase_order_item', 'ctns')
-                ),
+                new FunctionExpression('SUM', new ColumnExpression('purchase_order_item', 'ctns')),
                 'totalCtns'
               ),
               new ResultColumn(
@@ -166,15 +167,27 @@ const query = new QueryDef(
                     expression: new FunctionExpression(
                       'concat',
                       new ColumnExpression('purchase_order_item', 'grossWeight'),
-                      new ColumnExpression('purchase_order_item', 'weightUnit'),
+                      new ColumnExpression('purchase_order_item', 'weightUnit')
                     ),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'weight'
               ),
-              new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('purchase_order_item', 'grossWeight')), 'totalGrossWeight'),
-              new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('purchase_order_item', 'volume')), 'totalVolume'),
+              new ResultColumn(
+                new FunctionExpression(
+                  'SUM',
+                  new ColumnExpression('purchase_order_item', 'grossWeight')
+                ),
+                'totalGrossWeight'
+              ),
+              new ResultColumn(
+                new FunctionExpression(
+                  'SUM',
+                  new ColumnExpression('purchase_order_item', 'volume')
+                ),
+                'totalVolume'
+              ),
               new ResultColumn(
                 new FunctionExpression(
                   'group_concat',
@@ -182,9 +195,9 @@ const query = new QueryDef(
                     expression: new FunctionExpression(
                       'concat',
                       new ColumnExpression('purchase_order_item', 'quantity'),
-                      new ColumnExpression('purchase_order_item', 'quantityUnit'),
+                      new ColumnExpression('purchase_order_item', 'quantityUnit')
                     ),
-                    suffix: 'SEPARATOR \', \'',
+                    suffix: "SEPARATOR ', '",
                   })
                 ),
                 'quantity'
@@ -197,46 +210,58 @@ const query = new QueryDef(
                 'totalQuantity'
               ),
             ],
-            $from: new FromTable('purchase_order_item', 'purchase_order_item', {
-              operator: 'LEFT',
-              table: new FromTable('flex_data', 'flex_data'),
-              $on: [
-                new BinaryExpression(
-                  new ColumnExpression('flex_data', 'tableName'),
-                  '=',
-                  'purchase_order_item'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('flex_data', 'primaryKey'),
-                  '=',
-                  new ColumnExpression('purchase_order_item', 'id')
-                ),
-              ],
-            }, {
-              operator: 'LEFT',
-              table: new FromTable('product', 'product'),
-              $on: [
-                new BinaryExpression(
-                  new ColumnExpression('purchase_order_item', 'productId'),
-                  '=',
-                  new ColumnExpression('product', 'id'),
-                ),
-              ],
-            }, {
-              operator: 'LEFT',
-              table: new FromTable('product_category', 'product_category'),
-              $on: [
-                new BinaryExpression(
-                  new ColumnExpression('product', 'productCategoryId'),
-                  '=',
-                  new ColumnExpression('product_category', 'id'),
-                ),
-              ],
-            }),
+            $from: new FromTable(
+              'purchase_order_item',
+              'purchase_order_item',
+              {
+                operator: 'LEFT',
+                table: new FromTable('flex_data', 'flex_data'),
+                $on: [
+                  new BinaryExpression(
+                    new ColumnExpression('flex_data', 'tableName'),
+                    '=',
+                    'purchase_order_item'
+                  ),
+                  new BinaryExpression(
+                    new ColumnExpression('flex_data', 'primaryKey'),
+                    '=',
+                    new ColumnExpression('purchase_order_item', 'id')
+                  ),
+                ],
+              },
+              {
+                operator: 'LEFT',
+                table: new FromTable('product', 'product'),
+                $on: [
+                  new BinaryExpression(
+                    new ColumnExpression('purchase_order_item', 'productId'),
+                    '=',
+                    new ColumnExpression('product', 'id')
+                  ),
+                ],
+              },
+              {
+                operator: 'LEFT',
+                table: new FromTable('product_category', 'product_category'),
+                $on: [
+                  new BinaryExpression(
+                    new ColumnExpression('product', 'productCategoryId'),
+                    '=',
+                    new ColumnExpression('product_category', 'id')
+                  ),
+                ],
+              }
+            ),
             $where: new AndExpressions({
               expressions: [
-                new IsNullExpression(new ColumnExpression('purchase_order_item', 'deletedAt'), false),
-                new IsNullExpression(new ColumnExpression('purchase_order_item', 'deletedBy'), false),
+                new IsNullExpression(
+                  new ColumnExpression('purchase_order_item', 'deletedAt'),
+                  false
+                ),
+                new IsNullExpression(
+                  new ColumnExpression('purchase_order_item', 'deletedBy'),
+                  false
+                ),
                 new IsNullExpression(new ColumnExpression('flex_data', 'deletedAt'), false),
                 new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
               ],

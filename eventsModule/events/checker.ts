@@ -5,13 +5,11 @@ import { Transaction } from 'sequelize'
 import { stringify } from 'querystring'
 
 interface CheckerObject {
-
   resultName: string
   checkerFunction: Function
 }
 
 interface CheckerObjectResult {
-
   resultName: string
   result: any
 }
@@ -30,10 +28,7 @@ class CheckerEvent extends BaseEvent {
     super(parameters, eventConfig, repo, eventService, allService, user, transaction)
   }
 
-  runCheckerFunction(
-    checkerObject: CheckerObject,
-    parameters: any
-  ) {
+  runCheckerFunction(checkerObject: CheckerObject, parameters: any) {
     const checkerFunction = checkerObject.checkerFunction as Function
     const resultName = checkerObject.resultName as string
     // if checkerFunction is not provided, use checkerFunctionName is find function from checkerFunctionMap
@@ -52,7 +47,6 @@ class CheckerEvent extends BaseEvent {
   }
 
   public async mainFunction(parameters: any) {
-
     const checkerResult = {}
     if (!parameters.checker) {
       throw new Error('checker param is not found in checker Event')
@@ -61,10 +55,11 @@ class CheckerEvent extends BaseEvent {
     const checkerList = parameters['checker']
 
     checkerList.forEach((checkerObject: CheckerObject) => {
-
-      const checkerObjectResult = this.runCheckerFunction(checkerObject, parameters) as CheckerObjectResult
+      const checkerObjectResult = this.runCheckerFunction(
+        checkerObject,
+        parameters
+      ) as CheckerObjectResult
       checkerResult[checkerObjectResult.resultName] = checkerObjectResult.result
-
     })
 
     // remove checker from parameters
@@ -76,7 +71,7 @@ class CheckerEvent extends BaseEvent {
 }
 
 export default {
-  execute: async(
+  execute: async (
     parameters: any,
     eventConfig: EventConfig,
     repo: string,

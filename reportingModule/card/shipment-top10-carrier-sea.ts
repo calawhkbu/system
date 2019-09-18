@@ -9,29 +9,39 @@ import {
     OrderBy,
     JoinClause,
     BinaryExpression,
-    IsNullExpression,
-    AndExpressions,
 } from 'node-jql'
 
 import { parseCode } from 'utils/function'
 
 function prepareTop10Params(): Function {
+
     return function(require, session, params) {
+
+        const { Resultset } = require('node-jql-core')
+        const {
+
+            OrderBy,
+            ColumnExpression,
+            CreateTableJQL,
+            InsertJQL,
+            FromTable,
+            InExpression,
+            BetweenExpression,
+            FunctionExpression,
+            BinaryExpression,
+            GroupBy,
+            Query,
+            ResultColumn,
+        } = require('node-jql')
+
         // import
         const { BadRequestException } = require('@nestjs/common')
-
         const moment = require('moment')
-
         // script
         const subqueries = (params.subqueries = params.subqueries || {})
 
         // set daterange be this year if date is not given
-
-        console.log('before')
-        console.log(params)
-
-        if (!subqueries.date)
-        {
+        if (!subqueries.date) {
             const year = moment().year()
             subqueries.date = {}
             subqueries.date.from = moment()
@@ -43,39 +53,32 @@ function prepareTop10Params(): Function {
                 .year(year)
                 .endOf('year')
                 .format('YYYY-MM-DD')
-
         }
 
         subqueries.moduleType = {
-            value : 'SEA'
+            value: 'SEA'
         }
+
+        params.fields = ['carrierCode', 'cbmTotal']
+        params.sorting = new OrderBy('cbmTotal', 'DESC')
+
+        params.groupBy = ['carrierCode']
+        params.limit = 10
 
         return params
     }
+
 }
 
-function prepareTop10table(): CreateTableJQL
-{
+function prepareTop10table(): CreateTableJQL {
 
     return new CreateTableJQL({
 
-        $temporary : true,
+        $temporary: true,
+        name: 'top10',
 
-        name : 'top10',
-        $as : new Query({
+        $as: new Query({
 
-            $select: [
-                new ResultColumn(new ColumnExpression('shipment', 'carrierCode')),
-
-                new ResultColumn(
-                    new FunctionExpression(
-                        'IFNULL',
-                        new FunctionExpression('SUM', new ColumnExpression('shipment', 'cbm')),
-                        0
-                    ),
-                    'totalCbm'
-                ),
-            ],
             $from: new FromTable(
                 {
                     method: 'POST',
@@ -87,7 +90,7 @@ function prepareTop10table(): CreateTableJQL
                             type: 'string',
                         },
                         {
-                            name: 'cbm',
+                            name: 'cbmTotal',
                             type: 'number',
                         },
                     ],
@@ -95,14 +98,6 @@ function prepareTop10table(): CreateTableJQL
                 },
                 'shipment'
             ),
-
-            $where : new IsNullExpression(new ColumnExpression('shipment', 'carrierCode'), true),
-
-            $group: new GroupBy([new ColumnExpression('shipment', 'carrierCode')]),
-
-            $order: [new OrderBy(new ColumnExpression('totalCbm'), 'DESC')],
-
-            $limit : 10
 
         })
 
@@ -115,11 +110,7 @@ export default [
 
     new Query({
 
-        $from : 'top10',
+        $from: 'top10',
 
-        // $order: [new OrderBy(new ColumnExpression('top10', 'totalCbm'), 'DESC')],
-
-        // $limit : 10
     })
-
 ]

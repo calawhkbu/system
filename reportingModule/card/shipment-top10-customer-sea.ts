@@ -1,266 +1,235 @@
 import {
-    ColumnExpression,
-    CreateTableJQL,
-    FromTable,
-    FunctionExpression,
-    GroupBy,
-    Query,
-    ResultColumn,
-    OrderBy,
-    JoinClause,
-    BinaryExpression,
+  ColumnExpression,
+  CreateTableJQL,
+  FromTable,
+  FunctionExpression,
+  GroupBy,
+  Query,
+  ResultColumn,
+  OrderBy,
+  JoinClause,
+  BinaryExpression,
 } from 'node-jql'
 
 import { parseCode } from 'utils/function'
 
 function prepareTop10Params(): Function {
-    return function(require, session, params) {
 
-        const { Resultset } = require('node-jql-core')
-        const {
-            ColumnExpression,
-            CreateTableJQL,
-            InsertJQL,
-            FromTable,
-            InExpression,
-            BetweenExpression,
-            FunctionExpression,
-            BinaryExpression,
-            GroupBy,
-            Query,
-            ResultColumn,
-        } = require('node-jql')
-        const moment = require('moment')
-        // script
-        const subqueries = (params.subqueries = params.subqueries || {})
+  return function(require, session, params) {
 
-        // set daterange be this year if date is not given
+    const { Resultset } = require('node-jql-core')
+    const {
 
-        console.log('before')
-        console.log(params)
+      OrderBy,
+      ColumnExpression,
+      CreateTableJQL,
+      InsertJQL,
+      FromTable,
+      InExpression,
+      BetweenExpression,
+      FunctionExpression,
+      BinaryExpression,
+      GroupBy,
+      Query,
+      ResultColumn,
+    } = require('node-jql')
 
-        if (!subqueries.date)
-        {
-            const year = moment().year()
-            subqueries.date = {}
-            subqueries.date.from = moment()
-                .year(year)
-                .startOf('year')
-                .format('YYYY-MM-DD')
+    // import
+    const { BadRequestException } = require('@nestjs/common')
+    const moment = require('moment')
+    // script
+    const subqueries = (params.subqueries = params.subqueries || {})
 
-            subqueries.date.to = moment()
-                .year(year)
-                .endOf('year')
-                .format('YYYY-MM-DD')
+    // set daterange be this year if date is not given
+    if (!subqueries.date) {
+      const year = moment().year()
+      subqueries.date = {}
+      subqueries.date.from = moment()
+        .year(year)
+        .startOf('year')
+        .format('YYYY-MM-DD')
 
-        }
-
-        subqueries.moduleType = {
-
-            value : 'SEA'
-        }
-
-        return params
+      subqueries.date.to = moment()
+        .year(year)
+        .endOf('year')
+        .format('YYYY-MM-DD')
     }
-}
 
-function prepareTop10table(): CreateTableJQL
-{
+    subqueries.moduleType = {
+      value: 'SEA'
+    }
 
-    return new CreateTableJQL({
+    params.fields = ['controllingCustomerPartyCode', 'cbmTotal']
 
-        $temporary : true,
+    params.sorting = new OrderBy('cbmTotal', 'DESC')
 
-        name : 'top10',
-        $as : new Query({
+    params.groupBy = ['controllingCustomerPartyCode']
+    params.limit = 10
 
-            $select: [
-                new ResultColumn(new ColumnExpression('shipment', 'controllingCustomerPartyCode')),
-
-                new ResultColumn(
-                    new FunctionExpression(
-                        'IFNULL',
-                        new FunctionExpression('SUM', new ColumnExpression('shipment', 'cbm')),
-                        0
-                    ),
-                    'totalCbm'
-                ),
-            ],
-            $from: new FromTable(
-                {
-                    method: 'POST',
-                    url: 'api/shipment/query/shipment',
-                    columns: [
-
-                        {
-                            name: 'controllingCustomerPartyCode',
-                            type: 'string',
-                        },
-                        {
-                            name: 'cbm',
-                            type: 'number',
-                        },
-                    ],
-
-                },
-                'shipment'
-            ),
-
-            $group: new GroupBy([new ColumnExpression('shipment', 'controllingCustomerPartyCode')]),
-
-            $order: [new OrderBy(new ColumnExpression('totalCbm'), 'DESC')],
-
-            $limit : 10
-
-        })
-
-    })
+    return params
+  }
 
 }
 
 function preparePartyParams(): Function {
+  return async function(require, session, params) {
+    const { Resultset } = require('node-jql-core')
+    const {
+      ColumnExpression,
+      CreateTableJQL,
+      InsertJQL,
+      FromTable,
+      InExpression,
+      BetweenExpression,
+      FunctionExpression,
+      BinaryExpression,
+      GroupBy,
+      Query,
+      ResultColumn,
+    } = require('node-jql')
+    const moment = require('moment')
 
-    return async function(require, session, params)
-    {
+    const top10Result = new Resultset(await session.query(new Query('top10'))).toArray()
 
-        const { Resultset } = require('node-jql-core')
-        const {
-            ColumnExpression,
-            CreateTableJQL,
-            InsertJQL,
-            FromTable,
-            InExpression,
-            BetweenExpression,
-            FunctionExpression,
-            BinaryExpression,
-            GroupBy,
-            Query,
-            ResultColumn,
-        } = require('node-jql')
-        const moment = require('moment')
+    // script
+    const subqueries = (params.subqueries = params.subqueries || {})
 
-        const top10Result = new Resultset(await session.query(new Query('top10'))).toArray()
-
-        // script
-        const subqueries = (params.subqueries = params.subqueries || {})
-
-        return params
-
-    }
-
+    return params
+  }
 }
 
 // table for getting party
-function preparePartyTable(): Function
-{
+function preparePartyTable(): Function {
+  return function(require, session, params) {
+    const { Resultset } = require('node-jql-core')
+    const {
+      ColumnExpression,
+      CreateTableJQL,
+      InsertJQL,
+      FromTable,
+      InExpression,
+      BetweenExpression,
+      FunctionExpression,
+      BinaryExpression,
+      GroupBy,
+      Query,
+      ResultColumn,
+    } = require('node-jql')
+    const moment = require('moment')
 
-    return function(require, session, params) {
+    return new CreateTableJQL({
+      $temporary: true,
 
-        const { Resultset } = require('node-jql-core')
-        const {
-            ColumnExpression,
-            CreateTableJQL,
-            InsertJQL,
-            FromTable,
-            InExpression,
-            BetweenExpression,
-            FunctionExpression,
-            BinaryExpression,
-            GroupBy,
-            Query,
-            ResultColumn,
-        } = require('node-jql')
-        const moment = require('moment')
+      name: 'party',
+      $as: new Query({
+        $select: [
+          new ResultColumn(new ColumnExpression('party', 'id')),
+          new ResultColumn(new ColumnExpression('party', 'name')),
+          new ResultColumn(new ColumnExpression('party', 'erpCode')),
+        ],
+        $from: new FromTable(
+          {
+            method: 'POST',
+            url: 'api/party/query/party',
+            columns: [
+              {
+                name: 'id',
+                type: 'number',
+              },
 
-        return new CreateTableJQL({
+              {
+                name: 'name',
+                type: 'string',
+              },
 
-            $temporary : true,
+              {
+                name: 'thirdPartyCode',
+                type: 'string',
+              },
 
-            name : 'party',
-            $as : new Query({
+              {
+                name: 'erpCode',
+                type: 'string',
+              },
+            ],
 
-                $select: [
+            data: {
+              subqueries: {
+                erpCode: true,
+              },
+              // include jobMonth from the table
+              fields: ['erpCode', 'party.*'],
+            },
+          },
+          'party'
+        ),
+      }),
+    })
+  }
+}
 
-                    new ResultColumn(new ColumnExpression('party', 'id')),
-                    new ResultColumn(new ColumnExpression('party', 'name')),
-                    new ResultColumn(new ColumnExpression('party', 'erpCode')),
+function prepareTop10Table() {
 
-                ],
-                $from: new FromTable(
-                    {
-                        method: 'POST',
-                        url: 'api/party/query/party',
-                        columns: [
+  return new CreateTableJQL({
 
-                            {
-                                name: 'id',
-                                type: 'number',
-                            },
+    $temporary: true,
+    name: 'test',
 
-                            {
-                                name: 'name',
-                                type: 'string',
-                            },
+    $as: new Query({
 
-                            {
-                                name: 'thirdPartyCode',
-                                type: 'string',
-                            },
+      $from: new FromTable(
+        {
+          method: 'POST',
+          url: 'api/shipment/query/shipment',
+          columns: [
 
-                            {
-                                name: 'erpCode',
-                                type: 'string',
-                            },
+            {
+              name: 'controllingCustomerPartyCode',
+              type: 'string',
+            },
+            {
+              name: 'cbmTotal',
+              type: 'number',
+            },
+          ],
 
-                        ],
+        },
+        'shipment'
+      ),
 
-                        data: {
-                            subqueries: {
+    })
 
-                                erpCode: true,
-
-                            },
-                            // include jobMonth from the table
-                            fields: ['erpCode', 'party.*'],
-                        },
-
-                    },
-                    'party'
-                ),
-
-            })
-
-        })
-
-    }
+  })
 
 }
 
 export default [
+  [prepareTop10Params(), prepareTop10Table()],
+  [preparePartyParams(), preparePartyTable()],
 
-    [prepareTop10Params(), prepareTop10table()],
-    [preparePartyParams(), preparePartyTable()],
+  new Query({
+    $select: [
+      new ResultColumn(new ColumnExpression('top10', 'cbmTotal')),
+      new ResultColumn(
+        new FunctionExpression(
+          'IFNULL',
+          new ColumnExpression('party', 'name'),
+          new ColumnExpression('top10', 'controllingCustomerPartyCode')
+        ),
+        'partyName'
+      ),
+    ],
 
-    new Query({
-
-        $select : [
-
-            new ResultColumn(new ColumnExpression('top10', 'totalCbm')),
-            new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('party', 'name'), new ColumnExpression('top10', 'controllingCustomerPartyCode')), 'partyName')
-        ],
-
-        $from : new FromTable('top10', {
-
-            operator : 'LEFT',
-            table : 'party',
-            $on : [
-
-                new BinaryExpression(new ColumnExpression('top10', 'controllingCustomerPartyCode'), '=', new ColumnExpression('party', 'erpCode'))
-
-            ]
-
-        })
-
-    })
-
+    $from: new FromTable('top10', {
+      operator: 'LEFT',
+      table: 'party',
+      $on: [
+        new BinaryExpression(
+          new ColumnExpression('top10', 'controllingCustomerPartyCode'),
+          '=',
+          new ColumnExpression('party', 'erpCode')
+        ),
+      ],
+    }),
+  }),
 ]
