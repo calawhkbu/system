@@ -1947,13 +1947,11 @@ export default class Edi850Parser extends BaseEdiParser {
         }
         if (_.get(ST, 'promoStart'))
         {
-          const datetime = moment.utc(_.get(ST, 'DTM.promoStart'))
-          _.set(po, 'promoStart', datetime)
+          _.set(po, 'promoStart', moment.utc(_.get(ST, 'DTM.promoStart')))
         }
         if (_.get(ST, 'DTM.lastArrive'))
         {
-          const datetime = moment.utc(_.get(ST, 'DTM.lastArrive'))
-          _.set(po, 'lastArrive', datetime)
+          _.set(po, 'lastArrive',  moment.utc(_.get(ST, 'DTM.lastArrive')))
         }
 
         poList.push(po)
