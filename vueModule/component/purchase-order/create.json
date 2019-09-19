@@ -47,12 +47,14 @@
                 }
               ]
             },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "arrow_back"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
+                }
               }
-            }]
+            ]
           },
           {
             "is": "I18nText",

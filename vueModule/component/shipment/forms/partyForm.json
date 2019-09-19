@@ -34,8 +34,22 @@
             "class": "font-110 pink--text"
           }
         },
-        "fixedKeys": ["shipper", "consignee", "agent", "controllingCustomer", "linerAgent", "office"],
-        "alwaysShowKeys": ["shipper", "consignee", "agent", "controllingCustomer", "linerAgent", "office"],
+        "fixedKeys": [
+          "shipper",
+          "consignee",
+          "agent",
+          "controllingCustomer",
+          "linerAgent",
+          "office"
+        ],
+        "alwaysShowKeys": [
+          "shipper",
+          "consignee",
+          "agent",
+          "controllingCustomer",
+          "linerAgent",
+          "office"
+        ],
         "canAdd": true,
         "canAddProps": {
           "class": "xs-12 md-6 padding-20 min-height-200 margin-auto"

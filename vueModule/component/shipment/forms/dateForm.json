@@ -22,16 +22,8 @@
             "class": "font-110 indigo--text"
           }
         },
-        "fixedKeys": [
-          "departure",
-          "oceanBill",
-          "arrival"
-        ],
-        "alwaysShowKeys": [
-          "departure",
-          "oceanBill",
-          "arrival"
-        ],
+        "fixedKeys": ["departure", "oceanBill", "arrival"],
+        "alwaysShowKeys": ["departure", "oceanBill", "arrival"],
         "canAdd": true,
         "canAddProps": {
           "class": "xs-12 padding-20 min-height-200 margin-auto"
@@ -42,7 +34,6 @@
             "name": "{{flex}}{{key}}DateEstimated",
             "component": "DateTimePicker",
 
-            
             "class": "xs-12 md-6",
             "props": {
               "type": "datetime",
@@ -56,7 +47,7 @@
             "name": "{{flex}}{{key}}DateActual",
             "component": "DateTimePicker",
             "class": "xs-12 md-6",
-            
+
             "props": {
               "type": "datetime",
               "utc": true,

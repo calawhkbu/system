@@ -83,7 +83,6 @@
         "class": "xs-12 md-8 padding-left-8 padding-right-8"
       },
       "slots": [
-
         {
           "is": "DynamicComponent",
           "props": {
@@ -103,7 +102,6 @@
                         {
                           "is": "MouseHidden",
                           "slots": [
-
                             {
                               "is": "DynamicComponent",
                               "props": {
@@ -264,7 +262,6 @@
                         {
                           "is": "v-spacer"
                         }
-
                       ]
                     }
                   },

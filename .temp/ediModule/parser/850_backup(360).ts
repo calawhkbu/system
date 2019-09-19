@@ -16,8 +16,8 @@ const _ = require('lodash')
 
 export const formatJson = {
   removeCharacter: ['\r', '\n', '\r\n', '=', 'o'],
-  segmentSeperator : ['?'],
-  elementSeperator : [''],
+  segmentSeperator: ['?'],
+  elementSeperator: [''],
 
   // segmentSeperator : ['?'],
   // elementSeperator : '',

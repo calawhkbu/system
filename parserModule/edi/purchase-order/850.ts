@@ -11,8 +11,8 @@ const partyGroupCode = ''
 
 export const formatJson = {
   removeCharacter: ['\r', '\n', '\r\n', '=', 'o'],
-  segmentSeperator : ['?'],
-  elementSeperator : [''],
+  segmentSeperator: ['?'],
+  elementSeperator: [''],
 
   // segmentSeperator : ['?'],
   // elementSeperator : '',
@@ -1787,16 +1787,17 @@ export const formatJson = {
 export default class Edi850Parser extends BaseEdiParser {
   constructor(
     protected readonly allService: {
-      swivelConfigService: SwivelConfigService,
-      outboundService: OutboundService,
-    },
+      swivelConfigService: SwivelConfigService
+      outboundService: OutboundService
+    }
   ) {
     super(allService, {}, { import: { formatJson, ediType: '850' } })
   }
   async import(base64EdiString: string): Promise<any> {
     const { jsonData, errorList } = await super.import(base64EdiString)
     const poList: any[] = []
-    if (!jsonData || jsonData.length === 0) {// undefined or empty array
+    if (!jsonData || jsonData.length === 0) {
+      // undefined or empty array
       return jsonData
     }
     const sts = _.get(jsonData, 'ST', []) || []
@@ -1820,14 +1821,14 @@ export default class Edi850Parser extends BaseEdiParser {
             ? moment.utc(_.get(ST, 'DTM.requestedShipDateFromSupplierWarehouse')).toDate()
             : null,
           flexData: null,
-          purchaseOrderItems: this.getPurchaseOrderItems(_.get(ST, 'PO1', []) || [])
+          purchaseOrderItems: this.getPurchaseOrderItems(_.get(ST, 'PO1', []) || []),
         }
         const flexData = {}
         const n1s = _.get(ST, 'N1', []) || []
         if (n1s.length) {
           const partyMapper = {
             'Ship From': 'shipper',
-            'Ship To': 'shipTo'
+            'Ship To': 'shipTo',
           }
           const moreParty = []
           for (const N1 of n1s) {
@@ -1857,12 +1858,16 @@ export default class Edi850Parser extends BaseEdiParser {
         }
         const moreDate = []
         if (_.get(jsonData, 'ISA.createdDate') && _.get(jsonData, 'ISA.createdTime')) {
-          const datetime = moment.utc(`${_.get(jsonData, 'ISA.createdDate')} ${_.get(jsonData, 'ISA.createdTime')}`)
+          const datetime = moment.utc(
+            `${_.get(jsonData, 'ISA.createdDate')} ${_.get(jsonData, 'ISA.createdTime')}`
+          )
           moreDate.push('ediCreated')
           _.set(flexData, 'data.ediCreatedDateActual', datetime)
         }
         if (_.get(jsonData, 'GS.createdDate') && _.get(jsonData, 'GS.createdTime')) {
-          const datetime = moment.utc(`${_.get(jsonData, 'GS.createdDate')} ${_.get(jsonData, 'GS.createdTime')}`)
+          const datetime = moment.utc(
+            `${_.get(jsonData, 'GS.createdDate')} ${_.get(jsonData, 'GS.createdTime')}`
+          )
           moreDate.push('dataInterchange')
           _.set(flexData, 'data.dataInterchangeDateActual', datetime)
         }
@@ -1882,8 +1887,11 @@ export default class Edi850Parser extends BaseEdiParser {
   private getPurchaseOrderItems(po1: any[] = []) {
     const purchaseOrderItems: any[] = []
     if (po1 && Array.isArray(po1) && po1.length) {
-      for (const PO1 of po1) { // k<po1.length
-        const productCode = _.get(PO1, 'productId1', '').substr(3, 12).trim()
+      for (const PO1 of po1) {
+        // k<po1.length
+        const productCode = _.get(PO1, 'productId1', '')
+          .substr(3, 12)
+          .trim()
         const poItem = {
           itemKey: _.get(PO1, 'poLineNumber'),
           quantity: Number(_.get(PO1, 'quantityOrdered')),
@@ -1892,18 +1900,20 @@ export default class Edi850Parser extends BaseEdiParser {
           htsCode: _.get(PO1, 'SLN.productId2'),
           product: {
             productCode,
-            name: _.get(PO1, 'PID.description', '').substr(0, 20).trim(),
+            name: _.get(PO1, 'PID.description', '')
+              .substr(0, 20)
+              .trim(),
             definition: [
               { fieldName: 'colour', type: 'string' },
-              { fieldName: 'material', type: 'string' }
-            ]
+              { fieldName: 'material', type: 'string' },
+            ],
           },
           flexData: {
             data: {
               colour: _.get(PO1, 'productId1', '').substr(15, 3),
-              material: _.get(PO1, 'productId1', '').substr(18, 6)
-            }
-          }
+              material: _.get(PO1, 'productId1', '').substr(18, 6),
+            },
+          },
         }
         purchaseOrderItems.push(poItem)
       }

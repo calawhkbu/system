@@ -40,7 +40,6 @@ function prepareBookingParams(): Function {
 
     // get the primaryKeyList
     if (!subqueries.primaryKeyListString && subqueries.primaryKeyListString !== '')
-
       throw new BadRequestException('MISSING_primaryKeyListString')
 
     const primaryKeyList = subqueries.primaryKeyListString.value.split(',')

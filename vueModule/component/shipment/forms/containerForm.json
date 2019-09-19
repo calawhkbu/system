@@ -5,7 +5,6 @@
       "class": "xs-12",
       "props": {
         "fields": [
-
           {
             "label": "ShipmentPage.billCargos",
             "name": "billCargos",
@@ -129,7 +128,6 @@
                     "type": "string"
                   }
                 }
-
               ]
             }
           }
@@ -148,7 +146,6 @@
             "props": {
               "topLabel": true,
               "fields": [
-
                 {
                   "label": "ShipmentPage.containerNo",
                   "name": "containerNo",
@@ -219,7 +216,6 @@
                   }
                 },
 
-
                 {
                   "label": "ShipmentPage.grossWeight",
                   "name": "grossWeight",
@@ -245,12 +241,9 @@
                   "component": "v-text-field",
                   "props": {
                     "type": "number",
-                    "min" : 0
+                    "min": 0
                   }
                 }
-
-
-
               ]
             }
           }

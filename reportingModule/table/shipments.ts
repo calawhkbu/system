@@ -6,7 +6,6 @@ const query = new Query({
       method: 'POST',
       url: 'api/shipment/query/shipment',
       columns: [
-
         {
           name: 'houseNo',
           type: 'string',
@@ -371,23 +370,23 @@ const query = new Query({
         },
 
         {
-          name : 'rSalesmanCode',
+          name: 'rSalesmanCode',
           type: 'string',
         },
         {
-          name : 'rSalesmanName',
-          type: 'string',
-        },
-
-        {
-          name : 'cSalesmanCode',
+          name: 'rSalesmanName',
           type: 'string',
         },
 
         {
-          name : 'cSalesmanName',
+          name: 'cSalesmanCode',
           type: 'string',
-        }
+        },
+
+        {
+          name: 'cSalesmanName',
+          type: 'string',
+        },
 
         // TODO
       ],

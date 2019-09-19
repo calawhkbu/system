@@ -1226,16 +1226,20 @@ export const formatJson = {
 export default class Edi860Parser extends BaseEdiParser {
   constructor(
     protected readonly allService: {
-      swivelConfigService: SwivelConfigService,
-      outboundService: OutboundService,
-    },
+      swivelConfigService: SwivelConfigService
+      outboundService: OutboundService
+    }
   ) {
-    super(allService, {}, {
-      import: {
-        formatJson,
-        ediType: '860'
+    super(
+      allService,
+      {},
+      {
+        import: {
+          formatJson,
+          ediType: '860',
+        },
       }
-    })
+    )
   }
   async import(base64EdiString: string): Promise<any> {
     // console.log(`import type  : ${this.type}`)
