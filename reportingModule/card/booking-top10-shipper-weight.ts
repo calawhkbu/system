@@ -36,13 +36,12 @@ function prepareParams(): Function {
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    // subqueries.fields = ['booking.*', 'booking_popacking.*']
+    params.fields = ['shipperPartyId', 'weight']
+    params.groupBy = ['shipperPartyId']
 
-    subqueries.fields = ['bookingId']
-
-    // subqueries.groupBy = ['shipperPartyId']
     // subqueries.sorting = [ new OrderBy('weight', 'DESC') ]
-    // subqueries.limit = 9
+
+    params.limit = 10
 
     return params
   }
@@ -68,13 +67,9 @@ function prepareTable(name: string): CreateTableJQL {
             },
             {
               name: 'shipperPartyId',
-              type: 'number',
-            },
-
-            {
-              name: 'shipperPartyName',
               type: 'string',
             },
+
           ],
         },
         name
