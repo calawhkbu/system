@@ -1,0 +1,257 @@
+{
+  "components": [
+    {
+      "is": "WidgetForm",
+      "class": "xs-12",
+      "props": {
+        "fields": [
+          {
+            "label": "ShipmentPage.billCargos",
+            "name": "billCargos",
+            "component": "TableField",
+            "props": {
+              "topLabel": true,
+              "fields": [
+                {
+                  "label": "ShipmentPage.commodity",
+                  "name": "commodity",
+                  "component": "v-text-field",
+                  "props": {
+                    "type": "number",
+                    "min": 0
+                  },
+                  "slots": [
+                    {
+                      "name": "append",
+                      "is": "I18nText",
+                      "props": {
+                        "i18nKey": "commodity"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "label": "ShipmentPage.quantity",
+                  "name": "quantity",
+                  "component": "v-text-field",
+                  "props": {
+                    "type": "number",
+                    "min": 0
+                  }
+                },
+                {
+                  "label": "BookingPage.quantityUnit",
+                  "name": "quantityUnit",
+                  "component": "v-select",
+                  "props": {
+                    "items": [
+                      {
+                        "text": "W/C",
+                        "value": "W/C"
+                      },
+                      {
+                        "text": "PCS",
+                        "value": "PCS"
+                      },
+                      {
+                        "text": "M/C",
+                        "value": "M/C"
+                      },
+                      {
+                        "text": "BAG",
+                        "value": "BAG"
+                      },
+                      {
+                        "text": "CASE",
+                        "value": "CASE"
+                      },
+                      {
+                        "text": "PLT",
+                        "value": "PLT"
+                      },
+                      {
+                        "text": "ROLL",
+                        "value": "ROLL"
+                      },
+                      {
+                        "text": "PAIR",
+                        "value": "PAIR"
+                      },
+                      {
+                        "text": "CTN",
+                        "value": "CTN"
+                      }
+                    ]
+                  }
+                },
+
+                {
+                  "label": "ShipmentPage.grossWeight",
+                  "name": "grossWeight",
+                  "component": "v-text-field",
+                  "props": {
+                    "type": "number"
+                  }
+                },
+                {
+                  "label": "ShipmentPage.weightUnit",
+                  "name": "weightUnit",
+                  "component": "v-select",
+                  "props": {
+                    "items": [
+                      {
+                        "text": "KGs",
+                        "value": "KGs"
+                      },
+                      {
+                        "text": "LBs",
+                        "value": "LBs"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "label": "ShipmentPage.cbm",
+                  "name": "cbm",
+                  "component": "v-text-field",
+                  "props": {
+                    "type": "number",
+                    "min": 0
+                  }
+                },
+
+                {
+                  "label": "ShipmentPage.goodsDescription",
+                  "name": "goodsDescription",
+                  "component": "v-text-field",
+                  "props": {
+                    "type": "string"
+                  }
+                },
+
+                {
+                  "label": "ShipmentPage.dimension",
+                  "name": "dimension",
+                  "component": "v-text-field",
+                  "props": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "WidgetForm",
+      "class": "xs-12",
+      "props": {
+        "fields": [
+          {
+            "label": "BookingPage.BookingContainer",
+            "name": "billContainers",
+            "component": "TableField",
+            "props": {
+              "topLabel": true,
+              "fields": [
+                {
+                  "label": "ShipmentPage.containerNo",
+                  "name": "containerNo",
+                  "component": "v-text-field",
+                  "props": {
+                    "color": "blue"
+                  }
+                },
+
+                {
+                  "label": "ShipmentPage.carrierBookingNo",
+                  "name": "carrierBookingNo",
+                  "component": "v-text-field",
+                  "props": {
+                    "color": "blue"
+                  }
+                },
+
+                {
+                  "label": "ShipmentPage.sealNo",
+                  "name": "sealNo1",
+                  "component": "v-text-field"
+                },
+
+                {
+                  "label": "ShipmentPage.containerType",
+                  "name": "containerType",
+                  "component": "AsyncSelect",
+                  "props": {
+                    "item-text": "name",
+                    "item-value": "code",
+                    "axiosParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "CONTTYPE"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+
+                {
+                  "label": "BookingPage.quantity",
+                  "name": "quantity",
+                  "component": "v-text-field",
+                  "props": {
+                    "type": "number",
+                    "min": 0
+                  }
+                },
+
+                {
+                  "label": "BookingPage.quantityUnit",
+                  "name": "quantityUnit",
+                  "component": "v-text-field",
+                  "props": {
+                    "type": "string"
+                  }
+                },
+
+                {
+                  "label": "BookingPage.grossWeight",
+                  "name": "grossWeight",
+                  "component": "v-text-field",
+                  "props": {
+                    "type": "number",
+                    "min": 0
+                  }
+                },
+
+                {
+                  "label": "BookingPage.weightUnit",
+                  "name": "weightUnit",
+                  "component": "v-text-field",
+                  "props": {
+                    "type": "string"
+                  }
+                },
+
+                {
+                  "label": "ShipmentPage.cbm",
+                  "name": "cbm",
+                  "component": "v-text-field",
+                  "props": {
+                    "type": "number",
+                    "min": 0
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

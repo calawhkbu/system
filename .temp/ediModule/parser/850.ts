@@ -2016,9 +2016,7 @@ export default class EdiParser850 extends BaseEdiParser {
               .substr(40, 20)
               .replace(/^[ ]+|[ ]+$/g, '')
             product['color'] = _.get(PO1, 'productId1', '').substr(15, 3)
-            product['colorDesc'] = _.get(PO1, 'PID.description', '')
-              .substr(20, 20)
-              .replace(/^[ ]+|[ ]+$/g, '')
+            product['colorDesc'] = _.get(PO1, 'Product/ServiceId4')
             product['pack'] = _.get(PO1, 'productId1', '').substr(24, 3)
             product['packing'] = ''
             product['size'] = _.get(PO1, 'SLN.productId3')

@@ -1,11 +1,8 @@
-import { BaseEdiParser } from 'modules/parser/parser/edi'
-import { EdiFormatJson } from 'modules/edi/interface'
 import { SwivelConfigService } from 'modules/swivel-config/service'
 import { OutboundService } from 'modules/integration-hub/services/outbound'
 
-import { PurchaseOrder } from 'models/main/purchaseOrder'
-import { PurchaseOrderItem } from 'models/main/purchaseOrderItem'
-import { Product } from 'models/main/product'
+import { BaseEdiParser } from 'modules/parser/parser/edi'
+import { EdiFormatJson } from 'modules/edi/interface'
 
 const moment = require('moment')
 const _ = require('lodash')
@@ -13,12 +10,12 @@ const _ = require('lodash')
 const partyGroupCode = ''
 
 export const formatJson = {
-  removeCharacter: ['\r', '\n', '\r\n', '='],
-  segmentSeperator: ['?'],
+  removeCharacter: ['\r', '\n', '\r\n', '=', 'o', ''],
+  segmentSeperator: ['�'],
   elementSeperator: [''],
-  // removeCharacter: [],
-  // segmentSeperator : ['\r', '\n'],
-  // elementSeperator : ['*'],
+
+  // segmentSeperator : ['?'],
+  // elementSeperator : '',
 
   rootSegmentFormat: {
     type: 'object',
@@ -358,7 +355,7 @@ export const formatJson = {
             key: 'REF',
             code: 'REF',
             name: 'Reference Number',
-            type: 'object',
+            type: 'repeatObject',
             mandatory: false,
 
             elementFormatList: [
@@ -366,27 +363,28 @@ export const formatJson = {
                 index: 1,
                 name: 'Reference Number Qualifier',
                 key: 'referenceNumberQualifier',
+                overrideValueIndex: 2,
                 allowableValues: {
                   valueOptions: [
                     {
                       value: 'DP',
                       name: 'Dept Number',
-                      overrideValue: 'Dept Number',
+                      overrideKey: 'Dept Number',
                     },
                     {
                       value: 'IA',
                       name: 'Vendor',
-                      overrideValue: 'Vendor',
+                      overrideKey: 'Vendor',
                     },
                     {
                       value: '19',
                       name: 'Division ID',
-                      overrideValue: 'DivisionID',
+                      overrideKey: 'DivisionID',
                     },
                     {
                       value: 'CO',
                       name: 'Customer Order',
-                      overrideValue: 'Customer Order',
+                      overrideKey: 'Customer Order',
                     },
                   ],
                   allowAny: true,
@@ -646,7 +644,7 @@ export const formatJson = {
             key: 'N9',
             code: 'N9',
             name: 'Reference Number',
-            type: 'list',
+            type: 'specialObject',
             mandatory: false,
             elementFormatList: [
               {
@@ -669,56 +667,6 @@ export const formatJson = {
                       value: 'SH',
                       name: 'Gift Message',
                       overrideValue: 'Gift Message',
-                    },
-                    {
-                      value: 'DP',
-                      name: 'Department',
-                      overrideValue: 'Department',
-                    },
-                    {
-                      value: 'MR',
-                      name: 'MIC',
-                      overrideValue: 'MIC',
-                    },
-                    {
-                      value: 'BT',
-                      name: 'Group Code',
-                      overrideValue: 'Group Code',
-                    },
-                    {
-                      value: 'JH',
-                      name: 'Label Code',
-                      overrideValue: 'Label Code',
-                    },
-                    {
-                      value: 'OIC',
-                      name: 'Label Type',
-                      overrideValue: 'Label Type',
-                    },
-                    {
-                      value: 'E9',
-                      name: 'Hangtag Type',
-                      overrideValue: 'Hangtag Type',
-                    },
-                    {
-                      value: '2I',
-                      name: 'Tracking',
-                      overrideValue: 'Tracking',
-                    },
-                    {
-                      value: 'PM',
-                      name: 'Concatenated Style',
-                      overrideValue: 'Concatenated Style',
-                    },
-                    {
-                      value: 'TS',
-                      name: 'HTS',
-                      overrideValue: 'HTS',
-                    },
-                    {
-                      value: 'W9',
-                      name: 'Special Packageing',
-                      overrideValue: 'Special Packageing',
                     },
                   ],
                   allowAny: true,
@@ -750,6 +698,22 @@ export const formatJson = {
                     index: 2,
                     name: 'Message Text',
                     key: 'messageText',
+                    type: 'string',
+                  },
+                ],
+              },
+              {
+                code: 'MSG',
+                key: 'MSG',
+                type: 'list',
+                name: 'Message Text',
+                mandatory: false,
+                elementFormatList: [
+                  {
+                    index: 1,
+                    name: 'Message Text',
+                    key: 'messageText',
+                    type: 'string',
                   },
                 ],
               },
@@ -1114,53 +1078,6 @@ export const formatJson = {
             segmentFormatList: [],
           },
           {
-            key: 'MEA',
-            code: 'MEA',
-            name: 'Measurements',
-            type: 'Object',
-            mandatory: false,
-            elementFormatList: [
-              {
-                index: 1,
-                name: 'Class of Trade',
-                key: 'classOfTrade',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'SH',
-                      name: 'Shipping Tolerance',
-                      overrideValue: 'Shipping Tolerance',
-                    },
-                  ],
-                  allowAny: true,
-                },
-                type: 'string',
-              },
-              {
-                index: 2,
-                name: 'Price Code Qualifier',
-                key: 'priceCodeQualifier',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'PO',
-                      name: 'Percent of Order',
-                      overrideValue: 'Percent of Order',
-                    },
-                  ],
-                  allowAny: true,
-                },
-                type: 'string',
-              },
-              {
-                index: 3,
-                name: 'Unit Price',
-                key: 'UnitPrice',
-                type: 'decimal',
-              },
-            ],
-          },
-          {
             code: 'PO1',
             key: 'PO1',
             name: 'Purchase Order Baseline Item Data',
@@ -1254,19 +1171,19 @@ export const formatJson = {
               {
                 index: 10,
                 name: 'Product/Service ID Qualifier3',
-                key: 'Product/ServiceIdQualifier3',
+                key: 'productIdQualifier3',
                 type: 'string',
               },
               {
                 index: 11,
                 name: 'Product/Service ID3',
-                key: 'Product/ServiceId3',
+                key: 'productId3',
                 type: 'string',
               },
               {
                 index: 12,
                 name: 'Product/Service ID Qualifier4',
-                key: 'Product/ServiceIdQualifier4',
+                key: 'productIdQualifier4',
                 allowableValues: {
                   valueOptions: [
                     {
@@ -1282,13 +1199,13 @@ export const formatJson = {
               {
                 index: 13,
                 name: 'Product/Service ID4',
-                key: 'Product/ServiceId4',
+                key: 'productId4',
                 type: 'string',
               },
               {
                 index: 14,
                 name: 'Product/Service ID Qualifier5',
-                key: 'Product/ServiceIDQualifier5',
+                key: 'productIdQualifier5',
                 allowableValues: {
                   valueOptions: [
                     {
@@ -1303,13 +1220,13 @@ export const formatJson = {
               {
                 index: 15,
                 name: 'Product/Service ID5',
-                key: 'Product/ServiceId5',
+                key: 'productId5',
                 type: 'string',
               },
               {
                 index: 16,
                 name: 'Product/Service ID Qualifier6',
-                key: 'Product/ServiceIdQualifier6',
+                key: 'productIdQualifier6',
                 allowableValues: {
                   valueOptions: [
                     {
@@ -1325,13 +1242,13 @@ export const formatJson = {
               {
                 index: 17,
                 name: 'Product/Service ID6',
-                key: 'Product/ServiceID6',
+                key: 'productId6',
                 type: 'string',
               },
               {
                 index: 18,
                 name: 'Product/Service ID Qualifier7',
-                key: 'Product/ServiceIDQualifier7',
+                key: 'productIdQualifier7',
                 allowableValues: {
                   valueOptions: [
                     {
@@ -1347,7 +1264,7 @@ export const formatJson = {
               {
                 index: 19,
                 name: 'Product/Service ID8',
-                key: 'Product/ServiceID8',
+                key: 'productId7',
                 type: 'string',
               },
             ],
@@ -1370,6 +1287,53 @@ export const formatJson = {
                     name: 'Currency Code',
                     key: 'currencyCode',
                     type: 'string',
+                  },
+                ],
+              },
+              {
+                key: 'MEA',
+                code: 'MEA',
+                name: 'Measurements',
+                type: 'Object',
+                mandatory: false,
+                elementFormatList: [
+                  {
+                    index: 1,
+                    name: 'Class of Trade',
+                    key: 'classOfTrade',
+                    allowableValues: {
+                      valueOptions: [
+                        {
+                          value: 'SH',
+                          name: 'Shipping Tolerance',
+                          overrideValue: 'Shipping Tolerance',
+                        },
+                      ],
+                      allowAny: true,
+                    },
+                    type: 'string',
+                  },
+                  {
+                    index: 2,
+                    name: 'Price Code Qualifier',
+                    key: 'priceCodeQualifier',
+                    allowableValues: {
+                      valueOptions: [
+                        {
+                          value: 'PO',
+                          name: 'Percent of Order',
+                          overrideValue: 'Percent of Order',
+                        },
+                      ],
+                      allowAny: true,
+                    },
+                    type: 'string',
+                  },
+                  {
+                    index: 3,
+                    name: 'Unit Price',
+                    key: 'UnitPrice',
+                    type: 'decimal',
                   },
                 ],
               },
@@ -1512,6 +1476,145 @@ export const formatJson = {
                 ],
               },
               {
+                code: 'SDQ',
+                key: 'SDQ',
+                name: 'Destination/Quantity Data',
+                mandatory: false,
+                elementFormatList: [
+                  {
+                    index: 1,
+                    name: 'Unit of Measurement Code',
+                    key: 'unitOfMeasurementCode',
+                    allowableValues: {
+                      valueOptions: [
+                        {
+                          value: 'EA',
+                          name: 'Each',
+                          overrideValue: 'Each',
+                        },
+                        {
+                          value: 'CA',
+                          name: 'Prepack',
+                          overrideValue: 'Prepack',
+                        },
+                      ],
+                      allowAny: true,
+                    },
+                    type: 'string',
+                  },
+                  {
+                    index: 2,
+                    name: 'Location Qualifier',
+                    key: 'locationQualifier',
+                    allowableValues: {
+                      valueOptions: [
+                        {
+                          value: '92',
+                          name: 'Pack by Store',
+                          overrideValue: 'Pack by Store',
+                        },
+                      ],
+                      allowAny: true,
+                    },
+                    type: 'string',
+                  },
+                  {
+                    index: 3,
+                    name: 'Location Identifier',
+                    key: 'locationIdentifier',
+                    type: 'string',
+                  },
+                  {
+                    index: 4,
+                    name: 'Quantity',
+                    key: 'quantity',
+                    type: 'integer',
+                  },
+                ],
+              },
+              {
+                key: 'N9',
+                code: 'N9',
+                name: 'Reference Number',
+                type: 'list',
+                mandatory: false,
+                elementFormatList: [
+                  {
+                    index: 1,
+                    name: 'Reference Number Qual',
+                    key: 'referenceNumberQual',
+                    allowableValues: {
+                      valueOptions: [
+                        {
+                          value: 'DP',
+                          name: 'Department',
+                          overrideValue: 'Department',
+                        },
+                        {
+                          value: 'MR',
+                          name: 'MIC',
+                          overrideValue: 'MIC',
+                        },
+                        {
+                          value: 'BT',
+                          name: 'Group Code',
+                          overrideValue: 'Group Code',
+                        },
+                        {
+                          value: 'JH',
+                          name: 'Label Code',
+                          overrideValue: 'Label Code',
+                        },
+                        {
+                          value: 'OIC',
+                          name: 'Label Type',
+                          overrideValue: 'Label Type',
+                        },
+                        {
+                          value: 'E9',
+                          name: 'Hangtag Type',
+                          overrideValue: 'Hangtag Type',
+                        },
+                        {
+                          value: '2I',
+                          name: 'Tracking',
+                          overrideValue: 'Tracking',
+                        },
+                        {
+                          value: 'PM',
+                          name: 'Concatenated Style',
+                          overrideValue: 'Concatenated Style',
+                        },
+                        {
+                          value: 'TS',
+                          name: 'HTS',
+                          overrideValue: 'HTS',
+                        },
+                        {
+                          value: 'W9',
+                          name: 'Special Packageing',
+                          overrideValue: 'Special Packageing',
+                        },
+                      ],
+                      allowAny: true,
+                    },
+                    type: 'string',
+                  },
+                  {
+                    index: 2,
+                    name: 'Reference Number',
+                    key: 'referenceNumber',
+                    type: 'string',
+                  },
+                  {
+                    index: 3,
+                    name: 'Free-form Description',
+                    key: 'free-formDescription',
+                    type: 'string',
+                  },
+                ],
+              },
+              {
                 code: 'SLN',
                 key: 'SLN',
                 name: 'Subline Item Detail',
@@ -1637,69 +1740,12 @@ export const formatJson = {
                     type: 'string',
                   },
                   {
-                    index: 14,
+                    index: 18,
                     name: 'Product/Service ID',
                     key: 'productId4',
                     type: 'string',
                   },
                 ],
-              },
-            ],
-          },
-          {
-            code: 'SDQ',
-            key: 'SDQ',
-            name: 'Destination/Quantity Data',
-            mandatory: false,
-            elementFormatList: [
-              {
-                index: 1,
-                name: 'Unit of Measurement Code',
-                key: 'unitOfMeasurementCode',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'EA',
-                      name: 'Each',
-                      overrideValue: 'Each',
-                    },
-                    {
-                      value: 'CA',
-                      name: 'Prepack',
-                      overrideValue: 'Prepack',
-                    },
-                  ],
-                  allowAny: true,
-                },
-                type: 'string',
-              },
-              {
-                index: 2,
-                name: 'Location Qualifier',
-                key: 'locationQualifier',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: '92',
-                      name: 'Pack by Store',
-                      overrideValue: 'Pack by Store',
-                    },
-                  ],
-                  allowAny: true,
-                },
-                type: 'string',
-              },
-              {
-                index: 3,
-                name: 'Location Identifier',
-                key: 'locationIdentifier',
-                type: 'string',
-              },
-              {
-                index: 4,
-                name: 'Quantity',
-                key: 'quantity',
-                type: 'integer',
               },
             ],
           },
@@ -1796,11 +1842,11 @@ export default class Edi850Parser extends BaseEdiParser {
   ) {
     super(allService, {}, { import: { formatJson, ediType: '850' } })
   }
+
   async import(ediString: string): Promise<any> {
     // console.log(`import type  : ${this.type}`)
     const { jsonData, errorList } = await super.import(ediString)
-
-    const poList = [] as PurchaseOrder[]
+    const poList: any[] = []
     if (!jsonData || jsonData.length === 0) {
       // undefined or empty array
       throw new Error(errorList)
@@ -1816,14 +1862,14 @@ export default class Edi850Parser extends BaseEdiParser {
           poDate: _.get(ST, 'BEG.purchaseOrderDate')
             ? moment.utc(_.get(ST, 'BEG.purchaseOrderDate')).toDate()
             : null,
-          dontShipBeforeDate: _.get(ST, 'DTM.doNotShipBefore')
-            ? moment.utc(_.get(ST, 'DTM.doNotShipBefore')).toDate()
+          dontShipBeforeDate: _.get(ST, 'DTM.shipNotBefore')
+            ? moment.utc(_.get(ST, 'DTM.shipNotBefore')).toDate()
             : null,
-          dontShipAfterDate: _.get(ST, 'DTM.doNotDeliverAfter')
-            ? moment.utc(_.get(ST, 'DTM.doNotDeliverAfter')).toDate()
+          dontShipAfterDate: _.get(ST, 'DTM.doNotShipAfter')
+            ? moment.utc(_.get(ST, 'DTM.doNotShipAfter')).toDate()
             : null,
-          exitFactoryDateActual: _.get(ST, 'DTM.requestedShipDateFromSupplierWarehouse')
-            ? moment.utc(_.get(ST, 'DTM.requestedShipDateFromSupplierWarehouse')).toDate()
+          exitFactoryDateActual: _.get(ST, 'DTM.firstArrive')
+            ? moment.utc(_.get(ST, 'DTM.firstArrive')).toDate()
             : null,
           Department: _.get(ST, 'REF.referenceNumber'),
         }
@@ -1834,43 +1880,21 @@ export default class Edi850Parser extends BaseEdiParser {
           for (const PO1 of po1) {
             // k<ST['PO1'].length
             poItemList.push({
-              itemKey: _.get(PO1, 'poLineNumber'),
               perPackageQuantity: _.get(PO1, 'PO4.pack'),
               quantity: _.get(PO1, 'quantityOrdered'),
               quantityUnit: _.get(PO1, 'unitOfMeasureCode'),
               volume: _.get(PO1, 'PO4.grossVolumePerPack'),
               product: {
                 subLine: _.get(PO1, 'SLN.assignedIdentification'),
-                poLineNo: _.get(PO1, 'productId1', '').substr(24, 3),
-                price: _.get(PO1, 'unitPrice'),
+                poLineNo: _.get(PO1, 'poLineNumber'),
+                unitPrice: _.get(PO1, 'unitPrice'),
                 priceUnit: _.get(PO1, 'basisOfUnitPrice'),
-                sea: _.get(PO1, 'productId1', '')
-                  .substr(0, 3)
-                  .trim(),
-                style: _.get(PO1, 'productId1', '')
-                  .substr(3, 12)
-                  .trim(),
-                styleDesc: _.get(PO1, 'PID.description', '')
-                  .substr(0, 20)
-                  .trim(),
-                piece: _.get(PO1, 'productId1', '')
-                  .substr(18, 6)
-                  .trim(),
-                pieceDesc: _.get(PO1, 'PID.description', '')
-                  .substr(40, 20)
-                  .trim(),
-                color: _.get(PO1, 'productId1', '')
-                  .substr(15, 3)
-                  .trim(),
-                colorDesc: _.get(PO1, 'PID.description', '')
-                  .substr(20, 20)
-                  .trim(),
-                pack: _.get(PO1, 'productId1', '')
-                  .substr(24, 3)
-                  .trim(),
-                packing: '',
-                size: _.get(PO1, 'SLN.productId3'),
-                upcen: _.get(PO1, 'SLN.productId2'),
+                upcen: _.get(PO1, 'productId1').trim(),
+                size: (_.get(PO1, 'productId2') || '').substr(0, 3),
+                colorDesc: _.get(PO1, 'productId4'),
+                pack: _.get(PO1, 'poLineNumber'),
+                buyerSKU: _.get(PO1, 'productId3'),
+                style: _.get(PO1, 'productId5'),
               },
             })
           }
@@ -1878,57 +1902,87 @@ export default class Edi850Parser extends BaseEdiParser {
             _.set(po, 'purchaseOrderItems', poItemList)
           }
         }
-        const flexData = {}
         const n1s = _.get(ST, 'N1', []) || []
         if (n1s.length) {
           const partyMapper = {
             'Ship From': 'shipper',
             'Ship To': 'shipTo',
           }
-          const moreParty = []
           for (const N1 of n1s) {
             const role = _.get(N1, 'organizationIdentifier')
-            let address = _.get(N1, 'N3.addressInformation')
-            if (_.get(N1, 'N3.additionalAddressInformation')) {
-              address = `${address}\n${_.get(N1, 'N3.additionalAddressInformation')}`
-            }
             if (partyMapper[role]) {
-              _.set(po, `${role}PartyName`, _.get(N1, 'name'))
-              _.set(po, `${role}PartyAddress`, address)
-              _.set(po, `${role}PartyStateCode`, _.get(N1, 'N4.stateOrProvinceCode'))
-              _.set(po, `${role}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
-              _.set(po, `${role}PartyStateZip`, _.get(N1, 'N4.postalCode'))
+              const newRole = partyMapper[role]
+              if (newRole === 'shipper') {
+                _.set(po, `${newRole}PartyCode`, _.get(N1, 'identificationCode'))
+                _.set(po, `${newRole}PartyName`, _.get(N1, 'name'))
+              }
+              if (newRole === 'shipTo') {
+                const index = (_.get(N1, 'name') || '').indexOf('#')
+                _.set(
+                  po,
+                  `${newRole}PartyCode`,
+                  `${(_.get(N1, 'name') || '').substr(index + 1)} ${_.get(
+                    N1,
+                    'identificationCode'
+                  ).substr(0, 9)}`.trim()
+                )
+                _.set(
+                  po,
+                  `${newRole}PartyName`,
+                  (_.get(N1, 'name') || '').substr(0, index) || _.get(N1, 'name')
+                )
+              }
+              _.set(po, `${newRole}PartyAddress1`, _.get(N1, 'N3.addressInformation'))
+              _.set(po, `${newRole}PartyAddress2`, _.get(N1, 'N3.additionalAddressInformation'))
+              _.set(po, `${newRole}PartyStateCode`, _.get(N1, 'N4.stateOrProvinceCode'))
+              _.set(po, `${newRole}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
+              _.set(po, `${newRole}PartyStateZip`, _.get(N1, 'N4.postalCode'))
             } else {
-              moreParty.push(role)
-              _.set(flexData, `data.${role}PartyName`, _.get(N1, 'name'))
-              _.set(flexData, `data.${role}PartyAddress`, address)
-              _.set(flexData, `data.${role}PartyStateCode`, _.get(N1, 'N4.stateOrProvinceCode'))
-              _.set(flexData, `data.${role}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
-              _.set(flexData, `data.${role}PartyStateZip`, _.get(N1, 'N4.postalCode'))
+              _.set(po, `${role.replace(/\s/g, '')}PartyName`, _.get(N1, 'name'))
+              _.set(po, `${role.replace(/\s/g, '')}PartyCode`, _.get(N1, 'identificationCode'))
+              _.set(
+                po,
+                `${role.replace(/\s/g, '')}PartyAddress1`,
+                _.get(N1, 'N3.addressInformation')
+              )
+              _.set(
+                po,
+                `${role.replace(/\s/g, '')}PartyAddress2`,
+                _.get(N1, 'N3.additionalAddressInformation')
+              )
+              _.set(
+                po,
+                `${role.replace(/\s/g, '')}PartyStateCode`,
+                _.get(N1, 'N4.stateOrProvinceCode')
+              )
+              _.set(po, `${role.replace(/\s/g, '')}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
+              _.set(po, `${role.replace(/\s/g, '')}PartyStateZip`, _.get(N1, 'N4.postalCode'))
             }
-          }
-          if (moreParty.length) {
-            _.set(flexData, 'data.moreParty', moreParty)
           }
         }
-
-        const moreDate = []
         if (_.get(jsonData, 'ISA.createdDate') && _.get(jsonData, 'ISA.createdTime')) {
           const datetime = moment.utc(
             `${_.get(jsonData, 'ISA.createdDate')} ${_.get(jsonData, 'ISA.createdTime')}`
           )
-          moreDate.push('ediCreated')
-          _.set(flexData, 'data.ediCreatedDateActual', datetime)
+          _.set(po, 'ediCreatedDateActual', datetime)
         }
-        if (_.get(jsonData, 'GS.createdDate') && _.get(jsonData, 'GS.createdTime')) {
+        if (
+          _.get(jsonData, 'GS.dataInterchangeDate') &&
+          _.get(jsonData, 'GS.dataInterchangeTime')
+        ) {
           const datetime = moment.utc(
-            `${_.get(jsonData, 'GS.createdDate')} ${_.get(jsonData, 'GS.createdTime')}`
+            `${_.get(jsonData, 'GS.dataInterchangeDate')} ${_.get(
+              jsonData,
+              'GS.dataInterchangeTime'
+            )}`
           )
-          moreDate.push('dataInterchange')
-          _.set(flexData, 'data.dataInterchangeDateActual', datetime)
+          _.set(po, 'dataInterchangeDateActual', datetime)
         }
-        if (Object.keys(flexData).length > 0) {
-          _.set(po, `flexData`, flexData)
+        if (_.get(ST, 'promoStart')) {
+          _.set(po, 'promoStart', moment.utc(_.get(ST, 'DTM.promoStart')))
+        }
+        if (_.get(ST, 'DTM.lastArrive')) {
+          _.set(po, 'lastArrive', moment.utc(_.get(ST, 'DTM.lastArrive')))
         }
 
         poList.push(po)

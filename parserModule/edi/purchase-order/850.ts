@@ -1,11 +1,8 @@
-import { BaseEdiParser } from 'modules/parser/parser/edi'
-import { EdiFormatJson } from 'modules/edi/interface'
 import { SwivelConfigService } from 'modules/swivel-config/service'
 import { OutboundService } from 'modules/integration-hub/services/outbound'
 
-import { PurchaseOrder } from 'models/main/purchaseOrder'
-import { PurchaseOrderItem } from 'models/main/purchaseOrderItem'
-import { Product } from 'models/main/product'
+import { BaseEdiParser } from 'modules/parser/parser/edi'
+import { EdiFormatJson } from 'modules/edi/interface'
 
 const moment = require('moment')
 const _ = require('lodash')
@@ -13,9 +10,9 @@ const _ = require('lodash')
 const partyGroupCode = ''
 
 export const formatJson = {
-  removeCharacter: [],
-  segmentSeperator: ['\n', '\r'],
-  elementSeperator: ['*'],
+  removeCharacter: ['\r', '\n', '\r\n', '=', 'o'],
+  segmentSeperator: ['?'],
+  elementSeperator: [''],
 
   // segmentSeperator : ['?'],
   // elementSeperator : '',
@@ -1209,7 +1206,7 @@ export const formatJson = {
               {
                 index: 5,
                 name: 'Basis of Unit Price',
-                key: 'basisOfUnitPrice',
+                key: 'basisofUnitPrice',
                 allowableValues: {
                   valueOptions: [
                     {
