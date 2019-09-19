@@ -63,7 +63,6 @@ function prepareBookingParams(): Function {
 }
 
 function prepareBookingTable(): CreateTableJQL {
-
   const name = 'booking'
 
   return new CreateTableJQL({
@@ -71,18 +70,18 @@ function prepareBookingTable(): CreateTableJQL {
     name,
     $as: new Query({
       $select: [
-
         new ResultColumn(new ColumnExpression(name, 'moduleTypeCode'), 'moduleTypeCode'),
         new ResultColumn(new ColumnExpression(name, 'noOfBookings'), 'count'), // rename noOfBookings into Count
-        new ResultColumn(new ColumnExpression(name, 'primaryKeyListString'), 'primaryKeyListString'),
-
+        new ResultColumn(
+          new ColumnExpression(name, 'primaryKeyListString'),
+          'primaryKeyListString'
+        ),
       ],
       $from: new FromTable(
         {
           method: 'POST',
           url: 'api/booking/query/booking',
           columns: [
-
             {
               name: 'moduleTypeCode',
               type: 'string',
@@ -97,18 +96,15 @@ function prepareBookingTable(): CreateTableJQL {
               name: 'primaryKeyListString',
               type: 'string',
             },
-
           ],
         },
         name
-      )
+      ),
     }),
   })
-
 }
 
 export default [
-
   // hardcode the module table
   prepareModuleCodeTable('module'),
   insertModuleCodeTable('module'),
@@ -116,7 +112,6 @@ export default [
   [prepareBookingParams(), prepareBookingTable()],
 
   new Query({
-
     $select: [
       new ResultColumn(new ColumnExpression('module', 'moduleTypeCode'), 'moduleTypeCode'),
       new ResultColumn(
@@ -142,7 +137,5 @@ export default [
         new ColumnExpression('module', 'moduleTypeCode')
       ),
     }),
-
-  })
-
+  }),
 ]

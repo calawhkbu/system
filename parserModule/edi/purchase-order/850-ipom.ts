@@ -7,16 +7,15 @@ import { PurchaseOrder } from 'models/main/purchaseOrder'
 import { PurchaseOrderItem } from 'models/main/purchaseOrderItem'
 import { Product } from 'models/main/product'
 
-
 const moment = require('moment')
 const _ = require('lodash')
 
-const partyGroupCode = '';
+const partyGroupCode = ''
 
 export const formatJson = {
   removeCharacter: ['\r', '\n', '\r\n', '='],
-  segmentSeperator : ['?'],
-  elementSeperator : [''],
+  segmentSeperator: ['?'],
+  elementSeperator: [''],
   // removeCharacter: [],
   // segmentSeperator : ['\r', '\n'],
   // elementSeperator : ['*'],
@@ -1791,9 +1790,9 @@ export const formatJson = {
 export default class Edi850Parser extends BaseEdiParser {
   constructor(
     protected readonly allService: {
-      swivelConfigService: SwivelConfigService,
-      outboundService: OutboundService,
-    },
+      swivelConfigService: SwivelConfigService
+      outboundService: OutboundService
+    }
   ) {
     super(allService, {}, { import: { formatJson, ediType: '850' } })
   }
@@ -1802,7 +1801,8 @@ export default class Edi850Parser extends BaseEdiParser {
     const { jsonData, errorList } = await super.import(ediString)
 
     const poList = [] as PurchaseOrder[]
-    if (!jsonData || jsonData.length === 0) {// undefined or empty array
+    if (!jsonData || jsonData.length === 0) {
+      // undefined or empty array
       throw new Error(errorList)
     }
     const sts = _.get(jsonData, 'ST', []) || []
@@ -1825,13 +1825,14 @@ export default class Edi850Parser extends BaseEdiParser {
           exitFactoryDateActual: _.get(ST, 'DTM.requestedShipDateFromSupplierWarehouse')
             ? moment.utc(_.get(ST, 'DTM.requestedShipDateFromSupplierWarehouse')).toDate()
             : null,
-          Department: _.get(ST, 'REF.referenceNumber')
+          Department: _.get(ST, 'REF.referenceNumber'),
         }
         const po1 = _.get(ST, 'PO1', []) || []
         // return response
         if (po1.length) {
           const poItemList: any[] = []
-          for (const PO1 of po1) { // k<ST['PO1'].length
+          for (const PO1 of po1) {
+            // k<ST['PO1'].length
             poItemList.push({
               itemKey: _.get(PO1, 'poLineNumber'),
               perPackageQuantity: _.get(PO1, 'PO4.pack'),
@@ -1841,20 +1842,36 @@ export default class Edi850Parser extends BaseEdiParser {
               product: {
                 subLine: _.get(PO1, 'SLN.assignedIdentification'),
                 poLineNo: _.get(PO1, 'productId1', '').substr(24, 3),
-                price:  _.get(PO1, 'unitPrice'),
+                price: _.get(PO1, 'unitPrice'),
                 priceUnit: _.get(PO1, 'basisOfUnitPrice'),
-                sea: _.get(PO1, 'productId1', '').substr(0, 3).trim(),
-                style: _.get(PO1, 'productId1', '').substr(3, 12).trim(),
-                styleDesc: _.get(PO1, 'PID.description', '').substr(0, 20).trim(),
-                piece: _.get(PO1, 'productId1', '').substr(18, 6).trim(),
-                pieceDesc: _.get(PO1, 'PID.description', '').substr(40, 20).trim(),
-                color: _.get(PO1, 'productId1', '').substr(15, 3).trim(),
-                colorDesc: _.get(PO1, 'PID.description', '').substr(20, 20).trim(),
-                pack: _.get(PO1, 'productId1', '').substr(24, 3).trim(),
+                sea: _.get(PO1, 'productId1', '')
+                  .substr(0, 3)
+                  .trim(),
+                style: _.get(PO1, 'productId1', '')
+                  .substr(3, 12)
+                  .trim(),
+                styleDesc: _.get(PO1, 'PID.description', '')
+                  .substr(0, 20)
+                  .trim(),
+                piece: _.get(PO1, 'productId1', '')
+                  .substr(18, 6)
+                  .trim(),
+                pieceDesc: _.get(PO1, 'PID.description', '')
+                  .substr(40, 20)
+                  .trim(),
+                color: _.get(PO1, 'productId1', '')
+                  .substr(15, 3)
+                  .trim(),
+                colorDesc: _.get(PO1, 'PID.description', '')
+                  .substr(20, 20)
+                  .trim(),
+                pack: _.get(PO1, 'productId1', '')
+                  .substr(24, 3)
+                  .trim(),
                 packing: '',
                 size: _.get(PO1, 'SLN.productId3'),
-                upcen: _.get(PO1, 'SLN.productId2')
-              }
+                upcen: _.get(PO1, 'SLN.productId2'),
+              },
             })
           }
           if (poItemList.length) {
@@ -1866,7 +1883,7 @@ export default class Edi850Parser extends BaseEdiParser {
         if (n1s.length) {
           const partyMapper = {
             'Ship From': 'shipper',
-            'Ship To': 'shipTo'
+            'Ship To': 'shipTo',
           }
           const moreParty = []
           for (const N1 of n1s) {
@@ -1897,12 +1914,16 @@ export default class Edi850Parser extends BaseEdiParser {
 
         const moreDate = []
         if (_.get(jsonData, 'ISA.createdDate') && _.get(jsonData, 'ISA.createdTime')) {
-          const datetime = moment.utc(`${_.get(jsonData, 'ISA.createdDate')} ${_.get(jsonData, 'ISA.createdTime')}`)
+          const datetime = moment.utc(
+            `${_.get(jsonData, 'ISA.createdDate')} ${_.get(jsonData, 'ISA.createdTime')}`
+          )
           moreDate.push('ediCreated')
           _.set(flexData, 'data.ediCreatedDateActual', datetime)
         }
         if (_.get(jsonData, 'GS.createdDate') && _.get(jsonData, 'GS.createdTime')) {
-          const datetime = moment.utc(`${_.get(jsonData, 'GS.createdDate')} ${_.get(jsonData, 'GS.createdTime')}`)
+          const datetime = moment.utc(
+            `${_.get(jsonData, 'GS.createdDate')} ${_.get(jsonData, 'GS.createdTime')}`
+          )
           moreDate.push('dataInterchange')
           _.set(flexData, 'data.dataInterchangeDateActual', datetime)
         }

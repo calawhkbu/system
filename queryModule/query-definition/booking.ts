@@ -401,7 +401,6 @@ query.register('noOfBookings', {
   expression: new FunctionExpression({
     name: 'COUNT',
     parameters: new ParameterExpression({
-
       // cannot use distinct while using *
       // prefix: 'DISTINCT',
       expression: new ColumnExpression('*'),
@@ -419,10 +418,13 @@ query.register('jobMonth', {
   $as: 'jobMonth',
 })
 
-query
-  .register(
-    'primaryKeyListString',
-    new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ColumnExpression('booking', 'id')), 'primaryKeyListString'))
+query.register(
+  'primaryKeyListString',
+  new ResultColumn(
+    new FunctionExpression('GROUP_CONCAT', new ColumnExpression('booking', 'id')),
+    'primaryKeyListString'
+  )
+)
 
 // ------------- register filter
 

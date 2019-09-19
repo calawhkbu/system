@@ -56,7 +56,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('product', 'productCode'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'productCode'
@@ -66,7 +66,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('product', 'name'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'productName'
@@ -76,7 +76,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('product', 'skuCode'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'productSkuCode'
@@ -86,7 +86,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('product', 'description'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'productDesctiption'
@@ -96,7 +96,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('product_category', 'name'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'productCategoryName'
@@ -106,7 +106,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('product_category', 'description'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'productCategoryDesctiption'
@@ -116,7 +116,7 @@ const query = new QueryDef(
                   'group_concat',
                   new ParameterExpression({
                     expression: new ColumnExpression('purchase_order_item', 'htsCode'),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'htsCode'
@@ -136,7 +136,7 @@ const query = new QueryDef(
                       new ColumnExpression('purchase_order_item', 'height'),
                       new ColumnExpression('purchase_order_item', 'lwhUnit')
                     ),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'lwh'
@@ -151,7 +151,7 @@ const query = new QueryDef(
                       ' - ',
                       new ColumnExpression('purchase_order_item', 'ctnTo')
                     ),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'ctn'
@@ -169,7 +169,7 @@ const query = new QueryDef(
                       new ColumnExpression('purchase_order_item', 'grossWeight'),
                       new ColumnExpression('purchase_order_item', 'weightUnit')
                     ),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'weight'
@@ -197,7 +197,7 @@ const query = new QueryDef(
                       new ColumnExpression('purchase_order_item', 'quantity'),
                       new ColumnExpression('purchase_order_item', 'quantityUnit')
                     ),
-                    suffix: "SEPARATOR ', '",
+                    suffix: 'SEPARATOR \', \'',
                   })
                 ),
                 'quantity'

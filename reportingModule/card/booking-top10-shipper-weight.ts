@@ -13,10 +13,8 @@ import {
 
 function prepareParams(): Function {
   return function(require, session, params) {
-
     const { Resultset } = require('node-jql-core')
     const {
-
       OrderBy,
       ColumnExpression,
       CreateTableJQL,
@@ -79,7 +77,6 @@ function prepareTable(name: string): CreateTableJQL {
         },
         name
       ),
-
     }),
   })
 }
@@ -127,9 +124,8 @@ export default [
   // [prepareParams(), preparePartyTable('party')],
 
   new Query({
-
-    $from : 'tempTable'
-  })
+    $from: 'tempTable',
+  }),
 
   // new Query({
   //   $from: new FromTable(
@@ -146,5 +142,4 @@ export default [
   //     )
   //   ),
   // }),
-
 ]

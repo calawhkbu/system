@@ -271,7 +271,7 @@ export const schedulerConfig = {
 } as EdiSchedulerConfig
 
 interface JSONObject {
-  segement?: string,
+  segement?: string
   elementList?: string[]
 }
 
@@ -290,19 +290,14 @@ export default class EdiParser856 extends BaseEdiParser {
     returnJSON['data'] = []
     const data = returnJSON['data']
 
-    for (const element of entityJSON)
-    {
-      const ST: JSONObject = {
-
-      }
+    for (const element of entityJSON) {
+      const ST: JSONObject = {}
       ST.segement = 'ST'
       ST.elementList = []
       ST.elementList.push('856')
-      ST.elementList.push(`0000${(entityJSON.findIndex(x => x.id = element.id) + 1).toString()}`)
+      ST.elementList.push(`0000${(entityJSON.findIndex(x => (x.id = element.id)) + 1).toString()}`)
       data.push(ST)
-      const BSN: JSONObject = {
-
-      }
+      const BSN: JSONObject = {}
       BSN.segement = 'BSN'
       BSN.elementList = []
       BSN.elementList.push('00')
@@ -314,7 +309,10 @@ export default class EdiParser856 extends BaseEdiParser {
       data.push(BSN)
 
       const loopObjectList = []
-      const getNumOfLoopItem = 1 + this.getNumOfPo(_.get(element, 'bookingPopacking')) + (_.get(element, 'bookingPopacking').length)
+      const getNumOfLoopItem =
+        1 +
+        this.getNumOfPo(_.get(element, 'bookingPopacking')) +
+        _.get(element, 'bookingPopacking').length
       console.log('================================')
       // console.log(_.get(element, 'bookingPopacking').length)
       console.log(getNumOfLoopItem)
@@ -328,10 +326,10 @@ export default class EdiParser856 extends BaseEdiParser {
       SE.segement = 'SE'
       SE.elementList = []
       // SE.elementList.push((loopObjectList.length + 1).toString)
-      SE.elementList.push(`0000${(entityJSON.findIndex(x => x.id = element.id) + 1).toString()}`)
+      SE.elementList.push(`0000${(entityJSON.findIndex(x => (x.id = element.id)) + 1).toString()}`)
       data.push(SE)
 
-    data.push(loopObjectList)
+      data.push(loopObjectList)
     }
     return returnJSON
     const result = await super.export(entityJSON)
@@ -339,10 +337,8 @@ export default class EdiParser856 extends BaseEdiParser {
     console.log('.........................')
     return result
   }
-  async getLoopObject(loopObjectList, getNumOfLoopItem, element)
-  {
-    if (getNumOfLoopItem === 1)
-    {
+  async getLoopObject(loopObjectList, getNumOfLoopItem, element) {
+    if (getNumOfLoopItem === 1) {
       const V1: JSONObject = {}
       V1.segement = 'V1'
       V1.elementList = []
@@ -350,8 +346,7 @@ export default class EdiParser856 extends BaseEdiParser {
       V1.elementList.push(_.get(element, 'vesselName'))
       V1.elementList.push(_.get(element, 'voyageFlightNumber'))
       loopObjectList.unshift(V1)
-      if (_.get(element, 'arrivalDateActual'))
-      {
+      if (_.get(element, 'arrivalDateActual')) {
         const DTM: JSONObject = {}
         DTM.segement = 'DTM'
         DTM.elementList = []
@@ -359,8 +354,7 @@ export default class EdiParser856 extends BaseEdiParser {
         DTM.elementList.push(_.get(element, 'departureDateActual'))
         loopObjectList.unshift(DTM)
       }
-      if (_.get(element, 'departureDateActual'))
-      {
+      if (_.get(element, 'departureDateActual')) {
         const DTM: JSONObject = {}
         DTM.segement = 'DTM'
         DTM.elementList = []
@@ -368,8 +362,7 @@ export default class EdiParser856 extends BaseEdiParser {
         DTM.elementList.push(moment(_.get(element, 'departureDateActual')).format('YYYYMMDD'))
         loopObjectList.unshift(DTM)
       }
-      if (_.get(element, 'placeOfDeliveryCode'))
-      {
+      if (_.get(element, 'placeOfDeliveryCode')) {
         const TD5: JSONObject = {}
         TD5.segement = 'TD5'
         TD5.elementList = []
@@ -383,8 +376,7 @@ export default class EdiParser856 extends BaseEdiParser {
         TD5.elementList.push(_.get(element, 'placeOfDeliveryCode'))
         loopObjectList.unshift(TD5)
       }
-      if (_.get(element, 'portOfDischargeCode'))
-      {
+      if (_.get(element, 'portOfDischargeCode')) {
         const TD5: JSONObject = {}
         TD5.segement = 'TD5'
         TD5.elementList = []
@@ -398,8 +390,7 @@ export default class EdiParser856 extends BaseEdiParser {
         TD5.elementList.push(_.get(element, 'portOfDischargeCode'))
         loopObjectList.unshift(TD5)
       }
-      if (_.get(element, 'portOfLoadingCode'))
-      {
+      if (_.get(element, 'portOfLoadingCode')) {
         const TD5: JSONObject = {}
         TD5.segement = 'TD5'
         TD5.elementList = []
@@ -418,23 +409,16 @@ export default class EdiParser856 extends BaseEdiParser {
       HL.elementList = []
       HL.elementList.push(getNumOfLoopItem.toString)
       HL.elementList.push('')
-      if (_.get(element, 'moduleTypeCode') === 'SHIPMENT')
-      {
+      if (_.get(element, 'moduleTypeCode') === 'SHIPMENT') {
         HL.elementList.push('S')
-      }
-      else if (_.get(element, 'moduleTypeCode') === 'AIR')
-      {
+      } else if (_.get(element, 'moduleTypeCode') === 'AIR') {
         HL.elementList.push('A')
-      }
-      else
-      {
+      } else {
         HL.elementList.push(_.get(element, 'moduleTypeCode'))
       }
       loopObjectList.unshift(HL)
       return loopObjectList
-    }
-    else
-    {
+    } else {
       const Item = _.get(element, 'bookingPopacking')
       const lastGroupOfItem = Item[Item.length - 1]
       const poNo = _.get(lastGroupOfItem, 'purchaseOrderItem.purchaseOrder.poNo')
@@ -442,8 +426,7 @@ export default class EdiParser856 extends BaseEdiParser {
       const totalItemNo = Item.length - indexOfFirstMatch
       console.log(totalItemNo)
       console.log('===========================')
-      for (let i = 0; i < totalItemNo; i++)
-      {
+      for (let i = 0; i < totalItemNo; i++) {
         const HL: JSONObject = {}
         HL.segement = 'HL'
         HL.elementList = []
@@ -458,7 +441,9 @@ export default class EdiParser856 extends BaseEdiParser {
       PRF.elementList.push(poNo)
       PRF.elementList.push('')
       PRF.elementList.push('')
-      PRF.elementList.push(moment(_.get(lastGroupOfItem, 'purchaseOrderItem.purchaseOrder.poDate')).format('YYYYMMDD'))
+      PRF.elementList.push(
+        moment(_.get(lastGroupOfItem, 'purchaseOrderItem.purchaseOrder.poDate')).format('YYYYMMDD')
+      )
       loopObjectList.unshift(PRF)
       const HLO: JSONObject = {}
       HLO.segement = 'HL'
@@ -468,16 +453,13 @@ export default class EdiParser856 extends BaseEdiParser {
       HLO.elementList.push('O')
       loopObjectList.unshift(HLO)
       Item.splice(indexOfFirstMatch, totalItemNo)
-      this.getLoopObject(loopObjectList, (getNumOfLoopItem - 1 - totalItemNo), element)
+      this.getLoopObject(loopObjectList, getNumOfLoopItem - 1 - totalItemNo, element)
     }
   }
-  getNumOfPo(Item)
-  {
+  getNumOfPo(Item) {
     const uniquePo = []
-    for (const po of Item)
-    {
-      if (!uniquePo.includes(po.purchaseOrderItem.purchaseOrder.poNo))
-      {
+    for (const po of Item) {
+      if (!uniquePo.includes(po.purchaseOrderItem.purchaseOrder.poNo)) {
         uniquePo.push(po.purchaseOrderItem.purchaseOrder.poNo)
       }
     }
@@ -485,5 +467,4 @@ export default class EdiParser856 extends BaseEdiParser {
     // console.log(uniquePo.length)
     return uniquePo.length
   }
-
 }

@@ -14,12 +14,9 @@ import {
 import { parseCode } from 'utils/function'
 
 function prepareTop10Params(): Function {
-
   return function(require, session, params) {
-
     const { Resultset } = require('node-jql-core')
     const {
-
       OrderBy,
       ColumnExpression,
       CreateTableJQL,
@@ -56,7 +53,7 @@ function prepareTop10Params(): Function {
     }
 
     subqueries.moduleType = {
-      value: 'AIR'
+      value: 'AIR',
     }
 
     params.fields = ['carrierCode', 'chargeableWeightTotal']
@@ -68,24 +65,19 @@ function prepareTop10Params(): Function {
 
     return params
   }
-
 }
 
 function prepareTop10table(): CreateTableJQL {
-
   return new CreateTableJQL({
-
     $temporary: true,
     name: 'top10',
 
     $as: new Query({
-
       $from: new FromTable(
         {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-
             {
               name: 'carrierCode',
               type: 'string',
@@ -95,13 +87,10 @@ function prepareTop10table(): CreateTableJQL {
               type: 'number',
             },
           ],
-
         },
         'shipment'
       ),
-
-    })
-
+    }),
   })
 }
 
@@ -109,8 +98,6 @@ export default [
   [prepareTop10Params(), prepareTop10table()],
 
   new Query({
-
     $from: 'top10',
-
-  })
+  }),
 ]
