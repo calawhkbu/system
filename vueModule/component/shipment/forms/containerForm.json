@@ -41,48 +41,28 @@
                   }
                 },
                 {
-                  "label": "BookingPage.quantityUnit",
-                  "name": "quantityUnit",
-                  "component": "v-select",
+                  "label": "ShipmentPage.quantityUnit",
+                  "name": "weightUnit",
+                  "component": "ReadField",
                   "props": {
-                    "items": [
-                      {
-                        "text": "W/C",
-                        "value": "W/C"
-                      },
-                      {
-                        "text": "PCS",
-                        "value": "PCS"
-                      },
-                      {
-                        "text": "M/C",
-                        "value": "M/C"
-                      },
-                      {
-                        "text": "BAG",
-                        "value": "BAG"
-                      },
-                      {
-                        "text": "CASE",
-                        "value": "CASE"
-                      },
-                      {
-                        "text": "PLT",
-                        "value": "PLT"
-                      },
-                      {
-                        "text": "ROLL",
-                        "value": "ROLL"
-                      },
-                      {
-                        "text": "PAIR",
-                        "value": "PAIR"
-                      },
-                      {
-                        "text": "CTN",
-                        "value": "CTN"
+
+                    "showLabel" : false,
+                    "axiosParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "QUANTITY"
+                          },
+                          "code" :{
+
+                            "value" : "{{context:fixValue}}"
+
+                          }
+                        }
                       }
-                    ]
+                    }
                   }
                 },
 
@@ -94,23 +74,34 @@
                     "type": "number"
                   }
                 },
+
+
                 {
                   "label": "ShipmentPage.weightUnit",
                   "name": "weightUnit",
-                  "component": "v-select",
+                  "component": "ReadField",
                   "props": {
-                    "items": [
-                      {
-                        "text": "KGs",
-                        "value": "KGs"
-                      },
-                      {
-                        "text": "LBs",
-                        "value": "LBs"
+
+                    "showLabel" : false,
+                    "axiosParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "WEIGHT"
+                          },
+                          "code" :{
+
+                            "value" : "{{context:fixValue}}"
+
+                          }
+                        }
                       }
-                    ]
+                    }
                   }
                 },
+
                 {
                   "label": "ShipmentPage.cbm",
                   "name": "cbm",
@@ -151,7 +142,7 @@
       "props": {
         "fields": [
           {
-            "label": "BookingPage.BookingContainer",
+            "label": "ShipmentPage.BookingContainer",
             "name": "billContainers",
             "component": "TableField",
             "props": {
@@ -181,14 +172,15 @@
                   "name": "sealNo1",
                   "component": "v-text-field"
                 },
+                
 
                 {
                   "label": "ShipmentPage.containerType",
                   "name": "containerType",
-                  "component": "AsyncSelect",
+                  "component": "ReadField",
                   "props": {
-                    "item-text": "name",
-                    "item-value": "code",
+
+                    "showLabel" : false,
                     "axiosParams": {
                       "url": "api/code/query/code_master",
                       "method": "POST",
@@ -196,6 +188,11 @@
                         "subqueries": {
                           "codeType": {
                             "value": "CONTTYPE"
+                          },
+                          "code" :{
+
+                            "value" : "{{context:fixValue}}"
+
                           }
                         }
                       }
@@ -204,7 +201,7 @@
                 },
 
                 {
-                  "label": "BookingPage.quantity",
+                  "label": "ShipmentPage.quantity",
                   "name": "quantity",
                   "component": "v-text-field",
                   "props": {
@@ -214,7 +211,7 @@
                 },
 
                 {
-                  "label": "BookingPage.quantityUnit",
+                  "label": "ShipmentPage.quantityUnit",
                   "name": "quantityUnit",
                   "component": "v-text-field",
                   "props": {
@@ -224,7 +221,7 @@
 
 
                 {
-                  "label": "BookingPage.grossWeight",
+                  "label": "ShipmentPage.grossWeight",
                   "name": "grossWeight",
                   "component": "v-text-field",
                   "props": {
@@ -234,7 +231,7 @@
                 },
 
                 {
-                  "label": "BookingPage.weightUnit",
+                  "label": "ShipmentPage.weightUnit",
                   "name": "weightUnit",
                   "component": "v-text-field",
                   "props": {

@@ -49,212 +49,28 @@
 
 
           {
+            
             "label": "ShipmentPage.placeOfReceipt",
             "name": "placeOfReceipt",
-            "component": "AsyncAutoSuggest",
+            "component": "ReadField",
             "class": "xs-12 md-6",
-            "more": [
-              {
-                "name": "placeOfReceipt",
-                "selector": "portCode"
-              }
-            ],
             "props": {
-              "searchValueParams": {
+
+              "resultProp" : "name",
+              "axiosParams": {
                 "method": "POST",
                 "url": "api/location/query/location",
                 "data": {
                   "subqueries": {
-                    "ports": {
-                      "value": "{{context.autoSuggestModel}}"
+                    "portCode" : {
+                      "value" : "{{context.fixValue}}"
                     }
                   }
                 }
-              },
-              "searchTextParams": {
-                "method": "POST",
-                "url": "api/location/query/location",
-                "data": {
-                  "subqueries": {
-                    "q": {
-                      "value": "{{context.search}}"
-                    }
-                  },
-                  "limit": 5
-                }
-              },
-              "item-text": "name",
-              "item-value": "portCode"
-            }
-          },
-          {
-            "label": "ShipmentPage.placeOfDelivery",
-            "name": "placeOfDelivery",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "more": [
-              {
-                "name": "placeOfDeliveryCode",
-                "selector": "portCode"
               }
-            ],
-            "props": {
-              "searchValueParams": {
-                "method": "POST",
-                "url": "api/location/query/location",
-                "data": {
-                  "subqueries": {
-                    "ports": {
-                      "value": "{{context.autoSuggestModel}}"
-                    }
-                  }
-                }
-              },
-              "searchTextParams": {
-                "method": "POST",
-                "url": "api/location/query/location",
-                "data": {
-                  "subqueries": {
-
-                    "q": {
-                      "value": "{{context.search}}"
-                    }
-                  },
-                  "limit": 5
-                }
-              },
-              "item-text": "name",
-              "item-value": "portCode"
             }
           },
 
-          {
-            "label": "ShipmentPage.portOfLoading",
-            "name": "portOfLoading",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "validator": ["required"],
-            "more": [
-              {
-                "name": "portOfLoading",
-                "selector": "portCode"
-              }
-            ],
-            "props": {
-              "required": true,
-              "searchValueParams": {
-                "method": "POST",
-                "url": "api/location/query/location",
-                "data": {
-                  "subqueries": {
-                    "ports": {
-                      "value": "{{context.autoSuggestModel}}"
-                    }
-                  }
-                }
-              },
-              "searchTextParams": {
-                "method": "POST",
-                "url": "api/location/query/location",
-                "data": {
-                  "subqueries": {
-                    "q": {
-                      "value": "{{context.search}}"
-                    }
-                  },
-                  "limit": 5
-                }
-              },
-              "item-text": "name",
-              "item-value": "portCode"
-            }
-          },
-
-
-          {
-            "label": "ShipmentPage.portOfDischarge",
-            "name": "portOfDischarge",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "validator": ["required"],
-            "more": [
-              {
-                "name": "portOfDischargeCode",
-                "selector": "portCode"
-              }
-            ],
-            "props": {
-              "required": true,
-              "searchValueParams": {
-                "method": "POST",
-                "url": "api/location/query/location",
-                "data": {
-                  "subqueries": {
-                    "ports": {
-                      "value": "{{context.autoSuggestModel}}"
-                    }
-                  }
-                }
-              },
-              "searchTextParams": {
-                "method": "POST",
-                "url": "api/location/query/location",
-                "data": {
-                  "subqueries": {
-                    "q": {
-                      "value": "{{context.search}}"
-                    }
-                  },
-                  "limit": 5
-                }
-              },
-              "item-text": "name",
-              "item-value": "portCode"
-            }
-          },
-
-
-          {
-            "label": "ShipmentPage.finalDestination",
-            "name": "finalDestination",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12 md-6",
-            "validator": ["required"],
-            "more": [
-              {
-                "name": "portOfDischargeCode",
-                "selector": "portCode"
-              }
-            ],
-            "props": {
-              "required": true,
-              "searchValueParams": {
-                "method": "POST",
-                "url": "api/location/query/location",
-                "data": {
-                  "subqueries": {
-                    "ports": {
-                      "value": "{{context.autoSuggestModel}}"
-                    }
-                  }
-                }
-              },
-              "searchTextParams": {
-                "method": "POST",
-                "url": "api/location/query/location",
-                "data": {
-                  "subqueries": {
-                    "q": {
-                      "value": "{{context.search}}"
-                    }
-                  },
-                  "limit": 5
-                }
-              },
-              "item-text": "name",
-              "item-value": "portCode"
-            }
-          },
 
           {
 
