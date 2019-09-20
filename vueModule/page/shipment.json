@@ -13,7 +13,7 @@
           },
 
           "primaryKey": "houseNo",
-          "modeFunction": "\n          const modes = ['detail','map']\n          const selectedMode = isNaN(Number(mode)) ? mode : 'detail'\n          if (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
+          "modeFunction": "\n          const modes = ['detail','map']\n          const selectedMode = isNaN(Number(mode)) ? 'detail' : 'detail'\n          if (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
           "haveTermOnCreate": true,
           "haveTermOnEdit": false,
           "widgetComponentSetting": {

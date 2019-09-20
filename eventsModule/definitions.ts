@@ -157,7 +157,7 @@ export default {
           {
             resultName: 'haveDiff',
             checkerFunction: (parameters: any) => {
-              const difference = diff(parameters.oldData, parameters.data, undefined, undefined, [
+              const difference = diff(parameters.oldData, parameters.data, undefined, ['documents'], [
                 'createdAt',
                 'createdBy',
                 'updatedAt',

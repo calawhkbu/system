@@ -11,8 +11,8 @@ const partyGroupCode = ''
 
 export const formatJson = {
   removeCharacter: ['\r', '\n', '\r\n', '=', 'o', ''],
-  segmentSeperator : ['�'],
-  elementSeperator : [''],
+  segmentSeperator: ['�'],
+  elementSeperator: [''],
 
   // segmentSeperator : ['?'],
   // elementSeperator : '',
@@ -667,7 +667,7 @@ export const formatJson = {
                       value: 'SH',
                       name: 'Gift Message',
                       overrideValue: 'Gift Message',
-                    }
+                    },
                   ],
                   allowAny: true,
                 },
@@ -716,7 +716,7 @@ export const formatJson = {
                     type: 'string',
                   },
                 ],
-              }
+              },
             ],
           },
 
@@ -1836,9 +1836,9 @@ export const formatJson = {
 export default class Edi850Parser extends BaseEdiParser {
   constructor(
     protected readonly allService: {
-      swivelConfigService: SwivelConfigService,
-      outboundService: OutboundService,
-    },
+      swivelConfigService: SwivelConfigService
+      outboundService: OutboundService
+    }
   ) {
     super(allService, {}, { import: { formatJson, ediType: '850' } })
   }
@@ -1847,7 +1847,8 @@ export default class Edi850Parser extends BaseEdiParser {
     // console.log(`import type  : ${this.type}`)
     const { jsonData, errorList } = await super.import(ediString)
     const poList: any[] = []
-    if (!jsonData || jsonData.length === 0) {// undefined or empty array
+    if (!jsonData || jsonData.length === 0) {
+      // undefined or empty array
       throw new Error(errorList)
     }
     const sts = _.get(jsonData, 'ST', []) || []
@@ -1870,13 +1871,14 @@ export default class Edi850Parser extends BaseEdiParser {
           exitFactoryDateActual: _.get(ST, 'DTM.firstArrive')
             ? moment.utc(_.get(ST, 'DTM.firstArrive')).toDate()
             : null,
-          Department: _.get(ST, 'REF.referenceNumber')
+          Department: _.get(ST, 'REF.referenceNumber'),
         }
         const po1 = _.get(ST, 'PO1', []) || []
         // return response
         if (po1.length) {
           const poItemList: any[] = []
-          for (const PO1 of po1) { // k<ST['PO1'].length
+          for (const PO1 of po1) {
+            // k<ST['PO1'].length
             poItemList.push({
               perPackageQuantity: _.get(PO1, 'PO4.pack'),
               quantity: _.get(PO1, 'quantityOrdered'),
@@ -1885,15 +1887,15 @@ export default class Edi850Parser extends BaseEdiParser {
               product: {
                 subLine: _.get(PO1, 'SLN.assignedIdentification'),
                 poLineNo: _.get(PO1, 'poLineNumber'),
-                unitPrice:  _.get(PO1, 'unitPrice'),
+                unitPrice: _.get(PO1, 'unitPrice'),
                 priceUnit: _.get(PO1, 'basisOfUnitPrice'),
                 upcen: _.get(PO1, 'productId1').trim(),
                 size: (_.get(PO1, 'productId2') || '').substr(0, 3),
                 colorDesc: _.get(PO1, 'productId4'),
                 pack: _.get(PO1, 'poLineNumber'),
                 buyerSKU: _.get(PO1, 'productId3'),
-                style: _.get(PO1, 'productId5')
-              }
+                style: _.get(PO1, 'productId5'),
+              },
             })
           }
           if (poItemList.length) {
@@ -1904,22 +1906,31 @@ export default class Edi850Parser extends BaseEdiParser {
         if (n1s.length) {
           const partyMapper = {
             'Ship From': 'shipper',
-            'Ship To': 'shipTo'
+            'Ship To': 'shipTo',
           }
           for (const N1 of n1s) {
             const role = _.get(N1, 'organizationIdentifier')
             if (partyMapper[role]) {
               const newRole = partyMapper[role]
-              if (newRole === 'shipper')
-              {
-                _.set(po, `${newRole}PartyCode` , _.get(N1, 'identificationCode'))
+              if (newRole === 'shipper') {
+                _.set(po, `${newRole}PartyCode`, _.get(N1, 'identificationCode'))
                 _.set(po, `${newRole}PartyName`, _.get(N1, 'name'))
               }
-              if (newRole === 'shipTo')
-              {
+              if (newRole === 'shipTo') {
                 const index = (_.get(N1, 'name') || '').indexOf('#')
-                _.set(po, `${newRole}PartyCode`, `${(_.get(N1, 'name') || '').substr(index + 1)} ${_.get(N1, 'identificationCode').substr(0, 9)}`.trim())
-                _.set(po, `${newRole}PartyName`, (_.get(N1, 'name') || '').substr(0, index) ||  _.get(N1, 'name'))
+                _.set(
+                  po,
+                  `${newRole}PartyCode`,
+                  `${(_.get(N1, 'name') || '').substr(index + 1)} ${_.get(
+                    N1,
+                    'identificationCode'
+                  ).substr(0, 9)}`.trim()
+                )
+                _.set(
+                  po,
+                  `${newRole}PartyName`,
+                  (_.get(N1, 'name') || '').substr(0, index) || _.get(N1, 'name')
+                )
               }
               _.set(po, `${newRole}PartyAddress1`, _.get(N1, 'N3.addressInformation'))
               _.set(po, `${newRole}PartyAddress2`, _.get(N1, 'N3.additionalAddressInformation'))
@@ -1928,30 +1939,50 @@ export default class Edi850Parser extends BaseEdiParser {
               _.set(po, `${newRole}PartyStateZip`, _.get(N1, 'N4.postalCode'))
             } else {
               _.set(po, `${role.replace(/\s/g, '')}PartyName`, _.get(N1, 'name'))
-              _.set(po, `${role.replace(/\s/g, '')}PartyCode` , _.get(N1, 'identificationCode'))
-              _.set(po, `${role.replace(/\s/g, '')}PartyAddress1`, _.get(N1, 'N3.addressInformation'))
-              _.set(po, `${role.replace(/\s/g, '')}PartyAddress2`, _.get(N1, 'N3.additionalAddressInformation'))
-              _.set(po, `${role.replace(/\s/g, '')}PartyStateCode`, _.get(N1, 'N4.stateOrProvinceCode'))
+              _.set(po, `${role.replace(/\s/g, '')}PartyCode`, _.get(N1, 'identificationCode'))
+              _.set(
+                po,
+                `${role.replace(/\s/g, '')}PartyAddress1`,
+                _.get(N1, 'N3.addressInformation')
+              )
+              _.set(
+                po,
+                `${role.replace(/\s/g, '')}PartyAddress2`,
+                _.get(N1, 'N3.additionalAddressInformation')
+              )
+              _.set(
+                po,
+                `${role.replace(/\s/g, '')}PartyStateCode`,
+                _.get(N1, 'N4.stateOrProvinceCode')
+              )
               _.set(po, `${role.replace(/\s/g, '')}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
               _.set(po, `${role.replace(/\s/g, '')}PartyStateZip`, _.get(N1, 'N4.postalCode'))
             }
           }
         }
         if (_.get(jsonData, 'ISA.createdDate') && _.get(jsonData, 'ISA.createdTime')) {
-          const datetime = moment.utc(`${_.get(jsonData, 'ISA.createdDate')} ${_.get(jsonData, 'ISA.createdTime')}`)
+          const datetime = moment.utc(
+            `${_.get(jsonData, 'ISA.createdDate')} ${_.get(jsonData, 'ISA.createdTime')}`
+          )
           _.set(po, 'ediCreatedDateActual', datetime)
         }
-        if (_.get(jsonData, 'GS.dataInterchangeDate') && _.get(jsonData, 'GS.dataInterchangeTime')) {
-          const datetime = moment.utc(`${_.get(jsonData, 'GS.dataInterchangeDate')} ${_.get(jsonData, 'GS.dataInterchangeTime')}`)
+        if (
+          _.get(jsonData, 'GS.dataInterchangeDate') &&
+          _.get(jsonData, 'GS.dataInterchangeTime')
+        ) {
+          const datetime = moment.utc(
+            `${_.get(jsonData, 'GS.dataInterchangeDate')} ${_.get(
+              jsonData,
+              'GS.dataInterchangeTime'
+            )}`
+          )
           _.set(po, 'dataInterchangeDateActual', datetime)
         }
-        if (_.get(ST, 'promoStart'))
-        {
+        if (_.get(ST, 'promoStart')) {
           _.set(po, 'promoStart', moment.utc(_.get(ST, 'DTM.promoStart')))
         }
-        if (_.get(ST, 'DTM.lastArrive'))
-        {
-          _.set(po, 'lastArrive',  moment.utc(_.get(ST, 'DTM.lastArrive')))
+        if (_.get(ST, 'DTM.lastArrive')) {
+          _.set(po, 'lastArrive', moment.utc(_.get(ST, 'DTM.lastArrive')))
         }
 
         poList.push(po)

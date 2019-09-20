@@ -9,14 +9,13 @@ import {
   OrderBy,
   JoinClause,
   BinaryExpression,
+  IsNullExpression,
 } from 'node-jql'
 
 function prepareParams(): Function {
   return function(require, session, params) {
-
     const { Resultset } = require('node-jql-core')
     const {
-
       OrderBy,
       ColumnExpression,
       CreateTableJQL,
@@ -25,6 +24,7 @@ function prepareParams(): Function {
       InExpression,
       BetweenExpression,
       FunctionExpression,
+      IsNullExpression,
       BinaryExpression,
       GroupBy,
       Query,
@@ -36,26 +36,34 @@ function prepareParams(): Function {
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    // subqueries.fields = ['booking.*', 'booking_popacking.*']
+    params.fields = ['shipperPartyId', 'weightTotal']
+    params.groupBy = ['shipperPartyId']
 
-    subqueries.fields = ['bookingId']
+    params.sorting = [ new OrderBy('weightTotal', 'DESC') ]
 
-    // subqueries.groupBy = ['shipperPartyId']
-    // subqueries.sorting = [ new OrderBy('weight', 'DESC') ]
-    // subqueries.limit = 9
+    // params.conditions = [
+
+    //   new BinaryExpression(new IsNullExpression(new ColumnExpression('booking', 'shipmentPartyId'), true), '=', false)
+
+    // ]
+
+    params.limit = 10
 
     return params
   }
 }
 
-function prepareTable(name: string): CreateTableJQL {
+function prepareTop10Table(): CreateTableJQL {
+
+  const name = 'top10'
+
   return new CreateTableJQL({
     $temporary: true,
     name,
     $as: new Query({
       $select: [
-        new ResultColumn(new ColumnExpression(name, 'shipperPartyId')),
-        new ResultColumn(new ColumnExpression(name, 'weight')),
+        new ResultColumn(new ColumnExpression(name, 'shipperPartyId'), 'partyId'),
+        new ResultColumn(new ColumnExpression(name, 'weightTotal')),
       ],
       $from: new FromTable(
         {
@@ -63,28 +71,25 @@ function prepareTable(name: string): CreateTableJQL {
           url: 'api/booking/query/booking',
           columns: [
             {
-              name: 'weight',
+              name: 'weightTotal',
               type: 'number',
             },
             {
               name: 'shipperPartyId',
-              type: 'number',
-            },
-
-            {
-              name: 'shipperPartyName',
               type: 'string',
             },
+
           ],
         },
         name
       ),
-
     }),
   })
 }
 
-function preparePartyTable(name: string): CreateTableJQL {
+function preparePartyTable(): CreateTableJQL {
+
+  const name = 'party'
   return new CreateTableJQL({
     $temporary: true,
     name,
@@ -122,29 +127,34 @@ function preparePartyTable(name: string): CreateTableJQL {
 }
 
 export default [
-  [prepareParams(), prepareTable('tempTable')],
 
-  // [prepareParams(), preparePartyTable('party')],
+  [prepareParams(), prepareTop10Table()],
+  preparePartyTable(),
 
   new Query({
+    $select: [
+      new ResultColumn(new ColumnExpression('top10', 'weightTotal')),
+      new ResultColumn(
+        new FunctionExpression(
+          'IFNULL',
+          new ColumnExpression('party', 'name'),
+          new ColumnExpression('top10', 'partyId')
+        ),
+        'partyName'
+      ),
+    ],
 
-    $from : 'tempTable'
-  })
-
-  // new Query({
-  //   $from: new FromTable(
-  //     'tempTable',
-  //     'tempTable',
-  //     new JoinClause(
-  //       'INNER',
-  //       new FromTable('party', 'party'),
-  //       new BinaryExpression(
-  //         new ColumnExpression('tempTable', 'shipperPartyId'),
-  //         '=',
-  //         new ColumnExpression('party', 'id')
-  //       )
-  //     )
-  //   ),
-  // }),
+    $from: new FromTable('top10', {
+      operator: 'LEFT',
+      table: 'party',
+      $on: [
+        new BinaryExpression(
+          new ColumnExpression('top10', 'partyId'),
+          '=',
+          new ColumnExpression('party', 'id')
+        ),
+      ],
+    }),
+  }),
 
 ]

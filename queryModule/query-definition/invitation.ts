@@ -12,20 +12,17 @@ import {
 const query = new QueryDef(
   new Query({
     $distinct: true,
-    $from: new FromTable(
-      'invitation',
-      {
-        operator: 'LEFT',
-        table: 'person',
-        $on: [
-          new BinaryExpression(
-            new ColumnExpression('person', 'id'),
-            '=',
-            new ColumnExpression('invitation', 'personId')
-          ),
-        ],
-      },
-    ),
+    $from: new FromTable('invitation', {
+      operator: 'LEFT',
+      table: 'person',
+      $on: [
+        new BinaryExpression(
+          new ColumnExpression('person', 'id'),
+          '=',
+          new ColumnExpression('invitation', 'personId')
+        ),
+      ],
+    }),
   })
 )
 

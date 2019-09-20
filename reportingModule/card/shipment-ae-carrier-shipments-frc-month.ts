@@ -28,9 +28,9 @@ const months = [
   'November',
   'December',
 ]
-const types = ['F_GW', 'F_CW', 'R_GW', 'R_CW']
+const types = ['F', 'R', 'C']
 
-function prepareParams(type_: 'F' | 'R'): Function {
+function prepareParams(type_: 'F' | 'R' | 'C'): Function {
   const fn = function(require, session, params) {
     // import
     const moment = require('moment')
@@ -52,7 +52,7 @@ function prepareParams(type_: 'F' | 'R'): Function {
     subqueries.boundType = { value: 'O' }
 
     // select
-    params.fields = ['carrierCode', 'jobMonth', 'SUM(grossWeight)', 'SUM(chargeableWeight)']
+    params.fields = ['carrierCode', 'jobMonth', 'COUNT(id)']
 
     // group by
     params.groupBy = ['carrierCode', 'jobMonth']
@@ -60,9 +60,14 @@ function prepareParams(type_: 'F' | 'R'): Function {
     switch (type_) {
       case 'F':
         subqueries.nominatedType = { value: 'F' }
+        subqueries.isColoader = { value: 0 }
         break
       case 'R':
         subqueries.nominatedType = { value: 'R' }
+        subqueries.isColoader = { value: 0 }
+        break
+      case 'C':
+        subqueries.isColoader = { value: 1 }
         break
     }
 
@@ -74,10 +79,10 @@ function prepareParams(type_: 'F' | 'R'): Function {
 }
 
 // call API
-function prepareData(type: 'F' | 'R'): InsertJQL {
+function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
   return new InsertJQL({
     name: 'shipment',
-    columns: ['type', 'carrierCode', 'month', 'grossWeight', 'chargeableWeight'],
+    columns: ['type', 'carrierCode', 'month', 'noOfShipments'],
     query: new Query({
       $select: [
         new ResultColumn(new Value(type), 'type'),
@@ -86,8 +91,7 @@ function prepareData(type: 'F' | 'R'): InsertJQL {
           new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
           'month'
         ),
-        new ResultColumn('grossWeight'),
-        new ResultColumn('chargeableWeight'),
+        new ResultColumn('noOfShipments'),
       ],
       $from: new FromTable(
         {
@@ -96,8 +100,7 @@ function prepareData(type: 'F' | 'R'): InsertJQL {
           columns: [
             { name: 'carrierCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
-            { name: 'SUM(grossWeight)', type: 'number', $as: 'grossWeight' },
-            { name: 'SUM(chargeableWeight)', type: 'number', $as: 'chargeableWeight' },
+            { name: 'COUNT(id)', type: 'number', $as: 'noOfShipments' },
           ],
         },
         'shipment'
@@ -107,22 +110,18 @@ function prepareData(type: 'F' | 'R'): InsertJQL {
 }
 
 // prepare Total row(s)
-function prepareTotal(type: 'F' | 'R'): InsertJQL {
+function prepareTotal(type: 'F' | 'R' | 'C'): InsertJQL {
   return new InsertJQL({
     name: 'shipment',
-    columns: ['type', 'carrierCode', 'month', 'grossWeight', 'chargeableWeight'],
+    columns: ['type', 'carrierCode', 'month', 'noOfShipments'],
     query: new Query({
       $select: [
         new ResultColumn(new Value(type), 'type'),
         new ResultColumn('carrierCdoe'),
         new ResultColumn(new Value('Total'), 'month'),
         new ResultColumn(
-          new FunctionExpression('SUM', new ColumnExpression('grossWeight')),
-          'grossWeight'
-        ),
-        new ResultColumn(
-          new FunctionExpression('SUM', new ColumnExpression('chargeableWeight')),
-          'chargeableWeight'
+          new FunctionExpression('SUM', new ColumnExpression('noOfShipments')),
+          'noOfShipments'
         ),
       ],
       $from: 'shipment',
@@ -138,8 +137,7 @@ export default [
     new Column('type', 'string'),
     new Column('carrierCode', 'string'),
     new Column('month', 'string'),
-    new Column('grossWeight', 'number'),
-    new Column('chargeableWeight', 'number'),
+    new Column('noOfShipments', 'number'),
   ]),
 
   // prepare data
@@ -147,6 +145,8 @@ export default [
   prepareTotal('F'),
   [prepareParams('R'), prepareData('R')],
   prepareTotal('R'),
+  [prepareParams('C'), prepareData('C')],
+  prepareTotal('C'),
 
   // finalize data
   new Query({
@@ -163,9 +163,7 @@ export default [
                     new BinaryExpression(new ColumnExpression('month'), '=', month),
                     new BinaryExpression(new ColumnExpression('type'), '=', type.charAt(0)),
                   ]),
-                  new ColumnExpression(
-                    type.substr(2, 2) === 'GW' ? 'grossWeight' : 'chargeableWeight'
-                  )
+                  new ColumnExpression('noOfShipments')
                 ),
                 `${month}-${type}`
               )
