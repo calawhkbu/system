@@ -64,6 +64,12 @@ function prepareBookingable(name: string): CreateTableJQL {
         new ResultColumn(new ColumnExpression(name, 'id')),
         new ResultColumn(new ColumnExpression(name, 'moduleTypeCode')),
         new ResultColumn(new ColumnExpression(name, 'bookingNo')),
+        new ResultColumn(new ColumnExpression(name, 'shipperPartyName')),
+        new ResultColumn(new ColumnExpression(name, 'consigneePartyName')),
+        new ResultColumn(new ColumnExpression(name, 'portOfLoadingCode')),
+        new ResultColumn(new ColumnExpression(name, 'portOfDischargeCode')),
+        new ResultColumn(new ColumnExpression(name, 'depatureDateEstimated')),
+        new ResultColumn(new ColumnExpression(name, 'arrivalDateEstimated')),
       ],
 
       $from: new FromTable(
@@ -74,6 +80,13 @@ function prepareBookingable(name: string): CreateTableJQL {
             { name: 'bookingId', type: 'number', $as: 'id' },
             { name: 'moduleTypeCode', type: 'string' },
             { name: 'bookingNo', type: 'string' },
+            { name: 'shipperPartyName', type: 'string' },
+            { name: 'consigneePartyName', type: 'string' },
+            { name: 'portOfLoadingCode', type: 'string' },
+            { name: 'portOfDischargeCode', type: 'string' },
+            { name: 'depatureDateEstimated', type: 'Date' },
+            { name: 'arrivalDateEstimated', type: 'Date' },
+
           ],
         },
         name

@@ -12,7 +12,7 @@ import {
 } from 'node-jql'
 import { parseCode } from 'utils/function'
 
-function prepareBookingParams(): Function {
+function prepareShipmentParams(): Function {
   const fn = async function(require, session, params) {
     const { Resultset } = require('node-jql-core')
     const {
@@ -35,9 +35,11 @@ function prepareBookingParams(): Function {
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    // get the primaryKeyList
+    console.log('subqueries')
+    console.log(subqueries)
 
-    if (!subqueries.primaryKeyListString)
+    // get the primaryKeyList
+    if (!subqueries.primaryKeyListString && subqueries.primaryKeyListString !== '')
       throw new BadRequestException('MISSING_primaryKeyListString')
 
     const primaryKeyList = subqueries.primaryKeyListString.value.split(',')
@@ -53,16 +55,19 @@ function prepareBookingParams(): Function {
   return parseCode(code)
 }
 
-function prepareBookingable(name: string): CreateTableJQL {
+function prepareShipmentable(name: string): CreateTableJQL {
   return new CreateTableJQL({
     $temporary: true,
     name,
     $as: new Query({
       $select: [
         new ResultColumn(new ColumnExpression(name, 'houseNo')),
-        new ResultColumn(new ColumnExpression(name, 'jobNo')),
-        new ResultColumn(new ColumnExpression(name, 'moduleType')),
-        new ResultColumn(new ColumnExpression(name, 'jobDate')),
+        new ResultColumn(new ColumnExpression(name, 'shipperPartyCode'), 'shipperPartyErpCode'),
+        new ResultColumn(new ColumnExpression(name, 'consigneePartyCode'), 'consigneePartyErpCode'),
+        new ResultColumn(new ColumnExpression(name, 'polCode')),
+        new ResultColumn(new ColumnExpression(name, 'podCode')),
+        new ResultColumn(new ColumnExpression(name, 'estimatedDepatureDate')),
+        new ResultColumn(new ColumnExpression(name, 'estimatedArrivalDate')),
       ],
 
       $from: new FromTable(
@@ -70,10 +75,15 @@ function prepareBookingable(name: string): CreateTableJQL {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
+
             { name: 'houseNo', type: 'string' },
-            { name: 'jobNo', type: 'string' },
-            { name: 'moduleType', type: 'string' },
-            { name: 'jobDate', type: 'Date' },
+            { name: 'shipperPartyCode', type: 'string' },
+            { name: 'consigneePartyCode', type: 'string' },
+            { name: 'polCode', type: 'string' },
+            { name: 'podCode', type: 'string' },
+            { name: 'estimatedDepatureDate', type: 'Date' },
+            { name: 'estimatedArrivalDate', type: 'Date' },
+
           ],
         },
         name
@@ -83,9 +93,9 @@ function prepareBookingable(name: string): CreateTableJQL {
 }
 
 export default [
-  [prepareBookingParams(), prepareBookingable('booking')],
+  [prepareShipmentParams(), prepareShipmentable('shipment')],
 
   new Query({
-    $from: 'booking',
+    $from: 'shipment',
   }),
 ]

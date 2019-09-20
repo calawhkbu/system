@@ -52,9 +52,9 @@ function prepareBookingParams(): Function {
         .format('YYYY-MM-DD')
     }
 
-    params.fields = ['carrierCode', 'noOfBookings', 'primaryKeyListString']
+    params.fields = ['moduleTypeCode', 'noOfBookings', 'primaryKeyListString']
 
-    params.groupBy = ['carrierCode']
+    params.groupBy = ['moduleTypeCode']
 
     return params
   }

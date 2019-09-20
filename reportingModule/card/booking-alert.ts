@@ -33,7 +33,7 @@ function prepareParams(): Function {
     }
 
     subqueries.categories = {
-      value: ['Exception'],
+      value: ['Exception', 'Notification'],
     }
 
     return params
