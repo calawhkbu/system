@@ -1,182 +1,146 @@
 {
   "layout": "MainLayout",
-  "components": [
-    {
-      "is": "GridTool",
-      "props": {
-        "reportingKey": "dashboard",
-        "urlFormat": "/dashboard{{ id|if('/', '') }}{{ id }}",
-        "hasReports": true,
-        "showFilterBar": true,
-        "enableShare": true,
-        "enableSetting": true,
-        "newReport": {
-          "configurations": {
-            "i18nContext": "Reporting",
-            "colors": ["#4bc0c0", "#ff6384", "#ffcd56", "#c9cbcf", "#36a2eb"]
-          }
-        },
-        "filters": [
-          {
-            "name": "moduleTypeCode",
-            "type": "list",
-            "props": {
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "moduleType"
-                      }
+  "components": [{
+    "is": "GridTool",
+    "props": {
+      "reportingKey": "dashboard",
+      "urlFormat": "/dashboard{{ id|if('/', '') }}{{ id }}",
+      "hasReports": true,
+      "showFilterBar": true,
+      "enableShare": true,
+      "enableSetting": true,
+      "newReport": {
+        "configurations": {
+          "i18nContext": "Reporting",
+          "colors": ["#4bc0c0", "#ff6384", "#ffcd56", "#c9cbcf", "#36a2eb"]
+        }
+      },
+      "filters": [{
+          "name": "moduleTypeCode",
+          "type": "list",
+          "props": {
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "MODULE"
                     }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
+                  }
                 },
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "moduleType"
-                      },
-                      "code": {
-                        "value": "{{ value }}"
-                      }
+                "valueKey": "code",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "moduleType"
+                    },
+                    "code": {
+                      "value": "{{ value }}"
                     }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
-                }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
               }
             }
-          },
-          {
-            "name": "salesmanCode",
-            "type": "text"
-          },
-          {
-            "name": "date",
-            "type": "date",
-            "props": {
-              "required": true,
-              "shortcuts": [
-                {
-                  "label": "year-to-date",
-                  "func": "year-to-date"
-                },
-                {
-                  "label": "current",
-                  "shortcuts": [
-                    {
-                      "label": "current year",
-                      "func": {
-                        "key": "current",
-                        "args": { "unit": "year" }
-                      }
-                    },
-                    {
-                      "label": "current month",
-                      "func": {
-                        "key": "current",
-                        "args": { "unit": "month" }
-                      }
-                    }
-                  ]
-                },
-                {
-                  "label": "last",
-                  "shortcuts": [
-                    {
-                      "label": "last year",
-                      "func": {
-                        "key": "last",
-                        "args": { "unit": "year" }
-                      }
-                    },
-                    {
-                      "label": "last 3 month",
-                      "func": {
-                        "key": "last",
-                        "args": { "value": 3, "unit": "month" }
-                      }
-                    }
-                  ]
-                },
-                {
-                  "label": "coming",
-                  "shortcuts": [
-                    {
-                      "label": "coming 7 days",
-                      "func": {
-                        "key": "coming",
-                        "args": { "value": 7, "unit": "day", "startFromNow": true }
-                      }
-                    }
-                  ]
-                },
-                {
-                  "label": "past",
-                  "shortcuts": [
-                    {
-                      "label": "past 7 days",
-                      "func": {
-                        "key": "past",
-                        "args": { "value": 7, "unit": "day" }
-                      }
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          {
-            "name": "Airline",
-            "type": "autocomplete",
-            "props": {
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "airline"
-                      },
-                      "q": {
-                        "value": "{{ q }}"
-                      }
-                    }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
-                },
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "airline"
-                      },
-                      "code": {
-                        "value": "{{ value }}"
-                      }
-                    }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
-                }
-              },
-              "display": "value",
-              "multi": true
-            }
           }
-        ]
-      }
+        },
+        {
+          "name": "salesmanCode",
+          "type": "text"
+        },
+        {
+          "name": "date",
+          "type": "date",
+          "props": {
+            "required": true,
+            "shortcuts": [{
+                "label": "year-to-date",
+                "func": "year-to-date"
+              },
+              {
+                "label": "current",
+                "shortcuts": [{
+                    "label": "current year",
+                    "func": {
+                      "key": "current",
+                      "args": {
+                        "unit": "year"
+                      }
+                    }
+                  },
+                  {
+                    "label": "current month",
+                    "func": {
+                      "key": "current",
+                      "args": {
+                        "unit": "month"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "label": "last",
+                "shortcuts": [{
+                    "label": "last year",
+                    "func": {
+                      "key": "last",
+                      "args": {
+                        "unit": "year"
+                      }
+                    }
+                  },
+                  {
+                    "label": "last 3 month",
+                    "func": {
+                      "key": "last",
+                      "args": {
+                        "value": 3,
+                        "unit": "month"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "label": "coming",
+                "shortcuts": [{
+                  "label": "coming 7 days",
+                  "func": {
+                    "key": "coming",
+                    "args": {
+                      "value": 7,
+                      "unit": "day",
+                      "startFromNow": true
+                    }
+                  }
+                }]
+              },
+              {
+                "label": "past",
+                "shortcuts": [{
+                  "label": "past 7 days",
+                  "func": {
+                    "key": "past",
+                    "args": {
+                      "value": 7,
+                      "unit": "day"
+                    }
+                  }
+                }]
+              }
+            ]
+          }
+        }
+      ]
     }
-  ]
+  }]
 }
