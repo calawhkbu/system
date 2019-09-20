@@ -53,7 +53,7 @@ function prepareTop10Params(): Function {
     }
 
     subqueries.moduleType = {
-      value: 'SEA',
+      value: 'SEA'
     }
 
     params.fields = ['agentPartyCode', 'cbmTotal']
@@ -167,7 +167,7 @@ function preparePartyTable(): Function {
 function prepareTop10Table() {
   return new CreateTableJQL({
     $temporary: true,
-    name: 'test',
+    name: 'top10',
 
     $as: new Query({
       $from: new FromTable(
