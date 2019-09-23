@@ -10,8 +10,9 @@ const _ = require('lodash')
 const partyGroupCode = ''
 
 export const formatJson = {
-  removeCharacter: ['\r', '\n', '\r\n', '=', 'o', ''],
-  segmentSeperator: ['�'],
+  removeCharacter: ['|'],
+  segmentSeperator: ['\n'],
+  // segmentSeperator: ['�'],
   elementSeperator: [''],
 
   // segmentSeperator : ['?'],
