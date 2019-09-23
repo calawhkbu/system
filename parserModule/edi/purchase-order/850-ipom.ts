@@ -3,6 +3,7 @@ import { OutboundService } from 'modules/integration-hub/services/outbound'
 
 import { BaseEdiParser } from 'modules/parser/parser/edi'
 import { EdiFormatJson } from 'modules/edi/interface'
+import { createRequireFromPath } from 'module'
 
 const moment = require('moment')
 const _ = require('lodash')
@@ -10,9 +11,10 @@ const _ = require('lodash')
 const partyGroupCode = ''
 
 export const formatJson = {
-  removeCharacter: ['\r', '\n', '\r\n', '=', 'o', ''],
-  segmentSeperator : ['�'],
-  elementSeperator : [''],
+  removeCharacter: [ '=', 'o', ''],
+  segmentSeperator : ['�', '\r\n', '\r', '\n'],
+  elementSeperator : ['', '*'],
+  mainBodyHead : 'ST',
 
   // segmentSeperator : ['?'],
   // elementSeperator : '',
@@ -29,48 +31,64 @@ export const formatJson = {
         elementFormatList: [
           {
             index: 1,
+            maximumLen: 2,
+            minimumLen: 2,
             name: 'Authorization Info Qualifier',
             key: 'authorizationInfoQualifier',
             type: 'string',
           },
           {
             index: 2,
+            maximumLen: 10,
+            minimumLen: 10,
             name: 'Authorization Information',
             key: 'authorizationInformation',
             type: 'string',
           },
           {
             index: 3,
+            maximumLen: 2,
+            minimumLen: 2,
             name: 'Security Info Qualifier ',
             key: 'securityInfoQualifier ',
             type: 'string',
           },
           {
             index: 4,
+            maximumLen: 10,
+            minimumLen: 10,
             name: 'Security Information',
             key: 'securityInformation',
             type: 'string',
           },
           {
             index: 5,
+            maximumLen: 2,
+            minimumLen: 2,
             name: 'Interchange Sender ID QL',
             key: 'interchangeSenderIdQl',
             type: 'string',
           },
           {
             index: 6,
+            maximumLen: 15,
+            minimumLen: 15,
             name: 'Interchange Sender ID',
             key: 'interchangeSenderId',
             type: 'string',
           },
           {
             index: 7,
+            maximumLen: 2,
+            minimumLen: 2,
             name: 'Interchange Receiver QL',
             key: 'interchangeReceiverQl',
             type: 'string',
           },
           {
             index: 8,
+            maximumLen: 15,
+            minimumLen: 15,
             name: 'Interchange Receiver ID',
             key: 'interchangeReceiverId',
             type: 'string',
@@ -97,6 +115,8 @@ export const formatJson = {
           },
           {
             index: 9,
+            maximumLen: 6,
+            minimumLen: 6,
             name: 'Created Date',
             key: 'createdDate',
             type: 'date',
@@ -104,36 +124,48 @@ export const formatJson = {
           },
           {
             index: 10,
+            maximumLen: 4,
+            minimumLen: 4,
             name: 'Created Time',
             key: 'createdTime',
             type: 'time',
           },
           {
             index: 11,
+            maximumLen: 1,
+            minimumLen: 1,
             name: 'Interchange Standards ID',
             key: 'interchangeStandardsId',
             type: 'string',
           },
           {
             index: 12,
+            maximumLen: 5,
+            minimumLen: 5,
             name: 'Interchange Version ID',
             key: 'interchangeVersionId',
             type: 'string',
           },
           {
             index: 13,
+            maximumLen: 9,
+            minimumLen: 9,
             name: 'Interchange Control Number',
             key: 'interchangeControlNumber',
             type: 'string',
           },
           {
             index: 14,
+            maximumLen: 1,
+            minimumLen: 1,
             name: 'Acknowledgement Requested',
             key: 'acknowledgementRequested ',
             type: 'string',
           },
           {
             index: 15,
+            maximumLen: 1,
+            minimumLen: 1,
             name: 'Test Indicator',
             key: 'testIndicator',
             type: 'string',
@@ -155,6 +187,8 @@ export const formatJson = {
           },
           {
             index: 16,
+            maximumLen: 1,
+            minimumLen: 1,
             name: 'Sub Element Separator',
             key: 'subElementSeparator',
             type: 'string',
@@ -170,12 +204,16 @@ export const formatJson = {
         elementFormatList: [
           {
             index: 1,
+            maximumLen: 2,
+            minimumLen: 2,
             name: 'Functional ID',
             key: 'functionalId',
             type: 'string',
           },
           {
             index: 2,
+            maximumLen: 10,
+            minimumLen: 10,
             name: 'Application Sender ID',
             key: 'applicationSenderId',
             allowableValues: {
@@ -202,12 +240,16 @@ export const formatJson = {
           },
           {
             index: 3,
+            maximumLen: 12,
+            minimumLen: 2,
             name: 'Application Receiver ID',
             key: 'applicationReceiverId',
             type: 'string',
           },
           {
             index: 4,
+            maximumLen: 8,
+            minimumLen: 8,
             name: 'Data Interchange Date',
             key: 'dataInterchangeDate',
             type: 'date',
@@ -215,24 +257,32 @@ export const formatJson = {
           },
           {
             index: 5,
+            maximumLen: 4,
+            minimumLen: 4,
             name: 'Data Interchange Time',
             key: 'dataInterchangeTime',
             type: 'time',
           },
           {
             index: 6,
+            maximumLen: 9,
+            minimumLen: 1,
             name: 'Data Interchange Control Number',
             key: 'dataInterchangeControlNumber',
             type: 'string',
           },
           {
             index: 7,
+            maximumLen: 2,
+            minimumLen: 1,
             name: 'Responsible Agency Code',
             key: 'responsibleAgencyCode',
             type: 'string',
           },
           {
             index: 8,
+            maximumLen: 12,
+            minimumLen: 1,
             name: 'Version ID',
             key: 'versionId',
             type: 'string',
@@ -248,6 +298,8 @@ export const formatJson = {
         elementFormatList: [
           {
             index: 1,
+            maximumLen: 3,
+            minimumLen: 3,
             name: 'Transaction Set Identifier Code',
             key: 'transactionSetIdentifierCode',
             type: 'string',
@@ -255,6 +307,8 @@ export const formatJson = {
 
           {
             index: 2,
+            maximumLen: 9,
+            minimumLen: 4,
             name: 'Transaction Set Control Number',
             key: 'transactionSetControlNumber',
             type: 'string',
@@ -270,6 +324,8 @@ export const formatJson = {
             elementFormatList: [
               {
                 index: 1,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Transaction Set Purpose',
                 key: 'transactionSetPurpose',
                 allowableValues: {
@@ -292,6 +348,8 @@ export const formatJson = {
 
               {
                 index: 2,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Purchase Order Type',
                 key: 'purchaseOrderType',
                 allowableValues: {
@@ -329,25 +387,41 @@ export const formatJson = {
 
               {
                 index: 3,
+                maximumLen: 10,
+                minimumLen: 10,
                 name: 'Purchase Order Number',
                 key: 'purchaseOrderNumber',
                 type: 'string',
               },
               {
-                index: 4,
-
-                name: 'Release Number',
-                key: 'releaseNumber',
-                mandatory: false,
-                type: 'string',
-              },
-              {
                 index: 5,
-
+                maximumLen: 8,
+                minimumLen: 8,
                 name: 'Purchase Order Date',
                 key: 'purchaseOrderDate',
                 type: 'date',
                 format: 'yyyyMMdd',
+              },
+            ],
+          },
+          {
+            key: 'CUR',
+            code: 'CUR',
+            name: 'Currency',
+            type: 'object',
+            mandatory: false,
+            elementFormatList: [
+              {
+                index: 1,
+                name: 'Entity Identifier Code',
+                key: 'entityIdentifierCode',
+                type: 'string',
+              },
+              {
+                index: 2,
+                name: 'Currency Code',
+                key: 'currencyCode',
+                type: 'string',
               },
             ],
           },
@@ -361,6 +435,8 @@ export const formatJson = {
             elementFormatList: [
               {
                 index: 1,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Reference Number Qualifier',
                 key: 'referenceNumberQualifier',
                 overrideValueIndex: 2,
@@ -393,6 +469,8 @@ export const formatJson = {
               },
               {
                 index: 2,
+                maximumLen: 30,
+                minimumLen: 1,
                 name: 'Reference Number',
                 key: 'referenceNumber',
                 type: 'string',
@@ -408,6 +486,8 @@ export const formatJson = {
             elementFormatList: [
               {
                 index: 1,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Contact function code',
                 key: 'contactFunctionCode',
                 type: 'string',
@@ -415,6 +495,8 @@ export const formatJson = {
 
               {
                 index: 2,
+                maximumLen: 60,
+                minimumLen: 1,
                 name: 'Name',
                 key: 'name',
                 mandatory: false,
@@ -426,12 +508,14 @@ export const formatJson = {
             code: 'FOB',
             key: 'FOB',
             name: 'F.O.B. Instructions',
-            type: 'object',
+            type: 'list',
             mandatory: false,
 
             elementFormatList: [
               {
                 index: 1,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Shipment Method of Payment',
                 key: 'shipmentMethodOfPayment',
                 allowableValues: {
@@ -485,7 +569,8 @@ export const formatJson = {
 
               {
                 index: 2,
-
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Location Qualifier1',
                 key: 'locationQualifier1',
                 mandatory: false,
@@ -520,12 +605,16 @@ export const formatJson = {
               },
               {
                 index: 3,
+                maximumLen: 5,
+                minimumLen: 2,
                 name: 'description1',
                 key: 'description1',
                 type: 'string',
               },
               {
                 index: 6,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Location Qualifier2',
                 key: 'locationQualifier2',
                 allowableValues: {
@@ -542,6 +631,8 @@ export const formatJson = {
               },
               {
                 index: 7,
+                maximumLen: 20,
+                minimumLen: 1,
                 name: 'Description2',
                 key: 'description2',
                 type: 'string',
@@ -552,11 +643,13 @@ export const formatJson = {
             key: 'SAC',
             code: 'SAC',
             name: 'Service, Promotion, Allowance or Charge',
-            type: 'list',
+            type: 'specialObject',
             mandatory: false,
             elementFormatList: [
               {
                 index: 1,
+                maximumLen: 1,
+                minimumLen: 1,
                 name: 'Allowance or Charge Ind.',
                 key: 'allowanceOrChargeInd.',
                 allowableValues: {
@@ -573,12 +666,16 @@ export const formatJson = {
               },
               {
                 index: 3,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Agency Qualifier Code',
                 key: 'agencyQualifiercode',
                 type: 'string',
               },
               {
                 index: 4,
+                maximumLen: 4,
+                minimumLen: 4,
                 name: 'Agency Services,Promotion Allowance/Charge Code',
                 key: 'agencyServices,PromotionAllowance/ChargeCode',
                 allowableValues: {
@@ -613,6 +710,8 @@ export const formatJson = {
             elementFormatList: [
               {
                 index: 4,
+                maximumLen: 2,
+                minimumLen: 1,
                 name: 'Transportation Method/Type',
                 key: 'transportationMethod/Type',
                 allowableValues: {
@@ -634,6 +733,8 @@ export const formatJson = {
               },
               {
                 index: 5,
+                maximumLen: 35,
+                minimumLen: 1,
                 name: 'Routing',
                 key: 'routing',
                 type: 'string',
@@ -649,6 +750,8 @@ export const formatJson = {
             elementFormatList: [
               {
                 index: 1,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Reference Number Qual',
                 key: 'referenceNumberQual',
                 allowableValues: {
@@ -675,14 +778,10 @@ export const formatJson = {
               },
               {
                 index: 2,
+                maximumLen: 30,
+                minimumLen: 30,
                 name: 'Reference Number',
                 key: 'referenceNumber',
-                type: 'string',
-              },
-              {
-                index: 3,
-                name: 'Free-form Description',
-                key: 'free-formDescription',
                 type: 'string',
               },
             ],
@@ -696,6 +795,8 @@ export const formatJson = {
                 elementFormatList: [
                   {
                     index: 2,
+                    maximumLen: 78,
+                    minimumLen: 1,
                     name: 'Message Text',
                     key: 'messageText',
                     type: 'string',
@@ -711,6 +812,8 @@ export const formatJson = {
                 elementFormatList: [
                   {
                     index: 1,
+                    maximumLen: 78,
+                    minimumLen: 1,
                     name: 'Message Text',
                     key: 'messageText',
                     type: 'string',
@@ -729,6 +832,8 @@ export const formatJson = {
             elementFormatList: [
               {
                 index: 1,
+                maximumLen: 3,
+                minimumLen: 3,
                 name: 'Date/Time Qualifier',
                 key: 'date/TimeQualifier',
                 overrideValueIndex: 2,
@@ -781,6 +886,8 @@ export const formatJson = {
               },
               {
                 index: 2,
+                maximumLen: 8,
+                minimumLen: 8,
                 name: 'Date',
                 key: 'Date',
                 type: 'date',
@@ -797,6 +904,8 @@ export const formatJson = {
             elementFormatList: [
               {
                 index: 1,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Terms Type Code',
                 key: 'termsTypeCode',
                 allowableValues: {
@@ -818,6 +927,8 @@ export const formatJson = {
               },
               {
                 index: 2,
+                maximumLen: 2,
+                minimumLen: 1,
                 name: 'Terms Basis Date Code',
                 key: 'termsBasisDateCode',
                 allowableValues: {
@@ -834,18 +945,24 @@ export const formatJson = {
               },
               {
                 index: 3,
+                maximumLen: 6,
+                minimumLen: 1,
                 name: 'Terms Discount Percent',
                 key: 'termsDiscountPercent',
                 type: 'integer',
               },
               {
                 index: 5,
+                maximumLen: 3,
+                minimumLen: 1,
                 name: 'Terms Discount Days Due ',
                 key: 'termsDiscountDaysDue',
                 type: 'integer',
               },
               {
                 index: 7,
+                maximumLen: 3,
+                minimumLen: 1,
                 name: 'Terms Net Days',
                 key: 'termsNetDays',
                 type: 'integer',
@@ -862,6 +979,8 @@ export const formatJson = {
             elementFormatList: [
               {
                 index: 1,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Organization Identifier ',
                 key: 'organizationIdentifier',
                 allowableValues: {
@@ -923,12 +1042,16 @@ export const formatJson = {
               },
               {
                 index: 2,
+                maximumLen: 60,
+                minimumLen: 1,
                 name: 'name',
                 key: 'name',
                 type: 'string',
               },
               {
                 index: 3,
+                maximumLen: 2,
+                minimumLen: 1,
                 name: 'Identification Code Qualifier',
                 key: 'IdCodeQualifier',
                 mandatory: false,
@@ -946,6 +1069,8 @@ export const formatJson = {
               },
               {
                 index: 4,
+                maximumLen: 7,
+                minimumLen: 4,
                 name: 'Identification Code',
                 key: 'identificationCode',
                 type: 'string',
@@ -962,12 +1087,16 @@ export const formatJson = {
                 elementFormatList: [
                   {
                     index: 1,
+                    maximumLen: 55,
+                    minimumLen: 1,
                     name: 'Additional Name Information1',
                     key: 'additionalNameInformation1',
                     type: 'string',
                   },
                   {
                     index: 2,
+                    maximumLen: 55,
+                    minimumLen: 1,
                     name: 'Additional Name Information2',
                     key: 'additionalNameInformation2',
                     type: 'string',
@@ -983,12 +1112,16 @@ export const formatJson = {
                 elementFormatList: [
                   {
                     index: 1,
+                    maximumLen: 55,
+                    minimumLen: 1,
                     name: 'Address Information',
                     key: 'addressInformation',
                     type: 'string',
                   },
                   {
                     index: 2,
+                    maximumLen: 55,
+                    minimumLen: 1,
                     name: 'Additional Address Information',
                     key: 'additionalAddressInformation',
                     type: 'string',
@@ -1003,24 +1136,32 @@ export const formatJson = {
                 elementFormatList: [
                   {
                     index: 1,
+                    maximumLen: 30,
+                    minimumLen: 2,
                     name: 'City Name',
                     key: 'cityName',
                     type: 'string',
                   },
                   {
                     index: 2,
+                    maximumLen: 2,
+                    minimumLen: 2,
                     name: 'State Or Province Code',
                     key: 'stateOrProvinceCode',
                     type: 'string',
                   },
                   {
                     index: 3,
+                    maximumLen: 15,
+                    minimumLen: 3,
                     name: 'Postal Code',
                     key: 'postalCode',
                     type: 'string',
                   },
                   {
                     index: 4,
+                    maximumLen: 3,
+                    minimumLen: 2,
                     name: 'Country Code',
                     key: 'countryCode',
                     type: 'string',
@@ -1028,54 +1169,6 @@ export const formatJson = {
                 ],
               },
             ],
-          },
-          {
-            key: 'CTP',
-            code: 'CTP',
-            name: 'Pricing Information',
-            type: 'object',
-            mandatory: false,
-            elementFormatList: [
-              {
-                index: 1,
-                name: 'Class of Trade',
-                key: 'classOfTrade',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'RS',
-                      name: 'Resale',
-                      overrideValue: 'Resale',
-                    },
-                  ],
-                  allowAny: true,
-                },
-                type: 'string',
-              },
-              {
-                index: 2,
-                name: 'Price Code Qualifier',
-                key: 'priceCodeQualifier',
-                allowableValues: {
-                  valueOptions: [
-                    {
-                      value: 'RTL',
-                      name: 'Resale Price',
-                      overrideValue: 'Resale Price',
-                    },
-                  ],
-                  allowAny: true,
-                },
-                type: 'string',
-              },
-              {
-                index: 3,
-                name: 'Unit Price',
-                key: 'UnitPrice',
-                type: 'decimal',
-              },
-            ],
-            segmentFormatList: [],
           },
           {
             code: 'PO1',
@@ -1086,18 +1179,24 @@ export const formatJson = {
             elementFormatList: [
               {
                 index: 1,
+                maximumLen: 6,
+                minimumLen: 6,
                 name: 'PO Line Number',
                 key: 'poLineNumber',
                 type: 'string',
               },
               {
                 index: 2,
+                maximumLen: 9,
+                minimumLen: 1,
                 name: 'Quantity Ordered',
                 key: 'quantityOrdered',
                 type: 'integer',
               },
               {
                 index: 3,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Unit Of Measure Code',
                 key: 'unitOfMeasureCode',
                 allowableValues: {
@@ -1119,12 +1218,16 @@ export const formatJson = {
               },
               {
                 index: 4,
+                maximumLen: 14,
+                minimumLen: 1,
                 name: 'Unit Price',
                 key: 'unitPrice',
                 type: 'decimal',
               },
               {
                 index: 5,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Basis of Unit Price',
                 key: 'basisOfUnitPrice',
                 allowableValues: {
@@ -1146,42 +1249,56 @@ export const formatJson = {
               },
               {
                 index: 6,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Product ID Qualifier1',
                 key: 'productIdQualifier1',
                 type: 'string',
               },
               {
                 index: 7,
+                maximumLen: 30,
+                minimumLen: 1,
                 name: 'Product ID1',
                 key: 'productId1',
                 type: 'string',
               },
               {
                 index: 8,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Product/Service ID Qualifier2',
                 key: 'productIdQualifier2',
                 type: 'string',
               },
               {
                 index: 9,
+                maximumLen: 30,
+                minimumLen: 1,
                 name: 'Product/Service ID2',
                 key: 'productId2',
                 type: 'string',
               },
               {
                 index: 10,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Product/Service ID Qualifier3',
                 key: 'productIdQualifier3',
                 type: 'string',
               },
               {
                 index: 11,
+                maximumLen: 30,
+                minimumLen: 1,
                 name: 'Product/Service ID3',
                 key: 'productId3',
                 type: 'string',
               },
               {
                 index: 12,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Product/Service ID Qualifier4',
                 key: 'productIdQualifier4',
                 allowableValues: {
@@ -1198,12 +1315,16 @@ export const formatJson = {
               },
               {
                 index: 13,
+                maximumLen: 30,
+                minimumLen: 1,
                 name: 'Product/Service ID4',
                 key: 'productId4',
                 type: 'string',
               },
               {
                 index: 14,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Product/Service ID Qualifier5',
                 key: 'productIdQualifier5',
                 allowableValues: {
@@ -1219,12 +1340,16 @@ export const formatJson = {
               },
               {
                 index: 15,
+                maximumLen: 30,
+                minimumLen: 1,
                 name: 'Product/Service ID5',
                 key: 'productId5',
                 type: 'string',
               },
               {
                 index: 16,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Product/Service ID Qualifier6',
                 key: 'productIdQualifier6',
                 allowableValues: {
@@ -1241,12 +1366,16 @@ export const formatJson = {
               },
               {
                 index: 17,
+                maximumLen: 30,
+                minimumLen: 1,
                 name: 'Product/Service ID6',
                 key: 'productId6',
                 type: 'string',
               },
               {
                 index: 18,
+                maximumLen: 2,
+                minimumLen: 2,
                 name: 'Product/Service ID Qualifier7',
                 key: 'productIdQualifier7',
                 allowableValues: {
@@ -1263,12 +1392,68 @@ export const formatJson = {
               },
               {
                 index: 19,
+                maximumLen: 30,
+                minimumLen: 1,
                 name: 'Product/Service ID8',
                 key: 'productId7',
                 type: 'string',
               },
             ],
             segmentFormatList: [
+              {
+                key: 'CTP',
+                code: 'CTP',
+                name: 'Pricing Information',
+                type: 'object',
+                mandatory: false,
+                elementFormatList: [
+                  {
+                    index: 1,
+                    maximumLen: 2,
+                    minimumLen: 2,
+                    name: 'Class of Trade',
+                    key: 'classOfTrade',
+                    allowableValues: {
+                      valueOptions: [
+                        {
+                          value: 'RS',
+                          name: 'Resale',
+                          overrideValue: 'Resale',
+                        },
+                      ],
+                      allowAny: true,
+                    },
+                    type: 'string',
+                  },
+                  {
+                    index: 2,
+                    maximumLen: 3,
+                    minimumLen: 3,
+                    name: 'Price Code Qualifier',
+                    key: 'priceCodeQualifier',
+                    allowableValues: {
+                      valueOptions: [
+                        {
+                          value: 'RTL',
+                          name: 'Resale Price',
+                          overrideValue: 'Resale Price',
+                        },
+                      ],
+                      allowAny: true,
+                    },
+                    type: 'string',
+                  },
+                  {
+                    index: 3,
+                    maximumLen: 14,
+                    minimumLen: 1,
+                    name: 'Unit Price',
+                    key: 'UnitPrice',
+                    type: 'decimal',
+                  },
+                ],
+                segmentFormatList: [],
+              },
               {
                 key: 'CUR',
                 code: 'CUR',
@@ -1299,6 +1484,8 @@ export const formatJson = {
                 elementFormatList: [
                   {
                     index: 1,
+                    maximumLen: 2,
+                    minimumLen: 2,
                     name: 'Class of Trade',
                     key: 'classOfTrade',
                     allowableValues: {
@@ -1315,6 +1502,8 @@ export const formatJson = {
                   },
                   {
                     index: 2,
+                    maximumLen: 3,
+                    minimumLen: 3,
                     name: 'Price Code Qualifier',
                     key: 'priceCodeQualifier',
                     allowableValues: {
@@ -1331,6 +1520,8 @@ export const formatJson = {
                   },
                   {
                     index: 3,
+                    maximumLen: 14,
+                    minimumLen: 1,
                     name: 'Unit Price',
                     key: 'UnitPrice',
                     type: 'decimal',
@@ -1347,6 +1538,8 @@ export const formatJson = {
                 elementFormatList: [
                   {
                     index: 1,
+                    maximumLen: 1,
+                    minimumLen: 1,
                     name: 'Item Description Type',
                     key: 'itemDescriptionType',
                     allowableValues: {
@@ -1363,6 +1556,8 @@ export const formatJson = {
                   },
                   {
                     index: 2,
+                    maximumLen: 2,
+                    minimumLen: 2,
                     name: 'Product Characteristic Code',
                     key: 'productCharacteristicCode',
                     allowableValues: {
@@ -1385,6 +1580,8 @@ export const formatJson = {
 
                   {
                     index: 5,
+                    maximumLen: 1,
+                    minimumLen: 1,
                     name: 'Description',
                     key: 'description',
                     type: 'string',
@@ -1401,18 +1598,24 @@ export const formatJson = {
                 elementFormatList: [
                   {
                     index: 1,
+                    maximumLen: 6,
+                    minimumLen: 1,
                     name: 'Pack',
                     key: 'pack',
                     type: 'integer',
                   },
                   {
                     index: 2,
+                    maximumLen: 8,
+                    minimumLen: 1,
                     name: 'Size',
                     key: 'size',
                     type: 'integer',
                   },
                   {
                     index: 3,
+                    maximumLen: 2,
+                    minimumLen: 2,
                     name: 'Unit of Measure Code1',
                     key: 'unitOfMeasureCode1',
                     allowableValues: {
@@ -1429,30 +1632,40 @@ export const formatJson = {
                   },
                   {
                     index: 4,
+                    maximumLen: 3,
+                    minimumLen: 3,
                     name: 'Packing Code',
                     key: 'PackingCode',
                     type: 'string',
                   },
                   {
                     index: 8,
+                    maximumLen: 9,
+                    minimumLen: 1,
                     name: 'Gross Volume per Pack',
                     key: 'grossVolumePerPack',
                     type: 'integer',
                   },
                   {
                     index: 9,
+                    maximumLen: 1,
+                    minimumLen: 1,
                     name: 'Unit of Measure Code2',
                     key: 'unitOfMeasureCode2',
                     type: 'string',
                   },
                   {
                     index: 14,
+                    maximumLen: 5,
+                    minimumLen: 1,
                     name: 'Inner Pack',
                     key: 'innerPack',
                     type: 'string',
                   },
                   {
                     index: 15,
+                    maximumLen: 5,
+                    minimumLen: 1,
                     name: 'Surface/Layer/Position Code',
                     key: 'surface/Layer/PositionCode',
                     allowableValues: {
@@ -1469,6 +1682,8 @@ export const formatJson = {
                   },
                   {
                     index: 18,
+                    maximumLen: 9,
+                    minimumLen: 1,
                     name: 'Number',
                     key: 'number',
                     type: 'integer',
@@ -1483,6 +1698,8 @@ export const formatJson = {
                 elementFormatList: [
                   {
                     index: 1,
+                    maximumLen: 2,
+                    minimumLen: 2,
                     name: 'Unit of Measurement Code',
                     key: 'unitOfMeasurementCode',
                     allowableValues: {
@@ -1504,6 +1721,8 @@ export const formatJson = {
                   },
                   {
                     index: 2,
+                    maximumLen: 2,
+                    minimumLen: 2,
                     name: 'Location Qualifier',
                     key: 'locationQualifier',
                     allowableValues: {
@@ -1520,12 +1739,16 @@ export const formatJson = {
                   },
                   {
                     index: 3,
+                    maximumLen: 4,
+                    minimumLen: 4,
                     name: 'Location Identifier',
                     key: 'locationIdentifier',
                     type: 'string',
                   },
                   {
                     index: 4,
+                    maximumLen: 10,
+                    minimumLen: 1,
                     name: 'Quantity',
                     key: 'quantity',
                     type: 'integer',
@@ -1541,6 +1764,8 @@ export const formatJson = {
                 elementFormatList: [
                   {
                     index: 1,
+                    maximumLen: 3,
+                    minimumLen: 2,
                     name: 'Reference Number Qual',
                     key: 'referenceNumberQual',
                     allowableValues: {
@@ -1602,12 +1827,16 @@ export const formatJson = {
                   },
                   {
                     index: 2,
+                    maximumLen: 8,
+                    minimumLen: 1,
                     name: 'Reference Number',
                     key: 'referenceNumber',
                     type: 'string',
                   },
                   {
                     index: 3,
+                    maximumLen: 30,
+                    minimumLen: 1,
                     name: 'Free-form Description',
                     key: 'free-formDescription',
                     type: 'string',
@@ -1623,12 +1852,16 @@ export const formatJson = {
                 elementFormatList: [
                   {
                     index: 1,
+                    maximumLen: 6,
+                    minimumLen: 6,
                     name: 'Assigned Identification',
                     key: 'assignedIdentification',
                     type: 'string',
                   },
                   {
                     index: 3,
+                    maximumLen: 1,
+                    minimumLen: 1,
                     name: 'Relationship Code',
                     key: 'relationshipCode',
                     allowableValues: {
@@ -1645,12 +1878,16 @@ export const formatJson = {
                   },
                   {
                     index: 4,
+                    maximumLen: 15,
+                    minimumLen: 1,
                     name: 'Quantity',
                     key: 'quantity',
                     type: 'integer',
                   },
                   {
                     index: 5,
+                    maximumLen: 2,
+                    minimumLen: 2,
                     name: 'Unit of Measure Code',
                     key: 'unitOfMeasureCode',
                     allowableValues: {
@@ -1667,12 +1904,16 @@ export const formatJson = {
                   },
                   {
                     index: 6,
+                    maximumLen: 17,
+                    minimumLen: 1,
                     name: 'Unit Price',
                     key: 'unitPrice',
                     type: 'decimal',
                   },
                   {
                     index: 7,
+                    maximumLen: 2,
+                    minimumLen: 2,
                     name: 'Basis of Unit Price',
                     key: 'basisOfUnitPrice',
                     allowableValues: {
@@ -1689,30 +1930,40 @@ export const formatJson = {
                   },
                   {
                     index: 9,
+                    maximumLen: 2,
+                    minimumLen: 2,
                     name: 'Product ID Qualifier',
                     key: 'productIdQualifier1',
                     type: 'string',
                   },
                   {
                     index: 10,
+                    maximumLen: 3,
+                    minimumLen: 3,
                     name: 'Product ID',
                     key: 'ProductId1',
                     type: 'string',
                   },
                   {
                     index: 11,
+                    maximumLen: 2,
+                    minimumLen: 2,
                     name: 'Product/Service ID Qualifier',
                     key: 'productIdQualifier2',
                     type: 'string',
                   },
                   {
                     index: 12,
+                    maximumLen: 48,
+                    minimumLen: 1,
                     name: 'Product ID',
                     key: 'productId2',
                     type: 'string',
                   },
                   {
                     index: 13,
+                    maximumLen: 2,
+                    minimumLen: 2,
                     name: 'Product ID Qualifier',
                     key: 'productIdQualifier3',
                     allowableValues: {
@@ -1729,18 +1980,24 @@ export const formatJson = {
                   },
                   {
                     index: 14,
+                    maximumLen: 48,
+                    minimumLen: 1,
                     name: 'Product/Service ID',
                     key: 'productId3',
                     type: 'string',
                   },
                   {
                     index: 17,
+                    maximumLen: 2,
+                    minimumLen: 2,
                     name: 'Product/Service ID Qualifier',
                     key: 'productIdQualifier4',
                     type: 'string',
                   },
                   {
                     index: 18,
+                    maximumLen: 2,
+                    minimumLen: 2,
                     name: 'Product/Service ID',
                     key: 'productId4',
                     type: 'string',
@@ -1748,6 +2005,60 @@ export const formatJson = {
                 ],
               },
             ],
+          },
+          {
+            key: 'CTP',
+            code: 'CTP',
+            name: 'Pricing Information',
+            type: 'object',
+            mandatory: false,
+            elementFormatList: [
+              {
+                index: 1,
+                maximumLen: 2,
+                minimumLen: 2,
+                name: 'Class of Trade',
+                key: 'classOfTrade',
+                allowableValues: {
+                  valueOptions: [
+                    {
+                      value: 'RS',
+                      name: 'Resale',
+                      overrideValue: 'Resale',
+                    },
+                  ],
+                  allowAny: true,
+                },
+                type: 'string',
+              },
+              {
+                index: 2,
+                maximumLen: 3,
+                minimumLen: 3,
+                name: 'Price Code Qualifier',
+                key: 'priceCodeQualifier',
+                allowableValues: {
+                  valueOptions: [
+                    {
+                      value: 'RTL',
+                      name: 'Resale Price',
+                      overrideValue: 'Resale Price',
+                    },
+                  ],
+                  allowAny: true,
+                },
+                type: 'string',
+              },
+              {
+                index: 3,
+                maximumLen: 14,
+                minimumLen: 1,
+                name: 'Unit Price',
+                key: 'UnitPrice',
+                type: 'decimal',
+              },
+            ],
+            segmentFormatList: [],
           },
           {
             code: 'SE',
@@ -1758,12 +2069,16 @@ export const formatJson = {
             elementFormatList: [
               {
                 index: 1,
+                maximumLen: 6,
+                minimumLen: 1,
                 name: 'Number of Included Segments',
                 key: 'numberofIncludedSegments',
                 type: 'integer',
               },
               {
                 index: 2,
+                maximumLen: 9,
+                minimumLen: 4,
                 name: 'Transaction Set Control Num',
                 key: 'transactionSetControlNum',
                 type: 'string',
@@ -1779,6 +2094,8 @@ export const formatJson = {
             elementFormatList: [
               {
                 index: 1,
+                maximumLen: 6,
+                minimumLen: 1,
                 name: 'Number of Line Items',
                 key: 'numberofLineItems',
                 type: 'integer',
@@ -1796,12 +2113,16 @@ export const formatJson = {
         elementFormatList: [
           {
             index: 1,
+            maximumLen: 6,
+            minimumLen: 1,
             name: 'Number of Included Transaction Sets ',
             key: 'numberOfIncludedTransactionSets ',
             type: 'integer',
           },
           {
             index: 2,
+            maximumLen: 9,
+            minimumLen: 1,
             name: 'Data Interchange Control Num',
             key: 'dataInterchangeControlNum',
             type: 'integer',
@@ -1817,12 +2138,16 @@ export const formatJson = {
         elementFormatList: [
           {
             index: 1,
+            maximumLen: 5,
+            minimumLen: 1,
             name: 'Number of Included Groups',
             key: 'numberofIncludedGroups',
             type: 'integer',
           },
           {
             index: 2,
+            maximumLen: 9,
+            minimumLen: 9,
             name: 'Interchange Control Number',
             key: 'interchangeControlNumber',
             type: 'string',
@@ -1850,13 +2175,26 @@ export default class Edi850Parser extends BaseEdiParser {
     if (!jsonData || jsonData.length === 0) {// undefined or empty array
       throw new Error(errorList)
     }
+    return jsonData
+    // return jsonData
     const sts = _.get(jsonData, 'ST', []) || []
     if (sts.length) {
       for (const ST of sts) {
         const po: any = {
           partyGroupCode,
           edi: true,
+          ISASenderIdQl: _.get(jsonData, 'ISA.interchangeSenderIdQl'),
+          ISASenderId: _.get(jsonData, 'ISA.interchangeSenderId'),
+          ISAReceiverQl: _.get(jsonData, 'ISA.interchangeReceiverQl'),
+          ISAReceiverId: _.get(jsonData, 'ISA.interchangeReceiverId'),
+          testOrProd: _.get(jsonData, 'ISA.testIndicator'),
+          interchangeControlNumber: _.get(jsonData, 'ISA.interchangeControlNumber'),
+          senderId: _.get(jsonData, 'GS.applicationSenderId'),
+          receiverId: _.get(jsonData, 'GS.applicationReceiverId'),
+          dataInterchangeControlNumber: _.get(jsonData, 'GS.dataInterchangeControlNumber'),
+          versionId: _.get(jsonData, 'GS.versionId'),
           errors: errorList,
+          ediType: _.get(ST, 'transactionSetIdentifierCode'),
           poNo: _.get(ST, 'BEG.purchaseOrderNumber'),
           poDate: _.get(ST, 'BEG.purchaseOrderDate')
             ? moment.utc(_.get(ST, 'BEG.purchaseOrderDate')).toDate()
