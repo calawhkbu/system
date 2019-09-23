@@ -21,6 +21,15 @@ query
 
 query
   .register(
+    'portCode',
+    new Query({
+      $where: new BinaryExpression(new ColumnExpression('portCode'), '='),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
     'ports',
     new Query({
       $where: new InExpression(new ColumnExpression('portCode'), false),

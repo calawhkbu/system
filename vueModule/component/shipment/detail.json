@@ -1,35 +1,29 @@
 {
   "class": "grid",
-  "components": [
-    {
+  "components": [{
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 grid align-item-center padding-8",
-        "components": [
-          {
+        "components": [{
             "is": "v-btn",
             "props": {
               "flat": true,
               "icon": true
             },
-            "slots": [
-              {
-                "is": "Icon",
-                "props": {
-                  "icon": "arrow_back"
-                }
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
               }
-            ],
+            }],
             "events": {
-              "click.stop": [
-                {
-                  "type": "router",
-                  "otherParams": {
-                    "func": "push",
-                    "path": "/shipments"
-                  }
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/dashboard/2"
                 }
-              ]
+              }]
             }
           },
           {
@@ -47,32 +41,6 @@
           },
           {
             "is": "BookmarkButton"
-          },
-          {
-            "is": "v-btn",
-            "props": {
-              "icon": true,
-              "flat": true
-            },
-            "slots": [
-              {
-                "is": "Icon",
-                "props": {
-                  "icon": "map"
-                }
-              }
-            ],
-            "events": {
-              "click.stop": [
-                {
-                  "type": "dispatch",
-                  "otherParams": {
-                    "name": "widget/changeMode",
-                    "mode": "map"
-                  }
-                }
-              ]
-            }
           }
         ]
       }
@@ -82,119 +50,97 @@
       "props": {
         "class": "xs-12 md-8 padding-left-8 padding-right-8"
       },
-      "slots": [
-
-        {
+      "slots": [{
           "is": "DynamicComponent",
           "props": {
             "class": "grid margin-topbottom-8",
-            "components": [
-              {
+            "components": [{
                 "is": "div",
                 "props": {
                   "class": "xs-12 md-6 padding-right-4"
                 },
-                "slots": [
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "layout": "v-card",
-                      "components": [
-                        {
-                          "is": "MouseHidden",
-                          "slots": [
-
-                            {
-                              "is": "DynamicComponent",
+                "slots": [{
+                  "is": "DynamicComponent",
+                  "props": {
+                    "layout": "v-card",
+                    "components": [{
+                      "is": "MouseHidden",
+                      "slots": [{
+                        "is": "DynamicComponent",
+                        "props": {
+                          "components": [{
+                              "is": "v-card-title",
                               "props": {
-                                "components": [
-                                  {
-                                    "is": "v-card-title",
-                                    "props": {
-                                      "primary-title": true,
-                                      "class": "padding-4 min-height-48 bold uppercase"
-                                    },
-                                    "slots": [
-                                      {
-                                        "is": "I18nText",
-                                        "props": {
-                                          "i18nContext": "ShipmentPage",
-                                          "i18nKey": "PartyForm"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "is": "v-divider"
-                                  },
-                                  {
-                                    "is": "AsyncComponent",
-                                    "props": {
-                                      "layoutName": "shipment/forms/partyForm"
-                                    }
-                                  }
-                                ]
+                                "primary-title": true,
+                                "class": "padding-4 min-height-48 bold uppercase"
+                              },
+                              "slots": [{
+                                "is": "I18nText",
+                                "props": {
+                                  "i18nContext": "ShipmentPage",
+                                  "i18nKey": "PartyForm"
+                                }
+                              }]
+                            },
+                            {
+                              "is": "v-divider"
+                            },
+                            {
+                              "is": "AsyncComponent",
+                              "props": {
+                                "layoutName": "shipment/forms/partyForm"
                               }
                             }
                           ]
                         }
-                      ]
-                    }
+                      }]
+                    }]
                   }
-                ]
+                }]
               },
               {
                 "is": "div",
                 "props": {
                   "class": "xs-12 md-6 padding-left-4"
                 },
-                "slots": [
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "layout": "v-card",
-                      "components": [
-                        {
-                          "is": "MouseHidden",
-                          "slots": [
-                            {
-                              "is": "DynamicComponent",
+                "slots": [{
+                  "is": "DynamicComponent",
+                  "props": {
+                    "layout": "v-card",
+                    "components": [{
+                      "is": "MouseHidden",
+                      "slots": [{
+                        "is": "DynamicComponent",
+                        "props": {
+                          "components": [{
+                              "is": "v-card-title",
                               "props": {
-                                "components": [
-                                  {
-                                    "is": "v-card-title",
-                                    "props": {
-                                      "primary-title": true,
-                                      "class": "padding-4 min-height-48 bold uppercase"
-                                    },
-                                    "slots": [
-                                      {
-                                        "is": "I18nText",
-                                        "props": {
-                                          "i18nContext": "ShipmentPage",
-                                          "i18nKey": "DateForm"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "is": "v-divider"
-                                  },
-                                  {
-                                    "is": "AsyncComponent",
-                                    "props": {
-                                      "layoutName": "shipment/forms/dateForm"
-                                    }
-                                  }
-                                ]
+                                "primary-title": true,
+                                "class": "padding-4 min-height-48 bold uppercase"
+                              },
+                              "slots": [{
+                                "is": "I18nText",
+                                "props": {
+                                  "i18nContext": "ShipmentPage",
+                                  "i18nKey": "DateForm"
+                                }
+                              }]
+                            },
+                            {
+                              "is": "v-divider"
+                            },
+                            {
+                              "is": "AsyncComponent",
+                              "props": {
+                                "layoutName": "shipment/forms/dateForm"
                               }
                             }
                           ]
                         }
-                      ]
-                    }
+                      }]
+                    }]
                   }
-                ]
+                }]
               }
             ]
           }
@@ -204,105 +150,88 @@
           "props": {
             "layout": "v-card",
             "class": "margin-topbottom-8",
-            "components": [
-              {
-                "is": "MouseHidden",
-                "slots": [
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "components": [
-                        {
-                          "is": "v-card-title",
-                          "props": {
-                            "primary-title": true,
-                            "class": "padding-4 min-height-48 bold uppercase"
-                          },
-                          "slots": [
-                            {
-                              "is": "I18nText",
-                              "props": {
-                                "i18nContext": "ShipmentPage",
-                                "i18nKey": "GeneralForm"
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "is": "v-divider"
-                        },
-                        {
-                          "is": "AsyncComponent",
-                          "props": {
-                            "layoutName": "shipment/forms/generalForm"
-                          }
+            "components": [{
+              "is": "MouseHidden",
+              "slots": [{
+                "is": "DynamicComponent",
+                "props": {
+                  "components": [{
+                      "is": "v-card-title",
+                      "props": {
+                        "primary-title": true,
+                        "class": "padding-4 min-height-48 bold uppercase"
+                      },
+                      "slots": [{
+                        "is": "I18nText",
+                        "props": {
+                          "i18nContext": "ShipmentPage",
+                          "i18nKey": "GeneralForm"
                         }
-                      ]
+                      }]
+                    },
+                    {
+                      "is": "v-divider"
+                    },
+                    {
+                      "is": "AsyncComponent",
+                      "props": {
+                        "layoutName": "shipment/forms/generalForm"
+                      }
                     }
-                  }
-                ]
-              }
-            ]
+                  ]
+                }
+              }]
+            }]
           }
         },
-
         {
           "is": "DynamicComponent",
           "props": {
             "layout": "v-card",
             "class": "margin-topbottom-8",
-            "components": [
-              {
-                "is": "MouseHidden",
-                "slots": [
-                  {
-                    "name": "hidden",
-                    "is": "DynamicComponent",
-                    "props": {
-                      "class": "flex max-height-0",
-                      "components": [
-                        {
-                          "is": "v-spacer"
-                        }
-
-                      ]
-                    }
-                  },
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "components": [
-                        {
-                          "is": "v-card-title",
-                          "props": {
-                            "primary-title": true,
-                            "class": "padding-4 min-height-48 bold uppercase"
-                          },
-                          "slots": [
-                            {
-                              "is": "I18nText",
-                              "props": {
-                                "i18nContext": "ShipmentPage",
-                                "i18nKey": "ContainerForm"
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "is": "v-divider"
-                        },
-                        {
-                          "is": "AsyncComponent",
-                          "props": {
-                            "layoutName": "shipment/forms/containerForm"
-                          }
-                        }
-                      ]
-                    }
+            "components": [{
+              "is": "MouseHidden",
+              "slots": [{
+                  "name": "hidden",
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "flex max-height-0",
+                    "components": [{
+                      "is": "v-spacer"
+                    }]
                   }
-                ]
-              }
-            ]
+                },
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "components": [{
+                        "is": "v-card-title",
+                        "props": {
+                          "primary-title": true,
+                          "class": "padding-4 min-height-48 bold uppercase"
+                        },
+                        "slots": [{
+                          "is": "I18nText",
+                          "props": {
+                            "i18nContext": "ShipmentPage",
+                            "i18nKey": "ContainerForm"
+                          }
+                        }]
+                      },
+                      {
+                        "is": "v-divider"
+                      },
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "shipment/forms/containerForm"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }]
           }
         }
       ]
@@ -312,19 +241,18 @@
       "props": {
         "class": "xs-12 md-4 padding-8"
       },
-      "slots": [
-        {
+      "slots": [{
           "is": "AsyncComponent",
           "props": {
             "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/tracking"
+            "layoutName": "plugins/tracking0"
           }
         },
         {
           "is": "AsyncComponent",
           "props": {
             "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/alert"
+            "layoutName": "plugins/alert0"
           }
         },
         {

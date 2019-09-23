@@ -28,7 +28,6 @@ const monthMap = new Map<string, string>([
 ])
 
 function prepareParams(): Function {
-
   const fn = function(require, session, params) {
     const moment = require('moment')
     const subqueries = (params.subqueries = params.subqueries || {})
@@ -162,48 +161,45 @@ function prepareTempTable(name: string): CreateTableJQL {
 }
 
 function prepareMonthTable(fromTableName: string, name: string) {
-
   const queryObject = {
-    $select: [
-      new ResultColumn(new ColumnExpression('tempTable', 'carrierCode'), 'carrierCode'),
-    ],
+    $select: [new ResultColumn(new ColumnExpression('tempTable', 'carrierCode'), 'carrierCode')],
 
     $from: fromTableName,
     $group: 'carrierCode',
   }
 
   for (const [monthkey, monthName] of monthMap.entries()) {
-
-    queryObject.$select.push(new ResultColumn(
-      new FunctionExpression(
-        'IFNULL',
+    queryObject.$select.push(
+      new ResultColumn(
         new FunctionExpression(
-          'FIND',
+          'IFNULL',
+          new FunctionExpression(
+            'FIND',
 
-          new AndExpressions([
-            new BinaryExpression(
-              new FunctionExpression(
-                'MONTHNAME',
-                new ColumnExpression(fromTableName, 'jobMonth'),
-                'YYYY-MM'
+            new AndExpressions([
+              new BinaryExpression(
+                new FunctionExpression(
+                  'MONTHNAME',
+                  new ColumnExpression(fromTableName, 'jobMonth'),
+                  'YYYY-MM'
+                ),
+                '=',
+                monthName
               ),
-              '=',
-              monthName
-            ),
-            new BinaryExpression(
-              new ColumnExpression(fromTableName, 'carrierCode'),
-              '=',
-              new ColumnExpression('carrierCode')
-            ),
-          ]),
+              new BinaryExpression(
+                new ColumnExpression(fromTableName, 'carrierCode'),
+                '=',
+                new ColumnExpression('carrierCode')
+              ),
+            ]),
 
-          new ColumnExpression('count')
+            new ColumnExpression('count')
+          ),
+          0
         ),
-        0
-      ),
-      monthkey
-    ))
-
+        monthkey
+      )
+    )
   }
 
   return new CreateTableJQL({

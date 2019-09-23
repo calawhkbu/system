@@ -1,32 +1,27 @@
 {
   "layout": "MainLayout",
-  "components": [
-    {
-      "is": "Widget",
-      "props": {
-        "settingProp": {
-          "initAxiosParams": {
-            "url": "api/shipment/{{context.$route.params.params}}"
-          },
-          "defaultAxiosParams": {
-            "url": "default/shipment"
-          },
+  "components": [{
+    "is": "Widget",
+    "props": {
+      "settingProp": {
+        "initAxiosParams": {
+          "url": "api/shipment/{{context.$route.params.params}}"
+        },
+        "defaultAxiosParams": {
+          "url": "default/shipment"
+        },
 
-          "primaryKey": "houseNo",
-          "modeFunction": "\n          const modes = ['detail','map']\n          const selectedMode = isNaN(Number(mode)) ? mode : 'detail'\n          if (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
-          "haveTermOnCreate": true,
-          "haveTermOnEdit": false,
-          "widgetComponentSetting": {
-            "quick-create": {
-              "readonly": false
-            },
+        "primaryKey": "houseNo",
+        "modeFunction": "\n          const modes = ['detail','map']\n          const selectedMode = isNaN(Number(mode)) ? 'detail' : 'detail'\n          if (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
+        "haveTermOnCreate": true,
+        "haveTermOnEdit": false,
+        "widgetComponentSetting": {
 
-            "detail": {
-              "readonly": true
-            }
+          "detail": {
+            "readonly": true
           }
         }
       }
     }
-  ]
+  }]
 }

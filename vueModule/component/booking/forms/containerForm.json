@@ -79,8 +79,8 @@
                   ]
                 },
                 {
-                  "label": "BookingPage.pieces",
-                  "name": "pieces",
+                  "label": "BookingPage.quantity",
+                  "name": "quantity",
                   "component": "v-text-field",
                   "props": {
                     "type": "number",
@@ -88,8 +88,8 @@
                   }
                 },
                 {
-                  "label": "BookingPage.piecesUnit",
-                  "name": "piecesUnit",
+                  "label": "BookingPage.quantityUnit",
+                  "name": "quantityUnit",
                   "component": "v-select",
                   "props": {
                     "items": [

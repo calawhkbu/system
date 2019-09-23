@@ -1,0 +1,33 @@
+{
+  "layout": "Plugin",
+  "class": "xs-12 margin-topbottom-4",
+  "lazy": true,
+  "transition": "slide-y-reverse-transition",
+  "name": "Alert",
+  "remote": true,
+  "axiosBaseParams": {
+    "method": "POST",
+    "url": "api/alert/list/history-with-old",
+    "data": {
+      "tableName": "{{tableName}}",
+      "primaryKey": "{{primaryKey}}",
+      "afterTime": "{{afterTime}}"
+    }
+  },
+  "shareProps": {
+    "i18nContext": "Alert",
+    "iconType": "",
+    "icon": "alertCategory",
+    "iconMap": {
+      "Exception": "notification_important",
+      "Message": "message"
+    },
+    "titleKey": "alertType",
+    "subTitleKeys": ["alertContent"],
+    "noIcon": "notifications_none"
+  },
+  "baseSummaryProps": {
+    "size": -3
+  },
+  "baseDetailProps": {}
+}

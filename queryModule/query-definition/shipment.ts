@@ -24,30 +24,46 @@ const query = new QueryDef(
 )
 
 // -------- register field
-query
-  .register(
-    'cbmTotal',
-    new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('shipment', 'cbm')), 'cbmTotal')
+query.register(
+  'jobMonth',
+  new ResultColumn(
+    new FunctionExpression('DATE_FORMAT', new ColumnExpression('shipment', 'jobDate'), '%Y-%m'),
+    'jobMonth'
   )
+)
 
-query
-  .register(
-    'grossWeightTotal',
-    new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('shipment', 'grossWeight')), 'grossWeightTotal')
+query.register(
+  'cbmTotal',
+  new ResultColumn(
+    new FunctionExpression('SUM', new ColumnExpression('shipment', 'cbm')),
+    'cbmTotal'
   )
+)
 
-query
-  .register(
-    'chargeableWeightTotal',
-
-    new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('shipment', 'chargeableWeight')), 'chargeableWeightTotal')
-
+query.register(
+  'grossWeightTotal',
+  new ResultColumn(
+    new FunctionExpression('SUM', new ColumnExpression('shipment', 'grossWeight')),
+    'grossWeightTotal'
   )
+)
 
-query
-  .register(
-    'primaryKeyListString',
-    new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ColumnExpression('shipment', 'houseNo')), 'primaryKeyListString'))
+query.register(
+  'chargeableWeightTotal',
+
+  new ResultColumn(
+    new FunctionExpression('SUM', new ColumnExpression('shipment', 'chargeableWeight')),
+    'chargeableWeightTotal'
+  )
+)
+
+query.register(
+  'primaryKeyListString',
+  new ResultColumn(
+    new FunctionExpression('GROUP_CONCAT', new ColumnExpression('shipment', 'houseNo')),
+    'primaryKeyListString'
+  )
+)
 
 // -------- register filter
 

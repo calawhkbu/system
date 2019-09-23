@@ -9,7 +9,7 @@ export default {
         ...headers,
         'Content-Type': 'application/json',
       },
-      data: body
+      data: body,
     }
   },
   responseHandler: (response: { responseBody: any; responseOptions: any }) => {
