@@ -43,17 +43,17 @@ const query = new Query({
         },
 
         {
-          name: 'carrierName',
-          type: 'string',
-        },
-
-        {
           name: 'carrierCode',
           type: 'string',
         },
 
         {
-          name: 'vesselVoyage',
+          name: 'vessel',
+          type: 'string',
+        },
+
+        {
+          name: 'voyage',
           type: 'string',
         },
 
@@ -113,16 +113,9 @@ const query = new Query({
           name: 'porCode',
           type: 'string',
         },
-        {
-          name: 'porName',
-          type: 'string',
-        },
+
         {
           name: 'polCode',
-          type: 'string',
-        },
-        {
-          name: 'polName',
           type: 'string',
         },
 
@@ -130,26 +123,17 @@ const query = new Query({
           name: 'podCode',
           type: 'string',
         },
-        {
-          name: 'podName',
-          type: 'string',
-        },
+
         {
           name: 'pldCode',
           type: 'string',
         },
-        {
-          name: 'pldName',
-          type: 'string',
-        },
+
         {
           name: 'fdCode',
           type: 'string',
         },
-        {
-          name: 'fdName',
-          type: 'string',
-        },
+
         {
           name: 'estimatedDepartureDate',
           type: 'string',
