@@ -11,8 +11,8 @@ const _ = require('lodash')
 const partyGroupCode = ''
 
 export const formatJson = {
-  removeCharacter: [ '=', 'o', ''],
-  segmentSeperator : ['�', '\r\n', '\r', '\n'],
+  removeCharacter: [  '=', 'o', ''],
+  segmentSeperator : ['\r\n', '\r', '\n', '�'],
   elementSeperator : ['', '*'],
   mainBodyHead : 'ST',
 
@@ -643,7 +643,7 @@ export const formatJson = {
             key: 'SAC',
             code: 'SAC',
             name: 'Service, Promotion, Allowance or Charge',
-            type: 'specialObject',
+            type: 'list',
             mandatory: false,
             elementFormatList: [
               {
@@ -745,7 +745,7 @@ export const formatJson = {
             key: 'N9',
             code: 'N9',
             name: 'Reference Number',
-            type: 'specialObject',
+            type: 'list',
             mandatory: false,
             elementFormatList: [
               {
@@ -2116,7 +2116,7 @@ export const formatJson = {
             maximumLen: 6,
             minimumLen: 1,
             name: 'Number of Included Transaction Sets ',
-            key: 'numberOfIncludedTransactionSets ',
+            key: 'numberOfIncludedTransactionSets',
             type: 'integer',
           },
           {
@@ -2171,16 +2171,19 @@ export default class Edi850Parser extends BaseEdiParser {
   async import(ediString: string): Promise<any> {
     // console.log(`import type  : ${this.type}`)
     const { jsonData, errorList } = await super.import(ediString)
+
     const poList: any[] = []
     if (!jsonData || jsonData.length === 0) {
       // undefined or empty array
       throw new Error(errorList)
     }
-    return jsonData
-    // return jsonData
+
     const sts = _.get(jsonData, 'ST', []) || []
     if (sts.length) {
       for (const ST of sts) {
+        // if (_.get(ST, 'transactionSetIdentifierCode') !== '850') {
+        //   throw new Error('not correct edi type')
+        // }
         const po: any = {
           partyGroupCode,
           edi: true,
@@ -2194,8 +2197,9 @@ export default class Edi850Parser extends BaseEdiParser {
           receiverId: _.get(jsonData, 'GS.applicationReceiverId'),
           dataInterchangeControlNumber: _.get(jsonData, 'GS.dataInterchangeControlNumber'),
           versionId: _.get(jsonData, 'GS.versionId'),
-          errors: errorList,
           ediType: _.get(ST, 'transactionSetIdentifierCode'),
+          noSent: _.get(jsonData, 'GE.numberOfIncludedTransactionSets'),
+          errors: errorList,
           poNo: _.get(ST, 'BEG.purchaseOrderNumber'),
           poDate: _.get(ST, 'BEG.purchaseOrderDate')
             ? moment.utc(_.get(ST, 'BEG.purchaseOrderDate')).toDate()
@@ -2208,11 +2212,12 @@ export default class Edi850Parser extends BaseEdiParser {
             : null,
           exitFactoryDateActual: _.get(ST, 'DTM.firstArrive')
             ? moment.utc(_.get(ST, 'DTM.firstArrive')).toDate()
-            : null,
+            : (_.get(ST, 'DTM.shipNotBefore')
+            ? moment.utc(_.get(ST, 'DTM.shipNotBefore')).toDate()
+            : null),
           Department: _.get(ST, 'REF.referenceNumber'),
         }
         const po1 = _.get(ST, 'PO1', []) || []
-        // return response
         if (po1.length) {
           const poItemList: any[] = []
           for (const PO1 of po1) {

@@ -19,7 +19,7 @@ interface JSONObject {
   elementList?: any[]
 }
 
-export default class EdiParser856 extends BaseEdiParser {
+export default class EdiParser997 extends BaseEdiParser {
     constructor(
         protected readonly allService: {
           swivelConfigService: SwivelConfigService,
@@ -29,10 +29,9 @@ export default class EdiParser856 extends BaseEdiParser {
         super(allService, {}, { export: { formatJson, ediType: '997' } })
       }
 
-  async export(entityJSON: any): Promise<any> {
+  async export(entityJSON: any[]): Promise<any> {
     const returnJSON = {}
     const data = []
-    const index = 0
     const ISA: JSONObject = {
         segement: 'ISA',
         elementList : []
@@ -73,23 +72,34 @@ export default class EdiParser856 extends BaseEdiParser {
     }
     AK1.elementList.push('PO', _.get(entityJSON[0], 'ediType'))
     data.push(AK1)
-    const noOfST = entityJSON.length
-    const loopObjectList: any[] = []
-    loopObjectList.push(this.getLoopObject(loopObjectList, entityJSON[0], noOfST))
-    const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
-    const acknowledgmentList: any [] = filteredList.filter(x => x.segement === 'AK5')
-    data.push(...filteredList)
-
     const AK9: JSONObject = {
       segement: 'AK9',
       elementList: []
     }
-    if (!filteredList.length)
+    if (_.get(entityJSON[0], 'outboundSuccess'))
     {
-      AK9.elementList.push('A')
+      const noOfST = entityJSON.length
+      const loopObjectList: any[] = []
+      loopObjectList.push(this.getLoopObject(loopObjectList, entityJSON[0], noOfST))
+      const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
+      const segementErrorList = _.get(entityJSON[0], 'errors').filter(x => x.category === 'segementError' || x.category === 'elementError')
+      const segementuniqueList = [...new Set(segementErrorList.map(x => x.mainHeadIndex))]
+      console.log(segementuniqueList.length)
+      data.push(...filteredList)
+      if (segementErrorList.length === 0)
+      {
+        AK9.elementList.push('A')
+      }
+      else
+      {
+        AK9.elementList.push('P')
+      }
+      AK9.elementList.push(_.get(entityJSON[0], 'noSent').toString())
       AK9.elementList.push(entityJSON.length.toString())
-      AK9.elementList.push(entityJSON.length.toString())
-      AK9.elementList.push(entityJSON.length.toString())
+      AK9.elementList.push((entityJSON.length - segementuniqueList.length).toString())
+    }
+    else {
+      AK9.elementList.push('R')
     }
     data.push(AK9)
 
@@ -115,7 +125,7 @@ export default class EdiParser856 extends BaseEdiParser {
     IEA.elementList.push('1', _.get(entityJSON[0], 'interchangeControlNumber'))
     data.push(IEA)
     _.set(returnJSON, 'data', data)
-    return returnJSON
+    // return returnJSON
     const result = await super.export(returnJSON)
     return result
   }
