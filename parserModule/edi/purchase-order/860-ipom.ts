@@ -10,8 +10,8 @@ const _ = require('lodash')
 const partyGroupCode = ''
 
 export const formatJson = {
-  removeCharacter: ['\n', '\r', '\r\n', ''],
-  segmentSeperator: ['?'],
+  removeCharacter: ['=', 'o', ''],
+  segmentSeperator: ['?', '\n', '\r', '\r\n'],
   elementSeperator: [''],
 
   rootSegmentFormat: {
@@ -1183,7 +1183,7 @@ export const formatJson = {
           {
             index: 1,
             name: 'Number of Included Transaction Sets ',
-            key: 'numberOfIncludedTransactionSets ',
+            key: 'numberOfIncludedTransactionSets',
             type: 'integer',
           },
           {
@@ -1252,6 +1252,7 @@ export default class Edi850Parser extends BaseEdiParser {
                   dataInterchangeControlNumber: _.get(jsonData, 'GS.dataInterchangeControlNumber'),
                   versionId: _.get(jsonData, 'GS.versionId'),
                   ediType: _.get(ST, 'transactionSetIdentifierCode'),
+                  noSent: _.get(jsonData, 'GE.numberOfIncludedTransactionSets'),
                   errors: errorList,
                   purpose: _.get(ST, 'BCH.transactionSetPurpose'),
                   poNo: _.get(ST, 'BCH.purchaseOrderNumber'),
