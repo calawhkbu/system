@@ -2,7 +2,7 @@
   "layout": "Plugin",
   "lazy": true,
   "axiosBaseParams": {
-    "url": "api/document/document/{{tableName}}/{{primaryKey}}"
+    "url": "api/document/document/{{tableName | urlEncode }}/{{primaryKey | urlEncode }}"
   },
   "name": "Document",
   "shareProps": {

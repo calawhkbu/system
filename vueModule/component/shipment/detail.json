@@ -32,7 +32,7 @@
               "class": "headline",
               "i18nKey": "ShipmentPage.title",
               "i18nOptions": {
-                "title": "{{context.$store.state.widget.data.houseNo}}"
+                "title": "{{ context.$store.state.widget.data.houseNo }}"
               }
             }
           },

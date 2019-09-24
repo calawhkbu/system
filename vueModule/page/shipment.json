@@ -5,7 +5,7 @@
     "props": {
       "settingProp": {
         "initAxiosParams": {
-          "url": "api/shipment/{{context.$route.params.params}}"
+          "url": "api/shipment/{{context.$route.params.params | urlEncode }}"
         },
         "defaultAxiosParams": {
           "url": "default/shipment"

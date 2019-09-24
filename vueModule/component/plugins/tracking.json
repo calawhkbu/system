@@ -5,7 +5,7 @@
   "name": "Tracking",
   "remote": true,
   "axiosBaseParams": {
-    "url": "tracking/get/{{tableName}}/{{primaryKey}}"
+    "url": "tracking/get/{{tableName | urlEncode }}/{{primaryKey | urlEncode }}"
   },
   "shareProps": {
     "iconMap": {

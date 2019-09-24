@@ -6,7 +6,7 @@
   "remote": true,
   "dataParams": ["context", "return context.$store.state.widget.data"],
   "axiosBaseParams": {
-    "url": "tracking/getold/{{masterNo}}"
+    "url": "tracking/getold/{{masterNo | urlEncode }}"
   },
   "shareProps": {
     "iconMap": {
