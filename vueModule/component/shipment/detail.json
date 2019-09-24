@@ -20,8 +20,8 @@
               "click.stop": [{
                 "type": "router",
                 "otherParams": {
-                  "func": "push",
-                  "path": "/dashboard/2"
+                  "func": "go",
+                  "go": -1
                 }
               }]
             }
@@ -32,7 +32,7 @@
               "class": "headline",
               "i18nKey": "ShipmentPage.title",
               "i18nOptions": {
-                "title": "{{ context.$store.state.widget.data.houseNo }}"
+                "title": "{{context.$store.state.widget.data.houseNo}}"
               }
             }
           },
