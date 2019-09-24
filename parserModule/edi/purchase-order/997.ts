@@ -9,9 +9,9 @@ const _ = require('lodash')
 
 export const formatJson = {
   removeCharacter: [],
-  segmentSeperator: ['?'],
-  elementSeperator: ['*'],
-  // elementSeperator: ['']
+  segmentSeperator: ['\r\n'],
+  // elementSeperator: ['*'],
+  elementSeperator: ['']
 } as EdiFormatJson
 
 interface JSONObject {
@@ -29,7 +29,7 @@ export default class EdiParser997 extends BaseEdiParser {
         super(allService, {}, { export: { formatJson, ediType: '997' } })
       }
 
-  async export(entityJSON: any[]): Promise<any> {
+  async export(entityJSON: any[]| (any[])[]): Promise<any> {
     const returnJSON = {}
     const data = []
     const ISA: JSONObject = {
@@ -55,7 +55,7 @@ export default class EdiParser997 extends BaseEdiParser {
       Inovis: '6112391050',
       InterTrade: '6112392050'
     }
-    GS.elementList.push('FA', _.get(entityJSON[0], 'receiverId'), senderIdMapper[applicationsenderId], moment(currantDate).format('YYYYMMDD'), moment(currantDate).format('HHmm'), _.get(entityJSON[0], 'dataInterchangeControlNumber'), 'X', _.get(entityJSON[0], 'versionId'))
+    GS.elementList.push('FA', _.get(entityJSON[0], 'receiverId'), (senderIdMapper[applicationsenderId] || applicationsenderId), moment(currantDate).format('YYYYMMDD'), moment(currantDate).format('HHmm'), _.get(entityJSON[0], 'dataInterchangeControlNumber'), 'X', _.get(entityJSON[0], 'versionId'))
     data.push(GS)
 
     let lengthOfPreviousData = data.length
@@ -64,13 +64,13 @@ export default class EdiParser997 extends BaseEdiParser {
         segement: 'ST',
         elementList : []
     }
-    ST.elementList.push('997', `00001`)
+    ST.elementList.push('997', `000017`)
     data.push(ST)
     const AK1: JSONObject = {
         segement: 'AK1',
         elementList: []
     }
-    AK1.elementList.push('PO', _.get(entityJSON[0], 'ediType'))
+    AK1.elementList.push('PO', _.get(entityJSON[0], `00001`))
     data.push(AK1)
     const AK9: JSONObject = {
       segement: 'AK9',
@@ -107,8 +107,8 @@ export default class EdiParser997 extends BaseEdiParser {
       segement : 'SE',
       elementList: []
     }
-    SE.elementList.push(`00001`)
-    SE.elementList.push((data.length - lengthOfPreviousData).toString())
+    SE.elementList.push((data.length - lengthOfPreviousData + 1).toString())
+    SE.elementList.push(`000017`)
     data.push(SE)
     lengthOfPreviousData += data.length
 
@@ -127,6 +127,8 @@ export default class EdiParser997 extends BaseEdiParser {
     _.set(returnJSON, 'data', data)
     // return returnJSON
     const result = await super.export(returnJSON)
+    const resultList: any[] = []
+    resultList.push(result)
     return result
   }
   async getLoopObject(loopObjectList, element, noOfSt)
