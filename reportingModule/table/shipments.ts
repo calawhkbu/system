@@ -47,58 +47,55 @@ const query = new Query({
           type: 'string',
         },
 
-        {
-          name: 'vessel',
-          type: 'string',
-        },
+        // {
+        //   name: 'vesselName',
+        //   type: 'string',
+        // },
 
-        {
-          name: 'voyage',
-          type: 'string',
-        },
+        // {
+        //   name: 'voyage',
+        //   type: 'string',
+        // },
 
-        {
-          name: 'division',
-          type: 'string',
-        },
+        // {
+        //   name: 'division',
+        //   type: 'string',
+        // },
 
         // ["FCL", "LCL", "CONSOL"]
         {
-          name: 'serviceType',
+          name: 'serviceCode',
           type: 'string',
         },
 
         {
-          name: 'incoTerms',
+          name: 'incoTermsCode',
           type: 'string',
         },
 
         {
-          name: 'freightTerms',
+          name: 'freightTermsCode',
           type: 'string',
         },
 
         {
-          name: 'otherTerms',
+          name: 'otherTermsCode',
           type: 'string',
         },
 
         // ["SEA", "AIR", "ROAD"]
         {
-          name: 'moduleType',
+          name: 'moduleTypeCode',
           type: 'string',
         },
 
         {
-          name: 'boundType',
+          name: 'boundTypeCode',
           type: 'string',
         },
+
         {
-          name: 'serviceType',
-          type: 'string',
-        },
-        {
-          name: 'nominatedType',
+          name: 'nominatedTypeCode',
           type: 'string',
         },
         {
@@ -109,47 +106,34 @@ const query = new Query({
           name: 'isCoload',
           type: 'string',
         },
+
         {
-          name: 'porCode',
+          name: 'portOfLoadingCode',
           type: 'string',
         },
 
         {
-          name: 'polCode',
+          name: 'portOfDischargeCode',
           type: 'string',
         },
 
         {
-          name: 'podCode',
+          name: 'depatureDateEstimated',
+          type: 'string',
+        },
+        {
+          name: 'arrivalDateEstimated',
+          type: 'string',
+        },
+        {
+          name: 'depatureDateActual',
+          type: 'string',
+        },
+        {
+          name: 'arrivalDateActual',
           type: 'string',
         },
 
-        {
-          name: 'pldCode',
-          type: 'string',
-        },
-
-        {
-          name: 'fdCode',
-          type: 'string',
-        },
-
-        {
-          name: 'estimatedDepartureDate',
-          type: 'string',
-        },
-        {
-          name: 'estimatedArrivalDate',
-          type: 'string',
-        },
-        {
-          name: 'actualDepartureDate',
-          type: 'string',
-        },
-        {
-          name: 'actualArrivalDate',
-          type: 'string',
-        },
         {
           name: 'forwarderPartyName',
           type: 'string',
@@ -158,27 +142,7 @@ const query = new Query({
           name: 'forwarderPartyCustomCode',
           type: 'string',
         },
-        {
-          name: 'forwarderPartryShortName',
-          type: 'string',
-        },
-        {
-          name: 'forwarderPartyNature',
-          type: 'string',
-        },
-        {
-          name: 'forwarderPartyCityCode',
-          type: 'string',
-        },
-        {
-          name: 'forwarderPartyStateCode',
-          type: 'string',
-        },
 
-        {
-          name: 'forwarderPartyCountryCode',
-          type: 'string',
-        },
         {
           name: 'shipperPartyName',
           type: 'string',
@@ -192,108 +156,28 @@ const query = new Query({
           type: 'string',
         },
         {
-          name: 'shipperPartyNature',
-          type: 'string',
-        },
-        {
-          name: 'shipperPartyCityCode',
-          type: 'string',
-        },
-        {
-          name: 'shipperPartyStateCode',
-          type: 'string',
-        },
-        {
-          name: 'shipperPartyCountryCode',
-          type: 'string',
-        },
-        {
           name: 'consigneePartyName',
           type: 'string',
         },
         {
-          name: 'consigneePartyCustomCode',
-          type: 'string',
-        },
-        {
-          name: 'consigneePartryShortName',
-          type: 'string',
-        },
-        {
-          name: 'consigneePartyNature',
+          name: 'consigneePartyCode',
           type: 'string',
         },
 
-        {
-          name: 'consigneePartyCityCode',
-          type: 'string',
-        },
-
-        {
-          name: 'consigneePartyStateCode',
-          type: 'string',
-        },
-        {
-          name: 'consigneePartyCountryCode',
-          type: 'string',
-        },
         {
           name: 'linerAgentPartyName',
           type: 'string',
         },
         {
-          name: 'linerAgentPartyCustomCode',
+          name: 'linerAgentPartyCode',
           type: 'string',
         },
-        {
-          name: 'linerAgentPartryShortName',
-          type: 'string',
-        },
-        {
-          name: 'linerAgentPartyNature',
-          type: 'string',
-        },
-
-        {
-          name: 'linerAgentPartyCityCode',
-          type: 'string',
-        },
-        {
-          name: 'linerAgentPartyStateCode',
-          type: 'string',
-        },
-        {
-          name: 'linerAgentPartyCountryCode',
-          type: 'string',
-        },
-
         {
           name: 'roAgentPartyName',
           type: 'string',
         },
-
         {
-          name: 'roAgentPartyCustomCode',
-          type: 'string',
-        },
-        {
-          name: 'roAgentPartryShortName',
-          type: 'string',
-        },
-        {
-          name: 'roAgentPartyNature',
-          type: 'string',
-        },
-        {
-          name: 'roAgentPartyCityCode',
-          type: 'string',
-        },
-        {
-          name: 'roAgentPartyStateCode',
-          type: 'string',
-        },
-        {
-          name: 'roAgentPartyCountryCode',
+          name: 'roAgentPartyCode',
           type: 'string',
         },
         {
@@ -301,27 +185,7 @@ const query = new Query({
           type: 'string',
         },
         {
-          name: 'agentPartyCustomCode',
-          type: 'string',
-        },
-        {
-          name: 'agentPartryShortName',
-          type: 'string',
-        },
-        {
-          name: 'agentPartyNature',
-          type: 'string',
-        },
-        {
-          name: 'agentPartyCityCode',
-          type: 'string',
-        },
-        {
-          name: 'agentPartyStateCode',
-          type: 'string',
-        },
-        {
-          name: 'agentPartyCountryCode',
+          name: 'agentPartyCode',
           type: 'string',
         },
         {
@@ -329,30 +193,9 @@ const query = new Query({
           type: 'string',
         },
         {
-          name: 'controllingCustomerPartyCustomCode',
+          name: 'controllingCustomerPartyCode',
           type: 'string',
         },
-        {
-          name: 'controllingCustomerPartryShortName',
-          type: 'string',
-        },
-        {
-          name: 'controllingCustomerPartyNature',
-          type: 'string',
-        },
-        {
-          name: 'controllingCustomerPartyCityCode',
-          type: 'string',
-        },
-        {
-          name: 'controllingCustomerPartyStateCode',
-          type: 'string',
-        },
-        {
-          name: 'controllingCustomerPartyCountryCode',
-          type: 'string',
-        },
-
         {
           name: 'rSalesmanCode',
           type: 'string',
@@ -362,15 +205,15 @@ const query = new Query({
           type: 'string',
         },
 
-        {
-          name: 'cSalesmanCode',
-          type: 'string',
-        },
+        // {
+        //   name: 'cSalesmanCode',
+        //   type: 'string',
+        // },
 
-        {
-          name: 'cSalesmanName',
-          type: 'string',
-        },
+        // {
+        //   name: 'cSalesmanName',
+        //   type: 'string',
+        // },
 
         // TODO
       ],

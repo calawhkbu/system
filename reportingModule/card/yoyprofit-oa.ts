@@ -97,7 +97,7 @@ export default [
   // prepare function
   new CreateFunctionJQL(
     'PERCENT_CHANGE',
-    function(currValue: number, lastValue: number) {
+    function(parameter: any, currValue: number, lastValue: number) {
       if (currValue === 0 || lastValue === 0 || isNaN(currValue) || isNaN(lastValue)) return NaN
       return (currValue - lastValue) / Math.abs(lastValue)
     },
