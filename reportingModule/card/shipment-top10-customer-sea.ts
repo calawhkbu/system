@@ -56,11 +56,11 @@ function prepareTop10Params(): Function {
       value: 'SEA',
     }
 
-    params.fields = ['controllingCustomerPartyCode', 'cbmTotal']
+    params.fields = ['controllingCustomerPartyCode', 'cntCbm']
 
-    params.sorting = new OrderBy('cbmTotal', 'DESC')
-
+    params.sorting = new OrderBy('cntCbm', 'DESC')
     params.groupBy = ['controllingCustomerPartyCode']
+
     params.limit = 10
 
     return params
@@ -180,8 +180,9 @@ function prepareTop10Table() {
               type: 'string',
             },
             {
-              name: 'cbmTotal',
-              type: 'number',
+              name: 'cntCbm',
+              type: 'string',
+              $as : 'cbm'
             },
           ],
         },
@@ -195,9 +196,13 @@ export default [
   [prepareTop10Params(), prepareTop10Table()],
   [preparePartyParams(), preparePartyTable()],
 
+  // new Query({
+  //   $from : 'top10'
+  // })
+
   new Query({
     $select: [
-      new ResultColumn(new ColumnExpression('top10', 'cbmTotal')),
+      new ResultColumn(new ColumnExpression('top10', 'cbm')),
       new ResultColumn(
         new FunctionExpression(
           'IFNULL',
@@ -220,4 +225,5 @@ export default [
       ],
     }),
   }),
+
 ]
