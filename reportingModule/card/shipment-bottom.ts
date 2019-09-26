@@ -35,9 +35,6 @@ function prepareShipmentParams(): Function {
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    console.log('subqueries')
-    console.log(subqueries)
-
     // get the primaryKeyList
     if (!subqueries.primaryKeyListString && subqueries.primaryKeyListString !== '')
       throw new BadRequestException('MISSING_primaryKeyListString')
@@ -60,15 +57,6 @@ function prepareShipmentable(name: string): CreateTableJQL {
     $temporary: true,
     name,
     $as: new Query({
-      $select: [
-        new ResultColumn(new ColumnExpression(name, 'houseNo')),
-        new ResultColumn(new ColumnExpression(name, 'shipperPartyCode'), 'shipperPartyErpCode'),
-        new ResultColumn(new ColumnExpression(name, 'consigneePartyCode'), 'consigneePartyErpCode'),
-        new ResultColumn(new ColumnExpression(name, 'polCode')),
-        new ResultColumn(new ColumnExpression(name, 'podCode')),
-        new ResultColumn(new ColumnExpression(name, 'estimatedDepatureDate')),
-        new ResultColumn(new ColumnExpression(name, 'estimatedArrivalDate')),
-      ],
 
       $from: new FromTable(
         {
@@ -77,12 +65,13 @@ function prepareShipmentable(name: string): CreateTableJQL {
           columns: [
 
             { name: 'houseNo', type: 'string' },
-            { name: 'shipperPartyCode', type: 'string' },
-            { name: 'consigneePartyCode', type: 'string' },
-            { name: 'polCode', type: 'string' },
-            { name: 'podCode', type: 'string' },
-            { name: 'estimatedDepatureDate', type: 'Date' },
-            { name: 'estimatedArrivalDate', type: 'Date' },
+            { name: 'jobDate', type: 'Date' },
+            { name: 'shipperPartyName', type: 'string' },
+            { name: 'consigneePartyName', type: 'string'},
+            { name: 'portOfLoadingCode', type: 'string' },
+            { name: 'portOfDischargeCode', type: 'string' },
+            { name: 'departureDateEstimated', type: 'Date' },
+            { name: 'arrivalDateEstimated', type: 'Date' },
 
           ],
         },
@@ -98,4 +87,5 @@ export default [
   new Query({
     $from: 'shipment',
   }),
+
 ]
