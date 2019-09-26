@@ -20,7 +20,7 @@ export default [
   new Query({
 
     $select: [
-      new ResultColumn(new ColumnExpression('shipment', 'controllingCustomerPartyCode'), 'controllingCustomer'),
+      new ResultColumn(new ColumnExpression('controllingCustomerPartyName')),
       new ResultColumn(new FunctionExpression('NUMBERIFY', new ColumnExpression('shipment', 'cbm')), 'cbm')
     ],
 
@@ -29,6 +29,11 @@ export default [
         method: 'POST',
         url: 'api/shipment/query/shipment',
         columns: [
+
+          {
+            name: 'controllingCustomerPartyName',
+            type: 'string',
+          },
           {
             name: 'controllingCustomerPartyCode',
             type: 'string',
@@ -50,9 +55,13 @@ export default [
             }
           },
 
-          fields: ['controllingCustomerPartyCode', 'cntCbm'],
+          filter : {
+            controllingCustomerIsNotNull  : {}
+          },
+
+          fields: ['controllingCustomerPartyName', 'controllingCustomerPartyCode', 'cntCbm'],
           sorting: new OrderBy('cntCbm', 'DESC'),
-          groupBy: ['controllingCustomerPartyCode'],
+          groupBy: ['controllingCustomerPartyName', 'controllingCustomerPartyCode'],
           limit: 10
 
         }

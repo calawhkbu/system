@@ -21,7 +21,7 @@ export default [
   new Query({
 
     $select: [
-      new ResultColumn(new ColumnExpression('shipment', 'agentPartyCode'), 'issuingAgent'),
+      new ResultColumn(new ColumnExpression('agentPartyName')),
       new ResultColumn(new FunctionExpression('NUMBERIFY', new ColumnExpression('chargeableWeight')), 'chargeableWeight')
     ],
 
@@ -30,8 +30,13 @@ export default [
         method: 'POST',
         url: 'api/shipment/query/shipment',
         columns: [
+
           {
             name: 'agentPartyCode',
+            type: 'string',
+          },
+          {
+            name: 'agentPartyName',
             type: 'string',
           },
           {
@@ -41,17 +46,20 @@ export default [
         ],
 
         data: {
-
           subqueries: {
-
             moduleType: {
               value: 'AIR'
             }
           },
 
-          fields: ['agentPartyCode', 'chargeableWeight'],
+          fields: ['agentPartyCode', 'agentPartyName', 'chargeableWeight'],
+
+          filter : {
+            agentIsNotNull  : {}
+          },
+
           sorting: new OrderBy('chargeableWeight', 'DESC'),
-          groupBy: ['agentPartyCode'],
+          groupBy: ['agentPartyCode', 'agentPartyName'],
           limit: 10
 
         }

@@ -16,8 +16,7 @@ export default [
         username: '360schedule',
         password: '360Swivel!',
 
-        privateKey: `
-        `,
+        privateKey: ``,
       },
     },
 

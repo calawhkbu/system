@@ -21,7 +21,7 @@ export default [
   new Query({
 
     $select: [
-      new ResultColumn('carrierCode', 'carrier'),
+      new ResultColumn(new ColumnExpression('carrierCode')),
       new ResultColumn(new FunctionExpression('NUMBERIFY', new ColumnExpression('chargeableWeight')), 'chargeableWeight')
     ],
     $from: new FromTable(
@@ -29,6 +29,7 @@ export default [
         method: 'POST',
         url: 'api/shipment/query/shipment',
         columns: [
+
           {
             name: 'carrierCode',
             type: 'string',
@@ -46,6 +47,10 @@ export default [
             moduleType: {
               value: 'AIR'
             }
+          },
+
+          filter : {
+            carrierCodeIsNotNull  : {}
           },
 
           fields : ['carrierCode', 'chargeableWeight'],

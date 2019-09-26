@@ -19,7 +19,7 @@ export default [
   new Query({
 
     $select: [
-      new ResultColumn(new ColumnExpression('shipment', 'controllingCustomerPartyCode'), 'controllingCustomer'),
+      new ResultColumn(new ColumnExpression('controllingCustomerPartyName')),
       new ResultColumn(new FunctionExpression('NUMBERIFY', new ColumnExpression('chargeableWeight')), 'chargeableWeight')
     ],
 
@@ -28,6 +28,11 @@ export default [
         method: 'POST',
         url: 'api/shipment/query/shipment',
         columns: [
+
+          {
+            name: 'controllingCustomerPartyName',
+            type: 'string',
+          },
           {
             name: 'controllingCustomerPartyCode',
             type: 'string',
@@ -47,9 +52,13 @@ export default [
             }
           },
 
-          fields: ['controllingCustomerPartyCode', 'chargeableWeight'],
+          filter : {
+            controllingCustomerIsNotNull  : {}
+          },
+
+          fields: ['controllingCustomerPartyName', 'controllingCustomerPartyCode', 'chargeableWeight'],
           sorting: new OrderBy('chargeableWeight', 'DESC'),
-          groupBy: ['controllingCustomerPartyCode'],
+          groupBy: ['controllingCustomerPartyName', 'controllingCustomerPartyCode'],
           limit: 10
 
         }
