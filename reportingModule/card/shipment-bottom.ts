@@ -45,7 +45,15 @@ function prepareShipmentParams(): Function {
       value: primaryKeyList,
     }
 
-    params.fields = ['houseNo', 'shipperPartyCode', 'consigneePartyCode', 'portOfLoading', 'podCode', 'estimatedDepatureDate', 'estimatedArrivalDate']
+    params.fields = [
+      'houseNo',
+      'shipperPartyName',
+      'consigneePartyName',
+      'portOfLoading',
+      'portOfDischarge',
+      'estimatedDepartureDate',
+      'estimatedArrivalDate'
+    ]
 
     return params
   }
@@ -61,12 +69,12 @@ function prepareShipmentable(name: string): CreateTableJQL {
     $as: new Query({
       $select: [
         new ResultColumn(new ColumnExpression(name, 'houseNo')),
-        new ResultColumn(new ColumnExpression(name, 'shipperPartyCode'), 'shipperPartyErpCode'),
-        new ResultColumn(new ColumnExpression(name, 'consigneePartyCode'), 'consigneePartyErpCode'),
-        new ResultColumn(new ColumnExpression(name, 'portOfLoading'), 'portOfLoading'),
-        new ResultColumn(new ColumnExpression(name, 'portOfDischarge'), 'portOfDischarge'),
-        new ResultColumn(new ColumnExpression(name, 'estimatedDepatureDate')),
-        new ResultColumn(new ColumnExpression(name, 'estimatedArrivalDate')),
+        new ResultColumn(new ColumnExpression(name, 'shipperPartyName'), 'shipper'),
+        new ResultColumn(new ColumnExpression(name, 'consigneePartyName'), 'consignee'),
+        new ResultColumn(new ColumnExpression(name, 'portOfLoadingCode'), 'portOfLoading'),
+        new ResultColumn(new ColumnExpression(name, 'portOfDischargeCode'), 'portOfDischarge'),
+        new ResultColumn(new ColumnExpression(name, 'departureDateEstimated')),
+        new ResultColumn(new ColumnExpression(name, 'arrivalDateEstimated')),
       ],
 
       $from: new FromTable(
@@ -76,12 +84,12 @@ function prepareShipmentable(name: string): CreateTableJQL {
           columns: [
 
             { name: 'houseNo', type: 'string' },
-            { name: 'shipperPartyCode', type: 'string' },
-            { name: 'consigneePartyCode', type: 'string' },
+            { name: 'shipperPartyName', type: 'string' },
+            { name: 'consigneePartyName', type: 'string'},
             { name: 'portOfLoadingCode', type: 'string' },
             { name: 'portOfDischargeCode', type: 'string' },
-            { name: 'estimatedDepatureDate', type: 'Date' },
-            { name: 'estimatedArrivalDate', type: 'Date' },
+            { name: 'departureDateEstimated', type: 'Date' },
+            { name: 'arrivalDateEstimated', type: 'Date' },
 
           ],
         },
