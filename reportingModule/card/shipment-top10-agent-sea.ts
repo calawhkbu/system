@@ -20,7 +20,7 @@ export default [
   new Query({
 
     $select: [
-      new ResultColumn(new ColumnExpression('shipment', 'agentPartyCode'), 'issuingAgent'),
+      new ResultColumn(new ColumnExpression('agentPartyName')),
       new ResultColumn(new FunctionExpression('NUMBERIFY', new ColumnExpression('shipment', 'cbm')), 'cbm')
     ],
 
@@ -29,6 +29,11 @@ export default [
         method: 'POST',
         url: 'api/shipment/query/shipment',
         columns: [
+
+          {
+            name: 'agentPartyName',
+            type: 'string',
+          },
           {
             name: 'agentPartyCode',
             type: 'string',
@@ -50,9 +55,13 @@ export default [
             }
           },
 
-          fields: ['agentPartyCode', 'cntCbm'],
+          filter : {
+            agentIsNotNull  : {}
+          },
+
+          fields: ['agentPartyName', 'agentPartyCode', 'cntCbm'],
           sorting: new OrderBy('cntCbm', 'DESC'),
-          groupBy: ['agentPartyCode'],
+          groupBy: ['agentPartyCode', 'agentPartyName'],
           limit: 10
 
         }

@@ -88,10 +88,10 @@ const query = new Query({
         { name : 'placeOfDeliveryCode', type : 'string'},
         { name : 'finalDestinationCode', type : 'string'},
 
-        { name: 'departureDateEstimated', type: 'string'},
-        { name: 'arrivalDateEstimated', type: 'string' },
-        { name: 'departureDateActual', type: 'string' },
-        { name: 'arrivalDateActual', type: 'string' },
+        { name: 'departureDateEstimated', type: 'Date'},
+        { name: 'arrivalDateEstimated', type: 'Date' },
+        { name: 'departureDateActual', type: 'Date' },
+        { name: 'arrivalDateActual', type: 'Date' },
 
         { name: 'shipperPartyName', type: 'string' },
         { name: 'consigneePartyName', type: 'string' },
