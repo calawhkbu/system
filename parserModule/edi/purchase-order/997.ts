@@ -134,7 +134,7 @@ export default class EdiParser997 extends BaseEdiParser {
     const result = await super.export(returnJSON)
     const resultList: any[] = []
     resultList.push(result)
-    return result
+    return [result]
   }
   async getLoopObject(loopObjectList, entityJSON, noOfSt)
   {
