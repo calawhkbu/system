@@ -63,7 +63,7 @@ export default class EdiParser856 extends BaseEdiParser {
           elementList : []
       }
       ST.elementList.push('856')
-      const pad = '00000'
+      const pad = '0000'
       const elementId = `${pad.substring(0, pad.length - index.toString().length)}${index}`
       ST.elementList.push(`${elementId}`)
       data.push(ST)
@@ -114,7 +114,7 @@ export default class EdiParser856 extends BaseEdiParser {
     data.push(GE, IEA)
     _.set(returnJSON, 'data', data)
     // return cloneEntityJSON
-    return returnJSON
+    // return returnJSON
     const result = await super.export(returnJSON)
     return result
   }
