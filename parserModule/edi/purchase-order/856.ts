@@ -42,7 +42,7 @@ export default class EdiParser856 extends BaseEdiParser {
         elementList : []
     }
     const bookingNo = _.get(entityJSON[0], 'bookingNo')
-    const controlNo = bookingNo.substring(bookingNo.length - 9)
+    const controlNo = (bookingNo || '').substring((bookingNo || '').length - 9)
     ISA.elementList.push('00', '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0', '00',
     '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0', '12', '718978080', 'ZZ' , 'DILLARDSTST' , moment(currantDate).format('YYMMDD'), moment(currantDate).format('HHmm'), 'U', '00403', controlNo, '0', 'P', '>')
     data.push(ISA)
@@ -114,7 +114,7 @@ export default class EdiParser856 extends BaseEdiParser {
     data.push(GE, IEA)
     _.set(returnJSON, 'data', data)
     // return cloneEntityJSON
-    // return returnJSON
+    return returnJSON
     const result = await super.export(returnJSON)
     return result
   }
