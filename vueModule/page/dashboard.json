@@ -1,5 +1,4 @@
 {
-  "layout": "MainLayout",
   "components": [{
     "is": "GridTool",
     "props": {
@@ -12,11 +11,11 @@
       "newReport": {
         "filters": {
           "date": {
-            "func" : {
-              "args" : {
-                "unit" : "year"
+            "func": {
+              "args": {
+                "unit": "year"
               },
-              "key" : "current"
+              "key": "current"
             }
           }
         },
@@ -25,8 +24,7 @@
           "colors": ["#4bc0c0", "#ff6384", "#ffcd56", "#c9cbcf", "#36a2eb"]
         }
       },
-      "filters": [
-        {
+      "filters": [{
           "name": "date",
           "type": "date",
           "props": {
@@ -374,9 +372,14 @@
           "name": "nominatedTypeCode",
           "type": "list",
           "props": {
-            "items": [
-              { "value": "F", "label": "Freehand" },
-              { "value": "R", "label": "R/O" }
+            "items": [{
+                "value": "F",
+                "label": "Freehand"
+              },
+              {
+                "value": "R",
+                "label": "R/O"
+              }
             ]
           }
         },
