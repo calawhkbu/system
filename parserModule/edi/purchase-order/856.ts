@@ -194,8 +194,8 @@ export default class EdiParser856 extends BaseEdiParser {
               elementList: []
           }
           TD3.elementList.push('') // not used
-          TD3.elementList.push((_.get(container, 'containerNo') || '').substring(0, 3))
-          TD3.elementList.push((_.get(container, 'containerNo') || '').substring(3))
+          TD3.elementList.push((_.get(container, 'containerNo') || '').substring(0, 4))
+          TD3.elementList.push((_.get(container, 'containerNo') || '').substring(4))
           TD3.elementList.push('', '', '', '', '') // not used
           TD3.elementList.push(_.get(container, 'sealNo'))
           if (_.get(container, 'containerTypeCode') === '20OT')
