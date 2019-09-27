@@ -15,7 +15,6 @@ import {
 import { parseCode } from 'utils/function'
 
 const months = [
-  'Total',
   'January',
   'February',
   'March',
@@ -36,9 +35,12 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
     // import
     const moment = require('moment')
 
+    console.log(params)
+   console.log('==============================')
+
     // limit/extend to 1 year
     const subqueries = (params.subqueries = params.subqueries || {})
-    const year = (subqueries.data ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
+    const year = (subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
     const date = (subqueries.date = subqueries.date || {})
     date.from = moment()
       .year(year)
@@ -61,11 +63,11 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
 
     switch (type_) {
       case 'F':
-        subqueries.nominatedType = { value: 'F' }
+        subqueries.nominatedTypeCode = { value: 'F' }
         subqueries.isColoader = { value: 0 }
         break
       case 'R':
-        subqueries.nominatedType = { value: 'R' }
+        subqueries.nominatedTypeCode = { value: 'R' }
         subqueries.isColoader = { value: 0 }
         break
       case 'C':
@@ -107,16 +109,19 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-            { name: 'carrierCode', type: 'string', nullable: true },
+            { name: 'carrierCode', type: 'string'},
             { name: 'jobMonth', type: 'string' },
             { name: 'grossWeight', type: 'number' },
             { name: 'chargeableWeight', type: 'number' },
           ],
+
+          data : {
+            filter : { carrierCodeIsNotNull : {}}
+          }
+
         },
         'shipment'
       ),
-      $where: new BinaryExpression(new ColumnExpression('carrierCode'), '<>', 'null'),
-      $limit: 20
     }),
   })
 }
@@ -167,11 +172,17 @@ export default [
 
   // prepare data
   [prepareParams('F'), prepareData('F')],
-  prepareTotal('F'),
+
+  // prepareTotal('F'),
   [prepareParams('R'), prepareData('R')],
-  prepareTotal('R'),
+  // prepareTotal('R'),
   [prepareParams('C'), prepareData('C')],
-  prepareTotal('C'),
+  // prepareTotal('C'),
+
+  new Query({
+
+    $from : 'shipment'
+  })
 
   // finalize data
   new Query({
@@ -205,5 +216,6 @@ export default [
     $from: 'shipment',
     $group: 'carrierCode',
   })
+
   // new Query({ $from: 'shipment', $limit: 100 })
 ]

@@ -9,10 +9,12 @@ import {
   Value,
   Query,
   ResultColumn,
+  Column,
 } from 'node-jql'
 
+import { parseCode } from 'utils/function'
+
 const months = [
-  'Total',
   'January',
   'February',
   'March',
@@ -20,105 +22,95 @@ const months = [
   'May',
   'June',
   'July',
-  'Auguest',
+  'August',
   'September',
-  'Octomber',
+  'October',
   'November',
   'December',
 ]
 const types = ['GW', 'CW']
 
-export default [
-  [
-    // process params
-    function(require, session, params) {
-      // import
-      const moment = require('moment')
+function prepareParams(): Function {
+  return function(require, session, params) {
+    // import
+    const moment = require('moment')
 
-      // limit/extend to 1 year
-      const subqueries = (params.subqueries = params.subqueries || {})
-      const year = (subqueries.data ? moment() : moment(subqueries.date.from, 'YYYY-MM-DD')).year()
-      subqueries.date.from = moment()
-        .year(year)
-        .startOf('year')
-        .format('YYYY-MM-DD')
-      subqueries.date.to = moment()
-        .year(year)
-        .endOf('year')
-        .format('YYYY-MM-DD')
+    // limit/extend to 1 year
+    const subqueries = (params.subqueries = params.subqueries || {})
+    const year = (subqueries.data ? moment() : moment(subqueries.date.from, 'YYYY-MM-DD')).year()
+    subqueries.date.from = moment()
+      .year(year)
+      .startOf('year')
+      .format('YYYY-MM-DD')
+    subqueries.date.to = moment()
+      .year(year)
+      .endOf('year')
+      .format('YYYY-MM-DD')
 
-      // AE
-      subqueries.moduleType = { value: 'AIR' }
-      subqueries.boundType = { value: 'O' }
+    // AE
+    subqueries.moduleType = { value: 'AIR' }
+    subqueries.boundType = { value: 'O' }
 
-      // select
-      params.fields = ['carrierCode', 'jobMonth', 'SUM(grossWeight)', 'SUM(chargeableWeight)']
+    // select
+    params.fields = ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight']
 
-      // group by
-      params.groupBy = ['carrierCode', 'jobMonth']
+    // group by
+    params.groupBy = ['carrierCode', 'jobMonth']
 
-      return params
-    },
-    // create temp table
-    new CreateTableJQL({
-      $temporary: true,
-      name: 'shipment',
-      $as: new Query({
-        $select: [
-          new ResultColumn('carrierCode'),
-          new ResultColumn(
-            new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
-            'month'
-          ),
-          new ResultColumn('grossWeight'),
-          new ResultColumn('chargeableWeight'),
-        ],
-        $from: new FromTable(
-          {
-            method: 'POST',
-            url: 'api/shipment/query/shipment',
-            columns: [
-              { name: 'carrierCode', type: 'string' },
-              { name: 'jobMonth', type: 'string' },
-              { name: 'SUM(grossWeight)', type: 'number', $as: 'grossWeight' },
-              { name: 'SUM(chargeableWeight)', type: 'number', $as: 'chargeableWeight' },
-            ],
-          },
-          'shipment'
-        ),
-      }),
-    })
-  ],
+    return params
+  }
+}
 
-  // prepare total column
-  new InsertJQL({
+function prepareTable(): CreateTableJQL {
+
+  return new CreateTableJQL({
+    $temporary: true,
     name: 'shipment',
-    columns: ['carrierCode', 'month', 'grossWeight', 'chargeableWeight'],
-    query: new Query({
+    $as: new Query({
       $select: [
         new ResultColumn('carrierCode'),
-        new ResultColumn(new Value('Total'), 'month'),
         new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression('SUM', new ColumnExpression('grossWeight')),
-            0
-          ),
-          'grossWeight'
+          new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
+          'month'
         ),
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression('SUM', new ColumnExpression('chargeableWeight')),
-            0
-          ),
-          'chargeableWeight'
-        ),
+        new ResultColumn('grossWeight'),
+        new ResultColumn('chargeableWeight'),
       ],
-      $from: 'shipment',
-      $group: 'carrierCode',
+      $from: new FromTable(
+        {
+          method: 'POST',
+          url: 'api/shipment/query/shipment',
+          columns: [
+            { name: 'carrierCode', type: 'string' },
+            { name: 'jobMonth', type: 'string' },
+            { name: 'grossWeight', type: 'number' },
+            { name: 'chargeableWeight', type: 'number' },
+          ],
+
+          data: {
+
+            // fields: ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight'],
+
+            filter: { carrierCodeIsNotNull: {} },
+
+            // groupBy: ['carrierCode', 'jobMonth'],
+
+            // subqueries: {
+            //   moduleType: { value: 'AIR' },
+            //   boundType: { value: 'O' }
+            // }
+
+          }
+        },
+        'shipment'
+      ),
     }),
-  }),
+  })
+}
+
+export default [
+
+  [prepareParams(), prepareTable()],
 
   // finalize data
   new Query({
@@ -129,13 +121,17 @@ export default [
           ...types.map(
             type =>
               new ResultColumn(
-                new FunctionExpression(
-                  'FIND',
-                  new BinaryExpression(new ColumnExpression('month'), '=', month),
-                  new ColumnExpression(
-                    type.substr(2, 2) === 'GW' ? 'grossWeight' : 'chargeableWeight'
-                  )
-                ),
+
+                new FunctionExpression('IFNULL',
+
+                  new FunctionExpression(
+                    'FIND',
+                    new BinaryExpression(new ColumnExpression('month'), '=', month),
+                    new ColumnExpression(
+                      type.substr(2, 2) === 'GW' ? 'grossWeight' : 'chargeableWeight'
+                    )
+                  ), 0),
+
                 `${month}-${type}`
               )
           )
@@ -146,4 +142,5 @@ export default [
     $from: 'shipment',
     $group: 'carrierCode',
   }),
+
 ]

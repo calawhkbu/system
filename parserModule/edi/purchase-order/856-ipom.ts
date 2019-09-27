@@ -77,9 +77,8 @@ export default class EdiParser856 extends BaseEdiParser {
       BSN.elementList.push(moment(_.get(element, 'createdAt')).format('HHmm'))
       BSN.elementList.push('0004')
       data.push(BSN)
-
       const loopObjectList: any[] = []
-      const getNumOfLoopItem = 1 + this.getNumOfPo(_.get(element, 'bookingPopacking')) + (_.get(element, 'bookingPopacking').length)
+      const getNumOfLoopItem = 2 + (_.get(element, 'bookingPOPackings').length)
       loopObjectList.push(this.getLoopObject(loopObjectList, getNumOfLoopItem, element, index, entityJSON[index - 1]))
       const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
       data.push(...filteredList)
@@ -185,7 +184,7 @@ export default class EdiParser856 extends BaseEdiParser {
         REF.elementList.push(_.get(element, 'service'))
       }
       loopObjectList.unshift(REF)
-      if (_.get(element, 'bookingContainers').length)
+      if ((_.get(element, 'bookingContainers') || []).length)
       {
         for (const container of element.bookingContainers)
         {
@@ -237,9 +236,9 @@ export default class EdiParser856 extends BaseEdiParser {
           loopObjectList.unshift(TD3)
         }
       }
-      if (_.get(element, 'portOfLoadingCode') || _.get(element, 'portOfDischargeCode') || _.get(element, 'placeOfReceiptCode'))
+      if (_.get(element, 'portOfLoading') || _.get(element, 'portOfDischarge') || _.get(element, 'placeOfReceiptCode'))
       {
-        if (_.get(element, 'portOfLoadingCode'))
+        if (_.get(element, 'portOfLoading'))
         {
           const TD5: JSONObject = {
               segement : 'TD5',
@@ -252,10 +251,10 @@ export default class EdiParser856 extends BaseEdiParser {
           TD5.elementList.push('')// not used
           TD5.elementList.push('')// not used
           TD5.elementList.push('KL')
-          TD5.elementList.push(_.get(element, 'portOfLoadingCode'))
+          TD5.elementList.push(_.get(element, 'portOfLoading'))
           loopObjectList.unshift(TD5)
         }
-        if (_.get(element, 'portOfDischargeCode'))
+        if (_.get(element, 'portOfDischarge'))
         {
           const TD5: JSONObject = {
               segement : 'TD5',
@@ -268,7 +267,7 @@ export default class EdiParser856 extends BaseEdiParser {
           TD5.elementList.push('')// not used
           TD5.elementList.push('')// not used
           TD5.elementList.push('PB')
-          TD5.elementList.push(_.get(element, 'portOfDischargeCode'))
+          TD5.elementList.push(_.get(element, 'portOfDischarge'))
           loopObjectList.unshift(TD5)
         }
         if (_.get(element, 'placeOfReceiptCode'))
@@ -299,18 +298,18 @@ export default class EdiParser856 extends BaseEdiParser {
         TD5.elementList.push(_.get(element, 'carrierCode'))
         loopObjectList.unshift(TD5)
       }
-      if (_.get(originElement, 'bookingPopacking').length)
+      if ((_.get(originElement, 'bookingPOPackings') || []).length)
       {
         let totalVolume = 0
         let totalWeight = 0
         let numberOfPacking = 0
         let totalQuantity = 0
-        for (const booking of _.get(originElement, 'bookingPopacking'))
+        for (const booking of _.get(originElement, 'bookingPOPackings'))
         {
           totalVolume += parseInt(booking.volume, 10)
           totalWeight += parseInt(booking.weight, 10)
           numberOfPacking += 1
-          totalQuantity += booking.quantity
+          totalQuantity += booking.bookQuantity
         }
         if (totalQuantity > 0)
         {
@@ -318,7 +317,7 @@ export default class EdiParser856 extends BaseEdiParser {
             segement : 'MEA',
             elementList : []
           }
-          MEA.elementList.push('SU', totalQuantity, ((originElement[0], 'weightUnit') || '').substring(0, 2).toUpperCase())
+          MEA.elementList.push('', 'SU', totalQuantity, 'PC')
           loopObjectList.unshift(MEA)
         }
         if (numberOfPacking > 0)
@@ -327,7 +326,7 @@ export default class EdiParser856 extends BaseEdiParser {
             segement : 'MEA',
             elementList : []
           }
-          MEA.elementList.push('NM', numberOfPacking, '')
+          MEA.elementList.push('', 'NM', numberOfPacking, '')
           loopObjectList.unshift(MEA)
         }
         if (totalVolume > 0)
@@ -336,7 +335,7 @@ export default class EdiParser856 extends BaseEdiParser {
             segement : 'MEA',
             elementList : []
           }
-          MEA.elementList.push('VOL', totalVolume, 'CO')
+          MEA.elementList.push('', 'VOL', totalVolume, 'CO')
           loopObjectList.unshift(MEA)
         }
         if (totalWeight > 0)
@@ -345,7 +344,7 @@ export default class EdiParser856 extends BaseEdiParser {
             segement : 'MEA',
             elementList : []
           }
-          MEA.elementList.push('WT', totalWeight)
+          MEA.elementList.push('', 'WT', totalWeight)
           if (_.get(originElement[0], 'weightUnit') === 'pound')
           {
             MEA.elementList.push('LB')
@@ -370,47 +369,21 @@ export default class EdiParser856 extends BaseEdiParser {
     }
     else // start with the po
     {
-      const Item = _.get(element, 'bookingPopacking')
-      const lastGroupOfItem = Item[Item.length - 1]
-      const poNo = _.get(lastGroupOfItem, 'purchaseOrderItem.purchaseOrder.poNo')
-      const allMatchItem = Item.filter(x => x.purchaseOrderItem.purchaseOrder.poNo === poNo)
-      const totalItemNo = allMatchItem.length
+      const ItemList = _.get(element, 'bookingPOPackings')
+      // const lastGroupOfItem = Item[Item.length - 1]
+      // const poNo = _.get(lastGroupOfItem, 'purchaseOrderItem.purchaseOrder.poNo')
+      // const allMatchItem = Item.filter(x => x.purchaseOrderItem.purchaseOrder.poNo === poNo)
+      const totalItemNo = ItemList.length
       let itemIndex = 0
-      for (const matchItem of allMatchItem)
+      for (const Item of ItemList)
       {
-        if (_.get(matchItem, 'purchaseOrderItem.quantity'))
+        if (_.get(Item, 'bookQuantity'))
         {
           const MEA: JSONObject = {
               segement: 'MEA',
               elementList: []
           }
-          MEA.elementList.push('SU', _.get(matchItem, 'purchaseOrderItem.volume'), _.get(matchItem, 'purchaseOrderItem.quantity'), (_.get(matchItem, 'purchaseOrderItem.weightUnit') || '').substring(0, 2).toUpperCase())
-          loopObjectList.unshift(MEA)
-        }
-        if (_.get(matchItem, 'purchaseOrderItem.volume'))
-        {
-          const MEA: JSONObject = {
-              segement: 'MEA',
-              elementList: []
-          }
-          MEA.elementList.push('VOL', _.get(matchItem, 'purchaseOrderItem.volume'), _.get(matchItem), 'CO')
-          loopObjectList.unshift(MEA)
-        }
-        if (_.get(matchItem, 'purchaseOrderItem.grossWeight'))
-        {
-          const MEA: JSONObject = {
-              segement: 'MEA',
-              elementList: []
-          }
-          MEA.elementList.push('WT', _.get(matchItem, 'purchaseOrderItem.grossWeight'))
-          if (_.get(matchItem, 'purchaseOrderItem.weightUnit') === 'pound')
-          {
-            MEA.elementList.push('LB')
-          }
-          else
-          {
-            MEA.elementList.push((_.get(matchItem, 'purchaseOrderItem.weightUnit') || '').substring(0, 2).toUpperCase())
-          }
+          MEA.elementList.push('', 'SU', _.get(Item, 'bookQuantity'),  'PC')
           loopObjectList.unshift(MEA)
         }
 
@@ -421,20 +394,8 @@ export default class EdiParser856 extends BaseEdiParser {
         SLN.elementList.push('1')
         SLN.elementList.push('')// not used
         SLN.elementList.push('I')
-        SLN.elementList.push(_.get(matchItem, 'purchaseOrderItem.quantity').toString())
-        if (_.get(matchItem, 'purchaseOrderItem.quantityUnit') === 'PCS')
-        {
-          SLN.elementList.push('PC')
-        }
-        else if (_.get(matchItem, 'purchaseOrderItem.quantityUnit') === 'EACH')
-        {
-          SLN.elementList.push('EA')
-        }
-        else
-        {
-          SLN.elementList.push((
-            _.get(matchItem, 'purchaseOrderItem.quantityUnit') || '').substring(0, 2).toUpperCase())
-        }
+        SLN.elementList.push(_.get(Item, 'bookQuantity').toString())
+        SLN.elementList.push('PC')
         loopObjectList.unshift(SLN)
 
         const LIN: JSONObject = {
@@ -443,11 +404,11 @@ export default class EdiParser856 extends BaseEdiParser {
         }
         LIN.elementList.push((totalItemNo - itemIndex).toString())
         LIN.elementList.push('SK')
-        LIN.elementList.push(_.get(matchItem, 'purchaseOrderItem.product.style'))
+        LIN.elementList.push()
         LIN.elementList.push('BO')
-        LIN.elementList.push(_.get(matchItem, 'purchaseOrderItem.product.colorDesc'))
+        LIN.elementList.push(_.get(Item, 'colorDesc'))
         LIN.elementList.push('IZ')
-        LIN.elementList.push(_.get(matchItem, 'purchaseOrderItem.product.size'))
+        LIN.elementList.push(_.get(Item, 'size'))
         LIN.elementList.push('')
         LIN.elementList.push('')
         LIN.elementList.push('')
@@ -464,53 +425,13 @@ export default class EdiParser856 extends BaseEdiParser {
         loopObjectList.unshift(HL)
         itemIndex++
       }
-      if (_.get(lastGroupOfItem, 'purchaseOrderItem.purchaseOrder.cargoReciptDateActual'))
-      {
-        const DTM: JSONObject = {
-          segement: 'DTM',
-          elementList: [],
-        }
-        DTM.elementList.push('050')
-        DTM.elementList.push(_.get(lastGroupOfItem, 'purchaseOrderItem.purchaseOrder.cargoReciptDateActual').format('YYYYMMDD'))
-        loopObjectList.unshift(DTM)
-      }
-      if (_.get(lastGroupOfItem, 'purchaseOrderItem.purchaseOrder.portOfDischargeCode'))
-      {
-        const TD5: JSONObject = {
-                segement: 'TD5',
-                elementList: [],
-        }
-        TD5.elementList.push('O')
-        TD5.elementList.push('2')
-        TD5.elementList.push(_.get(element, 'carrierCode'))
-        TD5.elementList.push('')
-        TD5.elementList.push('')
-        TD5.elementList.push('DL')
-        TD5.elementList.push(_.get(lastGroupOfItem, 'purchaseOrderItem.purchaseOrder.portOfDischargeCode'))
-        loopObjectList.unshift(TD5)
-      }
-      if (_.get(lastGroupOfItem, 'purchaseOrderItem.purchaseOrder.portOfLoadingCode'))
-      {
-        const TD5: JSONObject = {
-                segement: 'TD5',
-                elementList: [],
-        }
-        TD5.elementList.push('O')
-        TD5.elementList.push('2')
-        TD5.elementList.push(_.get(element, 'carrierCode'))
-        TD5.elementList.push('')
-        TD5.elementList.push('')
-        TD5.elementList.push('OR')
-        TD5.elementList.push(_.get(lastGroupOfItem, 'purchaseOrderItem.purchaseOrder.portOfLoadingCode'))
-        loopObjectList.unshift(TD5)
-      }
       const PRF: JSONObject = {
         segement : 'PRF',
         elementList : []
       }
-      PRF.elementList.push(poNo)
+      PRF.elementList.push(_.get(element, 'poNo'))
       PRF.elementList.push('', '') // not used
-      PRF.elementList.push(moment(_.get(lastGroupOfItem, 'purchaseOrderItem.purchaseOrder.poDate')).format('YYYYMMDD'))
+      PRF.elementList.push(moment(_.get(element, 'poDate')).format('YYYYMMDD'))
       loopObjectList.unshift(PRF)
 
       const HLO: JSONObject = {
@@ -523,30 +444,18 @@ export default class EdiParser856 extends BaseEdiParser {
       HLO.elementList.push('O')
       loopObjectList.unshift(HLO)
 
-      Item.filter(x => allMatchItem.includes(x))
-      for (const matchItem of allMatchItem)
-      {
-        const index = Item.findIndex(x => x.purchaseOrderItem.purchaseOrder.poNo === poNo)
-        Item.splice(index, 1)
-      }
+      // Item.filter(x => allMatchItem.includes(x))
+      // for (const matchItem of allMatchItem)
+      // {
+      //   const index = Item.findIndex(x => x.purchaseOrderItem.purchaseOrder.poNo === poNo)
+      //   Item.splice(index, 1)
+      // }
       // remove the used bookingPopacking
 
       // Item.splice(allMatchItem, totalItemNo)
 
       this.getLoopObject(loopObjectList, (getNumOfLoopItem - 1 - totalItemNo), element, index, originElement)
     }
-  }
-  getNumOfPo(Item)
-  {
-    const uniquePo = []
-    for (const po of Item)
-    {
-      if (!uniquePo.includes(po.purchaseOrderItem.purchaseOrder.poNo))
-      {
-        uniquePo.push(po.purchaseOrderItem.purchaseOrder.poNo)
-      }
-    }
-    return uniquePo.length
   }
 
 }
