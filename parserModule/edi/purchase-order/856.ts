@@ -176,13 +176,13 @@ export default class EdiParser856 extends BaseEdiParser {
           elementList: []
       }
       REF.elementList.push('KK')
-      if (_.get(element, 'moduleTypeCode') === 'C')
+      if (_.get(element, 'service') === 'CFS')
       {
         REF.elementList.push('CFS/CY')
       }
       else
       {
-        REF.elementList.push(_.get(element, 'moduleTypeCode'))
+        REF.elementList.push(_.get(element, 'service'))
       }
       loopObjectList.unshift(REF)
       if (_.get(element, 'bookingContainers').length)
