@@ -46,6 +46,9 @@ export default [
 
             moduleType: {
               value: 'AIR'
+            },
+            boundType: {
+              value: 'O'
             }
           },
 

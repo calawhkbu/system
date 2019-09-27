@@ -49,6 +49,9 @@ export default [
 
             moduleType: {
               value: 'SEA'
+            },
+            boundType: {
+              value: 'O'
             }
           },
 
