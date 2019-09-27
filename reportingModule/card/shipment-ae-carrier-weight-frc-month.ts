@@ -6,6 +6,7 @@ import {
   CreateTableJQL,
   FromTable,
   FunctionExpression,
+  IsNullExpression,
   InsertJQL,
   Query,
   ResultColumn,
@@ -22,9 +23,9 @@ const months = [
   'May',
   'June',
   'July',
-  'Auguest',
+  'August',
   'September',
-  'Octomber',
+  'October',
   'November',
   'December',
 ]
@@ -39,11 +40,11 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
     const subqueries = (params.subqueries = params.subqueries || {})
     const year = (subqueries.data ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
     const date = (subqueries.date = subqueries.date || {})
-    subqueries.date.from = moment()
+    date.from = moment()
       .year(year)
       .startOf('year')
       .format('YYYY-MM-DD')
-    subqueries.date.to = moment()
+    date.to = moment()
       .year(year)
       .endOf('year')
       .format('YYYY-MM-DD')
@@ -53,7 +54,7 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
     subqueries.boundType = { value: 'O' }
 
     // select
-    params.fields = ['carrierCode', 'jobMonth', 'SUM(grossWeight)', 'SUM(chargeableWeight)']
+    params.fields = ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight']
 
     // group by
     params.groupBy = ['carrierCode', 'jobMonth']
@@ -106,14 +107,16 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-            { name: 'carrierCode', type: 'string' },
+            { name: 'carrierCode', type: 'string', nullable: true },
             { name: 'jobMonth', type: 'string' },
-            { name: 'SUM(grossWeight)', type: 'number', $as: 'grossWeight' },
-            { name: 'SUM(chargeableWeight)', type: 'number', $as: 'chargeableWeight' },
+            { name: 'grossWeight', type: 'number' },
+            { name: 'chargeableWeight', type: 'number' },
           ],
         },
         'shipment'
       ),
+      $where: new BinaryExpression(new ColumnExpression('carrierCode'), '<>', 'null'),
+      $limit: 20
     }),
   })
 }
@@ -179,15 +182,18 @@ export default [
           ...types.map(
             type =>
               new ResultColumn(
-                new FunctionExpression(
-                  'FIND',
-                  new AndExpressions([
-                    new BinaryExpression(new ColumnExpression('month'), '=', month),
-                    new BinaryExpression(new ColumnExpression('type'), '=', type.charAt(0)),
-                  ]),
-                  new ColumnExpression(
-                    type.substr(2, 2) === 'GW' ? 'grossWeight' : 'chargeableWeight'
-                  )
+                new FunctionExpression('IFNULL',
+                  new FunctionExpression(
+                    'FIND',
+                    new AndExpressions([
+                      new BinaryExpression(new ColumnExpression('month'), '=', month),
+                      new BinaryExpression(new ColumnExpression('type'), '=', type.charAt(0)),
+                    ]),
+                    new ColumnExpression(
+                      type.substr(2, 2) === 'GW' ? 'grossWeight' : 'chargeableWeight'
+                    )
+                  ),
+                  0
                 ),
                 `${month}-${type}`
               )
@@ -198,5 +204,6 @@ export default [
     ],
     $from: 'shipment',
     $group: 'carrierCode',
-  }),
+  })
+  // new Query({ $from: 'shipment', $limit: 100 })
 ]

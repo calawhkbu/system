@@ -21,7 +21,7 @@ export default [
 
     $select : [
 
-      new ResultColumn(new ColumnExpression('shipment', 'carrierCode'), 'carrier'),
+      new ResultColumn(new ColumnExpression('carrierCode')),
       new ResultColumn(new ColumnExpression('shipment', 'cbm'), 'cbm')
 
     ],
@@ -50,6 +50,10 @@ export default [
             moduleType: {
               value: 'SEA'
             }
+          },
+
+          filter : {
+            carrierCodeIsNotNull  : {}
           },
 
           fields : ['carrierCode', 'cntCbm'],

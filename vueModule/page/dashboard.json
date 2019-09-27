@@ -10,52 +10,22 @@
       "enableShare": true,
       "enableSetting": true,
       "newReport": {
+        "filters": {
+          "date": {
+            "func" : {
+              "args" : {
+                "unit" : "year"
+              },
+              "key" : "current"
+            }
+          }
+        },
         "configurations": {
           "i18nContext": "Reporting",
           "colors": ["#4bc0c0", "#ff6384", "#ffcd56", "#c9cbcf", "#36a2eb"]
         }
       },
-      "filters": [{
-          "name": "moduleTypeCode",
-          "type": "list",
-          "props": {
-            "api": {
-              "query": {
-                "method": "POST",
-                "url": "api/code/query/code_master",
-                "data": {
-                  "subqueries": {
-                    "codeType": {
-                      "value": "MODULE"
-                    }
-                  }
-                },
-                "valueKey": "code",
-                "labelKey": "name"
-              },
-              "resolve": {
-                "method": "POST",
-                "url": "api/code/query/code_master",
-                "data": {
-                  "subqueries": {
-                    "codeType": {
-                      "value": "moduleType"
-                    },
-                    "code": {
-                      "value": "{{ value }}"
-                    }
-                  }
-                },
-                "valueKey": "code",
-                "labelKey": "name"
-              }
-            }
-          }
-        },
-        {
-          "name": "salesmanCode",
-          "type": "text"
-        },
+      "filters": [
         {
           "name": "date",
           "type": "date",
@@ -139,6 +109,393 @@
               }
             ]
           }
+        },
+        {
+          "name": "officeParty",
+          "type": "list",
+          "props": {
+            "api": {
+              "query": {
+                "method": "GET",
+                "url": "api/partyGroup/branch",
+                "valueKey": "id",
+                "labelKey": "shortName"
+              },
+              "resolve": {
+                "method": "GET",
+                "url": "api/partyGroup/branch/{{ value }}",
+                "valueKey": "id",
+                "labelKey": "shortName"
+              }
+            }
+          }
+        },
+        {
+          "name": "estimatedDepartureDate",
+          "type": "date",
+          "props": {
+            "shortcuts": [{
+                "label": "year-to-date",
+                "func": "year-to-date"
+              },
+              {
+                "label": "current",
+                "shortcuts": [{
+                    "label": "current year",
+                    "func": {
+                      "key": "current",
+                      "args": {
+                        "unit": "year"
+                      }
+                    }
+                  },
+                  {
+                    "label": "current month",
+                    "func": {
+                      "key": "current",
+                      "args": {
+                        "unit": "month"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "label": "last",
+                "shortcuts": [{
+                    "label": "last year",
+                    "func": {
+                      "key": "last",
+                      "args": {
+                        "unit": "year"
+                      }
+                    }
+                  },
+                  {
+                    "label": "last 3 month",
+                    "func": {
+                      "key": "last",
+                      "args": {
+                        "value": 3,
+                        "unit": "month"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "label": "coming",
+                "shortcuts": [{
+                  "label": "coming 7 days",
+                  "func": {
+                    "key": "coming",
+                    "args": {
+                      "value": 7,
+                      "unit": "day",
+                      "startFromNow": true
+                    }
+                  }
+                }]
+              },
+              {
+                "label": "past",
+                "shortcuts": [{
+                  "label": "past 7 days",
+                  "func": {
+                    "key": "past",
+                    "args": {
+                      "value": 7,
+                      "unit": "day"
+                    }
+                  }
+                }]
+              }
+            ]
+          }
+        },
+        {
+          "name": "estimatedArrivalDate",
+          "type": "date",
+          "props": {
+            "shortcuts": [{
+                "label": "year-to-date",
+                "func": "year-to-date"
+              },
+              {
+                "label": "current",
+                "shortcuts": [{
+                    "label": "current year",
+                    "func": {
+                      "key": "current",
+                      "args": {
+                        "unit": "year"
+                      }
+                    }
+                  },
+                  {
+                    "label": "current month",
+                    "func": {
+                      "key": "current",
+                      "args": {
+                        "unit": "month"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "label": "last",
+                "shortcuts": [{
+                    "label": "last year",
+                    "func": {
+                      "key": "last",
+                      "args": {
+                        "unit": "year"
+                      }
+                    }
+                  },
+                  {
+                    "label": "last 3 month",
+                    "func": {
+                      "key": "last",
+                      "args": {
+                        "value": 3,
+                        "unit": "month"
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "label": "coming",
+                "shortcuts": [{
+                  "label": "coming 7 days",
+                  "func": {
+                    "key": "coming",
+                    "args": {
+                      "value": 7,
+                      "unit": "day",
+                      "startFromNow": true
+                    }
+                  }
+                }]
+              },
+              {
+                "label": "past",
+                "shortcuts": [{
+                  "label": "past 7 days",
+                  "func": {
+                    "key": "past",
+                    "args": {
+                      "value": 7,
+                      "unit": "day"
+                    }
+                  }
+                }]
+              }
+            ]
+          }
+        },
+        {
+          "name": "moduleTypeCode",
+          "type": "list",
+          "props": {
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "MODULE"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "MODULE"
+                    },
+                    "code": {
+                      "value": "{{ value }}"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              }
+            }
+          }
+        },
+        {
+          "name": "boundTypeCode",
+          "type": "list",
+          "props": {
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "BOUND"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "BOUND"
+                    },
+                    "code": {
+                      "value": "{{ value }}"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              }
+            }
+          }
+        },
+        {
+          "name": "nominatedTypeCode",
+          "type": "list",
+          "props": {
+            "items": [
+              { "value": "F", "label": "Freehand" },
+              { "value": "R", "label": "R/O" }
+            ]
+          }
+        },
+        {
+          "name": "shipmentTypeCode",
+          "type": "list",
+          "props": {
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "SHIPTYPE"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "SHIPTYPE"
+                    },
+                    "code": {
+                      "value": "{{ value }}"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              }
+            }
+          }
+        },
+        {
+          "name": "portOfLoading",
+          "type": "autocomplete",
+          "props": {
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "q": {
+                      "value": "{{ q }}"
+                    }
+                  },
+                  "limit": 20
+                },
+                "valueKey": "portCode",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "portCode": {
+                      "value": "{{ value }}"
+                    }
+                  },
+                  "limit": 20
+                },
+                "valueKey": "portCode",
+                "labelKey": "name"
+              }
+            }
+          }
+        },
+        {
+          "name": "portOfDischarge",
+          "type": "autocomplete",
+          "props": {
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "q": {
+                      "value": "{{ q }}"
+                    }
+                  },
+                  "limit": 20
+                },
+                "valueKey": "portCode",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "portCode": {
+                      "value": "{{ value }}"
+                    }
+                  },
+                  "limit": 20
+                },
+                "valueKey": "portCode",
+                "labelKey": "name"
+              }
+            }
+          }
+        },
+        {
+          "name": "salesmanCode",
+          "type": "text"
+        },
+        {
+          "name": "rSalesmanCode",
+          "type": "text"
         }
       ]
     }

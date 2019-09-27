@@ -45,8 +45,6 @@ function prepareShipmentParams(): Function {
       value: primaryKeyList,
     }
 
-    params.fields = ['houseNo', 'shipperPartyCode', 'consigneePartyCode', 'portOfLoading', 'podCode', 'estimatedDepatureDate', 'estimatedArrivalDate']
-
     return params
   }
 
@@ -59,15 +57,6 @@ function prepareShipmentable(name: string): CreateTableJQL {
     $temporary: true,
     name,
     $as: new Query({
-      $select: [
-        new ResultColumn(new ColumnExpression(name, 'houseNo')),
-        new ResultColumn(new ColumnExpression(name, 'shipperPartyCode'), 'shipperPartyErpCode'),
-        new ResultColumn(new ColumnExpression(name, 'consigneePartyCode'), 'consigneePartyErpCode'),
-        new ResultColumn(new ColumnExpression(name, 'portOfLoading'), 'portOfLoading'),
-        new ResultColumn(new ColumnExpression(name, 'portOfDischarge'), 'portOfDischarge'),
-        new ResultColumn(new ColumnExpression(name, 'estimatedDepatureDate')),
-        new ResultColumn(new ColumnExpression(name, 'estimatedArrivalDate')),
-      ],
 
       $from: new FromTable(
         {
@@ -76,12 +65,13 @@ function prepareShipmentable(name: string): CreateTableJQL {
           columns: [
 
             { name: 'houseNo', type: 'string' },
-            { name: 'shipperPartyCode', type: 'string' },
-            { name: 'consigneePartyCode', type: 'string' },
+            { name: 'jobDate', type: 'Date' },
+            { name: 'shipperPartyName', type: 'string' },
+            { name: 'consigneePartyName', type: 'string'},
             { name: 'portOfLoadingCode', type: 'string' },
             { name: 'portOfDischargeCode', type: 'string' },
-            { name: 'estimatedDepatureDate', type: 'Date' },
-            { name: 'estimatedArrivalDate', type: 'Date' },
+            { name: 'departureDateEstimated', type: 'Date' },
+            { name: 'arrivalDateEstimated', type: 'Date' },
 
           ],
         },
@@ -97,4 +87,5 @@ export default [
   new Query({
     $from: 'shipment',
   }),
+
 ]
