@@ -116,7 +116,7 @@ export default class EdiParser856 extends BaseEdiParser {
     // return cloneEntityJSON
     // return returnJSON
     const result = await super.export(returnJSON)
-    return result
+    return [result]
   }
   async getLoopObject(loopObjectList, getNumOfLoopItem, element, index, originElement)
   {
@@ -318,7 +318,7 @@ export default class EdiParser856 extends BaseEdiParser {
             segement : 'MEA',
             elementList : []
           }
-          MEA.elementList.push('SU', totalQuantity, ((originElement[0], 'weightUnit') || '').substring(0, 2).toUpperCase() )
+          MEA.elementList.push('SU', totalQuantity, ((originElement[0], 'weightUnit') || '').substring(0, 2).toUpperCase())
           loopObjectList.unshift(MEA)
         }
         if (numberOfPacking > 0)
