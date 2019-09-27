@@ -49,6 +49,9 @@ export default [
           subqueries: {
             moduleType: {
               value: 'AIR'
+            },
+            boundType: {
+              value: 'O'
             }
           },
 

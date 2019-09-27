@@ -15,7 +15,6 @@ import {
 import { parseCode } from 'utils/function'
 
 const months = [
-  'Total',
   'January',
   'February',
   'March',
@@ -31,9 +30,40 @@ const months = [
 ]
 const types = ['GW', 'CW']
 
-export default [
-  // create temp table
-  new CreateTableJQL({
+function prepareParams(): Function {
+  return function(require, session, params) {
+    // import
+    const moment = require('moment')
+
+    // limit/extend to 1 year
+    const subqueries = (params.subqueries = params.subqueries || {})
+    const year = (subqueries.data ? moment() : moment(subqueries.date.from, 'YYYY-MM-DD')).year()
+    subqueries.date.from = moment()
+      .year(year)
+      .startOf('year')
+      .format('YYYY-MM-DD')
+    subqueries.date.to = moment()
+      .year(year)
+      .endOf('year')
+      .format('YYYY-MM-DD')
+
+    // AE
+    subqueries.moduleType = { value: 'AIR' }
+    subqueries.boundType = { value: 'O' }
+
+    // select
+    params.fields = ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight']
+
+    // group by
+    params.groupBy = ['carrierCode', 'jobMonth']
+
+    return params
+  }
+}
+
+function prepareTable(): CreateTableJQL {
+
+  return new CreateTableJQL({
     $temporary: true,
     name: 'shipment',
     $as: new Query({
@@ -59,23 +89,28 @@ export default [
 
           data: {
 
-            fields: ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight'],
+            // fields: ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight'],
 
             filter: { carrierCodeIsNotNull: {} },
 
-            groupBy: ['carrierCode', 'jobMonth'],
+            // groupBy: ['carrierCode', 'jobMonth'],
 
-            subqueries: {
-              moduleType: { value: 'AIR' },
-              boundType: { value: 'O' }
-            }
+            // subqueries: {
+            //   moduleType: { value: 'AIR' },
+            //   boundType: { value: 'O' }
+            // }
 
           }
         },
         'shipment'
       ),
     }),
-  }),
+  })
+}
+
+export default [
+
+  [prepareParams(), prepareTable()],
 
   // finalize data
   new Query({
