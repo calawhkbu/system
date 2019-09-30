@@ -119,7 +119,7 @@ export default class EdiParser997 extends BaseEdiParser {
         B4.elementList.push(statusCodeMapper[_.get(currentStatus, 'statusCode')], moment(_.get(currentStatus, 'statusDate')).format('YYYYMMDD'), moment(_.get(currentStatus, 'statusDate')).format('HHmm'))
         B4.elementList.push('')// not used
         B4.elementList.push((_.get(container, 'containerNo') || '').substr(0, 4), (_.get(container, 'containerNo') || '').substr(4))
-        B4.elementList.push((emptyLoadMapper[_.get(currentStatus, 'statusCode')] || 'E'), `${_.get(container, 'containerSize')}${_.get(container, 'containerType')}`, _.get(currentStatus, 'statusPlace').substr(0, 30))
+        B4.elementList.push((emptyLoadMapper[_.get(currentStatus, 'statusCode')] || ''), `${_.get(container, 'containerSize')}${_.get(container, 'containerType')}`, _.get(currentStatus, 'statusPlace').substr(0, 30))
         B4.elementList.push('UN')
         B4.elementList.push('')// No Equipment Check Digit
         data.push(B4)
