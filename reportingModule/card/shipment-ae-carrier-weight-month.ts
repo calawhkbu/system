@@ -89,16 +89,7 @@ function prepareTable(): CreateTableJQL {
 
           data: {
 
-            // fields: ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight'],
-
             filter: { carrierCodeIsNotNull: {} },
-
-            // groupBy: ['carrierCode', 'jobMonth'],
-
-            // subqueries: {
-            //   moduleType: { value: 'AIR' },
-            //   boundType: { value: 'O' }
-            // }
 
           }
         },
@@ -128,7 +119,7 @@ export default [
                     'FIND',
                     new BinaryExpression(new ColumnExpression('month'), '=', month),
                     new ColumnExpression(
-                      type.substr(2, 2) === 'GW' ? 'grossWeight' : 'chargeableWeight'
+                      type === 'GW' ? 'grossWeight' : 'chargeableWeight'
                     )
                   ), 0),
 
