@@ -6,6 +6,7 @@ import {
   CreateTableJQL,
   FromTable,
   FunctionExpression,
+  IsNullExpression,
   InsertJQL,
   Query,
   ResultColumn,
@@ -14,7 +15,6 @@ import {
 import { parseCode } from 'utils/function'
 
 const months = [
-  'Total',
   'January',
   'February',
   'March',
@@ -22,13 +22,13 @@ const months = [
   'May',
   'June',
   'July',
-  'Auguest',
+  'August',
   'September',
-  'Octomber',
+  'October',
   'November',
   'December',
 ]
-const types = ['F', 'R', 'C']
+const types = ['F_shipments', 'R_shipments', 'C_shipments']
 
 function prepareParams(type_: 'F' | 'R' | 'C'): Function {
   const fn = function(require, session, params) {
@@ -37,12 +37,13 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
 
     // limit/extend to 1 year
     const subqueries = (params.subqueries = params.subqueries || {})
-    const year = (subqueries.data ? moment() : moment(subqueries.date.from, 'YYYY-MM-DD')).year()
-    subqueries.date.from = moment()
+    const year = (subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
+    const date = (subqueries.date = subqueries.date || {})
+    date.from = moment()
       .year(year)
       .startOf('year')
       .format('YYYY-MM-DD')
-    subqueries.date.to = moment()
+    date.to = moment()
       .year(year)
       .endOf('year')
       .format('YYYY-MM-DD')
@@ -52,18 +53,18 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
     subqueries.boundType = { value: 'O' }
 
     // select
-    params.fields = ['carrierCode', 'jobMonth', 'COUNT(id)']
+    params.fields = ['carrierCode', 'jobMonth', 'shipments']
 
     // group by
     params.groupBy = ['carrierCode', 'jobMonth']
 
     switch (type_) {
       case 'F':
-        subqueries.nominatedType = { value: 'F' }
+        subqueries.nominatedTypeCode = { value: 'F' }
         subqueries.isColoader = { value: 0 }
         break
       case 'R':
-        subqueries.nominatedType = { value: 'R' }
+        subqueries.nominatedTypeCode = { value: 'R' }
         subqueries.isColoader = { value: 0 }
         break
       case 'C':
@@ -82,7 +83,7 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
 function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
   return new InsertJQL({
     name: 'shipment',
-    columns: ['type', 'carrierCode', 'month', 'noOfShipments'],
+    columns: ['type', 'carrierCode', 'month', 'shipments'],
     query: new Query({
       $select: [
         new ResultColumn(new Value(type), 'type'),
@@ -91,42 +92,28 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
           new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
           'month'
         ),
-        new ResultColumn('noOfShipments'),
+        new ResultColumn(
+          new FunctionExpression('IFNULL', new ColumnExpression('shipments'), 0),
+          'shipments'
+        )
       ],
       $from: new FromTable(
         {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-            { name: 'carrierCode', type: 'string' },
+            { name: 'carrierCode', type: 'string'},
             { name: 'jobMonth', type: 'string' },
-            { name: 'COUNT(id)', type: 'number', $as: 'noOfShipments' },
+            { name: 'shipments', type: 'number' },
           ],
+
+          data : {
+            filter : { carrierCodeIsNotNull : {}}
+          }
+
         },
         'shipment'
       ),
-    }),
-  })
-}
-
-// prepare Total row(s)
-function prepareTotal(type: 'F' | 'R' | 'C'): InsertJQL {
-  return new InsertJQL({
-    name: 'shipment',
-    columns: ['type', 'carrierCode', 'month', 'noOfShipments'],
-    query: new Query({
-      $select: [
-        new ResultColumn(new Value(type), 'type'),
-        new ResultColumn('carrierCdoe'),
-        new ResultColumn(new Value('Total'), 'month'),
-        new ResultColumn(
-          new FunctionExpression('SUM', new ColumnExpression('noOfShipments')),
-          'noOfShipments'
-        ),
-      ],
-      $from: 'shipment',
-      $group: 'carrierCode',
-      $where: new BinaryExpression(new ColumnExpression('type'), '=', type),
     }),
   })
 }
@@ -137,16 +124,13 @@ export default [
     new Column('type', 'string'),
     new Column('carrierCode', 'string'),
     new Column('month', 'string'),
-    new Column('noOfShipments', 'number'),
+    new Column('shipments', 'number'),
   ]),
 
   // prepare data
   [prepareParams('F'), prepareData('F')],
-  prepareTotal('F'),
   [prepareParams('R'), prepareData('R')],
-  prepareTotal('R'),
   [prepareParams('C'), prepareData('C')],
-  prepareTotal('C'),
 
   // finalize data
   new Query({
@@ -157,13 +141,18 @@ export default [
           ...types.map(
             type =>
               new ResultColumn(
-                new FunctionExpression(
-                  'FIND',
-                  new AndExpressions([
-                    new BinaryExpression(new ColumnExpression('month'), '=', month),
-                    new BinaryExpression(new ColumnExpression('type'), '=', type.charAt(0)),
-                  ]),
-                  new ColumnExpression('noOfShipments')
+                new FunctionExpression('IFNULL',
+                  new FunctionExpression(
+                    'FIND',
+                    new AndExpressions([
+                      new BinaryExpression(new ColumnExpression('month'), '=', month),
+                      new BinaryExpression(new ColumnExpression('type'), '=', type.charAt(0)),
+                    ]),
+                    new ColumnExpression(
+                      'shipments'
+                    )
+                  ),
+                  0
                 ),
                 `${month}-${type}`
               )
@@ -174,5 +163,7 @@ export default [
     ],
     $from: 'shipment',
     $group: 'carrierCode',
-  }),
+  })
+
+  // new Query({ $from: 'shipment', $limit: 100 })
 ]
