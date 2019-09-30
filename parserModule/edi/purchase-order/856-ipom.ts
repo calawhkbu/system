@@ -113,7 +113,7 @@ export default class EdiParser856 extends BaseEdiParser {
     data.push(GE, IEA)
     _.set(returnJSON, 'data', data)
     // return cloneEntityJSON
-    // return returnJSON
+    return returnJSON
     const result = await super.export(returnJSON)
     return [result]
   }
@@ -196,7 +196,7 @@ export default class EdiParser856 extends BaseEdiParser {
           TD3.elementList.push((_.get(container, 'containerNo') || '').substring(0, 4))
           TD3.elementList.push((_.get(container, 'containerNo') || '').substring(4))
           TD3.elementList.push('', '', '', '', '') // not used
-          TD3.elementList.push(_.get(container, 'sealNo'))
+          TD3.elementList.push(_.get(container, 'sealNo1'))
           if (_.get(container, 'containerTypeCode') === '20OT')
           {
             TD3.elementList.push('2251')
