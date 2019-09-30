@@ -35,9 +35,6 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
     // import
     const moment = require('moment')
 
-    console.log(params)
-   console.log('==============================')
-
     // limit/extend to 1 year
     const subqueries = (params.subqueries = params.subqueries || {})
     const year = (subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
@@ -126,40 +123,6 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
   })
 }
 
-// prepare Total row(s)
-function prepareTotal(type: 'F' | 'R' | 'C'): InsertJQL {
-  return new InsertJQL({
-    name: 'shipment',
-    columns: ['type', 'carrierCode', 'month', 'grossWeight', 'chargeableWeight'],
-    query: new Query({
-      $select: [
-        new ResultColumn(new Value(type), 'type'),
-        new ResultColumn('carrierCode'),
-        new ResultColumn(new Value('Total'), 'month'),
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression('SUM', new ColumnExpression('grossWeight')),
-            0
-          ),
-          'grossWeight'
-        ),
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression('SUM', new ColumnExpression('chargeableWeight')),
-            0
-          ),
-          'chargeableWeight'
-        ),
-      ],
-      $from: 'shipment',
-      $group: 'carrierCode',
-      $where: new BinaryExpression(new ColumnExpression('type'), '=', type),
-    }),
-  })
-}
-
 export default [
   // prepare temp table
   new CreateTableJQL(true, 'shipment', [
@@ -172,17 +135,8 @@ export default [
 
   // prepare data
   [prepareParams('F'), prepareData('F')],
-
-  // prepareTotal('F'),
   [prepareParams('R'), prepareData('R')],
-  // prepareTotal('R'),
   [prepareParams('C'), prepareData('C')],
-  // prepareTotal('C'),
-
-  new Query({
-
-    $from : 'shipment'
-  })
 
   // finalize data
   new Query({
