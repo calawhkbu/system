@@ -50,6 +50,30 @@ query
 
 query
   .register(
+    'trackingType',
+    new Query({
+      $where: new BinaryExpression(
+        new ColumnExpression('tracking_reference', 'trackingType'),
+        '='
+      ),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
+    'yundang',
+    new Query({
+      $where: new BinaryExpression(
+        new ColumnExpression('tracking_reference', 'yundang'),
+        '='
+      ),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
     'partyGroupCode',
     new Query({
       $where: new BinaryExpression(
