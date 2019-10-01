@@ -127,6 +127,7 @@ export default class EdiParser856 extends BaseEdiParser {
       }
       V1.elementList.push(_.get(element, 'carrierCode'))
       V1.elementList.push(_.get(element, 'vesselName'))
+      V1.elementList.push('')// not used
       V1.elementList.push(_.get(element, 'voyageFlightNumber'))
       loopObjectList.unshift(V1)
 
@@ -196,7 +197,7 @@ export default class EdiParser856 extends BaseEdiParser {
           TD3.elementList.push((_.get(container, 'containerNo') || '').substring(0, 4))
           TD3.elementList.push((_.get(container, 'containerNo') || '').substring(4))
           TD3.elementList.push('', '', '', '', '') // not used
-          TD3.elementList.push(_.get(container, 'sealNo'))
+          TD3.elementList.push(_.get(container, 'sealNo1'))
           if (_.get(container, 'containerTypeCode') === '20OT')
           {
             TD3.elementList.push('2251')
@@ -404,7 +405,7 @@ export default class EdiParser856 extends BaseEdiParser {
         }
         LIN.elementList.push((totalItemNo - itemIndex).toString())
         LIN.elementList.push('SK')
-        LIN.elementList.push()
+        LIN.elementList.push(_.get(Item, 'style'))
         LIN.elementList.push('BO')
         LIN.elementList.push(_.get(Item, 'colorDesc'))
         LIN.elementList.push('IZ')

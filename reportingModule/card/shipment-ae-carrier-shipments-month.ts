@@ -1,18 +1,20 @@
 import {
+  AndExpressions,
   BinaryExpression,
-  Column,
   ColumnExpression,
   CreateTableJQL,
   FromTable,
   FunctionExpression,
   InsertJQL,
+  Value,
   Query,
   ResultColumn,
-  Value,
+  Column,
 } from 'node-jql'
 
+import { parseCode } from 'utils/function'
+
 const months = [
-  'Total',
   'January',
   'February',
   'March',
@@ -20,13 +22,13 @@ const months = [
   'May',
   'June',
   'July',
-  'Auguest',
+  'August',
   'September',
-  'Octomber',
+  'October',
   'November',
   'December',
 ]
-const types = ['F', 'R', 'C']
+const types = ['shipments']
 
 function prepareParams(): Function {
   return function(require, session, params) {
@@ -50,7 +52,7 @@ function prepareParams(): Function {
     subqueries.boundType = { value: 'O' }
 
     // select
-    params.fields = ['carrierCode', 'jobMonth', 'COUNT(id)']
+    params.fields = ['carrierCode', 'jobMonth', 'shipments']
 
     // group by
     params.groupBy = ['carrierCode', 'jobMonth']
@@ -59,19 +61,19 @@ function prepareParams(): Function {
   }
 }
 
-// call API
-function prepareData(): InsertJQL {
-  return new InsertJQL({
+function prepareTable(): CreateTableJQL {
+
+  return new CreateTableJQL({
+    $temporary: true,
     name: 'shipment',
-    columns: ['carrierCode', 'month', 'noOfShipments'],
-    query: new Query({
+    $as: new Query({
       $select: [
         new ResultColumn('carrierCode'),
         new ResultColumn(
           new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
           'month'
         ),
-        new ResultColumn('noOfShipments'),
+        new ResultColumn('shipments'),
       ],
       $from: new FromTable(
         {
@@ -80,8 +82,23 @@ function prepareData(): InsertJQL {
           columns: [
             { name: 'carrierCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
-            { name: 'COUNT(id)', type: 'number', $as: 'noOfShipments' },
+            { name: 'shipments', type: 'number' },
           ],
+
+          data: {
+
+            // fields: ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight'],
+
+            filter: { carrierCodeIsNotNull: {} },
+
+            // groupBy: ['carrierCode', 'jobMonth'],
+
+            // subqueries: {
+            //   moduleType: { value: 'AIR' },
+            //   boundType: { value: 'O' }
+            // }
+
+          }
         },
         'shipment'
       ),
@@ -89,37 +106,9 @@ function prepareData(): InsertJQL {
   })
 }
 
-// prepare Total row(s)
-function prepareTotal(): InsertJQL {
-  return new InsertJQL({
-    name: 'shipment',
-    columns: ['carrierCode', 'month', 'noOfShipments'],
-    query: new Query({
-      $select: [
-        new ResultColumn('carrierCdoe'),
-        new ResultColumn(new Value('Total'), 'month'),
-        new ResultColumn(
-          new FunctionExpression('SUM', new ColumnExpression('noOfShipments')),
-          'noOfShipments'
-        ),
-      ],
-      $from: 'shipment',
-      $group: 'carrierCode',
-    }),
-  })
-}
-
 export default [
-  // prepare temp table
-  new CreateTableJQL(true, 'shipment', [
-    new Column('carrierCode', 'string'),
-    new Column('month', 'string'),
-    new Column('noOfShipments', 'number'),
-  ]),
 
-  // prepare data
-  [prepareParams(), prepareData()],
-  prepareTotal(),
+  [prepareParams(), prepareTable()],
 
   // finalize data
   new Query({
@@ -130,11 +119,18 @@ export default [
           ...types.map(
             type =>
               new ResultColumn(
-                new FunctionExpression(
-                  'FIND',
-                  new BinaryExpression(new ColumnExpression('month'), '=', month),
-                  new ColumnExpression('noOfShipments')
-                ),
+
+                new FunctionExpression('IFNULL',
+
+                  new FunctionExpression(
+                    'FIND',
+                    new BinaryExpression(new ColumnExpression('month'), '=', month),
+                    new ColumnExpression(
+                      // only shipment
+                      type === 'shipments' ? 'shipments' : 'shipments'
+                    )
+                  ), 0),
+
                 `${month}-${type}`
               )
           )
@@ -145,4 +141,5 @@ export default [
     $from: 'shipment',
     $group: 'carrierCode',
   }),
+
 ]
