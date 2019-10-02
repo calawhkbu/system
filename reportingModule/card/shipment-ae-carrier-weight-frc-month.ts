@@ -171,5 +171,4 @@ export default [
     $group: 'carrierCode',
   })
 
-  // new Query({ $from: 'shipment', $limit: 100 })
 ]

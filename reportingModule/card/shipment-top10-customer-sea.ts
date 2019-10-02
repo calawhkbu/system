@@ -21,6 +21,7 @@ export default [
 
     $select: [
       new ResultColumn(new ColumnExpression('controllingCustomerPartyName')),
+      new ResultColumn(new ColumnExpression('controllingCustomerPartyCode')),
       new ResultColumn(new FunctionExpression('NUMBERIFY', new ColumnExpression('shipment', 'cbm')), 'cbm')
     ],
 
