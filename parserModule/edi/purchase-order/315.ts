@@ -123,7 +123,9 @@ export default class EdiParser997 extends BaseEdiParser {
         B4.elementList.push('UN')
         B4.elementList.push('')// No Equipment Check Digit
         data.push(B4)
-        const bookingInf = _.get(entityJSON, 'booking')
+        const trackingRefInf = _.get(entityJSON, 'trackingReference') || {}
+        const flexDataInf = _.get(trackingRefInf, 'flexData') || {}
+        const bookingInf = _.get(flexDataInf, 'data')
         if (bookingInf)
         {
           if  (_.get(bookingInf, 'bookingNo'))
@@ -152,10 +154,6 @@ export default class EdiParser997 extends BaseEdiParser {
           }
           Q2.elementList.push(_.get(bookingInf, 'vesselName'))
           data.push(Q2)
-          // if  (_.get(bookingInf, 'portOfLoading'))
-          // {
-
-          // }
         }
 
         const loopObjectList: any[] = []
