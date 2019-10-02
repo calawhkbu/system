@@ -114,7 +114,7 @@ export default class EdiParser856 extends BaseEdiParser {
     data.push(GE, IEA)
     _.set(returnJSON, 'data', data)
     // return cloneEntityJSON
-    // return returnJSON
+    return returnJSON
     const result = await super.export(returnJSON)
     return [result]
   }
@@ -318,7 +318,7 @@ export default class EdiParser856 extends BaseEdiParser {
             segement : 'MEA',
             elementList : []
           }
-          MEA.elementList.push('SU', totalQuantity, ((originElement[0], 'weightUnit') || '').substring(0, 2).toUpperCase())
+          MEA.elementList.push('', 'SU', totalQuantity, ((originElement[0], 'quantityUnit') || '').substring(0, 2).toUpperCase())
           loopObjectList.unshift(MEA)
         }
         if (numberOfPacking > 0)
@@ -327,7 +327,7 @@ export default class EdiParser856 extends BaseEdiParser {
             segement : 'MEA',
             elementList : []
           }
-          MEA.elementList.push('NM', numberOfPacking, '')
+          MEA.elementList.push('', 'NM', numberOfPacking, '')
           loopObjectList.unshift(MEA)
         }
         if (totalVolume > 0)
@@ -336,7 +336,7 @@ export default class EdiParser856 extends BaseEdiParser {
             segement : 'MEA',
             elementList : []
           }
-          MEA.elementList.push('VOL', totalVolume, 'CO')
+          MEA.elementList.push('', 'VOL', totalVolume, 'CO')
           loopObjectList.unshift(MEA)
         }
         if (totalWeight > 0)
@@ -345,7 +345,7 @@ export default class EdiParser856 extends BaseEdiParser {
             segement : 'MEA',
             elementList : []
           }
-          MEA.elementList.push('WT', totalWeight)
+          MEA.elementList.push('', 'WT', totalWeight)
           if (_.get(originElement[0], 'weightUnit') === 'pound')
           {
             MEA.elementList.push('LB')
@@ -384,7 +384,7 @@ export default class EdiParser856 extends BaseEdiParser {
               segement: 'MEA',
               elementList: []
           }
-          MEA.elementList.push('SU', _.get(matchItem, 'purchaseOrderItem.volume'), _.get(matchItem, 'purchaseOrderItem.quantity'), (_.get(matchItem, 'purchaseOrderItem.weightUnit') || '').substring(0, 2).toUpperCase())
+          MEA.elementList.push('', 'SU', _.get(matchItem, 'purchaseOrderItem.quantity'), (_.get(matchItem, 'purchaseOrderItem.quantityUnit') || '').substring(0, 2).toUpperCase())
           loopObjectList.unshift(MEA)
         }
         if (_.get(matchItem, 'purchaseOrderItem.volume'))
@@ -393,7 +393,7 @@ export default class EdiParser856 extends BaseEdiParser {
               segement: 'MEA',
               elementList: []
           }
-          MEA.elementList.push('VOL', _.get(matchItem, 'purchaseOrderItem.volume'), _.get(matchItem), 'CO')
+          MEA.elementList.push('', 'VOL', _.get(matchItem, 'purchaseOrderItem.volume'), _.get(matchItem), 'CO')
           loopObjectList.unshift(MEA)
         }
         if (_.get(matchItem, 'purchaseOrderItem.grossWeight'))
@@ -402,7 +402,7 @@ export default class EdiParser856 extends BaseEdiParser {
               segement: 'MEA',
               elementList: []
           }
-          MEA.elementList.push('WT', _.get(matchItem, 'purchaseOrderItem.grossWeight'))
+          MEA.elementList.push('', 'WT', _.get(matchItem, 'purchaseOrderItem.grossWeight'))
           if (_.get(matchItem, 'purchaseOrderItem.weightUnit') === 'pound')
           {
             MEA.elementList.push('LB')
