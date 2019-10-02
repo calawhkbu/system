@@ -12,8 +12,6 @@ import {
   Column,
 } from 'node-jql'
 
-import { parseCode } from 'utils/function'
-
 const months = [
   'January',
   'February',
@@ -87,16 +85,7 @@ function prepareTable(): CreateTableJQL {
 
           data: {
 
-            // fields: ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight'],
-
             filter: { carrierCodeIsNotNull: {} },
-
-            // groupBy: ['carrierCode', 'jobMonth'],
-
-            // subqueries: {
-            //   moduleType: { value: 'AIR' },
-            //   boundType: { value: 'O' }
-            // }
 
           }
         },
