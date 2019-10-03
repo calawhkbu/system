@@ -39,7 +39,7 @@ function prepareParams(): Function {
     params.fields = ['shipperPartyId', 'weightTotal']
     params.groupBy = ['shipperPartyId']
 
-    params.sorting = [ new OrderBy('weightTotal', 'DESC') ]
+    params.sorting = [new OrderBy('weightTotal', 'DESC')]
 
     // params.conditions = [
 
@@ -54,7 +54,6 @@ function prepareParams(): Function {
 }
 
 function prepareTop10Table(): CreateTableJQL {
-
   const name = 'top10'
 
   return new CreateTableJQL({
@@ -78,7 +77,6 @@ function prepareTop10Table(): CreateTableJQL {
               name: 'shipperPartyId',
               type: 'string',
             },
-
           ],
         },
         name
@@ -88,7 +86,6 @@ function prepareTop10Table(): CreateTableJQL {
 }
 
 function preparePartyTable(): CreateTableJQL {
-
   const name = 'party'
   return new CreateTableJQL({
     $temporary: true,
@@ -127,7 +124,6 @@ function preparePartyTable(): CreateTableJQL {
 }
 
 export default [
-
   [prepareParams(), prepareTop10Table()],
   preparePartyTable(),
 
@@ -156,5 +152,4 @@ export default [
       ],
     }),
   }),
-
 ]

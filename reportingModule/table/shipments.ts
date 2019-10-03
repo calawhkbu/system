@@ -1,7 +1,6 @@
 import { Query, FromTable, ResultColumn, ColumnExpression } from 'node-jql'
 
 const query = new Query({
-
   // $select: [
 
   //   new ResultColumn(new ColumnExpression('houseNo'), 'houseNo'),
@@ -61,9 +60,9 @@ const query = new Query({
         { name: 'poNo', type: 'string' },
         { name: 'contractNo', type: 'string' },
         { name: 'commodity', type: 'string' },
-        { name: 'carrierCode', type: 'string'},
+        { name: 'carrierCode', type: 'string' },
 
-        { name: 'voyage', type: 'string'},
+        { name: 'voyage', type: 'string' },
         { name: 'division', type: 'string' },
 
         // ["FCL", "LCL", "CONSOL"]
@@ -79,16 +78,16 @@ const query = new Query({
         { name: 'nominatedTypeCode', type: 'string' },
 
         { name: 'isDirect', type: 'boolean' },
-        { name: 'isCoload', type: 'boolean'},
+        { name: 'isCoload', type: 'boolean' },
 
         { name: 'portOfLoadingCode', type: 'string' },
         { name: 'portOfDischargeCode', type: 'string' },
 
-        { name : 'placeOfReceiptCode', type : 'string'},
-        { name : 'placeOfDeliveryCode', type : 'string'},
-        { name : 'finalDestinationCode', type : 'string'},
+        { name: 'placeOfReceiptCode', type: 'string' },
+        { name: 'placeOfDeliveryCode', type: 'string' },
+        { name: 'finalDestinationCode', type: 'string' },
 
-        { name: 'departureDateEstimated', type: 'Date'},
+        { name: 'departureDateEstimated', type: 'Date' },
         { name: 'arrivalDateEstimated', type: 'Date' },
         { name: 'departureDateActual', type: 'Date' },
         { name: 'arrivalDateActual', type: 'Date' },
@@ -99,10 +98,9 @@ const query = new Query({
         { name: 'linerAgentPartyName', type: 'string' },
         { name: 'roAgentPartyName', type: 'string' },
         { name: 'agentPartyName', type: 'string' },
-        { name: 'controllingCustomerPartyName', type: 'string'},
+        { name: 'controllingCustomerPartyName', type: 'string' },
 
         { name: 'salesmanCode', type: 'string' },
-
       ],
 
       // data : {
@@ -119,7 +117,6 @@ const query = new Query({
       //     'finalDestination'
       //   ]
       // }
-
     },
     'shipment'
   ),

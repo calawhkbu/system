@@ -86,7 +86,6 @@ function prepareBookingable(name: string): CreateTableJQL {
             { name: 'portOfDischargeCode', type: 'string' },
             { name: 'departureDateEstimated', type: 'Date' },
             { name: 'arrivalDateEstimated', type: 'Date' },
-
           ],
         },
         name

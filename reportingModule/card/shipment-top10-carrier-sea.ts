@@ -14,16 +14,19 @@ import {
 } from 'node-jql'
 
 export default [
-
-  new CreateFunctionJQL('NUMBERIFY', function(parameter: any, value: string) { return +value }, 'number', 'string'),
+  new CreateFunctionJQL(
+    'NUMBERIFY',
+    function(parameter: any, value: string) {
+      return +value
+    },
+    'number',
+    'string'
+  ),
 
   new Query({
-
-    $select : [
-
+    $select: [
       new ResultColumn(new ColumnExpression('carrierCode')),
-      new ResultColumn(new ColumnExpression('shipment', 'cbm'), 'cbm')
-
+      new ResultColumn(new ColumnExpression('shipment', 'cbm'), 'cbm'),
     ],
 
     $from: new FromTable(
@@ -40,36 +43,31 @@ export default [
             type: 'string',
 
             // rename it as cbm
-            $as : 'cbm'
+            $as: 'cbm',
           },
         ],
-        data : {
-
+        data: {
           subqueries: {
-
             moduleType: {
-              value: 'SEA'
+              value: 'SEA',
             },
             boundType: {
-              value: 'O'
-            }
+              value: 'O',
+            },
           },
 
-          filter : {
-            carrierCodeIsNotNull  : {}
+          filter: {
+            carrierCodeIsNotNull: {},
           },
 
-          fields : ['carrierCode', 'cntCbm'],
-          sorting :  new OrderBy('cntCbm', 'DESC'),
-          groupBy : ['carrierCode'],
-          limit : 10
-
-        }
+          fields: ['carrierCode', 'cntCbm'],
+          sorting: new OrderBy('cntCbm', 'DESC'),
+          groupBy: ['carrierCode'],
+          limit: 10,
+        },
       },
 
       'shipment'
     ),
-
-  })
-
+  }),
 ]
