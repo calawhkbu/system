@@ -49,8 +49,8 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
       .format('YYYY-MM-DD')
 
     // AE
-    subqueries.moduleType = { value: 'AIR' }
-    subqueries.boundType = { value: 'O' }
+    subqueries.moduleTypeCode = { value: 'AIR' }
+    subqueries.boundTypeCode = { value: 'O' }
 
     // select
     params.fields = ['carrierCode', 'jobMonth', 'shipments']
