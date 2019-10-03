@@ -1220,149 +1220,174 @@ export const formatJson = {
 } as EdiFormatJson
 
 export default class Edi850Parser extends BaseEdiParser {
-    constructor(
-      protected readonly allService: {
-        swivelConfigService: SwivelConfigService,
-        outboundService: OutboundService,
-      },
-    ) {
-      super(allService, {}, { import: { formatJson, ediType: '860' } })
+  constructor(
+    protected readonly allService: {
+      swivelConfigService: SwivelConfigService
+      outboundService: OutboundService
     }
-    async import(ediString: string): Promise<any> {
-        // console.log(`import type  : ${this.type}`)
-        const { jsonData, errorList } = await super.import(ediString)
-        const poList: any[] = []
-        if (!jsonData || jsonData.length === 0) {// undefined or empty array
-          throw new Error(errorList)
+  ) {
+    super(allService, {}, { import: { formatJson, ediType: '860' } })
+  }
+  async import(ediString: string): Promise<any> {
+    // console.log(`import type  : ${this.type}`)
+    const { jsonData, errorList } = await super.import(ediString)
+    const poList: any[] = []
+    if (!jsonData || jsonData.length === 0) {
+      // undefined or empty array
+      throw new Error(errorList)
+    }
+    const sts = _.get(jsonData, 'ST', []) || []
+    if (sts.length) {
+      for (const ST of sts) {
+        const po: any = {
+          partyGroupCode,
+          edi: true,
+          ISASenderIdQl: _.get(jsonData, 'ISA.interchangeSenderIdQl'),
+          ISASenderId: _.get(jsonData, 'ISA.interchangeSenderId'),
+          ISAReceiverQl: _.get(jsonData, 'ISA.interchangeReceiverQl'),
+          ISAReceiverId: _.get(jsonData, 'ISA.interchangeReceiverId'),
+          testOrProd: _.get(jsonData, 'ISA.testIndicator'),
+          interchangeControlNumber: _.get(jsonData, 'ISA.interchangeControlNumber'),
+          senderId: _.get(jsonData, 'GS.applicationSenderId'),
+          receiverId: _.get(jsonData, 'GS.applicationReceiverId'),
+          dataInterchangeControlNumber: _.get(jsonData, 'GS.dataInterchangeControlNumber'),
+          versionId: _.get(jsonData, 'GS.versionId'),
+          ediType: _.get(ST, 'transactionSetIdentifierCode'),
+          noSent: _.get(jsonData, 'GE.numberOfIncludedTransactionSets'),
+          errors: errorList,
+          purpose: _.get(ST, 'BCH.transactionSetPurpose'),
+          poNo: _.get(ST, 'BCH.purchaseOrderNumber'),
+          poDate: _.get(ST, 'BCH.purchaseOrderDate')
+            ? moment.utc(_.get(ST, 'BCH.purchaseOrderDate')).toDate()
+            : null,
+          dontShipBeforeDate: _.get(ST, 'DTM.shipNotBefore')
+            ? moment.utc(_.get(ST, 'DTM.shipNotBefore')).toDate()
+            : null,
+          dontShipAfterDate: _.get(ST, 'DTM.doNotShipAfter')
+            ? moment.utc(_.get(ST, 'DTM.doNotShipAfter')).toDate()
+            : null,
+
+          exitFactoryDateActual: _.get(ST, 'DTM.firstArrive')
+            ? moment.utc(_.get(ST, 'DTM.firstArrive')).toDate()
+            : null,
+          Department: _.get(ST, 'REF.referenceNumber'),
         }
-        const sts = _.get(jsonData, 'ST', []) || []
-        if (sts.length) {
-            for (const ST of sts) {
-                const po: any = {
-                  partyGroupCode,
-                  edi: true,
-                  ISASenderIdQl: _.get(jsonData, 'ISA.interchangeSenderIdQl'),
-                  ISASenderId: _.get(jsonData, 'ISA.interchangeSenderId'),
-                  ISAReceiverQl: _.get(jsonData, 'ISA.interchangeReceiverQl'),
-                  ISAReceiverId: _.get(jsonData, 'ISA.interchangeReceiverId'),
-                  testOrProd: _.get(jsonData, 'ISA.testIndicator'),
-                  interchangeControlNumber: _.get(jsonData, 'ISA.interchangeControlNumber'),
-                  senderId: _.get(jsonData, 'GS.applicationSenderId'),
-                  receiverId: _.get(jsonData, 'GS.applicationReceiverId'),
-                  dataInterchangeControlNumber: _.get(jsonData, 'GS.dataInterchangeControlNumber'),
-                  versionId: _.get(jsonData, 'GS.versionId'),
-                  ediType: _.get(ST, 'transactionSetIdentifierCode'),
-                  noSent: _.get(jsonData, 'GE.numberOfIncludedTransactionSets'),
-                  errors: errorList,
-                  purpose: _.get(ST, 'BCH.transactionSetPurpose'),
-                  poNo: _.get(ST, 'BCH.purchaseOrderNumber'),
-                  poDate: _.get(ST, 'BCH.purchaseOrderDate')
-                    ? moment.utc(_.get(ST, 'BCH.purchaseOrderDate')).toDate()
-                    : null,
-                  dontShipBeforeDate: _.get(ST, 'DTM.shipNotBefore')
-                    ? moment.utc(_.get(ST, 'DTM.shipNotBefore')).toDate()
-                    : null,
-                  dontShipAfterDate: _.get(ST, 'DTM.doNotShipAfter')
-                    ? moment.utc(_.get(ST, 'DTM.doNotShipAfter')).toDate()
-                    : null,
-
-                  exitFactoryDateActual: _.get(ST, 'DTM.firstArrive')
-                    ? moment.utc(_.get(ST, 'DTM.firstArrive')).toDate()
-                    : null,
-                  Department: _.get(ST, 'REF.referenceNumber')
-                }
-                const poc = _.get(ST, 'POC', []) || []
-                if (poc.length)
-                {
-                    const poItemList: any[] = []
-                    for (const POC of poc)
-                    {
-                        poItemList.push({
-                            perPackageQuantity: _.get(POC, 'PO4.pack'),
-                            quantity: _.get(POC, 'quantityOrdered'),
-                            quantityUnit: _.get(POC, 'unitOfMeasureCode'),
-                            change: _.get(POC, 'lineItemChange'),
-                            quantityChange: _.get(POC, 'quantityChange'),
-                            volume : _.get(POC, 'PO4.grossVolumePerPack'),
-                            htsCode : _.get(POC, 'SLN.productId2'),
-                            product: {
-                                poLineNo : _.get(POC, 'assignedIdentification'),
-                                subLine: _.get(POC, 'SLN.assignedIdentification'),
-                                unitPrice:  _.get(POC, 'unitPrice'),
-                                priceUnit: _.get(POC, 'basisOfUnitPriceCode'),
-                                upcen: _.get(POC, 'productId1').trim(),
-                                size: (_.get(POC, 'productId2') || '').substr(0, 3),
-                                colorDesc: _.get(POC, 'productId4'),
-                                pack: _.get(POC, 'poLineNumber'),
-                                buyerSKU: _.get(POC, 'productId3'),
-                                style: _.get(POC, 'productId5')
-
-                            }
-
-                        })
-                    }
-                    if (poItemList.length)
-                    {
-                        _.set(po, 'purchaseOrderItems', poItemList)
-                    }
-                }
-                const n1s = _.get(ST, 'N1', []) || []
-                if (n1s.length) {
-                    const partyMapper = {
-                      'Ship From': 'shipper',
-                      'Ship To': 'shipTo'
-                    }
-                    for (const N1 of n1s) {
-                      const role = _.get(N1, 'organizationIdentifier')
-                      if (partyMapper[role]) {
-                        const newRole = partyMapper[role]
-                        if (newRole === 'shipper')
-                        {
-                          _.set(po, `${newRole}PartyCode` , _.get(N1, 'identificationCode'))
-                          _.set(po, `${newRole}PartyName`, _.get(N1, 'name'))
-                        }
-                        if (newRole === 'shipTo')
-                        {
-                          const index = (_.get(N1, 'name') || '').indexOf('#')
-                          _.set(po, `${newRole}PartyCode`, `${(_.get(N1, 'name') || '').substr(index + 1)} ${_.get(N1, 'identificationCode').substr(0, 9)}`.trim())
-                          _.set(po, `${newRole}PartyName`, (_.get(N1, 'name') || '').substr(0, index) ||  _.get(N1, 'name'))
-                        }
-                        _.set(po, `${newRole}PartyAddress1`, _.get(N1, 'N3.addressInformation'))
-                        _.set(po, `${newRole}PartyAddress2`, _.get(N1, 'N3.additionalAddressInformation'))
-                        _.set(po, `${newRole}PartyStateCode`, _.get(N1, 'N4.stateOrProvinceCode'))
-                        _.set(po, `${newRole}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
-                        _.set(po, `${newRole}PartyStateZip`, _.get(N1, 'N4.postalCode'))
-                      } else {
-                        _.set(po, `${role.replace(/\s/g, '')}PartyName`, _.get(N1, 'name'))
-                        _.set(po, `${role.replace(/\s/g, '')}PartyCode` , _.get(N1, 'identificationCode'))
-                        _.set(po, `${role.replace(/\s/g, '')}PartyAddress1`, _.get(N1, 'N3.addressInformation'))
-                        _.set(po, `${role.replace(/\s/g, '')}PartyAddress2`, _.get(N1, 'N3.additionalAddressInformation'))
-                        _.set(po, `${role.replace(/\s/g, '')}PartyStateCode`, _.get(N1, 'N4.stateOrProvinceCode'))
-                        _.set(po, `${role.replace(/\s/g, '')}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
-                        _.set(po, `${role.replace(/\s/g, '')}PartyStateZip`, _.get(N1, 'N4.postalCode'))
-                      }
-                    }
-                  }
-                if (_.get(jsonData, 'ISA.createdDate') && _.get(jsonData, 'ISA.createdTime')) {
-                  const datetime = moment.utc(`${_.get(jsonData, 'ISA.createdDate')} ${_.get(jsonData, 'ISA.createdTime')}`)
-                  _.set(po, 'ediCreatedDateActual', datetime)
-                }
-                if (_.get(jsonData, 'GS.dataInterchangeDate') && _.get(jsonData, 'GS.dataInterchangeTime')) {
-                  const datetime = moment.utc(`${_.get(jsonData, 'GS.dataInterchangeDate')} ${_.get(jsonData, 'GS.dataInterchangeTime')}`)
-                  _.set(po, 'dataInterchangeDateActual', datetime)
-                }
-                if (_.get(ST, 'promoStart'))
-                {
-                  _.set(po, 'promoStart', moment.utc(_.get(ST, 'DTM.promoStart')))
-                }
-                if (_.get(ST, 'DTM.lastArrive'))
-                {
-                  _.set(po, 'lastArrive',  moment.utc(_.get(ST, 'DTM.lastArrive')))
-                }
-
-                poList.push(po)
+        const poc = _.get(ST, 'POC', []) || []
+        if (poc.length) {
+          const poItemList: any[] = []
+          for (const POC of poc) {
+            poItemList.push({
+              perPackageQuantity: _.get(POC, 'PO4.pack'),
+              quantity: _.get(POC, 'quantityOrdered'),
+              quantityUnit: _.get(POC, 'unitOfMeasureCode'),
+              change: _.get(POC, 'lineItemChange'),
+              quantityChange: _.get(POC, 'quantityChange'),
+              volume: _.get(POC, 'PO4.grossVolumePerPack'),
+              htsCode: _.get(POC, 'SLN.productId2'),
+              product: {
+                poLineNo: _.get(POC, 'assignedIdentification'),
+                subLine: _.get(POC, 'SLN.assignedIdentification'),
+                unitPrice: _.get(POC, 'unitPrice'),
+                priceUnit: _.get(POC, 'basisOfUnitPriceCode'),
+                upcen: _.get(POC, 'productId1').trim(),
+                size: (_.get(POC, 'productId2') || '').substr(0, 3),
+                colorDesc: _.get(POC, 'productId4'),
+                pack: _.get(POC, 'poLineNumber'),
+                buyerSKU: _.get(POC, 'productId3'),
+                style: _.get(POC, 'productId5'),
+              },
+            })
+          }
+          if (poItemList.length) {
+            _.set(po, 'purchaseOrderItems', poItemList)
+          }
+        }
+        const n1s = _.get(ST, 'N1', []) || []
+        if (n1s.length) {
+          const partyMapper = {
+            'Ship From': 'shipper',
+            'Ship To': 'shipTo',
+          }
+          for (const N1 of n1s) {
+            const role = _.get(N1, 'organizationIdentifier')
+            if (partyMapper[role]) {
+              const newRole = partyMapper[role]
+              if (newRole === 'shipper') {
+                _.set(po, `${newRole}PartyCode`, _.get(N1, 'identificationCode'))
+                _.set(po, `${newRole}PartyName`, _.get(N1, 'name'))
+              }
+              if (newRole === 'shipTo') {
+                const index = (_.get(N1, 'name') || '').indexOf('#')
+                _.set(
+                  po,
+                  `${newRole}PartyCode`,
+                  `${(_.get(N1, 'name') || '').substr(index + 1)} ${_.get(
+                    N1,
+                    'identificationCode'
+                  ).substr(0, 9)}`.trim()
+                )
+                _.set(
+                  po,
+                  `${newRole}PartyName`,
+                  (_.get(N1, 'name') || '').substr(0, index) || _.get(N1, 'name')
+                )
+              }
+              _.set(po, `${newRole}PartyAddress1`, _.get(N1, 'N3.addressInformation'))
+              _.set(po, `${newRole}PartyAddress2`, _.get(N1, 'N3.additionalAddressInformation'))
+              _.set(po, `${newRole}PartyStateCode`, _.get(N1, 'N4.stateOrProvinceCode'))
+              _.set(po, `${newRole}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
+              _.set(po, `${newRole}PartyStateZip`, _.get(N1, 'N4.postalCode'))
+            } else {
+              _.set(po, `${role.replace(/\s/g, '')}PartyName`, _.get(N1, 'name'))
+              _.set(po, `${role.replace(/\s/g, '')}PartyCode`, _.get(N1, 'identificationCode'))
+              _.set(
+                po,
+                `${role.replace(/\s/g, '')}PartyAddress1`,
+                _.get(N1, 'N3.addressInformation')
+              )
+              _.set(
+                po,
+                `${role.replace(/\s/g, '')}PartyAddress2`,
+                _.get(N1, 'N3.additionalAddressInformation')
+              )
+              _.set(
+                po,
+                `${role.replace(/\s/g, '')}PartyStateCode`,
+                _.get(N1, 'N4.stateOrProvinceCode')
+              )
+              _.set(po, `${role.replace(/\s/g, '')}PartyCountryCode`, _.get(N1, 'N4.countryCode'))
+              _.set(po, `${role.replace(/\s/g, '')}PartyStateZip`, _.get(N1, 'N4.postalCode'))
             }
-       }
+          }
+        }
+        if (_.get(jsonData, 'ISA.createdDate') && _.get(jsonData, 'ISA.createdTime')) {
+          const datetime = moment.utc(
+            `${_.get(jsonData, 'ISA.createdDate')} ${_.get(jsonData, 'ISA.createdTime')}`
+          )
+          _.set(po, 'ediCreatedDateActual', datetime)
+        }
+        if (
+          _.get(jsonData, 'GS.dataInterchangeDate') &&
+          _.get(jsonData, 'GS.dataInterchangeTime')
+        ) {
+          const datetime = moment.utc(
+            `${_.get(jsonData, 'GS.dataInterchangeDate')} ${_.get(
+              jsonData,
+              'GS.dataInterchangeTime'
+            )}`
+          )
+          _.set(po, 'dataInterchangeDateActual', datetime)
+        }
+        if (_.get(ST, 'promoStart')) {
+          _.set(po, 'promoStart', moment.utc(_.get(ST, 'DTM.promoStart')))
+        }
+        if (_.get(ST, 'DTM.lastArrive')) {
+          _.set(po, 'lastArrive', moment.utc(_.get(ST, 'DTM.lastArrive')))
+        }
+
+        poList.push(po)
+      }
+    }
     return poList
   }
   async export(entityJSON: any): Promise<any> {

@@ -1,20 +1,23 @@
 {
-
   "tableName": "booking",
 
   "defaultDocumentConfig": {
-
-    "allowFileType": ["image/png", "image/gif", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/pdf", "url", "application/octet-stream"],
+    "allowFileType": [
+      "image/png",
+      "image/gif",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/pdf",
+      "url",
+      "application/octet-stream"
+    ],
     "allowFillTemplate": false
-
   },
 
-  "documentList": [{
-
+  "documentList": [
+    {
       "fileName": "Shipping Order",
       "allowFillTemplate": true,
       "templateName": "shippingOrder"
-
     },
 
     {
@@ -46,7 +49,5 @@
       "fileName": "House Bill",
       "allowFillTemplate": false
     }
-
   ]
-
 }

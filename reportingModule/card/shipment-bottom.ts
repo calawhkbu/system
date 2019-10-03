@@ -57,22 +57,19 @@ function prepareShipmentable(name: string): CreateTableJQL {
     $temporary: true,
     name,
     $as: new Query({
-
       $from: new FromTable(
         {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-
             { name: 'houseNo', type: 'string' },
             { name: 'jobDate', type: 'Date' },
             { name: 'shipperPartyName', type: 'string' },
-            { name: 'consigneePartyName', type: 'string'},
+            { name: 'consigneePartyName', type: 'string' },
             { name: 'portOfLoadingCode', type: 'string' },
             { name: 'portOfDischargeCode', type: 'string' },
             { name: 'departureDateEstimated', type: 'Date' },
             { name: 'arrivalDateEstimated', type: 'Date' },
-
           ],
         },
         name
@@ -87,5 +84,4 @@ export default [
   new Query({
     $from: 'shipment',
   }),
-
 ]

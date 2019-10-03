@@ -56,26 +56,20 @@
         },
         "addItemsOrFunc": ["Trucker", "Broker", "Factory", "Warehouse"],
 
-
-
-        
         "fields": [
           {
             "name": "{{flex}}{{key}}PartyName",
             "component": "v-text-field",
             "class": "xs-12 md-12"
           }
-
         ],
 
-        "hiddenFields" : [
-
+        "hiddenFields": [
           {
             "name": "{{flex}}{{key}}PartyName",
             "component": "v-text-field",
             "class": "xs-12 md-12"
           },
-
 
           {
             "label": "Widget.countryCode",
@@ -83,11 +77,10 @@
             "component": "ReadField",
             "class": "xs-12 md-12",
             "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyCountryCode",
-            "props" : {
+            "props": {
+              "resultProp": "name",
 
-              "resultProp" : "name",
-
-              "axiosParams" :{
+              "axiosParams": {
                 "url": "api/code/query/code_master",
                 "method": "POST",
                 "data": {
@@ -101,10 +94,8 @@
                   }
                 }
               }
-
             }
           },
-
 
           {
             "label": "Widget.stateCode",
@@ -112,11 +103,10 @@
             "component": "ReadField",
             "class": "xs-12 md-12",
             "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyStateCode",
-            "props" : {
+            "props": {
+              "resultProp": "name",
 
-              "resultProp" : "name",
-
-              "axiosParams" :{
+              "axiosParams": {
                 "url": "api/code/query/code_master",
                 "method": "POST",
                 "data": {
@@ -130,7 +120,6 @@
                   }
                 }
               }
-
             }
           },
 
@@ -140,11 +129,10 @@
             "component": "ReadField",
             "class": "xs-12 md-12",
             "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyCityCode",
-            "props" : {
+            "props": {
+              "resultProp": "name",
 
-              "resultProp" : "name",
-
-              "axiosParams" :{
+              "axiosParams": {
                 "url": "api/code/query/code_master",
                 "method": "POST",
                 "data": {
@@ -158,10 +146,8 @@
                   }
                 }
               }
-
             }
           },
-
 
           {
             "label": "Widget.contactAddress",
@@ -179,8 +165,6 @@
             "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyContactName"
           },
 
-
-
           {
             "label": "Widget.contactPhone",
             "name": "{{flex}}{{key}}PartyContactPhone",
@@ -196,8 +180,6 @@
             "class": "xs-12 md-12",
             "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyContactEmail"
           }
-
-
         ]
       }
     }

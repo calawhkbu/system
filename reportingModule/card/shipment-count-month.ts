@@ -37,7 +37,7 @@ const months = [
 const moduleTypeCodeList = {
   AIR: ['AC', 'AD', 'AM', 'AN', 'AW', 'AX', 'AZ'],
   SEA: ['SA', 'SB', 'SC', 'SR', 'SS', 'ST', 'SW', 'SZ', 'SA'],
-  LOG: ['ZL']
+  LOG: ['ZL'],
 }
 
 function prepareParams(): Function {
@@ -68,15 +68,12 @@ function prepareParams(): Function {
 }
 
 function prepareTable(): CreateTableJQL {
-
   return new CreateTableJQL({
     $temporary: true,
     name: 'shipment',
 
     $as: new Query({
-
       $select: [
-
         new ResultColumn(new ColumnExpression('moduleTypeCode')),
         new ResultColumn(
           new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
@@ -84,18 +81,16 @@ function prepareTable(): CreateTableJQL {
         ),
         new ResultColumn(new ColumnExpression('reportingGroup')),
         new ResultColumn(new ColumnExpression('shipments'), 'count'),
-
       ],
       $from: new FromTable(
         {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-
             { name: 'moduleTypeCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
             { name: 'reportingGroup', type: 'string' },
-            { name: 'shipments', type: 'number' }
+            { name: 'shipments', type: 'number' },
           ],
         },
         'shipment'
@@ -105,27 +100,28 @@ function prepareTable(): CreateTableJQL {
 }
 
 function prepareFinalTable(): CreateTableJQL {
-
   const $select = [
-
     new ResultColumn(new ColumnExpression('moduleTypeCode')),
-    new ResultColumn(new ColumnExpression('reportingGroup'))
+    new ResultColumn(new ColumnExpression('reportingGroup')),
   ]
 
   months.forEach((month: string) => {
+    $select.push(
+      new ResultColumn(
+        new FunctionExpression(
+          'IFNULL',
+          new FunctionExpression(
+            'FIND',
 
-    $select.push(new ResultColumn(new FunctionExpression('IFNULL', new FunctionExpression('FIND',
+            new AndExpressions([new BinaryExpression(new ColumnExpression('month'), '=', month)]),
 
-      new AndExpressions([
-        new BinaryExpression(new ColumnExpression('month'), '=', month),
-      ]),
-
-      new ColumnExpression('count'),
-
-    ), 0), `${month}-count`)
-
+            new ColumnExpression('count')
+          ),
+          0
+        ),
+        `${month}-count`
+      )
     )
-
   })
 
   return new CreateTableJQL({
@@ -133,35 +129,29 @@ function prepareFinalTable(): CreateTableJQL {
     name: 'final',
 
     $as: new Query({
-
       $select,
 
       $from: 'shipment',
 
-      $group: new GroupBy([new ColumnExpression('moduleTypeCode'), new ColumnExpression('reportingGroup')]),
-
+      $group: new GroupBy([
+        new ColumnExpression('moduleTypeCode'),
+        new ColumnExpression('reportingGroup'),
+      ]),
     }),
   })
-
 }
 
 function prepareReportingGroupTable(): CreateTableJQL {
-
   const name = 'reportingGroupTable'
 
   return new CreateTableJQL({
     $temporary: true,
     name,
-    columns: [
-      new Column('moduleTypeCode', 'string'),
-      new Column('reportingGroup', 'string')
-
-    ],
+    columns: [new Column('moduleTypeCode', 'string'), new Column('reportingGroup', 'string')],
   })
 }
 
 function insertReportingGroupTable(): InsertJQL {
-
   const name = 'reportingGroupTable'
 
   const insertList = []
@@ -173,7 +163,6 @@ function insertReportingGroupTable(): InsertJQL {
       reportingGroupList.map((reportingGroup: string) => {
         insertList.push({ reportingGroup, moduleTypeCode })
       })
-
     }
   }
 
@@ -181,29 +170,33 @@ function insertReportingGroupTable(): InsertJQL {
 }
 
 function prepareResultTable(): CreateTableJQL {
-
   const $select = [
-    new ResultColumn(new ColumnExpression('reportingGroupTable', 'moduleTypeCode'), 'moduleTypeCode'),
-    new ResultColumn(new ColumnExpression('reportingGroupTable', 'reportingGroup'), 'reportingGroup'),
+    new ResultColumn(
+      new ColumnExpression('reportingGroupTable', 'moduleTypeCode'),
+      'moduleTypeCode'
+    ),
+    new ResultColumn(
+      new ColumnExpression('reportingGroupTable', 'reportingGroup'),
+      'reportingGroup'
+    ),
   ]
 
-  months.map((month) => {
-
-    $select.push(new ResultColumn(new FunctionExpression(
-
-      new FunctionExpression('IFNULL', new ColumnExpression('final', `${month}-count`), 0),
-
-    ), `${month}-count`))
-
+  months.map(month => {
+    $select.push(
+      new ResultColumn(
+        new FunctionExpression(
+          new FunctionExpression('IFNULL', new ColumnExpression('final', `${month}-count`), 0)
+        ),
+        `${month}-count`
+      )
+    )
   })
 
   return new CreateTableJQL({
-
     $temporary: true,
     name: 'result',
 
     $as: new Query({
-
       $select,
 
       $from: new FromTable('reportingGroupTable', 'reportingGroupTable', {
@@ -215,15 +208,11 @@ function prepareResultTable(): CreateTableJQL {
           new ColumnExpression('reportingGroupTable', 'reportingGroup')
         ),
       }),
-
     }),
-
   })
-
 }
 
 export default [
-
   [prepareParams(), prepareTable()],
   prepareFinalTable(),
 
@@ -233,7 +222,6 @@ export default [
   prepareResultTable(),
 
   new Query({
-
     $select: [
       new ResultColumn('moduleTypeCode', '__id'),
       new ResultColumn('moduleTypeCode', '__value'),
@@ -242,6 +230,5 @@ export default [
 
     $from: 'result',
     $group: 'moduleTypeCode',
-  })
-
+  }),
 ]

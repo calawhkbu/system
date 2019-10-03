@@ -11,10 +11,10 @@ const _ = require('lodash')
 const partyGroupCode = ''
 
 export const formatJson = {
-  removeCharacter: [  '=', 'o', ''],
-  segmentSeperator : ['\r\n', '\r', '\n', '�'],
-  elementSeperator : ['', '*'],
-  mainBodyHead : 'ST',
+  removeCharacter: ['=', 'o', ''],
+  segmentSeperator: ['\r\n', '\r', '\n', '�'],
+  elementSeperator: ['', '*'],
+  mainBodyHead: 'ST',
 
   // segmentSeperator : ['?'],
   // elementSeperator : '',
@@ -2212,9 +2212,9 @@ export default class Edi850Parser extends BaseEdiParser {
             : null,
           exitFactoryDateActual: _.get(ST, 'DTM.firstArrive')
             ? moment.utc(_.get(ST, 'DTM.firstArrive')).toDate()
-            : (_.get(ST, 'DTM.shipNotBefore')
+            : _.get(ST, 'DTM.shipNotBefore')
             ? moment.utc(_.get(ST, 'DTM.shipNotBefore')).toDate()
-            : null),
+            : null,
           Department: _.get(ST, 'REF.referenceNumber'),
         }
         const po1 = _.get(ST, 'PO1', []) || []

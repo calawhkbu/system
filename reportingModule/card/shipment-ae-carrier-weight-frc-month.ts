@@ -106,16 +106,15 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-            { name: 'carrierCode', type: 'string'},
+            { name: 'carrierCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
             { name: 'grossWeight', type: 'number' },
             { name: 'chargeableWeight', type: 'number' },
           ],
 
-          data : {
-            filter : { carrierCodeIsNotNull : {}}
-          }
-
+          data: {
+            filter: { carrierCodeIsNotNull: {} },
+          },
         },
         'shipment'
       ),
@@ -147,7 +146,8 @@ export default [
           ...types.map(
             type =>
               new ResultColumn(
-                new FunctionExpression('IFNULL',
+                new FunctionExpression(
+                  'IFNULL',
                   new FunctionExpression(
                     'FIND',
                     new AndExpressions([
@@ -169,6 +169,5 @@ export default [
     ],
     $from: 'shipment',
     $group: 'carrierCode',
-  })
-
+  }),
 ]
