@@ -28,7 +28,7 @@ const months = [
   'November',
   'December',
 ]
-const types = ['GW', 'CW']
+const types = ['cbm', 'shipments']
 
 function prepareParams(): Function {
   return function(require, session, params) {
@@ -47,12 +47,12 @@ function prepareParams(): Function {
       .endOf('year')
       .format('YYYY-MM-DD')
 
-    // AE
-    subqueries.moduleType = { value: 'AIR' }
+    // SE
+    subqueries.moduleType = { value: 'SEA' }
     subqueries.boundType = { value: 'O' }
 
     // select
-    params.fields = ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight']
+    params.fields = ['carrierCode', 'jobMonth', 'cntCbm', 'shipments']
 
     // group by
     params.groupBy = ['carrierCode', 'jobMonth']
@@ -62,6 +62,7 @@ function prepareParams(): Function {
 }
 
 function prepareTable(): CreateTableJQL {
+
   return new CreateTableJQL({
     $temporary: true,
     name: 'shipment',
@@ -72,8 +73,8 @@ function prepareTable(): CreateTableJQL {
           new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
           'month'
         ),
-        new ResultColumn('grossWeight'),
-        new ResultColumn('chargeableWeight'),
+        new ResultColumn('cbm'),
+        new ResultColumn('shipments'),
       ],
       $from: new FromTable(
         {
@@ -82,13 +83,15 @@ function prepareTable(): CreateTableJQL {
           columns: [
             { name: 'carrierCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
-            { name: 'grossWeight', type: 'number' },
-            { name: 'chargeableWeight', type: 'number' },
+            { name: 'cntCbm', type: 'number', $as : 'cbm'},
+            { name: 'shipments', type: 'number' },
           ],
 
           data: {
+
             filter: { carrierCodeIsNotNull: {} },
-          },
+
+          }
         },
         'shipment'
       ),
@@ -97,6 +100,7 @@ function prepareTable(): CreateTableJQL {
 }
 
 export default [
+
   [prepareParams(), prepareTable()],
 
   // finalize data
@@ -108,16 +112,14 @@ export default [
           ...types.map(
             type =>
               new ResultColumn(
-                new FunctionExpression(
-                  'IFNULL',
-
+                new FunctionExpression('IFNULL',
                   new FunctionExpression(
                     'FIND',
                     new BinaryExpression(new ColumnExpression('month'), '=', month),
-                    new ColumnExpression(type === 'GW' ? 'grossWeight' : 'chargeableWeight')
-                  ),
-                  0
-                ),
+                    new ColumnExpression(
+                      type === 'cbm' ? 'cbm' : 'shipments'
+                    )
+                  ), 0),
 
                 `${month}-${type}`
               )
@@ -129,4 +131,5 @@ export default [
     $from: 'shipment',
     $group: 'carrierCode',
   }),
+
 ]
