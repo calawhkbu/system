@@ -55,10 +55,10 @@ export default [
 
         data: {
           subqueries: {
-            moduleType: {
+            moduleTypeCode: {
               value: 'SEA',
             },
-            boundType: {
+            boundTypeCode: {
               value: 'O',
             },
           },
