@@ -16,14 +16,22 @@ import {
 import { parseCode } from 'utils/function'
 
 export default [
-
-  new CreateFunctionJQL('NUMBERIFY', function(parameter: any, value: string) { return +value }, 'number', 'string'),
+  new CreateFunctionJQL(
+    'NUMBERIFY',
+    function(parameter: any, value: string) {
+      return +value
+    },
+    'number',
+    'string'
+  ),
   new Query({
-
     $select: [
       new ResultColumn(new ColumnExpression('agentPartyName')),
       new ResultColumn(new ColumnExpression('agentPartyCode')),
-      new ResultColumn(new FunctionExpression('NUMBERIFY', new ColumnExpression('chargeableWeight')), 'chargeableWeight')
+      new ResultColumn(
+        new FunctionExpression('NUMBERIFY', new ColumnExpression('chargeableWeight')),
+        'chargeableWeight'
+      ),
     ],
 
     $from: new FromTable(
@@ -31,7 +39,6 @@ export default [
         method: 'POST',
         url: 'api/shipment/query/shipment',
         columns: [
-
           {
             name: 'agentPartyCode',
             type: 'string',
@@ -48,30 +55,26 @@ export default [
 
         data: {
           subqueries: {
-            moduleType: {
-              value: 'AIR'
+            moduleTypeCode: {
+              value: 'AIR',
             },
-            boundType: {
-              value: 'O'
-            }
+            boundTypeCode: {
+              value: 'O',
+            },
           },
 
           fields: ['agentPartyCode', 'agentPartyName', 'chargeableWeight'],
 
-          filter : {
-            agentIsNotNull  : {}
+          filter: {
+            agentIsNotNull: {},
           },
 
           sorting: new OrderBy('chargeableWeight', 'DESC'),
           groupBy: ['agentPartyCode', 'agentPartyName'],
-          limit: 10
-
-        }
-
+          limit: 10,
+        },
       },
       'shipment'
-    )
-
-  })
-
+    ),
+  }),
 ]

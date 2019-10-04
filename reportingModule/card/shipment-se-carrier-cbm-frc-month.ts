@@ -28,7 +28,7 @@ const months = [
   'November',
   'December',
 ]
-const types = ['F_shipments', 'R_shipments', 'C_shipments']
+const types = ['F_cbm', 'R_cbm', 'C_cbm']
 
 function prepareParams(type_: 'F' | 'R' | 'C'): Function {
   const fn = function(require, session, params) {
@@ -49,11 +49,11 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
       .format('YYYY-MM-DD')
 
     // AE
-    subqueries.moduleTypeCode = { value: 'AIR' }
+    subqueries.moduleTypeCode = { value: 'SEA' }
     subqueries.boundTypeCode = { value: 'O' }
 
     // select
-    params.fields = ['carrierCode', 'jobMonth', 'shipments']
+    params.fields = ['carrierCode', 'jobMonth', 'cntCbm']
 
     // group by
     params.groupBy = ['carrierCode', 'jobMonth']
@@ -83,7 +83,7 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
 function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
   return new InsertJQL({
     name: 'shipment',
-    columns: ['type', 'carrierCode', 'month', 'shipments'],
+    columns: ['type', 'carrierCode', 'month', 'cbm'],
     query: new Query({
       $select: [
         new ResultColumn(new Value(type), 'type'),
@@ -93,8 +93,8 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
           'month'
         ),
         new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('shipments'), 0),
-          'shipments'
+          new FunctionExpression('IFNULL', new ColumnExpression('cbm'), 0),
+          'cbm'
         ),
       ],
       $from: new FromTable(
@@ -102,14 +102,15 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-            { name: 'carrierCode', type: 'string' },
+            { name: 'carrierCode', type: 'string'},
             { name: 'jobMonth', type: 'string' },
-            { name: 'shipments', type: 'number' },
+            { name: 'cntCbm', type: 'number', $as : 'cbm' },
           ],
 
-          data: {
-            filter: { carrierCodeIsNotNull: {} },
-          },
+          data : {
+            filter : { carrierCodeIsNotNull : {}}
+          }
+
         },
         'shipment'
       ),
@@ -123,7 +124,7 @@ export default [
     new Column('type', 'string'),
     new Column('carrierCode', 'string'),
     new Column('month', 'string'),
-    new Column('shipments', 'number'),
+    new Column('cbm', 'number'),
   ]),
 
   // prepare data
@@ -140,15 +141,14 @@ export default [
           ...types.map(
             type =>
               new ResultColumn(
-                new FunctionExpression(
-                  'IFNULL',
+                new FunctionExpression('IFNULL',
                   new FunctionExpression(
                     'FIND',
                     new AndExpressions([
                       new BinaryExpression(new ColumnExpression('month'), '=', month),
                       new BinaryExpression(new ColumnExpression('type'), '=', type.charAt(0)),
                     ]),
-                    new ColumnExpression('shipments')
+                    new ColumnExpression('cbm')
                   ),
                   0
                 ),
@@ -161,7 +161,6 @@ export default [
     ],
     $from: 'shipment',
     $group: 'carrierCode',
-  }),
+  })
 
-  // new Query({ $from: 'shipment', $limit: 100 })
 ]

@@ -15,21 +15,28 @@ import {
 } from 'node-jql'
 
 export default [
-
-  new CreateFunctionJQL('NUMBERIFY', function(parameter: any, value: string) { return +value }, 'number', 'string'),
+  new CreateFunctionJQL(
+    'NUMBERIFY',
+    function(parameter: any, value: string) {
+      return +value
+    },
+    'number',
+    'string'
+  ),
 
   new Query({
-
     $select: [
       new ResultColumn(new ColumnExpression('carrierCode')),
-      new ResultColumn(new FunctionExpression('NUMBERIFY', new ColumnExpression('chargeableWeight')), 'chargeableWeight')
+      new ResultColumn(
+        new FunctionExpression('NUMBERIFY', new ColumnExpression('chargeableWeight')),
+        'chargeableWeight'
+      ),
     ],
     $from: new FromTable(
       {
         method: 'POST',
         url: 'api/shipment/query/shipment',
         columns: [
-
           {
             name: 'carrierCode',
             type: 'string',
@@ -40,31 +47,27 @@ export default [
           },
         ],
 
-        data : {
-
+        data: {
           subqueries: {
-
-            moduleType: {
-              value: 'AIR'
+            moduleTypeCode: {
+              value: 'AIR',
             },
-            boundType: {
-              value: 'O'
-            }
+            boundTypeCode: {
+              value: 'O',
+            },
           },
 
-          filter : {
-            carrierCodeIsNotNull  : {}
+          filter: {
+            carrierCodeIsNotNull: {},
           },
 
-          fields : ['carrierCode', 'chargeableWeight'],
-          sorting :  new OrderBy('chargeableWeight', 'DESC'),
-          groupBy : ['carrierCode'],
-          limit : 10
-        }
+          fields: ['carrierCode', 'chargeableWeight'],
+          sorting: new OrderBy('chargeableWeight', 'DESC'),
+          groupBy: ['carrierCode'],
+          limit: 10,
+        },
       },
       'shipment'
     ),
-
-  })
-
+  }),
 ]

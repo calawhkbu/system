@@ -1,53 +1,76 @@
 {
-
   "tableName": "shipment",
 
   "defaultDocumentConfig": {
-
-    "allowFileType": ["image/png", "image/gif", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/pdf"],
+    "allowFileType": [
+      "image/png",
+      "image/gif",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/pdf"
+    ],
     "allowFillTemplate": false
-
   },
 
   "documentList": [
-
-
     {
       "fileName": "Invoice",
-      "allowFileType": ["image/png", "image/gif", "image/jpeg", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/pdf"],
-
+      "allowFileType": [
+        "image/png",
+        "image/gif",
+        "image/jpeg",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/pdf"
+      ],
 
       "allowFillTemplate": false
     },
     {
       "fileName": "FCL Document",
-      "allowFileType": ["image/png", "image/gif", "image/jpeg", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/pdf"],
-
+      "allowFileType": [
+        "image/png",
+        "image/gif",
+        "image/jpeg",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/pdf"
+      ],
 
       "allowFillTemplate": false
     },
     {
       "fileName": "LCL Document",
-      "allowFileType": ["image/png", "image/gif", "image/jpeg", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/pdf"],
-
+      "allowFileType": [
+        "image/png",
+        "image/gif",
+        "image/jpeg",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/pdf"
+      ],
 
       "allowFillTemplate": false
     },
     {
       "fileName": "MBL begins with KKL and *CL Document",
-      "allowFileType": ["image/png", "image/gif", "image/jpeg", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/pdf"],
-
+      "allowFileType": [
+        "image/png",
+        "image/gif",
+        "image/jpeg",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/pdf"
+      ],
 
       "allowFillTemplate": false
     },
     {
       "fileName": "MBL begins with MOL Document & CY",
-      "allowFileType": ["image/png", "image/gif", "image/jpeg", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/pdf"],
-
+      "allowFileType": [
+        "image/png",
+        "image/gif",
+        "image/jpeg",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/pdf"
+      ],
 
       "allowFillTemplate": false
     }
-
   ]
-
 }

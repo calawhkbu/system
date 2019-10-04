@@ -13,7 +13,7 @@
   },
   "scripts": {
     "lint": "tslint -p tsconfig.json -c tslint.json",
-    "format": "yarn format:ts \"**/*.{ts,js}\" && yarn format:json \"**/*.json\"",
+    "format": "yarn format:ts \"**/*.{ts,js}\" && yarn format:json \"**/*.json\"; yarn lint --fix",
     "format:ts": "prettier --config .prettierrc.ts.json --write",
     "format:json": "prettier --config .prettierrc.json.json --write",
     "export": "node export"

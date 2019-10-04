@@ -14,15 +14,23 @@ import {
 } from 'node-jql'
 
 export default [
-
-  new CreateFunctionJQL('NUMBERIFY', function(parameter: any, value: string) { return +value }, 'number', 'string'),
+  new CreateFunctionJQL(
+    'NUMBERIFY',
+    function(parameter: any, value: string) {
+      return +value
+    },
+    'number',
+    'string'
+  ),
 
   new Query({
-
     $select: [
       new ResultColumn(new ColumnExpression('controllingCustomerPartyName')),
       new ResultColumn(new ColumnExpression('controllingCustomerPartyCode')),
-      new ResultColumn(new FunctionExpression('NUMBERIFY', new ColumnExpression('shipment', 'cbm')), 'cbm')
+      new ResultColumn(
+        new FunctionExpression('NUMBERIFY', new ColumnExpression('shipment', 'cbm')),
+        'cbm'
+      ),
     ],
 
     $from: new FromTable(
@@ -30,7 +38,6 @@ export default [
         method: 'POST',
         url: 'api/shipment/query/shipment',
         columns: [
-
           {
             name: 'controllingCustomerPartyName',
             type: 'string',
@@ -42,38 +49,31 @@ export default [
           {
             name: 'cntCbm',
             type: 'string',
-            $as : 'cbm'
-
+            $as: 'cbm',
           },
         ],
 
         data: {
-
           subqueries: {
-
-            moduleType: {
-              value: 'SEA'
+            moduleTypeCode: {
+              value: 'SEA',
             },
-            boundType: {
-              value: 'O'
-            }
+            boundTypeCode: {
+              value: 'O',
+            },
           },
 
-          filter : {
-            controllingCustomerIsNotNull  : {}
+          filter: {
+            controllingCustomerIsNotNull: {},
           },
 
           fields: ['controllingCustomerPartyName', 'controllingCustomerPartyCode', 'cntCbm'],
           sorting: new OrderBy('cntCbm', 'DESC'),
           groupBy: ['controllingCustomerPartyName', 'controllingCustomerPartyCode'],
-          limit: 10
-
-        }
-
+          limit: 10,
+        },
       },
       'shipment'
-    )
-
-  })
-
+    ),
+  }),
 ]
