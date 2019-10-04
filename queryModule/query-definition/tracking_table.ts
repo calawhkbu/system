@@ -10,6 +10,7 @@ import {
 
 const query = new QueryDef(
   new Query({
+    $distinct: true,
     $from: new FromTable({
       table: `
     (SELECT \`tracking_reference\`.*, \`masterNo\` AS \`trackingNo\`, 'masterNo' AS \`type\`
@@ -79,6 +80,18 @@ query
       $where: new BinaryExpression(
         new ColumnExpression('tracking_reference', 'partyGroupCode'),
         '='
+      ),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
+    'departureDateEstimated',
+    new Query({
+      $where: new BinaryExpression(
+        new ColumnExpression('tracking_reference', 'departureDateEstimated'),
+        '<='
       ),
     })
   )

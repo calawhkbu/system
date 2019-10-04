@@ -5,8 +5,8 @@
     "@nestjs/common": "6.3.0",
     "chalk": "^2.4.2",
     "moment": "^2.24.0",
-    "node-jql": "^2.0.0-rc.57",
-    "node-jql-core": "^2.0.0-rc.62",
+    "node-jql": "^2.0.0-rc.58",
+    "node-jql-core": "^2.0.0-rc.68",
     "prettier": "^1.18.2",
     "tslint": "5.19.0",
     "typescript": "^3.5.3"
