@@ -6,6 +6,8 @@ import {
   InExpression,
   JoinClause,
   Query,
+  OrExpressions,
+  AndExpressions
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -60,32 +62,11 @@ query
 
 query
   .register(
-    'yundang',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('tracking_reference', 'yundang'), '='),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
     'partyGroupCode',
     new Query({
       $where: new BinaryExpression(
         new ColumnExpression('tracking_reference', 'partyGroupCode'),
         '='
-      ),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'departureDateEstimated',
-    new Query({
-      $where: new BinaryExpression(
-        new ColumnExpression('tracking_reference', 'departureDateEstimated'),
-        '<='
       ),
     })
   )
