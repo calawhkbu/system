@@ -8,18 +8,33 @@ const query = new Query({
       url: 'api/shipment/query/shipment',
       columns: [
         { name: 'houseNo', type: 'string' },
-        { name: 'jobDate', type: 'Date' },
+
+        { name: 'departureDateEstimated', type: 'Date' },
+        { name: 'arrivalDateEstimated', type: 'Date' },
+
+        { name: 'shipperPartyName', type: 'string' },
+        { name: 'consigneePartyName', type: 'string' },
+
         { name: 'masterNo', type: 'string' },
+
+        { name: 'voyage', type: 'string' },
+
+        { name: 'placeOfReceiptCode', type: 'string' },
+        { name: 'portOfLoadingCode', type: 'string' },
+        { name: 'placeOfDeliveryCode', type: 'string' },
+
+        { name: 'serviceCode', type: 'string' },
+
+        { name: 'jobDate', type: 'Date' },
+
         { name: 'bookingNo', type: 'string' },
         { name: 'poNo', type: 'string' },
         { name: 'contractNo', type: 'string' },
         { name: 'commodity', type: 'string' },
         { name: 'carrierCode', type: 'string' },
 
-        { name: 'voyage', type: 'string' },
         { name: 'division', type: 'string' },
 
-        { name: 'serviceCode', type: 'string' },
 
         // ["FCL", "LCL", "CONSOL"]
         { name: 'shipmentTypeCode', type: 'string' },
@@ -37,20 +52,15 @@ const query = new Query({
         { name: 'isDirect', type: 'boolean' },
         { name: 'isCoload', type: 'boolean' },
 
-        { name: 'portOfLoadingCode', type: 'string' },
+
         { name: 'portOfDischargeCode', type: 'string' },
 
-        { name: 'placeOfReceiptCode', type: 'string' },
-        { name: 'placeOfDeliveryCode', type: 'string' },
+
         { name: 'finalDestinationCode', type: 'string' },
 
-        { name: 'departureDateEstimated', type: 'Date' },
-        { name: 'arrivalDateEstimated', type: 'Date' },
         { name: 'departureDateActual', type: 'Date' },
         { name: 'arrivalDateActual', type: 'Date' },
 
-        { name: 'shipperPartyName', type: 'string' },
-        { name: 'consigneePartyName', type: 'string' },
         { name: 'forwarderPartyName', type: 'string' },
         { name: 'linerAgentPartyName', type: 'string' },
         { name: 'roAgentPartyName', type: 'string' },
