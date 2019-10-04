@@ -35,37 +35,112 @@
             }
           },
           {
-            "name": "officeParty",
-            "type": "list",
+            "name": "officePartyId",
+            "display": "office",
+            "type": "autocomplete",
+      
             "props": {
+
+              "multi" : true,
+
               "api": {
                 "query": {
-                  "method": "GET",
-                  "url": "api/partyGroup/branch",
-                  "valueKey": "id",
-                  "labelKey": "shortName"
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+
+                  "data": {
+                    "subqueries": {
+                      "isBranch": {
+                        "value": true
+                      },
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    }
+                  },
+                  "valueKey": "old360Id",
+                  "labelKey": "partyName"
                 },
                 "resolve": {
-                  "method": "GET",
-                  "url": "api/partyGroup/branch/{{ value }}",
-                  "valueKey": "id",
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+
+                  "subqueries": {
+                    "isBranch": {
+                      "value": true
+                    },
+
+                    "old360Id": {
+                      "value": "{{value}}"
+                    }
+                  },
+                  "valueKey": "old360Id",
                   "labelKey": "shortName"
                 }
               }
             }
           },
+
           {
-            "name": "estimatedDepartureDate",
+            "name": "agentPartyId",
+            "display": "agent",
+            "type": "autocomplete",
+            
+            "props": {
+
+              "multi" : true,
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "subqueries": {
+                      "partyTypes": {
+                        "value": ["agent"]
+                      },
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    }
+                  },
+
+                  "valueKey": "old360Id",
+                  "labelKey": "partyName"
+                },
+
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "subqueries": {
+                      "partyTypes": {
+                        "value": ["agent"]
+                      },
+                      "old360Id": {
+                        "value": "{{value}}"
+                      }
+                    }
+                  },
+                  "valueKey": "old360Id",
+                  "labelKey": "partyName"
+                }
+              }
+            }
+          },
+
+          {
+            "name": "departureDateEstimated",
             "type": "date",
             "props": {}
           },
           {
-            "name": "estimatedArrivalDate",
+            "name": "arrivalDateEstimated",
             "type": "date",
             "props": {}
           },
           {
             "name": "moduleTypeCode",
+            "display": "moduleType",
             "type": "list",
             "props": {
               "api": {
@@ -103,6 +178,7 @@
           },
           {
             "name": "boundTypeCode",
+            "display": "boundType",
             "type": "list",
             "props": {
               "api": {
@@ -140,13 +216,18 @@
           },
           {
             "name": "nominatedTypeCode",
+            "display": "nominatedType",
             "type": "list",
             "props": {
-              "items": [{ "value": "F", "label": "Freehand" }, { "value": "R", "label": "R/O" }]
+              "items": [
+                { "value": "F", "label": "Freehand" },
+                { "value": "R", "label": "R/O" }
+              ]
             }
           },
           {
             "name": "shipmentTypeCode",
+            "display": "shipmentType",
             "type": "list",
             "props": {
               "api": {
@@ -183,7 +264,8 @@
             }
           },
           {
-            "name": "portOfLoading",
+            "name": "portOfLoadingCode",
+            "display": "portOfLoading",
             "type": "autocomplete",
             "props": {
               "api": {
@@ -219,7 +301,8 @@
             }
           },
           {
-            "name": "portOfDischarge",
+            "name": "portOfDischargeCode",
+            "display": "portOfDischarge",
             "type": "autocomplete",
             "props": {
               "api": {
@@ -256,10 +339,7 @@
           },
           {
             "name": "salesmanCode",
-            "type": "text"
-          },
-          {
-            "name": "rSalesmanCode",
+            "display": "salesman",
             "type": "text"
           }
         ]
