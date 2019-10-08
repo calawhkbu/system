@@ -108,14 +108,14 @@ function prepareData(type: 'F' | 'R'): InsertJQL {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-            { name: 'carrierCode', type: 'string'},
+            { name: 'carrierCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
             { name: 'grossWeight', type: 'number' },
             { name: 'chargeableWeight', type: 'number' },
           ],
 
-          data : {
-            filter : { carrierCodeIsNotNull : {}}
+          data: {
+            filter: { carrierCodeIsNotNull: {} }
           }
 
         },
@@ -125,8 +125,7 @@ function prepareData(type: 'F' | 'R'): InsertJQL {
   })
 }
 
-function prepareTotalData(): InsertJQL
-{
+function prepareTotalData(): InsertJQL {
 
   return new InsertJQL({
     name: 'shipment',
@@ -156,14 +155,14 @@ function prepareTotalData(): InsertJQL
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-            { name: 'carrierCode', type: 'string'},
+            { name: 'carrierCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
             { name: 'grossWeight', type: 'number' },
             { name: 'chargeableWeight', type: 'number' },
           ],
 
-          data : {
-            filter : { carrierCodeIsNotNull : {}}
+          data: {
+            filter: { carrierCodeIsNotNull: {} }
           }
 
         },
@@ -217,38 +216,37 @@ function prepareTotalData(): InsertJQL
 
 // }
 
-function prepareTempTable(): CreateTableJQL
-{
+function prepareTempTable(): CreateTableJQL {
 
   return new CreateTableJQL({
 
-    $temporary : true,
-    name : 'temp',
+    $temporary: true,
+    name: 'temp',
 
-    $as : new Query({
+    $as: new Query({
       $select: [
         new ResultColumn('carrierCode'),
         ...months.reduce<ResultColumn[]>((result, month) => {
 
-          const tempList1 =  types.reduce<ResultColumn[]>((result2, type) => {
+          const tempList1 = types.reduce<ResultColumn[]>((result2, type) => {
 
-            const tempList =  variables.reduce<ResultColumn[]>((result3, variable) => {
+            const tempList = variables.reduce<ResultColumn[]>((result3, variable) => {
               const columnName = `${month}-${type}_${variable}`
 
               const expression = new ResultColumn(
-                  new FunctionExpression('IFNULL',
-                    new FunctionExpression(
-                      'FIND',
-                      new AndExpressions([
-                        new BinaryExpression(new ColumnExpression('month'), '=', month),
-                        new BinaryExpression(new ColumnExpression('type'), '=', type),
-                      ]),
-                      new ColumnExpression(variable)
-                    ),
-                    0
+                new FunctionExpression('IFNULL',
+                  new FunctionExpression(
+                    'FIND',
+                    new AndExpressions([
+                      new BinaryExpression(new ColumnExpression('month'), '=', month),
+                      new BinaryExpression(new ColumnExpression('type'), '=', type),
+                    ]),
+                    new ColumnExpression(variable)
                   ),
-                  columnName
-                )
+                  0
+                ),
+                columnName
+              )
 
               result3.push(expression)
               return result3
@@ -294,55 +292,79 @@ function prepareTempTable(): CreateTableJQL
 
 }
 
-function prepareFinalTable()
-{
+function prepareFinalTable() {
 
-  function composeSumExpression(dumbList: any[])
-  {
-    if ( dumbList.length === 2)
-    {
+  function composeSumExpression(dumbList: any[]): MathExpression {
+    console.log(`dumbList.length : ${dumbList.length}`)
+    if (dumbList.length === 2) {
       return new MathExpression(dumbList[0], '+', dumbList[1])
     }
 
-    return new MathExpression(dumbList[0], '+', dumbList.splice(0, 1))
+    const popResult = dumbList.pop()
+
+    return new MathExpression(popResult, '+', composeSumExpression(dumbList))
 
   }
 
   const $select = []
 
-  months.map((month) => {
+  variables.map((variable) => {
 
-    let sumExpression: any
+    const finalSumList = []
 
-  // add basic field
-    types.map((type: string) => {
+    months.map((month) => {
 
-      variables.map((variable) => {
-
+      const monthSumList = []
+      types.map((type: string) => {
         const columnName = `${month}-${type}_${variable}`
-        console.log(columnName)
-        $select.push(new ResultColumn(new ColumnExpression('temp', columnName)))
+        const expression = new ColumnExpression('temp', columnName)
+        $select.push(new ResultColumn(expression))
+        monthSumList.push(expression)
+        finalSumList.push(expression)
 
       })
+      // add the month sum expression
+
+      const monthSumExpression = composeSumExpression(monthSumList)
+      // console.log('monthSumExpression')
+      // console.log(monthSumExpression)
+      $select.push(new ResultColumn(monthSumExpression, `${month}-T_${variable}`))
 
     })
 
-        // add the sum expression
-        sumExpression = composeSumExpression(types.map((type: string) => new ColumnExpression('temp', `${month}-${type}`)))
+    // --------------------------------------------------------
 
-    $select.push(new ResultColumn(sumExpression), `${month}-`)
+    types.map((type: string) => {
+
+      const typeSumList = []
+
+      months.map((month) => {
+
+        const columnName = `${month}-${type}_${variable}`
+        const expression = new ColumnExpression('temp', columnName)
+        typeSumList.push(expression)
+      })
+
+      console.log(`typeSumList.length : ${typeSumList.length}`)
+      const typeSumExpression = composeSumExpression(typeSumList)
+      $select.push(new ResultColumn(typeSumExpression, `total-${type}_${variable}`))
+
+    })
+
+    const finalSumExpression = composeSumExpression(finalSumList)
+    $select.push(new ResultColumn(finalSumExpression, `total-T_${variable}`))
 
   })
 
   return new CreateTableJQL({
 
-    $temporary : true,
-    name : 'final',
+    $temporary: true,
+    name: 'final',
 
-    $as : new Query({
+    $as: new Query({
 
       $select,
-      $from : 'temp'
+      $from: 'temp'
 
     })
 
@@ -365,45 +387,11 @@ export default [
   [prepareParams('R'), prepareData('R')],
 
   prepareTempTable(),
-
   prepareFinalTable(),
 
   new Query({
 
-    $from : 'temp'
+    $from: 'final'
   })
-
-  // // finalize data
-  // new Query({
-  //   $select: [
-  //     new ResultColumn('carrierCode'),
-  //     ...months.reduce<ResultColumn[]>((result, month) => {
-  //       result.push(
-  //         ...types.map(
-  //           type =>
-  //             new ResultColumn(
-  //               new FunctionExpression('IFNULL',
-  //                 new FunctionExpression(
-  //                   'FIND',
-  //                   new AndExpressions([
-  //                     new BinaryExpression(new ColumnExpression('month'), '=', month),
-  //                     new BinaryExpression(new ColumnExpression('type'), '=', type.charAt(0)),
-  //                   ]),
-  //                   new ColumnExpression(
-  //                     type.substr(2, 2) === 'GW' ? 'grossWeight' : 'chargeableWeight'
-  //                   )
-  //                 ),
-  //                 0
-  //               ),
-  //               `${month}-${type}`
-  //             )
-  //         )
-  //       )
-  //       return result
-  //     }, []),
-  //   ],
-  //   $from: 'shipment',
-  //   $group: 'carrierCode',
-  // })
 
 ]
