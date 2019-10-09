@@ -59,7 +59,8 @@
                     }
                   },
                   "valueKey": "old360Id",
-                  "labelKey": "partyName"
+                  "labelKey": "partyName",
+                  "sublabelKey": "shortName"
                 },
                 "resolve": {
                   "method": "POST",
@@ -75,7 +76,8 @@
                     }
                   },
                   "valueKey": "old360Id",
-                  "labelKey": "shortName"
+                  "labelKey": "shortName",
+                  "sublabelKey": "shortName"
                 }
               }
             }

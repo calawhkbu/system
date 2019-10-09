@@ -21,6 +21,7 @@ const query = new QueryDef(
     $select: [
       new ResultColumn(new ColumnExpression('party', 'id'), 'id'),
       new ResultColumn(new ColumnExpression('party', 'name'), 'name'),
+      new ResultColumn(new ColumnExpression('party', 'shortName'), 'shortName'),
       new ResultColumn(new ColumnExpression('party', 'id'), 'partyId'),
       new ResultColumn(new ColumnExpression('party', 'name'), 'partyName'),
 
