@@ -183,6 +183,7 @@ export default class EdiParser997 extends BaseEdiParser {
         _.set(returnJSON, 'data', data)
         // return returnJSON
         const result = await super.export(returnJSON)
+        // return result
         resultList.push(result)
       }
     }
