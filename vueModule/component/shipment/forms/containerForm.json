@@ -17,14 +17,7 @@
                 "props": {
                   "type": "number",
                   "min": 0
-                },
-                "slots": [{
-                  "name": "append",
-                  "is": "I18nText",
-                  "props": {
-                    "i18nKey": "commodity"
-                  }
-                }]
+                }
               },
               {
                 "label": "ShipmentPage.quantity",
@@ -39,8 +32,10 @@
                 "label": "ShipmentPage.quantityUnit",
                 "name": "weightUnit",
                 "component": "ReadField",
+                "colGroupProps": {
+                  "width": "50px"
+                },
                 "props": {
-
                   "showLabel": false,
                   "axiosParams": {
                     "url": "api/code/query/code_master",
@@ -51,9 +46,7 @@
                           "value": "QUANTITY"
                         },
                         "code": {
-
                           "value": "{{context:fixValue}}"
-
                         }
                       }
                     }
@@ -70,13 +63,14 @@
                 }
               },
 
-
               {
                 "label": "ShipmentPage.weightUnit",
                 "name": "weightUnit",
+                "colGroupProps": {
+                  "width": "50px"
+                },
                 "component": "ReadField",
                 "props": {
-
                   "showLabel": false,
                   "axiosParams": {
                     "url": "api/code/query/code_master",
@@ -87,9 +81,7 @@
                           "value": "WEIGHT"
                         },
                         "code": {
-
                           "value": "{{context:fixValue}}"
-
                         }
                       }
                     }
@@ -106,22 +98,17 @@
                   "min": 0
                 }
               },
-
-              {
-                "label": "ShipmentPage.goodsDescription",
-                "name": "goodsDescription",
-                "component": "v-text-field",
-                "props": {
-                  "type": "string"
-                }
-              },
-
               {
                 "label": "ShipmentPage.dimension",
                 "name": "dimension",
-                "component": "v-text-field",
+                "component": "v-text-field"
+              },
+              {
+                "label": "ShipmentPage.goodsDescription",
+                "name": "goodsDescription",
+                "component": "v-textarea",
                 "props": {
-                  "type": "string"
+                  "rows": 3
                 }
               }
             ]
@@ -158,13 +145,14 @@
                 "component": "v-text-field"
               },
 
-
               {
                 "label": "ShipmentPage.containerType",
                 "name": "containerType",
                 "component": "ReadField",
+                "colGroupProps": {
+                  "width": "75px"
+                },
                 "props": {
-
                   "showLabel": false,
                   "axiosParams": {
                     "url": "api/code/query/code_master",
@@ -175,16 +163,13 @@
                           "value": "CONTTYPE"
                         },
                         "code": {
-
                           "value": "{{context:fixValue}}"
-
                         }
                       }
                     }
                   }
                 }
               },
-
               {
                 "label": "ShipmentPage.quantity",
                 "name": "quantity",
@@ -194,13 +179,12 @@
                   "min": 0
                 }
               },
-
               {
                 "label": "ShipmentPage.quantityUnit",
                 "name": "quantityUnit",
                 "component": "v-text-field",
-                "props": {
-                  "type": "string"
+                "colGroupProps": {
+                  "width": "50px"
                 }
               },
 
@@ -218,8 +202,8 @@
                 "label": "ShipmentPage.weightUnit",
                 "name": "weightUnit",
                 "component": "v-text-field",
-                "props": {
-                  "type": "string"
+                "colGroupProps": {
+                  "width": "50px"
                 }
               },
 

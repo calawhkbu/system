@@ -12,82 +12,102 @@ export const formatJson = {
   removeCharacter: [],
   segmentSeperator: ['\r\n'],
   // elementSeperator: ['*'],
-  elementSeperator: ['']
+  elementSeperator: [''],
 } as EdiFormatJson
 
 interface JSONObject {
-  segment?: string,
+  segment?: string
   elementList?: any[]
 }
 
 export default class EdiParser997 extends BaseEdiParser {
-    constructor(
-        protected readonly allService: {
-          swivelConfigService: SwivelConfigService,
-          outboundService: OutboundService,
-        },
-      ) {
-        super(allService, {}, { export: { formatJson, ediType: '315' } })
-      }
+  constructor(
+    protected readonly allService: {
+      swivelConfigService: SwivelConfigService
+      outboundService: OutboundService
+    }
+  ) {
+    super(allService, {}, { export: { formatJson, ediType: '315' } })
+  }
 
-  async export(entityJSON: any[]| (any[])[]): Promise<any> {
+  async export(entityJSON: any[] | (any[])[]): Promise<any> {
     const details = _.get(entityJSON, 'details')
-    if (!details)
-    {
+    if (!details) {
       throw Error('no details')
     }
     const resultList: any[] = []
-    const containerList = (_.get(details, 'billContainerTracking') || [])
-    if (containerList.length)
-    {
-      for (const container of containerList)
-      {
+    const containerList = _.get(details, 'billContainerTracking') || []
+    if (containerList.length) {
+      for (const container of containerList) {
         const returnJSON = {}
         const data = []
         const ISA: JSONObject = {
-            segment: 'ISA',
-            elementList : []
+          segment: 'ISA',
+          elementList: [],
         }
         const currantDate = moment().toDate()
-        const containerNo = (_.get(container, 'containerNo'))
+        const containerNo = _.get(container, 'containerNo')
         // const controlNo = (containerNo  || '').substr(4)
         const pad = '000000000'
-        const controlNo = `${pad.substring(0, pad.length - (containerNo  || '').substr(4).length)}${(containerNo  || '').substr(4)}`
-        ISA.elementList.push('00', '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0', '00',
-        '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0', '12', '718978080', 'ZZ' , 'DILLARDSTST', moment(currantDate).format('YYMMDD'), moment(currantDate).format('HHmm'), 'U', '00401', controlNo, '0', 'P', '>')
+        const controlNo = `${pad.substring(0, pad.length - (containerNo || '').substr(4).length)}${(
+          containerNo || ''
+        ).substr(4)}`
+        ISA.elementList.push(
+          '00',
+          '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
+          '00',
+          '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
+          '12',
+          '718978080',
+          'ZZ',
+          'DILLARDSTST',
+          moment(currantDate).format('YYMMDD'),
+          moment(currantDate).format('HHmm'),
+          'U',
+          '00401',
+          controlNo,
+          '0',
+          'P',
+          '>'
+        )
         data.push(ISA)
         const GS: JSONObject = {
-            segment: 'GS',
-            elementList: []
+          segment: 'GS',
+          elementList: [],
         }
 
-        GS.elementList.push('FA', '718978080', 'DILLARDSTST', moment(currantDate).format('YYYYMMDD'), moment(currantDate).format('HHmm'), parseInt(controlNo, 10) , 'X', '004030VICS')
+        GS.elementList.push(
+          'FA',
+          '718978080',
+          'DILLARDSTST',
+          moment(currantDate).format('YYYYMMDD'),
+          moment(currantDate).format('HHmm'),
+          parseInt(controlNo, 10),
+          'X',
+          '004030VICS'
+        )
         data.push(GS)
 
         const lengthOfPreviousData = data.length
 
         const ST: JSONObject = {
-            segment: 'ST',
-            elementList : []
+          segment: 'ST',
+          elementList: [],
         }
         ST.elementList.push('315', `0001`)
         data.push(ST)
         const historyList = _.get(container, 'history')
-        historyList.sort(function(a, b)
-        {
-          if (!a.statusDate)
-          {
+        historyList.sort(function(a, b) {
+          if (!a.statusDate) {
             return -1
           }
 
-          if (!b.statusDate)
-          {
+          if (!b.statusDate) {
             return 1
           }
 
           return moment(a.statusDate) - moment(b.statusDate)
-        }
-        )
+        })
         // return historyList
         const currentStatusIndex = historyList.map(el => el.isEstimated).lastIndexOf(false)
         const currentStatus = historyList[currentStatusIndex]
@@ -99,7 +119,7 @@ export default class EdiParser997 extends BaseEdiParser {
           DECL: 'CT',
           PASS: 'OA',
           TMPS: 'D',
-          RCVE: 'RD'
+          RCVE: 'RD',
         }
         const emptyLoadMapper = {
           GITM: 'E',
@@ -109,47 +129,62 @@ export default class EdiParser997 extends BaseEdiParser {
           DECL: 'L',
           PASS: 'L',
           TMPS: 'L',
-          RCVE: 'E'
+          RCVE: 'E',
         }
         const B4: JSONObject = {
           segment: 'B4',
-          elementList : []
+          elementList: [],
         }
         B4.elementList.push('', '') // not used
-        B4.elementList.push(statusCodeMapper[_.get(currentStatus, 'statusCode')], moment(_.get(currentStatus, 'statusDate')).format('YYYYMMDD'), moment(_.get(currentStatus, 'statusDate')).format('HHmm'))
-        B4.elementList.push('')// not used
-        B4.elementList.push((_.get(container, 'containerNo') || '').substr(0, 4), (_.get(container, 'containerNo') || '').substr(4))
-        B4.elementList.push((emptyLoadMapper[_.get(currentStatus, 'statusCode')] || ''), `${_.get(container, 'containerSize')}${_.get(container, 'containerType')}`, _.get(currentStatus, 'statusPlace').substr(0, 30))
+        B4.elementList.push(
+          statusCodeMapper[_.get(currentStatus, 'statusCode')],
+          moment(_.get(currentStatus, 'statusDate')).format('YYYYMMDD'),
+          moment(_.get(currentStatus, 'statusDate')).format('HHmm')
+        )
+        B4.elementList.push('') // not used
+        B4.elementList.push(
+          (_.get(container, 'containerNo') || '').substr(0, 4),
+          (_.get(container, 'containerNo') || '').substr(4)
+        )
+        B4.elementList.push(
+          emptyLoadMapper[_.get(currentStatus, 'statusCode')] || '',
+          `${_.get(container, 'containerSize')}${_.get(container, 'containerType')}`,
+          _.get(currentStatus, 'statusPlace').substr(0, 30)
+        )
         B4.elementList.push('UN')
-        B4.elementList.push('')// No Equipment Check Digit
+        B4.elementList.push('') // No Equipment Check Digit
         data.push(B4)
         const trackingRefInf = _.get(entityJSON, 'trackingReference') || {}
         const flexDataInf = _.get(trackingRefInf, 'flexData') || {}
         const bookingInf = _.get(flexDataInf, 'data')
-        if (bookingInf)
-        {
-          if  (_.get(bookingInf, 'bookingNo'))
-          {
+        if (bookingInf) {
+          if (_.get(bookingInf, 'bookingNo')) {
             const N9: JSONObject = {
               segment: 'N9',
-              elementList : []
+              elementList: [],
             }
             N9.elementList.push('BN', _.get(bookingInf, 'bookingNo'), 'ORIGINAL BKG NBR')
             data.push(N9)
           }
           const Q2: JSONObject = {
             segment: 'Q2',
-            elementList: []
+            elementList: [],
           }
           Q2.elementList.push(_.get(bookingInf, 'vesselCode'))
           Q2.elementList.push('')
-          for (let i = 0; i < 6; i++) // not used
-          {
+          for (
+            let i = 0;
+            i < 6;
+            i++ // not used
+          ) {
             Q2.elementList.push('')
           }
           Q2.elementList.push(_.get(bookingInf, 'voyageFlightNumber'))
-          for (let i = 0; i < 3; i++) // not used
-          {
+          for (
+            let i = 0;
+            i < 3;
+            i++ // not used
+          ) {
             Q2.elementList.push('')
           }
           Q2.elementList.push(_.get(bookingInf, 'vesselName'))
@@ -161,8 +196,8 @@ export default class EdiParser997 extends BaseEdiParser {
         const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
         data.push(...filteredList)
         const SE: JSONObject = {
-          segment : 'SE',
-          elementList: []
+          segment: 'SE',
+          elementList: [],
         }
         SE.elementList.push((data.length - lengthOfPreviousData + 1).toString())
         SE.elementList.push(`0001`)
@@ -170,13 +205,13 @@ export default class EdiParser997 extends BaseEdiParser {
 
         const GE: JSONObject = {
           segment: 'GE',
-          elementList : []
+          elementList: [],
         }
         GE.elementList.push('1', parseInt(controlNo, 10))
         data.push(GE)
         const IEA: JSONObject = {
           segment: 'IEA',
-          elementList : []
+          elementList: [],
         }
         IEA.elementList.push('1', controlNo)
         data.push(IEA)
@@ -189,15 +224,13 @@ export default class EdiParser997 extends BaseEdiParser {
     }
     return resultList
   }
-  async getLoopObject(loopObjectList, historyList)
-  {
+  async getLoopObject(loopObjectList, historyList) {
     const noOfhistory = historyList.length
-    for (let i = 0; i < noOfhistory - 1; i++)
-    {
+    for (let i = 0; i < noOfhistory - 1; i++) {
       let noMatch = false
       const R4: JSONObject = {
         segment: 'R4',
-        elementList : []
+        elementList: [],
       }
       switch (historyList[i].statusCode) {
         case 'EPRL':
@@ -218,47 +251,54 @@ export default class EdiParser997 extends BaseEdiParser {
         default:
           noMatch = true
       }
-      if (noMatch === false)
-      {
+      if (noMatch === false) {
         R4.elementList.push('UN', _.get(historyList[i], 'statusPlace').substr(0, 30))
-        R4.elementList.push('')// not used
-        R4.elementList.push('')// No country code
-        R4.elementList.push('', '')// not used
+        R4.elementList.push('') // not used
+        R4.elementList.push('') // No country code
+        R4.elementList.push('', '') // not used
         R4.elementList.push('') // State or Province Code
         loopObjectList.push(R4)
-        if (_.get(historyList[i], 'isEstimated') === false  && _.get(historyList[i], 'statusDate'))
-        {
+        if (_.get(historyList[i], 'isEstimated') === false && _.get(historyList[i], 'statusDate')) {
           const DTM: JSONObject = {
             segment: 'DTM',
-            elementList : []
+            elementList: [],
           }
-          DTM.elementList.push('140', moment(_.get(historyList[i], 'statusDate')).format('YYYYMMDD'), moment(_.get(historyList[i], 'statusDate')).format('HHmm'))
-          DTM.elementList.push('')// no time code
+          DTM.elementList.push(
+            '140',
+            moment(_.get(historyList[i], 'statusDate')).format('YYYYMMDD'),
+            moment(_.get(historyList[i], 'statusDate')).format('HHmm')
+          )
+          DTM.elementList.push('') // no time code
           loopObjectList.push(DTM)
         }
       }
     }
     const R4: JSONObject = {
       segment: 'R4',
-      elementList : []
+      elementList: [],
     }
     R4.elementList.push('5', 'UN', _.get(historyList[noOfhistory - 1], 'statusPlace').substr(0, 30))
-    R4.elementList.push('')// not used
-    R4.elementList.push('')// No country code
-    R4.elementList.push('', '')// not used
+    R4.elementList.push('') // not used
+    R4.elementList.push('') // No country code
+    R4.elementList.push('', '') // not used
     R4.elementList.push('') // State or Province Code
     loopObjectList.push(R4)
-    if (_.get(historyList[noOfhistory - 1], 'isEstimated') === false && _.get(historyList[noOfhistory - 1], 'statusDate'))
-    {
+    if (
+      _.get(historyList[noOfhistory - 1], 'isEstimated') === false &&
+      _.get(historyList[noOfhistory - 1], 'statusDate')
+    ) {
       const DTM: JSONObject = {
         segment: 'DTM',
-        elementList : []
+        elementList: [],
       }
-      DTM.elementList.push('140', moment(_.get(historyList[noOfhistory - 1], 'statusDate')).format('YYYYMMDD'), moment(_.get(historyList[noOfhistory - 1], 'statusDate')).format('HHmm'))
-      DTM.elementList.push('')// no time code
+      DTM.elementList.push(
+        '140',
+        moment(_.get(historyList[noOfhistory - 1], 'statusDate')).format('YYYYMMDD'),
+        moment(_.get(historyList[noOfhistory - 1], 'statusDate')).format('HHmm')
+      )
+      DTM.elementList.push('') // no time code
       loopObjectList.push(DTM)
     }
     return loopObjectList
   }
-
 }

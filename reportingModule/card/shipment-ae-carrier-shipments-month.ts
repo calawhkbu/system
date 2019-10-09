@@ -12,8 +12,6 @@ import {
   Column,
 } from 'node-jql'
 
-import { parseCode } from 'utils/function'
-
 const months = [
   'January',
   'February',
@@ -48,8 +46,8 @@ function prepareParams(): Function {
       .format('YYYY-MM-DD')
 
     // AE
-    subqueries.moduleType = { value: 'AIR' }
-    subqueries.boundType = { value: 'O' }
+    subqueries.moduleTypeCode = { value: 'AIR' }
+    subqueries.boundTypeCode = { value: 'O' }
 
     // select
     params.fields = ['carrierCode', 'jobMonth', 'shipments']
@@ -62,7 +60,6 @@ function prepareParams(): Function {
 }
 
 function prepareTable(): CreateTableJQL {
-
   return new CreateTableJQL({
     $temporary: true,
     name: 'shipment',
@@ -86,19 +83,8 @@ function prepareTable(): CreateTableJQL {
           ],
 
           data: {
-
-            // fields: ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight'],
-
             filter: { carrierCodeIsNotNull: {} },
-
-            // groupBy: ['carrierCode', 'jobMonth'],
-
-            // subqueries: {
-            //   moduleType: { value: 'AIR' },
-            //   boundType: { value: 'O' }
-            // }
-
-          }
+          },
         },
         'shipment'
       ),
@@ -107,7 +93,6 @@ function prepareTable(): CreateTableJQL {
 }
 
 export default [
-
   [prepareParams(), prepareTable()],
 
   // finalize data
@@ -119,8 +104,8 @@ export default [
           ...types.map(
             type =>
               new ResultColumn(
-
-                new FunctionExpression('IFNULL',
+                new FunctionExpression(
+                  'IFNULL',
 
                   new FunctionExpression(
                     'FIND',
@@ -129,7 +114,9 @@ export default [
                       // only shipment
                       type === 'shipments' ? 'shipments' : 'shipments'
                     )
-                  ), 0),
+                  ),
+                  0
+                ),
 
                 `${month}-${type}`
               )
@@ -141,5 +128,4 @@ export default [
     $from: 'shipment',
     $group: 'carrierCode',
   }),
-
 ]

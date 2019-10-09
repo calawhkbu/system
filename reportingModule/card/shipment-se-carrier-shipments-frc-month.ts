@@ -49,7 +49,7 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
       .format('YYYY-MM-DD')
 
     // AE
-    subqueries.moduleTypeCode = { value: 'AIR' }
+    subqueries.moduleTypeCode = { value: 'SEA' }
     subqueries.boundTypeCode = { value: 'O' }
 
     // select
@@ -95,21 +95,22 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
         new ResultColumn(
           new FunctionExpression('IFNULL', new ColumnExpression('shipments'), 0),
           'shipments'
-        ),
+        )
       ],
       $from: new FromTable(
         {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-            { name: 'carrierCode', type: 'string' },
+            { name: 'carrierCode', type: 'string'},
             { name: 'jobMonth', type: 'string' },
             { name: 'shipments', type: 'number' },
           ],
 
-          data: {
-            filter: { carrierCodeIsNotNull: {} },
-          },
+          data : {
+            filter : { carrierCodeIsNotNull : {}}
+          }
+
         },
         'shipment'
       ),
@@ -140,15 +141,16 @@ export default [
           ...types.map(
             type =>
               new ResultColumn(
-                new FunctionExpression(
-                  'IFNULL',
+                new FunctionExpression('IFNULL',
                   new FunctionExpression(
                     'FIND',
                     new AndExpressions([
                       new BinaryExpression(new ColumnExpression('month'), '=', month),
                       new BinaryExpression(new ColumnExpression('type'), '=', type.charAt(0)),
                     ]),
-                    new ColumnExpression('shipments')
+                    new ColumnExpression(
+                      'shipments'
+                    )
                   ),
                   0
                 ),
@@ -161,7 +163,7 @@ export default [
     ],
     $from: 'shipment',
     $group: 'carrierCode',
-  }),
+  })
 
   // new Query({ $from: 'shipment', $limit: 100 })
 ]

@@ -58,7 +58,7 @@ function prepareParams(): Function {
       .format('YYYY-MM-DD')
 
     // select
-    params.fields = ['moduleTypeCode', 'reportingGroup', 'jobMonth', 'teuOrCbm', 'chargeableWeight']
+    params.fields = ['moduleTypeCode', 'reportingGroup', 'jobMonth', 'shipments']
 
     // group by
     params.groupBy = ['moduleTypeCode', 'reportingGroup', 'jobMonth']
@@ -80,8 +80,7 @@ function prepareTable(): CreateTableJQL {
           'month'
         ),
         new ResultColumn(new ColumnExpression('reportingGroup')),
-        new ResultColumn(new ColumnExpression('chargeableWeight')),
-        new ResultColumn(new ColumnExpression('teuOrCbm')),
+        new ResultColumn(new ColumnExpression('shipments'), 'count'),
       ],
       $from: new FromTable(
         {
@@ -91,8 +90,7 @@ function prepareTable(): CreateTableJQL {
             { name: 'moduleTypeCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
             { name: 'reportingGroup', type: 'string' },
-            { name: 'teuOrCbm', type: 'number' },
-            { name: 'chargeableWeight', type: 'number' },
+            { name: 'shipments', type: 'number' },
           ],
         },
         'shipment'
@@ -117,16 +115,11 @@ function prepareFinalTable(): CreateTableJQL {
 
             new AndExpressions([new BinaryExpression(new ColumnExpression('month'), '=', month)]),
 
-            new FunctionExpression(
-              'IF',
-              new BinaryExpression(new ColumnExpression('moduleTypeCode'), '=', 'AIR'),
-              new ColumnExpression('chargeableWeight'),
-              new ColumnExpression('teuOrCbm')
-            )
+            new ColumnExpression('count')
           ),
           0
         ),
-        `${month}-value`
+        `${month}-count`
       )
     )
   })
@@ -192,25 +185,9 @@ function prepareResultTable(): CreateTableJQL {
     $select.push(
       new ResultColumn(
         new FunctionExpression(
-          'IF',
-          new InExpression(new ColumnExpression('reportingGroupTable', 'reportingGroup'), false, [
-            'SA',
-            'SR',
-          ]),
-
-          // times 25
-          // new FunctionExpression('IF', new IsNullExpression(new ColumnExpression('final', `${month}-value`), true), new ColumnExpression('final', `${month}-value`), 0),
-
-          new FunctionExpression(
-            'IF',
-            new IsNullExpression(new ColumnExpression('final', `${month}-value`), true),
-            new MathExpression(new ColumnExpression('final', `${month}-value`), '*', 25),
-            0
-          ),
-
-          new FunctionExpression('IFNULL', new ColumnExpression('final', `${month}-value`), 0)
+          new FunctionExpression('IFNULL', new ColumnExpression('final', `${month}-count`), 0)
         ),
-        `${month}-value`
+        `${month}-count`
       )
     )
   })

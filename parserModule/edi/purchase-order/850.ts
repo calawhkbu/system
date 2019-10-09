@@ -1865,19 +1865,25 @@ export default class Edi850Parser extends BaseEdiParser {
           moreDate.push('ediCreated')
           _.set(flexData, 'data.ediCreatedDateActual', datetime)
         }
-        if (_.get(jsonData, 'GS.dataInterchangeDate') && _.get(jsonData, 'GS.dataInterchangeTime')) {
-          const datetime = moment.utc(`${_.get(jsonData, 'GS.dataInterchangeDate')} ${_.get(jsonData, 'GS.dataInterchangeTime')}`)
+        if (
+          _.get(jsonData, 'GS.dataInterchangeDate') &&
+          _.get(jsonData, 'GS.dataInterchangeTime')
+        ) {
+          const datetime = moment.utc(
+            `${_.get(jsonData, 'GS.dataInterchangeDate')} ${_.get(
+              jsonData,
+              'GS.dataInterchangeTime'
+            )}`
+          )
           moreDate.push('dataInterchange')
           _.set(flexData, 'data.dataInterchangeDateActual', datetime)
         }
-        if (_.get(ST, 'DTM.promoStart'))
-        {
+        if (_.get(ST, 'DTM.promoStart')) {
           const datetime = moment.utc(_.get(ST, 'DTM.promoStart'))
           moreDate.push('promoStart')
           _.set(flexData, 'data.promoStart', datetime)
         }
-        if (_.get(ST, 'DTM.lastArrive'))
-        {
+        if (_.get(ST, 'DTM.lastArrive')) {
           const datetime = moment.utc(_.get(ST, 'DTM.lastArrive'))
           moreDate.push('lastArrive')
           _.set(flexData, 'data.lastArrive', datetime)

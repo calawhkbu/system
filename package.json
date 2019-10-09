@@ -5,15 +5,15 @@
     "@nestjs/common": "6.3.0",
     "chalk": "^2.4.2",
     "moment": "^2.24.0",
-    "node-jql": "^2.0.0-rc.57",
-    "node-jql-core": "^2.0.0-rc.62",
+    "node-jql": "^2.0.0-rc.59",
+    "node-jql-core": "^2.0.0-rc.69",
     "prettier": "^1.18.2",
-    "tslint": "5.19.0",
-    "typescript": "^3.5.3"
+    "tslint": "5.20.0",
+    "typescript": "^3.6.3"
   },
   "scripts": {
     "lint": "tslint -p tsconfig.json -c tslint.json",
-    "format": "yarn format:ts \"**/*.{ts,js}\" && yarn format:json \"**/*.json\"",
+    "format": "yarn format:ts \"**/*.{ts,js}\" && yarn format:json \"**/*.json\"; yarn lint --fix",
     "format:ts": "prettier --config .prettierrc.ts.json --write",
     "format:json": "prettier --config .prettierrc.json.json --write",
     "export": "node export"
