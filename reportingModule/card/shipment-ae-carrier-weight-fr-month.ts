@@ -306,7 +306,10 @@ function prepareFinalTable() {
 
   }
 
-  const $select = []
+  const $select = [
+
+    new ResultColumn(new ColumnExpression('carrierCode'))
+  ]
 
   variables.map((variable) => {
 

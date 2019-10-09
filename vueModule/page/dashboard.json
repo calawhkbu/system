@@ -58,7 +58,7 @@
                       }
                     }
                   },
-                  "valueKey": "old360Id",
+                  "valueKey": "id",
                   "labelKey": "partyName",
                   "sublabelKey": "shortName"
                 },
@@ -70,12 +70,11 @@
                     "isBranch": {
                       "value": true
                     },
-
-                    "old360Id": {
-                      "value": "{{value}}"
+                    "id" : {
+                      "value" : "{{value}}"
                     }
                   },
-                  "valueKey": "old360Id",
+                  "valueKey": "id",
                   "labelKey": "shortName",
                   "sublabelKey": "shortName"
                 }
@@ -106,7 +105,7 @@
                     }
                   },
 
-                  "valueKey": "old360Id",
+                  "valueKey": "id",
                   "labelKey": "partyName"
                 },
 
@@ -114,16 +113,18 @@
                   "method": "POST",
                   "url": "api/party/query/party_auto_suggest",
                   "data": {
+
                     "subqueries": {
                       "partyTypes": {
                         "value": ["agent"]
                       },
-                      "old360Id": {
-                        "value": "{{value}}"
+                      "id" : {
+                        "value" : "{{value}}"
                       }
                     }
+
                   },
-                  "valueKey": "old360Id",
+                  "valueKey": "id",
                   "labelKey": "partyName"
                 }
               }
