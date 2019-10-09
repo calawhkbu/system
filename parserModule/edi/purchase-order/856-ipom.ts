@@ -144,9 +144,11 @@ export default class EdiParser856 extends BaseEdiParser {
           let numberOfPacking = 0
           for (const booking of _.get(element, 'bookingPOPackings'))
           {
-            if (_.get(booking, 'weight'))
+            if (_.get(booking, 'bookWeight'))
             {
-              const weight = (_.get(booking, 'weightUnit') === 'KG') ? _.get(booking, 'weight') * 2.2 : _.get(booking, 'weight')
+              console.log(_.get(booking, 'bookWeight'))
+              const weight = _.get(booking, 'bookWeight') * 2.2
+              console.log(weight)
               totalWeight += weight
             }
             numberOfPacking += 1
@@ -157,7 +159,7 @@ export default class EdiParser856 extends BaseEdiParser {
           }
           TD1.elementList.push('CTN25', numberOfPacking)
           TD1.elementList.push('', '', '')// not used
-          TD1.elementList.push( 'G', totalWeight, 'LB')
+          TD1.elementList.push( 'G', Number.parseFloat(totalWeight.toPrecision(8)).toString(), 'LB')
           loopObjectList.push(TD1)
         }
         const TD5: JSONObject = {
@@ -295,16 +297,17 @@ export default class EdiParser856 extends BaseEdiParser {
             elementList : []
           }
           PO4.elementList.push('', '', '', '')// not used
-          const weight = (_.get(ItemList[itemIndex], 'weightUnit') === 'KG') ? _.get(ItemList[itemIndex], 'weight') * 2.2 : _.get(ItemList[itemIndex], 'weight')
-          PO4.elementList.push('G', weight, 'LB')
-          PO4.elementList.push(_.get(ItemList[itemIndex], 'volume') * 35.31 , 'CF')
+          const weight = _.get(ItemList[itemIndex], 'bookWeight') * 2.2
+          PO4.elementList.push('G', Number.parseFloat(weight.toPrecision(8)).toString(), 'LB')
+          const volume = _.get(ItemList[itemIndex], 'bookVolume') * 35.31
+          PO4.elementList.push( Number.parseFloat(volume.toPrecision(8)).toString(), 'CF')
           loopObjectList.push(PO4)
 
           const MAN: JSONObject = {
             segement : 'MAN',
             elementList : []
           }
-          MAN.elementList.push('GM', _.get(element, 'mark'))
+          MAN.elementList.push('GM', '00008049180041468238') // MAN 02 is wrong
           loopObjectList.push(MAN)
 
           index++
