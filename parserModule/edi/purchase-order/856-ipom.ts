@@ -146,9 +146,7 @@ export default class EdiParser856 extends BaseEdiParser {
           {
             if (_.get(booking, 'bookWeight'))
             {
-              console.log(_.get(booking, 'bookWeight'))
               const weight = _.get(booking, 'bookWeight') * 2.2
-              console.log(weight)
               totalWeight += weight
             }
             numberOfPacking += 1
