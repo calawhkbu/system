@@ -6,10 +6,13 @@ import {
   InExpression,
   JoinClause,
   Query,
+  OrExpressions,
+  AndExpressions
 } from 'node-jql'
 
 const query = new QueryDef(
   new Query({
+    $distinct: true,
     $from: new FromTable({
       table: `
     (SELECT \`tracking_reference\`.*, \`masterNo\` AS \`trackingNo\`, 'masterNo' AS \`type\`
@@ -53,15 +56,6 @@ query
     'trackingType',
     new Query({
       $where: new BinaryExpression(new ColumnExpression('tracking_reference', 'trackingType'), '='),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'yundang',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('tracking_reference', 'yundang'), '='),
     })
   )
   .register('value', 0)

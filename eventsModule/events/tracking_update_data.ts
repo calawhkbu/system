@@ -28,6 +28,30 @@ const deplayAlertTimeRange = {
   },
 }
 
+const alertMap = [
+  {
+    trackingVariable: 'estimatedDepartureDate',
+    bookingVariable: 'departureDateEstimated',
+    alertType: 'bookingEtdChanged',
+  },
+  {
+    trackingVariable: 'actualDepartureDate',
+    bookingVariable: 'departureDateActual',
+    alertType: 'bookingAtdChanged',
+  },
+
+  {
+    trackingVariable: 'estimatedArrivalDate',
+    bookingVariable: 'arrivalDateEstimated',
+    alertType: 'bookingEtAChanged',
+  },
+  {
+    trackingVariable: 'actualArrivalDate',
+    bookingVariable: 'arrivalDateActual',
+    alertType: 'bookingAtaChanged',
+  },
+]
+
 class TrackingUpdateDataEvent extends BaseEvent {
   constructor(
     protected readonly parameters: any,
@@ -43,47 +67,56 @@ class TrackingUpdateDataEvent extends BaseEvent {
   }
 
   public async mainFunction(parameters: any) {
-    const tracking = parameters.data as Tracking
+    const {
+      TrackingService: trackingService,
+      AlertDbService: alertDbService,
+      BookingService: bookingService,
+      TrackingReferenceService: trackingReferenceService,
+    }: {
+      TrackingService: TrackingService,
+      AlertDbService: AlertDbService,
+      BookingService: BookingService,
+      TrackingReferenceService: TrackingReferenceService
+    } = this.allService
+    const {
+      trackingNo
+    } = parameters.data as Tracking
+    const references: TrackingReference[] = await trackingService.reportQuery(
+      'tracking_table',
+      {
+        fields: [['tracking_reference', 'id'] ],
+        subqueries: { trackingNo: { value: [trackingNo] } }
+      }
+    )
+    for (const { id } of references) {
+      const {
+        masterNo = null,
+        soNo = [],
+        containerNo = []
+      }: TrackingReference = await trackingReferenceService.findOne(id)
+      const bookingIdList = await bookingService.query(
+        `
+          SELECT br.bookingId as bookingId
+          FROM booking_reference br
+          WHERE br.refDescription in (:trackingNo) AND (br.refName = 'MAWB' OR br.refName = 'MLB')
+          UNION
+          SELECT bc.bookingId as bookingId
+          FROM booking_container bc
+          WHERE (bc.soNo in (:trackingNo) OR bc.containerNo in (:trackingNo))
+        `,
+        {
+          raw: true,
+          type: Sequelize.QueryTypes.SELECT,
+          transaction: this.transaction,
+          replacement: {
+            trackingNo: [masterNo].concat(soNo, containerNo)
+          }
+        }
+      )
+      for (const id of bookingIdList) {
 
-    const rawQueryOption = {
-      raw: true,
-      type: Sequelize.QueryTypes.SELECT,
-      transaction: this.transaction,
+      }
     }
-
-    // todo: find all tracking reference related to this tracking
-    // find all booking related to this booking
-
-    // update eted/eta in booking
-    // check if it changed too much
-
-    console.log(JSON.stringify(parameters), 'parameters')
-    console.log('in main Excecute of TrackingUpdateData')
-
-    const trackingService = this.allService['TrackingService'] as TrackingService
-
-    const trackingReferenceService = this.allService[
-      'TrackingReferenceService'
-    ] as TrackingReferenceService
-    const alertDbService = this.allService['AlertDbService'] as AlertDbService
-
-    const bookingService = this.allService['BookingService'] as BookingService
-
-    let trackingNo = tracking.trackingNo
-    trackingNo = '123'
-
-    const queryString =
-      'SELECT `tracking_reference`.`partyGroupCode`, `tracking_reference`.`trackingNo`, `tracking_reference`.`type` FROM (SELECT  `tracking_reference`.*,  `masterNo` AS trackingNo, \'masterNo\' as `type` FROM `tracking_reference` UNION SELECT  `tracking_reference`.*, `soTable`.`trackingNo`, \'soNo\' as `type` FROM  `tracking_reference`,  JSON_TABLE( `soNo`, "$[*]" COLUMNS (`trackingNo` VARCHAR(100) PATH "$")) `soTable`\n\tUNION\n\t\tSELECT  `tracking_reference`.* , `containerTable`.`trackingNo`, \'containerNo\' as `type`\n\t\tFROM `tracking_reference`,  JSON_TABLE( `containerNo`, "$[*]" COLUMNS (`trackingNo` VARCHAR(100) PATH "$")) `containerTable`\n) `tracking_reference`\nWHERE `tracking_reference`.`trackingNo` is not null \nAND `tracking_reference`.`trackingNo` = "' +
-      `${trackingNo}` +
-      '"'
-    const trackingReferenceList = (await trackingReferenceService.query(
-      queryString,
-      rawQueryOption
-    )) as {
-      partyGroupCode: string
-      trackingNo: string
-      type: 'masterNo' | 'soNo' | 'containerNo'
-    }[]
 
     await Promise.all(
       trackingReferenceList.map(async trackingReference => {
@@ -93,21 +126,12 @@ class TrackingUpdateDataEvent extends BaseEvent {
         if (trackingReference.type === 'masterNo') {
           // hardcode
           bookingIdListQueryString = `
-          SELECT booking_reference.bookingId
-          FROM booking_reference
-          WHERE booking_reference.refDescription = '${trackingNo}'
-          AND (booking_reference.refName = 'MAWB' OR booking_reference.refName = 'MLB')`
+          `
         } else if (trackingReference.type === 'soNo') {
-          bookingIdListQueryString = `SELECT
-          booking_container.bookingId
-          FROM booking_container
-          WHERE booking_container.soNo = '${trackingNo}'
+          bookingIdListQueryString = `
           `
         } else if (trackingReference.type === 'containerNo') {
-          bookingIdListQueryString = `SELECT
-          booking_container.bookingId
-          FROM booking_container
-          WHERE booking_container.containerNo = '${trackingNo}'
+          bookingIdListQueryString = `
           `
         }
 
@@ -128,29 +152,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
           this.user
         )) as Booking[]
 
-        const alertMap = [
-          {
-            trackingVariable: 'estimatedDepartureDate',
-            bookingVariable: 'departureDateEstimated',
-            alertType: 'bookingEtdChanged',
-          },
-          {
-            trackingVariable: 'actualDepartureDate',
-            bookingVariable: 'departureDateActual',
-            alertType: 'bookingAtdChanged',
-          },
 
-          {
-            trackingVariable: 'estimatedArrivalDate',
-            bookingVariable: 'arrivalDateEstimated',
-            alertType: 'bookingEtAChanged',
-          },
-          {
-            trackingVariable: 'actualArrivalDate',
-            bookingVariable: 'arrivalDateActual',
-            alertType: 'bookingAtaChanged',
-          },
-        ]
 
         const alertResult = [] as {
           tableName: string
