@@ -63,7 +63,7 @@ const query = new Query({
       columns: [
         { name: 'alertType', type: 'string' },
         { name: 'tableName', type: 'string' },
-        { name: 'primaryKey', type: 'number' },
+        { name: 'primaryKey', type: 'string' },
       ],
     },
     'alert'
