@@ -6,8 +6,6 @@ import {
   InExpression,
   JoinClause,
   Query,
-  OrExpressions,
-  AndExpressions
 } from 'node-jql'
 
 const query = new QueryDef(
