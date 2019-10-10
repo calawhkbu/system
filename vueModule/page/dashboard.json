@@ -1,352 +1,353 @@
 {
-  "layout": "MainLayout",
-  "components": [
-    {
-      "is": "GridTool",
-      "props": {
-        "reportingKey": "dashboard",
-        "urlFormat": "/dashboard{{ id|if('/', '') }}{{ id }}",
-        "hasReports": true,
-        "showFilterBar": true,
-        "enableShare": true,
-        "enableSetting": true,
-        "newReport": {
-          "filters": {
-            "date": {
-              "func": {
-                "args": {
-                  "unit": "year"
-                },
-                "key": "current"
-              }
+  "components": [{
+    "is": "GridTool",
+    "props": {
+      "reportingKey": "dashboard",
+      "urlFormat": "/dashboard{{ id|if('/', '') }}{{ id }}",
+      "hasReports": true,
+      "showFilterBar": true,
+      "enableShare": true,
+      "enableSetting": true,
+      "newReport": {
+        "filters": {
+          "date": {
+            "func": {
+              "args": {
+                "unit": "year"
+              },
+              "key": "current"
             }
-          },
-          "configurations": {
-            "i18nContext": "Reporting",
-            "colors": ["#4bc0c0", "#ff6384", "#ffcd56", "#c9cbcf", "#36a2eb"]
           }
         },
-        "filters": [
-          {
-            "name": "date",
-            "type": "date",
-            "props": {
-              "required": true
-            }
-          },
-          {
-            "name": "officePartyId",
-            "display": "office",
-            "type": "autocomplete",
-      
-            "props": {
+        "configurations": {
+          "i18nContext": "Reporting",
+          "colors": ["#4bc0c0", "#ff6384", "#ffcd56", "#c9cbcf", "#36a2eb"]
+        }
+      },
+      "filters": [{
+          "name": "date",
+          "type": "date",
+          "props": {
+            "required": true
+          }
+        },
+        {
+          "name": "officePartyId",
+          "display": "office",
+          "type": "autocomplete",
 
-              "multi" : true,
+          "props": {
 
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/party/query/party_auto_suggest",
+            "multi": true,
 
-                  "data": {
-                    "subqueries": {
-                      "isBranch": {
-                        "value": true
-                      },
-                      "q": {
-                        "value": "{{ q }}"
-                      }
-                    }
-                  },
-                  "valueKey": "id",
-                  "labelKey": "partyName",
-                  "sublabelKey": "shortName"
-                },
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/party/query/party_auto_suggest",
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
 
+                "data": {
                   "subqueries": {
                     "isBranch": {
                       "value": true
                     },
-                    "id" : {
-                      "value" : "{{value}}"
+                    "q": {
+                      "value": "{{ q }}"
                     }
-                  },
-                  "valueKey": "id",
-                  "labelKey": "shortName",
-                  "sublabelKey": "shortName"
-                }
-              }
-            }
-          },
-
-          {
-            "name": "agentPartyId",
-            "display": "agent",
-            "type": "autocomplete",
-            
-            "props": {
-
-              "multi" : true,
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/party/query/party_auto_suggest",
-                  "data": {
-                    "subqueries": {
-                      "partyTypes": {
-                        "value": ["agent"]
-                      },
-                      "q": {
-                        "value": "{{ q }}"
-                      }
-                    }
-                  },
-
-                  "valueKey": "id",
-                  "labelKey": "partyName"
+                  }
                 },
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "shortName"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
 
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/party/query/party_auto_suggest",
-                  "data": {
-
-                    "subqueries": {
-                      "partyTypes": {
-                        "value": ["agent"]
-                      },
-                      "id" : {
-                        "value" : "{{value}}"
-                      }
-                    }
-
+                "subqueries": {
+                  "isBranch": {
+                    "value": true
                   },
-                  "valueKey": "id",
-                  "labelKey": "partyName"
-                }
-              }
-            }
-          },
-
-          {
-            "name": "departureDateEstimated",
-            "type": "date",
-            "props": {}
-          },
-          {
-            "name": "arrivalDateEstimated",
-            "type": "date",
-            "props": {}
-          },
-          {
-            "name": "moduleTypeCode",
-            "display": "moduleType",
-            "type": "list",
-            "props": {
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "MODULE"
-                      }
-                    }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
+                  "id": {
+                    "value": "{{value}}"
+                  }
                 },
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "MODULE"
-                      },
-                      "code": {
-                        "value": "{{ value }}"
-                      }
-                    }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
-                }
+                "valueKey": "id",
+                "labelKey": "shortName",
+                "sublabelKey": "shortName"
               }
             }
-          },
-          {
-            "name": "boundTypeCode",
-            "display": "boundType",
-            "type": "list",
-            "props": {
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "BOUND"
-                      }
-                    }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
-                },
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "BOUND"
-                      },
-                      "code": {
-                        "value": "{{ value }}"
-                      }
-                    }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
-                }
-              }
-            }
-          },
-          {
-            "name": "nominatedTypeCode",
-            "display": "nominatedType",
-            "type": "list",
-            "props": {
-              "items": [
-                { "value": "F", "label": "Freehand" },
-                { "value": "R", "label": "R/O" }
-              ]
-            }
-          },
-          {
-            "name": "shipmentTypeCode",
-            "display": "shipmentType",
-            "type": "list",
-            "props": {
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "SHIPTYPE"
-                      }
-                    }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
-                },
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "SHIPTYPE"
-                      },
-                      "code": {
-                        "value": "{{ value }}"
-                      }
-                    }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
-                }
-              }
-            }
-          },
-          {
-            "name": "portOfLoadingCode",
-            "display": "portOfLoading",
-            "type": "autocomplete",
-            "props": {
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/location/query/location",
-                  "data": {
-                    "subqueries": {
-                      "q": {
-                        "value": "{{ q }}"
-                      }
-                    },
-                    "limit": 20
-                  },
-                  "valueKey": "portCode",
-                  "labelKey": "name"
-                },
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/location/query/location",
-                  "data": {
-                    "subqueries": {
-                      "portCode": {
-                        "value": "{{ value }}"
-                      }
-                    },
-                    "limit": 20
-                  },
-                  "valueKey": "portCode",
-                  "labelKey": "name"
-                }
-              }
-            }
-          },
-          {
-            "name": "portOfDischargeCode",
-            "display": "portOfDischarge",
-            "type": "autocomplete",
-            "props": {
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/location/query/location",
-                  "data": {
-                    "subqueries": {
-                      "q": {
-                        "value": "{{ q }}"
-                      }
-                    },
-                    "limit": 20
-                  },
-                  "valueKey": "portCode",
-                  "labelKey": "name"
-                },
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/location/query/location",
-                  "data": {
-                    "subqueries": {
-                      "portCode": {
-                        "value": "{{ value }}"
-                      }
-                    },
-                    "limit": 20
-                  },
-                  "valueKey": "portCode",
-                  "labelKey": "name"
-                }
-              }
-            }
-          },
-          {
-            "name": "salesmanCode",
-            "display": "salesman",
-            "type": "text"
           }
-        ]
-      }
+        },
+
+        {
+          "name": "agentPartyId",
+          "display": "agent",
+          "type": "autocomplete",
+
+          "props": {
+
+            "multi": true,
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+                "data": {
+                  "subqueries": {
+                    "partyTypes": {
+                      "value": ["agent"]
+                    },
+                    "q": {
+                      "value": "{{ q }}"
+                    }
+                  }
+                },
+
+                "valueKey": "id",
+                "labelKey": "partyName"
+              },
+
+              "resolve": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+                "data": {
+
+                  "subqueries": {
+                    "partyTypes": {
+                      "value": ["agent"]
+                    },
+                    "id": {
+                      "value": "{{value}}"
+                    }
+                  }
+
+                },
+                "valueKey": "id",
+                "labelKey": "partyName"
+              }
+            }
+          }
+        },
+
+        {
+          "name": "departureDateEstimated",
+          "type": "date",
+          "props": {}
+        },
+        {
+          "name": "arrivalDateEstimated",
+          "type": "date",
+          "props": {}
+        },
+        {
+          "name": "moduleTypeCode",
+          "display": "moduleType",
+          "type": "list",
+          "props": {
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "MODULE"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "MODULE"
+                    },
+                    "code": {
+                      "value": "{{ value }}"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              }
+            }
+          }
+        },
+        {
+          "name": "boundTypeCode",
+          "display": "boundType",
+          "type": "list",
+          "props": {
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "BOUND"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "BOUND"
+                    },
+                    "code": {
+                      "value": "{{ value }}"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              }
+            }
+          }
+        },
+        {
+          "name": "nominatedTypeCode",
+          "display": "nominatedType",
+          "type": "list",
+          "props": {
+            "items": [{
+                "value": "F",
+                "label": "Freehand"
+              },
+              {
+                "value": "R",
+                "label": "R/O"
+              }
+            ]
+          }
+        },
+        {
+          "name": "shipmentTypeCode",
+          "display": "shipmentType",
+          "type": "list",
+          "props": {
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "SHIPTYPE"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "SHIPTYPE"
+                    },
+                    "code": {
+                      "value": "{{ value }}"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              }
+            }
+          }
+        },
+        {
+          "name": "portOfLoadingCode",
+          "display": "portOfLoading",
+          "type": "autocomplete",
+          "props": {
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "q": {
+                      "value": "{{ q }}"
+                    }
+                  },
+                  "limit": 20
+                },
+                "valueKey": "portCode",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "portCode": {
+                      "value": "{{ value }}"
+                    }
+                  },
+                  "limit": 20
+                },
+                "valueKey": "portCode",
+                "labelKey": "name"
+              }
+            }
+          }
+        },
+        {
+          "name": "portOfDischargeCode",
+          "display": "portOfDischarge",
+          "type": "autocomplete",
+          "props": {
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "q": {
+                      "value": "{{ q }}"
+                    }
+                  },
+                  "limit": 20
+                },
+                "valueKey": "portCode",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "portCode": {
+                      "value": "{{ value }}"
+                    }
+                  },
+                  "limit": 20
+                },
+                "valueKey": "portCode",
+                "labelKey": "name"
+              }
+            }
+          }
+        },
+        {
+          "name": "salesmanCode",
+          "display": "salesman",
+          "type": "text"
+        }
+      ]
     }
-  ]
+  }]
 }
