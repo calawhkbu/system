@@ -47,15 +47,14 @@ function prepareParams(): Function {
 
     // limit/extend to 1 year
     const subqueries = (params.subqueries = params.subqueries || {})
-    const year = (subqueries.data ? moment() : moment(subqueries.date.from, 'YYYY-MM-DD')).year()
-    subqueries.date.from = moment()
-      .year(year)
-      .startOf('year')
-      .format('YYYY-MM-DD')
-    subqueries.date.to = moment()
-      .year(year)
-      .endOf('year')
-      .format('YYYY-MM-DD')
+
+    const year = !subqueries.date ? moment().year() : moment(subqueries.date.from, 'YYYY-MM-DD').year()
+
+    subqueries.date = {
+
+      from : moment().year(year).startOf('year').format('YYYY-MM-DD'),
+      to : moment().year(year).endOf('year').format('YYYY-MM-DD')
+    }
 
     // select
     params.fields = ['moduleTypeCode', 'reportingGroup', 'jobMonth', 'teuOrCbm', 'chargeableWeight']
@@ -177,6 +176,20 @@ function insertReportingGroupTable(): InsertJQL {
 }
 
 function prepareResultTable(): CreateTableJQL {
+
+  function composeSumExpression(dumbList: any[]): MathExpression {
+    if (dumbList.length === 2) {
+      return new MathExpression(dumbList[0], '+', dumbList[1])
+    }
+
+    const popResult = dumbList.pop()
+
+    return new MathExpression(popResult, '+', composeSumExpression(dumbList))
+
+  }
+
+  const sumList = []
+
   const $select = [
     new ResultColumn(
       new ColumnExpression('reportingGroupTable', 'moduleTypeCode'),
@@ -189,31 +202,33 @@ function prepareResultTable(): CreateTableJQL {
   ]
 
   months.map(month => {
-    $select.push(
-      new ResultColumn(
-        new FunctionExpression(
-          'IF',
-          new InExpression(new ColumnExpression('reportingGroupTable', 'reportingGroup'), false, [
-            'SA',
-            'SR',
-          ]),
 
-          // times 25
-          // new FunctionExpression('IF', new IsNullExpression(new ColumnExpression('final', `${month}-value`), true), new ColumnExpression('final', `${month}-value`), 0),
+    const column = new FunctionExpression(
+      'IF',
+      new InExpression(new ColumnExpression('reportingGroupTable', 'reportingGroup'), false, [
+        'SA',
+        'SR',
+      ]),
 
-          new FunctionExpression(
-            'IF',
-            new IsNullExpression(new ColumnExpression('final', `${month}-value`), true),
-            new MathExpression(new ColumnExpression('final', `${month}-value`), '*', 25),
-            0
-          ),
+      // times 25
+      new FunctionExpression(
+        'IF',
+        new IsNullExpression(new ColumnExpression('final', `${month}-value`), true),
+        new MathExpression(new ColumnExpression('final', `${month}-value`), '*', 25),
+        0
+      ),
 
-          new FunctionExpression('IFNULL', new ColumnExpression('final', `${month}-value`), 0)
-        ),
-        `${month}-value`
-      )
+      new FunctionExpression('IFNULL', new ColumnExpression('final', `${month}-value`), 0)
     )
+
+    $select.push(new ResultColumn(column, `${month}-value`))
+
+    sumList.push(column)
   })
+
+  const sumExpression = composeSumExpression(sumList)
+
+  $select.push(new ResultColumn(sumExpression, 'total'))
 
   return new CreateTableJQL({
     $temporary: true,

@@ -35,7 +35,7 @@ const types = ['F', 'R']
 
 // const types = ['F_GW', 'F_CW', 'R_GW', 'R_CW']
 
-const variables = ['grossWeight', 'chargeableWeight']
+const variables = ['shipments']
 
 function prepareParams(type_: 'F' | 'R' | 'T'): Function {
   const fn = function(require, session, params) {
@@ -60,7 +60,7 @@ function prepareParams(type_: 'F' | 'R' | 'T'): Function {
     subqueries.boundTypeCode = { value: 'O' }
 
     // select
-    params.fields = ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight']
+    params.fields = ['carrierCode', 'jobMonth', 'shipments']
 
     // group by
     params.groupBy = ['carrierCode', 'jobMonth']
@@ -86,7 +86,7 @@ function prepareParams(type_: 'F' | 'R' | 'T'): Function {
 function prepareData(type: 'F' | 'R'): InsertJQL {
   return new InsertJQL({
     name: 'shipment',
-    columns: ['type', 'carrierCode', 'month', 'grossWeight', 'chargeableWeight'],
+    columns: ['type', 'carrierCode', 'month', 'shipments'],
     query: new Query({
       $select: [
         new ResultColumn(new Value(type), 'type'),
@@ -96,13 +96,9 @@ function prepareData(type: 'F' | 'R'): InsertJQL {
           'month'
         ),
         new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('grossWeight'), 0),
-          'grossWeight'
-        ),
-        new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('chargeableWeight'), 0),
-          'chargeableWeight'
-        ),
+          new FunctionExpression('IFNULL', new ColumnExpression('shipments'), 0),
+          'shipments'
+        )
       ],
       $from: new FromTable(
         {
@@ -111,8 +107,7 @@ function prepareData(type: 'F' | 'R'): InsertJQL {
           columns: [
             { name: 'carrierCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
-            { name: 'grossWeight', type: 'number' },
-            { name: 'chargeableWeight', type: 'number' },
+            { name: 'shipments', type: 'number' },
           ],
 
           data: {
@@ -266,8 +261,7 @@ export default [
     new Column('type', 'string'),
     new Column('carrierCode', 'string'),
     new Column('month', 'string'),
-    new Column('grossWeight', 'number'),
-    new Column('chargeableWeight', 'number'),
+    new Column('shipments', 'number'),
   ]),
 
   // prepare data
@@ -280,7 +274,7 @@ export default [
   new Query({
 
     $from: 'final',
-    $order: new OrderBy(new ColumnExpression('final', 'total-T_grossWeight'), 'DESC')
+    $order: new OrderBy(new ColumnExpression('final', 'total-T_shipments'), 'DESC')
   })
 
 ]
