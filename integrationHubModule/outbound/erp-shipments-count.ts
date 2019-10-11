@@ -2,61 +2,6 @@ import { BadRequestException, ForbiddenException, NotImplementedException } from
 import moment = require('moment')
 
 const app = {
-  constants: {
-    fieldNameMap: {
-      site: 'site',
-      houseNo: 'houseNo',
-      jobDate: 'jobDate',
-      jobNo: 'jobNo',
-      masterNo: 'masterNo',
-      bookingNo: 'bookingNo',
-      poNo: 'poNo', // TODO Need FC
-      contractNo: 'contractNo', // TODO Need FC
-      commodity: 'commodity',
-      carrierCode: 'carrierCode',
-      carrierName: 'carrierName', // TODO Need FC
-      vessel: 'vessel',
-      voyage: 'voyage',
-      division: 'division',
-      serviceCode: 'service',
-      incoTermsCode: 'incoTerms',
-      freightTermsCode: 'freightTerms',
-      otherTermsCode: 'otherTerms',
-      moduleTypeCode: 'moduleType',
-      boundTypeCode: 'boundType',
-      nominatedTypeCode: 'nominatedType',
-      isDirect: 'isDirect',
-      isCoload: 'isCoload',
-      shipmentTypeCode: 'shipmentType',
-      placeOfReceiptCode: 'placeOfReceipt',
-      portOfLoadingCode: 'portOfLoading',
-      portOfDischargeCode: 'portOfDischarge',
-      placeOfDeliveryCode: 'placeOfDelivery',
-      finalDestinationCode: 'finalDestination',
-      departureDateEstimated: 'departureDateEstimated',
-      departureDateActual: 'departureDateActual', // TODO Need FC
-      arrivalDateEstimated: 'arrivalDateEstimated',
-      arrivalDateActual: 'arrivalDateActual', // TODO Need FC
-      forwarderPartyCode: 'officeCode',
-      forwarderPartyName: 'officePartyName',
-      shipperPartyCode: 'shipperCode',
-      shipperPartyName: 'shipperPartyName',
-      consigneePartyCode: 'consigneeCode',
-      consigneePartyName: 'consigneePartyName',
-      linerAgentPartyCode: 'linerAgentCode',
-      linerAgentPartyName: 'linerAgentPartyName',
-      roAgentPartyCode: 'roAgentCode', // TODO Need FC
-      roAgentPartyName: 'roAgentPartyName', // TODO Need FC
-      agentPartyCode: 'agentCode',
-      agentPartyName: 'agentPartyName',
-      controllingCustomerPartyCode: 'controllingCustomerCode',
-      controllingCustomerPartyName: 'controllingCustomerPartyName',
-      sSalesmanCode: 'shipperSalesmanCode',
-      cSalesmanCode: 'consigneeSalesmanCode',
-      rSalesmanCode: 'controllingCustomerSalesmanCode',
-      quantity: 'quantity',
-    },
-  },
   method: 'POST', // 'GET'|'POST'|'PUT'|'DELETE'|'HEAD'|'OPTIONS'
   getUrl: ({ api }: { api: any }) => {
     if (!api.erp || !api.erp.url2) throw new NotImplementedException()
@@ -67,12 +12,6 @@ const app = {
     body: any,
     helper: { [key: string]: Function }
   ) => {
-    app.constants.fieldNameMap = helper.create2WayMap(
-      app.constants.fieldNameMap,
-      'external',
-      'internal'
-    )
-
     // resolve role filters
     roles = await helper.resolveRoles(roleService, partyGroup, roles)
     const roleFilters = roles
@@ -140,7 +79,6 @@ const app = {
     }
 
     // salesmanCode
-    // TODO
     if (subqueries.salesmanCode) {
       para.salesmanCode = subqueries.salesmanCode.value
     }
@@ -155,17 +93,11 @@ const app = {
 
     // TODO agentCode
 
-    // agentGroup
-    if (subqueries.agentGroup) {
-      para.agentGroup = subqueries.agentGroup.value
-    }
+    // TODO agentGroup
 
     // TODO controllingCustomerCode
 
-    // division
-    if (subqueries.division) {
-      para.division = subqueries.division.value
-    }
+    // TODO division
 
     // moduleType
     let availableModuleTypes = helper.getModuleTypes(roleFilters)
@@ -216,7 +148,7 @@ const app = {
       headers: {
         'content-type': 'application/json',
       },
-      body: JSON.stringify({ para: JSON.stringify(para), gettot: 0 }),
+      body: JSON.stringify({ para: JSON.stringify(para), gettot: 1 }),
     }
   },
   responseHandler: (
@@ -227,9 +159,7 @@ const app = {
     const responseBody = JSON.parse(JSON.parse(response.responseBody).d)
 
     return {
-      responseBody: helper
-        .convertToInternalObject(responseBody || [], app.constants.fieldNameMap)
-        .slice(0, 20), // TODO
+      responseBody: [{ count: responseBody.total }],
       responseOptions: response.responseOptions,
     }
   },
