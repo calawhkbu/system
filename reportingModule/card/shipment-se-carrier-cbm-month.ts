@@ -62,7 +62,6 @@ function prepareParams(): Function {
 }
 
 function prepareTable(): CreateTableJQL {
-
   return new CreateTableJQL({
     $temporary: true,
     name: 'shipment',
@@ -83,15 +82,13 @@ function prepareTable(): CreateTableJQL {
           columns: [
             { name: 'carrierCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
-            { name: 'cntCbm', type: 'number', $as : 'cbm'},
+            { name: 'cntCbm', type: 'number', $as: 'cbm' },
             { name: 'shipments', type: 'number' },
           ],
 
           data: {
-
             filter: { carrierCodeIsNotNull: {} },
-
-          }
+          },
         },
         'shipment'
       ),
@@ -100,7 +97,6 @@ function prepareTable(): CreateTableJQL {
 }
 
 export default [
-
   [prepareParams(), prepareTable()],
 
   // finalize data
@@ -112,14 +108,15 @@ export default [
           ...types.map(
             type =>
               new ResultColumn(
-                new FunctionExpression('IFNULL',
+                new FunctionExpression(
+                  'IFNULL',
                   new FunctionExpression(
                     'FIND',
                     new BinaryExpression(new ColumnExpression('month'), '=', month),
-                    new ColumnExpression(
-                      type === 'cbm' ? 'cbm' : 'shipments'
-                    )
-                  ), 0),
+                    new ColumnExpression(type === 'cbm' ? 'cbm' : 'shipments')
+                  ),
+                  0
+                ),
 
                 `${month}-${type}`
               )
@@ -131,5 +128,4 @@ export default [
     $from: 'shipment',
     $group: 'carrierCode',
   }),
-
 ]

@@ -34,7 +34,6 @@ const months = [
 const types = ['GW', 'CW']
 
 function prepareParams(likeHouseNo_: string): Function {
-
   const fn = async function(require, session, params) {
     const { Resultset } = require('node-jql-core')
     const {
@@ -70,12 +69,12 @@ function prepareParams(likeHouseNo_: string): Function {
     subqueries.boundTypeCode = { value: 'O' }
 
     // warning : hardCode
-    subqueries.officePartyId = { value : 7351490 }
+    subqueries.officePartyId = { value: 7351490 }
 
     // subqueries.billTypeCode = { value: 'M' }
     subqueries.reportingGroup = { value: ['AC', 'AD'] }
 
-    subqueries.likeHouseNo = { value :  likeHouseNo_}
+    subqueries.likeHouseNo = { value: likeHouseNo_ }
 
     // select
     params.fields = ['jobMonth', 'grossWeight', 'chargeableWeight']
@@ -91,17 +90,15 @@ function prepareParams(likeHouseNo_: string): Function {
 }
 
 function prepareFullTable(): CreateTableJQL {
-
   const tableName = 'full'
   return new CreateTableJQL({
     $temporary: true,
-    name : tableName,
+    name: tableName,
     columns: [
       new Column('officePartyName', 'string'),
       new Column('month', 'string'),
       new Column('grossWeight', 'number'),
       new Column('chargeableWeight', 'number'),
-
     ],
   })
 }
@@ -125,7 +122,6 @@ function prepareData(hardCodeName: string): InsertJQL {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-
             { name: 'officePartyName', type: 'string' },
             { name: 'jobMonth', type: 'string' },
             { name: 'chargeableWeight', type: 'number' },
@@ -134,36 +130,37 @@ function prepareData(hardCodeName: string): InsertJQL {
         },
         'shipment'
       ),
-
     }),
   })
 }
 
 function prepareUnionTable(): CreateTableJQL {
-
   const tableName = 'union'
   return new CreateTableJQL({
     $temporary: true,
     name: tableName,
     $as: new Query({
-
-      $select : [
+      $select: [
         new ResultColumn(new ColumnExpression('officePartyName')),
         new ResultColumn(new ColumnExpression('month')),
-        new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('chargeableWeight')), 'chargeableWeight'),
-        new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('grossWeight')), 'grossWeight'),
+        new ResultColumn(
+          new FunctionExpression('SUM', new ColumnExpression('chargeableWeight')),
+          'chargeableWeight'
+        ),
+        new ResultColumn(
+          new FunctionExpression('SUM', new ColumnExpression('grossWeight')),
+          'grossWeight'
+        ),
       ],
 
-      $from : 'full',
+      $from: 'full',
 
-      $group : new GroupBy(['officePartyName', 'month'])
-
+      $group: new GroupBy(['officePartyName', 'month']),
     }),
   })
 }
 
 export default [
-
   prepareFullTable(),
 
   [prepareParams('GZH%'), prepareData('GGL GZH')],
@@ -207,5 +204,4 @@ export default [
     $from: 'union',
     $group: 'officePartyName',
   }),
-
 ]

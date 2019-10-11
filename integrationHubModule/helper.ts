@@ -1,7 +1,11 @@
 import { BadRequestException } from '@nestjs/common'
 import { RoleService } from 'modules/sequelize/role/service'
 import { PartyService } from 'modules/sequelize/party/service'
-import { JwtPayloadRole, JwtPayloadPartyGroup, JwtPayloadParty } from 'modules/auth/interfaces/jwt-payload'
+import {
+  JwtPayloadRole,
+  JwtPayloadPartyGroup,
+  JwtPayloadParty,
+} from 'modules/auth/interfaces/jwt-payload'
 import _ = require('lodash')
 
 const app = {
@@ -10,7 +14,11 @@ const app = {
   /*******************************/
 
   // resolve user roles
-  async resolveRoles(roleService: RoleService, partyGroup: JwtPayloadPartyGroup, roles: JwtPayloadRole[]) {
+  async resolveRoles(
+    roleService: RoleService,
+    partyGroup: JwtPayloadPartyGroup,
+    roles: JwtPayloadRole[]
+  ) {
     return await roleService.find({
       where: {
         id: {
@@ -20,13 +28,17 @@ const app = {
             }
             return ids
           }, []),
-        }
-      }
+        },
+      },
     })
   },
 
   // resolve user parties
-  async resolveParties(partyService: PartyService, partyGroup: JwtPayloadPartyGroup, parties: JwtPayloadParty[]) {
+  async resolveParties(
+    partyService: PartyService,
+    partyGroup: JwtPayloadPartyGroup,
+    parties: JwtPayloadParty[]
+  ) {
     return await partyService.find({
       where: {
         id: {
@@ -36,8 +48,8 @@ const app = {
             }
             return ids
           }, []),
-        }
-      }
+        },
+      },
     })
   },
 
@@ -94,14 +106,35 @@ const app = {
         result.push(party.thirdPartyCode[system])
     } else {
       for (const { thirdPartyCode } of parties) {
-        if (thirdPartyCode && typeof thirdPartyCode[system] === 'string') result.push(thirdPartyCode[system])
+        if (thirdPartyCode && typeof thirdPartyCode[system] === 'string')
+          result.push(thirdPartyCode[system])
       }
     }
     return result
   },
 
   // interpret divisions
-  getDivisions(filters: any[], allowed: string[] = ['AE', 'AI', 'AM', 'TA', 'SE', 'SE FCL', 'SE LCL', 'SE Consol', 'SI', 'SI FCL', 'SI LCL', 'SI Consol', 'SM', 'TS', 'Logistics', 'Total']): string[] {
+  getDivisions(
+    filters: any[],
+    allowed: string[] = [
+      'AE',
+      'AI',
+      'AM',
+      'TA',
+      'SE',
+      'SE FCL',
+      'SE LCL',
+      'SE Consol',
+      'SI',
+      'SI FCL',
+      'SI LCL',
+      'SI Consol',
+      'SM',
+      'TS',
+      'Logistics',
+      'Total',
+    ]
+  ): string[] {
     // moduleType
     const flag_air = !!filters.find(f => f.moduleTypeCode === 'AIR')
     const flag_sea = !!filters.find(f => f.moduleTypeCode === 'SEA')
@@ -254,7 +287,7 @@ const app = {
     return fieldNameMap['external'][internalFieldName]
       ? fieldNameMap['external'][internalFieldName]
       : internalFieldName
-  }
+  },
 }
 
 export default app

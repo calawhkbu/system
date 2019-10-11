@@ -73,7 +73,6 @@ function prepareParams(type_: 'F' | 'R' | 'T'): Function {
       case 'R':
         subqueries.nominatedTypeCode = { value: ['R'] }
         break
-
     }
 
     return params
@@ -99,7 +98,7 @@ function prepareData(type: 'F' | 'R'): InsertJQL {
         new ResultColumn(
           new FunctionExpression('IFNULL', new ColumnExpression('shipments'), 0),
           'shipments'
-        )
+        ),
       ],
       $from: new FromTable(
         {
@@ -112,9 +111,8 @@ function prepareData(type: 'F' | 'R'): InsertJQL {
           ],
 
           data: {
-            filter: { carrierCodeIsNotNull: {} }
-          }
-
+            filter: { carrierCodeIsNotNull: {} },
+          },
         },
         'shipment'
       ),
@@ -123,9 +121,7 @@ function prepareData(type: 'F' | 'R'): InsertJQL {
 }
 
 function prepareTempTable(): CreateTableJQL {
-
   return new CreateTableJQL({
-
     $temporary: true,
     name: 'temp',
 
@@ -133,14 +129,13 @@ function prepareTempTable(): CreateTableJQL {
       $select: [
         new ResultColumn('carrierCode'),
         ...months.reduce<ResultColumn[]>((result, month) => {
-
           const tempList1 = types.reduce<ResultColumn[]>((result2, type) => {
-
             const tempList = variables.reduce<ResultColumn[]>((result3, variable) => {
               const columnName = `${month}-${type}_${variable}`
 
               const expression = new ResultColumn(
-                new FunctionExpression('IFNULL',
+                new FunctionExpression(
+                  'IFNULL',
                   new FunctionExpression(
                     'FIND',
                     new AndExpressions([
@@ -161,7 +156,6 @@ function prepareTempTable(): CreateTableJQL {
             result2 = result2.concat(tempList)
 
             return result2
-
           }, [])
 
           result = result.concat(tempList1)
@@ -171,13 +165,11 @@ function prepareTempTable(): CreateTableJQL {
       ],
       $from: 'shipment',
       $group: 'carrierCode',
-    })
+    }),
   })
-
 }
 
 function prepareFinalTable() {
-
   function composeSumExpression(dumbList: any[]): MathExpression {
     if (dumbList.length === 2) {
       return new MathExpression(dumbList[0], '+', dumbList[1])
@@ -186,20 +178,14 @@ function prepareFinalTable() {
     const popResult = dumbList.pop()
 
     return new MathExpression(popResult, '+', composeSumExpression(dumbList))
-
   }
 
-  const $select = [
+  const $select = [new ResultColumn(new ColumnExpression('carrierCode'))]
 
-    new ResultColumn(new ColumnExpression('carrierCode'))
-  ]
-
-  variables.map((variable) => {
-
+  variables.map(variable => {
     const finalSumList = []
 
-    months.map((month) => {
-
+    months.map(month => {
       const monthSumList = []
       types.map((type: string) => {
         const columnName = `${month}-${type}_${variable}`
@@ -207,23 +193,19 @@ function prepareFinalTable() {
         $select.push(new ResultColumn(expression))
         monthSumList.push(expression)
         finalSumList.push(expression)
-
       })
       // add the month sum expression
 
       const monthSumExpression = composeSumExpression(monthSumList)
       $select.push(new ResultColumn(monthSumExpression, `${month}-T_${variable}`))
-
     })
 
     // --------------------------------------------------------
 
     types.map((type: string) => {
-
       const typeSumList = []
 
-      months.map((month) => {
-
+      months.map(month => {
         const columnName = `${month}-${type}_${variable}`
         const expression = new ColumnExpression('temp', columnName)
         typeSumList.push(expression)
@@ -232,28 +214,21 @@ function prepareFinalTable() {
       console.log(`typeSumList.length : ${typeSumList.length}`)
       const typeSumExpression = composeSumExpression(typeSumList)
       $select.push(new ResultColumn(typeSumExpression, `total-${type}_${variable}`))
-
     })
 
     const finalSumExpression = composeSumExpression(finalSumList)
     $select.push(new ResultColumn(finalSumExpression, `total-T_${variable}`))
-
   })
 
   return new CreateTableJQL({
-
     $temporary: true,
     name: 'final',
 
     $as: new Query({
-
       $select,
-      $from: 'temp'
-
-    })
-
+      $from: 'temp',
+    }),
   })
-
 }
 
 export default [
@@ -273,9 +248,7 @@ export default [
   prepareFinalTable(),
 
   new Query({
-
     $from: 'final',
-    $order: new OrderBy(new ColumnExpression('final', 'total-T_shipments'), 'DESC')
-  })
-
+    $order: new OrderBy(new ColumnExpression('final', 'total-T_shipments'), 'DESC'),
+  }),
 ]

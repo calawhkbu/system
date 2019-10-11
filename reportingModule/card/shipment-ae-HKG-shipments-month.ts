@@ -34,7 +34,6 @@ const months = [
 const types = ['shipments']
 
 function prepareParams(likeHouseNo_: string): Function {
-
   const fn = async function(require, session, params) {
     const { Resultset } = require('node-jql-core')
     const {
@@ -70,12 +69,12 @@ function prepareParams(likeHouseNo_: string): Function {
     subqueries.boundTypeCode = { value: 'O' }
 
     // warning : hardCode
-    subqueries.officePartyId = { value : 7351490 }
+    subqueries.officePartyId = { value: 7351490 }
 
     // subqueries.billTypeCode = { value: 'M' }
     subqueries.reportingGroup = { value: ['AC', 'AD'] }
 
-    subqueries.likeHouseNo = { value :  likeHouseNo_}
+    subqueries.likeHouseNo = { value: likeHouseNo_ }
 
     // select
     params.fields = ['jobMonth', 'shipments']
@@ -91,16 +90,14 @@ function prepareParams(likeHouseNo_: string): Function {
 }
 
 function prepareFullTable(): CreateTableJQL {
-
   const tableName = 'full'
   return new CreateTableJQL({
     $temporary: true,
-    name : tableName,
+    name: tableName,
     columns: [
       new Column('officePartyName', 'string'),
       new Column('month', 'string'),
       new Column('shipments', 'number'),
-
     ],
   })
 }
@@ -123,7 +120,6 @@ function prepareData(hardCodeName: string): InsertJQL {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-
             { name: 'officePartyName', type: 'string' },
             { name: 'jobMonth', type: 'string' },
             { name: 'shipments', type: 'number' },
@@ -131,35 +127,33 @@ function prepareData(hardCodeName: string): InsertJQL {
         },
         'shipment'
       ),
-
     }),
   })
 }
 
 function prepareUnionTable(): CreateTableJQL {
-
   const tableName = 'union'
   return new CreateTableJQL({
     $temporary: true,
     name: tableName,
     $as: new Query({
-
-      $select : [
+      $select: [
         new ResultColumn(new ColumnExpression('officePartyName')),
         new ResultColumn(new ColumnExpression('month')),
-        new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('shipments')), 'shipments'),
+        new ResultColumn(
+          new FunctionExpression('SUM', new ColumnExpression('shipments')),
+          'shipments'
+        ),
       ],
 
-      $from : 'full',
+      $from: 'full',
 
-      $group : new GroupBy(['officePartyName', 'month'])
-
+      $group: new GroupBy(['officePartyName', 'month']),
     }),
   })
 }
 
 export default [
-
   prepareFullTable(),
 
   [prepareParams('GZH%'), prepareData('GGL GZH')],
@@ -203,5 +197,4 @@ export default [
     $from: 'union',
     $group: 'officePartyName',
   }),
-
 ]
