@@ -1,0 +1,53 @@
+{
+  "tableName": "booking",
+
+  "defaultDocumentConfig": {
+    "allowFileType": [
+      "image/png",
+      "image/gif",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "application/pdf",
+      "url",
+      "application/octet-stream"
+    ],
+    "allowFillTemplate": false
+  },
+
+  "documentList": [
+    {
+      "fileName": "Shipping Order",
+      "allowFillTemplate": true,
+      "templateName": "shippingOrder"
+    },
+
+    {
+      "fileName": "Shipping Advice",
+      "allowFillTemplate": false
+    },
+    {
+      "fileName": "Print Invoice",
+      "allowFillTemplate": false
+    },
+    {
+      "fileName": "Pro Forma Invoice",
+      "allowFillTemplate": false
+    },
+    {
+      "fileName": "Packing List",
+      "allowFillTemplate": false
+    },
+    {
+      "fileName": "Load Plan",
+      "allowFillTemplate": false
+    },
+    {
+      "fileName": "Shipping Instructions",
+
+      "allowFillTemplate": false
+    },
+    {
+      "fileName": "House Bill",
+      "allowFillTemplate": false
+    }
+  ]
+}

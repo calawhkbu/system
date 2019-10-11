@@ -6,6 +6,7 @@ import {
   CreateTableJQL,
   FromTable,
   FunctionExpression,
+  IsNullExpression,
   InsertJQL,
   Query,
   ResultColumn,
@@ -14,7 +15,6 @@ import {
 import { parseCode } from 'utils/function'
 
 const months = [
-  'Total',
   'January',
   'February',
   'March',
@@ -22,9 +22,9 @@ const months = [
   'May',
   'June',
   'July',
-  'Auguest',
+  'August',
   'September',
-  'Octomber',
+  'October',
   'November',
   'December',
 ]
@@ -37,13 +37,13 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
 
     // limit/extend to 1 year
     const subqueries = (params.subqueries = params.subqueries || {})
-    const year = (subqueries.data ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
+    const year = (subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
     const date = (subqueries.date = subqueries.date || {})
-    subqueries.date.from = moment()
+    date.from = moment()
       .year(year)
       .startOf('year')
       .format('YYYY-MM-DD')
-    subqueries.date.to = moment()
+    date.to = moment()
       .year(year)
       .endOf('year')
       .format('YYYY-MM-DD')
@@ -53,18 +53,18 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
     subqueries.boundType = { value: 'O' }
 
     // select
-    params.fields = ['carrierCode', 'jobMonth', 'SUM(grossWeight)', 'SUM(chargeableWeight)']
+    params.fields = ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight']
 
     // group by
     params.groupBy = ['carrierCode', 'jobMonth']
 
     switch (type_) {
       case 'F':
-        subqueries.nominatedType = { value: 'F' }
+        subqueries.nominatedTypeCode = { value: 'F' }
         subqueries.isColoader = { value: 0 }
         break
       case 'R':
-        subqueries.nominatedType = { value: 'R' }
+        subqueries.nominatedTypeCode = { value: 'R' }
         subqueries.isColoader = { value: 0 }
         break
       case 'C':
@@ -108,46 +108,16 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
           columns: [
             { name: 'carrierCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
-            { name: 'SUM(grossWeight)', type: 'number', $as: 'grossWeight' },
-            { name: 'SUM(chargeableWeight)', type: 'number', $as: 'chargeableWeight' },
+            { name: 'grossWeight', type: 'number' },
+            { name: 'chargeableWeight', type: 'number' },
           ],
+
+          data: {
+            filter: { carrierCodeIsNotNull: {} },
+          },
         },
         'shipment'
       ),
-    }),
-  })
-}
-
-// prepare Total row(s)
-function prepareTotal(type: 'F' | 'R' | 'C'): InsertJQL {
-  return new InsertJQL({
-    name: 'shipment',
-    columns: ['type', 'carrierCode', 'month', 'grossWeight', 'chargeableWeight'],
-    query: new Query({
-      $select: [
-        new ResultColumn(new Value(type), 'type'),
-        new ResultColumn('carrierCode'),
-        new ResultColumn(new Value('Total'), 'month'),
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression('SUM', new ColumnExpression('grossWeight')),
-            0
-          ),
-          'grossWeight'
-        ),
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression('SUM', new ColumnExpression('chargeableWeight')),
-            0
-          ),
-          'chargeableWeight'
-        ),
-      ],
-      $from: 'shipment',
-      $group: 'carrierCode',
-      $where: new BinaryExpression(new ColumnExpression('type'), '=', type),
     }),
   })
 }
@@ -164,11 +134,8 @@ export default [
 
   // prepare data
   [prepareParams('F'), prepareData('F')],
-  prepareTotal('F'),
   [prepareParams('R'), prepareData('R')],
-  prepareTotal('R'),
   [prepareParams('C'), prepareData('C')],
-  prepareTotal('C'),
 
   // finalize data
   new Query({
@@ -180,14 +147,18 @@ export default [
             type =>
               new ResultColumn(
                 new FunctionExpression(
-                  'FIND',
-                  new AndExpressions([
-                    new BinaryExpression(new ColumnExpression('month'), '=', month),
-                    new BinaryExpression(new ColumnExpression('type'), '=', type.charAt(0)),
-                  ]),
-                  new ColumnExpression(
-                    type.substr(2, 2) === 'GW' ? 'grossWeight' : 'chargeableWeight'
-                  )
+                  'IFNULL',
+                  new FunctionExpression(
+                    'FIND',
+                    new AndExpressions([
+                      new BinaryExpression(new ColumnExpression('month'), '=', month),
+                      new BinaryExpression(new ColumnExpression('type'), '=', type.charAt(0)),
+                    ]),
+                    new ColumnExpression(
+                      type.substr(2, 2) === 'GW' ? 'grossWeight' : 'chargeableWeight'
+                    )
+                  ),
+                  0
                 ),
                 `${month}-${type}`
               )

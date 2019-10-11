@@ -1,292 +1,285 @@
 {
-  "components": [{
-    "is": "WidgetForm",
-    "props": {
-      "fields": [{
-          "label": "ShipmentPage.houseNo",
-          "name": "houseNo",
-          "component": "v-text-field",
-          "class": "xs-12 md-6"
-        },
+  "components": [
+    {
+      "is": "WidgetForm",
+      "props": {
+        "fields": [
+          {
+            "label": "ShipmentPage.houseNo",
+            "name": "houseNo",
+            "component": "v-text-field",
+            "class": "xs-12 md-6"
+          },
 
-        {
-          "label": "ShipmentPage.masterNo",
-          "name": "masterNo",
-          "component": "v-text-field",
-          "class": "xs-12 md-6"
-        },
+          {
+            "label": "ShipmentPage.masterNo",
+            "name": "masterNo",
+            "component": "v-text-field",
+            "class": "xs-12 md-6"
+          },
 
-        {
-          "label": "ShipmentPage.departureDateEstimated",
-          "name": "estimatedDepartureDate",
-          "component": "DateTimePicker",
-          "class": "xs-12 md-6",
-          "props": {
-            "type": "datetime",
-            "utc": true,
-            "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
-            "useOwnFormat": true
-          }
-        },
+          {
+            "label": "ShipmentPage.departureDateEstimated",
+            "name": "estimatedDepartureDate",
+            "component": "DateTimePicker",
+            "class": "xs-12 md-6",
+            "props": {
+              "type": "datetime",
+              "utc": true,
+              "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+              "useOwnFormat": true
+            }
+          },
 
-        {
-          "label": "ShipmentPage.arrivalDateEstimated",
-          "name": "estimatedArrivalDate",
-          "component": "DateTimePicker",
-          "class": "xs-12 md-6",
-          "props": {
-            "type": "datetime",
-            "utc": true,
-            "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
-            "useOwnFormat": true
-          }
-        },
-        {
-
-          "label": "ShipmentPage.placeOfReceipt",
-          "name": "placeOfReceipt",
-          "component": "ReadField",
-          "class": "xs-12 md-6",
-          "props": {
-
-            "resultProp": "name",
-            "axiosParams": {
-              "method": "POST",
-              "url": "api/location/query/location",
-              "data": {
-                "subqueries": {
-                  "portCode": {
-                    "value": "{{context.fixValue}}"
+          {
+            "label": "ShipmentPage.arrivalDateEstimated",
+            "name": "estimatedArrivalDate",
+            "component": "DateTimePicker",
+            "class": "xs-12 md-6",
+            "props": {
+              "type": "datetime",
+              "utc": true,
+              "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+              "useOwnFormat": true
+            }
+          },
+          {
+            "label": "ShipmentPage.placeOfReceipt",
+            "name": "placeOfReceipt",
+            "component": "ReadField",
+            "class": "xs-12 md-6",
+            "props": {
+              "resultProp": "name",
+              "axiosParams": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "portCode": {
+                      "value": "{{context.fixValue}}"
+                    }
                   }
                 }
               }
             }
-          }
-        },
-        {
-
-          "label": "ShipmentPage.placeOfDelivery",
-          "name": "placeOfDelivery",
-          "component": "ReadField",
-          "class": "xs-12 md-6",
-          "props": {
-
-            "resultProp": "name",
-            "axiosParams": {
-              "method": "POST",
-              "url": "api/location/query/location",
-              "data": {
-                "subqueries": {
-                  "portCode": {
-                    "value": "{{context.fixValue}}"
+          },
+          {
+            "label": "ShipmentPage.placeOfDelivery",
+            "name": "placeOfDelivery",
+            "component": "ReadField",
+            "class": "xs-12 md-6",
+            "props": {
+              "resultProp": "name",
+              "axiosParams": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "portCode": {
+                      "value": "{{context.fixValue}}"
+                    }
                   }
                 }
               }
             }
-          }
-        },
+          },
 
-        {
-
-          "label": "ShipmentPage.portOfLoading",
-          "name": "portOfLoading",
-          "component": "ReadField",
-          "class": "xs-12 md-6",
-          "props": {
-
-            "resultProp": "name",
-            "axiosParams": {
-              "method": "POST",
-              "url": "api/location/query/location",
-              "data": {
-                "subqueries": {
-                  "portCode": {
-                    "value": "{{context.fixValue}}"
+          {
+            "label": "ShipmentPage.portOfLoading",
+            "name": "portOfLoading",
+            "component": "ReadField",
+            "class": "xs-12 md-6",
+            "props": {
+              "resultProp": "name",
+              "axiosParams": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "portCode": {
+                      "value": "{{context.fixValue}}"
+                    }
                   }
                 }
               }
             }
-          }
-        },
-        {
-
-          "label": "ShipmentPage.portOfDischarge",
-          "name": "portOfDischarge",
-          "component": "ReadField",
-          "class": "xs-12 md-6",
-          "props": {
-
-            "resultProp": "name",
-            "axiosParams": {
-              "method": "POST",
-              "url": "api/location/query/location",
-              "data": {
-                "subqueries": {
-                  "portCode": {
-                    "value": "{{context.fixValue}}"
+          },
+          {
+            "label": "ShipmentPage.portOfDischarge",
+            "name": "portOfDischarge",
+            "component": "ReadField",
+            "class": "xs-12 md-6",
+            "props": {
+              "resultProp": "name",
+              "axiosParams": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "portCode": {
+                      "value": "{{context.fixValue}}"
+                    }
                   }
                 }
               }
             }
-          }
-        },
+          },
 
-        {
-
-          "label": "ShipmentPage.finalDestination",
-          "name": "finalDestination",
-          "component": "ReadField",
-          "class": "xs-12 md-6",
-          "props": {
-
-            "resultProp": "name",
-            "axiosParams": {
-              "method": "POST",
-              "url": "api/location/query/location",
-              "data": {
-                "subqueries": {
-                  "portCode": {
-                    "value": "{{context.fixValue}}"
+          {
+            "label": "ShipmentPage.finalDestination",
+            "name": "finalDestination",
+            "component": "ReadField",
+            "class": "xs-12 md-6",
+            "props": {
+              "resultProp": "name",
+              "axiosParams": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "portCode": {
+                      "value": "{{context.fixValue}}"
+                    }
                   }
                 }
               }
             }
-          }
-        },
+          },
 
-        {
+          {
+            "class": "xs-12 md-6"
+          },
 
-          "class": "xs-12 md-6"
-
-        },
-
-        {
-          "label": "ShipmentPage.carrier",
-          "name": "billTransports[0].carrierCode",
-          "component": "AsyncAutoSuggest",
-          "class": "xs-12 md-6",
-          "relation": "carrier",
-          "more": [{
-            "name": "carrierCode",
-            "selector": "code"
-          }],
-          "props": {
-            "searchValueParams": {
-              "method": "POST",
-              "url": "api/code/query/code_master",
-              "data": {
-                "subqueries": {
-                  "codeType": {
-                    "value": "CARRIER"
+          {
+            "label": "ShipmentPage.carrier",
+            "name": "billTransports[0].carrierCode",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-6",
+            "relation": "carrier",
+            "more": [
+              {
+                "name": "carrierCode",
+                "selector": "code"
+              }
+            ],
+            "props": {
+              "searchValueParams": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "CARRIER"
+                    },
+                    "code": {
+                      "value": "{{context.autoSuggestModel}}"
+                    }
+                  }
+                }
+              },
+              "searchTextParams": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "CARRIER"
+                    },
+                    "q": {
+                      "value": "{{context.search}}"
+                    }
                   },
-                  "code": {
-                    "value": "{{context.autoSuggestModel}}"
-                  }
+                  "limit": 5
                 }
-              }
-            },
-            "searchTextParams": {
-              "method": "POST",
-              "url": "api/code/query/code_master",
-              "data": {
-                "subqueries": {
-                  "codeType": {
-                    "value": "CARRIER"
-                  },
-                  "q": {
-                    "value": "{{context.search}}"
-                  }
-                },
-                "limit": 5
-              }
-            },
-            "item-text": "name",
-            "item-value": "code"
+              },
+              "item-text": "name",
+              "item-value": "code"
+            }
+          },
+
+          {
+            "label": "ShipmentPage.vessel",
+            "name": "billTransports[0].transport",
+            "component": "v-text-field",
+            "checkDisplayWhen": "return form && form.moduleType && form.moduleType === 'SEA'",
+            "class": "xs-12 md-6"
+          },
+
+          {
+            "label": "ShipmentPage.flightNo",
+            "name": "billTransports[0].transport",
+            "component": "v-text-field",
+            "checkDisplayWhen": "return form && form.moduleType && form.moduleType === 'AIR'",
+            "class": "xs-12 md-6"
+          },
+
+          {
+            "label": "ShipmentPage.service",
+            "name": "service",
+            "component": "v-text-field",
+            "class": "xs-12 md-6"
+          },
+
+          {
+            "label": "ShipmentPage.incoTerms",
+            "name": "incoTerms",
+            "component": "v-text-field",
+            "class": "xs-12 md-6"
+          },
+
+          {
+            "label": "ShipmentPage.issuingAgent",
+            "name": "issuingAgent",
+            "component": "v-text-field",
+            "class": "xs-12 md-6"
+          },
+
+          {
+            "class": "xs-12 md-6"
+          },
+
+          {
+            "label": "ShipmentPage.nominatedType",
+            "name": "nominatedType",
+            "component": "v-text-field",
+            "class": "xs-12 md-6"
+          },
+
+          {
+            "label": "ShipmentPage.valueForCarriage",
+            "name": "valueForCarriage",
+            "component": "v-text-field",
+            "class": "xs-12 md-6"
+          },
+
+          {
+            "label": "ShipmentPage.valueForCustoms",
+            "name": "valueForCustoms",
+            "component": "v-text-field",
+            "class": "xs-12 md-6"
+          },
+
+          {
+            "label": "ShipmentPage.amountOfInsurance",
+            "name": "amountOfInsurance",
+            "component": "v-text-field",
+            "class": "xs-12 md-6"
+          },
+
+          {
+            "label": "ShipmentPage.issueAt",
+            "name": "issueAt",
+            "component": "DateTimePicker",
+            "class": "xs-12 md-6",
+            "props": {
+              "type": "datetime",
+              "utc": true,
+              "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+              "useOwnFormat": true
+            }
           }
-        },
-
-        {
-          "label": "ShipmentPage.vessel",
-          "name": "billTransports[0].transport",
-          "component": "v-text-field",
-          "checkDisplayWhen": "return form && form.moduleType && form.moduleType === 'SEA'",
-          "class": "xs-12 md-6"
-        },
-
-        {
-          "label": "ShipmentPage.flightNo",
-          "name": "billTransports[0].transport",
-          "component": "v-text-field",
-          "checkDisplayWhen": "return form && form.moduleType && form.moduleType === 'AIR'",
-          "class": "xs-12 md-6"
-        },
-
-        {
-          "label": "ShipmentPage.service",
-          "name": "service",
-          "component": "v-text-field",
-          "class": "xs-12 md-6"
-        },
-
-        {
-          "label": "ShipmentPage.incoTerms",
-          "name": "incoTerms",
-          "component": "v-text-field",
-          "class": "xs-12 md-6"
-        },
-
-        {
-          "label": "ShipmentPage.issuingAgent",
-          "name": "issuingAgent",
-          "component": "v-text-field",
-          "class": "xs-12 md-6"
-        },
-
-        {
-          "class": "xs-12 md-6"
-        },
-
-        {
-          "label": "ShipmentPage.nominatedType",
-          "name": "nominatedType",
-          "component": "v-text-field",
-          "class": "xs-12 md-6"
-        },
-
-        {
-          "label": "ShipmentPage.valueForCarriage",
-          "name": "valueForCarriage",
-          "component": "v-text-field",
-          "class": "xs-12 md-6"
-        },
-
-        {
-          "label": "ShipmentPage.valueForCustoms",
-          "name": "valueForCustoms",
-          "component": "v-text-field",
-          "class": "xs-12 md-6"
-        },
-
-        {
-          "label": "ShipmentPage.amountOfInsurance",
-          "name": "amountOfInsurance",
-          "component": "v-text-field",
-          "class": "xs-12 md-6"
-        },
-
-        {
-          "label": "ShipmentPage.issueAt",
-          "name": "issueAt",
-          "component": "DateTimePicker",
-          "class": "xs-12 md-6",
-          "props": {
-            "type": "datetime",
-            "utc": true,
-            "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
-            "useOwnFormat": true
-          }
-        }
-      ]
+        ]
+      }
     }
-  }]
+  ]
 }

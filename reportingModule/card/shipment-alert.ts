@@ -59,11 +59,11 @@ const query = new Query({
   $from: new FromTable(
     {
       method: 'POST',
-      url: 'api/alert/query/alert_shipment',
+      url: 'api/alert/query/alert',
       columns: [
         { name: 'alertType', type: 'string' },
         { name: 'tableName', type: 'string' },
-        { name: 'primaryKey', type: 'number' },
+        { name: 'primaryKey', type: 'string' },
       ],
     },
     'alert'

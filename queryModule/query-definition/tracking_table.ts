@@ -10,6 +10,7 @@ import {
 
 const query = new QueryDef(
   new Query({
+    $distinct: true,
     $from: new FromTable({
       table: `
     (SELECT \`tracking_reference\`.*, \`masterNo\` AS \`trackingNo\`, 'masterNo' AS \`type\`
@@ -44,6 +45,15 @@ query
     'trackingNo',
     new Query({
       $where: new InExpression(new ColumnExpression('tracking_reference', 'trackingNo'), false),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
+    'trackingType',
+    new Query({
+      $where: new BinaryExpression(new ColumnExpression('tracking_reference', 'trackingType'), '='),
     })
   )
   .register('value', 0)

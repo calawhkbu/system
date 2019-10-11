@@ -1,26 +1,28 @@
 {
-  "layout": "MainLayout",
+  
   "components": [
     {
       "is": "TableTool",
       "props": {
         "reportingKey": "invitations",
         "jql": "invitations",
+        "urlFormat": "/invitations{{ id|if('/', '') }}{{ id }}",
+        "hasReports": true,
         "showFilterBar": true,
-        "enableShare": false,
-        "enableSetting": false,
+        "enableShare": true,
+        "enableSetting": true,
         "newReport": {
           "filters": {
-            "status": {
-              "value": "sent"
-            },
             "isActive": true
           },
           "configurations": {
-            "i18nContext": "Reporting",
+            "i18nContext": "InvitationPage",
             "clickable": true,
             "draggable": true,
-            "sorting": {},
+            "sorting": {
+              "direction": "DESC",
+              "key": "updatedAt"
+            },
             "pagination": {
               "current": 0,
               "perPage": 20
@@ -34,54 +36,23 @@
             "hidden": true
           },
           {
-            "key": "userName",
-            "sql": "person.userName"
-          },
-          {
-            "key": "firstName",
-            "sql": "person.firstName"
-          },
-          {
-            "key": "lastName",
-            "sql": "person.lastName"
-          },
-          {
-            "key": "displayName",
-            "sql": "person.displayName"
-          },
-          {
-            "key": "status",
-            "sql": "invitation.status"
-          },
-          {
             "key": "createdAt",
             "sql": "invitation.createdAt",
-            "hidden": true
+            "width": 150,
+            "format": "YYYY-MM-DD"
           },
           {
             "key": "updatedAt",
             "sql": "invitation.updatedAt",
-            "hidden": true
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "invitationNo",
+            "width": 150
           }
         ],
-        "filters": [
-          {
-            "name": "userName",
-            "type": "text"
-          },
-          {
-            "name": "firstName",
-            "type": "text"
-          },
-          {
-            "name": "lastName",
-            "type": "text"
-          },
-          {
-            "name": "displayName",
-            "type": "text"
-          }
-        ],
+        "filters": [],
         "clickFunction": {
           "type": "router",
           "otherParams": {
@@ -89,7 +60,6 @@
             "path": "/invitation/{{id}}"
           }
         },
-        "back": "/admin",
         "icons": [
           {
             "icon": "add",

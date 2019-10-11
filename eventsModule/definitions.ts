@@ -1,107 +1,68 @@
-import { EventService, EventConfig } from 'modules/events/service'
-import { extractObject, diff } from 'modules/events/checkerFunction'
+import { EventConfig } from 'modules/events/service'
+import { diff } from 'modules/events/checkerFunction'
 
 export default {
-  afterCreate_i18n: [
-    {
-      handlerName: 'example',
-      otherParameters: {},
-      afterEvent: [],
-    },
-  ],
-
-  example: [
-    {
-      handlerName: 'example',
-      otherParameters: {},
-      afterEvent: [
-        {
-          eventName: 'example2',
-          previousParameters: {},
-        },
-      ],
-    },
-  ],
-
-  example2: [],
-
   // should not be called directly, should be called after an event
-  create_alert: [
+  create_alert: [// create alert from entity
     {
       handlerName: 'create_alert',
     },
   ],
-
-  create_tracking: [
+  create_tracking_by_booking: [// create tracking from entity
     {
-      handlerName: 'create_tracking',
+      handlerName: 'create_tracking_by_booking',
     },
   ],
-
-  // update entity(booking) with a tracking
-  tracking_update_data: [
+  tracking_update_data: [// update entity(booking) with a tracking
     {
       handlerName: 'tracking_update_data',
     },
   ],
-
-  afterCreate_tracking: [
-    {
-      eventName: 'tracking_update_data',
-    },
-  ],
-
-  afterUpdate_tracking: [
-    {
-      eventName: 'tracking_update_data',
-    },
-  ],
-
-  // should not be called directly, should be called after an event
   fill_template: [
     {
       handlerName: 'fill_template',
     },
   ],
-
   update_document_preview: [
     {
       handlerName: 'update_document_preview',
     },
   ],
-
+  fm3k_booking: [
+    {
+      condition: true,
+      handlerName: 'fm3k_booking',
+    },
+  ],
+  // start
+  afterCreate_tracking: [
+    {
+      eventName: 'tracking_update_data',
+    },
+  ],
+  afterUpdate_tracking: [
+    {
+      eventName: 'tracking_update_data',
+    },
+  ],
   afterCreate_document: [
     {
       eventName: 'update_document_preview',
     },
   ],
-
   afterUpdate_document: [
     {
       eventName: 'update_document_preview',
     },
   ],
-
   afterCreate_booking: [
-    // warning: not using !!!!!!!
-    // create alert of new Booking
-
-    // // update personId / create Invitation
-    // {
-    //   condition : true,
-    //   handlerName : 'entity_create_invitation',
-    //   otherParameters : {
-    //     tableName : 'booking',
-    //   }
-    // },
-
     {
       condition: true,
       eventName: 'create_alert',
       otherParameters: {
         alertType: 'newBooking',
         tableName: 'booking',
-        primaryKey: parameters => {
+        primaryKey: (parameters: any) => {
           // use booking.id as primaryKey
           return parameters.data.id
         },
@@ -111,7 +72,7 @@ export default {
     // create booking tracking
     {
       condition: true,
-      eventName: 'create_tracking',
+      eventName: 'create_tracking_by_booking',
     },
 
     // fill template of the booking
@@ -121,7 +82,6 @@ export default {
       otherParameters: {
         tableName: 'booking',
         fileName: 'Shipping Order',
-
         // use booking .id as primaryKey
         primaryKey: result => {
           return result.data.id
@@ -133,7 +93,7 @@ export default {
   afterUpdate_booking: [
     {
       condition: true,
-      eventName: 'create_tracking',
+      eventName: 'create_tracking_by_booking',
     },
 
     {
@@ -157,12 +117,13 @@ export default {
           {
             resultName: 'haveDiff',
             checkerFunction: (parameters: any) => {
-              const difference = diff(parameters.oldData, parameters.data, undefined, ['documents'], [
-                'createdAt',
-                'createdBy',
-                'updatedAt',
-                'updatedBy',
-              ])
+              const difference = diff(
+                parameters.oldData,
+                parameters.data,
+                undefined,
+                ['documents'],
+                ['createdAt', 'createdBy', 'updatedAt', 'updatedBy']
+              )
 
               // console.log('difference')
               // console.log(difference)
@@ -196,13 +157,6 @@ export default {
           },
         },
       ],
-    },
-  ],
-
-  fm3k_booking: [
-    {
-      condition: true,
-      handlerName: 'fm3k_booking',
     },
   ],
 } as {

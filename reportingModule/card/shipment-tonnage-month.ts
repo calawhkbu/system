@@ -1,648 +1,272 @@
 import {
-  Query,
-  FromTable,
-  CreateTableJQL,
-  GroupBy,
-  ResultColumn,
-  ColumnExpression,
-  FunctionExpression,
   AndExpressions,
   BinaryExpression,
+  ColumnExpression,
+  CreateTableJQL,
+  FromTable,
+  FunctionExpression,
   InsertJQL,
+  Value,
+  Query,
+  ResultColumn,
   Column,
+  GroupBy,
   JoinClause,
-  IConditionalExpression,
+  IsNullExpression,
   InExpression,
+  CreateFunctionJQL,
+  MathExpression,
 } from 'node-jql'
-import { parseCode } from 'utils/function'
+
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+]
+
+// hardcode all reportingGroup and divided into SEA and AIR
+const moduleTypeCodeList = {
+  AIR: ['AC', 'AD', 'AM', 'AN', 'AW', 'AX', 'AZ'],
+  SEA: ['SA', 'SB', 'SC', 'SR', 'SS', 'ST', 'SW', 'SZ', 'SA'],
+  LOG: ['ZL'],
+}
 
 function prepareParams(): Function {
-  const fn = function(require, session, params) {
+  return function(require, session, params) {
+    // import
     const moment = require('moment')
+
+    // limit/extend to 1 year
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    if (subqueries.date) {
-      // get the year part of the "from date"
+    const year = !subqueries.date ? moment().year() : moment(subqueries.date.from, 'YYYY-MM-DD').year()
 
-      // reset the date.from and date.to depending on date.from YEAR
-      subqueries.date.from = moment()
-        .month()
-        .startOf('month')
-        .format('YYYY-MM-DD')
-      subqueries.date.to = moment()
-        .month()
-        .endOf('month')
-        .format('YYYY-MM-DD')
+    subqueries.date = {
+
+      from : moment().year(year).startOf('year').format('YYYY-MM-DD'),
+      to : moment().year(year).endOf('year').format('YYYY-MM-DD')
     }
+
+    // select
+    params.fields = ['moduleTypeCode', 'reportingGroup', 'jobMonth', 'teuOrCbm', 'chargeableWeight']
+
+    // group by
+    params.groupBy = ['moduleTypeCode', 'reportingGroup', 'jobMonth']
 
     return params
   }
-  const code = fn.toString()
-  return parseCode(code)
 }
 
-function prepareMonthTotalTable(name: string): CreateTableJQL {
+function prepareTable(): CreateTableJQL {
   return new CreateTableJQL({
     $temporary: true,
-    name,
+    name: 'shipment',
+
     $as: new Query({
       $select: [
-        new ResultColumn(new ColumnExpression(name, 'reportingGroup')),
-        new ResultColumn(new ColumnExpression(name, 'jobMonth')),
-        new ResultColumn(new ColumnExpression(name, 'moduleType')),
-
+        new ResultColumn(new ColumnExpression('moduleTypeCode')),
         new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-
-            new FunctionExpression(
-              'IF',
-
-              // if air , user chargeable weight
-              new BinaryExpression(new ColumnExpression(name, 'moduleType'), '=', 'AIR'),
-              new FunctionExpression('SUM', new ColumnExpression(name, 'chargeableWeight')),
-
-              // warning : in reportingGroup == ['SA', 'SR'] use teu
-              new FunctionExpression(
-                'IF',
-                new InExpression(new ColumnExpression(name, 'reportingGroup'), false, ['SA', 'SR']),
-
-                new FunctionExpression('SUM', new ColumnExpression(name, 'teu')),
-
-                //
-                new FunctionExpression('SUM', new ColumnExpression(name, 'cbm'))
-              )
-            ),
-            0
-          ),
-          'monthTotal'
+          new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
+          'month'
         ),
+        new ResultColumn(new ColumnExpression('reportingGroup')),
+        new ResultColumn(new ColumnExpression('chargeableWeight')),
+        new ResultColumn(new ColumnExpression('teuOrCbm')),
       ],
       $from: new FromTable(
         {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-            {
-              name: 'reportingGroup',
-              type: 'string',
-            },
-            {
-              name: 'moduleType',
-              type: 'string',
-            },
-            {
-              name: 'chargeableWeight',
-              type: 'number',
-            },
-            {
-              name: 'cbm',
-              type: 'number',
-            },
-            {
-              name: 'grossWeight',
-            },
-            {
-              name: 'teu',
-            },
-            {
-              name: 'jobMonth',
-              type: 'string',
-            },
+            { name: 'moduleTypeCode', type: 'string' },
+            { name: 'jobMonth', type: 'string' },
+            { name: 'reportingGroup', type: 'string' },
+            { name: 'teuOrCbm', type: 'number' },
+            { name: 'chargeableWeight', type: 'number' },
           ],
-
-          data: {
-            subqueries: {
-              jobMonth: true,
-            },
-            // include jobMonth from the table
-            fields: ['jobMonth', 'shipment.*'],
-          },
         },
-        name
+        'shipment'
       ),
+    }),
+  })
+}
+
+function prepareFinalTable(): CreateTableJQL {
+  const $select = [
+    new ResultColumn(new ColumnExpression('moduleTypeCode')),
+    new ResultColumn(new ColumnExpression('reportingGroup')),
+  ]
+
+  months.forEach((month: string) => {
+    $select.push(
+      new ResultColumn(
+        new FunctionExpression(
+          'IFNULL',
+          new FunctionExpression(
+            'FIND',
+
+            new AndExpressions([new BinaryExpression(new ColumnExpression('month'), '=', month)]),
+
+            new FunctionExpression(
+              'IF',
+              new BinaryExpression(new ColumnExpression('moduleTypeCode'), '=', 'AIR'),
+              new ColumnExpression('chargeableWeight'),
+              new ColumnExpression('teuOrCbm')
+            )
+          ),
+          0
+        ),
+        `${month}-value`
+      )
+    )
+  })
+
+  return new CreateTableJQL({
+    $temporary: true,
+    name: 'final',
+
+    $as: new Query({
+      $select,
+
+      $from: 'shipment',
+
       $group: new GroupBy([
-        new ColumnExpression(name, 'reportingGroup'),
-        new ColumnExpression(name, 'jobMonth'),
+        new ColumnExpression('moduleTypeCode'),
+        new ColumnExpression('reportingGroup'),
       ]),
     }),
   })
 }
 
-function prepareMonthTable(name: string): CreateTableJQL {
+function prepareReportingGroupTable(): CreateTableJQL {
+  const name = 'reportingGroupTable'
+
   return new CreateTableJQL({
     $temporary: true,
     name,
-    $as: new Query({
-      $select: [
-        new ResultColumn(new ColumnExpression('tempTable', 'reportingGroup'), 'reportingGroup'),
-        new ResultColumn(new ColumnExpression('tempTable', 'moduleType'), 'moduleType'),
-
-        // hard code 12 months
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression('SUM', new ColumnExpression('tempTable', 'monthTotal')),
-            0
-          ),
-          'total'
-        ),
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
-
-              new AndExpressions([
-                new BinaryExpression(
-                  new FunctionExpression(
-                    'MONTHNAME',
-                    new ColumnExpression('tempTable', 'jobMonth'),
-                    'YYYY-MM'
-                  ),
-                  '=',
-                  'January'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('tempTable', 'reportingGroup'),
-                  '=',
-                  new ColumnExpression('reportingGroup')
-                ),
-              ]),
-              new ColumnExpression('monthTotal')
-            ),
-            0
-          ),
-          'Jan'
-        ),
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
-
-              new AndExpressions([
-                new BinaryExpression(
-                  new FunctionExpression(
-                    'MONTHNAME',
-                    new ColumnExpression('tempTable', 'jobMonth'),
-                    'YYYY-MM'
-                  ),
-                  '=',
-                  'February'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('tempTable', 'reportingGroup'),
-                  '=',
-                  new ColumnExpression('reportingGroup')
-                ),
-              ]),
-              new ColumnExpression('monthTotal')
-            ),
-            0
-          ),
-          'Feb'
-        ),
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
-
-              new AndExpressions([
-                new BinaryExpression(
-                  new FunctionExpression(
-                    'MONTHNAME',
-                    new ColumnExpression('tempTable', 'jobMonth'),
-                    'YYYY-MM'
-                  ),
-                  '=',
-                  'March'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('tempTable', 'reportingGroup'),
-                  '=',
-                  new ColumnExpression('reportingGroup')
-                ),
-              ]),
-              new ColumnExpression('monthTotal')
-            ),
-            0
-          ),
-          'Mar'
-        ),
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
-
-              new AndExpressions([
-                new BinaryExpression(
-                  new FunctionExpression(
-                    'MONTHNAME',
-                    new ColumnExpression('tempTable', 'jobMonth'),
-                    'YYYY-MM'
-                  ),
-                  '=',
-                  'April'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('tempTable', 'reportingGroup'),
-                  '=',
-                  new ColumnExpression('reportingGroup')
-                ),
-              ]),
-              new ColumnExpression('monthTotal')
-            ),
-            0
-          ),
-          'Apr'
-        ),
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
-
-              new AndExpressions([
-                new BinaryExpression(
-                  new FunctionExpression(
-                    'MONTHNAME',
-                    new ColumnExpression('tempTable', 'jobMonth'),
-                    'YYYY-MM'
-                  ),
-                  '=',
-                  'May'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('tempTable', 'reportingGroup'),
-                  '=',
-                  new ColumnExpression('reportingGroup')
-                ),
-              ]),
-              new ColumnExpression('monthTotal')
-            ),
-            0
-          ),
-          'May'
-        ),
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
-
-              new AndExpressions([
-                new BinaryExpression(
-                  new FunctionExpression(
-                    'MONTHNAME',
-                    new ColumnExpression('tempTable', 'jobMonth'),
-                    'YYYY-MM'
-                  ),
-                  '=',
-                  'June'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('tempTable', 'reportingGroup'),
-                  '=',
-                  new ColumnExpression('reportingGroup')
-                ),
-              ]),
-              new ColumnExpression('monthTotal')
-            ),
-            0
-          ),
-          'Jun'
-        ),
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
-
-              new AndExpressions([
-                new BinaryExpression(
-                  new FunctionExpression(
-                    'MONTHNAME',
-                    new ColumnExpression('tempTable', 'jobMonth'),
-                    'YYYY-MM'
-                  ),
-                  '=',
-                  'July'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('tempTable', 'reportingGroup'),
-                  '=',
-                  new ColumnExpression('reportingGroup')
-                ),
-              ]),
-              new ColumnExpression('monthTotal')
-            ),
-            0
-          ),
-          'Jul'
-        ),
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
-              new AndExpressions([
-                new BinaryExpression(
-                  new FunctionExpression(
-                    'MONTHNAME',
-                    new ColumnExpression('tempTable', 'jobMonth'),
-                    'YYYY-MM'
-                  ),
-                  '=',
-                  'August'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('tempTable', 'reportingGroup'),
-                  '=',
-                  new ColumnExpression('reportingGroup')
-                ),
-              ]),
-              new ColumnExpression('monthTotal')
-            ),
-            0
-          ),
-          'Aug'
-        ),
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
-
-              new AndExpressions([
-                new BinaryExpression(
-                  new FunctionExpression(
-                    'MONTHNAME',
-                    new ColumnExpression('tempTable', 'jobMonth'),
-                    'YYYY-MM'
-                  ),
-                  '=',
-                  'September'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('tempTable', 'reportingGroup'),
-                  '=',
-                  new ColumnExpression('reportingGroup')
-                ),
-              ]),
-              new ColumnExpression('monthTotal')
-            ),
-            0
-          ),
-          'Sep'
-        ),
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
-
-              new AndExpressions([
-                new BinaryExpression(
-                  new FunctionExpression(
-                    'MONTHNAME',
-                    new ColumnExpression('tempTable', 'jobMonth'),
-                    'YYYY-MM'
-                  ),
-                  '=',
-                  'October'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('tempTable', 'reportingGroup'),
-                  '=',
-                  new ColumnExpression('reportingGroup')
-                ),
-              ]),
-              new ColumnExpression('monthTotal')
-            ),
-            0
-          ),
-          'Oct'
-        ),
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
-
-              new AndExpressions([
-                new BinaryExpression(
-                  new FunctionExpression(
-                    'MONTHNAME',
-                    new ColumnExpression('tempTable', 'jobMonth'),
-                    'YYYY-MM'
-                  ),
-                  '=',
-                  'November'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('tempTable', 'reportingGroup'),
-                  '=',
-                  new ColumnExpression('reportingGroup')
-                ),
-              ]),
-              new ColumnExpression('monthTotal')
-            ),
-            0
-          ),
-          'Nov'
-        ),
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
-
-              new AndExpressions([
-                new BinaryExpression(
-                  new FunctionExpression(
-                    'MONTHNAME',
-                    new ColumnExpression('tempTable', 'jobMonth'),
-                    'YYYY-MM'
-                  ),
-                  '=',
-                  'December'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('tempTable', 'reportingGroup'),
-                  '=',
-                  new ColumnExpression('reportingGroup')
-                ),
-              ]),
-              new ColumnExpression('monthTotal')
-            ),
-            0
-          ),
-          'Dec'
-        ),
-      ],
-
-      $from: 'tempTable',
-
-      $group: 'reportingGroup',
-    }),
+    columns: [new Column('moduleTypeCode', 'string'), new Column('reportingGroup', 'string')],
   })
 }
 
-function prepareCodeMasterParams(): Function {
-  const fn = function(require, session, params) {
-    const subqueries = (params.subqueries = params.subqueries || {})
+function insertReportingGroupTable(): InsertJQL {
+  const name = 'reportingGroupTable'
 
-    subqueries.codeType = {
-      value: 'reportingGroup',
+  const insertList = []
+
+  for (const moduleTypeCode in moduleTypeCodeList) {
+    if (moduleTypeCodeList.hasOwnProperty(moduleTypeCode)) {
+      const reportingGroupList = moduleTypeCodeList[moduleTypeCode] as string[]
+
+      reportingGroupList.map((reportingGroup: string) => {
+        insertList.push({ reportingGroup, moduleTypeCode })
+      })
+    }
+  }
+
+  return new InsertJQL(name, ...insertList)
+}
+
+function prepareResultTable(): CreateTableJQL {
+
+  function composeSumExpression(dumbList: any[]): MathExpression {
+    if (dumbList.length === 2) {
+      return new MathExpression(dumbList[0], '+', dumbList[1])
     }
 
-    return params
+    const popResult = dumbList.pop()
+
+    return new MathExpression(popResult, '+', composeSumExpression(dumbList))
+
   }
-  const code = fn.toString()
-  return parseCode(code)
-}
 
-function prepareCodeMasterTable(name: string): CreateTableJQL {
+  const sumList = []
+
+  const $select = [
+    new ResultColumn(
+      new ColumnExpression('reportingGroupTable', 'moduleTypeCode'),
+      'moduleTypeCode'
+    ),
+    new ResultColumn(
+      new ColumnExpression('reportingGroupTable', 'reportingGroup'),
+      'reportingGroup'
+    ),
+  ]
+
+  months.map(month => {
+
+    const column = new FunctionExpression(
+      'IF',
+      new InExpression(new ColumnExpression('reportingGroupTable', 'reportingGroup'), false, [
+        'SA',
+        'SR',
+      ]),
+
+      // times 25
+      new FunctionExpression(
+        'IF',
+        new IsNullExpression(new ColumnExpression('final', `${month}-value`), true),
+        new MathExpression(new ColumnExpression('final', `${month}-value`), '*', 25),
+        0
+      ),
+
+      new FunctionExpression('IFNULL', new ColumnExpression('final', `${month}-value`), 0)
+    )
+
+    $select.push(new ResultColumn(column, `${month}-value`))
+
+    sumList.push(column)
+  })
+
+  const sumExpression = composeSumExpression(sumList)
+
+  $select.push(new ResultColumn(sumExpression, 'total'))
+
   return new CreateTableJQL({
     $temporary: true,
-    name,
+    name: 'result',
 
     $as: new Query({
-      $from: new FromTable(
-        {
-          method: 'POST',
-          url: 'api/code/query/code_master',
-          columns: [
-            {
-              name: 'id',
-              type: 'number',
-            },
-            {
-              name: 'code',
-              type: 'string',
-            },
-            {
-              name: 'codeType',
-              type: 'string',
-            },
-          ],
-        },
-        name
-      ),
+      $select,
+
+      $from: new FromTable('reportingGroupTable', 'reportingGroupTable', {
+        operator: 'LEFT',
+        table: 'final',
+        $on: new BinaryExpression(
+          new ColumnExpression('final', 'reportingGroup'),
+          '=',
+          new ColumnExpression('reportingGroupTable', 'reportingGroup')
+        ),
+      }),
     }),
   })
 }
 
-function preparefinalTable(name: string) {
-  return new CreateTableJQL({
-    $temporary: true,
-    name,
-    $as: new Query({
-      $select: [
-        new ResultColumn(new ColumnExpression('code_master', 'code'), 'reportingGroup'),
-        new ResultColumn(new ColumnExpression('month', 'moduleType'), 'moduleType'),
-        new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('month', 'total'), 0),
-          'total'
-        ),
-        new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jan'), 0),
-          'Jan'
-        ),
-        new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('month', 'Feb'), 0),
-          'Feb'
-        ),
-        new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('month', 'Mar'), 0),
-          'Mar'
-        ),
-        new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('month', 'Apr'), 0),
-          'Apr'
-        ),
-        new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('month', 'May'), 0),
-          'May'
-        ),
-        new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jun'), 0),
-          'Jun'
-        ),
-        new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('month', 'Jul'), 0),
-          'Jul'
-        ),
-        new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('month', 'Aug'), 0),
-          'Aug'
-        ),
-        new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('month', 'Sep'), 0),
-          'Sep'
-        ),
-        new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('month', 'Oct'), 0),
-          'Oct'
-        ),
-        new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('month', 'Nov'), 0),
-          'Nov'
-        ),
-        new ResultColumn(
-          new FunctionExpression('IFNULL', new ColumnExpression('month', 'Dec'), 0),
-          'Dec'
-        ),
-      ],
-
-      $from: new FromTable(
-        'code_master',
-        new JoinClause(
-          'LEFT',
-          'month',
-          new BinaryExpression(
-            new ColumnExpression('code_master', 'code'),
-            '=',
-            new ColumnExpression('month', 'reportingGroup')
-          )
-        )
-      ),
-    }),
-  })
-}
-
-// question : should use all reportingGroup or what??
 export default [
-  [prepareParams(), prepareMonthTotalTable('tempTable')],
-  prepareMonthTable('month'),
-  [prepareCodeMasterParams(), prepareCodeMasterTable('code_master')],
+  [prepareParams(), prepareTable()],
+  prepareFinalTable(),
 
-  preparefinalTable('final'),
+  prepareReportingGroupTable(),
+  insertReportingGroupTable(),
+
+  prepareResultTable(),
 
   new Query({
     $select: [
-      new ResultColumn(new ColumnExpression('final', 'moduleType'), '__id'),
-      new ResultColumn(new ColumnExpression('final', 'moduleType'), '__value'),
+      new ResultColumn('moduleTypeCode', '__id'),
+      new ResultColumn('moduleTypeCode', '__value'),
       new ResultColumn(new FunctionExpression('ROWS', new ColumnExpression('*')), '__rows'),
     ],
 
-    $from: 'final',
-
-    $group: new GroupBy(new ColumnExpression('final', 'moduleType')),
+    $from: 'result',
+    $group: 'moduleTypeCode',
   }),
 ]

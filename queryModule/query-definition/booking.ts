@@ -410,7 +410,11 @@ query.register('noOfBookings', {
 })
 
 query.register('weightTotal', {
-  expression: new FunctionExpression('IFNULL', new FunctionExpression('SUM', new ColumnExpression('weight')), 0),
+  expression: new FunctionExpression(
+    'IFNULL',
+    new FunctionExpression('SUM', new ColumnExpression('weight')),
+    0
+  ),
   $as: 'weightTotal',
 })
 

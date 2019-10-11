@@ -43,25 +43,26 @@ query.register('erpCode', {
   $as: 'erpCode',
 })
 
-query
-  .register(
-    'thirdPartyCodeKey',
-    new Query({
-      $where: new BinaryExpression(
-        new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression(
-            'JSON_EXTRACT',
-            new ColumnExpression('party', 'thirdPartyCode'),
-            new Unknown('string')
-          )
-        ),
-        '='
-      ),
-    })
-  )
-  .register('key', 0)
-  .register('value', 1)
+// // not wokring, so comment it out
+// query
+//   .register(
+//     'thirdPartyCodeKey',
+//     new Query({
+//       $where: new BinaryExpression(
+//         new FunctionExpression(
+//           'JSON_UNQUOTE',
+//           new FunctionExpression(
+//             'JSON_EXTRACT',
+//             new ColumnExpression('party', 'thirdPartyCode'),
+//             new Unknown('string')
+//           )
+//         ),
+//         '='
+//       ),
+//     })
+//   )
+//   .register('key', 0)
+//   .register('value', 1)
 
 query
   .register(

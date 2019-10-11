@@ -68,7 +68,7 @@ function prepareBookingable(name: string): CreateTableJQL {
         new ResultColumn(new ColumnExpression(name, 'consigneePartyName')),
         new ResultColumn(new ColumnExpression(name, 'portOfLoadingCode')),
         new ResultColumn(new ColumnExpression(name, 'portOfDischargeCode')),
-        new ResultColumn(new ColumnExpression(name, 'depatureDateEstimated')),
+        new ResultColumn(new ColumnExpression(name, 'departureDateEstimated')),
         new ResultColumn(new ColumnExpression(name, 'arrivalDateEstimated')),
       ],
 
@@ -84,9 +84,8 @@ function prepareBookingable(name: string): CreateTableJQL {
             { name: 'consigneePartyName', type: 'string' },
             { name: 'portOfLoadingCode', type: 'string' },
             { name: 'portOfDischargeCode', type: 'string' },
-            { name: 'depatureDateEstimated', type: 'Date' },
+            { name: 'departureDateEstimated', type: 'Date' },
             { name: 'arrivalDateEstimated', type: 'Date' },
-
           ],
         },
         name
