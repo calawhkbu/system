@@ -48,12 +48,19 @@ function prepareParams(): Function {
     // limit/extend to 1 year
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    const year = !subqueries.date ? moment().year() : moment(subqueries.date.from, 'YYYY-MM-DD').year()
+    const year = !subqueries.date
+      ? moment().year()
+      : moment(subqueries.date.from, 'YYYY-MM-DD').year()
 
     subqueries.date = {
-
-      from : moment().year(year).startOf('year').format('YYYY-MM-DD'),
-      to : moment().year(year).endOf('year').format('YYYY-MM-DD')
+      from: moment()
+        .year(year)
+        .startOf('year')
+        .format('YYYY-MM-DD'),
+      to: moment()
+        .year(year)
+        .endOf('year')
+        .format('YYYY-MM-DD'),
     }
 
     // select
@@ -99,7 +106,6 @@ function prepareTable(): CreateTableJQL {
 }
 
 function prepareFinalTable(): CreateTableJQL {
-
   const $select = [
     new ResultColumn(new ColumnExpression('moduleTypeCode')),
     new ResultColumn(new ColumnExpression('reportingGroup')),
@@ -122,7 +128,6 @@ function prepareFinalTable(): CreateTableJQL {
         `${month}-count`
       )
     )
-
   })
 
   return new CreateTableJQL({
@@ -148,10 +153,7 @@ function prepareReportingGroupTable(): CreateTableJQL {
   return new CreateTableJQL({
     $temporary: true,
     name,
-    columns: [
-      new Column('moduleTypeCode', 'string'),
-      new Column('reportingGroup', 'string')
-    ],
+    columns: [new Column('moduleTypeCode', 'string'), new Column('reportingGroup', 'string')],
   })
 }
 
@@ -174,7 +176,6 @@ function insertReportingGroupTable(): InsertJQL {
 }
 
 function prepareResultTable(): CreateTableJQL {
-
   function composeSumExpression(dumbList: any[]): MathExpression {
     if (dumbList.length === 2) {
       return new MathExpression(dumbList[0], '+', dumbList[1])
@@ -183,7 +184,6 @@ function prepareResultTable(): CreateTableJQL {
     const popResult = dumbList.pop()
 
     return new MathExpression(popResult, '+', composeSumExpression(dumbList))
-
   }
 
   const sumList = []
@@ -200,11 +200,12 @@ function prepareResultTable(): CreateTableJQL {
   ]
 
   months.map(month => {
-
-    const column = new FunctionExpression('IFNULL', new ColumnExpression('final', `${month}-count`), 0)
-    $select.push(
-      new ResultColumn(column, `${month}-count`)
+    const column = new FunctionExpression(
+      'IFNULL',
+      new ColumnExpression('final', `${month}-count`),
+      0
     )
+    $select.push(new ResultColumn(column, `${month}-count`))
 
     sumList.push(column)
   })
@@ -252,5 +253,4 @@ export default [
     $from: 'result',
     $group: 'moduleTypeCode',
   }),
-
 ]

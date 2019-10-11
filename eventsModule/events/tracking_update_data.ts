@@ -152,8 +152,6 @@ class TrackingUpdateDataEvent extends BaseEvent {
           this.user
         )) as Booking[]
 
-
-
         const alertResult = [] as {
           tableName: string
           primaryKey: string
