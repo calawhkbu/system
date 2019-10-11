@@ -49,8 +49,8 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
       .format('YYYY-MM-DD')
 
     // AE
-    subqueries.moduleType = { value: 'AIR' }
-    subqueries.boundType = { value: 'O' }
+    subqueries.moduleType = { value: ['AIR'] }
+    subqueries.boundType = { value: ['O'] }
 
     // select
     params.fields = ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight']
@@ -60,15 +60,15 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
 
     switch (type_) {
       case 'F':
-        subqueries.nominatedTypeCode = { value: 'F' }
-        subqueries.isColoader = { value: 0 }
+        subqueries.nominatedTypeCode = { value: ['F'] }
+        subqueries.isColoader = { value: [0] }
         break
       case 'R':
-        subqueries.nominatedTypeCode = { value: 'R' }
-        subqueries.isColoader = { value: 0 }
+        subqueries.nominatedTypeCode = { value: ['R'] }
+        subqueries.isColoader = { value: [0] }
         break
       case 'C':
-        subqueries.isColoader = { value: 1 }
+        subqueries.isColoader = { value: [1] }
         break
     }
 
@@ -138,6 +138,12 @@ export default [
   [prepareParams('C'), prepareData('C')],
 
   // finalize data
+
+  // new Query({
+
+  //   $from : 'shipment'
+  // })
+
   new Query({
     $select: [
       new ResultColumn('carrierCode'),
@@ -170,4 +176,5 @@ export default [
     $from: 'shipment',
     $group: 'carrierCode',
   }),
+
 ]
