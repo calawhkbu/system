@@ -56,8 +56,9 @@ function prepareParams(type_: 'F' | 'R' | 'T'): Function {
       .format('YYYY-MM-DD')
 
     // AE
-    subqueries.moduleTypeCode = { value: 'AIR' }
-    subqueries.boundTypeCode = { value: 'O' }
+    subqueries.moduleTypeCode = { value: ['AIR'] }
+    subqueries.boundTypeCode = { value: ['O'] }
+    subqueries.billTypeCode = { value : ['M'] }
 
     // select
     params.fields = ['carrierCode', 'jobMonth', 'shipments']
@@ -67,10 +68,10 @@ function prepareParams(type_: 'F' | 'R' | 'T'): Function {
 
     switch (type_) {
       case 'F':
-        subqueries.nominatedTypeCode = { value: 'F' }
+        subqueries.nominatedTypeCode = { value: ['F'] }
         break
       case 'R':
-        subqueries.nominatedTypeCode = { value: 'R' }
+        subqueries.nominatedTypeCode = { value: ['R'] }
         break
 
     }
