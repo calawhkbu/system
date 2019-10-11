@@ -59,8 +59,8 @@ const app = {
   },
   method: 'POST', // 'GET'|'POST'|'PUT'|'DELETE'|'HEAD'|'OPTIONS'
   getUrl: ({ api }: { api: any }) => {
-    if (!api.erp || !api.erp.url2) throw new NotImplementedException()
-    return `${api.erp.url2}/getshipsummary`
+    if (!api.erp || !api.erp.url2 && !api.erp.url) throw new NotImplementedException()
+    return `${api.erp.url2 || api.erp.url}/getshipsummary`
   },
   requestHandler: async(
     { query, roles, roleService, partyGroup, party, partyService }: any,
@@ -82,7 +82,8 @@ const app = {
     // resolve parties
     party = await helper.resolveParties(partyService, partyGroup, party)
 
-    let { subqueries = {} as any, sorting, limit } = query
+    const { subqueries = {} as any } = query
+    let { sorting, limit } = query
     const para = {} as any
 
     // order
