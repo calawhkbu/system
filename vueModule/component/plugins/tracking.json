@@ -42,7 +42,16 @@
       "SUOT": "tracking/set-sail.svg",
       "EPRL": "tracking/truck.svg",
       "STSP": "tracking/truck.svg",
-      "RCS": "tracking/truck.svg"
+      "RCS": "tracking/truck.svg",
+      "oceanBill": "tracking/file",
+      "SEAdeparture": "tracking/ship-departure",
+      "SEAarrival": "tracking/ship-arrival",
+      "AIRdeparture": "tracking/air-departure",
+      "AIRarrival": "tracking/air-arrival",
+      "cargoReady": "tracking/cargo-ready",
+      "cyCutoff": "tracking/cy-cutoff",
+      "pickup": "tracking/pickup",
+      "finalDoorDelivery": "tracking/final-door-delivery"
     }
   },
   "baseSummaryProps": {
