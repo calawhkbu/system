@@ -48,8 +48,9 @@ function prepareParams(): Function {
       .format('YYYY-MM-DD')
 
     // AE
-    subqueries.moduleTypeCode = { value: 'AIR' }
-    subqueries.boundTypeCode = { value: 'O' }
+    subqueries.moduleTypeCode = { value: ['AIR'] }
+    subqueries.boundTypeCode = { value: ['O'] }
+    subqueries.billTypeCode = { value: ['M'] }
 
     // select
     params.fields = ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight']

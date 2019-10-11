@@ -20,9 +20,7 @@ import {
 const query = new QueryDef(
   new Query({
     $distinct: true,
-    $select: [
-      new ResultColumn(new ColumnExpression('booking', 'id'), 'bookingId'),
-    ],
+    $select: [new ResultColumn(new ColumnExpression('booking', 'id'), 'bookingId')],
     $from: new FromTable(
       'booking',
       {

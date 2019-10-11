@@ -12,7 +12,7 @@ import {
   AndExpressions,
   FunctionExpression,
   Unknown,
-  Value
+  Value,
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -25,15 +25,29 @@ const query = new QueryDef(
       new ResultColumn(new ColumnExpression('party', 'id'), 'partyId'),
       new ResultColumn(new ColumnExpression('party', 'name'), 'partyName'),
 
-      new ResultColumn(new FunctionExpression(
-        'JSON_UNQUOTE',
-        new FunctionExpression('JSON_EXTRACT', new ColumnExpression('party', 'thirdPartyCode'), '$.erp')
-      ), 'erpCode'),
+      new ResultColumn(
+        new FunctionExpression(
+          'JSON_UNQUOTE',
+          new FunctionExpression(
+            'JSON_EXTRACT',
+            new ColumnExpression('party', 'thirdPartyCode'),
+            '$.erp'
+          )
+        ),
+        'erpCode'
+      ),
 
-      new ResultColumn(new FunctionExpression(
-        'JSON_UNQUOTE',
-        new FunctionExpression('JSON_EXTRACT', new ColumnExpression('party', 'thirdPartyCode'), '$.old360')
-      ), 'old360Id'),
+      new ResultColumn(
+        new FunctionExpression(
+          'JSON_UNQUOTE',
+          new FunctionExpression(
+            'JSON_EXTRACT',
+            new ColumnExpression('party', 'thirdPartyCode'),
+            '$.old360'
+          )
+        ),
+        'old360Id'
+      ),
 
       new ResultColumn(new ColumnExpression('party', 'phone'), 'partyPhone'),
       new ResultColumn(new ColumnExpression('party', 'fax'), 'partyFax'),
@@ -99,27 +113,44 @@ query
   )
   .register('value', 0)
 
-query.register('old360Id', new Query({
-  $where: new BinaryExpression(
+query
+  .register(
+    'old360Id',
+    new Query({
+      $where: new BinaryExpression(
+        new FunctionExpression(
+          'JSON_UNQUOTE',
+          new FunctionExpression(
+            'JSON_EXTRACT',
+            new ColumnExpression('party', 'thirdPartyCode'),
+            '$.old360'
+          )
+        ),
+        '='
+      ),
+    })
+  )
+  .register('value', 0)
 
-    new FunctionExpression(
-      'JSON_UNQUOTE',
-      new FunctionExpression('JSON_EXTRACT', new ColumnExpression('party', 'thirdPartyCode'), '$.old360')
-    ), '='),
-
-})
-).register('value', 0)
-
-query.register('erpCode', new Query({
-  $where: new BinaryExpression(
-
-    new FunctionExpression(
-      'JSON_UNQUOTE',
-      new FunctionExpression('JSON_EXTRACT', new ColumnExpression('party', 'thirdPartyCode'), new Value('$.erp'))
-    ), '=', new Unknown()),
-
-  })
-).register('value', 0)
+query
+  .register(
+    'erpCode',
+    new Query({
+      $where: new BinaryExpression(
+        new FunctionExpression(
+          'JSON_UNQUOTE',
+          new FunctionExpression(
+            'JSON_EXTRACT',
+            new ColumnExpression('party', 'thirdPartyCode'),
+            new Value('$.erp')
+          )
+        ),
+        '=',
+        new Unknown()
+      ),
+    })
+  )
+  .register('value', 0)
 
 //
 

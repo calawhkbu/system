@@ -49,10 +49,10 @@ export default [
         data: {
           subqueries: {
             moduleTypeCode: {
-              value: 'SEA',
+              value: ['SEA'],
             },
             boundTypeCode: {
-              value: 'O',
+              value: ['O'],
             },
           },
 

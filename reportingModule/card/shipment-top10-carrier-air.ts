@@ -50,10 +50,10 @@ export default [
         data: {
           subqueries: {
             moduleTypeCode: {
-              value: 'AIR',
+              value: ['AIR'],
             },
             boundTypeCode: {
-              value: 'O',
+              value: ['O'],
             },
           },
 

@@ -58,17 +58,19 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
     // group by
     params.groupBy = ['carrierCode', 'jobMonth']
 
+    // subqueries.billTypeCode = { value : ['M'] }
+
     switch (type_) {
       case 'F':
-        subqueries.nominatedTypeCode = { value: 'F' }
-        subqueries.isColoader = { value: 0 }
+        subqueries.nominatedTypeCode = { value: ['F'] }
+        subqueries.isColoader = { value: [0] }
         break
       case 'R':
-        subqueries.nominatedTypeCode = { value: 'R' }
-        subqueries.isColoader = { value: 0 }
+        subqueries.nominatedTypeCode = { value: ['R'] }
+        subqueries.isColoader = { value: [0] }
         break
       case 'C':
-        subqueries.isColoader = { value: 1 }
+        subqueries.isColoader = { value: [1] }
         break
     }
 

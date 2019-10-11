@@ -48,10 +48,11 @@ function prepareParams(): Function {
     // limit/extend to 1 year
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    const year = !subqueries.date ? moment().year() : moment(subqueries.date.from, 'YYYY-MM-DD').year()
+    const year = !subqueries.date
+      ? moment().year()
+      : moment(subqueries.date.from, 'YYYY-MM-DD').year()
 
     subqueries.date = {
-
       from : moment().year(year).startOf('year').format('YYYY-MM-DD'),
       to : moment().year(year).endOf('year').format('YYYY-MM-DD')
     }
@@ -176,7 +177,6 @@ function insertReportingGroupTable(): InsertJQL {
 }
 
 function prepareResultTable(): CreateTableJQL {
-
   function composeSumExpression(dumbList: any[]): MathExpression {
     if (dumbList.length === 2) {
       return new MathExpression(dumbList[0], '+', dumbList[1])
@@ -185,7 +185,6 @@ function prepareResultTable(): CreateTableJQL {
     const popResult = dumbList.pop()
 
     return new MathExpression(popResult, '+', composeSumExpression(dumbList))
-
   }
 
   const sumList = []
@@ -202,7 +201,6 @@ function prepareResultTable(): CreateTableJQL {
   ]
 
   months.map(month => {
-
     const column = new FunctionExpression(
       'IF',
       new InExpression(new ColumnExpression('reportingGroupTable', 'reportingGroup'), false, [

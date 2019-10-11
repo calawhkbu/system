@@ -18,29 +18,35 @@ import { parseCode } from 'utils/function'
 const statusList = ['notInTrack', 'processing', 'cargoReady', 'departure', 'inTransit', 'arrival']
 
 const statusMap = new Map([
-
   ['notInTrack', 'Not In Track'],
   ['processing', 'Processing'],
   ['cargoReady', 'Cargo Ready'],
   ['departure', 'Departure'],
   ['inTransit', 'In Transit'],
-  ['arrival', 'Arrival']
-
+  ['arrival', 'Arrival'],
 ])
 
-function prepareFinalQuery()
-{
-
+function prepareFinalQuery() {
   const $select = []
 
   for (const [key, value] of statusMap) {
-
-    $select.push(new ResultColumn(new FunctionExpression('IFNULL', new FunctionExpression('FIND', new BinaryExpression(new ColumnExpression('shipment', 'status'), '=', value), new ColumnExpression('shipment', 'count')), 0), `${key}_count`))
-
+    $select.push(
+      new ResultColumn(
+        new FunctionExpression(
+          'IFNULL',
+          new FunctionExpression(
+            'FIND',
+            new BinaryExpression(new ColumnExpression('shipment', 'status'), '=', value),
+            new ColumnExpression('shipment', 'count')
+          ),
+          0
+        ),
+        `${key}_count`
+      )
+    )
   }
 
   return new Query({
-
     $select,
     $from: new FromTable(
       {
@@ -50,12 +56,12 @@ function prepareFinalQuery()
           {
             name: 'cnt',
             type: 'string',
-            $as : 'count'
+            $as: 'count',
           },
           {
             name: 'sequenceOrder',
             type: 'string',
-            $as : 'order'
+            $as: 'order',
           },
           {
             name: 'status',
@@ -68,6 +74,4 @@ function prepareFinalQuery()
   })
 }
 
-export default [
-  prepareFinalQuery()
-]
+export default [prepareFinalQuery()]

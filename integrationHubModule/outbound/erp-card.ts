@@ -4,9 +4,9 @@ import axios from 'axios'
 
 const app = {
   constants: {
-    url: '' as string,
-    zyh: 0 as number,
-    zyd: 0 as number,
+    url: '',
+    zyh: 0,
+    zyd: 0,
   },
   method: 'POST',
   getUrl: ({ api }: { api: any }) => {

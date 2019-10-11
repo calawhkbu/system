@@ -31,6 +31,112 @@
             "required": true
           }
         },
+
+
+        {
+          "name": "shipperPartyId",
+          "display": "shipper",
+          "type": "autocomplete",
+
+          "props": {
+
+            "multi": true,
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+                "data": {
+
+                  "limit" : 5,
+                  "subqueries": {
+                    "partyTypes": {
+                      "value": ["shipper"]
+                    },
+                    "q": {
+                      "value": "{{ q }}"
+                    }
+                  }
+                },
+
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
+              },
+
+              "resolve": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+                "data": {
+
+                  "subqueries": {
+                    "partyTypes": {
+                      "value": ["shipper"]
+                    },
+                    "id": {
+                      "value": "{{value}}"
+                    }
+                  }
+
+                },
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
+              }
+            }
+          }
+        },
+
+        {
+          "display" : "consignee",
+          "name" : "consigneePartyId",
+          "props" : {
+            "api" : {
+              "query" : {
+                "data" : {
+                  "limit" : 5,
+                  "subqueries" : {
+                    "partyTypes" : {
+                      "value" : [
+                        "consignee"
+                      ]
+                    },
+                    "q" : {
+                      "value" : "{{ q }}"
+                    }
+                  }
+                },
+                "labelKey" : "partyName",
+                "method" : "POST",
+                "sublabelKey" : "erpCode",
+                "url" : "api/party/query/party_auto_suggest",
+                "valueKey" : "id"
+              },
+              "resolve" : {
+                "data" : {
+                  "subqueries" : {
+                    "id" : {
+                      "value" : "{{value}}"
+                    },
+                    "partyTypes" : {
+                      "value" : [
+                        "consignee"
+                      ]
+                    }
+                  }
+                },
+                "labelKey" : "partyName",
+                "method" : "POST",
+                "sublabelKey" : "erpCode",
+                "url" : "api/party/query/party_auto_suggest",
+                "valueKey" : "id"
+              }
+            },
+            "multi" : true
+          },
+          "type" : "autocomplete"
+        },
+
+
         {
           "name": "officePartyId",
           "display": "office",
@@ -55,9 +161,9 @@
                     }
                   }
                 },
-                "valueKey": "id",
+                "valueKey": "old360Id",
                 "labelKey": "partyName",
-                "sublabelKey": "shortName"
+                "sublabelKey": "erpCode"
               },
               "resolve": {
                 "method": "POST",
@@ -71,9 +177,9 @@
                     "value": "{{value}}"
                   }
                 },
-                "valueKey": "id",
+                "valueKey": "old360Id",
                 "labelKey": "shortName",
-                "sublabelKey": "shortName"
+                "sublabelKey": "erpCode"
               }
             }
           }
@@ -92,6 +198,8 @@
                 "method": "POST",
                 "url": "api/party/query/party_auto_suggest",
                 "data": {
+
+                  "limit" : 5,
                   "subqueries": {
                     "partyTypes": {
                       "value": ["agent"]
@@ -103,7 +211,8 @@
                 },
 
                 "valueKey": "id",
-                "labelKey": "partyName"
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
               },
 
               "resolve": {
@@ -122,11 +231,174 @@
 
                 },
                 "valueKey": "id",
-                "labelKey": "partyName"
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
               }
             }
           }
         },
+
+
+        {
+          "name": "roAgentPartyId",
+          "display": "roAgent",
+          "type": "autocomplete",
+
+          "props": {
+
+            "multi": true,
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+                "data": {
+
+                  "limit" : 5,
+                  "subqueries": {
+                    "partyTypes": {
+                      "value": ["agent"]
+                    },
+                    "q": {
+                      "value": "{{ q }}"
+                    }
+                  }
+                },
+
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
+              },
+
+              "resolve": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+                "data": {
+
+                  "subqueries": {
+                    "partyTypes": {
+                      "value": ["agent"]
+                    },
+                    "id": {
+                      "value": "{{value}}"
+                    }
+                  }
+
+                },
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
+              }
+            }
+          }
+        },
+
+
+        {
+          "name": "linerAgentPartyId",
+          "display": "linerAgent",
+          "type": "autocomplete",
+
+          "props": {
+
+            "multi": true,
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+                "data": {
+
+                  "limit" : 5,
+                  "subqueries": {
+                    "partyTypes": {
+                      "value": ["agent"]
+                    },
+                    "q": {
+                      "value": "{{ q }}"
+                    }
+                  }
+                },
+
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
+              },
+
+              "resolve": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+                "data": {
+
+                  "subqueries": {
+                    "partyTypes": {
+                      "value": ["agent"]
+                    },
+                    "id": {
+                      "value": "{{value}}"
+                    }
+                  }
+
+                },
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
+              }
+            }
+          }
+        },
+
+
+
+        {
+          "name": "controllingCustomerPartyId",
+          "display": "controllingCustomer",
+          "type": "autocomplete",
+
+          "props": {
+
+            "multi": true,
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+                "data": {
+
+                  "limit" : 5,
+                  "subqueries": {
+                    "q": {
+                      "value": "{{ q }}"
+                    }
+                  }
+                },
+
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
+              },
+
+              "resolve": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+                "data": {
+
+                  "subqueries": {
+                    "partyTypes": {
+                      "value": ["controllingCustomer"]
+                    },
+                    "id": {
+                      "value": "{{value}}"
+                    }
+                  }
+
+                },
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
+              }
+            }
+          }
+        },
+
+
 
         {
           "name": "departureDateEstimated",
@@ -342,11 +614,71 @@
             }
           }
         },
+
+
+        {
+          "name": "agentGroup",
+          "display": "agentGroup",
+          "type": "list",
+
+          "props" : {
+            "items" : [
+              {
+                "label" : "agentGroup1",
+                "value" : "agentGroup1"
+              },
+              {
+                "label" : "agentGroup2",
+                "value" : "agentGroup2"
+              },
+              {
+                "label" : "agentGroup3",
+                "value" : "agentGroup3"
+              }
+            ]
+          }
+        },
+
+        {
+          "name": "division",
+          "display": "division",
+          "type": "list",
+
+          "props" : {
+
+            "items" : [
+              {
+                "label" : "division1",
+                "value" : "division1"
+              },
+              {
+                "label" : "division2",
+                "value" : "division2"
+              },
+              {
+                "label" : "division3",
+                "value" : "division3"
+              }
+
+
+            ]
+
+          }
+        },
+
         {
           "name": "salesmanCode",
           "display": "salesman",
           "type": "text"
+        },
+
+        {
+          "name": "rSalesmanCode",
+          "display": "rSalesman",
+          "type": "text"
         }
+
+
       ]
     }
   }]

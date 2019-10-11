@@ -37,16 +37,14 @@ function prepareShipmentParams(): Function {
 
     // console.log(subqueries)
 
-    if (!subqueries.primaryKeyListString && !subqueries.workflowStatusListString)
-    {
+    if (!subqueries.primaryKeyListString && !subqueries.workflowStatusListString) {
       throw new BadRequestException('MISSING_primaryKeyListString/workflowStatus')
     }
 
-    if (subqueries.primaryKeyListString)
-    {
-            // get the primaryKeyList
+    if (subqueries.primaryKeyListString) {
+      // get the primaryKeyList
       if (!subqueries.primaryKeyListString && subqueries.primaryKeyListString !== '')
-      throw new BadRequestException('MISSING_primaryKeyListString')
+        throw new BadRequestException('MISSING_primaryKeyListString')
 
       const primaryKeyList = subqueries.primaryKeyListString.value.split(',')
 
@@ -56,18 +54,15 @@ function prepareShipmentParams(): Function {
     }
 
     // workflowStatus case
-    if (subqueries.workflowStatusListString)
-    {
-
-      if (!subqueries.workflowStatusListString && subqueries.workflowStatusListString !== '' )
-      throw new BadRequestException('MISSING_workflowStatusListString')
+    if (subqueries.workflowStatusListString) {
+      if (!subqueries.workflowStatusListString && subqueries.workflowStatusListString !== '')
+        throw new BadRequestException('MISSING_workflowStatusListString')
 
       const workflowStatusList = subqueries.workflowStatusListString.value.split(',')
 
       subqueries.workflowStatusList = {
         value: workflowStatusList,
       }
-
     }
 
     return params
