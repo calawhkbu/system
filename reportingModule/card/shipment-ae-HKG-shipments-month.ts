@@ -68,11 +68,8 @@ function prepareParams(likeHouseNo_: string): Function {
     subqueries.moduleTypeCode = { value: 'AIR' }
     subqueries.boundTypeCode = { value: 'O' }
 
-    // warning : hardCode
-    subqueries.officePartyId = { value: 7351490 }
-
-    // subqueries.billTypeCode = { value: 'M' }
-    subqueries.reportingGroup = { value: ['AC', 'AD'] }
+    // warning : hardCode , very hardcode!!!!!!!!
+    // subqueries.officePartyId = { value: [ 7351490 ] }
 
     subqueries.likeHouseNo = { value: likeHouseNo_ }
 

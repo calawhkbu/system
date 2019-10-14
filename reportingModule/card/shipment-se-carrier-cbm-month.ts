@@ -52,10 +52,10 @@ function prepareParams(): Function {
     subqueries.boundTypeCode = { value: ['O'] }
 
     // select
-    params.fields = ['carrierCode', 'jobMonth', 'cntCbm', 'shipments']
+    params.fields = ['carrierCode', 'carrierName', 'jobMonth', 'cntCbm', 'shipments']
 
     // group by
-    params.groupBy = ['carrierCode', 'jobMonth']
+    params.groupBy = ['carrierCode', 'carrierName', 'jobMonth']
 
     return params
   }
@@ -68,6 +68,7 @@ function prepareTable(): CreateTableJQL {
     $as: new Query({
       $select: [
         new ResultColumn('carrierCode'),
+        new ResultColumn('carrierName'),
         new ResultColumn(
           new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
           'month'
@@ -81,6 +82,7 @@ function prepareTable(): CreateTableJQL {
           url: 'api/shipment/query/shipment',
           columns: [
             { name: 'carrierCode', type: 'string' },
+            { name: 'carrierName', type: 'string' },
             { name: 'jobMonth', type: 'string' },
             { name: 'cntCbm', type: 'number', $as: 'cbm' },
             { name: 'shipments', type: 'number' },
@@ -103,6 +105,7 @@ export default [
   new Query({
     $select: [
       new ResultColumn('carrierCode'),
+      new ResultColumn('carrierName'),
       ...months.reduce<ResultColumn[]>((result, month) => {
         result.push(
           ...types.map(
