@@ -1,173 +1,200 @@
 {
   "layout": "CardLayout",
-  "components": [{
-    "is": "Form",
-    "props": {
-      "createdFunctions": [{
-        "type": "dispatch",
-        "otherParams": {
-          "name": "auth/verifyInvitationToken"
-        }
-      }],
-      "form": {
-        "lastName": "",
-        "password": "",
-        "username": "",
-        "firstName": "",
-        "confirmPassword": ""
-      },
-      "fields": [{
-          "name": "username",
-          "label": "Auth.username",
-          "props": {
-            "type": "email",
-            "required": true,
-            "disabled": true
-          },
-          "component": "v-text-field",
-          "validator": ["required", "isEmail"]
-        },
-        {
-          "name": "firstName",
-          "class": "xs-6",
-          "label": "Auth.firstName",
-          "component": "v-text-field",
-          "validator": []
-        },
-        {
-          "name": "lastName",
-          "class": "xs-6",
-          "label": "Auth.lastName",
-          "component": "v-text-field",
-          "validator": []
-        },
-        {
-          "name": "password",
-          "label": "Auth.password",
-          "component": "DisplayPasswordField",
-          "validator": ["required"]
-        },
-        {
-          "name": "confirmPassword",
-          "label": "Auth.confirmPassword",
-          "component": "DisplayPasswordField",
-          "validator": [
-            "required",
-            {
-              "type": "compare",
-              "value2": "password"
+  "components": [
+    {
+      "is": "Form",
+      "props": {
+        "createdFunctions": [
+          {
+            "type": "dispatch",
+            "otherParams": {
+              "name": "auth/verifyInvitationToken"
             }
-          ]
-        }
-      ],
-      "submitActions": [{
-        "type": "dispatch",
-        "otherParams": {
-          "name": "auth/register",
-          "type": "local"
+          }
+        ],
+        "form": {
+          "lastName": "",
+          "password": "",
+          "username": "",
+          "firstName": "",
+          "confirmPassword": ""
         },
-        "afterActions": [{
-          "type": "router"
-        }]
-      }]
-    },
-    "slots": [{
-        "is": "DynamicComponent",
-        "name": "pre-form",
-        "props": {
-          "components": [{
-            "is": "v-img",
+        "fields": [
+          {
+            "name": "username",
+            "label": "Auth.username",
             "props": {
-              "src": "/img/logo/swivel-logo-light.svg",
-              "style": {
-                "width": "484px"
-              }
-            }
-          }]
-        }
-      },
-      {
-        "is": "DynamicComponent",
-        "name": "post-form",
-        "props": {
-          "style": {
-            "display": "flex"
+              "type": "email",
+              "required": true,
+              "disabled": true
+            },
+            "component": "v-text-field",
+            "validator": ["required", "isEmail"]
           },
-          "components": [{
-              "is": "v-btn",
-              "props": {
-                "flat": true
-              },
-              "events": {
-                "click.stop": [{
-                  "type": "router",
-                  "otherParams": {
-                    "func": "push",
-                    "path": "login"
+          {
+            "name": "firstName",
+            "class": "xs-6",
+            "label": "Auth.firstName",
+            "component": "v-text-field",
+            "validator": []
+          },
+          {
+            "name": "lastName",
+            "class": "xs-6",
+            "label": "Auth.lastName",
+            "component": "v-text-field",
+            "validator": []
+          },
+          {
+            "name": "password",
+            "label": "Auth.password",
+            "component": "DisplayPasswordField",
+            "validator": ["required"]
+          },
+          {
+            "name": "confirmPassword",
+            "label": "Auth.confirmPassword",
+            "component": "DisplayPasswordField",
+            "validator": [
+              "required",
+              {
+                "type": "compare",
+                "value2": "password"
+              }
+            ]
+          }
+        ],
+        "submitActions": [
+          {
+            "type": "dispatch",
+            "otherParams": {
+              "name": "auth/register",
+              "type": "local"
+            },
+            "afterActions": [
+              {
+                "type": "router"
+              }
+            ]
+          }
+        ]
+      },
+      "slots": [
+        {
+          "is": "DynamicComponent",
+          "name": "pre-form",
+          "props": {
+            "components": [
+              {
+                "is": "v-img",
+                "props": {
+                  "src": "/img/logo/swivel-logo-light.svg",
+                  "style": {
+                    "width": "484px"
                   }
-                }]
-              },
-              "slots": [{
-                "is": "i18nText",
-                "name": "default",
-                "props": {
-                  "i18nKey": "Cancel"
                 }
-              }]
-            },
-            {
-              "is": "v-spacer"
-            },
-            {
-              "is": "GoogleLoginButton",
-              "props": {
-                "successActions": [{
-                  "type": "dispatch",
-                  "otherParams": {
-                    "name": "auth/register",
-                    "type": "google"
-                  },
-                  "afterActions": [{
-                    "type": "router"
-                  }]
-                }]
               }
+            ]
+          }
+        },
+        {
+          "is": "DynamicComponent",
+          "name": "post-form",
+          "props": {
+            "style": {
+              "display": "flex"
             },
-            {
-              "is": "WechatLoginButton",
-              "props": {
-                "successActions": [{
-                  "type": "dispatch",
-                  "otherParams": {
-                    "name": "auth/register",
-                    "type": "wechat"
-                  },
-                  "afterActions": [{
-                    "type": "router"
-                  }]
-                }]
-              }
-            },
-            {
-              "is": "v-spacer"
-            },
-            {
-              "is": "v-btn",
-              "props": {
-                "flat": true,
-                "type": "submit"
-              },
-              "slots": [{
-                "is": "i18nText",
-                "name": "default",
+            "components": [
+              {
+                "is": "v-btn",
                 "props": {
-                  "i18nKey": "Auth.Register"
+                  "flat": true
+                },
+                "events": {
+                  "click.stop": [
+                    {
+                      "type": "router",
+                      "otherParams": {
+                        "func": "push",
+                        "path": "login"
+                      }
+                    }
+                  ]
+                },
+                "slots": [
+                  {
+                    "is": "i18nText",
+                    "name": "default",
+                    "props": {
+                      "i18nKey": "Cancel"
+                    }
+                  }
+                ]
+              },
+              {
+                "is": "v-spacer"
+              },
+              {
+                "is": "GoogleLoginButton",
+                "props": {
+                  "successActions": [
+                    {
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "auth/register",
+                        "type": "google"
+                      },
+                      "afterActions": [
+                        {
+                          "type": "router"
+                        }
+                      ]
+                    }
+                  ]
                 }
-              }]
-            }
-          ]
+              },
+              {
+                "is": "WechatLoginButton",
+                "props": {
+                  "successActions": [
+                    {
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "auth/register",
+                        "type": "wechat"
+                      },
+                      "afterActions": [
+                        {
+                          "type": "router"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "is": "v-spacer"
+              },
+              {
+                "is": "v-btn",
+                "props": {
+                  "flat": true,
+                  "type": "submit"
+                },
+                "slots": [
+                  {
+                    "is": "i18nText",
+                    "name": "default",
+                    "props": {
+                      "i18nKey": "Auth.Register"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
         }
-      }
-    ]
-  }]
+      ]
+    }
+  ]
 }

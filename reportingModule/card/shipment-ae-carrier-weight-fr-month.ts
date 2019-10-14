@@ -56,21 +56,23 @@ function prepareParams(type_: 'F' | 'R' | 'T'): Function {
       .format('YYYY-MM-DD')
 
     // AE
-    subqueries.moduleTypeCode = { value: 'AIR' }
-    subqueries.boundTypeCode = { value: 'O' }
+    subqueries.moduleTypeCode = { value: ['AIR'] }
+    subqueries.boundTypeCode = { value: ['O'] }
 
     // select
-    params.fields = ['carrierCode', 'jobMonth', 'grossWeight', 'chargeableWeight']
+    params.fields = ['carrierCode', 'carrierName', 'jobMonth', 'grossWeight', 'chargeableWeight']
 
     // group by
-    params.groupBy = ['carrierCode', 'jobMonth']
+    params.groupBy = ['carrierCode', 'carrierName', 'jobMonth']
+
+    subqueries.billTypeCode = { value : ['M'] }
 
     switch (type_) {
       case 'F':
-        subqueries.nominatedTypeCode = { value: 'F' }
+        subqueries.nominatedTypeCode = { value: ['F'] }
         break
       case 'R':
-        subqueries.nominatedTypeCode = { value: 'R' }
+        subqueries.nominatedTypeCode = { value: ['R'] }
         break
     }
 
@@ -85,11 +87,12 @@ function prepareParams(type_: 'F' | 'R' | 'T'): Function {
 function prepareData(type: 'F' | 'R'): InsertJQL {
   return new InsertJQL({
     name: 'shipment',
-    columns: ['type', 'carrierCode', 'month', 'grossWeight', 'chargeableWeight'],
+    columns: ['type', 'carrierCode', 'carrierName', 'month', 'grossWeight', 'chargeableWeight'],
     query: new Query({
       $select: [
         new ResultColumn(new Value(type), 'type'),
         new ResultColumn('carrierCode'),
+        new ResultColumn('carrierName'),
         new ResultColumn(
           new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
           'month'
@@ -109,6 +112,7 @@ function prepareData(type: 'F' | 'R'): InsertJQL {
           url: 'api/shipment/query/shipment',
           columns: [
             { name: 'carrierCode', type: 'string' },
+            { name: 'carrierName', type: 'string' },
             { name: 'jobMonth', type: 'string' },
             { name: 'grossWeight', type: 'number' },
             { name: 'chargeableWeight', type: 'number' },
@@ -132,6 +136,7 @@ function prepareTempTable(): CreateTableJQL {
     $as: new Query({
       $select: [
         new ResultColumn('carrierCode'),
+        new ResultColumn('carrierName'),
         ...months.reduce<ResultColumn[]>((result, month) => {
           const tempList1 = types.reduce<ResultColumn[]>((result2, type) => {
             const tempList = variables.reduce<ResultColumn[]>((result3, variable) => {
@@ -184,7 +189,10 @@ function prepareFinalTable() {
     return new MathExpression(popResult, '+', composeSumExpression(dumbList))
   }
 
-  const $select = [new ResultColumn(new ColumnExpression('carrierCode'))]
+  const $select = [
+    new ResultColumn(new ColumnExpression('carrierCode')),
+    new ResultColumn(new ColumnExpression('carrierName'))
+  ]
 
   variables.map(variable => {
     const finalSumList = []
@@ -240,6 +248,7 @@ export default [
   new CreateTableJQL(true, 'shipment', [
     new Column('type', 'string'),
     new Column('carrierCode', 'string'),
+    new Column('carrierName', 'string'),
     new Column('month', 'string'),
     new Column('grossWeight', 'number'),
     new Column('chargeableWeight', 'number'),

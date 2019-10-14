@@ -36,16 +36,14 @@ function prepareParams(): Function {
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    params.fields = ['shipperPartyId', 'weightTotal']
-    params.groupBy = ['shipperPartyId']
+    params.fields = ['shipperPartyCode', 'weightTotal']
+    params.groupBy = ['shipperPartyCode']
 
     params.sorting = [new OrderBy('weightTotal', 'DESC')]
 
-    // params.conditions = [
-
-    //   new BinaryExpression(new IsNullExpression(new ColumnExpression('booking', 'shipmentPartyId'), true), '=', false)
-
-    // ]
+    subqueries.shipperPartyCodeIsNotNull = {
+      value : true
+    }
 
     params.limit = 10
 
@@ -60,10 +58,13 @@ function prepareTop10Table(): CreateTableJQL {
     $temporary: true,
     name,
     $as: new Query({
+
       $select: [
-        new ResultColumn(new ColumnExpression(name, 'shipperPartyId'), 'partyId'),
-        new ResultColumn(new ColumnExpression(name, 'weightTotal')),
+
+        new ResultColumn(new ColumnExpression(name, 'shipperPartyCode'), 'shipperPartyCode'),
+        new ResultColumn(new ColumnExpression(name, 'weightTotal'), 'weight'),
       ],
+
       $from: new FromTable(
         {
           method: 'POST',
@@ -73,83 +74,26 @@ function prepareTop10Table(): CreateTableJQL {
               name: 'weightTotal',
               type: 'number',
             },
+
             {
-              name: 'shipperPartyId',
+              name: 'shipperPartyCode',
               type: 'string',
             },
+
           ],
         },
         name
       ),
-    }),
-  })
-}
-
-function preparePartyTable(): CreateTableJQL {
-  const name = 'party'
-  return new CreateTableJQL({
-    $temporary: true,
-    name,
-
-    $as: new Query({
-      $from: new FromTable(
-        {
-          method: 'POST',
-          url: 'api/party/query/party',
-          columns: [
-            {
-              name: 'id',
-              type: 'number',
-            },
-            {
-              name: 'name',
-              type: 'string',
-            },
-            {
-              name: 'type',
-              type: 'string',
-            },
-          ],
-
-          data: {
-            fields: ['party_type.*', 'party.*'],
-          },
-        },
-        name
-      ),
-
-      $where: new BinaryExpression(new ColumnExpression('type'), '=', 'shipper'),
     }),
   })
 }
 
 export default [
   [prepareParams(), prepareTop10Table()],
-  preparePartyTable(),
 
   new Query({
-    $select: [
-      new ResultColumn(new ColumnExpression('top10', 'weightTotal')),
-      new ResultColumn(
-        new FunctionExpression(
-          'IFNULL',
-          new ColumnExpression('party', 'name'),
-          new ColumnExpression('top10', 'partyId')
-        ),
-        'partyName'
-      ),
-    ],
 
-    $from: new FromTable('top10', {
-      operator: 'LEFT',
-      table: 'party',
-      $on: [
-        new BinaryExpression(
-          new ColumnExpression('top10', 'partyId'),
-          '=',
-          new ColumnExpression('party', 'id')
-        ),
-      ],
-    }),
-  }),
+    $from : 'top10'
+  })
+
 ]

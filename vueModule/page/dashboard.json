@@ -1,63 +1,177 @@
 {
-  "components": [{
-    "is": "GridTool",
-    "props": {
-      "reportingKey": "dashboard",
-      "urlFormat": "/dashboard{{ id|if('/', '') }}{{ id }}",
-      "hasReports": true,
-      "showFilterBar": true,
-      "enableShare": true,
-      "enableSetting": true,
-      "newReport": {
-        "filters": {
-          "date": {
-            "func": {
-              "args": {
-                "unit": "year"
-              },
-              "key": "current"
+  "components": [
+    {
+      "is": "GridTool",
+      "props": {
+        "reportingKey": "dashboard",
+        "urlFormat": "/dashboard{{ id|if('/', '') }}{{ id }}",
+        "hasReports": true,
+        "showFilterBar": true,
+        "enableShare": true,
+        "enableSetting": true,
+        "newReport": {
+          "filters": {
+            "date": {
+              "func": {
+                "args": {
+                  "unit": "year"
+                },
+                "key": "current"
+              }
             }
+          },
+          "configurations": {
+            "i18nContext": "Reporting",
+            "colors": ["#4bc0c0", "#ff6384", "#ffcd56", "#c9cbcf", "#36a2eb"]
           }
         },
-        "configurations": {
-          "i18nContext": "Reporting",
-          "colors": ["#4bc0c0", "#ff6384", "#ffcd56", "#c9cbcf", "#36a2eb"]
-        }
-      },
-      "filters": [{
-          "name": "date",
-          "type": "date",
-          "props": {
-            "required": true
-          }
-        },
-        {
-          "name": "officePartyId",
-          "display": "office",
-          "type": "autocomplete",
+        "filters": [
+          {
+            "name": "date",
+            "type": "date",
+            "props": {
+              "required": true
+            }
+          },
 
-          "props": {
+          {
+            "name": "shipperPartyId",
+            "display": "shipper",
+            "type": "autocomplete",
 
-            "multi": true,
+            "props": {
+              "multi": true,
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "limit": 5,
+                    "subqueries": {
+                      "partyTypes": {
+                        "value": ["shipper"]
+                      },
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    }
+                  },
 
-            "api": {
-              "query": {
-                "method": "POST",
-                "url": "api/party/query/party_auto_suggest",
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                },
 
-                "data": {
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "subqueries": {
+                      "partyTypes": {
+                        "value": ["shipper"]
+                      },
+                      "id": {
+                        "value": "{{value}}"
+                      }
+                    }
+                  },
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                }
+              }
+            }
+          },
+
+          {
+            "display": "consignee",
+            "name": "consigneePartyId",
+            "props": {
+              "api": {
+                "query": {
+                  "data": {
+                    "limit": 5,
+                    "subqueries": {
+                      "partyTypes": {
+                        "value": ["consignee"]
+                      },
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    }
+                  },
+                  "labelKey": "partyName",
+                  "method": "POST",
+                  "sublabelKey": "erpCode",
+                  "url": "api/party/query/party_auto_suggest",
+                  "valueKey": "id"
+                },
+                "resolve": {
+                  "data": {
+                    "subqueries": {
+                      "id": {
+                        "value": "{{value}}"
+                      },
+                      "partyTypes": {
+                        "value": ["consignee"]
+                      }
+                    }
+                  },
+                  "labelKey": "partyName",
+                  "method": "POST",
+                  "sublabelKey": "erpCode",
+                  "url": "api/party/query/party_auto_suggest",
+                  "valueKey": "id"
+                }
+              },
+              "multi": true
+            },
+            "type": "autocomplete"
+          },
+
+          {
+            "name": "officePartyId",
+            "display": "office",
+            "type": "autocomplete",
+
+            "props": {
+              "multi": true,
+
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+
+                  "data": {
+                    "subqueries": {
+                      "isBranch": {
+                        "value": true
+                      },
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    }
+                  },
+                  "valueKey": "old360Id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                },
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+
                   "subqueries": {
                     "isBranch": {
                       "value": true
                     },
-                    "q": {
-                      "value": "{{ q }}"
+                    "id": {
+                      "value": "{{value}}"
                     }
                   }
                 },
                 "valueKey": "id",
                 "labelKey": "partyName",
-                "sublabelKey": "shortName"
+                "sublabelKey": "erpCode"
               },
               "resolve": {
                 "method": "POST",
@@ -73,281 +187,479 @@
                 },
                 "valueKey": "id",
                 "labelKey": "shortName",
-                "sublabelKey": "shortName"
+                "sublabelKey": "erpCode"
               }
             }
-          }
-        },
+          },
 
-        {
-          "name": "agentPartyId",
-          "display": "agent",
-          "type": "autocomplete",
+          {
+            "name": "agentPartyId",
+            "display": "agent",
+            "type": "autocomplete",
 
-          "props": {
-
-            "multi": true,
-            "api": {
-              "query": {
-                "method": "POST",
-                "url": "api/party/query/party_auto_suggest",
-                "data": {
-                  "subqueries": {
-                    "partyTypes": {
-                      "value": ["agent"]
-                    },
-                    "q": {
-                      "value": "{{ q }}"
-                    }
-                  }
-                },
-
-                "valueKey": "id",
-                "labelKey": "partyName"
-              },
-
-              "resolve": {
-                "method": "POST",
-                "url": "api/party/query/party_auto_suggest",
-                "data": {
-
-                  "subqueries": {
-                    "partyTypes": {
-                      "value": ["agent"]
-                    },
-                    "id": {
-                      "value": "{{value}}"
-                    }
-                  }
-
-                },
-                "valueKey": "id",
-                "labelKey": "partyName"
-              }
-            }
-          }
-        },
-
-        {
-          "name": "departureDateEstimated",
-          "type": "date",
-          "props": {}
-        },
-        {
-          "name": "arrivalDateEstimated",
-          "type": "date",
-          "props": {}
-        },
-        {
-          "name": "moduleTypeCode",
-          "display": "moduleType",
-          "type": "list",
-          "props": {
-            "api": {
-              "query": {
-                "method": "POST",
-                "url": "api/code/query/code_master",
-                "data": {
-                  "subqueries": {
-                    "codeType": {
-                      "value": "MODULE"
-                    }
-                  }
-                },
-                "valueKey": "code",
-                "labelKey": "name"
-              },
-              "resolve": {
-                "method": "POST",
-                "url": "api/code/query/code_master",
-                "data": {
-                  "subqueries": {
-                    "codeType": {
-                      "value": "MODULE"
-                    },
-                    "code": {
-                      "value": "{{ value }}"
-                    }
-                  }
-                },
-                "valueKey": "code",
-                "labelKey": "name"
-              }
-            }
-          }
-        },
-        {
-          "name": "boundTypeCode",
-          "display": "boundType",
-          "type": "list",
-          "props": {
-            "api": {
-              "query": {
-                "method": "POST",
-                "url": "api/code/query/code_master",
-                "data": {
-                  "subqueries": {
-                    "codeType": {
-                      "value": "BOUND"
-                    }
-                  }
-                },
-                "valueKey": "code",
-                "labelKey": "name"
-              },
-              "resolve": {
-                "method": "POST",
-                "url": "api/code/query/code_master",
-                "data": {
-                  "subqueries": {
-                    "codeType": {
-                      "value": "BOUND"
-                    },
-                    "code": {
-                      "value": "{{ value }}"
-                    }
-                  }
-                },
-                "valueKey": "code",
-                "labelKey": "name"
-              }
-            }
-          }
-        },
-        {
-          "name": "nominatedTypeCode",
-          "display": "nominatedType",
-          "type": "list",
-          "props": {
-            "items": [{
-                "value": "F",
-                "label": "Freehand"
-              },
-              {
-                "value": "R",
-                "label": "R/O"
-              }
-            ]
-          }
-        },
-        {
-          "name": "shipmentTypeCode",
-          "display": "shipmentType",
-          "type": "list",
-          "props": {
-            "api": {
-              "query": {
-                "method": "POST",
-                "url": "api/code/query/code_master",
-                "data": {
-                  "subqueries": {
-                    "codeType": {
-                      "value": "SHIPTYPE"
-                    }
-                  }
-                },
-                "valueKey": "code",
-                "labelKey": "name"
-              },
-              "resolve": {
-                "method": "POST",
-                "url": "api/code/query/code_master",
-                "data": {
-                  "subqueries": {
-                    "codeType": {
-                      "value": "SHIPTYPE"
-                    },
-                    "code": {
-                      "value": "{{ value }}"
-                    }
-                  }
-                },
-                "valueKey": "code",
-                "labelKey": "name"
-              }
-            }
-          }
-        },
-        {
-          "name": "portOfLoadingCode",
-          "display": "portOfLoading",
-          "type": "autocomplete",
-          "props": {
-            "api": {
-              "query": {
-                "method": "POST",
-                "url": "api/location/query/location",
-                "data": {
-                  "subqueries": {
-                    "q": {
-                      "value": "{{ q }}"
+            "props": {
+              "multi": true,
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "limit": 5,
+                    "subqueries": {
+                      "partyTypes": {
+                        "value": ["agent"]
+                      },
+                      "q": {
+                        "value": "{{ q }}"
+                      }
                     }
                   },
-                  "limit": 20
+
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
                 },
-                "valueKey": "portCode",
-                "labelKey": "name"
-              },
-              "resolve": {
-                "method": "POST",
-                "url": "api/location/query/location",
-                "data": {
-                  "subqueries": {
-                    "portCode": {
-                      "value": "{{ value }}"
+
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "subqueries": {
+                      "partyTypes": {
+                        "value": ["agent"]
+                      },
+                      "id": {
+                        "value": "{{value}}"
+                      }
                     }
                   },
-                  "limit": 20
-                },
-                "valueKey": "portCode",
-                "labelKey": "name"
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                }
               }
             }
-          }
-        },
-        {
-          "name": "portOfDischargeCode",
-          "display": "portOfDischarge",
-          "type": "autocomplete",
-          "props": {
-            "api": {
-              "query": {
-                "method": "POST",
-                "url": "api/location/query/location",
-                "data": {
-                  "subqueries": {
-                    "q": {
-                      "value": "{{ q }}"
+          },
+
+          {
+            "name": "roAgentPartyId",
+            "display": "roAgent",
+            "type": "autocomplete",
+
+            "props": {
+              "multi": true,
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "limit": 5,
+                    "subqueries": {
+                      "partyTypes": {
+                        "value": ["agent"]
+                      },
+                      "q": {
+                        "value": "{{ q }}"
+                      }
                     }
                   },
-                  "limit": 20
+
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
                 },
-                "valueKey": "portCode",
-                "labelKey": "name"
-              },
-              "resolve": {
-                "method": "POST",
-                "url": "api/location/query/location",
-                "data": {
-                  "subqueries": {
-                    "portCode": {
-                      "value": "{{ value }}"
+
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "subqueries": {
+                      "partyTypes": {
+                        "value": ["agent"]
+                      },
+                      "id": {
+                        "value": "{{value}}"
+                      }
                     }
                   },
-                  "limit": 20
-                },
-                "valueKey": "portCode",
-                "labelKey": "name"
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                }
               }
             }
+          },
+
+          {
+            "name": "linerAgentPartyId",
+            "display": "linerAgent",
+            "type": "autocomplete",
+
+            "props": {
+              "multi": true,
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "limit": 5,
+                    "subqueries": {
+                      "partyTypes": {
+                        "value": ["agent"]
+                      },
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    }
+                  },
+
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                },
+
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "subqueries": {
+                      "partyTypes": {
+                        "value": ["agent"]
+                      },
+                      "id": {
+                        "value": "{{value}}"
+                      }
+                    }
+                  },
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                }
+              }
+            }
+          },
+
+          {
+            "name": "controllingCustomerPartyId",
+            "display": "controllingCustomer",
+            "type": "autocomplete",
+
+            "props": {
+              "multi": true,
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "limit": 5,
+                    "subqueries": {
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    }
+                  },
+
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                },
+
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "subqueries": {
+                      "partyTypes": {
+                        "value": ["controllingCustomer"]
+                      },
+                      "id": {
+                        "value": "{{value}}"
+                      }
+                    }
+                  },
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                }
+              }
+            }
+          },
+
+          {
+            "name": "departureDateEstimated",
+            "type": "date",
+            "props": {}
+          },
+          {
+            "name": "arrivalDateEstimated",
+            "type": "date",
+            "props": {}
+          },
+          {
+            "name": "moduleTypeCode",
+            "display": "moduleType",
+            "type": "list",
+            "props": {
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "MODULE"
+                      }
+                    }
+                  },
+                  "valueKey": "code",
+                  "labelKey": "name"
+                },
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "MODULE"
+                      },
+                      "code": {
+                        "value": "{{ value }}"
+                      }
+                    }
+                  },
+                  "valueKey": "code",
+                  "labelKey": "name"
+                }
+              }
+            }
+          },
+          {
+            "name": "boundTypeCode",
+            "display": "boundType",
+            "type": "list",
+            "props": {
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "BOUND"
+                      }
+                    }
+                  },
+                  "valueKey": "code",
+                  "labelKey": "name"
+                },
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "BOUND"
+                      },
+                      "code": {
+                        "value": "{{ value }}"
+                      }
+                    }
+                  },
+                  "valueKey": "code",
+                  "labelKey": "name"
+                }
+              }
+            }
+          },
+          {
+            "name": "nominatedTypeCode",
+            "display": "nominatedType",
+            "type": "list",
+            "props": {
+              "items": [
+                {
+                  "value": "F",
+                  "label": "Freehand"
+                },
+                {
+                  "value": "R",
+                  "label": "R/O"
+                }
+              ]
+            }
+          },
+          {
+            "name": "shipmentTypeCode",
+            "display": "shipmentType",
+            "type": "list",
+            "props": {
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "SHIPTYPE"
+                      }
+                    }
+                  },
+                  "valueKey": "code",
+                  "labelKey": "name"
+                },
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "SHIPTYPE"
+                      },
+                      "code": {
+                        "value": "{{ value }}"
+                      }
+                    }
+                  },
+                  "valueKey": "code",
+                  "labelKey": "name"
+                }
+              }
+            }
+          },
+          {
+            "name": "portOfLoadingCode",
+            "display": "portOfLoading",
+            "type": "autocomplete",
+            "props": {
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/location/query/location",
+                  "data": {
+                    "subqueries": {
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    },
+                    "limit": 20
+                  },
+                  "valueKey": "portCode",
+                  "labelKey": "name"
+                },
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/location/query/location",
+                  "data": {
+                    "subqueries": {
+                      "portCode": {
+                        "value": "{{ value }}"
+                      }
+                    },
+                    "limit": 20
+                  },
+                  "valueKey": "portCode",
+                  "labelKey": "name"
+                }
+              }
+            }
+          },
+          {
+            "name": "portOfDischargeCode",
+            "display": "portOfDischarge",
+            "type": "autocomplete",
+            "props": {
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/location/query/location",
+                  "data": {
+                    "subqueries": {
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    },
+                    "limit": 20
+                  },
+                  "valueKey": "portCode",
+                  "labelKey": "name"
+                },
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/location/query/location",
+                  "data": {
+                    "subqueries": {
+                      "portCode": {
+                        "value": "{{ value }}"
+                      }
+                    },
+                    "limit": 20
+                  },
+                  "valueKey": "portCode",
+                  "labelKey": "name"
+                }
+              }
+            }
+          },
+
+          {
+            "name": "agentGroup",
+            "display": "agentGroup",
+            "type": "list",
+
+            "props": {
+              "items": [
+                {
+                  "label": "agentGroup1",
+                  "value": "agentGroup1"
+                },
+                {
+                  "label": "agentGroup2",
+                  "value": "agentGroup2"
+                },
+                {
+                  "label": "agentGroup3",
+                  "value": "agentGroup3"
+                }
+              ]
+            }
+          },
+
+          {
+            "name": "division",
+            "display": "division",
+            "type": "list",
+
+            "props": {
+              "items": [
+                {
+                  "label": "division1",
+                  "value": "division1"
+                },
+                {
+                  "label": "division2",
+                  "value": "division2"
+                },
+                {
+                  "label": "division3",
+                  "value": "division3"
+                }
+              ]
+            }
+          },
+
+          {
+            "name": "salesmanCode",
+            "display": "salesman",
+            "type": "text"
+          },
+
+          {
+            "name": "rSalesmanCode",
+            "display": "rSalesman",
+            "type": "text"
           }
-        },
-        {
-          "name": "salesmanCode",
-          "display": "salesman",
-          "type": "text"
-        }
-      ]
+        ]
+      }
     }
-  }]
+  ]
 }

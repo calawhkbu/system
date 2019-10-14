@@ -53,18 +53,20 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
     subqueries.boundTypeCode = { value: 'O' }
 
     // select
-    params.fields = ['carrierCode', 'jobMonth', 'shipments']
+    params.fields = ['carrierCode', 'carrierName', 'jobMonth', 'shipments']
 
     // group by
     params.groupBy = ['carrierCode', 'jobMonth']
 
+    subqueries.billTypeCode = { value : ['M'] }
+
     switch (type_) {
       case 'F':
-        subqueries.nominatedTypeCode = { value: 'F' }
+        subqueries.nominatedTypeCode = { value: ['F'] }
         subqueries.isColoader = { value: 0 }
         break
       case 'R':
-        subqueries.nominatedTypeCode = { value: 'R' }
+        subqueries.nominatedTypeCode = { value: ['R'] }
         subqueries.isColoader = { value: 0 }
         break
       case 'C':
@@ -83,11 +85,12 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
 function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
   return new InsertJQL({
     name: 'shipment',
-    columns: ['type', 'carrierCode', 'month', 'shipments'],
+    columns: ['type', 'carrierCode', 'carrierName', 'month', 'shipments'],
     query: new Query({
       $select: [
         new ResultColumn(new Value(type), 'type'),
         new ResultColumn('carrierCode'),
+        new ResultColumn('carrierName'),
         new ResultColumn(
           new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
           'month'
@@ -102,6 +105,8 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
+
+            { name: 'carrierName', type: 'string' },
             { name: 'carrierCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
             { name: 'shipments', type: 'number' },
@@ -122,6 +127,7 @@ export default [
   new CreateTableJQL(true, 'shipment', [
     new Column('type', 'string'),
     new Column('carrierCode', 'string'),
+    new Column('carrierName', 'string'),
     new Column('month', 'string'),
     new Column('shipments', 'number'),
   ]),
@@ -135,6 +141,7 @@ export default [
   new Query({
     $select: [
       new ResultColumn('carrierCode'),
+      new ResultColumn('carrierName'),
       ...months.reduce<ResultColumn[]>((result, month) => {
         result.push(
           ...types.map(

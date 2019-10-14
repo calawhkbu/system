@@ -1,5 +1,4 @@
 {
-  
   "components": [
     {
       "is": "Widget",
@@ -27,39 +26,19 @@
             "quick-create": {
               "readonly": false
             },
-            "defaultAxiosParams": {
-              "url": "default/booking"
+            "create": {
+              "readonly": false,
+              "stepper": 0,
+              "next": false,
+              "saveIcon": "create"
             },
-            "validateAxiosParams": {
-              "method": "post",
-              "url": "api/booking/validate/{{id}}"
+            "detail": {
+              "readonly": true
             },
-            "saveAxiosParams": {
-              "method": "post",
-              "url": "api/booking"
-            },
-            "primaryKey": "id",
-            "modeFunction": "const modes = ['create', 'detail','edit', 'map', // 'import', 'copy']\nconst selectedMode = isNaN(Number(mode)) ? mode : 'detail'\n          if (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
-            "haveTermOnCreate": true,
-            "haveTermOnEdit": false,
-            "widgetComponentSetting": {
-              "quick-create": {
-                "readonly": false
-              },
-              "create": {
-                "readonly": false,
-                "stepper": 0,
-                "next": false,
-                "saveIcon": "create"
-              },
-              "detail": {
-                "readonly": true
-              },
-              "edit": {
-                "readonly": false,
-                "stepper": 0,
-                "saveIcon": "save"
-              }
+            "edit": {
+              "readonly": false,
+              "stepper": 0,
+              "saveIcon": "save"
             }
           }
         }

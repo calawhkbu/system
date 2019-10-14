@@ -10,6 +10,8 @@ import {
   Query,
   ResultColumn,
   Column,
+  GroupBy,
+  OrderBy,
 } from 'node-jql'
 
 import { parseCode } from 'utils/function'
@@ -31,6 +33,7 @@ const months = [
 const types = ['CW', 'shipments']
 
 function prepareParams(): Function {
+
   return function(require, session, params) {
     // import
     const moment = require('moment')
@@ -48,26 +51,30 @@ function prepareParams(): Function {
       .format('YYYY-MM-DD')
 
     // AE
-    subqueries.moduleTypeCode = { value: 'AIR' }
-    subqueries.boundTypeCode = { value: 'O' }
+    subqueries.moduleTypeCode = { value: ['AIR'] }
+    subqueries.boundTypeCode = { value: ['O'] }
 
     // select
-    params.fields = ['carrierCode', 'jobMonth', 'chargeableWeight', 'shipments']
+    params.fields = ['carrierCode', 'carrierName', 'jobMonth', 'chargeableWeight', 'shipments']
 
     // group by
-    params.groupBy = ['carrierCode', 'jobMonth']
+    params.groupBy = ['carrierCode', 'carrierName', 'jobMonth']
 
     return params
   }
 }
 
 function prepareTable(): CreateTableJQL {
+
+  const tableName = 'final'
+
   return new CreateTableJQL({
     $temporary: true,
-    name: 'shipment',
+    name: tableName,
     $as: new Query({
       $select: [
-        new ResultColumn('carrierCode'),
+        new ResultColumn(new ColumnExpression('carrierCode')),
+        new ResultColumn(new ColumnExpression('carrierName')),
         new ResultColumn(
           new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
           'month'
@@ -80,6 +87,8 @@ function prepareTable(): CreateTableJQL {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
+
+            { name: 'carrierName', type: 'string' },
             { name: 'carrierCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
             { name: 'chargeableWeight', type: 'number' },
@@ -102,7 +111,8 @@ export default [
   // finalize data
   new Query({
     $select: [
-      new ResultColumn('carrierCode'),
+      new ResultColumn(new ColumnExpression('carrierCode')),
+      new ResultColumn(new ColumnExpression('carrierName')),
       ...months.reduce<ResultColumn[]>((result, month) => {
         result.push(
           ...types.map(
@@ -125,7 +135,9 @@ export default [
         return result
       }, []),
     ],
-    $from: 'shipment',
-    $group: 'carrierCode',
-  }),
+    $from: 'final',
+    $group: new GroupBy(new ColumnExpression('carrierCode')),
+    $order : new OrderBy(new ColumnExpression('final', 'carrierName'), 'ASC')
+  })
+
 ]
