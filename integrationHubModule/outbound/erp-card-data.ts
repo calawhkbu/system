@@ -3,19 +3,14 @@ import axios from 'axios'
 
 const app = {
   constants: {
+    getPostProcessFunc: null as Function,
+    partyGroup: null as any,
     card: null as any,
+    user: null as any,
+    zyh: 0,
   },
   method: 'GET',
-  getUrl: async({
-    id,
-    params,
-    api,
-  }: {
-    id: number
-    params: any
-    api: any
-    user: any
-  }): Promise<string> => {
+  getUrl: async({ id, partyGroup: { api } }: any, params: any): Promise<string> => {
     if (!api.erp || !api.erp.url) throw new NotImplementedException('ERP_NOT_LINKED')
     if (!params.subqueries || !params.subqueries.type) throw new BadRequestException('MISSING_TYPE')
     const axiosResponse = await axios.request({
@@ -25,7 +20,7 @@ const app = {
       },
       url: `${api.erp.url}/getschrptdata`,
       data: {
-        zyh: id,
+        zyh: app.constants.zyh = id,
         zyd: params.subqueries.type.value,
       },
     })
@@ -34,7 +29,10 @@ const app = {
     const card = (app.constants.card = responseBody[0])
     return card.dlink
   },
-  requestHandler: (): any => {
+  requestHandler: ({ getPostProcessFunc, partyGroup, user }: any): any => {
+    app.constants.getPostProcessFunc = getPostProcessFunc
+    app.constants.partyGroup = partyGroup
+    app.constants.user = user
     return {
       headers: {
         'content-type': 'application/json',
@@ -45,7 +43,7 @@ const app = {
     response: { responseBody: any; responseOptions: any },
     helper: { [key: string]: Function }
   ) => {
-    const { card } = app.constants
+    const { card, getPostProcessFunc, partyGroup, user, zyh } = app.constants
 
     // reformat
     let responseBody = JSON.parse((response.responseBody.trim() || '[]').replace(/[\n\r]/g, ''))
@@ -54,6 +52,9 @@ const app = {
     const layout = JSON.parse(card.layout) as any[]
     const groupBy = layout.filter(header => header.grp).map(header => header.ffield as string)
     if (groupBy.length > 0) responseBody = helper.groupRows(responseBody, groupBy)
+
+    const postProcessFunc = await getPostProcessFunc(partyGroup.code, `erp-card-data/${zyh}`)
+    responseBody = postProcessFunc(responseBody, card, user)
 
     return { ...response, responseBody }
   },

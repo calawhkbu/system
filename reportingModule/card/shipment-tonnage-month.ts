@@ -53,8 +53,14 @@ function prepareParams(): Function {
       : moment(subqueries.date.from, 'YYYY-MM-DD').year()
 
     subqueries.date = {
-      from : moment().year(year).startOf('year').format('YYYY-MM-DD'),
-      to : moment().year(year).endOf('year').format('YYYY-MM-DD')
+      from: moment()
+        .year(year)
+        .startOf('year')
+        .format('YYYY-MM-DD'),
+      to: moment()
+        .year(year)
+        .endOf('year')
+        .format('YYYY-MM-DD'),
     }
 
     // select
