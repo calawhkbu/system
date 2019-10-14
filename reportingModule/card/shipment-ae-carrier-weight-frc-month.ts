@@ -182,5 +182,4 @@ export default [
     $from: 'shipment',
     $group: 'carrierCode',
   }),
-
 ]
