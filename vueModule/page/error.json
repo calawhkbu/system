@@ -1,6 +1,7 @@
 {
   "layout": "CardLayout",
-  "components": [{
+  "components": [
+    {
       "is": "Icon",
       "props": {
         "icon": "error_outline",
@@ -18,14 +19,16 @@
           "flex": 0.2
         }
       },
-      "slots": [{
-        "is": "I18nText",
-        "props": {
-          "i18nKey": "",
-          "dispatchKey": "$route.params.params",
-          "i18nContext": "ErrorLayout"
+      "slots": [
+        {
+          "is": "I18nText",
+          "props": {
+            "i18nKey": "",
+            "dispatchKey": "$route.params.params",
+            "i18nContext": "ErrorLayout"
+          }
         }
-      }]
+      ]
     },
     {
       "is": "div",
@@ -37,51 +40,60 @@
           "flex-direction": "column"
         }
       },
-      "slots": [{
-        "is": "DynamicComponent",
-        "props": {
-          "components": [{
-              "is": "v-btn",
-              "props": {
-                "flat": true,
-                "block": true
-              },
-              "slots": [{
-                "is": "I18nText",
-                "name": "default",
+      "slots": [
+        {
+          "is": "DynamicComponent",
+          "props": {
+            "components": [
+              {
+                "is": "v-btn",
                 "props": {
-                  "i18nKey": "ErrorLayout.Back"
-                }
-              }],
-              "events": {
-                "click.stop": [{
-                  "type": "router",
-                  "otherParams": {
-                    "func": "go",
-                    "go": -1
+                  "flat": true,
+                  "block": true
+                },
+                "slots": [
+                  {
+                    "is": "I18nText",
+                    "name": "default",
+                    "props": {
+                      "i18nKey": "ErrorLayout.Back"
+                    }
                   }
-                }]
-              }
-            },
-            {
-              "is": "v-btn",
-              "props": {
-                "block": true
-              },
-              "slots": [{
-                "is": "I18nText",
-                "name": "default",
-                "props": {
-                  "i18nKey": "ErrorLayout.Report"
+                ],
+                "events": {
+                  "click.stop": [
+                    {
+                      "type": "router",
+                      "otherParams": {
+                        "func": "go",
+                        "go": -1
+                      }
+                    }
+                  ]
                 }
-              }],
-              "events": {
-                "click": ["console.log('TODO ERROR REPORT API')"]
+              },
+              {
+                "is": "v-btn",
+                "props": {
+                  "block": true
+                },
+                "slots": [
+                  {
+                    "is": "I18nText",
+                    "name": "default",
+                    "props": {
+                      "i18nKey": "ErrorLayout.Report"
+                    }
+                  }
+                ],
+                "events": {
+                  "click": ["console.log('TODO ERROR REPORT API')"]
+                }
               }
-            }
-          ]
+            ]
+          }
         }
-      }]
+      ]
     }
   ]
 }
