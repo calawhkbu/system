@@ -15,6 +15,7 @@ import {
   OrExpressions,
   AndExpressions,
   CreateFunctionJQL,
+  Unknown,
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -418,6 +419,15 @@ query.register('weightTotal', {
   $as: 'weightTotal',
 })
 
+query.register('volumeTotal', {
+  expression: new FunctionExpression(
+    'IFNULL',
+    new FunctionExpression('SUM', new ColumnExpression('volume')),
+    0
+  ),
+  $as: 'volumeTotal',
+})
+
 // used createdAt as jobMonth
 query.register('jobMonth', {
   expression: new FunctionExpression({
@@ -500,6 +510,14 @@ query
   )
   .register('value', 0)
 
+  query
+  .register(
+    'shipperPartyCodeIsNotNull',
+    new Query({
+      $where: new IsNullExpression(new ColumnExpression('booking', 'shipperPartyCode'), true),
+    })
+  )
+
 query
   .register(
     'consigneePartyName',
@@ -508,6 +526,14 @@ query
     })
   )
   .register('value', 0)
+
+  query
+  .register(
+    'consigneePartyCodeIsNotNull',
+    new Query({
+      $where: new IsNullExpression(new ColumnExpression('booking', 'consigneePartyCode'), true),
+    })
+  )
 
 query
   .register(
@@ -518,6 +544,14 @@ query
   )
   .register('value', 0)
 
+  query
+  .register(
+    'forwarderPartyCodeIsNotNull',
+    new Query({
+      $where: new IsNullExpression(new ColumnExpression('booking', 'forwarderPartyCode'), true),
+    })
+  )
+
 query
   .register(
     'notifyPartyPartyName',
@@ -527,6 +561,14 @@ query
   )
   .register('value', 0)
 
+  query
+  .register(
+    'notifyPartyPartyCodeIsNotNull',
+    new Query({
+      $where: new IsNullExpression(new ColumnExpression('booking', 'notifyPartyPartyCode'), true),
+    })
+  )
+
 query
   .register(
     'agentPartyName',
@@ -535,6 +577,14 @@ query
     })
   )
   .register('value', 0)
+
+  query
+  .register(
+    'agentPartyCodeIsNotNull',
+    new Query({
+      $where: new IsNullExpression(new ColumnExpression('booking', 'agentPartyCode'), true),
+    })
+  )
 
 query
   .register(
