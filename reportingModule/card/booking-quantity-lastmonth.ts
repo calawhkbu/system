@@ -130,11 +130,11 @@ export default [
       new ResultColumn(new ColumnExpression('module', 'moduleTypeCode')),
       new ResultColumn(
         new FunctionExpression('IFNULL', new ColumnExpression('currentMonth', 'quantity'), 0),
-        'currentMonthQuantity'
+        'current'
       ),
       new ResultColumn(
         new FunctionExpression('IFNULL', new ColumnExpression('lastMonth', 'quantity'), 0),
-        'lastMonthQuantity'
+        'last'
       ),
     ],
 

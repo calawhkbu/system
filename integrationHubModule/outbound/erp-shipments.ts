@@ -59,7 +59,7 @@ const app = {
   },
   method: 'POST', // 'GET'|'POST'|'PUT'|'DELETE'|'HEAD'|'OPTIONS'
   getUrl: ({ api }: { api: any }) => {
-    if (!api.erp || !api.erp.url2 && !api.erp.url) throw new NotImplementedException()
+    if (!api.erp || (!api.erp.url2 && !api.erp.url)) throw new NotImplementedException()
     return `${api.erp.url2 || api.erp.url}/getshipsummary`
   },
   requestHandler: async(
