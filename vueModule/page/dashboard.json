@@ -167,11 +167,27 @@
                     "id": {
                       "value": "{{value}}"
                     }
+                  }
+                },
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+
+                "subqueries": {
+                  "isBranch": {
+                    "value": true
                   },
-                  "valueKey": "old360Id",
-                  "labelKey": "shortName",
-                  "sublabelKey": "erpCode"
-                }
+                  "id": {
+                    "value": "{{value}}"
+                  }
+                },
+                "valueKey": "id",
+                "labelKey": "shortName",
+                "sublabelKey": "erpCode"
               }
             }
           },
