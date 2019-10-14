@@ -65,6 +65,8 @@ function prepareParams(type_: 'F' | 'R' | 'T'): Function {
     // group by
     params.groupBy = ['carrierCode', 'jobMonth']
 
+    subqueries.billTypeCode = { value : ['M'] }
+
     switch (type_) {
       case 'F':
         subqueries.nominatedTypeCode = { value: ['F'] }

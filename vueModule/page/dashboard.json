@@ -161,7 +161,7 @@
                     }
                   }
                 },
-                "valueKey": "old360Id",
+                "valueKey": "id",
                 "labelKey": "partyName",
                 "sublabelKey": "erpCode"
               },
@@ -177,7 +177,7 @@
                     "value": "{{value}}"
                   }
                 },
-                "valueKey": "old360Id",
+                "valueKey": "id",
                 "labelKey": "shortName",
                 "sublabelKey": "erpCode"
               }

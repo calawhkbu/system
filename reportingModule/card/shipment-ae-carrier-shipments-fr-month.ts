@@ -58,13 +58,15 @@ function prepareParams(type_: 'F' | 'R' | 'T'): Function {
     // AE
     subqueries.moduleTypeCode = { value: ['AIR'] }
     subqueries.boundTypeCode = { value: ['O'] }
-    subqueries.billTypeCode = { value : ['M'] }
+    // subqueries.billTypeCode = { value : ['M'] }
 
     // select
     params.fields = ['carrierCode', 'jobMonth', 'shipments']
 
     // group by
     params.groupBy = ['carrierCode', 'jobMonth']
+
+    subqueries.billTypeCode = { value : ['M'] }
 
     switch (type_) {
       case 'F':
