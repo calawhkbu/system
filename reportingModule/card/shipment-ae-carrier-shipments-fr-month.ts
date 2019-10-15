@@ -178,13 +178,6 @@ function prepareTempTable(): CreateTableJQL {
 function finalQuery(): Query
 {
 
-  return new Query({
-
-  })
-
-}
-
-function prepareFinalTable() {
   function composeSumExpression(dumbList: any[]): MathExpression {
 
     if (dumbList.length === 2) {
@@ -238,17 +231,27 @@ function prepareFinalTable() {
     $select.push(new ResultColumn(finalSumExpression, `total-T_${variable}`))
   })
 
-  return new CreateTableJQL({
-    $temporary: true,
-    name: 'final',
-
-    $as: new Query({
-      $select,
-      $from: 'temp',
-      $order : new OrderBy('total_T_shipments', 'DESC')
-    }),
+  return new Query({
+    $select,
+    $from: 'temp',
+    $order : new OrderBy('total-T_shipments', 'DESC')
   })
+
 }
+
+// function prepareFinalTable() {
+
+//   return new CreateTableJQL({
+//     $temporary: true,
+//     name: 'final',
+
+//     $as: new Query({
+//       $select,
+//       $from: 'temp',
+//       $order : new OrderBy('total-T_shipments', 'DESC')
+//     }),
+//   })
+// }
 
 export default [
   // prepare temp table
@@ -265,10 +268,12 @@ export default [
   [prepareParams('R'), prepareData('R')],
 
   prepareTempTable(),
-  prepareFinalTable(),
+  // prepareFinalTable(),
 
-  new Query({
-    $from: 'final',
-    // $order: new OrderBy(new ColumnExpression('final', 'total-T_shipments'), 'DESC'),
-  }),
+  finalQuery()
+
+  // new Query({
+  //   $from: 'final',
+  //   // $order: new OrderBy(new ColumnExpression('final', 'total-T_shipments'), 'DESC'),
+  // }),
 ]
