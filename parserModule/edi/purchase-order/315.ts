@@ -79,7 +79,7 @@ export default class EdiParser997 extends BaseEdiParser {
         GS.elementList.push(
           'FA',
           '718978080',
-          'DILLARDSTST',
+          '6112390050',
           moment(currantDate).format('YYYYMMDD'),
           moment(currantDate).format('HHmm'),
           parseInt(controlNo, 10),
