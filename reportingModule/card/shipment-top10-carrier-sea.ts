@@ -26,7 +26,10 @@ export default [
   new Query({
     $select: [
       new ResultColumn(new ColumnExpression('carrierCode')),
-      new ResultColumn(new ColumnExpression('shipment', 'cbm'), 'cbm'),
+      new ResultColumn(
+        new FunctionExpression('NUMBERIFY', new ColumnExpression('shipment', 'cbm')),
+        'cbm'
+      ),
     ],
 
     $from: new FromTable(
@@ -39,11 +42,8 @@ export default [
             type: 'string',
           },
           {
-            name: 'cntCbm',
+            name: 'cbm',
             type: 'string',
-
-            // rename it as cbm
-            $as: 'cbm',
           },
         ],
         data: {
@@ -60,8 +60,8 @@ export default [
             carrierCodeIsNotNull: {},
           },
 
-          fields: ['carrierCode', 'cntCbm'],
-          sorting: new OrderBy('cntCbm', 'DESC'),
+          fields: ['carrierCode', 'cbm'],
+          sorting: new OrderBy('cbm', 'DESC'),
           groupBy: ['carrierCode'],
           limit: 10,
         },

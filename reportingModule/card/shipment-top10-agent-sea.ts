@@ -47,9 +47,8 @@ export default [
             type: 'string',
           },
           {
-            name: 'cntCbm',
+            name: 'cbm',
             type: 'string',
-            $as: 'cbm',
           },
         ],
 
@@ -67,8 +66,8 @@ export default [
             agentIsNotNull: {},
           },
 
-          fields: ['agentPartyName', 'agentPartyCode', 'cntCbm'],
-          sorting: new OrderBy('cntCbm', 'DESC'),
+          fields: ['agentPartyName', 'agentPartyCode', 'cbm'],
+          sorting: new OrderBy('cbm', 'DESC'),
           groupBy: ['agentPartyCode', 'agentPartyName'],
           limit: 10,
         },
