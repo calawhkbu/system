@@ -175,6 +175,15 @@ function prepareTempTable(): CreateTableJQL {
   })
 }
 
+function finalQuery(): Query
+{
+
+  return new Query({
+
+  })
+
+}
+
 function prepareFinalTable() {
   function composeSumExpression(dumbList: any[]): MathExpression {
 
@@ -236,6 +245,7 @@ function prepareFinalTable() {
     $as: new Query({
       $select,
       $from: 'temp',
+      $order : new OrderBy('total_T_shipments', 'DESC')
     }),
   })
 }
@@ -259,6 +269,6 @@ export default [
 
   new Query({
     $from: 'final',
-    $order: new OrderBy(new ColumnExpression('final', 'total-T_shipments'), 'DESC'),
+    // $order: new OrderBy(new ColumnExpression('final', 'total-T_shipments'), 'DESC'),
   }),
 ]
