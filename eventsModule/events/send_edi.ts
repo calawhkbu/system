@@ -3,7 +3,7 @@ import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 
-class ExampleEvent extends BaseEvent {
+class SendEdiEvent extends BaseEvent {
   constructor(
     protected readonly parameters: any,
     protected readonly eventConfig: EventConfig,
@@ -39,7 +39,7 @@ export default {
     user?: JwtPayload,
     transaction?: Transaction
   ) => {
-    const event = new ExampleEvent(
+    const event = new SendEdiEvent(
       parameters,
       eventConfig,
       repo,
