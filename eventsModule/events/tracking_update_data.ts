@@ -51,43 +51,43 @@ class TrackingUpdateDataEvent extends BaseEvent {
       TrackingReferenceService: TrackingReferenceService
     } = this.allService
     const { trackingNo } = parameters.data as Tracking
-    const bookingIdList = await bookingService.query(
-      `
-        SELECT "trackingReference" AS \`type\`, tr.id AS \`id\`
-        FROM (
-          (
-            SELECT \`tracking_reference\`.\`id\`, \`masterNo\` AS \`trackingNo\`, 'masterNo' AS \`type\`
-            FROM \`tracking_reference\`
-          )
-          UNION (
-            SELECT \`tracking_reference\`.\`id\`, \`soTable\`.\`trackingNo\`, 'soNo' AS \`type\`
-            FROM  \`tracking_reference\`,  JSON_TABLE(\`soNo\`, "$[*]" COLUMNS (\`trackingNo\` VARCHAR(100) PATH "$")) \`soTable\`
-          )
-          UNION (
-            SELECT  \`tracking_reference\`.\`id\` , \`containerTable\`.\`trackingNo\`, 'containerNo' as \`type\`
-            FROM \`tracking_reference\`,  JSON_TABLE(\`containerNo\`, "$[*]" COLUMNS (\`trackingNo\` VARCHAR(100) PATH "$")) \`containerTable\`)
-          )
-        ) trackingReference tr
-        WHERE
-        UNION
-        SELECT br.bookingId as bookingId
-        FROM booking_reference br
-        WHERE br.refDescription in (:trackingNo) AND (br.refName = 'MAWB' OR br.refName = 'MLB')
-        UNION
-        SELECT bc.bookingId as bookingId
-        FROM booking_container bc
-        WHERE (bc.soNo in (:trackingNo) OR bc.containerNo in (:trackingNo))
-      `,
-      {
-        raw: true,
-        type: Sequelize.QueryTypes.SELECT,
-        transaction: this.transaction,
-        replacements: { trackingNo }
-      }
-    )
-    for (const id of bookingIdList) {
-
-    }
+    // const bookingIdList = await bookingService.query(
+    //   `
+    //     SELECT "trackingReference" AS \`type\`, tr.id AS \`id\`
+    //     FROM (
+    //       (
+    //         SELECT \`tracking_reference\`.\`id\`, \`masterNo\` AS \`trackingNo\`, 'masterNo' AS \`type\`
+    //         FROM \`tracking_reference\`
+    //       )
+    //       UNION (
+    //         SELECT \`tracking_reference\`.\`id\`, \`soTable\`.\`trackingNo\`, 'soNo' AS \`type\`
+    //         FROM  \`tracking_reference\`,  JSON_TABLE(\`soNo\`, "$[*]" COLUMNS (\`trackingNo\` VARCHAR(100) PATH "$")) \`soTable\`
+    //       )
+    //       UNION (
+    //         SELECT  \`tracking_reference\`.\`id\` , \`containerTable\`.\`trackingNo\`, 'containerNo' as \`type\`
+    //         FROM \`tracking_reference\`,  JSON_TABLE(\`containerNo\`, "$[*]" COLUMNS (\`trackingNo\` VARCHAR(100) PATH "$")) \`containerTable\`)
+    //       )
+    //     ) trackingReference tr
+    //     WHERE
+    //     UNION
+    //     SELECT br.bookingId as bookingId
+    //     FROM booking_reference br
+    //     WHERE br.refDescription in (:trackingNo) AND (br.refName = 'MAWB' OR br.refName = 'MLB')
+    //     UNION
+    //     SELECT bc.bookingId as bookingId
+    //     FROM booking_container bc
+    //     WHERE (bc.soNo in (:trackingNo) OR bc.containerNo in (:trackingNo))
+    //   `,
+    //   {
+    //     raw: true,
+    //     type: Sequelize.QueryTypes.SELECT,
+    //     transaction: this.transaction,
+    //     replacements: { trackingNo }
+    //   }
+    // )
+    // for (const id of bookingIdList) {
+    //
+    // }
     //
     // await Promise.all(
     //   trackingReferenceList.map(async trackingReference => {
