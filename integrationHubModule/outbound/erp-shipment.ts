@@ -1,19 +1,28 @@
-import { BadRequestException, ForbiddenException, NotFoundException, NotImplementedException } from '@nestjs/common'
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+  NotImplementedException,
+} from '@nestjs/common'
 
 const app = {
   constants: {
     fieldNameMap: {
       billCargos: 'billCargo',
-      billTransports: 'billTransport'
+      billTransports: 'billTransport',
     },
-    houseNo: ''
+    houseNo: '',
   },
   method: 'POST', // 'GET'|'POST'|'PUT'|'DELETE'|'HEAD'|'OPTIONS'
   getUrl: ({ api }: { api: any }) => {
     if (!api.erp || (!api.erp.url2 && !api.erp.url)) throw new NotImplementedException()
     return `${api.erp.url2 || api.erp.url}/getshipdetail`
   },
-  requestHandler: async({ party, partyGroup, partyService }: any, body: any, helper: { [key: string]: Function }) => {
+  requestHandler: async(
+    { party, partyGroup, partyService }: any,
+    body: any,
+    helper: { [key: string]: Function }
+  ) => {
     const [site, moduleTypeCode, houseNo] = body['options'].split('+')
 
     // resolve parties
@@ -44,8 +53,7 @@ const app = {
     let responseBody: any
     try {
       responseBody = JSON.parse(JSON.parse(response.responseBody).d)[0]
-    }
-    catch (e) {
+    } catch (e) {
       console.error(e, e.stack, 'erp-shipment')
       throw new NotFoundException(`SHIPMENT_${app.constants.houseNo.toLocaleUpperCase()}_NOT_FOUND`)
     }

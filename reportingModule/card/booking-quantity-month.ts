@@ -38,8 +38,8 @@ function prepareParams(currentMonth?: boolean): Function {
         .endOf('month')
         .format('YYYY-MM-DD')
 
-      console.log('subqueries.date.from', subqueries.date.from)
-      console.log('subqueries.date.to', subqueries.date.to)
+      // console.log('subqueries.date.from', subqueries.date.from)
+      // console.log('subqueries.date.to', subqueries.date.to)
     }
 
     return params

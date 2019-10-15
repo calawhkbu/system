@@ -3,123 +3,133 @@
     "width": "100%",
     "height": "100%"
   },
-  "components": [{
-    "is": "TableTool",
-    "props": {
-      "reportingKey": "bookings",
-      "jql": "bookings",
-      "urlFormat": "/bookings{{ id|if('/', '') }}{{ id }}",
-      "hasReports": true,
-      "showFilterBar": true,
-      "enableShare": true,
-      "enableSetting": true,
-      "newReport": {
-        "filters": {
-          "isActive": true
-        },
-        "configurations": {
-          "i18nContext": "BookingPage",
-          "clickable": true,
-          "draggable": true,
-          "sorting": {
-            "direction": "DESC",
-            "key": "updatedAt"
+  "components": [
+    {
+      "is": "TableTool",
+      "props": {
+        "reportingKey": "bookings",
+        "jql": "bookings",
+        "urlFormat": "/bookings{{ id|if('/', '') }}{{ id }}",
+        "hasReports": true,
+        "showFilterBar": true,
+        "enableShare": true,
+        "enableSetting": true,
+        "newReport": {
+          "filters": {
+            "isActive": true
           },
-          "pagination": {
-            "current": 0,
-            "perPage": 20
+          "configurations": {
+            "i18nContext": "BookingPage",
+            "clickable": true,
+            "draggable": true,
+            "sorting": {
+              "direction": "DESC",
+              "key": "updatedAt"
+            },
+            "pagination": {
+              "current": 0,
+              "perPage": 20
+            }
           }
-        }
-      },
-      "fieldOptions": [{
-          "key": "id",
-          "sql": "booking.id",
-          "hidden": true
         },
-        {
-          "key": "createdAt",
-          "sql": "booking.createdAt",
-          "width": 150,
-          "format": "YYYY-MM-DD"
+        "fieldOptions": [
+          {
+            "key": "id",
+            "sql": "booking.id",
+            "hidden": true
+          },
+          {
+            "key": "createdAt",
+            "sql": "booking.createdAt",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "updatedAt",
+            "sql": "booking.updatedAt",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "bookingNo",
+            "width": 150
+          },
+          {
+            "key": "departureDateEstimated",
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "departureDateActual",
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "arrivalDateEstimated",
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "cargoReadyDateEstimated",
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "cargoReadyDateActual",
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "cYCutOffDateEstimated",
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "cYCutOffDateActual",
+            "format": "YYYY-MM-DD"
+          }
+        ],
+        "filters": [],
+        "clickFunction": {
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "/booking/{{id}}"
+          }
         },
-        {
-          "key": "updatedAt",
-          "sql": "booking.updatedAt",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "bookingNo",
-          "width": 150
-        },
-        {
-          "key": "departureDateEstimated",
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "departureDateActual",
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "arrivalDateEstimated",
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "cargoReadyDateEstimated",
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "cargoReadyDateActual",
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "cYCutOffDateEstimated",
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "cYCutOffDateActual",
-          "format": "YYYY-MM-DD"
-        }
-      ],
-      "filters": [],
-      "clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/booking/{{id}}"
-        }
-      },
-      "icons": [{
-          "icon": "add",
-          "click": [{
-            "type": "router",
-            "otherParams": {
-              "func": "push",
-              "path": "booking/create"
-            }
-          }]
-        },
-        {
-          "icon": "fas fa-file-import",
-          "click": [{
-            "type": "router",
-            "otherParams": {
-              "func": "push",
-              "path": "booking/import"
-            }
-          }]
-        },
-        {
-          "icon": "fas fa-copy",
-          "click": [{
-            "type": "router",
-            "otherParams": {
-              "func": "push",
-              "path": "booking/copy"
-            }
-          }]
-        }
-      ]
+        "icons": [
+          {
+            "icon": "add",
+            "click": [
+              {
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "booking/create"
+                }
+              }
+            ]
+          },
+          {
+            "icon": "fas fa-file-import",
+            "click": [
+              {
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "booking/import"
+                }
+              }
+            ]
+          },
+          {
+            "icon": "fas fa-copy",
+            "click": [
+              {
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "booking/copy"
+                }
+              }
+            ]
+          }
+        ]
+      }
     }
-  }]
+  ]
 }
