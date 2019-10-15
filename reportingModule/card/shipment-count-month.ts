@@ -36,7 +36,7 @@ const months = [
 // hardcode all reportingGroup and divided into SEA and AIR
 const moduleTypeCodeList = {
   AIR: ['AC', 'AD', 'AM', 'AN', 'AW', 'AX', 'AZ'],
-  SEA: ['SA', 'SB', 'SC', 'SR', 'SS', 'ST', 'SW', 'SZ', 'SA'],
+  SEA: ['SA', 'SB', 'SC', 'SR', 'SS', 'ST', 'SW', 'SZ'],
   LOG: ['ZL'],
 }
 

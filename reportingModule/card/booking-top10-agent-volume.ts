@@ -9,130 +9,91 @@ import {
   OrderBy,
   JoinClause,
   BinaryExpression,
+  IsNullExpression,
 } from 'node-jql'
 
 function prepareParams(): Function {
   return function(require, session, params) {
+    const { Resultset } = require('node-jql-core')
+    const {
+      OrderBy,
+      ColumnExpression,
+      CreateTableJQL,
+      InsertJQL,
+      FromTable,
+      InExpression,
+      BetweenExpression,
+      FunctionExpression,
+      IsNullExpression,
+      BinaryExpression,
+      GroupBy,
+      Query,
+      ResultColumn,
+    } = require('node-jql')
     // import
     const { BadRequestException } = require('@nestjs/common')
 
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
+
+    params.fields = ['agentPartyCode', 'volumeTotal']
+    params.groupBy = ['agentPartyCode']
+
+    params.sorting = [new OrderBy('volumeTotal', 'DESC')]
+
+    subqueries.agentPartyCodeIsNotNull = {
+      value : true
+    }
+
+    params.limit = 10
+
     return params
   }
 }
 
-function prepareTable(name: string): CreateTableJQL {
+function prepareTop10Table(): CreateTableJQL {
+  const name = 'top10'
+
   return new CreateTableJQL({
     $temporary: true,
     name,
     $as: new Query({
+
       $select: [
-        new ResultColumn(new ColumnExpression(name, 'agentPartyId')),
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression('SUM', new ColumnExpression(name, 'volume')),
-            0
-          ),
-          'totalVolume'
-        ),
+
+        new ResultColumn(new ColumnExpression(name, 'agentPartyCode'), 'agentPartyCode'),
+        new ResultColumn(new ColumnExpression(name, 'volumeTotal'), 'volume'),
       ],
+
       $from: new FromTable(
         {
           method: 'POST',
           url: 'api/booking/query/booking',
           columns: [
             {
-              name: 'volume',
-              type: 'number',
-            },
-            {
-              name: 'agentPartyId',
+              name: 'volumeTotal',
               type: 'number',
             },
 
             {
-              name: 'agentPartyName',
+              name: 'agentPartyCode',
               type: 'string',
             },
-          ],
 
-          data: {
-            subqueries: {
-              jobMonth: true,
-            },
-            // include jobMonth from the table
-            fields: ['jobMonth', 'booking.*', 'booking_popacking.*'],
-          },
+          ],
         },
         name
       ),
-
-      $group: new GroupBy([new ColumnExpression(name, 'agentPartyId')]),
-
-      $order: [new OrderBy('totalVolume', 'DESC')],
-
-      $limit: 10,
-    }),
-  })
-}
-
-function preparePartyTable(name: string): CreateTableJQL {
-  return new CreateTableJQL({
-    $temporary: true,
-    name,
-
-    $as: new Query({
-      $from: new FromTable(
-        {
-          method: 'POST',
-          url: 'api/party/query/party',
-          columns: [
-            {
-              name: 'id',
-              type: 'number',
-            },
-            {
-              name: 'name',
-              type: 'string',
-            },
-            {
-              name: 'type',
-              type: 'string',
-            },
-          ],
-
-          data: {
-            // include jobMonth from the table
-            fields: ['party_type.*', 'party.*'],
-          },
-        },
-        name
-      ),
-
-      $where: new BinaryExpression(new ColumnExpression('type'), '=', 'agent'),
     }),
   })
 }
 
 export default [
-  [prepareParams(), prepareTable('tempTable')],
-  [prepareParams(), preparePartyTable('party')],
+  [prepareParams(), prepareTop10Table()],
 
   new Query({
-    $from: new FromTable(
-      'tempTable',
-      'tempTable',
-      new JoinClause(
-        'INNER',
-        new FromTable('party', 'party'),
-        new BinaryExpression(
-          new ColumnExpression('tempTable', 'agentPartyId'),
-          '=',
-          new ColumnExpression('party', 'id')
-        )
-      )
-    ),
-  }),
+
+    $from : 'top10'
+  })
+
 ]
