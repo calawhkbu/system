@@ -133,6 +133,16 @@ export default class EdiParser997 extends BaseEdiParser {
             TMPS: 'L',
             RCVE: 'E',
           }
+          const isoCodeMapper = {
+            '20OT': 2251,
+            '40OT': 4351,
+            '40HRF': 4662,
+            '45HRF': 9532,
+            '20RF': 2232,
+            '40RF': 4332,
+            '40HC': 4500,
+            '45HC': 9500,
+          }
           const B4: JSONObject = {
             segment: 'B4',
             elementList: [],
@@ -150,7 +160,7 @@ export default class EdiParser997 extends BaseEdiParser {
           )
           B4.elementList.push(
             emptyLoadMapper[_.get(currentStatus, 'statusCode')] || '',
-            `${_.get(container, 'containerSize')}${_.get(container, 'containerType')}`,
+            isoCodeMapper[_.get(container, 'container')] || '',
             _.get(currentStatus, 'statusPlace').substr(0, 30)
           )
           B4.elementList.push('UN')
@@ -218,7 +228,7 @@ export default class EdiParser997 extends BaseEdiParser {
           IEA.elementList.push('1', controlNo)
           data.push(IEA)
           _.set(returnJSON, 'data', data)
-          // return returnJSON
+          return returnJSON
           const result = await super.export(returnJSON)
           // return result
           resultList.push(result)
