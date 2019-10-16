@@ -48,7 +48,8 @@ function prepareParams(): Function {
     // AE
     subqueries.moduleTypeCode = { value: ['SEA'] }
     subqueries.boundTypeCode = { value: ['O'] }
-    subqueries.billTypeCode = { value: ['M'] }
+
+    // subqueries.billTypeCode = { value: ['M'] }
 
     // select
     params.fields = ['carrierCode', 'carrierName', 'jobMonth', 'shipments']

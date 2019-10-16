@@ -42,9 +42,18 @@ const query = new QueryDef(
 
 query
   .register(
-    'trackingNo',
+    'trackingNos',
     new Query({
       $where: new InExpression(new ColumnExpression('tracking_reference', 'trackingNo'), false),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
+    'trackingNo',
+    new Query({
+      $where: new BinaryExpression(new ColumnExpression('tracking_reference', 'trackingNo'), '='),
     })
   )
   .register('value', 0)

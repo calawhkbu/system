@@ -53,7 +53,7 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
     subqueries.boundTypeCode = { value: 'O' }
 
     // select
-    params.fields = ['carrierCode', 'carrierName', 'jobMonth', 'cntCbm']
+    params.fields = ['carrierCode', 'carrierName', 'jobMonth', 'cbm']
 
     // group by
     params.groupBy = ['carrierCode', 'carrierName', 'jobMonth']
@@ -105,7 +105,7 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
             { name: 'carrierCode', type: 'string' },
             { name: 'carrierName', type: 'string' },
             { name: 'jobMonth', type: 'string' },
-            { name: 'cntCbm', type: 'number', $as: 'cbm' },
+            { name: 'cbm', type: 'number' },
           ],
 
           data: {

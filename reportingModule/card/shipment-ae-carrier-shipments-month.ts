@@ -10,6 +10,8 @@ import {
   Query,
   ResultColumn,
   Column,
+  MathExpression,
+  OrderBy,
 } from 'node-jql'
 
 const months = [
@@ -27,6 +29,8 @@ const months = [
   'December',
 ]
 const types = ['shipments']
+
+const variables = ['shipments']
 
 function prepareParams(): Function {
   return function(require, session, params) {
@@ -95,41 +99,63 @@ function prepareTable(): CreateTableJQL {
   })
 }
 
-export default [
-  [prepareParams(), prepareTable()],
+function finalQuery(): Query {
 
-  // finalize data
-  new Query({
-    $select: [
-      new ResultColumn('carrierCode'),
-      new ResultColumn('carrierName'),
-      ...months.reduce<ResultColumn[]>((result, month) => {
-        result.push(
-          ...types.map(
-            type =>
-              new ResultColumn(
-                new FunctionExpression(
-                  'IFNULL',
+  function composeSumExpression(dumbList: any[]): MathExpression {
 
-                  new FunctionExpression(
-                    'FIND',
-                    new BinaryExpression(new ColumnExpression('month'), '=', month),
-                    new ColumnExpression(
-                      // only shipment
-                      type === 'shipments' ? 'shipments' : 'shipments'
-                    )
-                  ),
-                  0
-                ),
+    if (dumbList.length === 2) {
+      return new MathExpression(dumbList[0], '+', dumbList[1])
+    }
 
-                `${month}-${type}`
-              )
-          )
-        )
-        return result
-      }, []),
-    ],
+    const popResult = dumbList.pop()
+
+    return new MathExpression(popResult, '+', composeSumExpression(dumbList))
+  }
+
+  const $select = [
+
+    new ResultColumn('carrierCode'),
+    new ResultColumn('carrierName'),
+
+  ]
+
+  const finalSumList = []
+
+  months.map((month: string) => {
+
+    types.map((type: string) => {
+
+      const column = new FunctionExpression('IFNULL',
+        new FunctionExpression(
+          'FIND',
+          new BinaryExpression(new ColumnExpression('month'), '=', month),
+          new ColumnExpression(type)
+        ),
+        0
+      )
+
+      // single month count
+      $select.push(new ResultColumn(column, `${month}-${type}`))
+      finalSumList.push(column)
+
+    })
+
+  })
+
+  const finalSumExpression = composeSumExpression(finalSumList)
+  $select.push(new ResultColumn(finalSumExpression, `total`))
+
+  return new Query({
+
+    $select,
+
     $from: 'shipment',
     $group: 'carrierCode',
-  }),
+    $order : new OrderBy('total', 'DESC')
+  })
+}
+
+export default [
+  [prepareParams(), prepareTable()],
+  finalQuery()
 ]

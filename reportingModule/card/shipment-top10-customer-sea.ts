@@ -47,9 +47,8 @@ export default [
             type: 'string',
           },
           {
-            name: 'cntCbm',
+            name: 'cbm',
             type: 'string',
-            $as: 'cbm',
           },
         ],
 
@@ -67,8 +66,8 @@ export default [
             controllingCustomerIsNotNull: {},
           },
 
-          fields: ['controllingCustomerPartyName', 'controllingCustomerPartyCode', 'cntCbm'],
-          sorting: new OrderBy('cntCbm', 'DESC'),
+          fields: ['controllingCustomerPartyName', 'controllingCustomerPartyCode', 'cbm'],
+          sorting: new OrderBy('cbm', 'DESC'),
           groupBy: ['controllingCustomerPartyName', 'controllingCustomerPartyCode'],
           limit: 10,
         },
