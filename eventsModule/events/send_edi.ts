@@ -28,25 +28,39 @@ class SendEdiEvent extends BaseEvent {
       EdiService: EdiService,
       TrackingReferenceService: TrackingReferenceService
     }
-    const { data } = parameters
+    const { oldData = null, data } = parameters
     if (data) {
-      const references: any[] = await trackingReferenceService.reportQuery('tracking_table', {
-        fields: [['tracking_reference', 'id'], ['tracking_reference', 'partyGroupCode']],
-        subqueries: {
-          trackingNo: { value: data.trackingNo },
+      const createOrUpdate = oldData ? 'update' : 'create'
+      let sendIt = false
+      if (createOrUpdate === 'create') {
+        if (data.lastStatusCode && !(['NEW', 'CANF', 'ERR'].includes(data.lastStatusCode))) {
+          sendIt = true
         }
-      })
-      for (const { id, partyGroupCode } of references) {
-        if (['ECX'].includes(partyGroupCode)) {
-          const value = {
-            ...data.dataValues,
-            trackingReference: await trackingReferenceService.findOne(id)
+      } else if (createOrUpdate === 'update') {
+        if (data.lastStatusCode && !(['NEW', 'CANF', 'ERR'].includes(data.lastStatusCode)) && oldData.lastStatusCode !== data.lastStatusCode) {
+          sendIt = true
+        }
+      }
+      if (sendIt) {
+        const references: any[] = await trackingReferenceService.reportQuery('tracking_table', {
+          fields: [['tracking_reference', 'id'], ['tracking_reference', 'partyGroupCode']],
+          subqueries: {
+            trackingNo: { value: data.trackingNo },
           }
-          try {
-            console.log([value], 'here')
-            await ediService.export(partyGroupCode, '315', [value])
-          } catch (e) {
-            console.error(e, e.stack, this.constructor.name)
+        })
+        for (const { id, partyGroupCode } of references) {
+          if (['ECX'].includes(partyGroupCode)) {
+            const value = {
+              ...data.dataValues,
+              trackingReference: await trackingReferenceService.findOne(id)
+            }
+            try {
+              console.log(value, 'edi315')
+              await ediService.export(process.env.NODE_ENV === 'production' ? partyGroupCode : 'DEV', '315', value)
+            } catch (e) {
+              console.log('Error', 'edi315')
+              console.error(e, e.stack, this.constructor.name)
+            }
           }
         }
       }

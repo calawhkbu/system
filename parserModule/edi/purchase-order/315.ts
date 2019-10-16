@@ -31,14 +31,17 @@ export default class EdiParser997 extends BaseEdiParser {
   }
 
   async export(entityJSON: any[] | (any[])[]): Promise<any> {
+    console.log(entityJSON)
     const resultList: any[] = []
     for (const element of entityJSON)
     {
-      const details = _.get(element, 'details')
-      if (!details) {
-        throw Error('no details')
-      }
+      // const details = _.get(element, 'details')
+      // if (!details) {
+      //   throw Error('no details')
+      // }
+      console.log(element)
       const containerList = _.get(element, 'trackingContainers') || []
+      console.log(containerList)
       if (containerList.length) {
         for (const container of containerList) {
           const returnJSON = {}
@@ -56,9 +59,9 @@ export default class EdiParser997 extends BaseEdiParser {
           ).substr(4)}`
           ISA.elementList.push(
             '00',
-            '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
+            '          ',
             '00',
-            '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
+            '          ',
             '12',
             '718978080',
             '08',
@@ -228,7 +231,6 @@ export default class EdiParser997 extends BaseEdiParser {
           IEA.elementList.push('1', controlNo)
           data.push(IEA)
           _.set(returnJSON, 'data', data)
-          return returnJSON
           const result = await super.export(returnJSON)
           // return result
           resultList.push(result)
