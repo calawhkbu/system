@@ -51,6 +51,15 @@ query
 
 query
   .register(
+    'trackingNo',
+    new Query({
+      $where: new BinaryExpression(new ColumnExpression('tracking_reference', 'trackingNo'), '='),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
     'trackingType',
     new Query({
       $where: new BinaryExpression(new ColumnExpression('tracking_reference', 'trackingType'), '='),
