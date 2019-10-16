@@ -449,36 +449,74 @@ query.register(
 
 query
   .register(
-    'partyGroupCode',
+    'shipperPartyId',
     new Query({
-      $where: new BinaryExpression(new ColumnExpression('booking', 'partyGroupCode'), '='),
+      $where: new InExpression(new ColumnExpression('booking', 'shipperPartyId'), false)
     })
   )
   .register('value', 0)
 
-query
+  query
   .register(
-    'bookingNo',
+    'consigneePartyId',
     new Query({
-      $where: new RegexpExpression(new ColumnExpression('booking', 'bookingNo'), false),
+      $where: new InExpression(new ColumnExpression('booking', 'consigneePartyId'), false)
     })
   )
   .register('value', 0)
 
-query
+  query
+  .register(
+    'forwarderPartyId',
+    new Query({
+      $where: new InExpression(new ColumnExpression('booking', 'forwarderPartyId'), false)
+    })
+  )
+  .register('value', 0)
+
+  query
+  .register(
+    'officePartyId',
+    new Query({
+      $where: new InExpression(new ColumnExpression('booking', 'forwarderPartyId'), false)
+    })
+  )
+  .register('value', 0)
+
+  query
+  .register(
+    'agentPartyId',
+    new Query({
+      $where: new InExpression(new ColumnExpression('booking', 'agentPartyId'), false)
+    })
+  )
+  .register('value', 0)
+
+  query
+  .register(
+    'departureDateEstimated',
+    new Query({
+      $where: new BetweenExpression(new ColumnExpression('booking', 'departureDateEstimated'), false),
+    })
+  )
+  .register('from', 0)
+  .register('to', 1)
+
+  query
+  .register(
+    'arrivalDateEstimated',
+    new Query({
+      $where: new BetweenExpression(new ColumnExpression('booking', 'arrivalDateEstimated'), false),
+    })
+  )
+  .register('from', 0)
+  .register('to', 1)
+
+  query
   .register(
     'moduleTypeCode',
     new Query({
-      $where: new BinaryExpression(new ColumnExpression('booking', 'moduleTypeCode'), '='),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'moduleTypeCodes',
-    new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'moduleTypeCode'), false),
+      $where: new InExpression(new ColumnExpression('booking', 'moduleTypeCode'), false)
     })
   )
   .register('value', 0)
@@ -487,16 +525,44 @@ query
   .register(
     'boundTypeCode',
     new Query({
-      $where: new BinaryExpression(new ColumnExpression('booking', 'boundTypeCode'), '='),
+      $where: new InExpression(new ColumnExpression('booking', 'boundTypeCode'), false)
     })
   )
   .register('value', 0)
 
+  query
+  .register(
+    'portOfLoadingCode',
+    new Query({
+      $where: new InExpression(new ColumnExpression('booking', 'portOfLoadingCode'), false)
+    })
+  )
+  .register('value', 0)
+
+  query
+  .register(
+    'portOfDischargeCode',
+    new Query({
+      $where: new InExpression(new ColumnExpression('booking', 'portOfDischargeCode'), false)
+    })
+  )
+  .register('value', 0)
+
+// ----------------- filter in main filter menu
+
 query
   .register(
-    'boundTypeCodes',
+    'partyGroupCode',
     new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'boundTypeCode'), false),
+      $where: new BinaryExpression(new ColumnExpression('booking', 'partyGroupCode'), '='),
+    })
+  )
+  .register('value', 0)
+query
+  .register(
+    'bookingNo',
+    new Query({
+      $where: new RegexpExpression(new ColumnExpression('booking', 'bookingNo'), false),
     })
   )
   .register('value', 0)

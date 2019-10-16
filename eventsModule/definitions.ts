@@ -34,15 +34,25 @@ export default {
       handlerName: 'fm3k_booking',
     },
   ],
-  // start
+  send_edi: [
+    {
+      handlerName: 'send_edi'
+    }
+  ],
   afterCreate_tracking: [
     {
       eventName: 'tracking_update_data',
+    },
+    {
+      eventName: 'send_edi',
     },
   ],
   afterUpdate_tracking: [
     {
       eventName: 'tracking_update_data',
+    },
+    {
+      eventName: 'send_edi',
     },
   ],
   afterCreate_document: [
@@ -89,13 +99,11 @@ export default {
       },
     },
   ],
-
   afterUpdate_booking: [
     {
       condition: true,
       eventName: 'create_tracking_by_booking',
     },
-
     {
       condition: true,
       eventName: 'create_alert',
@@ -108,7 +116,6 @@ export default {
         },
       },
     },
-
     {
       condition: true,
       handlerName: 'checker',

@@ -44,8 +44,8 @@ export default class EdiParser856 extends BaseEdiParser {
     const bookingNo = _.get(entityJSON[0], 'bookingNo')
     const removeCharbookingNo = bookingNo.replace(/-/g, '')
     const controlNo = (removeCharbookingNo || '').substring((removeCharbookingNo || '').length - 9)
-    ISA.elementList.push('00', '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0', '00',
-    '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0', '12', '718978080', '08' , '6112390050' , moment(currantDate).format('YYMMDD'), moment(currantDate).format('HHmm'), 'U', '00403', controlNo, '0', 'P', '>')
+    ISA.elementList.push('00', '          ', '00',
+    '          ', '12', '718978080', '08' , '6112390050' , moment(currantDate).format('YYMMDD'), moment(currantDate).format('HHmm'), 'U', '00403', controlNo, '0', 'P', '>')
     data.push(ISA)
     const GS: JSONObject = {
         segement: 'GS',

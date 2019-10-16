@@ -30,6 +30,8 @@ const months = [
 ]
 const types = ['shipments']
 
+const variables = ['shipments']
+
 function prepareParams(): Function {
   return function(require, session, params) {
     // import
