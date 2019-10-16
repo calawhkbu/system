@@ -31,13 +31,13 @@ export default class EdiParser997 extends BaseEdiParser {
   }
 
   async export(entityJSON: any[] | (any[])[]): Promise<any> {
+    const resultList: any[] = []
     for (const element of entityJSON)
     {
       const details = _.get(element, 'details')
       if (!details) {
         throw Error('no details')
       }
-      const resultList: any[] = []
       const containerList = _.get(element, 'trackingContainers') || []
       if (containerList.length) {
         for (const container of containerList) {
@@ -224,8 +224,8 @@ export default class EdiParser997 extends BaseEdiParser {
           resultList.push(result)
         }
       }
-      return resultList
     }
+    return resultList
   }
   async getLoopObject(loopObjectList, historyList) {
     const noOfhistory = historyList.length
