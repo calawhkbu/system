@@ -2,7 +2,6 @@ import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
-import { AlertDbService } from '../../../../swivel-backend-new/src/modules/sequelize/alert/service'
 
 class ExampleEvent extends BaseEvent {
   constructor(

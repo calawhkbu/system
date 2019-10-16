@@ -31,195 +31,210 @@ export default class EdiParser997 extends BaseEdiParser {
   }
 
   async export(entityJSON: any[] | (any[])[]): Promise<any> {
-    const details = _.get(entityJSON, 'details')
-    if (!details) {
-      throw Error('no details')
-    }
+    console.log(entityJSON)
     const resultList: any[] = []
-    const containerList = _.get(details, 'billContainerTracking') || []
-    if (containerList.length) {
-      for (const container of containerList) {
-        const returnJSON = {}
-        const data = []
-        const ISA: JSONObject = {
-          segment: 'ISA',
-          elementList: [],
-        }
-        const currantDate = moment().toDate()
-        const containerNo = _.get(container, 'containerNo')
-        // const controlNo = (containerNo  || '').substr(4)
-        const pad = '000000000'
-        const controlNo = `${pad.substring(0, pad.length - (containerNo || '').substr(4).length)}${(
-          containerNo || ''
-        ).substr(4)}`
-        ISA.elementList.push(
-          '00',
-          '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
-          '00',
-          '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
-          '12',
-          '718978080',
-          '08',
-          '6112390050',
-          moment(currantDate).format('YYMMDD'),
-          moment(currantDate).format('HHmm'),
-          'U',
-          '00401',
-          controlNo,
-          '0',
-          'P',
-          '>'
-        )
-        data.push(ISA)
-        const GS: JSONObject = {
-          segment: 'GS',
-          elementList: [],
-        }
-
-        GS.elementList.push(
-          'FA',
-          '718978080',
-          '6112390050',
-          moment(currantDate).format('YYYYMMDD'),
-          moment(currantDate).format('HHmm'),
-          parseInt(controlNo, 10),
-          'X',
-          '004030VICS'
-        )
-        data.push(GS)
-
-        const lengthOfPreviousData = data.length
-
-        const ST: JSONObject = {
-          segment: 'ST',
-          elementList: [],
-        }
-        ST.elementList.push('315', `0001`)
-        data.push(ST)
-        const historyList = _.get(container, 'history')
-        historyList.sort(function(a, b) {
-          if (!a.statusDate) {
-            return -1
-          }
-
-          if (!b.statusDate) {
-            return 1
-          }
-
-          return moment(a.statusDate) - moment(b.statusDate)
-        })
-        // return historyList
-        const currentStatusIndex = historyList.map(el => el.isEstimated).lastIndexOf(false)
-        const currentStatus = historyList[currentStatusIndex]
-        const statusCodeMapper = {
-          GITM: 'I',
-          DLPT: 'VD',
-          BDAR: 'VA',
-          DSCH: 'UV',
-          DECL: 'CT',
-          PASS: 'OA',
-          TMPS: 'D',
-          RCVE: 'RD',
-        }
-        const emptyLoadMapper = {
-          GITM: 'E',
-          DLPT: 'L',
-          BDAR: 'L',
-          DSCH: 'E',
-          DECL: 'L',
-          PASS: 'L',
-          TMPS: 'L',
-          RCVE: 'E',
-        }
-        const B4: JSONObject = {
-          segment: 'B4',
-          elementList: [],
-        }
-        B4.elementList.push('', '') // not used
-        B4.elementList.push(
-          statusCodeMapper[_.get(currentStatus, 'statusCode')],
-          moment(_.get(currentStatus, 'statusDate')).format('YYYYMMDD'),
-          moment(_.get(currentStatus, 'statusDate')).format('HHmm')
-        )
-        B4.elementList.push('') // not used
-        B4.elementList.push(
-          (_.get(container, 'containerNo') || '').substr(0, 4),
-          (_.get(container, 'containerNo') || '').substr(4)
-        )
-        B4.elementList.push(
-          emptyLoadMapper[_.get(currentStatus, 'statusCode')] || '',
-          `${_.get(container, 'containerSize')}${_.get(container, 'containerType')}`,
-          _.get(currentStatus, 'statusPlace').substr(0, 30)
-        )
-        B4.elementList.push('UN')
-        B4.elementList.push('') // No Equipment Check Digit
-        data.push(B4)
-        const trackingRefInf = _.get(entityJSON, 'trackingReference') || {}
-        const flexDataInf = _.get(trackingRefInf, 'flexData') || {}
-        const bookingInf = _.get(flexDataInf, 'data')
-        if (bookingInf) {
-          if (_.get(bookingInf, 'bookingNo')) {
-            const N9: JSONObject = {
-              segment: 'N9',
-              elementList: [],
-            }
-            N9.elementList.push('BN', _.get(bookingInf, 'bookingNo'), 'ORIGINAL BKG NBR')
-            data.push(N9)
-          }
-          const Q2: JSONObject = {
-            segment: 'Q2',
+    for (const element of entityJSON)
+    {
+      // const details = _.get(element, 'details')
+      // if (!details) {
+      //   throw Error('no details')
+      // }
+      console.log(element)
+      const containerList = _.get(element, 'trackingContainers') || []
+      console.log(containerList)
+      if (containerList.length) {
+        for (const container of containerList) {
+          const returnJSON = {}
+          const data = []
+          const ISA: JSONObject = {
+            segment: 'ISA',
             elementList: [],
           }
-          Q2.elementList.push(_.get(bookingInf, 'vesselCode'))
-          Q2.elementList.push('')
-          for (
-            let i = 0;
-            i < 6;
-            i++ // not used
-          ) {
-            Q2.elementList.push('')
+          const currantDate = moment().toDate()
+          const containerNo = _.get(container, 'containerNo')
+          // const controlNo = (containerNo  || '').substr(4)
+          const pad = '000000000'
+          const controlNo = `${pad.substring(0, pad.length - (containerNo || '').substr(4).length)}${(
+            containerNo || ''
+          ).substr(4)}`
+          ISA.elementList.push(
+            '00',
+            '          ',
+            '00',
+            '          ',
+            '12',
+            '718978080',
+            '08',
+            '6112390050',
+            moment(currantDate).format('YYMMDD'),
+            moment(currantDate).format('HHmm'),
+            'U',
+            '00401',
+            controlNo,
+            '0',
+            'P',
+            '>'
+          )
+          data.push(ISA)
+          const GS: JSONObject = {
+            segment: 'GS',
+            elementList: [],
           }
-          Q2.elementList.push(_.get(bookingInf, 'voyageFlightNumber'))
-          for (
-            let i = 0;
-            i < 3;
-            i++ // not used
-          ) {
-            Q2.elementList.push('')
+
+          GS.elementList.push(
+            'FA',
+            '718978080',
+            '6112390050',
+            moment(currantDate).format('YYYYMMDD'),
+            moment(currantDate).format('HHmm'),
+            parseInt(controlNo, 10),
+            'X',
+            '004030VICS'
+          )
+          data.push(GS)
+
+          const lengthOfPreviousData = data.length
+
+          const ST: JSONObject = {
+            segment: 'ST',
+            elementList: [],
           }
-          Q2.elementList.push(_.get(bookingInf, 'vesselName'))
-          data.push(Q2)
-        }
+          ST.elementList.push('315', `0001`)
+          data.push(ST)
+          const historyList = _.get(container, 'trackingStatus')
+          historyList.sort(function(a, b) {
+            if (!a.statusDate) {
+              return -1
+            }
 
-        const loopObjectList: any[] = []
-        loopObjectList.push(this.getLoopObject(loopObjectList, historyList))
-        const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
-        data.push(...filteredList)
-        const SE: JSONObject = {
-          segment: 'SE',
-          elementList: [],
-        }
-        SE.elementList.push((data.length - lengthOfPreviousData + 1).toString())
-        SE.elementList.push(`0001`)
-        data.push(SE)
+            if (!b.statusDate) {
+              return 1
+            }
 
-        const GE: JSONObject = {
-          segment: 'GE',
-          elementList: [],
+            return moment(a.statusDate) - moment(b.statusDate)
+          })
+          // return historyList
+          const currentStatusIndex = historyList.map(el => el.isEstimated).lastIndexOf(false)
+          const currentStatus = historyList[currentStatusIndex]
+          const statusCodeMapper = {
+            GITM: 'I',
+            DLPT: 'VD',
+            BDAR: 'VA',
+            DSCH: 'UV',
+            DECL: 'CT',
+            PASS: 'OA',
+            TMPS: 'D',
+            RCVE: 'RD',
+          }
+          const emptyLoadMapper = {
+            GITM: 'E',
+            DLPT: 'L',
+            BDAR: 'L',
+            DSCH: 'E',
+            DECL: 'L',
+            PASS: 'L',
+            TMPS: 'L',
+            RCVE: 'E',
+          }
+          const isoCodeMapper = {
+            '20OT': 2251,
+            '40OT': 4351,
+            '40HRF': 4662,
+            '45HRF': 9532,
+            '20RF': 2232,
+            '40RF': 4332,
+            '40HC': 4500,
+            '45HC': 9500,
+          }
+          const B4: JSONObject = {
+            segment: 'B4',
+            elementList: [],
+          }
+          B4.elementList.push('', '') // not used
+          B4.elementList.push(
+            statusCodeMapper[_.get(currentStatus, 'statusCode')],
+            moment(_.get(currentStatus, 'statusDate')).format('YYYYMMDD'),
+            moment(_.get(currentStatus, 'statusDate')).format('HHmm')
+          )
+          B4.elementList.push('') // not used
+          B4.elementList.push(
+            (_.get(container, 'containerNo') || '').substr(0, 4),
+            (_.get(container, 'containerNo') || '').substr(4)
+          )
+          B4.elementList.push(
+            emptyLoadMapper[_.get(currentStatus, 'statusCode')] || '',
+            isoCodeMapper[_.get(container, 'container')] || '',
+            _.get(currentStatus, 'statusPlace').substr(0, 30)
+          )
+          B4.elementList.push('UN')
+          B4.elementList.push('') // No Equipment Check Digit
+          data.push(B4)
+          const trackingRefInf = _.get(element, 'trackingReference') || {}
+          const flexDataInf = _.get(trackingRefInf, 'flexData') || {}
+          const bookingInf = _.get(flexDataInf, 'data')
+          if (bookingInf) {
+            if (_.get(bookingInf, 'bookingNo')) {
+              const N9: JSONObject = {
+                segment: 'N9',
+                elementList: [],
+              }
+              N9.elementList.push('BN', _.get(bookingInf, 'bookingNo'), 'ORIGINAL BKG NBR')
+              data.push(N9)
+            }
+            const Q2: JSONObject = {
+              segment: 'Q2',
+              elementList: [],
+            }
+            Q2.elementList.push(_.get(bookingInf, 'vesselCode'))
+            Q2.elementList.push('')
+            for (
+              let i = 0;
+              i < 6;
+              i++ // not used
+            ) {
+              Q2.elementList.push('')
+            }
+            Q2.elementList.push(_.get(bookingInf, 'voyageFlightNumber'))
+            for (
+              let i = 0;
+              i < 3;
+              i++ // not used
+            ) {
+              Q2.elementList.push('')
+            }
+            Q2.elementList.push(_.get(bookingInf, 'vesselName'))
+            data.push(Q2)
+          }
+
+          const loopObjectList: any[] = []
+          loopObjectList.push(this.getLoopObject(loopObjectList, historyList))
+          const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
+          data.push(...filteredList)
+          const SE: JSONObject = {
+            segment: 'SE',
+            elementList: [],
+          }
+          SE.elementList.push((data.length - lengthOfPreviousData + 1).toString())
+          SE.elementList.push(`0001`)
+          data.push(SE)
+
+          const GE: JSONObject = {
+            segment: 'GE',
+            elementList: [],
+          }
+          GE.elementList.push('1', parseInt(controlNo, 10))
+          data.push(GE)
+          const IEA: JSONObject = {
+            segment: 'IEA',
+            elementList: [],
+          }
+          IEA.elementList.push('1', controlNo)
+          data.push(IEA)
+          _.set(returnJSON, 'data', data)
+          const result = await super.export(returnJSON)
+          // return result
+          resultList.push(result)
         }
-        GE.elementList.push('1', parseInt(controlNo, 10))
-        data.push(GE)
-        const IEA: JSONObject = {
-          segment: 'IEA',
-          elementList: [],
-        }
-        IEA.elementList.push('1', controlNo)
-        data.push(IEA)
-        _.set(returnJSON, 'data', data)
-        // return returnJSON
-        const result = await super.export(returnJSON)
-        // return result
-        resultList.push(result)
       }
     }
     return resultList
