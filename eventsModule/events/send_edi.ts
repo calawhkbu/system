@@ -2,6 +2,9 @@ import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
+import { EdiService } from 'modules/edi/service'
+import { TrackingReferenceService } from 'modules/sequelize/tracking/service'
+
 
 class SendEdiEvent extends BaseEvent {
   constructor(
@@ -18,10 +21,36 @@ class SendEdiEvent extends BaseEvent {
   }
 
   public async mainFunction(parameters: any) {
-    console.log(JSON.stringify(parameters), 'parameters')
-    console.log('in main Excecute of Example')
-
-    console.log('in main Excecute of Example Finish')
+    const {
+      TrackingReferenceService: trackingReferenceService,
+      EdiService: ediService
+    } = this.allService as {
+      EdiService: EdiService,
+      TrackingReferenceService: TrackingReferenceService
+    }
+    const { data } = parameters
+    if (data) {
+      const references: any[] = await trackingReferenceService.reportQuery('tracking_table', {
+        fields: [['tracking_reference', 'id'], ['tracking_reference', 'partyGroupCode']],
+        subqueries: {
+          trackingNo: { value: data.trackingNo },
+        }
+      })
+      for (const { id, partyGroupCode } of references) {
+        if (['ECX'].includes(partyGroupCode)) {
+          const value = {
+            ...data.dataValues,
+            trackingReference: await trackingReferenceService.findOne(id)
+          }
+          try {
+            console.log([value], 'here')
+            await ediService.export(partyGroupCode, '315', [value])
+          } catch (e) {
+            console.error(e, e.stack, this.constructor.name)
+          }
+        }
+      }
+    }
 
     return {
       exampleResult: 'exampleValue',
