@@ -160,14 +160,17 @@
                   "method": "POST",
                   "url": "api/party/query/party_auto_suggest",
 
-                  "subqueries": {
-                    "isBranch": {
-                      "value": true
-                    },
-                    "id": {
-                      "value": "{{value}}"
+                  "data" : {
+                    "subqueries": {
+                      "isBranch": {
+                        "value": true
+                      },
+                      "id": {
+                        "value": "{{value}}"
+                      }
                     }
                   }
+
                 },
                 "valueKey": "id",
                 "labelKey": "partyName",
@@ -177,14 +180,22 @@
                 "method": "POST",
                 "url": "api/party/query/party_auto_suggest",
 
-                "subqueries": {
-                  "isBranch": {
-                    "value": true
-                  },
-                  "id": {
-                    "value": "{{value}}"
+
+                "data" : {
+
+                  "subqueries": {
+                    "isBranch": {
+                      "value": true
+                    },
+                    "id": {
+                      "value": "{{value}}"
+                    }
                   }
+
+
                 },
+
+
                 "valueKey": "id",
                 "labelKey": "shortName",
                 "sublabelKey": "erpCode"
