@@ -67,9 +67,6 @@
                   "url": "api/party/query/party_auto_suggest",
                   "data": {
                     "subqueries": {
-                      "partyTypes": {
-                        "value": ["shipper"]
-                      },
                       "id": {
                         "value": "{{value}}"
                       }
@@ -111,9 +108,6 @@
                     "subqueries": {
                       "id": {
                         "value": "{{value}}"
-                      },
-                      "partyTypes": {
-                        "value": ["consignee"]
                       }
                     }
                   },
@@ -160,34 +154,17 @@
                   "method": "POST",
                   "url": "api/party/query/party_auto_suggest",
 
-                  "subqueries": {
-                    "isBranch": {
-                      "value": true
-                    },
-                    "id": {
-                      "value": "{{value}}"
+                  "data": {
+                    "subqueries": {
+                      "id": {
+                        "value": "{{value}}"
+                      }
                     }
-                  }
-                },
-                "valueKey": "id",
-                "labelKey": "partyName",
-                "sublabelKey": "erpCode"
-              },
-              "resolve": {
-                "method": "POST",
-                "url": "api/party/query/party_auto_suggest",
-
-                "subqueries": {
-                  "isBranch": {
-                    "value": true
                   },
-                  "id": {
-                    "value": "{{value}}"
-                  }
-                },
-                "valueKey": "id",
-                "labelKey": "shortName",
-                "sublabelKey": "erpCode"
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                }
               }
             }
           },
@@ -196,7 +173,6 @@
             "name": "agentPartyId",
             "display": "agent",
             "type": "autocomplete",
-
             "props": {
               "multi": true,
               "api": {
@@ -214,12 +190,10 @@
                       }
                     }
                   },
-
                   "valueKey": "id",
                   "labelKey": "partyName",
                   "sublabelKey": "erpCode"
                 },
-
                 "resolve": {
                   "method": "POST",
                   "url": "api/party/query/party_auto_suggest",
@@ -273,10 +247,7 @@
                   "method": "POST",
                   "url": "api/party/query/party_auto_suggest",
                   "data": {
-                    "subqueries": {
-                      "partyTypes": {
-                        "value": ["agent"]
-                      },
+                    "subqueries" : {
                       "id": {
                         "value": "{{value}}"
                       }
@@ -286,6 +257,7 @@
                   "labelKey": "partyName",
                   "sublabelKey": "erpCode"
                 }
+
               }
             }
           },
@@ -322,13 +294,8 @@
                   "method": "POST",
                   "url": "api/party/query/party_auto_suggest",
                   "data": {
-                    "subqueries": {
-                      "partyTypes": {
-                        "value": ["agent"]
-                      },
-                      "id": {
-                        "value": "{{value}}"
-                      }
+                    "id": {
+                      "value": "{{value}}"
                     }
                   },
                   "valueKey": "id",
@@ -369,9 +336,6 @@
                   "url": "api/party/query/party_auto_suggest",
                   "data": {
                     "subqueries": {
-                      "partyTypes": {
-                        "value": ["controllingCustomer"]
-                      },
                       "id": {
                         "value": "{{value}}"
                       }
