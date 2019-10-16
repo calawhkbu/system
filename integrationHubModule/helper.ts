@@ -120,7 +120,6 @@ const app = {
       'AE',
       'AI',
       'AM',
-      'TA',
       'SE',
       'SE FCL',
       'SE LCL',
@@ -130,7 +129,6 @@ const app = {
       'SI LCL',
       'SI Consol',
       'SM',
-      'TS',
       'Logistics',
       'Total',
     ]
@@ -148,10 +146,10 @@ const app = {
     const result = [] as string[]
     if (flag_air && flag_o) result.push('AE')
     if (flag_air && flag_i) result.push('AI')
-    if (flag_air && flag_m) result.push(...['AM', 'TA'])
+    if (flag_air && flag_m) result.push(...['AM'])
     if (flag_sea && flag_o) result.push(...['SE', 'SE FCL', 'SE LCL', 'SE Consol'])
     if (flag_sea && flag_i) result.push(...['SI', 'SI FCL', 'SI LCL', 'SI Consol'])
-    if (flag_sea && flag_m) result.push(...['SM', 'TS'])
+    if (flag_sea && flag_m) result.push(...['SM'])
     if (flag_log) result.push('Logistics')
 
     if (result.length === 15) result.push('Total')
@@ -188,10 +186,6 @@ const app = {
         return 9
       case 'SM':
         return 'B'
-      case 'TA':
-        return 'E'
-      case 'TS':
-        return 'F'
       case 'Logistics':
         return 0
       default:
