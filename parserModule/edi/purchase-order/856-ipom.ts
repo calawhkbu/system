@@ -51,7 +51,7 @@ export default class EdiParser856 extends BaseEdiParser {
         segement: 'GS',
         elementList: []
     }
-    GS.elementList.push('SH', '718978080', 'DILLARDSTST', moment(currantDate).format('YYYYMMDD'), moment(currantDate).format('HHmm'), parseInt(controlNo, 10), 'X', '004030VICS')
+    GS.elementList.push('SH', '718978080', '6112390050', moment(currantDate).format('YYYYMMDD'), moment(currantDate).format('HHmm'), parseInt(controlNo, 10), 'X', '004030VICS')
     data.push(GS)
 
     let lengthOfPreviousData = data.length

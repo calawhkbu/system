@@ -52,7 +52,7 @@ function prepareParams(): Function {
     subqueries.boundTypeCode = { value: ['O'] }
 
     // select
-    params.fields = ['carrierCode', 'carrierName', 'jobMonth', 'cntCbm', 'shipments']
+    params.fields = ['carrierCode', 'carrierName', 'jobMonth', 'cbm', 'shipments']
 
     // group by
     params.groupBy = ['carrierCode', 'carrierName', 'jobMonth']
@@ -84,7 +84,7 @@ function prepareTable(): CreateTableJQL {
             { name: 'carrierCode', type: 'string' },
             { name: 'carrierName', type: 'string' },
             { name: 'jobMonth', type: 'string' },
-            { name: 'cntCbm', type: 'number', $as: 'cbm' },
+            { name: 'cbm', type: 'number'},
             { name: 'shipments', type: 'number' },
           ],
 

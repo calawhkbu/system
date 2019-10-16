@@ -55,9 +55,11 @@ function prepareParams(type_: 'F' | 'R' | 'T'): Function {
       .endOf('year')
       .format('YYYY-MM-DD')
 
-    // AE
+    // // AE
     subqueries.moduleTypeCode = { value: ['AIR'] }
     subqueries.boundTypeCode = { value: ['O'] }
+
+    // subqueries.reportingGroup = { value: ['AC', 'AD'] }
 
     // select
     params.fields = ['carrierCode', 'carrierName', 'jobMonth', 'grossWeight', 'chargeableWeight']
