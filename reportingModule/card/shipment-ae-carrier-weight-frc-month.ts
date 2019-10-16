@@ -11,6 +11,8 @@ import {
   Query,
   ResultColumn,
   Value,
+  MathExpression,
+  OrderBy,
 } from 'node-jql'
 import { parseCode } from 'utils/function'
 
@@ -28,7 +30,11 @@ const months = [
   'November',
   'December',
 ]
-const types = ['F_GW', 'F_CW', 'R_GW', 'R_CW', 'C_GW', 'C_CW']
+
+// const types = ['F_shipments', 'R_shipments', 'C_shipments']
+
+const types = ['F', 'R', 'C']
+const variables = ['grossWeight', 'chargeableWeight']
 
 function prepareParams(type_: 'F' | 'R' | 'C'): Function {
   const fn = function(require, session, params) {
@@ -49,14 +55,14 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
       .format('YYYY-MM-DD')
 
     // AE
-    subqueries.moduleType = { value: ['AIR'] }
-    subqueries.boundType = { value: ['O'] }
+    subqueries.moduleTypeCode = { value: 'AIR' }
+    subqueries.boundTypeCode = { value: 'O' }
 
     // select
     params.fields = ['carrierCode', 'carrierName', 'jobMonth', 'grossWeight', 'chargeableWeight']
 
     // group by
-    params.groupBy = ['carrierCode', 'carrierName', 'jobMonth']
+    params.groupBy = ['carrierCode', 'jobMonth']
 
     subqueries.billTypeCode = { value : ['M'] }
 
@@ -88,11 +94,9 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
     columns: ['type', 'carrierCode', 'carrierName', 'month', 'grossWeight', 'chargeableWeight'],
     query: new Query({
       $select: [
-
         new ResultColumn(new Value(type), 'type'),
         new ResultColumn('carrierCode'),
         new ResultColumn('carrierName'),
-
         new ResultColumn(
           new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
           'month'
@@ -101,6 +105,7 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
           new FunctionExpression('IFNULL', new ColumnExpression('grossWeight'), 0),
           'grossWeight'
         ),
+
         new ResultColumn(
           new FunctionExpression('IFNULL', new ColumnExpression('chargeableWeight'), 0),
           'chargeableWeight'
@@ -111,9 +116,9 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-            { name: 'carrierCode', type: 'string' },
-            { name: 'carrierName', type: 'string' },
 
+            { name: 'carrierName', type: 'string' },
+            { name: 'carrierCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
             { name: 'grossWeight', type: 'number' },
             { name: 'chargeableWeight', type: 'number' },
@@ -129,14 +134,97 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
   })
 }
 
+function finalQuery(): Query
+{
+
+  const fromTableName = 'shipment'
+
+  function composeSumExpression(dumbList: any[]): MathExpression {
+
+    if (dumbList.length === 2) {
+      return new MathExpression(dumbList[0], '+', dumbList[1])
+    }
+
+    const popResult = dumbList.pop()
+
+    return new MathExpression(popResult, '+', composeSumExpression(dumbList))
+  }
+
+  const $select = [
+    new ResultColumn(new ColumnExpression('carrierCode')),
+    new ResultColumn(new ColumnExpression('carrierName'))
+  ]
+
+  variables.map(variable => {
+    const finalSumList = []
+
+    months.map(month => {
+      const monthSumList = []
+      types.map((type: string) => {
+
+        const expression = new FunctionExpression('IFNULL', new FunctionExpression('FIND', new AndExpressions([
+
+          new BinaryExpression(new ColumnExpression('month'), '=', month),
+          // hardcode
+          new BinaryExpression(new ColumnExpression('type'), '=', type),
+
+        ]), new ColumnExpression(variable)), 0)
+
+        const columnName = `${month}-${type}_${variable}`
+
+        $select.push(new ResultColumn(expression, columnName))
+        monthSumList.push(expression)
+        finalSumList.push(expression)
+      })
+      // add the month sum expression
+
+      const monthSumExpression = composeSumExpression(monthSumList)
+      $select.push(new ResultColumn(monthSumExpression, `${month}-T_${variable}`))
+    })
+
+    // --------------------------------------------------------
+
+    types.map((type: string) => {
+      const typeSumList = []
+
+      months.map(month => {
+        const columnName = `${month}-${type}_${variable}`
+
+        const expression = new FunctionExpression('IFNULL', new FunctionExpression('FIND', new AndExpressions([
+
+          new BinaryExpression(new ColumnExpression('month'), '=', month),
+          // hardcode
+          new BinaryExpression(new ColumnExpression('type'), '=', type),
+
+        ]), new ColumnExpression(variable)), 0)
+
+        typeSumList.push(expression)
+      })
+
+      const typeSumExpression = composeSumExpression(typeSumList)
+      $select.push(new ResultColumn(typeSumExpression, `total-${type}_${variable}`))
+    })
+
+    const finalSumExpression = composeSumExpression(finalSumList)
+    $select.push(new ResultColumn(finalSumExpression, `total-T_${variable}`))
+  })
+
+  return new Query({
+    $select,
+    $from: fromTableName,
+
+    $group : 'carrierCode',
+    $order : new OrderBy('total-T_grossWeight', 'DESC')
+  })
+
+}
+
 export default [
   // prepare temp table
   new CreateTableJQL(true, 'shipment', [
     new Column('type', 'string'),
-
     new Column('carrierCode', 'string'),
     new Column('carrierName', 'string'),
-
     new Column('month', 'string'),
     new Column('grossWeight', 'number'),
     new Column('chargeableWeight', 'number'),
@@ -148,38 +236,6 @@ export default [
   [prepareParams('C'), prepareData('C')],
 
   // finalize data
+  finalQuery()
 
-  new Query({
-    $select: [
-      new ResultColumn('carrierCode'),
-      new ResultColumn('carrierName'),
-      ...months.reduce<ResultColumn[]>((result, month) => {
-        result.push(
-          ...types.map(
-            type =>
-              new ResultColumn(
-                new FunctionExpression(
-                  'IFNULL',
-                  new FunctionExpression(
-                    'FIND',
-                    new AndExpressions([
-                      new BinaryExpression(new ColumnExpression('month'), '=', month),
-                      new BinaryExpression(new ColumnExpression('type'), '=', type.charAt(0)),
-                    ]),
-                    new ColumnExpression(
-                      type.substr(2, 2) === 'GW' ? 'grossWeight' : 'chargeableWeight'
-                    )
-                  ),
-                  0
-                ),
-                `${month}-${type}`
-              )
-          )
-        )
-        return result
-      }, []),
-    ],
-    $from: 'shipment',
-    $group: 'carrierCode',
-  }),
 ]
