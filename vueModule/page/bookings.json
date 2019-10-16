@@ -83,7 +83,402 @@
             "format": "YYYY-MM-DD"
           }
         ],
-        "filters": [],
+        "filters": [
+          {
+            "name": "date",
+            "type": "date",
+            "props": {
+              "required": true
+            }
+          },
+
+          {
+            "name": "shipperPartyId",
+            "display": "shipper",
+            "type": "autocomplete",
+
+            "props": {
+              "multi": true,
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "limit": 5,
+                    "subqueries": {
+                      "partyTypes": {
+                        "value": ["shipper"]
+                      },
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    }
+                  },
+
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                },
+
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "subqueries": {
+                      "id": {
+                        "value": "{{value}}"
+                      }
+                    }
+                  },
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                }
+              }
+            }
+          },
+
+          {
+            "display": "consignee",
+            "name": "consigneePartyId",
+            "props": {
+              "api": {
+                "query": {
+                  "data": {
+                    "limit": 5,
+                    "subqueries": {
+                      "partyTypes": {
+                        "value": ["consignee"]
+                      },
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    }
+                  },
+                  "labelKey": "partyName",
+                  "method": "POST",
+                  "sublabelKey": "erpCode",
+                  "url": "api/party/query/party_auto_suggest",
+                  "valueKey": "id"
+                },
+                "resolve": {
+                  "data": {
+                    "subqueries": {
+                      "id": {
+                        "value": "{{value}}"
+                      }
+                    }
+                  },
+                  "labelKey": "partyName",
+                  "method": "POST",
+                  "sublabelKey": "erpCode",
+                  "url": "api/party/query/party_auto_suggest",
+                  "valueKey": "id"
+                }
+              },
+              "multi": true
+            },
+            "type": "autocomplete"
+          },
+
+          {
+            "name": "officePartyId",
+            "display": "office",
+            "type": "autocomplete",
+
+            "props": {
+              "multi": true,
+
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+
+                  "data": {
+                    "subqueries": {
+                      "isBranch": {
+                        "value": true
+                      },
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    }
+                  },
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                },
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+
+                  "data": {
+                    "subqueries": {
+                      "id": {
+                        "value": "{{value}}"
+                      }
+                    }
+                  },
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                }
+              }
+            }
+          },
+
+
+
+          {
+            "name": "controllingCustomerPartyId",
+            "display": "controllingCustomer",
+            "type": "autocomplete",
+
+            "props": {
+              "multi": true,
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "limit": 5,
+                    "subqueries": {
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    }
+                  },
+
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                },
+
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/party/query/party_auto_suggest",
+                  "data": {
+                    "subqueries": {
+                      "id": {
+                        "value": "{{value}}"
+                      }
+                    }
+                  },
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                }
+              }
+            }
+          },
+
+          {
+            "name": "departureDateEstimated",
+            "type": "date",
+            "props": {}
+          },
+          {
+            "name": "arrivalDateEstimated",
+            "type": "date",
+            "props": {}
+          },
+          {
+            "name": "moduleTypeCode",
+            "display": "moduleType",
+            "type": "list",
+            "props": {
+
+              "multi": true,
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "MODULE"
+                      }
+                    }
+                  },
+                  "valueKey": "code",
+                  "labelKey": "name"
+                },
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "MODULE"
+                      },
+                      "code": {
+                        "value": "{{ value }}"
+                      }
+                    }
+                  },
+                  "valueKey": "code",
+                  "labelKey": "name"
+                }
+              }
+            }
+          },
+          {
+            "name": "boundTypeCode",
+            "display": "boundType",
+            "type": "list",
+            "props": {
+
+              "multi": true,
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "BOUND"
+                      }
+                    }
+                  },
+                  "valueKey": "code",
+                  "labelKey": "name"
+                },
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "BOUND"
+                      },
+                      "code": {
+                        "value": "{{ value }}"
+                      }
+                    }
+                  },
+                  "valueKey": "code",
+                  "labelKey": "name"
+                }
+              }
+            }
+          },
+          {
+            "name": "shipmentTypeCode",
+            "display": "shipmentType",
+            "type": "list",
+            "props": {
+
+              "multi": true,
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "SHIPTYPE"
+                      }
+                    }
+                  },
+                  "valueKey": "code",
+                  "labelKey": "name"
+                },
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "SHIPTYPE"
+                      },
+                      "code": {
+                        "value": "{{ value }}"
+                      }
+                    }
+                  },
+                  "valueKey": "code",
+                  "labelKey": "name"
+                }
+              }
+            }
+          },
+          {
+            "name": "portOfLoadingCode",
+            "display": "portOfLoading",
+            "type": "autocomplete",
+            "props": {
+              "multi" : true,
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/location/query/location",
+                  "data": {
+                    "subqueries": {
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    },
+                    "limit": 20
+                  },
+                  "valueKey": "portCode",
+                  "labelKey": "name"
+                },
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/location/query/location",
+                  "data": {
+                    "subqueries": {
+                      "portCode": {
+                        "value": "{{ value }}"
+                      }
+                    },
+                    "limit": 20
+                  },
+                  "valueKey": "portCode",
+                  "labelKey": "name"
+                }
+              }
+            }
+          },
+          {
+            "name": "portOfDischargeCode",
+            "display": "portOfDischarge",
+            "type": "autocomplete",
+            "props": {
+              "multi" : true,
+              "api": {
+                "query": {
+                  "method": "POST",
+                  "url": "api/location/query/location",
+                  "data": {
+                    "subqueries": {
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    },
+                    "limit": 20
+                  },
+                  "valueKey": "portCode",
+                  "labelKey": "name"
+                },
+                "resolve": {
+                  "method": "POST",
+                  "url": "api/location/query/location",
+                  "data": {
+                    "subqueries": {
+                      "portCode": {
+                        "value": "{{ value }}"
+                      }
+                    },
+                    "limit": 20
+                  },
+                  "valueKey": "portCode",
+                  "labelKey": "name"
+                }
+              }
+            }
+          }
+        ],
         "clickFunction": {
           "type": "router",
           "otherParams": {
