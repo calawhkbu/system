@@ -152,42 +152,27 @@
                       }
                     }
                   },
-                  "valueKey": "old360Id",
+                  "valueKey": "id",
                   "labelKey": "partyName",
                   "sublabelKey": "erpCode"
                 },
                 "resolve": {
                   "method": "POST",
                   "url": "api/party/query/party_auto_suggest",
-
-                  "subqueries": {
-                    "isBranch": {
-                      "value": true
-                    },
-                    "id": {
-                      "value": "{{value}}"
+                  "data": {
+                    "subqueries": {
+                      "isBranch": {
+                        "value": true
+                      },
+                      "id": {
+                        "value": "{{value}}"
+                      }
                     }
-                  }
-                },
-                "valueKey": "id",
-                "labelKey": "partyName",
-                "sublabelKey": "erpCode"
-              },
-              "resolve": {
-                "method": "POST",
-                "url": "api/party/query/party_auto_suggest",
-
-                "subqueries": {
-                  "isBranch": {
-                    "value": true
                   },
-                  "id": {
-                    "value": "{{value}}"
-                  }
-                },
-                "valueKey": "id",
-                "labelKey": "shortName",
-                "sublabelKey": "erpCode"
+                  "valueKey": "id",
+                  "labelKey": "partyName",
+                  "sublabelKey": "erpCode"
+                }
               }
             }
           },
