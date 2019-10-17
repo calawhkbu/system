@@ -8,6 +8,7 @@ import {
   FromTable,
   CreateTableJQL,
 } from 'node-jql'
+import moment = require('moment')
 
 const tempQuery = new CreateTableJQL({
   $temporary: true,
@@ -34,13 +35,13 @@ const tempQuery = new CreateTableJQL({
           },
           {
             name: 'value',
-            type: 'string',
+            type: 'number',
           },
         ],
       },
       'Test'
     ),
-    $where: new BinaryExpression(new ColumnExpression('group'), '=', '1'),
+    $where: new BinaryExpression(new ColumnExpression('group'), '=', String(moment().year())),
   }),
 })
 
