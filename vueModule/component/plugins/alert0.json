@@ -5,6 +5,16 @@
   "transition": "slide-y-reverse-transition",
   "name": "Alert",
   "remote": true,
+  "axiosBaseParams": [
+    "return {",
+    "url: 'api/alert/list/history-with-old',",
+    "method: 'POST',",
+    "data: {",
+    "tableName: context.$route.params.page,",
+    "primaryKey: context.$route.params.params,",
+    "}",
+    "};"
+  ],
   "axiosBaseParams": {
     "method": "POST",
     "url": "api/alert/list/history-with-old",
