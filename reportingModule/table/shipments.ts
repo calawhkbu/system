@@ -15,7 +15,10 @@ const query = new Query({
         { name: 'poNo', type: 'string' },
         { name: 'contractNo', type: 'string' },
         { name: 'commodity', type: 'string' },
+
         { name: 'carrierCode', type: 'string' },
+        { name: 'carrierName', type: 'string' },
+
         { name: 'vessel', type: 'string' },
         { name: 'voyage', type: 'string' },
         { name: 'division', type: 'string' },

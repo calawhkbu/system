@@ -49,7 +49,7 @@ class SendEdiEvent extends BaseEvent {
           }
         })
         for (const { id, partyGroupCode } of references) {
-          if (['ECX'].includes(partyGroupCode)) {
+          if (['ECXD'].includes(partyGroupCode)) {
             const value = {
               ...data.dataValues,
               trackingReference: await trackingReferenceService.findOne(id)

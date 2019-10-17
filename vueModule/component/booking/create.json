@@ -471,7 +471,7 @@
                   "props": {
                     "initList": true,
                     "searchTextParams": {
-                      "url": "api/code/query/code_master",
+                      "url": "api/code/query/code_master_with_flex_data",
                       "method": "POST",
                       "data": {
                         "fields": ["code_master.*", "flex_data.data"],
