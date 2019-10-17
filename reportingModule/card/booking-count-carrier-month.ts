@@ -47,7 +47,7 @@ function prepareParams(): Function {
     }
 
     subqueries.moduleTypeCode = {
-      value: 'AIR',
+      value: ['AIR'],
     }
 
     return params

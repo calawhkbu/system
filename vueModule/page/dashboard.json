@@ -364,6 +364,8 @@
             "display": "moduleType",
             "type": "list",
             "props": {
+
+              "multi": true,
               "api": {
                 "query": {
                   "method": "POST",
@@ -402,6 +404,8 @@
             "display": "boundType",
             "type": "list",
             "props": {
+
+              "multi": true,
               "api": {
                 "query": {
                   "method": "POST",
@@ -440,6 +444,8 @@
             "display": "nominatedType",
             "type": "list",
             "props": {
+
+              "multi": true,
               "items": [
                 {
                   "value": "F",
@@ -457,6 +463,8 @@
             "display": "shipmentType",
             "type": "list",
             "props": {
+
+              "multi": true,
               "api": {
                 "query": {
                   "method": "POST",
@@ -495,6 +503,7 @@
             "display": "portOfLoading",
             "type": "autocomplete",
             "props": {
+              "multi" : true,
               "api": {
                 "query": {
                   "method": "POST",
@@ -532,6 +541,7 @@
             "display": "portOfDischarge",
             "type": "autocomplete",
             "props": {
+              "multi" : true,
               "api": {
                 "query": {
                   "method": "POST",
@@ -571,6 +581,7 @@
             "type": "list",
 
             "props": {
+              "multi": true,
               "items": [
                 {
                   "label": "agentGroup1",
@@ -592,8 +603,9 @@
             "name": "division",
             "display": "division",
             "type": "list",
-
+  
             "props": {
+              "multi": true,
               "items": [
                 {
                   "label": "division1",
