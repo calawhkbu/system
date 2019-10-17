@@ -105,6 +105,16 @@
               "id": null,
               "name": "{{autoSuggestModel}}"
             },
+            "createDialog": {
+              "button": [
+                "Widget",
+                "Create a new Party"
+              ],
+              "layoutName": "booking/forms/createPartyForm",
+              "api": {
+                
+              }
+            },
             "searchValueParams": {
               "url": "api/party/{{context.autoSuggestModel}}"
             },
