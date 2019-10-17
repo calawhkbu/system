@@ -451,58 +451,61 @@ query
   .register(
     'shipperPartyId',
     new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'shipperPartyId'), false)
+      $where: new InExpression(new ColumnExpression('booking', 'shipperPartyId'), false),
     })
   )
   .register('value', 0)
 
-  query
+query
   .register(
     'consigneePartyId',
     new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'consigneePartyId'), false)
+      $where: new InExpression(new ColumnExpression('booking', 'consigneePartyId'), false),
     })
   )
   .register('value', 0)
 
-  query
+query
   .register(
     'forwarderPartyId',
     new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'forwarderPartyId'), false)
+      $where: new InExpression(new ColumnExpression('booking', 'forwarderPartyId'), false),
     })
   )
   .register('value', 0)
 
-  query
+query
   .register(
     'officePartyId',
     new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'forwarderPartyId'), false)
+      $where: new InExpression(new ColumnExpression('booking', 'forwarderPartyId'), false),
     })
   )
   .register('value', 0)
 
-  query
+query
   .register(
     'agentPartyId',
     new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'agentPartyId'), false)
+      $where: new InExpression(new ColumnExpression('booking', 'agentPartyId'), false),
     })
   )
   .register('value', 0)
 
-  query
+query
   .register(
     'departureDateEstimated',
     new Query({
-      $where: new BetweenExpression(new ColumnExpression('booking', 'departureDateEstimated'), false),
+      $where: new BetweenExpression(
+        new ColumnExpression('booking', 'departureDateEstimated'),
+        false
+      ),
     })
   )
   .register('from', 0)
   .register('to', 1)
 
-  query
+query
   .register(
     'arrivalDateEstimated',
     new Query({
@@ -512,11 +515,11 @@ query
   .register('from', 0)
   .register('to', 1)
 
-  query
+query
   .register(
     'moduleTypeCode',
     new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'moduleTypeCode'), false)
+      $where: new InExpression(new ColumnExpression('booking', 'moduleTypeCode'), false),
     })
   )
   .register('value', 0)
@@ -525,25 +528,25 @@ query
   .register(
     'boundTypeCode',
     new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'boundTypeCode'), false)
+      $where: new InExpression(new ColumnExpression('booking', 'boundTypeCode'), false),
     })
   )
   .register('value', 0)
 
-  query
+query
   .register(
     'portOfLoadingCode',
     new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'portOfLoadingCode'), false)
+      $where: new InExpression(new ColumnExpression('booking', 'portOfLoadingCode'), false),
     })
   )
   .register('value', 0)
 
-  query
+query
   .register(
     'portOfDischargeCode',
     new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'portOfDischargeCode'), false)
+      $where: new InExpression(new ColumnExpression('booking', 'portOfDischargeCode'), false),
     })
   )
   .register('value', 0)
@@ -576,13 +579,12 @@ query
   )
   .register('value', 0)
 
-  query
-  .register(
-    'shipperPartyCodeIsNotNull',
-    new Query({
-      $where: new IsNullExpression(new ColumnExpression('booking', 'shipperPartyCode'), true),
-    })
-  )
+query.register(
+  'shipperPartyCodeIsNotNull',
+  new Query({
+    $where: new IsNullExpression(new ColumnExpression('booking', 'shipperPartyCode'), true),
+  })
+)
 
 query
   .register(
@@ -593,13 +595,12 @@ query
   )
   .register('value', 0)
 
-  query
-  .register(
-    'consigneePartyCodeIsNotNull',
-    new Query({
-      $where: new IsNullExpression(new ColumnExpression('booking', 'consigneePartyCode'), true),
-    })
-  )
+query.register(
+  'consigneePartyCodeIsNotNull',
+  new Query({
+    $where: new IsNullExpression(new ColumnExpression('booking', 'consigneePartyCode'), true),
+  })
+)
 
 query
   .register(
@@ -610,13 +611,12 @@ query
   )
   .register('value', 0)
 
-  query
-  .register(
-    'forwarderPartyCodeIsNotNull',
-    new Query({
-      $where: new IsNullExpression(new ColumnExpression('booking', 'forwarderPartyCode'), true),
-    })
-  )
+query.register(
+  'forwarderPartyCodeIsNotNull',
+  new Query({
+    $where: new IsNullExpression(new ColumnExpression('booking', 'forwarderPartyCode'), true),
+  })
+)
 
 query
   .register(
@@ -627,13 +627,12 @@ query
   )
   .register('value', 0)
 
-  query
-  .register(
-    'notifyPartyPartyCodeIsNotNull',
-    new Query({
-      $where: new IsNullExpression(new ColumnExpression('booking', 'notifyPartyPartyCode'), true),
-    })
-  )
+query.register(
+  'notifyPartyPartyCodeIsNotNull',
+  new Query({
+    $where: new IsNullExpression(new ColumnExpression('booking', 'notifyPartyPartyCode'), true),
+  })
+)
 
 query
   .register(
@@ -644,13 +643,12 @@ query
   )
   .register('value', 0)
 
-  query
-  .register(
-    'agentPartyCodeIsNotNull',
-    new Query({
-      $where: new IsNullExpression(new ColumnExpression('booking', 'agentPartyCode'), true),
-    })
-  )
+query.register(
+  'agentPartyCodeIsNotNull',
+  new Query({
+    $where: new IsNullExpression(new ColumnExpression('booking', 'agentPartyCode'), true),
+  })
+)
 
 query
   .register(

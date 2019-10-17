@@ -1,72 +1,30 @@
 [
   {
     "group": "notInTrack",
-    "status": [
-      "CANF",
-      "ERR"
-    ]
+    "status": ["CANF", "ERR"]
   },
   {
     "group": "processing",
-    "status": [
-      "NEW",
-      "BKCF",
-      "EPRL",
-
-      "NEW",
-      "BKD"
-    ]
+    "status": ["NEW", "BKCF", "EPRL", "NEW", "BKD"]
   },
   {
     "group": "cargoReady",
-    "status": [
-
-      "STSP",
-      "GITM",
-      "LOBD",
-      "RCS",
-      "MNF",
-      "MAN"
-    
-    ]
+    "status": ["STSP", "GITM", "LOBD", "RCS", "MNF", "MAN"]
   },
   {
     "group": "departure",
-    "status": [
-      "DLPT",
-      "DEP"
-    ]
+    "status": ["DLPT", "DEP"]
   },
   {
     "group": "inTransit",
-    "status": [
-      "TSLB",
-      "TSDC",
-      "TAR",
-      "TDE"
-    ]
+    "status": ["TSLB", "TSDC", "TAR", "TDE"]
   },
   {
     "group": "arrival",
-    "status": [
-      "BDAR",
-      "DSCH",
-      "DECL",
-      "PASS",
-      "TMPS",
-      "ARR",
-      "RWB",
-      "RCF",
-      "CUS"
-    ]
+    "status": ["BDAR", "DSCH", "DECL", "PASS", "TMPS", "ARR", "RWB", "RCF", "CUS"]
   },
   {
     "group": "delivered",
-    "status": [
-      "STCS",
-      "RCVE",
-      "NFD",
-      "DLV"
-    ]
+    "status": ["STCS", "RCVE", "NFD", "DLV"]
   }
 ]

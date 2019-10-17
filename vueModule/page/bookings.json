@@ -227,8 +227,6 @@
             }
           },
 
-
-
           {
             "name": "controllingCustomerPartyId",
             "display": "controllingCustomer",
@@ -287,7 +285,6 @@
             "display": "moduleType",
             "type": "list",
             "props": {
-
               "multi": true,
               "api": {
                 "query": {
@@ -327,7 +324,6 @@
             "display": "boundType",
             "type": "list",
             "props": {
-
               "multi": true,
               "api": {
                 "query": {
@@ -367,7 +363,6 @@
             "display": "shipmentType",
             "type": "list",
             "props": {
-
               "multi": true,
               "api": {
                 "query": {
@@ -407,7 +402,7 @@
             "display": "portOfLoading",
             "type": "autocomplete",
             "props": {
-              "multi" : true,
+              "multi": true,
               "api": {
                 "query": {
                   "method": "POST",
@@ -445,7 +440,7 @@
             "display": "portOfDischarge",
             "type": "autocomplete",
             "props": {
-              "multi" : true,
+              "multi": true,
               "api": {
                 "query": {
                   "method": "POST",

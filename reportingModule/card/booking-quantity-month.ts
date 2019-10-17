@@ -137,16 +137,12 @@ function insertModuleCodeTable(name: string): InsertJQL {
 }
 
 function prepareMonthTable(name: string): CreateTableJQL {
-
   const $select = [
-
     new ResultColumn(new ColumnExpression('tempTable', 'moduleTypeCode'), 'moduleTypeCode'),
   ]
 
   months.map((month: string) => {
-
     $select.push(
-
       new ResultColumn(
         new FunctionExpression(
           'IFNULL',
@@ -174,17 +170,14 @@ function prepareMonthTable(name: string): CreateTableJQL {
           0
         ),
         month.substr(0, 3)
-      ),
-
+      )
     )
-
   })
 
   return new CreateTableJQL({
     $temporary: true,
     name,
     $as: new Query({
-
       $select,
       $from: 'tempTable',
       $group: 'moduleTypeCode',

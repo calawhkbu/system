@@ -42,7 +42,7 @@ function prepareParams(): Function {
     params.sorting = [new OrderBy('volumeTotal', 'DESC')]
 
     subqueries.agentPartyCodeIsNotNull = {
-      value : true
+      value: true,
     }
 
     params.limit = 10
@@ -58,9 +58,7 @@ function prepareTop10Table(): CreateTableJQL {
     $temporary: true,
     name,
     $as: new Query({
-
       $select: [
-
         new ResultColumn(new ColumnExpression(name, 'agentPartyCode'), 'agentPartyCode'),
         new ResultColumn(new ColumnExpression(name, 'volumeTotal'), 'volume'),
       ],
@@ -79,7 +77,6 @@ function prepareTop10Table(): CreateTableJQL {
               name: 'agentPartyCode',
               type: 'string',
             },
-
           ],
         },
         name
@@ -92,8 +89,6 @@ export default [
   [prepareParams(), prepareTop10Table()],
 
   new Query({
-
-    $from : 'top10'
-  })
-
+    $from: 'top10',
+  }),
 ]

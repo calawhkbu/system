@@ -124,13 +124,10 @@ function prepareData(type: 'F' | 'R' | 'C'): InsertJQL {
   })
 }
 
-function finalQuery(): Query
-{
-
+function finalQuery(): Query {
   const fromTableName = 'shipment'
 
   function composeSumExpression(dumbList: any[]): MathExpression {
-
     if (dumbList.length === 2) {
       return new MathExpression(dumbList[0], '+', dumbList[1])
     }
@@ -142,7 +139,7 @@ function finalQuery(): Query
 
   const $select = [
     new ResultColumn(new ColumnExpression('carrierCode')),
-    new ResultColumn(new ColumnExpression('carrierName'))
+    new ResultColumn(new ColumnExpression('carrierName')),
   ]
 
   variables.map(variable => {
@@ -151,19 +148,23 @@ function finalQuery(): Query
     months.map(month => {
       const monthSumList = []
 
-      if (types && types.length){
-
+      if (types && types.length) {
         // case when types is given
 
         types.map((type: string) => {
-
-          const expression = new FunctionExpression('IFNULL', new FunctionExpression('FIND', new AndExpressions([
-
-            new BinaryExpression(new ColumnExpression('month'), '=', month),
-            // hardcode
-            new BinaryExpression(new ColumnExpression('type'), '=', type),
-
-          ]), new ColumnExpression(variable)), 0)
+          const expression = new FunctionExpression(
+            'IFNULL',
+            new FunctionExpression(
+              'FIND',
+              new AndExpressions([
+                new BinaryExpression(new ColumnExpression('month'), '=', month),
+                // hardcode
+                new BinaryExpression(new ColumnExpression('type'), '=', type),
+              ]),
+              new ColumnExpression(variable)
+            ),
+            0
+          )
 
           const columnName = `${month}-${type}_${variable}`
 
@@ -175,46 +176,52 @@ function finalQuery(): Query
         // add the month sum expression
         const monthSumExpression = composeSumExpression(monthSumList)
         $select.push(new ResultColumn(monthSumExpression, `${month}-T_${variable}`))
-
-      }
-
-      else {
+      } else {
         // case when types is not given
         // month summary (e.g. January_T_cbm , sum of all type of Jan) is not needed
 
-        const expression = new FunctionExpression('IFNULL', new FunctionExpression('FIND', new AndExpressions([
-
-          new BinaryExpression(new ColumnExpression('month'), '=', month),
-          // hardcode
-        ]), new ColumnExpression(variable)), 0)
+        const expression = new FunctionExpression(
+          'IFNULL',
+          new FunctionExpression(
+            'FIND',
+            new AndExpressions([
+              new BinaryExpression(new ColumnExpression('month'), '=', month),
+              // hardcode
+            ]),
+            new ColumnExpression(variable)
+          ),
+          0
+        )
 
         const columnName = `${month}-${variable}`
 
         $select.push(new ResultColumn(expression, columnName))
         finalSumList.push(expression)
-
       }
-
     })
 
     // ----perform type total e.g. total_F_shipment-------------------------
 
-    if (types && types.length)
-    {
-
+    if (types && types.length) {
       types.map((type: string) => {
         const typeSumList = []
 
         months.map(month => {
           const columnName = `${month}-${type}_${variable}`
 
-          const expression = new FunctionExpression('IFNULL', new FunctionExpression('FIND', new AndExpressions([
-
-            new BinaryExpression(new ColumnExpression('month'), '=', month),
-            // hardcode
-            new BinaryExpression(new ColumnExpression('type'), '=', type),
-
-          ]), new ColumnExpression(variable)), 0)
+          const expression = new FunctionExpression(
+            'IFNULL',
+            new FunctionExpression(
+              'FIND',
+              new AndExpressions([
+                new BinaryExpression(new ColumnExpression('month'), '=', month),
+                // hardcode
+                new BinaryExpression(new ColumnExpression('type'), '=', type),
+              ]),
+              new ColumnExpression(variable)
+            ),
+            0
+          )
 
           typeSumList.push(expression)
         })
@@ -222,31 +229,26 @@ function finalQuery(): Query
         const typeSumExpression = composeSumExpression(typeSumList)
         $select.push(new ResultColumn(typeSumExpression, `total-${type}_${variable}`))
       })
-
     }
 
     // final total
 
     const finalSumExpression = composeSumExpression(finalSumList)
 
-    if (types && types.length)
-    {
+    if (types && types.length) {
       $select.push(new ResultColumn(finalSumExpression, `total-T_${variable}`))
-    }
-    else{
+    } else {
       $select.push(new ResultColumn(finalSumExpression, `total-${variable}`))
     }
-
   })
 
   return new Query({
     $select,
     $from: fromTableName,
 
-    $group : 'carrierCode',
-    $order : new OrderBy(finalOrderBy, 'DESC')
+    $group: 'carrierCode',
+    $order: new OrderBy(finalOrderBy, 'DESC'),
   })
-
 }
 
 export default [
@@ -265,6 +267,5 @@ export default [
   [prepareParams('R'), prepareData('R')],
   [prepareParams('C'), prepareData('C')],
 
-  finalQuery()
-
+  finalQuery(),
 ]
