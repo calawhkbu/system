@@ -220,10 +220,17 @@ query
       $where: new OrExpressions([
         new RegexpExpression(new ColumnExpression('party', 'name'), false),
         new RegexpExpression(new ColumnExpression('party', 'shortName'), false),
-        new RegexpExpression(new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression('JSON_EXTRACT', new ColumnExpression('party', 'thirdPartyCode'), '$.erp')
-        ), false),
+        new RegexpExpression(
+          new FunctionExpression(
+            'JSON_UNQUOTE',
+            new FunctionExpression(
+              'JSON_EXTRACT',
+              new ColumnExpression('party', 'thirdPartyCode'),
+              '$.erp'
+            )
+          ),
+          false
+        ),
         // new RegexpExpression(new ColumnExpression('party', 'erpCode'), false)
       ]),
     })

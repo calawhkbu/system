@@ -1,4 +1,5 @@
 {
+  "fillParent": true,
   "components": [
     {
       "is": "Widget",
