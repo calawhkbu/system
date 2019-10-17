@@ -64,7 +64,14 @@ function prepareParams(): Function {
     }
 
     // select
-    params.fields = ['moduleTypeCode', 'reportingGroup', 'jobMonth', 'teu', 'cbm', 'chargeableWeight']
+    params.fields = [
+      'moduleTypeCode',
+      'reportingGroup',
+      'jobMonth',
+      'teu',
+      'cbm',
+      'chargeableWeight',
+    ]
 
     // group by
     params.groupBy = ['moduleTypeCode', 'reportingGroup', 'jobMonth']
@@ -89,15 +96,23 @@ function prepareTable(): CreateTableJQL {
         ),
         new ResultColumn(new ColumnExpression('reportingGroup')),
 
-        new ResultColumn(new FunctionExpression('IF',
+        new ResultColumn(
+          new FunctionExpression(
+            'IF',
 
-          new InExpression(new ColumnExpression('reportingGroup'), false, ['SA', 'SR']),
+            new InExpression(new ColumnExpression('reportingGroup'), false, ['SA', 'SR']),
 
-          new MathExpression(new ColumnExpression('teu'), '*', 25),
+            new MathExpression(new ColumnExpression('teu'), '*', 25),
 
-          new FunctionExpression('IF', new BinaryExpression(new ColumnExpression('moduleTypeCode'), '=', 'SEA'), new ColumnExpression('cbm'), new ColumnExpression('chargeableWeight'))
-
-        ), 'value')
+            new FunctionExpression(
+              'IF',
+              new BinaryExpression(new ColumnExpression('moduleTypeCode'), '=', 'SEA'),
+              new ColumnExpression('cbm'),
+              new ColumnExpression('chargeableWeight')
+            )
+          ),
+          'value'
+        ),
       ],
       $from: new FromTable(
         {
@@ -134,7 +149,7 @@ function prepareFinalTable(): CreateTableJQL {
 
             new AndExpressions([new BinaryExpression(new ColumnExpression('month'), '=', month)]),
 
-            new ColumnExpression('value'),
+            new ColumnExpression('value')
           ),
           0
         ),
@@ -213,8 +228,11 @@ function prepareResultTable(): CreateTableJQL {
   ]
 
   months.map(month => {
-
-    const column = new FunctionExpression('IFNULL', new ColumnExpression('final', `${month}-value`), 0)
+    const column = new FunctionExpression(
+      'IFNULL',
+      new ColumnExpression('final', `${month}-value`),
+      0
+    )
     $select.push(new ResultColumn(column, `${month}-value`))
 
     sumList.push(column)
@@ -263,5 +281,4 @@ export default [
     $from: 'result',
     $group: 'moduleTypeCode',
   }),
-
 ]

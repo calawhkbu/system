@@ -231,6 +231,7 @@ export default class EdiParser997 extends BaseEdiParser {
           IEA.elementList.push('1', controlNo)
           data.push(IEA)
           _.set(returnJSON, 'data', data)
+          // return returnJSON
           const result = await super.export(returnJSON)
           // return result
           resultList.push(result)
