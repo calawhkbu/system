@@ -46,7 +46,95 @@
             "is": "WidgetForm",
             "props": {
               "class": "full-width padding-leftright-8",
-              "fields": [{
+              "fields": [
+
+
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.branch",
+                  "name": "forwarderParty",
+                  "component": "AsyncSelect",
+                  "class": "xs-12 md-3",
+                  "validator": ["required"],
+                  "relation": "forwarderParty",
+                  "relationMore": [
+                    {
+                      "name": "forwarderPartyId",
+                      "selector": "id"
+                    },
+
+                    {
+                      "name": "forwarderPartyName",
+                      "selector": "name"
+                    },
+                    {
+                      "name": "forwarderPartyPhone",
+                      "selector": "partyPhone"
+                    },
+                    {
+                      "name": "forwarderPartyFax",
+                      "selector": "partyFax"
+                    },
+                    {
+                      "name": "forwarderPartyEmail",
+                      "selector": "partyEmail"
+                    },
+                    {
+                      "name": "forwarderPartyAddress",
+                      "selector": "partyAddress"
+                    },
+                    {
+                      "name": "forwarderPartyCityCode",
+                      "selector": "partyCityCode"
+                    },
+                    {
+                      "name": "forwarderPartyStateCode",
+                      "selector": "partyStateCode"
+                    },
+                    {
+                      "name": "forwarderPartyCountryCode",
+                      "selector": "partyCountryCode"
+                    },
+                    {
+                      "name": "forwarderPartyZip",
+                      "selector": "partyZip"
+                    },
+                    {
+                      "name": "forwarderPartyContactPersonId",
+                      "selector": "contactPersonId"
+                    },
+                    {
+                      "name": "forwarderPartyContactPersonEmail",
+                      "selector": "contactPersonEmail"
+                    },
+                    {
+                      "name": "forwarderPartyContactPersonName",
+                      "selector": "contactPersonName"
+                    },
+                    {
+                      "name": "forwarderPartyContactPersonPhone",
+                      "selector": "contactPersonPhone"
+                    }
+                  
+                  ],
+
+                  "props": {
+                    "required": true,
+                    "axiosParams": {
+                      "url": "api/party/query/office_auto_suggest",
+                      "method": "POST",
+                      "data": {}
+                    },
+                    "item-text": "partyName",
+                    "item-value": "erpCode"
+                  }
+                },
+
+                
+                {
                   "containerComponent": "v-card",
                   "containerComponentProps": {
                     "class": "padding-topbottom-8 padding-leftright-4"
