@@ -523,7 +523,7 @@
                   },
                   "label": "BookingPage.forwarder",
                   "name": "forwarderParty",
-                  "component": "AsyncAutoSuggest",
+                  "component": "AsyncSelect",
                   "class": "xs-12",
                   "relation": "{{flex}}{{key}}Party",
                   "relationMore": [{
@@ -583,18 +583,21 @@
                       "selector": "contactPersonPhone"
                     }
                   ],
+                  "validator": ["required"],
                   "props": {
-                    "searchTextParams": {
+                    "required": true,
+                    "axiosParams": {
                       "url": "api/party/query/party_auto_suggest",
                       "method": "POST",
                       "data": {
                         "subqueries": {
-                          "q": {
-                            "value": "{{context.search}}"
+                          "isBranch": {
+                            "value": 1
                           },
-                          "isBranch": 1
-                        },
-                        "limit": 5
+                          "partyTypes": {
+                            "value": ["forwarder"]
+                          }
+                        }
                       }
                     },
                     "item-text": "name",
