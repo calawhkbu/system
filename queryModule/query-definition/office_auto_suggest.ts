@@ -100,7 +100,9 @@ const query = new QueryDef(
           new ColumnExpression('parties_person', 'personId')
         ),
       }
-    )
+    ),
+
+    $where : new BinaryExpression(new ColumnExpression('party', 'isBranch'), '=', true)
   })
 )
 
@@ -173,15 +175,6 @@ query
 //   )
 //   .register('key', 0)
 //   .register('value', 1)
-
-query
-  .register(
-    'isBranch',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('party', 'isBranch'), '='),
-    })
-  )
-  .register('value', 0)
 
 query
   .register(

@@ -282,7 +282,12 @@ a[x-apple-data-detectors=true] {
                     <b>this is a zh-cn email</b></p><br>
                       <b>{{message}}</b></p><br>
                       <p style="margin: 0;font-size: 12px;line-height: 18px;text-align: left">
-                    entity: {{entity}}<br>
+                        ETD: {% if entity.estimatedDepartureDate %} {{entity.estimatedDepartureDate | date('d M Y')}} {% endif %}<br>
+                        ETA: {% if entity.estimatedArrivalDate %} {{entity.estimatedArrivalDate | date('d M Y')}} {% endif %}<br>
+                        Port Of Loading: {{entity.portOfLoading}}<br>
+                        Port Of Loading: {{entity.portOfDischarge}}<br>
+                        Commodity: {{entity.commodity}}<br>
+                        Status: {{entity.status}}<br>
 
                     </p>
                   </div>

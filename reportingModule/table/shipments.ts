@@ -32,11 +32,13 @@ const query = new Query({
         { name: 'isDirect', type: 'boolean' },
         { name: 'isCoload', type: 'boolean' },
         { name: 'shipmentTypeCode', type: 'string' },
+
         { name: 'placeOfReceiptCode', type: 'string' },
         { name: 'portOfLoadingCode', type: 'string' },
         { name: 'portOfDischargeCode', type: 'string' },
         { name: 'placeOfDeliveryCode', type: 'string' },
         { name: 'finalDestinationCode', type: 'string' },
+
         { name: 'departureDateEstimated', type: 'Date' },
         { name: 'departureDateActual', type: 'Date' },
         { name: 'arrivalDateEstimated', type: 'Date' },

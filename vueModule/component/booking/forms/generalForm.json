@@ -2,7 +2,9 @@
   "components": [{
     "is": "WidgetForm",
     "props": {
-      "fields": [{
+      "fields": [
+        
+        {
           "label": "BookingPage.moduleType",
           "name": "moduleTypeCode",
           "component": "AsyncSelect",
@@ -93,6 +95,7 @@
                 }
               }
             },
+            "color": "red",
             "item-text": "name",
             "item-value": "code",
             "showValue": false,

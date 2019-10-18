@@ -16,13 +16,13 @@ import {
   AndExpressions,
   CreateFunctionJQL,
   Unknown,
+  Value,
 } from 'node-jql'
 
 const query = new QueryDef(
   new Query({
     $select: [
       new ResultColumn(new ColumnExpression('booking', '*')),
-
       // avoid id being overwritten
       new ResultColumn(new ColumnExpression('booking', 'id'), 'bookingId'),
 
@@ -30,6 +30,8 @@ const query = new QueryDef(
       new ResultColumn(new ColumnExpression('booking_container', '*')),
       new ResultColumn(new ColumnExpression('booking_popacking', '*')),
       new ResultColumn(new ColumnExpression('finalWorkflow', '*')),
+
+      // new ResultColumn(new ColumnExpression('booking_reference', '*')),
     ],
 
     $distinct: true,
@@ -408,6 +410,36 @@ query.register('noOfBookings', {
     }),
   }),
   $as: 'noOfBookings',
+})
+
+// query.register('houseNo2', {
+//   expression: new FunctionExpression(
+//     'IFNULL',
+//     new FunctionExpression('SUM', new ColumnExpression('weight')),
+//     0
+//   ),
+//   $as: 'weightTotal',
+// })
+
+query.register('houseNo', {
+  expression: new FunctionExpression('IF', new BinaryExpression(new ColumnExpression('booking_reference', 'refName'), '=', new Value('HBL')),
+    new ColumnExpression('booking_reference', 'refDescription'), new Value(null)),
+  $as: 'houseNo',
+})
+
+query.register('masterNo', {
+  expression: new FunctionExpression(
+    'IF', new BinaryExpression(new ColumnExpression('booking_reference', 'refName'), '=', 'MBL'),
+    new ColumnExpression('booking_reference', 'refDescription'), new Value(null)),
+  $as: 'masterNo',
+})
+
+query.register('poNo', {
+  expression: new FunctionExpression(
+    'JSON_UNQUOTE',
+    new FunctionExpression('JSON_EXTRACT', new ColumnExpression('flex_data', 'data'), '$.poNo')
+  ),
+  $as: 'poNo',
 })
 
 query.register('weightTotal', {
