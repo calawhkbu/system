@@ -140,6 +140,7 @@
                   "component": "AsyncSelect",
                   "class": "xs-12 md-3",
                   "props": {
+                    "color": "red",
                     "multiple": true,
                     "axiosParams": {
                       "url": "api/code/query/code_master",

@@ -93,6 +93,7 @@
                 }
               }
             },
+            "color": "red",
             "item-text": "name",
             "item-value": "code",
             "showValue": false,
