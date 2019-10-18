@@ -39,7 +39,17 @@
         },
         "addItemsOrFunc": ["Trucker", "Broker", "Factory", "Warehouse"],
         "fields": [
+
           {
+
+            "checkDisplayWhen": "return !(user && user.roles.find(x => x.roleName === 'INTERNAL'))",
+            "name": "{{flex}}{{key}}PartyName",
+            "component": "v-text-field",
+            "class": "xs-12"
+          },
+          {
+
+            "checkDisplayWhen": "return user && user.roles.find(x => x.roleName === 'INTERNAL')",
             "name": "{{flex}}{{key}}Party",
             "component": "AsyncAutoSuggest",
             "class": "xs-12",
