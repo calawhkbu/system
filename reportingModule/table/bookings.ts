@@ -14,6 +14,21 @@ const query = new Query({
           name: 'id',
           type: 'number',
         },
+
+        {
+          name: 'houseNo',
+          type: 'string',
+        },
+
+        {
+          name: 'masterNo',
+          type: 'string',
+        },
+        {
+          name: 'poNo',
+          type: 'string',
+        },
+
         {
           name: 'bookingNo',
           type: 'string',

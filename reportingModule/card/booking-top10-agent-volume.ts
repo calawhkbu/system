@@ -10,6 +10,9 @@ import {
   JoinClause,
   BinaryExpression,
   IsNullExpression,
+  Column,
+  InsertJQL,
+  LimitOffset,
 } from 'node-jql'
 
 function prepareParams(): Function {
@@ -36,12 +39,12 @@ function prepareParams(): Function {
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    params.fields = ['agentPartyCode', 'volumeTotal']
-    params.groupBy = ['agentPartyCode']
+    params.fields = ['agentPartyId', 'volumeTotal']
+    params.groupBy = ['agentPartyId']
 
     params.sorting = [new OrderBy('volumeTotal', 'DESC')]
 
-    subqueries.agentPartyCodeIsNotNull = {
+    subqueries.agentPartyIdIsNotNull = {
       value: true,
     }
 
@@ -51,15 +54,58 @@ function prepareParams(): Function {
   }
 }
 
-function prepareTop10Table(): CreateTableJQL {
-  const name = 'top10'
+function createTable()
+{
+    return new CreateTableJQL(true, 'top10', [
+      new Column('agentPartyId', 'string'),
+      new Column('volumeTotal', 'number'),
+    ])
+}
 
+function prepareData(type: 'top10' | 'other')
+{
+
+  const bigLimit = 999999999999999999
+
+  if (type === 'other' )
+  {
+    return new InsertJQL({
+      name : 'top10',
+      columns: ['agentPartyId', 'volumeTotal'],
+
+      query : new Query({
+        $from : 'raw',
+        $limit : new LimitOffset(bigLimit, 10)
+
+      })
+
+    })
+
+  }
+
+  return new InsertJQL({
+
+    name : 'top10',
+    columns: ['agentPartyId', 'volumeTotal'],
+
+    query : new Query({
+      $from : 'raw',
+      $where : new IsNullExpression(new ColumnExpression('raw', 'agentPartyId'), true),
+      $limit : 10
+    })
+
+  })
+
+}
+
+function prepareRawTable(): CreateTableJQL {
+  const name = 'raw'
   return new CreateTableJQL({
     $temporary: true,
     name,
     $as: new Query({
       $select: [
-        new ResultColumn(new ColumnExpression(name, 'agentPartyCode'), 'agentPartyCode'),
+        new ResultColumn(new ColumnExpression(name, 'agentPartyId'), 'agentPartyId'),
         new ResultColumn(new ColumnExpression(name, 'volumeTotal'), 'volume'),
       ],
 
@@ -74,7 +120,7 @@ function prepareTop10Table(): CreateTableJQL {
             },
 
             {
-              name: 'agentPartyCode',
+              name: 'agentPartyId',
               type: 'string',
             },
           ],
@@ -86,7 +132,11 @@ function prepareTop10Table(): CreateTableJQL {
 }
 
 export default [
-  [prepareParams(), prepareTop10Table()],
+  [prepareParams(), prepareRawTable()],
+
+  createTable(),
+  prepareData('top10'),
+  prepareData('other'),
 
   new Query({
     $from: 'top10',
