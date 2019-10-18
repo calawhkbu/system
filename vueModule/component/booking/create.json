@@ -140,6 +140,7 @@
                   "component": "AsyncSelect",
                   "class": "xs-12 md-3",
                   "props": {
+                    "color": "red",
                     "multiple": true,
                     "axiosParams": {
                       "url": "api/code/query/code_master",
@@ -514,6 +515,91 @@
                   "name": "flexData.data.specialInstruction",
                   "component": "v-textarea",
                   "class": "xs-12 md-6"
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.forwarder",
+                  "name": "forwarderParty",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12",
+                  "relation": "{{flex}}{{key}}Party",
+                  "relationMore": [{
+                      "name": "{{flex}}{{key}}PartyId",
+                      "selector": "id"
+                    },
+                    {
+                      "name": "{{flex}}{{key}}PartyName",
+                      "selector": "name"
+                    },
+                    {
+                      "name": "{{flex}}{{key}}PartyPhone",
+                      "selector": "partyPhone"
+                    },
+                    {
+                      "name": "{{flex}}{{key}}PartyFax",
+                      "selector": "partyFax"
+                    },
+                    {
+                      "name": "{{flex}}{{key}}PartyEmail",
+                      "selector": "partyEmail"
+                    },
+                    {
+                      "name": "{{flex}}{{key}}PartyAddress",
+                      "selector": "partyAddress"
+                    },
+                    {
+                      "name": "{{flex}}{{key}}PartyCityCode",
+                      "selector": "partyCityCode"
+                    },
+                    {
+                      "name": "{{flex}}{{key}}PartyStateCode",
+                      "selector": "partyStateCode"
+                    },
+                    {
+                      "name": "{{flex}}{{key}}PartyCountryCode",
+                      "selector": "partyCountryCode"
+                    },
+                    {
+                      "name": "{{flex}}{{key}}PartyZip",
+                      "selector": "partyZip"
+                    },
+                    {
+                      "name": "{{flex}}{{key}}PartyContactPersonId",
+                      "selector": "contactPersonId"
+                    },
+                    {
+                      "name": "{{flex}}{{key}}PartyContactPersonEmail",
+                      "selector": "contactPersonEmail"
+                    },
+                    {
+                      "name": "{{flex}}{{key}}PartyContactPersonName",
+                      "selector": "contactPersonName"
+                    },
+                    {
+                      "name": "{{flex}}{{key}}PartyContactPersonPhone",
+                      "selector": "contactPersonPhone"
+                    }
+                  ],
+                  "props": {
+                    "searchTextParams": {
+                      "url": "api/party/query/party_auto_suggest",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "q": {
+                            "value": "{{context.search}}"
+                          },
+                          "isBranch": 1
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "erpCode"
+                  }
                 },
                 {
                   "containerComponent": "v-card",

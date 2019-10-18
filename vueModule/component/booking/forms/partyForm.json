@@ -37,7 +37,19 @@
         "class": "xs-12 md-6 padding-20 min-height-200 margin-auto"
       },
       "addItemsOrFunc": ["Trucker", "Broker", "Factory", "Warehouse"],
-      "fields": [{
+      "fields": [
+
+        {
+
+          "checkDisplayWhen": "return !(user && user.roles.find(x => x.roleName === 'INTERNAL'))",
+          "name": "{{flex}}{{key}}PartyName",
+          "component": "v-text-field",
+          "class": "xs-12"
+        },
+        
+        {
+
+          "checkDisplayWhen": "return user && user.roles.find(x => x.roleName === 'INTERNAL')",
           "name": "{{flex}}{{key}}Party",
           "component": "AsyncAutoSuggest",
           "class": "xs-12",
@@ -100,23 +112,158 @@
             }
           ],
           "props": {
-            "canCreate": true,
             "canCreateValue": {
               "id": null,
               "name": "{{autoSuggestModel}}"
             },
-            "createDialog": {
-              "button": [
-                "Widget",
-                "Create a new Party"
+            "_createDialog": {
+              "listItem": ["Widget", "Create a new Party"],
+              "title": "Create a new Party",
+              "nameKey": "name",
+              "fields": [{
+                  "label": "Widget.partyName",
+                  "name": "name",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-8",
+                  "readonlyClass": "hidden"
+                },
+                {
+                  "label": "Widget.erpCode",
+                  "name": "thirdPartyCode.erp",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-4",
+                  "readonlyClass": "hidden"
+                },
+                {
+                  "label": "Widget.address",
+                  "name": "address",
+                  "component": "v-textarea",
+                  "props": {
+                    "auto-grow": true,
+                    "rows": 5
+                  },
+                  "class": "xs-12",
+                  "readonlyClass": "hidden"
+                },
+                {
+                  "label": "Widget.city",
+                  "name": "cityCode",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-4",
+                  "readonlyClass": "xs-12 md-4",
+                  "relation": "cityCode",
+                  "relationMore": [{
+                    "name": "cityCode",
+                    "selector": "locationCode"
+                  }],
+                  "props": {
+                    "canCreate": true,
+                    "canCreateValue": {
+                      "id": null,
+                      "code": "{{autoSuggestModel}}"
+                    },
+                    "searchTextParams": {
+                      "url": "api/location/query/location",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "q": {
+                            "value": "{{context.search}}"
+                          }
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "locationCode"
+                  }
+                },
+                {
+                  "label": "Widget.state",
+                  "name": "stateCode",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-4",
+                  "readonlyClass": "xs-12 md-4",
+                  "relation": "stateCode",
+                  "relationMore": [{
+                    "name": "stateCode",
+                    "selector": "code"
+                  }],
+                  "props": {
+                    "canCreate": true,
+                    "canCreateValue": {
+                      "id": null,
+                      "code": "{{autoSuggestModel}}"
+                    },
+                    "searchTextParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "STATE-PROVINCE"
+                          },
+                          "q": {
+                            "value": "{{context.search}}"
+                          }
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "code"
+                  }
+                },
+                {
+                  "label": "Widget.country",
+                  "name": "countryCode",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-4",
+                  "readonlyClass": "xs-12 md-4",
+                  "relation": "countryCode",
+                  "relationMore": [{
+                    "name": "countryCode",
+                    "selector": "code"
+                  }],
+                  "props": {
+                    "canCreate": true,
+                    "canCreateValue": {
+                      "id": null,
+                      "code": "{{autoSuggestModel}}"
+                    },
+                    "searchTextParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "COUNTRY"
+                          },
+                          "q": {
+                            "value": "{{context.search}}"
+                          }
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "code"
+                  }
+                },
+                {
+                  "label": "Widget.zip",
+                  "name": "zip",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-6",
+                  "readonlyClass": "hidden"
+                }
               ],
-              "layoutName": "booking/forms/createPartyForm",
               "api": {
-                
+                "url": "api/party",
+                "method": "POST",
+                "item-text": "name",
+                "item-value": "thirdPartyCode.erp"
               }
-            },
-            "searchValueParams": {
-              "url": "api/party/{{context.autoSuggestModel}}"
             },
             "searchTextParams": {
               "url": "api/party/query/party_auto_suggest",
