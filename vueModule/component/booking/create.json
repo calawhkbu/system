@@ -525,6 +525,7 @@
                   "name": "forwarderParty",
                   "component": "AsyncSelect",
                   "class": "xs-12",
+                  "displayWhen": "return false",
                   "relation": "{{flex}}{{key}}Party",
                   "relationMore": [{
                       "name": "{{flex}}{{key}}PartyId",
