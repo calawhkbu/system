@@ -74,7 +74,9 @@ class CreateTrackingEvent extends BaseEvent {
           masterNo,
           soNo,
           containerNo,
-          flexData: parameters.data
+          flexData: {
+            booking: parameters.data
+          }
         }
         const trackService = this.allService['TrackService'] as TrackService
         if (trackService) {

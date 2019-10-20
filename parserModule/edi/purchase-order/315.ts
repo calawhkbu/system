@@ -10,9 +10,9 @@ const _ = require('lodash')
 
 export const formatJson = {
   removeCharacter: [],
-  segmentSeperator: ['\r\n'],
-  // elementSeperator: ['*'],
-  elementSeperator: [''],
+  segmentSeperator: ['~\r\n'],
+  // elementSeperator: ['*']
+  elementSeperator: ['']
 } as EdiFormatJson
 
 interface JSONObject {
