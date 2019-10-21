@@ -52,249 +52,249 @@
           "key": "bookingNo",
           "width": 150
         },
-        
+
 
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "code",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "codeType" : {
-                    "value" : "SERVTYPE"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "SERVTYPE"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/code/query/code_master"
+              "method": "POST",
+              "url": "api/code/query/code_master"
             }
           },
-          "key" : "serviceCode",
-          "label" : "service",
-          "width" : 100
+          "key": "serviceCode",
+          "label": "service",
+          "width": 100
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "code",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "codeType" : {
-                    "value" : "MODULE"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "MODULE"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/code/query/code_master"
+              "method": "POST",
+              "url": "api/code/query/code_master"
             }
           },
-          "key" : "moduleTypeCode",
-          "label" : "moduleType",
-          "width" : 100
+          "key": "moduleTypeCode",
+          "label": "moduleType",
+          "width": 100
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "code",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "codeType" : {
-                    "value" : "BOUND"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "BOUND"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/code/query/code_master"
+              "method": "POST",
+              "url": "api/code/query/code_master"
             }
           },
-          "key" : "boundTypeCode",
-          "label" : "boundType",
-          "width" : 100
+          "key": "boundTypeCode",
+          "label": "boundType",
+          "width": 100
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "code",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "codeType" : {
-                    "value" : "INCOTERMS"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "INCOTERMS"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/code/query/code_master"
+              "method": "POST",
+              "url": "api/code/query/code_master"
             }
           },
-          "key" : "incoTermsCode",
-          "label" : "incoTerms",
-          "width" : 100
+          "key": "incoTermsCode",
+          "label": "incoTerms",
+          "width": 100
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "code",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "codeType" : {
-                    "value" : "PAYTERMS"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "PAYTERMS"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/code/query/code_master"
+              "method": "POST",
+              "url": "api/code/query/code_master"
             }
           },
-          "key" : "otherTermsCode",
-          "label" : "otherTerms",
-          "width" : 100
+          "key": "otherTermsCode",
+          "label": "otherTerms",
+          "width": 100
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "code",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "codeType" : {
-                    "value" : "PAYTERMS"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "PAYTERMS"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/code/query/code_master"
+              "method": "POST",
+              "url": "api/code/query/code_master"
             }
           },
-          "key" : "freightTermsCode",
-          "label" : "freightTerms",
-          "width" : 100
+          "key": "freightTermsCode",
+          "label": "freightTerms",
+          "width": 100
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "portCode",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "portCode",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "portCode" : {
-                    "value" : "{{context.row.portOfDischargeCode}}"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "portCode": {
+                    "value": "{{context.row.portOfDischargeCode}}"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/location/query/location"
+              "method": "POST",
+              "url": "api/location/query/location"
             }
           },
-          "key" : "portOfDischargeCode",
-          "label" : "portOfDischarge",
-          "width" : 100
+          "key": "portOfDischargeCode",
+          "label": "portOfDischarge",
+          "width": 100
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "portCode",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "portCode",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "portCode" : {
-                    "value" : "{{context.row.portOfLoadingCode}}"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "portCode": {
+                    "value": "{{context.row.portOfLoadingCode}}"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/location/query/location"
+              "method": "POST",
+              "url": "api/location/query/location"
             }
           },
-          "key" : "portOfLoadingCode",
-          "label" : "portOfLoading",
-          "width" : 100
+          "key": "portOfLoadingCode",
+          "label": "portOfLoading",
+          "width": 100
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "portCode",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "portCode",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "portCode" : {
-                    "value" : "{{context.row.placeOfReceiptCode}}"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "portCode": {
+                    "value": "{{context.row.placeOfReceiptCode}}"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/location/query/location"
+              "method": "POST",
+              "url": "api/location/query/location"
             }
           },
-          "key" : "placeOfReceiptCode",
-          "label" : "placeOfReceipt",
-          "width" : 100
+          "key": "placeOfReceiptCode",
+          "label": "placeOfReceipt",
+          "width": 100
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "portCode",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "portCode",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "portCode" : {
-                    "value" : "{{context.row.placeOfDeliveryCode}}"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "portCode": {
+                    "value": "{{context.row.placeOfDeliveryCode}}"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/location/query/location"
+              "method": "POST",
+              "url": "api/location/query/location"
             }
           },
-          "key" : "placeOfDeliveryCode",
-          "label" : "placeOfDelivery",
-          "width" : 100
+          "key": "placeOfDeliveryCode",
+          "label": "placeOfDelivery",
+          "width": 100
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "portCode",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "portCode",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "portCode" : {
-                    "value" : "{{context.row.finalDestinationCode}}"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "portCode": {
+                    "value": "{{context.row.finalDestinationCode}}"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/location/query/location"
+              "method": "POST",
+              "url": "api/location/query/location"
             }
           },
-          "key" : "finalDestinationCode",
-          "label" : "finalDestination",
-          "width" : 100
+          "key": "finalDestinationCode",
+          "label": "finalDestination",
+          "width": 100
         },
 
         {
@@ -731,7 +731,7 @@
           "type": "router",
           "otherParams": {
             "func": "push",
-            "path": "booking/create"
+            "path": "/booking/create"
           }
         }]
       }]
