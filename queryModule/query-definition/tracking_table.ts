@@ -11,9 +11,9 @@ import {
 const query = new QueryDef(
   new Query({
     $distinct: true,
-    $from: new FromTable({
-      table: `
-    (SELECT \`tracking_reference\`.*, \`masterNo\` AS \`trackingNo\`, 'masterNo' AS \`type\`
+    $from: new FromTable(
+      `
+      (SELECT \`tracking_reference\`.*, \`masterNo\` AS \`trackingNo\`, 'masterNo' AS \`type\`
     FROM \`tracking_reference\`
     UNION
     SELECT \`tracking_reference\`.*, \`soTable\`.\`trackingNo\`, 'soNo' AS \`type\`
@@ -21,22 +21,20 @@ const query = new QueryDef(
     UNION
     SELECT  \`tracking_reference\`.* , \`containerTable\`.\`trackingNo\`, 'containerNo' as \`type\`
     FROM \`tracking_reference\`,  JSON_TABLE(\`containerNo\`, "$[*]" COLUMNS (\`trackingNo\` VARCHAR(100) PATH "$")) \`containerTable\`)
-    `,
-      $as: 'tracking_reference',
-      joinClauses: [
-        new JoinClause(
-          'LEFT',
-          'tracking',
-          new BinaryExpression(
+      `,
+      'tracking_reference',
+      new JoinClause(
+            'LEFT',
+            'tracking',
             new BinaryExpression(
-              new ColumnExpression('tracking', 'trackingNo'),
-              '=',
-              new ColumnExpression('tracking_reference', 'trackingNo')
+              new BinaryExpression(
+                new ColumnExpression('tracking', 'trackingNo'),
+                '=',
+                new ColumnExpression('tracking_reference', 'trackingNo')
+              )
             )
           )
-        ),
-      ],
-    }),
+    )
   })
 )
 
