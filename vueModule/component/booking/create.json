@@ -525,14 +525,13 @@
                   "name": "forwarderParty",
                   "component": "AsyncSelect",
                   "class": "xs-12",
-                  "checkDisplayWhen": "return false",
-                  "relation": "{{flex}}{{key}}Party",
+                  "relation": "forwarderParty",
                   "relationMore": [{
-                      "name": "{{flex}}{{key}}PartyId",
+                      "name": "forwarderPartyId",
                       "selector": "id"
                     },
                     {
-                      "name": "{{flex}}{{key}}PartyName",
+                      "name": "forwarderPartyName",
                       "selector": "name"
                     },
                     {
@@ -544,43 +543,43 @@
                       "selector": "partyFax"
                     },
                     {
-                      "name": "{{flex}}{{key}}PartyEmail",
+                      "name": "forwarderPartyEmail",
                       "selector": "partyEmail"
                     },
                     {
-                      "name": "{{flex}}{{key}}PartyAddress",
+                      "name": "forwarderPartyAddress",
                       "selector": "partyAddress"
                     },
                     {
-                      "name": "{{flex}}{{key}}PartyCityCode",
+                      "name": "forwarderPartyCityCode",
                       "selector": "partyCityCode"
                     },
                     {
-                      "name": "{{flex}}{{key}}PartyStateCode",
+                      "name": "forwarderPartyStateCode",
                       "selector": "partyStateCode"
                     },
                     {
-                      "name": "{{flex}}{{key}}PartyCountryCode",
+                      "name": "forwarderPartyCountryCode",
                       "selector": "partyCountryCode"
                     },
                     {
-                      "name": "{{flex}}{{key}}PartyZip",
+                      "name": "forwarderPartyZip",
                       "selector": "partyZip"
                     },
                     {
-                      "name": "{{flex}}{{key}}PartyContactPersonId",
+                      "name": "forwarderPartyContactPersonId",
                       "selector": "contactPersonId"
                     },
                     {
-                      "name": "{{flex}}{{key}}PartyContactPersonEmail",
+                      "name": "forwarderPartyContactPersonEmail",
                       "selector": "contactPersonEmail"
                     },
                     {
-                      "name": "{{flex}}{{key}}PartyContactPersonName",
+                      "name": "forwarderPartyContactPersonName",
                       "selector": "contactPersonName"
                     },
                     {
-                      "name": "{{flex}}{{key}}PartyContactPersonPhone",
+                      "name": "forwarderPartyContactPersonPhone",
                       "selector": "contactPersonPhone"
                     }
                   ],
@@ -588,15 +587,12 @@
                   "props": {
                     "required": true,
                     "axiosParams": {
-                      "url": "api/party/query/party_auto_suggest",
+                      "url": "api/party/query/office_auto_suggest",
                       "method": "POST",
                       "data": {
                         "subqueries": {
                           "isBranch": {
                             "value": 1
-                          },
-                          "partyTypes": {
-                            "value": ["forwarder"]
                           }
                         }
                       }
