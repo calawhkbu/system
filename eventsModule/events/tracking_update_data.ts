@@ -51,6 +51,12 @@ class TrackingUpdateDataEvent extends BaseEvent {
       TrackingReferenceService: TrackingReferenceService
     } = this.allService
     const { trackingNo } = parameters.data as Tracking
+    if (trackingNo) {
+      const trackingReference = await trackingReferenceService.getTrackingReference([trackingNo])
+      for (const { partyGroupCode, flexData } of trackingReference) {
+        if (flexData.data && )
+      }
+    }
     // const bookingIdList = await bookingService.query(
     //   `
     //     SELECT "trackingReference" AS \`type\`, tr.id AS \`id\`

@@ -10,9 +10,9 @@ const _ = require('lodash')
 
 export const formatJson = {
   removeCharacter: [],
-  segmentSeperator: ['\r\n'],
-  // elementSeperator: ['*'],
-  elementSeperator: [''],
+  segmentSeperator: ['~\r\n'],
+  // elementSeperator: ['*']
+  elementSeperator: ['']
 } as EdiFormatJson
 
 interface JSONObject {
@@ -63,14 +63,14 @@ export default class EdiParser997 extends BaseEdiParser {
             '00',
             '          ',
             '12',
-            '718978080',
+            '718978080    ',
             '08',
             '6112390050',
             moment(currantDate).format('YYMMDD'),
             moment(currantDate).format('HHmm'),
             'U',
             '00401',
-            controlNo,
+            controlNo.substring(0, 9),
             '0',
             'P',
             '>'
@@ -159,11 +159,11 @@ export default class EdiParser997 extends BaseEdiParser {
           B4.elementList.push('') // not used
           B4.elementList.push(
             (_.get(container, 'containerNo') || '').substr(0, 4),
-            (_.get(container, 'containerNo') || '').substr(4)
+            (_.get(container, 'containerNo') || '').substr(4, 10)
           )
           B4.elementList.push(
             emptyLoadMapper[_.get(currentStatus, 'statusCode')] || '',
-            isoCodeMapper[_.get(container, 'container')] || '',
+            isoCodeMapper[_.get(container, 'container')] || ' ',
             _.get(currentStatus, 'statusPlace').substr(0, 30)
           )
           B4.elementList.push('UN')
@@ -178,15 +178,15 @@ export default class EdiParser997 extends BaseEdiParser {
                 segment: 'N9',
                 elementList: [],
               }
-              N9.elementList.push('BN', _.get(bookingInf, 'bookingNo'), 'ORIGINAL BKG NBR')
+              N9.elementList.push('BN', _.get(bookingInf, 'bookingNo').substring(0, 18), 'ORIGINAL BKG NBR')
               data.push(N9)
             }
             const Q2: JSONObject = {
               segment: 'Q2',
               elementList: [],
             }
-            Q2.elementList.push(_.get(bookingInf, 'vesselCode'))
-            Q2.elementList.push('')
+            Q2.elementList.push((_.get(bookingInf, 'vesselCode') || ' ').substring(0, 8))
+            Q2.elementList.push('  ')
             for (
               let i = 0;
               i < 6;
@@ -194,7 +194,7 @@ export default class EdiParser997 extends BaseEdiParser {
             ) {
               Q2.elementList.push('')
             }
-            Q2.elementList.push(_.get(bookingInf, 'voyageFlightNumber'))
+            Q2.elementList.push(_.get(bookingInf, 'voyageFlightNumber').substring(0, 10))
             for (
               let i = 0;
               i < 3;
@@ -202,7 +202,7 @@ export default class EdiParser997 extends BaseEdiParser {
             ) {
               Q2.elementList.push('')
             }
-            Q2.elementList.push(_.get(bookingInf, 'vesselName'))
+            Q2.elementList.push((_.get(bookingInf, 'vesselName') || '  ' ).substring(0, 28))
             data.push(Q2)
           }
 
@@ -268,11 +268,11 @@ export default class EdiParser997 extends BaseEdiParser {
           noMatch = true
       }
       if (noMatch === false) {
-        R4.elementList.push('UN', _.get(historyList[i], 'statusPlace').substr(0, 30))
+        R4.elementList.push(' ', _.get(historyList[i], 'statusPlace').substr(0, 30))
         R4.elementList.push('') // not used
-        R4.elementList.push('') // No country code
+        R4.elementList.push('  ') // No country code
         R4.elementList.push('', '') // not used
-        R4.elementList.push('') // State or Province Code
+        R4.elementList.push('  ') // State or Province Code
         loopObjectList.push(R4)
         if (_.get(historyList[i], 'isEstimated') === false && _.get(historyList[i], 'statusDate')) {
           const DTM: JSONObject = {
@@ -284,7 +284,7 @@ export default class EdiParser997 extends BaseEdiParser {
             moment(_.get(historyList[i], 'statusDate')).format('YYYYMMDD'),
             moment(_.get(historyList[i], 'statusDate')).format('HHmm')
           )
-          DTM.elementList.push('') // no time code
+          DTM.elementList.push('  ') // no time code
           loopObjectList.push(DTM)
         }
       }
@@ -293,7 +293,7 @@ export default class EdiParser997 extends BaseEdiParser {
       segment: 'R4',
       elementList: [],
     }
-    R4.elementList.push('5', 'UN', _.get(historyList[noOfhistory - 1], 'statusPlace').substr(0, 30))
+    R4.elementList.push('5', ' ', _.get(historyList[noOfhistory - 1], 'statusPlace').substr(0, 30))
     R4.elementList.push('') // not used
     R4.elementList.push('') // No country code
     R4.elementList.push('', '') // not used

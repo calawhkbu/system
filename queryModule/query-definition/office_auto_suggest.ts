@@ -102,7 +102,7 @@ const query = new QueryDef(
       }
     ),
 
-    $where : new BinaryExpression(new ColumnExpression('party', 'isBranch'), '=', true)
+    $where: new BinaryExpression(new ColumnExpression('party', 'isBranch'), '=', true),
   })
 )
 

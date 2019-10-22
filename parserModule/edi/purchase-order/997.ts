@@ -9,9 +9,9 @@ const _ = require('lodash')
 
 export const formatJson = {
   removeCharacter: [],
-  segmentSeperator: ['\r\n'],
-  // elementSeperator: ['*'],
-  elementSeperator: [''],
+  segmentSeperator: ['~\r\n'],
+  // elementSeperator: ['*']
+  elementSeperator: ['']
 } as EdiFormatJson
 
 interface JSONObject {
@@ -215,8 +215,12 @@ export default class EdiParser997 extends BaseEdiParser {
               segment: 'AK3',
               elementList: [],
             }
+            const errorID = segmentError.errorID
+            const pad = '   '
+            const errorIDWithFormat = `${errorID}${pad.substring(0, pad.length - errorID.length)}`
+
             AK3.elementList.push(
-              segmentError.errorID,
+              errorIDWithFormat,
               segmentError.afterMainHeadLocation.toString(),
               loopIndex.toString(),
               segmentErrorMapper[segmentError.errorType]

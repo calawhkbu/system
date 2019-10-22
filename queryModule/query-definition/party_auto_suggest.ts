@@ -100,7 +100,7 @@ const query = new QueryDef(
           new ColumnExpression('parties_person', 'personId')
         ),
       }
-    )
+    ),
   })
 )
 

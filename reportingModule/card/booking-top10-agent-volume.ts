@@ -54,12 +54,11 @@ function prepareParams(): Function {
   }
 }
 
-function createTable()
-{
-    return new CreateTableJQL(true, 'top10', [
-      new Column('agentPartyId', 'string'),
-      new Column('volumeTotal', 'number'),
-    ])
+function createTable() {
+  return new CreateTableJQL(true, 'top10', [
+    new Column('agentPartyId', 'string'),
+    new Column('volumeTotal', 'number'),
+  ])
 }
 
 function prepareData(type: 'top10' | 'other' | 'test')
@@ -77,32 +76,26 @@ function prepareData(type: 'top10' | 'other' | 'test')
   if (type === 'other' )
   {
     return new InsertJQL({
-      name : 'top10',
+      name: 'top10',
       columns: ['agentPartyId', 'volumeTotal'],
 
-      query : new Query({
-        $from : 'raw',
-        $limit : new LimitOffset(bigLimit, 10)
-
-      })
-
+      query: new Query({
+        $from: 'raw',
+        $limit: new LimitOffset(bigLimit, 10),
+      }),
     })
-
   }
 
   return new InsertJQL({
-
-    name : 'top10',
+    name: 'top10',
     columns: ['agentPartyId', 'volumeTotal'],
 
-    query : new Query({
-      $from : 'raw',
-      $where : new IsNullExpression(new ColumnExpression('raw', 'agentPartyId'), true),
-      $limit : 10
-    })
-
+    query: new Query({
+      $from: 'raw',
+      $where: new IsNullExpression(new ColumnExpression('raw', 'agentPartyId'), true),
+      $limit: 10,
+    }),
   })
-
 }
 
 function prepareRawTable(): CreateTableJQL {
