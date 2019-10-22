@@ -62,10 +62,17 @@ function createTable()
     ])
 }
 
-function prepareData(type: 'top10' | 'other')
+function prepareData(type: 'top10' | 'other' | 'test')
 {
 
   const bigLimit = 999999999999999999
+
+  if (type === 'test')
+  {
+
+    return new InsertJQL('top10', { agentPartyId : 'other', volumeTotal : 999 })
+
+  }
 
   if (type === 'other' )
   {
@@ -134,9 +141,15 @@ function prepareRawTable(): CreateTableJQL {
 export default [
   [prepareParams(), prepareRawTable()],
 
+  // new Query({
+
+  //   $from : 'raw'
+  // })
+
   createTable(),
   prepareData('top10'),
   prepareData('other'),
+  prepareData('test'),
 
   new Query({
     $from: 'top10',
