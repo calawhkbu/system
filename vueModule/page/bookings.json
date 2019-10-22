@@ -3,528 +3,738 @@
     "width": "100%",
     "height": "100%"
   },
-  "components": [
-    {
-      "is": "TableTool",
-      "props": {
-        "reportingKey": "bookings",
-        "jql": "bookings",
-        "urlFormat": "/bookings{{ id|if('/', '') }}{{ id }}",
-        "hasReports": true,
-        "showFilterBar": true,
-        "enableShare": true,
-        "enableSetting": true,
-        "newReport": {
-          "filters": {
-            "isActive": true
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "reportingKey": "bookings",
+      "jql": "bookings",
+      "urlFormat": "/bookings{{ id|if('/', '') }}{{ id }}",
+      "hasReports": true,
+      "showFilterBar": true,
+      "enableShare": true,
+      "enableSetting": true,
+      "newReport": {
+        "filters": {
+          "isActive": true
+        },
+        "configurations": {
+          "i18nContext": "BookingPage",
+          "clickable": true,
+          "draggable": true,
+          "sorting": {
+            "direction": "DESC",
+            "key": "updatedAt"
           },
-          "configurations": {
-            "i18nContext": "BookingPage",
-            "clickable": true,
-            "draggable": true,
-            "sorting": {
-              "direction": "DESC",
-              "key": "updatedAt"
+          "pagination": {
+            "current": 0,
+            "perPage": 20
+          }
+        }
+      },
+      "fieldOptions": [{
+          "key": "id",
+          "sql": "booking.id",
+          "hidden": true
+        },
+        {
+          "key": "createdAt",
+          "sql": "booking.createdAt",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "updatedAt",
+          "sql": "booking.updatedAt",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "bookingNo",
+          "width": 150
+        },
+
+
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
             },
-            "pagination": {
-              "current": 0,
-              "perPage": 20
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "SERVTYPE"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/code/query/code_master"
+            }
+          },
+          "key": "serviceCode",
+          "label": "service",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "MODULE"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/code/query/code_master"
+            }
+          },
+          "key": "moduleTypeCode",
+          "label": "moduleType",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "BOUND"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/code/query/code_master"
+            }
+          },
+          "key": "boundTypeCode",
+          "label": "boundType",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "INCOTERMS"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/code/query/code_master"
+            }
+          },
+          "key": "incoTermsCode",
+          "label": "incoTerms",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "PAYTERMS"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/code/query/code_master"
+            }
+          },
+          "key": "otherTermsCode",
+          "label": "otherTerms",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "PAYTERMS"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/code/query/code_master"
+            }
+          },
+          "key": "freightTermsCode",
+          "label": "freightTerms",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "portCode",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "portCode": {
+                    "value": "{{context.row.portOfDischargeCode}}"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/location/query/location"
+            }
+          },
+          "key": "portOfDischargeCode",
+          "label": "portOfDischarge",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "portCode",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "portCode": {
+                    "value": "{{context.row.portOfLoadingCode}}"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/location/query/location"
+            }
+          },
+          "key": "portOfLoadingCode",
+          "label": "portOfLoading",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "portCode",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "portCode": {
+                    "value": "{{context.row.placeOfReceiptCode}}"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/location/query/location"
+            }
+          },
+          "key": "placeOfReceiptCode",
+          "label": "placeOfReceipt",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "portCode",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "portCode": {
+                    "value": "{{context.row.placeOfDeliveryCode}}"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/location/query/location"
+            }
+          },
+          "key": "placeOfDeliveryCode",
+          "label": "placeOfDelivery",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "portCode",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "portCode": {
+                    "value": "{{context.row.finalDestinationCode}}"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/location/query/location"
+            }
+          },
+          "key": "finalDestinationCode",
+          "label": "finalDestination",
+          "width": 100
+        },
+
+        {
+          "key": "departureDateEstimated",
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "departureDateActual",
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "arrivalDateEstimated",
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "cargoReadyDateEstimated",
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "cargoReadyDateActual",
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "cYCutOffDateEstimated",
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "cYCutOffDateActual",
+          "format": "YYYY-MM-DD"
+
+        }
+
+      ],
+      "filters": [{
+          "name": "date",
+          "type": "date",
+          "props": {
+            "required": true
+          }
+        },
+
+        {
+          "name": "shipperPartyId",
+          "display": "shipper",
+          "type": "autocomplete",
+
+          "props": {
+            "multi": true,
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+                "data": {
+                  "limit": 5,
+                  "subqueries": {
+                    "partyTypes": {
+                      "value": ["shipper"]
+                    },
+                    "q": {
+                      "value": "{{ q }}"
+                    }
+                  }
+                },
+
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
+              },
+
+              "resolve": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+                "data": {
+                  "subqueries": {
+                    "id": {
+                      "value": "{{value}}"
+                    }
+                  }
+                },
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
+              }
             }
           }
         },
-        "fieldOptions": [
-          {
-            "key": "id",
-            "sql": "booking.id",
-            "hidden": true
-          },
-          {
-            "key": "createdAt",
-            "sql": "booking.createdAt",
-            "width": 150,
-            "format": "YYYY-MM-DD"
-          },
-          {
-            "key": "updatedAt",
-            "sql": "booking.updatedAt",
-            "width": 150,
-            "format": "YYYY-MM-DD"
-          },
-          {
-            "key": "bookingNo",
-            "width": 150
-          },
-          {
-            "key": "departureDateEstimated",
-            "format": "YYYY-MM-DD"
-          },
-          {
-            "key": "departureDateActual",
-            "format": "YYYY-MM-DD"
-          },
-          {
-            "key": "arrivalDateEstimated",
-            "format": "YYYY-MM-DD"
-          },
-          {
-            "key": "cargoReadyDateEstimated",
-            "format": "YYYY-MM-DD"
-          },
-          {
-            "key": "cargoReadyDateActual",
-            "format": "YYYY-MM-DD"
-          },
-          {
-            "key": "cYCutOffDateEstimated",
-            "format": "YYYY-MM-DD"
-          },
-          {
-            "key": "cYCutOffDateActual",
-            "format": "YYYY-MM-DD"
-          }
-        ],
-        "filters": [
-          {
-            "name": "date",
-            "type": "date",
-            "props": {
-              "required": true
-            }
-          },
 
-          {
-            "name": "shipperPartyId",
-            "display": "shipper",
-            "type": "autocomplete",
-
-            "props": {
-              "multi": true,
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/party/query/party_auto_suggest",
-                  "data": {
-                    "limit": 5,
-                    "subqueries": {
-                      "partyTypes": {
-                        "value": ["shipper"]
-                      },
-                      "q": {
-                        "value": "{{ q }}"
-                      }
+        {
+          "display": "consignee",
+          "name": "consigneePartyId",
+          "props": {
+            "api": {
+              "query": {
+                "data": {
+                  "limit": 5,
+                  "subqueries": {
+                    "partyTypes": {
+                      "value": ["consignee"]
+                    },
+                    "q": {
+                      "value": "{{ q }}"
                     }
-                  },
-
-                  "valueKey": "id",
-                  "labelKey": "partyName",
-                  "sublabelKey": "erpCode"
+                  }
                 },
-
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/party/query/party_auto_suggest",
-                  "data": {
-                    "subqueries": {
-                      "id": {
-                        "value": "{{value}}"
-                      }
-                    }
-                  },
-                  "valueKey": "id",
-                  "labelKey": "partyName",
-                  "sublabelKey": "erpCode"
-                }
-              }
-            }
-          },
-
-          {
-            "display": "consignee",
-            "name": "consigneePartyId",
-            "props": {
-              "api": {
-                "query": {
-                  "data": {
-                    "limit": 5,
-                    "subqueries": {
-                      "partyTypes": {
-                        "value": ["consignee"]
-                      },
-                      "q": {
-                        "value": "{{ q }}"
-                      }
-                    }
-                  },
-                  "labelKey": "partyName",
-                  "method": "POST",
-                  "sublabelKey": "erpCode",
-                  "url": "api/party/query/party_auto_suggest",
-                  "valueKey": "id"
-                },
-                "resolve": {
-                  "data": {
-                    "subqueries": {
-                      "id": {
-                        "value": "{{value}}"
-                      }
-                    }
-                  },
-                  "labelKey": "partyName",
-                  "method": "POST",
-                  "sublabelKey": "erpCode",
-                  "url": "api/party/query/party_auto_suggest",
-                  "valueKey": "id"
-                }
+                "labelKey": "partyName",
+                "method": "POST",
+                "sublabelKey": "erpCode",
+                "url": "api/party/query/party_auto_suggest",
+                "valueKey": "id"
               },
-              "multi": true
+              "resolve": {
+                "data": {
+                  "subqueries": {
+                    "id": {
+                      "value": "{{value}}"
+                    }
+                  }
+                },
+                "labelKey": "partyName",
+                "method": "POST",
+                "sublabelKey": "erpCode",
+                "url": "api/party/query/party_auto_suggest",
+                "valueKey": "id"
+              }
             },
-            "type": "autocomplete"
+            "multi": true
           },
+          "type": "autocomplete"
+        },
 
-          {
-            "name": "officePartyId",
-            "display": "office",
-            "type": "autocomplete",
+        {
+          "name": "officePartyId",
+          "display": "office",
+          "type": "autocomplete",
 
-            "props": {
-              "multi": true,
+          "props": {
+            "multi": true,
 
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/party/query/party_auto_suggest",
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
 
-                  "data": {
-                    "subqueries": {
-                      "isBranch": {
-                        "value": true
-                      },
-                      "q": {
-                        "value": "{{ q }}"
-                      }
-                    }
-                  },
-                  "valueKey": "id",
-                  "labelKey": "partyName",
-                  "sublabelKey": "erpCode"
-                },
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/party/query/party_auto_suggest",
-
-                  "data": {
-                    "subqueries": {
-                      "id": {
-                        "value": "{{value}}"
-                      }
-                    }
-                  },
-                  "valueKey": "id",
-                  "labelKey": "partyName",
-                  "sublabelKey": "erpCode"
-                }
-              }
-            }
-          },
-
-
-
-          {
-            "name": "controllingCustomerPartyId",
-            "display": "controllingCustomer",
-            "type": "autocomplete",
-
-            "props": {
-              "multi": true,
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/party/query/party_auto_suggest",
-                  "data": {
-                    "limit": 5,
-                    "subqueries": {
-                      "q": {
-                        "value": "{{ q }}"
-                      }
-                    }
-                  },
-
-                  "valueKey": "id",
-                  "labelKey": "partyName",
-                  "sublabelKey": "erpCode"
-                },
-
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/party/query/party_auto_suggest",
-                  "data": {
-                    "subqueries": {
-                      "id": {
-                        "value": "{{value}}"
-                      }
-                    }
-                  },
-                  "valueKey": "id",
-                  "labelKey": "partyName",
-                  "sublabelKey": "erpCode"
-                }
-              }
-            }
-          },
-
-          {
-            "name": "departureDateEstimated",
-            "type": "date",
-            "props": {}
-          },
-          {
-            "name": "arrivalDateEstimated",
-            "type": "date",
-            "props": {}
-          },
-          {
-            "name": "moduleTypeCode",
-            "display": "moduleType",
-            "type": "list",
-            "props": {
-
-              "multi": true,
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "MODULE"
-                      }
-                    }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
-                },
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "MODULE"
-                      },
-                      "code": {
-                        "value": "{{ value }}"
-                      }
-                    }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
-                }
-              }
-            }
-          },
-          {
-            "name": "boundTypeCode",
-            "display": "boundType",
-            "type": "list",
-            "props": {
-
-              "multi": true,
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "BOUND"
-                      }
-                    }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
-                },
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "BOUND"
-                      },
-                      "code": {
-                        "value": "{{ value }}"
-                      }
-                    }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
-                }
-              }
-            }
-          },
-          {
-            "name": "shipmentTypeCode",
-            "display": "shipmentType",
-            "type": "list",
-            "props": {
-
-              "multi": true,
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "SHIPTYPE"
-                      }
-                    }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
-                },
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/code/query/code_master",
-                  "data": {
-                    "subqueries": {
-                      "codeType": {
-                        "value": "SHIPTYPE"
-                      },
-                      "code": {
-                        "value": "{{ value }}"
-                      }
-                    }
-                  },
-                  "valueKey": "code",
-                  "labelKey": "name"
-                }
-              }
-            }
-          },
-          {
-            "name": "portOfLoadingCode",
-            "display": "portOfLoading",
-            "type": "autocomplete",
-            "props": {
-              "multi" : true,
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/location/query/location",
-                  "data": {
-                    "subqueries": {
-                      "q": {
-                        "value": "{{ q }}"
-                      }
+                "data": {
+                  "subqueries": {
+                    "isBranch": {
+                      "value": true
                     },
-                    "limit": 20
-                  },
-                  "valueKey": "portCode",
-                  "labelKey": "name"
+                    "q": {
+                      "value": "{{ q }}"
+                    }
+                  }
                 },
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/location/query/location",
-                  "data": {
-                    "subqueries": {
-                      "portCode": {
-                        "value": "{{ value }}"
-                      }
-                    },
-                    "limit": 20
-                  },
-                  "valueKey": "portCode",
-                  "labelKey": "name"
-                }
-              }
-            }
-          },
-          {
-            "name": "portOfDischargeCode",
-            "display": "portOfDischarge",
-            "type": "autocomplete",
-            "props": {
-              "multi" : true,
-              "api": {
-                "query": {
-                  "method": "POST",
-                  "url": "api/location/query/location",
-                  "data": {
-                    "subqueries": {
-                      "q": {
-                        "value": "{{ q }}"
-                      }
-                    },
-                    "limit": 20
-                  },
-                  "valueKey": "portCode",
-                  "labelKey": "name"
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+
+                "data": {
+                  "subqueries": {
+                    "id": {
+                      "value": "{{value}}"
+                    }
+                  }
                 },
-                "resolve": {
-                  "method": "POST",
-                  "url": "api/location/query/location",
-                  "data": {
-                    "subqueries": {
-                      "portCode": {
-                        "value": "{{ value }}"
-                      }
-                    },
-                    "limit": 20
-                  },
-                  "valueKey": "portCode",
-                  "labelKey": "name"
-                }
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
               }
             }
           }
-        ],
-        "clickFunction": {
+        },
+
+        {
+          "name": "controllingCustomerPartyId",
+          "display": "controllingCustomer",
+          "type": "autocomplete",
+
+          "props": {
+            "multi": true,
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+                "data": {
+                  "limit": 5,
+                  "subqueries": {
+                    "q": {
+                      "value": "{{ q }}"
+                    }
+                  }
+                },
+
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
+              },
+
+              "resolve": {
+                "method": "POST",
+                "url": "api/party/query/party_auto_suggest",
+                "data": {
+                  "subqueries": {
+                    "id": {
+                      "value": "{{value}}"
+                    }
+                  }
+                },
+                "valueKey": "id",
+                "labelKey": "partyName",
+                "sublabelKey": "erpCode"
+              }
+            }
+          }
+        },
+
+        {
+          "name": "departureDateEstimated",
+          "type": "date",
+          "props": {}
+        },
+        {
+          "name": "arrivalDateEstimated",
+          "type": "date",
+          "props": {}
+        },
+        {
+          "name": "moduleTypeCode",
+          "display": "moduleType",
+          "type": "list",
+          "props": {
+            "multi": true,
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "MODULE"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "MODULE"
+                    },
+                    "code": {
+                      "value": "{{ value }}"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              }
+            }
+          }
+        },
+        {
+          "name": "boundTypeCode",
+          "display": "boundType",
+          "type": "list",
+          "props": {
+            "multi": true,
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "BOUND"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "BOUND"
+                    },
+                    "code": {
+                      "value": "{{ value }}"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              }
+            }
+          }
+        },
+        {
+          "name": "shipmentTypeCode",
+          "display": "shipmentType",
+          "type": "list",
+          "props": {
+            "multi": true,
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "SHIPTYPE"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "SHIPTYPE"
+                    },
+                    "code": {
+                      "value": "{{ value }}"
+                    }
+                  }
+                },
+                "valueKey": "code",
+                "labelKey": "name"
+              }
+            }
+          }
+        },
+        {
+          "name": "portOfLoadingCode",
+          "display": "portOfLoading",
+          "type": "autocomplete",
+          "props": {
+            "multi": true,
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "q": {
+                      "value": "{{ q }}"
+                    }
+                  },
+                  "limit": 20
+                },
+                "valueKey": "portCode",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "portCode": {
+                      "value": "{{ value }}"
+                    }
+                  },
+                  "limit": 20
+                },
+                "valueKey": "portCode",
+                "labelKey": "name"
+              }
+            }
+          }
+        },
+        {
+          "name": "portOfDischargeCode",
+          "display": "portOfDischarge",
+          "type": "autocomplete",
+          "props": {
+            "multi": true,
+            "api": {
+              "query": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "q": {
+                      "value": "{{ q }}"
+                    }
+                  },
+                  "limit": 20
+                },
+                "valueKey": "portCode",
+                "labelKey": "name"
+              },
+              "resolve": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "portCode": {
+                      "value": "{{ value }}"
+                    }
+                  },
+                  "limit": 20
+                },
+                "valueKey": "portCode",
+                "labelKey": "name"
+              }
+            }
+          }
+        }
+      ],
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/booking/{{id}}"
+        }
+      },
+      "icons": [{
+        "icon": "add",
+        "click": [{
           "type": "router",
           "otherParams": {
             "func": "push",
-            "path": "/booking/{{id}}"
+            "path": "/booking/create"
           }
-        },
-        "icons": [
-          {
-            "icon": "add",
-            "click": [
-              {
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "booking/create"
-                }
-              }
-            ]
-          },
-          {
-            "icon": "fas fa-file-import",
-            "click": [
-              {
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "booking/import"
-                }
-              }
-            ]
-          },
-          {
-            "icon": "fas fa-copy",
-            "click": [
-              {
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "booking/copy"
-                }
-              }
-            ]
-          }
-        ]
-      }
+        }]
+      }]
     }
-  ]
+  }]
 }

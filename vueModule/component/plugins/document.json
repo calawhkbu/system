@@ -1,9 +1,13 @@
 {
   "layout": "Plugin",
   "lazy": true,
-  "axiosBaseParams": {
-    "url": "api/document/document/{{tableName | urlEncode }}/{{primaryKey | urlEncode }}"
-  },
+  "axiosBaseParams": [
+    "const tableName = context.$route.params.page;",
+    "const primaryKey = context.$route.params.params;",
+    "return {",
+    "url: 'api/document/document/{{tableName | urlEncode }}/{{primaryKey | urlEncode }}'.format({ tableName, primaryKey}),",
+    "};"
+  ],
   "name": "Document",
   "shareProps": {
     "i18nKey": "Document",

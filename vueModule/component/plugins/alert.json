@@ -5,15 +5,16 @@
   "transition": "slide-y-reverse-transition",
   "name": "Alert",
   "remote": true,
-  "axiosBaseParams": {
-    "method": "POST",
-    "url": "api/alert/list/history",
-    "data": {
-      "tableName": "{{tableName}}",
-      "primaryKey": "{{primaryKey}}",
-      "afterTime": "{{afterTime}}"
-    }
-  },
+  "axiosBaseParams": [
+    "return {",
+    "url: 'api/alert/list/history',",
+    "method: 'POST',",
+    "data: {",
+    "tableName: context.$route.params.page,",
+    "primaryKey: context.$route.params.params,",
+    "}",
+    "};"
+  ],
   "loopGetData": 60000,
   "shareProps": {
     "i18nContext": "Alert",

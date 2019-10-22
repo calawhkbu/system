@@ -2,7 +2,9 @@
   "components": [{
     "is": "WidgetForm",
     "props": {
-      "fields": [{
+      "fields": [
+        
+        {
           "label": "BookingPage.moduleType",
           "name": "moduleTypeCode",
           "component": "AsyncSelect",
@@ -23,7 +25,8 @@
               }
             },
             "item-text": "name",
-            "item-value": "code"
+            "item-value": "code",
+            "showValue": false
           }
         },
         {
@@ -92,6 +95,7 @@
                 }
               }
             },
+            "color": "red",
             "item-text": "name",
             "item-value": "code",
             "showValue": false,
@@ -332,25 +336,17 @@
           "name": "vesselName",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-3",
-          "more": [{
+          "relation": "vesselName",
+          "relationMore": [{
             "name": "vesselName",
             "selector": "name"
           }],
           "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA'",
           "props": {
-            "searchValueParams": {
-              "method": "POST",
-              "url": "api/code/query/code_master",
-              "data": {
-                "subqueries": {
-                  "codeType": {
-                    "value": "VESSEL"
-                  },
-                  "code": {
-                    "value": "{{context.autoSuggestModel}}"
-                  }
-                }
-              }
+            "canCreate": true,
+            "canCreateValue": {
+              "id": null,
+              "name": "{{autoSuggestModel}}"
             },
             "searchTextParams": {
               "method": "POST",
@@ -405,23 +401,8 @@
             }
           ],
           "props": {
-            "searchValueParams": {
-              "url": "api/code/query/code_master_with_flex_data",
-              "method": "POST",
-              "data": {
-                "fields": ["code_master.*", "flex_data.data"],
-                "subqueries": {
-                  "codeType": {
-                    "value": "INCOTERMS"
-                  },
-                  "code": {
-                    "value": "{{context.autoSuggestModel}}"
-                  }
-                }
-              }
-            },
             "searchTextParams": {
-              "url": "api/code/query/code_master",
+              "url": "api/code/query/code_master_with_flex_data",
               "method": "POST",
               "data": {
                 "fields": ["code_master.*", "flex_data.data"],

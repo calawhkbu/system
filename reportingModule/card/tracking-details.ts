@@ -20,7 +20,7 @@ function prepareParams(): Function {
     const moment = require('moment')
 
     // script
-    const subqueries = (params.subqueries || {})
+    const subqueries = params.subqueries || {}
 
     console.log('subqueries')
     console.log(subqueries)
@@ -36,8 +36,7 @@ function prepareParams(): Function {
   }
 }
 
-function prepareStatusMasterTable()
-{
+function prepareStatusMasterTable() {
   return new CreateTableJQL({
     $temporary: true,
     name: 'status_master',
@@ -45,10 +44,7 @@ function prepareStatusMasterTable()
       $from: new FromTable(
         {
           url: `api/statusMaster/query/tracking-flow`,
-          columns: [
-            { name: 'group', type: 'string' },
-            { name: 'status', type: 'string' }
-          ],
+          columns: [{ name: 'group', type: 'string' }, { name: 'status', type: 'string' }],
         },
         'status_master'
       ),
@@ -56,10 +52,8 @@ function prepareStatusMasterTable()
   })
 }
 
-function prepareTrackingTable()
-{
+function prepareTrackingTable() {
   return function(require, session, params) {
-
     console.log(params)
 
     const { Resultset } = require('node-jql-core')
@@ -143,7 +137,7 @@ export default [
   // prepare tables
   [prepareParams(), prepareStatusMasterTable()],
 
-  prepareTrackingTable()
+  prepareTrackingTable(),
 
   // function(require, session, params) {
   //   // import
@@ -355,5 +349,4 @@ export default [
   //   $from: 'entities',
   //   $group: 'trackingNo',
   // }),
-
 ]

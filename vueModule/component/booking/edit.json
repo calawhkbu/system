@@ -50,7 +50,7 @@
       "props": {
         "topClick": true,
         "validateBeforeStepChange": false,
-        "preview": "booking-preview",
+        "preview": false,
         "steps": [
           {
             "id": "BookingPage.GeneralForm",

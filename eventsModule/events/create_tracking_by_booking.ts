@@ -41,31 +41,32 @@ class CreateTrackingEvent extends BaseEvent {
     } = parameters.data
 
     if (moduleTypeCode && carrierCode && departureDateEstimated) {
-      let refName = null
-      if (moduleTypeCode === 'AIR') {
-        refName = 'MAWB'
-      } else if (moduleTypeCode === 'SEA') {
-        refName = 'MBL'
-      }
-      const masterNo = bookingReference.reduce((masterNo: string, bookingReference: BookingReference) => {
-        if (bookingReference.refName === refName) {
-          masterNo = bookingReference.refDescription
-        }
-        return masterNo
-      }, null)
-      const soNo = bookingContainers.reduce((soNos: string[], bookingContainer: BookingContainer) => {
-        if (bookingContainer.soNo && bookingContainer.soNo.length) {
-          soNos.push(soNo)
-        }
-        return soNos
-      }, [])
-      const containerNo = bookingContainers.reduce((containerNos: string[], bookingContainer: BookingContainer) => {
-        if (bookingContainer.containerNo && bookingContainer.containerNo.length) {
-          containerNos.push(containerNo)
-        }
-        return containerNos
-      }, [])
       try {
+        let refName = null
+        if (moduleTypeCode === 'AIR') {
+          refName = 'MAWB'
+        } else if (moduleTypeCode === 'SEA') {
+          refName = 'MBL'
+        }
+        const masterNo = bookingReference.reduce((masterNo: string, bookingReference: BookingReference) => {
+          if (bookingReference.refName === refName) {
+            masterNo = bookingReference.refDescription
+          }
+          return masterNo
+        }, null)
+        const soNo = bookingContainers.reduce((soNos: string[], bookingContainer: BookingContainer) => {
+          console.log(bookingContainer, this.constructor.name)
+          if (bookingContainer.soNo && bookingContainer.soNo.length) {
+            soNos.push(bookingContainer.soNo)
+          }
+          return soNos
+        }, [])
+        const containerNo = bookingContainers.reduce((containerNos: string[], bookingContainer: BookingContainer) => {
+          if (bookingContainer.containerNo && bookingContainer.containerNo.length) {
+            containerNos.push(bookingContainer.containerNo)
+          }
+          return containerNos
+        }, [])
         const registerForm: RegisterTrackingForm = {
           moduleTypeCode,
           carrierCode,
@@ -73,6 +74,9 @@ class CreateTrackingEvent extends BaseEvent {
           masterNo,
           soNo,
           containerNo,
+          flexData: {
+            booking: parameters.data
+          }
         }
         const trackService = this.allService['TrackService'] as TrackService
         if (trackService) {

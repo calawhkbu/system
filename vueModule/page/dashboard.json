@@ -1,4 +1,5 @@
 {
+  "fillParent": true,
   "components": [
     {
       "is": "GridTool",
@@ -247,7 +248,7 @@
                   "method": "POST",
                   "url": "api/party/query/party_auto_suggest",
                   "data": {
-                    "subqueries" : {
+                    "subqueries": {
                       "id": {
                         "value": "{{value}}"
                       }
@@ -257,7 +258,6 @@
                   "labelKey": "partyName",
                   "sublabelKey": "erpCode"
                 }
-
               }
             }
           },
@@ -364,7 +364,6 @@
             "display": "moduleType",
             "type": "list",
             "props": {
-
               "multi": true,
               "api": {
                 "query": {
@@ -404,7 +403,6 @@
             "display": "boundType",
             "type": "list",
             "props": {
-
               "multi": true,
               "api": {
                 "query": {
@@ -444,7 +442,6 @@
             "display": "nominatedType",
             "type": "list",
             "props": {
-
               "multi": true,
               "items": [
                 {
@@ -463,7 +460,6 @@
             "display": "shipmentType",
             "type": "list",
             "props": {
-
               "multi": true,
               "api": {
                 "query": {
@@ -503,7 +499,7 @@
             "display": "portOfLoading",
             "type": "autocomplete",
             "props": {
-              "multi" : true,
+              "multi": true,
               "api": {
                 "query": {
                   "method": "POST",
@@ -541,7 +537,7 @@
             "display": "portOfDischarge",
             "type": "autocomplete",
             "props": {
-              "multi" : true,
+              "multi": true,
               "api": {
                 "query": {
                   "method": "POST",
@@ -603,7 +599,7 @@
             "name": "division",
             "display": "division",
             "type": "list",
-  
+
             "props": {
               "multi": true,
               "items": [
