@@ -56,17 +56,17 @@ const query = new QueryDef(
         )
       ),
       new JoinClause(
-            'LEFT',
-            'flex_data',
-            new BinaryExpression(
-              new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'tracking'),
-              new BinaryExpression(
-                new ColumnExpression('tracking', 'id'),
-                '=',
-                new ColumnExpression('flex_data', 'primaryKey')
-              )
-            )
-          ),
+        'LEFT',
+        'flex_data',
+        new BinaryExpression(
+          new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'tracking'),
+          new BinaryExpression(
+            new ColumnExpression('tracking', 'id'),
+            '=',
+            new ColumnExpression('flex_data', 'primaryKey')
+          )
+        )
+      )
     ),
   })
 )

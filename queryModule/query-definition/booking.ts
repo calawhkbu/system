@@ -422,15 +422,26 @@ query.register('noOfBookings', {
 // })
 
 query.register('houseNo', {
-  expression: new FunctionExpression('IF', new BinaryExpression(new ColumnExpression('booking_reference', 'refName'), '=', new Value('HBL')),
-    new ColumnExpression('booking_reference', 'refDescription'), new Value(null)),
+  expression: new FunctionExpression(
+    'IF',
+    new BinaryExpression(
+      new ColumnExpression('booking_reference', 'refName'),
+      '=',
+      new Value('HBL')
+    ),
+    new ColumnExpression('booking_reference', 'refDescription'),
+    new Value(null)
+  ),
   $as: 'houseNo',
 })
 
 query.register('masterNo', {
   expression: new FunctionExpression(
-    'IF', new BinaryExpression(new ColumnExpression('booking_reference', 'refName'), '=', 'MBL'),
-    new ColumnExpression('booking_reference', 'refDescription'), new Value(null)),
+    'IF',
+    new BinaryExpression(new ColumnExpression('booking_reference', 'refName'), '=', 'MBL'),
+    new ColumnExpression('booking_reference', 'refDescription'),
+    new Value(null)
+  ),
   $as: 'masterNo',
 })
 
