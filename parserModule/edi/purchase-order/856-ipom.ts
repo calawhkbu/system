@@ -45,7 +45,7 @@ export default class EdiParser856 extends BaseEdiParser {
     const removeCharbookingNo = bookingNo.replace(/-/g, '')
     const controlNo = (removeCharbookingNo || '').substring((removeCharbookingNo || '').length - 9)
     ISA.elementList.push('00', '          ', '00',
-    '          ', '12', '718978080', '08' , '6112390050' , moment(currantDate).format('YYMMDD'), moment(currantDate).format('HHmm'), 'U', '00403', controlNo, '0', 'P', '>')
+    '          ', '12', '718978080      ', '08' , '6112390050' , moment(currantDate).format('YYMMDD'), moment(currantDate).format('HHmm'), 'U', '00403', controlNo, '0', 'P', '>')
     data.push(ISA)
     const GS: JSONObject = {
         segement: 'GS',
@@ -73,7 +73,7 @@ export default class EdiParser856 extends BaseEdiParser {
         elementList: []
       }
       BSN.elementList.push('00')
-      BSN.elementList.push(_.get(element, 'bookingNo'))
+      BSN.elementList.push(_.get(element, 'bookingNo').substring(0, 30))
       BSN.elementList.push(moment(_.get(element, 'createdAt')).format('YYYYMMDD'))
       BSN.elementList.push(moment(_.get(element, 'createdAt')).format('HHmm'))
       BSN.elementList.push('0004')
@@ -88,15 +88,15 @@ export default class EdiParser856 extends BaseEdiParser {
         segement : 'CTT',
         elementList : []
       }
-      CTT.elementList.push(getNumOfLoopItem.toString())
+      CTT.elementList.push(getNumOfLoopItem.toString().substring(0, 6))
       data.push(CTT)
 
       const SE: JSONObject = {
         segement : 'SE',
         elementList: []
       }
+      SE.elementList.push((data.length - lengthOfPreviousData + 1).toString().substring(0, 6))
       SE.elementList.push(`${pad.substring(0, pad.length - index.toString().length)}${index}`)
-      SE.elementList.push((data.length - lengthOfPreviousData + 1).toString())
       data.push(SE)
       lengthOfPreviousData += data.length
 
@@ -128,7 +128,7 @@ export default class EdiParser856 extends BaseEdiParser {
           segement : 'HL',
           elementList : []
         }
-        HL.elementList.push(i)
+        HL.elementList.push(i.toString().substring(0, 12))
         HL.elementList.push('')// not used
         HL.elementList.push('S')
         loopObjectList.push(HL)
@@ -163,7 +163,7 @@ export default class EdiParser856 extends BaseEdiParser {
             }
             totalWeight = Number.parseFloat(totalWeight.toPrecision(5))
             MEA.elementList.push('')// not used
-            MEA.elementList.push( 'WT', totalWeight.toString(), 'KG')
+            MEA.elementList.push( 'WT', totalWeight.toString().substring(0, 20), 'KG')
             loopObjectList.push(MEA)
           }
           if (totalVolume > 0)
@@ -174,7 +174,7 @@ export default class EdiParser856 extends BaseEdiParser {
             }
             totalVolume = Number.parseFloat(totalVolume.toPrecision(5))
             MEA.elementList.push('')// not used
-            MEA.elementList.push( 'VOL', totalVolume.toString(), 'CO')
+            MEA.elementList.push( 'VOL', totalVolume.toString().substring(0, 20), 'CO')
             loopObjectList.push(MEA)
           }
           if (numberOfPacking > 0)
@@ -184,7 +184,7 @@ export default class EdiParser856 extends BaseEdiParser {
               elementList: []
             }
             MEA.elementList.push('')// not used
-            MEA.elementList.push( 'NM', numberOfPacking, 'CT')
+            MEA.elementList.push( 'NM', numberOfPacking.toString().substring(0, 20), 'CT')
             loopObjectList.push(MEA)
           }
           if (totalShipUnit > 0)
@@ -194,10 +194,13 @@ export default class EdiParser856 extends BaseEdiParser {
               elementList: []
             }
             MEA.elementList.push('')// not used
-            MEA.elementList.push( 'WT', totalShipUnit, 'PC')
+            MEA.elementList.push( 'WT', totalShipUnit.toString().substring(0, 20), 'PC')
             loopObjectList.push(MEA)
           }
         }
+        const carrierCode = _.get(element, 'carrierCode')
+        const pad2 = '    '
+        const scac = `${carrierCode}${pad2.substring(0, pad2.length - carrierCode.toString().length)}`
         if (_.get(element, 'portOfLoading') || _.get(element, 'portOfDischarge') || _.get(element, 'placeOfReceiptCode'))
         {
           if (_.get(element, 'portOfLoading'))
@@ -208,12 +211,12 @@ export default class EdiParser856 extends BaseEdiParser {
             }
             TD5.elementList.push('O')
             TD5.elementList.push('2')
-            TD5.elementList.push(_.get(element, 'carrierCode'))
+            TD5.elementList.push(scac)
             TD5.elementList.push('')// not used
-            TD5.elementList.push('')// not used
-            TD5.elementList.push('')// not used
+            TD5.elementList.push(' ')// not used
+            TD5.elementList.push('  ')// not used
             TD5.elementList.push('KL')
-            TD5.elementList.push(_.get(element, 'portOfLoading'))
+            TD5.elementList.push(_.get(element, 'portOfLoading').substring(0, 30))
             loopObjectList.push(TD5)
           }
           if (_.get(element, 'portOfDischarge'))
@@ -224,12 +227,12 @@ export default class EdiParser856 extends BaseEdiParser {
             }
             TD5.elementList.push('O')
             TD5.elementList.push('2')
-            TD5.elementList.push(_.get(element, 'carrierCode'))
+            TD5.elementList.push(scac)
             TD5.elementList.push('')// not used
-            TD5.elementList.push('')// not used
-            TD5.elementList.push('')// not used
+            TD5.elementList.push(' ')// not used
+            TD5.elementList.push('  ')// not used
             TD5.elementList.push('PB')
-            TD5.elementList.push(_.get(element, 'portOfDischarge'))
+            TD5.elementList.push(_.get(element, 'portOfDischarge').substring(0, 30))
             loopObjectList.push(TD5)
           }
           if (_.get(element, 'placeOfReceiptCode'))
@@ -240,12 +243,12 @@ export default class EdiParser856 extends BaseEdiParser {
             }
             TD5.elementList.push('O')
             TD5.elementList.push('2')
-            TD5.elementList.push(_.get(element, 'carrierCode'))
+            TD5.elementList.push(scac)
             TD5.elementList.push('') // not used
-            TD5.elementList.push('') // not used
-            TD5.elementList.push('') // not used
+            TD5.elementList.push(' ') // not used
+            TD5.elementList.push('  ') // not used
             TD5.elementList.push('OA')
-            TD5.elementList.push(_.get(element, 'placeOfReceiptCode'))
+            TD5.elementList.push(_.get(element, 'placeOfReceiptCode').substring(0, 30))
             loopObjectList.push(TD5)
           }
         }
@@ -257,7 +260,7 @@ export default class EdiParser856 extends BaseEdiParser {
           }
           TD5.elementList.push('O')
           TD5.elementList.push('2')
-          TD5.elementList.push(_.get(element, 'carrierCode'))
+          TD5.elementList.push(scac)
           loopObjectList.push(TD5)
         }
 
@@ -269,47 +272,58 @@ export default class EdiParser856 extends BaseEdiParser {
               segement: 'TD3',
               elementList: []
             }
-            TD3.elementList.push('') // not used
-            TD3.elementList.push((_.get(container, 'containerNo') || '').substring(0, 4))
-            TD3.elementList.push((_.get(container, 'containerNo') || '').substring(4))
+            const isoCodeMapper = {
+              '20OT': 2251,
+              '40OT': 4351,
+              '40HRF': 4662,
+              '45HRF': 9532,
+              '20RF': 2232,
+              '40RF': 4332,
+              '40HC': 4500,
+              '45HC': 9500,
+            }
+            TD3.elementList.push('  ') // not used
+            TD3.elementList.push((_.get(container, 'containerNo') || ' ').substring(0, 4))
+            TD3.elementList.push((_.get(container, 'containerNo') || ' ').substring(4, 10))
             TD3.elementList.push('', '', '', '', '') // not used
             TD3.elementList.push(_.get(container, 'sealNo1'))
-            if (_.get(container, 'containerTypeCode') === '20OT')
-            {
-              TD3.elementList.push('2251')
-            }
-            else if (_.get(container, 'containerTypeCode') === '40OT')
-            {
-              TD3.elementList.push('4351')
-            }
-            else if (_.get(container, 'containerTypeCode') === '40HRF')
-            {
-              TD3.elementList.push('4662')
-            }
-            else if (_.get(container, 'containerTypeCode') === '45HRF')
-            {
-              TD3.elementList.push('9532')
-            }
-            else if (_.get(container, 'containerTypeCode') === '20RF')
-            {
-              TD3.elementList.push('2232')
-            }
-            else if (_.get(container, 'containerTypeCode') === '40RF')
-            {
-              TD3.elementList.push('4332')
-            }
-            else if (_.get(container, 'containerTypeCode') === '40HC')
-            {
-              TD3.elementList.push('4500')
-            }
-            else if (_.get(container, 'containerTypeCode') === '45HC')
-            {
-              TD3.elementList.push('9500')
-            }
-            else
-            {
-              TD3.elementList.push('')
-            }
+            TD3.elementList.push(isoCodeMapper[_.get(container, 'containerType')] || ' ')
+            // if (_.get(container, 'containerTypeCode') === '20OT')
+            // {
+            //   TD3.elementList.push('2251')
+            // }
+            // else if (_.get(container, 'containerTypeCode') === '40OT')
+            // {
+            //   TD3.elementList.push('4351')
+            // }
+            // else if (_.get(container, 'containerTypeCode') === '40HRF')
+            // {
+            //   TD3.elementList.push('4662')
+            // }
+            // else if (_.get(container, 'containerTypeCode') === '45HRF')
+            // {
+            //   TD3.elementList.push('9532')
+            // }
+            // else if (_.get(container, 'containerTypeCode') === '20RF')
+            // {
+            //   TD3.elementList.push('2232')
+            // }
+            // else if (_.get(container, 'containerTypeCode') === '40RF')
+            // {
+            //   TD3.elementList.push('4332')
+            // }
+            // else if (_.get(container, 'containerTypeCode') === '40HC')
+            // {
+            //   TD3.elementList.push('4500')
+            // }
+            // else if (_.get(container, 'containerTypeCode') === '45HC')
+            // {
+            //   TD3.elementList.push('9500')
+            // }
+            // else
+            // {
+            //   TD3.elementList.push('')
+            // }
             loopObjectList.push(TD3)
           }
         }
@@ -344,10 +358,13 @@ export default class EdiParser856 extends BaseEdiParser {
           segement : 'V1',
           elementList : []
         }
-        V1.elementList.push(_.get(element, 'carrierCode'))
-        V1.elementList.push(_.get(element, 'vesselName'))
+        const vesselCode = _.get(element, 'vesselCode')
+        const pad = '        '
+        const vesselCodeWithLength = `${vesselCode}${pad.substring(0, pad.length - vesselCode.toString().length)}`.substring(0, 8)
+        V1.elementList.push(vesselCodeWithLength)
+        V1.elementList.push((_.get(element, 'vesselName') || ' ').substring(0, 28) )
         V1.elementList.push('')// not used
-        V1.elementList.push(_.get(element, 'voyageFlightNumber'))
+        V1.elementList.push((_.get(element, 'voyageFlightNumber') || ' ').substring(0, 10))
         loopObjectList.push(V1)
       }
       else
@@ -356,7 +373,7 @@ export default class EdiParser856 extends BaseEdiParser {
           segement : 'HL',
           elementList : []
         }
-        HLO.elementList.push(i)
+        HLO.elementList.push(i.toString().substr(0, 12))
         HLO.elementList.push('1')
         HLO.elementList.push('O')
         loopObjectList.push(HLO)
@@ -364,7 +381,7 @@ export default class EdiParser856 extends BaseEdiParser {
           segement : 'PRF',
           elementList : []
         }
-        PRF.elementList.push(_.get(element, 'poNo'))
+        PRF.elementList.push(_.get(element, 'poNo').substring(0, 10))
         if (_.get(element, 'poDate'))
         {
           PRF.elementList.push('', '') // not used
@@ -382,25 +399,25 @@ export default class EdiParser856 extends BaseEdiParser {
             segement : 'HL',
             elementList : []
           }
-          HLI.elementList.push(i + index)
-          HLI.elementList.push(i)
+          HLI.elementList.push((i + index).toString().substring(0, 12))
+          HLI.elementList.push(i.toString().substring(0, 12))
           HLI.elementList.push('I')
           loopObjectList.push(HLI)
           const LIN: JSONObject = {
             segement : 'LIN',
             elementList : []
           }
-          LIN.elementList.push((totalItemNo - itemIndex).toString())
+          LIN.elementList.push(index.toString().substring(0, 6))
           LIN.elementList.push('SK')
-          LIN.elementList.push(_.get(ItemList[itemIndex], 'style'))
+          LIN.elementList.push((_.get(ItemList[itemIndex], 'style') || ' ').substring(0, 30))
           LIN.elementList.push('BO')
-          LIN.elementList.push(_.get(ItemList[itemIndex], 'colorDesc'))
+          LIN.elementList.push((_.get(ItemList[itemIndex], 'colorDesc') || ' ').substring(0, 30))
           LIN.elementList.push('IZ')
-          LIN.elementList.push(_.get(ItemList[itemIndex], 'size'))
-          LIN.elementList.push('')
-          LIN.elementList.push('')
-          LIN.elementList.push('')
-          LIN.elementList.push('')
+          LIN.elementList.push((_.get(ItemList[itemIndex], 'size') || ' ').substring(0, 30))
+          LIN.elementList.push('  ')
+          LIN.elementList.push(' ')
+          LIN.elementList.push('  ')
+          LIN.elementList.push(' ')
           loopObjectList.push(LIN)
           const SLN: JSONObject = {
             segement: 'SLN',
@@ -409,7 +426,7 @@ export default class EdiParser856 extends BaseEdiParser {
           SLN.elementList.push('1')
           SLN.elementList.push('')// not used
           SLN.elementList.push('I')
-          SLN.elementList.push(_.get(ItemList[itemIndex], 'bookQuantity').toString())
+          SLN.elementList.push((_.get(ItemList[itemIndex], 'bookQuantity') || ' ').toString().substring(0, 15))
           SLN.elementList.push('PC')
           loopObjectList.push(SLN)
           if (_.get(ItemList[itemIndex], 'bookWeight'))
@@ -418,7 +435,7 @@ export default class EdiParser856 extends BaseEdiParser {
                   segement: 'MEA',
                   elementList: []
               }
-              MEA.elementList.push('', 'WT', _.get(ItemList[itemIndex], 'bookWeight'),  'KG')
+              MEA.elementList.push('', 'WT', (_.get(ItemList[itemIndex], 'bookWeight') || ' ').toString().substring(0, 20),  'KG')
               loopObjectList.push(MEA)
             }
           if (_.get(ItemList[itemIndex], 'bookVolume'))
@@ -427,7 +444,7 @@ export default class EdiParser856 extends BaseEdiParser {
                 segement: 'MEA',
                 elementList: []
             }
-            MEA.elementList.push('', 'VOL', _.get(ItemList[itemIndex], 'bookQuantity'),  'CO')
+            MEA.elementList.push('', 'VOL', (_.get(ItemList[itemIndex], 'bookQuantity') || ' ').toString().substring(0, 20),  'CO')
             loopObjectList.push(MEA)
           }
           const MEANUM: JSONObject = {
@@ -442,7 +459,7 @@ export default class EdiParser856 extends BaseEdiParser {
                 segement: 'MEA',
                 elementList: []
             }
-            MEA.elementList.push('', 'SU', _.get(ItemList[itemIndex], 'bookQuantity'),  'PC')
+            MEA.elementList.push('', 'SU', (_.get(ItemList[itemIndex], 'bookQuantity') || ' ').toString().substring(0, 20),  'PC')
             loopObjectList.push(MEA)
           }
 
