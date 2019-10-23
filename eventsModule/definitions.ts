@@ -114,55 +114,55 @@ export default {
         },
       },
     },
-    // {
-    //   condition: true,
-    //   handlerName: 'checker',
-    //   otherParameters: {
-    //     checker: [
-    //       {
-    //         resultName: 'haveDiff',
-    //         checkerFunction: (parameters: any) => {
-    //           const difference = diff(
-    //             parameters.oldData,
-    //             parameters.data,
-    //             undefined,
-    //             ['documents'],
-    //             ['createdAt', 'createdBy', 'updatedAt', 'updatedBy']
-    //           )
-    //
-    //           // console.log('difference')
-    //           // console.log(difference)
-    //
-    //           return difference ? true : false
-    //         },
-    //       },
-    //     ],
-    //   },
-    //   afterEvent: [
-    //     // warning: not using !!!!!!!
-    //     // // update personId / create Invitation
-    //     // {
-    //     //   condition : true,
-    //     //   handlerName : 'entity_create_invitation',
-    //     //   previousParameters : {
-    //     //     tableName : 'booking'
-    //     //   }
-    //     // },
-    //     {
-    //       eventName: 'fill_template',
-    //       previousParameters: {
-    //         tableName: 'booking',
-    //         fileName: 'Shipping Order',
-    //         primaryKey: parameters => {
-    //           return parameters.data.id
-    //         },
-    //       },
-    //       condition(parameters: any) {
-    //         return parameters.checkerResult['haveDiff']
-    //       },
-    //     },
-    //   ],
-    // },
+    {
+      condition: true,
+      handlerName: 'checker',
+      otherParameters: {
+        checker: [
+          {
+            resultName: 'haveDiff',
+            checkerFunction: (parameters: any) => {
+              const difference = diff(
+                parameters.oldData,
+                parameters.data,
+                undefined,
+                ['documents'],
+                ['createdAt', 'createdBy', 'updatedAt', 'updatedBy']
+              )
+
+              // console.log('difference')
+              // console.log(difference)
+
+              return difference ? true : false
+            },
+          },
+        ],
+      },
+      afterEvent: [
+        // warning: not using !!!!!!!
+        // // update personId / create Invitation
+        // {
+        //   condition : true,
+        //   handlerName : 'entity_create_invitation',
+        //   previousParameters : {
+        //     tableName : 'booking'
+        //   }
+        // },
+        {
+          eventName: 'fill_template',
+          previousParameters: {
+            tableName: 'booking',
+            fileName: 'Shipping Order',
+            primaryKey: parameters => {
+              return parameters.data.id
+            },
+          },
+          condition(parameters: any) {
+            return parameters.checkerResult['haveDiff']
+          },
+        },
+      ],
+    },
   ],
 } as {
   [eventName: string]: EventConfig[]
