@@ -5,9 +5,13 @@
   "name": "Tracking",
   "remote": true,
   "dataParams": ["context", "return context.$store.state.widget.data"],
-  "axiosBaseParams": {
-    "url": "tracking/getold/{{masterNo | urlEncode}}"
-  },
+  "axiosBaseParams": [
+    "const data = context.$store.state.widget.data;",
+    "return {",
+    "url: `api/tracking/getold/${data.masterNo}`,",
+    "method: 'get'",
+    "}"
+  ],
   "shareProps": {
     "iconMap": {
       "MNF": "tracking/airplane-flying",

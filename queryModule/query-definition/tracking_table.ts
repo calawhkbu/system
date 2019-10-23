@@ -24,17 +24,17 @@ const query = new QueryDef(
       `,
       'tracking_reference',
       new JoinClause(
-            'LEFT',
-            'tracking',
-            new BinaryExpression(
-              new BinaryExpression(
-                new ColumnExpression('tracking', 'trackingNo'),
-                '=',
-                new ColumnExpression('tracking_reference', 'trackingNo')
-              )
-            )
+        'LEFT',
+        'tracking',
+        new BinaryExpression(
+          new BinaryExpression(
+            new ColumnExpression('tracking', 'trackingNo'),
+            '=',
+            new ColumnExpression('tracking_reference', 'trackingNo')
           )
-    )
+        )
+      )
+    ),
   })
 )
 
