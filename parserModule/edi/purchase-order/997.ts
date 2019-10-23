@@ -44,9 +44,9 @@ export default class EdiParser997 extends BaseEdiParser {
     }
     ISA.elementList.push(
       '00',
-      '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
+      '          ',
       '00',
-      '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
+      '          ',
       _.get(entityJSON, 'ISAReceiverQl'),
       _.get(entityJSON, 'ISAReceiverId'),
       _.get(entityJSON, 'ISASenderIdQl'),

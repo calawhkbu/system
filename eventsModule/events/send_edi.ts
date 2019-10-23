@@ -55,8 +55,11 @@ class SendEdiEvent extends BaseEvent {
               trackingReference: await trackingReferenceService.findOne(id)
             }
             try {
-              console.log(value, 'edi315')
-              await ediService.export(process.env.NODE_ENV === 'production' ? partyGroupCode : 'DEV', '315', value)
+              let finalCode = process.env.NODE_ENV === 'production' ? partyGroupCode : 'DEV'
+              if (finalCode === 'ECXD') {
+                finalCode = 'ECX'
+              }
+              await ediService.export(finalCode, '315', value)
             } catch (e) {
               console.log('Error', 'edi315')
               console.error(e, e.stack, this.constructor.name)

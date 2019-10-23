@@ -45,7 +45,7 @@ export default class EdiParser856 extends BaseEdiParser {
     const removeCharbookingNo = bookingNo.replace(/-/g, '')
     const controlNo = (removeCharbookingNo || '').substring((removeCharbookingNo || '').length - 9)
     ISA.elementList.push('00', '          ', '00',
-    '          ', '12', '718978080      ', '08' , '6112390050' , moment(currantDate).format('YYMMDD'), moment(currantDate).format('HHmm'), 'U', '00403', controlNo, '0', 'P', '>')
+    '          ', '12', '718978080      ', '08' , '6112390050     ' , moment(currantDate).format('YYMMDD'), moment(currantDate).format('HHmm'), 'U', '00403', controlNo, '0', 'P', '>')
     data.push(ISA)
     const GS: JSONObject = {
         segement: 'GS',
