@@ -8,7 +8,7 @@
     "const trackingNos = [];",
     "const data = context.$store.state.widget.data;",
     "if (data.bookingReference && data.bookingReference.length > 0) {",
-    "for (const reference of data.bookingReference) {",
+    "for (const reference of data.bookingReference || []) {",
     "if ((reference.refName === 'MAWB' || reference.refName === 'MBL') && reference.refDescription){",
     "trackingNos.push(reference.refDescription)",
     "}",

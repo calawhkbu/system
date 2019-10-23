@@ -78,26 +78,24 @@ export default {
         },
       },
     },
-    //
     // // create booking tracking
     {
       condition: true,
       eventName: 'create_tracking_by_booking',
     },
-    //
     // // fill template of the booking
-    // {
-    //   condition: true,
-    //   eventName: 'fill_template',
-    //   otherParameters: {
-    //     tableName: 'booking',
-    //     fileName: 'Shipping Order',
-    //     // use booking .id as primaryKey
-    //     primaryKey: result => {
-    //       return result.data.id
-    //     },
-    //   },
-    // },
+    {
+      condition: true,
+      eventName: 'fill_template',
+      otherParameters: {
+        tableName: 'booking',
+        fileName: 'Shipping Order',
+        // use booking .id as primaryKey
+        primaryKey: result => {
+          return result.data.id
+        },
+      },
+    },
   ],
   afterUpdate_booking: [
     {
