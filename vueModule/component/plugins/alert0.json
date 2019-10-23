@@ -15,15 +15,6 @@
     "}",
     "};"
   ],
-  "axiosBaseParams": {
-    "method": "POST",
-    "url": "api/alert/list/history-with-old",
-    "data": {
-      "tableName": "{{tableName}}",
-      "primaryKey": "{{primaryKey}}",
-      "afterTime": "{{afterTime}}"
-    }
-  },
   "shareProps": {
     "i18nContext": "Alert",
     "iconType": "",

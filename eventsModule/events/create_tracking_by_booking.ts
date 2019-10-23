@@ -33,6 +33,12 @@ class CreateTrackingEvent extends BaseEvent {
     console.log('Start Create Tracking Event ....', this.constructor.name)
 
     const {
+      TrackService: trackService
+    } = this.allService as {
+      TrackService: TrackService
+    }
+
+    const {
       moduleTypeCode = null,
       carrierCode = null,
       departureDateEstimated = null,
@@ -54,19 +60,22 @@ class CreateTrackingEvent extends BaseEvent {
           }
           return masterNo
         }, null)
-        const soNo = bookingContainers.reduce((soNos: string[], bookingContainer: BookingContainer) => {
-          console.log(bookingContainer, this.constructor.name)
-          if (bookingContainer.soNo && bookingContainer.soNo.length) {
-            soNos.push(bookingContainer.soNo)
-          }
-          return soNos
-        }, [])
-        const containerNo = bookingContainers.reduce((containerNos: string[], bookingContainer: BookingContainer) => {
-          if (bookingContainer.containerNo && bookingContainer.containerNo.length) {
-            containerNos.push(bookingContainer.containerNo)
-          }
-          return containerNos
-        }, [])
+        let soNo = []
+        let containerNo = []
+        if (moduleTypeCode === 'SEA') {
+          soNo = bookingContainers.reduce((soNos: string[], bookingContainer: BookingContainer) => {
+            if (bookingContainer.soNo && bookingContainer.soNo.length) {
+              soNos.push(bookingContainer.soNo)
+            }
+            return soNos
+          }, [])
+          containerNo = bookingContainers.reduce((containerNos: string[], bookingContainer: BookingContainer) => {
+            if (bookingContainer.containerNo && bookingContainer.containerNo.length) {
+              containerNos.push(bookingContainer.containerNo)
+            }
+            return containerNos
+          }, [])
+        }
         const registerForm: RegisterTrackingForm = {
           moduleTypeCode,
           carrierCode,
@@ -78,12 +87,8 @@ class CreateTrackingEvent extends BaseEvent {
             booking: parameters.data
           }
         }
-        const trackService = this.allService['TrackService'] as TrackService
-        if (trackService) {
-          console.log(registerForm, this.constructor.name)
-          await trackService.register(registerForm, this.user)
-        }
-        throw new Error('No tracking Service')
+        console.log(registerForm, this.constructor.name)
+        await trackService.register(registerForm, this.user)
       } catch (e) {
         console.error(e, e.stack, this.constructor.name)
       }
