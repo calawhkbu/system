@@ -59,7 +59,7 @@
           "component": "AsyncSelect",
           "class": "xs-12 md-2",
           "validator": ["required"],
-          "relation": "moduleType",
+          "relation": "service",
           "props": {
             "required": true,
             "axiosParams": {
