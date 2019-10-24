@@ -33,8 +33,8 @@ function prepareParams(): Function {
     params.sorting = new OrderBy(summaryColumnName, 'DESC'),
 
     // select
-    params.fields = [codeColumnName, nameColumnName, summaryColumnName]
-    params.groupBy =  [nameColumnName, codeColumnName]
+    params.fields = [codeColumnName, summaryColumnName]
+    params.groupBy =  [codeColumnName]
 
     return params
   }
@@ -73,10 +73,10 @@ function createTop10Table()
           type : 'string'
 
         },
-        {
-          name : nameColumnName,
-          type : 'string'
-        },
+        // {
+        //   name : nameColumnName,
+        //   type : 'string'
+        // },
         {
           name : summaryColumnName,
           type : 'number'
@@ -142,7 +142,7 @@ function insertTop10Data()
     // compose the record for other
     const otherResult = {}
     otherResult[codeColumnName] = 'other'
-    otherResult[nameColumnName] = 'other',
+    // otherResult[nameColumnName] = 'other',
     otherResult[summaryColumnName] = otherSum
 
     return new InsertJQL('top10', ...top10ShipmentList, otherResult)
@@ -179,7 +179,7 @@ function prepareRawTable()
       $as : new Query({
           $select: [
             new ResultColumn(new ColumnExpression(codeColumnName)),
-            new ResultColumn(new ColumnExpression(nameColumnName)),
+            // new ResultColumn(new ColumnExpression(nameColumnName)),
             new ResultColumn(
               new FunctionExpression('NUMBERIFY', new ColumnExpression(summaryColumnName)),
               summaryColumnName

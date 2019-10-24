@@ -34,13 +34,24 @@ const months = [
   'December',
 ]
 
-function prepareParams(currentYear: boolean): Function {
+function prepareParams(currentYear_: boolean): Function {
+
   const fn = function(require, session, params) {
     const moment = require('moment')
+
     const subqueries = (params.subqueries = params.subqueries || {})
+
+    const { BadRequestException } = require('@nestjs/common')
+
+    console.log(params)
+
+    if (!subqueries.summaryVariable) throw new BadRequestException('MISSING_summaryVariable')
+
+    const summaryVariable = subqueries.summaryVariable.value
+
     if (subqueries.date) {
       let year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
-      if (!currentYear) year -= 1
+      if (!currentYear_) year -= 1
       subqueries.date.from = moment()
         .year(year)
         .startOf('year')
@@ -52,7 +63,7 @@ function prepareParams(currentYear: boolean): Function {
     }
 
     // select
-    params.fields = ['nominatedTypeCode', 'jobMonth', 'totalShipment']
+    params.fields = ['nominatedTypeCode', 'jobMonth', summaryVariable]
 
     // group by
     params.groupBy = ['nominatedTypeCode', 'jobMonth']
@@ -60,73 +71,105 @@ function prepareParams(currentYear: boolean): Function {
     return params
   }
   let code = fn.toString()
-  code = code.replace(new RegExp('currentYear', 'g'), String(currentYear))
+  code = code.replace(new RegExp('currentYear_', 'g'), String(currentYear_))
   return parseCode(code)
 }
 
-function prepareTable(tableName: string, currentYear: boolean): CreateTableJQL {
-  return new CreateTableJQL({
-    $temporary: true,
-    name: tableName,
+function prepareTable(tableName_: string, currentYear_: boolean): CreateTableJQL {
 
-    $as: new Query({
-      $select: [
-        new ResultColumn(
-          new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
-          'month'
-        ),
+  const fn = function(require, session, params) {
 
-        // new ResultColumn(new FunctionExpression('IF' , new BinaryExpression(new ColumnExpression('nominatedTypeCode'), '=', 'F'), 1, 0), 'is_F'),
-        new ResultColumn(
-          new FunctionExpression(
-            'SUM',
-            new FunctionExpression(
-              'if',
-              new BinaryExpression(new ColumnExpression('nominatedTypeCode'), '=', 'F'),
-              new ColumnExpression('count'),
-              0
-            )
+    const {
+      ColumnExpression,
+      CreateTableJQL,
+      FromTable,
+      FunctionExpression,
+      GroupBy,
+      Query,
+      ResultColumn,
+      OrderBy,
+      JoinClause,
+      BinaryExpression,
+      IsNullExpression,
+      CreateFunctionJQL,
+      Value,
+      AndExpressions,
+      InsertJQL,
+      Column,
+    } = require('node-jql')
+
+    const subqueries = (params.subqueries = params.subqueries || {})
+    const summaryVariable = subqueries.summaryVariable.value
+
+    return new CreateTableJQL({
+      $temporary: true,
+      name: tableName_,
+
+      $as: new Query({
+        $select: [
+          new ResultColumn(
+            new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
+            'month'
           ),
-          'F_total'
-        ),
-        new ResultColumn(
-          new FunctionExpression(
-            'SUM',
+
+          // new ResultColumn(new FunctionExpression('IF' , new BinaryExpression(new ColumnExpression('nominatedTypeCode'), '=', 'F'), 1, 0), 'is_F'),
+          new ResultColumn(
             new FunctionExpression(
-              'if',
-              new BinaryExpression(new ColumnExpression('nominatedTypeCode'), '=', 'F'),
-              0,
-              new ColumnExpression('count')
-            )
+              'SUM',
+              new FunctionExpression(
+                'if',
+                new BinaryExpression(new ColumnExpression('nominatedTypeCode'), '=', 'F'),
+                new ColumnExpression('value'),
+                0
+              )
+            ),
+            'F_total'
           ),
-          'R_total'
+          new ResultColumn(
+            new FunctionExpression(
+              'SUM',
+              new FunctionExpression(
+                'if',
+                new BinaryExpression(new ColumnExpression('nominatedTypeCode'), '=', 'F'),
+                0,
+                new ColumnExpression('value')
+              )
+            ),
+            'R_total'
+          ),
+
+          new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('value')), 'total'),
+
+          new ResultColumn(new Value(currentYear_ ? 1 : 0), 'currentYear'),
+
+          new ResultColumn(new ColumnExpression('nominatedTypeCode')),
+          // new ResultColumn(new ColumnExpression('value')),
+        ],
+
+        $from: new FromTable(
+          {
+            method: 'POST',
+            url: 'api/shipment/query/shipment',
+            columns: [
+              { name: 'jobMonth', type: 'string' },
+              { name: 'nominatedTypeCode', type: 'string' },
+              { name: summaryVariable, type: 'number', $as: 'value' },
+            ],
+          },
+          'shipment'
         ),
 
-        new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('count')), 'total'),
+        $group: new GroupBy(new ColumnExpression('jobMonth')),
+        // $group : new GroupBy(['jobMonth', 'nominatedTypeCode'])
+      }),
+    })
+  }
 
-        new ResultColumn(new Value(currentYear ? 1 : 0), 'currentYear'),
+  let code = fn.toString()
+  code = code.replace(new RegExp('currentYear_', 'g'), String(currentYear_))
+  code = code.replace(new RegExp('tableName_', 'g'), `'${tableName_}'`)
+  return parseCode(code)
 
-        new ResultColumn(new ColumnExpression('nominatedTypeCode')),
-        // new ResultColumn(new ColumnExpression('count')),
-      ],
-
-      $from: new FromTable(
-        {
-          method: 'POST',
-          url: 'api/shipment/query/shipment',
-          columns: [
-            { name: 'jobMonth', type: 'string' },
-            { name: 'nominatedTypeCode', type: 'string' },
-            { name: 'totalShipment', type: 'number', $as: 'count' },
-          ],
-        },
-        'shipment'
-      ),
-
-      $group: new GroupBy(new ColumnExpression('jobMonth')),
-      // $group : new GroupBy(['jobMonth', 'nominatedTypeCode'])
-    }),
-  })
 }
 
 function prepareUnionTable(): CreateTableJQL {

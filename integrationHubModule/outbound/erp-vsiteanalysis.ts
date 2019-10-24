@@ -99,13 +99,33 @@ const app = {
       xicltype: '',
       xigntype: '',
     }
+
+    if (subqueries.isColoader)
+    {
+      // filter isColoader cannot be used together with includeCustomer OR excludeCustomer
+      if (subqueries.includeCustomer || subqueries.excludeCustomer)
+        throw new BadRequestException('ISCOLOADER_INCLUDE_EXCLUDE_CUSTOMER_CANNOT_EXIST_BOTH')
+
+      if (subqueries.isColoader.value)
+      {
+        xCustomer.xicltype = 'F'
+      }
+      else{
+
+        xCustomer.xigntype = 'F'
+      }
+
+    }
+
     if (subqueries.includeCustomer && subqueries.excludeCustomer)
       throw new BadRequestException('INCLUDE_EXCLUDE_CUSTOMER_EITHER_ONE')
+
     if (subqueries.includeCustomer)
       xCustomer.xicltype = (Array.isArray(subqueries.includeCustomer.value)
         ? subqueries.includeCustomer.value
         : [subqueries.includeCustomer.value]
       ).join('')
+
     if (subqueries.excludeCustomer)
       xCustomer.xigntype = (Array.isArray(subqueries.excludeCustomer.value)
         ? subqueries.excludeCustomer.value

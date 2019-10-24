@@ -1,22 +1,70 @@
-import { parseCode } from 'utils/function'
 import {
-  Query,
-  FromTable,
-  CreateTableJQL,
-  ResultColumn,
   ColumnExpression,
+  CreateTableJQL,
+  FromTable,
   FunctionExpression,
-  MathExpression,
+  GroupBy,
+  Query,
+  ResultColumn,
+  OrderBy,
+  JoinClause,
+  BinaryExpression,
+  IsNullExpression,
   CreateFunctionJQL,
+  Value,
+  AndExpressions,
+  InsertJQL,
+  Column,
+  MathExpression,
 } from 'node-jql'
 
-function prepareParams(thisYear: boolean, nominatedType_: 'F' | 'R'): Function {
+import { parseCode } from 'utils/function'
+
+function createProfitTable() {
+
+  return function(require, session, params) {
+
+    const { CreateTableJQL } = require('node-jql')
+
+    const profitSummaryVariables = params.subqueries.profitSummaryVariables.value
+    // const profitSummaryVariables = ['grossProfit', 'profitShare', 'profitShareCost', 'profitShareIncome', 'revenue']
+
+    return new CreateTableJQL({
+
+      name: 'profit_raw',
+      columns: [
+
+        {
+          name: 'current',
+          type: 'boolean'
+        },
+        {
+          name: 'month',
+          type: 'string'
+        },
+
+        {
+          name: 'type',
+          type: 'string'
+        },
+
+        ...profitSummaryVariables.map(variable => ({ name: variable, type: 'number' }))
+
+      ]
+
+    })
+
+  }
+
+}
+
+function prepareProfitParams(currentYear_: boolean, nominatedType_: 'F' | 'R'): Function {
   const fn = function(require, session, params) {
     const moment = require('moment')
     const subqueries = (params.subqueries = params.subqueries || {})
     if (subqueries.date) {
       let year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
-      if (!thisYear) year -= 1
+      if (!currentYear_) year -= 1
       subqueries.date.from = moment()
         .year(year)
         .startOf('year')
@@ -26,42 +74,66 @@ function prepareParams(thisYear: boolean, nominatedType_: 'F' | 'R'): Function {
         .endOf('year')
         .format('YYYY-MM-DD')
     }
-    if (subqueries) subqueries.nominatedType = { value: nominatedType_ }
+
+    subqueries.nominatedTypeCode = { value: nominatedType_ }
+    // subqueries.isColoader = { value: false }
+
     return params
   }
   let code = fn.toString()
-  code = code.replace(new RegExp('thisYear', 'g'), String(thisYear))
+  code = code.replace(new RegExp('currentYear_', 'g'), String(currentYear_))
   code = code.replace(new RegExp('nominatedType_', 'g'), `'${nominatedType_}'`)
   return parseCode(code)
 }
 
-function prepareTable(name: string): CreateTableJQL {
-  return new CreateTableJQL({
-    $temporary: true,
-    name,
-    $as: new Query({
-      $select: [
-        new ResultColumn(
-          new FunctionExpression('YEAR', new ColumnExpression('jobMonth'), 'YYYY-MM'),
-          'year'
-        ),
-        new ResultColumn(
-          new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
-          'month'
-        ),
-        new ResultColumn('currency'),
-        new ResultColumn('grossProfit'),
-        new ResultColumn(
-          new MathExpression(
-            new ColumnExpression('grossProfit'),
-            '/',
-            new ColumnExpression('revenue')
+function insertProfitData(currentYear_: boolean, nominatedType_: 'F' | 'R') {
+
+  const fn = function(require, session, params) {
+
+    const { InsertJQL, ResultColumn, FunctionExpression, Value, ColumnExpression, FromTable, Query, MathExpression } = require('node-jql')
+
+    const profitSummaryVariables = params.subqueries.profitSummaryVariables.value
+    // const profitSummaryVariables = ['grossProfit', 'profitShare', 'profitShareCost', 'profitShareIncome', 'revenue']
+
+    return new InsertJQL({
+      name: 'profit_raw',
+      columns: [...profitSummaryVariables, 'type', 'month', 'current'],
+      query: new Query({
+
+        $select: [
+
+          // warning : profitSummaryVariables should also contains grossProfit and revenue if margin is selected
+          ...profitSummaryVariables.map(variable =>
+            {
+
+              if (variable === 'margin')
+              {
+
+                return new ResultColumn(
+                  new MathExpression(
+                    new ColumnExpression('grossProfit'),
+                    '/',
+                    new ColumnExpression('revenue')
+                  ),
+                  'margin'
+                )
+
+              }
+
+              return new ResultColumn(new ColumnExpression(variable))
+
+            }),
+
+          new ResultColumn(new Value(nominatedType_), 'type'),
+
+          new ResultColumn(
+            new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
+            'month'
           ),
-          'margin'
-        ),
-      ],
-      $from: new FromTable(
-        {
+          new ResultColumn(new Value(currentYear_), 'current'),
+        ],
+
+        $from: new FromTable({
           method: 'POST',
           url: 'api/shipment/query/profit',
           columns: [
@@ -70,160 +142,100 @@ function prepareTable(name: string): CreateTableJQL {
               type: 'string',
             },
             {
-              name: 'currency',
-              type: 'string',
-            },
-            {
               name: 'jobMonth',
               type: 'string',
             },
-            {
-              name: 'grossProfit',
-              type: 'number',
-            },
-            {
-              name: 'revenue',
-              type: 'number',
-            },
+
+            ...profitSummaryVariables.map(variable => ({ name: variable, type: 'number' })) as any,
+
           ],
-        },
-        name
-      ),
-    }),
-  })
+        }, 'dumb')
+
+      })
+
+    })
+
+  }
+
+  let code = fn.toString()
+  code = code.replace(new RegExp('currentYear_', 'g'), String(currentYear_))
+  code = code.replace(new RegExp('nominatedType_', 'g'), `'${nominatedType_}'`)
+  return parseCode(code)
+
+}
+
+function processProfitSummary() {
+
+  return function(require, session, params) {
+
+    const showMonth = (params.subqueries.showMonth) || false
+
+    const { ResultColumn, FunctionExpression, AndExpressions, BinaryExpression, ColumnExpression, CreateTableJQL, Query } = require('node-jql')
+
+    const profitSummaryVariables = params.subqueries.profitSummaryVariables.value
+    // const profitSummaryVariables = ['grossProfit', 'profitShare', 'profitShareCost', 'profitShareIncome', 'revenue']
+
+    const isCurrentList = [true, false]
+    const types = ['F', 'R']
+
+    const $select = []
+
+    if (showMonth) {
+      $select.push(new ResultColumn('month'))
+
+    }
+
+    profitSummaryVariables.map(variable => {
+
+      isCurrentList.map(isCurrent => {
+
+        types.map(type => {
+
+          $select.push(
+
+            new ResultColumn(
+
+              new FunctionExpression('IFNULL',
+                new FunctionExpression('FIND',
+                  new AndExpressions([
+
+                    new BinaryExpression(new ColumnExpression('type'), '=', type),
+                    new BinaryExpression(new ColumnExpression('current'), '=', isCurrent)
+
+                  ]),
+
+                  new ColumnExpression(variable)
+
+                ), 0), `${isCurrent ? 'current' : 'last'}_${type}_${variable}`)
+
+          )
+
+        })
+
+      })
+
+    })
+
+    return new Query({
+
+      $select,
+      $from: 'profit_raw',
+      $group: 'month'
+
+    })
+  }
+
 }
 
 export default [
-  // prepare function
-  new CreateFunctionJQL(
-    'PERCENT_CHANGE',
-    function(parameter: any, currValue: number, lastValue: number) {
-      if (currValue === 0 || lastValue === 0 || isNaN(currValue) || isNaN(lastValue)) return NaN
-      return (currValue - lastValue) / Math.abs(lastValue)
-    },
-    'number',
-    'number',
-    'number'
-  ),
 
-  // prepare tables
-  [prepareParams(true, 'F'), prepareTable('current_F')],
-  [prepareParams(true, 'R'), prepareTable('current_R')],
-  [prepareParams(false, 'F'), prepareTable('last_F')],
-  [prepareParams(false, 'R'), prepareTable('last_R')],
+  // prepare all profit table
+  createProfitTable(),
+  [prepareProfitParams(true, 'F'), insertProfitData(true, 'F')],
+  [prepareProfitParams(false, 'F'), insertProfitData(false, 'F')],
+  [prepareProfitParams(true, 'R'), insertProfitData(true, 'R')],
+  [prepareProfitParams(false, 'R'), insertProfitData(false, 'R')],
 
-  // finalize
-  function(require, session, params) {
-    const {
-      Query,
-      FromTable,
-      ResultColumn,
-      ColumnExpression,
-      FunctionExpression,
-      JoinClause,
-      BinaryExpression,
-    } = require('node-jql')
-    const query = new Query({
-      $select: [
-        new ResultColumn(
-          new FunctionExpression('ROUND', new ColumnExpression('cf', 'grossProfit'), 0),
-          'grossProfit_F'
-        ),
-        new ResultColumn(
-          new FunctionExpression('ROUND', new ColumnExpression('cr', 'grossProfit'), 0),
-          'grossProfit_R'
-        ),
-        new ResultColumn(
-          new FunctionExpression('NUMBER_FORMAT', new ColumnExpression('cf', 'margin'), '0.00%'),
-          'margin_F'
-        ),
-        new ResultColumn(
-          new FunctionExpression('NUMBER_FORMAT', new ColumnExpression('cr', 'margin'), '0.00%'),
-          'margin_R'
-        ),
-        new ResultColumn(
-          new FunctionExpression(
-            'NUMBER_FORMAT',
-            new FunctionExpression(
-              'PERCENT_CHANGE',
-              new ColumnExpression('cf', 'grossProfit'),
-              new ColumnExpression('lf', 'grossProfit')
-            ),
-            '0.00%'
-          ),
-          'pc_grossProfit_F'
-        ),
-        new ResultColumn(
-          new FunctionExpression(
-            'NUMBER_FORMAT',
-            new FunctionExpression(
-              'PERCENT_CHANGE',
-              new ColumnExpression('cr', 'grossProfit'),
-              new ColumnExpression('lr', 'grossProfit')
-            ),
-            '0.00%'
-          ),
-          'pc_grossProfit_R'
-        ),
-        new ResultColumn(
-          new FunctionExpression(
-            'NUMBER_FORMAT',
-            new FunctionExpression(
-              'PERCENT_CHANGE',
-              new ColumnExpression('cf', 'margin'),
-              new ColumnExpression('lf', 'margin')
-            ),
-            '0.00%'
-          ),
-          'pc_margin_F'
-        ),
-        new ResultColumn(
-          new FunctionExpression(
-            'NUMBER_FORMAT',
-            new FunctionExpression(
-              'PERCENT_CHANGE',
-              new ColumnExpression('cr', 'margin'),
-              new ColumnExpression('lr', 'margin')
-            ),
-            '0.00%'
-          ),
-          'pc_margin_R'
-        ),
-      ],
-      $from: new FromTable(
-        'current_F',
-        'cf',
-        new JoinClause(
-          'LEFT',
-          new FromTable('current_R', 'cr'),
-          new BinaryExpression(
-            new ColumnExpression('cf', 'month'),
-            '=',
-            new ColumnExpression('cr', 'month')
-          )
-        ),
-        new JoinClause(
-          'LEFT',
-          new FromTable('last_F', 'lf'),
-          new BinaryExpression(
-            new ColumnExpression('cf', 'month'),
-            '=',
-            new ColumnExpression('lf', 'month')
-          )
-        ),
-        new JoinClause(
-          'LEFT',
-          new FromTable('last_R', 'lr'),
-          new BinaryExpression(
-            new ColumnExpression('cf', 'month'),
-            '=',
-            new ColumnExpression('lr', 'month')
-          )
-        )
-      ),
-    })
-    if (params.subqueries && params.subqueries.showMonth)
-      query.$select.unshift(new ResultColumn(new ColumnExpression('cf', 'month'), 'month'))
-    return query
-  },
+  processProfitSummary(),
+
 ]

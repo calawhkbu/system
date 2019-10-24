@@ -135,7 +135,7 @@
               "api": {
                 "query": {
                   "method": "POST",
-                  "url": "api/party/query/party_auto_suggest",
+                  "url": "api/party/query/office_auto_suggest",
 
                   "data": {
                     "subqueries": {
@@ -153,7 +153,7 @@
                 },
                 "resolve": {
                   "method": "POST",
-                  "url": "api/party/query/party_auto_suggest",
+                  "url": "api/party/query/office_auto_suggest",
 
                   "data": {
                     "subqueries": {
@@ -601,19 +601,34 @@
             "type": "list",
 
             "props": {
-              "multi": true,
               "items": [
                 {
-                  "label": "division1",
-                  "value": "division1"
+                  "value": "AE",
+                  "label": "Air Export"
                 },
                 {
-                  "label": "division2",
-                  "value": "division2"
+                  "value": "AI",
+                  "label": "Air Import"
                 },
                 {
-                  "label": "division3",
-                  "value": "division3"
+                  "value": "AM",
+                  "label": "Air Misc."
+                },
+                {
+                  "value": "SE",
+                  "label": "Sea Export"
+                },
+                {
+                  "value": "SI",
+                  "label": "Sea Import"
+                },
+                {
+                  "value": "SM",
+                  "label": "Sea Misc."
+                },
+                {
+                  "value": "Logistics",
+                  "label": "Logistics"
                 }
               ]
             }
