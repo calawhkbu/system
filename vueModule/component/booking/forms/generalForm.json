@@ -3,14 +3,14 @@
     "is": "WidgetForm",
     "props": {
       "fields": [
-        
+
         {
           "label": "BookingPage.moduleType",
           "name": "moduleTypeCode",
           "component": "AsyncSelect",
           "class": "xs-12 md-2",
-          "validator": ["required"],
           "relation": "moduleType",
+          "validator": ["required"],
           "props": {
             "required": true,
             "axiosParams": {
@@ -59,6 +59,7 @@
           "component": "AsyncSelect",
           "class": "xs-12 md-2",
           "validator": ["required"],
+          "relation": "moduleType",
           "props": {
             "required": true,
             "axiosParams": {
@@ -426,6 +427,7 @@
           "name": "freightTermsCode",
           "component": "AsyncSelect",
           "class": "xs-12 md-3",
+          "relation": "freightTerms",
           "props": {
             "axiosParams": {
               "url": "api/code/query/code_master",
@@ -447,6 +449,7 @@
           "name": "otherTermsCode",
           "component": "AsyncSelect",
           "class": "xs-12 md-3",
+          "relation": "otherTerms",
           "props": {
             "axiosParams": {
               "url": "api/code/query/code_master",

@@ -112,6 +112,7 @@
                   "component": "AsyncSelect",
                   "class": "xs-12 md-3",
                   "validator": ["required"],
+                  "relation": "service",
                   "props": {
                     "required": true,
                     "axiosParams": {
@@ -479,6 +480,7 @@
                   "name": "freightTermsCode",
                   "component": "AsyncSelect",
                   "class": "xs-12 md-1",
+                  "relation": "freightTerms",
                   "props": {
                     "axiosParams": {
                       "url": "api/code/query/code_master",
@@ -623,7 +625,7 @@
           {
             "is": "DynamicComponent",
             "props": {
-              "class": "flex padding-leftright-8",
+              "class": "flex padding-leftright-8 padding-topbottom-4",
               "components": [{
                   "is": "v-btn",
                   "props": {
@@ -675,7 +677,7 @@
         "components": [{
             "is": "DynamicComponent",
             "props": {
-              "class": "flex align-item-center full-width padding-left-36",
+              "class": "flex align-item-center full-width padding-top-4 padding-bottom-4",
               "components": [{
                   "is": "v-btn",
                   "props": {
@@ -788,7 +790,7 @@
                           "type": "booking-term",
                           "confirmTermI18nText": "BookingPage.confirmTerm",
                           "termProps": {
-                            "class": "margin-leftright-4 padding-leftright-4 min-height-200 max-height-300 overflow-auto"
+                            "class": "margin-leftright-4 padding-leftright-4 overflow-auto"
                           }
                         }
                       }]
