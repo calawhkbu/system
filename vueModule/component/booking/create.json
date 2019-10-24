@@ -52,7 +52,7 @@
                     "class": "padding-topbottom-8 padding-leftright-4"
                   },
                   "label": "BookingPage.moduleType",
-                  "name": "moduleTypeCode",
+                  "name": "moduleType",
                   "component": "AsyncSelect",
                   "class": "xs-12 md-3",
                   "validator": ["required"],
