@@ -3,14 +3,17 @@
     "is": "WidgetForm",
     "props": {
       "fields": [
-        
+
         {
           "label": "BookingPage.moduleType",
-          "name": "moduleTypeCode",
+          "name": "moduleType",
           "component": "AsyncSelect",
           "class": "xs-12 md-2",
           "validator": ["required"],
-          "relation": "moduleType",
+          "more": [{
+            "name": "moduleTypeCode",
+            "selector": "code"
+          }],
           "props": {
             "required": true,
             "axiosParams": {
@@ -31,10 +34,13 @@
         },
         {
           "label": "BookingPage.boundType",
-          "name": "boundTypeCode",
+          "name": "boundType",
           "component": "AsyncSelect",
           "class": "xs-12 md-2",
-          "relation": "boundType",
+          "more": [{
+            "name": "boundTypeCode",
+            "selector": "code"
+          }],
           "validator": ["required"],
           "props": {
             "required": true,
@@ -55,10 +61,14 @@
         },
         {
           "label": "BookingPage.serviceCode",
-          "name": "serviceCode",
+          "name": "service",
           "component": "AsyncSelect",
           "class": "xs-12 md-2",
           "validator": ["required"],
+          "more": [{
+            "name": "serviceCode",
+            "selector": "code"
+          }],
           "props": {
             "required": true,
             "axiosParams": {
@@ -423,9 +433,13 @@
         },
         {
           "label": "BookingPage.freightTermsCode",
-          "name": "freightTermsCode",
+          "name": "freightTerms",
           "component": "AsyncSelect",
           "class": "xs-12 md-3",
+          "more": [{
+            "name": "freightTermsCode",
+            "selector": "code"
+          }],
           "props": {
             "axiosParams": {
               "url": "api/code/query/code_master",
@@ -444,9 +458,13 @@
         },
         {
           "label": "BookingPage.otherTerms",
-          "name": "otherTermsCode",
+          "name": "otherTerms",
           "component": "AsyncSelect",
           "class": "xs-12 md-3",
+          "more": [{
+            "name": "otherTermsCode",
+            "selector": "code"
+          }],
           "props": {
             "axiosParams": {
               "url": "api/code/query/code_master",

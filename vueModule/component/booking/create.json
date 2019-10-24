@@ -56,7 +56,10 @@
                   "component": "AsyncSelect",
                   "class": "xs-12 md-3",
                   "validator": ["required"],
-                  "relation": "moduleType",
+                  "more": [{
+                    "name": "moduleTypeCode",
+                    "selector": "code"
+                  }],
                   "props": {
                     "required": true,
                     "axiosParams": {
@@ -83,7 +86,10 @@
                   "name": "boundTypeCode",
                   "component": "AsyncSelect",
                   "class": "xs-12 md-3",
-                  "relation": "boundType",
+                  "more": [{
+                    "name": "boundTypeCode",
+                    "selector": "code"
+                  }],
                   "validator": ["required"],
                   "props": {
                     "required": true,
@@ -108,10 +114,14 @@
                     "class": "padding-topbottom-8 padding-leftright-4"
                   },
                   "label": "BookingPage.serviceCode",
-                  "name": "serviceCode",
+                  "name": "service",
                   "component": "AsyncSelect",
                   "class": "xs-12 md-3",
                   "validator": ["required"],
+                  "more": [{
+                    "name": "serviceCode",
+                    "selector": "code"
+                  }],
                   "props": {
                     "required": true,
                     "axiosParams": {
@@ -623,7 +633,7 @@
           {
             "is": "DynamicComponent",
             "props": {
-              "class": "flex padding-leftright-8",
+              "class": "flex padding-leftright-8 padding-topbottom-4",
               "components": [{
                   "is": "v-btn",
                   "props": {
@@ -675,7 +685,7 @@
         "components": [{
             "is": "DynamicComponent",
             "props": {
-              "class": "flex align-item-center full-width padding-left-36",
+              "class": "flex align-item-center full-width padding-top-4 padding-bottom-4",
               "components": [{
                   "is": "v-btn",
                   "props": {
@@ -788,7 +798,7 @@
                           "type": "booking-term",
                           "confirmTermI18nText": "BookingPage.confirmTerm",
                           "termProps": {
-                            "class": "margin-leftright-4 padding-leftright-4 min-height-200 max-height-300 overflow-auto"
+                            "class": "margin-leftright-4 padding-leftright-4 overflow-auto"
                           }
                         }
                       }]

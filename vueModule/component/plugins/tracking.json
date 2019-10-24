@@ -4,6 +4,7 @@
   "width": "50%",
   "name": "Tracking",
   "remote": true,
+  "loadWhenDataLoaded": true,
   "axiosBaseParams": [
     "const trackingNos = [];",
     "const data = context.$store.state.widget.data;",
