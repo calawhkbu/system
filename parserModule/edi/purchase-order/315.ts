@@ -82,7 +82,7 @@ export default class EdiParser997 extends BaseEdiParser {
           }
 
           GS.elementList.push(
-            'FA',
+            'QO',
             '718978080',
             '6112390050',
             moment(currantDate).format('YYYYMMDD'),
