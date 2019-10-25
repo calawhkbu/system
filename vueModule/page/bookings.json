@@ -13,7 +13,7 @@
       "newReport": {
         "filters": {
           "isActive": true,
-          "_date": {
+          "date": {
             "func": {
               "args": {
                 "unit": "year"
