@@ -52,7 +52,7 @@ function prepareParams(currentYear: boolean): Function {
     }
 
     // select
-    params.fields = ['nominatedTypeCode', 'jobMonth', 'shipments']
+    params.fields = ['nominatedTypeCode', 'jobMonth', 'totalShipment']
 
     // group by
     params.groupBy = ['nominatedTypeCode', 'jobMonth']
@@ -117,7 +117,7 @@ function prepareTable(tableName: string, currentYear: boolean): CreateTableJQL {
           columns: [
             { name: 'jobMonth', type: 'string' },
             { name: 'nominatedTypeCode', type: 'string' },
-            { name: 'shipments', type: 'number', $as: 'count' },
+            { name: 'totalShipment', type: 'number', $as: 'count' },
           ],
         },
         'shipment'
