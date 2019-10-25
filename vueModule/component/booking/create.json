@@ -56,10 +56,7 @@
                   "component": "AsyncSelect",
                   "class": "xs-12 md-3",
                   "validator": ["required"],
-                  "more": [{
-                    "name": "moduleTypeCode",
-                    "selector": "code"
-                  }],
+                  "relation": "moduleType",
                   "props": {
                     "required": true,
                     "axiosParams": {
@@ -86,10 +83,7 @@
                   "name": "boundTypeCode",
                   "component": "AsyncSelect",
                   "class": "xs-12 md-3",
-                  "more": [{
-                    "name": "boundTypeCode",
-                    "selector": "code"
-                  }],
+                  "relation": "boundType",
                   "validator": ["required"],
                   "props": {
                     "required": true,
@@ -114,14 +108,11 @@
                     "class": "padding-topbottom-8 padding-leftright-4"
                   },
                   "label": "BookingPage.serviceCode",
-                  "name": "service",
+                  "name": "serviceCode",
                   "component": "AsyncSelect",
                   "class": "xs-12 md-3",
                   "validator": ["required"],
-                  "more": [{
-                    "name": "serviceCode",
-                    "selector": "code"
-                  }],
+                  "relation": "service",
                   "props": {
                     "required": true,
                     "axiosParams": {
@@ -489,6 +480,7 @@
                   "name": "freightTermsCode",
                   "component": "AsyncSelect",
                   "class": "xs-12 md-1",
+                  "relation": "freightTerms",
                   "props": {
                     "axiosParams": {
                       "url": "api/code/query/code_master",
