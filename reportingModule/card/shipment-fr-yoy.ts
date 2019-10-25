@@ -43,11 +43,8 @@ function prepareParams(currentYear_: boolean): Function {
 
     const { BadRequestException } = require('@nestjs/common')
 
-    console.log(params)
-
-    if (!subqueries.summaryVariable) throw new BadRequestException('MISSING_summaryVariable')
-
-    const summaryVariable = subqueries.summaryVariable.value
+    if (!subqueries.summaryVariables) throw new BadRequestException('MISSING_summaryVariable')
+    const summaryVariables = subqueries.summaryVariables.value
 
     if (subqueries.date) {
       let year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
@@ -63,7 +60,7 @@ function prepareParams(currentYear_: boolean): Function {
     }
 
     // select
-    params.fields = ['nominatedTypeCode', 'jobMonth', summaryVariable]
+    params.fields = ['nominatedTypeCode', 'jobMonth', ...summaryVariables]
 
     // group by
     params.groupBy = ['nominatedTypeCode', 'jobMonth']
@@ -75,7 +72,7 @@ function prepareParams(currentYear_: boolean): Function {
   return parseCode(code)
 }
 
-function prepareTable(tableName_: string, currentYear_: boolean): CreateTableJQL {
+function prepareTable(tableName_: string, currentYear_: boolean) {
 
   const fn = function(require, session, params) {
 
@@ -87,64 +84,55 @@ function prepareTable(tableName_: string, currentYear_: boolean): CreateTableJQL
       GroupBy,
       Query,
       ResultColumn,
-      OrderBy,
-      JoinClause,
       BinaryExpression,
-      IsNullExpression,
-      CreateFunctionJQL,
       Value,
-      AndExpressions,
-      InsertJQL,
-      Column,
     } = require('node-jql')
 
-    const subqueries = (params.subqueries = params.subqueries || {})
-    const summaryVariable = subqueries.summaryVariable.value
+    const summaryVariables = params.subqueries.summaryVariables.value as string[]
+    const types = ['F', 'R']
+
+    const $select = [
+
+      new ResultColumn(
+        new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
+        'month'
+      ),
+
+      new ResultColumn(new Value(currentYear_), 'currentYear'),
+      new ResultColumn(new ColumnExpression('nominatedTypeCode')),
+    ]
+
+    summaryVariables.map(variable => {
+
+      types.map(type => {
+
+        $select.push(new ResultColumn(
+          new FunctionExpression(
+            'SUM',
+            new FunctionExpression(
+              'if',
+              new BinaryExpression(new ColumnExpression('nominatedTypeCode'), '=', type),
+              new ColumnExpression(variable),
+              0
+            )
+          ),
+          `${type}_${variable}`
+        )
+        )
+
+      })
+
+      $select.push(new ResultColumn(new FunctionExpression('SUM', new ColumnExpression(variable)), `total_${variable}`))
+
+    })
 
     return new CreateTableJQL({
       $temporary: true,
       name: tableName_,
 
       $as: new Query({
-        $select: [
-          new ResultColumn(
-            new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
-            'month'
-          ),
 
-          // new ResultColumn(new FunctionExpression('IF' , new BinaryExpression(new ColumnExpression('nominatedTypeCode'), '=', 'F'), 1, 0), 'is_F'),
-          new ResultColumn(
-            new FunctionExpression(
-              'SUM',
-              new FunctionExpression(
-                'if',
-                new BinaryExpression(new ColumnExpression('nominatedTypeCode'), '=', 'F'),
-                new ColumnExpression('value'),
-                0
-              )
-            ),
-            'F_total'
-          ),
-          new ResultColumn(
-            new FunctionExpression(
-              'SUM',
-              new FunctionExpression(
-                'if',
-                new BinaryExpression(new ColumnExpression('nominatedTypeCode'), '=', 'F'),
-                0,
-                new ColumnExpression('value')
-              )
-            ),
-            'R_total'
-          ),
-
-          new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('value')), 'total'),
-
-          new ResultColumn(new Value(currentYear_ ? 1 : 0), 'currentYear'),
-
-          new ResultColumn(new ColumnExpression('nominatedTypeCode')),
-          // new ResultColumn(new ColumnExpression('value')),
-        ],
+        $select,
 
         $from: new FromTable(
           {
@@ -153,7 +141,8 @@ function prepareTable(tableName_: string, currentYear_: boolean): CreateTableJQL
             columns: [
               { name: 'jobMonth', type: 'string' },
               { name: 'nominatedTypeCode', type: 'string' },
-              { name: summaryVariable, type: 'number', $as: 'value' },
+
+              ...summaryVariables.map(variable => ({ name: variable, type: 'number' })),
             ],
           },
           'shipment'
@@ -188,168 +177,74 @@ function prepareUnionTable(): CreateTableJQL {
   })
 }
 
-function prepareFinalTable(): CreateTableJQL {
-  const tableName = 'final'
+function prepareFinalTable() {
 
-  return new CreateTableJQL({
-    $temporary: true,
-    name: tableName,
+  return function(require, session, params) {
 
-    $as: new Query({
-      $select: [
-        new ResultColumn(new ColumnExpression('month')),
+    const { Query, ResultColumn, ColumnExpression, FunctionExpression, AndExpressions, BinaryExpression, CreateTableJQL, GroupBy } = require('node-jql')
 
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
+    const summaryVariables = params.subqueries.summaryVariables.value
 
-              new AndExpressions([
-                new BinaryExpression(new ColumnExpression('currentYear'), '=', 1),
-                new BinaryExpression(
-                  new ColumnExpression('month'),
-                  '=',
-                  new ColumnExpression('month')
+    const types = ['F', 'R', 'total']
+    const isCurrentList = [true, false]
+
+    const tableName = 'final'
+
+    const $select = [
+      new ResultColumn(new ColumnExpression('month'))
+    ]
+
+    summaryVariables.map(variable => {
+
+      isCurrentList.map(isCurrent => {
+        types.map(type => {
+
+          $select.push(
+
+            new ResultColumn(
+              new FunctionExpression(
+                'IFNULL',
+                new FunctionExpression(
+                  'FIND',
+
+                  new AndExpressions([
+                    new BinaryExpression(new ColumnExpression('currentYear'), '=', isCurrent),
+                    new BinaryExpression(
+                      new ColumnExpression('month'),
+                      '=',
+                      new ColumnExpression('month')
+                    ),
+                  ]),
+
+                  new ColumnExpression(`${type}_${variable}`)
                 ),
-              ]),
+                0
+              ),
+              `${isCurrent ? 'current' : 'last'}_${type}_${variable}`
+            )
 
-              new ColumnExpression('F_total')
-            ),
-            0
-          ),
-          'currentYear_F'
-        ),
+          )
 
-        // ---------------------------------------------------
+        })
+      })
 
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
+    })
 
-              new AndExpressions([
-                new BinaryExpression(new ColumnExpression('currentYear'), '=', 1),
-                new BinaryExpression(
-                  new ColumnExpression('month'),
-                  '=',
-                  new ColumnExpression('month')
-                ),
-              ]),
+    return new CreateTableJQL({
+      $temporary: true,
+      name: tableName,
 
-              new ColumnExpression('R_total')
-            ),
-            0
-          ),
-          'currentYear_R'
-        ),
+      $as: new Query({
 
-        // --------------------------------------------
+        $select,
 
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
+        $group: new GroupBy(new ColumnExpression('month')),
 
-              new AndExpressions([
-                new BinaryExpression(new ColumnExpression('currentYear'), '=', 1),
-                new BinaryExpression(
-                  new ColumnExpression('month'),
-                  '=',
-                  new ColumnExpression('month')
-                ),
-              ]),
+        $from: 'union',
+      }),
+    })
+  }
 
-              new ColumnExpression('total')
-            ),
-            0
-          ),
-          'currentYear_total'
-        ),
-
-        // ---------------------------------------------------
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
-
-              new AndExpressions([
-                new BinaryExpression(new ColumnExpression('currentYear'), '=', 0),
-                new BinaryExpression(
-                  new ColumnExpression('month'),
-                  '=',
-                  new ColumnExpression('month')
-                ),
-              ]),
-
-              new ColumnExpression('F_total')
-            ),
-            0
-          ),
-          'lastYear_F'
-        ),
-
-        // ---------------------------------------------------
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
-
-              new AndExpressions([
-                new BinaryExpression(new ColumnExpression('currentYear'), '=', 0),
-                new BinaryExpression(
-                  new ColumnExpression('month'),
-                  '=',
-                  new ColumnExpression('month')
-                ),
-              ]),
-
-              new ColumnExpression('F_total')
-            ),
-            0
-          ),
-          'lastYear_R'
-        ),
-
-        // -----------------------------------------------------
-
-        new ResultColumn(
-          new FunctionExpression(
-            'IFNULL',
-            new FunctionExpression(
-              'FIND',
-
-              new AndExpressions([
-                new BinaryExpression(new ColumnExpression('currentYear'), '=', 0),
-                new BinaryExpression(
-                  new ColumnExpression('month'),
-                  '=',
-                  new ColumnExpression('month')
-                ),
-              ]),
-
-              new ColumnExpression('total')
-            ),
-            0
-          ),
-          'lastYear_total'
-        ),
-
-        // new ResultColumn(new ColumnExpression('F_total')),
-        // new ResultColumn(new ColumnExpression('R_total')),
-      ],
-
-      $group: new GroupBy(new ColumnExpression('month')),
-
-      $from: 'union',
-    }),
-  })
 }
 
 function prepareMonthTable(name: string): CreateTableJQL {
@@ -373,11 +268,65 @@ function insertMonthTable(name: string): InsertJQL {
   return new InsertJQL(name, ...result)
 }
 
+function finalQuery() {
+
+  return function(require, session, params) {
+
+    const { Query, ResultColumn, ColumnExpression, FunctionExpression, FromTable, BinaryExpression, OrderBy } = require('node-jql')
+
+    const summaryVariables = params.subqueries.summaryVariables.value
+    const showMonth = params.subqueries.showMonth
+
+    const isCurrentList = [true, false]
+    const types = ['F', 'R', 'total']
+
+    const $select = []
+
+    summaryVariables.map(variable => {
+
+      isCurrentList.map(isCurrent => {
+
+        types.map(type => {
+          const columnName = `${isCurrent ? 'current' : 'last'}_${type}_${variable}`
+          $select.push(
+            new ResultColumn(
+              new FunctionExpression('IFNULL', new ColumnExpression('final', columnName), 0),
+              columnName
+            ),
+          )
+        })
+
+      })
+
+    })
+
+    if (showMonth) {
+      $select.push(new ResultColumn(new ColumnExpression('month', 'month'), 'month'))
+    }
+
+    return new Query({
+
+      $select,
+      $from: new FromTable('month', 'month', {
+        operator: 'LEFT',
+        table: 'final',
+        $on: new BinaryExpression(
+          new ColumnExpression('final', 'month'),
+          '=',
+          new ColumnExpression('month', 'month')
+        ),
+      }),
+
+      $order: new OrderBy(new ColumnExpression('month', 'order')),
+    })
+
+  }
+}
+
 export default [
   // prepare 2 table and union them
   [prepareParams(true), prepareTable('current', true)],
   [prepareParams(false), prepareTable('last', false)],
-
   prepareUnionTable(),
 
   prepareMonthTable('month'),
@@ -385,46 +334,33 @@ export default [
 
   prepareFinalTable(),
 
-  new Query({
-    $select: [
-      new ResultColumn(new ColumnExpression('month', 'month'), 'month'),
-      new ResultColumn(
-        new FunctionExpression('IFNULL', new ColumnExpression('final', 'currentYear_F'), 0),
-        'currentYear_F'
-      ),
-      new ResultColumn(
-        new FunctionExpression('IFNULL', new ColumnExpression('final', 'currentYear_R'), 0),
-        'currentYear_R'
-      ),
-      new ResultColumn(
-        new FunctionExpression('IFNULL', new ColumnExpression('final', 'currentYear_total'), 0),
-        'currentYear_total'
-      ),
+  finalQuery()
 
-      new ResultColumn(
-        new FunctionExpression('IFNULL', new ColumnExpression('final', 'lastYear_F'), 0),
-        'lastYear_F'
-      ),
-      new ResultColumn(
-        new FunctionExpression('IFNULL', new ColumnExpression('final', 'lastYear_R'), 0),
-        'lastYear_R'
-      ),
-      new ResultColumn(
-        new FunctionExpression('IFNULL', new ColumnExpression('final', 'lastYear_total'), 0),
-        'lastYear_total'
-      ),
-    ],
+]
 
-    $from: new FromTable('month', 'month', {
-      operator: 'LEFT',
-      table: 'final',
-      $on: new BinaryExpression(
-        new ColumnExpression('final', 'month'),
-        '=',
-        new ColumnExpression('month', 'month')
-      ),
-    }),
+// filters avaliable for this card
+// all card in DB record using this jql will have these filter
+export const filters = [
 
-    $order: new OrderBy(new ColumnExpression('month', 'order')),
-  }),
+  {
+    name: 'showMonth',
+    type: 'boolean'
+  },
+  {
+    name: 'showYear',
+    props: {
+      items: [
+        {
+          label: 'current',
+          value: 'current'
+        },
+        {
+          label: 'last',
+          value: 'last'
+        }
+      ],
+      required: true
+    },
+    type: 'list'
+  }
 ]

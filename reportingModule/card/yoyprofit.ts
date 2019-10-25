@@ -43,11 +43,6 @@ function createProfitTable() {
           type: 'string'
         },
 
-        {
-          name: 'type',
-          type: 'string'
-        },
-
         ...profitSummaryVariables.map(variable => ({ name: variable, type: 'number' }))
 
       ]
@@ -58,7 +53,7 @@ function createProfitTable() {
 
 }
 
-function prepareProfitParams(currentYear_: boolean, nominatedType_: 'F' | 'R'): Function {
+function prepareProfitParams(currentYear_: boolean): Function {
   const fn = function(require, session, params) {
     const moment = require('moment')
     const subqueries = (params.subqueries = params.subqueries || {})
@@ -75,18 +70,14 @@ function prepareProfitParams(currentYear_: boolean, nominatedType_: 'F' | 'R'): 
         .format('YYYY-MM-DD')
     }
 
-    subqueries.nominatedTypeCode = { value: nominatedType_ }
-    // subqueries.isColoader = { value: false }
-
     return params
   }
   let code = fn.toString()
   code = code.replace(new RegExp('currentYear_', 'g'), String(currentYear_))
-  code = code.replace(new RegExp('nominatedType_', 'g'), `'${nominatedType_}'`)
   return parseCode(code)
 }
 
-function insertProfitData(currentYear_: boolean, nominatedType_: 'F' | 'R') {
+function insertProfitData(currentYear_: boolean) {
 
   const fn = function(require, session, params) {
 
@@ -97,34 +88,30 @@ function insertProfitData(currentYear_: boolean, nominatedType_: 'F' | 'R') {
 
     return new InsertJQL({
       name: 'profit_raw',
-      columns: [...profitSummaryVariables, 'type', 'month', 'current'],
+      columns: [...profitSummaryVariables, 'month', 'current'],
       query: new Query({
 
         $select: [
 
           // warning : profitSummaryVariables should also contains grossProfit and revenue if margin is selected
-          ...profitSummaryVariables.map(variable =>
-            {
+          ...profitSummaryVariables.map(variable => {
 
-              if (variable === 'margin')
-              {
+            if (variable === 'margin') {
 
-                return new ResultColumn(
-                  new MathExpression(
-                    new ColumnExpression('grossProfit'),
-                    '/',
-                    new ColumnExpression('revenue')
-                  ),
-                  'margin'
-                )
+              return new ResultColumn(
+                new MathExpression(
+                  new ColumnExpression('grossProfit'),
+                  '/',
+                  new ColumnExpression('revenue')
+                ),
+                'margin'
+              )
 
-              }
+            }
 
-              return new ResultColumn(new ColumnExpression(variable))
+            return new ResultColumn(new ColumnExpression(variable))
 
-            }),
-
-          new ResultColumn(new Value(nominatedType_), 'type'),
+          }),
 
           new ResultColumn(
             new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
@@ -159,7 +146,6 @@ function insertProfitData(currentYear_: boolean, nominatedType_: 'F' | 'R') {
 
   let code = fn.toString()
   code = code.replace(new RegExp('currentYear_', 'g'), String(currentYear_))
-  code = code.replace(new RegExp('nominatedType_', 'g'), `'${nominatedType_}'`)
   return parseCode(code)
 
 }
@@ -170,47 +156,37 @@ function processProfitSummary() {
 
     const showMonth = (params.subqueries.showMonth) || false
 
-    const { ResultColumn, FunctionExpression, AndExpressions, BinaryExpression, ColumnExpression, CreateTableJQL, Query } = require('node-jql')
+    const { ResultColumn, FunctionExpression, AndExpressions, BinaryExpression, ColumnExpression, Query } = require('node-jql')
 
     const profitSummaryVariables = params.subqueries.profitSummaryVariables.value
     // const profitSummaryVariables = ['grossProfit', 'profitShare', 'profitShareCost', 'profitShareIncome', 'revenue']
 
     const isCurrentList = [true, false]
-    const types = ['F', 'R']
 
     const $select = []
 
     if (showMonth) {
       $select.push(new ResultColumn('month'))
-
     }
 
     profitSummaryVariables.map(variable => {
 
       isCurrentList.map(isCurrent => {
 
-        types.map(type => {
+        $select.push(
 
-          $select.push(
+          new ResultColumn(
 
-            new ResultColumn(
+            new FunctionExpression('IFNULL',
+              new FunctionExpression('FIND',
 
-              new FunctionExpression('IFNULL',
-                new FunctionExpression('FIND',
-                  new AndExpressions([
+                new BinaryExpression(new ColumnExpression('current'), '=', isCurrent),
 
-                    new BinaryExpression(new ColumnExpression('type'), '=', type),
-                    new BinaryExpression(new ColumnExpression('current'), '=', isCurrent)
+                new ColumnExpression(variable)
 
-                  ]),
+              ), 0), `${isCurrent ? 'current' : 'last'}_${variable}`)
 
-                  new ColumnExpression(variable)
-
-                ), 0), `${isCurrent ? 'current' : 'last'}_${type}_${variable}`)
-
-          )
-
-        })
+        )
 
       })
 
@@ -231,11 +207,36 @@ export default [
 
   // prepare all profit table
   createProfitTable(),
-  [prepareProfitParams(true, 'F'), insertProfitData(true, 'F')],
-  [prepareProfitParams(false, 'F'), insertProfitData(false, 'F')],
-  [prepareProfitParams(true, 'R'), insertProfitData(true, 'R')],
-  [prepareProfitParams(false, 'R'), insertProfitData(false, 'R')],
+  [prepareProfitParams(true), insertProfitData(true)],
+  [prepareProfitParams(false), insertProfitData(false)],
 
-  processProfitSummary(),
+  processProfitSummary()
 
+]
+
+// filters avaliable for this card
+// all card in DB record using this jql will have these filter
+export const filters = [
+
+  {
+    name: 'showMonth',
+    type: 'boolean'
+  },
+  {
+    name: 'showYear',
+    props: {
+      items: [
+        {
+          label: 'current',
+          value: 'current'
+        },
+        {
+          label: 'last',
+          value: 'last'
+        }
+      ],
+      required: true
+    },
+    type: 'list'
+  }
 ]

@@ -261,3 +261,55 @@ export default [
   finalQuery()
 
 ]
+
+export const filters =  [
+
+  {
+    display : 'yAxis',
+    name : 'yAxis',
+    props : {
+      items : [
+        {
+          label : 'weightTotal',
+          value : 'weightTotal'
+        },
+        {
+          label : 'volumeTotal',
+          value : 'volumeTotal'
+        },
+        {
+          label : 'noOfBookings',
+          value : 'noOfBookings'
+        }
+      ],
+      required : true
+    },
+    type : 'list'
+  },
+  {
+    display : 'xAxis',
+    name : 'xAxis',
+    props : {
+      items : [
+        {
+          label : 'carrier',
+          value : 'carrier'
+        },
+        {
+          label : 'shipper',
+          value : 'shipper'
+        },
+        {
+          label : 'consignee',
+          value : 'consignee'
+        },
+        {
+          label : 'agent',
+          value : 'agent'
+        }
+      ],
+      required : true
+    },
+    type : 'list'
+  }
+]

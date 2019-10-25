@@ -282,3 +282,62 @@ export default [
   finalQuery()
 
 ]
+
+export const filters =  [
+  {
+    display : 'yAxis',
+    name : 'yAxis',
+    props : {
+      items : [
+        {
+          label : 'chargeableWeight',
+          value : 'chargeableWeight'
+        },
+        {
+          label : 'grossWeight',
+          value : 'grossWeight'
+        },
+        {
+          label : 'cbm',
+          value : 'cbm'
+        },
+        {
+          label : 'totalShipment',
+          value : 'totalShipment'
+        }
+      ],
+      required : true
+    },
+    type : 'list'
+  },
+  {
+    display : 'xAxis',
+    name : 'xAxis',
+    props : {
+      items : [
+        {
+          label : 'carrier',
+          value : 'carrier'
+        },
+        {
+          label : 'shipper',
+          value : 'shipper'
+        },
+        {
+          label : 'consignee',
+          value : 'consignee'
+        },
+        {
+          label : 'agent',
+          value : 'agent'
+        },
+        {
+          label : 'controllingCustomer',
+          value : 'controllingCustomer'
+        }
+      ],
+      required : true
+    },
+    type : 'list'
+  }
+]

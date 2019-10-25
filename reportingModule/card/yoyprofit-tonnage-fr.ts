@@ -91,9 +91,6 @@ function prepareProfitParams(currentYear_: boolean, nominatedType_: 'F' | 'R'): 
     }
 
     subqueries.nominatedTypeCode = { value: nominatedType_ }
-
-    subqueries.isColoader = { value: false }
-
     return params
   }
   let code = fn.toString()
@@ -300,8 +297,6 @@ function prepareTonnageParams(currentYear_: boolean, nominatedType_: 'F' | 'R'):
     }
 
     subqueries.nominatedTypeCode = { value: nominatedType_ }
-    subqueries.isColoader = { value: false }
-
     const tonnageSummaryVariables = params.subqueries.tonnageSummaryVariables.value
     //  const tonnageSummaryVariables = ['chargeableWeight', 'cbm', 'totalShipment']
 
@@ -527,4 +522,31 @@ export default [
 
   finalQuery()
 
+]
+
+// filters avaliable for this card
+// all card in DB record using this jql will have these filter
+export const filters = [
+
+  {
+    name: 'showMonth',
+    type: 'boolean'
+  },
+  {
+    name: 'showYear',
+    props: {
+      items: [
+        {
+          label: 'current',
+          value: 'current'
+        },
+        {
+          label: 'last',
+          value: 'last'
+        }
+      ],
+      required: true
+    },
+    type: 'list'
+  }
 ]

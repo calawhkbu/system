@@ -334,17 +334,8 @@ function insertNextStatusTable() {
   const fn = async function(require, session, params) {
     const { Resultset } = require('node-jql-core')
     const {
-      ColumnExpression,
-      CreateTableJQL,
       InsertJQL,
-      FromTable,
-      InExpression,
-      BetweenExpression,
-      FunctionExpression,
-      BinaryExpression,
-      GroupBy,
       Query,
-      ResultColumn,
     } = require('node-jql')
     const moment = require('moment')
 
