@@ -33,7 +33,7 @@
                 },
                 {
                   "label": "ShipmentPage.quantityUnit",
-                  "name": "weightUnit",
+                  "name": "quantityUnit",
                   "component": "ReadField",
                   "colGroupProps": {
                     "width": "50px"

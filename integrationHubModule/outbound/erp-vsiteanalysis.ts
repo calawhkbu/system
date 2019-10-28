@@ -49,7 +49,8 @@ const app = {
     if (availableModuleTypes.length === 0) {
       throw new ForbiddenException('NO_ACCESS_RIGHT')
     } else if (subqueries.moduleTypeCode) {
-      xmodule = availableModuleTypes.find(type => type === subqueries.moduleTypeCode.value)
+      // warning : getting the first one only
+      xmodule = availableModuleTypes.find(type => type === subqueries.moduleTypeCode.value[0])
       if (!xmodule) throw new BadRequestException('INVALID_MODULE_TYPE')
     } else if (availableModuleTypes.length === 1) {
       xmodule = availableModuleTypes[0]
@@ -63,7 +64,8 @@ const app = {
     if (availableBoundTypes.length === 0) {
       throw new ForbiddenException('NO_ACCESS_RIGHT')
     } else if (subqueries.boundTypeCode) {
-      xbound = availableBoundTypes.filter(type => type === subqueries.boundTypeCode.value)
+      // warning : getting the first one only
+      xbound = availableBoundTypes.filter(type => type === subqueries.boundTypeCode.value[0])
       if (!xbound) throw new BadRequestException('INVALID_BOUND_TYPE')
     } else {
       xbound = availableBoundTypes
@@ -78,8 +80,10 @@ const app = {
 
     // xdivision
     const availableDivisions = helper.getDivisions(roleFilters)
+
+    // warning : getting the first one only
     const xdivision = subqueries.division
-      ? availableDivisions.find(division => division === subqueries.division.value)
+      ? availableDivisions.find(division => division === subqueries.division.value[0])
       : availableDivisions.find(division => division === 'Total')
     if (!xdivision) throw new BadRequestException('MISSING_DIVISION')
 
@@ -99,13 +103,28 @@ const app = {
       xicltype: '',
       xigntype: '',
     }
+
+    if (subqueries.isColoader) {
+      // filter isColoader cannot be used together with includeCustomer OR excludeCustomer
+      if (subqueries.includeCustomer || subqueries.excludeCustomer)
+        throw new BadRequestException('ISCOLOADER_INCLUDE_EXCLUDE_CUSTOMER_CANNOT_EXIST_BOTH')
+
+      if (subqueries.isColoader.value) {
+        xCustomer.xicltype = 'F'
+      } else {
+        xCustomer.xigntype = 'F'
+      }
+    }
+
     if (subqueries.includeCustomer && subqueries.excludeCustomer)
       throw new BadRequestException('INCLUDE_EXCLUDE_CUSTOMER_EITHER_ONE')
+
     if (subqueries.includeCustomer)
       xCustomer.xicltype = (Array.isArray(subqueries.includeCustomer.value)
         ? subqueries.includeCustomer.value
         : [subqueries.includeCustomer.value]
       ).join('')
+
     if (subqueries.excludeCustomer)
       xCustomer.xigntype = (Array.isArray(subqueries.excludeCustomer.value)
         ? subqueries.excludeCustomer.value
@@ -113,8 +132,9 @@ const app = {
       ).join('')
 
     // xgrpname
+    // warning : getting the first one only
     let xgrpname = ''
-    if (subqueries.agentGroup) xgrpname = subqueries.agentGroup.value
+    if (subqueries.agentGroup) xgrpname = subqueries.agentGroup.value[0]
 
     return {
       headers: {

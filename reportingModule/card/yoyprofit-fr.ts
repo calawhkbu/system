@@ -39,13 +39,18 @@ function createProfitTable() {
           type: 'string',
         },
 
+        {
+          name: 'type',
+          type: 'string',
+        },
+
         ...profitSummaryVariables.map(variable => ({ name: variable, type: 'number' })),
       ],
     })
   }
 }
 
-function prepareProfitParams(currentYear_: boolean): Function {
+function prepareProfitParams(currentYear_: boolean, nominatedType_: 'F' | 'R'): Function {
   const fn = function(require, session, params) {
     const moment = require('moment')
     const subqueries = (params.subqueries = params.subqueries || {})
@@ -62,14 +67,17 @@ function prepareProfitParams(currentYear_: boolean): Function {
         .format('YYYY-MM-DD')
     }
 
+    subqueries.nominatedTypeCode = { value: nominatedType_ }
+
     return params
   }
   let code = fn.toString()
   code = code.replace(new RegExp('currentYear_', 'g'), String(currentYear_))
+  code = code.replace(new RegExp('nominatedType_', 'g'), `'${nominatedType_}'`)
   return parseCode(code)
 }
 
-function insertProfitData(currentYear_: boolean) {
+function insertProfitData(currentYear_: boolean, nominatedType_: 'F' | 'R') {
   const fn = function(require, session, params) {
     const {
       InsertJQL,
@@ -87,7 +95,7 @@ function insertProfitData(currentYear_: boolean) {
 
     return new InsertJQL({
       name: 'profit_raw',
-      columns: [...profitSummaryVariables, 'month', 'current'],
+      columns: [...profitSummaryVariables, 'type', 'month', 'current'],
       query: new Query({
         $select: [
           // warning : profitSummaryVariables should also contains grossProfit and revenue if margin is selected
@@ -105,6 +113,8 @@ function insertProfitData(currentYear_: boolean) {
 
             return new ResultColumn(new ColumnExpression(variable))
           }),
+
+          new ResultColumn(new Value(nominatedType_), 'type'),
 
           new ResultColumn(
             new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
@@ -141,6 +151,7 @@ function insertProfitData(currentYear_: boolean) {
 
   let code = fn.toString()
   code = code.replace(new RegExp('currentYear_', 'g'), String(currentYear_))
+  code = code.replace(new RegExp('nominatedType_', 'g'), `'${nominatedType_}'`)
   return parseCode(code)
 }
 
@@ -154,6 +165,7 @@ function processProfitSummary() {
       AndExpressions,
       BinaryExpression,
       ColumnExpression,
+      CreateTableJQL,
       Query,
     } = require('node-jql')
 
@@ -161,6 +173,7 @@ function processProfitSummary() {
     // const profitSummaryVariables = ['grossProfit', 'profitShare', 'profitShareCost', 'profitShareIncome', 'revenue']
 
     const isCurrentList = [true, false]
+    const types = ['F', 'R']
 
     const $select = []
 
@@ -170,22 +183,26 @@ function processProfitSummary() {
 
     profitSummaryVariables.map(variable => {
       isCurrentList.map(isCurrent => {
-        $select.push(
-          new ResultColumn(
-            new FunctionExpression(
-              'IFNULL',
+        types.map(type => {
+          $select.push(
+            new ResultColumn(
               new FunctionExpression(
-                'FIND',
+                'IFNULL',
+                new FunctionExpression(
+                  'FIND',
+                  new AndExpressions([
+                    new BinaryExpression(new ColumnExpression('type'), '=', type),
+                    new BinaryExpression(new ColumnExpression('current'), '=', isCurrent),
+                  ]),
 
-                new BinaryExpression(new ColumnExpression('current'), '=', isCurrent),
-
-                new ColumnExpression(variable)
+                  new ColumnExpression(variable)
+                ),
+                0
               ),
-              0
-            ),
-            `${isCurrent ? 'current' : 'last'}_${variable}`
+              `${isCurrent ? 'current' : 'last'}_${type}_${variable}`
+            )
           )
-        )
+        })
       })
     })
 
@@ -200,8 +217,10 @@ function processProfitSummary() {
 export default [
   // prepare all profit table
   createProfitTable(),
-  [prepareProfitParams(true), insertProfitData(true)],
-  [prepareProfitParams(false), insertProfitData(false)],
+  [prepareProfitParams(true, 'F'), insertProfitData(true, 'F')],
+  [prepareProfitParams(false, 'F'), insertProfitData(false, 'F')],
+  [prepareProfitParams(true, 'R'), insertProfitData(true, 'R')],
+  [prepareProfitParams(false, 'R'), insertProfitData(false, 'R')],
 
   processProfitSummary(),
 ]

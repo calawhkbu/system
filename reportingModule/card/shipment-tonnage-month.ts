@@ -33,6 +33,8 @@ const months = [
   'December',
 ]
 
+// warning : this card have some special handling on showing cbm and chargeable Weight!!!!!
+
 // hardcode all reportingGroup and divided into SEA and AIR
 const moduleTypeCodeList = {
   AIR: ['AC', 'AD', 'AM', 'AN', 'AW', 'AX', 'AZ'],

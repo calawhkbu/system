@@ -57,10 +57,6 @@ const query = new QueryDef(
       new ResultColumn(new ColumnExpression('party', 'stateCode'), 'partyStateCode'),
       new ResultColumn(new ColumnExpression('party', 'countryCode'), 'partyCountryCode'),
       new ResultColumn(new ColumnExpression('party', 'zip'), 'partyZip'),
-      new ResultColumn(new ColumnExpression('person', 'id'), 'contactPersonId'),
-      new ResultColumn(new ColumnExpression('person', 'displayName'), 'contactPersonName'),
-      // TODO new ResultColumn({ expression: 'TODO', $as: 'contactPersonPhone' }),
-      new ResultColumn(new ColumnExpression('person', 'userName'), 'contactPersonEmail'),
     ],
     $from: new FromTable(
       'party',
@@ -80,24 +76,6 @@ const query = new QueryDef(
           new ColumnExpression('party_group', 'code'),
           '=',
           new ColumnExpression('party', 'partyGroupCode')
-        ),
-      },
-      {
-        operator: 'LEFT',
-        table: 'parties_person',
-        $on: new BinaryExpression(
-          new ColumnExpression('party', 'id'),
-          '=',
-          new ColumnExpression('parties_person', 'partyId')
-        ),
-      },
-      {
-        operator: 'LEFT',
-        table: 'person',
-        $on: new BinaryExpression(
-          new ColumnExpression('person', 'id'),
-          '=',
-          new ColumnExpression('parties_person', 'personId')
         ),
       }
     ),
