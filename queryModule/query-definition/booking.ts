@@ -27,6 +27,9 @@ const query = new QueryDef(
       new ResultColumn(new ColumnExpression('booking', 'id'), 'bookingId'),
 
       new ResultColumn(new ColumnExpression('flex_data', 'data')),
+
+      new ResultColumn(new ColumnExpression('code_master', 'name'), 'carrierName'),
+
       new ResultColumn(new ColumnExpression('booking_container', '*')),
       new ResultColumn(new ColumnExpression('booking_popacking', '*')),
       new ResultColumn(new ColumnExpression('finalWorkflow', '*')),
@@ -49,6 +52,26 @@ const query = new QueryDef(
           ),
         ],
       },
+
+      {
+        operator: 'LEFT',
+        table: 'code_master',
+        $on: [
+
+          new BinaryExpression(
+            new ColumnExpression('code_master', 'codeType'),
+            '=',
+            new Value('CARRIER')
+          ),
+
+          new BinaryExpression(
+            new ColumnExpression('booking', 'carrierCode'),
+            '=',
+            new ColumnExpression('code_master', 'code')
+          ),
+        ],
+      },
+
       // {
       //   operator: 'LEFT',
       //   table: new FromTable({

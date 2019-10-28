@@ -33,7 +33,7 @@ function prepareParams(): Function {
     params.sorting = new OrderBy(summaryColumnName, 'DESC'),
 
     // select
-    params.fields = [codeColumnName, summaryColumnName]
+    params.fields = [codeColumnName, summaryColumnName, nameColumnName]
     params.groupBy =  [codeColumnName]
 
     return params
@@ -73,10 +73,10 @@ function createTop10Table()
           type : 'string'
 
         },
-        // {
-        //   name : nameColumnName,
-        //   type : 'string'
-        // },
+        {
+          name : nameColumnName,
+          type : 'string'
+        },
         {
           name : summaryColumnName,
           type : 'number'
@@ -142,7 +142,7 @@ function insertTop10Data()
     // compose the record for other
     const otherResult = {}
     otherResult[codeColumnName] = 'other'
-    // otherResult[nameColumnName] = 'other',
+    otherResult[nameColumnName] = 'other',
     otherResult[summaryColumnName] = otherSum
 
     return new InsertJQL('top10', ...top10ShipmentList, otherResult)
@@ -179,7 +179,7 @@ function prepareRawTable()
       $as : new Query({
           $select: [
             new ResultColumn(new ColumnExpression(codeColumnName)),
-            // new ResultColumn(new ColumnExpression(nameColumnName)),
+            new ResultColumn(new ColumnExpression(nameColumnName)),
             new ResultColumn(
               new FunctionExpression('NUMBERIFY', new ColumnExpression(summaryColumnName)),
               summaryColumnName
@@ -195,10 +195,10 @@ function prepareRawTable()
                   name: codeColumnName,
                   type: 'string',
                 },
-                // {
-                //   name: nameColumnName,
-                //   type: 'string',
-                // },
+                {
+                  name: nameColumnName,
+                  type: 'string',
+                },
                 {
                   name: summaryColumnName,
                   type: 'string',
@@ -240,7 +240,7 @@ function finalQuery()
 
       $select : [
         new ResultColumn(new ColumnExpression(codeColumnName), 'code'),
-        // new ResultColumn(new ColumnExpression(nameColumnName), 'name'),
+        new ResultColumn(new ColumnExpression(nameColumnName), 'name'),
         new ResultColumn(new ColumnExpression(summaryColumnName), 'summary')
       ],
 

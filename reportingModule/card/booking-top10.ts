@@ -9,7 +9,7 @@ function prepareParams(): Function {
   const fn = function(require, session, params) {
     const moment = require('moment')
 
-    const { OrderBy} = require('node-jql')
+    const { OrderBy } = require('node-jql')
     const { BadRequestException } = require('@nestjs/common')
 
     const subqueries = (params.subqueries = params.subqueries || {})
@@ -25,14 +25,15 @@ function prepareParams(): Function {
     const summaryColumnName = subqueries.yAxis.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
 
     const codeColumnName = xAxis === 'carrier' ? `carrierCode` : `${xAxis}PartyId`
+    const nameColumnName = xAxis === 'carrier' ? `carrierName` : `${xAxis}PartyName`
 
     // ------------------------------
 
     params.sorting = new OrderBy(summaryColumnName, 'DESC'),
 
-    // select
-    params.fields = [codeColumnName, summaryColumnName]
-    params.groupBy =  [codeColumnName]
+      // select
+      params.fields = [codeColumnName, summaryColumnName, nameColumnName]
+    params.groupBy = [codeColumnName, nameColumnName]
 
     return params
   }
@@ -41,10 +42,9 @@ function prepareParams(): Function {
   return parseCode(code)
 }
 
-function createTop10Table()
-{
+function createTop10Table() {
 
-  const fn =  function(require, session, params) {
+  const fn = function(require, session, params) {
 
     const {
       CreateTableJQL
@@ -56,22 +56,27 @@ function createTop10Table()
     const summaryColumnName = subqueries.yAxis.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
 
     const codeColumnName = xAxis === 'carrier' ? `carrierCode` : `${xAxis}PartyId`
+    const nameColumnName = xAxis === 'carrier' ? `carrierName` : `${xAxis}PartyName`
 
     // ------------------------------
 
     return new CreateTableJQL({
 
-      $temporary : true,
-      name : 'top10',
-      columns : [
+      $temporary: true,
+      name: 'top10',
+      columns: [
         {
-          name : codeColumnName,
-          type : 'string'
+          name: codeColumnName,
+          type: 'string'
+        },
 
+        {
+          name: nameColumnName,
+          type: 'string'
         },
         {
-          name : summaryColumnName,
-          type : 'number'
+          name: summaryColumnName,
+          type: 'number'
         }
 
       ]
@@ -85,24 +90,14 @@ function createTop10Table()
 
 }
 
-function insertTop10Data()
-{
+function insertTop10Data() {
 
   const fn = async function(require, session, params) {
 
     const { Resultset } = require('node-jql-core')
     const {
       InsertJQL,
-      ColumnExpression,
-      CreateTableJQL,
-      FromTable,
-      InExpression,
-      BetweenExpression,
-      FunctionExpression,
-      BinaryExpression,
-      GroupBy,
-      Query,
-      ResultColumn,
+      Query
     } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
@@ -111,6 +106,7 @@ function insertTop10Data()
     const summaryColumnName = subqueries.yAxis.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
 
     const codeColumnName = xAxis === 'carrier' ? `carrierCode` : `${xAxis}PartyId`
+    const nameColumnName = xAxis === 'carrier' ? `carrierName` : `${xAxis}PartyName`
 
     // ------------------------------
 
@@ -133,6 +129,7 @@ function insertTop10Data()
     // compose the record for other
     const otherResult = {}
     otherResult[codeColumnName] = 'other'
+    otherResult[nameColumnName] = 'other'
     otherResult[summaryColumnName] = otherSum
 
     return new InsertJQL('top10', ...top10ShipmentList, otherResult)
@@ -143,12 +140,11 @@ function insertTop10Data()
 
 }
 
-function prepareRawTable()
-{
+function prepareRawTable() {
 
   const fn = function(require, session, params) {
 
-    const { CreateTableJQL, ResultColumn, FromTable, ColumnExpression, Query, FunctionExpression, OrderBy} = require('node-jql')
+    const { CreateTableJQL, ResultColumn, FromTable, ColumnExpression, Query, FunctionExpression, OrderBy } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -156,6 +152,7 @@ function prepareRawTable()
     const summaryColumnName = subqueries.yAxis.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
 
     const codeColumnName = xAxis === 'carrier' ? `carrierCode` : `${xAxis}PartyId`
+    const nameColumnName = xAxis === 'carrier' ? `carrierName` : `${xAxis}PartyName`
 
     // ------------------------------
 
@@ -164,34 +161,39 @@ function prepareRawTable()
       $temporary: true,
       name: 'raw',
 
-      $as : new Query({
-          $select: [
-            new ResultColumn(new ColumnExpression(codeColumnName)),
-            new ResultColumn(
-              new FunctionExpression('NUMBERIFY', new ColumnExpression(summaryColumnName)),
-              summaryColumnName
-            ),
-          ],
+      $as: new Query({
+        $select: [
+          new ResultColumn(new ColumnExpression(codeColumnName)),
+          new ResultColumn(new ColumnExpression(nameColumnName)),
+          new ResultColumn(
+            new FunctionExpression('NUMBERIFY', new ColumnExpression(summaryColumnName)),
+            summaryColumnName
+          ),
+        ],
 
-          $from: new FromTable(
-            {
-              method: 'POST',
-              url: 'api/booking/query/booking',
-              columns: [
-                {
-                  name: codeColumnName,
-                  type: 'string',
-                },
-                {
-                  name: summaryColumnName,
-                  type: 'string',
-                },
-              ],
+        $from: new FromTable(
+          {
+            method: 'POST',
+            url: 'api/booking/query/booking',
+            columns: [
+              {
+                name: codeColumnName,
+                type: 'string',
+              },
+              {
+                name: nameColumnName,
+                type: 'string',
+              },
+              {
+                name: summaryColumnName,
+                type: 'string',
+              },
+            ],
 
-            },
-            'shipment'
-          )
-        })
+          },
+          'shipment'
+        )
+      })
 
     })
 
@@ -202,12 +204,11 @@ function prepareRawTable()
 
 }
 
-function finalQuery()
-{
+function finalQuery() {
 
   const fn = function(require, session, params) {
 
-    const { CreateTableJQL, ResultColumn, FromTable, ColumnExpression, Query, FunctionExpression, OrderBy} = require('node-jql')
+    const { ResultColumn, ColumnExpression, Query } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -215,17 +216,19 @@ function finalQuery()
     const summaryColumnName = subqueries.yAxis.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
 
     const codeColumnName = xAxis === 'carrier' ? `carrierCode` : `${xAxis}PartyId`
+    const nameColumnName = xAxis === 'carrier' ? `carrierName` : `${xAxis}PartyName`
 
     // ------------------------------
 
     return new Query({
 
-      $select : [
+      $select: [
         new ResultColumn(new ColumnExpression(codeColumnName), 'code'),
+        new ResultColumn(new ColumnExpression(nameColumnName), 'name'),
         new ResultColumn(new ColumnExpression(summaryColumnName), 'summary')
       ],
 
-      $from : 'top10'
+      $from: 'top10'
     })
   }
 
@@ -234,10 +237,9 @@ function finalQuery()
 
 }
 
-function createNumerifyFunction()
-{
+function createNumerifyFunction() {
 
-  return  new CreateFunctionJQL(
+  return new CreateFunctionJQL(
     'NUMBERIFY',
     function(parameter: any, value: string) {
       return +value
@@ -262,54 +264,54 @@ export default [
 
 ]
 
-export const filters =  [
+export const filters = [
 
   {
-    display : 'yAxis',
-    name : 'yAxis',
-    props : {
-      items : [
+    display: 'yAxis',
+    name: 'yAxis',
+    props: {
+      items: [
         {
-          label : 'weightTotal',
-          value : 'weightTotal'
+          label: 'weightTotal',
+          value: 'weightTotal'
         },
         {
-          label : 'volumeTotal',
-          value : 'volumeTotal'
+          label: 'volumeTotal',
+          value: 'volumeTotal'
         },
         {
-          label : 'noOfBookings',
-          value : 'noOfBookings'
+          label: 'noOfBookings',
+          value: 'noOfBookings'
         }
       ],
-      required : true
+      required: true
     },
-    type : 'list'
+    type: 'list'
   },
   {
-    display : 'xAxis',
-    name : 'xAxis',
-    props : {
-      items : [
+    display: 'xAxis',
+    name: 'xAxis',
+    props: {
+      items: [
         {
-          label : 'carrier',
-          value : 'carrier'
+          label: 'carrier',
+          value: 'carrier'
         },
         {
-          label : 'shipper',
-          value : 'shipper'
+          label: 'shipper',
+          value: 'shipper'
         },
         {
-          label : 'consignee',
-          value : 'consignee'
+          label: 'consignee',
+          value: 'consignee'
         },
         {
-          label : 'agent',
-          value : 'agent'
+          label: 'agent',
+          value: 'agent'
         }
       ],
-      required : true
+      required: true
     },
-    type : 'list'
+    type: 'list'
   }
 ]
