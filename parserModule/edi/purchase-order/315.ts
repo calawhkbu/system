@@ -166,8 +166,8 @@ export default class EdiParser997 extends BaseEdiParser {
             isoCodeMapper[_.get(container, 'container')] || ' ',
             _.get(currentStatus, 'statusPlace').substr(0, 30)
           )
-          B4.elementList.push('UN')
-          B4.elementList.push('') // No Equipment Check Digit
+          // B4.elementList.push('UN')
+          // B4.elementList.push('') // No Equipment Check Digit
           data.push(B4)
           const trackingRefInf = _.get(element, 'trackingReference') || {}
           const flexDataInf = _.get(trackingRefInf, 'flexData') || {}
@@ -210,6 +210,7 @@ export default class EdiParser997 extends BaseEdiParser {
           loopObjectList.push(this.getLoopObject(loopObjectList, historyList))
           const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
           data.push(...filteredList)
+          await this.removeEmptyElementListObject(data)
           const SE: JSONObject = {
             segment: 'SE',
             elementList: [],
@@ -239,6 +240,26 @@ export default class EdiParser997 extends BaseEdiParser {
       }
     }
     return resultList
+  }
+  async removeEmptyElementListObject(data)
+  {
+    for (let i = data.length - 1; i >= 0; i--)
+    {
+      let noEmpty = false
+      for (const element of data[i].elementList)
+      {
+        if (element.trim())
+        {
+          noEmpty = true
+          break
+        }
+      }
+      if (noEmpty === false)
+      {
+        data.splice(i, 1)
+      }
+    }
+    return data
   }
   async getLoopObject(loopObjectList, historyList) {
     const noOfhistory = historyList.length
@@ -284,7 +305,7 @@ export default class EdiParser997 extends BaseEdiParser {
             moment(_.get(historyList[i], 'statusDate')).format('YYYYMMDD'),
             moment(_.get(historyList[i], 'statusDate')).format('HHmm')
           )
-          DTM.elementList.push('  ') // no time code
+          // DTM.elementList.push('  ') // no time code
           loopObjectList.push(DTM)
         }
       }
@@ -294,10 +315,10 @@ export default class EdiParser997 extends BaseEdiParser {
       elementList: [],
     }
     R4.elementList.push('5', ' ', _.get(historyList[noOfhistory - 1], 'statusPlace').substr(0, 30))
-    R4.elementList.push('') // not used
-    R4.elementList.push('') // No country code
-    R4.elementList.push('', '') // not used
-    R4.elementList.push('') // State or Province Code
+    // R4.elementList.push('') // not used
+    // R4.elementList.push('') // No country code
+    // R4.elementList.push('', '') // not used
+    // R4.elementList.push('') // State or Province Code
     loopObjectList.push(R4)
     if (
       _.get(historyList[noOfhistory - 1], 'isEstimated') === false &&
@@ -312,7 +333,7 @@ export default class EdiParser997 extends BaseEdiParser {
         moment(_.get(historyList[noOfhistory - 1], 'statusDate')).format('YYYYMMDD'),
         moment(_.get(historyList[noOfhistory - 1], 'statusDate')).format('HHmm')
       )
-      DTM.elementList.push('') // no time code
+      // DTM.elementList.push('') // no time code
       loopObjectList.push(DTM)
     }
     return loopObjectList
