@@ -59,7 +59,9 @@
                 "label": "BookingPage.ctns",
                 "name": "ctns",
                 "colGroupProps": {
-                  "width": "10%"
+                  "style": {
+                    "width": "10%"
+                  }
                 },
                 "component": "NumberField",
                 "props": {
@@ -81,7 +83,9 @@
                 "name": "quantity",
                 "component": "NumberField",
                 "colGroupProps": {
-                  "width": "10%"
+                  "style": {
+                    "width": "10%"
+                  }
                 },
                 "props": {
                   "type": "number",
@@ -93,7 +97,9 @@
                 "name": "quantityUnit",
                 "component": "v-select",
                 "colGroupProps": {
-                  "width": "7.5%"
+                  "style": {
+                    "width": "7.5%"
+                  }
                 },
                 "props": {
                   "items": [{
@@ -139,7 +145,9 @@
                 "label": "BookingPage.volume",
                 "name": "volume",
                 "colGroupProps": {
-                  "width": "10%"
+                  "style": {
+                    "width": "10%"
+                  }
                 },
                 "component": "NumberField",
                 "props": {
@@ -159,7 +167,9 @@
                 "name": "length",
                 "component": "NumberField",
                 "colGroupProps": {
-                  "width": "10%"
+                  "style": {
+                    "width": "10%"
+                  }
                 },
                 "props": {
                   "type": "number",
@@ -178,7 +188,9 @@
                 "name": "width",
                 "component": "NumberField",
                 "colGroupProps": {
-                  "width": "10%"
+                  "style": {
+                    "width": "10%"
+                  }
                 },
                 "props": {
                   "type": "number",
@@ -196,7 +208,9 @@
                 "label": "BookingPage.height",
                 "name": "height",
                 "colGroupProps": {
-                  "width": "10%"
+                  "style": {
+                    "width": "10%"
+                  }
                 },
                 "component": "NumberField",
                 "props": {
@@ -208,7 +222,9 @@
                 "label": "BookingPage.lwhUnit",
                 "name": "lwhUnit",
                 "colGroupProps": {
-                  "width": "10%"
+                  "style": {
+                    "width": "10%"
+                  }
                 },
                 "component": "v-select",
                 "props": {
@@ -227,7 +243,9 @@
                 "label": "BookingPage.weight",
                 "name": "weight",
                 "colGroupProps": {
-                  "width": "10%"
+                  "style": {
+                    "width": "10%"
+                  }
                 },
                 "component": "NumberField",
                 "props": {
@@ -238,7 +256,9 @@
                 "label": "BookingPage.weightUnit",
                 "name": "weightUnit",
                 "colGroupProps": {
-                  "width": "7.5%"
+                  "style": {
+                    "width": "7.5%"
+                  }
                 },
                 "component": "v-select",
                 "props": {
@@ -266,7 +286,9 @@
                 "label": "BookingPage.containerTypeCode",
                 "name": "containerTypeCode",
                 "colGroupProps": {
-                  "width": "30%"
+                  "style": {
+                    "width": "20%"
+                  }
                 },
                 "component": "AsyncSelect",
                 "props": {
@@ -289,7 +311,9 @@
                 "label": "BookingPage.containerNo",
                 "name": "containerNo",
                 "colGroupProps": {
-                  "width": "15%"
+                  "style": {
+                    "width": "20%"
+                  }
                 },
                 "component": "v-text-field",
                 "props": {
@@ -300,7 +324,9 @@
                 "label": "BookingPage.sealNo",
                 "name": "sealNo",
                 "colGroupProps": {
-                  "width": "15%"
+                  "style": {
+                    "width": "20%"
+                  }
                 },
                 "component": "v-text-field"
               },
@@ -308,7 +334,9 @@
                 "label": "BookingPage.soNo",
                 "name": "soNo",
                 "colGroupProps": {
-                  "width": "15%"
+                  "style": {
+                    "width": "20%"
+                  }
                 },
                 "component": "v-text-field"
               },
@@ -316,7 +344,9 @@
                 "label": "BookingPage.ctns",
                 "name": "ctns",
                 "colGroupProps": {
-                  "width": "20%"
+                  "style": {
+                    "width": "15%"
+                  }
                 },
                 "component": "NumberField",
                 "props": {
