@@ -82,7 +82,7 @@ export default class EdiParser997 extends BaseEdiParser {
           }
 
           GS.elementList.push(
-            'FA',
+            'QO',
             '718978080',
             '6112390050',
             moment(currantDate).format('YYYYMMDD'),
@@ -210,6 +210,7 @@ export default class EdiParser997 extends BaseEdiParser {
           loopObjectList.push(this.getLoopObject(loopObjectList, historyList))
           const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
           data.push(...filteredList)
+          await this.removeEmptyElementListObject(data)
           const SE: JSONObject = {
             segment: 'SE',
             elementList: [],
@@ -239,6 +240,26 @@ export default class EdiParser997 extends BaseEdiParser {
       }
     }
     return resultList
+  }
+  async removeEmptyElementListObject(data)
+  {
+    for (let i = data.length - 1; i >= 0; i--)
+    {
+      let noEmpty = false
+      for (const element of data[i].elementList)
+      {
+        if (element.trim())
+        {
+          noEmpty = true
+          break
+        }
+      }
+      if (noEmpty === false)
+      {
+        data.splice(i, 1)
+      }
+    }
+    return data
   }
   async getLoopObject(loopObjectList, historyList) {
     const noOfhistory = historyList.length

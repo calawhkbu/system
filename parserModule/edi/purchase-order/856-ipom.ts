@@ -83,7 +83,7 @@ export default class EdiParser856 extends BaseEdiParser {
       loopObjectList.push(this.getLoopObject(loopObjectList, getNumOfLoopItem, element))
       const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
       data.push(...filteredList)
-
+      await this.removeEmptyElementListObject(data)
       const CTT: JSONObject = {
         segement : 'CTT',
         elementList : []
@@ -116,7 +116,27 @@ export default class EdiParser856 extends BaseEdiParser {
     // return cloneEntityJSON
     // return returnJSON
     const result = await super.export(returnJSON)
-    return [result]
+    return result
+  }
+  async removeEmptyElementListObject(data)
+  {
+    for (let i = data.length - 1; i >= 0; i--)
+    {
+      let noEmpty = false
+      for (const element of data[i].elementList)
+      {
+        if (element.trim())
+        {
+          noEmpty = true
+          break
+        }
+      }
+      if (noEmpty === false)
+      {
+        data.splice(i, 1)
+      }
+    }
+    return data
   }
   async getLoopObject(loopObjectList, getNumOfLoopItem, element)
   {
