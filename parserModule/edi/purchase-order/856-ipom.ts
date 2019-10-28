@@ -83,7 +83,7 @@ export default class EdiParser856 extends BaseEdiParser {
       loopObjectList.push(this.getLoopObject(loopObjectList, getNumOfLoopItem, element))
       const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
       data.push(...filteredList)
-
+      await this.removeEmptyElementListObject(data)
       const CTT: JSONObject = {
         segement : 'CTT',
         elementList : []
@@ -117,6 +117,26 @@ export default class EdiParser856 extends BaseEdiParser {
     // return returnJSON
     const result = await super.export(returnJSON)
     return [result]
+  }
+  async removeEmptyElementListObject(data)
+  {
+    for (let i = data.length - 1; i >= 0; i--)
+    {
+      let noEmpty = false
+      for (const element of data[i].elementList)
+      {
+        if (element.trim())
+        {
+          noEmpty = true
+          break
+        }
+      }
+      if (noEmpty === false)
+      {
+        data.splice(i, 1)
+      }
+    }
+    return data
   }
   async getLoopObject(loopObjectList, getNumOfLoopItem, element)
   {
@@ -285,45 +305,14 @@ export default class EdiParser856 extends BaseEdiParser {
             TD3.elementList.push('  ') // not used
             TD3.elementList.push((_.get(container, 'containerNo') || ' ').substring(0, 4))
             TD3.elementList.push((_.get(container, 'containerNo') || ' ').substring(4, 10))
-            TD3.elementList.push('', '', '', '', '') // not used
-            TD3.elementList.push(_.get(container, 'sealNo1'))
-            TD3.elementList.push(isoCodeMapper[_.get(container, 'containerType')] || ' ')
-            // if (_.get(container, 'containerTypeCode') === '20OT')
-            // {
-            //   TD3.elementList.push('2251')
-            // }
-            // else if (_.get(container, 'containerTypeCode') === '40OT')
-            // {
-            //   TD3.elementList.push('4351')
-            // }
-            // else if (_.get(container, 'containerTypeCode') === '40HRF')
-            // {
-            //   TD3.elementList.push('4662')
-            // }
-            // else if (_.get(container, 'containerTypeCode') === '45HRF')
-            // {
-            //   TD3.elementList.push('9532')
-            // }
-            // else if (_.get(container, 'containerTypeCode') === '20RF')
-            // {
-            //   TD3.elementList.push('2232')
-            // }
-            // else if (_.get(container, 'containerTypeCode') === '40RF')
-            // {
-            //   TD3.elementList.push('4332')
-            // }
-            // else if (_.get(container, 'containerTypeCode') === '40HC')
-            // {
-            //   TD3.elementList.push('4500')
-            // }
-            // else if (_.get(container, 'containerTypeCode') === '45HC')
-            // {
-            //   TD3.elementList.push('9500')
-            // }
-            // else
-            // {
-            //   TD3.elementList.push('')
-            // }
+            if (_.get(container, 'sealNo1') && _.get(container, 'sealNo1'))
+            {
+              TD3.elementList.push('', '', '', '', '') // not used
+              TD3.elementList.push(_.get(container, 'sealNo1'))
+              isoCodeMapper[_.get(container, 'containerType')]
+              ? TD3.elementList.push(isoCodeMapper[_.get(container, 'containerType')])
+              : null
+            }
             loopObjectList.push(TD3)
           }
         }
@@ -414,10 +403,10 @@ export default class EdiParser856 extends BaseEdiParser {
           LIN.elementList.push((_.get(ItemList[itemIndex], 'colorDesc') || ' ').substring(0, 30))
           LIN.elementList.push('IZ')
           LIN.elementList.push((_.get(ItemList[itemIndex], 'size') || ' ').substring(0, 30))
-          LIN.elementList.push('  ')
-          LIN.elementList.push(' ')
-          LIN.elementList.push('  ')
-          LIN.elementList.push(' ')
+          LIN.elementList.push('')
+          LIN.elementList.push('')
+          LIN.elementList.push('')
+          LIN.elementList.push('')
           loopObjectList.push(LIN)
           const SLN: JSONObject = {
             segement: 'SLN',

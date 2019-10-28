@@ -32,6 +32,8 @@
     "};"
   ],
   "shareProps": {
+    "icon": "statusCode",
+    "titleKey": ["status.name", "statusCode"],
     "iconMap": {
       "MNF": "tracking/airplane-flying.svg",
       "RWB": "tracking/airplane-flying.svg",
@@ -80,8 +82,6 @@
     }
   },
   "baseSummaryProps": {
-    "icon": "statusCode",
-    "titleKey": "status",
     "subTitleKeys": [
       "statusDescription",
       "statusPlace",
@@ -95,6 +95,10 @@
   },
   "baseDetailProps": {
     "showCargoOrContainer": true,
-    "subTitleKeys": ["statusDescription", "statusPlace", "pieces"]
+    "subTitleKeys": [
+      "statusDescription",
+      "statusPlace",
+      "details.pieces"
+    ]
   }
 }

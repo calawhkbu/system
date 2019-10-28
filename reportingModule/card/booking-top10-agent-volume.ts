@@ -61,20 +61,14 @@ function createTable() {
   ])
 }
 
-function prepareData(type: 'top10' | 'other' | 'test')
-{
-
+function prepareData(type: 'top10' | 'other' | 'test') {
   const bigLimit = 999999999999999999
 
-  if (type === 'test')
-  {
-
-    return new InsertJQL('top10', { agentPartyId : 'other', volumeTotal : 999 })
-
+  if (type === 'test') {
+    return new InsertJQL('top10', { agentPartyId: 'other', volumeTotal: 999 })
   }
 
-  if (type === 'other' )
-  {
+  if (type === 'other') {
     return new InsertJQL({
       name: 'top10',
       columns: ['agentPartyId', 'volumeTotal'],

@@ -35,7 +35,6 @@ const months = [
 ]
 
 function prepareParams(currentYear_: boolean): Function {
-
   const fn = function(require, session, params) {
     const moment = require('moment')
 
@@ -73,9 +72,7 @@ function prepareParams(currentYear_: boolean): Function {
 }
 
 function prepareTable(tableName_: string, currentYear_: boolean) {
-
   const fn = function(require, session, params) {
-
     const {
       ColumnExpression,
       CreateTableJQL,
@@ -92,7 +89,6 @@ function prepareTable(tableName_: string, currentYear_: boolean) {
     const types = ['F', 'R']
 
     const $select = [
-
       new ResultColumn(
         new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
         'month'
@@ -103,27 +99,29 @@ function prepareTable(tableName_: string, currentYear_: boolean) {
     ]
 
     summaryVariables.map(variable => {
-
       types.map(type => {
-
-        $select.push(new ResultColumn(
-          new FunctionExpression(
-            'SUM',
+        $select.push(
+          new ResultColumn(
             new FunctionExpression(
-              'if',
-              new BinaryExpression(new ColumnExpression('nominatedTypeCode'), '=', type),
-              new ColumnExpression(variable),
-              0
-            )
-          ),
-          `${type}_${variable}`
+              'SUM',
+              new FunctionExpression(
+                'if',
+                new BinaryExpression(new ColumnExpression('nominatedTypeCode'), '=', type),
+                new ColumnExpression(variable),
+                0
+              )
+            ),
+            `${type}_${variable}`
+          )
         )
-        )
-
       })
 
-      $select.push(new ResultColumn(new FunctionExpression('SUM', new ColumnExpression(variable)), `total_${variable}`))
-
+      $select.push(
+        new ResultColumn(
+          new FunctionExpression('SUM', new ColumnExpression(variable)),
+          `total_${variable}`
+        )
+      )
     })
 
     return new CreateTableJQL({
@@ -131,7 +129,6 @@ function prepareTable(tableName_: string, currentYear_: boolean) {
       name: tableName_,
 
       $as: new Query({
-
         $select,
 
         $from: new FromTable(
@@ -158,7 +155,6 @@ function prepareTable(tableName_: string, currentYear_: boolean) {
   code = code.replace(new RegExp('currentYear_', 'g'), String(currentYear_))
   code = code.replace(new RegExp('tableName_', 'g'), `'${tableName_}'`)
   return parseCode(code)
-
 }
 
 function prepareUnionTable(): CreateTableJQL {
@@ -178,10 +174,17 @@ function prepareUnionTable(): CreateTableJQL {
 }
 
 function prepareFinalTable() {
-
   return function(require, session, params) {
-
-    const { Query, ResultColumn, ColumnExpression, FunctionExpression, AndExpressions, BinaryExpression, CreateTableJQL, GroupBy } = require('node-jql')
+    const {
+      Query,
+      ResultColumn,
+      ColumnExpression,
+      FunctionExpression,
+      AndExpressions,
+      BinaryExpression,
+      CreateTableJQL,
+      GroupBy,
+    } = require('node-jql')
 
     const summaryVariables = params.subqueries.summaryVariables.value
 
@@ -190,17 +193,12 @@ function prepareFinalTable() {
 
     const tableName = 'final'
 
-    const $select = [
-      new ResultColumn(new ColumnExpression('month'))
-    ]
+    const $select = [new ResultColumn(new ColumnExpression('month'))]
 
     summaryVariables.map(variable => {
-
       isCurrentList.map(isCurrent => {
         types.map(type => {
-
           $select.push(
-
             new ResultColumn(
               new FunctionExpression(
                 'IFNULL',
@@ -222,12 +220,9 @@ function prepareFinalTable() {
               ),
               `${isCurrent ? 'current' : 'last'}_${type}_${variable}`
             )
-
           )
-
         })
       })
-
     })
 
     return new CreateTableJQL({
@@ -235,7 +230,6 @@ function prepareFinalTable() {
       name: tableName,
 
       $as: new Query({
-
         $select,
 
         $group: new GroupBy(new ColumnExpression('month')),
@@ -244,7 +238,6 @@ function prepareFinalTable() {
       }),
     })
   }
-
 }
 
 function prepareMonthTable(name: string): CreateTableJQL {
@@ -269,10 +262,16 @@ function insertMonthTable(name: string): InsertJQL {
 }
 
 function finalQuery() {
-
   return function(require, session, params) {
-
-    const { Query, ResultColumn, ColumnExpression, FunctionExpression, FromTable, BinaryExpression, OrderBy } = require('node-jql')
+    const {
+      Query,
+      ResultColumn,
+      ColumnExpression,
+      FunctionExpression,
+      FromTable,
+      BinaryExpression,
+      OrderBy,
+    } = require('node-jql')
 
     const summaryVariables = params.subqueries.summaryVariables.value
     const showMonth = params.subqueries.showMonth
@@ -283,21 +282,17 @@ function finalQuery() {
     const $select = []
 
     summaryVariables.map(variable => {
-
       isCurrentList.map(isCurrent => {
-
         types.map(type => {
           const columnName = `${isCurrent ? 'current' : 'last'}_${type}_${variable}`
           $select.push(
             new ResultColumn(
               new FunctionExpression('IFNULL', new ColumnExpression('final', columnName), 0),
               columnName
-            ),
+            )
           )
         })
-
       })
-
     })
 
     if (showMonth) {
@@ -305,7 +300,6 @@ function finalQuery() {
     }
 
     return new Query({
-
       $select,
       $from: new FromTable('month', 'month', {
         operator: 'LEFT',
@@ -319,7 +313,6 @@ function finalQuery() {
 
       $order: new OrderBy(new ColumnExpression('month', 'order')),
     })
-
   }
 }
 
@@ -334,17 +327,15 @@ export default [
 
   prepareFinalTable(),
 
-  finalQuery()
-
+  finalQuery(),
 ]
 
 // filters avaliable for this card
 // all card in DB record using this jql will have these filter
 export const filters = [
-
   {
     name: 'showMonth',
-    type: 'boolean'
+    type: 'boolean',
   },
   {
     name: 'showYear',
@@ -352,15 +343,15 @@ export const filters = [
       items: [
         {
           label: 'current',
-          value: 'current'
+          value: 'current',
         },
         {
           label: 'last',
-          value: 'last'
-        }
+          value: 'last',
+        },
       ],
-      required: true
+      required: true,
     },
-    type: 'list'
-  }
+    type: 'list',
+  },
 ]

@@ -39,7 +39,7 @@ function prepareParams(): Function {
 
     if (!subqueries.summaryVariables) throw new BadRequestException('MISSING_summaryVariables')
 
-    const summaryVariables = subqueries.summaryVariables.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const finalOrderBy = subqueries.finalOrderBy.value
 
     const year = !subqueries.date
@@ -127,11 +127,17 @@ function insertReportingGroupTable(): InsertJQL {
   return new InsertJQL(name, ...insertList)
 }
 
-function prepareResultTable(){
-
+function prepareResultTable() {
   return function(require, session, params) {
-
-    const {CreateTableJQL, Query, ColumnExpression, ResultColumn, FunctionExpression, BinaryExpression, FromTable } = require('node-jql')
+    const {
+      CreateTableJQL,
+      Query,
+      ColumnExpression,
+      ResultColumn,
+      FunctionExpression,
+      BinaryExpression,
+      FromTable,
+    } = require('node-jql')
 
     const months = [
       'January',
@@ -150,7 +156,7 @@ function prepareResultTable(){
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    const summaryVariables = subqueries.summaryVariables.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const finalOrderBy = subqueries.finalOrderBy.value
 
     const $select = [
@@ -159,19 +165,25 @@ function prepareResultTable(){
     ]
 
     summaryVariables.map(variable => {
-
       months.map((month: string) => {
-
         const columeName = `${month}_${variable}`
 
-        $select.push(new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('final', columeName), 0), columeName))
-
+        $select.push(
+          new ResultColumn(
+            new FunctionExpression('IFNULL', new ColumnExpression('final', columeName), 0),
+            columeName
+          )
+        )
       })
 
       const totalColumnName = `total_${variable}`
 
-      $select.push(new ResultColumn(new FunctionExpression('IFNULL', new ColumnExpression('final', totalColumnName), 0), totalColumnName))
-
+      $select.push(
+        new ResultColumn(
+          new FunctionExpression('IFNULL', new ColumnExpression('final', totalColumnName), 0),
+          totalColumnName
+        )
+      )
     })
 
     return new CreateTableJQL({
@@ -179,7 +191,6 @@ function prepareResultTable(){
       name: 'result',
 
       $as: new Query({
-
         $select,
 
         $from: new FromTable('reportingGroupTable', 'reportingGroupTable', {
@@ -193,16 +204,22 @@ function prepareResultTable(){
         }),
       }),
     })
-
   }
-
 }
 
 function prepareFinalTable(types_?: string[]) {
-
   const fn = function(require, session, params) {
-
-    const { OrderBy, MathExpression, Query, ResultColumn, ColumnExpression, FunctionExpression, AndExpressions, BinaryExpression, CreateTableJQL } = require('node-jql')
+    const {
+      OrderBy,
+      MathExpression,
+      Query,
+      ResultColumn,
+      ColumnExpression,
+      FunctionExpression,
+      AndExpressions,
+      BinaryExpression,
+      CreateTableJQL,
+    } = require('node-jql')
 
     const fromTableName = 'shipment'
 
@@ -236,7 +253,7 @@ function prepareFinalTable(types_?: string[]) {
     const $select = [...finalGroupBy.map(x => new ResultColumn(new ColumnExpression(x)))]
 
     const subqueries = (params.subqueries = params.subqueries || {})
-    const summaryVariables = subqueries.summaryVariables.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const finalOrderBy = subqueries.finalOrderBy.value
 
     summaryVariables.map(variable => {
@@ -337,11 +354,9 @@ function prepareFinalTable(types_?: string[]) {
       } else {
         $select.push(new ResultColumn(finalSumExpression, `total_${variable}`))
       }
-
     })
 
     return new CreateTableJQL({
-
       $temporary: true,
       name: 'final',
       $as: new Query({
@@ -349,18 +364,19 @@ function prepareFinalTable(types_?: string[]) {
         $from: fromTableName,
 
         $group: finalGroupBy,
-        $order: finalOrderBy.map(x => new OrderBy(x, 'DESC'))
-      })
-
+        $order: finalOrderBy.map(x => new OrderBy(x, 'DESC')),
+      }),
     })
   }
 
   let code = fn.toString()
 
-  code = code.replace(new RegExp('types_', 'g'), (types_ && types_.length) ? `[${types_.map(x => `'${x}'`)}]` : `[]`)
+  code = code.replace(
+    new RegExp('types_', 'g'),
+    types_ && types_.length ? `[${types_.map(x => `'${x}'`)}]` : `[]`
+  )
 
   return parseCode(code)
-
 }
 
 export default [
@@ -383,6 +399,5 @@ export default [
     $from: 'result',
 
     $group: 'moduleTypeCode',
-  })
-
+  }),
 ]
