@@ -613,7 +613,6 @@
                   "class": "xs-12",
                   "props": {
                     "type": "booking-term",
-                    "confirmTermI18nText": "BookingPage.confirmTerm",
                     "termProps": {
                       "class": "margin-leftright-4 padding-leftright-4 min-height-200 max-height-300 overflow-auto"
                     }
@@ -788,7 +787,6 @@
                         "class": "xs-12",
                         "props": {
                           "type": "booking-term",
-                          "confirmTermI18nText": "BookingPage.confirmTerm",
                           "termProps": {
                             "class": "margin-leftright-4 padding-leftright-4 overflow-auto"
                           }

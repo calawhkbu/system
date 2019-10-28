@@ -12,7 +12,8 @@
             "i18nContext": "Admin"
           }
         },
-        "filters": []
+        "filters": [],
+        "hideCardFilters": true
       }
     }
   ]
