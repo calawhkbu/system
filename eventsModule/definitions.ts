@@ -13,9 +13,9 @@ export default {
       handlerName: 'create_tracking_by_booking',
     },
   ],
-  tracking_update_data: [// update entity(booking) with a tracking
+  create_tracking_alerts: [// update entity(booking) with a tracking
     {
-      handlerName: 'tracking_update_data',
+      handlerName: 'create_tracking_alerts',
     },
   ],
   fill_template: [
@@ -41,7 +41,7 @@ export default {
   ],
   afterCreate_tracking: [
     {
-      eventName: 'tracking_update_data',
+      eventName: 'create_tracking_alerts',
     },
     {
       eventName: 'send_edi',
@@ -49,7 +49,7 @@ export default {
   ],
   afterUpdate_tracking: [
     {
-      eventName: 'tracking_update_data',
+      eventName: 'create_tracking_alerts',
     },
     {
       eventName: 'send_edi',
