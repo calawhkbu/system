@@ -1,11 +1,8 @@
-import {
-  CreateFunctionJQL, Query
-} from 'node-jql'
+import { CreateFunctionJQL, Query } from 'node-jql'
 
 import { parseCode } from 'utils/function'
 
 function prepareParams(): Function {
-
   const fn = function(require, session, params) {
     const moment = require('moment')
 
@@ -21,8 +18,8 @@ function prepareParams(): Function {
     // most important part of this card
     // dynamically choose the fields and summary value
 
-    const xAxis = subqueries.xAxis.value  // should be shipper/consignee/agent/controllingCustomer/carrier
-    const summaryColumnName = subqueries.yAxis.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const xAxis = subqueries.xAxis.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
     const codeColumnName = xAxis === 'carrier' ? `carrierCode` : `${xAxis}PartyId`
     const nameColumnName = xAxis === 'carrier' ? `carrierName` : `${xAxis}PartyName`
@@ -52,8 +49,8 @@ function createTop10Table() {
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    const xAxis = subqueries.xAxis.value  // should be shipper/consignee/agent/controllingCustomer/carrier
-    const summaryColumnName = subqueries.yAxis.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const xAxis = subqueries.xAxis.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
     const codeColumnName = xAxis === 'carrier' ? `carrierCode` : `${xAxis}PartyId`
     const nameColumnName = xAxis === 'carrier' ? `carrierName` : `${xAxis}PartyName`
@@ -61,7 +58,6 @@ function createTop10Table() {
     // ------------------------------
 
     return new CreateTableJQL({
-
       $temporary: true,
       name: 'top10',
       columns: [
@@ -82,18 +78,14 @@ function createTop10Table() {
       ]
 
     })
-
   }
 
   const code = fn.toString()
   return parseCode(code)
-
 }
 
 function insertTop10Data() {
-
   const fn = async function(require, session, params) {
-
     const { Resultset } = require('node-jql-core')
     const {
       InsertJQL,
@@ -102,8 +94,8 @@ function insertTop10Data() {
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    const xAxis = subqueries.xAxis.value  // should be shipper/consignee/agent/controllingCustomer/carrier
-    const summaryColumnName = subqueries.yAxis.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const xAxis = subqueries.xAxis.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
     const codeColumnName = xAxis === 'carrier' ? `carrierCode` : `${xAxis}PartyId`
     const nameColumnName = xAxis === 'carrier' ? `carrierName` : `${xAxis}PartyName`
@@ -116,15 +108,14 @@ function insertTop10Data() {
 
     // use the code of the top10 to find the rest
     const top10ShipmentCodeList = top10ShipmentList.map(x => x[codeColumnName])
-    const otherShipmentList = shipments.filter(x => !top10ShipmentCodeList.includes(x[codeColumnName]))
+    const otherShipmentList = shipments.filter(
+      x => !top10ShipmentCodeList.includes(x[codeColumnName])
+    )
 
     // sum up all the other
-    const otherSum = otherShipmentList.reduce(
-      (accumulator, currentValue, currentIndex, array) => {
-        return accumulator + currentValue[summaryColumnName]
-      },
-      0
-    )
+    const otherSum = otherShipmentList.reduce((accumulator, currentValue, currentIndex, array) => {
+      return accumulator + currentValue[summaryColumnName]
+    }, 0)
 
     // compose the record for other
     const otherResult = {}
@@ -137,7 +128,6 @@ function insertTop10Data() {
 
   const code = fn.toString()
   return parseCode(code)
-
 }
 
 function prepareRawTable() {
@@ -148,8 +138,8 @@ function prepareRawTable() {
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    const xAxis = subqueries.xAxis.value  // should be shipper/consignee/agent/controllingCustomer/carrier
-    const summaryColumnName = subqueries.yAxis.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const xAxis = subqueries.xAxis.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
     const codeColumnName = xAxis === 'carrier' ? `carrierCode` : `${xAxis}PartyId`
     const nameColumnName = xAxis === 'carrier' ? `carrierName` : `${xAxis}PartyName`
@@ -157,7 +147,6 @@ function prepareRawTable() {
     // ------------------------------
 
     return new CreateTableJQL({
-
       $temporary: true,
       name: 'raw',
 
@@ -196,12 +185,10 @@ function prepareRawTable() {
       })
 
     })
-
   }
 
   const code = fn.toString()
   return parseCode(code)
-
 }
 
 function finalQuery() {
@@ -212,8 +199,8 @@ function finalQuery() {
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    const xAxis = subqueries.xAxis.value  // should be shipper/consignee/agent/controllingCustomer/carrier
-    const summaryColumnName = subqueries.yAxis.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const xAxis = subqueries.xAxis.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
     const codeColumnName = xAxis === 'carrier' ? `carrierCode` : `${xAxis}PartyId`
     const nameColumnName = xAxis === 'carrier' ? `carrierName` : `${xAxis}PartyName`
@@ -234,11 +221,9 @@ function finalQuery() {
 
   const code = fn.toString()
   return parseCode(code)
-
 }
 
 function createNumerifyFunction() {
-
   return new CreateFunctionJQL(
     'NUMBERIFY',
     function(parameter: any, value: string) {
@@ -247,11 +232,9 @@ function createNumerifyFunction() {
     'number',
     'string'
   )
-
 }
 
 export default [
-
   createNumerifyFunction(),
 
   // get all data
@@ -260,12 +243,10 @@ export default [
   createTop10Table(),
   insertTop10Data(),
 
-  finalQuery()
-
+  finalQuery(),
 ]
 
 export const filters = [
-
   {
     display: 'yAxis',
     name: 'yAxis',

@@ -49,7 +49,6 @@ const app = {
     if (availableModuleTypes.length === 0) {
       throw new ForbiddenException('NO_ACCESS_RIGHT')
     } else if (subqueries.moduleTypeCode) {
-
       // warning : getting the first one only
       xmodule = availableModuleTypes.find(type => type === subqueries.moduleTypeCode.value[0])
       if (!xmodule) throw new BadRequestException('INVALID_MODULE_TYPE')
@@ -65,7 +64,6 @@ const app = {
     if (availableBoundTypes.length === 0) {
       throw new ForbiddenException('NO_ACCESS_RIGHT')
     } else if (subqueries.boundTypeCode) {
-
       // warning : getting the first one only
       xbound = availableBoundTypes.filter(type => type === subqueries.boundTypeCode.value[0])
       if (!xbound) throw new BadRequestException('INVALID_BOUND_TYPE')
@@ -106,21 +104,16 @@ const app = {
       xigntype: '',
     }
 
-    if (subqueries.isColoader)
-    {
+    if (subqueries.isColoader) {
       // filter isColoader cannot be used together with includeCustomer OR excludeCustomer
       if (subqueries.includeCustomer || subqueries.excludeCustomer)
         throw new BadRequestException('ISCOLOADER_INCLUDE_EXCLUDE_CUSTOMER_CANNOT_EXIST_BOTH')
 
-      if (subqueries.isColoader.value)
-      {
+      if (subqueries.isColoader.value) {
         xCustomer.xicltype = 'F'
-      }
-      else{
-
+      } else {
         xCustomer.xigntype = 'F'
       }
-
     }
 
     if (subqueries.includeCustomer && subqueries.excludeCustomer)

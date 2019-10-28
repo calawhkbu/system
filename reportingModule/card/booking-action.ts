@@ -333,10 +333,7 @@ function createNextStatusTable(): CreateTableJQL {
 function insertNextStatusTable() {
   const fn = async function(require, session, params) {
     const { Resultset } = require('node-jql-core')
-    const {
-      InsertJQL,
-      Query,
-    } = require('node-jql')
+    const { InsertJQL, Query } = require('node-jql')
     const moment = require('moment')
 
     const result = [] as any[]

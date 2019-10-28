@@ -1,159 +1,182 @@
 {
   "layout": "CardLayout",
-  "components": [{
-    "is": "Form",
-    "props": {
-      "showPreFormOnSubmit": false,
-      "showFormOnSubmit": false,
-      "showPostFormOnLoading": false,
-      "showLoadingOnSubmit": false,
-      "form": {
-        "password": "",
-        "username": ""
-      },
-      "style": {
-        "display": "flex",
-        "flex-direction": "column",
-        "min-height": "100%"
-      },
-      "fields": [{
-          "name": "username",
-          "label": "Auth.username",
-          "props": {
-            "required": true,
-            "type": "email",
-            "browser-autocomplete": "username",
-            "autocomplete": "username"
+  "components": [
+    {
+      "is": "Form",
+      "props": {
+        "showPreFormOnSubmit": false,
+        "showFormOnSubmit": false,
+        "showPostFormOnLoading": false,
+        "showLoadingOnSubmit": false,
+        "form": {
+          "password": "",
+          "username": ""
+        },
+        "style": {
+          "display": "flex",
+          "flex-direction": "column",
+          "min-height": "100%"
+        },
+        "fields": [
+          {
+            "name": "username",
+            "label": "Auth.username",
+            "props": {
+              "required": true,
+              "type": "email",
+              "browser-autocomplete": "username",
+              "autocomplete": "username"
+            },
+            "component": "v-text-field",
+            "validator": ["required", "isEmail"]
           },
-          "component": "v-text-field",
-          "validator": ["required", "isEmail"]
+          {
+            "name": "password",
+            "label": "Auth.password",
+            "props": {
+              "required": true,
+              "browser-autocomplete": "password",
+              "autocomplete": "password"
+            },
+            "component": "DisplayPasswordField",
+            "validator": ["required"]
+          }
+        ],
+        "submitActions": [
+          {
+            "type": "dispatch",
+            "otherParams": {
+              "name": "auth/login",
+              "type": "local"
+            },
+            "afterActions": [
+              {
+                "type": "router"
+              }
+            ]
+          }
+        ]
+      },
+      "slots": [
+        {
+          "is": "DynamicComponent",
+          "name": "pre-form",
+          "props": {
+            "style": {
+              "flex-grow": 1
+            },
+            "components": [
+              {
+                "is": "v-img",
+                "props": {
+                  "src": "/img/logo/swivel-logo-light.svg",
+                  "style": {
+                    "width": "484px"
+                  }
+                }
+              }
+            ]
+          }
         },
         {
-          "name": "password",
-          "label": "Auth.password",
+          "is": "DynamicComponent",
+          "name": "post-form",
           "props": {
-            "required": true,
-            "browser-autocomplete": "password",
-            "autocomplete": "password"
-          },
-          "component": "DisplayPasswordField",
-          "validator": ["required"]
-        }
-      ],
-      "submitActions": [{
-        "type": "dispatch",
-        "otherParams": {
-          "name": "auth/login",
-          "type": "local"
-        },
-        "afterActions": [{
-          "type": "router"
-        }]
-      }]
-    },
-    "slots": [{
-        "is": "DynamicComponent",
-        "name": "pre-form",
-        "props": {
-          "style": {
-            "flex-grow": 1
-          },
-          "components": [{
-            "is": "v-img",
-            "props": {
-              "src": "/img/logo/swivel-logo-light.svg",
-              "style": {
-                "width": "484px"
-              }
-            }
-          }]
-        }
-      },
-      {
-        "is": "DynamicComponent",
-        "name": "post-form",
-        "props": {
-          "style": {
-            "min-height": "120px"
-          },
-          "components": [{
-              "is": "DynamicComponent",
-              "props": {
-                "style": {
-                  "display": "flex"
-                },
-                "components": [{
-                    "is": "v-spacer"
-                  },
-                  {
-                    "is": "v-btn",
-                    "props": {
-                      "flat": true
-                    },
-                    "events": {
-                      "click.stop": [{
-                        "type": "router",
-                        "otherParams": {
-                          "func": "push",
-                          "path": "forget-password"
-                        }
-                      }]
-                    },
-                    "slots": [{
-                      "is": "i18nText",
-                      "name": "default",
-                      "props": {
-                        "i18nKey": "Auth.ForgetPassword?"
-                      }
-                    }]
-                  }
-                ]
-              }
+            "style": {
+              "min-height": "120px"
             },
-            {
-              "is": "DynamicComponent",
-              "props": {
-                "style": {
-                  "display": "flex"
-                },
-                "components": [{
-                    "is": "WechatLoginButton",
-                    "props": {
-                      "successActions": [{
-                        "type": "dispatch",
-                        "otherParams": {
-                          "name": "auth/login",
-                          "type": "wechat"
-                        },
-                        "afterActions": [{
-                          "type": "router"
-                        }]
-                      }]
-                    }
+            "components": [
+              {
+                "is": "DynamicComponent",
+                "props": {
+                  "style": {
+                    "display": "flex"
                   },
-                  {
-                    "is": "v-spacer"
-                  },
-                  {
-                    "is": "v-btn",
-                    "props": {
-                      "flat": true,
-                      "type": "submit"
+                  "components": [
+                    {
+                      "is": "v-spacer"
                     },
-                    "slots": [{
-                      "is": "i18nText",
-                      "name": "default",
+                    {
+                      "is": "v-btn",
                       "props": {
-                        "i18nKey": "Auth.Login"
+                        "flat": true
+                      },
+                      "events": {
+                        "click.stop": [
+                          {
+                            "type": "router",
+                            "otherParams": {
+                              "func": "push",
+                              "path": "forget-password"
+                            }
+                          }
+                        ]
+                      },
+                      "slots": [
+                        {
+                          "is": "i18nText",
+                          "name": "default",
+                          "props": {
+                            "i18nKey": "Auth.ForgetPassword?"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "is": "DynamicComponent",
+                "props": {
+                  "style": {
+                    "display": "flex"
+                  },
+                  "components": [
+                    {
+                      "is": "WechatLoginButton",
+                      "props": {
+                        "successActions": [
+                          {
+                            "type": "dispatch",
+                            "otherParams": {
+                              "name": "auth/login",
+                              "type": "wechat"
+                            },
+                            "afterActions": [
+                              {
+                                "type": "router"
+                              }
+                            ]
+                          }
+                        ]
                       }
-                    }]
-                  }
-                ]
+                    },
+                    {
+                      "is": "v-spacer"
+                    },
+                    {
+                      "is": "v-btn",
+                      "props": {
+                        "flat": true,
+                        "type": "submit"
+                      },
+                      "slots": [
+                        {
+                          "is": "i18nText",
+                          "name": "default",
+                          "props": {
+                            "i18nKey": "Auth.Login"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
               }
-            }
-          ]
+            ]
+          }
         }
-      }
-    ]
-  }]
+      ]
+    }
+  ]
 }
