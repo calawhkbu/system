@@ -18,7 +18,6 @@ import {
 import { parseCode } from 'utils/function'
 
 function prepareParams(likeHouseNo_: string): Function {
-
   const fn = function(require, session, params) {
     // import
     const moment = require('moment')
@@ -29,7 +28,7 @@ function prepareParams(likeHouseNo_: string): Function {
     if (!subqueries.summaryVariables) throw new BadRequestException('MISSING_summaryVariables')
     if (!subqueries.finalOrderBy) throw new BadRequestException('MISSING_finalOrderBy')
 
-    const summaryVariables = subqueries.summaryVariables.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const finalOrderBy = subqueries.finalOrderBy.value
 
     // limit/extend to 1 year
@@ -45,7 +44,7 @@ function prepareParams(likeHouseNo_: string): Function {
 
     // warning : hardCode, very hardcode
     // TODO : need to hardcode partyId in new 360
-    subqueries.officePartyId = { value: [ 2 ] }
+    subqueries.officePartyId = { value: [2] }
     subqueries.likeHouseNo = { value: likeHouseNo_ }
 
     // select
@@ -63,14 +62,19 @@ function prepareParams(likeHouseNo_: string): Function {
 
 // call API
 function prepareData(hardCodeOfficePartyName_: string) {
-
-  const fn =  function(require, session, params)
-  {
-
-    const { Query, ResultColumn, ColumnExpression, FunctionExpression, Value, InsertJQL, FromTable } = require('node-jql')
+  const fn = function(require, session, params) {
+    const {
+      Query,
+      ResultColumn,
+      ColumnExpression,
+      FunctionExpression,
+      Value,
+      InsertJQL,
+      FromTable,
+    } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
-    const summaryVariables = subqueries.summaryVariables.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const finalOrderBy = subqueries.finalOrderBy.value
 
     return new InsertJQL({
@@ -84,39 +88,46 @@ function prepareData(hardCodeOfficePartyName_: string) {
             'month'
           ),
 
-          ...summaryVariables.map(variable => new ResultColumn(
-            new FunctionExpression('IFNULL', new ColumnExpression(variable), 0),
-            variable
-          ) )
+          ...summaryVariables.map(
+            variable =>
+              new ResultColumn(
+                new FunctionExpression('IFNULL', new ColumnExpression(variable), 0),
+                variable
+              )
+          ),
         ],
         $from: new FromTable(
           {
             method: 'POST',
             url: 'api/shipment/query/shipment',
             columns: [
-
               { name: 'jobMonth', type: 'string' },
-              ...summaryVariables.map(variable => ({ name : variable , type : 'number'}))
+              ...summaryVariables.map(variable => ({ name: variable, type: 'number' })),
             ],
           },
           'shipment'
         ),
       }),
     })
-
   }
 
   let code = fn.toString()
   code = code.replace(new RegExp('hardCodeOfficePartyName_', 'g'), `'${hardCodeOfficePartyName_}'`)
   return parseCode(code)
-
 }
 
 function finalQuery(types_?: string[]): Function {
-
   const fn = function(require, session, params) {
-
-    const { OrderBy, MathExpression, Query, ResultColumn, ColumnExpression, FunctionExpression, AndExpressions, BinaryExpression } = require('node-jql')
+    const {
+      OrderBy,
+      MathExpression,
+      Query,
+      ResultColumn,
+      ColumnExpression,
+      FunctionExpression,
+      AndExpressions,
+      BinaryExpression,
+    } = require('node-jql')
 
     const fromTableName = 'shipment'
 
@@ -150,7 +161,7 @@ function finalQuery(types_?: string[]): Function {
     const $select = [...finalGroupBy.map(x => new ResultColumn(new ColumnExpression(x)))]
 
     const subqueries = (params.subqueries = params.subqueries || {})
-    const summaryVariables = subqueries.summaryVariables.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const finalOrderBy = subqueries.finalOrderBy.value
 
     summaryVariables.map(variable => {
@@ -251,7 +262,6 @@ function finalQuery(types_?: string[]): Function {
       } else {
         $select.push(new ResultColumn(finalSumExpression, `total_${variable}`))
       }
-
     })
 
     return new Query({
@@ -259,43 +269,38 @@ function finalQuery(types_?: string[]): Function {
       $from: fromTableName,
 
       $group: finalGroupBy,
-      $order: finalOrderBy.map(x => new OrderBy(x, 'DESC'))
+      $order: finalOrderBy.map(x => new OrderBy(x, 'DESC')),
     })
-
   }
 
   let code = fn.toString()
 
-  code = code.replace(new RegExp('types_', 'g'), (types_ && types_.length) ? `[${types_.map(x => `'${x}'`)}]` : `[]`)
+  code = code.replace(
+    new RegExp('types_', 'g'),
+    types_ && types_.length ? `[${types_.map(x => `'${x}'`)}]` : `[]`
+  )
 
   return parseCode(code)
-
 }
 
-function createTable()
-{
-
+function createTable() {
   return function(require, session, params) {
-
-    const {CreateTableJQL, Column } = require('node-jql')
+    const { CreateTableJQL, Column } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
-    const summaryVariables = subqueries.summaryVariables.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const finalOrderBy = subqueries.finalOrderBy.value
 
-      // prepare temp table
+    // prepare temp table
     return new CreateTableJQL(true, 'shipment', [
       new Column('officePartyName', 'string'),
       new Column('month', 'string'),
-      ...summaryVariables.map(variable => new Column(variable, 'number'))
+      ...summaryVariables.map(variable => new Column(variable, 'number')),
     ])
-
   }
-
 }
 
 export default [
-
   createTable(),
   // prepare data
   [prepareParams('GZH%'), prepareData('GGL GZH')],
@@ -306,6 +311,5 @@ export default [
   //   $from : 'shipment'
   // })
 
-  finalQuery()
-
+  finalQuery(),
 ]

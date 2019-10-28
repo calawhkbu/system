@@ -36,41 +36,33 @@ const months = [
 ]
 
 function createProfitTable() {
-
   return function(require, session, params) {
-
     const { CreateTableJQL } = require('node-jql')
 
     const profitSummaryVariables = params.subqueries.profitSummaryVariables.value
     // const profitSummaryVariables = ['grossProfit', 'profitShare', 'profitShareCost', 'profitShareIncome', 'revenue']
 
     return new CreateTableJQL({
-
       name: 'profit_raw',
       columns: [
-
         {
           name: 'current',
-          type: 'boolean'
+          type: 'boolean',
         },
         {
           name: 'month',
-          type: 'string'
+          type: 'string',
         },
 
         {
           name: 'type',
-          type: 'string'
+          type: 'string',
         },
 
-        ...profitSummaryVariables.map(variable => ({ name: variable, type: 'number' }))
-
-      ]
-
+        ...profitSummaryVariables.map(variable => ({ name: variable, type: 'number' })),
+      ],
     })
-
   }
-
 }
 
 function prepareProfitParams(currentYear_: boolean, nominatedType_: 'F' | 'R'): Function {
@@ -100,10 +92,16 @@ function prepareProfitParams(currentYear_: boolean, nominatedType_: 'F' | 'R'): 
 }
 
 function insertProfitData(currentYear_: boolean, nominatedType_: 'F' | 'R') {
-
   const fn = function(require, session, params) {
-
-    const { InsertJQL, ResultColumn, FunctionExpression, Value, ColumnExpression, FromTable, Query } = require('node-jql')
+    const {
+      InsertJQL,
+      ResultColumn,
+      FunctionExpression,
+      Value,
+      ColumnExpression,
+      FromTable,
+      Query,
+    } = require('node-jql')
 
     const profitSummaryVariables = params.subqueries.profitSummaryVariables.value
     // const profitSummaryVariables = ['grossProfit', 'profitShare', 'profitShareCost', 'profitShareIncome', 'revenue']
@@ -112,30 +110,22 @@ function insertProfitData(currentYear_: boolean, nominatedType_: 'F' | 'R') {
       name: 'profit_raw',
       columns: [...profitSummaryVariables, 'type', 'month', 'current'],
       query: new Query({
-
         $select: [
-
           // warning : profitSummaryVariables should also contains grossProfit and revenue if margin is selected
-          ...profitSummaryVariables.map(variable =>
-            {
+          ...profitSummaryVariables.map(variable => {
+            if (variable === 'margin') {
+              return new ResultColumn(
+                new MathExpression(
+                  new ColumnExpression('grossProfit'),
+                  '/',
+                  new ColumnExpression('revenue')
+                ),
+                'margin'
+              )
+            }
 
-              if (variable === 'margin')
-              {
-
-                return new ResultColumn(
-                  new MathExpression(
-                    new ColumnExpression('grossProfit'),
-                    '/',
-                    new ColumnExpression('revenue')
-                  ),
-                  'margin'
-                )
-
-              }
-
-              return new ResultColumn(new ColumnExpression(variable))
-
-            }),
+            return new ResultColumn(new ColumnExpression(variable))
+          }),
 
           new ResultColumn(new Value(nominatedType_), 'type'),
 
@@ -146,42 +136,49 @@ function insertProfitData(currentYear_: boolean, nominatedType_: 'F' | 'R') {
           new ResultColumn(new Value(currentYear_), 'current'),
         ],
 
-        $from: new FromTable({
-          method: 'POST',
-          url: 'api/shipment/query/profit',
-          columns: [
-            {
-              name: 'officePartyCode',
-              type: 'string',
-            },
-            {
-              name: 'jobMonth',
-              type: 'string',
-            },
+        $from: new FromTable(
+          {
+            method: 'POST',
+            url: 'api/shipment/query/profit',
+            columns: [
+              {
+                name: 'officePartyCode',
+                type: 'string',
+              },
+              {
+                name: 'jobMonth',
+                type: 'string',
+              },
 
-            ...profitSummaryVariables.map(variable => ({ name: variable, type: 'number' })) as any,
-
-          ],
-        }, 'dumb')
-
-      })
-
+              ...(profitSummaryVariables.map(variable => ({
+                name: variable,
+                type: 'number',
+              })) as any),
+            ],
+          },
+          'dumb'
+        ),
+      }),
     })
-
   }
 
   let code = fn.toString()
   code = code.replace(new RegExp('currentYear_', 'g'), String(currentYear_))
   code = code.replace(new RegExp('nominatedType_', 'g'), `'${nominatedType_}'`)
   return parseCode(code)
-
 }
 
 function processProfitSummary() {
-
   return function(require, session, params) {
-
-    const { ResultColumn, FunctionExpression, AndExpressions, BinaryExpression, ColumnExpression, CreateTableJQL, Query } = require('node-jql')
+    const {
+      ResultColumn,
+      FunctionExpression,
+      AndExpressions,
+      BinaryExpression,
+      ColumnExpression,
+      CreateTableJQL,
+      Query,
+    } = require('node-jql')
 
     const profitSummaryVariables = params.subqueries.profitSummaryVariables.value
     // const profitSummaryVariables = ['grossProfit', 'profitShare', 'profitShareCost', 'profitShareIncome', 'revenue']
@@ -189,77 +186,60 @@ function processProfitSummary() {
     const isCurrentList = [true, false]
     const types = ['F', 'R']
 
-    const $select = [
-      new ResultColumn('month')
-    ]
+    const $select = [new ResultColumn('month')]
 
     profitSummaryVariables.map(variable => {
-
       isCurrentList.map(isCurrent => {
-
         types.map(type => {
-
           $select.push(
-
             new ResultColumn(
-
-              new FunctionExpression('IFNULL',
-                new FunctionExpression('FIND',
+              new FunctionExpression(
+                'IFNULL',
+                new FunctionExpression(
+                  'FIND',
                   new AndExpressions([
-
                     new BinaryExpression(new ColumnExpression('type'), '=', type),
-                    new BinaryExpression(new ColumnExpression('current'), '=', isCurrent)
-
+                    new BinaryExpression(new ColumnExpression('current'), '=', isCurrent),
                   ]),
 
                   new ColumnExpression(variable)
-
-                ), 0), `${isCurrent ? 'current' : 'last' }_${type}_${variable}`)
-
+                ),
+                0
+              ),
+              `${isCurrent ? 'current' : 'last'}_${type}_${variable}`
+            )
           )
-
         })
-
       })
-
     })
 
     return new CreateTableJQL({
-
       name: 'profit',
       $temporary: true,
       $as: new Query({
-
         $select,
         $from: 'profit_raw',
-        $group: 'month'
-
-      })
+        $group: 'month',
+      }),
     })
-
   }
-
 }
 
 function createTonnagetable() {
-
   return function(require, session, params) {
-
     const { CreateTableJQL } = require('node-jql')
 
     const tonnageSummaryVariables = params.subqueries.tonnageSummaryVariables.value
     //  const tonnageSummaryVariables = ['chargeableWeight', 'cbm', 'totalShipment']
 
     return new CreateTableJQL({
-
       name: 'tonnage_raw',
       columns: [
-
         ...tonnageSummaryVariables.map(variable => ({ name: variable, type: 'number' })),
 
         {
           name: 'current',
-          type: 'boolean'
+          type: 'boolean',
         },
 
         {
@@ -269,14 +249,11 @@ function createTonnagetable() {
 
         {
           name: 'month',
-          type: 'string'
-        }
-      ]
-
+          type: 'string',
+        },
+      ],
     })
-
   }
-
 }
 
 function prepareTonnageParams(currentYear_: boolean, nominatedType_: 'F' | 'R'): Function {
@@ -312,10 +289,16 @@ function prepareTonnageParams(currentYear_: boolean, nominatedType_: 'F' | 'R'):
 }
 
 function insertTonnageData(currentYear_: boolean, nominatedType_: 'F' | 'R') {
-
   const fn = function(require, session, params) {
-
-    const { ResultColumn, ColumnExpression, FunctionExpression, InsertJQL, Value, FromTable, Query } = require('node-jql')
+    const {
+      ResultColumn,
+      ColumnExpression,
+      FunctionExpression,
+      InsertJQL,
+      Value,
+      FromTable,
+      Query,
+    } = require('node-jql')
 
     const tonnageSummaryVariables = params.subqueries.tonnageSummaryVariables.value
     //  const tonnageSummaryVariables = ['chargeableWeight', 'cbm', 'totalShipment']
@@ -324,10 +307,10 @@ function insertTonnageData(currentYear_: boolean, nominatedType_: 'F' | 'R') {
       name: 'tonnage_raw',
       columns: [...tonnageSummaryVariables, 'type', 'month', 'current'],
       query: new Query({
-
         $select: [
-
-          ...tonnageSummaryVariables.map(variable => new ResultColumn(new ColumnExpression(variable))),
+          ...tonnageSummaryVariables.map(
+            variable => new ResultColumn(new ColumnExpression(variable))
+          ),
 
           new ResultColumn(new Value(nominatedType_), 'type'),
 
@@ -339,24 +322,26 @@ function insertTonnageData(currentYear_: boolean, nominatedType_: 'F' | 'R') {
           new ResultColumn(new Value(currentYear_), 'current'),
         ],
 
-        $from: new FromTable({
-          method: 'POST',
-          url: 'api/shipment/query/shipment',
-          columns: [
+        $from: new FromTable(
+          {
+            method: 'POST',
+            url: 'api/shipment/query/shipment',
+            columns: [
+              ...(tonnageSummaryVariables.map(variable => ({
+                name: variable,
+                type: 'number',
+              })) as any),
 
-            ...tonnageSummaryVariables.map(variable => ({ name: variable, type: 'number' })) as any,
-
-            {
-              name: 'jobMonth',
-              type: 'string',
-            }
-          ],
-        }, 'dumb')
-
-      })
-
+              {
+                name: 'jobMonth',
+                type: 'string',
+              },
+            ],
+          },
+          'dumb'
+        ),
+      }),
     })
-
   }
 
   let code = fn.toString()
@@ -366,10 +351,16 @@ function insertTonnageData(currentYear_: boolean, nominatedType_: 'F' | 'R') {
 }
 
 function processTonnageSummary() {
-
   return function(require, session, params) {
-
-    const { ResultColumn, ColumnExpression, FunctionExpression, Query, CreateTableJQL, BinaryExpression, AndExpressions } = require('node-jql')
+    const {
+      ResultColumn,
+      ColumnExpression,
+      FunctionExpression,
+      Query,
+      CreateTableJQL,
+      BinaryExpression,
+      AndExpressions,
+    } = require('node-jql')
 
     const tonnageSummaryVariables = params.subqueries.tonnageSummaryVariables.value
     //  const tonnageSummaryVariables = ['chargeableWeight', 'cbm', 'totalShipment']
@@ -378,66 +369,58 @@ function processTonnageSummary() {
 
     const types = ['F', 'R']
 
-    const $select = [
-      new ResultColumn('month')
-    ]
+    const $select = [new ResultColumn('month')]
 
     tonnageSummaryVariables.map(variable => {
-
       isCurrentList.map(isCurrent => {
-
         types.map(type => {
-
           $select.push(
-
             new ResultColumn(
-
-              new FunctionExpression('IFNULL',
-                new FunctionExpression('FIND',
+              new FunctionExpression(
+                'IFNULL',
+                new FunctionExpression(
+                  'FIND',
                   new AndExpressions([
-
                     new BinaryExpression(new ColumnExpression('type'), '=', type),
-                    new BinaryExpression(new ColumnExpression('current'), '=', isCurrent)
-
+                    new BinaryExpression(new ColumnExpression('current'), '=', isCurrent),
                   ]),
 
                   new ColumnExpression(variable)
-
-                ), 0), `${isCurrent ? 'current' : 'last'}_${type}_${variable}`)
-
+                ),
+                0
+              ),
+              `${isCurrent ? 'current' : 'last'}_${type}_${variable}`
+            )
           )
-
         })
-
       })
-
     })
 
     return new CreateTableJQL({
-
       name: 'tonnage',
       $temporary: true,
       $as: new Query({
-
         $select,
         $from: 'tonnage_raw',
-        $group: 'month'
-
-      })
+        $group: 'month',
+      }),
     })
-
   }
-
 }
 
 function finalQuery() {
-
-  return function(require, session, params){
-
+  return function(require, session, params) {
     const currentOrLastList = ['current', 'last']
     const types = ['F', 'R']
 
-    const { ResultColumn, ColumnExpression, FromTable, JoinClause, BinaryExpression, Query } = require('node-jql')
+    const {
+      ResultColumn,
+      ColumnExpression,
+      FromTable,
+      JoinClause,
+      BinaryExpression,
+      Query,
+    } = require('node-jql')
 
     const tonnageSummaryVariables = params.subqueries.tonnageSummaryVariables.value
     //  const tonnageSummaryVariables = ['chargeableWeight', 'cbm', 'totalShipment']
@@ -445,58 +428,55 @@ function finalQuery() {
     const profitSummaryVariables = params.subqueries.profitSummaryVariables.value
     // const profitSummaryVariables = ['grossProfit', 'profitShare', 'profitShareCost', 'profitShareIncome', 'revenue']
 
-    const showMonth = (params.subqueries.showMonth ) || false
+    const showMonth = params.subqueries.showMonth || false
 
-    const $select = [
-    ]
+    const $select = []
 
-    if (showMonth)
-    {
-
+    if (showMonth) {
       $select.push(new ResultColumn(new ColumnExpression('profit', 'month')))
-
     }
 
     currentOrLastList.map(currentOrLast => {
-
       types.map(type => {
-
         tonnageSummaryVariables.map(variable => {
-          $select.push(new ResultColumn(new ColumnExpression('tonnage', `${currentOrLast}_${type}_${variable}`)))
+          $select.push(
+            new ResultColumn(
+              new ColumnExpression('tonnage', `${currentOrLast}_${type}_${variable}`)
+            )
+          )
         })
 
         profitSummaryVariables.map(variable => {
-          $select.push(new ResultColumn(new ColumnExpression('profit', `${currentOrLast}_${type}_${variable}`)))
+          $select.push(
+            new ResultColumn(new ColumnExpression('profit', `${currentOrLast}_${type}_${variable}`))
+          )
         })
-
       })
-
     })
 
     return new Query({
-
       $select,
 
-      $from: new FromTable('profit',
+      $from: new FromTable(
+        'profit',
 
         new JoinClause({
-
           table: 'tonnage',
           operator: 'LEFT',
           $on: [
-            new BinaryExpression(new ColumnExpression('profit', 'month'), '=', new ColumnExpression('tonnage', 'month'))
-          ]
-
+            new BinaryExpression(
+              new ColumnExpression('profit', 'month'),
+              '=',
+              new ColumnExpression('tonnage', 'month')
+            ),
+          ],
         })
-      )
-
+      ),
     })
   }
-
 }
 
 export default [
-
   // prepare all profit table
   createProfitTable(),
   [prepareProfitParams(true, 'F'), insertProfitData(true, 'F')],
@@ -520,17 +500,15 @@ export default [
 
   processTonnageSummary(),
 
-  finalQuery()
-
+  finalQuery(),
 ]
 
 // filters avaliable for this card
 // all card in DB record using this jql will have these filter
 export const filters = [
-
   {
     name: 'showMonth',
-    type: 'boolean'
+    type: 'boolean',
   },
   {
     name: 'showYear',
@@ -538,15 +516,15 @@ export const filters = [
       items: [
         {
           label: 'current',
-          value: 'current'
+          value: 'current',
         },
         {
           label: 'last',
-          value: 'last'
-        }
+          value: 'last',
+        },
       ],
-      required: true
+      required: true,
     },
-    type: 'list'
-  }
+    type: 'list',
+  },
 ]

@@ -29,7 +29,7 @@ function prepareParams(): Function {
 
     console.log(subqueries)
 
-    const summaryVariables = subqueries.summaryVariables.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const finalOrderBy = subqueries.finalOrderBy.value
 
     // limit/extend to 1 year
@@ -54,10 +54,17 @@ function prepareParams(): Function {
 }
 
 function finalQuery(types_?: string[]): Function {
-
   const fn = function(require, session, params) {
-
-    const { OrderBy, MathExpression, Query, ResultColumn, ColumnExpression, FunctionExpression, AndExpressions, BinaryExpression } = require('node-jql')
+    const {
+      OrderBy,
+      MathExpression,
+      Query,
+      ResultColumn,
+      ColumnExpression,
+      FunctionExpression,
+      AndExpressions,
+      BinaryExpression,
+    } = require('node-jql')
 
     const fromTableName = 'shipment'
 
@@ -91,7 +98,7 @@ function finalQuery(types_?: string[]): Function {
     const $select = [...finalGroupBy.map(x => new ResultColumn(new ColumnExpression(x)))]
 
     const subqueries = (params.subqueries = params.subqueries || {})
-    const summaryVariables = subqueries.summaryVariables.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const finalOrderBy = subqueries.finalOrderBy.value
 
     summaryVariables.map(variable => {
@@ -192,7 +199,6 @@ function finalQuery(types_?: string[]): Function {
       } else {
         $select.push(new ResultColumn(finalSumExpression, `total_${variable}`))
       }
-
     })
 
     return new Query({
@@ -200,33 +206,39 @@ function finalQuery(types_?: string[]): Function {
       $from: fromTableName,
 
       $group: finalGroupBy,
-      $order: finalOrderBy.map(x => new OrderBy(x, 'DESC'))
+      $order: finalOrderBy.map(x => new OrderBy(x, 'DESC')),
     })
-
   }
 
   let code = fn.toString()
 
-  code = code.replace(new RegExp('types_', 'g'), (types_ && types_.length) ? `[${types_.map(x => `'${x}'`)}]` : `[]`)
+  code = code.replace(
+    new RegExp('types_', 'g'),
+    types_ && types_.length ? `[${types_.map(x => `'${x}'`)}]` : `[]`
+  )
 
   return parseCode(code)
-
 }
 
 function prepareTable(): Function {
-
   return function(require, session, params) {
-
-    const { OrderBy, CreateTableJQL, Query, ResultColumn, ColumnExpression, FunctionExpression, FromTable } = require('node-jql')
+    const {
+      OrderBy,
+      CreateTableJQL,
+      Query,
+      ResultColumn,
+      ColumnExpression,
+      FunctionExpression,
+      FromTable,
+    } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
-    const summaryVariables = subqueries.summaryVariables.value  // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const finalOrderBy = subqueries.finalOrderBy.value
 
     const tableName = 'shipment'
 
     return new CreateTableJQL({
-
       $temporary: true,
       name: tableName,
       $as: new Query({
@@ -238,7 +250,7 @@ function prepareTable(): Function {
             'month'
           ),
 
-          ...summaryVariables.map(variable => new ResultColumn(variable))
+          ...summaryVariables.map(variable => new ResultColumn(variable)),
         ],
         $from: new FromTable(
           {
@@ -249,7 +261,7 @@ function prepareTable(): Function {
               { name: 'carrierCode', type: 'string' },
               { name: 'jobMonth', type: 'string' },
 
-              ...summaryVariables.map(variable => ({ name: variable, type: 'number' }) )
+              ...summaryVariables.map(variable => ({ name: variable, type: 'number' })),
             ],
 
             data: {
@@ -260,12 +272,7 @@ function prepareTable(): Function {
         ),
       }),
     })
-
   }
 }
 
-export default [
-  [prepareParams(), prepareTable()],
-  finalQuery()
-
-]
+export default [[prepareParams(), prepareTable()], finalQuery()]
