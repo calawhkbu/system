@@ -28,8 +28,6 @@ const query = new QueryDef(
 
       new ResultColumn(new ColumnExpression('flex_data', 'data')),
 
-      new ResultColumn(new ColumnExpression('code_master', 'name'), 'carrierName'),
-
       new ResultColumn(new ColumnExpression('booking_container', '*')),
       new ResultColumn(new ColumnExpression('booking_popacking', '*')),
       new ResultColumn(new ColumnExpression('finalWorkflow', '*')),
@@ -423,7 +421,7 @@ const query = new QueryDef(
   })
 )
 
-query.register('noOfBookings', {
+query.register('totalBooking', {
   expression: new FunctionExpression({
     name: 'COUNT',
     parameters: new ParameterExpression({
@@ -432,7 +430,7 @@ query.register('noOfBookings', {
       expression: new ColumnExpression('*'),
     }),
   }),
-  $as: 'noOfBookings',
+  $as: 'totalBooking',
 })
 
 // query.register('houseNo2', {
@@ -441,7 +439,7 @@ query.register('noOfBookings', {
 //     new FunctionExpression('SUM', new ColumnExpression('weight')),
 //     0
 //   ),
-//   $as: 'weightTotal',
+//   $as: 'weight',
 // })
 
 query.register('houseNo', {
@@ -476,22 +474,27 @@ query.register('poNo', {
   $as: 'poNo',
 })
 
-query.register('weightTotal', {
+query.register('weight', {
   expression: new FunctionExpression(
     'IFNULL',
     new FunctionExpression('SUM', new ColumnExpression('weight')),
     0
   ),
-  $as: 'weightTotal',
+  $as: 'weight',
 })
 
-query.register('volumeTotal', {
+query.register('cbm', {
   expression: new FunctionExpression(
     'IFNULL',
     new FunctionExpression('SUM', new ColumnExpression('volume')),
     0
   ),
-  $as: 'volumeTotal',
+  $as: 'cbm',
+})
+
+query.register('carrierName', {
+  expression: new ColumnExpression('code_master', 'name'),
+  $as: 'carrierName',
 })
 
 // used createdAt as jobMonth

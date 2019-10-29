@@ -52,7 +52,7 @@ function prepareBookingParams(): Function {
         .format('YYYY-MM-DD')
     }
 
-    params.fields = ['moduleTypeCode', 'noOfBookings', 'primaryKeyListString']
+    params.fields = ['moduleTypeCode', 'totalBooking', 'primaryKeyListString']
 
     params.groupBy = ['moduleTypeCode']
 
@@ -71,7 +71,7 @@ function prepareBookingTable(): CreateTableJQL {
     $as: new Query({
       $select: [
         new ResultColumn(new ColumnExpression(name, 'moduleTypeCode'), 'moduleTypeCode'),
-        new ResultColumn(new ColumnExpression(name, 'noOfBookings'), 'count'), // rename noOfBookings into Count
+        new ResultColumn(new ColumnExpression(name, 'totalBooking'), 'count'), // rename totalBooking into Count
         new ResultColumn(
           new ColumnExpression(name, 'primaryKeyListString'),
           'primaryKeyListString'
@@ -88,7 +88,7 @@ function prepareBookingTable(): CreateTableJQL {
             },
 
             {
-              name: 'noOfBookings',
+              name: 'totalBooking',
               type: 'number',
             },
 
