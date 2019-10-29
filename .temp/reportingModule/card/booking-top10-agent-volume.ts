@@ -39,10 +39,10 @@ function prepareParams(): Function {
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    params.fields = ['agentPartyId', 'volumeTotal']
+    params.fields = ['agentPartyId', 'volume']
     params.groupBy = ['agentPartyId']
 
-    params.sorting = [new OrderBy('volumeTotal', 'DESC')]
+    params.sorting = [new OrderBy('volume', 'DESC')]
 
     subqueries.agentPartyIdIsNotNull = {
       value: true,
@@ -57,7 +57,7 @@ function prepareParams(): Function {
 function createTable() {
   return new CreateTableJQL(true, 'top10', [
     new Column('agentPartyId', 'string'),
-    new Column('volumeTotal', 'number'),
+    new Column('volume', 'number'),
   ])
 }
 
@@ -65,13 +65,13 @@ function prepareData(type: 'top10' | 'other' | 'test') {
   const bigLimit = 999999999999999999
 
   if (type === 'test') {
-    return new InsertJQL('top10', { agentPartyId: 'other', volumeTotal: 999 })
+    return new InsertJQL('top10', { agentPartyId: 'other', volume: 999 })
   }
 
   if (type === 'other') {
     return new InsertJQL({
       name: 'top10',
-      columns: ['agentPartyId', 'volumeTotal'],
+      columns: ['agentPartyId', 'volume'],
 
       query: new Query({
         $from: 'raw',
@@ -82,7 +82,7 @@ function prepareData(type: 'top10' | 'other' | 'test') {
 
   return new InsertJQL({
     name: 'top10',
-    columns: ['agentPartyId', 'volumeTotal'],
+    columns: ['agentPartyId', 'volume'],
 
     query: new Query({
       $from: 'raw',
@@ -100,7 +100,7 @@ function prepareRawTable(): CreateTableJQL {
     $as: new Query({
       $select: [
         new ResultColumn(new ColumnExpression(name, 'agentPartyId'), 'agentPartyId'),
-        new ResultColumn(new ColumnExpression(name, 'volumeTotal'), 'volume'),
+        new ResultColumn(new ColumnExpression(name, 'volume'), 'volume'),
       ],
 
       $from: new FromTable(
@@ -109,7 +109,7 @@ function prepareRawTable(): CreateTableJQL {
           url: 'api/booking/query/booking',
           columns: [
             {
-              name: 'volumeTotal',
+              name: 'volume',
               type: 'number',
             },
 

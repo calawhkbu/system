@@ -280,7 +280,7 @@ const query = new QueryDef(
   })
 )
 
-query.register('noOfBookings', {
+query.register('totalBooking', {
   expression: new FunctionExpression({
     name: 'COUNT',
     parameters: new ParameterExpression({
