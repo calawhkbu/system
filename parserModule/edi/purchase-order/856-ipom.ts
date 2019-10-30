@@ -43,7 +43,7 @@ export default class EdiParser856 extends BaseEdiParser {
     }
     const bookingNo = _.get(entityJSON[0], 'bookingNo')
     const removeCharbookingNo = bookingNo.replace(/-/g, '')
-    const controlNo = (removeCharbookingNo || '').substring((removeCharbookingNo || '').length - 9)
+    const controlNo = await this.getNewSeq(process.env.NODE_ENV === 'production' ? '856-ipom' : '856-ipom-dev')
     ISA.elementList.push('00', '          ', '00',
     '          ', '12', '718978080      ', '08' , '6112390050     ' , moment(currantDate).format('YYMMDD'), moment(currantDate).format('HHmm'), 'U', '00403', controlNo, '0', 'P', '>')
     data.push(ISA)
