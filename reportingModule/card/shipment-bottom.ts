@@ -35,6 +35,18 @@ function prepareShipmentParams(): Function {
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
 
+    params.fields = [
+      'primaryKey',
+      'houseNo',
+      'jobDate',
+      'shipperPartyName',
+      'consigneePartyName',
+      'portOfLoadingCode',
+      'portOfDischargeCode',
+      'departureDateEstimated',
+      'arrivalDateEstimated'
+    ]
+
     // console.log(subqueries)
 
     if (!subqueries.primaryKeyListString && !subqueries.workflowStatusListString) {
@@ -63,6 +75,7 @@ function prepareShipmentParams(): Function {
       subqueries.workflowStatusList = {
         value: workflowStatusList,
       }
+
     }
 
     return params
@@ -82,6 +95,8 @@ function prepareShipmentable(name: string): CreateTableJQL {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
+
+            { name: 'primaryKey', type: 'string' },
             { name: 'houseNo', type: 'string' },
             { name: 'jobDate', type: 'Date' },
             { name: 'shipperPartyName', type: 'string' },
