@@ -4,7 +4,6 @@ import { parseCode } from 'utils/function'
 
 function prepareParams(): Function {
   const fn = function(require, session, params) {
-
     const { OrderBy } = require('node-jql')
     const { BadRequestException } = require('@nestjs/common')
 
@@ -25,10 +24,9 @@ function prepareParams(): Function {
 
     // ------------------------------
 
-    params.sorting = new OrderBy(summaryColumnName, 'DESC'),
-
+    ; (params.sorting = new OrderBy(summaryColumnName, 'DESC')),
       // select
-    params.fields = [codeColumnName, summaryColumnName, nameColumnName]
+      (params.fields = [codeColumnName, summaryColumnName, nameColumnName])
     params.groupBy = [codeColumnName, nameColumnName]
 
     return params
@@ -39,12 +37,8 @@ function prepareParams(): Function {
 }
 
 function createTop10Table() {
-
   const fn = function(require, session, params) {
-
-    const {
-      CreateTableJQL
-    } = require('node-jql')
+    const { CreateTableJQL } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -62,20 +56,18 @@ function createTop10Table() {
       columns: [
         {
           name: codeColumnName,
-          type: 'string'
+          type: 'string',
         },
 
         {
           name: nameColumnName,
-          type: 'string'
+          type: 'string',
         },
         {
           name: summaryColumnName,
-          type: 'number'
-        }
-
-      ]
-
+          type: 'number',
+        },
+      ],
     })
   }
 
@@ -86,10 +78,7 @@ function createTop10Table() {
 function insertTop10Data() {
   const fn = async function(require, session, params) {
     const { Resultset } = require('node-jql-core')
-    const {
-      InsertJQL,
-      Query
-    } = require('node-jql')
+    const { InsertJQL, Query } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -99,23 +88,20 @@ function insertTop10Data() {
     const codeColumnName = xAxis === 'carrier' ? `carrierCode` : `${xAxis}PartyId`
     const nameColumnName = xAxis === 'carrier' ? `carrierName` : `${xAxis}PartyName`
 
-    const showOther = (subqueries.showOther || false)
+    const showOther = subqueries.showOther || false
     const topX = subqueries.topX.value
 
     // ------------------------------
 
     const bookings = new Resultset(await session.query(new Query('raw'))).toArray() as any[]
 
-    if (!(bookings && bookings.length))
-    {
+    if (!(bookings && bookings.length)) {
       throw new Error('NO_DATA')
     }
 
     const top10BookingList = bookings.filter(x => x[codeColumnName]).slice(0, topX)
 
-    if (showOther)
-    {
-
+    if (showOther) {
       // use the code of the top10 to find the rest
       const top10BookingCodeList = top10BookingList.map(x => x[codeColumnName])
       const otherBookingList = bookings.filter(
@@ -134,7 +120,6 @@ function insertTop10Data() {
       otherResult[summaryColumnName] = otherSum
 
       top10BookingList.push(otherResult)
-
     }
 
     return new InsertJQL('top10', ...top10BookingList)
@@ -145,10 +130,16 @@ function insertTop10Data() {
 }
 
 function prepareRawTable() {
-
   const fn = function(require, session, params) {
-
-    const { CreateTableJQL, ResultColumn, FromTable, ColumnExpression, Query, FunctionExpression, OrderBy } = require('node-jql')
+    const {
+      CreateTableJQL,
+      ResultColumn,
+      FromTable,
+      ColumnExpression,
+      Query,
+      FunctionExpression,
+      OrderBy,
+    } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -192,12 +183,10 @@ function prepareRawTable() {
                 type: 'string',
               },
             ],
-
           },
           'booking'
-        )
-      })
-
+        ),
+      }),
     })
   }
 
@@ -206,9 +195,7 @@ function prepareRawTable() {
 }
 
 function finalQuery() {
-
   const fn = function(require, session, params) {
-
     const { ResultColumn, ColumnExpression, Query } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
@@ -222,14 +209,13 @@ function finalQuery() {
     // ------------------------------
 
     return new Query({
-
       $select: [
         new ResultColumn(new ColumnExpression(codeColumnName), 'code'),
         new ResultColumn(new ColumnExpression(nameColumnName), 'name'),
-        new ResultColumn(new ColumnExpression(summaryColumnName), 'summary')
+        new ResultColumn(new ColumnExpression(summaryColumnName), 'summary'),
       ],
 
-      $from: 'top10'
+      $from: 'top10',
     })
   }
 
@@ -268,20 +254,20 @@ export const filters = [
       items: [
         {
           label: 'weight',
-          value: 'weight'
+          value: 'weight',
         },
         {
           label: 'cbm',
-          value: 'cbm'
+          value: 'cbm',
         },
         {
           label: 'totalBooking',
-          value: 'totalBooking'
-        }
+          value: 'totalBooking',
+        },
       ],
-      required: true
+      required: true,
     },
-    type: 'list'
+    type: 'list',
   },
   {
     display: 'xAxis',
@@ -290,24 +276,24 @@ export const filters = [
       items: [
         {
           label: 'carrier',
-          value: 'carrier'
+          value: 'carrier',
         },
         {
           label: 'shipper',
-          value: 'shipper'
+          value: 'shipper',
         },
         {
           label: 'consignee',
-          value: 'consignee'
+          value: 'consignee',
         },
         {
           label: 'agent',
-          value: 'agent'
-        }
+          value: 'agent',
+        },
       ],
-      required: true
+      required: true,
     },
-    type: 'list'
+    type: 'list',
   },
 
   {
@@ -326,7 +312,7 @@ export const filters = [
         {
           label: '20',
           value: 20,
-        }
+        },
       ],
       required: true,
     },
@@ -336,6 +322,6 @@ export const filters = [
   {
     display: 'showOther',
     name: 'showOther',
-    type: 'boolean'
-  }
+    type: 'boolean',
+  },
 ]

@@ -87,7 +87,7 @@ const app = {
             ? 'SubTotalRow'
             : undefined,
           isExternalCard: true,
-          skipReportFilters: true
+          skipReportFilters: true,
         },
       } as any,
     }

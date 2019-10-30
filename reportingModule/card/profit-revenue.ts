@@ -48,8 +48,14 @@ function perpareIntermediate(): CreateTableJQL {
           'month'
         ),
         new ResultColumn('currency'),
-        new ResultColumn(new FunctionExpression('ROUND', new ColumnExpression('grossProfit'), 0), 'grossProfit'),
-        new ResultColumn(new FunctionExpression('ROUND', new ColumnExpression('revenue'), 0), 'revenue'),
+        new ResultColumn(
+          new FunctionExpression('ROUND', new ColumnExpression('grossProfit'), 0),
+          'grossProfit'
+        ),
+        new ResultColumn(
+          new FunctionExpression('ROUND', new ColumnExpression('revenue'), 0),
+          'revenue'
+        ),
       ],
       $from: new FromTable(
         {
@@ -95,13 +101,28 @@ function prepareTable(name: string): CreateTableJQL {
         new ResultColumn(new ColumnExpression('lhs', 'month')),
         new ResultColumn(new ColumnExpression('lhs', 'currency')),
         new ResultColumn(new ColumnExpression('lhs', name), 'value'),
-        new ResultColumn(new MathExpression(new ColumnExpression('lhs', name), '/', new ColumnExpression('rhs', 'revenue')), 'percent'),
+        new ResultColumn(
+          new MathExpression(
+            new ColumnExpression('lhs', name),
+            '/',
+            new ColumnExpression('rhs', 'revenue')
+          ),
+          'percent'
+        ),
       ],
       $from: new FromTable(
         'intermediate',
         'lhs',
-        new JoinClause('LEFT', new FromTable(new Query('intermediate'), 'rhs'), new BinaryExpression(new ColumnExpression('lhs', 'month'), '=', new ColumnExpression('rhs', 'month')))
-      )
+        new JoinClause(
+          'LEFT',
+          new FromTable(new Query('intermediate'), 'rhs'),
+          new BinaryExpression(
+            new ColumnExpression('lhs', 'month'),
+            '=',
+            new ColumnExpression('rhs', 'month')
+          )
+        )
+      ),
     }),
   })
 }
