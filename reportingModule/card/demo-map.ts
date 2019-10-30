@@ -11,7 +11,7 @@ const query = new Query({
           type: 'string',
         },
         {
-          name: 'noOfBookings',
+          name: 'totalBooking',
           type: 'number',
         },
       ],

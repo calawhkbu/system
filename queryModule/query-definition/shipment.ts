@@ -13,6 +13,8 @@ import {
   GroupBy,
 } from 'node-jql'
 
+// warning : this file should not be called since the shipment should be getting from outbound but not from internal
+
 const query = new QueryDef(
   new Query({
     $distinct: true,
