@@ -55,7 +55,6 @@ const query = new QueryDef(
         operator: 'LEFT',
         table: 'code_master',
         $on: [
-
           new BinaryExpression(
             new ColumnExpression('code_master', 'codeType'),
             '=',

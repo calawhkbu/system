@@ -86,6 +86,8 @@ const app = {
           footer: row.layout.reduce((result, { grp }) => result || grp, false)
             ? 'SubTotalRow'
             : undefined,
+          isExternalCard: true,
+          skipReportFilters: true,
         },
       } as any,
     }
