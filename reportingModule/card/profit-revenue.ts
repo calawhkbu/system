@@ -1,4 +1,6 @@
 import {
+  BinaryExpression,
+  MathExpression,
   Query,
   FromTable,
   CreateTableJQL,
@@ -6,6 +8,7 @@ import {
   ColumnExpression,
   FunctionExpression,
   Value,
+  JoinClause,
 } from 'node-jql'
 
 function prepareParams(): Function {
@@ -30,13 +33,12 @@ function prepareParams(): Function {
   }
 }
 
-function prepareTable(name: string): CreateTableJQL {
+function perpareIntermediate(): CreateTableJQL {
   return new CreateTableJQL({
     $temporary: true,
-    name,
+    name: 'intermediate',
     $as: new Query({
       $select: [
-        new ResultColumn(new Value(name), 'type'),
         new ResultColumn(
           new FunctionExpression('YEAR', new ColumnExpression('jobMonth'), 'YYYY-MM'),
           'year'
@@ -46,7 +48,8 @@ function prepareTable(name: string): CreateTableJQL {
           'month'
         ),
         new ResultColumn('currency'),
-        new ResultColumn(new FunctionExpression('ROUND', new ColumnExpression(name), 0), 'value'),
+        new ResultColumn(new FunctionExpression('ROUND', new ColumnExpression('grossProfit'), 0), 'grossProfit'),
+        new ResultColumn(new FunctionExpression('ROUND', new ColumnExpression('revenue'), 0), 'revenue'),
       ],
       $from: new FromTable(
         {
@@ -66,19 +69,46 @@ function prepareTable(name: string): CreateTableJQL {
               type: 'string',
             },
             {
-              name,
+              name: 'grossProfit',
+              type: 'number',
+            },
+            {
+              name: 'revenue',
               type: 'number',
             },
           ],
         },
-        name
+        'intermediate'
       ),
     }),
   })
 }
 
+function prepareTable(name: string): CreateTableJQL {
+  return new CreateTableJQL({
+    $temporary: true,
+    name,
+    $as: new Query({
+      $select: [
+        new ResultColumn(new Value(name), 'type'),
+        new ResultColumn(new ColumnExpression('lhs', 'year')),
+        new ResultColumn(new ColumnExpression('lhs', 'month')),
+        new ResultColumn(new ColumnExpression('lhs', 'currency')),
+        new ResultColumn(new ColumnExpression('lhs', name), 'value'),
+        new ResultColumn(new MathExpression(new ColumnExpression('lhs', name), '/', new ColumnExpression('rhs', 'revenue')), 'percent'),
+      ],
+      $from: new FromTable(
+        'intermediate',
+        'lhs',
+        new JoinClause('LEFT', new FromTable(new Query('intermediate'), 'rhs'), new BinaryExpression(new ColumnExpression('lhs', 'month'), '=', new ColumnExpression('rhs', 'month')))
+      )
+    }),
+  })
+}
+
 export default [
-  [prepareParams(), prepareTable('grossProfit')],
+  [prepareParams(), perpareIntermediate()],
+  prepareTable('grossProfit'),
   prepareTable('revenue'),
   new Query({
     $from: 'grossProfit',
