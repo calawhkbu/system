@@ -152,7 +152,7 @@ export default class EdiParser997 extends BaseEdiParser {
     IEA.elementList.push('1', _.get(entityJSON, 'interchangeControlNumber'))
     data.push(IEA)
     _.set(returnJSON, 'data', data)
-    // return returnJSON
+    return returnJSON
     const result = await super.export(returnJSON)
     const resultList: any[] = []
     resultList.push(result)
@@ -237,7 +237,6 @@ export default class EdiParser997 extends BaseEdiParser {
           AK4.elementList.push(
             elementError.segmentPosition.toString(),
             elementError.errorIdex.toString(),
-            loopIndex.toString(),
             elementErrorMapper[elementError.errorType],
             elementError.element
           )
