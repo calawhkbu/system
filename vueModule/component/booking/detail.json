@@ -215,7 +215,7 @@
               {
                 "is": "div",
                 "props": {
-                  "class": "xs-12 md-6 padding-right-4"
+                  "class": "xs-12 md-6 padding-right-4 margin-topbottom-8"
                 },
                 "slots": [
                   {
@@ -319,7 +319,7 @@
               {
                 "is": "div",
                 "props": {
-                  "class": "xs-12 md-6 padding-left-4"
+                  "class": "xs-12 md-6 padding-left-4 margin-topbottom-8"
                 },
                 "slots": [
                   {
@@ -427,7 +427,7 @@
           "is": "DynamicComponent",
           "props": {
             "layout": "v-card",
-            "class": "margin-topbottom-8",
+            "class": "xs-12 md-6 margin-topbottom-8",
             "components": [
               {
                 "is": "MouseHidden",

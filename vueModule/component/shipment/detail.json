@@ -65,7 +65,7 @@
               {
                 "is": "div",
                 "props": {
-                  "class": "xs-12 md-6 padding-right-4"
+                  "class": "xs-12 md-6 padding-right-4 margin-topbottom-8"
                 },
                 "slots": [
                   {
@@ -118,7 +118,7 @@
               {
                 "is": "div",
                 "props": {
-                  "class": "xs-12 md-6 padding-left-4"
+                  "class": "xs-12 md-6 padding-left-4 margin-topbottom-8"
                 },
                 "slots": [
                   {
