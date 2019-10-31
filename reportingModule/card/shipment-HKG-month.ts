@@ -44,7 +44,7 @@ function prepareParams(likeHouseNo_: string): Function {
 
     // warning : hardCode, very hardcode
     // TODO : need to hardcode partyId in new 360
-    subqueries.officePartyId = { value: [2] }
+    subqueries.viaHKG = true
     subqueries.likeHouseNo = { value: likeHouseNo_ }
 
     // select

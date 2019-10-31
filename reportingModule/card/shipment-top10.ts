@@ -1,4 +1,4 @@
-import { CreateFunctionJQL } from 'node-jql'
+import { CreateFunctionJQL, Value } from 'node-jql'
 
 import { parseCode } from 'utils/function'
 
@@ -86,6 +86,7 @@ function insertTop10Data() {
 
     const subqueries = (params.subqueries = params.subqueries || {})
     const xAxis = subqueries.xAxis.value // should be shipper/consignee/agent/controllingCustomer/carrier
+
     const partyColumnName = xAxis === 'carrier' ? `${xAxis}` : `${xAxis}Party`
 
     const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
@@ -124,7 +125,8 @@ function insertTop10Data() {
       // compose the record for other
       const otherResult = {}
       otherResult[codeColumnName] = 'other'
-      ; (otherResult[nameColumnName] = 'other'), (otherResult[summaryColumnName] = otherSum)
+      otherResult[nameColumnName] = 'other'
+      otherResult[summaryColumnName] = otherSum
 
       top10ShipmentList.push(otherResult)
     }
@@ -205,13 +207,10 @@ function prepareRawTable() {
 function finalQuery() {
   const fn = function(require, session, params) {
     const {
-      CreateTableJQL,
       ResultColumn,
-      FromTable,
       ColumnExpression,
       Query,
-      FunctionExpression,
-      OrderBy,
+      Value
     } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
@@ -229,6 +228,8 @@ function finalQuery() {
         new ResultColumn(new ColumnExpression(codeColumnName), 'code'),
         new ResultColumn(new ColumnExpression(nameColumnName), 'name'),
         new ResultColumn(new ColumnExpression(summaryColumnName), 'summary'),
+        new ResultColumn(new Value(xAxis), 'xAxis'),
+        new ResultColumn(new Value(summaryColumnName), 'yAxis'),
       ],
 
       $from: 'top10',
@@ -265,6 +266,34 @@ export default [
 ]
 
 export const filters = [
+
+  {
+    display : 'controllingCustomerExcludeRole',
+    name : 'controllingCustomerExcludeRole',
+    type : 'list',
+    default : ['AGT', 'CLR', 'FWD'],
+    disabled : true,
+    props : {
+      multi : true,
+      items : [
+
+        {
+          label: 'agent',
+          value: 'AGT',
+        },
+        {
+          label: 'forwarder',
+          value: 'FWD',
+        },
+        {
+          label: 'coloader',
+          value: 'CLR',
+        },
+
+      ]
+
+    }
+  },
   {
     display: 'yAxis',
     name: 'yAxis',

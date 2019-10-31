@@ -196,7 +196,7 @@ function prepareRawTable() {
 
 function finalQuery() {
   const fn = function(require, session, params) {
-    const { ResultColumn, ColumnExpression, Query } = require('node-jql')
+    const { ResultColumn, ColumnExpression, Query, Value } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -213,6 +213,8 @@ function finalQuery() {
         new ResultColumn(new ColumnExpression(codeColumnName), 'code'),
         new ResultColumn(new ColumnExpression(nameColumnName), 'name'),
         new ResultColumn(new ColumnExpression(summaryColumnName), 'summary'),
+        new ResultColumn(new Value(xAxis), 'xAxis'),
+        new ResultColumn(new Value(summaryColumnName), 'yAxis'),
       ],
 
       $from: 'top10',
