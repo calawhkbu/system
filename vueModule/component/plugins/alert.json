@@ -6,13 +6,12 @@
   "name": "Alert",
   "remote": true,
   "axiosBaseParams": [
+    "const tableName = encodeURIComponent(context.$route.params.page);",
+    "const primaryKey = encodeURIComponent(context.$route.params.params);",
     "return {",
     "url: 'api/alert/list/history',",
     "method: 'POST',",
-    "data: {",
-    "tableName: context.$route.params.page,",
-    "primaryKey: context.$route.params.params,",
-    "}",
+    "data: { tableName, primaryKey }",
     "};"
   ],
   "loopGetData": 60000,
