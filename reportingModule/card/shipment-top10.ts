@@ -1,4 +1,4 @@
-import { CreateFunctionJQL, Value } from 'node-jql'
+import { CreateFunctionJQL, Value, Query } from 'node-jql'
 
 import { parseCode } from 'utils/function'
 
@@ -20,17 +20,16 @@ function prepareParams(): Function {
     // dynamically choose the fields and summary value
 
     const xAxis = subqueries.xAxis.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const partyColumnName = xAxis === 'carrier' ? `${xAxis}` : `${xAxis}Party`
 
     const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const codeColumnName = `${partyColumnName}Code`
-    const nameColumnName = `${partyColumnName}Name`
+    const codeColumnName = xAxis === 'carrier' ?  `carrierCode` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyCode`)
+    const nameColumnName = xAxis === 'carrier' ?  `carrierName` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyName`)
     // ------------------------------
 
-    ; (params.sorting = new OrderBy(summaryColumnName, 'DESC')),
+    params.sorting = new OrderBy(summaryColumnName, 'DESC')
       // select
-      (params.fields = [codeColumnName, summaryColumnName, nameColumnName])
+    params.fields = [...new Set([codeColumnName, summaryColumnName, nameColumnName])]
     params.groupBy = [codeColumnName]
 
     return params
@@ -47,12 +46,11 @@ function createTop10Table() {
     const subqueries = (params.subqueries = params.subqueries || {})
 
     const xAxis = subqueries.xAxis.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const partyColumnName = xAxis === 'carrier' ? `${xAxis}` : `${xAxis}Party`
 
     const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const codeColumnName = `${partyColumnName}Code`
-    const nameColumnName = `${partyColumnName}Name`
+    const codeColumnName = xAxis === 'carrier' ?  `carrierCode` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyCode`)
+    const nameColumnName = xAxis === 'carrier' ?  `carrierName` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyName`)
     // ------------------------------
 
     return new CreateTableJQL({
@@ -87,12 +85,10 @@ function insertTop10Data() {
     const subqueries = (params.subqueries = params.subqueries || {})
     const xAxis = subqueries.xAxis.value // should be shipper/consignee/agent/controllingCustomer/carrier
 
-    const partyColumnName = xAxis === 'carrier' ? `${xAxis}` : `${xAxis}Party`
-
     const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const codeColumnName = `${partyColumnName}Code`
-    const nameColumnName = `${partyColumnName}Name`
+    const codeColumnName = xAxis === 'carrier' ?  `carrierCode` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyCode`)
+    const nameColumnName = xAxis === 'carrier' ?  `carrierName` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyName`)
 
     const showOther = subqueries.showOther || false
     const topX = subqueries.topX.value
@@ -153,12 +149,11 @@ function prepareRawTable() {
     const subqueries = (params.subqueries = params.subqueries || {})
 
     const xAxis = subqueries.xAxis.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const partyColumnName = xAxis === 'carrier' ? `${xAxis}` : `${xAxis}Party`
 
     const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const codeColumnName = `${partyColumnName}Code`
-    const nameColumnName = `${partyColumnName}Name`
+    const codeColumnName = xAxis === 'carrier' ?  `carrierCode` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyCode`)
+    const nameColumnName = xAxis === 'carrier' ?  `carrierName` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyName`)
     // ------------------------------
 
     return new CreateTableJQL({
@@ -215,12 +210,11 @@ function finalQuery() {
 
     const subqueries = (params.subqueries = params.subqueries || {})
     const xAxis = subqueries.xAxis.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const partyColumnName = xAxis === 'carrier' ? `${xAxis}` : `${xAxis}Party`
 
     const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const codeColumnName = `${partyColumnName}Code`
-    const nameColumnName = `${partyColumnName}Name`
+    const codeColumnName = xAxis === 'carrier' ?  `carrierCode` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyCode`)
+    const nameColumnName = xAxis === 'carrier' ?  `carrierName` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyName`)
     // ------------------------------
 
     return new Query({
@@ -256,8 +250,6 @@ export default [
 
   // get all data
   [prepareParams(), prepareRawTable()],
-
-  // prepareTempTable(),
 
   createTop10Table(),
   insertTop10Data(),
@@ -340,6 +332,10 @@ export const filters = [
         {
           label: 'agent',
           value: 'agent',
+        },
+        {
+          label: 'agentGroup',
+          value: 'agentGroup',
         },
         {
           label: 'controllingCustomer',
