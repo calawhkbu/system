@@ -292,7 +292,7 @@ export default class EdiParser997 extends BaseEdiParser {
       const statusCode = historyList[i].statusCode
       if (functionalCodeMapper[statusCode]) {
         const country = _.get(extraData, countryMapper[functionalCodeMapper[statusCode]])
-        const countryCode = (country || '').substring(0, 2)
+        const countryCode = (country || '  ').substring(0, 2)
         R4.elementList.push(functionalCodeMapper[statusCode], 'UN', _.get(historyList[i], 'statusPlace').substr(0, 30))
         R4.elementList.push('') // not used
         R4.elementList.push(countryCode)
