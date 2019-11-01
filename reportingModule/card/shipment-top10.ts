@@ -1,4 +1,4 @@
-import { CreateFunctionJQL } from 'node-jql'
+import { CreateFunctionJQL, Value } from 'node-jql'
 
 import { parseCode } from 'utils/function'
 
@@ -14,6 +14,7 @@ function prepareParams(): Function {
     // warning cannot display from frontend
     if (!subqueries.xAxis) throw new BadRequestException('MISSING_xAxis')
     if (!subqueries.yAxis) throw new BadRequestException('MISSING_yAxis')
+    if (!subqueries.topX) throw new BadRequestException('MISSING_topX')
 
     // most important part of this card
     // dynamically choose the fields and summary value
@@ -25,10 +26,11 @@ function prepareParams(): Function {
 
     const codeColumnName = `${partyColumnName}Code`
     const nameColumnName = `${partyColumnName}Name`
-      // ------------------------------
+    // ------------------------------
+
     ; (params.sorting = new OrderBy(summaryColumnName, 'DESC')),
       // select
-      (params.fields = [codeColumnName, summaryColumnName])
+      (params.fields = [codeColumnName, summaryColumnName, nameColumnName])
     params.groupBy = [codeColumnName]
 
     return params
@@ -61,10 +63,10 @@ function createTop10Table() {
           name: codeColumnName,
           type: 'string',
         },
-        // {
-        //   name : nameColumnName,
-        //   type : 'string'
-        // },
+        {
+          name: nameColumnName,
+          type: 'string',
+        },
         {
           name: summaryColumnName,
           type: 'number',
@@ -80,52 +82,56 @@ function createTop10Table() {
 function insertTop10Data() {
   const fn = async function(require, session, params) {
     const { Resultset } = require('node-jql-core')
-    const {
-      InsertJQL,
-      ColumnExpression,
-      CreateTableJQL,
-      FromTable,
-      InExpression,
-      BetweenExpression,
-      FunctionExpression,
-      BinaryExpression,
-      GroupBy,
-      Query,
-      ResultColumn,
-    } = require('node-jql')
+    const { InsertJQL, Query } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
     const xAxis = subqueries.xAxis.value // should be shipper/consignee/agent/controllingCustomer/carrier
+
     const partyColumnName = xAxis === 'carrier' ? `${xAxis}` : `${xAxis}Party`
 
     const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
     const codeColumnName = `${partyColumnName}Code`
     const nameColumnName = `${partyColumnName}Name`
+
+    const showOther = subqueries.showOther || false
+    const topX = subqueries.topX.value
+
     // ------------------------------
 
     const shipments = new Resultset(await session.query(new Query('raw'))).toArray() as any[]
 
-    const top10ShipmentList = shipments.filter(x => x[codeColumnName]).slice(0, 10)
+    if (!(shipments && shipments.length)) {
+      throw new Error('NO_DATA')
+    }
 
-    // use the code of the top10 to find the rest
-    const top10ShipmentCodeList = top10ShipmentList.map(x => x[codeColumnName])
-    const otherShipmentList = shipments.filter(
-      x => !top10ShipmentCodeList.includes(x[codeColumnName])
-    )
+    const top10ShipmentList = shipments.filter(x => x[codeColumnName]).slice(0, topX)
 
-    // sum up all the other
-    const otherSum = otherShipmentList.reduce((accumulator, currentValue, currentIndex, array) => {
-      return accumulator + currentValue[summaryColumnName]
-    }, 0)
+    if (showOther) {
+      // use the code of the top10 to find the rest
+      const top10ShipmentCodeList = top10ShipmentList.map(x => x[codeColumnName])
+      const otherShipmentList = shipments.filter(
+        x => !top10ShipmentCodeList.includes(x[codeColumnName])
+      )
 
-    // compose the record for other
-    const otherResult = {}
-    otherResult[codeColumnName] = 'other'
-    // otherResult[nameColumnName] = 'other',
-    otherResult[summaryColumnName] = otherSum
+      // sum up all the other
+      const otherSum = otherShipmentList.reduce(
+        (accumulator, currentValue, currentIndex, array) => {
+          return accumulator + currentValue[summaryColumnName]
+        },
+        0
+      )
 
-    return new InsertJQL('top10', ...top10ShipmentList, otherResult)
+      // compose the record for other
+      const otherResult = {}
+      otherResult[codeColumnName] = 'other'
+      otherResult[nameColumnName] = 'other'
+      otherResult[summaryColumnName] = otherSum
+
+      top10ShipmentList.push(otherResult)
+    }
+
+    return new InsertJQL('top10', ...top10ShipmentList)
   }
 
   const code = fn.toString()
@@ -162,7 +168,7 @@ function prepareRawTable() {
       $as: new Query({
         $select: [
           new ResultColumn(new ColumnExpression(codeColumnName)),
-          // new ResultColumn(new ColumnExpression(nameColumnName)),
+          new ResultColumn(new ColumnExpression(nameColumnName)),
           new ResultColumn(
             new FunctionExpression('NUMBERIFY', new ColumnExpression(summaryColumnName)),
             summaryColumnName
@@ -178,10 +184,10 @@ function prepareRawTable() {
                 name: codeColumnName,
                 type: 'string',
               },
-              // {
-              //   name: nameColumnName,
-              //   type: 'string',
-              // },
+              {
+                name: nameColumnName,
+                type: 'string',
+              },
               {
                 name: summaryColumnName,
                 type: 'string',
@@ -201,13 +207,10 @@ function prepareRawTable() {
 function finalQuery() {
   const fn = function(require, session, params) {
     const {
-      CreateTableJQL,
       ResultColumn,
-      FromTable,
       ColumnExpression,
       Query,
-      FunctionExpression,
-      OrderBy,
+      Value
     } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
@@ -223,8 +226,10 @@ function finalQuery() {
     return new Query({
       $select: [
         new ResultColumn(new ColumnExpression(codeColumnName), 'code'),
-        // new ResultColumn(new ColumnExpression(nameColumnName), 'name'),
+        new ResultColumn(new ColumnExpression(nameColumnName), 'name'),
         new ResultColumn(new ColumnExpression(summaryColumnName), 'summary'),
+        new ResultColumn(new Value(xAxis), 'xAxis'),
+        new ResultColumn(new Value(summaryColumnName), 'yAxis'),
       ],
 
       $from: 'top10',
@@ -261,6 +266,34 @@ export default [
 ]
 
 export const filters = [
+
+  {
+    display : 'controllingCustomerExcludeRole',
+    name : 'controllingCustomerExcludeRole',
+    type : 'list',
+    default : ['AGT', 'CLR', 'FWD'],
+    disabled : true,
+    props : {
+      multi : true,
+      items : [
+
+        {
+          label: 'agent',
+          value: 'AGT',
+        },
+        {
+          label: 'forwarder',
+          value: 'FWD',
+        },
+        {
+          label: 'coloader',
+          value: 'CLR',
+        },
+
+      ]
+
+    }
+  },
   {
     display: 'yAxis',
     name: 'yAxis',
@@ -316,5 +349,34 @@ export const filters = [
       required: true,
     },
     type: 'list',
+  },
+
+  {
+    display: 'topX',
+    name: 'topX',
+    props: {
+      items: [
+        {
+          label: '5',
+          value: 5,
+        },
+        {
+          label: '10',
+          value: 10,
+        },
+        {
+          label: '20',
+          value: 20,
+        },
+      ],
+      required: true,
+    },
+    type: 'list',
+  },
+
+  {
+    display: 'showOther',
+    name: 'showOther',
+    type: 'boolean',
   },
 ]

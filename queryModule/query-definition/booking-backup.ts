@@ -346,7 +346,7 @@ const query = new QueryDef(
   })
 )
 
-query.register('noOfBookings', {
+query.register('totalBooking', {
   expression: new FunctionExpression({
     name: 'COUNT',
     parameters: new ParameterExpression({
@@ -354,7 +354,7 @@ query.register('noOfBookings', {
       expression: new ColumnExpression('*'),
     }),
   }),
-  $as: 'noOfBookings',
+  $as: 'totalBooking',
 })
 
 query

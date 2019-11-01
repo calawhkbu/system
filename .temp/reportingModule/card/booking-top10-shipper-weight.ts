@@ -36,10 +36,10 @@ function prepareParams(): Function {
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    params.fields = ['shipperPartyCode', 'weightTotal']
+    params.fields = ['shipperPartyCode', 'weight']
     params.groupBy = ['shipperPartyCode']
 
-    params.sorting = [new OrderBy('weightTotal', 'DESC')]
+    params.sorting = [new OrderBy('weight', 'DESC')]
 
     subqueries.shipperPartyCodeIsNotNull = {
       value: true,
@@ -60,7 +60,7 @@ function prepareTop10Table(): CreateTableJQL {
     $as: new Query({
       $select: [
         new ResultColumn(new ColumnExpression(name, 'shipperPartyCode'), 'shipperPartyCode'),
-        new ResultColumn(new ColumnExpression(name, 'weightTotal'), 'weight'),
+        new ResultColumn(new ColumnExpression(name, 'weight'), 'weight'),
       ],
 
       $from: new FromTable(
@@ -69,7 +69,7 @@ function prepareTop10Table(): CreateTableJQL {
           url: 'api/booking/query/booking',
           columns: [
             {
-              name: 'weightTotal',
+              name: 'weight',
               type: 'number',
             },
 

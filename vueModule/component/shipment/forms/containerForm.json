@@ -14,18 +14,37 @@
               "topLabel": true,
               "fields": [
                 {
+                  "label": "ShipmentPage.goodsDescription",
+                  "name": "goodsDescription",
+                  "component": "v-textarea",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "30%"
+                    }
+                  },
+                  "props": {
+                    "rows": 3
+                  }
+                },
+                {
                   "label": "ShipmentPage.commodity",
                   "name": "commodity",
                   "component": "v-text-field",
-                  "props": {
-                    "type": "number",
-                    "min": 0
+                  "colGroupProps": {
+                    "style": {
+                      "width": "15%"
+                    }
                   }
                 },
                 {
                   "label": "ShipmentPage.quantity",
                   "name": "quantity",
                   "component": "v-text-field",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "8%"
+                    }
+                  },
                   "props": {
                     "type": "number",
                     "min": 0
@@ -36,7 +55,7 @@
                   "name": "quantityUnit",
                   "component": "ReadField",
                   "colGroupProps": {
-                    "width": "50px"
+                    "width": "2%"
                   },
                   "props": {
                     "showLabel": false,
@@ -56,21 +75,24 @@
                     }
                   }
                 },
-
                 {
                   "label": "ShipmentPage.grossWeight",
                   "name": "grossWeight",
                   "component": "v-text-field",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "8%"
+                    }
+                  },
                   "props": {
                     "type": "number"
                   }
                 },
-
                 {
                   "label": "ShipmentPage.weightUnit",
                   "name": "weightUnit",
                   "colGroupProps": {
-                    "width": "50px"
+                    "width": "2%"
                   },
                   "component": "ReadField",
                   "props": {
@@ -91,9 +113,13 @@
                     }
                   }
                 },
-
                 {
                   "label": "ShipmentPage.cbm",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "10%"
+                    }
+                  },
                   "name": "cbm",
                   "component": "v-text-field",
                   "props": {
@@ -104,14 +130,11 @@
                 {
                   "label": "ShipmentPage.dimension",
                   "name": "dimension",
-                  "component": "v-text-field"
-                },
-                {
-                  "label": "ShipmentPage.goodsDescription",
-                  "name": "goodsDescription",
-                  "component": "v-textarea",
-                  "props": {
-                    "rows": 3
+                  "component": "v-text-field",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "20%"
+                    }
                   }
                 }
               ]
@@ -129,32 +152,41 @@
                   "label": "ShipmentPage.containerNo",
                   "name": "containerNo",
                   "component": "v-text-field",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "15%"
+                    }
+                  },
                   "props": {
                     "color": "blue"
                   }
                 },
-
                 {
                   "label": "ShipmentPage.carrierBookingNo",
                   "name": "carrierBookingNo",
-                  "component": "v-text-field",
-                  "props": {
-                    "color": "blue"
-                  }
+                  "colGroupProps": {
+                    "style": {
+                      "width": "15%"
+                    }
+                  },
+                  "component": "v-text-field"
                 },
-
                 {
                   "label": "ShipmentPage.sealNo",
                   "name": "sealNo1",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "15%"
+                    }
+                  },
                   "component": "v-text-field"
                 },
-
                 {
                   "label": "ShipmentPage.containerType",
                   "name": "containerType",
                   "component": "ReadField",
                   "colGroupProps": {
-                    "width": "75px"
+                    "width": "15%"
                   },
                   "props": {
                     "showLabel": false,
@@ -178,6 +210,11 @@
                   "label": "ShipmentPage.quantity",
                   "name": "quantity",
                   "component": "v-text-field",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "8%"
+                    }
+                  },
                   "props": {
                     "type": "number",
                     "min": 0
@@ -186,35 +223,59 @@
                 {
                   "label": "ShipmentPage.quantityUnit",
                   "name": "quantityUnit",
-                  "component": "v-text-field",
+                  "component": "ReadField",
                   "colGroupProps": {
-                    "width": "50px"
+                    "width": "2%"
+                  },
+                  "props": {
+                    "showLabel": false,
+                    "axiosParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "QUANTITY"
+                          },
+                          "code": {
+                            "value": "{{context:fixValue}}"
+                          }
+                        }
+                      }
+                    }
                   }
                 },
-
                 {
                   "label": "ShipmentPage.grossWeight",
                   "name": "grossWeight",
                   "component": "v-text-field",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "8%"
+                    }
+                  },
                   "props": {
                     "type": "number",
                     "min": 0
                   }
                 },
-
                 {
                   "label": "ShipmentPage.weightUnit",
                   "name": "weightUnit",
                   "component": "v-text-field",
                   "colGroupProps": {
-                    "width": "50px"
+                    "width": "2%"
                   }
                 },
-
                 {
                   "label": "ShipmentPage.cbm",
                   "name": "cbm",
                   "component": "v-text-field",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "15%"
+                    }
+                  },
                   "props": {
                     "type": "number",
                     "min": 0

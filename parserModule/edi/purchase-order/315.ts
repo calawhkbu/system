@@ -54,9 +54,7 @@ export default class EdiParser997 extends BaseEdiParser {
           const containerNo = _.get(container, 'containerNo')
           // const controlNo = (containerNo  || '').substr(4)
           const pad = '000000000'
-          const controlNo = `${pad.substring(0, pad.length - (containerNo || '').substr(4).length)}${(
-            containerNo || ''
-          ).substr(4)}`
+          const controlNo = await this.getNewSeq(process.env.NODE_ENV === 'production' ? '315' : '315-dev')
           ISA.elementList.push(
             '00',
             '          ',

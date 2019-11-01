@@ -4,15 +4,18 @@
   "width": "50%",
   "name": "Workflow",
   "remote": true,
-  "axiosBaseParams": {
-    "url": "api/workflow/{{tableName | urlEncode }}/{{primaryKey | urlEncode }}"
-  },
+  "axiosBaseParams": [
+    "const tableName = encodeURIComponent(context.$route.params.page);",
+    "const primaryKey = encodeURIComponent(context.$route.params.params);",
+    "return {",
+    "url: `api/workflow/${tableName}/${primaryKey}`",
+    "};"
+  ],
   "shareProps": {
     "idKey": "id",
     "iconType": "",
     "titleKey": "statusName",
-    "subTitleKeys": [
-      {
+    "subTitleKeys": [{
         "key": "statusDate",
         "is": "Datetime"
       },

@@ -386,7 +386,7 @@ const query = new QueryDef(
   })
 )
 
-query.register('noOfBookings', {
+query.register('totalBooking', {
   expression: new FunctionExpression({
     name: 'COUNT',
     parameters: new ParameterExpression({
@@ -395,16 +395,16 @@ query.register('noOfBookings', {
       expression: new ColumnExpression('*'),
     }),
   }),
-  $as: 'noOfBookings',
+  $as: 'totalBooking',
 })
 
-query.register('weightTotal', {
+query.register('weight', {
   expression: new FunctionExpression(
     'IFNULL',
     new FunctionExpression('SUM', new ColumnExpression('weight')),
     0
   ),
-  $as: 'weightTotal',
+  $as: 'weight',
 })
 
 // used createdAt as jobMonth
