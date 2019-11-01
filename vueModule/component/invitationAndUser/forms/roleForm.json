@@ -12,14 +12,20 @@
             "props": {
               "multiple": true,
               "url": "api/role",
-              "searchValueParams": "{\"where\": { \"id\": {{query}} }}",
               "searchTextParams": {
-                "where": {
-                  "roleName": {
-                    "$regexp": "{{query}}"
-                  }
-                },
-                "limit": 5
+                "url": "api/role",
+                "method": "POST",
+                "data" : {
+                  "subqueries": {
+                    "q": {
+                      "value": "{{context.search}}"
+                    },
+                    "isBranch": {
+                      "value": 1
+                    }
+                  },
+                  "limit": 5
+                }
               },
               "item-text": "roleName",
               "item-value": "id"

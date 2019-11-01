@@ -1,0 +1,111 @@
+{
+  "class": "grid",
+  "components": [
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid align-item-center",
+        "components": [
+          {
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true
+            },
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
+                }
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "detail"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "class": "headline",
+              "i18nKey": "InvitationPage.updateTitle",
+              "i18nOptions": {
+                "title": "{{context.$store.state.widget.data.bookingNo}}"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "WidgetStepper",
+      "props": {
+        "topClick": true,
+        "validateBeforeStepChange": false,
+        "preview": false,
+        "steps": [
+          {
+            "id": "InvitationPage.PersonForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "invitationAndUser/forms/personForm"
+                }
+              }
+            ]
+          },
+          {
+            "id": "InvitationPage.ContactForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "invitationAndUser/forms/contactForm"
+                }
+              }
+            ]
+          },
+          {
+            "id": "InvitationPage.PartyForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "invitationAndUser/forms/partyForm"
+                }
+              }
+            ]
+          },
+          {
+            "id": "InvitationPage.RoleForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "invitationAndUser/forms/roleForm"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
