@@ -272,15 +272,14 @@ const app = {
   },
 
   convertToInternal(externalFieldName: string, fieldNameMap: any) {
-    return fieldNameMap['internal'][externalFieldName]
-      ? fieldNameMap['internal'][externalFieldName]
-      : externalFieldName
+
+    const internal = fieldNameMap['internal'][externalFieldName]
+    return (!internal && internal !== 0) ? externalFieldName : internal
   },
 
   convertToExternal(internalFieldName: string, fieldNameMap: any) {
-    return fieldNameMap['external'][internalFieldName]
-      ? fieldNameMap['external'][internalFieldName]
-      : internalFieldName
+    const external = fieldNameMap['external'][internalFieldName]
+    return (!external && external !== 0) ? internalFieldName : external
   },
 }
 

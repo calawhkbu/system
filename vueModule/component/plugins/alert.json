@@ -5,6 +5,7 @@
   "transition": "slide-y-reverse-transition",
   "name": "Alert",
   "remote": true,
+  "loadWhenDataLoaded": true,
   "axiosBaseParams": [
     "const tableName = encodeURIComponent(context.$route.params.page);",
     "const primaryKey = encodeURIComponent(context.$route.params.params);",

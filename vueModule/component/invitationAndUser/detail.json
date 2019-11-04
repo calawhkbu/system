@@ -46,6 +46,59 @@
             "is": "v-spacer"
           },
 
+
+          {
+            "is": "v-btn",
+            "props": {
+              "icon": true,
+              "flat": true,
+              "class": "primary black-text"
+            },
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "edit"
+                }
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "axios",
+                  "otherParams": {
+                    "axiosParams": {
+                      "url" : "/api/invitation/delete/{{context.$store.state.widget.data.id}}",
+                      "method" : "GET",
+                      "data" : {
+                        "subqueries" :  {}
+                      }
+                    }
+                  },
+                  "afterActions" : [
+
+                    {
+                      "type" : "router",
+                      "otherParams": {
+                        "func": "replace",
+                        "path": "/invitations"
+                      }
+                    },
+
+                    {
+                      "type" : "notify",
+                      "otherParams" : {
+                        "i18nKey" : "Delete Success"
+                      }
+                    }
+
+
+                  ]
+                }
+              ]
+            }
+          },
+
           {
             "is": "v-btn",
             "props": {
@@ -64,11 +117,27 @@
             "events": {
               "click.stop": [
                 {
-                  "type": "dispatch",
+                  "type": "axios",
                   "otherParams": {
-                    "name": "widget/changeMode",
-                    "mode": "edit"
-                  }
+                    "axiosParams": {
+                      "url" : "/api/invitation/resend/{{context.$store.state.widget.data.id}}",
+                      "method" : "GET",
+                      "data" : {
+                        "subqueries" :  {}
+                      }
+                    }
+                  },
+                  "afterActions" : [
+
+                    {
+                      "type" : "notify",
+                      "otherParams" : {
+                        "i18nKey" : "Resend Success"
+                      }
+                    }
+
+
+                  ]
                 }
               ]
             }
