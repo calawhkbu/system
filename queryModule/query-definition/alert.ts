@@ -33,21 +33,24 @@ const query = new QueryDef(
   })
 )
 
-query.register(
-  'partyGroupCode',
-  new Query({
-    $where:   new BinaryExpression(
-      new FunctionExpression(
-        'JSON_UNQUOTE',
+query
+  .register(
+    'partyGroupCode',
+    new Query({
+      $where: new BinaryExpression(
         new FunctionExpression(
-          'JSON_EXTRACT',
-          new ColumnExpression('flex_data', 'data'),
-          '$.partyGroupCode'
-        )
-      ), '=')
-  })
-
-).register('value', 0)
+          'JSON_UNQUOTE',
+          new FunctionExpression(
+            'JSON_EXTRACT',
+            new ColumnExpression('flex_data', 'data'),
+            '$.partyGroupCode'
+          )
+        ),
+        '='
+      ),
+    })
+  )
+  .register('value', 0)
 
 query
   .register(
@@ -133,7 +136,8 @@ query
             new Unknown('string')
           )
         ),
-        '=', new Unknown('string')
+        '=',
+        new Unknown('string')
       ),
     })
   )

@@ -26,11 +26,21 @@ const query = new QueryDef(
   })
 )
 
+// ----------------- filter stuff
 query
   .register(
     'id',
     new Query({
       $where: new BinaryExpression(new ColumnExpression('role', 'id'), '='),
+    })
+  )
+  .register('value', 0)
+
+  query
+  .register(
+    'partyGroupCode',
+    new Query({
+      $where: new BinaryExpression(new ColumnExpression('role', 'partyGroupCode'), '='),
     })
   )
   .register('value', 0)
@@ -58,6 +68,33 @@ query
     'group',
     new Query({
       $where: new InExpression(new ColumnExpression('role', 'roleGroup'), null),
+    })
+  )
+  .register('value', 0)
+
+  query
+  .register(
+    'shareable',
+    new Query({
+      $where: new BinaryExpression(new ColumnExpression('role', 'shareable'), '='),
+    })
+  )
+  .register('value', 0)
+
+  query
+  .register(
+    'hidden',
+    new Query({
+      $where: new BinaryExpression(new ColumnExpression('role', 'hidden'), '='),
+    })
+  )
+  .register('value', 0)
+
+  query
+  .register(
+    'canMultiSelect',
+    new Query({
+      $where: new BinaryExpression(new ColumnExpression('role', 'canMultiSelect'), '='),
     })
   )
   .register('value', 0)

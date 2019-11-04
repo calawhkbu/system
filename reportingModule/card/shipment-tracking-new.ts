@@ -15,63 +15,84 @@ import {
 
 import { parseCode } from 'utils/function'
 
-const statusList = ['notInTrack', 'processing', 'cargoReady', 'departure', 'inTransit', 'arrival']
+function prepareParams(): Function {
+  return function(require, session, params) {
+    // import
+    const { BadRequestException } = require('@nestjs/common')
+    const moment = require('moment')
 
-const statusMap = new Map([
-  ['notInTrack', 'Not In Track'],
-  ['processing', 'Processing'],
-  ['cargoReady', 'Cargo Ready'],
-  ['departure', 'Departure'],
-  ['inTransit', 'In Transit'],
-  ['arrival', 'Arrival'],
-])
+    // script
+    const subqueries = params.subqueries || {}
+    console.log(subqueries)
+    if (!subqueries.statusList || !subqueries.statusList.value) throw new BadRequestException('MISSING_STATUS_LIST')
 
-function prepareFinalQuery() {
-  const $select = []
+    // subqueries.statusList = ['notInTrack', 'cargoReady', 'departure', 'inTransit', 'arrival']
+    // subqueries.statusList = ['notInTrack', 'processing', 'cargoReady', 'departure', 'inTransit', 'arrival']
 
-  for (const [key, value] of statusMap) {
-    $select.push(
-      new ResultColumn(
-        new FunctionExpression(
-          'IFNULL',
-          new FunctionExpression(
-            'FIND',
-            new BinaryExpression(new ColumnExpression('shipment', 'status'), '=', value),
-            new ColumnExpression('shipment', 'count')
-          ),
-          0
-        ),
-        `${key}_count`
-      )
-    )
+    return params
   }
-
-  return new Query({
-    $select,
-    $from: new FromTable(
-      {
-        method: 'POST',
-        url: 'api/shipment/query/shipment-status',
-        columns: [
-          {
-            name: 'cnt',
-            type: 'string',
-            $as: 'count',
-          },
-          {
-            name: 'sequenceOrder',
-            type: 'string',
-            $as: 'order',
-          },
-          {
-            name: 'status',
-            type: 'string',
-          },
-        ],
-      },
-      'shipment'
-    ),
-  })
 }
 
-export default [prepareFinalQuery()]
+function prepareFinalQuery() {
+
+  return function(require, session, params) {
+
+    const subqueries = params.subqueries || {}
+    const statusList = subqueries.statusList.value
+
+    const $select = []
+
+    statusList.map(status => {
+
+      $select.push(
+        new ResultColumn(
+          new FunctionExpression(
+            'IFNULL',
+            new FunctionExpression(
+              'FIND',
+              new BinaryExpression(new ColumnExpression('shipment', 'status'), '=', status),
+              new ColumnExpression('shipment', 'count')
+            ),
+            0
+          ),
+          `${status}_count`
+        )
+      )
+
+    })
+
+    return new Query({
+      $select,
+      $from: new FromTable(
+        {
+          method: 'POST',
+          url: 'api/shipment/query/shipment-status',
+          columns: [
+            {
+              name: 'cnt',
+              type: 'string',
+              $as: 'count',
+            },
+            {
+              name: 'sequenceOrder',
+              type: 'string',
+              $as: 'order',
+            },
+            {
+              name: 'status',
+              type: 'string',
+            },
+          ],
+        },
+        'shipment'
+      ),
+    })
+
+  }
+}
+
+export default [
+
+  [prepareParams(), prepareFinalQuery()]
+
+]

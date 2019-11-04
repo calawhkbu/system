@@ -21,7 +21,7 @@
     "severity": "medium",
     "variableList": [],
 
-    "contactRoleList": ["forwarder", "shipper", "consignee"],
+    "contactRoleList": [],
 
 
     "active": true
@@ -52,7 +52,7 @@
 
     "variableList": [],
 
-    "contactRoleList": ["shipper", "forwarder"],
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 
@@ -118,7 +118,7 @@
 
     "variableList": [],
 
-    "contactRoleList": ["shipper", "forwarder"],
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 
@@ -134,7 +134,7 @@
 
     "variableList": [],
 
-    "contactRoleList": ["shipper", "forwarder"],
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 
@@ -149,7 +149,7 @@
     "templatePath": "alert/shipment-alert",
 
     "severity": "medium",
-    "contactRoleList": ["shipper", "forwarder"],
+    "contactRoleList": [],
 
     "variableList": [],
     "extraContactPersonSql": null,
@@ -164,7 +164,7 @@
 
     "templatePath": "alert/shipment-alert",
     "severity": "medium",
-    "contactRoleList": ["shipper", "forwarder"],
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 
@@ -248,7 +248,7 @@
     "severity": "medium",
 
     "variableList": [],
-    "contactRoleList": ["shipper", "forwarder"],
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 
@@ -263,7 +263,7 @@
     "severity": "medium",
 
     "variableList": [],
-    "contactRoleList": ["shipper", "forwarder"],
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 
@@ -278,7 +278,7 @@
     "variableList": [],
     "severity": "medium",
 
-    "contactRoleList": ["shipper", "forwarder"],
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 
@@ -367,7 +367,7 @@
     "severity": "medium",
 
     "variableList": [],
-    "contactRoleList": ["forwarder", "shipper", "consignee"],
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 
@@ -381,7 +381,7 @@
     "severity": "medium",
 
     "variableList": [],
-    "contactRoleList": ["forwarder", "shipper", "consignee"],
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 
@@ -395,7 +395,7 @@
     "severity": "medium",
 
     "variableList": [],
-    "contactRoleList": ["forwarder", "shipper", "consignee"],
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 
@@ -409,7 +409,7 @@
     "severity": "medium",
 
     "variableList": [],
-    "contactRoleList": ["forwarder", "shipper", "consignee"],
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 

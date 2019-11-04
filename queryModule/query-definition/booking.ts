@@ -55,7 +55,6 @@ const query = new QueryDef(
         operator: 'LEFT',
         table: 'code_master',
         $on: [
-
           new BinaryExpression(
             new ColumnExpression('code_master', 'codeType'),
             '=',
@@ -131,6 +130,16 @@ const query = new QueryDef(
                   })
                 ),
                 'containerTypeCode'
+              ),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({
+                    expression: new ColumnExpression('booking_container', 'containerNo'),
+                    suffix: 'SEPARATOR \', \'',
+                  })
+                ),
+                'containerNo'
               ),
               new ResultColumn(
                 new FunctionExpression(

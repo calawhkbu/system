@@ -54,6 +54,7 @@ class SendEdiEvent extends BaseEvent {
               ...data.dataValues,
               trackingReference: await trackingReferenceService.findOne(id)
             }
+            console.log(value, 'EDI')
             try {
               let finalCode = process.env.NODE_ENV === 'production' ? partyGroupCode : 'DEV'
               if (finalCode === 'ECXD') {

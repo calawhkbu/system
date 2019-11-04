@@ -31,7 +31,6 @@ export default class EdiParser997 extends BaseEdiParser {
   }
 
   async export(entityJSON: any[] | (any[])[]): Promise<any> {
-    console.log(entityJSON)
     const resultList: any[] = []
     for (const element of entityJSON)
     {
@@ -205,7 +204,7 @@ export default class EdiParser997 extends BaseEdiParser {
           }
 
           const loopObjectList: any[] = []
-          loopObjectList.push(this.getLoopObject(loopObjectList, historyList))
+          loopObjectList.push(this.getLoopObject(loopObjectList, historyList, bookingInf))
           const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
           data.push(...filteredList)
           await this.removeEmptyElementListObject(data)
@@ -259,37 +258,66 @@ export default class EdiParser997 extends BaseEdiParser {
     }
     return data
   }
-  async getLoopObject(loopObjectList, historyList) {
+  async getLoopObject(loopObjectList, historyList, extraData) {
     const noOfhistory = historyList.length
-    for (let i = 0; i < noOfhistory - 1; i++) {
-      let noMatch = false
+    const functionalCodeMapper = {
+      BKCF: 'R',
+      EPRL: 'R',
+      STSP: 'R',
+      GITM: 'L',
+      LOBD: 'L',
+      DLPT: 'L',
+      TSLB: 'I',
+      TSDC: 'I',
+      BDAR: 'D',
+      DSCH: 'D',
+      PSCG: 'D',
+      DECL: 'D',
+      PASS: 'D',
+      TMPS: 'D',
+      STCS: 'E',
+      RCVE: 'E',
+    }
+    const countryMapper = {
+      L : 'portOfLoading',
+      D : 'portOfDischarge',
+      E : 'placeOfDelivery',
+      R : 'placeOfReceipt'
+    }
+    for (let i = 0; i < noOfhistory; i++) {
       const R4: JSONObject = {
         segment: 'R4',
         elementList: [],
       }
-      switch (historyList[i].statusCode) {
-        case 'EPRL':
-          R4.elementList.push('R')
-          break
-        case 'GITM' || 'LOBD' || 'DLPT':
-          R4.elementList.push('L')
-          break
-        case 'BDAR' || 'PSCG' || 'DECL':
-          R4.elementList.push('D')
-          break
-        case 'STCS':
-          R4.elementList.push('D')
-          break
-        case 'TSLB' || 'TSDC':
-          R4.elementList.push('I')
-          break
-        default:
-          noMatch = true
-      }
-      if (noMatch === false) {
-        R4.elementList.push(' ', _.get(historyList[i], 'statusPlace').substr(0, 30))
+      const statusCode = historyList[i].statusCode
+      if (functionalCodeMapper[statusCode]) {
+        let country = _.get(extraData, countryMapper[functionalCodeMapper[statusCode]])
+        if (!country)
+        {
+          switch (countryMapper[functionalCodeMapper[statusCode]])
+          {
+            case 'placeOfDelivery': {
+            country = _.get(extraData, 'portOfDischarge')
+            break
+            }
+            case  'placeOfReceipt': {
+            country = _.get(extraData, 'portOfLoading')
+            break
+            }
+          }
+        }
+        const countryCode = (country || 'XX').substring(0, 2)
+        if (i === noOfhistory - 1)
+        {
+          R4.elementList.push('5')
+        }
+        else
+        {
+          R4.elementList.push(functionalCodeMapper[statusCode])
+        }
+        R4.elementList.push('UN', _.get(historyList[i], 'statusPlace').substr(0, 30))
         R4.elementList.push('') // not used
-        R4.elementList.push('  ') // No country code
+        R4.elementList.push(countryCode)
         R4.elementList.push('', '') // not used
         R4.elementList.push('  ') // State or Province Code
         loopObjectList.push(R4)
@@ -308,32 +336,49 @@ export default class EdiParser997 extends BaseEdiParser {
         }
       }
     }
-    const R4: JSONObject = {
-      segment: 'R4',
-      elementList: [],
-    }
-    R4.elementList.push('5', ' ', _.get(historyList[noOfhistory - 1], 'statusPlace').substr(0, 30))
+    // const statusCode = historyList[noOfhistory - 1].statusCode
+    // let country = _.get(extraData, countryMapper[functionalCodeMapper[statusCode]])
+    // if (!country)
+    // {
+    //   switch (countryMapper[functionalCodeMapper[statusCode]])
+    //   {
+    //     case 'placeOfDelivery': {
+    //     country = _.get(extraData, 'portOfDischarge')
+    //     break
+    //     }
+    //     case  'placeOfReceipt': {
+    //     country = _.get(extraData, 'portOfLoading')
+    //     break
+    //     }
+    //   }
+    // }
+    // const countryCode = (country || 'XX').substring(0, 2)
+    // const R4: JSONObject = {
+    //   segment: 'R4',
+    //   elementList: [],
+    // }
+    // R4.elementList.push('5', 'UN', _.get(historyList[noOfhistory - 1], 'statusPlace').substr(0, 30))
     // R4.elementList.push('') // not used
-    // R4.elementList.push('') // No country code
+    // R4.elementList.push(countryCode) // No country code
     // R4.elementList.push('', '') // not used
     // R4.elementList.push('') // State or Province Code
-    loopObjectList.push(R4)
-    if (
-      _.get(historyList[noOfhistory - 1], 'isEstimated') === false &&
-      _.get(historyList[noOfhistory - 1], 'statusDate')
-    ) {
-      const DTM: JSONObject = {
-        segment: 'DTM',
-        elementList: [],
-      }
-      DTM.elementList.push(
-        '140',
-        moment(_.get(historyList[noOfhistory - 1], 'statusDate')).format('YYYYMMDD'),
-        moment(_.get(historyList[noOfhistory - 1], 'statusDate')).format('HHmm')
-      )
-      // DTM.elementList.push('') // no time code
-      loopObjectList.push(DTM)
-    }
+    // loopObjectList.push(R4)
+    // if (
+    //   _.get(historyList[noOfhistory - 1], 'isEstimated') === false &&
+    //   _.get(historyList[noOfhistory - 1], 'statusDate')
+    // ) {
+    //   const DTM: JSONObject = {
+    //     segment: 'DTM',
+    //     elementList: [],
+    //   }
+    //   DTM.elementList.push(
+    //     '140',
+    //     moment(_.get(historyList[noOfhistory - 1], 'statusDate')).format('YYYYMMDD'),
+    //     moment(_.get(historyList[noOfhistory - 1], 'statusDate')).format('HHmm')
+    //   )
+    //   // DTM.elementList.push('') // no time code
+    //   loopObjectList.push(DTM)
+    // }
     return loopObjectList
   }
 }
