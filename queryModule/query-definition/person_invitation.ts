@@ -65,10 +65,7 @@ query
   .register(
     'invitationStatus',
     new Query({
-      $where: new BinaryExpression(
-        `(CASE WHEN invitation.deletedAt is not null AND invitation.deletedBy is not null THEN 'disabled' else invitation.status END)`,
-        '='
-      ),
+      $where: new BinaryExpression(new ColumnExpression('invitation', 'status'), '='),
     })
   )
   .register('value', 0)
@@ -77,13 +74,7 @@ query
   .register(
     'invitationStatuses',
     new Query({
-      $where: new InExpression(
-        new ColumnExpression(
-          `(CASE WHEN invitation.deletedAt is not null AND invitation.deletedBy is not null THEN 'disabled' else invitation.status END)`,
-          'status'
-        ),
-        false
-      ),
+      $where: new InExpression(new ColumnExpression('invitation', 'status'), false),
     })
   )
   .register('value', 0)

@@ -5,8 +5,12 @@ const query = new Query({
   $from: new FromTable(
     {
       method: 'POST',
-      url: 'api/person/query/person',
+      url: 'api/person/query/person_invitation',
       columns: [
+        {
+          name: 'id',
+          type: 'number'
+        },
         {
           name: 'userName',
           type: 'string',
@@ -21,6 +25,14 @@ const query = new Query({
         },
         {
           name: 'displayName',
+          type: 'string',
+        },
+        {
+          name: 'status',
+          type: 'string',
+        },
+        {
+          name: 'updatedAt',
           type: 'string',
         },
       ],

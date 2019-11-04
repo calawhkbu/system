@@ -5,23 +5,16 @@
     "is": "TableTool",
     "props": {
       "reportingKey": "users",
-      "jql": "invitations",
+      "jql": "users",
       "urlFormat": "/users{{ id|if('/', '') }}{{ id }}",
-      "hasReports": false,
+      "hasReports": true,
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": true,
       "newReport": {
         "filters": {
-          "isActive": true,
-          "date": {
-            "func": {
-              "args": {
-                "unit": "year"
-              },
-              "key": "current"
-            }
-          }
+          "invitationStatuses": ["sent", "accepted"],
+          "isActive": true
         },
         "configurations": {
           "i18nContext": "InvitationPage",
@@ -29,7 +22,7 @@
           "draggable": true,
           "sorting": {
             "direction": "DESC",
-            "key": "updatedAt"
+            "key": "person.updatedAt"
           },
           "pagination": {
             "current": 0,
@@ -43,22 +36,54 @@
           "hidden": true
         },
         {
-          "key": "createdAt",
-          "sql": "invitation.createdAt",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
           "key": "updatedAt",
-          "sql": "invitation.updatedAt",
+          "sql": "person.updatedAt",
           "width": 150,
           "format": "YYYY-MM-DD"
         },
         {
-          "key": "invitationNo",
-          "width": 150
+          "key": "status",
+          "i18nContext": "InvitationStatus",
+          "sql": "(CASE WHEN invitation.deletedAt is not null AND invitation.deletedBy is not null THEN 'disabled' else invitation.status END)"
+        },
+        {
+          "key": "userName",
+          "sql": "person.userName"
+        },
+        {
+          "key": "firstName",
+          "sql": "person.firstName"
+        },
+        {
+          "key": "lastName",
+          "sql": "person.lastName"
+        },
+        {
+          "key": "displayName",
+          "sql": "person.displayName"
         }
       ],
+      "filters": [{
+        "display": "status",
+        "name": "status",
+        "props": {
+          "i18nContext": "InvitationStatus",
+          "items": [{
+              "value": "sent",
+              "label": "sent"
+            },
+            {
+              "value": "accepted",
+              "label": "accepted"
+            },
+            {
+              "value": "disabled",
+              "label": "disabled"
+            }
+          ]
+        },
+        "type": "list"
+      }],
       "clickFunction": {
         "type": "router",
         "otherParams": {
