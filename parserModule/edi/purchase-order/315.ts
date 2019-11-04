@@ -284,16 +284,38 @@ export default class EdiParser997 extends BaseEdiParser {
       E : 'placeOfDelivery',
       R : 'placeOfReceipt'
     }
-    for (let i = 0; i < noOfhistory - 1; i++) {
+    for (let i = 0; i < noOfhistory; i++) {
       const R4: JSONObject = {
         segment: 'R4',
         elementList: [],
       }
       const statusCode = historyList[i].statusCode
       if (functionalCodeMapper[statusCode]) {
-        const country = _.get(extraData, countryMapper[functionalCodeMapper[statusCode]])
-        const countryCode = (country || '  ').substring(0, 2)
-        R4.elementList.push(functionalCodeMapper[statusCode], 'UN', _.get(historyList[i], 'statusPlace').substr(0, 30))
+        let country = _.get(extraData, countryMapper[functionalCodeMapper[statusCode]])
+        if (!country)
+        {
+          switch (countryMapper[functionalCodeMapper[statusCode]])
+          {
+            case 'placeOfDelivery': {
+            country = _.get(extraData, 'portOfDischarge')
+            break
+            }
+            case  'placeOfReceipt': {
+            country = _.get(extraData, 'portOfLoading')
+            break
+            }
+          }
+        }
+        const countryCode = (country || 'XX').substring(0, 2)
+        if (i === noOfhistory - 1)
+        {
+          R4.elementList.push('5')
+        }
+        else
+        {
+          R4.elementList.push(functionalCodeMapper[statusCode])
+        }
+        R4.elementList.push('UN', _.get(historyList[i], 'statusPlace').substr(0, 30))
         R4.elementList.push('') // not used
         R4.elementList.push(countryCode)
         R4.elementList.push('', '') // not used
@@ -314,35 +336,49 @@ export default class EdiParser997 extends BaseEdiParser {
         }
       }
     }
-    const statusCode = historyList[noOfhistory - 1].statusCode
-    const country = _.get(extraData, countryMapper[functionalCodeMapper[statusCode]])
-    const countryCode = (country || '').substring(0, 2)
-    const R4: JSONObject = {
-      segment: 'R4',
-      elementList: [],
-    }
-    R4.elementList.push('5', 'UN', _.get(historyList[noOfhistory - 1], 'statusPlace').substr(0, 30))
-    R4.elementList.push('') // not used
-    R4.elementList.push(countryCode) // No country code
-    R4.elementList.push('', '') // not used
-    R4.elementList.push('') // State or Province Code
-    loopObjectList.push(R4)
-    if (
-      _.get(historyList[noOfhistory - 1], 'isEstimated') !== false &&
-      _.get(historyList[noOfhistory - 1], 'statusDate')
-    ) {
-      const DTM: JSONObject = {
-        segment: 'DTM',
-        elementList: [],
-      }
-      DTM.elementList.push(
-        '140',
-        moment(_.get(historyList[noOfhistory - 1], 'statusDate')).format('YYYYMMDD'),
-        moment(_.get(historyList[noOfhistory - 1], 'statusDate')).format('HHmm')
-      )
-      // DTM.elementList.push('') // no time code
-      loopObjectList.push(DTM)
-    }
+    // const statusCode = historyList[noOfhistory - 1].statusCode
+    // let country = _.get(extraData, countryMapper[functionalCodeMapper[statusCode]])
+    // if (!country)
+    // {
+    //   switch (countryMapper[functionalCodeMapper[statusCode]])
+    //   {
+    //     case 'placeOfDelivery': {
+    //     country = _.get(extraData, 'portOfDischarge')
+    //     break
+    //     }
+    //     case  'placeOfReceipt': {
+    //     country = _.get(extraData, 'portOfLoading')
+    //     break
+    //     }
+    //   }
+    // }
+    // const countryCode = (country || 'XX').substring(0, 2)
+    // const R4: JSONObject = {
+    //   segment: 'R4',
+    //   elementList: [],
+    // }
+    // R4.elementList.push('5', 'UN', _.get(historyList[noOfhistory - 1], 'statusPlace').substr(0, 30))
+    // R4.elementList.push('') // not used
+    // R4.elementList.push(countryCode) // No country code
+    // R4.elementList.push('', '') // not used
+    // R4.elementList.push('') // State or Province Code
+    // loopObjectList.push(R4)
+    // if (
+    //   _.get(historyList[noOfhistory - 1], 'isEstimated') === false &&
+    //   _.get(historyList[noOfhistory - 1], 'statusDate')
+    // ) {
+    //   const DTM: JSONObject = {
+    //     segment: 'DTM',
+    //     elementList: [],
+    //   }
+    //   DTM.elementList.push(
+    //     '140',
+    //     moment(_.get(historyList[noOfhistory - 1], 'statusDate')).format('YYYYMMDD'),
+    //     moment(_.get(historyList[noOfhistory - 1], 'statusDate')).format('HHmm')
+    //   )
+    //   // DTM.elementList.push('') // no time code
+    //   loopObjectList.push(DTM)
+    // }
     return loopObjectList
   }
 }
