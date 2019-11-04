@@ -1,35 +1,29 @@
 {
   "class": "grid",
-  "components": [
-    {
+  "components": [{
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 grid align-item-center padding-8",
-        "components": [
-          {
+        "components": [{
             "is": "v-btn",
             "props": {
               "flat": true,
               "icon": true
             },
-            "slots": [
-              {
-                "is": "Icon",
-                "props": {
-                  "icon": "arrow_back"
-                }
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
               }
-            ],
+            }],
             "events": {
-              "click.stop": [
-                {
-                  "type": "router",
-                  "otherParams": {
-                    "func": "push",
-                    "path": "/bookings"
-                  }
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/bookings"
                 }
-              ]
+              }]
             }
           },
           {
@@ -54,24 +48,20 @@
               "icon": true,
               "flat": true
             },
-            "slots": [
-              {
-                "is": "Icon",
-                "props": {
-                  "icon": "map"
-                }
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "map"
               }
-            ],
+            }],
             "events": {
-              "click.stop": [
-                {
-                  "type": "dispatch",
-                  "otherParams": {
-                    "name": "widget/changeMode",
-                    "mode": "map"
-                  }
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "map"
                 }
-              ]
+              }]
             }
           },
           {
@@ -81,24 +71,20 @@
               "flat": true,
               "class": "primary white-text"
             },
-            "slots": [
-              {
-                "is": "Icon",
-                "props": {
-                  "icon": "edit"
-                }
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "edit"
               }
-            ],
+            }],
             "events": {
-              "click.stop": [
-                {
-                  "type": "dispatch",
-                  "otherParams": {
-                    "name": "widget/changeMode",
-                    "mode": "edit"
-                  }
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "edit"
                 }
-              ]
+              }]
             }
           }
         ]
@@ -109,318 +95,357 @@
       "props": {
         "class": "xs-12 md-8 padding-left-8 padding-right-8"
       },
-      "slots": [
-        {
+      "slots": [{
           "is": "DynamicComponent",
           "props": {
             "layout": "v-card",
             "class": "margin-topbottom-8",
-            "components": [
-              {
-                "is": "MouseHidden",
-                "slots": [
-                  {
-                    "name": "hidden",
-                    "is": "DynamicComponent",
-                    "props": {
-                      "class": "flex max-height-0",
-                      "components": [
-                        {
-                          "is": "v-spacer"
+            "components": [{
+              "is": "MouseHidden",
+              "slots": [{
+                  "name": "hidden",
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "flex max-height-0",
+                    "components": [{
+                        "is": "v-spacer"
+                      },
+                      {
+                        "is": "v-btn",
+                        "props": {
+                          "small": true,
+                          "fab": true,
+                          "color": "primary",
+                          "class": "no-margin zindex-10 no-padding margin-right-4 margin-top-4"
                         },
-                        {
-                          "is": "v-btn",
+                        "slots": [{
+                          "is": "Icon",
                           "props": {
-                            "small": true,
-                            "fab": true,
-                            "color": "primary",
-                            "class": "no-margin zindex-10 no-padding margin-right-4 margin-top-4"
-                          },
-                          "slots": [
-                            {
-                              "is": "Icon",
-                              "props": {
-                                "icon": "edit"
-                              }
-                            }
-                          ],
-                          "events": {
-                            "click.stop": [
-                              {
-                                "type": "dispatch",
-                                "otherParams": {
-                                  "name": "widget/changeMode",
-                                  "mode": "edit"
-                                },
-                                "afterActions": [
-                                  {
-                                    "type": "dispatch",
-                                    "otherParams": {
-                                      "name": "widget/updateComponentSetting",
-                                      "value": {
-                                        "stepper": 0
-                                      }
-                                    }
-                                  }
-                                ]
-                              }
-                            ]
+                            "icon": "edit"
                           }
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "components": [
-                        {
-                          "is": "v-card-title",
-                          "props": {
-                            "primary-title": true,
-                            "class": "padding-4 min-height-48 bold uppercase"
-                          },
-                          "slots": [
-                            {
-                              "is": "I18nText",
-                              "props": {
-                                "i18nContext": "BookingPage",
-                                "i18nKey": "GeneralForm"
+                        }],
+                        "events": {
+                          "click.stop": [{
+                            "type": "dispatch",
+                            "otherParams": {
+                              "name": "widget/changeMode",
+                              "mode": "edit"
+                            },
+                            "afterActions": [{
+                              "type": "dispatch",
+                              "otherParams": {
+                                "name": "widget/updateComponentSetting",
+                                "value": {
+                                  "stepper": 0
+                                }
                               }
-                            }
-                          ]
-                        },
-                        {
-                          "is": "v-divider"
-                        },
-                        {
-                          "is": "AsyncComponent",
-                          "props": {
-                            "layoutName": "booking/forms/generalForm"
-                          }
+                            }]
+                          }]
                         }
-                      ]
-                    }
+                      }
+                    ]
                   }
-                ]
-              }
-            ]
+                },
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "components": [{
+                        "is": "v-card-title",
+                        "props": {
+                          "primary-title": true,
+                          "class": "padding-4 min-height-48 bold uppercase"
+                        },
+                        "slots": [{
+                          "is": "I18nText",
+                          "props": {
+                            "i18nContext": "BookingPage",
+                            "i18nKey": "GeneralForm"
+                          }
+                        }]
+                      },
+                      {
+                        "is": "v-divider"
+                      },
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/forms/generalForm"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }]
           }
         },
         {
           "is": "DynamicComponent",
           "props": {
             "class": "grid margin-topbottom-8",
-            "components": [
-              {
+            "components": [{
                 "is": "div",
                 "props": {
-                  "class": "xs-12 md-6 padding-right-4"
+                  "class": "xs-12 md-6 padding-right-4 margin-topbottom-8"
                 },
-                "slots": [
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "layout": "v-card",
-                      "components": [
+                "slots": [{
+                  "is": "DynamicComponent",
+                  "props": {
+                    "layout": "v-card",
+                    "components": [{
+                      "is": "MouseHidden",
+                      "slots": [{
+                          "name": "hidden",
+                          "is": "DynamicComponent",
+                          "props": {
+                            "class": "flex max-height-0",
+                            "components": [{
+                                "is": "v-spacer"
+                              },
+                              {
+                                "is": "v-btn",
+                                "props": {
+                                  "small": true,
+                                  "fab": true,
+                                  "color": "primary",
+                                  "class": "no-margin zindex-10 no-padding margin-right-4 margin-top-4"
+                                },
+                                "slots": [{
+                                  "is": "Icon",
+                                  "props": {
+                                    "icon": "edit"
+                                  }
+                                }],
+                                "events": {
+                                  "click.stop": [{
+                                    "type": "dispatch",
+                                    "otherParams": {
+                                      "name": "widget/changeMode",
+                                      "mode": "edit"
+                                    },
+                                    "afterActions": [{
+                                      "type": "dispatch",
+                                      "otherParams": {
+                                        "name": "widget/updateComponentSetting",
+                                        "value": {
+                                          "stepper": 1
+                                        }
+                                      }
+                                    }]
+                                  }]
+                                }
+                              }
+                            ]
+                          }
+                        },
                         {
-                          "is": "MouseHidden",
-                          "slots": [
-                            {
-                              "name": "hidden",
-                              "is": "DynamicComponent",
-                              "props": {
-                                "class": "flex max-height-0",
-                                "components": [
-                                  {
-                                    "is": "v-spacer"
-                                  },
-                                  {
-                                    "is": "v-btn",
-                                    "props": {
-                                      "small": true,
-                                      "fab": true,
-                                      "color": "primary",
-                                      "class": "no-margin zindex-10 no-padding margin-right-4 margin-top-4"
-                                    },
-                                    "slots": [
-                                      {
-                                        "is": "Icon",
-                                        "props": {
-                                          "icon": "edit"
-                                        }
-                                      }
-                                    ],
-                                    "events": {
-                                      "click.stop": [
-                                        {
-                                          "type": "dispatch",
-                                          "otherParams": {
-                                            "name": "widget/changeMode",
-                                            "mode": "edit"
-                                          },
-                                          "afterActions": [
-                                            {
-                                              "type": "dispatch",
-                                              "otherParams": {
-                                                "name": "widget/updateComponentSetting",
-                                                "value": {
-                                                  "stepper": 1
-                                                }
-                                              }
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    }
+                          "is": "DynamicComponent",
+                          "props": {
+                            "components": [{
+                                "is": "v-card-title",
+                                "props": {
+                                  "primary-title": true,
+                                  "class": "padding-4 min-height-48 bold uppercase"
+                                },
+                                "slots": [{
+                                  "is": "I18nText",
+                                  "props": {
+                                    "i18nContext": "BookingPage",
+                                    "i18nKey": "PartyForm"
                                   }
-                                ]
+                                }]
+                              },
+                              {
+                                "is": "v-divider"
+                              },
+                              {
+                                "is": "AsyncComponent",
+                                "props": {
+                                  "layoutName": "booking/forms/partyForm"
+                                }
                               }
-                            },
-                            {
-                              "is": "DynamicComponent",
-                              "props": {
-                                "components": [
-                                  {
-                                    "is": "v-card-title",
-                                    "props": {
-                                      "primary-title": true,
-                                      "class": "padding-4 min-height-48 bold uppercase"
-                                    },
-                                    "slots": [
-                                      {
-                                        "is": "I18nText",
-                                        "props": {
-                                          "i18nContext": "BookingPage",
-                                          "i18nKey": "PartyForm"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "is": "v-divider"
-                                  },
-                                  {
-                                    "is": "AsyncComponent",
-                                    "props": {
-                                      "layoutName": "booking/forms/partyForm"
-                                    }
-                                  }
-                                ]
-                              }
-                            }
-                          ]
+                            ]
+                          }
                         }
                       ]
-                    }
+                    }]
                   }
-                ]
+                }]
               },
               {
                 "is": "div",
                 "props": {
-                  "class": "xs-12 md-6 padding-left-4"
+                  "class": "xs-12 md-6 padding-left-4 margin-topbottom-8"
                 },
-                "slots": [
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "layout": "v-card",
-                      "components": [
-                        {
-                          "is": "MouseHidden",
-                          "slots": [
-                            {
-                              "name": "hidden",
-                              "is": "DynamicComponent",
-                              "props": {
-                                "class": "flex max-height-0",
-                                "components": [
-                                  {
-                                    "is": "v-spacer"
-                                  },
-                                  {
-                                    "is": "v-btn",
-                                    "props": {
-                                      "small": true,
-                                      "fab": true,
-                                      "color": "primary",
-                                      "class": "no-margin zindex-10 no-padding margin-right-4 margin-top-4"
+                "slots": [{
+                  "is": "DynamicComponent",
+                  "props": {
+                    "layout": "v-card",
+                    "components": [{
+                      "is": "MouseHidden",
+                      "slots": [{
+                          "name": "hidden",
+                          "is": "DynamicComponent",
+                          "props": {
+                            "class": "flex max-height-0",
+                            "components": [{
+                                "is": "v-spacer"
+                              },
+                              {
+                                "is": "v-btn",
+                                "props": {
+                                  "small": true,
+                                  "fab": true,
+                                  "color": "primary",
+                                  "class": "no-margin zindex-10 no-padding margin-right-4 margin-top-4"
+                                },
+                                "slots": [{
+                                  "is": "Icon",
+                                  "props": {
+                                    "icon": "edit"
+                                  }
+                                }],
+                                "events": {
+                                  "click.stop": [{
+                                    "type": "dispatch",
+                                    "otherParams": {
+                                      "name": "widget/changeMode",
+                                      "mode": "edit"
                                     },
-                                    "slots": [
-                                      {
-                                        "is": "Icon",
-                                        "props": {
-                                          "icon": "edit"
+                                    "afterActions": [{
+                                      "type": "dispatch",
+                                      "otherParams": {
+                                        "name": "widget/updateComponentSetting",
+                                        "value": {
+                                          "stepper": 2
                                         }
                                       }
-                                    ],
-                                    "events": {
-                                      "click.stop": [
-                                        {
-                                          "type": "dispatch",
-                                          "otherParams": {
-                                            "name": "widget/changeMode",
-                                            "mode": "edit"
-                                          },
-                                          "afterActions": [
-                                            {
-                                              "type": "dispatch",
-                                              "otherParams": {
-                                                "name": "widget/updateComponentSetting",
-                                                "value": {
-                                                  "stepper": 2
-                                                }
-                                              }
-                                            }
-                                          ]
-                                        }
-                                      ]
-                                    }
-                                  }
-                                ]
+                                    }]
+                                  }]
+                                }
                               }
+                            ]
+                          }
+                        },
+                        {
+                          "is": "DynamicComponent",
+                          "props": {
+                            "components": [{
+                                "is": "v-card-title",
+                                "props": {
+                                  "primary-title": true,
+                                  "class": "padding-4 min-height-48 bold uppercase"
+                                },
+                                "slots": [{
+                                  "is": "I18nText",
+                                  "props": {
+                                    "i18nContext": "BookingPage",
+                                    "i18nKey": "DateForm"
+                                  }
+                                }]
+                              },
+                              {
+                                "is": "v-divider"
+                              },
+                              {
+                                "is": "AsyncComponent",
+                                "props": {
+                                  "layoutName": "booking/forms/dateForm"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }]
+                  }
+                }]
+              }
+            ]
+          }
+        },
+        {
+          "is": "DynamicComponent",
+          "props": {
+            "layout": "v-card",
+            "class": "xs-12 md-6 margin-topbottom-8",
+            "components": [{
+              "is": "MouseHidden",
+              "slots": [{
+                  "name": "hidden",
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "flex max-height-0",
+                    "components": [{
+                        "is": "v-spacer"
+                      },
+                      {
+                        "is": "v-btn",
+                        "props": {
+                          "small": true,
+                          "fab": true,
+                          "color": "primary",
+                          "class": "no-margin zindex-10 no-padding margin-right-4 margin-top-4"
+                        },
+                        "slots": [{
+                          "is": "Icon",
+                          "props": {
+                            "icon": "edit"
+                          }
+                        }],
+                        "events": {
+                          "click.stop": [{
+                            "type": "dispatch",
+                            "otherParams": {
+                              "name": "widget/changeMode",
+                              "mode": "edit"
                             },
-                            {
-                              "is": "DynamicComponent",
-                              "props": {
-                                "components": [
-                                  {
-                                    "is": "v-card-title",
-                                    "props": {
-                                      "primary-title": true,
-                                      "class": "padding-4 min-height-48 bold uppercase"
-                                    },
-                                    "slots": [
-                                      {
-                                        "is": "I18nText",
-                                        "props": {
-                                          "i18nContext": "BookingPage",
-                                          "i18nKey": "DateForm"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "is": "v-divider"
-                                  },
-                                  {
-                                    "is": "AsyncComponent",
-                                    "props": {
-                                      "layoutName": "booking/forms/dateForm"
-                                    }
-                                  }
-                                ]
+                            "afterActions": [{
+                              "type": "dispatch",
+                              "otherParams": {
+                                "name": "widget/updateComponentSetting",
+                                "value": {
+                                  "stepper": 3
+                                }
                               }
-                            }
-                          ]
+                            }]
+                          }]
                         }
-                      ]
-                    }
+                      }
+                    ]
                   }
-                ]
-              }
-            ]
+                },
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "components": [{
+                        "is": "v-card-title",
+                        "props": {
+                          "primary-title": true,
+                          "class": "padding-4 min-height-48 bold uppercase"
+                        },
+                        "slots": [{
+                          "is": "I18nText",
+                          "props": {
+                            "i18nContext": "BookingPage",
+                            "i18nKey": "ContainerForm"
+                          }
+                        }]
+                      },
+                      {
+                        "is": "v-divider"
+                      },
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/forms/containerForm"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }]
           }
         },
         {
@@ -428,193 +453,83 @@
           "props": {
             "layout": "v-card",
             "class": "margin-topbottom-8",
-            "components": [
-              {
-                "is": "MouseHidden",
-                "slots": [
-                  {
-                    "name": "hidden",
-                    "is": "DynamicComponent",
-                    "props": {
-                      "class": "flex max-height-0",
-                      "components": [
-                        {
-                          "is": "v-spacer"
+            "components": [{
+              "is": "MouseHidden",
+              "slots": [{
+                  "name": "hidden",
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "flex max-height-0",
+                    "components": [{
+                        "is": "v-spacer"
+                      },
+                      {
+                        "is": "v-btn",
+                        "props": {
+                          "small": true,
+                          "fab": true,
+                          "color": "primary",
+                          "class": "no-margin zindex-10 no-padding margin-right-4 margin-top-4"
                         },
-                        {
-                          "is": "v-btn",
+                        "slots": [{
+                          "is": "Icon",
                           "props": {
-                            "small": true,
-                            "fab": true,
-                            "color": "primary",
-                            "class": "no-margin zindex-10 no-padding margin-right-4 margin-top-4"
-                          },
-                          "slots": [
-                            {
-                              "is": "Icon",
-                              "props": {
-                                "icon": "edit"
-                              }
-                            }
-                          ],
-                          "events": {
-                            "click.stop": [
-                              {
-                                "type": "dispatch",
-                                "otherParams": {
-                                  "name": "widget/changeMode",
-                                  "mode": "edit"
-                                },
-                                "afterActions": [
-                                  {
-                                    "type": "dispatch",
-                                    "otherParams": {
-                                      "name": "widget/updateComponentSetting",
-                                      "value": {
-                                        "stepper": 3
-                                      }
-                                    }
-                                  }
-                                ]
-                              }
-                            ]
+                            "icon": "edit"
                           }
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "components": [
-                        {
-                          "is": "v-card-title",
-                          "props": {
-                            "primary-title": true,
-                            "class": "padding-4 min-height-48 bold uppercase"
-                          },
-                          "slots": [
-                            {
-                              "is": "I18nText",
-                              "props": {
-                                "i18nContext": "BookingPage",
-                                "i18nKey": "ContainerForm"
+                        }],
+                        "events": {
+                          "click.stop": [{
+                            "type": "dispatch",
+                            "otherParams": {
+                              "name": "widget/changeMode",
+                              "mode": "edit"
+                            },
+                            "afterActions": [{
+                              "type": "dispatch",
+                              "otherParams": {
+                                "name": "widget/updateComponentSetting",
+                                "value": {
+                                  "stepper": 4
+                                }
                               }
-                            }
-                          ]
-                        },
-                        {
-                          "is": "v-divider"
-                        },
-                        {
-                          "is": "AsyncComponent",
-                          "props": {
-                            "layoutName": "booking/forms/containerForm"
-                          }
+                            }]
+                          }]
                         }
-                      ]
-                    }
+                      }
+                    ]
                   }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          "is": "DynamicComponent",
-          "props": {
-            "layout": "v-card",
-            "class": "margin-topbottom-8",
-            "components": [
-              {
-                "is": "MouseHidden",
-                "slots": [
-                  {
-                    "name": "hidden",
-                    "is": "DynamicComponent",
-                    "props": {
-                      "class": "flex max-height-0",
-                      "components": [
-                        {
-                          "is": "v-spacer"
+                },
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "components": [{
+                        "is": "v-card-title",
+                        "props": {
+                          "primary-title": true,
+                          "class": "padding-4 min-height-48 bold uppercase"
                         },
-                        {
-                          "is": "v-btn",
+                        "slots": [{
+                          "is": "I18nText",
                           "props": {
-                            "small": true,
-                            "fab": true,
-                            "color": "primary",
-                            "class": "no-margin zindex-10 no-padding margin-right-4 margin-top-4"
-                          },
-                          "slots": [
-                            {
-                              "is": "Icon",
-                              "props": {
-                                "icon": "edit"
-                              }
-                            }
-                          ],
-                          "events": {
-                            "click.stop": [
-                              {
-                                "type": "dispatch",
-                                "otherParams": {
-                                  "name": "widget/changeMode",
-                                  "mode": "edit"
-                                },
-                                "afterActions": [
-                                  {
-                                    "type": "dispatch",
-                                    "otherParams": {
-                                      "name": "widget/updateComponentSetting",
-                                      "value": {
-                                        "stepper": 4
-                                      }
-                                    }
-                                  }
-                                ]
-                              }
-                            ]
+                            "i18nContext": "BookingPage",
+                            "i18nKey": "Reference"
                           }
+                        }]
+                      },
+                      {
+                        "is": "v-divider"
+                      },
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/forms/referenceForm"
                         }
-                      ]
-                    }
-                  },
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "components": [
-                        {
-                          "is": "v-card-title",
-                          "props": {
-                            "primary-title": true,
-                            "class": "padding-4 min-height-48 bold uppercase"
-                          },
-                          "slots": [
-                            {
-                              "is": "I18nText",
-                              "props": {
-                                "i18nContext": "BookingPage",
-                                "i18nKey": "Reference"
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "is": "v-divider"
-                        },
-                        {
-                          "is": "AsyncComponent",
-                          "props": {
-                            "layoutName": "booking/forms/referenceForm"
-                          }
-                        }
-                      ]
-                    }
+                      }
+                    ]
                   }
-                ]
-              }
-            ]
+                }
+              ]
+            }]
           }
         }
       ]
@@ -624,12 +539,18 @@
       "props": {
         "class": "xs-12 md-4 padding-8"
       },
-      "slots": [
-        {
+      "slots": [{
           "is": "AsyncComponent",
           "props": {
             "class": "xs-12 margin-topbottom-4",
             "layoutName": "plugins/tracking"
+          }
+        },
+        {
+          "is": "AsyncComponent",
+          "props": {
+            "class": "xs-12 margin-topbottom-4",
+            "layoutName": "plugins/workflow"
           }
         },
         {
