@@ -9,7 +9,7 @@ const query = new Query({
       columns: [
         {
           name: 'id',
-          type: 'number'
+          type: 'number',
         },
         {
           name: 'userName',

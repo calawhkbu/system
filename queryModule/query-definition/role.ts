@@ -36,7 +36,7 @@ query
   )
   .register('value', 0)
 
-  query
+query
   .register(
     'partyGroupCode',
     new Query({
@@ -72,7 +72,7 @@ query
   )
   .register('value', 0)
 
-  query
+query
   .register(
     'shareable',
     new Query({
@@ -81,7 +81,7 @@ query
   )
   .register('value', 0)
 
-  query
+query
   .register(
     'hidden',
     new Query({
@@ -90,7 +90,7 @@ query
   )
   .register('value', 0)
 
-  query
+query
   .register(
     'canMultiSelect',
     new Query({

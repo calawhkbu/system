@@ -22,9 +22,8 @@ function prepareParams(): Function {
     const codeColumnName = xAxis === 'carrier' ? `carrierCode` : `${xAxis}PartyId`
     const nameColumnName = xAxis === 'carrier' ? `carrierName` : `${xAxis}PartyName`
 
-    // ------------------------------
-
-    ; (params.sorting = new OrderBy(summaryColumnName, 'DESC')),
+      // ------------------------------
+    ;(params.sorting = new OrderBy(summaryColumnName, 'DESC')),
       // select
       (params.fields = [codeColumnName, summaryColumnName, nameColumnName])
     params.groupBy = [codeColumnName, nameColumnName]

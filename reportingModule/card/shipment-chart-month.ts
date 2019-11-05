@@ -1,6 +1,4 @@
-import {
-  MathExpression, Query, CreateTableJQL, InsertJQL, ResultColumn,
-} from 'node-jql'
+import { MathExpression, Query, CreateTableJQL, InsertJQL, ResultColumn } from 'node-jql'
 
 import { parseCode } from 'utils/function'
 
@@ -52,33 +50,27 @@ function prepareParams(): Function {
 }
 
 function createTable() {
-
   return new CreateTableJQL({
-
-    name : 'result',
-    columns : [
+    name: 'result',
+    columns: [
       {
-        name : 'type',
-        type : 'string'
+        name: 'type',
+        type: 'string',
       },
       {
-        name : 'month',
-        type : 'string'
+        name: 'month',
+        type: 'string',
       },
       {
-        name : 'value',
-        type : 'number'
+        name: 'value',
+        type: 'number',
       },
-
-    ]
+    ],
   })
 }
 
 function insertData() {
-
-  return async function(require, session, params)
-  {
-
+  return async function(require, session, params) {
     const { CreateTableJQL, FromTable, Query } = require('node-jql')
     const { Resultset } = require('node-jql-core')
 
@@ -90,37 +82,33 @@ function insertData() {
     const finalResult = []
 
     rawResultList.map(rawResult => {
-
       summaryVariables.map(variable => {
-
-        if (rawResult[variable])
-        {
+        if (rawResult[variable]) {
           finalResult.push({
-            type : variable,
-            month : rawResult['month'],
-            value : rawResult[variable]
-
+            type: variable,
+            month: rawResult['month'],
+            value: rawResult[variable],
           })
-
         }
-
       })
-
     })
 
     return new InsertJQL('result', ...finalResult)
-
   }
-
 }
 
 function prepareData(): Function {
-
   return function(require, session, params) {
-
     const tableName = 'raw'
 
-    const { CreateTableJQL, FromTable, GroupBy, ColumnExpression, ResultColumn, FunctionExpression } = require('node-jql')
+    const {
+      CreateTableJQL,
+      FromTable,
+      GroupBy,
+      ColumnExpression,
+      ResultColumn,
+      FunctionExpression,
+    } = require('node-jql')
 
     let summaryVariables = params.subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     summaryVariables = Array.isArray(summaryVariables) ? summaryVariables : [summaryVariables]
@@ -130,90 +118,76 @@ function prepareData(): Function {
         new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
         'month'
       ),
-      ...summaryVariables]
+      ...summaryVariables,
+    ]
 
     return new CreateTableJQL({
       $temporary: true,
       name: tableName,
 
       $as: new Query({
-
         $select,
         $from: new FromTable(
           {
             method: 'POST',
             url: 'api/shipment/query/shipment',
             columns: [
-
               { name: 'jobMonth', type: 'string' },
-              ...summaryVariables.map(variable => ({ name : variable, type : 'number' }))
-
+              ...summaryVariables.map(variable => ({ name: variable, type: 'number' })),
             ],
           },
           'shipment'
         ),
 
         $group: new GroupBy(new ColumnExpression('jobMonth')),
-
       }),
     })
-
   }
-
 }
 
 export default [
-
   [prepareParams(), prepareData()],
   createTable(),
   insertData(),
 
   new Query({
-
-   $from : 'result'
-  })
-
+    $from: 'result',
+  }),
 ]
 
 // filters avaliable for this card
 // all card in DB record using this jql will have these filter
 export const filters = [
-
   {
-
     // what to find in the groupby
-    name : 'summaryVariables',
-    type : 'list',
-    default : [],
-    props : {
-      required : true,
+    name: 'summaryVariables',
+    type: 'list',
+    default: [],
+    props: {
+      required: true,
 
       // // note : if set multi into true , user can select multiple summary variable and will return multiple dataset
       // // warning : but still need to config in card db record
       // multi : true,
 
-      items : [
-
+      items: [
         {
           label: 'chargeableWeight',
-          value: 'chargeableWeight'
+          value: 'chargeableWeight',
         },
         {
           label: 'grossWeight',
-          value: 'grossWeight'
+          value: 'grossWeight',
         },
         {
           label: 'cbm',
-          value: 'cbm'
+          value: 'cbm',
         },
         {
           label: 'totalShipment',
-          value: 'totalShipment'
-        }
-
-      ]
-
-    }
-
-  }
+          value: 'totalShipment',
+        },
+      ],
+    },
+  },
 ]
