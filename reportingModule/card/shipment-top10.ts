@@ -23,12 +23,22 @@ function prepareParams(): Function {
 
     const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const codeColumnName = xAxis === 'carrier' ?  `carrierCode` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyCode`)
-    const nameColumnName = xAxis === 'carrier' ?  `carrierName` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyName`)
+    const codeColumnName =
+      xAxis === 'carrier'
+        ? `carrierCode`
+        : xAxis === 'agentGroup'
+        ? `agentGroupName`
+        : `${xAxis}PartyCode`
+    const nameColumnName =
+      xAxis === 'carrier'
+        ? `carrierName`
+        : xAxis === 'agentGroup'
+        ? `agentGroupName`
+        : `${xAxis}PartyName`
     // ------------------------------
 
     params.sorting = new OrderBy(summaryColumnName, 'DESC')
-      // select
+    // select
     params.fields = [...new Set([codeColumnName, summaryColumnName, nameColumnName])]
     params.groupBy = [codeColumnName]
 
@@ -49,8 +59,18 @@ function createTop10Table() {
 
     const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const codeColumnName = xAxis === 'carrier' ?  `carrierCode` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyCode`)
-    const nameColumnName = xAxis === 'carrier' ?  `carrierName` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyName`)
+    const codeColumnName =
+      xAxis === 'carrier'
+        ? `carrierCode`
+        : xAxis === 'agentGroup'
+        ? `agentGroupName`
+        : `${xAxis}PartyCode`
+    const nameColumnName =
+      xAxis === 'carrier'
+        ? `carrierName`
+        : xAxis === 'agentGroup'
+        ? `agentGroupName`
+        : `${xAxis}PartyName`
     // ------------------------------
 
     return new CreateTableJQL({
@@ -87,8 +107,18 @@ function insertTop10Data() {
 
     const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const codeColumnName = xAxis === 'carrier' ?  `carrierCode` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyCode`)
-    const nameColumnName = xAxis === 'carrier' ?  `carrierName` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyName`)
+    const codeColumnName =
+      xAxis === 'carrier'
+        ? `carrierCode`
+        : xAxis === 'agentGroup'
+        ? `agentGroupName`
+        : `${xAxis}PartyCode`
+    const nameColumnName =
+      xAxis === 'carrier'
+        ? `carrierName`
+        : xAxis === 'agentGroup'
+        ? `agentGroupName`
+        : `${xAxis}PartyName`
 
     const showOther = subqueries.showOther || false
     const topX = subqueries.topX.value
@@ -152,8 +182,18 @@ function prepareRawTable() {
 
     const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const codeColumnName = xAxis === 'carrier' ?  `carrierCode` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyCode`)
-    const nameColumnName = xAxis === 'carrier' ?  `carrierName` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyName`)
+    const codeColumnName =
+      xAxis === 'carrier'
+        ? `carrierCode`
+        : xAxis === 'agentGroup'
+        ? `agentGroupName`
+        : `${xAxis}PartyCode`
+    const nameColumnName =
+      xAxis === 'carrier'
+        ? `carrierName`
+        : xAxis === 'agentGroup'
+        ? `agentGroupName`
+        : `${xAxis}PartyName`
     // ------------------------------
 
     return new CreateTableJQL({
@@ -201,20 +241,25 @@ function prepareRawTable() {
 
 function finalQuery() {
   const fn = function(require, session, params) {
-    const {
-      ResultColumn,
-      ColumnExpression,
-      Query,
-      Value
-    } = require('node-jql')
+    const { ResultColumn, ColumnExpression, Query, Value } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
     const xAxis = subqueries.xAxis.value // should be shipper/consignee/agent/controllingCustomer/carrier
 
     const summaryColumnName = subqueries.yAxis.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const codeColumnName = xAxis === 'carrier' ?  `carrierCode` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyCode`)
-    const nameColumnName = xAxis === 'carrier' ?  `carrierName` : (xAxis === 'agentGroup' ?  `agentGroupName` : `${xAxis}PartyName`)
+    const codeColumnName =
+      xAxis === 'carrier'
+        ? `carrierCode`
+        : xAxis === 'agentGroup'
+        ? `agentGroupName`
+        : `${xAxis}PartyCode`
+    const nameColumnName =
+      xAxis === 'carrier'
+        ? `carrierName`
+        : xAxis === 'agentGroup'
+        ? `agentGroupName`
+        : `${xAxis}PartyName`
     // ------------------------------
 
     return new Query({
@@ -258,17 +303,15 @@ export default [
 ]
 
 export const filters = [
-
   {
-    display : 'controllingCustomerExcludeRole',
-    name : 'controllingCustomerExcludeRole',
-    type : 'list',
-    default : ['AGT', 'CLR', 'FWD'],
-    disabled : true,
-    props : {
-      multi : true,
-      items : [
-
+    display: 'controllingCustomerExcludeRole',
+    name: 'controllingCustomerExcludeRole',
+    type: 'list',
+    default: ['AGT', 'CLR', 'FWD'],
+    disabled: true,
+    props: {
+      multi: true,
+      items: [
         {
           label: 'agent',
           value: 'AGT',
@@ -281,10 +324,8 @@ export const filters = [
           label: 'coloader',
           value: 'CLR',
         },
-
-      ]
-
-    }
+      ],
+    },
   },
   {
     display: 'yAxis',

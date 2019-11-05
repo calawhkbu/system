@@ -99,8 +99,8 @@ function prepareSubTable(type: string, name: string): CreateTableJQL {
         new ResultColumn('currency'),
         new ResultColumn(new ColumnExpression(name), 'value'),
       ],
-      $from: type
-    })
+      $from: type,
+    }),
   })
 }
 

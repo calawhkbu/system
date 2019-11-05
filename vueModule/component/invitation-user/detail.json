@@ -1,29 +1,35 @@
 {
   "class": "grid",
-  "components": [{
+  "components": [
+    {
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 grid align-item-center padding-8",
-        "components": [{
+        "components": [
+          {
             "is": "v-btn",
             "props": {
               "flat": true,
               "icon": true
             },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "arrow_back"
-              }
-            }],
-            "events": {
-              "click.stop": [{
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "/invitations"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
                 }
-              }]
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "router",
+                  "otherParams": {
+                    "func": "push",
+                    "path": "/invitations"
+                  }
+                }
+              ]
             }
           },
           {
@@ -45,36 +51,41 @@
               "icon": true,
               "flat": true
             },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "delete"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "delete"
+                }
               }
-            }],
+            ],
             "events": {
-              "click.stop": [{
-                "type": "axios",
-                "otherParams": {
-                  "axiosParams": {
-                    "url": "/api/invitation/delete/{{context.$store.state.widget.data.id}}",
-                    "method": "GET"
-                  }
-                },
-                "afterActions": [{
-                    "type": "router",
-                    "otherParams": {
-                      "func": "replace",
-                      "path": "/users"
+              "click.stop": [
+                {
+                  "type": "axios",
+                  "otherParams": {
+                    "axiosParams": {
+                      "url": "/api/invitation/delete/{{context.$store.state.widget.data.id}}",
+                      "method": "GET"
                     }
                   },
-                  {
-                    "type": "notify",
-                    "otherParams": {
-                      "i18nKey": "Delete Success"
+                  "afterActions": [
+                    {
+                      "type": "router",
+                      "otherParams": {
+                        "func": "replace",
+                        "path": "/users"
+                      }
+                    },
+                    {
+                      "type": "notify",
+                      "otherParams": {
+                        "i18nKey": "Delete Success"
+                      }
                     }
-                  }
-                ]
-              }]
+                  ]
+                }
+              ]
             }
           },
           {
@@ -83,28 +94,34 @@
               "icon": true,
               "flat": true
             },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "send"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "send"
+                }
               }
-            }],
+            ],
             "events": {
-              "click.stop": [{
-                "type": "axios",
-                "otherParams": {
-                  "axiosParams": {
-                    "url": "/api/invitation/resend/{{context.$store.state.widget.data.id}}",
-                    "method": "GET"
-                  }
-                },
-                "afterActions": [{
-                  "type": "notify",
+              "click.stop": [
+                {
+                  "type": "axios",
                   "otherParams": {
-                    "i18nKey": "Resend Success"
-                  }
-                }]
-              }]
+                    "axiosParams": {
+                      "url": "/api/invitation/resend/{{context.$store.state.widget.data.id}}",
+                      "method": "GET"
+                    }
+                  },
+                  "afterActions": [
+                    {
+                      "type": "notify",
+                      "otherParams": {
+                        "i18nKey": "Resend Success"
+                      }
+                    }
+                  ]
+                }
+              ]
             }
           },
           {
@@ -114,20 +131,24 @@
               "flat": true,
               "class": "primary white-text"
             },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "edit"
-              }
-            }],
-            "events": {
-              "click.stop": [{
-                "type": "dispatch",
-                "otherParams": {
-                  "name": "widget/changeMode",
-                  "mode": "edit"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "edit"
                 }
-              }]
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "edit"
+                  }
+                }
+              ]
             }
           }
         ]
@@ -137,25 +158,29 @@
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 padding-left-8 padding-right-8 width-100 grid",
-        "components": [{
-          "is": "AsyncComponent",
-          "props": {
-            "class": "margin-topbottom-4 xs-12",
-            "layoutName": "invitation-user/forms/general"
+        "components": [
+          {
+            "is": "AsyncComponent",
+            "props": {
+              "class": "margin-topbottom-4 xs-12",
+              "layoutName": "invitation-user/forms/general"
+            }
+          },
+          {
+            "is": "AsyncComponent",
+            "props": {
+              "class": "margin-topbottom-4 xs-12",
+              "layoutName": "invitation-user/forms/preference"
+            }
+          },
+          {
+            "is": "AsyncComponent",
+            "props": {
+              "class": "margin-topbottom-4 xs-12",
+              "layoutName": "invitation-user/forms/contacts"
+            }
           }
-        }, {
-          "is": "AsyncComponent",
-          "props": {
-            "class": "margin-topbottom-4 xs-12",
-            "layoutName": "invitation-user/forms/preference"
-          }
-        }, {
-          "is": "AsyncComponent",
-          "props": {
-            "class": "margin-topbottom-4 xs-12",
-            "layoutName": "invitation-user/forms/contacts"
-          }
-        }]
+        ]
       }
     }
   ]

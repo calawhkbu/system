@@ -1,90 +1,99 @@
 {
   "layout": "v-card",
-  "components": [{
-    "is": "WidgetForm",
-    "props": {
-      "fields": [{
-          "label": "config.locale",
-          "name": "person.configuration.locale",
-          "component": "AsyncSelect",
-          "class": "xs-12 md-4",
-          "props": {
-            "item-text": "value",
-            "item-value": "key",
-            "axiosParams": {
-              "url": "i18n/available-languages"
-            }
-          }
-        },
-        {
-          "label": "config.timezone",
-          "name": "person.configuration.timezone",
-          "component": "LocalAutoSuggest",
-          "class": "xs-12 md-4",
-          "props": {
-            "funcItems": "return context.$moment.tz.names()"
-          }
-        },
-        {
-          "label": "config.dow",
-          "name": "person.configuration.weekFormat.dow",
-          "component": "v-select",
-          "class": "xs-12 md-4",
-          "more": [{
-            "name": "person.configuration.weekFormat.doy",
-            "func": "return 7 + value - 1"
-          }],
-          "props": {
-            "items": [{
-                "text": "Sunday",
-                "value": 0
-              },
-              {
-                "text": "Monday",
-                "value": 1
-              },
-              {
-                "text": "Tuesday",
-                "value": 2
-              }, {
-                "text": "Wednesday",
-                "value": 3
-              }, {
-                "text": "Thursday",
-                "value": 4
-              }, {
-                "text": "Friday",
-                "value": 5
-              }, {
-                "text": "Saturday",
-                "value": 6
+  "components": [
+    {
+      "is": "WidgetForm",
+      "props": {
+        "fields": [
+          {
+            "label": "config.locale",
+            "name": "person.configuration.locale",
+            "component": "AsyncSelect",
+            "class": "xs-12 md-4",
+            "props": {
+              "item-text": "value",
+              "item-value": "key",
+              "axiosParams": {
+                "url": "i18n/available-languages"
               }
-            ]
+            }
+          },
+          {
+            "label": "config.timezone",
+            "name": "person.configuration.timezone",
+            "component": "LocalAutoSuggest",
+            "class": "xs-12 md-4",
+            "props": {
+              "funcItems": "return context.$moment.tz.names()"
+            }
+          },
+          {
+            "label": "config.dow",
+            "name": "person.configuration.weekFormat.dow",
+            "component": "v-select",
+            "class": "xs-12 md-4",
+            "more": [
+              {
+                "name": "person.configuration.weekFormat.doy",
+                "func": "return 7 + value - 1"
+              }
+            ],
+            "props": {
+              "items": [
+                {
+                  "text": "Sunday",
+                  "value": 0
+                },
+                {
+                  "text": "Monday",
+                  "value": 1
+                },
+                {
+                  "text": "Tuesday",
+                  "value": 2
+                },
+                {
+                  "text": "Wednesday",
+                  "value": 3
+                },
+                {
+                  "text": "Thursday",
+                  "value": 4
+                },
+                {
+                  "text": "Friday",
+                  "value": 5
+                },
+                {
+                  "text": "Saturday",
+                  "value": 6
+                }
+              ]
+            }
+          },
+          {
+            "label": "config.dateFormat",
+            "name": "person.configuration.dateFormat",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "hint": "config.dateFormatHint"
+          },
+          {
+            "label": "config.timeFormat",
+            "name": "person.configuration.timeFormat",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "hint": "config.timeFormatHint"
+          },
+          {
+            "label": "config.dateTimeFormat",
+            "name": "person.configuration.dateTimeFormat",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "hint": "config.dateTimeFormatHint"
           }
-        },
-        {
-          "label": "config.dateFormat",
-          "name": "person.configuration.dateFormat",
-          "component": "v-text-field",
-          "class": "xs-12 md-4",
-          "hint": "config.dateFormatHint"
-        },
-        {
-          "label": "config.timeFormat",
-          "name": "person.configuration.timeFormat",
-          "component": "v-text-field",
-          "class": "xs-12 md-4",
-          "hint": "config.timeFormatHint"
-        },
-        {
-          "label": "config.dateTimeFormat",
-          "name": "person.configuration.dateTimeFormat",
-          "component": "v-text-field",
-          "class": "xs-12 md-4",
-          "hint": "config.dateTimeFormatHint"
-        }
-
-      ]
+        ]
+      }
     }
-  }]
+  ]
 }

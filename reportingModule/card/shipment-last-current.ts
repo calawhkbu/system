@@ -1,10 +1,23 @@
-import { CreateFunctionJQL, Value, Query, InsertJQL, FromTable, CreateTableJQL, GroupBy, BinaryExpression, ColumnExpression, IsNullExpression, ResultColumn, FunctionExpression, OrderBy } from 'node-jql'
+import {
+  CreateFunctionJQL,
+  Value,
+  Query,
+  InsertJQL,
+  FromTable,
+  CreateTableJQL,
+  GroupBy,
+  BinaryExpression,
+  ColumnExpression,
+  IsNullExpression,
+  ResultColumn,
+  FunctionExpression,
+  OrderBy,
+} from 'node-jql'
 
 import { parseCode } from 'utils/function'
 
 function prepareParams(isCurrent_: boolean): Function {
   const fn = function(require, session, params) {
-
     const moment = require('moment')
     const { OrderBy } = require('node-jql')
     const { BadRequestException } = require('@nestjs/common')
@@ -18,7 +31,7 @@ function prepareParams(isCurrent_: boolean): Function {
     if (!subqueries.metric2) throw new BadRequestException('MISSING_metric2')
     if (!subqueries.lastCurrentUnit) throw new BadRequestException('lastCurrentUnit')
 
-        // most important part of this card
+    // most important part of this card
     // dynamically choose the fields and summary value
 
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
@@ -28,8 +41,18 @@ function prepareParams(isCurrent_: boolean): Function {
 
     const metricList = [metric1, metric2]
 
-    const codeColumnName = groupByEntity === 'carrier' ?  `carrierCode` : (groupByEntity === 'agentGroup' ?  `agentGroupName` : `${groupByEntity}PartyCode`)
-    const nameColumnName = groupByEntity === 'carrier' ?  `carrierName` : (groupByEntity === 'agentGroup' ?  `agentGroupName` : `${groupByEntity}PartyName`)
+    const codeColumnName =
+      groupByEntity === 'carrier'
+        ? `carrierCode`
+        : groupByEntity === 'agentGroup'
+        ? `agentGroupName`
+        : `${groupByEntity}PartyCode`
+    const nameColumnName =
+      groupByEntity === 'carrier'
+        ? `carrierName`
+        : groupByEntity === 'agentGroup'
+        ? `agentGroupName`
+        : `${groupByEntity}PartyName`
 
     const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     // ------------------------------
@@ -37,50 +60,54 @@ function prepareParams(isCurrent_: boolean): Function {
     let dateFrom: any
     let dateTo: any
 
-    if (lastCurrentUnit === 'year')
-    {
+    if (lastCurrentUnit === 'year') {
       let year = moment().year()
-      if (!isCurrent_)
-      {
+      if (!isCurrent_) {
         year = year - 1
       }
-      dateFrom = moment().year(year).startOf('year').format('YYYY-MM-DD')
-      dateTo = moment().year(year).endOf('year').format('YYYY-MM-DD')
-    }
-
-    else if (lastCurrentUnit === 'month')
-    {
-
+      dateFrom = moment()
+        .year(year)
+        .startOf('year')
+        .format('YYYY-MM-DD')
+      dateTo = moment()
+        .year(year)
+        .endOf('year')
+        .format('YYYY-MM-DD')
+    } else if (lastCurrentUnit === 'month') {
       const month = moment().month()
-      if (!isCurrent_)
-      {
-        dateFrom = moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD')
-        dateTo = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD')
+      if (!isCurrent_) {
+        dateFrom = moment()
+          .subtract(1, 'months')
+          .startOf('month')
+          .format('YYYY-MM-DD')
+        dateTo = moment()
+          .subtract(1, 'months')
+          .endOf('month')
+          .format('YYYY-MM-DD')
+      } else {
+        dateFrom = moment()
+          .month(month)
+          .startOf('month')
+          .format('YYYY-MM-DD')
+        dateTo = moment()
+          .month(month)
+          .endOf('month')
+          .format('YYYY-MM-DD')
       }
-
-      else
-      {
-        dateFrom = moment().month(month).startOf('month').format('YYYY-MM-DD')
-        dateTo = moment().month(month).endOf('month').format('YYYY-MM-DD')
-      }
-
-    }
-
-    else if (lastCurrentUnit === 'lastYearCurrentMonth')
-    {
-
+    } else if (lastCurrentUnit === 'lastYearCurrentMonth') {
       let year = moment().year()
-      if (!isCurrent_)
-      {
+      if (!isCurrent_) {
         year = year - 1
       }
-      dateFrom = moment().year(year).startOf('month').format('YYYY-MM-DD')
-      dateTo = moment().year(year).endOf('month').format('YYYY-MM-DD')
-
-    }
-
-    else
-    {
+      dateFrom = moment()
+        .year(year)
+        .startOf('month')
+        .format('YYYY-MM-DD')
+      dateTo = moment()
+        .year(year)
+        .endOf('month')
+        .format('YYYY-MM-DD')
+    } else {
       throw new BadRequestException('INVALID_lastCurrentUnit')
     }
 
@@ -122,8 +149,18 @@ function prepareRawTable(isCurrent_: boolean) {
 
     const metricList = [metric1, metric2]
 
-    const codeColumnName = groupByEntity === 'carrier' ?  `carrierCode` : (groupByEntity === 'agentGroup' ?  `agentGroupName` : `${groupByEntity}PartyCode`)
-    const nameColumnName = groupByEntity === 'carrier' ?  `carrierName` : (groupByEntity === 'agentGroup' ?  `agentGroupName` : `${groupByEntity}PartyName`)
+    const codeColumnName =
+      groupByEntity === 'carrier'
+        ? `carrierCode`
+        : groupByEntity === 'agentGroup'
+        ? `agentGroupName`
+        : `${groupByEntity}PartyCode`
+    const nameColumnName =
+      groupByEntity === 'carrier'
+        ? `carrierName`
+        : groupByEntity === 'agentGroup'
+        ? `agentGroupName`
+        : `${groupByEntity}PartyName`
 
     const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     // ------------------------------
@@ -136,16 +173,15 @@ function prepareRawTable(isCurrent_: boolean) {
           new ResultColumn(new ColumnExpression(codeColumnName), 'code'),
           new ResultColumn(new ColumnExpression(nameColumnName), 'name'),
 
-          ...metricList.map(metric => new ResultColumn(
-              new FunctionExpression('NUMBERIFY', new ColumnExpression(metric)),
-              metric
-            )
+          ...metricList.map(
+            metric =>
+              new ResultColumn(
+                new FunctionExpression('NUMBERIFY', new ColumnExpression(metric)),
+                metric
+              )
           ),
 
-          new ResultColumn(
-            new Value(isCurrent_),
-            'isCurrent'
-          )
+          new ResultColumn(new Value(isCurrent_), 'isCurrent'),
         ],
 
         $from: new FromTable(
@@ -161,12 +197,10 @@ function prepareRawTable(isCurrent_: boolean) {
                 name: nameColumnName,
                 type: 'string',
               },
-              ...metricList.map(metric => (
-                {
-                  name: metric,
-                  type: 'number'
-                })
-              )
+              ...metricList.map(metric => ({
+                name: metric,
+                type: 'number',
+              })),
             ],
           },
           'shipment'
@@ -180,18 +214,15 @@ function prepareRawTable(isCurrent_: boolean) {
 }
 
 function createUnionTable() {
-
   return new CreateTableJQL({
-
-    $temporary : true,
-    name : 'union',
-    $as : new Query({
-      $from  : 'current',
-      $union : new Query({
-        $from : 'last'
-      })
-    })
-
+    $temporary: true,
+    name: 'union',
+    $as: new Query({
+      $from: 'current',
+      $union: new Query({
+        $from: 'last',
+      }),
+    }),
   })
 }
 
@@ -206,7 +237,7 @@ function finalQuery() {
       ColumnExpression,
       IsNullExpression,
       Query,
-      Value
+      Value,
     } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
@@ -217,61 +248,67 @@ function finalQuery() {
 
     const metricList = [metric1, metric2]
 
-    const codeColumnName = groupByEntity === 'carrier' ?  `carrierCode` : (groupByEntity === 'agentGroup' ?  `agentGroupName` : `${groupByEntity}PartyCode`)
-    const nameColumnName = groupByEntity === 'carrier' ?  `carrierName` : (groupByEntity === 'agentGroup' ?  `agentGroupName` : `${groupByEntity}PartyName`)
+    const codeColumnName =
+      groupByEntity === 'carrier'
+        ? `carrierCode`
+        : groupByEntity === 'agentGroup'
+        ? `agentGroupName`
+        : `${groupByEntity}PartyCode`
+    const nameColumnName =
+      groupByEntity === 'carrier'
+        ? `carrierName`
+        : groupByEntity === 'agentGroup'
+        ? `agentGroupName`
+        : `${groupByEntity}PartyName`
 
     const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
     // ------------------------------
 
     const $select = [
-
       new ResultColumn(new ColumnExpression('union', 'name'), 'name'),
       new ResultColumn(new ColumnExpression('union', 'code'), 'code'),
 
       new ResultColumn(new Value(lastCurrentUnit), 'lastCurrentUnit'),
-      ...metricList.map((metric, index) => new ResultColumn(new Value(metric), `metric${index + 1}`))
-
+      ...metricList.map(
+        (metric, index) => new ResultColumn(new Value(metric), `metric${index + 1}`)
+      ),
     ]
 
     // a list for easy listing
     const isCurrentList = [true, false]
 
     metricList.map((metric, index) => {
-
       isCurrentList.map(isCurrent => {
-
         $select.push(
-
           new ResultColumn(
-
-            new FunctionExpression('IFNULL',
-              new FunctionExpression('FIND',
-              new BinaryExpression(new ColumnExpression('union', 'isCurrent'), '=', isCurrent),
-              new ColumnExpression('union', metric)
+            new FunctionExpression(
+              'IFNULL',
+              new FunctionExpression(
+                'FIND',
+                new BinaryExpression(new ColumnExpression('union', 'isCurrent'), '=', isCurrent),
+                new ColumnExpression('union', metric)
               ),
-            0), `${isCurrent ? 'current' : 'last'}_metric${index + 1}`)
-
+              0
+            ),
+            `${isCurrent ? 'current' : 'last'}_metric${index + 1}`
+          )
         )
-
       })
-
     })
 
     return new Query({
-
       $select,
 
-      $from  : 'union',
+      $from: 'union',
 
       // the ordering
 
       // $order : new OrderBy(new ColumnExpression('union', 'code'), 'ASC'),
-      $order : new OrderBy(new ColumnExpression('current_metric1'), 'DESC'),
+      $order: new OrderBy(new ColumnExpression('current_metric1'), 'DESC'),
 
-      $where : new IsNullExpression(new ColumnExpression('union', 'code'), true),
-      $group : new GroupBy('code')
-
+      $where: new IsNullExpression(new ColumnExpression('union', 'code'), true),
+      $group: new GroupBy('code'),
     })
   }
 
@@ -299,11 +336,10 @@ export default [
 
   createUnionTable(),
 
-  finalQuery()
+  finalQuery(),
 ]
 
 export const filters = [
-
   {
     display: 'lastCurrentUnit',
     name: 'lastCurrentUnit',
@@ -320,7 +356,7 @@ export const filters = [
         {
           label: 'lastYearCurrentMonth',
           value: 'lastYearCurrentMonth',
-        }
+        },
       ],
       required: true,
     },
@@ -330,7 +366,7 @@ export const filters = [
     display: 'summaryVariables',
     name: 'summaryVariables',
     props: {
-      multi : true,
+      multi: true,
       items: [
         {
           label: 'chargeableWeight',
@@ -442,5 +478,4 @@ export const filters = [
     },
     type: 'list',
   },
-
 ]

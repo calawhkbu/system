@@ -15,7 +15,8 @@
     "idKey": "id",
     "iconType": "",
     "titleKey": "statusName",
-    "subTitleKeys": [{
+    "subTitleKeys": [
+      {
         "key": "statusDate",
         "is": "Datetime"
       },
