@@ -44,7 +44,7 @@ function prepareShipmentParams(): Function {
       'portOfLoadingCode',
       'portOfDischargeCode',
       'departureDateEstimated',
-      'arrivalDateEstimated'
+      'arrivalDateEstimated',
     ]
 
     // console.log(subqueries)
@@ -75,7 +75,6 @@ function prepareShipmentParams(): Function {
       subqueries.workflowStatusList = {
         value: workflowStatusList,
       }
-
     }
 
     return params
@@ -95,7 +94,6 @@ function prepareShipmentable(name: string): CreateTableJQL {
           method: 'POST',
           url: 'api/shipment/query/shipment',
           columns: [
-
             { name: 'primaryKey', type: 'string' },
             { name: 'houseNo', type: 'string' },
             { name: 'jobDate', type: 'Date' },
