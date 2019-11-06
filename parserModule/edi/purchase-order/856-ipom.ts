@@ -351,9 +351,9 @@ export default class EdiParser856 extends BaseEdiParser {
         const pad = '        '
         const vesselCodeWithLength = `${vesselCode}${pad.substring(0, pad.length - vesselCode.toString().length)}`.substring(0, 8)
         V1.elementList.push(vesselCodeWithLength)
-        V1.elementList.push((_.get(element, 'vesselName') || ' ').substring(0, 28) )
+        V1.elementList.push((_.get(element, 'vesselName') || '').substring(0, 28) )
         V1.elementList.push('')// not used
-        V1.elementList.push((_.get(element, 'voyageFlightNumber') || ' ').substring(0, 10))
+        V1.elementList.push((_.get(element, 'voyageFlightNumber') || '').substring(0, 10))
         loopObjectList.push(V1)
       }
       else
