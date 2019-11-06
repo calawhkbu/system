@@ -6,7 +6,6 @@
       "props": {
         "fields": [
           {
-            "label": "InvitationPage.Contacts",
             "name": "person.contacts",
             "component": "TableField",
             "props": {

@@ -6,7 +6,6 @@ const query = new Query({
       method: 'POST',
       url: 'api/shipment/query/shipment',
       columns: [
-
         { name: 'primaryKey', type: 'string' },
         { name: 'site', type: 'string' },
         { name: 'houseNo', type: 'string' },

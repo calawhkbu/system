@@ -24,7 +24,8 @@ function prepareParams(): Function {
     // script
     const subqueries = params.subqueries || {}
     console.log(subqueries)
-    if (!subqueries.statusList || !subqueries.statusList.value) throw new BadRequestException('MISSING_STATUS_LIST')
+    if (!subqueries.statusList || !subqueries.statusList.value)
+      throw new BadRequestException('MISSING_STATUS_LIST')
 
     // subqueries.statusList = ['notInTrack', 'cargoReady', 'departure', 'inTransit', 'arrival']
     // subqueries.statusList = ['notInTrack', 'processing', 'cargoReady', 'departure', 'inTransit', 'arrival']
@@ -34,16 +35,13 @@ function prepareParams(): Function {
 }
 
 function prepareFinalQuery() {
-
   return function(require, session, params) {
-
     const subqueries = params.subqueries || {}
     const statusList = subqueries.statusList.value
 
     const $select = []
 
     statusList.map(status => {
-
       $select.push(
         new ResultColumn(
           new FunctionExpression(
@@ -58,7 +56,6 @@ function prepareFinalQuery() {
           `${status}_count`
         )
       )
-
     })
 
     return new Query({
@@ -87,12 +84,7 @@ function prepareFinalQuery() {
         'shipment'
       ),
     })
-
   }
 }
 
-export default [
-
-  [prepareParams(), prepareFinalQuery()]
-
-]
+export default [[prepareParams(), prepareFinalQuery()]]

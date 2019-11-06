@@ -1,5 +1,4 @@
 {
-
   "fillParent": true,
   "components": [
     {
@@ -7,58 +6,109 @@
       "props": {
         "reportingKey": "users",
         "jql": "users",
-        "back": "/admin",
+        "urlFormat": "/users{{ id|if('/', '') }}{{ id }}",
+        "noPartyGroupFilters": true,
+        "hasReports": false,
         "showFilterBar": true,
         "enableShare": false,
-        "enableSetting": false,
+        "enableSetting": true,
+        "back": true,
         "newReport": {
           "filters": {
-            "invitationStatus": {
-              "value": "used"
-            },
+            "invitationStatuses": ["sent", "accepted"],
             "isActive": true
           },
           "configurations": {
-            "i18nContext": "Reporting",
+            "i18nContext": "InvitationPage",
             "clickable": true,
             "draggable": true,
-            "sorting": {},
+            "sorting": {
+              "direction": "DESC",
+              "key": "person.updatedAt"
+            },
             "pagination": {
               "current": 0,
               "perPage": 20
             }
           }
         },
-        "clickFunction": {
-          "type": "router",
-          "otherParams": {
-            "func": "push",
-            "path": "/user/{{personId}}"
-          }
-        },
         "fieldOptions": [
           {
-            "key": "personId",
-            "expression": "person.id",
+            "key": "id",
+            "sql": "invitation.id",
             "hidden": true
+          },
+          {
+            "key": "updatedAt",
+            "sql": "person.updatedAt",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "status",
+            "i18nContext": "InvitationStatus",
+            "sql": "(CASE WHEN invitation.deletedAt is not null AND invitation.deletedBy is not null THEN 'disabled' else invitation.status END)"
+          },
+          {
+            "key": "userName",
+            "sql": "person.userName"
+          },
+          {
+            "key": "firstName",
+            "sql": "person.firstName"
+          },
+          {
+            "key": "lastName",
+            "sql": "person.lastName"
+          },
+          {
+            "key": "displayName",
+            "sql": "person.displayName"
           }
         ],
         "filters": [
           {
-            "name": "userName",
-            "type": "text"
-          },
+            "display": "status",
+            "name": "status",
+            "props": {
+              "i18nContext": "InvitationStatus",
+              "items": [
+                {
+                  "value": "sent",
+                  "label": "sent"
+                },
+                {
+                  "value": "accepted",
+                  "label": "accepted"
+                },
+                {
+                  "value": "disabled",
+                  "label": "disabled"
+                }
+              ]
+            },
+            "type": "list"
+          }
+        ],
+        "clickFunction": {
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "/user/{{id}}"
+          }
+        },
+        "icons": [
           {
-            "name": "firstName",
-            "type": "text"
-          },
-          {
-            "name": "lastName",
-            "type": "text"
-          },
-          {
-            "name": "displayName",
-            "type": "text"
+            "icon": "add",
+            "click": [
+              {
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "user/create"
+                }
+              }
+            ]
           }
         ]
       }

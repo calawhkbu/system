@@ -1,163 +1,48 @@
 {
+  "fillParent": true,
   "components": [
     {
       "is": "Widget",
       "props": {
-        "initUrl": "api/person/{{id}}",
-        "saveUrl": "api/person",
-        "primaryKey": "id",
-        "top": {
-          "assignment": [
-            {
-              "is": "v-btn",
-              "props": {
-                "flat": true,
-                "icon": true
-              },
-              "events": {
-                "click.stop": [
-                  {
-                    "type": "router",
-                    "otherParams": {
-                      "func": "push",
-                      "path": "/users"
-                    }
-                  }
-                ]
-              },
-              "slots": [
-                {
-                  "is": "Icon",
-                  "props": {
-                    "icon": "arrow_back"
-                  }
-                }
-              ]
+        "settingProp": {
+          "overrideType": "invitation-user",
+          "initAxiosParams": {
+            "url": "api/invitation/{{context.$route.params.params}}"
+          },
+          "defaultAxiosParams": {
+            "url": "default/invitation"
+          },
+          "validateAxiosParams": {
+            "method": "post",
+            "url": "api/invitation/validate/{{id}}"
+          },
+          "saveAxiosParams": {
+            "method": "post",
+            "url": "api/invitation"
+          },
+          "primaryKey": "id",
+          "modeFunction": "const modes = ['create', 'detail','edit'];\nconst selectedMode = isNaN(Number(mode)) ? mode : 'detail'\nif (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
+          "haveTermOnCreate": true,
+          "haveTermOnEdit": false,
+          "widgetComponentSetting": {
+            "quick-create": {
+              "readonly": false
             },
-            {
-              "is": "I18nText",
-              "props": {
-                "class": "headline",
-                "i18nKey": "UserPage.title",
-                "swig": true
-              }
+            "create": {
+              "readonly": false,
+              "stepper": 0,
+              "next": false,
+              "saveIcon": "create"
+            },
+            "detail": {
+              "readonly": true
+            },
+            "edit": {
+              "readonly": false,
+              "stepper": 0,
+              "saveIcon": "save"
             }
-          ],
-          "edit": "assignment"
-        },
-        "components": {
-          "assignment": [
-            {
-              "is": "div",
-              "props": {
-                "style": {
-                  "padding-right": "4px"
-                }
-              },
-              "slots": [
-                {
-                  "name": "default",
-                  "is": "DynamicComponent",
-                  "props": {
-                    "components": [
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "style": {
-                            "margin-bottom": "25px"
-                          },
-                          "layoutName": "invitationAndUser/personForm"
-                        }
-                      },
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "style": {
-                            "margin-bottom": "25px"
-                          },
-                          "layoutName": "invitationAndUser/contactForm"
-                        }
-                      },
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "style": {
-                            "margin-bottom": "25px"
-                          },
-                          "layoutName": "invitationAndUser/partyForm"
-                        }
-                      },
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "style": {
-                            "margin-bottom": "25px"
-                          },
-                          "layoutName": "invitationAndUser/roleForm"
-                        }
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          ],
-          "edit": [
-            {
-              "is": "WidgetPanel",
-              "props": {
-                "initUrl": "api/user/{{id}}",
-                "saveUrl": "api/user",
-                "primaryKey": "id"
-              },
-              "slots": [
-                {
-                  "name": "default",
-                  "is": "DynamicComponent",
-                  "props": {
-                    "components": [
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "style": {
-                            "margin-bottom": "25px"
-                          },
-                          "layoutName": "invitationAndUser/personForm"
-                        }
-                      },
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "style": {
-                            "margin-bottom": "25px"
-                          },
-                          "layoutName": "invitationAndUser/contactForm"
-                        }
-                      },
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "style": {
-                            "margin-bottom": "25px"
-                          },
-                          "layoutName": "invitationAndUser/partyForm"
-                        }
-                      },
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "style": {
-                            "margin-bottom": "25px"
-                          },
-                          "layoutName": "invitationAndUser/roleForm"
-                        }
-                      }
-                    ]
-                  }
-                }
-              ]
-            }
-          ]
+          }
         }
       }
     }

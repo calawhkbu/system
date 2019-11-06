@@ -135,6 +135,16 @@ const query = new QueryDef(
                 new FunctionExpression(
                   'group_concat',
                   new ParameterExpression({
+                    expression: new ColumnExpression('booking_container', 'containerNo'),
+                    suffix: 'SEPARATOR \', \'',
+                  })
+                ),
+                'containerNo'
+              ),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({
                     expression: new ColumnExpression('booking_container', 'soNo'),
                     suffix: 'SEPARATOR \', \'',
                   })
