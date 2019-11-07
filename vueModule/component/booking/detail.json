@@ -98,7 +98,7 @@
             "is": "DynamicComponent",
             "if": "return !context.$vuetify.breakpoint.mdAndUp",
             "props": {
-              "class": "xs-12 align-item-center padding-8",
+              "class": "xs-12 align-item-center padding-8 flex",
               "components": [{
                 "is": "I18nText",
                 "props": {
