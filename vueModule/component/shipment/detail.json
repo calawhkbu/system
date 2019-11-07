@@ -44,6 +44,28 @@
                   "is": "v-spacer"
                 },
                 {
+                  "is": "v-btn",
+                  "props": {
+                    "icon": true,
+                    "flat": true
+                  },
+                  "slots": [{
+                    "is": "Icon",
+                    "props": {
+                      "icon": "map"
+                    }
+                  }],
+                  "events": {
+                    "click.stop": [{
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "widget/changeMode",
+                        "mode": "map"
+                      }
+                    }]
+                  }
+                },
+                {
                   "is": "BookmarkButton"
                 }
               ]
@@ -203,11 +225,11 @@
       "slots": [{
           "is": "DynamicComponent",
           "props": {
-            "class": "grid margin-topbottom-8",
+            "class": "grid margin-bottom-8",
             "components": [{
                 "is": "div",
                 "props": {
-                  "class": "xs-12 md-6 padding-right-4 margin-topbottom-8"
+                  "class": "xs-12 md-6 padding-right-4"
                 },
                 "slots": [{
                   "is": "DynamicComponent",
@@ -251,7 +273,7 @@
               {
                 "is": "div",
                 "props": {
-                  "class": "xs-12 md-6 padding-left-4 margin-topbottom-8"
+                  "class": "xs-12 md-6 padding-left-4"
                 },
                 "slots": [{
                   "is": "DynamicComponent",
@@ -390,7 +412,7 @@
       "is": "div",
       "if": "return context.$vuetify.breakpoint.mdAndUp",
       "props": {
-        "class": "xs-12 md-4 padding-8"
+        "class": "xs-12 md-4 padding-leftright-8"
       },
       "slots": [{
           "is": "AsyncComponent",
