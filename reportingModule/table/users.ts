@@ -28,8 +28,21 @@ const query = new Query({
           type: 'string',
         },
         {
-          name: 'status',
+          name: 'invitationStatus',
           type: 'string',
+        },
+
+        {
+          name: 'can_resend',
+          type: 'number',
+        },
+        {
+          name: 'can_delete',
+          type: 'number',
+        },
+        {
+          name: 'can_restore',
+          type: 'number',
         },
         {
           name: 'updatedAt',

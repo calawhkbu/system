@@ -40,7 +40,8 @@
             "cityCode": "{{cityCode}}",
             "countryCode": "{{countryCode}}",
             "zip": "{{zip}}",
-            "shortName": "{{shortName}}"
+            "shortName": "{{shortName}}",
+            "fixValue": "{{fixValue}}"
           }
         },
         "fixedKeys": ["shipper", "consignee", "forwarder", "agent", "notifyParty"],
@@ -339,6 +340,7 @@
             "class": "xs-12 md-4",
             "readonlyClass": "hidden"
           },
+
           {
             "label": "Widget.contactPhone",
             "name": "{{flex}}{{key}}PartyContactPhone",
@@ -604,26 +606,86 @@
             "label": "Widget.contactName",
             "name": "{{flex}}{{key}}PartyContactName",
             "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "xs-12 md-4"
+            "class": "xs-6 md-6",
+            "readonlyClass": "xs-6 md-6"
           },
           {
             "label": "Widget.contactEmail",
             "name": "{{flex}}{{key}}PartyContactEmail",
             "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "xs-12 md-4"
+            "class": "xs-9 md-9",
+            "readonlyClass": "xs-9 md-9"
           },
+
+
+          
+          {
+            "label": "Widget.inviteEmail",
+            "name": "{{flex}}{{key}}PartyContactEmail",
+            "component": "button-field",
+            "class": "xs-3 md-3",
+            "_readonlyClass": "xs-3 md-3",
+            "slots" : [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "email"
+                }
+              }
+            ],
+            "props": {
+
+              "flat": true,
+              "icon": true,
+              "events": {
+                "click.stop" : 
+                [
+                  {
+                    "type": "axios",
+                    "otherParams": {
+                      "axiosParams" : {
+                        "url" : "/api/invitation/invite/invite",
+                        "method" : "POST",
+                        "data" : {
+                          "entityId" : "{{context.$store.state.widget.id}}",
+                          "tableName" : "booking",
+                          "partyId" : ["{{ '`${args[0]}${args[1]}PartyId`'  | calculate(flex,key) | getFrom(context.$store.state.widget.data)}}"],
+                          "partyType" : ["{{key}}"],
+                          "person" : {
+                            "userName" : "{{ context.fixValue }}"
+                          }
+                        }
+                      }
+                    },
+  
+                    "afterActions" : [
+                      {
+                        "type": "notify",
+                        "otherParams": {
+                          "notification": "invite success"
+                        }
+                      }
+                    ]
+                  }
+                ]
+
+
+              }
+              
+
+            }
+          },
+
           {
             "label": "Widget.contactPhone",
             "name": "{{flex}}{{key}}PartyContactPhone",
             "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "readonlyClass": "xs-12 md-4"
+            "class": "xs-12 md-12",
+            "readonlyClass": "xs-12 md-12"
           },
           {
             "name": "{{flex}}{{key}}PartyContacts",
-            "component": "TableField",
+            "component": "GridField",
             "class": "xs-12",
             "readonlyClass": "xs-12",
             "props": {
@@ -633,22 +695,80 @@
                   "label": "Widget.contactXName",
                   "name": "Name",
                   "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "_readonlyClass": "xs-12 md-4"
+                  "class": "xs-12 md-12",
+                  "_readonlyClass": "xs-12 md-12"
                 },
+
                 {
                   "label": "Widget.contactXEmail",
                   "name": "Email",
                   "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "_readonlyClass": "xs-12 md-4"
+                  "class": "xs-9 md-9",
+                  "_readonlyClass": "xs-9 md-9"
+                },
+
+                {
+                  "label": "Widget.inviteEmail",
+                  "name": "Email",
+                  "component": "button-field",
+                  "class": "xs-3 md-3",
+                  "_readonlyClass": "xs-3 md-3",
+                  "slots" : [
+                    {
+                      "is": "Icon",
+                      "props": {
+                        "icon": "email"
+                      }
+                    }
+                  ],
+                  "props": {
+
+                    "flat": true,
+                    "icon": true,
+                    "events": {
+                      "click.stop" : 
+                      [
+                        {
+                          "type": "axios",
+                          "otherParams": {
+                            "axiosParams" : {
+                              "url" : "/api/invitation/invite/invite",
+                              "method" : "POST",
+                              "data" : {
+                                "entityId" : "{{context.$store.state.widget.id}}",
+                                "tableName" : "booking",
+                                "partyId" : ["{{ '`${args[0]}${args[1]}PartyId`'  | calculate(flex,key) | getFrom(context.$store.state.widget.data)}}"],
+                                "partyType" : ["{{key}}"],
+                                "person" : {
+                                  "userName" : "{{ context.fixValue }}"
+                                }
+                              }
+                            }
+                          },
+        
+                          "afterActions" : [
+                            {
+                              "type": "notify",
+                              "otherParams": {
+                                "notification": "invite success"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+
+
+                    }
+                    
+
+                  }
                 },
                 {
                   "label": "Widget.contactXPhone",
                   "name": "Phone",
                   "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "_readonlyClass": "xs-12 md-4"
+                  "class": "xs-12 md-12",
+                  "_readonlyClass": "xs-12 md-12"
                 }
               ]
             }
