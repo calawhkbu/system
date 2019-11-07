@@ -4,6 +4,7 @@
     {
       "is": "TableTool",
       "props": {
+        "title": "Users",
         "reportingKey": "users",
         "jql": "users",
         "urlFormat": "/users{{ id|if('/', '') }}{{ id }}",
@@ -15,8 +16,9 @@
         "back": true,
         "newReport": {
           "filters": {
-            "invitationStatuses": ["sent", "accepted"],
-            "isActive": true
+            "status": {
+              "value": ["sent", "accepted"]
+            }
           },
           "configurations": {
             "i18nContext": "InvitationPage",
@@ -85,7 +87,8 @@
                   "value": "disabled",
                   "label": "disabled"
                 }
-              ]
+              ],
+              "multi": true
             },
             "type": "list"
           }
