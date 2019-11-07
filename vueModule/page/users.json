@@ -7,11 +7,12 @@
         "reportingKey": "users",
         "jql": "users",
         "urlFormat": "/users{{ id|if('/', '') }}{{ id }}",
-        "hasReports": true,
+        "noPartyGroupFilters": true,
+        "hasReports": false,
         "showFilterBar": true,
         "enableShare": false,
         "enableSetting": true,
-        "noPartyGroupFilters" : true,
+        "back": true,
         "newReport": {
           "filters": {
             "invitationStatus" : {
