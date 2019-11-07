@@ -143,13 +143,48 @@ export default class EdiParser997 extends BaseEdiParser {
             '40HC': 4500,
             '45HC': 9500,
           }
+          const countryCodeMapper = {
+            GITM: 'portOfLoading',
+            LOBD: 'portOfLoading',
+            DLPT: 'portOfLoading',
+            BDAR: 'portOfDischarge',
+            DSCH: 'portOfDischarge',
+            PSCG: 'portOfDischarge',
+            DECL: 'portOfDischarge',
+            PASS: 'portOfDischarge',
+            TMPS: 'portOfDischarge',
+            STCS: 'placeOfDelivery',
+            RCVE: 'placeOfDelivery',
+            BKCF: 'placeOfReceipt',
+            EPRL: 'placeOfReceipt',
+            STSP: 'placeOfReceipt',
+          }
           const B4: JSONObject = {
             segment: 'B4',
             elementList: [],
           }
+          const trackingRefInf = _.get(element, 'trackingReference') || {}
+          const flexDataInf = _.get(trackingRefInf, 'flexData') || {}
+          const bookingInf = _.get(flexDataInf, 'data')
+          const statusCode = _.get(currentStatus, 'statusCode')
+          let country = _.get(bookingInf, countryCodeMapper[statusCode])
+          if (!country)
+          {
+            switch (countryCodeMapper[statusCode])
+            {
+              case 'placeOfDelivery': {
+              country = _.get(bookingInf, 'portOfDischarge')
+              break
+              }
+              case  'placeOfReceipt': {
+              country = _.get(bookingInf, 'portOfLoading')
+              break
+              }
+            }
+          }
           B4.elementList.push('', '') // not used
           B4.elementList.push(
-            statusCodeMapper[_.get(currentStatus, 'statusCode')],
+            statusCodeMapper[statusCode],
             moment(_.get(currentStatus, 'statusDate')).format('YYYYMMDD'),
             moment(_.get(currentStatus, 'statusDate')).format('HHmm')
           )
@@ -161,14 +196,12 @@ export default class EdiParser997 extends BaseEdiParser {
           B4.elementList.push(
             emptyLoadMapper[_.get(currentStatus, 'statusCode')] || '',
             isoCodeMapper[_.get(container, 'container')] || ' ',
-            _.get(currentStatus, 'statusPlace').substr(0, 30)
           )
-          // B4.elementList.push('UN')
-          // B4.elementList.push('') // No Equipment Check Digit
+          B4.elementList.push((country || '').substring(0, 30))
+          B4.elementList.push('UN')
+          B4.elementList.push(' ') // No Equipment Check Digit
           data.push(B4)
-          const trackingRefInf = _.get(element, 'trackingReference') || {}
-          const flexDataInf = _.get(trackingRefInf, 'flexData') || {}
-          const bookingInf = _.get(flexDataInf, 'data')
+
           if (bookingInf) {
             if (_.get(bookingInf, 'bookingNo')) {
               const N9: JSONObject = {
@@ -315,11 +348,11 @@ export default class EdiParser997 extends BaseEdiParser {
         {
           R4.elementList.push(functionalCodeMapper[statusCode])
         }
-        R4.elementList.push('UN', _.get(historyList[i], 'statusPlace').substr(0, 30))
+        R4.elementList.push('UN', (country || '').substring(0, 30))
         R4.elementList.push('') // not used
         R4.elementList.push(countryCode)
         R4.elementList.push('', '') // not used
-        R4.elementList.push('  ') // State or Province Code
+        R4.elementList.push('') // State or Province Code
         loopObjectList.push(R4)
         if (_.get(historyList[i], 'isEstimated') === false && _.get(historyList[i], 'statusDate')) {
           const DTM: JSONObject = {

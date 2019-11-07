@@ -7,6 +7,10 @@ import {
   RegexpExpression,
   IsNullExpression,
   InExpression,
+  ResultColumn,
+  Value,
+  FunctionExpression,
+  AndExpressions,
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -61,20 +65,99 @@ const query = new QueryDef(
   })
 )
 
+query.register('can_resend', {
+  expression: new FunctionExpression('IF',
+
+  new InExpression(
+    new FunctionExpression('IF',
+      new AndExpressions([
+        new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
+      ]),
+
+      new ColumnExpression('invitation', 'status'),
+      new Value('disabled')
+    ),
+    false,
+    ['sent']
+  ), 1, 0),
+
+  $as: 'can_resend'
+})
+
+query.register('can_delete', {
+  expression: new FunctionExpression('IF',
+
+  new InExpression(
+    new FunctionExpression('IF',
+      new AndExpressions([
+        new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
+      ]),
+
+      new ColumnExpression('invitation', 'status'),
+      new Value('disabled')
+    ),
+    false,
+    ['sent', 'accepted']
+  ), 1, 0),
+
+  $as: 'can_delete'
+})
+
+query.register('can_restore', {
+  expression: new FunctionExpression('IF',
+
+  new InExpression(
+    new FunctionExpression('IF',
+      new AndExpressions([
+        new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
+      ]),
+
+      new ColumnExpression('invitation', 'status'),
+      new Value('disabled')
+    ),
+    false,
+    ['disabled']
+  ), 1, 0),
+  $as: 'can_restore'
+})
+
+query.register('invitationStatus', {
+  expression: new FunctionExpression(
+    new FunctionExpression('IF',
+      new AndExpressions([
+        new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
+      ]),
+
+      new ColumnExpression('invitation', 'status'),
+      new Value('disabled')
+    )
+
+  ),
+  $as: 'invitationStatus'
+})
+
+// ---------------------------------
+
 query
   .register(
     'invitationStatus',
     new Query({
-      $where: new BinaryExpression(new ColumnExpression('invitation', 'status'), '='),
-    })
-  )
-  .register('value', 0)
+      $where: new InExpression(
+        new FunctionExpression(
+          new FunctionExpression('IF',
+            new AndExpressions([
+              new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
+              new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
+            ]),
 
-query
-  .register(
-    'invitationStatuses',
-    new Query({
-      $where: new InExpression(new ColumnExpression('invitation', 'status'), false),
+            new ColumnExpression('invitation', 'status'),
+            new Value('disabled')
+          ))
+        , false),
     })
   )
   .register('value', 0)

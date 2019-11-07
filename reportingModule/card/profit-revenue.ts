@@ -29,6 +29,9 @@ function prepareParams(): Function {
         .endOf('year')
         .format('YYYY-MM-DD')
     }
+    if (subqueries.division) {
+      subqueries.division.value = [subqueries.division.value]
+    }
     return params
   }
 }
@@ -135,4 +138,14 @@ export default [
     $from: 'grossProfit',
     $union: new Query('revenue'),
   }),
+]
+
+export const filters = [
+  {
+    name: 'division',
+    type: 'list',
+    props: {
+      multi: false
+    }
+  }
 ]
