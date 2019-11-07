@@ -6,15 +6,14 @@
       "props": {
         "fields": [
           {
+
             "label": "InvitationPage.email",
             "name": "person.userName",
             "component": "v-text-field",
             "class": "xs-6",
-            "props": {
-              "disabled": false,
-              "readonly": false
-            }
+            "canEdit" : "return mode === 'create' "
           },
+
           {
             "label": "InvitationPage.erpCode",
             "name": "person.thirdPartyCode.erp",
