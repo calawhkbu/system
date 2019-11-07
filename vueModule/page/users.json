@@ -15,8 +15,9 @@
         "back": true,
         "newReport": {
           "filters": {
-            "invitationStatuses": ["sent", "accepted"],
-            "isActive": true
+            "invitationStatus" : {
+              "value" :  ["sent","accepted"]
+            }
           },
           "configurations": {
             "i18nContext": "InvitationPage",
@@ -44,11 +45,127 @@
             "width": 150,
             "format": "YYYY-MM-DD"
           },
+
           {
-            "key": "status",
-            "i18nContext": "InvitationStatus",
-            "sql": "(CASE WHEN invitation.deletedAt is not null AND invitation.deletedBy is not null THEN 'disabled' else invitation.status END)"
+            "label" : "status",
+            "key": "invitationStatus",
+            "width": 150
           },
+
+          {
+            "label" : "",
+            "key": "can_resend",
+            "sortable" : false,
+            "clickFunction" : {
+              "type": "axios",
+              "otherParams": {
+                "axiosParams": {
+                  "url": "/api/invitation/resend/{{row.id}}",
+                  "method": "GET"
+                }
+              },
+              "afterActions": [
+                {
+                  "type": "notify",
+                  "otherParams": {
+                    "i18nKey": "Resend Success"
+                  }
+                }
+              ]
+            },
+
+            "tdComponent" : {
+              "props" : {
+                "slotComponents" :[
+                  {
+                    "is" : "icon",
+                    "props" : {
+                      "icon" : "email"
+                    }
+                  } 
+                ]
+
+              }
+            },
+            "width": 50
+          },
+
+          {
+            "label" : "",
+            "key": "can_delete",
+            "sortable" : false,
+            "clickFunction" : {
+              "type": "axios",
+              "otherParams": {
+                "axiosParams": {
+                  "url": "/api/invitation/delete/{{row.id}}",
+                  "method": "DELETE"
+                }
+              },
+              "afterActions": [
+                {
+                  "type": "notify",
+                  "otherParams": {
+                    "i18nKey": "Delete Success"
+                  }
+                }
+              ]
+            },
+
+            "tdComponent" : {
+              "props" : {
+                "slotComponents" :[
+                  {
+                    "is" : "icon",
+                    "props" : {
+                      "icon" : "delete"
+                    }
+                  } 
+                ]
+
+              }
+            },
+            "width": 50
+          },
+
+          {
+            "label" : "",
+            "key": "can_restore",
+            "sortable" : false,
+            "clickFunction" : {
+              "type": "axios",
+              "otherParams": {
+                "axiosParams": {
+                  "url": "/api/invitation/restore/{{row.id}}",
+                  "method": "GET"
+                }
+              },
+              "afterActions": [
+                {
+                  "type": "notify",
+                  "otherParams": {
+                    "i18nKey": "Restore Success"
+                  }
+                }
+              ]
+            },
+
+            "tdComponent" : {
+              "props" : {
+                "slotComponents" :[
+                  {
+                    "is" : "icon",
+                    "props" : {
+                      "icon" : "refresh"
+                    }
+                  } 
+                ]
+
+              }
+            },
+            "width": 50
+          },
+
           {
             "key": "userName",
             "sql": "person.userName"
@@ -69,8 +186,9 @@
         "filters": [
           {
             "display": "status",
-            "name": "status",
+            "name": "invitationStatus",
             "props": {
+              "multi" : true,
               "i18nContext": "InvitationStatus",
               "items": [
                 {

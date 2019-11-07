@@ -130,17 +130,14 @@ export default {
                 ['createdAt', 'createdBy', 'updatedAt', 'updatedBy']
               )
 
-              // console.log('difference')
-              // console.log(difference)
-
               return difference ? true : false
             },
           },
         ],
       },
       afterEvent: [
-        // warning: not using !!!!!!!
-        // // update personId / create Invitation
+        // warning: not using !!!!!!! auto invitation is now abandoned
+        // update personId / create Invitation
         // {
         //   condition : true,
         //   handlerName : 'entity_create_invitation',

@@ -11,8 +11,8 @@
             "component": "v-text-field",
             "class": "xs-6",
             "props": {
-              "disabled": true,
-              "readonly": true
+              "disabled": false,
+              "readonly": false
             }
           },
           {
