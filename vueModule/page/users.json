@@ -4,6 +4,7 @@
     {
       "is": "TableTool",
       "props": {
+        "title": "Users",
         "reportingKey": "users",
         "jql": "users",
         "urlFormat": "/users{{ id|if('/', '') }}{{ id }}",
