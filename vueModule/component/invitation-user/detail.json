@@ -26,7 +26,7 @@
                   "type": "router",
                   "otherParams": {
                     "func": "push",
-                    "path": "/invitations"
+                    "path": "/users"
                   }
                 }
               ]
@@ -66,7 +66,7 @@
                   "otherParams": {
                     "axiosParams": {
                       "url": "/api/invitation/delete/{{context.$store.state.widget.data.id}}",
-                      "method": "GET"
+                      "method": "DELETE"
                     }
                   },
                   "afterActions": [
