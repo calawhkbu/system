@@ -152,7 +152,7 @@ export default class EdiParser997 extends BaseEdiParser {
     IEA.elementList.push('1', _.get(entityJSON, 'interchangeControlNumber'))
     data.push(IEA)
     _.set(returnJSON, 'data', data)
-    return returnJSON
+    // return returnJSON
     const result = await super.export(returnJSON)
     const resultList: any[] = []
     resultList.push(result)
@@ -261,6 +261,8 @@ export default class EdiParser997 extends BaseEdiParser {
             }
             if (outboundSuccess === true) {
               AK5.elementList.push('E')
+            }else {
+              AK5.elementList.push('R')
             }
             AK5.elementList.push(
               transactionSetSyntaxErrorMapper[transactionSetSyntaxError.errorType]
