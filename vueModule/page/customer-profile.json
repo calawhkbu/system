@@ -1,0 +1,50 @@
+{
+  "fillParent": true,
+  "components": [
+    {
+      "is": "Widget",
+      "props": {
+        "settingProp": {
+          "overrideType": "party-group",
+          "initAxiosParams": {
+            "url": "api/partyGroup/{{context.$route.params.params}}"
+          },
+          "defaultAxiosParams": {
+            "url": "default/partyGroup"
+          },
+          "validateAxiosParams": {
+            "method": "POST",
+            "url": "api/partyGroup/validate/{{id}}"
+          },
+          "saveAxiosParams": {
+            "method": "POST",
+            "url": "api/partyGroup/{{context.$route.params.params}}"
+          },
+          "primaryKey": "id",
+          "modeFunction": "const modes = ['create', 'detail','edit'];\nconst selectedMode = isNaN(Number(mode)) && mode !== 'default'  ? mode : 'detail'\nif (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
+          "haveTermOnCreate": false,
+          "haveTermOnEdit": false,
+          "widgetComponentSetting": {
+            "quick-create": {
+              "readonly": false
+            },
+            "create": {
+              "readonly": false,
+              "stepper": 0,
+              "next": false,
+              "saveIcon": "create"
+            },
+            "detail": {
+              "readonly": true
+            },
+            "edit": {
+              "readonly": false,
+              "stepper": 0,
+              "saveIcon": "save"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

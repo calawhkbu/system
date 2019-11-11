@@ -231,11 +231,11 @@ query
           ),
           false
         ),
-        // new RegexpExpression(new ColumnExpression('party', 'erpCode'), false)
       ]),
     })
   )
   .register('value', 0)
-  .register('value', 1) // .register('value', 2)
+  .register('value', 1)
+  .register('value', 2)
 
 export default query

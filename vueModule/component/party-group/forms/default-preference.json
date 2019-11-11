@@ -45,6 +45,21 @@
             "name": "configuration.defaultDateTimeFormat",
             "component": "v-text-field",
             "class": "xs-12"
+          },
+          {
+            "label": "config.weekFormat.dow",
+            "name": "configuration.defaultWeekFormat.dow",
+            "component": "NumberField",
+            "props" : {
+              "noZero" : false
+            },
+            "class": "xs-6 md-6"
+          },
+          {
+            "label": "config.weekFormat.doy",
+            "name": "configuration.defaultWeekFormat.doy",
+            "component": "NumberField",
+            "class": "xs-6 md-6"
           }
         ]
       }
