@@ -24,10 +24,10 @@
             "events": {
               "click.stop": [
                 {
-                  "type": "dispatch",
+                  "type": "router",
                   "otherParams": {
-                    "name": "widget/changeMode",
-                    "mode": "detail"
+                    "func": "push",
+                    "path": "/admin"
                   }
                 }
               ]
@@ -47,10 +47,30 @@
             "is": "v-spacer"
           },
           {
-            "is": "WidgetSave",
+            "is": "v-btn",
             "props": {
-              "fab": true,
-              "color": "primary"
+              "icon": true,
+              "flat": true,
+              "class": "primary white-text"
+            },
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "edit"
+                }
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "edit"
+                  }
+                }
+              ]
             }
           }
         ]
