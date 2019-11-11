@@ -5,7 +5,7 @@
       "mainKey": "Party",
       "formProps": {
         "z": {
-          "class": "xs-12 md-6 padding-4"
+          "class": "xs-12 md-6 padding-leftright-4"
         }
       },
       "labelProps": {
