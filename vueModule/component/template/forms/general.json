@@ -1,0 +1,34 @@
+{
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [
+
+        {
+          "label": "TemplatePage.templateName",
+          "name": "houseNo",
+          "component": "v-text-field",
+          "class": "xs-12 md-3"
+        },
+        {
+          "label": "TemplatePage.extension",
+          "name": "masterNo",
+          "component": "v-text-field",
+          "class": "xs-12 md-3"
+        },
+        {
+          "label": "TemplatePage.format",
+          "name": "houseNo",
+          "component": "v-text-field",
+          "class": "xs-12 md-3"
+        }, 
+        {
+          "label": "TemplatePage.base64String",
+          "name": "houseNo",
+          "component": "v-text-field",
+          "class": "xs-12 md-3"
+        }
+      ]
+    }
+  }]
+}
