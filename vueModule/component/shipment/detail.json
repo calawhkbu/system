@@ -7,7 +7,7 @@
         "components": [{
           "is": "DynamicComponent",
           "props": {
-            "class": "xs-12 align-item-center padding-8 flex",
+            "class": "xs-12 align-item-center flex",
             "components": [{
                 "is": "v-btn",
                 "props": {
@@ -34,7 +34,7 @@
                 "is": "I18nText",
                 "if": "return context.$vuetify.breakpoint.mdAndUp",
                 "props": {
-                  "class": "headline hidden-xs-only hidden-sm-only",
+                  "class": "title hidden-xs-only hidden-sm-only",
                   "i18nKey": "ShipmentPage.title",
                   "i18nOptions": {
                     "title": "{{context.$store.state.widget.data.houseNo}}"
@@ -45,7 +45,7 @@
                 "is": "I18nText",
                 "if": "return !context.$vuetify.breakpoint.mdAndUp",
                 "props": {
-                  "class": "body-2 hidden-md-and-up",
+                  "class": "subheading hidden-md-and-up",
                   "i18nKey": "ShipmentPage.title",
                   "i18nOptions": {
                     "title": "{{context.$store.state.widget.data.houseNo}}"
@@ -100,21 +100,12 @@
             }
           }],
           "tabItemComponents": [{
-            "is": "v-card",
+            "is": "AsyncComponent",
             "props": {
-              "class": "padding-bottom-2"
-            },
-            "slots": [{
-              "is": "AsyncComponent",
-              "props": {
-                "layoutName": "plugins/tracking0"
-              }
-            }]
+              "layoutName": "plugins/tracking0"
+            }
           }, {
             "is": "v-card",
-            "props": {
-              "class": "padding-bottom-2"
-            },
             "slots": [{
               "is": "AsyncComponent",
               "props": {
@@ -123,9 +114,6 @@
             }]
           }, {
             "is": "v-card",
-            "props": {
-              "class": "padding-bottom-2"
-            },
             "slots": [{
               "is": "AsyncComponent",
               "props": {

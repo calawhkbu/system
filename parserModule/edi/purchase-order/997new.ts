@@ -9,9 +9,254 @@ const _ = require('lodash')
 
 export const formatJson = {
   removeCharacter: [],
-  segmentSeperator: ['~\r\n'],
-  // elementSeperator: ['*'],
-  elementSeperator: [''],
+  segmentSeperator: ['\r\n'],
+  elementSeperator: ['*'],
+  // elementSeperator: [''],
+  formatType: {
+    resultType: 'oneContent',
+    header: [
+      {
+        name: 'ISA',
+        type: 'header',
+        elementList: [
+          {
+            element: '00000',
+            type: 'hardcode',
+            max: 2,
+            min: 2
+          },
+          {
+            element: '          ',
+            type: 'hardcode',
+            max: 10,
+            min: 10
+          },
+          {
+            element: '00',
+            type: 'hardcode'
+          },
+        ],
+      },
+      {
+        name: 'GS',
+        type: 'header',
+        elementList: [
+          {
+            element: 'now',
+            type: 'datetime',
+            format: 'yyyyMMdd'
+          }
+        ]
+      },
+    ],
+    content: {
+      contentLocation: '',
+      contentInfo: [
+        {
+          name: 'ST',
+          type: 'content',
+          elementList: [
+            {
+              element: '315',
+              type: 'hardcode',
+            },
+            {
+              element: 'content',
+              type: 'sequence',
+              max: 4,
+              min: 4,
+              padDirection: 'L',
+              padChar: '0',
+            }
+          ]
+        },
+        {
+          name: 'AK1',
+          type: 'content',
+          elementList: [
+            {
+              element: 'PO',
+              type: 'hardcode',
+            },
+            {
+              element: 'json',
+              type: 'total',
+            }
+          ],
+        },
+        {
+          name: 'AK2',
+          type: 'content',
+          jsonLocation: `errors`,
+          isLoop: true,
+          requirement: {
+            reorder: true,
+            orderBy: 'mainHeadIndex',
+            groupBy2dList: true,
+            groupBy: 'mainHeadIndex',
+            needAdd: true,
+            otherRequireField: ['ediType'],
+            isFilter: true,
+            filterInfoList: [
+              {
+                filterBy: 'mainHeadIndex',
+                sign: '>',
+                value: 0,
+              }
+            ],
+            specialRequirement: false,
+            function: {
+              param: [
+                {
+                  type: 'fromJson',
+                  name: 'errors'
+                }
+              ],
+              functionName: 'dummyFunction',
+              code: 'public static JToken dummyFunction(JToken json, string location){var loopList=json[$"{location}"] as JArray; loopList=HelperFunction.filter(loopList, (Func<JToken,bool>) (x => x.Value<int>("mainHeadIndex")!=0 )); loopList=HelperFunction.orderBy(loopList,(Func<JToken,dynamic>) (x => x.Value<int>("mainHeadIndex"))); var seperate = new JArray(); return seperate;}'
+            },
+          },
+          elementList: [
+            {
+              element: 'extraData1',
+              type: 'variable',
+            },
+            {
+              element: 'groupElement.0.mainHeadIndex',
+              type: 'variable'
+            },
+          ],
+          subSegmentList: [
+            {
+              name: 'AK3',
+              type: 'content',
+              isLoop: true,
+              jsonLocation: 'groupElement',
+              requirement: {
+                isFilter: true,
+                filterInfoList: [
+                  {
+                    filterBy: 'category',
+                    sign: '==',
+                    value: 'segmentError',
+                  }
+                ],
+              },
+              elementList: [
+                {
+                  element: 'errorID',
+                  type: 'variable',
+                },
+                {
+                  element: 'afterMainHeadLocation',
+                  type: 'variable'
+                },
+                {
+                  element: '',
+                  type: 'variable',
+                },
+                {
+                  element: 'errorType',
+                  type: 'variable',
+                  match: {
+                    'Unrecognized SegmentID': '1',
+                    'Unexpected Segment': '2',
+                    'Mandatory Seg Missing': '3',
+                  }
+                }
+              ],
+            },
+            {
+              name: 'AK4',
+              type: 'content',
+              isLoop: true,
+              jsonLocation: 'groupElement',
+              requirement: {
+                isFilter: true,
+                filterInfoList: [
+                  {
+                    filterBy: 'category',
+                    sign: '==',
+                    value: 'elementError',
+                  }
+                ],
+              },
+              elementList: [
+                {
+                  element: 'segmentPosition',
+                  type: 'variable',
+                },
+                {
+                  element: 'errorIdex',
+                  type: 'variable'
+                },
+                {
+                  element: 'errorType',
+                  type: 'variable',
+                  match: {
+                    'Mandatory Data element missing': '1',
+                    'Too many data elements': '3',
+                    'Data element too short': '4',
+                    'Data element too long': '5',
+                    'Invalid code value': '7',
+                  }
+                },
+                {
+                  element: 'element',
+                  type: 'variable',
+                }
+              ],
+            },
+          ],
+        },
+        {
+          name: 'SE',
+          type: 'content',
+          elementList: [
+            {
+              element: 'content',
+              type: 'total',
+            },
+            {
+              element: 'content',
+              type: 'sequence',
+            }
+          ],
+        },
+      ]
+    },
+    footer: [
+      {
+        name: 'GE',
+        type: 'footer',
+        elementList: [
+          {
+            element: '01',
+            type: 'hardcode',
+          },
+          {
+            element: 'content',
+            type: 'sequence',
+          }
+        ],
+      },
+      {
+        name: 'ISA',
+        type: 'footer',
+        elementList: [
+          {
+            element: '01',
+            type: 'hardcode',
+          },
+          {
+            element: 'content',
+            type: 'sequence',
+          }
+        ],
+      },
+    ]
+
+  }
 } as EdiFormatJson
 
 interface JSONObject {
@@ -30,6 +275,8 @@ export default class EdiParser997 extends BaseEdiParser {
   }
 
   async export(entityJSON: any[] | (any[])[]): Promise<any> {
+    const result = await super.export(entityJSON)
+    return result.ediResults[0].ediContent
     const returnJSON = {}
     const data = []
     const ISA: JSONObject = {
@@ -153,7 +400,7 @@ export default class EdiParser997 extends BaseEdiParser {
     data.push(IEA)
     _.set(returnJSON, 'data', data)
     // return returnJSON
-    const result = await super.export(returnJSON)
+    // const result = await super.export(returnJSON)
     const resultList: any[] = []
     resultList.push(result)
     return [result]
@@ -237,6 +484,7 @@ export default class EdiParser997 extends BaseEdiParser {
           AK4.elementList.push(
             elementError.segmentPosition.toString(),
             elementError.errorIdex.toString(),
+            loopIndex.toString(),
             elementErrorMapper[elementError.errorType],
             elementError.element
           )
@@ -261,8 +509,6 @@ export default class EdiParser997 extends BaseEdiParser {
             }
             if (outboundSuccess === true) {
               AK5.elementList.push('E')
-            }else {
-              AK5.elementList.push('R')
             }
             AK5.elementList.push(
               transactionSetSyntaxErrorMapper[transactionSetSyntaxError.errorType]
