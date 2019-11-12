@@ -13,6 +13,20 @@
     "}"
   ],
   "shareProps": {
+    "icon": "statusCode",
+    "titleKey": {
+      "key": "key",
+      "track": true
+    },
+    "subTitleKeys": [
+      "statusDescription",
+      "statusPlace",
+      {
+        "key": "statusDate",
+        "is": "Datetime",
+        "format": "YYYY-MM-DD HH:mm:ss"
+      }
+    ],
     "iconMap": {
       "MNF": "tracking/airplane-flying",
       "RWB": "tracking/airplane-flying",
@@ -48,6 +62,7 @@
       "EPRL": "tracking/truck",
       "STSP": "tracking/truck",
       "RCS": "tracking/truck",
+      "bookingReceivedByForwarder": "tracking/paperwork",
       "oceanBill": "tracking/file",
       "SEAdeparture": "tracking/ship-departure",
       "SEAarrival": "tracking/ship-arrival",
@@ -60,22 +75,10 @@
     }
   },
   "baseSummaryProps": {
-    "icon": "statusCode",
-    "titleKey": "status",
-    "subTitleKeys": [
-      "statusDescription",
-      "statusPlace",
-      {
-        "key": "statusDate",
-        "is": "Datetime",
-        "format": "YYYY-MM-DD HH:mm:ss"
-      }
-    ],
+    "getModule": "moduleType",
     "size": -1
   },
   "baseDetailProps": {
-    "getModule": "moduleType",
-    "showCargoOrContainer": true,
-    "subTitleKeys": ["statusDescription", "statusPlace", "pieces"]
+    "getModule": "moduleType"
   }
 }

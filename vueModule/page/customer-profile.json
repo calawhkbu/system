@@ -5,23 +5,24 @@
       "is": "Widget",
       "props": {
         "settingProp": {
+          "overrideType": "party-group",
           "initAxiosParams": {
-            "url": "api/template/{{context.$route.params.params}}"
+            "url": "api/partyGroup/{{context.$route.params.params}}"
           },
           "defaultAxiosParams": {
-            "url": "default/template"
+            "url": "default/partyGroup"
           },
           "validateAxiosParams": {
-            "method": "post",
-            "url": "api/template/validate/{{id}}"
+            "method": "POST",
+            "url": "api/partyGroup/validate/{{id}}"
           },
           "saveAxiosParams": {
-            "method": "post",
-            "url": "api/template"
+            "method": "POST",
+            "url": "api/partyGroup/{{context.$route.params.params}}"
           },
           "primaryKey": "id",
-          "modeFunction": "const modes = ['create', 'detail','edit']\nconst selectedMode = isNaN(Number(mode)) ? mode : 'detail'\n          if (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
-          "haveTermOnCreate": true,
+          "modeFunction": "const modes = ['create', 'detail','edit'];\nconst selectedMode = isNaN(Number(mode)) && mode !== 'default'  ? mode : 'detail'\nif (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
+          "haveTermOnCreate": false,
           "haveTermOnEdit": false,
           "widgetComponentSetting": {
             "quick-create": {

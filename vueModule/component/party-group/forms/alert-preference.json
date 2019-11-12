@@ -26,9 +26,17 @@
                 {
                   "label": "CustomerPage.notifyBy",
                   "name": "notifyBy",
-                  "component": "AsyncAutoSuggest",
+                  "component": "AsyncSelect",
                   "props": {
-                    "url": ""
+                    "axiosParams": {
+                      "method": "GET",
+                      "url" : "/api/alertPreference/notifyByOption/partyGroup/{{context.$store.state.widget.data.id}}",
+                      "data": {
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "code",
+                    "showValue": true
                   }
                 }
               ]

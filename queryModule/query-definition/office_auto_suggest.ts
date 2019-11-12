@@ -189,24 +189,26 @@ query
     'q',
     new Query({
       $where: new OrExpressions([
-        new RegexpExpression(new ColumnExpression('party', 'name'), false),
-        new RegexpExpression(new ColumnExpression('party', 'shortName'), false),
+        new RegexpExpression(new ColumnExpression('party', 'name'), false, new Unknown('string')),
+        new RegexpExpression(new ColumnExpression('party', 'shortName'), false, new Unknown('string')),
         new RegexpExpression(
           new FunctionExpression(
             'JSON_UNQUOTE',
             new FunctionExpression(
               'JSON_EXTRACT',
               new ColumnExpression('party', 'thirdPartyCode'),
-              '$.erp'
+              '$.erp',
             )
           ),
-          false
+          false,
+          new Unknown('string')
         ),
         // new RegexpExpression(new ColumnExpression('party', 'erpCode'), false)
       ]),
     })
   )
   .register('value', 0)
-  .register('value', 1) // .register('value', 2)
+  .register('value', 1)
+  .register('value', 2)
 
 export default query

@@ -196,7 +196,7 @@ query
   .register(
     'partyGroupCode',
     new Query({
-      $where: new BinaryExpression(new ColumnExpression('party', 'partyGroupCode'), '='),
+      $where: new BinaryExpression(new ColumnExpression('party', 'partyGroupCode'), '=', new Unknown('string')),
     })
   )
   .register('value', 0)
@@ -218,8 +218,8 @@ query
     'q',
     new Query({
       $where: new OrExpressions([
-        new RegexpExpression(new ColumnExpression('party', 'name'), false),
-        new RegexpExpression(new ColumnExpression('party', 'shortName'), false),
+        new RegexpExpression(new ColumnExpression('party', 'name'), false, new Unknown('string')),
+        new RegexpExpression(new ColumnExpression('party', 'shortName'), false, new Unknown('string')),
         new RegexpExpression(
           new FunctionExpression(
             'JSON_UNQUOTE',
@@ -229,13 +229,14 @@ query
               '$.erp'
             )
           ),
-          false
+          false,
+          new Unknown('string')
         ),
-        // new RegexpExpression(new ColumnExpression('party', 'erpCode'), false)
       ]),
     })
   )
   .register('value', 0)
-  .register('value', 1) // .register('value', 2)
+  .register('value', 1)
+  .register('value', 2)
 
 export default query
