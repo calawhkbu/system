@@ -6,27 +6,67 @@
 
         {
           "label": "TemplatePage.templateName",
-          "name": "houseNo",
+          "name": "templateName",
           "component": "v-text-field",
-          "class": "xs-12 md-3"
+          "class": "xs-12 md-6"
         },
         {
           "label": "TemplatePage.extension",
-          "name": "masterNo",
+          "name": "extension",
           "component": "v-text-field",
-          "class": "xs-12 md-3"
+          "class": "xs-12 md-6"
         },
         {
           "label": "TemplatePage.format",
-          "name": "houseNo",
+          "name": "format",
           "component": "v-text-field",
-          "class": "xs-12 md-3"
+          "class": "xs-12 md-6"
         }, 
         {
           "label": "TemplatePage.base64String",
-          "name": "houseNo",
+          "name": "base64String",
           "component": "v-text-field",
-          "class": "xs-12 md-3"
+          "class": "xs-12 md-6"
+        },
+        {
+          "label": "TemplatePage.key",
+          "name": "templateName",
+          "component": "button-field",
+          "class": "xs-12 md-6",
+
+          "slots": [
+            {
+              "is": "Icon",
+              "props": {
+                "icon": "refresh"
+              }
+            }
+          ],
+          "props" : {
+
+            "flat": true,
+            "icon": true,
+
+            "events" : {
+
+              "click.stop": [
+                {
+                  "type": "axios",
+                  "otherParams": {
+
+                    "axiosParams" : {
+
+                      "method" : "POST",
+                      "url" : "/api/template/download",
+                      "data" : {
+                        "templateName" : "{{context.fixValue}}"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
         }
       ]
     }
