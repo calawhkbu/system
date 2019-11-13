@@ -16,6 +16,11 @@
               "convertBase64": true,
               "defaultImage": "/img/logo/swivel-logo-light.svg",
 
+              "style": {
+                "display": "flex",
+                "justify-content": "center"
+              },
+
               "imageProps": {
                 "style": {
                   "max-height": "150px"
