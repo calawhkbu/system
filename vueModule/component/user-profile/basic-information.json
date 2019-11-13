@@ -45,7 +45,7 @@
         "fields": [
           {
             "name": "photoURL",
-            "component": "FileField",
+            "component": "ImageField",
             "class": "xs-12",
             "props": {
               "convertBase64": true,
