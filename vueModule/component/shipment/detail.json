@@ -96,7 +96,7 @@
             "is": "i18nText",
             "props": {
               "i18nContext": "ShipmentPage",
-              "i18nKey": "Main"
+              "i18nKey": "General"
             }
           }],
           "tabItemComponents": [{
@@ -152,7 +152,7 @@
           "tabComponents": [{
             "is": "I18nText",
             "props": {
-              "i18nContext": "Plugin",
+              "i18nContext": "ShipmentPage",
               "i18nKey": "alertAndDocument"
             }
           }],
