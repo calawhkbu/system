@@ -79,7 +79,7 @@
               }
             },
             "key": "serviceCode",
-            "label": "service",
+            "label": "serviceCode",
             "width": 100
           },
           {
@@ -145,7 +145,7 @@
               }
             },
             "key": "incoTermsCode",
-            "label": "incoTerms",
+            "label": "incoTermsCode",
             "width": 100
           },
           {
@@ -189,7 +189,7 @@
               }
             },
             "key": "freightTermsCode",
-            "label": "freightTerms",
+            "label": "freightTermsCode",
             "width": 100
           },
           {
