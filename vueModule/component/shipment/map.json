@@ -75,9 +75,9 @@
                 },
                 {
                   "label": "ShipmentPage.departureDateEstimated",
-                  "name": "estimatedDepartureDate",
+                  "name": "departureDateEstimated",
                   "component": "DateTimePicker",
-                  "class": "xs-6 md-3",
+                  "class": "xs-6",
                   "props": {
                     "type": "datetime",
                     "utc": true,
@@ -87,9 +87,33 @@
                 },
                 {
                   "label": "ShipmentPage.arrivalDateEstimated",
-                  "name": "estimatedArrivalDate",
+                  "name": "arrivalDateEstimated",
                   "component": "DateTimePicker",
-                  "class": "xs-6 md-3",
+                  "class": "xs-6",
+                  "props": {
+                    "type": "datetime",
+                    "utc": true,
+                    "defaultFormat": "ddd MMM DD YYYY",
+                    "useOwnFormat": true
+                  }
+                },
+                {
+                  "label": "ShipmentPage.departureDateActual",
+                  "name": "departureDateActual",
+                  "component": "DateTimePicker",
+                  "class": "xs-6",
+                  "props": {
+                    "type": "datetime",
+                    "utc": true,
+                    "defaultFormat": "ddd MMM DD YYYY",
+                    "useOwnFormat": true
+                  }
+                },
+                {
+                  "label": "ShipmentPage.arrivalDateActual",
+                  "name": "arrivalDateActual",
+                  "component": "DateTimePicker",
+                  "class": "xs-6",
                   "props": {
                     "type": "datetime",
                     "utc": true,
