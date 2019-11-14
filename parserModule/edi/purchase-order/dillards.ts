@@ -557,7 +557,7 @@ export const formatJson = {
                         {
                           value: 'DP',
                           name: 'Dept Number',
-                          overrideKey: 'Dept Number',
+                          overrideKey: 'DeptNumber',
                         },
                         {
                           value: 'IA',
@@ -4029,6 +4029,7 @@ export default class Edi850Parser extends BaseEdiParser {
     // console.log(`import type  : ${this.type}`)
     const { jsonData, errorList, ediType } = await super.import(ediString)
     // const poList: any[] = []
+    // return jsonData
     const error = errorList.find(x => x.errorType === 'Transaction Set Trailer all Missing')
     if ((!jsonData || jsonData.length === 0) && error) {
       // undefined or empty array
@@ -4120,7 +4121,13 @@ export default class Edi850Parser extends BaseEdiParser {
               : _.get(ST, 'DTM.shipNotBefore')
               ? moment.utc(_.get(ST, 'DTM.shipNotBefore')).toDate()
               : null,
-            Department: _.get(ST, 'REF.referenceNumber'),
+            Department: _.get(ST, 'REF.DeptNumber'),
+            portOfLoadingCounrty: _.get(ST, 'FOB.locationQualifier1') === 'On vessel'
+              ? _.get(ST, 'FOB.description1')
+              : null,
+            portOfLoading: _.get(ST, 'FOB.locationQualifier1') === 'Other FOB Point'
+              ? _.get(ST, 'FOB.description1')
+              : null,
           }
           const po1 = _.get(ST, 'PO1', []) || []
           if (po1.length) {
@@ -4138,7 +4145,7 @@ export default class Edi850Parser extends BaseEdiParser {
                   unitPrice: _.get(PO1, 'unitPrice'),
                   priceUnit: _.get(PO1, 'basisOfUnitPrice'),
                   upcen: _.get(PO1, 'productId1').trim(),
-                  size: (_.get(PO1, 'productId2') || '').substr(0, 3),
+                  size: (_.get(PO1, 'productId2') || ''),
                   colorDesc: _.get(PO1, 'productId4'),
                   pack: _.get(PO1, 'poLineNumber'),
                   buyerSKU: _.get(PO1, 'productId3'),
@@ -4268,11 +4275,10 @@ export default class Edi850Parser extends BaseEdiParser {
             dontShipAfterDate: _.get(ST, 'DTM.doNotShipAfter')
               ? moment.utc(_.get(ST, 'DTM.doNotShipAfter')).toDate()
               : null,
-
             exitFactoryDateActual: _.get(ST, 'DTM.firstArrive')
               ? moment.utc(_.get(ST, 'DTM.firstArrive')).toDate()
               : null,
-            Department: _.get(ST, 'REF.referenceNumber'),
+            Department: _.get(ST, 'REF.DeptNumber'),
           }
           const poc = _.get(ST, 'POC', []) || []
           if (poc.length) {
@@ -4292,7 +4298,7 @@ export default class Edi850Parser extends BaseEdiParser {
                   unitPrice: _.get(POC, 'unitPrice'),
                   priceUnit: _.get(POC, 'basisOfUnitPriceCode'),
                   upcen: _.get(POC, 'productId1').trim(),
-                  size: (_.get(POC, 'productId2') || '').substr(0, 3),
+                  size: (_.get(POC, 'productId2') || ''),
                   colorDesc: _.get(POC, 'productId4'),
                   pack: _.get(POC, 'poLineNumber'),
                   buyerSKU: _.get(POC, 'productId3'),
