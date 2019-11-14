@@ -66,67 +66,83 @@ const query = new QueryDef(
 )
 
 query.register('can_resend', {
-  expression: new FunctionExpression('IF',
+  expression: new FunctionExpression(
+    'IF',
 
-  new InExpression(
-    new FunctionExpression('IF',
-      new AndExpressions([
-        new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
-        new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
-      ]),
+    new InExpression(
+      new FunctionExpression(
+        'IF',
+        new AndExpressions([
+          new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
+        ]),
 
-      new ColumnExpression('invitation', 'status'),
-      new Value('disabled')
+        new ColumnExpression('invitation', 'status'),
+        new Value('disabled')
+      ),
+      false,
+      ['sent']
     ),
-    false,
-    ['sent']
-  ), 1, 0),
+    1,
+    0
+  ),
 
-  $as: 'can_resend'
+  $as: 'can_resend',
 })
 
 query.register('can_delete', {
-  expression: new FunctionExpression('IF',
+  expression: new FunctionExpression(
+    'IF',
 
-  new InExpression(
-    new FunctionExpression('IF',
-      new AndExpressions([
-        new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
-        new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
-      ]),
+    new InExpression(
+      new FunctionExpression(
+        'IF',
+        new AndExpressions([
+          new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
+        ]),
 
-      new ColumnExpression('invitation', 'status'),
-      new Value('disabled')
+        new ColumnExpression('invitation', 'status'),
+        new Value('disabled')
+      ),
+      false,
+      ['sent', 'accepted']
     ),
-    false,
-    ['sent', 'accepted']
-  ), 1, 0),
+    1,
+    0
+  ),
 
-  $as: 'can_delete'
+  $as: 'can_delete',
 })
 
 query.register('can_restore', {
-  expression: new FunctionExpression('IF',
+  expression: new FunctionExpression(
+    'IF',
 
-  new InExpression(
-    new FunctionExpression('IF',
-      new AndExpressions([
-        new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
-        new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
-      ]),
+    new InExpression(
+      new FunctionExpression(
+        'IF',
+        new AndExpressions([
+          new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
+        ]),
 
-      new ColumnExpression('invitation', 'status'),
-      new Value('disabled')
+        new ColumnExpression('invitation', 'status'),
+        new Value('disabled')
+      ),
+      false,
+      ['disabled']
     ),
-    false,
-    ['disabled']
-  ), 1, 0),
-  $as: 'can_restore'
+    1,
+    0
+  ),
+  $as: 'can_restore',
 })
 
 query.register('invitationStatus', {
   expression: new FunctionExpression(
-    new FunctionExpression('IF',
+    new FunctionExpression(
+      'IF',
       new AndExpressions([
         new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
         new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
@@ -135,9 +151,8 @@ query.register('invitationStatus', {
       new ColumnExpression('invitation', 'status'),
       new Value('disabled')
     )
-
   ),
-  $as: 'invitationStatus'
+  $as: 'invitationStatus',
 })
 
 // ---------------------------------
@@ -148,7 +163,8 @@ query
     new Query({
       $where: new InExpression(
         new FunctionExpression(
-          new FunctionExpression('IF',
+          new FunctionExpression(
+            'IF',
             new AndExpressions([
               new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
               new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
@@ -156,8 +172,10 @@ query
 
             new ColumnExpression('invitation', 'status'),
             new Value('disabled')
-          ))
-        , false),
+          )
+        ),
+        false
+      ),
     })
   )
   .register('value', 0)

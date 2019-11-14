@@ -145,7 +145,7 @@ export const filters = [
     name: 'division',
     type: 'list',
     props: {
-      multi: false
-    }
-  }
+      multi: false,
+    },
+  },
 ]

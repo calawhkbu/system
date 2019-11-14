@@ -1,5 +1,6 @@
 {
-  "components": [{
+  "components": [
+    {
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 grid align-item-center full-width",
@@ -12,7 +13,8 @@
           "width": "700px",
           "border-radius": "4px"
         },
-        "components": [{
+        "components": [
+          {
             "is": "v-btn",
             "props": {
               "flat": true,
@@ -20,20 +22,24 @@
               "small": true
             },
             "events": {
-              "click.stop": [{
-                "type": "dispatch",
-                "otherParams": {
-                  "name": "widget/changeMode",
-                  "mode": "detail"
+              "click.stop": [
+                {
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "detail"
+                  }
                 }
-              }]
+              ]
             },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "arrow_back"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
+                }
               }
-            }]
+            ]
           },
           {
             "is": "I18nText",
@@ -50,18 +56,20 @@
     },
     {
       "is": "Map",
-      "slots": [{
-        "is": "Route",
-        "props": {
-          "startPoint": "widget.data.portOfLoading",
-          "endPoint": "widget.data.portOfDischarge",
-          "estimatedStartTime": "widget.data.departureDateEstimated",
-          "actualStartTime": "widget.data.departureDateActual",
-          "estimatedEndTime": "widget.data.arrivalDateEstimated",
-          "actualEndTime": "widget.data.arrivalDateActual",
-          "mode": "widget.data.moduleType"
+      "slots": [
+        {
+          "is": "Route",
+          "props": {
+            "startPoint": "widget.data.portOfLoading",
+            "endPoint": "widget.data.portOfDischarge",
+            "estimatedStartTime": "widget.data.departureDateEstimated",
+            "actualStartTime": "widget.data.departureDateActual",
+            "estimatedEndTime": "widget.data.arrivalDateEstimated",
+            "actualEndTime": "widget.data.arrivalDateActual",
+            "mode": "widget.data.moduleType"
+          }
         }
-      }]
+      ]
     }
   ]
 }
