@@ -23,10 +23,10 @@
             "events": {
               "click.stop": [
                 {
-                  "type": "router",
+                  "type": "dispatch",
                   "otherParams": {
-                    "func": "push",
-                    "path": "/users"
+                    "name": "widget/changeMode",
+                    "mode": "detail"
                   }
                 }
               ]

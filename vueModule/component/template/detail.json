@@ -1,7 +1,6 @@
 {
-  "class" : "grid",
+  "class": "grid",
   "components": [
-
     {
       "is": "DynamicComponent",
       "props": {
@@ -24,10 +23,10 @@
             "events": {
               "click.stop": [
                 {
-                  "type": "dispatch",
+                  "type": "router",
                   "otherParams": {
-                    "name": "widget/changeMode",
-                    "mode": "detail"
+                    "func": "push",
+                    "path": "/templates"
                   }
                 }
               ]
@@ -37,7 +36,7 @@
             "is": "I18nText",
             "props": {
               "class": "headline",
-              "i18nKey": "CustomerPage.title",
+              "i18nKey": "TemplatePage.title",
               "i18nOptions": {
                 "title": "sometitle"
               }
@@ -47,17 +46,35 @@
             "is": "v-spacer"
           },
           {
-            "is": "WidgetSave",
+            "is": "v-btn",
             "props": {
-              "fab": true,
-              "color": "primary"
+              "icon": true,
+              "flat": true,
+              "class": "primary white-text"
+            },
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "edit"
+                }
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "edit"
+                  }
+                }
+              ]
             }
           }
         ]
       }
     },
-
-
     {
       "is": "DynamicComponent",
       "props": {
@@ -67,28 +84,7 @@
             "is": "AsyncComponent",
             "props": {
               "class": "margin-topbottom-4 xs-12",
-              "layoutName": "party-group/forms/basic-information"
-            }
-          },
-          {
-            "is": "AsyncComponent",
-            "props": {
-              "class": "margin-topbottom-4 xs-12",
-              "layoutName": "party-group/forms/party"
-            }
-          },
-          {
-            "is": "AsyncComponent",
-            "props": {
-              "class": "margin-topbottom-4 xs-12",
-              "layoutName": "party-group/forms/default-preference"
-            }
-          },
-          {
-            "is": "AsyncComponent",
-            "props": {
-              "class": "margin-topbottom-4 xs-12",
-              "layoutName": "party-group/forms/alert-preference"
+              "layoutName": "template/forms/general"
             }
           }
         ]

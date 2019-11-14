@@ -38,7 +38,9 @@ function prepareShipmentParams(): Function {
     params.fields = [
       'primaryKey',
       'houseNo',
+      'masterNo',
       'jobDate',
+      'carrierName',
       'shipperPartyName',
       'consigneePartyName',
       'portOfLoadingCode',
@@ -96,7 +98,9 @@ function prepareShipmentable(name: string): CreateTableJQL {
           columns: [
             { name: 'primaryKey', type: 'string' },
             { name: 'houseNo', type: 'string' },
+            { name: 'masterNo', type: 'string' },
             { name: 'jobDate', type: 'Date' },
+            { name: 'carrierName', type: 'string' },
             { name: 'shipperPartyName', type: 'string' },
             { name: 'consigneePartyName', type: 'string' },
             { name: 'portOfLoadingCode', type: 'string' },
