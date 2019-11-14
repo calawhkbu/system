@@ -1,13 +1,27 @@
 {
-  "components": [
-    {
-      "is": "WidgetMoreForm",
-      "props": {
-        "mainKey": "Party",
-        "formProps": {
-          "z": {
-            "class": "xs-12 md-6 padding-4"
-          }
+  "components": [{
+    "is": "WidgetMoreForm",
+    "props": {
+      "mainKey": "Party",
+      "formProps": {
+        "z": {
+          "class": "xs-12 md-6 padding-leftright-4"
+        }
+      },
+      "labelProps": {
+        "z": {
+          "isComponent": "v-label",
+          "i18nContext": "Widget",
+          "class": "font-110"
+        },
+        "shipper": {
+          "class": "font-110 teal--text required form-label"
+        },
+        "consignee": {
+          "class": "font-110 green--text required form-label"
+        },
+        "agent": {
+          "class": "font-110 blue--text"
         },
         "labelProps": {
           "z": {

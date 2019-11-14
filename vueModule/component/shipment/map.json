@@ -3,55 +3,129 @@
     {
       "is": "DynamicComponent",
       "props": {
-        "class": "xs-12 grid align-item-center full-width",
-        "style": {
-          "position": "absolute",
-          "top": "8px",
-          "left": "8px",
-          "z-index": "999",
-          "background-color": "#fff",
-          "width": "700px",
-          "border-radius": "4px"
-        },
-        "components": [
-          {
-            "is": "v-btn",
+        "layout": "v-card",
+        "class": "absolute-topleft-20 zindex-300",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "icon": true
+          },
+          "events": {
+            "click.stop": [{
+              "type": "dispatch",
+              "otherParams": {
+                "name": "widget/changeMode",
+                "mode": "detail"
+              }
+            }]
+          },
+          "slots": [{
+            "is": "Icon",
             "props": {
-              "flat": true,
-              "icon": true,
-              "small": true
-            },
-            "events": {
-              "click.stop": [
+              "icon": "arrow_back"
+            }
+          }]
+        }]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "layout": "v-card",
+        "class": "absolute-topright-20 zindex-250",
+        "components": [{
+          "is": "ClickHidden",
+          "props": {
+            "desktopOpen": true
+          },
+          "slots": [{
+            "is": "WidgetForm",
+            "props": {
+              "style": {
+                "max-width": "300px"
+              },
+              "fields": [{
+                  "label": "ShipmentPage.houseNo",
+                  "name": "houseNo",
+                  "component": "v-text-field",
+                  "class": "xs-12"
+                },
                 {
-                  "type": "dispatch",
-                  "otherParams": {
-                    "name": "widget/changeMode",
-                    "mode": "detail"
+                  "label": "ShipmentPage.masterNo",
+                  "name": "masterNo",
+                  "component": "v-text-field",
+                  "class": "xs-12"
+                },
+                {
+                  "label": "ShipmentPage.carrier",
+                  "name": ["carrier.name", "carrierCode"],
+                  "component": "v-text-field",
+                  "class": "xs-12"
+                },
+                {
+                  "label": "ShipmentPage.portOfLoading",
+                  "name": ["pol.locationName", "portOfLoading"],
+                  "component": "v-text-field",
+                  "class": "xs-6"
+                },
+                {
+                  "label": "ShipmentPage.portOfDischarge",
+                  "name": ["pod.locationName", "portOfDischarge"],
+                  "component": "v-text-field",
+                  "class": "xs-6"
+                },
+                {
+                  "label": "ShipmentPage.departureDateEstimated",
+                  "name": "departureDateEstimated",
+                  "component": "DateTimePicker",
+                  "class": "xs-6",
+                  "props": {
+                    "type": "datetime",
+                    "utc": true,
+                    "defaultFormat": "ddd MMM DD YYYY",
+                    "useOwnFormat": true
+                  }
+                },
+                {
+                  "label": "ShipmentPage.arrivalDateEstimated",
+                  "name": "arrivalDateEstimated",
+                  "component": "DateTimePicker",
+                  "class": "xs-6",
+                  "props": {
+                    "type": "datetime",
+                    "utc": true,
+                    "defaultFormat": "ddd MMM DD YYYY",
+                    "useOwnFormat": true
+                  }
+                },
+                {
+                  "label": "ShipmentPage.departureDateActual",
+                  "name": "departureDateActual",
+                  "component": "DateTimePicker",
+                  "class": "xs-6",
+                  "props": {
+                    "type": "datetime",
+                    "utc": true,
+                    "defaultFormat": "ddd MMM DD YYYY",
+                    "useOwnFormat": true
+                  }
+                },
+                {
+                  "label": "ShipmentPage.arrivalDateActual",
+                  "name": "arrivalDateActual",
+                  "component": "DateTimePicker",
+                  "class": "xs-6",
+                  "props": {
+                    "type": "datetime",
+                    "utc": true,
+                    "defaultFormat": "ddd MMM DD YYYY",
+                    "useOwnFormat": true
                   }
                 }
               ]
-            },
-            "slots": [
-              {
-                "is": "Icon",
-                "props": {
-                  "icon": "arrow_back"
-                }
-              }
-            ]
-          },
-          {
-            "is": "I18nText",
-            "props": {
-              "class": "headline",
-              "i18nKey": "ShipmentPage.title",
-              "i18nOptions": {
-                "title": "{{context.$store.state.widget.data.houseNo}}"
-              }
             }
-          }
-        ]
+          }]
+        }]
       }
     },
     {
