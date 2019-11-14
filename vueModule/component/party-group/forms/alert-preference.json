@@ -22,9 +22,8 @@
                   "props": {
                     "axiosParams": {
                       "method": "GET",
-                      "url" : "/api/alert/getAlertConfig",
-                      "data": {
-                      }
+                      "url": "/api/alert/getAlertConfig",
+                      "data": {}
                     },
                     "item-text": "alertType",
                     "item-value": "alertType",
@@ -39,9 +38,8 @@
                   "props": {
                     "axiosParams": {
                       "method": "GET",
-                      "url" : "/api/alertPreference/notifyByOption/partyGroup/{{context.$store.state.widget.data.id}}",
-                      "data": {
-                      }
+                      "url": "/api/alertPreference/notifyByOption/partyGroup/{{context.$store.state.widget.data.id}}",
+                      "data": {}
                     },
                     "item-text": "name",
                     "item-value": "code",
@@ -54,8 +52,6 @@
                   "name": "active",
                   "component": "BooleanField"
                 }
-
-
               ]
             }
           }

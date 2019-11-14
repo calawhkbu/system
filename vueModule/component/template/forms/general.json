@@ -1,109 +1,89 @@
 {
-  "components": [{
-    "is": "WidgetForm",
-    "props": {
-      "fields": [
+  "components": [
+    {
+      "is": "WidgetForm",
+      "props": {
+        "fields": [
+          {
+            "label": "TemplatePage.templateName",
+            "name": "templateName",
+            "component": "v-text-field",
+            "class": "xs-12 md-6",
+            "canEdit": "return mode === 'create' "
+          },
+          {
+            "label": "TemplatePage.format",
+            "name": "format",
+            "component": "JsonField",
+            "class": "xs-12 md-6"
+          },
 
-        {
-          "label": "TemplatePage.templateName",
-          "name": "templateName",
-          "component": "v-text-field",
-          "class": "xs-12 md-6",
-          "canEdit" : "return mode === 'create' "
-        },
-        {
-          "label": "TemplatePage.format",
-          "name": "format",
-          "component": "JsonField",
-          "class": "xs-12 md-6"
-        },
+          {
+            "label": "TemplatePage.key",
+            "name": "templateName",
+            "component": "button-field",
+            "class": "xs-12 md-6",
 
-        {
-          "label": "TemplatePage.key",
-          "name": "templateName",
-          "component": "button-field",
-          "class": "xs-12 md-6",
-
-          "slots": [
-            {
-              "is": "Icon",
-              "props": {
-                "icon": "refresh"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "refresh"
+                }
               }
-            }
-          ],
-          "props" : {
+            ],
+            "props": {
+              "flat": true,
+              "icon": true,
 
-            "flat": true,
-            "icon": true,
-
-            "events" : {
-
-              "click.stop": [
-                {
-                  "type": "axios",
-                  "otherParams": {
-
-                    "axiosParams" : {
-
-                      "method" : "POST",
-                      "url" : "/api/template/download",
-                      "data" : {
-                        "templateName" : "{{context.fixValue}}"
+              "events": {
+                "click.stop": [
+                  {
+                    "type": "axios",
+                    "otherParams": {
+                      "axiosParams": {
+                        "method": "POST",
+                        "url": "/api/template/download",
+                        "data": {
+                          "templateName": "{{context.fixValue}}"
+                        }
                       }
                     }
                   }
-                }
-              ]
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "UploadDownloadButton",
+      "props": {
+        "uploadParams": {
+          "axiosParams": {
+            "method": "POST",
+            "url": "/api/template/upload",
+            "data": {
+              "base64String": "{{base64String}}",
+              "extension": "{{extension}}",
+              "templateName": "{{context.$store.state.widget.data.templateName}}"
+            }
+          }
+        },
+
+        "downloadParams": {
+          "fileName": "{{context.$store.state.widget.data.templateName}}",
+          "extension": "{{context.$store.state.widget.data.extension}}",
+          "axiosParams": {
+            "method": "POST",
+            "url": "/api/template/download",
+            "data": {
+              "templateName": "{{context.$store.state.widget.data.templateName}}"
             }
           }
         }
-      ]
-    }
-  },
-  {
-
-    "is" : "UploadDownloadButton",
-    "props" : {
-
-      "uploadParams" : {
-        "axiosParams" : {
-
-          "method" : "POST",
-          "url" : "/api/template/upload",
-          "data" : {
-            "base64String" : "{{base64String}}",
-            "extension" : "{{extension}}",
-            "templateName" : "{{context.$store.state.widget.data.templateName}}"
-          }
-  
-        }
-
-      },
-
-
-      "downloadParams" : {
-
-        "fileName" : "{{context.$store.state.widget.data.templateName}}",
-        "extension" : "{{context.$store.state.widget.data.extension}}",
-        "axiosParams" : {
-
-          "method" : "POST",
-          "url" : "/api/template/download",
-          "data" : {
-            "templateName" : "{{context.$store.state.widget.data.templateName}}"
-          }
-  
-        }
-
-
       }
-
-
     }
-
-
-  }
-
-]
+  ]
 }

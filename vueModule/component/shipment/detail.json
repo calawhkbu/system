@@ -5,85 +5,96 @@
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 grid align-item-center padding-4",
-        "components": [{
-          "is": "DynamicComponent",
-          "props": {
-            "class": "xs-12 align-item-center flex",
-            "components": [{
-                "is": "v-btn",
-                "props": {
-                  "flat": true,
-                  "icon": true
-                },
-                "slots": [{
-                  "is": "Icon",
+        "components": [
+          {
+            "is": "DynamicComponent",
+            "props": {
+              "class": "xs-12 align-item-center flex",
+              "components": [
+                {
+                  "is": "v-btn",
                   "props": {
-                    "icon": "arrow_back"
-                  }
-                }],
-                "events": {
-                  "click.stop": [{
-                    "type": "router",
-                    "otherParams": {
-                      "func": "go",
-                      "go": -1
+                    "flat": true,
+                    "icon": true
+                  },
+                  "slots": [
+                    {
+                      "is": "Icon",
+                      "props": {
+                        "icon": "arrow_back"
+                      }
                     }
-                  }]
-                }
-              },
-              {
-                "is": "I18nText",
-                "if": "return context.$vuetify.breakpoint.mdAndUp",
-                "props": {
-                  "class": "title hidden-xs-only hidden-sm-only",
-                  "i18nKey": "ShipmentPage.title",
-                  "i18nOptions": {
-                    "title": "{{context.$store.state.widget.data.houseNo}}"
+                  ],
+                  "events": {
+                    "click.stop": [
+                      {
+                        "type": "router",
+                        "otherParams": {
+                          "func": "go",
+                          "go": -1
+                        }
+                      }
+                    ]
                   }
-                }
-              },
-              {
-                "is": "I18nText",
-                "if": "return !context.$vuetify.breakpoint.mdAndUp",
-                "props": {
-                  "class": "subheading hidden-md-and-up",
-                  "i18nKey": "ShipmentPage.title",
-                  "i18nOptions": {
-                    "title": "{{context.$store.state.widget.data.houseNo}}"
-                  }
-                }
-              },
-              {
-                "is": "v-spacer"
-              },
-              {
-                "is": "v-btn",
-                "props": {
-                  "icon": true,
-                  "flat": true
                 },
-                "slots": [{
-                  "is": "Icon",
+                {
+                  "is": "I18nText",
+                  "if": "return context.$vuetify.breakpoint.mdAndUp",
                   "props": {
-                    "icon": "map"
-                  }
-                }],
-                "events": {
-                  "click.stop": [{
-                    "type": "dispatch",
-                    "otherParams": {
-                      "name": "widget/changeMode",
-                      "mode": "map"
+                    "class": "title hidden-xs-only hidden-sm-only",
+                    "i18nKey": "ShipmentPage.title",
+                    "i18nOptions": {
+                      "title": "{{context.$store.state.widget.data.houseNo}}"
                     }
-                  }]
+                  }
+                },
+                {
+                  "is": "I18nText",
+                  "if": "return !context.$vuetify.breakpoint.mdAndUp",
+                  "props": {
+                    "class": "subheading hidden-md-and-up",
+                    "i18nKey": "ShipmentPage.title",
+                    "i18nOptions": {
+                      "title": "{{context.$store.state.widget.data.houseNo}}"
+                    }
+                  }
+                },
+                {
+                  "is": "v-spacer"
+                },
+                {
+                  "is": "v-btn",
+                  "props": {
+                    "icon": true,
+                    "flat": true
+                  },
+                  "slots": [
+                    {
+                      "is": "Icon",
+                      "props": {
+                        "icon": "map"
+                      }
+                    }
+                  ],
+                  "events": {
+                    "click.stop": [
+                      {
+                        "type": "dispatch",
+                        "otherParams": {
+                          "name": "widget/changeMode",
+                          "mode": "map"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "is": "BookmarkButton"
                 }
-              },
-              {
-                "is": "BookmarkButton"
-              }
-            ]
+              ]
+            }
           }
-        }]
+        ]
       }
     },
     {
@@ -91,84 +102,112 @@
       "if": "return !context.$vuetify.breakpoint.mdAndUp",
       "props": {
         "show-arrows": true,
-        "tabComponents": [{
-          "index": "general2",
-          "tabComponents": [{
-            "is": "i18nText",
-            "props": {
-              "i18nContext": "ShipmentPage",
-              "i18nKey": "General"
-            }
-          }],
-          "tabItemComponents": [{
-            "is": "AsyncComponent",
-            "props": {
-              "layoutName": "plugins/tracking0"
-            }
-          }, {
-            "is": "v-card",
-            "slots": [{
-              "is": "AsyncComponent",
-              "props": {
-                "layoutName": "shipment/forms/generalForm"
+        "tabComponents": [
+          {
+            "index": "general2",
+            "tabComponents": [
+              {
+                "is": "i18nText",
+                "props": {
+                  "i18nContext": "ShipmentPage",
+                  "i18nKey": "General"
+                }
               }
-            }]
-          }, {
-            "is": "v-card",
-            "slots": [{
-              "is": "AsyncComponent",
-              "props": {
-                "layoutName": "shipment/forms/containerForm"
+            ],
+            "tabItemComponents": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "plugins/tracking0"
+                }
+              },
+              {
+                "is": "v-card",
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "shipment/forms/generalForm"
+                    }
+                  }
+                ]
+              },
+              {
+                "is": "v-card",
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "shipment/forms/containerForm"
+                    }
+                  }
+                ]
               }
-            }]
-          }]
-        }, {
-          "index": "partyAndDate",
-          "tabComponents": [{
-            "is": "I18nText",
-            "props": {
-              "i18nContext": "ShipmentPage",
-              "i18nKey": "partyAndDate"
-            }
-          }],
-          "tabItemComponents": [{
-            "is": "v-card",
-            "slots": [{
-              "is": "AsyncComponent",
-              "props": {
-                "layoutName": "shipment/forms/partyForm"
+            ]
+          },
+          {
+            "index": "partyAndDate",
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "ShipmentPage",
+                  "i18nKey": "partyAndDate"
+                }
               }
-            }]
-          }, {
-            "is": "v-card",
-            "slots": [{
-              "is": "AsyncComponent",
-              "props": {
-                "layoutName": "shipment/forms/dateForm"
+            ],
+            "tabItemComponents": [
+              {
+                "is": "v-card",
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "shipment/forms/partyForm"
+                    }
+                  }
+                ]
+              },
+              {
+                "is": "v-card",
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "shipment/forms/dateForm"
+                    }
+                  }
+                ]
               }
-            }]
-          }]
-        }, {
-          "index": "alertAndDocument",
-          "tabComponents": [{
-            "is": "I18nText",
-            "props": {
-              "i18nContext": "ShipmentPage",
-              "i18nKey": "alertAndDocument"
-            }
-          }],
-          "tabItemComponents": [{
-            "is": "AsyncComponent",
-            "props": {
-              "layoutName": "plugins/alert0"
-            }
-          }, {
-            "is": "AsyncComponent",
-            "props": {
-              "layoutName": "plugins/document"
-            }
-          }]
-        }]
+            ]
+          },
+          {
+            "index": "alertAndDocument",
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "ShipmentPage",
+                  "i18nKey": "alertAndDocument"
+                }
+              }
+            ],
+            "tabItemComponents": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "plugins/alert0"
+                }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "plugins/document"
+                }
+              }
+            ]
+          }
+        ]
       }
     },
     {
