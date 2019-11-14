@@ -36,7 +36,7 @@
       "DLPT": "tracking/dlpt",
       "TSLB": "tracking/lobd",
       "TSBA": "tracking/cy-cutoff",
-      "BDAR": "tracking/bdar",
+      "BDAR": "tracking/dlpt",
       "DSCH": "tracking/lobd",
       "DECL": "tracking/sumit-so-date",
       "PASS": "tracking/cus",
