@@ -76,6 +76,7 @@
           "fileName": "{{context.$store.state.widget.data.templateName}}",
           "extension": "{{context.$store.state.widget.data.extension}}",
           "axiosParams": {
+            "responseType": "blob",
             "method": "POST",
             "url": "/api/template/download",
             "data": {
