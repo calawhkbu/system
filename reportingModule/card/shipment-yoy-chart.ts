@@ -37,7 +37,6 @@ const months = [
 
 function prepareParams(currentYear_: boolean): Function {
   const fn = function(require, session, params) {
-
     const moment = require('moment')
     const { OrderBy } = require('node-jql')
     const { BadRequestException } = require('@nestjs/common')
@@ -95,7 +94,6 @@ function prepareTable(tableName_: string) {
     const summaryColumnName = params.subqueries.yAxis.value
 
     const $select = [
-
       new ResultColumn(new Value(summaryColumnName), 'summary'),
 
       new ResultColumn(
@@ -123,13 +121,13 @@ function prepareTable(tableName_: string) {
             url: 'api/shipment/query/shipment',
             columns: [
               { name: 'jobMonth', type: 'string' },
-              { name : summaryColumnName, type : 'string' }
+              { name: summaryColumnName, type: 'string' },
             ],
           },
           'shipment'
         ),
 
-        $group: new GroupBy(new ColumnExpression('jobMonth'))
+        $group: new GroupBy(new ColumnExpression('jobMonth')),
       }),
     })
   }
@@ -141,9 +139,7 @@ function prepareTable(tableName_: string) {
 
 function finalQuery() {
   return function(require, session, params) {
-    const {
-      Query
-    } = require('node-jql')
+    const { Query } = require('node-jql')
 
     return new Query({
       $from: 'current',
@@ -151,7 +147,6 @@ function finalQuery() {
         $from: 'last',
       }),
     })
-
   }
 }
 
@@ -191,5 +186,5 @@ export const filters = [
       required: true,
     },
     type: 'list',
-  }
+  },
 ]

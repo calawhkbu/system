@@ -196,7 +196,11 @@ query
   .register(
     'partyGroupCode',
     new Query({
-      $where: new BinaryExpression(new ColumnExpression('party', 'partyGroupCode'), '=', new Unknown('string')),
+      $where: new BinaryExpression(
+        new ColumnExpression('party', 'partyGroupCode'),
+        '=',
+        new Unknown('string')
+      ),
     })
   )
   .register('value', 0)
@@ -219,7 +223,11 @@ query
     new Query({
       $where: new OrExpressions([
         new RegexpExpression(new ColumnExpression('party', 'name'), false, new Unknown('string')),
-        new RegexpExpression(new ColumnExpression('party', 'shortName'), false, new Unknown('string')),
+        new RegexpExpression(
+          new ColumnExpression('party', 'shortName'),
+          false,
+          new Unknown('string')
+        ),
         new RegexpExpression(
           new FunctionExpression(
             'JSON_UNQUOTE',

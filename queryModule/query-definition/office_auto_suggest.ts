@@ -190,14 +190,18 @@ query
     new Query({
       $where: new OrExpressions([
         new RegexpExpression(new ColumnExpression('party', 'name'), false, new Unknown('string')),
-        new RegexpExpression(new ColumnExpression('party', 'shortName'), false, new Unknown('string')),
+        new RegexpExpression(
+          new ColumnExpression('party', 'shortName'),
+          false,
+          new Unknown('string')
+        ),
         new RegexpExpression(
           new FunctionExpression(
             'JSON_UNQUOTE',
             new FunctionExpression(
               'JSON_EXTRACT',
               new ColumnExpression('party', 'thirdPartyCode'),
-              '$.erp',
+              '$.erp'
             )
           ),
           false,

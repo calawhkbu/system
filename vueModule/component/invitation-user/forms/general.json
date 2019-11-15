@@ -6,12 +6,11 @@
       "props": {
         "fields": [
           {
-
             "label": "InvitationPage.email",
             "name": "person.userName",
             "component": "v-text-field",
             "class": "xs-6",
-            "canEdit" : "return mode === 'create' "
+            "canEdit": "return mode === 'create' "
           },
 
           {
