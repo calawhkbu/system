@@ -855,8 +855,8 @@ export const formatJson = {
                         },
                         {
                           value: 'S',
-                          name: 'Ocean',
-                          overrideValue: 'Ocean',
+                          name: 'Sea',
+                          overrideValue: 'Sea',
                         },
                       ],
                       allowAny: true,
@@ -1145,7 +1145,7 @@ export const formatJson = {
                         {
                           value: 'VN',
                           name: 'vendor',
-                          overrideValue: 'Vendor',
+                          overrideValue: 'vendor',
                         },
                         {
                           value: 'MA',
@@ -1155,12 +1155,12 @@ export const formatJson = {
                         {
                           value: 'AG',
                           name: 'Agent',
-                          overrideValue: 'Agent',
+                          overrideValue: 'agent',
                         },
                         {
                           value: 'SU',
                           name: 'Factory (Supplier)',
-                          overrideValue: 'Factory (Supplier)',
+                          overrideValue: 'factory(Supplier)',
                         },
                         {
                           value: 'MP',
@@ -1336,12 +1336,12 @@ export const formatJson = {
                         {
                           value: 'EA',
                           name: 'Each(Unit)',
-                          overrideValue: 'Each(Unit)',
+                          overrideValue: 'Each',
                         },
                         {
                           value: 'CA',
                           name: 'Case(Prepack)',
-                          overrideValue: 'Case(Prepack)',
+                          overrideValue: 'Prepack',
                         },
                       ],
                       allowAny: true,
@@ -1961,52 +1961,52 @@ export const formatJson = {
                             {
                               value: 'DP',
                               name: 'Department',
-                              overrideValue: 'Department',
+                              overrideValue: 'department',
                             },
                             {
                               value: 'MR',
                               name: 'MIC',
-                              overrideValue: 'MIC',
+                              overrideValue: 'mic',
                             },
                             {
                               value: 'BT',
                               name: 'Group Code',
-                              overrideValue: 'Group Code',
+                              overrideValue: 'groupCode',
                             },
                             {
                               value: 'JH',
                               name: 'Label Code',
-                              overrideValue: 'Label Code',
+                              overrideValue: 'labelCode',
                             },
                             {
                               value: 'OIC',
                               name: 'Label Type',
-                              overrideValue: 'Label Type',
+                              overrideValue: 'label',
                             },
                             {
                               value: 'E9',
                               name: 'Hangtag Type',
-                              overrideValue: 'Hangtag Type',
+                              overrideValue: 'hangtag',
                             },
                             {
                               value: '2I',
                               name: 'Tracking',
-                              overrideValue: 'Tracking',
+                              overrideValue: 'tracking',
                             },
                             {
                               value: 'PM',
                               name: 'Concatenated Style',
-                              overrideValue: 'Concatenated Style',
+                              overrideValue: 'concatenated',
                             },
                             {
                               value: 'TS',
                               name: 'HTS',
-                              overrideValue: 'HTS',
+                              overrideValue: 'hts',
                             },
                             {
                               value: 'W9',
                               name: 'Special Packageing',
-                              overrideValue: 'Special Packageing',
+                              overrideValue: 'specialPackageing',
                             },
                           ],
                           allowAny: true,
@@ -2914,14 +2914,24 @@ export const formatJson = {
                           overrideValue: 'Ship To',
                         },
                         {
+                          value: 'MA',
+                          name: 'Party to Ship To',
+                          overrideValue: 'Party to Ship To',
+                        },
+                        {
+                          value: 'AG',
+                          name: 'Agent',
+                          overrideValue: 'agent',
+                        },
+                        {
                           value: 'VN',
                           name: 'vendor',
-                          overrideValue: 'Vendor',
+                          overrideValue: 'vendor',
                         },
                         {
                           value: 'SU',
                           name: 'Factory (Supplier)',
-                          overrideValue: 'Factory (Supplier)',
+                          overrideValue: 'factory(Supplier)',
                         },
                       ],
                       allowAny: true,
@@ -4106,56 +4116,44 @@ export default class Edi850Parser extends BaseEdiParser {
             edi: true,
             errors: errorList,
             poNo: _.get(ST, 'BEG.purchaseOrderNumber'),
-            poOrder: _.get(ST, 'transactionSetControlNumber'),
             poDate: _.get(ST, 'BEG.purchaseOrderDate')
-              ? moment.utc(_.get(ST, 'BEG.purchaseOrderDate')).toDate()
-              : null,
-            dontShipBeforeDate: _.get(ST, 'DTM.shipNotBefore')
+            ? moment.utc(_.get(ST, 'BEG.purchaseOrderDate')).toDate()
+            : null,
+            poOrder: _.get(ST, 'transactionSetControlNumber'),
+            consigneeId: _.get(ST, 'REF.DeptNumber'),
+            vendorId: _.get(ST, 'REF.Vendor'),
+            divisionId: _.get(ST, 'REF.DivisionID'),
+            buyer: _.get(ST, 'PER.name'),
+            shipNotBefore: _.get(ST, 'DTM.shipNotBefore')
               ? moment.utc(_.get(ST, 'DTM.shipNotBefore')).toDate()
               : null,
-            dontShipAfterDate: _.get(ST, 'DTM.doNotShipAfter')
+            doNotShipAfter: _.get(ST, 'DTM.doNotShipAfter')
               ? moment.utc(_.get(ST, 'DTM.doNotShipAfter')).toDate()
               : null,
-            exitFactoryDateActual: _.get(ST, 'DTM.firstArrive')
+            firstArrive: _.get(ST, 'DTM.firstArrive')
               ? moment.utc(_.get(ST, 'DTM.firstArrive')).toDate()
               : _.get(ST, 'DTM.shipNotBefore')
               ? moment.utc(_.get(ST, 'DTM.shipNotBefore')).toDate()
               : null,
-            Department: _.get(ST, 'REF.DeptNumber'),
-            portOfLoadingCounrty: _.get(ST, 'FOB.locationQualifier1') === 'On vessel'
-              ? _.get(ST, 'FOB.description1')
+            lastArrive: _.get(ST, 'DTM.lasttArrive')
+              ? moment.utc(_.get(ST, 'DTM.lasttArrive')).toDate()
               : null,
-            portOfLoading: _.get(ST, 'FOB.locationQualifier1') === 'Other FOB Point'
-              ? _.get(ST, 'FOB.description1')
-              : null,
+            mode: _.get(ST, 'TD5.transportationMethod/Type')
           }
-          const po1 = _.get(ST, 'PO1', []) || []
-          if (po1.length) {
-            const poItemList: any[] = []
-            for (const PO1 of po1) {
-              // k<ST['PO1'].length
-              poItemList.push({
-                perPackageQuantity: _.get(PO1, 'PO4.pack'),
-                quantity: _.get(PO1, 'quantityOrdered'),
-                quantityUnit: _.get(PO1, 'unitOfMeasureCode'),
-                volume: _.get(PO1, 'PO4.grossVolumePerPack'),
-                product: {
-                  subLine: _.get(PO1, 'SLN.assignedIdentification'),
-                  poLineNo: _.get(PO1, 'poLineNumber'),
-                  unitPrice: _.get(PO1, 'unitPrice'),
-                  priceUnit: _.get(PO1, 'basisOfUnitPrice'),
-                  upcen: _.get(PO1, 'productId1').trim(),
-                  size: (_.get(PO1, 'productId2') || ''),
-                  colorDesc: _.get(PO1, 'productId4'),
-                  pack: _.get(PO1, 'poLineNumber'),
-                  buyerSKU: _.get(PO1, 'productId3'),
-                  style: _.get(PO1, 'productId5'),
-                },
-              })
-            }
-            if (poItemList.length) {
-              _.set(po, 'purchaseOrderItems', poItemList)
-            }
+          const fob = _.get(ST, 'FOB', []) || []
+          if (fob.length)
+          {
+            po.portOfLoadingCounrty = fob.find(x => x.locationQualifier1 === 'On vessel').description1
+            po.portOfLoading = fob.find(x => x.locationQualifier1 === 'Other FOB Point').description1
+          }
+          else
+          {
+            po.portOfLoadingCounrty = _.get(fob, 'locationQualifier1') === 'On vessel'
+              ? _.get(fob, 'description1')
+              : null
+            po.portOfLoading = _.get(fob, 'locationQualifier1') === 'Other FOB Point'
+              ? _.get(fob, 'description1')
+              : null
           }
           const n1s = _.get(ST, 'N1', []) || []
           if (n1s.length) {
@@ -4187,6 +4185,8 @@ export default class Edi850Parser extends BaseEdiParser {
                     (_.get(N1, 'name') || '').substr(0, index) || _.get(N1, 'name')
                   )
                 }
+                _.set(po, `${newRole}AdditionalName1`, _.get(N1, 'N2.additionalNameInformation1'))
+                _.set(po, `${newRole}AdditionalName2`, _.get(N1, 'N2.additionalNameInformation2'))
                 _.set(po, `${newRole}PartyAddress1`, _.get(N1, 'N3.addressInformation'))
                 _.set(po, `${newRole}PartyAddress2`, _.get(N1, 'N3.additionalAddressInformation'))
                 _.set(po, `${newRole}PartyStateCode`, _.get(N1, 'N4.stateOrProvinceCode'))
@@ -4195,6 +4195,8 @@ export default class Edi850Parser extends BaseEdiParser {
               } else {
                 _.set(po, `${role.replace(/\s/g, '')}PartyName`, _.get(N1, 'name'))
                 _.set(po, `${role.replace(/\s/g, '')}PartyCode`, _.get(N1, 'identificationCode'))
+                _.set(po, `${role.replace(/\s/g, '')}AdditionalName1`, _.get(N1, 'N2.additionalNameInformation1'))
+                _.set(po, `${role.replace(/\s/g, '')}AdditionalName2`, _.get(N1, 'N2.additionalNameInformation2'))
                 _.set(
                   po,
                   `${role.replace(/\s/g, '')}PartyAddress1`,
@@ -4239,7 +4241,47 @@ export default class Edi850Parser extends BaseEdiParser {
           if (_.get(ST, 'DTM.lastArrive')) {
             _.set(po, 'lastArrive', moment.utc(_.get(ST, 'DTM.lastArrive')))
           }
+          const po1 = _.get(ST, 'PO1', []) || []
+          if (po1.length) {
+            const poItemList: any[] = []
+            for (const PO1 of po1) {
+              // k<ST['PO1'].length
+              const product: any = {
+                // sdqQuantityPerPackage: _.get(PO1, 'SDQ.quantity'),
+                quantityPerPackage: _.get(PO1, 'PO4.grossVolumePerPack'),
+                productDescription: _.get(PO1, 'PID.description'),
+                quantity: _.get(PO1, 'quantityOrdered'),
+                quantityUnit: _.get(PO1, 'unitOfMeasureCode'),
+                volume: _.get(PO1, 'PO4.grossVolumePerPack'),
+                product: {
+                  subLine: _.get(PO1, 'SLN.assignedIdentification'),
+                  poLineNo: _.get(PO1, 'poLineNumber'),
+                  unitPrice: _.get(PO1, 'unitPrice'),
+                  priceUnit: _.get(PO1, 'basisOfUnitPrice'),
+                  upcen: _.get(PO1, 'productId1').trim(),
+                  size: (_.get(PO1, 'productId2') || ''),
+                  colorDesc: _.get(PO1, 'productId4'),
+                  pack: _.get(PO1, 'poLineNumber'),
+                  buyerSKU: _.get(PO1, 'productId3'),
+                  style: _.get(PO1, 'productId5'),
+                  price: _.get(PO1, 'productIdQualifier7'),
+                },
+              }
+              const n9s = _.get(PO1, 'N9', []) || []
+              if (n9s.length)
+              {
+                for (const n9 of n9s)
+                {
+                  product[_.get(n9, 'referenceNumberQual')] = _.get(n9, 'referenceNumber')
+                }
+              }
+              poItemList.push(product)
 
+            }
+            if (poItemList.length) {
+              _.set(po, 'purchaseOrderItems', poItemList)
+            }
+          }
           holeEdi.poList.push(po)
         }
       }
@@ -4278,7 +4320,9 @@ export default class Edi850Parser extends BaseEdiParser {
             exitFactoryDateActual: _.get(ST, 'DTM.firstArrive')
               ? moment.utc(_.get(ST, 'DTM.firstArrive')).toDate()
               : null,
-            Department: _.get(ST, 'REF.DeptNumber'),
+            consigneeId: _.get(ST, 'REF.DeptNumber'),
+            venderId: _.get(ST, 'REF.Vender'),
+            divisionId: _.get(ST, 'REF.DivisionID')
           }
           const poc = _.get(ST, 'POC', []) || []
           if (poc.length) {
