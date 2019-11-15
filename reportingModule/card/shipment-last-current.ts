@@ -363,34 +363,6 @@ export const filters = [
     type: 'list',
   },
   {
-    display: 'summaryVariables',
-    name: 'summaryVariables',
-    props: {
-      multi: true,
-      items: [
-        {
-          label: 'chargeableWeight',
-          value: 'chargeableWeight',
-        },
-        {
-          label: 'grossWeight',
-          value: 'grossWeight',
-        },
-        {
-          label: 'cbm',
-          value: 'cbm',
-        },
-        {
-          label: 'totalShipment',
-          value: 'totalShipment',
-        },
-      ],
-      required: true,
-    },
-    type: 'list',
-  },
-
-  {
     display: 'metric1',
     name: 'metric1',
     props: {
