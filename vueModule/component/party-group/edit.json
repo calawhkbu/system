@@ -1,7 +1,6 @@
 {
-  "class" : "grid",
+  "class": "grid",
   "components": [
-
     {
       "is": "DynamicComponent",
       "props": {
@@ -56,7 +55,6 @@
         ]
       }
     },
-
 
     {
       "is": "DynamicComponent",

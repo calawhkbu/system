@@ -72,7 +72,6 @@
           "component": "v-text-field",
           "class": "xs-12 md-12"
         },
-
         {
           "label": "Widget.countryCode",
           "name": "{{flex}}{{key}}PartyCountryCode",
@@ -81,7 +80,6 @@
           "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyCountryCode",
           "props": {
             "resultProp": "name",
-
             "axiosParams": {
               "url": "api/code/query/code_master",
               "method": "POST",
@@ -98,7 +96,6 @@
             }
           }
         },
-
         {
           "label": "Widget.stateCode",
           "name": "{{flex}}{{key}}PartyStateCode",
@@ -107,7 +104,6 @@
           "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyStateCode",
           "props": {
             "resultProp": "name",
-
             "axiosParams": {
               "url": "api/code/query/code_master",
               "method": "POST",
@@ -124,7 +120,6 @@
             }
           }
         },
-
         {
           "label": "Widget.cityCode",
           "name": "{{flex}}{{key}}PartyCityCode",
@@ -133,7 +128,6 @@
           "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyCityCode",
           "props": {
             "resultProp": "name",
-
             "axiosParams": {
               "url": "api/code/query/code_master",
               "method": "POST",
@@ -150,7 +144,6 @@
             }
           }
         },
-
         {
           "label": "Widget.contactAddress",
           "name": "{{flex}}{{key}}PartyAddress",
@@ -158,7 +151,6 @@
           "class": "xs-12 md-12",
           "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyAddress"
         },
-
         {
           "label": "Widget.contactName",
           "name": "{{flex}}{{key}}PartyContactName",
@@ -166,7 +158,6 @@
           "class": "xs-12 md-12",
           "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyContactName"
         },
-
         {
           "label": "Widget.contactPhone",
           "name": "{{flex}}{{key}}PartyContactPhone",
@@ -174,7 +165,6 @@
           "class": "xs-12 md-12",
           "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyContactPhone"
         },
-
         {
           "label": "Widget.contactEmail",
           "name": "{{flex}}{{key}}PartyContactEmail",
