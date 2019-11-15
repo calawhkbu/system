@@ -16,8 +16,8 @@
         "back": true,
         "newReport": {
           "filters": {
-            "invitationStatus" : {
-              "value" :  ["sent","accepted"]
+            "invitationStatus": {
+              "value": ["sent", "accepted"]
             }
           },
           "configurations": {
@@ -48,16 +48,16 @@
           },
 
           {
-            "label" : "status",
+            "label": "status",
             "key": "invitationStatus",
             "width": 150
           },
 
           {
-            "label" : "",
+            "label": "",
             "key": "can_resend",
-            "sortable" : false,
-            "clickFunction" : {
+            "sortable": false,
+            "clickFunction": {
               "type": "axios",
               "otherParams": {
                 "axiosParams": {
@@ -75,27 +75,26 @@
               ]
             },
 
-            "tdComponent" : {
-              "props" : {
-                "slotComponents" :[
+            "tdComponent": {
+              "props": {
+                "slotComponents": [
                   {
-                    "is" : "icon",
-                    "props" : {
-                      "icon" : "email"
+                    "is": "icon",
+                    "props": {
+                      "icon": "email"
                     }
-                  } 
+                  }
                 ]
-
               }
             },
             "width": 50
           },
 
           {
-            "label" : "",
+            "label": "",
             "key": "can_delete",
-            "sortable" : false,
-            "clickFunction" : {
+            "sortable": false,
+            "clickFunction": {
               "type": "axios",
               "otherParams": {
                 "axiosParams": {
@@ -113,27 +112,26 @@
               ]
             },
 
-            "tdComponent" : {
-              "props" : {
-                "slotComponents" :[
+            "tdComponent": {
+              "props": {
+                "slotComponents": [
                   {
-                    "is" : "icon",
-                    "props" : {
-                      "icon" : "delete"
+                    "is": "icon",
+                    "props": {
+                      "icon": "delete"
                     }
-                  } 
+                  }
                 ]
-
               }
             },
             "width": 50
           },
 
           {
-            "label" : "",
+            "label": "",
             "key": "can_restore",
-            "sortable" : false,
-            "clickFunction" : {
+            "sortable": false,
+            "clickFunction": {
               "type": "axios",
               "otherParams": {
                 "axiosParams": {
@@ -151,17 +149,16 @@
               ]
             },
 
-            "tdComponent" : {
-              "props" : {
-                "slotComponents" :[
+            "tdComponent": {
+              "props": {
+                "slotComponents": [
                   {
-                    "is" : "icon",
-                    "props" : {
-                      "icon" : "refresh"
+                    "is": "icon",
+                    "props": {
+                      "icon": "refresh"
                     }
-                  } 
+                  }
                 ]
-
               }
             },
             "width": 50
@@ -189,7 +186,7 @@
             "display": "status",
             "name": "invitationStatus",
             "props": {
-              "multi" : true,
+              "multi": true,
               "i18nContext": "InvitationStatus",
               "items": [
                 {
