@@ -7,7 +7,10 @@
             "name": "templateName",
             "component": "v-text-field",
             "class": "xs-12",
-            "canEdit": "return mode === 'create' "
+            "canEdit": "return false",
+            "props": {
+              "disable": true
+            }
           },
           {
             "label": "TemplatePage.format",
@@ -32,7 +35,6 @@
             }
           }
         },
-
         "downloadParams": {
           "fileName": "{{context.$store.state.widget.data.templateName}}",
           "extension": "{{context.$store.state.widget.data.extension}}",

@@ -1,0 +1,14 @@
+{
+  "class": "grid",
+  "components": [{
+    "is": "DynamicComponent",
+    "props": {
+      "components": []
+    }
+  }, {
+    "is": "WidgetForm",
+    "props": {
+      "fields": []
+    }
+  }]
+}

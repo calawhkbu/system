@@ -17,11 +17,11 @@
           },
           "saveAxiosParams": {
             "method": "post",
-            "url": "api/template"
+            "url": "api/template/upload"
           },
           "primaryKey": "id",
           "modeFunction": "const modes = ['create', 'detail','edit']\nconst selectedMode = isNaN(Number(mode)) ? mode : 'detail'\n          if (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
-          "haveTermOnCreate": true,
+          "haveTermOnCreate": false,
           "haveTermOnEdit": false,
           "widgetComponentSetting": {
             "quick-create": {

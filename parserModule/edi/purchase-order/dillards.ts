@@ -4247,8 +4247,8 @@ export default class Edi850Parser extends BaseEdiParser {
             for (const PO1 of po1) {
               // k<ST['PO1'].length
               const product: any = {
-                sdqQuantityPerPackage: _.get(PO1, 'SDQ.quantity'),
-                po4QuantityPerPackage: _.get(PO1, 'PO4.grossVolumePerPack'),
+                // sdqQuantityPerPackage: _.get(PO1, 'SDQ.quantity'),
+                quantityPerPackage: _.get(PO1, 'PO4.grossVolumePerPack'),
                 productDescription: _.get(PO1, 'PID.description'),
                 quantity: _.get(PO1, 'quantityOrdered'),
                 quantityUnit: _.get(PO1, 'unitOfMeasureCode'),
