@@ -64,7 +64,7 @@
             "is": "AsyncComponent",
             "props": {
               "class": "margin-topbottom-4 xs-12",
-              "layoutName": "template/forms/general"
+              "layoutName": "template/forms/template-create"
             }
           }
         ]

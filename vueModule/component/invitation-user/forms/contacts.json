@@ -47,7 +47,7 @@
                   }
                 },
                 {
-                  "label": "InvitationPage.contentContent",
+                  "label": "InvitationPage.contactContent",
                   "name": "content",
                   "component": "v-text-field"
                 }

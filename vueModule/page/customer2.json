@@ -1,0 +1,71 @@
+{
+  "components": [
+    {
+      "is": "Widget",
+      "props": {
+        "initUrl": "api/partyGroup/{{id}}",
+        "saveUrl": "api/partyGroup",
+        "primaryKey": "id",
+        "type": "partyGroup",
+        "modes": ["assignment", "edit"],
+        "top": {
+          "assignment": [
+            {
+              "is": "v-btn",
+              "props": {
+                "flat": true,
+                "icon": true
+              },
+              "events": {
+                "click.stop": [
+                  {
+                    "type": "router",
+                    "otherParams": {
+                      "func": "push",
+                      "path": "/admin"
+                    }
+                  }
+                ]
+              },
+              "slots": [
+                {
+                  "is": "Icon",
+                  "props": {
+                    "icon": "arrow_back"
+                  }
+                }
+              ]
+            },
+            {
+              "is": "DynamicComponent",
+              "props": {
+                "style": {
+                  "align-items": "center",
+                  "box-sizing": "border-box",
+                  "position": "sticky",
+                  "justify-content": "center",
+                  "flex-shrink": 0,
+                  "display": "flex"
+                },
+                "components": [
+                  {},
+                  {
+                    "is": "span",
+                    "props": {
+                      "class": "flex-grow"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "edit": "assignment"
+        },
+        "components": {
+          "assignment": [],
+          "edit": "assignment"
+        }
+      }
+    }
+  ]
+}

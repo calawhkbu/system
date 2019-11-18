@@ -89,8 +89,8 @@
             "hint": "config.timeFormatHint"
           },
           {
-            "label": "config.defaultDateTimeFormat",
-            "name": "configuration.dateTimeFormat",
+            "label": "config.dateTimeFormat",
+            "name": "configuration.defaultDateTimeFormat",
             "component": "v-text-field",
             "class": "xs-12 md-4",
             "hint": "config.dateTimeFormatHint"
