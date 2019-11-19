@@ -467,6 +467,16 @@ export default class EdiParser856 extends BaseEdiParser {
               }
             }
           }
+          const invoiceNo = _.get(element, 'referenceNumber')
+          if (invoiceNo)
+          {
+            const REF: JSONObject = {
+              segement : 'REF',
+              elementList : []
+            }
+            REF.elementList.push('IK', invoiceNo)
+            loopObjectList.push(REF)
+          }
           while (itemIndex < totalItemNo)
           {
             const HLI: JSONObject = {
@@ -540,7 +550,7 @@ export default class EdiParser856 extends BaseEdiParser {
             index++
             itemIndex++
           }
-          i += index
+          i += itemIndex + 1
         }
       }
     }
