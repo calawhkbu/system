@@ -16,7 +16,7 @@ const app = {
     app.constants.url = `${api.wms.url}/getschrptlist`
     return `${api.wms.url}/getschrptdata`
   },
-  requestHandler: ({ api, id, getPostProcessFunc, partyGroup }: any, params: any) => {
+  requestHandler: ({ id, getPostProcessFunc, partyGroup }: any, params: any) => {
     app.constants.partyGroup = partyGroup
     app.constants.getPostProcessFunc = getPostProcessFunc
     if (!params.subqueries || !params.subqueries.type) throw new BadRequestException()
@@ -27,7 +27,7 @@ const app = {
       body: JSON.stringify({
         zyh: app.constants.zyh = id,
         zyd: app.constants.zyd = params.subqueries.type.value,
-        ...(api.wms.body || {}),
+        ...(partyGroup.api.wms.body || {}),
       }),
     }
   },
@@ -46,6 +46,9 @@ const app = {
       method: 'POST',
       url,
       headers: { 'content-type': 'application/json' },
+      data: {
+        ...(partyGroup.api.wms.body || {}),
+      },
     })
     const cards = JSON.parse(axiosResponse.data.d) as any[]
     const baseCard = cards.filter(c => c.zyh === zyh)
