@@ -13,7 +13,7 @@
         "showFilterBar": true,
         "enableShare": false,
         "enableSetting": true,
-        "back": true,
+        "back": "/admin",
         "newReport": {
           "filters": {
             "invitationStatus": {
