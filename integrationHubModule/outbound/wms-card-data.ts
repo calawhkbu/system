@@ -30,7 +30,7 @@ const app = {
     const card = (app.constants.card = responseBody[0])
     return card.dlink
   },
-  requestHandler: ({ api, getPostProcessFunc, partyGroup, user }: any): any => {
+  requestHandler: ({ getPostProcessFunc, partyGroup, user }: any): any => {
     app.constants.getPostProcessFunc = getPostProcessFunc
     app.constants.partyGroup = partyGroup
     app.constants.user = user
@@ -39,7 +39,7 @@ const app = {
         'content-type': 'application/json',
       },
     } as any
-    if (api.wms.body) result.body = JSON.stringify(api.wms.body)
+    if (partyGroup.api.wms.body) result.body = JSON.stringify(partyGroup.api.wms.body)
     return result
   },
   responseHandler: async(
