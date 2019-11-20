@@ -1,0 +1,29 @@
+{
+    "components": [{
+        "is": "WidgetForm",
+        "props": {
+          "fields": [
+            {
+              "label": "RolePage.roleName",
+              "name": "roleName",
+              "component": "v-text-field",
+              "class": "xs-12"
+            },
+            {
+                "label": "RolePage.filter",
+                "name": "filter",
+                "component": "JsonField",
+                "class": "xs-12"
+            },
+
+            {
+                "label": "RolePage.canMultiSelect",
+                "name": "canMultiSelect",
+                "component": "BooleanField",
+                "class": "xs-12"
+            }
+          ]
+        }
+      }
+    ]
+  }

@@ -1,69 +1,47 @@
 {
+  "fillParent": true,
   "components": [
     {
       "is": "Widget",
       "props": {
-        "initUrl": "api/role/{{id}}",
-        "saveUrl": "api/role",
-        "primaryKey": "id",
-        "top": {
-          "assignment": [
-            {
-              "is": "v-btn",
-              "props": {
-                "flat": true,
-                "icon": true
-              },
-              "events": {
-                "click.stop": [
-                  {
-                    "type": "router",
-                    "otherParams": {
-                      "func": "push",
-                      "path": "/roles"
-                    }
-                  }
-                ]
-              },
-              "slots": [
-                {
-                  "is": "Icon",
-                  "props": {
-                    "icon": "arrow_back"
-                  }
-                }
-              ]
+        "settingProp": {
+          "initAxiosParams": {
+            "url": "api/role/{{context.$route.params.params}}"
+          },
+          "defaultAxiosParams": {
+            "url": "default/role"
+          },
+          "validateAxiosParams": {
+            "method": "post",
+            "url": "api/role/validate/{{id}}"
+          },
+          "saveAxiosParams": {
+            "method": "post",
+            "url": "api/role"
+          },
+          "primaryKey": "id",
+          "modeFunction": "const modes = ['create', 'detail','edit']\nconst selectedMode = isNaN(Number(mode)) ? mode : 'detail'\n          if (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
+          "haveTermOnCreate": false,
+          "haveTermOnEdit": false,
+          "widgetComponentSetting": {
+            "quick-create": {
+              "readonly": false
             },
-            {
-              "is": "I18nText",
-              "props": {
-                "class": "headline",
-                "i18nKey": "RolePage.title",
-                "swig": true
-              }
+            "create": {
+              "readonly": false,
+              "stepper": 0,
+              "next": false,
+              "saveIcon": "create"
+            },
+            "detail": {
+              "readonly": true
+            },
+            "edit": {
+              "readonly": false,
+              "stepper": 0,
+              "saveIcon": "save"
             }
-          ]
-        },
-        "components": {
-          "assignment": [
-            {
-              "is": "div",
-              "props": {
-                "style": {
-                  "padding-right": "4px"
-                }
-              },
-              "slots": [
-                {
-                  "name": "default",
-                  "is": "DynamicComponent",
-                  "props": {
-                    "components": []
-                  }
-                }
-              ]
-            }
-          ]
+          }
         }
       }
     }
