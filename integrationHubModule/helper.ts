@@ -71,6 +71,37 @@ const app = {
     }))
   },
 
+  // parse cards
+  parseCards(responseBody: any[], api: string, category: string) {
+    return responseBody.reduce<any[]>((result, row) => {
+      const card = result.find(({ id }) => id === row.zyh)
+      if (!card) {
+        result.push({
+          id: row.zyh,
+          reportingKey: 'dashboard',
+          api,
+          category,
+          name: row.title,
+          component: {
+            props: {
+              defaultParams: {
+                filters: {
+                  type: {
+                    value: row.zyd,
+                  },
+                },
+              },
+            },
+          },
+          layouts: {
+            __BASE__: { h: 12, w: 6 },
+          },
+        })
+      }
+      return result
+    }, [])
+  },
+
   /*******************************/
   // ERP helper functions
   /*******************************/
