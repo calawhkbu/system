@@ -411,7 +411,7 @@ export default class EdiParser856 extends BaseEdiParser {
             ONE: 'ONEY',
           }
           const scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode.toString().length)}`
-          if (_.get(subPoList[0], 'portOfLoading'))
+          if (_.get(subPoList[0], 'portOfLoading') || _.get(element, 'portOfLoading'))
           {
             const TD5: JSONObject = {
               segement : 'TD5',
@@ -424,10 +424,10 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push(' ') // not used
             TD5.elementList.push('  ') // not used
             TD5.elementList.push('OR')
-            TD5.elementList.push(_.get(subPoList[0], 'portOfLoading').substring(0, 30))
+            TD5.elementList.push((_.get(subPoList[0], 'portOfLoading') || _.get(element, 'portOfLoading')).substring(0, 30))
             loopObjectList.push(TD5)
           }
-          if (_.get(subPoList[0], 'portOfDischarge'))
+          if (_.get(subPoList[0], 'portOfDischarge') || _.get(element, 'portOfDischarge'))
           {
             const TD5: JSONObject = {
               segement : 'TD5',
@@ -440,7 +440,7 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push(' ') // not used
             TD5.elementList.push('  ') // not used
             TD5.elementList.push('DL')
-            TD5.elementList.push(_.get(subPoList[0], 'portOfDischarge').substring(0, 30))
+            TD5.elementList.push((_.get(subPoList[0], 'portOfDischarge') || _.get(element, 'portOfDischarge')).substring(0, 30))
             loopObjectList.push(TD5)
           }
 
@@ -466,6 +466,16 @@ export default class EdiParser856 extends BaseEdiParser {
                 loopObjectList.push(REF)
               }
             }
+          }
+          const invoiceNo = _.get(element, 'referenceNumber')
+          if (invoiceNo)
+          {
+            const REF: JSONObject = {
+              segement : 'REF',
+              elementList : []
+            }
+            REF.elementList.push('IK', invoiceNo)
+            loopObjectList.push(REF)
           }
           while (itemIndex < totalItemNo)
           {
@@ -540,7 +550,7 @@ export default class EdiParser856 extends BaseEdiParser {
             index++
             itemIndex++
           }
-          i += index
+          i += itemIndex + 1
         }
       }
     }

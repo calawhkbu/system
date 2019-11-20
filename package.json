@@ -15,10 +15,20 @@
     "typescript": "^3.6.3"
   },
   "scripts": {
-    "lint": "tslint -p tsconfig.json -c tslint.json",
-    "format": "yarn format:ts \"**/*.{ts,js}\" && yarn format:json \"**/*.json\"; yarn lint --fix",
-    "format:ts": "prettier --config .prettierrc.ts.json --write",
-    "format:json": "prettier --config .prettierrc.json.json --write",
+    "prepare": "mkdir node_modules;yarn prepare:bin;yarn prepare:nest;yarn prepare:types;yarn prepare:axios;yarn prepare:classes;yarn prepare:lodash;yarn prepare:modules;yarn prepare:moment;yarn prepare:node-jql;yarn prepare:node-jql-core;yarn prepare:sequelize;yarn prepare:tslint;yarn prepare:typescript",
+    "prepare:bin": "ln -s ../../../swivel-backend-new/node_modules/.bin node_modules/.bin",
+    "prepare:nest": "ln -s ../../../swivel-backend-new/node_modules/@nestjs node_modules/@nestjs",
+    "prepare:types": "ln -s ../../../swivel-backend-new/node_modules/@types node_modules/@types",
+    "prepare:axios": "ln -s ../../../swivel-backend-new/node_modules/axios node_modules/axios",
+    "prepare:classes": "ln -s ../../../swivel-backend-new/src/classes node_modules/classes",
+    "prepare:lodash": "ln -s ../../../swivel-backend-new/node_modules/lodash node_modules/lodash",
+    "prepare:modules": "ln -s ../../../swivel-backend-new/src/modules node_modules/modules",
+    "prepare:moment": "ln -s ../../../swivel-backend-new/node_modules/moment node_modules/moment",
+    "prepare:node-jql": "ln -s ../../../swivel-backend-new/node_modules/node-jql node_modules/node-jql",
+    "prepare:node-jql-core": "ln -s ../../../swivel-backend-new/node_modules/node-jql-core node_modules/node-jql-core",
+    "prepare:sequelize": "ln -s ../../../swivel-backend-new/node_modules/sequelize node_modules/sequelize",
+    "prepare:tslint": "ln -s ../../../swivel-backend-new/node_modules/tslint node_modules/tslint",
+    "prepare:typescript": "ln -s ../../../swivel-backend-new/node_modules/typescript node_modules/typescript",
     "export": "node export"
   }
 }

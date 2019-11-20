@@ -19,6 +19,9 @@
             "label": "TemplatePage.format",
             "name": "base64String",
             "component": "FileField",
+            "props" : {
+              "convertBase64" : true
+            },
             "class": "xs-12"
           }
         ]

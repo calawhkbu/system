@@ -278,7 +278,7 @@ export default class EdiParser997 extends BaseEdiParser {
       let noEmpty = false
       for (const element of data[i].elementList)
       {
-        if (element.trim())
+        if (!element || element.trim())
         {
           noEmpty = true
           break

@@ -13,38 +13,12 @@ export default {
       },
     }
   },
-  responseHandler: (response: { responseBody: any; responseOptions: any }) => {
+  responseHandler: (response: { responseBody: any; responseOptions: any }, helper: { [key: string]: Function }) => {
     // parse results
     let responseBody = JSON.parse(JSON.parse(response.responseBody).d) as any[]
 
     // reformat
-    responseBody = responseBody.reduce<any[]>((result, row) => {
-      const card = result.find(({ id }) => id === row.zyh)
-      if (!card) {
-        result.push({
-          id: row.zyh,
-          reportingKey: 'dashboard',
-          api: 'erp',
-          category: 'Swivel ERP',
-          name: row.title,
-          component: {
-            props: {
-              defaultParams: {
-                filters: {
-                  type: {
-                    value: row.zyd,
-                  },
-                },
-              },
-            },
-          },
-          layouts: {
-            __BASE__: { h: 12, w: 6 },
-          },
-        })
-      }
-      return result
-    }, [])
+    responseBody = helper.parseCards(responseBody, 'erp', 'Swivel ERP')
 
     return { ...response, responseBody }
   },
