@@ -6,7 +6,7 @@
       "props": {
         "fields": [
           {
-            "label": "InvitationPage.email",
+            "label": "InvitationPage.userName",
             "name": "person.userName",
             "component": "v-text-field",
             "class": "xs-6",
@@ -38,7 +38,7 @@
             "class": "xs-6"
           },
           {
-            "label": "InvitationAndUserForm.Parties",
+            "label": "InvitationPage.parties",
             "name": "person.parties",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-6",
@@ -65,7 +65,7 @@
             }
           },
           {
-            "label": "InvitationAndUserForm.Roles",
+            "label": "InvitationPage.roles",
             "name": "person.roles",
             "component": "AsyncAutoSuggest",
             "props": {

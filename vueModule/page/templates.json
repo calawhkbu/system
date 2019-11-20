@@ -1,4 +1,5 @@
 {
+  "fillParent": true,
   "components": [
     {
       "is": "TableTool",
@@ -27,6 +28,22 @@
             }
           }
         },
+
+        "icons": [
+          {
+            "icon": "add",
+            "click": [
+              {
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/template/create"
+                }
+              }
+            ]
+          }
+        ],
+
         "fieldOptions": [
           {
             "key": "id",

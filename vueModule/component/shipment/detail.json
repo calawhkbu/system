@@ -1,100 +1,88 @@
 {
   "class": "grid",
-  "components": [
-    {
+  "components": [{
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 grid align-item-center padding-4",
-        "components": [
-          {
-            "is": "DynamicComponent",
-            "props": {
-              "class": "xs-12 align-item-center flex",
-              "components": [
-                {
-                  "is": "v-btn",
+        "components": [{
+          "is": "DynamicComponent",
+          "props": {
+            "class": "xs-12 align-item-center flex",
+            "components": [{
+                "is": "v-btn",
+                "props": {
+                  "flat": true,
+                  "icon": true
+                },
+                "slots": [{
+                  "is": "Icon",
                   "props": {
-                    "flat": true,
-                    "icon": true
-                  },
-                  "slots": [
-                    {
-                      "is": "Icon",
-                      "props": {
-                        "icon": "arrow_back"
-                      }
-                    }
-                  ],
-                  "events": {
-                    "click.stop": [
-                      {
-                        "type": "router",
-                        "otherParams": {
-                          "func": "go",
-                          "go": -1
-                        }
-                      }
-                    ]
+                    "icon": "arrow_back"
                   }
-                },
-                {
-                  "is": "I18nText",
-                  "if": "return context.$vuetify.breakpoint.mdAndUp",
-                  "props": {
-                    "class": "title hidden-xs-only hidden-sm-only",
-                    "i18nKey": "ShipmentPage.title",
-                    "i18nOptions": {
-                      "title": "{{context.$store.state.widget.data.houseNo}}"
+                }],
+                "events": {
+                  "click.stop": [{
+                    "type": "router",
+                    "otherParams": {
+                      "func": "go",
+                      "go": -1
                     }
-                  }
-                },
-                {
-                  "is": "I18nText",
-                  "if": "return !context.$vuetify.breakpoint.mdAndUp",
-                  "props": {
-                    "class": "subheading hidden-md-and-up",
-                    "i18nKey": "ShipmentPage.title",
-                    "i18nOptions": {
-                      "title": "{{context.$store.state.widget.data.houseNo}}"
-                    }
-                  }
-                },
-                {
-                  "is": "v-spacer"
-                },
-                {
-                  "is": "v-btn",
-                  "props": {
-                    "icon": true,
-                    "flat": true
-                  },
-                  "slots": [
-                    {
-                      "is": "Icon",
-                      "props": {
-                        "icon": "map"
-                      }
-                    }
-                  ],
-                  "events": {
-                    "click.stop": [
-                      {
-                        "type": "dispatch",
-                        "otherParams": {
-                          "name": "widget/changeMode",
-                          "mode": "map"
-                        }
-                      }
-                    ]
-                  }
-                },
-                {
-                  "is": "BookmarkButton"
+                  }]
                 }
-              ]
-            }
+              },
+              {
+                "is": "I18nText",
+                "if": "return context.$vuetify.breakpoint.mdAndUp",
+                "props": {
+                  "class": "title hidden-xs-only hidden-sm-only",
+                  "i18nKey": "ShipmentPage.title",
+                  "i18nOptions": {
+                    "title": "{{context.$store.state.widget.data.houseNo}}"
+                  }
+                }
+              },
+              {
+                "is": "I18nText",
+                "if": "return !context.$vuetify.breakpoint.mdAndUp",
+                "props": {
+                  "class": "subheading hidden-md-and-up",
+                  "i18nKey": "ShipmentPage.title",
+                  "i18nOptions": {
+                    "title": "{{context.$store.state.widget.data.houseNo}}"
+                  }
+                }
+              },
+              {
+                "is": "v-spacer"
+              },
+              {
+                "is": "v-btn",
+                "props": {
+                  "icon": true,
+                  "flat": true
+                },
+                "slots": [{
+                  "is": "Icon",
+                  "props": {
+                    "icon": "map"
+                  }
+                }],
+                "events": {
+                  "click.stop": [{
+                    "type": "dispatch",
+                    "otherParams": {
+                      "name": "widget/changeMode",
+                      "mode": "map"
+                    }
+                  }]
+                }
+              },
+              {
+                "is": "BookmarkButton"
+              }
+            ]
           }
-        ]
+        }]
       }
     },
     {
@@ -102,20 +90,16 @@
       "if": "return !context.$vuetify.breakpoint.mdAndUp",
       "props": {
         "show-arrows": true,
-        "tabComponents": [
-          {
-            "index": "general2",
-            "tabComponents": [
-              {
-                "is": "i18nText",
-                "props": {
-                  "i18nContext": "ShipmentPage",
-                  "i18nKey": "General"
-                }
+        "tabComponents": [{
+            "index": "general",
+            "tabComponents": [{
+              "is": "i18nText",
+              "props": {
+                "i18nContext": "ShipmentPage",
+                "i18nKey": "General"
               }
-            ],
-            "tabItemComponents": [
-              {
+            }],
+            "tabItemComponents": [{
                 "is": "AsyncComponent",
                 "props": {
                   "layoutName": "plugins/tracking0"
@@ -123,77 +107,63 @@
               },
               {
                 "is": "v-card",
-                "slots": [
-                  {
-                    "is": "AsyncComponent",
-                    "props": {
-                      "layoutName": "shipment/forms/generalForm"
-                    }
+                "slots": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "shipment/forms/generalForm"
                   }
-                ]
+                }]
               },
               {
                 "is": "v-card",
-                "slots": [
-                  {
-                    "is": "AsyncComponent",
-                    "props": {
-                      "layoutName": "shipment/forms/containerForm"
-                    }
+                "slots": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "shipment/forms/containerForm"
                   }
-                ]
+                }]
               }
             ]
           },
           {
             "index": "partyAndDate",
-            "tabComponents": [
-              {
-                "is": "I18nText",
-                "props": {
-                  "i18nContext": "ShipmentPage",
-                  "i18nKey": "partyAndDate"
-                }
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "ShipmentPage",
+                "i18nKey": "partyAndDate"
               }
-            ],
-            "tabItemComponents": [
-              {
+            }],
+            "tabItemComponents": [{
                 "is": "v-card",
-                "slots": [
-                  {
-                    "is": "AsyncComponent",
-                    "props": {
-                      "layoutName": "shipment/forms/partyForm"
-                    }
+                "slots": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "shipment/forms/partyForm"
                   }
-                ]
+                }]
               },
               {
                 "is": "v-card",
-                "slots": [
-                  {
-                    "is": "AsyncComponent",
-                    "props": {
-                      "layoutName": "shipment/forms/dateForm"
-                    }
+                "slots": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "shipment/forms/dateForm"
                   }
-                ]
+                }]
               }
             ]
           },
           {
             "index": "alertAndDocument",
-            "tabComponents": [
-              {
-                "is": "I18nText",
-                "props": {
-                  "i18nContext": "ShipmentPage",
-                  "i18nKey": "alertAndDocument"
-                }
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "ShipmentPage",
+                "i18nKey": "alertAndDocument"
               }
-            ],
-            "tabItemComponents": [
-              {
+            }],
+            "tabItemComponents": [{
                 "is": "AsyncComponent",
                 "props": {
                   "layoutName": "plugins/alert0"
@@ -216,117 +186,97 @@
       "props": {
         "class": "xs-12 md-8 padding-left-8 padding-right-8"
       },
-      "slots": [
-        {
+      "slots": [{
           "is": "DynamicComponent",
           "props": {
             "class": "grid margin-bottom-8",
-            "components": [
-              {
+            "components": [{
                 "is": "div",
                 "props": {
                   "class": "xs-12 md-6 padding-right-4"
                 },
-                "slots": [
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "layout": "v-card",
-                      "components": [
-                        {
-                          "is": "MouseHidden",
-                          "slots": [
-                            {
-                              "is": "DynamicComponent",
+                "slots": [{
+                  "is": "DynamicComponent",
+                  "props": {
+                    "layout": "v-card",
+                    "components": [{
+                      "is": "MouseHidden",
+                      "slots": [{
+                        "is": "DynamicComponent",
+                        "props": {
+                          "components": [{
+                              "is": "v-card-title",
                               "props": {
-                                "components": [
-                                  {
-                                    "is": "v-card-title",
-                                    "props": {
-                                      "primary-title": true,
-                                      "class": "padding-4 min-height-48 bold uppercase"
-                                    },
-                                    "slots": [
-                                      {
-                                        "is": "I18nText",
-                                        "props": {
-                                          "i18nContext": "ShipmentPage",
-                                          "i18nKey": "PartyForm"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "is": "v-divider"
-                                  },
-                                  {
-                                    "is": "AsyncComponent",
-                                    "props": {
-                                      "layoutName": "shipment/forms/partyForm"
-                                    }
-                                  }
-                                ]
+                                "primary-title": true,
+                                "class": "padding-4 min-height-48 bold uppercase"
+                              },
+                              "slots": [{
+                                "is": "I18nText",
+                                "props": {
+                                  "i18nContext": "ShipmentPage",
+                                  "i18nKey": "PartyForm"
+                                }
+                              }]
+                            },
+                            {
+                              "is": "v-divider"
+                            },
+                            {
+                              "is": "AsyncComponent",
+                              "props": {
+                                "layoutName": "shipment/forms/partyForm"
                               }
                             }
                           ]
                         }
-                      ]
-                    }
+                      }]
+                    }]
                   }
-                ]
+                }]
               },
               {
                 "is": "div",
                 "props": {
                   "class": "xs-12 md-6 padding-left-4"
                 },
-                "slots": [
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "layout": "v-card",
-                      "components": [
-                        {
-                          "is": "MouseHidden",
-                          "slots": [
-                            {
-                              "is": "DynamicComponent",
+                "slots": [{
+                  "is": "DynamicComponent",
+                  "props": {
+                    "layout": "v-card",
+                    "components": [{
+                      "is": "MouseHidden",
+                      "slots": [{
+                        "is": "DynamicComponent",
+                        "props": {
+                          "components": [{
+                              "is": "v-card-title",
                               "props": {
-                                "components": [
-                                  {
-                                    "is": "v-card-title",
-                                    "props": {
-                                      "primary-title": true,
-                                      "class": "padding-4 min-height-48 bold uppercase"
-                                    },
-                                    "slots": [
-                                      {
-                                        "is": "I18nText",
-                                        "props": {
-                                          "i18nContext": "ShipmentPage",
-                                          "i18nKey": "DateForm"
-                                        }
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    "is": "v-divider"
-                                  },
-                                  {
-                                    "is": "AsyncComponent",
-                                    "props": {
-                                      "layoutName": "shipment/forms/dateForm"
-                                    }
-                                  }
-                                ]
+                                "primary-title": true,
+                                "class": "padding-4 min-height-48 bold uppercase"
+                              },
+                              "slots": [{
+                                "is": "I18nText",
+                                "props": {
+                                  "i18nContext": "ShipmentPage",
+                                  "i18nKey": "DateForm"
+                                }
+                              }]
+                            },
+                            {
+                              "is": "v-divider"
+                            },
+                            {
+                              "is": "AsyncComponent",
+                              "props": {
+                                "layoutName": "shipment/forms/dateForm"
                               }
                             }
                           ]
                         }
-                      ]
-                    }
+                      }]
+                    }]
                   }
-                ]
+                }]
               }
             ]
           }
@@ -336,45 +286,38 @@
           "props": {
             "layout": "v-card",
             "class": "margin-topbottom-8",
-            "components": [
-              {
-                "is": "MouseHidden",
-                "slots": [
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "components": [
-                        {
-                          "is": "v-card-title",
-                          "props": {
-                            "primary-title": true,
-                            "class": "padding-4 min-height-48 bold uppercase"
-                          },
-                          "slots": [
-                            {
-                              "is": "I18nText",
-                              "props": {
-                                "i18nContext": "ShipmentPage",
-                                "i18nKey": "GeneralForm"
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "is": "v-divider"
-                        },
-                        {
-                          "is": "AsyncComponent",
-                          "props": {
-                            "layoutName": "shipment/forms/generalForm"
-                          }
+            "components": [{
+              "is": "MouseHidden",
+              "slots": [{
+                "is": "DynamicComponent",
+                "props": {
+                  "components": [{
+                      "is": "v-card-title",
+                      "props": {
+                        "primary-title": true,
+                        "class": "padding-4 min-height-48 bold uppercase"
+                      },
+                      "slots": [{
+                        "is": "I18nText",
+                        "props": {
+                          "i18nContext": "ShipmentPage",
+                          "i18nKey": "GeneralForm"
                         }
-                      ]
+                      }]
+                    },
+                    {
+                      "is": "v-divider"
+                    },
+                    {
+                      "is": "AsyncComponent",
+                      "props": {
+                        "layoutName": "shipment/forms/generalForm"
+                      }
                     }
-                  }
-                ]
-              }
-            ]
+                  ]
+                }
+              }]
+            }]
           }
         },
         {
@@ -382,57 +325,49 @@
           "props": {
             "layout": "v-card",
             "class": "margin-topbottom-8",
-            "components": [
-              {
-                "is": "MouseHidden",
-                "slots": [
-                  {
-                    "name": "hidden",
-                    "is": "DynamicComponent",
-                    "props": {
-                      "class": "flex max-height-0",
-                      "components": [
-                        {
-                          "is": "v-spacer"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "is": "DynamicComponent",
-                    "props": {
-                      "components": [
-                        {
-                          "is": "v-card-title",
-                          "props": {
-                            "primary-title": true,
-                            "class": "padding-4 min-height-48 bold uppercase"
-                          },
-                          "slots": [
-                            {
-                              "is": "I18nText",
-                              "props": {
-                                "i18nContext": "ShipmentPage",
-                                "i18nKey": "ContainerForm"
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          "is": "v-divider"
-                        },
-                        {
-                          "is": "AsyncComponent",
-                          "props": {
-                            "layoutName": "shipment/forms/containerForm"
-                          }
-                        }
-                      ]
-                    }
+            "components": [{
+              "is": "MouseHidden",
+              "slots": [{
+                  "name": "hidden",
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "flex max-height-0",
+                    "components": [{
+                      "is": "v-spacer"
+                    }]
                   }
-                ]
-              }
-            ]
+                },
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "components": [{
+                        "is": "v-card-title",
+                        "props": {
+                          "primary-title": true,
+                          "class": "padding-4 min-height-48 bold uppercase"
+                        },
+                        "slots": [{
+                          "is": "I18nText",
+                          "props": {
+                            "i18nContext": "ShipmentPage",
+                            "i18nKey": "ContainerForm"
+                          }
+                        }]
+                      },
+                      {
+                        "is": "v-divider"
+                      },
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "shipment/forms/containerForm"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }]
           }
         }
       ]
@@ -443,8 +378,7 @@
       "props": {
         "class": "xs-12 md-4 padding-leftright-8"
       },
-      "slots": [
-        {
+      "slots": [{
           "is": "AsyncComponent",
           "props": {
             "class": "xs-12 margin-topbottom-4",

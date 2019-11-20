@@ -4,7 +4,7 @@ const query = new Query({
   $from: new FromTable(
     {
       method: 'POST',
-      url: 'api/role',
+      url: 'api/role/query/role',
       columns: [
         {
           name: 'id',

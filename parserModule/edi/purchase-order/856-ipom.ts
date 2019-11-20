@@ -6,6 +6,8 @@ import { EdiFormatJson } from 'modules/edi/interface'
 
 const moment = require('moment')
 const _ = require('lodash')
+const {from} = require('rxjs')
+const {groupBy, mergeMap, toArray} = require('rxjs/operators')
 
 export const formatJson = {
   removeCharacter: [],
@@ -79,7 +81,8 @@ export default class EdiParser856 extends BaseEdiParser {
       BSN.elementList.push('0004')
       data.push(BSN)
       const loopObjectList: any[] = []
-      const getNumOfLoopItem = 2 + (_.get(element, 'bookingPOPackings').length)
+      console.log(_.get(element, 'bookingPopackings'))
+      const getNumOfLoopItem = 1 + (_.get(element, 'bookingPOPackings').length) + this.getNumOfPo(_.get(element, 'bookingPOPackings'))
       loopObjectList.push(this.getLoopObject(loopObjectList, getNumOfLoopItem, element))
       const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
       data.push(...filteredList)
@@ -172,8 +175,10 @@ export default class EdiParser856 extends BaseEdiParser {
             {
               totalShipUnit += _.get(booking, 'bookQuantity')
             }
-
-            numberOfPacking += 1
+            if (_.get(booking, 'ctns'))
+            {
+              numberOfPacking += _.get(booking, 'ctns')
+            }
           }
           if (totalWeight > 0)
           {
@@ -214,13 +219,19 @@ export default class EdiParser856 extends BaseEdiParser {
               elementList: []
             }
             MEA.elementList.push('')// not used
-            MEA.elementList.push( 'WT', totalShipUnit.toString().substring(0, 20), 'PC')
+            MEA.elementList.push( 'SU', totalShipUnit.toString().substring(0, 20), 'PC')
             loopObjectList.push(MEA)
           }
         }
         const carrierCode = _.get(element, 'carrierCode')
         const pad2 = '    '
-        const scac = `${carrierCode}${pad2.substring(0, pad2.length - carrierCode.toString().length)}`
+        const scacMapper = {
+          MSC: 'MSCU',
+          HII: 'HLCU',
+          HSU: 'SUDU',
+          ONE: 'ONEY',
+        }
+        const scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode.toString().length)}`
         if (_.get(element, 'portOfLoading') || _.get(element, 'portOfDischarge') || _.get(element, 'placeOfReceiptCode'))
         {
           if (_.get(element, 'portOfLoading'))
@@ -292,16 +303,16 @@ export default class EdiParser856 extends BaseEdiParser {
               segement: 'TD3',
               elementList: []
             }
-            const isoCodeMapper = {
-              '20OT': 2251,
-              '40OT': 4351,
-              '40HRF': 4662,
-              '45HRF': 9532,
-              '20RF': 2232,
-              '40RF': 4332,
-              '40HC': 4500,
-              '45HC': 9500,
-            }
+            // const isoCodeMapper = {
+            //   '20OT': 2251,
+            //   '40OT': 4351,
+            //   '40HRF': 4662,
+            //   '45HRF': 9532,
+            //   '20RF': 2232,
+            //   '40RF': 4332,
+            //   '40HC': 4500,
+            //   '45HC': 9500,
+            // }
             TD3.elementList.push('  ') // not used
             TD3.elementList.push((_.get(container, 'containerNo') || ' ').substring(0, 4))
             TD3.elementList.push((_.get(container, 'containerNo') || ' ').substring(4, 10))
@@ -309,9 +320,7 @@ export default class EdiParser856 extends BaseEdiParser {
             {
               TD3.elementList.push('', '', '', '', '') // not used
               TD3.elementList.push(_.get(container, 'sealNo1'))
-              isoCodeMapper[_.get(container, 'containerType')]
-              ? TD3.elementList.push(isoCodeMapper[_.get(container, 'containerType')])
-              : null
+              TD3.elementList.push(_.get(container, 'isoNo'))
             }
             loopObjectList.push(TD3)
           }
@@ -358,107 +367,203 @@ export default class EdiParser856 extends BaseEdiParser {
       }
       else
       {
-        const HLO: JSONObject = {
-          segement : 'HL',
-          elementList : []
-        }
-        HLO.elementList.push(i.toString().substr(0, 12))
-        HLO.elementList.push('1')
-        HLO.elementList.push('O')
-        loopObjectList.push(HLO)
-        const PRF: JSONObject = {
-          segement : 'PRF',
-          elementList : []
-        }
-        PRF.elementList.push(_.get(element, 'poNo').substring(0, 10))
-        if (_.get(element, 'poDate'))
-        {
-          PRF.elementList.push('', '') // not used
-          PRF.elementList.push(moment(_.get(element, 'poDate')).format('YYYYMMDD'))
-        }
-        loopObjectList.push(PRF)
-
-        const ItemList = _.get(element, 'bookingPOPackings') // find packing# however in this case packing# same as Item #
-        const totalItemNo = ItemList.length
+        const ItemList = _.get(element, 'bookingPOPackings')
+        const source = from(ItemList)
+        const grouped = source.pipe(
+          groupBy(item => item.poNo),
+          // return each item in group as array
+          mergeMap(group => group.pipe(toArray()))
+        )
+        const poList = []
+        grouped.subscribe(val => poList.push(val))
+        console.log(poList)
+        // for (const groupValue of grouped)
+        // console.log(groupValue)
         let index = 1
-        let itemIndex = 0
-        while (index <=  totalItemNo)
+        for (const subPoList of poList)
         {
-          const HLI: JSONObject = {
+          let itemIndex = 0
+          const HLO: JSONObject = {
             segement : 'HL',
             elementList : []
           }
-          HLI.elementList.push((i + index).toString().substring(0, 12))
-          HLI.elementList.push(i.toString().substring(0, 12))
-          HLI.elementList.push('I')
-          loopObjectList.push(HLI)
-          const LIN: JSONObject = {
-            segement : 'LIN',
+          HLO.elementList.push(i.toString().substr(0, 12))
+          HLO.elementList.push('1')
+          HLO.elementList.push('O')
+          loopObjectList.push(HLO)
+          const PRF: JSONObject = {
+            segement : 'PRF',
             elementList : []
           }
-          LIN.elementList.push(index.toString().substring(0, 6))
-          LIN.elementList.push('SK')
-          LIN.elementList.push((_.get(ItemList[itemIndex], 'style') || ' ').substring(0, 30))
-          LIN.elementList.push('BO')
-          LIN.elementList.push((_.get(ItemList[itemIndex], 'colorDesc') || ' ').substring(0, 30))
-          LIN.elementList.push('IZ')
-          LIN.elementList.push((_.get(ItemList[itemIndex], 'size') || ' ').substring(0, 30))
-          LIN.elementList.push('')
-          LIN.elementList.push('')
-          LIN.elementList.push('')
-          LIN.elementList.push('')
-          loopObjectList.push(LIN)
-          const SLN: JSONObject = {
-            segement: 'SLN',
-            elementList : []
+          PRF.elementList.push(_.get(subPoList[0], 'poNo').substring(0, 10))
+          if (_.get(subPoList[0], 'poDate'))
+          {
+            PRF.elementList.push('', '') // not used
+            PRF.elementList.push(moment(_.get(subPoList[0], 'poDate')).format('YYYYMMDD'))
           }
-          SLN.elementList.push('1')
-          SLN.elementList.push('')// not used
-          SLN.elementList.push('I')
-          SLN.elementList.push((_.get(ItemList[itemIndex], 'bookQuantity') || ' ').toString().substring(0, 15))
-          SLN.elementList.push('PC')
-          loopObjectList.push(SLN)
-          if (_.get(ItemList[itemIndex], 'bookWeight'))
+          loopObjectList.push(PRF)
+          const carrierCode = _.get(element, 'carrierCode')
+          const pad2 = '    '
+          const scacMapper = {
+            MSC: 'MSCU',
+            HII: 'HLCU',
+            HSU: 'SUDU',
+            ONE: 'ONEY',
+          }
+          const scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode.toString().length)}`
+          if (_.get(subPoList[0], 'portOfLoading') || _.get(element, 'portOfLoading'))
+          {
+            const TD5: JSONObject = {
+              segement : 'TD5',
+              elementList : []
+            }
+            TD5.elementList.push('O')
+            TD5.elementList.push('2')
+            TD5.elementList.push(scac)
+            TD5.elementList.push('') // not used
+            TD5.elementList.push(' ') // not used
+            TD5.elementList.push('  ') // not used
+            TD5.elementList.push('OR')
+            TD5.elementList.push((_.get(subPoList[0], 'portOfLoading') || _.get(element, 'portOfLoading')).substring(0, 30))
+            loopObjectList.push(TD5)
+          }
+          if (_.get(subPoList[0], 'portOfDischarge') || _.get(element, 'portOfDischarge'))
+          {
+            const TD5: JSONObject = {
+              segement : 'TD5',
+              elementList : []
+            }
+            TD5.elementList.push('O')
+            TD5.elementList.push('2')
+            TD5.elementList.push(scac)
+            TD5.elementList.push('') // not used
+            TD5.elementList.push(' ') // not used
+            TD5.elementList.push('  ') // not used
+            TD5.elementList.push('DL')
+            TD5.elementList.push((_.get(subPoList[0], 'portOfDischarge') || _.get(element, 'portOfDischarge')).substring(0, 30))
+            loopObjectList.push(TD5)
+          }
+
+          // const ItemList = _.get(element, 'bookingPOPackings') // find packing# however in this case packing# same as Item #
+          const totalItemNo = subPoList.length
+
+          const bookingReferences = _.get(element, 'bookingReferences') || []
+          if (bookingReferences.length)
+          {
+            for (const ref of bookingReferences)
+            {
+              const refMapper = {
+                MBL: 'BM',
+              }
+              const refName = _.get(ref, 'refName')
+              if (refMapper[refName])
+              {
+                const REF: JSONObject = {
+                  segement : 'REF',
+                  elementList : []
+                }
+                REF.elementList.push(refMapper[refName], _.get(ref, 'refDescription'))
+                loopObjectList.push(REF)
+              }
+            }
+          }
+          const invoiceNo = _.get(element, 'referenceNumber')
+          if (invoiceNo)
+          {
+            const REF: JSONObject = {
+              segement : 'REF',
+              elementList : []
+            }
+            REF.elementList.push('IK', invoiceNo)
+            loopObjectList.push(REF)
+          }
+          while (itemIndex < totalItemNo)
+          {
+            const HLI: JSONObject = {
+              segement : 'HL',
+              elementList : []
+            }
+            HLI.elementList.push((i + itemIndex + 1).toString().substring(0, 12))
+            HLI.elementList.push(i.toString().substring(0, 12))
+            HLI.elementList.push('I')
+            loopObjectList.push(HLI)
+            const LIN: JSONObject = {
+              segement : 'LIN',
+              elementList : []
+            }
+            LIN.elementList.push(index.toString().substring(0, 6))
+            LIN.elementList.push('SK')
+            LIN.elementList.push((_.get(subPoList[itemIndex], 'style') || ' ').substring(0, 30))
+            LIN.elementList.push('BO')
+            LIN.elementList.push((_.get(subPoList[itemIndex], 'colorDesc') || ' ').substring(0, 30))
+            LIN.elementList.push('IZ')
+            LIN.elementList.push((_.get(subPoList[itemIndex], 'size') || ' ').substring(0, 30))
+            LIN.elementList.push('')
+            LIN.elementList.push('')
+            LIN.elementList.push('')
+            LIN.elementList.push('')
+            loopObjectList.push(LIN)
+            const SLN: JSONObject = {
+              segement: 'SLN',
+              elementList : []
+            }
+            SLN.elementList.push('1')
+            SLN.elementList.push('')// not used
+            SLN.elementList.push('I')
+            SLN.elementList.push((_.get(subPoList[itemIndex], 'bookQuantity') || ' ').toString().substring(0, 15))
+            SLN.elementList.push('PC')
+            loopObjectList.push(SLN)
+            if (_.get(ItemList[itemIndex], 'bookWeight'))
+              {
+                  const MEA: JSONObject = {
+                    segement: 'MEA',
+                    elementList: []
+                }
+                MEA.elementList.push('', 'WT', (_.get(subPoList[itemIndex], 'bookWeight') || ' ').toString().substring(0, 20),  'KG')
+                loopObjectList.push(MEA)
+              }
+            if (_.get(ItemList[itemIndex], 'bookVolume'))
             {
                 const MEA: JSONObject = {
                   segement: 'MEA',
                   elementList: []
               }
-              MEA.elementList.push('', 'WT', (_.get(ItemList[itemIndex], 'bookWeight') || ' ').toString().substring(0, 20),  'KG')
+              MEA.elementList.push('', 'VOL', (_.get(subPoList[itemIndex], 'bookQuantity') || ' ').toString().substring(0, 20),  'CO')
               loopObjectList.push(MEA)
             }
-          if (_.get(ItemList[itemIndex], 'bookVolume'))
-          {
+            const MEANUM: JSONObject = {
+              segement: 'MEA',
+              elementList: []
+            }
+            MEANUM.elementList.push('', 'NUM', (_.get(subPoList[itemIndex], 'ctns') || ' ').toString().substring(0, 20),  'CT')
+            loopObjectList.push(MEANUM)
+            if (_.get(ItemList[itemIndex], 'bookQuantity'))
+            {
               const MEA: JSONObject = {
-                segement: 'MEA',
-                elementList: []
+                  segement: 'MEA',
+                  elementList: []
+              }
+              MEA.elementList.push('', 'SU', (_.get(subPoList[itemIndex], 'bookQuantity') || ' ').toString().substring(0, 20),  'PC')
+              loopObjectList.push(MEA)
             }
-            MEA.elementList.push('', 'VOL', (_.get(ItemList[itemIndex], 'bookQuantity') || ' ').toString().substring(0, 20),  'CO')
-            loopObjectList.push(MEA)
-          }
-          const MEANUM: JSONObject = {
-            segement: 'MEA',
-            elementList: []
-          }
-          MEANUM.elementList.push('', 'NUM', 1,  'CT')
-          loopObjectList.push(MEANUM)
-          if (_.get(ItemList[itemIndex], 'bookQuantity'))
-          {
-            const MEA: JSONObject = {
-                segement: 'MEA',
-                elementList: []
-            }
-            MEA.elementList.push('', 'SU', (_.get(ItemList[itemIndex], 'bookQuantity') || ' ').toString().substring(0, 20),  'PC')
-            loopObjectList.push(MEA)
-          }
 
-          index++
-          itemIndex++
+            index++
+            itemIndex++
+          }
+          i += itemIndex + 1
         }
-        i += index
       }
     }
     return loopObjectList
+  }
+  getNumOfPo(Item) {
+    const uniquePo = []
+    for (const po of Item) {
+      if (!uniquePo.includes(po.poNo)) {
+        uniquePo.push(po.poNo)
+      }
+    }
+    return uniquePo.length
   }
 
 }

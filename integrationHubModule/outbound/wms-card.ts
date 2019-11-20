@@ -10,9 +10,9 @@ const app = {
   },
   method: 'POST',
   getUrl: ({ partyGroup: { api } }: any) => {
-    if (!api.erp || !api.erp.url) throw new NotImplementedException()
-    app.constants.url = `${api.erp.url}/getschrptlist`
-    return `${api.erp.url}/getschrptdata`
+    if (!api.wms || !api.wms.url) throw new NotImplementedException()
+    app.constants.url = `${api.wms.url}/getschrptlist`
+    return `${api.wms.url}/getschrptdata`
   },
   requestHandler: ({ id, getPostProcessFunc, partyGroup }: any, params: any) => {
     app.constants.partyGroup = partyGroup
@@ -25,6 +25,7 @@ const app = {
       body: JSON.stringify({
         zyh: app.constants.zyh = id,
         zyd: app.constants.zyd = params.subqueries.type.value,
+        ...(partyGroup.api.wms.body || {}),
       }),
     }
   },
@@ -38,13 +39,16 @@ const app = {
 
     const { getPostProcessFunc, partyGroup, url, zyh, zyd } = app.constants
 
-    let card = await helper.prepareCard(responseBody[0], 'erp', 'Swivel ERP', zyh, zyd, {
+    let card = await helper.prepareCard(responseBody[0], 'wms', 'Swivel WMS', zyh, zyd, {
       method: 'POST',
       url,
       headers: { 'content-type': 'application/json' },
+      data: {
+        ...(partyGroup.api.wms.body || {}),
+      },
     })
 
-    const postProcessFunc = await getPostProcessFunc(partyGroup.code, `erp-card/${zyh}`)
+    const postProcessFunc = await getPostProcessFunc(partyGroup.code, `wms-card/${zyh}`)
     card = postProcessFunc(card)
 
     return { ...response, responseBody: card }
