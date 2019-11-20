@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common'
+import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { RoleService } from 'modules/sequelize/role/service'
 import { PartyService } from 'modules/sequelize/party/service'
 import {
@@ -7,6 +7,8 @@ import {
   JwtPayloadParty,
 } from 'modules/auth/interfaces/jwt-payload'
 import _ = require('lodash')
+import axios from 'axios'
+import moment = require('moment')
 
 const app = {
   /*******************************/
@@ -100,6 +102,55 @@ const app = {
       }
       return result
     }, [])
+  },
+
+  // prepare card
+  async prepareCard(responseBody: any, api: string, category: string, zyh: number, zyd: number, data: any) {
+    const axiosResponse = await axios.request(data)
+    const cards = JSON.parse(axiosResponse.data.d) as any[]
+    const baseCard = cards.filter(c => c.zyh === zyh)
+    const currentCard = baseCard.filter(c => c.zyd === zyd)
+    if (!currentCard.length) throw new NotFoundException()
+
+    let items: any[] | null = null
+    if (baseCard.length > 1)
+      items = baseCard.map(({ zyd, title }) => ({ label: title, value: zyd }))
+
+    // reformat
+    const row = responseBody
+    row.layout = JSON.parse(row.layout)
+    return {
+      id: zyh,
+      reportingKey: 'dashboard',
+      api,
+      category,
+      name: baseCard[0].title,
+      description: `Generated at ${moment(row.rptdate).format('DD/MM/YYYY hh:mm:ssa')}`,
+      component: {
+        is: 'TableCard',
+        props: {
+          url: `card/external/data/${api}/${zyh}`,
+          filters: items ? [{ name: 'type', props: { items }, type: 'list' }] : undefined,
+          headers: row.layout
+            .filter(({ dtype, grp }) => dtype !== 'H' && !grp)
+            .map(({ ffield, label, width, dtype, dplace, grp }) => {
+              const result = { key: ffield, label } as any
+              if (width > 0) result.width = width * 8
+              if (dtype === 'N') {
+                result.align = 'right'
+                result.format = app.getNumberFormat(dplace)
+                result.subTotal = grp
+              }
+              return result
+            }),
+          footer: row.layout.reduce((result, { grp }) => result || grp, false)
+            ? 'SubTotalRow'
+            : undefined,
+          isExternalCard: true,
+          skipReportFilters: true,
+        },
+      } as any,
+    }
   },
 
   /*******************************/
