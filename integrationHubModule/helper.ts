@@ -62,12 +62,12 @@ const app = {
 
   // group rows
   groupRows(rows: any[], groupBy: string[]): Array<{ __id: any; __value: any; __rows: any[] }> {
-    const key = groupBy.pop()
+    const [key, ...groupBy_] = groupBy
     const result = _.groupBy(rows, row => row[key])
     return Object.keys(result).map(key => ({
       __id: key || '(EMPTY)',
       __value: key || '(EMPTY)',
-      __rows: groupBy.length > 0 ? app.groupRows(result[key], groupBy) : result[key],
+      __rows: groupBy_.length > 0 ? app.groupRows(result[key], groupBy_) : result[key],
     }))
   },
 
