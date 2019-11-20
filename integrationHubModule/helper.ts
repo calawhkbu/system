@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common'
+import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { RoleService } from 'modules/sequelize/role/service'
 import { PartyService } from 'modules/sequelize/party/service'
 import {
@@ -7,6 +7,8 @@ import {
   JwtPayloadParty,
 } from 'modules/auth/interfaces/jwt-payload'
 import _ = require('lodash')
+import axios from 'axios'
+import moment = require('moment')
 
 const app = {
   /*******************************/
@@ -53,6 +55,10 @@ const app = {
     })
   },
 
+  /*******************************/
+  // Common external card functions
+  /*******************************/
+
   // get number format from number of decimal places
   getNumberFormat(dp: number): string {
     let result = ''
@@ -69,6 +75,107 @@ const app = {
       __value: key || '(EMPTY)',
       __rows: groupBy_.length > 0 ? app.groupRows(result[key], groupBy_) : result[key],
     }))
+  },
+
+  // parse cards
+  parseCards(responseBody: any[], api: string, category: string) {
+    return responseBody.reduce<any[]>((result, row) => {
+      const card = result.find(({ id }) => id === row.zyh)
+      if (!card) {
+        result.push({
+          id: row.zyh,
+          reportingKey: 'dashboard',
+          api,
+          category,
+          name: row.title,
+          component: {
+            props: {
+              defaultParams: {
+                filters: {
+                  type: {
+                    value: row.zyd,
+                  },
+                },
+              },
+            },
+          },
+          layouts: {
+            __BASE__: { h: 12, w: 6 },
+          },
+        })
+      }
+      return result
+    }, [])
+  },
+
+  // prepare card
+  async prepareCard(responseBody: any, api: string, category: string, zyh: number, zyd: number, options: any) {
+    const axiosResponse = await axios.request(options)
+    const cards = JSON.parse(axiosResponse.data.d) as any[]
+    const baseCard = cards.filter(c => c.zyh === zyh)
+    const currentCard = baseCard.filter(c => c.zyd === zyd)
+    if (!currentCard.length) throw new NotFoundException()
+
+    let items: any[] | null = null
+    if (baseCard.length > 1)
+      items = baseCard.map(({ zyd, title }) => ({ label: title, value: zyd }))
+
+    // reformat
+    const row = responseBody
+    row.layout = JSON.parse(row.layout)
+    return {
+      id: zyh,
+      reportingKey: 'dashboard',
+      api,
+      category,
+      name: baseCard[0].title,
+      description: `Generated at ${moment(row.rptdate).format('DD/MM/YYYY hh:mm:ssa')}`,
+      component: {
+        is: 'TableCard',
+        props: {
+          url: `card/external/data/${api}/${zyh}`,
+          filters: items ? [{ name: 'type', props: { items }, type: 'list' }] : undefined,
+          headers: row.layout
+            .filter(({ dtype, grp }) => dtype !== 'H' && !grp)
+            .map(({ ffield, label, width, dtype, dplace, grp }) => {
+              const result = { key: ffield, label } as any
+              if (width > 0) result.width = width * 8
+              if (dtype === 'N') {
+                result.align = 'right'
+                result.format = app.getNumberFormat(dplace)
+                result.subTotal = grp
+              }
+              return result
+            }),
+          footer: row.layout.reduce((result, { grp }) => result || grp, false)
+            ? 'SubTotalRow'
+            : undefined,
+          isExternalCard: true,
+          skipReportFilters: true,
+        },
+      } as any,
+    }
+  },
+
+  // get card
+  async getCard(options: any) {
+    const axiosResponse = await axios.request(options)
+    const responseBody = JSON.parse(axiosResponse.data.d) as any[]
+    if (!responseBody.length) throw new NotFoundException('REPORT_NOT_READY')
+    return responseBody[0]
+  },
+
+  // parse external data
+  parseData(responseBody: any, card: any) {
+    // reformat
+    responseBody = JSON.parse((responseBody.trim() || '[]').replace(/[\n\r]/g, ''))
+
+    // grouping
+    const layout = JSON.parse(card.layout) as any[]
+    const groupBy = layout.filter(header => header.grp).map(header => header.ffield as string)
+    if (groupBy.length > 0) responseBody = app.groupRows(responseBody, groupBy)
+
+    return responseBody
   },
 
   /*******************************/

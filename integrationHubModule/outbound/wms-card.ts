@@ -1,6 +1,4 @@
 import { NotImplementedException, NotFoundException, BadRequestException } from '@nestjs/common'
-import moment = require('moment')
-import axios from 'axios'
 
 const app = {
   constants: {
@@ -41,8 +39,7 @@ const app = {
 
     const { getPostProcessFunc, partyGroup, url, zyh, zyd } = app.constants
 
-    // get card base info
-    const axiosResponse = await axios.request({
+    let card = await helper.prepareCard(responseBody[0], 'wms', 'Swivel WMS', zyh, zyd, {
       method: 'POST',
       url,
       headers: { 'content-type': 'application/json' },
@@ -50,51 +47,6 @@ const app = {
         ...(partyGroup.api.wms.body || {}),
       },
     })
-    const cards = JSON.parse(axiosResponse.data.d) as any[]
-    const baseCard = cards.filter(c => c.zyh === zyh)
-    const currentCard = baseCard.filter(c => c.zyd === zyd)
-    if (!currentCard.length) throw new NotFoundException()
-
-    // filter list items
-    let items: any[] | null = null
-    if (baseCard.length > 1)
-      items = baseCard.map(({ zyd, title }) => ({ label: title, value: zyd }))
-
-    // reformat
-    const row = responseBody[0]
-    row.layout = JSON.parse(row.layout)
-    let card = {
-      id: zyh,
-      reportingKey: 'dashboard',
-      api: 'wms',
-      category: 'Swivel WMS',
-      name: baseCard[0].title,
-      description: `Generated at ${moment(row.rptdate).format('DD/MM/YYYY hh:mm:ssa')}`,
-      component: {
-        is: 'TableCard',
-        props: {
-          url: `card/external/data/wms/${zyh}`,
-          filters: items ? [{ name: 'type', props: { items }, type: 'list' }] : undefined,
-          headers: row.layout
-            .filter(({ dtype }) => dtype !== 'H')
-            .map(({ ffield, label, width, dtype, dplace, grp }) => {
-              const result = { key: ffield, label } as any
-              if (width > 0) result.width = width * 8
-              if (dtype === 'N') {
-                result.align = 'right'
-                result.format = helper.getNumberFormat(dplace)
-                result.subTotal = grp
-              }
-              return result
-            }),
-          footer: row.layout.reduce((result, { grp }) => result || grp, false)
-            ? 'SubTotalRow'
-            : undefined,
-          isExternalCard: true,
-          skipReportFilters: true,
-        },
-      } as any,
-    }
 
     const postProcessFunc = await getPostProcessFunc(partyGroup.code, `wms-card/${zyh}`)
     card = postProcessFunc(card)
