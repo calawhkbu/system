@@ -55,6 +55,10 @@ const app = {
     })
   },
 
+  /*******************************/
+  // Common external card functions
+  /*******************************/
+
   // get number format from number of decimal places
   getNumberFormat(dp: number): string {
     let result = ''
@@ -105,8 +109,8 @@ const app = {
   },
 
   // prepare card
-  async prepareCard(responseBody: any, api: string, category: string, zyh: number, zyd: number, data: any) {
-    const axiosResponse = await axios.request(data)
+  async prepareCard(responseBody: any, api: string, category: string, zyh: number, zyd: number, options: any) {
+    const axiosResponse = await axios.request(options)
     const cards = JSON.parse(axiosResponse.data.d) as any[]
     const baseCard = cards.filter(c => c.zyh === zyh)
     const currentCard = baseCard.filter(c => c.zyd === zyd)
@@ -151,6 +155,27 @@ const app = {
         },
       } as any,
     }
+  },
+
+  // get card
+  async getCard(options: any) {
+    const axiosResponse = await axios.request(options)
+    const responseBody = JSON.parse(axiosResponse.data.d) as any[]
+    if (!responseBody.length) throw new NotFoundException('REPORT_NOT_READY')
+    return responseBody[0]
+  },
+
+  // parse external data
+  parseData(responseBody: any, card: any) {
+    // reformat
+    responseBody = JSON.parse((responseBody.trim() || '[]').replace(/[\n\r]/g, ''))
+
+    // grouping
+    const layout = JSON.parse(card.layout) as any[]
+    const groupBy = layout.filter(header => header.grp).map(header => header.ffield as string)
+    if (groupBy.length > 0) responseBody = app.groupRows(responseBody, groupBy)
+
+    return responseBody
   },
 
   /*******************************/
