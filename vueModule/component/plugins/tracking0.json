@@ -8,8 +8,13 @@
   "axiosBaseParams": [
     "const data = context.$store.state.widget.data;",
     "return {",
-    "url: `api/tracking/getold/${data.masterNo}`,",
-    "method: 'get'",
+    "url: `api/tracking/getold`,",
+    "method: 'post',",
+    "data: {",
+    "masterNo: data.masterNo,",
+    "carrierBookingNo: data.billContainers.map(c => c.carrierBookingNo),",
+    "containerNo: data.billContainers.map(c => c.containerNo)",
+    "}",
     "}"
   ],
   "shareProps": {
