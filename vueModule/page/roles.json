@@ -55,7 +55,9 @@
         "fieldOptions": [
           {
             "key": "id",
-            "sql": "role.id",
+            "sql":{
+              "classname":"ColumnExpression","table":"role","name":"id"
+            },
             "hidden": true
           },
           {
