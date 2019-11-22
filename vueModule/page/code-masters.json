@@ -4,20 +4,15 @@
     {
       "is": "TableTool",
       "props": {
-        "reportingKey": "roles",
-        "jql": "roles",
         "back": "/admin",
-        "clickFunction": {
-          "type": "router",
-          "otherParams": {
-            "func": "push",
-            "path": "/role/{{id}}"
-          }
-        },
+        "reportingKey": "code-masters",
+        "jql": "code-masters",
         "showFilterBar": true,
         "enableShare": false,
         "enableSetting": false,
         "newReport": {
+          "filters": {
+          },
           "configurations": {
             "i18nContext": "Reporting",
             "clickable": true,
@@ -25,7 +20,8 @@
             "sorting": {},
             "pagination": {
               "current": 0,
-              "perPage": 20
+              "perPage": 20,
+              "remote" : false
             }
           }
         },
@@ -38,33 +34,28 @@
                 "type": "router",
                 "otherParams": {
                   "func": "push",
-                  "path": "/role/create"
+                  "path": "/code-master/create"
                 }
               }
             ]
           }
         ],
 
-
-        "filters": [
-          {
-            "name": "roleName",
-            "type": "text"
-          }
-        ],
         "fieldOptions": [
           {
             "key": "id",
-            "sql": "role.id",
             "hidden": true
-          },
-          {
-            "key": "roleName"
-          },
-          {
-            "key": "roleGroup"
           }
-        ]
+        ],
+        "filters": [
+        ],
+        "clickFunction": {
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "/code-master/{{id}}"
+          }
+        }
       }
     }
   ]

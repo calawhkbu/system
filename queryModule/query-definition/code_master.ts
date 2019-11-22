@@ -27,6 +27,15 @@ query
   )
   .register('value', 0)
 
+  query
+  .register(
+    'codeTypeLike',
+    new Query({
+      $where: new RegexpExpression(new ColumnExpression('code_master', 'codeType'), false),
+    })
+  )
+  .register('value', 0)
+
 query
   .register(
     'code',

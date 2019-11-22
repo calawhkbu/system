@@ -175,9 +175,9 @@ export default class EdiParser856 extends BaseEdiParser {
             {
               totalShipUnit += _.get(booking, 'bookQuantity')
             }
-            if (_.get(booking, 'ctns'))
+            if (_.get(booking, 'bookCtns'))
             {
-              numberOfPacking += _.get(booking, 'ctns')
+              numberOfPacking += _.get(booking, 'bookCtns')
             }
           }
           if (totalWeight > 0)
@@ -424,10 +424,10 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push(' ') // not used
             TD5.elementList.push('  ') // not used
             TD5.elementList.push('OR')
-            TD5.elementList.push((_.get(subPoList[0], 'portOfLoading') || _.get(element, 'portOfLoading')).substring(0, 30))
+            TD5.elementList.push((_.get(subPoList[0], 'pol') || _.get(element, 'portOfLoading')).substring(0, 30))
             loopObjectList.push(TD5)
           }
-          if (_.get(subPoList[0], 'portOfDischarge') || _.get(element, 'portOfDischarge'))
+          if (_.get(subPoList[0], 'pod') || _.get(element, 'portOfDischarge'))
           {
             const TD5: JSONObject = {
               segement : 'TD5',
@@ -467,7 +467,7 @@ export default class EdiParser856 extends BaseEdiParser {
               }
             }
           }
-          const invoiceNo = _.get(element, 'referenceNumber')
+          const invoiceNo = _.get(element, 'invoiceNo')
           if (invoiceNo)
           {
             const REF: JSONObject = {
@@ -528,14 +528,14 @@ export default class EdiParser856 extends BaseEdiParser {
                   segement: 'MEA',
                   elementList: []
               }
-              MEA.elementList.push('', 'VOL', (_.get(subPoList[itemIndex], 'bookQuantity') || ' ').toString().substring(0, 20),  'CO')
+              MEA.elementList.push('', 'VOL', (_.get(subPoList[itemIndex], 'bookVolume') || ' ').toString().substring(0, 20),  'CO')
               loopObjectList.push(MEA)
             }
             const MEANUM: JSONObject = {
               segement: 'MEA',
               elementList: []
             }
-            MEANUM.elementList.push('', 'NUM', (_.get(subPoList[itemIndex], 'ctns') || ' ').toString().substring(0, 20),  'CT')
+            MEANUM.elementList.push('', 'NUM', (_.get(subPoList[itemIndex], 'bookCtns') || ' ').toString().substring(0, 20),  'CT')
             loopObjectList.push(MEANUM)
             if (_.get(ItemList[itemIndex], 'bookQuantity'))
             {

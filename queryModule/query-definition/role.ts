@@ -7,10 +7,18 @@ import {
   InExpression,
   BinaryExpression,
   IsNullExpression,
+  ResultColumn,
 } from 'node-jql'
 
 const query = new QueryDef(
   new Query({
+
+    $select : [
+
+      new ResultColumn(new ColumnExpression('role', '*')),
+      new ResultColumn(new ColumnExpression('flex_data', 'data')),
+
+    ],
     $from: new FromTable('role', {
       operator: 'LEFT',
       table: 'flex_data',
