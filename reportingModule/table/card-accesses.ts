@@ -4,17 +4,17 @@ const query = new Query({
   $from: new FromTable(
     {
       method: 'POST',
-      url: 'api/i18n/query/i18n',
+      url: 'api/cardAccess/query/card_access',
       columns: [
+
         { name: 'id', type: 'number' },
         { name: 'partyGroupCode', type: 'string' },
-        { name: 'version', type: 'number' },
-        { name: 'category', type: 'string' },
-        { name: 'key', type: 'string' },
-        { name: 'value', type: 'string' }
+        { name:  'cardId', type: 'string' },
+        { name: 'disabled', type: 'boolean' },
+        { name: 'partyGroupSpecific', type: 'boolean' }
       ],
     },
-    'i18n'
+    'card_access'
   ),
 })
 

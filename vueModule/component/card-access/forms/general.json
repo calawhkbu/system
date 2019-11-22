@@ -1,0 +1,40 @@
+{
+  "layout": "v-card",
+  "components": [
+    {
+      "is": "WidgetForm",
+      "props": {
+        "fields": [
+
+          {
+            "label": "CardAccessPage.partyGroupcode",
+            "name": "partyGroupCode",
+            "component": "v-text-field",
+            "class": "xs-6"
+          },
+
+          {
+            "label": "CardAccessPage.cardId",
+            "name": "cardId",
+            "component": "v-text-field",
+            "class": "xs-6"
+          },
+
+          {
+            "label": "CardAccessPage.disabled",
+            "name": "disabled",
+            "component": "BooleanField",
+            "class": "xs-6"
+          },
+
+          {
+            "label": "CardAccessPage.partyGroupSpecific",
+            "name": "partyGroupSpecific",
+            "component": "BooleanField",
+            "class": "xs-6"
+          }
+        ]
+      }
+    }
+  ]
+}

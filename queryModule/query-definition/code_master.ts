@@ -9,12 +9,126 @@ import {
   OrExpressions,
   RegexpExpression,
   IsNullExpression,
+  JoinClause,
+  AndExpressions,
+  ResultColumn,
+  GroupBy,
 } from 'node-jql'
 
 const query = new QueryDef(
   new Query({
-    $distinct: true,
-    $from: new FromTable('code_master'),
+
+    // one more layer of select from to prevent overriding select code_master.*
+    $from : new FromTable({
+
+      $as : 'code_master',
+
+      table : new Query({
+
+        $select : [
+          new ResultColumn(new ColumnExpression('code_master', '*'))
+        ],
+        $from : new FromTable({
+          table : new Query({
+
+            $select : [
+
+              new ResultColumn(new ColumnExpression('code_master', 'codeType'), 'codeType'),
+              new ResultColumn(new ColumnExpression('code_master', 'code'), 'code'),
+              new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('code_master', 'partyGroupCode')), 'partyGroupCode')
+
+            ],
+
+            $from: new FromTable('code_master'),
+            $group : new GroupBy([
+              'codeType', 'code'
+            ]),
+
+          }),
+          $as : 'leftTable',
+          joinClauses : [
+            new JoinClause(
+              'LEFT',
+              new FromTable('code_master'),
+
+              new AndExpressions([
+
+                // code is same
+                new BinaryExpression(
+                  new BinaryExpression(
+                    new ColumnExpression('leftTable', 'code'),
+                    '=',
+                    new ColumnExpression('code_master', 'code')
+                  )
+                ),
+
+                // codeType is same
+
+                new OrExpressions([
+
+                  // codeType is not null case
+                  new AndExpressions([
+
+                    new IsNullExpression(new ColumnExpression('leftTable', 'codeType'), true),
+
+                    new BinaryExpression(
+                      new BinaryExpression(
+                        new ColumnExpression('leftTable', 'codeType'),
+                        '=',
+                        new ColumnExpression('code_master', 'codeType')
+                      )
+                    )
+
+                  ]),
+
+                  // codeType is null case
+                  new AndExpressions([
+
+                    new IsNullExpression(new ColumnExpression('leftTable', 'codeType'), false),
+                    new IsNullExpression(new ColumnExpression('code_master', 'codeType'), false)
+
+                  ]),
+
+                ]),
+
+                // partyGroupCode is same
+
+                new OrExpressions([
+
+                  // partyGroupCode is not null case
+                  new AndExpressions([
+
+                    new IsNullExpression(new ColumnExpression('leftTable', 'partyGroupCode'), true),
+
+                    new BinaryExpression(
+                      new BinaryExpression(
+                        new ColumnExpression('leftTable', 'partyGroupCode'),
+                        '=',
+                        new ColumnExpression('code_master', 'partyGroupCode')
+                      )
+                    )
+
+                  ]),
+
+                  // partyGroupCode is null case
+                  new AndExpressions([
+
+                    new IsNullExpression(new ColumnExpression('leftTable', 'partyGroupCode'), false),
+                    new IsNullExpression(new ColumnExpression('code_master', 'partyGroupCode'), false)
+
+                  ]),
+
+                ])
+
+              ])
+
+            )
+          ]
+        })
+      })
+
+    })
+
   })
 )
 
@@ -44,26 +158,6 @@ query
     })
   )
   .register('value', 0)
-
-query
-  .register(
-    'flexDataData',
-    new Query({
-      $where: new BinaryExpression(
-        new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression(
-            'JSON_EXTRACT',
-            new ColumnExpression('flex_data', 'data'),
-            new Unknown('string')
-          )
-        ),
-        '='
-      ),
-    })
-  )
-  .register('flexDataKey', 0)
-  .register('value', 1)
 
 query
   .register(

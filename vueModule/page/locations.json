@@ -5,8 +5,8 @@
       "is": "TableTool",
       "props": {
         "back": "/admin",
-        "reportingKey": "code-masters",
-        "jql": "code-masters",
+        "reportingKey": "locations",
+        "jql": "locations",
         "showFilterBar": true,
         "enableShare": false,
         "enableSetting": false,
@@ -17,6 +17,8 @@
             "i18nContext": "Reporting",
             "clickable": true,
             "draggable": true,
+            "sorting": {},
+            "expanded" : {},
             "pagination": {
               "current": 0,
               "perPage": 20,
@@ -33,7 +35,7 @@
                 "type": "router",
                 "otherParams": {
                   "func": "push",
-                  "path": "/code-master/create"
+                  "path": "/location/create"
                 }
               }
             ]
@@ -46,11 +48,17 @@
             "hidden": true
           }
         ],
+        "filters": [
+          {
+            "name": "countryCode",
+            "type": "text"
+          }
+        ],
         "clickFunction": {
           "type": "router",
           "otherParams": {
             "func": "push",
-            "path": "/code-master/{{id}}"
+            "path": "/location/{{id}}"
           }
         }
       }

@@ -5,8 +5,8 @@
       "is": "TableTool",
       "props": {
         "back": "/admin",
-        "reportingKey": "code-masters",
-        "jql": "code-masters",
+        "reportingKey": "card-accesses",
+        "jql": "card-accesses",
         "showFilterBar": true,
         "enableShare": false,
         "enableSetting": false,
@@ -33,7 +33,7 @@
                 "type": "router",
                 "otherParams": {
                   "func": "push",
-                  "path": "/code-master/create"
+                  "path": "/card-access/create"
                 }
               }
             ]
@@ -50,7 +50,7 @@
           "type": "router",
           "otherParams": {
             "func": "push",
-            "path": "/code-master/{{id}}"
+            "path": "/card-access/{{id}}"
           }
         }
       }
