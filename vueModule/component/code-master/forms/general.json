@@ -50,6 +50,13 @@
             "name": "name",
             "component": "v-text-field",
             "class": "xs-6"
+          },
+
+          {
+            "label": "CodeMasterPage.flexData",
+            "name": "flexData.data",
+            "component": "JsonField",
+            "class": "xs-6"
           }
 
         ]

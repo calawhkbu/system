@@ -17,11 +17,10 @@
             "i18nContext": "Reporting",
             "clickable": true,
             "draggable": true,
-            "sorting": {},
             "pagination": {
               "current": 0,
               "perPage": 20,
-              "remote" : false
+              "remote" : true
             }
           }
         },
@@ -46,8 +45,6 @@
             "key": "id",
             "hidden": true
           }
-        ],
-        "filters": [
         ],
         "clickFunction": {
           "type": "router",

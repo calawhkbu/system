@@ -1,0 +1,74 @@
+{
+  "class": "grid",
+  "components": [
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid align-item-center padding-8",
+        "components": [
+          {
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true
+            },
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
+                }
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "router",
+                  "otherParams": {
+                    "func": "push",
+                    "path": "/card-accesses"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "class": "headline",
+              "i18nKey": "CardAccessPage.title",
+              "i18nOptions": {
+                "title": "sometitle"
+              }
+            }
+          },
+          {
+            "is": "v-spacer"
+          },
+          {
+            "is": "WidgetSave",
+            "props": {
+              "fab": true,
+              "color": "primary"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 padding-left-8 padding-right-8 width-100 grid",
+        "components": [
+          {
+            "is": "AsyncComponent",
+            "props": {
+              "class": "margin-topbottom-4 xs-12",
+              "layoutName": "card-access/forms/general"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

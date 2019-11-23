@@ -21,7 +21,8 @@
             "expanded" : {},
             "pagination": {
               "current": 0,
-              "perPage": 20
+              "perPage": 20,
+              "remote" : true
             }
           }
         },
