@@ -26,7 +26,10 @@
             "draggable": true,
             "sorting": {
               "direction": "DESC",
-              "key": "person.updatedAt"
+              "key": "updatedAt",
+              "sql": {
+                "classname":"ColumnExpression","table":"person","name":"updatedAt"
+              }
             },
             "pagination": {
               "current": 0,
@@ -37,12 +40,16 @@
         "fieldOptions": [
           {
             "key": "id",
-            "sql": "invitation.id",
+            "sql":{
+              "classname":"ColumnExpression","table":"invitation","name":"id"
+            },
             "hidden": true
           },
           {
             "key": "updatedAt",
-            "sql": "person.updatedAt",
+            "sql":{
+              "classname":"ColumnExpression","table":"person","name":"updatedAt"
+            },
             "width": 150,
             "format": "YYYY-MM-DD"
           },
@@ -166,19 +173,27 @@
 
           {
             "key": "userName",
-            "sql": "person.userName"
+            "sql":{
+              "classname":"ColumnExpression","table":"person","name":"userName"
+            }
           },
           {
             "key": "firstName",
-            "sql": "person.firstName"
+            "sql":{
+              "classname":"ColumnExpression","table":"person","name":"firstName"
+            }
           },
           {
             "key": "lastName",
-            "sql": "person.lastName"
+            "sql":{
+              "classname":"ColumnExpression","table":"person","name":"lastName"
+            }
           },
           {
             "key": "displayName",
-            "sql": "person.displayName"
+            "sql":{
+              "classname":"ColumnExpression","table":"person","name":"displayName"
+            }
           }
         ],
         "filters": [

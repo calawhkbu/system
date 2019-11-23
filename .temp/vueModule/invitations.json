@@ -33,18 +33,24 @@
         "fieldOptions": [
           {
             "key": "id",
-            "sql": "invitation.id",
+            "sql":{
+              "classname":"ColumnExpression","table":"invitation","name":"id"
+            },
             "hidden": true
           },
           {
             "key": "createdAt",
-            "sql": "invitation.createdAt",
+            "sql":{
+              "classname":"ColumnExpression","table":"invitation","name":"createdAt"
+            },
             "width": 150,
             "format": "YYYY-MM-DD"
           },
           {
             "key": "updatedAt",
-            "sql": "invitation.updatedAt",
+            "sql":{
+              "classname":"ColumnExpression","table":"invitation","name":"updatedAt"
+            },
             "width": 150,
             "format": "YYYY-MM-DD"
           },
