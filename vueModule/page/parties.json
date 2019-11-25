@@ -32,7 +32,9 @@
         "fieldOptions": [
           {
             "key": "id",
-            "sql": "party.id"
+            "sql":{
+              "classname":"ColumnExpression","table":"party","name":"id"
+            }
           }
         ],
         "_clickFunction": {

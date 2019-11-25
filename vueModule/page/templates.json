@@ -53,6 +53,7 @@
         "filters": [
           {
             "name": "templateName",
+            "i18nContext" : "TemplatePage",
             "type": "text"
           }
         ],

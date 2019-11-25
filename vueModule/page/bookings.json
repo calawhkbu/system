@@ -29,7 +29,10 @@
             "draggable": true,
             "sorting": {
               "direction": "DESC",
-              "key": "updatedAt"
+              "key": "updatedAt",
+              "sql" :{
+                "classname":"ColumnExpression","table":"booking","name":"updatedAt"
+              }
             },
             "pagination": {
               "current": 0,
@@ -41,18 +44,24 @@
         "fieldOptions": [
           {
             "key": "id",
-            "sql": "booking.id",
+            "sql":{
+              "classname":"ColumnExpression","table":"booking","name":"id"
+            },
             "hidden": true
           },
           {
             "key": "createdAt",
-            "sql": "booking.createdAt",
+            "sql":{
+              "classname":"ColumnExpression","table":"booking","name":"updatedAt"
+            },
             "width": 150,
             "format": "YYYY-MM-DD"
           },
           {
             "key": "updatedAt",
-            "sql": "booking.updatedAt",
+            "sql":{
+              "classname":"ColumnExpression","table":"booking","name":"updatedAt"
+            },
             "width": 150,
             "format": "YYYY-MM-DD"
           },
