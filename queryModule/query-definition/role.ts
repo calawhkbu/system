@@ -18,124 +18,146 @@ import {
 const query = new QueryDef(
   new Query({
 
-            // one more layer of select from to prevent overriding select role.*
-            $from : new FromTable({
+    // one more layer of select from to prevent overriding select role.*
+    $from: new FromTable({
 
-              $as : 'role',
+      $as: 'role',
 
-              table : new Query({
+      table: new Query({
 
-                $select : [
-                  new ResultColumn(new ColumnExpression('role', '*')),
-                  new ResultColumn(new ColumnExpression('flex_data', 'data'))
-                ],
-                $from : new FromTable({
-                  table : new Query({
+        $select: [
+          new ResultColumn(new ColumnExpression('role', '*')),
+          new ResultColumn(new ColumnExpression('flex_data', 'data'))
+        ],
+        $from: new FromTable({
+          table: new Query({
 
-                    $select : [
-                      new ResultColumn(new ColumnExpression('role', 'roleName'), 'roleName'),
-                      new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('role', 'partyGroupCode')), 'partyGroupCode')
+            $select: [
+              new ResultColumn(new ColumnExpression('role', 'roleName'), 'roleName'),
+              new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('role', 'partyGroupCode')), 'partyGroupCode')
 
-                    ],
+            ],
 
-                    $from: new FromTable('role'),
-                    $group : new GroupBy([
-                      'roleName'
-                    ]),
+            // warning !!! : deletedBy must be Null!!!!!!
+            // warning !!! : deletedBy must be Null!!!!!!
+            // warning !!! : deletedBy must be Null!!!!!!
+            // warning !!! : deletedBy must be Null!!!!!!
+            // warning !!! : deletedBy must be Null!!!!!!
+            // warning !!! : deletedBy must be Null!!!!!!
+            $where: [
+              new IsNullExpression(new ColumnExpression('role', 'deletedBy'), false),
+              new IsNullExpression(new ColumnExpression('role', 'deletedAt'), false)
+            ],
 
-                  }),
-                  $as : 'leftTable',
-                  joinClauses : [
-                    new JoinClause(
-                      'LEFT',
-                      new FromTable('role'),
+            $from: new FromTable('role'),
+            $group: new GroupBy([
+              'roleName'
+            ]),
 
-                      new AndExpressions([
+          }),
+          $as: 'leftTable',
+          joinClauses: [
+            new JoinClause(
+              'LEFT',
+              new FromTable('role'),
 
-                        // roleName is same
-                        new BinaryExpression(
-                          new BinaryExpression(
-                            new ColumnExpression('leftTable', 'roleName'),
-                            '=',
-                            new ColumnExpression('role', 'roleName')
-                          )
-                        ),
+              new AndExpressions([
 
-                        // partyGroupCode is same
-                        new OrExpressions([
+                // roleName is same
+                new BinaryExpression(
+                  new BinaryExpression(
+                    new ColumnExpression('leftTable', 'roleName'),
+                    '=',
+                    new ColumnExpression('role', 'roleName')
+                  )
+                ),
 
-                          // partyGroupCode is not null case
-                          new AndExpressions([
+                // partyGroupCode is same
+                new OrExpressions([
 
-                            new IsNullExpression(new ColumnExpression('leftTable', 'partyGroupCode'), true),
+                  // partyGroupCode is not null case
+                  new AndExpressions([
 
-                            new BinaryExpression(
-                              new BinaryExpression(
-                                new ColumnExpression('leftTable', 'partyGroupCode'),
-                                '=',
-                                new ColumnExpression('role', 'partyGroupCode')
-                              )
-                            )
+                    new IsNullExpression(new ColumnExpression('leftTable', 'partyGroupCode'), true),
 
-                          ]),
-
-                          // partyGroupCode is null case
-                          new AndExpressions([
-
-                            new IsNullExpression(new ColumnExpression('leftTable', 'partyGroupCode'), false),
-                            new IsNullExpression(new ColumnExpression('role', 'partyGroupCode'), false)
-
-                          ]),
-
-                        ])
-
-                      ])
-
-                    ),
-
-                    // join flexData
-                    new JoinClause(
-                      {
-                      operator: 'LEFT',
-                      table: 'flex_data',
-                      $on: [
-                        new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'role'),
-                        new BinaryExpression(
-                          new ColumnExpression('role', 'id'),
-                          '=',
-                          new ColumnExpression('flex_data', 'primaryKey')
-                        ),
-                      ],
-                    }
-
+                    new BinaryExpression(
+                      new BinaryExpression(
+                        new ColumnExpression('leftTable', 'partyGroupCode'),
+                        '=',
+                        new ColumnExpression('role', 'partyGroupCode')
+                      )
                     )
-                  ]
-                })
-              })
 
-            })
+                  ]),
 
-  //   $select : [
+                  // partyGroupCode is null case
+                  new AndExpressions([
 
-  //     new ResultColumn(new ColumnExpression('role', '*')),
-  //     new ResultColumn(new ColumnExpression('flex_data', 'data')),
+                    new IsNullExpression(new ColumnExpression('leftTable', 'partyGroupCode'), false),
+                    new IsNullExpression(new ColumnExpression('role', 'partyGroupCode'), false)
 
-  //   ],
-  //   $from: new FromTable('role', {
-  //     operator: 'LEFT',
-  //     table: 'flex_data',
-  //     $on: [
-  //       new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'role'),
-  //       new BinaryExpression(
-  //         new ColumnExpression('role', 'id'),
-  //         '=',
-  //         new ColumnExpression('flex_data', 'primaryKey')
-  //       ),
-  //     ],
-  //   }),
+                  ]),
+
+                ])
+
+              ])
+
+            ),
+
+            // join flexData
+            new JoinClause(
+              {
+                operator: 'LEFT',
+                table: 'flex_data',
+                $on: [
+                  new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'role'),
+                  new BinaryExpression(
+                    new ColumnExpression('role', 'id'),
+                    '=',
+                    new ColumnExpression('flex_data', 'primaryKey')
+                  ),
+                ],
+              }
+
+            )
+          ]
+        })
+      })
+
+    })
+
+    //   $select : [
+
+    //     new ResultColumn(new ColumnExpression('role', '*')),
+    //     new ResultColumn(new ColumnExpression('flex_data', 'data')),
+
+    //   ],
+    //   $from: new FromTable('role', {
+    //     operator: 'LEFT',
+    //     table: 'flex_data',
+    //     $on: [
+    //       new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'role'),
+    //       new BinaryExpression(
+    //         new ColumnExpression('role', 'id'),
+    //         '=',
+    //         new ColumnExpression('flex_data', 'primaryKey')
+    //       ),
+    //     ],
+    //   }),
 
   })
 )
+
+query.register('isDefault',
+{
+  expression : new FunctionExpression(
+    'IF',
+    new IsNullExpression(new ColumnExpression('role', 'partyGroupCode'), false),
+    1, 0
+  ),
+
+  $as: 'isDefault'
+})
 
 // ----------------- filter stuff
 query
@@ -200,17 +222,5 @@ query
     })
   )
   .register('value', 0)
-
-query.register(
-  'isActive',
-  new Query({
-    $where: [
-      new IsNullExpression(new ColumnExpression('role', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('role', 'deletedBy'), false),
-      new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
-      new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
-    ],
-  })
-)
 
 export default query

@@ -40,6 +40,17 @@ const query = new QueryDef(
 
                 ],
 
+                // warning !!! : deletedBy must be Null!!!!!!
+                // warning !!! : deletedBy must be Null!!!!!!
+                // warning !!! : deletedBy must be Null!!!!!!
+                // warning !!! : deletedBy must be Null!!!!!!
+                // warning !!! : deletedBy must be Null!!!!!!
+                // warning !!! : deletedBy must be Null!!!!!!
+                $where: [
+                  new IsNullExpression(new ColumnExpression('code_master', 'deletedBy'), false),
+                  new IsNullExpression(new ColumnExpression('code_master', 'deletedAt'), false)
+                ],
+
                 $from: new FromTable('code_master'),
                 $group : new GroupBy([
                   'codeType', 'code'
@@ -163,6 +174,17 @@ const query = new QueryDef(
   })
 )
 
+query.register('isDefault',
+{
+  expression : new FunctionExpression(
+    'IF',
+    new IsNullExpression(new ColumnExpression('code_master', 'partyGroupCode'), false),
+    1, 0
+  ),
+
+  $as: 'isDefault'
+})
+
 query
   .register(
     'codeType',
@@ -213,17 +235,5 @@ query
   )
   .register('value', 0)
   .register('value', 1)
-
-query.register(
-  'isActive',
-  new Query({
-    $where: [
-      new IsNullExpression(new ColumnExpression('code_master', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('code_master', 'deletedBy'), false),
-      new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
-      new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
-    ],
-  })
-)
 
 export default query

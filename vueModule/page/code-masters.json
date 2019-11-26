@@ -10,6 +10,7 @@
         "showFilterBar": true,
         "enableShare": false,
         "enableSetting": false,
+        "noPartyGroupFilters": true,
         "newReport": {
           "filters": {
           },
@@ -44,6 +45,48 @@
           {
             "key": "id",
             "hidden": true
+          },
+
+          {
+            "key": "partyGroupCode",
+            "hidden": true
+          },
+
+          {
+            "label": "",
+            "key": "isDefault",
+            "sortable": false,
+            "clickFunction": {
+              "type": "axios",
+              "otherParams": {
+                "axiosParams": {
+                  "url": "/api/code/resetDefault/{{row.id}}",
+                  "method": "POST"
+                }
+              },
+              "afterActions": [
+                {
+                  "type": "notify",
+                  "otherParams": {
+                    "notification": "Notify.resetDefaultSuccess"
+                  }
+                }
+              ]
+            },
+
+            "tdComponent": {
+              "props": {
+                "slotComponents": [
+                  {
+                    "is": "icon",
+                    "props": {
+                      "icon": "refresh"
+                    }
+                  }
+                ]
+              }
+            },
+            "width": 50
           }
         ],
         "clickFunction": {

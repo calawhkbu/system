@@ -7,6 +7,7 @@
         "back": "/admin",
         "reportingKey": "templates",
         "jql": "templates",
+        "noPartyGroupFilters": true,
         "showFilterBar": true,
         "enableShare": false,
         "enableSetting": false,
@@ -48,6 +49,86 @@
           {
             "key": "id",
             "hidden": true
+          },
+
+          {
+            "label": "",
+            "key": "can_delete",
+            "sortable": false,
+            "clickFunction": {
+              "type": "axios",
+              "otherParams": {
+                "axiosParams": {
+                  "url": "/api/template/delete",
+                  "method": "POST",
+                  "data" : {
+                    "templateName" : "{{row.templateName}}"
+                  }
+                }
+              },
+              "afterActions": [
+                {
+                  "type": "notify",
+                  "otherParams": {
+                    "notification": "Notify.deleteSuccess"
+                  }
+                }
+              ]
+            },
+
+            "tdComponent": {
+              "props": {
+                "slotComponents": [
+                  {
+                    "is": "icon",
+                    "props": {
+                      "icon": "delete"
+                    }
+                  }
+                ]
+              }
+            },
+            "width": 50
+          },
+
+          {
+            "label": "",
+            "key": "can_restore",
+            "sortable": false,
+            "clickFunction": {
+              "type": "axios",
+              "otherParams": {
+                "axiosParams": {
+                  "url": "/api/template/restore",
+                  "method": "POST",
+                  "data" : {
+                    "templateName" : "{{row.templateName}}"
+                  }
+                }
+              },
+              "afterActions": [
+                {
+                  "type": "notify",
+                  "otherParams": {
+                    "notification": "Notify.restoreSuccess"
+                  }
+                }
+              ]
+            },
+
+            "tdComponent": {
+              "props": {
+                "slotComponents": [
+                  {
+                    "is": "icon",
+                    "props": {
+                      "icon": "refresh"
+                    }
+                  }
+                ]
+              }
+            },
+            "width": 50
           }
         ],
         "filters": [

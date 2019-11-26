@@ -18,6 +18,15 @@ const query = new Query({
           name: 'extension',
           type: 'string',
         },
+
+        {
+          name: 'can_delete',
+          type: 'number',
+        },
+        {
+          name: 'can_restore',
+          type: 'number',
+        },
       ],
     },
     'template'

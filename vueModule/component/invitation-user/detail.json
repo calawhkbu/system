@@ -80,7 +80,7 @@
                     {
                       "type": "notify",
                       "otherParams": {
-                        "i18nKey": "Delete Success"
+                        "notification": "Notify.deleteSuccess"
                       }
                     }
                   ]
@@ -116,7 +116,7 @@
                     {
                       "type": "notify",
                       "otherParams": {
-                        "i18nKey": "Resend Success"
+                        "notification": "Notify.resendSuccess"
                       }
                     }
                   ]
