@@ -5,7 +5,6 @@
       "props": {
         "reportingKey": "purchase-orders",
         "jql": "purchase-orders",
-        "urlFormat": "/purchase-orders{{ id|if('/', '') }}{{ id }}",
         "hasReports": true,
         "showFilterBar": true,
         "enableShare": true,

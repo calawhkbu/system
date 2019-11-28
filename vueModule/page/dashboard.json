@@ -5,7 +5,6 @@
       "is": "GridTool",
       "props": {
         "reportingKey": "dashboard",
-        "urlFormat": "/dashboard{{ id|if('/', '') }}{{ id }}",
         "hasReports": true,
         "showFilterBar": true,
         "enableShare": true,

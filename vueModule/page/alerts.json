@@ -5,8 +5,8 @@
       "props": {
         "reportingKey": "alerts",
         "jql": "alerts",
-        "urlFormat": "/alerts{{ id|if('/', '') }}{{ id }}",
         "hasReports": false,
+        "showDefault": true,
         "showFilterBar": true,
         "enableShare": true,
         "enableSetting": true,

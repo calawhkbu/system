@@ -6,7 +6,6 @@
       "props": {
         "reportingKey": "bookings",
         "jql": "bookings",
-        "urlFormat": "/bookings{{ id|if('/', '') }}{{ id }}",
         "hasReports": true,
         "showFilterBar": true,
         "enableShare": true,
