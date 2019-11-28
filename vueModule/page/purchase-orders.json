@@ -1,125 +1,129 @@
 {
-  "components": [
-    {
-      "is": "TableTool",
-      "props": {
-        "reportingKey": "purchase-orders",
-        "jql": "purchase-orders",
-        "urlFormat": "/purchase-orders{{ id|if('/', '') }}{{ id }}",
-        "hasReports": true,
-        "showFilterBar": true,
-        "enableShare": true,
-        "enableSetting": true,
-        "newReport": {
-          "filters": {
-            "isActive": true
-          },
-          "configurations": {
-            "i18nContext": "PurchaseOrderPage",
-            "clickable": true,
-            "draggable": true,
-            "sorting": {
-              "direction": "DESC",
-              "key": "updatedAt"
-            },
-            "pagination": {
-              "current": 0,
-              "perPage": 20
-            }
-          }
+  "fillParent": true,
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "reportingKey": "purchase-orders",
+      "jql": "purchase-orders",
+      "urlFormat": "/purchase-orders{{ id|if('/', '') }}{{ id }}",
+      "hasReports": true,
+      "showFilterBar": true,
+      "enableShare": true,
+      "enableSetting": true,
+      "newReport": {
+        "filters": {
+          "isActive": true
         },
-        "fieldOptions": [
-          {
-            "key": "id",
-            "sql": "purchase_order.id",
-            "hidden": true
-          },
-          {
-            "key": "createdAt",
-            "sql": "purchase_order.createdAt",
-            "width": 150,
-            "format": "YYYY-MM-DD"
-          },
-          {
+        "configurations": {
+          "i18nContext": "PurchaseOrderPage",
+          "clickable": true,
+          "draggable": true,
+          "sorting": {
+            "direction": "DESC",
             "key": "updatedAt",
-            "sql": "purchase_order.updatedAt",
-            "width": 150,
-            "format": "YYYY-MM-DD"
-          }
-        ],
-        "filters": [],
-        "clickFunction": {
-          "type": "router",
-          "otherParams": {
-            "func": "push",
-            "path": "/purchase-order/{{id}}"
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "purchase_order",
+              "name": "updatedAt"
+            }
+          },
+          "pagination": {
+            "current": 0,
+            "perPage": 20
           }
         }
       },
-      "slots": [
+      "fieldOptions": [{
+          "key": "id",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "purchase_order",
+            "name": "id"
+          },
+          "hidden": true
+        },
         {
-          "name": "middle-button",
-          "is": "DynamicComponent",
-          "props": {
-            "components": [
-              {
-                "is": "v-btn",
-                "props": {
-                  "small": true,
-                  "flat": true,
-                  "icon": true
-                },
-                "slots": [
-                  {
-                    "is": "Icon",
-                    "props": {
-                      "icon": "add"
-                    }
-                  }
-                ],
-                "events": {
-                  "click.stop": [
-                    {
-                      "type": "router",
-                      "otherParams": {
-                        "func": "push",
-                        "path": "purchase-order/create"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "is": "v-btn",
-                "props": {
-                  "small": true,
-                  "flat": true,
-                  "icon": true
-                },
-                "slots": [
-                  {
-                    "is": "Icon",
-                    "props": {
-                      "icon": "fas fa-file-import"
-                    }
-                  }
-                ],
-                "events": {
-                  "click.stop": [
-                    {
-                      "type": "router",
-                      "otherParams": {
-                        "func": "push",
-                        "path": "purchase-order/create-import"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
+          "key": "createdAt",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "purchase_order",
+            "name": "createdAt"
+          },
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "updatedAt",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "purchase_order",
+            "name": "updatedAt"
+          },
+          "width": 150,
+          "format": "YYYY-MM-DD"
         }
-      ]
-    }
-  ]
+      ],
+      "filters": [],
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/purchase-order/{{id}}"
+        }
+      }
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "components": [{
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "add"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "purchase-order/create"
+                }
+              }]
+            }
+          },
+          {
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "fas fa-file-import"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "purchase-order/create-import"
+                }
+              }]
+            }
+          }
+        ]
+      }
+    }]
+  }]
 }

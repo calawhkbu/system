@@ -1,48 +1,49 @@
 {
-  "components": [
-    {
-      "is": "TableTool",
-      "props": {
-        "reportingKey": "connections",
-        "jql": "parties",
-        "showFilterBar": true,
-        "enableShare": false,
-        "enableSetting": false,
-        "newReport": {
-          "filter": {
-            "isActive": true
-          },
-          "configurations": {
-            "i18nContext": "Reporting",
-            "clickable": true,
-            "draggable": true,
-            "sorting": {},
-            "pagination": {
-              "current": 0,
-              "perPage": 20
-            }
-          }
+  "fillParent": true,
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "reportingKey": "connections",
+      "jql": "parties",
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": false,
+      "noPartyGroupFilters": true,
+      "newReport": {
+        "filter": {
+          "isActive": true
         },
-        "filters": [
-          {
-            "name": "name",
-            "type": "text"
+        "configurations": {
+          "i18nContext": "Reporting",
+          "clickable": true,
+          "draggable": true,
+          "sorting": {},
+          "pagination": {
+            "current": 0,
+            "perPage": 20
           }
-        ],
-        "fieldOptions": [
-          {
-            "key": "id",
-            "sql": "party.id"
-          }
-        ],
-        "_clickFunction": {
-          "type": "router",
-          "otherParams": {
-            "func": "push",
-            "path": "/party/{{id}}"
-          }
+        }
+      },
+      "filters": [{
+        "name": "name",
+        "type": "text"
+      }],
+      "fieldOptions": [{
+        "key": "id",
+        "sql": {
+          "classname": "ColumnExpression",
+          "table": "party",
+          "name": "id"
+        },
+        "hidden": true
+      }],
+      "_clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/party/{{id}}"
         }
       }
     }
-  ]
+  }]
 }

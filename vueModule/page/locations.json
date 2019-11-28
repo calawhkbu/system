@@ -10,11 +10,10 @@
         "showFilterBar": true,
         "enableShare": false,
         "enableSetting": false,
+        "noPartyGroupFilters": true,
         "newReport": {
-          "filters": {
-          },
           "configurations": {
-            "i18nContext": "Reporting",
+            "i18nContext": "LocationPage",
             "clickable": true,
             "draggable": true,
             "sorting": {},
@@ -26,6 +25,8 @@
             }
           }
         },
+
+      
 
         "icons": [
           {
@@ -46,12 +47,89 @@
           {
             "key": "id",
             "hidden": true
+          },
+          {
+            "label": "",
+            "key": "can_delete",
+            "sortable": false,
+            "clickFunction": {
+              "type": "axios",
+              "otherParams": {
+                "axiosParams": {
+                  "url": "/api/location/{{row.id}}",
+                  "method": "DELETE"
+                }
+              },
+              "afterActions": [
+                {
+                  "type": "notify",
+                  "otherParams": {
+                    "notification": "Notify.deleteSuccess"
+                  }
+                }
+              ]
+            },
+
+            "tdComponent": {
+              "props": {
+                "slotComponents": [
+                  {
+                    "is": "icon",
+                    "props": {
+                      "icon": "delete"
+                    }
+                  }
+                ]
+              }
+            },
+            "width": 50
+          },
+
+          {
+            "label": "",
+            "key": "can_restore",
+            "sortable": false,
+            "clickFunction": {
+              "type": "axios",
+              "otherParams": {
+                "axiosParams": {
+                  "url": "/api/location/restore/{{row.id}}",
+                  "method": "POST"
+                }
+              },
+              "afterActions": [
+                {
+                  "type": "notify",
+                  "otherParams": {
+                    "notification": "Notify.restoreSuccess"
+                  }
+                }
+              ]
+            },
+
+            "tdComponent": {
+              "props": {
+                "slotComponents": [
+                  {
+                    "is": "icon",
+                    "props": {
+                      "icon": "refresh"
+                    }
+                  }
+                ]
+              }
+            },
+            "width": 50
           }
         ],
         "filters": [
           {
             "name": "countryCode",
             "type": "text"
+          },
+          {
+            "name": "isActive",
+            "type": "boolean"
           }
         ],
         "clickFunction": {

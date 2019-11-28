@@ -11,14 +11,6 @@ const query = new Query({
           type: 'number',
         },
         {
-          name: 'partyGroupCode',
-          type: 'string',
-        },
-        {
-          name: 'isBranch',
-          type: 'boolean',
-        },
-        {
           name: 'name',
           type: 'string',
         },
