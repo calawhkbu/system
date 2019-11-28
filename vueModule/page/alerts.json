@@ -8,9 +8,9 @@
       "urlFormat": "/alerts{{ id|if('/', '') }}{{ id }}",
       "hasReports": false,
       "showFilterBar": true,
-      "noPartyGroupFilters": true,
       "enableShare": true,
       "enableSetting": true,
+      "noPartyGroupFilters": true,
       "newReport": {
         "filters": {
           "isActive": true
@@ -21,7 +21,12 @@
           "draggable": true,
           "sorting": {
             "direction": "DESC",
-            "key": "alert.updatedAt"
+            "key": "updatedAt",
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "alert",
+              "name": "updatedAt"
+            }
           },
           "pagination": {
             "current": 0,
@@ -62,30 +67,44 @@
                 "table": "alert",
                 "name": "alertType"
               },
-              "Title"
+              {
+                "classname": "Value",
+                "type": "String",
+                "value": "Title"
+              }
+
             ]
-          }
+          },
+          "sql2": "concat(alert.alertType, 'Title')"
         },
         {
           "key": "alertContent",
           "i18nContext": "Alert",
+
           "sql": {
             "classname": "FunctionExpression",
             "name": "IFNULL",
             "parameters": [{
                 "classname": "FunctionExpression",
                 "name": "JSON_UNQUOTE",
-                "parameters": [{
-                  "classname": "FunctionExpression",
-                  "name": "JSON_EXTRACT",
-                  "parameters": [{
-                      "classname": "ColumnExpression",
-                      "table": "flex_data",
-                      "name": "data"
-                    },
-                    "$.customMessage"
-                  ]
-                }]
+                "parameters": [
+
+                  {
+                    "classname": "FunctionExpression",
+                    "name": "JSON_EXTRACT",
+                    "parameters": [{
+                        "classname": "ColumnExpression",
+                        "table": "flex_data",
+                        "name": "data"
+                      },
+                      {
+                        "classname": "Value",
+                        "type": "String",
+                        "value": "$.customMessage"
+                      }
+                    ]
+                  }
+                ]
               },
               {
                 "classname": "FunctionExpression",
@@ -95,11 +114,16 @@
                     "table": "alert",
                     "name": "alertType"
                   },
-                  "Message"
+                  {
+                    "classname": "Value",
+                    "type": "String",
+                    "value": "Title"
+                  }
                 ]
               }
             ]
-          }
+          },
+          "sql2": "IFNULL(JSON_UNQUOTE(JSON_EXTRACT(flex_data.data, '$.customMessage')), concat(alert.alertType, 'Message'))"
         }
       ],
       "filters": [],
@@ -107,7 +131,7 @@
         "type": "router",
         "otherParams": {
           "func": "push",
-          "path": "/booking/{{id}}"
+          "path": "/{{tableName}}/{{primaryKey}}"
         }
       },
       "icons": []

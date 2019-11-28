@@ -3,7 +3,7 @@
   "components": [{
     "is": "TableTool",
     "props": {
-      "reportingKey": "parties",
+      "reportingKey": "connections",
       "jql": "parties",
       "showFilterBar": true,
       "enableShare": false,

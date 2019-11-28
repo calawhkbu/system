@@ -11,7 +11,8 @@ const query = new Query({
         { name: 'version', type: 'number' },
         { name: 'category', type: 'string' },
         { name: 'key', type: 'string' },
-        { name: 'value', type: 'string' }
+        { name: 'value', type: 'string' },
+        { name: 'isDefault', type: 'boolean' }
       ],
     },
     'i18n'

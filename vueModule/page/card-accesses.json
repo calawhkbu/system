@@ -10,6 +10,7 @@
         "showFilterBar": true,
         "enableShare": false,
         "enableSetting": false,
+        "noPartyGroupFilters": true,
         "newReport": {
           "filters": {
           },
@@ -43,7 +44,87 @@
         "fieldOptions": [
           {
             "key": "id",
+            "sql": {
+              "classname":"ColumnExpression","table":"card_access","name":"id"
+            },
             "hidden": true
+          },
+          {
+            "key": "partyGroupCode",
+            "hidden": true
+          },
+          {
+            "label": "",
+            "key": "can_delete",
+            "sortable": false,
+            "clickFunction": {
+              "type": "axios",
+              "otherParams": {
+                "axiosParams": {
+                  "url": "/api/cardAccess/{{row.id}}",
+                  "method": "DELETE"
+                }
+              },
+              "afterActions": [
+                {
+                  "type": "notify",
+                  "otherParams": {
+                    "notification": "Notify.deleteSuccess"
+                  }
+                }
+              ]
+            },
+
+            "tdComponent": {
+              "props": {
+                "slotComponents": [
+                  {
+                    "is": "icon",
+                    "props": {
+                      "icon": "delete"
+                    }
+                  }
+                ]
+              }
+            },
+            "width": 50
+          },
+
+          {
+            "label": "",
+            "key": "can_restore",
+            "sortable": false,
+            "clickFunction": {
+              "type": "axios",
+              "otherParams": {
+                "axiosParams": {
+                  "url": "/api/cardAccess/restore/{{row.id}}",
+                  "method": "POST"
+                }
+              },
+              "afterActions": [
+                {
+                  "type": "notify",
+                  "otherParams": {
+                    "notification": "Notify.restoreSuccess"
+                  }
+                }
+              ]
+            },
+
+            "tdComponent": {
+              "props": {
+                "slotComponents": [
+                  {
+                    "is": "icon",
+                    "props": {
+                      "icon": "refresh"
+                    }
+                  }
+                ]
+              }
+            },
+            "width": 50
           }
         ],
         "clickFunction": {

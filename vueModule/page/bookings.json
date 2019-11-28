@@ -28,7 +28,12 @@
           "draggable": true,
           "sorting": {
             "direction": "DESC",
-            "key": "updatedAt"
+            "key": "updatedAt",
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "booking",
+              "name": "updatedAt"
+            }
           },
           "pagination": {
             "current": 0,
@@ -51,7 +56,7 @@
           "sql": {
             "classname": "ColumnExpression",
             "table": "booking",
-            "name": "createdAt"
+            "name": "updatedAt"
           },
           "width": 150,
           "format": "YYYY-MM-DD"

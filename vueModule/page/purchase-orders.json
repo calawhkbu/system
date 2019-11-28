@@ -20,7 +20,12 @@
           "draggable": true,
           "sorting": {
             "direction": "DESC",
-            "key": "updatedAt"
+            "key": "updatedAt",
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "purchase_order",
+              "name": "updatedAt"
+            }
           },
           "pagination": {
             "current": 0,
