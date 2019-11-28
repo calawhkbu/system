@@ -10,7 +10,8 @@ const query = new Query({
         { name: 'partyGroupCode', type: 'string' },
         { name: 'codeType', type: 'string' },
         { name: 'code', type: 'string' },
-        { name: 'name', type: 'string' }
+        { name: 'name', type: 'string' },
+        { name: 'isDefault', type: 'boolean' },
       ],
     },
     'code_master'

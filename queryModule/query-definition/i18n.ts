@@ -22,19 +22,18 @@ const query = new QueryDef(
   new Query({
 
     // one more layer of select from to prevent overriding select i18n.*
-    $from : new FromTable({
+    $from: new FromTable({
 
-      $as : 'i18n',
+      $as: 'i18n',
+      table: new Query({
 
-      table : new Query({
-
-        $select : [
+        $select: [
           new ResultColumn(new ColumnExpression('i18n', '*'))
         ],
-        $from : new FromTable({
-          table : new Query({
+        $from: new FromTable({
+          table: new Query({
 
-            $select : [
+            $select: [
 
               new ResultColumn(new ColumnExpression('i18n', 'category'), 'category'),
               new ResultColumn(new ColumnExpression('i18n', 'key'), 'key'),
@@ -43,13 +42,24 @@ const query = new QueryDef(
             ],
 
             $from: new FromTable('i18n'),
-            $group : new GroupBy([
+            // warning !!! : deletedBy must be Null!!!!!!
+            // warning !!! : deletedBy must be Null!!!!!!
+            // warning !!! : deletedBy must be Null!!!!!!
+            // warning !!! : deletedBy must be Null!!!!!!
+            // warning !!! : deletedBy must be Null!!!!!!
+            // warning !!! : deletedBy must be Null!!!!!!
+            $where: [
+              new IsNullExpression(new ColumnExpression('i18n', 'deletedBy'), false),
+              new IsNullExpression(new ColumnExpression('i18n', 'deletedAt'), false)
+            ],
+
+            $group: new GroupBy([
               'category', 'key'
             ]),
 
           }),
-          $as : 'leftTable',
-          joinClauses : [
+          $as: 'leftTable',
+          joinClauses: [
             new JoinClause(
               'LEFT',
               new FromTable('i18n'),
@@ -136,6 +146,19 @@ const query = new QueryDef(
 
 )
 
+query.register('isDefault',
+  {
+    expression: new FunctionExpression(
+      'IF',
+      new IsNullExpression(new ColumnExpression('i18n', 'partyGroupCode'), false),
+      1, 0
+    ),
+
+    $as: 'isDefault'
+  })
+
+// ------------------- filter
+
 query
   .register(
     'id',
@@ -154,7 +177,7 @@ query
   )
   .register('value', 0)
 
-  query
+query
   .register(
     'categoryLike',
     new Query({

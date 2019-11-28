@@ -11,7 +11,10 @@ const query = new Query({
         { name: 'locationCode', type: 'string' },
         { name: 'portCode', type: 'string' },
         { name: 'moduleTypeCode', type: 'string' },
-        { name: 'name', type: 'string' }
+        { name: 'name', type: 'string' },
+        { name: 'isActive', type: 'boolean' },
+        { name: 'can_delete', type: 'boolean' },
+        { name: 'can_restore', type: 'boolean' }
       ],
     },
     'location'

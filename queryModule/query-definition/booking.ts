@@ -747,6 +747,15 @@ query
   .register('from', 0)
   .register('to', 1)
 
+query.register(
+    'primaryKey',
+    new Query({
+      $select: [
+        new ResultColumn(new ColumnExpression('booking', 'id'), 'primaryKey'),
+      ]
+    })
+  )
+
 query
   .register(
     'q',
