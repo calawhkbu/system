@@ -1,360 +1,371 @@
 {
   "fillParent": true,
-  "components": [
-    {
-      "is": "TableTool",
-      "props": {
-        "reportingKey": "bookings",
-        "jql": "bookings",
-        "urlFormat": "/bookings{{ id|if('/', '') }}{{ id }}",
-        "hasReports": true,
-        "showFilterBar": true,
-        "enableShare": true,
-        "enableSetting": true,
-        "newReport": {
-          "filters": {
-            "isActive": true,
-            "date": {
-              "func": {
-                "args": {
-                  "unit": "year"
-                },
-                "key": "current"
-              }
-            }
-          },
-          "configurations": {
-            "i18nContext": "BookingPage",
-            "clickable": true,
-            "draggable": true,
-            "sorting": {
-              "direction": "DESC",
-              "key": "updatedAt"
-            },
-            "pagination": {
-              "current": 0,
-              "perPage": 20
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "reportingKey": "bookings",
+      "jql": "bookings",
+      "urlFormat": "/bookings{{ id|if('/', '') }}{{ id }}",
+      "hasReports": true,
+      "showFilterBar": true,
+      "enableShare": true,
+      "enableSetting": true,
+      "newReport": {
+        "filters": {
+          "isActive": true,
+          "date": {
+            "func": {
+              "args": {
+                "unit": "year"
+              },
+              "key": "current"
             }
           }
         },
-        "fieldOptions": [
-          {
-            "key": "id",
-            "sql": "booking.id",
-            "hidden": true
-          },
-          {
-            "key": "createdAt",
-            "sql": "booking.createdAt",
-            "width": 150,
-            "format": "YYYY-MM-DD"
-          },
-          {
+        "configurations": {
+          "i18nContext": "BookingPage",
+          "clickable": true,
+          "draggable": true,
+          "sorting": {
+            "direction": "DESC",
             "key": "updatedAt",
-            "sql": "booking.updatedAt",
-            "width": 150,
-            "format": "YYYY-MM-DD"
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "booking",
+              "name": "updatedAt"
+            }
           },
-          {
-            "key": "bookingNo",
-            "width": 150
-          },
-
-          {
-            "api": {
-              "arrayMapper": {
-                "keyKey": "code",
-                "valueKey": "name"
-              },
-              "axiosParams": {
-                "data": {
-                  "subqueries": {
-                    "codeType": {
-                      "value": "SERVTYPE"
-                    }
-                  }
-                },
-                "method": "POST",
-                "url": "api/code/query/code_master"
-              }
-            },
-            "key": "serviceCode",
-            "label": "serviceCode",
-            "width": 100
-          },
-          {
-            "api": {
-              "arrayMapper": {
-                "keyKey": "code",
-                "valueKey": "name"
-              },
-              "axiosParams": {
-                "data": {
-                  "subqueries": {
-                    "codeType": {
-                      "value": "MODULE"
-                    }
-                  }
-                },
-                "method": "POST",
-                "url": "api/code/query/code_master"
-              }
-            },
-            "key": "moduleTypeCode",
-            "label": "moduleType",
-            "width": 100
-          },
-          {
-            "api": {
-              "arrayMapper": {
-                "keyKey": "code",
-                "valueKey": "name"
-              },
-              "axiosParams": {
-                "data": {
-                  "subqueries": {
-                    "codeType": {
-                      "value": "BOUND"
-                    }
-                  }
-                },
-                "method": "POST",
-                "url": "api/code/query/code_master"
-              }
-            },
-            "key": "boundTypeCode",
-            "label": "boundType",
-            "width": 100
-          },
-          {
-            "api": {
-              "arrayMapper": {
-                "keyKey": "code",
-                "valueKey": "name"
-              },
-              "axiosParams": {
-                "data": {
-                  "subqueries": {
-                    "codeType": {
-                      "value": "INCOTERMS"
-                    }
-                  }
-                },
-                "method": "POST",
-                "url": "api/code/query/code_master"
-              }
-            },
-            "key": "incoTermsCode",
-            "label": "incoTermsCode",
-            "width": 100
-          },
-          {
-            "api": {
-              "arrayMapper": {
-                "keyKey": "code",
-                "valueKey": "name"
-              },
-              "axiosParams": {
-                "data": {
-                  "subqueries": {
-                    "codeType": {
-                      "value": "PAYTERMS"
-                    }
-                  }
-                },
-                "method": "POST",
-                "url": "api/code/query/code_master"
-              }
-            },
-            "key": "otherTermsCode",
-            "label": "otherTerms",
-            "width": 100
-          },
-          {
-            "api": {
-              "arrayMapper": {
-                "keyKey": "code",
-                "valueKey": "name"
-              },
-              "axiosParams": {
-                "data": {
-                  "subqueries": {
-                    "codeType": {
-                      "value": "PAYTERMS"
-                    }
-                  }
-                },
-                "method": "POST",
-                "url": "api/code/query/code_master"
-              }
-            },
-            "key": "freightTermsCode",
-            "label": "freightTermsCode",
-            "width": 100
-          },
-          {
-            "api": {
-              "arrayMapper": {
-                "keyKey": "portCode",
-                "valueKey": "name"
-              },
-              "axiosParams": {
-                "data": {
-                  "subqueries": {
-                    "portCode": {
-                      "value": "{{context.row.portOfDischargeCode}}"
-                    }
-                  }
-                },
-                "method": "POST",
-                "url": "api/location/query/location"
-              }
-            },
-            "key": "portOfDischargeCode",
-            "label": "portOfDischarge",
-            "width": 100
-          },
-          {
-            "api": {
-              "arrayMapper": {
-                "keyKey": "portCode",
-                "valueKey": "name"
-              },
-              "axiosParams": {
-                "data": {
-                  "subqueries": {
-                    "portCode": {
-                      "value": "{{context.row.portOfLoadingCode}}"
-                    }
-                  }
-                },
-                "method": "POST",
-                "url": "api/location/query/location"
-              }
-            },
-            "key": "portOfLoadingCode",
-            "label": "portOfLoading",
-            "width": 100
-          },
-          {
-            "api": {
-              "arrayMapper": {
-                "keyKey": "portCode",
-                "valueKey": "name"
-              },
-              "axiosParams": {
-                "data": {
-                  "subqueries": {
-                    "portCode": {
-                      "value": "{{context.row.placeOfReceiptCode}}"
-                    }
-                  }
-                },
-                "method": "POST",
-                "url": "api/location/query/location"
-              }
-            },
-            "key": "placeOfReceiptCode",
-            "label": "placeOfReceipt",
-            "width": 100
-          },
-          {
-            "api": {
-              "arrayMapper": {
-                "keyKey": "portCode",
-                "valueKey": "name"
-              },
-              "axiosParams": {
-                "data": {
-                  "subqueries": {
-                    "portCode": {
-                      "value": "{{context.row.placeOfDeliveryCode}}"
-                    }
-                  }
-                },
-                "method": "POST",
-                "url": "api/location/query/location"
-              }
-            },
-            "key": "placeOfDeliveryCode",
-            "label": "placeOfDelivery",
-            "width": 100
-          },
-          {
-            "api": {
-              "arrayMapper": {
-                "keyKey": "portCode",
-                "valueKey": "name"
-              },
-              "axiosParams": {
-                "data": {
-                  "subqueries": {
-                    "portCode": {
-                      "value": "{{context.row.finalDestinationCode}}"
-                    }
-                  }
-                },
-                "method": "POST",
-                "url": "api/location/query/location"
-              }
-            },
-            "key": "finalDestinationCode",
-            "label": "finalDestination",
-            "width": 100
-          },
-
-          {
-            "key": "departureDateEstimated",
-            "format": "YYYY-MM-DD"
-          },
-          {
-            "key": "departureDateActual",
-            "format": "YYYY-MM-DD"
-          },
-          {
-            "key": "arrivalDateEstimated",
-            "format": "YYYY-MM-DD"
-          },
-          {
-            "key": "cargoReadyDateEstimated",
-            "format": "YYYY-MM-DD"
-          },
-          {
-            "key": "cargoReadyDateActual",
-            "format": "YYYY-MM-DD"
-          },
-          {
-            "key": "cYCutOffDateEstimated",
-            "format": "YYYY-MM-DD"
-          },
-          {
-            "key": "cYCutOffDateActual",
-            "format": "YYYY-MM-DD"
+          "pagination": {
+            "current": 0,
+            "perPage": 20,
+            "remote": true
           }
-        ],
-        "clickFunction": {
+        }
+      },
+      "fieldOptions": [{
+          "key": "id",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "booking",
+            "name": "id"
+          },
+          "hidden": true
+        },
+        {
+          "key": "createdAt",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "booking",
+            "name": "updatedAt"
+          },
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "updatedAt",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "booking",
+            "name": "updatedAt"
+          },
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "bookingNo",
+          "width": 150
+        },
+
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "SERVTYPE"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/code/query/code_master"
+            }
+          },
+          "key": "serviceCode",
+          "label": "serviceCode",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "MODULE"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/code/query/code_master"
+            }
+          },
+          "key": "moduleTypeCode",
+          "label": "moduleType",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "BOUND"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/code/query/code_master"
+            }
+          },
+          "key": "boundTypeCode",
+          "label": "boundType",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "INCOTERMS"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/code/query/code_master"
+            }
+          },
+          "key": "incoTermsCode",
+          "label": "incoTermsCode",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "PAYTERMS"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/code/query/code_master"
+            }
+          },
+          "key": "otherTermsCode",
+          "label": "otherTerms",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "PAYTERMS"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/code/query/code_master"
+            }
+          },
+          "key": "freightTermsCode",
+          "label": "freightTermsCode",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "portCode",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "portCode": {
+                    "value": "{{context.row.portOfDischargeCode}}"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/location/query/location"
+            }
+          },
+          "key": "portOfDischargeCode",
+          "label": "portOfDischarge",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "portCode",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "portCode": {
+                    "value": "{{context.row.portOfLoadingCode}}"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/location/query/location"
+            }
+          },
+          "key": "portOfLoadingCode",
+          "label": "portOfLoading",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "portCode",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "portCode": {
+                    "value": "{{context.row.placeOfReceiptCode}}"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/location/query/location"
+            }
+          },
+          "key": "placeOfReceiptCode",
+          "label": "placeOfReceipt",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "portCode",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "portCode": {
+                    "value": "{{context.row.placeOfDeliveryCode}}"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/location/query/location"
+            }
+          },
+          "key": "placeOfDeliveryCode",
+          "label": "placeOfDelivery",
+          "width": 100
+        },
+        {
+          "api": {
+            "arrayMapper": {
+              "keyKey": "portCode",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "portCode": {
+                    "value": "{{context.row.finalDestinationCode}}"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/location/query/location"
+            }
+          },
+          "key": "finalDestinationCode",
+          "label": "finalDestination",
+          "width": 100
+        },
+
+        {
+          "key": "departureDateEstimated",
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "departureDateActual",
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "arrivalDateEstimated",
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "cargoReadyDateEstimated",
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "cargoReadyDateActual",
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "cYCutOffDateEstimated",
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "cYCutOffDateActual",
+          "format": "YYYY-MM-DD"
+        }
+      ],
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/booking/{{id}}"
+        }
+      },
+      "icons": [{
+        "icon": "add",
+        "click": [{
           "type": "router",
           "otherParams": {
             "func": "push",
-            "path": "/booking/{{id}}"
+            "path": "/booking/create"
           }
-        },
-        "icons": [
-          {
-            "icon": "add",
-            "click": [
-              {
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "/booking/create"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "slots": []
-    }
-  ]
+        }]
+      }]
+    },
+    "slots": []
+  }]
 }

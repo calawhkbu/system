@@ -1,15 +1,15 @@
 {
-  "charLimit": 50,
-
-  "paginator": {
-    "pageLimit": 10
+  "booking": {
+    "title": ["bookingNo"],
+    "limit": 10,
+    "charLimit": 50
   },
+  "shipment": {
+    "title": ["houseNo"],
+    "limit": 10,
+    "charLimit": 50
+  },
+  "purchaseOrder": {
 
-  "attribute": {
-    "booking": ["bookingNo", "moduleTypeCode"],
-
-    "shipment": [],
-
-    "po": []
   }
 }

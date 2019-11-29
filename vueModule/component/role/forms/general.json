@@ -1,29 +1,86 @@
 {
-    "components": [{
-        "is": "WidgetForm",
-        "props": {
-          "fields": [
-            {
-              "label": "RolePage.roleName",
-              "name": "roleName",
-              "component": "v-text-field",
-              "class": "xs-12"
-            },
-            {
-                "label": "RolePage.filter",
-                "name": "filter",
-                "component": "JsonField",
-                "class": "xs-12"
-            },
+  "components": [
+    {
+      "is": "WidgetForm",
+      "props": {
+        "fields": [
+          {
+            "label": "RolePage.roleName",
+            "name": "roleName",
+            "component": "v-text-field",
+            "class": "xs-12"
+          },
+          {
+            "label": "RolePage.roleGroup",
+            "name": "roleGroup",
+            "class": "xs-12",
+            "component": "AsyncAutoSuggest",
+            "props": {
+              "searchValueParams": {
+                "method": "POST",
+                "url": "api/role/roleGroupOption/list",
+                "data": {
+                  "subqueries": {
+                    "roleGroupLike": {
+                      "value": "{{context.autoSuggestModel}}"
+                    }
+                  }
+                }
+              },
+              "searchTextParams": {
+                "method": "POST",
+                "url": "api/role/roleGroupOption/list",
+                "data": {
+                  "subqueries": {
+                    "roleGroupLike": {
+                      "value": "{{context.search}}"
+                    }
+                  }
+                }
+              },
+              "canCreate" : true,
+              "canCreateValue" : "{{autoSuggestModel}}"
 
-            {
-                "label": "RolePage.canMultiSelect",
-                "name": "canMultiSelect",
-                "component": "BooleanField",
-                "class": "xs-12"
             }
-          ]
-        }
+
+          },
+
+          {
+            "label": "RolePage.canMultiSelect",
+            "name": "canMultiSelect",
+            "component": "BooleanField",
+            "class": "xs-12 md-3"
+          },
+
+          {
+            "label": "RolePage.shareable",
+            "name": "shareable",
+            "component": "BooleanField",
+            "class": "xs-12 md-3"
+          },
+
+          {
+            "label": "RolePage.defaultSelect",
+            "name": "defaultSelect",
+            "component": "BooleanField",
+            "class": "xs-12 md-3"
+          },
+
+          {
+            "label": "RolePage.hidden",
+            "name": "hidden",
+            "component": "BooleanField",
+            "class": "xs-12 md-3"
+          },
+
+          {
+            "label": "RolePage.filter",
+            "name": "filter",
+            "component": "JsonField",
+            "class": "xs-12"
+          }
+        ]
       }
-    ]
-  }
+    }
+  ]
+}

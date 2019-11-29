@@ -436,7 +436,7 @@ query.register('totalBooking', {
     parameters: new ParameterExpression({
       // cannot use distinct while using *
       // prefix: 'DISTINCT',
-      expression: new ColumnExpression('*'),
+      expression: '*',
     }),
   }),
   $as: 'totalBooking',
@@ -746,6 +746,15 @@ query
   )
   .register('from', 0)
   .register('to', 1)
+
+query.register(
+    'primaryKey',
+    new Query({
+      $select: [
+        new ResultColumn(new ColumnExpression('booking', 'id'), 'primaryKey'),
+      ]
+    })
+  )
 
 query
   .register(

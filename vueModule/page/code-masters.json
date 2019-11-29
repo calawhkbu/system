@@ -5,27 +5,23 @@
       "is": "TableTool",
       "props": {
         "back": "/admin",
-        "reportingKey": "templates",
-        "jql": "templates",
-        "noPartyGroupFilters": true,
+        "reportingKey": "code-masters",
+        "jql": "code-masters",
         "showFilterBar": true,
         "enableShare": false,
         "enableSetting": false,
+        "noPartyGroupFilters": true,
         "newReport": {
           "filters": {
-            "extension": {
-              "value": "pdf"
-            },
-            "isActive": true
           },
           "configurations": {
             "i18nContext": "Reporting",
             "clickable": true,
             "draggable": true,
-            "sorting": {},
             "pagination": {
               "current": 0,
-              "perPage": 20
+              "perPage": 20,
+              "remote" : true
             }
           }
         },
@@ -38,7 +34,7 @@
                 "type": "router",
                 "otherParams": {
                   "func": "push",
-                  "path": "/template/create"
+                  "path": "/code-master/create"
                 }
               }
             ]
@@ -52,65 +48,27 @@
           },
 
           {
-            "label": "",
-            "key": "can_delete",
-            "sortable": false,
-            "clickFunction": {
-              "type": "axios",
-              "otherParams": {
-                "axiosParams": {
-                  "url": "/api/template/delete",
-                  "method": "POST",
-                  "data" : {
-                    "templateName" : "{{row.templateName}}"
-                  }
-                }
-              },
-              "afterActions": [
-                {
-                  "type": "notify",
-                  "otherParams": {
-                    "notification": "Notify.deleteSuccess"
-                  }
-                }
-              ]
-            },
-
-            "tdComponent": {
-              "props": {
-                "slotComponents": [
-                  {
-                    "is": "icon",
-                    "props": {
-                      "icon": "delete"
-                    }
-                  }
-                ]
-              }
-            },
-            "width": 50
+            "key": "partyGroupCode",
+            "hidden": true
           },
 
           {
             "label": "",
-            "key": "can_restore",
+            "key": "isDefault",
             "sortable": false,
             "clickFunction": {
               "type": "axios",
               "otherParams": {
                 "axiosParams": {
-                  "url": "/api/template/restore",
-                  "method": "POST",
-                  "data" : {
-                    "templateName" : "{{row.templateName}}"
-                  }
+                  "url": "/api/code/resetDefault/{{row.id}}",
+                  "method": "POST"
                 }
               },
               "afterActions": [
                 {
                   "type": "notify",
                   "otherParams": {
-                    "notification": "Notify.restoreSuccess"
+                    "notification": "Notify.resetDefaultSuccess"
                   }
                 }
               ]
@@ -131,18 +89,11 @@
             "width": 50
           }
         ],
-        "filters": [
-          {
-            "name": "templateName",
-            "i18nContext" : "TemplatePage",
-            "type": "text"
-          }
-        ],
         "clickFunction": {
           "type": "router",
           "otherParams": {
             "func": "push",
-            "path": "/template/{{id}}"
+            "path": "/code-master/{{id}}"
           }
         }
       }

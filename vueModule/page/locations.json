@@ -5,30 +5,28 @@
       "is": "TableTool",
       "props": {
         "back": "/admin",
-        "reportingKey": "templates",
-        "jql": "templates",
-        "noPartyGroupFilters": true,
+        "reportingKey": "locations",
+        "jql": "locations",
         "showFilterBar": true,
         "enableShare": false,
         "enableSetting": false,
+        "noPartyGroupFilters": true,
         "newReport": {
-          "filters": {
-            "extension": {
-              "value": "pdf"
-            },
-            "isActive": true
-          },
           "configurations": {
-            "i18nContext": "Reporting",
+            "i18nContext": "LocationPage",
             "clickable": true,
             "draggable": true,
             "sorting": {},
+            "expanded" : {},
             "pagination": {
               "current": 0,
-              "perPage": 20
+              "perPage": 20,
+              "remote" : true
             }
           }
         },
+
+      
 
         "icons": [
           {
@@ -38,7 +36,7 @@
                 "type": "router",
                 "otherParams": {
                   "func": "push",
-                  "path": "/template/create"
+                  "path": "/location/create"
                 }
               }
             ]
@@ -50,7 +48,6 @@
             "key": "id",
             "hidden": true
           },
-
           {
             "label": "",
             "key": "can_delete",
@@ -59,11 +56,8 @@
               "type": "axios",
               "otherParams": {
                 "axiosParams": {
-                  "url": "/api/template/delete",
-                  "method": "POST",
-                  "data" : {
-                    "templateName" : "{{row.templateName}}"
-                  }
+                  "url": "/api/location/{{row.id}}",
+                  "method": "DELETE"
                 }
               },
               "afterActions": [
@@ -99,11 +93,8 @@
               "type": "axios",
               "otherParams": {
                 "axiosParams": {
-                  "url": "/api/template/restore",
-                  "method": "POST",
-                  "data" : {
-                    "templateName" : "{{row.templateName}}"
-                  }
+                  "url": "/api/location/restore/{{row.id}}",
+                  "method": "POST"
                 }
               },
               "afterActions": [
@@ -133,16 +124,19 @@
         ],
         "filters": [
           {
-            "name": "templateName",
-            "i18nContext" : "TemplatePage",
+            "name": "countryCode",
             "type": "text"
+          },
+          {
+            "name": "isActive",
+            "type": "boolean"
           }
         ],
         "clickFunction": {
           "type": "router",
           "otherParams": {
             "func": "push",
-            "path": "/template/{{id}}"
+            "path": "/location/{{id}}"
           }
         }
       }
