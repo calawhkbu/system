@@ -6,9 +6,60 @@ import {
   Query,
   OrExpressions,
   RegexpExpression,
+  FunctionExpression,
+  AndExpressions,
+  IsNullExpression,
 } from 'node-jql'
 
 const query = new QueryDef(new Query('location'))
+
+// ------------- fields stuff
+
+query.register('isActive',
+{
+  expression : new FunctionExpression(
+    'IF',
+    new AndExpressions([
+      new IsNullExpression(new ColumnExpression('location', 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression('location', 'deletedBy'), false),
+    ]),
+    1, 0
+  ),
+
+  $as: 'isActive'
+})
+
+query.register('can_delete',
+{
+
+  expression : new FunctionExpression(
+    'IF',
+    new AndExpressions([
+      new IsNullExpression(new ColumnExpression('location', 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression('location', 'deletedBy'), false),
+    ]),
+    1, 0
+  ),
+
+  $as: 'can_delete'
+})
+
+query.register('can_restore',
+{
+
+  expression : new FunctionExpression(
+    'IF',
+    new AndExpressions([
+      new IsNullExpression(new ColumnExpression('location', 'deletedAt'), true),
+      new IsNullExpression(new ColumnExpression('location', 'deletedBy'), true),
+    ]),
+    1, 0
+  ),
+
+  $as: 'can_restore'
+})
+
+// -----------------------------------
 
 query
   .register(
@@ -51,5 +102,15 @@ query
   )
   .register('value', 0)
   .register('value', 1)
+
+  query.register(
+    'isActive',
+    new Query({
+      $where: [
+        new IsNullExpression(new ColumnExpression('location', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('location', 'deletedBy'), false),
+      ],
+    })
+  )
 
 export default query

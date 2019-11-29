@@ -1,4 +1,5 @@
 {
+  "fillParent": true,
   "components": [
     {
       "is": "TableTool",
@@ -6,8 +7,7 @@
         "reportingKey": "roles",
         "jql": "roles",
         "back": "/admin",
-        "icons": [],
-        "_clickFunction": {
+        "clickFunction": {
           "type": "router",
           "otherParams": {
             "func": "push",
@@ -17,6 +17,7 @@
         "showFilterBar": true,
         "enableShare": false,
         "enableSetting": false,
+        "noPartyGroupFilters": true,
         "newReport": {
           "configurations": {
             "i18nContext": "Reporting",
@@ -29,6 +30,23 @@
             }
           }
         },
+
+        "icons": [
+          {
+            "icon": "add",
+            "click": [
+              {
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/role/create"
+                }
+              }
+            ]
+          }
+        ],
+
+
         "filters": [
           {
             "name": "roleName",
@@ -38,7 +56,9 @@
         "fieldOptions": [
           {
             "key": "id",
-            "sql": "role.id",
+            "sql":{
+              "classname":"ColumnExpression","table":"role","name":"id"
+            },
             "hidden": true
           },
           {
@@ -46,7 +66,45 @@
           },
           {
             "key": "roleGroup"
+          },
+
+          {
+            "label": "",
+            "key": "isDefault",
+            "sortable": false,
+            "clickFunction": {
+              "type": "axios",
+              "otherParams": {
+                "axiosParams": {
+                  "url": "/api/role/resetDefault/{{row.id}}",
+                  "method": "POST"
+                }
+              },
+              "afterActions": [
+                {
+                  "type": "notify",
+                  "otherParams": {
+                    "notification": "Notify.resetDefaultSuccess"
+                  }
+                }
+              ]
+            },
+
+            "tdComponent": {
+              "props": {
+                "slotComponents": [
+                  {
+                    "is": "icon",
+                    "props": {
+                      "icon": "refresh"
+                    }
+                  }
+                ]
+              }
+            },
+            "width": 50
           }
+
         ]
       }
     }

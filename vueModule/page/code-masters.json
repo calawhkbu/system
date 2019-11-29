@@ -1,0 +1,102 @@
+{
+  "fillParent": true,
+  "components": [
+    {
+      "is": "TableTool",
+      "props": {
+        "back": "/admin",
+        "reportingKey": "code-masters",
+        "jql": "code-masters",
+        "showFilterBar": true,
+        "enableShare": false,
+        "enableSetting": false,
+        "noPartyGroupFilters": true,
+        "newReport": {
+          "filters": {
+          },
+          "configurations": {
+            "i18nContext": "Reporting",
+            "clickable": true,
+            "draggable": true,
+            "pagination": {
+              "current": 0,
+              "perPage": 20,
+              "remote" : true
+            }
+          }
+        },
+
+        "icons": [
+          {
+            "icon": "add",
+            "click": [
+              {
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/code-master/create"
+                }
+              }
+            ]
+          }
+        ],
+
+        "fieldOptions": [
+          {
+            "key": "id",
+            "hidden": true
+          },
+
+          {
+            "key": "partyGroupCode",
+            "hidden": true
+          },
+
+          {
+            "label": "",
+            "key": "isDefault",
+            "sortable": false,
+            "clickFunction": {
+              "type": "axios",
+              "otherParams": {
+                "axiosParams": {
+                  "url": "/api/code/resetDefault/{{row.id}}",
+                  "method": "POST"
+                }
+              },
+              "afterActions": [
+                {
+                  "type": "notify",
+                  "otherParams": {
+                    "notification": "Notify.resetDefaultSuccess"
+                  }
+                }
+              ]
+            },
+
+            "tdComponent": {
+              "props": {
+                "slotComponents": [
+                  {
+                    "is": "icon",
+                    "props": {
+                      "icon": "refresh"
+                    }
+                  }
+                ]
+              }
+            },
+            "width": 50
+          }
+        ],
+        "clickFunction": {
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "/code-master/{{id}}"
+          }
+        }
+      }
+    }
+  ]
+}
