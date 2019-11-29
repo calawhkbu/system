@@ -1616,7 +1616,7 @@ export const formatJson = {
                         maximumLen: 14,
                         minimumLen: 1,
                         name: 'Unit Price',
-                        key: 'UnitPrice',
+                        key: 'unitPrice',
                         type: 'decimal',
                       },
                     ],
@@ -2272,7 +2272,7 @@ export const formatJson = {
                     maximumLen: 14,
                     minimumLen: 1,
                     name: 'Unit Price',
-                    key: 'UnitPrice',
+                    key: 'unitPrice',
                     type: 'decimal',
                   },
                 ],
@@ -3428,7 +3428,7 @@ export const formatJson = {
                         maximumLen: 14,
                         minimumLen: 1,
                         name: 'Unit Price',
-                        key: 'UnitPrice',
+                        key: 'unitPrice',
                         type: 'decimal',
                       },
                     ],
@@ -3857,37 +3857,37 @@ export const formatJson = {
                             {
                               value: 'DP',
                               name: 'Department',
-                              overrideValue: 'Department',
+                              overrideValue: 'department',
                             },
                             {
                               value: 'MR',
                               name: 'MIC',
-                              overrideValue: 'MIC',
+                              overrideValue: 'mic',
                             },
                             {
                               value: 'BT',
                               name: 'Group Code',
-                              overrideValue: 'Group Code',
+                              overrideValue: 'groupCode',
                             },
                             {
                               value: 'JH',
                               name: 'Label Code',
-                              overrideValue: 'Label Code',
+                              overrideValue: 'labelCode',
                             },
                             {
                               value: 'OIC',
                               name: 'Label Type',
-                              overrideValue: 'Label Type',
+                              overrideValue: 'label',
                             },
                             {
                               value: 'E9',
                               name: 'Hangtag Type',
-                              overrideValue: 'Hangtag Type',
+                              overrideValue: 'hangtag',
                             },
                             {
                               value: 'W9',
                               name: 'Special Packageing',
-                              overrideValue: 'Special Packageing',
+                              overrideValue: 'specialPackageing',
                             },
                           ],
                           allowAny: true,
@@ -4045,6 +4045,7 @@ export default class Edi850Parser extends BaseEdiParser {
       // undefined or empty array
       throw new Error(error.message)
     }
+    // return jsonData
 
     const holeEdi: any = {
       partyGroupCode,
@@ -4304,8 +4305,10 @@ export default class Edi850Parser extends BaseEdiParser {
           }
           const po: any = {
             partyGroupCode,
+            update: true,
             edi: true,
-            errors: errorList,
+            // errors: errorList,
+            isChange: _.get(ST, 'BCH.transactionSetPurpose') === 'Change',
             purpose: _.get(ST, 'BCH.transactionSetPurpose'),
             poNo: _.get(ST, 'BCH.purchaseOrderNumber'),
             poDate: _.get(ST, 'BCH.purchaseOrderDate')
@@ -4328,11 +4331,15 @@ export default class Edi850Parser extends BaseEdiParser {
           if (poc.length) {
             const poItemList: any[] = []
             for (const POC of poc) {
-              poItemList.push({
+              const poItem: any = {
                 perPackageQuantity: _.get(POC, 'PO4.pack'),
-                quantity: _.get(POC, 'quantityOrdered'),
+                addItem: _.get(POC, 'lineItemChange') === 'Add Item',
+                priceChange: _.get(POC, 'lineItemChange') === 'Price Change',
+                changesLineItems: _.get(POC, 'lineItemChange') === 'Changes to line items',
+                deleteItem: _.get(POC, 'lineItemChange') === 'Delete Item',
+                isQuantityChange: _.get(POC, 'lineItemChange') === 'Quantity Increase' || _.get(POC, 'lineItemChange') === 'Quantity Decrease',
+                // quantity: _.get(POC, 'quantityOrdered'),
                 quantityUnit: _.get(POC, 'unitOfMeasureCode'),
-                change: _.get(POC, 'lineItemChange'),
                 quantityChange: _.get(POC, 'quantityChange'),
                 volume: _.get(POC, 'PO4.grossVolumePerPack'),
                 htsCode: _.get(POC, 'SLN.productId2'),
@@ -4348,7 +4355,34 @@ export default class Edi850Parser extends BaseEdiParser {
                   buyerSKU: _.get(POC, 'productId3'),
                   style: _.get(POC, 'productId5'),
                 },
-              })
+              }
+              if (_.get(POC, 'lineItemChange') === 'Quantity Increase' || _.get(POC, 'lineItemChange') === 'Quantity Decrease')
+              {
+                poItem['quantity'] = _.get(POC, 'quantityOrdered')
+                if (_.get(POC, 'lineItemChange') === 'Quantity Increase')
+                {
+                  poItem['quantityChangeSign'] = '+'
+                }
+                else if (_.get(POC, 'lineItemChange') === 'Quantity Decrease')
+                {
+                  poItem['quantityChangeSign'] = '-'
+                }
+              }
+              if (_.get(POC, 'CTP'))
+              {
+                console.log('lllllllllllllllllllllllllllllllllll')
+                console.log(_.get(POC, 'CTP.unitPrice'))
+                poItem['product']['unitPrice'] =  _.get(POC, 'CTP.unitPrice')
+              }
+              const n9s = _.get(POC, 'N9', []) || []
+              if (n9s.length)
+              {
+                for (const n9 of n9s)
+                {
+                  poItem[_.get(n9, 'referenceNumberQual')] = _.get(n9, 'referenceNumber')
+                }
+              }
+              poItemList.push(poItem)
             }
             if (poItemList.length) {
               _.set(po, 'purchaseOrderItems', poItemList)
