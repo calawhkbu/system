@@ -4307,7 +4307,7 @@ export default class Edi850Parser extends BaseEdiParser {
             partyGroupCode,
             update: true,
             edi: true,
-            // errors: errorList,
+            errors: errorList,
             isChange: _.get(ST, 'BCH.transactionSetPurpose') === 'Change',
             purpose: _.get(ST, 'BCH.transactionSetPurpose'),
             poNo: _.get(ST, 'BCH.purchaseOrderNumber'),
