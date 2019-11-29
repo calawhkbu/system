@@ -4,20 +4,16 @@
     {
       "is": "TableTool",
       "props": {
+        "title": "Roles",
         "reportingKey": "roles",
         "jql": "roles",
-        "back": "/admin",
-        "clickFunction": {
-          "type": "router",
-          "otherParams": {
-            "func": "push",
-            "path": "/role/{{id}}"
-          }
-        },
+        "noPartyGroupFilters": true,
+        "urlFormat": "/admin/roles/{{ id }}",
+        "hasReports": false,
         "showFilterBar": true,
         "enableShare": false,
-        "enableSetting": false,
-        "noPartyGroupFilters": true,
+        "enableSetting": true,
+        "back": "/admin",
         "newReport": {
           "configurations": {
             "i18nContext": "Reporting",
@@ -30,7 +26,14 @@
             }
           }
         },
-
+        "clickFunction": {
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "/admin/roles/detail/{{id}}"
+          }
+        },
+        "nextPageComponent": "role",
         "icons": [
           {
             "icon": "add",
@@ -45,8 +48,6 @@
             ]
           }
         ],
-
-
         "filters": [
           {
             "name": "roleName",
@@ -67,7 +68,6 @@
           {
             "key": "roleGroup"
           },
-
           {
             "label": "",
             "key": "isDefault",
