@@ -174,15 +174,15 @@ const query = new QueryDef(
   })
 )
 
-query.register('isDefault',
+query.register('canResetDefault',
 {
   expression : new FunctionExpression(
     'IF',
-    new IsNullExpression(new ColumnExpression('code_master', 'partyGroupCode'), false),
+    new IsNullExpression(new ColumnExpression('code_master', 'partyGroupCode'), true),
     1, 0
   ),
 
-  $as: 'isDefault'
+  $as: 'canResetDefault'
 })
 
 query

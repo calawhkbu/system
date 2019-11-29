@@ -13,9 +13,12 @@
         "noPartyGroupFilters": true,
         "newReport": {
           "filters": {
+            "activeStatus" : {
+              "value" : "active"
+            }
           },
           "configurations": {
-            "i18nContext": "Reporting",
+            "i18nContext": "CardAccessPage",
             "clickable": true,
             "draggable": true,
             "pagination": {
@@ -49,13 +52,33 @@
             },
             "hidden": true
           },
+
+          {
+            "key": "name"
+          },          
           {
             "key": "partyGroupCode",
             "hidden": true
           },
+
+          {
+            "key": "disabled",
+            "boolean": true
+          },
+          {
+            "key": "partyGroupSpecific",
+            "boolean": true
+          },
+
+          {
+            "key": "isActive",
+            "hidden" : true,
+            "boolean": true
+          },
           {
             "label": "",
-            "key": "can_delete",
+            "key": "canDelete",
+            "boolean" : true,
             "sortable": false,
             "clickFunction": {
               "type": "axios",
@@ -76,6 +99,7 @@
             },
 
             "tdComponent": {
+              "hideIfFalse" : true,
               "props": {
                 "slotComponents": [
                   {
@@ -92,8 +116,9 @@
 
           {
             "label": "",
-            "key": "can_restore",
+            "key": "canRestore",
             "sortable": false,
+            "boolean" : true,
             "clickFunction": {
               "type": "axios",
               "otherParams": {
@@ -125,6 +150,28 @@
               }
             },
             "width": 50
+          }
+        ],
+        "filters" : [
+          {
+            "name" : "activeStatus",
+            "i18nContext" : "CardAccess",
+            "type" : "list",
+            "props" : {
+              "items" :[
+
+                {
+                  "label" : "active",
+                  "value" : "active"
+                },
+                {
+                  "label" : "deleted",
+                  "value" : "deleted"
+                }
+              ]
+
+
+            }
           }
         ],
         "clickFunction": {

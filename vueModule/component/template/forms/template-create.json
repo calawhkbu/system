@@ -17,10 +17,18 @@
           },
           {
             "label": "TemplatePage.format",
-            "name": "base64String",
+            "name": "fileData",
             "component": "FileField",
             "props" : {
-              "convertBase64" : true
+              "convertBase64" : true,
+              "accept" : {
+                "url" : "/api/template/get/allowFileType",
+                "method" : "GET"
+              },
+              "size" : {
+                "url" : "/api/template/get/maxFileSize/",
+                "method" : "GET"
+              }
             },
             "class": "xs-12"
           }

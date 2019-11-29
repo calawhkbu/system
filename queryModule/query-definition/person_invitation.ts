@@ -11,6 +11,7 @@ import {
   Value,
   FunctionExpression,
   AndExpressions,
+  OrExpressions,
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -65,7 +66,7 @@ const query = new QueryDef(
   })
 )
 
-query.register('can_resend', {
+query.register('canResend', {
   expression: new FunctionExpression(
     'IF',
 
@@ -87,10 +88,10 @@ query.register('can_resend', {
     0
   ),
 
-  $as: 'can_resend',
+  $as: 'canResend',
 })
 
-query.register('can_delete', {
+query.register('canDelete', {
   expression: new FunctionExpression(
     'IF',
 
@@ -112,10 +113,10 @@ query.register('can_delete', {
     0
   ),
 
-  $as: 'can_delete',
+  $as: 'canDelete',
 })
 
-query.register('can_restore', {
+query.register('canRestore', {
   expression: new FunctionExpression(
     'IF',
 
@@ -136,7 +137,7 @@ query.register('can_restore', {
     1,
     0
   ),
-  $as: 'can_restore',
+  $as: 'canRestore',
 })
 
 query.register('invitationStatus', {
@@ -188,6 +189,22 @@ query
     })
   )
   .register('value', 0)
+
+  query
+  .register(
+    'nameLike',
+    new Query({
+      $where: new OrExpressions([
+        new RegexpExpression(new ColumnExpression('person', 'firstName'), false),
+        new RegexpExpression(new ColumnExpression('person', 'lastName'), false),
+        new RegexpExpression(new ColumnExpression('person', 'displayName'), false)
+
+      ])
+    })
+  )
+  .register('value', 0)
+  .register('value', 1)
+  .register('value', 2)
 
 query
   .register(

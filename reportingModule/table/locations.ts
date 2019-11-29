@@ -13,8 +13,8 @@ const query = new Query({
         { name: 'moduleTypeCode', type: 'string' },
         { name: 'name', type: 'string' },
         { name: 'isActive', type: 'boolean' },
-        { name: 'can_delete', type: 'boolean' },
-        { name: 'can_restore', type: 'boolean' }
+        { name: 'canDelete', type: 'boolean' },
+        { name: 'canRestore', type: 'boolean' }
       ],
     },
     'location'

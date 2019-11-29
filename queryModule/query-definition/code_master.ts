@@ -13,10 +13,13 @@ import {
   AndExpressions,
   ResultColumn,
   GroupBy,
+  Value,
 } from 'node-jql'
 
 const query = new QueryDef(
   new Query({
+
+    $distinct : true,
 
     // one more layer of select from to prevent overriding select code_master.*
     $from : new FromTable({
@@ -143,21 +146,7 @@ const query = new QueryDef(
   })
 )
 
-query.register('isActive',
-{
-  expression : new FunctionExpression(
-    'IF',
-    new AndExpressions([
-      new IsNullExpression(new ColumnExpression('code_master', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('code_master', 'deletedBy'), false),
-    ]),
-    1, 0
-  ),
-
-  $as: 'isActive'
-})
-
-query.register('can_delete',
+query.register('canDelete',
 {
 
   expression : new FunctionExpression(
@@ -169,10 +158,10 @@ query.register('can_delete',
     1, 0
   ),
 
-  $as: 'can_delete'
+  $as: 'canDelete'
 })
 
-query.register('can_restore',
+query.register('canRestore',
 {
 
   expression : new FunctionExpression(
@@ -184,18 +173,18 @@ query.register('can_restore',
     1, 0
   ),
 
-  $as: 'can_restore'
+  $as: 'canRestore'
 })
 
-query.register('isDefault',
+query.register('canResetDefault',
 {
   expression : new FunctionExpression(
     'IF',
-    new IsNullExpression(new ColumnExpression('code_master', 'partyGroupCode'), false),
+    new IsNullExpression(new ColumnExpression('code_master', 'partyGroupCode'), true),
     1, 0
   ),
 
-  $as: 'isDefault'
+  $as: 'canResetDefault'
 })
 
 // -------------- filter

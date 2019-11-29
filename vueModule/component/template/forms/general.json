@@ -21,18 +21,29 @@
     {
       "is": "UploadDownloadButton",
       "props": {
+
+
+
         "uploadParams": {
+
+          "allowFileType" : {
+            "url" : "/api/template/get/allowFileType",
+            "method" : "GET"
+          },
+
+    
           "axiosParams": {
             "method": "POST",
             "url": "/api/template/upload",
             "data": {
-              "base64String": "{{base64String}}",
-              "extension": "{{extension}}",
-              "templateName": "{{context.$store.state.widget.data.templateName}}"
+              "templateName": "{{context.$store.state.widget.data.templateName}}",
+              "fileData" : {
+                "base64String": "{{base64String}}",
+                "extension": "{{extension}}"
+              }
             }
           }
         },
-
         "downloadParams": {
           "fileName": "{{context.$store.state.widget.data.templateName}}",
           "extension": "{{context.$store.state.widget.data.extension}}",
