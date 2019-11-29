@@ -1,66 +1,63 @@
 {
   "layout": "v-card",
-  "components": [
-    {
-      "is": "WidgetForm",
-      "props": {
-        "fields": [
-          {
-            "label": "CodeMasterPage.codeType",
-            "name": "codeType",
-            "class": "xs-6",
-            "component": "AsyncAutoSuggest",
-            "props": {
-              "searchValueParams": {
-                "method": "POST",
-                "url": "api/code/codeType/list",
-                "data": {
-                  "subqueries": {
-                    "codeTypeLike": {
-                      "value": "{{context.autoSuggestModel}}"
-                    }
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [{
+          "label": "CodeMasterPage.codeType",
+          "name": "codeType",
+          "class": "xs-4",
+          "component": "AsyncAutoSuggest",
+          "props": {
+            "searchValueParams": {
+              "method": "POST",
+              "url": "api/code/codeType/list",
+              "data": {
+                "subqueries": {
+                  "codeTypeLike": {
+                    "value": "{{context.autoSuggestModel}}"
                   }
                 }
-              },
-              "searchTextParams": {
-                "method": "POST",
-                "url": "api/code/codeType/list",
-                "data": {
-                  "subqueries": {
-                    "codeTypeLike": {
-                      "value": "{{context.search}}"
-                    }
+              }
+            },
+            "searchTextParams": {
+              "method": "POST",
+              "url": "api/code/codeType/list",
+              "data": {
+                "subqueries": {
+                  "codeTypeLike": {
+                    "value": "{{context.search}}"
                   }
                 }
-              },
-              "canCreate" : true,
-              "canCreateValue" : "{{autoSuggestModel}}"
-            }
-          },
-
-          {
-            "label": "CodeMasterPage.code",
-            "name": "code",
-            "component": "v-text-field",
-            "class": "xs-6"
-          },
-
-          {
-            "label": "CodeMasterPage.name",
-            "name": "name",
-            "component": "v-text-field",
-            "class": "xs-6"
-          },
-
-          {
-            "label": "CodeMasterPage.flexData",
-            "name": "flexData.data",
-            "component": "JsonField",
-            "class": "xs-6"
+              }
+            },
+            "canCreate": true,
+            "canCreateValue": "{{autoSuggestModel}}"
           }
+        },
 
-        ]
-      }
+        {
+          "label": "CodeMasterPage.code",
+          "name": "code",
+          "component": "v-text-field",
+          "class": "xs-4"
+        },
+
+        {
+          "label": "CodeMasterPage.name",
+          "name": "name",
+          "component": "v-text-field",
+          "class": "xs-4"
+        },
+
+        {
+          "label": "CodeMasterPage.flexData",
+          "name": "flexData.data",
+          "component": "JsonField",
+          "class": "xs-12"
+        }
+
+      ]
     }
-  ]
+  }]
 }
