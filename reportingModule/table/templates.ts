@@ -20,11 +20,11 @@ const query = new Query({
         },
 
         {
-          name: 'can_delete',
+          name: 'canDelete',
           type: 'number',
         },
         {
-          name: 'can_restore',
+          name: 'canRestore',
           type: 'number',
         },
       ],

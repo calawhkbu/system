@@ -121,6 +121,11 @@ function prepareTempTable(name: string): CreateTableJQL {
           method: 'POST',
           url: 'api/booking/query/booking',
           columns: [
+
+            {
+              name: 'bookingId',
+              type: 'string',
+            },
             {
               name: 'carrierCode',
               type: 'string',
@@ -136,12 +141,11 @@ function prepareTempTable(name: string): CreateTableJQL {
           ],
 
           data: {
-            subqueries: {
-              jobMonth: true,
-            },
-
+            // subqueries: {
+            //   jobMonth: true,
+            // },
             // include jobMonth from the table
-            fields: ['jobMonth', 'booking.*'],
+            fields: [new ColumnExpression('booking', 'id'), 'jobMonth', 'carrierCode', 'moduleTypeCode'],
           },
         },
         name

@@ -62,7 +62,7 @@
 
           {
             "label": "",
-            "key": "can_resend",
+            "key": "canResend",
             "sortable": false,
             "clickFunction": {
               "type": "axios",
@@ -83,6 +83,8 @@
             },
 
             "tdComponent": {
+
+              "hideIfFalse" : true,
               "props": {
                 "slotComponents": [
                   {
@@ -99,7 +101,7 @@
 
           {
             "label": "",
-            "key": "can_delete",
+            "key": "canDelete",
             "sortable": false,
             "clickFunction": {
               "type": "axios",
@@ -120,6 +122,7 @@
             },
 
             "tdComponent": {
+              "hideIfFalse" : true,
               "props": {
                 "slotComponents": [
                   {
@@ -136,7 +139,7 @@
 
           {
             "label": "",
-            "key": "can_restore",
+            "key": "canRestore",
             "sortable": false,
             "clickFunction": {
               "type": "axios",
@@ -157,6 +160,7 @@
             },
 
             "tdComponent": {
+              "hideIfFalse" : true,
               "props": {
                 "slotComponents": [
                   {
@@ -200,9 +204,9 @@
           {
             "display": "status",
             "name": "invitationStatus",
+            "i18nContext": "InvitationPage",
             "props": {
               "multi": true,
-              "i18nContext": "InvitationStatus",
               "items": [
                 {
                   "value": "sent",
@@ -219,6 +223,20 @@
               ]
             },
             "type": "list"
+          },
+          {
+
+            "i18nContext": "InvitationPage",
+            "display": "email",
+            "name": "userName",
+            "type": "text"
+          },
+          {
+
+            "i18nContext": "InvitationPage",
+            "display": "name",
+            "name" : "nameLike",
+            "type": "text"
           }
         ],
         "clickFunction": {

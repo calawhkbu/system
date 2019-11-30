@@ -148,15 +148,15 @@ const query = new QueryDef(
   })
 )
 
-query.register('isDefault',
+query.register('canResetDefault',
 {
   expression : new FunctionExpression(
     'IF',
-    new IsNullExpression(new ColumnExpression('role', 'partyGroupCode'), false),
+    new IsNullExpression(new ColumnExpression('role', 'partyGroupCode'), true),
     1, 0
   ),
 
-  $as: 'isDefault'
+  $as: 'canResetDefault'
 })
 
 // ----------------- filter stuff

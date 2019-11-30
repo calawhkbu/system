@@ -16,7 +16,7 @@
         "back": "/admin",
         "newReport": {
           "configurations": {
-            "i18nContext": "Reporting",
+            "i18nContext": "RolePage",
             "clickable": true,
             "draggable": true,
             "sorting": {},
@@ -70,7 +70,7 @@
           },
           {
             "label": "",
-            "key": "isDefault",
+            "key": "canResetDefault",
             "sortable": false,
             "clickFunction": {
               "type": "axios",
@@ -91,6 +91,7 @@
             },
 
             "tdComponent": {
+              "hideIfFalse" : true,
               "props": {
                 "slotComponents": [
                   {
