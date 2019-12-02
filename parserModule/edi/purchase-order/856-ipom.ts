@@ -411,7 +411,7 @@ export default class EdiParser856 extends BaseEdiParser {
             ONE: 'ONEY',
           }
           const scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode.toString().length)}`
-          if (_.get(subPoList[0], 'portOfLoading') || _.get(element, 'portOfLoading'))
+          if (_.get(subPoList[0], 'pol') || _.get(element, 'portOfLoading'))
           {
             const TD5: JSONObject = {
               segement : 'TD5',
@@ -440,7 +440,7 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push(' ') // not used
             TD5.elementList.push('  ') // not used
             TD5.elementList.push('DL')
-            TD5.elementList.push((_.get(subPoList[0], 'portOfDischarge') || _.get(element, 'portOfDischarge')).substring(0, 30))
+            TD5.elementList.push((_.get(subPoList[0], 'pod') || _.get(element, 'portOfDischarge')).substring(0, 30))
             loopObjectList.push(TD5)
           }
 
