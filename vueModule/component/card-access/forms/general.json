@@ -21,6 +21,40 @@
           },
 
           {
+            "label": "CardAccessPage.cardId",
+            "name": "cardId",
+            "class": "xs-6",
+            "component": "AsyncAutoSuggest",
+            "props": {
+              "searchValueParams": {
+                "method": "GET",
+                "url": "card/query/card",
+                "data": {
+                  "subqueries": {
+                    "uuid": {
+                      "value": "{{context.autoSuggestModel}}"
+                    }
+                  }
+                }
+              },
+              "searchTextParams": {
+                "method": "POST",
+                "url": "card/query/card",
+                "data": {
+                  "subqueries": {
+                    "q": {
+                      "value": "{{context.search}}"
+                    }
+                  },
+                  "limit": 5
+                }
+              },
+              "item-text": "name",
+              "item-value": "uuid"
+            }
+          },
+
+          {
             "label": "CardAccessPage.disabled",
             "name": "disabled",
             "component": "BooleanField",

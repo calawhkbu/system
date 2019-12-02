@@ -12,7 +12,7 @@ const query = new Query({
         { name: 'category', type: 'string' },
         { name: 'key', type: 'string' },
         { name: 'value', type: 'string' },
-        { name: 'isDefault', type: 'boolean' }
+        { name: 'canResetDefault', type: 'boolean' }
       ],
     },
     'i18n'

@@ -85,11 +85,16 @@ function prepareTable(name: string): CreateTableJQL {
           ],
 
           data: {
-            subqueries: {
-              jobMonth: true,
-            },
+            // subqueries: {
+            //   jobMonth: true,
+            // },
             // include jobMonth from the table
-            fields: ['jobMonth', 'booking.*', 'booking_popacking.*'],
+            fields: [
+              'jobMonth',
+              'moduleTypeCode',
+              new ColumnExpression('booking', 'id'),
+              new ColumnExpression('booking_popacking', 'quantity')
+            ],
           },
         },
         name

@@ -436,7 +436,7 @@ query.register('totalBooking', {
     parameters: new ParameterExpression({
       // cannot use distinct while using *
       // prefix: 'DISTINCT',
-      expression: '*',
+      expression: new ColumnExpression('booking', 'id'),
     }),
   }),
   $as: 'totalBooking',

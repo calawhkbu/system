@@ -10,6 +10,8 @@ import {
   InExpression,
   AndExpressions,
   Value,
+  OrExpressions,
+  Unknown,
 } from 'node-jql'
 
 const query = new QueryDef(new Query('template'))
@@ -17,48 +19,48 @@ const query = new QueryDef(new Query('template'))
 // -------------- field stuff
 
 query.register('isActive',
-{
-  expression : new FunctionExpression(
-    'IF',
-    new AndExpressions([
-      new IsNullExpression(new ColumnExpression('template', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false),
-    ]),
-    1, 0
-  ),
+  {
+    expression: new FunctionExpression(
+      'IF',
+      new AndExpressions([
+        new IsNullExpression(new ColumnExpression('template', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false),
+      ]),
+      1, 0
+    ),
 
-  $as: 'isActive'
-})
+    $as: 'isActive'
+  })
 
-query.register('can_delete',
-{
+query.register('canDelete',
+  {
 
-  expression : new FunctionExpression(
-    'IF',
-    new AndExpressions([
-      new IsNullExpression(new ColumnExpression('template', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false),
-    ]),
-    1, 0
-  ),
+    expression: new FunctionExpression(
+      'IF',
+      new AndExpressions([
+        new IsNullExpression(new ColumnExpression('template', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false),
+      ]),
+      1, 0
+    ),
 
-  $as: 'can_delete'
-})
+    $as: 'canDelete'
+  })
 
-query.register('can_restore',
-{
+query.register('canRestore',
+  {
 
-  expression : new FunctionExpression(
-    'IF',
-    new AndExpressions([
-      new IsNullExpression(new ColumnExpression('template', 'deletedAt'), true),
-      new IsNullExpression(new ColumnExpression('template', 'deletedBy'), true),
-    ]),
-    1, 0
-  ),
+    expression: new FunctionExpression(
+      'IF',
+      new AndExpressions([
+        new IsNullExpression(new ColumnExpression('template', 'deletedAt'), true),
+        new IsNullExpression(new ColumnExpression('template', 'deletedBy'), true),
+      ]),
+      1, 0
+    ),
 
-  $as: 'can_restore'
-})
+    $as: 'canRestore'
+  })
 
 // ----------- filter stuff
 
@@ -73,9 +75,9 @@ query
 
 query
   .register(
-    'fileType',
+    'extension',
     new Query({
-      $where: new BinaryExpression(new ColumnExpression('template', 'fileType'), '='),
+      $where: new BinaryExpression(new ColumnExpression('template', 'extension'), '='),
     })
   )
   .register('value', 0)
@@ -89,14 +91,31 @@ query
   )
   .register('value', 0)
 
-query.register(
-  'isActive',
-  new Query({
-    $where: [
+// will have 2 options, active and deleted
+query.register('activeStatus', new Query({
+
+  $where: new OrExpressions([
+
+    new AndExpressions([
+
+      new BinaryExpression(new Value('active'), '=', new Unknown('string')),
+
+      // active case
       new IsNullExpression(new ColumnExpression('template', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false),
-    ],
-  })
-)
+      new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false)
+    ]),
+
+    new AndExpressions([
+      new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
+      // deleted case
+      new IsNullExpression(new ColumnExpression('template', 'deletedAt'), true),
+      new IsNullExpression(new ColumnExpression('template', 'deletedBy'), true)
+    ])
+
+  ])
+
+}))
+  .register('value', 0)
+  .register('value', 1)
 
 export default query
