@@ -667,28 +667,78 @@
           "is": "AsyncComponent",
           "props": {
             "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/tracking"
+            "layoutName": "plugins/tracking",
+            "loadWhenDataLoaded": true,
+            "axiosBaseParams": [
+              "const trackingNos = [];",
+              "const data = context.$store.state.widget.data;",
+              "if (data.bookingReference && data.bookingReference.length > 0) {",
+              "for (const reference of data.bookingReference || []) {",
+              "if ((reference.refName === 'MAWB' || reference.refName === 'MBL') && reference.refDescription){",
+              "trackingNos.push(reference.refDescription)",
+              "}",
+              "}",
+              "}",
+              "if (data.bookingContainers && data.bookingContainers.length > 0) {",
+              "for (const containers of data.bookingContainers) {",
+              "if (containers.soNo){",
+              "trackingNos.push(containers.soNo)",
+              "}",
+              "if (containers.containerNo){",
+              "trackingNos.push(containers.containerNo)",
+              "}",
+              "}",
+              "}",
+              "return {",
+              "url: 'api/tracking',",
+              "method: 'POST',",
+              "data: { trackingNos }",
+              "};"
+            ]
           }
         },
         {
           "is": "AsyncComponent",
           "props": {
             "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/workflow"
+            "layoutName": "plugins/workflow",
+            "axiosBaseParams": [
+              "const tableName = encodeURIComponent('booking');",
+              "const primaryKey = encodeURIComponent(context.$route.params.params);",
+              "return {",
+              "url: `api/workflow/${tableName}/${primaryKey}`",
+              "};"
+            ]
           }
         },
         {
           "is": "AsyncComponent",
           "props": {
             "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/alert"
+            "layoutName": "plugins/alert",
+            "axiosBaseParams": [
+              "const tableName = encodeURIComponent('booking');",
+              "const primaryKey = encodeURIComponent(context.$route.params.params);",
+              "return {",
+              "url: 'api/alert/list/history',",
+              "method: 'POST',",
+              "data: { tableName: 'booking', primaryKey }",
+              "};"
+            ]
           }
         },
         {
           "is": "AsyncComponent",
           "props": {
             "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/document"
+            "layoutName": "plugins/document",
+            "axiosBaseParams": [
+              "const tableName = encodeURIComponent('booking');",
+              "const primaryKey = encodeURIComponent(context.$route.params.params);",
+              "return {",
+              "url: 'api/document/document/{{tableName | urlEncode }}/{{primaryKey | urlEncode }}'.format({ tableName, primaryKey}),",
+              "};"
+            ]
           }
         }
       ]

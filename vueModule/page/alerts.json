@@ -1,144 +1,137 @@
 {
   "fillParent": true,
-  "components": [
-    {
-      "is": "TableTool",
-      "props": {
-        "reportingKey": "alerts",
-        "jql": "alerts",
-        "showDefault": true,
-        "hasReports": false,
-        "showFilterBar": true,
-        "enableShare": true,
-        "enableSetting": true,
-        "noPartyGroupFilters": true,
-        "newReport": {
-          "filters": {
-            "isActive": true
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "reportingKey": "alerts",
+      "jql": "alerts",
+      "showDefault": true,
+      "hasReports": false,
+      "showFilterBar": true,
+      "enableShare": true,
+      "enableSetting": true,
+      "noPartyGroupFilters": true,
+      "newReport": {
+        "filters": {
+          "isActive": true
+        },
+        "configurations": {
+          "i18nContext": "Alert",
+          "clickable": true,
+          "draggable": true,
+          "sorting": {
+            "direction": "DESC",
+            "key": "updatedAt",
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "alert",
+              "name": "updatedAt"
+            }
           },
-          "configurations": {
-            "i18nContext": "Alert",
-            "clickable": true,
-            "draggable": true,
-            "sorting": {
-              "direction": "DESC",
-              "key": "updatedAt",
-              "sql": {
+          "pagination": {
+            "current": 0,
+            "perPage": 20
+          }
+        }
+      },
+      "fieldOptions": [{
+          "key": "tableName",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "alert",
+            "name": "tableName"
+          },
+          "hidden": true
+        },
+        {
+          "key": "primaryKey",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "alert",
+            "name": "primaryKey"
+          },
+          "hidden": true
+        },
+        {
+          "key": "alertCategory",
+          "i18nContext": "Alert"
+        },
+        {
+          "key": "alertType",
+          "i18nContext": "Alert",
+          "sql": {
+            "classname": "FunctionExpression",
+            "name": "CONCAT",
+            "parameters": [{
                 "classname": "ColumnExpression",
                 "table": "alert",
-                "name": "updatedAt"
+                "name": "alertType"
+              },
+              {
+                "classname": "Value",
+                "type": "String",
+                "value": "Title"
               }
-            },
-            "pagination": {
-              "current": 0,
-              "perPage": 20
-            }
-          }
+            ]
+          },
+          "sql2": "concat(alert.alertType, 'Title')"
         },
-        "fieldOptions": [
-          {
-            "key": "tableName",
-            "sql": {
-              "classname": "ColumnExpression",
-              "table": "alert",
-              "name": "tableName"
-            },
-            "hidden": true
-          },
-          {
-            "key": "primaryKey",
-            "sql": {
-              "classname": "ColumnExpression",
-              "table": "alert",
-              "name": "primaryKey"
-            },
-            "hidden": true
-          },
-          {
-            "key": "alertCategory",
-            "i18nContext": "Alert"
-          },
-          {
-            "key": "alertType",
-            "i18nContext": "Alert",
-            "sql": {
-              "classname": "FunctionExpression",
-              "name": "CONCAT",
-              "parameters": [
-                {
-                  "classname": "ColumnExpression",
-                  "table": "alert",
-                  "name": "alertType"
-                },
-                {
-                  "classname": "Value",
-                  "type": "String",
-                  "value": "Title"
-                }
-              ]
-            },
-            "sql2": "concat(alert.alertType, 'Title')"
-          },
-          {
-            "key": "alertContent",
-            "i18nContext": "Alert",
-            "sql": {
-              "classname": "FunctionExpression",
-              "name": "IFNULL",
-              "parameters": [
-                {
+        {
+          "key": "alertContent",
+          "i18nContext": "Alert",
+          "sql": {
+            "classname": "FunctionExpression",
+            "name": "IFNULL",
+            "parameters": [{
+                "classname": "FunctionExpression",
+                "name": "JSON_UNQUOTE",
+                "parameters": [{
                   "classname": "FunctionExpression",
-                  "name": "JSON_UNQUOTE",
-                  "parameters": [
-                    {
-                      "classname": "FunctionExpression",
-                      "name": "JSON_EXTRACT",
-                      "parameters": [
-                        {
-                          "classname": "ColumnExpression",
-                          "table": "flex_data",
-                          "name": "data"
-                        },
-                        {
-                          "classname": "Value",
-                          "type": "String",
-                          "value": "$.customMessage"
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "classname": "FunctionExpression",
-                  "name": "CONCAT",
-                  "parameters": [
-                    {
+                  "name": "JSON_EXTRACT",
+                  "parameters": [{
                       "classname": "ColumnExpression",
-                      "table": "alert",
-                      "name": "alertType"
+                      "table": "flex_data",
+                      "name": "data"
                     },
                     {
                       "classname": "Value",
                       "type": "String",
-                      "value": "Title"
+                      "value": "$.customMessage"
                     }
                   ]
-                }
-              ]
-            },
-            "sql2": "IFNULL(JSON_UNQUOTE(JSON_EXTRACT(flex_data.data, '$.customMessage')), concat(alert.alertType, 'Message'))"
-          }
-        ],
-        "filters": [],
-        "clickFunction": {
-          "type": "router",
-          "otherParams": {
-            "func": "push",
-            "path": "/{{tableName}}/{{primaryKey}}"
-          }
-        },
-        "icons": []
-      }
+                }]
+              },
+              {
+                "classname": "FunctionExpression",
+                "name": "CONCAT",
+                "parameters": [{
+                    "classname": "ColumnExpression",
+                    "table": "alert",
+                    "name": "alertType"
+                  },
+                  {
+                    "classname": "Value",
+                    "type": "String",
+                    "value": "Title"
+                  }
+                ]
+              }
+            ]
+          },
+          "sql2": "IFNULL(JSON_UNQUOTE(JSON_EXTRACT(flex_data.data, '$.customMessage')), concat(alert.alertType, 'Message'))"
+        }
+      ],
+      "filters": [],
+      "nextPageComponent": "{{tableName}}",
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "default/{{tableName}}/{{primaryKey}}",
+          "base": true
+        }
+      },
+      "icons": []
     }
-  ]
+  }]
 }
