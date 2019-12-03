@@ -718,6 +718,38 @@
                     "i18nContext": "BookingPage",
                     "i18nKey": "createTitle"
                   }
+                },
+                {
+                  "is": "LoadEntityTemplateButton",
+                  "props": {
+
+                    "class" : "xs-3",
+                    "axiosParams": {
+                      "method" : "GET",
+                      "url" : "/default/booking/list"
+                    }
+
+                  }
+                },
+                {
+                  "is": "SaveEntityTemplateButton",
+                  "props": {
+                    "class" : "xs-3",
+                    "axiosParams2": {
+                      "method" : "POST",
+                      "url" : "/default",
+                      "data" : {
+                        "tableName" : "booking"
+                      }
+                    },
+
+                    "axiosParams": "{ \"method\" : \"POST\",\"url\" : \"/default\",\"data\" : { \"tableName\" : \"booking\" , \"name\" : {{name | safe}},\"value\" : {{value | safe }}   }   }",
+                    "valuePath" : "data.value",
+                    "namePath" : "data.name",
+                    "blackList" : [],
+                    "i18nContext": "BookingPage",
+                    "i18nKey": "createTitle"
+                  }
                 }
               ]
             }
