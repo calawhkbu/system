@@ -1,35 +1,99 @@
 {
   "class": "grid full-width",
-  "components": [{
+  "components": [
+    {
       "is": "DynamicComponent",
       "if": "\n        const setting = context.$store.state.widget.componentSetting || {}\n        return !setting.next\n      ",
       "props": {
         "class": "grid full-width",
-        "components": [{
+        "components": [
+          {
             "is": "DynamicComponent",
             "props": {
               "class": "flex align-item-center full-width",
-              "components": [{
+              "components2": [
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "grid full-width align-item-center",
+                    "components": [
+                      {
+                        "is": "v-btn",
+                        "props": {
+                          "flat": true,
+                          "icon": true
+                        },
+                        "events": {
+                          "click.stop": [
+                            {
+                              "type": "router",
+                              "otherParams": {
+                                "func": "push",
+                                "path": "/bookings"
+                              }
+                            }
+                          ]
+                        },
+                        "slots": [
+                          {
+                            "is": "Icon",
+                            "props": {
+                              "icon": "arrow_back"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "is": "I18nText",
+                        "props": {
+                          "class": "xs-3 md-3 headline",
+                          "i18nContext": "BookingPage",
+                          "i18nKey": "quickCreate"
+                        }
+                      },
+                      {
+                        "is": "v-spacer"
+                      },
+                      {
+                        "is": "LoadEntityTemplateButton",
+                        "props": {
+                          "class": "xs-1 md-1 max-width-300",
+                          "axiosParams": {
+                            "method": "GET",
+                            "url": "/default/booking/list"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
+              "components": [
+                {
                   "is": "v-btn",
                   "props": {
                     "flat": true,
                     "icon": true
                   },
                   "events": {
-                    "click.stop": [{
-                      "type": "router",
-                      "otherParams": {
-                        "func": "push",
-                        "path": "/bookings"
+                    "click.stop": [
+                      {
+                        "type": "router",
+                        "otherParams": {
+                          "func": "push",
+                          "path": "/bookings"
+                        }
                       }
-                    }]
+                    ]
                   },
-                  "slots": [{
-                    "is": "Icon",
-                    "props": {
-                      "icon": "arrow_back"
+                  "slots": [
+                    {
+                      "is": "Icon",
+                      "props": {
+                        "icon": "arrow_back"
+                      }
                     }
-                  }]
+                  ]
                 },
                 {
                   "is": "I18nText",
@@ -37,6 +101,19 @@
                     "class": "headline",
                     "i18nContext": "BookingPage",
                     "i18nKey": "quickCreate"
+                  }
+                },
+                {
+                  "is": "v-spacer"
+                },
+                {
+                  "is": "LoadEntityTemplateButton",
+                  "props": {
+                    "class": "max-width-300",
+                    "axiosParams": {
+                      "method": "GET",
+                      "url": "/default/booking/list"
+                    }
                   }
                 }
               ]
@@ -46,7 +123,8 @@
             "is": "WidgetForm",
             "props": {
               "class": "full-width padding-leftright-8",
-              "fields": [{
+              "fields": [
+                {
                   "containerComponent": "v-card",
                   "containerComponentProps": {
                     "class": "padding-topbottom-8 padding-leftright-4"
@@ -172,10 +250,12 @@
                   "name": "placeOfReceipt",
                   "component": "AsyncAutoSuggest",
                   "class": "xs-12 md-3 padding-topbottom-4",
-                  "more": [{
-                    "name": "placeOfReceiptCode",
-                    "selector": "portCode"
-                  }],
+                  "more": [
+                    {
+                      "name": "placeOfReceiptCode",
+                      "selector": "portCode"
+                    }
+                  ],
                   "props": {
                     "searchValueParams": {
                       "method": "POST",
@@ -220,10 +300,12 @@
                   "component": "AsyncAutoSuggest",
                   "class": "xs-12 md-3 padding-topbottom-4",
                   "validator": ["required"],
-                  "more": [{
-                    "name": "portOfLoadingCode",
-                    "selector": "portCode"
-                  }],
+                  "more": [
+                    {
+                      "name": "portOfLoadingCode",
+                      "selector": "portCode"
+                    }
+                  ],
                   "props": {
                     "required": true,
                     "searchValueParams": {
@@ -269,10 +351,12 @@
                   "component": "AsyncAutoSuggest",
                   "class": "xs-12 md-3 padding-topbottom-4",
                   "validator": ["required"],
-                  "more": [{
-                    "name": "portOfDischargeCode",
-                    "selector": "portCode"
-                  }],
+                  "more": [
+                    {
+                      "name": "portOfDischargeCode",
+                      "selector": "portCode"
+                    }
+                  ],
                   "props": {
                     "required": true,
                     "searchValueParams": {
@@ -317,10 +401,12 @@
                   "name": "placeOfDelivery padding-topbottom-4",
                   "component": "AsyncAutoSuggest",
                   "class": "xs-12 md-3 padding-topbottom-4",
-                  "more": [{
-                    "name": "placeOfDeliveryCode",
-                    "selector": "portCode"
-                  }],
+                  "more": [
+                    {
+                      "name": "placeOfDeliveryCode",
+                      "selector": "portCode"
+                    }
+                  ],
                   "props": {
                     "searchValueParams": {
                       "method": "POST",
@@ -365,10 +451,12 @@
                   "component": "AsyncAutoSuggest",
                   "class": "xs-12 md-3 padding-topbottom-4",
                   "relation": "carrier",
-                  "more": [{
-                    "name": "carrierCode",
-                    "selector": "code"
-                  }],
+                  "more": [
+                    {
+                      "name": "carrierCode",
+                      "selector": "code"
+                    }
+                  ],
                   "props": {
                     "searchValueParams": {
                       "method": "POST",
@@ -436,11 +524,14 @@
                   "name": "incoTerms",
                   "component": "AsyncAutoSuggest",
                   "class": "xs-12 md-2 padding-topbottom-4",
-                  "more": [{
-                    "name": "incoTermsCode",
-                    "selector": "code"
-                  }],
-                  "relationMore": [{
+                  "more": [
+                    {
+                      "name": "incoTermsCode",
+                      "selector": "code"
+                    }
+                  ],
+                  "relationMore": [
+                    {
                       "name": "freightTermsCode",
                       "selector": "data.frieghtTermsCode"
                     },
@@ -455,15 +546,18 @@
                       "url": "api/code/query/code_master",
                       "method": "POST",
                       "data": {
-                        "fields": [{
-                          "classname": "ColumnExpression",
-                          "table": "code_master",
-                          "name": "*"
-                        }, {
-                          "classname": "ColumnExpression",
-                          "table": "flex_data",
-                          "name": "data"
-                        }],
+                        "fields": [
+                          {
+                            "classname": "ColumnExpression",
+                            "table": "code_master",
+                            "name": "*"
+                          },
+                          {
+                            "classname": "ColumnExpression",
+                            "table": "flex_data",
+                            "name": "data"
+                          }
+                        ],
                         "subqueries": {
                           "flex_data_join": true,
                           "codeType": {
@@ -537,7 +631,8 @@
                   "component": "AsyncSelect",
                   "class": "xs-12 padding-topbottom-4",
                   "relation": "forwarderParty",
-                  "relationMore": [{
+                  "relationMore": [
+                    {
                       "name": "forwarderPartyId",
                       "selector": "id"
                     },
@@ -634,28 +729,33 @@
             "is": "DynamicComponent",
             "props": {
               "class": "flex padding-leftright-8 padding-topbottom-4",
-              "components": [{
+              "components": [
+                {
                   "is": "v-btn",
                   "props": {
                     "fab": true
                   },
-                  "slots": [{
-                    "is": "Icon",
-                    "props": {
-                      "icon": "navigate_next"
+                  "slots": [
+                    {
+                      "is": "Icon",
+                      "props": {
+                        "icon": "navigate_next"
+                      }
                     }
-                  }],
+                  ],
                   "events": {
-                    "click.stop": [{
-                      "type": "dispatch",
-                      "otherParams": {
-                        "name": "widget/updateComponentSetting",
-                        "value": {
-                          "next": true,
-                          "stepper": 0
+                    "click.stop": [
+                      {
+                        "type": "dispatch",
+                        "otherParams": {
+                          "name": "widget/updateComponentSetting",
+                          "value": {
+                            "next": true,
+                            "stepper": 0
+                          }
                         }
                       }
-                    }]
+                    ]
                   }
                 },
                 {
@@ -682,34 +782,40 @@
       "if": "\n        const setting = context.$store.state.widget.componentSetting || {}\n        return setting.next\n      ",
       "props": {
         "class": "grid full-width",
-        "components": [{
+        "components": [
+          {
             "is": "DynamicComponent",
             "props": {
               "class": "flex align-item-center full-width padding-top-4 padding-bottom-4",
-              "components": [{
+              "components": [
+                {
                   "is": "v-btn",
                   "props": {
                     "flat": true,
                     "icon": true
                   },
                   "events": {
-                    "click.stop": [{
-                      "type": "dispatch",
-                      "otherParams": {
-                        "name": "widget/updateComponentSetting",
-                        "value": {
-                          "next": false,
-                          "stepper": 0
+                    "click.stop": [
+                      {
+                        "type": "dispatch",
+                        "otherParams": {
+                          "name": "widget/updateComponentSetting",
+                          "value": {
+                            "next": false,
+                            "stepper": 0
+                          }
                         }
                       }
-                    }]
+                    ]
                   },
-                  "slots": [{
-                    "is": "Icon",
-                    "props": {
-                      "icon": "arrow_back"
+                  "slots": [
+                    {
+                      "is": "Icon",
+                      "props": {
+                        "icon": "arrow_back"
+                      }
                     }
-                  }]
+                  ]
                 },
                 {
                   "is": "I18nText",
@@ -720,35 +826,16 @@
                   }
                 },
                 {
-                  "is": "LoadEntityTemplateButton",
-                  "props": {
-
-                    "class" : "xs-3",
-                    "axiosParams": {
-                      "method" : "GET",
-                      "url" : "/default/booking/list"
-                    }
-
-                  }
+                  "is" : "v-spacer"
                 },
                 {
-                  "is": "SaveEntityTemplateButton",
+                  "is": "LoadEntityTemplateButton",
                   "props": {
-                    "class" : "xs-3",
-                    "axiosParams2": {
-                      "method" : "POST",
-                      "url" : "/default",
-                      "data" : {
-                        "tableName" : "booking"
-                      }
-                    },
-
-                    "axiosParams": "{ \"method\" : \"POST\",\"url\" : \"/default\",\"data\" : { \"tableName\" : \"booking\" , \"name\" : {{name | safe}},\"value\" : {{value | safe }}   }   }",
-                    "valuePath" : "data.value",
-                    "namePath" : "data.name",
-                    "blackList" : [],
-                    "i18nContext": "BookingPage",
-                    "i18nKey": "createTitle"
+                    "class": "max-width-300",
+                    "axiosParams": {
+                      "method": "GET",
+                      "url": "/default/booking/list"
+                    }
                   }
                 }
               ]
@@ -760,81 +847,96 @@
               "topClick": false,
               "validateBeforeStepChange": true,
               "preview": false,
-              "steps": [{
+              "steps": [
+                {
                   "id": "BookingPage.GeneralForm",
                   "layout": "v-card",
                   "class": "margin-8",
-                  "components": [{
-                    "is": "AsyncComponent",
-                    "props": {
-                      "layoutName": "booking/forms/generalForm"
+                  "components": [
+                    {
+                      "is": "AsyncComponent",
+                      "props": {
+                        "layoutName": "booking/forms/generalForm"
+                      }
                     }
-                  }]
+                  ]
                 },
                 {
                   "id": "BookingPage.PartyForm",
                   "layout": "v-card",
                   "class": "margin-8",
-                  "components": [{
-                    "is": "AsyncComponent",
-                    "props": {
-                      "layoutName": "booking/forms/partyForm"
+                  "components": [
+                    {
+                      "is": "AsyncComponent",
+                      "props": {
+                        "layoutName": "booking/forms/partyForm"
+                      }
                     }
-                  }]
+                  ]
                 },
                 {
                   "id": "BookingPage.DateForm",
                   "layout": "v-card",
                   "class": "margin-8",
-                  "components": [{
-                    "is": "AsyncComponent",
-                    "props": {
-                      "layoutName": "booking/forms/dateForm"
+                  "components": [
+                    {
+                      "is": "AsyncComponent",
+                      "props": {
+                        "layoutName": "booking/forms/dateForm"
+                      }
                     }
-                  }]
+                  ]
                 },
                 {
                   "id": "BookingPage.ContainerForm",
                   "layout": "v-card",
                   "class": "margin-8",
-                  "components": [{
-                    "is": "AsyncComponent",
-                    "props": {
-                      "layoutName": "booking/forms/containerForm"
+                  "components": [
+                    {
+                      "is": "AsyncComponent",
+                      "props": {
+                        "layoutName": "booking/forms/containerForm"
+                      }
                     }
-                  }]
+                  ]
                 },
                 {
                   "id": "BookingPage.referenceForm",
                   "layout": "v-card",
                   "class": "margin-8",
-                  "components": [{
-                    "is": "AsyncComponent",
-                    "props": {
-                      "layoutName": "booking/forms/referenceForm"
+                  "components": [
+                    {
+                      "is": "AsyncComponent",
+                      "props": {
+                        "layoutName": "booking/forms/referenceForm"
+                      }
                     }
-                  }]
+                  ]
                 },
                 {
                   "id": "BookingPage.TermAndCondition",
                   "layout": "v-card",
                   "class": "margin-8",
-                  "components": [{
-                    "is": "WidgetForm",
-                    "props": {
-                      "fields": [{
-                        "name": "Term",
-                        "component": "Term",
-                        "class": "xs-12",
-                        "props": {
-                          "type": "booking-term",
-                          "termProps": {
-                            "class": "margin-leftright-4 padding-leftright-4 overflow-auto"
+                  "components": [
+                    {
+                      "is": "WidgetForm",
+                      "props": {
+                        "fields": [
+                          {
+                            "name": "Term",
+                            "component": "Term",
+                            "class": "xs-12",
+                            "props": {
+                              "type": "booking-term",
+                              "termProps": {
+                                "class": "margin-leftright-4 padding-leftright-4 overflow-auto"
+                              }
+                            }
                           }
-                        }
-                      }]
+                        ]
+                      }
                     }
-                  }]
+                  ]
                 }
               ]
             }
