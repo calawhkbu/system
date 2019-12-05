@@ -30,7 +30,7 @@ function prepareParams(): Function {
     summaryVariables = Array.isArray(summaryVariables) ? summaryVariables : [summaryVariables]
 
     // limit/extend to 1 year
-    const year = (subqueries.data ? moment() : moment(subqueries.date.from, 'YYYY-MM-DD')).year()
+    const year = (subqueries.date ? moment() : moment(subqueries.date.from, 'YYYY-MM-DD')).year()
     subqueries.date.from = moment()
       .year(year)
       .startOf('year')
