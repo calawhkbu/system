@@ -135,7 +135,7 @@
                       }
                     }
                   },
-                  "labelKey" : "partyName",
+                  "labelKey" : "codeType",
                   "method" : "POST",
                   "url" : "api/code/query/code_master",
                   "valueKey" : "codeType"
@@ -149,13 +149,13 @@
                       }
                     }
                   },
-                  "labelKey" : "partyName",
+                  "labelKey" : "codeType",
                   "method" : "POST",
                   "url" : "api/code/query/code_master",
                   "valueKey" : "codeType"
                 }
               },
-              "multi" : true
+              "multi" : false
             },
             "type" : "autocomplete"
           }

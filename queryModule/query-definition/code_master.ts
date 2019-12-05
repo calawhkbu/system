@@ -18,6 +18,9 @@ import {
 const query = new QueryDef(
   new Query({
     // one more layer of select from to prevent overriding select code_master.*
+
+    $distinct : true,
+
     $from : new FromTable({
       $as : 'code_master',
       table : new Query({
