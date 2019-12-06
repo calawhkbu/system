@@ -23,7 +23,7 @@
                         "type": "router",
                         "otherParams": {
                           "func": "push",
-                          "path": "/purchase-orders"
+                          "path": "/{{ p[0] }}/{{ p[1] }}"
                         }
                       }
                     ]
