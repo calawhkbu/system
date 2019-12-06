@@ -137,13 +137,13 @@ const app = {
           filters: items ? [{ name: 'type', props: { items }, type: 'list' }] : undefined,
           headers: row.layout
             .filter(({ dtype, grp }) => dtype !== 'H' && !grp)
-            .map(({ ffield, label, width, dtype, dplace, grp }) => {
+            .map(({ ffield, label, width, dtype, dplace, stotal }) => {
               const result = { key: ffield, label } as any
               if (width > 0) result.width = width * 8
               if (dtype === 'N') {
                 result.align = 'right'
                 result.format = app.getNumberFormat(dplace)
-                result.subTotal = grp
+                result.subTotal = stotal
               }
               return result
             }),
