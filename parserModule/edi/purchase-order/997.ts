@@ -82,7 +82,6 @@ export default class EdiParser997 extends BaseEdiParser {
       _.get(entityJSON, 'versionId')
     )
     data.push(GS)
-
     let lengthOfPreviousData = data.length
 
     const ST: JSONObject = {
@@ -208,40 +207,40 @@ export default class EdiParser997 extends BaseEdiParser {
         }
       }
       if (segmentErrorList.length || elementErrorList.length) {
-        let loopIndex = 1
-        for (const segmentError of segmentErrorList) {
-          if (segmentErrorMapper[segmentError.errorType]) {
-            const AK3: JSONObject = {
-              segment: 'AK3',
-              elementList: [],
-            }
-            const errorID = segmentError.errorID
-            const pad = '   '
-            const errorIDWithFormat = `${errorID}${pad.substring(0, pad.length - errorID.length)}`
+        // let loopIndex = 1
+        // for (const segmentError of segmentErrorList) {
+        //   if (segmentErrorMapper[segmentError.errorType]) {
+        //     const AK3: JSONObject = {
+        //       segment: 'AK3',
+        //       elementList: [],
+        //     }
+        //     const errorID = segmentError.errorID
+        //     const pad = '   '
+        //     const errorIDWithFormat = `${errorID}${pad.substring(0, pad.length - errorID.length)}`
 
-            AK3.elementList.push(
-              errorIDWithFormat,
-              segmentError.afterMainHeadLocation.toString(),
-              loopIndex.toString(),
-              segmentErrorMapper[segmentError.errorType]
-            )
-            loopObjectList.push(AK3)
-          }
-          loopIndex++
-        }
-        for (const elementError of elementErrorList) {
-          const AK4: JSONObject = {
-            segment: 'AK4',
-            elementList: [],
-          }
-          AK4.elementList.push(
-            elementError.segmentPosition.toString(),
-            elementError.errorIdex.toString(),
-            elementErrorMapper[elementError.errorType],
-            elementError.element
-          )
-          loopObjectList.push(AK4)
-        }
+        //     AK3.elementList.push(
+        //       errorIDWithFormat,
+        //       segmentError.afterMainHeadLocation.toString(),
+        //       loopIndex.toString(),
+        //       segmentErrorMapper[segmentError.errorType]
+        //     )
+        //     loopObjectList.push(AK3)
+        //   }
+        //   loopIndex++
+        // }
+        // for (const elementError of elementErrorList) {
+        //   const AK4: JSONObject = {
+        //     segment: 'AK4',
+        //     elementList: [],
+        //   }
+        //   AK4.elementList.push(
+        //     elementError.segmentPosition.toString(),
+        //     elementError.errorIdex.toString(),
+        //     elementErrorMapper[elementError.errorType],
+        //     elementError.element
+        //   )
+        //   loopObjectList.push(AK4)
+        // }
         const AK5: JSONObject = {
           segment: 'AK5',
           elementList: [],
