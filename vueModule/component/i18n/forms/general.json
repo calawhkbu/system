@@ -20,7 +20,7 @@
             "component": "AsyncAutoSuggest",
             "props": {
               "searchValueParams": {
-                "method": "GET",
+                "method": "POST",
                 "url": "api/i18n/category/list",
                 "data": {
                   "subqueries": {
@@ -31,7 +31,7 @@
                 }
               },
               "searchTextParams": {
-                "method": "GET",
+                "method": "POST",
                 "url": "api/i18n/category/list",
                 "data": {
                   "subqueries": {

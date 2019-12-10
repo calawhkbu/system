@@ -12,6 +12,11 @@
         "enableSetting": false,
         "noPartyGroupFilters": true,
         "newReport": {
+          "filters" : {
+            "activeStatus" : {
+              "value" : "active"
+            }
+          },
           "configurations": {
             "i18nContext": "LocationPage",
             "clickable": true,
@@ -48,9 +53,15 @@
             "key": "id",
             "hidden": true
           },
+
+          {
+            "key": "isActive",
+            "boolean": true
+          },
+          
           {
             "label": "",
-            "key": "can_delete",
+            "key": "canDelete",
             "sortable": false,
             "clickFunction": {
               "type": "axios",
@@ -71,6 +82,7 @@
             },
 
             "tdComponent": {
+              "hideIfFalse" : true,
               "props": {
                 "slotComponents": [
                   {
@@ -87,7 +99,7 @@
 
           {
             "label": "",
-            "key": "can_restore",
+            "key": "canRestore",
             "sortable": false,
             "clickFunction": {
               "type": "axios",
@@ -108,6 +120,7 @@
             },
 
             "tdComponent": {
+              "hideIfFalse" : true,
               "props": {
                 "slotComponents": [
                   {
@@ -124,12 +137,53 @@
         ],
         "filters": [
           {
+
+            "display" : "moduleType",
+            "name" : "moduleTypeCode",
+            "i18nContext" : "Reporting",
+            "props" : {
+              "items" : [
+                {
+                  "label" : "AIR",
+                  "value" : "AIR"
+                },
+                {
+                  "label" : "SEA",
+                  "value" : "SEA"
+                },
+                {
+                  "label" : "XXX",
+                  "value" : "XXX"
+                }
+              ]
+            },
+            "type" : "list"
+
+          },
+          {
             "name": "countryCode",
+            "i18nContext" : "LocationPage",
             "type": "text"
           },
           {
-            "name": "isActive",
-            "type": "boolean"
+            "name" : "activeStatus",
+            "i18nContext" : "LocationPage",
+            "type" : "list",
+            "props" : {
+              "items" :[
+
+                {
+                  "label" : "active",
+                  "value" : "active"
+                },
+                {
+                  "label" : "deleted",
+                  "value" : "deleted"
+                }
+              ]
+
+
+            }
           }
         ],
         "clickFunction": {

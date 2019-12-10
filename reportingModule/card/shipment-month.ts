@@ -13,6 +13,7 @@ import {
   GroupBy,
   OrderBy,
   MathExpression,
+  IsNullExpression,
 } from 'node-jql'
 import { parseCode } from 'utils/function'
 
@@ -24,18 +25,30 @@ function prepareParams(): Function {
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
+    if (!subqueries.groupByVariable) throw new BadRequestException('MISSING_groupByVariable')
     if (!subqueries.summaryVariables) throw new BadRequestException('MISSING_summaryVariables')
     if (!subqueries.finalOrderBy) throw new BadRequestException('MISSING_finalOrderBy')
 
     console.log(subqueries)
 
-    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    // groupBy variable
+    const groupByVariable = subqueries.groupByVariable.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const codeColumnName = groupByVariable === 'carrier' ? `carrierCode` : `${groupByVariable}PartyCode`
+    const nameColumnName = groupByVariable === 'carrier' ? `carrierName` : `${groupByVariable}PartyName`
+
+    const groupByVariables = [codeColumnName, nameColumnName]
+
+    // sumamary variable
+    let summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    // handle when summaryVariables is single case
+    if (!Array.isArray(summaryVariables)) {
+      summaryVariables = [summaryVariables]
+    }
+
     const finalOrderBy = subqueries.finalOrderBy.value
 
     // limit/extend to 1 year
-    const year = subqueries.date ?  moment(subqueries.date.from, 'YYYY-MM-DD').year() : moment().year()
-
-    console.log(year, `yearyearyear`)
+    const year = (subqueries.data ? moment() : moment(subqueries.date.from, 'YYYY-MM-DD')).year()
     subqueries.date.from = moment()
       .year(year)
       .startOf('year')
@@ -46,10 +59,10 @@ function prepareParams(): Function {
       .format('YYYY-MM-DD')
 
     // select
-    params.fields = ['carrierCode', 'carrierName', 'jobMonth', ...summaryVariables]
+    params.fields = [...groupByVariables, 'jobMonth', ...summaryVariables]
 
     // group by
-    params.groupBy = ['carrierCode', 'carrierName', 'jobMonth']
+    params.groupBy = [...groupByVariables, 'jobMonth']
 
     return params
   }
@@ -66,11 +79,10 @@ function finalQuery(types_?: string[]): Function {
       FunctionExpression,
       AndExpressions,
       BinaryExpression,
+      Value
     } = require('node-jql')
 
     const fromTableName = 'shipment'
-
-    const finalGroupBy = ['carrierCode', 'carrierName']
 
     const months = [
       'January',
@@ -87,6 +99,23 @@ function finalQuery(types_?: string[]): Function {
       'December',
     ]
 
+    const subqueries = (params.subqueries = params.subqueries || {})
+    // groupBy variable
+    const groupByVariable = subqueries.groupByVariable.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const codeColumnName = groupByVariable === 'carrier' ? `carrierCode` : `${groupByVariable}PartyCode`
+    const nameColumnName = groupByVariable === 'carrier' ? `carrierName` : `${groupByVariable}PartyName`
+
+    const groupByVariables = [codeColumnName, nameColumnName]
+
+    let summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    // handle when summaryVariables is single case
+    if (!Array.isArray(summaryVariables)) {
+      summaryVariables = [summaryVariables]
+    }
+
+    const finalOrderBy = subqueries.finalOrderBy.value
+
+    // ----------------------------------
     function composeSumExpression(dumbList: any[]): MathExpression {
       if (dumbList.length === 2) {
         return new MathExpression(dumbList[0], '+', dumbList[1])
@@ -97,11 +126,10 @@ function finalQuery(types_?: string[]): Function {
       return new MathExpression(popResult, '+', composeSumExpression(dumbList))
     }
 
-    const $select = [...finalGroupBy.map(x => new ResultColumn(new ColumnExpression(x)))]
-
-    const subqueries = (params.subqueries = params.subqueries || {})
-    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
-    const finalOrderBy = subqueries.finalOrderBy.value
+    const $select = [
+      new ResultColumn(new ColumnExpression(codeColumnName), 'code'),
+      new ResultColumn(new ColumnExpression(nameColumnName), 'name'),
+    ]
 
     summaryVariables.map(variable => {
       const finalSumList = []
@@ -207,7 +235,7 @@ function finalQuery(types_?: string[]): Function {
       $select,
       $from: fromTableName,
 
-      $group: finalGroupBy,
+      $group: groupByVariables,
       $order: finalOrderBy.map(x => new OrderBy(x, 'DESC')),
     })
   }
@@ -231,11 +259,25 @@ function prepareTable(): Function {
       ResultColumn,
       ColumnExpression,
       FunctionExpression,
+      IsNullExpression,
       FromTable,
     } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
-    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    // groupBy variable
+    const groupByVariable = subqueries.groupByVariable.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const codeColumnName = groupByVariable === 'carrier' ? `carrierCode` : `${groupByVariable}PartyCode`
+    const nameColumnName = groupByVariable === 'carrier' ? `carrierName` : `${groupByVariable}PartyName`
+
+    const groupByVariables = [codeColumnName, nameColumnName]
+
+    let summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+
+    // handle when summaryVariables is single case
+    if (!Array.isArray(summaryVariables)) {
+      summaryVariables = [summaryVariables]
+    }
+
     const finalOrderBy = subqueries.finalOrderBy.value
 
     const tableName = 'shipment'
@@ -245,8 +287,9 @@ function prepareTable(): Function {
       name: tableName,
       $as: new Query({
         $select: [
-          new ResultColumn(new ColumnExpression('carrierCode')),
-          new ResultColumn(new ColumnExpression('carrierName')),
+
+          ...groupByVariables.map(variable => new ResultColumn(variable)),
+
           new ResultColumn(
             new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
             'month'
@@ -254,21 +297,20 @@ function prepareTable(): Function {
 
           ...summaryVariables.map(variable => new ResultColumn(variable)),
         ],
+
+        $where : [
+          ...groupByVariables.map(variable => new IsNullExpression(new ColumnExpression(variable), true))
+        ],
         $from: new FromTable(
           {
             method: 'POST',
             url: 'api/shipment/query/shipment',
             columns: [
-              { name: 'carrierName', type: 'string' },
-              { name: 'carrierCode', type: 'string' },
+
+              ...groupByVariables.map(variable => ({ name: variable, type: 'string' })),
               { name: 'jobMonth', type: 'string' },
-
               ...summaryVariables.map(variable => ({ name: variable, type: 'number' })),
-            ],
-
-            data: {
-              filter: { carrierCodeIsNotNull: {} },
-            },
+            ]
           },
           'shipment'
         ),
@@ -277,4 +319,110 @@ function prepareTable(): Function {
   }
 }
 
-export default [[prepareParams(), prepareTable()], finalQuery()]
+function prepareParams2(): Function {
+  const fn = function(require, session, params) {
+    // import
+    const moment = require('moment')
+    const { BadRequestException } = require('@nestjs/common')
+
+    const subqueries = (params.subqueries = params.subqueries || {})
+
+    if (!subqueries.summaryVariables) throw new BadRequestException('MISSING_summaryVariables')
+    if (!subqueries.finalOrderBy) throw new BadRequestException('MISSING_finalOrderBy')
+
+    let summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    // handle when summaryVariables is single case
+    if (!Array.isArray(summaryVariables)) {
+      summaryVariables = [summaryVariables]
+    }
+
+    const finalOrderBy = subqueries.finalOrderBy.value
+
+    // select
+    params.fields = ['jobMonth', 'shipperParties', 'shipperShortName']
+    // group by
+    params.groupBy = ['jobMonth', 'shipperParties', 'shipperShortName']
+
+    return params
+  }
+
+  const code = fn.toString()
+  return parseCode(code)
+}
+
+function testQuery()
+{
+
+  return new Query({
+    $from: new FromTable(
+      {
+        method: 'POST',
+        url: 'api/shipment/query/shipment',
+        columns: [
+          { name: 'shipperParties', type: 'string' },
+          { name: 'shipperShortName', type: 'string' },
+        ]
+      },
+
+      'shipment'
+    ),
+  })
+
+}
+
+export default [
+  [prepareParams(), prepareTable()],
+  finalQuery()
+  // [prepareParams2(), testQuery()]
+]
+
+export const filters = [
+  // {
+  //   display: 'yAxis',
+  //   name: 'yAxis',
+  //   props: {
+  //     items: [
+  //       {
+  //         label: 'weight',
+  //         value: 'weight',
+  //       },
+  //       {
+  //         label: 'cbm',
+  //         value: 'cbm',
+  //       },
+  //       {
+  //         label: 'totalBooking',
+  //         value: 'totalBooking',
+  //       },
+  //     ],
+  //     required: true,
+  //   },
+  //   type: 'list',
+  // },
+  {
+    display: 'groupByVariable',
+    name: 'groupByVariable',
+    props: {
+      items: [
+        {
+          label: 'carrier',
+          value: 'carrier',
+        },
+        {
+          label: 'shipper',
+          value: 'shipper',
+        },
+        {
+          label: 'consignee',
+          value: 'consignee',
+        },
+        {
+          label: 'agent',
+          value: 'agent',
+        },
+      ],
+      required: true,
+    },
+    type: 'list',
+  }
+]

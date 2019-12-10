@@ -419,7 +419,7 @@
           "name": "{{flex}}{{key}}PartyCityCode",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-4",
-          "readonlyClass": "xs-12 md-4",
+          "readonlyClass": "xs-12 md-6",
           "relation": "{{flex}}{{key}}PartyCityCode",
           "relationMore": [{
             "name": "{{flex}}{{key}}PartyCityCode",
@@ -452,7 +452,7 @@
           "name": "{{flex}}{{key}}PartyStateCode",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-4",
-          "readonlyClass": "xs-12 md-4",
+          "readonlyClass": "xs-12 md-3",
           "relation": "{{flex}}{{key}}PartyStateCode",
           "relationMore": [{
             "name": "{{flex}}{{key}}PartyStateCode",
@@ -488,7 +488,7 @@
           "name": "{{flex}}{{key}}PartyCountryCode",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-4",
-          "readonlyClass": "xs-12 md-4",
+          "readonlyClass": "xs-12 md-3",
           "relation": "{{flex}}{{key}}PartyCountryCode",
           "relationMore": [{
             "name": "{{flex}}{{key}}PartyCountryCode",

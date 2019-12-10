@@ -32,7 +32,7 @@ function prepareParams(likeHouseNo_: string): Function {
     const finalOrderBy = subqueries.finalOrderBy.value
 
     // limit/extend to 1 year
-    const year = (subqueries.data ? moment() : moment(subqueries.date.from, 'YYYY-MM-DD')).year()
+    const year = subqueries.date ?  moment(subqueries.date.from, 'YYYY-MM-DD').year() : moment().year()
     subqueries.date.from = moment()
       .year(year)
       .startOf('year')

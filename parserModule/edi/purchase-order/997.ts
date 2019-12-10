@@ -19,6 +19,11 @@ interface JSONObject {
   elementList?: any[]
 }
 
+function pad(n: any, width: number, z: string) {
+  const e = `n`
+  return e.length >= width ? e : new Array(width - e.length + 1).join(z) + e
+}
+
 export default class EdiParser997 extends BaseEdiParser {
   constructor(
     protected readonly allService: {
@@ -42,11 +47,12 @@ export default class EdiParser997 extends BaseEdiParser {
       Prod: 'p',
       Test: 'T',
     }
+    const controlNo = await this.getNewSeq(process.env.NODE_ENV === 'production' ? '997' : '997-dev')
     ISA.elementList.push(
       '00',
-      '          ',
+      '          ', // 10 space
       '00',
-      '          ',
+      '          ', // 10 space
       _.get(entityJSON, 'ISAReceiverQl'),
       _.get(entityJSON, 'ISAReceiverId'),
       _.get(entityJSON, 'ISASenderIdQl'),
@@ -55,7 +61,7 @@ export default class EdiParser997 extends BaseEdiParser {
       moment(currantDate).format('HHmm'),
       'U',
       '00403',
-      _.get(entityJSON, 'interchangeControlNumber'),
+      pad(controlNo, 9, '0'),
       '0',
       testMapper[testIndicator],
       '>'
@@ -77,12 +83,11 @@ export default class EdiParser997 extends BaseEdiParser {
       senderIdMapper[applicationsenderId] || applicationsenderId,
       moment(currantDate).format('YYYYMMDD'),
       moment(currantDate).format('HHmm'),
-      _.get(entityJSON, 'dataInterchangeControlNumber'),
+      pad(controlNo, 9, '0'),
       'X',
       _.get(entityJSON, 'versionId')
     )
     data.push(GS)
-
     let lengthOfPreviousData = data.length
 
     const ST: JSONObject = {
@@ -208,40 +213,40 @@ export default class EdiParser997 extends BaseEdiParser {
         }
       }
       if (segmentErrorList.length || elementErrorList.length) {
-        let loopIndex = 1
-        for (const segmentError of segmentErrorList) {
-          if (segmentErrorMapper[segmentError.errorType]) {
-            const AK3: JSONObject = {
-              segment: 'AK3',
-              elementList: [],
-            }
-            const errorID = segmentError.errorID
-            const pad = '   '
-            const errorIDWithFormat = `${errorID}${pad.substring(0, pad.length - errorID.length)}`
+        // let loopIndex = 1
+        // for (const segmentError of segmentErrorList) {
+        //   if (segmentErrorMapper[segmentError.errorType]) {
+        //     const AK3: JSONObject = {
+        //       segment: 'AK3',
+        //       elementList: [],
+        //     }
+        //     const errorID = segmentError.errorID
+        //     const pad = '   '
+        //     const errorIDWithFormat = `${errorID}${pad.substring(0, pad.length - errorID.length)}`
 
-            AK3.elementList.push(
-              errorIDWithFormat,
-              segmentError.afterMainHeadLocation.toString(),
-              loopIndex.toString(),
-              segmentErrorMapper[segmentError.errorType]
-            )
-            loopObjectList.push(AK3)
-          }
-          loopIndex++
-        }
-        for (const elementError of elementErrorList) {
-          const AK4: JSONObject = {
-            segment: 'AK4',
-            elementList: [],
-          }
-          AK4.elementList.push(
-            elementError.segmentPosition.toString(),
-            elementError.errorIdex.toString(),
-            elementErrorMapper[elementError.errorType],
-            elementError.element
-          )
-          loopObjectList.push(AK4)
-        }
+        //     AK3.elementList.push(
+        //       errorIDWithFormat,
+        //       segmentError.afterMainHeadLocation.toString(),
+        //       loopIndex.toString(),
+        //       segmentErrorMapper[segmentError.errorType]
+        //     )
+        //     loopObjectList.push(AK3)
+        //   }
+        //   loopIndex++
+        // }
+        // for (const elementError of elementErrorList) {
+        //   const AK4: JSONObject = {
+        //     segment: 'AK4',
+        //     elementList: [],
+        //   }
+        //   AK4.elementList.push(
+        //     elementError.segmentPosition.toString(),
+        //     elementError.errorIdex.toString(),
+        //     elementErrorMapper[elementError.errorType],
+        //     elementError.element
+        //   )
+        //   loopObjectList.push(AK4)
+        // }
         const AK5: JSONObject = {
           segment: 'AK5',
           elementList: [],

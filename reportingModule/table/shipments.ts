@@ -20,7 +20,7 @@ const query = new Query({
         { name: 'carrierCode', type: 'string' },
         { name: 'carrierName', type: 'string' },
 
-        { name: 'vessel', type: 'string' },
+        // { name: 'vessel', type: 'string' },
         { name: 'voyage', type: 'string' },
         { name: 'division', type: 'string' },
         { name: 'serviceCode', type: 'string' },
@@ -40,10 +40,17 @@ const query = new Query({
         { name: 'placeOfDeliveryCode', type: 'string' },
         { name: 'finalDestinationCode', type: 'string' },
 
+        // { name: 'placeOfReceiptName', type: 'string' },
+        // { name: 'portOfLoadingName', type: 'string' },
+        // { name: 'portOfDischargeName', type: 'string' },
+        // { name: 'placeOfDeliveryName', type: 'string' },
+        // { name: 'finalDestinationName', type: 'string' },
+
         { name: 'departureDateEstimated', type: 'Date' },
         { name: 'departureDateActual', type: 'Date' },
         { name: 'arrivalDateEstimated', type: 'Date' },
         { name: 'arrivalDateActual', type: 'Date' },
+
         { name: 'forwarderPartyCode', type: 'string' },
         { name: 'forwarderPartyName', type: 'string' },
         { name: 'shipperPartyCode', type: 'string' },
@@ -58,10 +65,8 @@ const query = new Query({
         { name: 'agentPartyName', type: 'string' },
         { name: 'controllingCustomerPartyCode', type: 'string' },
         { name: 'controllingCustomerPartyName', type: 'string' },
-        { name: 'sSalesmanCode', type: 'string' },
-        { name: 'cSalesmanCode', type: 'string' },
-        { name: 'rSalesmanCode', type: 'string' },
-        { name: 'quantity', type: 'number' },
+
+        { name: 'salesmanCode', type: 'string' },
       ],
     },
     'shipment'

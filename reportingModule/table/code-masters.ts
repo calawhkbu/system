@@ -11,7 +11,7 @@ const query = new Query({
         { name: 'codeType', type: 'string' },
         { name: 'code', type: 'string' },
         { name: 'name', type: 'string' },
-        { name: 'isDefault', type: 'boolean' },
+        { name: 'canResetDefault', type: 'boolean' },
       ],
     },
     'code_master'

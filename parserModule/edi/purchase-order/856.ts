@@ -19,6 +19,11 @@ interface JSONObject {
   elementList?: any[]
 }
 
+function pad(n: any, width: number, z: string) {
+  const e = `n`
+  return e.length >= width ? e : new Array(width - e.length + 1).join(z) + e
+}
+
 export default class EdiParser856 extends BaseEdiParser {
   constructor(
     protected readonly allService: {
@@ -42,12 +47,13 @@ export default class EdiParser856 extends BaseEdiParser {
       elementList: [],
     }
     const bookingNo = _.get(entityJSON[0], 'bookingNo')
-    const controlNo = (bookingNo || '').substring((bookingNo || '').length - 9)
+    // const controlNo = (bookingNo || '').substring((bookingNo || '').length - 9)
+    const controlNo = await this.getNewSeq(process.env.NODE_ENV === 'production' ? '856' : '856-dev')
     ISA.elementList.push(
       '00',
-      '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
+      '          ', // 10 space
       '00',
-      '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
+      '          ', // 10 space
       '12',
       '718978080',
       'ZZ',
@@ -56,7 +62,7 @@ export default class EdiParser856 extends BaseEdiParser {
       moment(currantDate).format('HHmm'),
       'U',
       '00403',
-      controlNo,
+      pad(controlNo, 9, '0'),
       '0',
       'P',
       '>'
@@ -72,7 +78,7 @@ export default class EdiParser856 extends BaseEdiParser {
       'DILLARDSTST',
       moment(currantDate).format('YYYYMMDD'),
       moment(currantDate).format('HHmm'),
-      parseInt(controlNo, 10),
+      pad(controlNo, 9, '0'),
       'X',
       '004030VICS'
     )

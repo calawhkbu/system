@@ -20,34 +20,6 @@
           }
         ]
       }
-    },
-    {
-      "is": "UploadDownloadButton",
-      "props": {
-        "uploadParams": {
-          "axiosParams": {
-            "method": "POST",
-            "url": "/api/template/upload",
-            "data": {
-              "base64String": "{{base64String}}",
-              "extension": "{{extension}}",
-              "templateName": "{{context.$store.state.widget.data.templateName}}"
-            }
-          }
-        },
-        "downloadParams": {
-          "fileName": "{{context.$store.state.widget.data.templateName}}",
-          "extension": "{{context.$store.state.widget.data.extension}}",
-          "axiosParams": {
-            "responseType": "blob",
-            "method": "POST",
-            "url": "/api/template/download",
-            "data": {
-              "templateName": "{{context.$store.state.widget.data.templateName}}"
-            }
-          }
-        }
-      }
     }
   ]
 }

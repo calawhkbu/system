@@ -50,12 +50,16 @@
             "hidden": true
           },
           {
+            "key": "version",
+            "hidden": true
+          },
+          {
             "key": "partyGroupCode",
             "hidden": true
           },
           {
-            "label": "",
-            "key": "isDefault",
+            "label": "canResetDefault",
+            "key": "canResetDefault",
             "sortable": false,
             "clickFunction": {
               "type": "axios",
@@ -76,12 +80,14 @@
             },
 
             "tdComponent": {
+              "hideIfFalse" : true,
+
               "props": {
+
                 "slotComponents": [
                   {
                     "is": "icon",
                     "props": {
-                      "class" : "hidden",
                       "icon": "refresh"
                     }
                   }
@@ -97,13 +103,7 @@
             "name": "key",
             "i18nContext" : "I18nPage",
             "type": "text"
-          },
-          {
-            "name": "isDefault",
-            "i18nContext" : "I18nPage",
-            "type": "boolean"
           }
-
         ],
         "clickFunction": {
           "type": "router",
