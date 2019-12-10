@@ -34,11 +34,17 @@ const query = new Query({
         { name: 'isCoload', type: 'boolean' },
         { name: 'shipmentTypeCode', type: 'string' },
 
-        { name: 'placeOfReceiptName', type: 'string' },
-        { name: 'portOfLoadingName', type: 'string' },
-        { name: 'portOfDischargeName', type: 'string' },
-        { name: 'placeOfDeliveryName', type: 'string' },
-        { name: 'finalDestinationName', type: 'string' },
+        { name: 'placeOfReceiptCode', type: 'string' },
+        { name: 'portOfLoadingCode', type: 'string' },
+        { name: 'portOfDischargeCode', type: 'string' },
+        { name: 'placeOfDeliveryCode', type: 'string' },
+        { name: 'finalDestinationCode', type: 'string' },
+
+        // { name: 'placeOfReceiptName', type: 'string' },
+        // { name: 'portOfLoadingName', type: 'string' },
+        // { name: 'portOfDischargeName', type: 'string' },
+        // { name: 'placeOfDeliveryName', type: 'string' },
+        // { name: 'finalDestinationName', type: 'string' },
 
         { name: 'departureDateEstimated', type: 'Date' },
         { name: 'departureDateActual', type: 'Date' },
