@@ -31,6 +31,17 @@ function prepareParams(type_: 'F' | 'R' | 'C'): Function {
     const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const finalOrderBy = subqueries.finalOrderBy.value
 
+    // limit/extend to 1 year
+    const year = (subqueries.data ? moment() : moment(subqueries.date.from, 'YYYY-MM-DD')).year()
+    subqueries.date.from = moment()
+      .year(year)
+      .startOf('year')
+      .format('YYYY-MM-DD')
+    subqueries.date.to = moment()
+      .year(year)
+      .endOf('year')
+      .format('YYYY-MM-DD')
+
     // select
     params.fields = ['carrierCode', 'carrierName', 'jobMonth', ...summaryVariables]
 
