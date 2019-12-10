@@ -56,6 +56,14 @@
                 "is": "v-spacer"
               },
               {
+                "is" : "SaveEntityTemplateButton",
+                "props" : {
+
+                  "blackList" : ["id"],
+                  "axiosParams": "{ \"method\" : \"POST\",\"url\" : \"/default\",\"data\" : { \"tableName\" : \"booking\" , \"name\" : {{name | safe}},\"value\" : {{value | safe }}   }   }"
+                }
+              },
+              {
                 "is": "BookmarkButton"
               },
               {
@@ -64,7 +72,8 @@
                   "icon": true,
                   "flat": true
                 },
-                "slots": [{
+                "slots": [
+                  {
                   "is": "Icon",
                   "props": {
                     "icon": "map"
