@@ -19,6 +19,11 @@ interface JSONObject {
   elementList?: any[]
 }
 
+function pad(n: any, width: number, z: string) {
+  const e = `n`
+  return e.length >= width ? e : new Array(width - e.length + 1).join(z) + e
+}
+
 export default class EdiParser997 extends BaseEdiParser {
   constructor(
     protected readonly allService: {
@@ -42,11 +47,12 @@ export default class EdiParser997 extends BaseEdiParser {
       Prod: 'p',
       Test: 'T',
     }
+    const controlNo = await this.getNewSeq(process.env.NODE_ENV === 'production' ? '997' : '997-dev')
     ISA.elementList.push(
       '00',
-      '          ',
+      '          ', // 10 space
       '00',
-      '          ',
+      '          ', // 10 space
       _.get(entityJSON, 'ISAReceiverQl'),
       _.get(entityJSON, 'ISAReceiverId'),
       _.get(entityJSON, 'ISASenderIdQl'),
@@ -55,7 +61,7 @@ export default class EdiParser997 extends BaseEdiParser {
       moment(currantDate).format('HHmm'),
       'U',
       '00403',
-      _.get(entityJSON, 'interchangeControlNumber'),
+      pad(controlNo, 9, '0'),
       '0',
       testMapper[testIndicator],
       '>'
@@ -77,7 +83,7 @@ export default class EdiParser997 extends BaseEdiParser {
       senderIdMapper[applicationsenderId] || applicationsenderId,
       moment(currantDate).format('YYYYMMDD'),
       moment(currantDate).format('HHmm'),
-      _.get(entityJSON, 'dataInterchangeControlNumber'),
+      pad(controlNo, 9, '0'),
       'X',
       _.get(entityJSON, 'versionId')
     )
