@@ -11,6 +11,63 @@
             "is": "DynamicComponent",
             "props": {
               "class": "flex align-item-center full-width",
+              "components2": [
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "grid full-width align-item-center",
+                    "components": [
+                      {
+                        "is": "v-btn",
+                        "props": {
+                          "flat": true,
+                          "icon": true
+                        },
+                        "events": {
+                          "click.stop": [
+                            {
+                              "type": "router",
+                              "otherParams": {
+                                "func": "push",
+                                "path": "/bookings"
+                              }
+                            }
+                          ]
+                        },
+                        "slots": [
+                          {
+                            "is": "Icon",
+                            "props": {
+                              "icon": "arrow_back"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "is": "I18nText",
+                        "props": {
+                          "class": "xs-3 md-3 headline",
+                          "i18nContext": "BookingPage",
+                          "i18nKey": "quickCreate"
+                        }
+                      },
+                      {
+                        "is": "v-spacer"
+                      },
+                      {
+                        "is": "LoadEntityTemplateButton",
+                        "props": {
+                          "class": "xs-1 md-1 max-width-300",
+                          "axiosParams": {
+                            "method": "GET",
+                            "url": "/default/booking/list"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ],
               "components": [
                 {
                   "is": "v-btn",
@@ -45,6 +102,19 @@
                     "i18nContext": "BookingPage",
                     "i18nKey": "quickCreate"
                   }
+                },
+                {
+                  "is": "v-spacer"
+                },
+                {
+                  "is": "LoadEntityTemplateButton",
+                  "props": {
+                    "class": "max-width-300",
+                    "axiosParams": {
+                      "method": "GET",
+                      "url": "/default/booking/list"
+                    }
+                  }
                 }
               ]
             }
@@ -62,7 +132,7 @@
                   "label": "BookingPage.moduleType",
                   "name": "moduleTypeCode",
                   "component": "AsyncSelect",
-                  "class": "xs-12 md-3",
+                  "class": "xs-12 md-3 padding-topbottom-4",
                   "validator": ["required"],
                   "relation": "moduleType",
                   "props": {
@@ -90,7 +160,7 @@
                   "label": "BookingPage.boundType",
                   "name": "boundTypeCode",
                   "component": "AsyncSelect",
-                  "class": "xs-12 md-3",
+                  "class": "xs-12 md-3 padding-topbottom-4",
                   "relation": "boundType",
                   "validator": ["required"],
                   "props": {
@@ -118,7 +188,7 @@
                   "label": "BookingPage.serviceCode",
                   "name": "serviceCode",
                   "component": "AsyncSelect",
-                  "class": "xs-12 md-3",
+                  "class": "xs-12 md-3 padding-topbottom-4",
                   "validator": ["required"],
                   "relation": "service",
                   "props": {
@@ -147,7 +217,7 @@
                   "label": "BookingPage.vas",
                   "name": "vas",
                   "component": "AsyncSelect",
-                  "class": "xs-12 md-3",
+                  "class": "xs-12 md-3 padding-topbottom-4",
                   "props": {
                     "color": "red",
                     "multiple": true,
@@ -179,7 +249,7 @@
                   "label": "BookingPage.placeOfReceipt",
                   "name": "placeOfReceipt",
                   "component": "AsyncAutoSuggest",
-                  "class": "xs-12 md-3",
+                  "class": "xs-12 md-3 padding-topbottom-4",
                   "more": [
                     {
                       "name": "placeOfReceiptCode",
@@ -228,7 +298,7 @@
                   "label": "BookingPage.portOfLoading",
                   "name": "portOfLoading",
                   "component": "AsyncAutoSuggest",
-                  "class": "xs-12 md-3",
+                  "class": "xs-12 md-3 padding-topbottom-4",
                   "validator": ["required"],
                   "more": [
                     {
@@ -279,7 +349,7 @@
                   "label": "BookingPage.portOfDischarge",
                   "name": "portOfDischarge",
                   "component": "AsyncAutoSuggest",
-                  "class": "xs-12 md-3",
+                  "class": "xs-12 md-3 padding-topbottom-4",
                   "validator": ["required"],
                   "more": [
                     {
@@ -328,9 +398,9 @@
                     "class": "padding-topbottom-8 padding-leftright-4"
                   },
                   "label": "BookingPage.placeOfDelivery",
-                  "name": "placeOfDelivery",
+                  "name": "placeOfDelivery padding-topbottom-4",
                   "component": "AsyncAutoSuggest",
-                  "class": "xs-12 md-3",
+                  "class": "xs-12 md-3 padding-topbottom-4",
                   "more": [
                     {
                       "name": "placeOfDeliveryCode",
@@ -379,7 +449,7 @@
                   "label": "BookingPage.preferredCarrier",
                   "name": "carrier",
                   "component": "AsyncAutoSuggest",
-                  "class": "xs-12 md-3",
+                  "class": "xs-12 md-3 padding-topbottom-4",
                   "relation": "carrier",
                   "more": [
                     {
@@ -429,7 +499,7 @@
                   "label": "BookingPage.poNo",
                   "name": "flexData.data.poNo",
                   "component": "v-text-field",
-                  "class": "xs-12 md-3"
+                  "class": "xs-12 md-3 padding-topbottom-4"
                 },
                 {
                   "containerComponent": "v-card",
@@ -439,7 +509,7 @@
                   "label": "BookingPage.commodity",
                   "name": "commodity",
                   "component": "v-text-field",
-                  "class": "xs-12 md-3",
+                  "class": "xs-12 md-3 padding-topbottom-4",
                   "validator": ["required"],
                   "props": {
                     "required": true
@@ -453,7 +523,7 @@
                   "label": "BookingPage.incoTermsCode",
                   "name": "incoTerms",
                   "component": "AsyncAutoSuggest",
-                  "class": "xs-12 md-2",
+                  "class": "xs-12 md-2 padding-topbottom-4",
                   "more": [
                     {
                       "name": "incoTermsCode",
@@ -473,11 +543,23 @@
                   "props": {
                     "initList": true,
                     "searchTextParams": {
-                      "url": "api/code/query/code_master_with_flex_data",
+                      "url": "api/code/query/code_master",
                       "method": "POST",
                       "data": {
-                        "fields": ["code_master.*", "flex_data.data"],
+                        "fields": [
+                          {
+                            "classname": "ColumnExpression",
+                            "table": "code_master",
+                            "name": "*"
+                          },
+                          {
+                            "classname": "ColumnExpression",
+                            "table": "flex_data",
+                            "name": "data"
+                          }
+                        ],
                         "subqueries": {
+                          "flex_data_join": true,
                           "codeType": {
                             "value": "INCOTERMS"
                           },
@@ -500,7 +582,7 @@
                   "label": "BookingPage.freightTermsCode",
                   "name": "freightTermsCode",
                   "component": "AsyncSelect",
-                  "class": "xs-12 md-1",
+                  "class": "xs-12 md-1 padding-topbottom-4",
                   "relation": "freightTerms",
                   "props": {
                     "axiosParams": {
@@ -527,7 +609,7 @@
                   "label": "BookingPage.remark",
                   "name": "remark",
                   "component": "v-textarea",
-                  "class": "xs-12 md-6"
+                  "class": "xs-12 md-6 padding-topbottom-4"
                 },
                 {
                   "containerComponent": "v-card",
@@ -537,7 +619,7 @@
                   "label": "BookingPage.specialInstruction",
                   "name": "flexData.data.specialInstruction",
                   "component": "v-textarea",
-                  "class": "xs-12 md-6"
+                  "class": "xs-12 md-6 padding-topbottom-4"
                 },
                 {
                   "containerComponent": "v-card",
@@ -547,7 +629,7 @@
                   "label": "BookingPage.forwarder",
                   "name": "forwarderParty",
                   "component": "AsyncSelect",
-                  "class": "xs-12",
+                  "class": "xs-12 padding-topbottom-4",
                   "relation": "forwarderParty",
                   "relationMore": [
                     {
@@ -632,7 +714,7 @@
                   },
                   "name": "Term",
                   "component": "Term",
-                  "class": "xs-12",
+                  "class": "xs-12 padding-topbottom-4",
                   "props": {
                     "type": "booking-term",
                     "termProps": {
@@ -741,6 +823,19 @@
                     "class": "headline",
                     "i18nContext": "BookingPage",
                     "i18nKey": "createTitle"
+                  }
+                },
+                {
+                  "is" : "v-spacer"
+                },
+                {
+                  "is": "LoadEntityTemplateButton",
+                  "props": {
+                    "class": "max-width-300",
+                    "axiosParams": {
+                      "method": "GET",
+                      "url": "/default/booking/list"
+                    }
                   }
                 }
               ]

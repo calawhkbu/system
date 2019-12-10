@@ -20,6 +20,11 @@ interface JSONObject {
   elementList?: any[]
 }
 
+function pad(n: any, width: number, z: string) {
+  const e = `n`
+  return e.length >= width ? e : new Array(width - e.length + 1).join(z) + e
+}
+
 export default class EdiParser997 extends BaseEdiParser {
   constructor(
     protected readonly allService: {
@@ -52,13 +57,12 @@ export default class EdiParser997 extends BaseEdiParser {
           const currantDate = moment().toDate()
           const containerNo = _.get(container, 'containerNo')
           // const controlNo = (containerNo  || '').substr(4)
-          const pad = '000000000'
           const controlNo = await this.getNewSeq(process.env.NODE_ENV === 'production' ? '315' : '315-dev')
           ISA.elementList.push(
             '00',
-            '          ',
+            '          ', // 10 space
             '00',
-            '          ',
+            '          ', // 10 space
             '12',
             '718978080      ',
             '08',
@@ -67,7 +71,7 @@ export default class EdiParser997 extends BaseEdiParser {
             moment(currantDate).format('HHmm'),
             'U',
             '00401',
-            controlNo.substring(0, 9),
+            pad(controlNo, 9, '0'),
             '0',
             'P',
             '>'
@@ -84,7 +88,7 @@ export default class EdiParser997 extends BaseEdiParser {
             '6112390050',
             moment(currantDate).format('YYYYMMDD'),
             moment(currantDate).format('HHmm'),
-            parseInt(controlNo, 10),
+            pad(controlNo, 9, '0'),
             'X',
             '004030VICS'
           )

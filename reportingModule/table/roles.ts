@@ -22,7 +22,7 @@ const query = new Query({
           name: 'filter',
           type: 'string',
         },
-        { name: 'isDefault', type: 'boolean' }
+        { name: 'canResetDefault', type: 'boolean' }
       ],
     },
     'role'

@@ -13,9 +13,12 @@
         "noPartyGroupFilters": true,
         "newReport": {
           "filters": {
+            "activeStatus" : {
+              "value" : "active"
+            }
           },
           "configurations": {
-            "i18nContext": "Reporting",
+            "i18nContext": "CodeMasterPage",
             "clickable": true,
             "draggable": true,
             "pagination": {
@@ -52,9 +55,10 @@
             "hidden": true
           },
 
+
           {
             "label": "",
-            "key": "isDefault",
+            "key": "canResetDefault",
             "sortable": false,
             "clickFunction": {
               "type": "axios",
@@ -75,6 +79,7 @@
             },
 
             "tdComponent": {
+              "hideIfFalse" : true,
               "props": {
                 "slotComponents": [
                   {
@@ -88,6 +93,73 @@
             },
             "width": 50
           }
+        ],
+
+        "filters"  : [
+
+          {
+
+            "name" : "activeStatus",
+            "i18nContext" : "CodeMasterPage",
+            "type" : "list",
+            "props" : {
+              "items" :[
+
+                {
+                  "label" : "active",
+                  "value" : "active"
+                },
+                {
+                  "label" : "deleted",
+                  "value" : "deleted"
+                }
+              ]
+
+
+            }
+          },
+          {
+            "name" : "codeType",
+            "i18nContext" : "CodeMasterPage",
+            "props" : {
+              "api" : {
+                "query" : {
+                  "data" : {
+                    "limit" : 5,
+                    "fields" : [
+                      "codeType"
+                    ],
+                    "subqueries" : {
+                      "codeTypeLike" : {
+                        "value" : "{{ q }}"
+                      }
+                    }
+                  },
+                  "labelKey" : "codeType",
+                  "method" : "POST",
+                  "url" : "api/code/query/code_master",
+                  "valueKey" : "codeType"
+                },
+                "resolve" : {
+                  "data" : {
+                    "fields" : ["codeType"],
+                    "subqueries" : {
+                      "codeType" : {
+                        "value" : "{{value}}"
+                      }
+                    }
+                  },
+                  "labelKey" : "codeType",
+                  "method" : "POST",
+                  "url" : "api/code/query/code_master",
+                  "valueKey" : "codeType"
+                }
+              },
+              "multi" : false
+            },
+            "type" : "autocomplete"
+          }
+
         ],
         "clickFunction": {
           "type": "router",

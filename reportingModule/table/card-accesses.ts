@@ -8,13 +8,14 @@ const query = new Query({
       columns: [
 
         { name: 'id', type: 'number' },
+        { name: 'name', type: 'string' },
         { name: 'partyGroupCode', type: 'string' },
         { name:  'cardId', type: 'string' },
         { name: 'disabled', type: 'boolean' },
         { name: 'partyGroupSpecific', type: 'boolean' },
         { name: 'isActive', type: 'number' },
-        { name: 'can_delete', type: 'number' },
-        { name: 'can_restore', type: 'number' }
+        { name: 'canDelete', type: 'number' },
+        { name: 'canRestore', type: 'number' }
       ],
     },
     'card_access'
