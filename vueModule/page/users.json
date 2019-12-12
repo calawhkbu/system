@@ -77,6 +77,7 @@
           "label": "",
           "key": "canResend",
           "sortable": false,
+          "align": "center",
           "clickFunction": {
             "type": "axios",
             "otherParams": {
@@ -92,17 +93,11 @@
               }
             }]
           },
-
           "tdComponent": {
-
+            "is": "icon",
             "hideIfFalse": true,
             "props": {
-              "slotComponents": [{
-                "is": "icon",
-                "props": {
-                  "icon": "email"
-                }
-              }]
+              "icon": "email"
             }
           },
           "width": 50
@@ -112,6 +107,7 @@
           "label": "",
           "key": "canDelete",
           "sortable": false,
+          "align": "center",
           "clickFunction": {
             "type": "axios",
             "otherParams": {
@@ -129,14 +125,10 @@
           },
 
           "tdComponent": {
+            "is": "icon",
             "hideIfFalse": true,
             "props": {
-              "slotComponents": [{
-                "is": "icon",
-                "props": {
-                  "icon": "delete"
-                }
-              }]
+              "icon": "delete"
             }
           },
           "width": 50
@@ -146,6 +138,7 @@
           "label": "",
           "key": "canRestore",
           "sortable": false,
+          "align": "center",
           "clickFunction": {
             "type": "axios",
             "otherParams": {
@@ -163,14 +156,10 @@
           },
 
           "tdComponent": {
+            "is": "icon",
             "hideIfFalse": true,
             "props": {
-              "slotComponents": [{
-                "is": "icon",
-                "props": {
-                  "icon": "refresh"
-                }
-              }]
+              "icon": "refresh"
             }
           },
           "width": 50
