@@ -3,69 +3,17 @@ import { diff } from 'modules/events/checkerFunction'
 
 export default {
   // should not be called directly, should be called after an event
-  create_alert: [// create alert from entity
-    {
-      handlerName: 'create_alert',
-    },
-  ],
-  create_tracking_by_booking: [// create tracking from entity
-    {
-      handlerName: 'create_tracking_by_booking',
-    },
-  ],
-  create_tracking_alerts: [// update entity(booking) with a tracking
-    {
-      handlerName: 'create_tracking_alerts',
-    },
-  ],
-  fill_template: [
-    {
-      handlerName: 'fill_template',
-    },
-  ],
-  update_document_preview: [
-    {
-      handlerName: 'update_document_preview',
-    },
-  ],
-  fm3k_booking: [
-    {
-      condition: true,
-      handlerName: 'fm3k_booking',
-    },
-  ],
-  send_edi: [
-    {
-      handlerName: 'send_edi'
-    }
-  ],
-  afterCreate_tracking: [
-    {
-      eventName: 'create_tracking_alerts',
-    },
-    {
-      eventName: 'send_edi',
-    },
-  ],
-  afterUpdate_tracking: [
-    {
-      eventName: 'create_tracking_alerts',
-    },
-    {
-      eventName: 'send_edi',
-    },
-  ],
-  afterCreate_document: [
-    {
-      eventName: 'update_document_preview',
-    },
-  ],
-  afterUpdate_document: [
-    {
-      eventName: 'update_document_preview',
-    },
-  ],
+  create_alert: [{ handlerName: 'create_alert' }], // create alert from entity
+  create_tracking: [{ handlerName: 'create_tracking' }], // create tracking from entity
+  create_tracking_alerts: [{ handlerName: 'create_tracking_alerts' }], // update entity(booking) with a tracking
+  fill_template: [{ handlerName: 'fill_template' }],
+  update_document_preview: [{ handlerName: 'update_document_preview' }],
+  fm3k_booking: [{ handlerName: 'fm3k_booking' }],
+  send_edi: [{ handlerName: 'send_edi' }],
+  // start here
+  // booking
   afterCreate_booking: [
+    // create new booking alert and should move to workflow later
     {
       condition: true,
       eventName: 'create_alert',
@@ -78,12 +26,15 @@ export default {
         },
       },
     },
-    // // create booking tracking
+    // create booking tracking
     {
       condition: true,
-      eventName: 'create_tracking_by_booking',
+      eventName: 'create_tracking',
+      otherParameters: {
+        tableName: 'booking'
+      }
     },
-    // // fill template of the booking
+    // fill shipping order
     {
       condition: true,
       eventName: 'fill_template',
@@ -96,24 +47,35 @@ export default {
         },
       },
     },
-  ],
-  afterUpdate_booking: [
+    // send fm3k
     {
       condition: true,
-      eventName: 'create_tracking_by_booking',
+      eventName: 'fm3k_booking'
     },
+  ],
+  afterUpdate_booking: [
+    // create new booking alert and should move to workflow later
     {
       condition: true,
       eventName: 'create_alert',
       otherParameters: {
         alertType: 'newBooking',
         tableName: 'booking',
-        primaryKey: parameters => {
+        primaryKey: (parameters: any) => {
           // use booking.id as primaryKey
           return parameters.data.id
         },
       },
     },
+    // create booking tracking
+    {
+      condition: true,
+      eventName: 'create_tracking',
+      otherParameters: {
+        tableName: 'booking'
+      }
+    },
+    // fill shipping order
     {
       condition: true,
       handlerName: 'checker',
@@ -129,7 +91,6 @@ export default {
                 ['documents'],
                 ['createdAt', 'createdBy', 'updatedAt', 'updatedBy']
               )
-
               return difference ? true : false
             },
           },
@@ -160,7 +121,41 @@ export default {
         },
       ],
     },
+    // send fm3k
+    {
+      condition: true,
+      eventName: 'fm3k_booking'
+    },
   ],
+  // documents
+  afterCreate_document: [
+    {
+      eventName: 'update_document_preview',
+    },
+  ],
+  afterUpdate_document: [
+    {
+      eventName: 'update_document_preview',
+    },
+  ],
+  // purchase-order
+  // shipment
+  // tracking
+  afterCreate_tracking: [
+    {
+      eventName: 'create_tracking_alerts',
+    },
+  ],
+  afterUpdate_tracking: [
+    {
+      eventName: 'create_tracking_alerts',
+    },
+    {
+      eventName: 'send_edi',
+    },
+  ],
+
+
 } as {
   [eventName: string]: EventConfig[]
 }
