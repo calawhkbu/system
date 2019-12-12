@@ -122,13 +122,11 @@
         }
       ],
       "filters": [],
-      "nextPageComponent": "{{tableName}}",
       "clickFunction": {
         "type": "router",
         "otherParams": {
           "func": "push",
-          "path": "default/{{tableName}}/{{primaryKey}}",
-          "base": true
+          "path": "alerts/default/{{tableName}}/{{primaryKey}}"
         }
       },
       "icons": []
