@@ -56,10 +56,10 @@
                 "is": "v-spacer"
               },
               {
-                "is" : "SaveEntityTemplateButton",
-                "props" : {
+                "is": "SaveEntityTemplateButton",
+                "props": {
 
-                  "blackList" : ["id"],
+                  "blackList": ["id"],
                   "axiosParams": "{ \"method\" : \"POST\",\"url\" : \"/default\",\"data\" : { \"tableName\" : \"booking\" , \"name\" : {{name | safe}},\"value\" : {{value | safe }}   }   }"
                 }
               },
@@ -72,8 +72,7 @@
                   "icon": true,
                   "flat": true
                 },
-                "slots": [
-                  {
+                "slots": [{
                   "is": "Icon",
                   "props": {
                     "icon": "map"
@@ -702,20 +701,6 @@
               "url: 'api/tracking',",
               "method: 'POST',",
               "data: { trackingNos }",
-              "};"
-            ]
-          }
-        },
-        {
-          "is": "AsyncComponent",
-          "props": {
-            "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/workflow",
-            "axiosBaseParams": [
-              "const tableName = encodeURIComponent('booking');",
-              "const primaryKey = encodeURIComponent(context.$route.params.params);",
-              "return {",
-              "url: `api/workflow/${tableName}/${primaryKey}`",
               "};"
             ]
           }
