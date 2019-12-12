@@ -28,13 +28,13 @@ function prepareParams(type_: 'F' | 'R'): Function {
 
     // idea : userGroupByVariable and userSummaryVariable is selected within filter by user
 
-    if (!subqueries.groupByVariable || !subqueries.groupByVariable.value) throw new Error('MISSING_groupByVariable')
+    if (!subqueries.groupByEntity || !subqueries.groupByEntity.value) throw new Error('MISSING_groupByVariable')
     if (!subqueries.topX || !subqueries.topX.value) throw new Error('MISSING_topX')
 
     // -----------------------------groupBy variable
-    const groupByVariable = subqueries.groupByVariable.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const codeColumnName = groupByVariable === 'carrier' ? `carrierCode` : `${groupByVariable}PartyCode`
-    const nameColumnName = groupByVariable === 'carrier' ? `carrierName` : `${groupByVariable}PartyName`
+    const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : `${groupByEntity}PartyName`
 
     const groupByVariables = [codeColumnName, nameColumnName]
 
@@ -75,7 +75,7 @@ function prepareParams(type_: 'F' | 'R'): Function {
     // group by
     params.groupBy = [...groupByVariables, 'jobMonth']
 
-    subqueries[`${groupByVariable}IsNotNull`]  = {
+    subqueries[`${groupByEntity}IsNotNull`]  = {
       value : true
     }
 
@@ -119,12 +119,12 @@ function prepareData(type_: 'F' | 'R') {
 
     // idea : userGroupByVariable and userSummaryVariable is selected within filter by user
 
-    if (!subqueries.groupByVariable) throw new Error('MISSING_groupByVariable')
+    if (!subqueries.groupByEntity) throw new Error('MISSING_groupByVariable')
 
     // -----------------------------groupBy variable
-    const groupByVariable = subqueries.groupByVariable.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const codeColumnName = groupByVariable === 'carrier' ? `carrierCode` : `${groupByVariable}PartyCode`
-    const nameColumnName = groupByVariable === 'carrier' ? `carrierName` : `${groupByVariable}PartyName`
+    const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : `${groupByEntity}PartyName`
 
     const groupByVariables = [codeColumnName, nameColumnName]
 
@@ -230,9 +230,9 @@ function finalQuery(types_?: string[]): Function {
 
     const subqueries = (params.subqueries = params.subqueries || {})
     // groupBy variable
-    const groupByVariable = subqueries.groupByVariable.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const codeColumnName = groupByVariable === 'carrier' ? `carrierCode` : `${groupByVariable}PartyCode`
-    const nameColumnName = groupByVariable === 'carrier' ? `carrierName` : `${groupByVariable}PartyName`
+    const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : `${groupByEntity}PartyName`
 
     const groupByVariables = [codeColumnName, nameColumnName]
 
@@ -278,7 +278,7 @@ function finalQuery(types_?: string[]): Function {
     const $select = [
       new ResultColumn(new ColumnExpression(codeColumnName), 'code'),
       new ResultColumn(new ColumnExpression(nameColumnName), 'name'),
-      new ResultColumn(new Value(groupByVariable), 'groupByVariable'),
+      new ResultColumn(new Value(groupByEntity), 'groupByEntity'),
     ]
 
     summaryVariables.map(variable => {
@@ -406,12 +406,12 @@ function createTable() {
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    if (!subqueries.groupByVariable || !subqueries.groupByVariable.value) throw new Error('MISSING_groupByVariable')
+    if (!subqueries.groupByEntity || !subqueries.groupByEntity.value) throw new Error('MISSING_groupByVariable')
     if (!subqueries.topX || !subqueries.topX.value) throw new Error('MISSING_topX')
     // groupBy variable
-    const groupByVariable = subqueries.groupByVariable.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const codeColumnName = groupByVariable === 'carrier' ? `carrierCode` : `${groupByVariable}PartyCode`
-    const nameColumnName = groupByVariable === 'carrier' ? `carrierName` : `${groupByVariable}PartyName`
+    const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : `${groupByEntity}PartyName`
 
     const groupByVariables = [codeColumnName, nameColumnName]
 
@@ -509,8 +509,8 @@ export const filters = [
     type: 'list',
   },
   {
-    display: 'groupByVariable',
-    name: 'groupByVariable',
+    display: 'groupByEntity',
+    name: 'groupByEntity',
     props: {
       items: [
         {
