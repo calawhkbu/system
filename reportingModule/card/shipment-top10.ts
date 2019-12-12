@@ -127,6 +127,9 @@ function insertTop10Data() {
 
     const shipments = new Resultset(await session.query(new Query('raw'))).toArray() as any[]
 
+    console.log(`shipments`)
+    console.log(shipments.length)
+
     if (!(shipments && shipments.length)) {
       throw new Error('NO_DATA')
     }
@@ -136,6 +139,7 @@ function insertTop10Data() {
     if (showOther) {
       // use the code of the top10 to find the rest
       const top10ShipmentCodeList = top10ShipmentList.map(x => x[codeColumnName])
+
       const otherShipmentList = shipments.filter(
         x => !top10ShipmentCodeList.includes(x[codeColumnName])
       )
@@ -155,6 +159,12 @@ function insertTop10Data() {
       otherResult[summaryColumnName] = otherSum
 
       top10ShipmentList.push(otherResult)
+    }
+
+    else{
+      if (!(top10ShipmentList && top10ShipmentList.length)) {
+        throw new Error('top10ShipmentList is empty')
+      }
     }
 
     return new InsertJQL('top10', ...top10ShipmentList)
@@ -374,7 +384,7 @@ export const filters = [
           label: 'agent',
           value: 'agent',
         },
-        // currently disabled
+        // // currently disabled
         // {
         //   label: 'agentGroup',
         //   value: 'agentGroup',
