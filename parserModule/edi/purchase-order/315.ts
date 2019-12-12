@@ -337,17 +337,12 @@ export default class EdiParser997 extends BaseEdiParser {
             country = _.get(extraData, 'portOfLoading')
             break
             }
+            default:
+              continue
           }
         }
         const countryCode = (country || 'XX').substring(0, 2)
-        if (i === noOfhistory - 1)
-        {
-          R4.elementList.push('5')
-        }
-        else
-        {
-          R4.elementList.push(functionalCodeMapper[statusCode])
-        }
+        R4.elementList.push(functionalCodeMapper[statusCode])
         R4.elementList.push('UN', (country || '').substring(0, 30))
         R4.elementList.push('') // not used
         R4.elementList.push(countryCode)
@@ -368,6 +363,10 @@ export default class EdiParser997 extends BaseEdiParser {
           loopObjectList.push(DTM)
         }
       }
+    }
+    if (loopObjectList.length > 0)
+    {
+      _.findLast(loopObjectList, x => x.segment === 'R4').elementList[0] = '5'
     }
     // const statusCode = historyList[noOfhistory - 1].statusCode
     // let country = _.get(extraData, countryMapper[functionalCodeMapper[statusCode]])
