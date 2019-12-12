@@ -48,7 +48,9 @@ function prepareParams(likeHouseNo_: string): Function {
     subqueries.likeHouseNo = { value: likeHouseNo_ }
 
     // select
-    params.fields = ['jobMonth', ...summaryVariables]
+    params.fields = [
+      'jobMonth',
+      ...summaryVariables]
     // group by
     params.groupBy = ['jobMonth']
 

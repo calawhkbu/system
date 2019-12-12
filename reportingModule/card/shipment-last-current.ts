@@ -20,16 +20,15 @@ function prepareParams(isCurrent_: boolean): Function {
   const fn = function(require, session, params) {
     const moment = require('moment')
     const { OrderBy } = require('node-jql')
-    const { BadRequestException } = require('@nestjs/common')
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
     // warning cannot display from frontend
-    if (!subqueries.groupByEntity) throw new BadRequestException('MISSING_groupByEntity')
+    if (!subqueries.groupByEntity) throw new Error('MISSING_groupByEntity')
 
-    if (!subqueries.metric1) throw new BadRequestException('MISSING_metric1')
-    if (!subqueries.metric2) throw new BadRequestException('MISSING_metric2')
-    if (!subqueries.lastCurrentUnit) throw new BadRequestException('lastCurrentUnit')
+    if (!subqueries.metric1) throw new Error('MISSING_metric1')
+    if (!subqueries.metric2) throw new Error('MISSING_metric2')
+    if (!subqueries.lastCurrentUnit) throw new Error('lastCurrentUnit')
 
     // most important part of this card
     // dynamically choose the fields and summary value
@@ -108,7 +107,7 @@ function prepareParams(isCurrent_: boolean): Function {
         .endOf('month')
         .format('YYYY-MM-DD')
     } else {
-      throw new BadRequestException('INVALID_lastCurrentUnit')
+      throw new Error('INVALID_lastCurrentUnit')
     }
 
     subqueries.date.from = dateFrom

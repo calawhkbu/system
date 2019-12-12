@@ -116,8 +116,8 @@ function prepareData(type_: 'F' | 'R') {
             ],
 
             data: {
-              // subqueries : { carrierCodeIsNotNull : true }
-              filter: { carrierCodeIsNotNull: {} },
+              // subqueries : { carrierIsNotNull : true }
+              filter: { carrierIsNotNull: {} },
             },
           },
           'shipment'
@@ -321,7 +321,7 @@ export default [
   createTable(),
   // prepare data
   [prepareParams('F'), prepareData('F')],
-  [prepareParams('R'), prepareData('R')],
+  // [prepareParams('R'), prepareData('R')],
 
   finalQuery(['F', 'R']),
 ]
