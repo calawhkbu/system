@@ -13,14 +13,36 @@ const query = new QueryDef(
     $distinct: true,
     $from: new FromTable(
       `
-      (SELECT \`tracking_reference\`.*, \`masterNo\` AS \`trackingNo\`, 'masterNo' AS \`type\`
-    FROM \`tracking_reference\`
-    UNION
-    SELECT \`tracking_reference\`.*, \`soTable\`.\`trackingNo\`, 'soNo' AS \`type\`
-    FROM  \`tracking_reference\`,  JSON_TABLE(\`soNo\`, "$[*]" COLUMNS (\`trackingNo\` VARCHAR(100) PATH "$")) \`soTable\`
-    UNION
-    SELECT  \`tracking_reference\`.* , \`containerTable\`.\`trackingNo\`, 'containerNo' as \`type\`
-    FROM \`tracking_reference\`,  JSON_TABLE(\`containerNo\`, "$[*]" COLUMNS (\`trackingNo\` VARCHAR(100) PATH "$")) \`containerTable\`)
+        (
+          SELECT
+            tracking_reference.*, masterNo AS trackingNo, 'masterNo' AS type
+          FROM
+            tracking_reference
+          WHERE
+            tracking_reference.deletedAt IS NULL
+            AND
+            tracking_reference.deletedBy IS NULL
+          UNION
+          SELECT
+            tracking_reference.*, soTable.trackingNo AS trackingNo, 'soNo' AS type
+          FROM
+            tracking_reference,
+            JSON_TABLE(soNo, "$[*]" COLUMNS (trackingNo VARCHAR(100) PATH "$")) soTable
+          WHERE
+            tracking_reference.deletedAt IS NULL
+            AND
+            tracking_reference.deletedBy IS NULL
+          UNION
+          SELECT
+            tracking_reference.*, containerTable.trackingNo AS trackingNo, 'containerNo' AS type
+          FROM
+            tracking_reference,
+            JSON_TABLE(containerNo, "$[*]" COLUMNS (trackingNo VARCHAR(100) PATH "$")) containerTable
+          WHERE
+            tracking_reference.deletedAt IS NULL
+            AND
+            tracking_reference.deletedBy IS NULL
+        )
       `,
       'tracking_reference',
       new JoinClause(
