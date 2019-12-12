@@ -220,7 +220,7 @@ function prepareResultTable() {
         $select.push(
           new ResultColumn(
             new FunctionExpression('IFNULL', new ColumnExpression('final', columeName), 0),
-            columeName
+            `${month}_value`
           )
         )
       })
@@ -230,7 +230,7 @@ function prepareResultTable() {
       $select.push(
         new ResultColumn(
           new FunctionExpression('IFNULL', new ColumnExpression('final', totalColumnName), 0),
-          totalColumnName
+          'total_value'
         )
       )
     })
@@ -449,7 +449,7 @@ export default [
 
   // })
 
-  // 
+  //
   prepareReportingGroupTable(),
   insertReportingGroupTable(),
 

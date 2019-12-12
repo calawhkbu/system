@@ -155,7 +155,7 @@ function prepareFinalTable(): CreateTableJQL {
           ),
           0
         ),
-        `${month}-value`
+        `${month}_value`
       )
     )
   })
@@ -232,10 +232,10 @@ function prepareResultTable(): CreateTableJQL {
   months.map(month => {
     const column = new FunctionExpression(
       'IFNULL',
-      new ColumnExpression('final', `${month}-value`),
+      new ColumnExpression('final', `${month}_value`),
       0
     )
-    $select.push(new ResultColumn(column, `${month}-value`))
+    $select.push(new ResultColumn(column, `${month}_value`))
 
     sumList.push(column)
   })
