@@ -90,7 +90,7 @@ const query = new Query({
   $from: new FromTable(
     {
       method: 'POST',
-      url: 'api/shipment/query/shipment',
+      url: 'api/shipment/query/old360-uber',
       columns: [
         { name: 'primaryKey', type: 'string' },
         { name: 'houseNo', type: 'string' },
