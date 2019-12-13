@@ -79,7 +79,7 @@ const query = new Query({
   $from: new FromTable(
     {
       method: 'POST',
-      url: 'api/shipment/query/shipment-count',
+      url: 'api/shipment/query/old360-uber-count',
       columns: [{ name: 'count', type: 'number' }],
     },
     'shipment'

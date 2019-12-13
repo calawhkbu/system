@@ -26,10 +26,23 @@ function prepareParams(likeHouseNo_: string): Function {
     const subqueries = (params.subqueries = params.subqueries || {})
 
     if (!subqueries.summaryVariables) throw new BadRequestException('MISSING_summaryVariables')
-    if (!subqueries.finalOrderBy) throw new BadRequestException('MISSING_finalOrderBy')
 
-    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
-    const finalOrderBy = subqueries.finalOrderBy.value
+    // ---------------------summaryVariables
+
+    let summaryVariables: string[]
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
+      // sumamary variable
+      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    }
+
+    else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
+      summaryVariables = [subqueries.summaryVariable.value]
+    }
+    else {
+      throw new Error('MISSING_summaryVariables')
+    }
 
     // limit/extend to 1 year
     const year = subqueries.date ?  moment(subqueries.date.from, 'YYYY-MM-DD').year() : moment().year()
@@ -76,8 +89,21 @@ function prepareData(hardCodeOfficePartyName_: string) {
     } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
-    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
-    const finalOrderBy = subqueries.finalOrderBy.value
+
+    let summaryVariables: string[]
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
+      // sumamary variable
+      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    }
+
+    else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
+      summaryVariables = [subqueries.summaryVariable.value]
+    }
+    else {
+      throw new Error('MISSING_summaryVariables')
+    }
 
     return new InsertJQL({
       name: 'shipment',
@@ -163,7 +189,22 @@ function finalQuery(types_?: string[]): Function {
     const $select = [...finalGroupBy.map(x => new ResultColumn(new ColumnExpression(x)))]
 
     const subqueries = (params.subqueries = params.subqueries || {})
-    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+
+    let summaryVariables: string[]
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
+      // sumamary variable
+      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    }
+
+    else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
+      summaryVariables = [subqueries.summaryVariable.value]
+    }
+    else {
+      throw new Error('MISSING_summaryVariables')
+    }
+
     const finalOrderBy = subqueries.finalOrderBy.value
 
     summaryVariables.map(variable => {
@@ -305,13 +346,10 @@ function createTable() {
 export default [
   createTable(),
   // prepare data
+
+  // insert one by one
   [prepareParams('GZH%'), prepareData('GGL GZH')],
   [prepareParams('XMN%'), prepareData('GGL XMN')],
-
-  // new Query({
-
-  //   $from : 'shipment'
-  // })
 
   finalQuery(),
 ]
