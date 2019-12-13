@@ -29,7 +29,7 @@
                               "type": "router",
                               "otherParams": {
                                 "func": "push",
-                                "path": "/bookings"
+                                "path": "/{{ p[0] }}/{{ p[1] }}"
                               }
                             }
                           ]
@@ -81,7 +81,7 @@
                         "type": "router",
                         "otherParams": {
                           "func": "push",
-                          "path": "/bookings"
+                          "path": "/{{ p[0] }}/{{ p[1] }}"
                         }
                       }
                     ]

@@ -382,21 +382,27 @@
           "is": "AsyncComponent",
           "props": {
             "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/tracking0"
+            "layoutName": "plugins/tracking-shipment"
           }
         },
         {
           "is": "AsyncComponent",
           "props": {
             "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/alert0"
+            "layoutName": "plugins/alert-shipment"
           }
         },
         {
           "is": "AsyncComponent",
           "props": {
             "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/document"
+            "layoutName": "plugins/document",
+            "axiosBaseParams": [
+              "const primaryKey = encodeURIComponent(context.$route.params.params);",
+              "return {",
+              "url: 'api/document/document/shipment/{{primaryKey | urlEncode }}'.format({ primaryKey}),",
+              "};"
+            ]
           }
         }
       ]

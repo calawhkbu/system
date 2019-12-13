@@ -46,10 +46,6 @@ class CreateTrackingEvent extends BaseEvent {
       bookingContainers = []
     } = parameters.data
 
-    console.log(`ModuleTypeCode: ${moduleTypeCode}`, this.constructor.name)
-    console.log(`CarrierCode: ${carrierCode}`, this.constructor.name)
-    console.log(`estimated departure date: ${departureDateEstimated}`, this.constructor.name)
-
     if (moduleTypeCode && carrierCode && departureDateEstimated) {
       try {
         let refName = null

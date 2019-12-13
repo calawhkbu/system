@@ -5,14 +5,31 @@
     "props": {
       "reportingKey": "purchase-orders",
       "jql": "purchase-orders",
-      "urlFormat": "/purchase-orders{{ id|if('/', '') }}{{ id }}",
       "hasReports": true,
       "showFilterBar": true,
       "enableShare": true,
       "enableSetting": true,
+      "noPartyGroupFilters": false,
+      "nextPageComponent": "purchase-order",
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "detail/{{id}}",
+          "base": true
+        }
+      },
       "newReport": {
         "filters": {
-          "isActive": true
+          "isActive": true,
+          "date": {
+            "func": {
+              "args": {
+                "unit": "year"
+              },
+              "key": "current"
+            }
+          }
         },
         "configurations": {
           "i18nContext": "PurchaseOrderPage",
@@ -33,6 +50,7 @@
           }
         }
       },
+      "filters": [],
       "fieldOptions": [{
           "key": "id",
           "sql": {
@@ -62,15 +80,7 @@
           "width": 150,
           "format": "YYYY-MM-DD"
         }
-      ],
-      "filters": [],
-      "clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/purchase-order/{{id}}"
-        }
-      }
+      ]
     },
     "slots": [{
       "name": "middle-button",

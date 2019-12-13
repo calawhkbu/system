@@ -5,7 +5,7 @@
     "props": {
       "reportingKey": "alerts",
       "jql": "alerts",
-      "urlFormat": "/alerts{{ id|if('/', '') }}{{ id }}",
+      "showDefault": true,
       "hasReports": false,
       "showFilterBar": true,
       "enableShare": true,
@@ -72,7 +72,6 @@
                 "type": "String",
                 "value": "Title"
               }
-
             ]
           },
           "sql2": "concat(alert.alertType, 'Title')"
@@ -80,31 +79,27 @@
         {
           "key": "alertContent",
           "i18nContext": "Alert",
-
           "sql": {
             "classname": "FunctionExpression",
             "name": "IFNULL",
             "parameters": [{
                 "classname": "FunctionExpression",
                 "name": "JSON_UNQUOTE",
-                "parameters": [
-
-                  {
-                    "classname": "FunctionExpression",
-                    "name": "JSON_EXTRACT",
-                    "parameters": [{
-                        "classname": "ColumnExpression",
-                        "table": "flex_data",
-                        "name": "data"
-                      },
-                      {
-                        "classname": "Value",
-                        "type": "String",
-                        "value": "$.customMessage"
-                      }
-                    ]
-                  }
-                ]
+                "parameters": [{
+                  "classname": "FunctionExpression",
+                  "name": "JSON_EXTRACT",
+                  "parameters": [{
+                      "classname": "ColumnExpression",
+                      "table": "flex_data",
+                      "name": "data"
+                    },
+                    {
+                      "classname": "Value",
+                      "type": "String",
+                      "value": "$.customMessage"
+                    }
+                  ]
+                }]
               },
               {
                 "classname": "FunctionExpression",
@@ -131,7 +126,7 @@
         "type": "router",
         "otherParams": {
           "func": "push",
-          "path": "/{{tableName}}/{{primaryKey}}"
+          "path": "alerts/default/{{tableName}}/{{primaryKey}}"
         }
       },
       "icons": []
