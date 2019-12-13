@@ -1,113 +1,99 @@
 {
   "fillParent": true,
-  "components": [
-    {
-      "is": "TableTool",
-      "props": {
-        "reportingKey": "roles",
-        "jql": "roles",
-        "back": "/admin",
-        "clickFunction": {
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "title": "Roles",
+      "back": "/admin",
+      "urlFormat": "/admin/roles/{{ id }}",
+      "reportingKey": "roles",
+      "jql": "roles",
+      "noPartyGroupFilters": true,
+      "hasReports": false,
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": true,
+      "newReport": {
+        "configurations": {
+          "i18nContext": "RolePage",
+          "clickable": true,
+          "draggable": true,
+          "sorting": {},
+          "pagination": {
+            "current": 0,
+            "perPage": 20
+          }
+        }
+      },
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/admin/roles/detail/{{id}}"
+        }
+      },
+      "nextPageComponent": "role",
+      "icons": [{
+        "icon": "add",
+        "click": [{
           "type": "router",
           "otherParams": {
             "func": "push",
-            "path": "/role/{{id}}"
+            "path": "/role/create"
           }
+        }]
+      }],
+      "filters": [{
+        "name": "roleName",
+        "type": "text"
+      }],
+      "fieldOptions": [{
+          "key": "id",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "role",
+            "name": "id"
+          },
+          "hidden": true
         },
-        "showFilterBar": true,
-        "enableShare": false,
-        "enableSetting": false,
-        "noPartyGroupFilters": true,
-        "newReport": {
-          "configurations": {
-            "i18nContext": "RolePage",
-            "clickable": true,
-            "draggable": true,
-            "sorting": {},
-            "pagination": {
-              "current": 0,
-              "perPage": 20
-            }
-          }
+        {
+          "key": "roleName"
         },
-
-        "icons": [
-          {
-            "icon": "add",
-            "click": [
-              {
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "/role/create"
-                }
+        {
+          "key": "roleGroup"
+        },
+        {
+          "label": "",
+          "key": "canResetDefault",
+          "sortable": false,
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/api/role/resetDefault/{{row.id}}",
+                "method": "POST"
               }
-            ]
-          }
-        ],
-
-
-        "filters": [
-          {
-            "name": "roleName",
-            "type": "text"
-          }
-        ],
-        "fieldOptions": [
-          {
-            "key": "id",
-            "sql":{
-              "classname":"ColumnExpression","table":"role","name":"id"
             },
-            "hidden": true
-          },
-          {
-            "key": "roleName"
-          },
-          {
-            "key": "roleGroup"
-          },
-
-          {
-            "label": "",
-            "key": "canResetDefault",
-            "sortable": false,
-            "clickFunction": {
-              "type": "axios",
+            "afterActions": [{
+              "type": "notify",
               "otherParams": {
-                "axiosParams": {
-                  "url": "/api/role/resetDefault/{{row.id}}",
-                  "method": "POST"
-                }
-              },
-              "afterActions": [
-                {
-                  "type": "notify",
-                  "otherParams": {
-                    "notification": "Notify.resetDefaultSuccess"
-                  }
-                }
-              ]
-            },
-
-            "tdComponent": {
-              "hideIfFalse" : true,
-              "props": {
-                "slotComponents": [
-                  {
-                    "is": "icon",
-                    "props": {
-                      "icon": "refresh"
-                    }
-                  }
-                ]
+                "notification": "Notify.resetDefaultSuccess"
               }
-            },
-            "width": 50
-          }
+            }]
+          },
 
-        ]
-      }
+          "tdComponent": {
+            "hideIfFalse": true,
+            "is": "icon",
+            "props": {
+              "icon": "refresh"
+            }
+          },
+          "width": 50
+        }
+
+      ]
     }
-  ]
+  }]
 }

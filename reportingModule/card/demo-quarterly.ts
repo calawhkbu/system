@@ -37,6 +37,10 @@ const tempQuery = new CreateTableJQL({
             name: 'value',
             type: 'number',
           },
+          {
+            name: 'flag',
+            type: 'boolean',
+          },
         ],
       },
       'Test'
@@ -49,6 +53,7 @@ const query = new Query({
   $select: [
     new ResultColumn('quarter'),
     new ResultColumn(new FunctionExpression('SUM', new ColumnExpression('value')), 'value'),
+    new ResultColumn('flag'),
   ],
   $from: 'temp',
   $group: 'quarter',
