@@ -3,7 +3,7 @@ import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import { EdiService } from 'modules/edi/service'
-import { TrackingReferenceService } from 'modules/sequelize/tracking/service'
+import { TrackingReferenceService } from 'modules/sequelize/trackingReference/service'
 
 
 class SendEdiEvent extends BaseEvent {
@@ -33,11 +33,11 @@ class SendEdiEvent extends BaseEvent {
       const createOrUpdate = oldData ? 'update' : 'create'
       let sendIt = false
       if (createOrUpdate === 'create') {
-        if (data.lastStatusCode && !(['NEW', 'CANF', 'ERR'].includes(data.lastStatusCode))) {
+        if (data.lastStatusCode && !(['NEW', 'CANF', 'ERR', 'TSBA', 'TSDC'].includes(data.lastStatusCode))) {
           sendIt = true
         }
       } else if (createOrUpdate === 'update') {
-        if (data.lastStatusCode && !(['NEW', 'CANF', 'ERR'].includes(data.lastStatusCode)) && oldData.lastStatusCode !== data.lastStatusCode) {
+        if (data.lastStatusCode && !(['NEW', 'CANF', 'ERR', 'TSBA', 'TSDC'].includes(data.lastStatusCode)) && oldData.lastStatusCode !== data.lastStatusCode) {
           sendIt = true
         }
       }

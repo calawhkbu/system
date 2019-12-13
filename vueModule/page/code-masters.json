@@ -60,6 +60,7 @@
             "label": "",
             "key": "canResetDefault",
             "sortable": false,
+            "align": "center",
             "clickFunction": {
               "type": "axios",
               "otherParams": {
@@ -77,18 +78,11 @@
                 }
               ]
             },
-
             "tdComponent": {
+              "is": "icon",
               "hideIfFalse" : true,
               "props": {
-                "slotComponents": [
-                  {
-                    "is": "icon",
-                    "props": {
-                      "icon": "refresh"
-                    }
-                  }
-                ]
+                "icon": "refresh"
               }
             },
             "width": 50

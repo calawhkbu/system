@@ -5,10 +5,20 @@
     "props": {
       "reportingKey": "connections",
       "jql": "parties",
+      "hasReports": false,
       "showFilterBar": true,
       "enableShare": false,
-      "enableSetting": false,
+      "enableSetting": true,
       "noPartyGroupFilters": true,
+      "nextPageComponent": "party",
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "detail/{{id}}",
+          "base": true
+        }
+      },
       "newReport": {
         "filter": {
           "isActive": true
@@ -36,14 +46,8 @@
           "name": "id"
         },
         "hidden": true
-      }],
-      "_clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/party/{{id}}"
-        }
-      }
-    }
+      }]
+    },
+    "slots": []
   }]
 }

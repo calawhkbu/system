@@ -57,7 +57,7 @@ export default [
           },
 
           filter: {
-            carrierCodeIsNotNull: {},
+            carrierIsNotNull: {},
           },
 
           fields: ['carrierCode', 'cbm'],
