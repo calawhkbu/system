@@ -90,7 +90,7 @@ function prepareTable(): CreateTableJQL {
           ],
 
           data: {
-            filter: { carrierCodeIsNotNull: {} },
+            filter: { carrierIsNotNull: {} },
           },
         },
         'shipment'

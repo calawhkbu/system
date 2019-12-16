@@ -5,11 +5,20 @@
     "props": {
       "reportingKey": "bookings",
       "jql": "bookings",
-      "urlFormat": "/bookings{{ id|if('/', '') }}{{ id }}",
       "hasReports": true,
       "showFilterBar": true,
       "enableShare": true,
       "enableSetting": true,
+      "noPartyGroupFilters": false,
+      "nextPageComponent": "booking",
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "detail/{{id}}",
+          "base": true
+        }
+      },
       "newReport": {
         "filters": {
           "isActive": true,
@@ -37,11 +46,11 @@
           },
           "pagination": {
             "current": 0,
-            "perPage": 20,
-            "remote": true
+            "perPage": 20
           }
         }
       },
+      "filters": [],
       "fieldOptions": [{
           "key": "id",
           "sql": {
@@ -75,7 +84,6 @@
           "key": "bookingNo",
           "width": 150
         },
-
         {
           "api": {
             "arrayMapper": {
@@ -318,7 +326,6 @@
           "label": "finalDestination",
           "width": 100
         },
-
         {
           "key": "departureDateEstimated",
           "format": "YYYY-MM-DD"
@@ -347,25 +354,37 @@
           "key": "cYCutOffDateActual",
           "format": "YYYY-MM-DD"
         }
-      ],
-      "clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/booking/{{id}}"
-        }
-      },
-      "icons": [{
-        "icon": "add",
-        "click": [{
-          "type": "router",
-          "otherParams": {
-            "func": "push",
-            "path": "/booking/create"
+      ]
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "booking/create",
+                "base": true
+              }
+            }]
           }
         }]
-      }]
-    },
-    "slots": []
+      }
+    }]
   }]
 }

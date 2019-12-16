@@ -58,7 +58,7 @@ export default [
           },
 
           filter: {
-            carrierCodeIsNotNull: {},
+            carrierIsNotNull: {},
           },
 
           fields: ['carrierCode', 'chargeableWeight'],

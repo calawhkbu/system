@@ -1,266 +1,270 @@
 {
   "fillParent": true,
-  "components": [
-    {
-      "is": "TableTool",
-      "props": {
-        "title": "Users",
-        "reportingKey": "users",
-        "jql": "users",
-        "urlFormat": "/users{{ id|if('/', '') }}{{ id }}",
-        "noPartyGroupFilters": true,
-        "hasReports": false,
-        "showFilterBar": true,
-        "enableShare": false,
-        "enableSetting": true,
-        "back": "/admin",
-        "newReport": {
-          "filters": {
-            "invitationStatus": {
-              "value": ["sent", "accepted"]
-            }
-          },
-          "configurations": {
-            "i18nContext": "InvitationPage",
-            "clickable": true,
-            "draggable": true,
-            "sorting": {
-              "direction": "DESC",
-              "key": "updatedAt",
-              "sql": {
-                "classname":"ColumnExpression","table":"person","name":"updatedAt"
-              }
-            },
-            "pagination": {
-              "current": 0,
-              "perPage": 20
-            }
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "title": "Users",
+      "back": "/admin",
+      "urlFormat": "/admin/users/{{ id }}",
+      "reportingKey": "users",
+      "jql": "users",
+      "hasReports": false,
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": true,
+      "noPartyGroupFilters": true,
+      "nextPageComponent": "user",
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/detail/{{id}}",
+          "base": true
+        }
+      },
+      "newReport": {
+        "filters": {
+          "invitationStatus": {
+            "value": ["sent", "accepted"]
           }
         },
-        "fieldOptions": [
-          {
-            "key": "id",
-            "sql":{
-              "classname":"ColumnExpression","table":"invitation","name":"id"
-            },
-            "hidden": true
-          },
-          {
+        "configurations": {
+          "i18nContext": "InvitationPage",
+          "clickable": true,
+          "draggable": true,
+          "sorting": {
+            "direction": "DESC",
             "key": "updatedAt",
-            "sql":{
-              "classname":"ColumnExpression","table":"person","name":"updatedAt"
-            },
-            "width": 150,
-            "format": "YYYY-MM-DD"
-          },
-
-          {
-            "label": "status",
-            "key": "invitationStatus",
-            "width": 150
-          },
-
-          {
-            "label": "",
-            "key": "canResend",
-            "sortable": false,
-            "clickFunction": {
-              "type": "axios",
-              "otherParams": {
-                "axiosParams": {
-                  "url": "/api/invitation/resend/{{row.id}}",
-                  "method": "GET"
-                }
-              },
-              "afterActions": [
-                {
-                  "type": "notify",
-                  "otherParams": {
-                    "notification": "Notify.resendSuccess"
-                  }
-                }
-              ]
-            },
-
-            "tdComponent": {
-
-              "hideIfFalse" : true,
-              "props": {
-                "slotComponents": [
-                  {
-                    "is": "icon",
-                    "props": {
-                      "icon": "email"
-                    }
-                  }
-                ]
-              }
-            },
-            "width": 50
-          },
-
-          {
-            "label": "",
-            "key": "canDelete",
-            "sortable": false,
-            "clickFunction": {
-              "type": "axios",
-              "otherParams": {
-                "axiosParams": {
-                  "url": "/api/invitation/delete/{{row.id}}",
-                  "method": "DELETE"
-                }
-              },
-              "afterActions": [
-                {
-                  "type": "notify",
-                  "otherParams": {
-                    "notification": "Notify.deleteSuccess"
-                  }
-                }
-              ]
-            },
-
-            "tdComponent": {
-              "hideIfFalse" : true,
-              "props": {
-                "slotComponents": [
-                  {
-                    "is": "icon",
-                    "props": {
-                      "icon": "delete"
-                    }
-                  }
-                ]
-              }
-            },
-            "width": 50
-          },
-
-          {
-            "label": "",
-            "key": "canRestore",
-            "sortable": false,
-            "clickFunction": {
-              "type": "axios",
-              "otherParams": {
-                "axiosParams": {
-                  "url": "/api/invitation/restore/{{row.id}}",
-                  "method": "GET"
-                }
-              },
-              "afterActions": [
-                {
-                  "type": "notify",
-                  "otherParams": {
-                    "notification": "Notify.restoreSuccess"
-                  }
-                }
-              ]
-            },
-
-            "tdComponent": {
-              "hideIfFalse" : true,
-              "props": {
-                "slotComponents": [
-                  {
-                    "is": "icon",
-                    "props": {
-                      "icon": "refresh"
-                    }
-                  }
-                ]
-              }
-            },
-            "width": 50
-          },
-
-          {
-            "key": "userName",
-            "sql":{
-              "classname":"ColumnExpression","table":"person","name":"userName"
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "person",
+              "name": "updatedAt"
             }
           },
-          {
-            "key": "firstName",
-            "sql":{
-              "classname":"ColumnExpression","table":"person","name":"firstName"
-            }
-          },
-          {
-            "key": "lastName",
-            "sql":{
-              "classname":"ColumnExpression","table":"person","name":"lastName"
-            }
-          },
-          {
-            "key": "displayName",
-            "sql":{
-              "classname":"ColumnExpression","table":"person","name":"displayName"
-            }
+          "pagination": {
+            "current": 0,
+            "perPage": 20
           }
-        ],
-        "filters": [
-          {
-            "display": "status",
-            "name": "invitationStatus",
-            "i18nContext": "InvitationPage",
+        }
+      },
+      "fieldOptions": [{
+          "key": "id",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "invitation",
+            "name": "id"
+          },
+          "hidden": true
+        },
+        {
+          "key": "updatedAt",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "person",
+            "name": "updatedAt"
+          },
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+
+        {
+          "label": "status",
+          "key": "invitationStatus",
+          "width": 150
+        },
+
+        {
+          "label": "",
+          "key": "canResend",
+          "sortable": false,
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/api/invitation/resend/{{row.id}}",
+                "method": "GET"
+              }
+            },
+            "afterActions": [{
+              "type": "notify",
+              "otherParams": {
+                "notification": "Notify.resendSuccess"
+              }
+            }]
+          },
+          "tdComponent": {
+            "is": "icon",
+            "hideIfFalse": true,
             "props": {
-              "multi": true,
-              "items": [
-                {
-                  "value": "sent",
-                  "label": "sent"
-                },
-                {
-                  "value": "accepted",
-                  "label": "accepted"
-                },
-                {
-                  "value": "disabled",
-                  "label": "disabled"
-                }
-              ]
+              "icon": "email"
+            }
+          },
+          "width": 50
+        },
+
+        {
+          "label": "",
+          "key": "canDelete",
+          "sortable": false,
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/api/invitation/delete/{{row.id}}",
+                "method": "DELETE"
+              }
             },
-            "type": "list"
+            "afterActions": [{
+              "type": "notify",
+              "otherParams": {
+                "notification": "Notify.deleteSuccess"
+              }
+            }]
           },
-          {
 
-            "i18nContext": "InvitationPage",
-            "display": "email",
-            "name": "userName",
-            "type": "text"
+          "tdComponent": {
+            "is": "icon",
+            "hideIfFalse": true,
+            "props": {
+              "icon": "delete"
+            }
           },
-          {
+          "width": 50
+        },
 
-            "i18nContext": "InvitationPage",
-            "display": "name",
-            "name" : "nameLike",
-            "type": "text"
-          }
-        ],
-        "clickFunction": {
-          "type": "router",
-          "otherParams": {
-            "func": "push",
-            "path": "/user/{{id}}"
+        {
+          "label": "",
+          "key": "canRestore",
+          "sortable": false,
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/api/invitation/restore/{{row.id}}",
+                "method": "GET"
+              }
+            },
+            "afterActions": [{
+              "type": "notify",
+              "otherParams": {
+                "notification": "Notify.restoreSuccess"
+              }
+            }]
+          },
+
+          "tdComponent": {
+            "is": "icon",
+            "hideIfFalse": true,
+            "props": {
+              "icon": "refresh"
+            }
+          },
+          "width": 50
+        },
+
+        {
+          "key": "userName",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "person",
+            "name": "userName"
           }
         },
-        "icons": [
-          {
-            "icon": "add",
-            "click": [
+        {
+          "key": "firstName",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "person",
+            "name": "firstName"
+          }
+        },
+        {
+          "key": "lastName",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "person",
+            "name": "lastName"
+          }
+        },
+        {
+          "key": "displayName",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "person",
+            "name": "displayName"
+          }
+        }
+      ],
+      "filters": [{
+          "display": "status",
+          "name": "invitationStatus",
+          "i18nContext": "InvitationPage",
+          "props": {
+            "multi": true,
+            "items": [{
+                "value": "sent",
+                "label": "sent"
+              },
               {
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "user/create"
-                }
+                "value": "accepted",
+                "label": "accepted"
+              },
+              {
+                "value": "disabled",
+                "label": "disabled"
               }
             ]
+          },
+          "type": "list"
+        },
+        {
+
+          "i18nContext": "InvitationPage",
+          "display": "email",
+          "name": "userName",
+          "type": "text"
+        },
+        {
+
+          "i18nContext": "InvitationPage",
+          "display": "name",
+          "name": "nameLike",
+          "type": "text"
+        }
+      ]
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "user/create",
+                "base": true
+              }
+            }]
           }
-        ]
+        }]
       }
-    }
-  ]
+    }]
+  }]
 }

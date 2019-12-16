@@ -33,6 +33,8 @@ const months = [
   'December',
 ]
 
+// warning : this card have some special handling on showing cbm and chargeable Weight!!!!!
+
 // hardcode all reportingGroup and divided into SEA and AIR
 const moduleTypeCodeList = {
   AIR: ['AC', 'AD', 'AM', 'AN', 'AW', 'AX', 'AZ'],
@@ -64,7 +66,14 @@ function prepareParams(): Function {
     }
 
     // select
-    params.fields = ['moduleTypeCode', 'reportingGroup', 'jobMonth', 'shipments']
+    params.fields = [
+      'moduleTypeCode',
+      'reportingGroup',
+      'jobMonth',
+      'teu',
+      'cbm',
+      'chargeableWeight',
+    ]
 
     // group by
     params.groupBy = ['moduleTypeCode', 'reportingGroup', 'jobMonth']
@@ -78,6 +87,8 @@ function prepareTable(): CreateTableJQL {
     $temporary: true,
     name: 'shipment',
 
+    // condition
+
     $as: new Query({
       $select: [
         new ResultColumn(new ColumnExpression('moduleTypeCode')),
@@ -86,7 +97,24 @@ function prepareTable(): CreateTableJQL {
           'month'
         ),
         new ResultColumn(new ColumnExpression('reportingGroup')),
-        new ResultColumn(new ColumnExpression('shipments'), 'count'),
+
+        new ResultColumn(
+          new FunctionExpression(
+            'IF',
+
+            new InExpression(new ColumnExpression('reportingGroup'), false, ['SA', 'SR']),
+
+            new MathExpression(new ColumnExpression('teu'), '*', 25),
+
+            new FunctionExpression(
+              'IF',
+              new BinaryExpression(new ColumnExpression('moduleTypeCode'), '=', 'SEA'),
+              new ColumnExpression('cbm'),
+              new ColumnExpression('chargeableWeight')
+            )
+          ),
+          'value'
+        ),
       ],
       $from: new FromTable(
         {
@@ -96,7 +124,9 @@ function prepareTable(): CreateTableJQL {
             { name: 'moduleTypeCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
             { name: 'reportingGroup', type: 'string' },
-            { name: 'shipments', type: 'number' },
+            { name: 'teu', type: 'number' },
+            { name: 'cbm', type: 'number' },
+            { name: 'chargeableWeight', type: 'number' },
           ],
         },
         'shipment'
@@ -121,11 +151,11 @@ function prepareFinalTable(): CreateTableJQL {
 
             new AndExpressions([new BinaryExpression(new ColumnExpression('month'), '=', month)]),
 
-            new ColumnExpression('count')
+            new ColumnExpression('value')
           ),
           0
         ),
-        `${month}_count`
+        `${month}_value`
       )
     )
   })
@@ -202,16 +232,15 @@ function prepareResultTable(): CreateTableJQL {
   months.map(month => {
     const column = new FunctionExpression(
       'IFNULL',
-      new ColumnExpression('final', `${month}_count`),
+      new ColumnExpression('final', `${month}_value`),
       0
     )
-    $select.push(new ResultColumn(column, `${month}_count`))
+    $select.push(new ResultColumn(column, `${month}_value`))
 
     sumList.push(column)
   })
 
   const sumExpression = composeSumExpression(sumList)
-
   $select.push(new ResultColumn(sumExpression, 'total'))
 
   return new CreateTableJQL({
@@ -236,6 +265,7 @@ function prepareResultTable(): CreateTableJQL {
 
 export default [
   [prepareParams(), prepareTable()],
+
   prepareFinalTable(),
 
   prepareReportingGroupTable(),

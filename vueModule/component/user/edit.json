@@ -1,35 +1,29 @@
 {
   "class": "grid",
-  "components": [
-    {
+  "components": [{
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 grid align-item-center padding-8",
-        "components": [
-          {
+        "components": [{
             "is": "v-btn",
             "props": {
               "flat": true,
               "icon": true
             },
-            "slots": [
-              {
-                "is": "Icon",
-                "props": {
-                  "icon": "arrow_back"
-                }
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
               }
-            ],
+            }],
             "events": {
-              "click.stop": [
-                {
-                  "type": "dispatch",
-                  "otherParams": {
-                    "name": "widget/changeMode",
-                    "mode": "detail"
-                  }
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "detail"
                 }
-              ]
+              }]
             }
           },
           {
@@ -41,16 +35,6 @@
                 "title": "sometitle"
               }
             }
-          },
-          {
-            "is": "v-spacer"
-          },
-          {
-            "is": "WidgetSave",
-            "props": {
-              "fab": true,
-              "color": "primary"
-            }
           }
         ]
       }
@@ -59,29 +43,35 @@
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 padding-left-8 padding-right-8 width-100 grid",
-        "components": [
-          {
+        "components": [{
             "is": "AsyncComponent",
             "props": {
               "class": "margin-topbottom-4 xs-12",
-              "layoutName": "invitation-user/forms/general"
+              "layoutName": "user/forms/general"
             }
           },
           {
             "is": "AsyncComponent",
             "props": {
               "class": "margin-topbottom-4 xs-12",
-              "layoutName": "invitation-user/forms/preference"
+              "layoutName": "user/forms/preference"
             }
           },
           {
             "is": "AsyncComponent",
             "props": {
               "class": "margin-topbottom-4 xs-12",
-              "layoutName": "invitation-user/forms/contacts"
+              "layoutName": "user/forms/contacts"
             }
           }
         ]
+      }
+    },
+    {
+      "is": "WidgetSave",
+      "props": {
+        "fab": true,
+        "color": "primary"
       }
     }
   ]

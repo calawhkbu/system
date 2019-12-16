@@ -13,19 +13,32 @@ import {
   GroupBy,
   OrderBy,
   MathExpression,
+  IsNullExpression,
+  OrExpressions,
 } from 'node-jql'
 
 import { parseCode } from 'utils/function'
 
-function prepareParams(likeHouseNo_: string): Function {
+function prepareParams(type_: 'F' | 'R'): Function {
   const fn = function(require, session, params) {
     // import
     const moment = require('moment')
-    const { BadRequestException } = require('@nestjs/common')
-
+    const { OrderBy } = require('node-jql')
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    if (!subqueries.summaryVariables) throw new BadRequestException('MISSING_summaryVariables')
+    // idea : userGroupByVariable and userSummaryVariable is selected within filter by user
+
+    if (!subqueries.groupByEntity || !subqueries.groupByEntity.value) throw new Error('MISSING_groupByVariable')
+    if (!subqueries.topX || !subqueries.topX.value) throw new Error('MISSING_topX')
+
+    // -----------------------------groupBy variable
+    const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : `${groupByEntity}PartyName`
+
+    const groupByVariables = [codeColumnName, nameColumnName]
+
+    const topX = subqueries.topX.value
 
     // ---------------------summaryVariables
 
@@ -55,28 +68,42 @@ function prepareParams(likeHouseNo_: string): Function {
       .endOf('year')
       .format('YYYY-MM-DD')
 
-    // warning : hardCode, very hardcode
-    // TODO : need to hardcode partyId in new 360
-    subqueries.viaHKG = true
-    subqueries.likeHouseNo = { value: likeHouseNo_ }
-
     // select
     params.fields = [
-      'jobMonth',
-      ...summaryVariables]
+      ...groupByVariables, 'jobMonth', ...summaryVariables]
+
     // group by
-    params.groupBy = ['jobMonth']
+    params.groupBy = [...groupByVariables, 'jobMonth']
+
+    subqueries[`${groupByEntity}IsNotNull`]  = {
+      value : true
+    }
+
+    // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
+    // params.sorting = new OrderBy(`${summaryVariables[0]}Month`, 'DESC')
+
+    // // wait until uber3
+    // params.limit = topX
+
+    switch (type_) {
+      case 'F':
+        subqueries.nominatedTypeCode = { value: ['F'] }
+        break
+      case 'R':
+        subqueries.nominatedTypeCode = { value: ['R'] }
+        break
+    }
 
     return params
   }
 
   let code = fn.toString()
-  code = code.replace(new RegExp('likeHouseNo_', 'g'), `'${likeHouseNo_}'`)
+  code = code.replace(new RegExp('type_', 'g'), `'${type_}'`)
   return parseCode(code)
 }
 
 // call API
-function prepareData(hardCodeOfficePartyName_: string) {
+function prepareData(type_: 'F' | 'R') {
   const fn = function(require, session, params) {
     const {
       Query,
@@ -89,6 +116,19 @@ function prepareData(hardCodeOfficePartyName_: string) {
     } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
+
+    // idea : userGroupByVariable and userSummaryVariable is selected within filter by user
+
+    if (!subqueries.groupByEntity) throw new Error('MISSING_groupByVariable')
+
+    // -----------------------------groupBy variable
+    const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : `${groupByEntity}PartyName`
+
+    const groupByVariables = [codeColumnName, nameColumnName]
+
+    // ---------------------summaryVariables
 
     let summaryVariables: string[]
     if (subqueries.summaryVariables && subqueries.summaryVariables.value)
@@ -107,13 +147,24 @@ function prepareData(hardCodeOfficePartyName_: string) {
 
     return new InsertJQL({
       name: 'shipment',
-      columns: ['officePartyName', 'month', ...summaryVariables],
+      columns: [
+        'type',
+        'month',
+        ...groupByVariables,
+        ...summaryVariables
+      ],
       query: new Query({
         $select: [
-          new ResultColumn(new Value(hardCodeOfficePartyName_), 'officePartyName'),
+          new ResultColumn(new Value(type_), 'type'),
+
           new ResultColumn(
             new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
             'month'
+          ),
+
+          ...groupByVariables.map(
+            variable =>
+              new ResultColumn(new ColumnExpression(variable))
           ),
 
           ...summaryVariables.map(
@@ -129,6 +180,8 @@ function prepareData(hardCodeOfficePartyName_: string) {
             method: 'POST',
             url: 'api/shipment/query/shipment',
             columns: [
+
+              ...groupByVariables.map(variable => ({ name: variable, type: 'string', nullable : true })),
               { name: 'jobMonth', type: 'string' },
               ...summaryVariables.map(variable => ({ name: variable, type: 'number' })),
             ],
@@ -140,7 +193,7 @@ function prepareData(hardCodeOfficePartyName_: string) {
   }
 
   let code = fn.toString()
-  code = code.replace(new RegExp('hardCodeOfficePartyName_', 'g'), `'${hardCodeOfficePartyName_}'`)
+  code = code.replace(new RegExp('type_', 'g'), `'${type_}'`)
   return parseCode(code)
 }
 
@@ -155,11 +208,10 @@ function finalQuery(types_?: string[]): Function {
       FunctionExpression,
       AndExpressions,
       BinaryExpression,
+      Value
     } = require('node-jql')
 
     const fromTableName = 'shipment'
-
-    const finalGroupBy = ['officePartyName']
 
     const months = [
       'January',
@@ -176,19 +228,13 @@ function finalQuery(types_?: string[]): Function {
       'December',
     ]
 
-    function composeSumExpression(dumbList: any[]): MathExpression {
-      if (dumbList.length === 2) {
-        return new MathExpression(dumbList[0], '+', dumbList[1])
-      }
-
-      const popResult = dumbList.pop()
-
-      return new MathExpression(popResult, '+', composeSumExpression(dumbList))
-    }
-
-    const $select = [...finalGroupBy.map(x => new ResultColumn(new ColumnExpression(x)))]
-
     const subqueries = (params.subqueries = params.subqueries || {})
+    // groupBy variable
+    const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : `${groupByEntity}PartyName`
+
+    const groupByVariables = [codeColumnName, nameColumnName]
 
     let summaryVariables: string[]
     if (subqueries.summaryVariables && subqueries.summaryVariables.value)
@@ -205,7 +251,35 @@ function finalQuery(types_?: string[]): Function {
       throw new Error('MISSING_summaryVariables')
     }
 
-    const finalOrderBy = subqueries.finalOrderBy.value
+    // ------------------ final order by
+    let finalOrderBy: string[]
+    if (subqueries.finalOrderBy && subqueries.finalOrderBy.value) {
+      finalOrderBy = subqueries.finalOrderBy.value
+    }
+    else{
+      // guess the final Order By
+      finalOrderBy = [(types_ && types_.length) ? `total_T_${summaryVariables[0]}` : `total_${summaryVariables[0]}`]
+    }
+
+    // uber2
+    const topX = subqueries.topX.value
+
+    // ----------------------------------
+    function composeSumExpression(dumbList: any[]): MathExpression {
+      if (dumbList.length === 2) {
+        return new MathExpression(dumbList[0], '+', dumbList[1])
+      }
+
+      const popResult = dumbList.pop()
+
+      return new MathExpression(popResult, '+', composeSumExpression(dumbList))
+    }
+
+    const $select = [
+      new ResultColumn(new ColumnExpression(codeColumnName), 'code'),
+      new ResultColumn(new ColumnExpression(nameColumnName), 'name'),
+      new ResultColumn(new Value(groupByEntity), 'groupByEntity'),
+    ]
 
     summaryVariables.map(variable => {
       const finalSumList = []
@@ -311,7 +385,7 @@ function finalQuery(types_?: string[]): Function {
       $select,
       $from: fromTableName,
 
-      $group: finalGroupBy,
+      $group: groupByVariables,
       $order: finalOrderBy.map(x => new OrderBy(x, 'DESC')),
     })
   }
@@ -331,12 +405,37 @@ function createTable() {
     const { CreateTableJQL, Column } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
-    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
-    const finalOrderBy = subqueries.finalOrderBy.value
+
+    if (!subqueries.groupByEntity || !subqueries.groupByEntity.value) throw new Error('MISSING_groupByVariable')
+    if (!subqueries.topX || !subqueries.topX.value) throw new Error('MISSING_topX')
+    // groupBy variable
+    const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : `${groupByEntity}PartyName`
+
+    const groupByVariables = [codeColumnName, nameColumnName]
+
+    let summaryVariables: string[]
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
+      // sumamary variable
+      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    }
+
+    else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
+      summaryVariables = [subqueries.summaryVariable.value]
+    }
+    else {
+      throw new Error('MISSING_summaryVariables')
+    }
 
     // prepare temp table
     return new CreateTableJQL(true, 'shipment', [
-      new Column('officePartyName', 'string'),
+
+      new Column(codeColumnName, 'string', true),
+      new Column(nameColumnName, 'string', true),
+      new Column('type', 'string'),
       new Column('month', 'string'),
       ...summaryVariables.map(variable => new Column(variable, 'number')),
     ])
@@ -347,9 +446,92 @@ export default [
   createTable(),
   // prepare data
 
-  // insert one by one
-  [prepareParams('GZH%'), prepareData('GGL GZH')],
-  [prepareParams('XMN%'), prepareData('GGL XMN')],
+  [prepareParams('F'), prepareData('F')],
+ [prepareParams('R'), prepareData('R')],
 
-  finalQuery(),
+  finalQuery(['F', 'R']),
+]
+
+export const filters = [
+
+  // for this filter, user can only select single,
+  // but when config in card definition, use summaryVariables. Then we can set as multi
+
+  {
+    display: 'topX',
+    name: 'topX',
+    props: {
+      items: [
+        {
+          label: '10',
+          value: 10,
+        },
+        {
+          label: '20',
+          value: 20,
+        },
+        {
+          label: '50',
+          value: 50,
+        }
+      ],
+      multi : false,
+      required: true,
+    },
+    type: 'list',
+  },
+
+  {
+    display: 'summaryVariable',
+    name: 'summaryVariable',
+    props: {
+      items: [
+        {
+          label: 'chargeableWeight',
+          value: 'chargeableWeight',
+        },
+        {
+          label: 'grossWeight',
+          value: 'grossWeight',
+        },
+        {
+          label: 'cbm',
+          value: 'cbm',
+        },
+        {
+          label: 'totalShipment',
+          value: 'totalShipment',
+        },
+      ],
+      multi : false,
+      required: true,
+    },
+    type: 'list',
+  },
+  {
+    display: 'groupByEntity',
+    name: 'groupByEntity',
+    props: {
+      items: [
+        {
+          label: 'carrier',
+          value: 'carrier',
+        },
+        // {
+        //   label: 'shipper',
+        //   value: 'shipper',
+        // },
+        // {
+        //   label: 'consignee',
+        //   value: 'consignee',
+        // },
+        // {
+        //   label: 'agent',
+        //   value: 'agent',
+        // },
+      ],
+      required: true,
+    },
+    type: 'list',
+  }
 ]
