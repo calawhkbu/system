@@ -79,11 +79,13 @@ function createTop10Table() {
       columns: [
         {
           name: codeColumnName,
-          type: 'string',
+          type: 'any',
+          nullable : true
         },
         {
           name: nameColumnName,
-          type: 'string',
+          type: 'any',
+          nullable : true
         },
         {
           name: summaryColumnName,
