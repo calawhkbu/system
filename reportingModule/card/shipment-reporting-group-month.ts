@@ -31,30 +31,33 @@ function prepareParams(): Function {
     // import
     const moment = require('moment')
 
-    const { BadRequestException } = require('@nestjs/common')
-
-    // limit/extend to 1 year
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    if (!subqueries.summaryVariables) throw new BadRequestException('MISSING_summaryVariables')
-
-    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
-    const finalOrderBy = subqueries.finalOrderBy.value
-
-    const year = !subqueries.date
-      ? moment().year()
-      : moment(subqueries.date.from, 'YYYY-MM-DD').year()
-
-    subqueries.date = {
-      from: moment()
-        .year(year)
-        .startOf('year')
-        .format('YYYY-MM-DD'),
-      to: moment()
-        .year(year)
-        .endOf('year')
-        .format('YYYY-MM-DD'),
+    let summaryVariables: string[]
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
+      // sumamary variable
+      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     }
+
+    else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
+      summaryVariables = [subqueries.summaryVariable.value]
+    }
+    else {
+      throw new Error('MISSING_summaryVariables')
+    }
+
+    // limit/extend to 1 year
+    const year = (subqueries.date ? moment() : moment(subqueries.date.from, 'YYYY-MM-DD')).year()
+    subqueries.date.from = moment()
+      .year(year)
+      .startOf('year')
+      .format('YYYY-MM-DD')
+    subqueries.date.to = moment()
+      .year(year)
+      .endOf('year')
+      .format('YYYY-MM-DD')
 
     // select
     params.fields = ['moduleTypeCode', 'reportingGroup', 'jobMonth', ...summaryVariables]
@@ -66,36 +69,70 @@ function prepareParams(): Function {
   }
 }
 
-function prepareTable(): CreateTableJQL {
-  return new CreateTableJQL({
-    $temporary: true,
-    name: 'shipment',
+function prepareTable(): Function {
 
-    $as: new Query({
-      $select: [
-        new ResultColumn(new ColumnExpression('moduleTypeCode')),
-        new ResultColumn(
-          new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
-          'month'
+  return function(require, session, params){
+
+    const subqueries = (params.subqueries = params.subqueries || {})
+
+    let summaryVariables: string[]
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
+      // sumamary variable
+      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    }
+
+    else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
+      summaryVariables = [subqueries.summaryVariable.value]
+    }
+    else {
+      throw new Error('MISSING_summaryVariables')
+    }
+
+    const {
+      CreateTableJQL,
+      Query,
+      ColumnExpression,
+      ResultColumn,
+      FunctionExpression,
+      BinaryExpression,
+      FromTable,
+    } = require('node-jql')
+
+    return new CreateTableJQL({
+      $temporary: true,
+      name: 'shipment',
+
+      $as: new Query({
+        $select: [
+          new ResultColumn(new ColumnExpression('moduleTypeCode')),
+          new ResultColumn(
+            new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
+            'month'
+          ),
+          new ResultColumn(new ColumnExpression('reportingGroup')),
+
+          ...summaryVariables.map(variable => new ResultColumn(new ColumnExpression(variable)))
+
+        ],
+        $from: new FromTable(
+          {
+            method: 'POST',
+            url: 'api/shipment/query/shipment',
+            columns: [
+              { name: 'moduleTypeCode', type: 'string' },
+              { name: 'jobMonth', type: 'string' },
+              { name: 'reportingGroup', type: 'string' },
+              ...summaryVariables.map(variable => ({ name: variable, type: 'number' }))
+            ],
+          },
+          'shipment'
         ),
-        new ResultColumn(new ColumnExpression('reportingGroup')),
-        new ResultColumn(new ColumnExpression('totalShipment')),
-      ],
-      $from: new FromTable(
-        {
-          method: 'POST',
-          url: 'api/shipment/query/shipment',
-          columns: [
-            { name: 'moduleTypeCode', type: 'string' },
-            { name: 'jobMonth', type: 'string' },
-            { name: 'reportingGroup', type: 'string' },
-            { name: 'totalShipment', type: 'number' },
-          ],
-        },
-        'shipment'
-      ),
-    }),
-  })
+      }),
+    })
+
+  }
 }
 
 function prepareReportingGroupTable(): CreateTableJQL {
@@ -155,8 +192,21 @@ function prepareResultTable() {
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
-    const finalOrderBy = subqueries.finalOrderBy.value
+    let summaryVariables: string[]
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
+      // sumamary variable
+      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    }
+
+    else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
+      summaryVariables = [subqueries.summaryVariable.value]
+    }
+    else {
+      throw new Error('MISSING_summaryVariables')
+
+    }
 
     const $select = [
       new ResultColumn(new ColumnExpression('reportingGroupTable', 'reportingGroup')),
@@ -170,7 +220,7 @@ function prepareResultTable() {
         $select.push(
           new ResultColumn(
             new FunctionExpression('IFNULL', new ColumnExpression('final', columeName), 0),
-            columeName
+            `${month}_value`
           )
         )
       })
@@ -180,7 +230,7 @@ function prepareResultTable() {
       $select.push(
         new ResultColumn(
           new FunctionExpression('IFNULL', new ColumnExpression('final', totalColumnName), 0),
-          totalColumnName
+          'total_value'
         )
       )
     })
@@ -209,7 +259,6 @@ function prepareResultTable() {
 function prepareFinalTable(types_?: string[]) {
   const fn = function(require, session, params) {
     const {
-      OrderBy,
       MathExpression,
       Query,
       ResultColumn,
@@ -252,8 +301,22 @@ function prepareFinalTable(types_?: string[]) {
     const $select = [...finalGroupBy.map(x => new ResultColumn(new ColumnExpression(x)))]
 
     const subqueries = (params.subqueries = params.subqueries || {})
-    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
-    const finalOrderBy = subqueries.finalOrderBy.value
+
+    let summaryVariables: string[]
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
+      // sumamary variable
+      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    }
+
+    else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
+      summaryVariables = [subqueries.summaryVariable.value]
+    }
+    else {
+      throw new Error('MISSING_summaryVariables')
+
+    }
 
     summaryVariables.map(variable => {
       const finalSumList = []
@@ -361,9 +424,7 @@ function prepareFinalTable(types_?: string[]) {
       $as: new Query({
         $select,
         $from: fromTableName,
-
-        $group: finalGroupBy,
-        $order: finalOrderBy.map(x => new OrderBy(x, 'DESC')),
+        $group: finalGroupBy
       }),
     })
   }
@@ -382,6 +443,13 @@ export default [
   [prepareParams(), prepareTable()],
   prepareFinalTable(),
 
+  // new Query({
+
+  //   $from : 'final'
+
+  // })
+
+  //
   prepareReportingGroupTable(),
   insertReportingGroupTable(),
 
@@ -399,4 +467,38 @@ export default [
 
     $group: 'moduleTypeCode',
   }),
+
+]
+
+export const filters = [
+
+  // for this filter, user can only select single,
+  // but when config in card definition, use summaryVariables. Then we can set as multi
+  {
+    display: 'summaryVariable',
+    name: 'summaryVariable',
+    props: {
+      items: [
+        {
+          label: 'chargeableWeight',
+          value: 'chargeableWeight',
+        },
+        {
+          label: 'grossWeight',
+          value: 'grossWeight',
+        },
+        {
+          label: 'cbm',
+          value: 'cbm',
+        },
+        {
+          label: 'totalShipment',
+          value: 'totalShipment',
+        },
+      ],
+      multi : false,
+      required: true,
+    },
+    type: 'list',
+  }
 ]

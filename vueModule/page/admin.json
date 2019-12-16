@@ -1,18 +1,13 @@
 {
   "components": [
     {
-      "is": "GridTool",
+      "is": "SimpleGridTool",
       "props": {
         "reportingKey": "admin",
-        "showFilterBar": false,
+        "i18nContext": "AdminPage",
+        "nextPageKey": "reportIdParams",
         "reportUrl": "report/admin",
-        "noAnimation": true,
-        "newReport": {
-          "configurations": {
-            "i18nContext": "Admin"
-          }
-        },
-        "filters": []
+        "noAnimation": true
       }
     }
   ]

@@ -35,19 +35,6 @@ export default {
       onEnterValidation: [
         {
           rules: async(entity: any, user: { roles: { name: string }[] }) => {
-            if (user && user.roles.filter(role => ['Admin', 'User'].filter(r => r === role.name))) {
-              return true
-            }
-            return false
-          },
-          onError: async(entity: any, workflow: any) => {
-            return {
-              error: 'Workflow.NotAllowByRole',
-            }
-          },
-        },
-        {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
             const documents = (entity.documents || []).find(
               doc => doc.fileName === 'Shipping Advice'
             )

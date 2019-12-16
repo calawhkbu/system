@@ -80,6 +80,7 @@
             "key": "canDelete",
             "boolean" : true,
             "sortable": false,
+            "align": "center",
             "clickFunction": {
               "type": "axios",
               "otherParams": {
@@ -99,16 +100,10 @@
             },
 
             "tdComponent": {
+              "is": "icon",
               "hideIfFalse" : true,
               "props": {
-                "slotComponents": [
-                  {
-                    "is": "icon",
-                    "props": {
-                      "icon": "delete"
-                    }
-                  }
-                ]
+                "icon": "delete"
               }
             },
             "width": 50
@@ -119,6 +114,7 @@
             "key": "canRestore",
             "sortable": false,
             "boolean" : true,
+            "align": "center",
             "clickFunction": {
               "type": "axios",
               "otherParams": {
@@ -136,17 +132,10 @@
                 }
               ]
             },
-
             "tdComponent": {
+              "is": "icon",
               "props": {
-                "slotComponents": [
-                  {
-                    "is": "icon",
-                    "props": {
-                      "icon": "refresh"
-                    }
-                  }
-                ]
+                "icon": "refresh"
               }
             },
             "width": 50

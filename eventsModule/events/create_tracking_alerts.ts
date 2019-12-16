@@ -46,7 +46,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
         UNION
         SELECT 'booking' as tableName, bc.bookingId as primaryKey
         FROM booking_container bc
-        WHERE (bc.soNo in (:soNo) OR bc.containerNo = (:containerNo))
+        WHERE (bc.soNo in (:soNo) OR bc.containerNo in (:containerNo))
       ) base
       LEFT OUTER JOIN booking ON booking.id = base.primaryKey AND booking.partyGroupCode in (:partyGroupCode)
     `, {

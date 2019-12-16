@@ -14,10 +14,11 @@ import {
   OrderBy,
   MathExpression,
 } from 'node-jql'
+
 import { parseCode } from 'utils/function'
 
-function prepareParams(): Function {
-  return function(require, session, params) {
+function prepareParams(type_: 'F' | 'R' | 'C'): Function {
+  const fn = function(require, session, params) {
     // import
     const moment = require('moment')
     const { BadRequestException } = require('@nestjs/common')
@@ -27,15 +28,11 @@ function prepareParams(): Function {
     if (!subqueries.summaryVariables) throw new BadRequestException('MISSING_summaryVariables')
     if (!subqueries.finalOrderBy) throw new BadRequestException('MISSING_finalOrderBy')
 
-    console.log(subqueries)
-
     const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const finalOrderBy = subqueries.finalOrderBy.value
 
     // limit/extend to 1 year
-    const year = subqueries.date ?  moment(subqueries.date.from, 'YYYY-MM-DD').year() : moment().year()
-
-    console.log(year, `yearyearyear`)
+    const year = (subqueries.data ? moment() : moment(subqueries.date.from, 'YYYY-MM-DD')).year()
     subqueries.date.from = moment()
       .year(year)
       .startOf('year')
@@ -51,8 +48,91 @@ function prepareParams(): Function {
     // group by
     params.groupBy = ['carrierCode', 'carrierName', 'jobMonth']
 
+    switch (type_) {
+      case 'F':
+        subqueries.nominatedTypeCode = { value: ['F'] }
+        subqueries.isColoader = { value: 0 }
+        break
+      case 'R':
+        subqueries.nominatedTypeCode = { value: ['R'] }
+        subqueries.isColoader = { value: 0 }
+        break
+      case 'C':
+        subqueries.isColoader = { value: 1 }
+        break
+    }
+
     return params
   }
+
+  let code = fn.toString()
+  code = code.replace(new RegExp('type_', 'g'), `'${type_}'`)
+  return parseCode(code)
+}
+
+// call API
+function prepareData(type_: 'F' | 'R' | 'C') {
+  const fn = function(require, session, params) {
+    const {
+      Query,
+      ResultColumn,
+      ColumnExpression,
+      FunctionExpression,
+      Value,
+      InsertJQL,
+      FromTable,
+    } = require('node-jql')
+
+    const subqueries = (params.subqueries = params.subqueries || {})
+    const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const finalOrderBy = subqueries.finalOrderBy.value
+
+    return new InsertJQL({
+      name: 'shipment',
+      columns: ['type', 'carrierCode', 'carrierName', 'month', ...summaryVariables],
+      query: new Query({
+        $select: [
+          new ResultColumn(new Value(type_), 'type'),
+          new ResultColumn(new ColumnExpression('carrierCode')),
+          new ResultColumn(new ColumnExpression('carrierName')),
+          new ResultColumn(
+            new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
+            'month'
+          ),
+
+          ...summaryVariables.map(
+            variable =>
+              new ResultColumn(
+                new FunctionExpression('IFNULL', new ColumnExpression(variable), 0),
+                variable
+              )
+          ),
+        ],
+        $from: new FromTable(
+          {
+            method: 'POST',
+            url: 'api/shipment/query/shipment',
+            columns: [
+              { name: 'carrierCode', type: 'string' },
+              { name: 'carrierName', type: 'string' },
+              { name: 'jobMonth', type: 'string' },
+
+              ...summaryVariables.map(variable => ({ name: variable, type: 'number' })),
+            ],
+
+            data: {
+              filter: { carrierIsNotNull: {} },
+            },
+          },
+          'shipment'
+        ),
+      }),
+    })
+  }
+
+  let code = fn.toString()
+  code = code.replace(new RegExp('type_', 'g'), `'${type_}'`)
+  return parseCode(code)
 }
 
 function finalQuery(types_?: string[]): Function {
@@ -222,59 +302,36 @@ function finalQuery(types_?: string[]): Function {
   return parseCode(code)
 }
 
-function prepareTable(): Function {
+function createTable() {
   return function(require, session, params) {
-    const {
-      OrderBy,
-      CreateTableJQL,
-      Query,
-      ResultColumn,
-      ColumnExpression,
-      FunctionExpression,
-      FromTable,
-    } = require('node-jql')
+    const { CreateTableJQL, Column } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
     const summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const finalOrderBy = subqueries.finalOrderBy.value
 
-    const tableName = 'shipment'
-
-    return new CreateTableJQL({
-      $temporary: true,
-      name: tableName,
-      $as: new Query({
-        $select: [
-          new ResultColumn(new ColumnExpression('carrierCode')),
-          new ResultColumn(new ColumnExpression('carrierName')),
-          new ResultColumn(
-            new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
-            'month'
-          ),
-
-          ...summaryVariables.map(variable => new ResultColumn(variable)),
-        ],
-        $from: new FromTable(
-          {
-            method: 'POST',
-            url: 'api/shipment/query/shipment',
-            columns: [
-              { name: 'carrierName', type: 'string' },
-              { name: 'carrierCode', type: 'string' },
-              { name: 'jobMonth', type: 'string' },
-
-              ...summaryVariables.map(variable => ({ name: variable, type: 'number' })),
-            ],
-
-            data: {
-              filter: { carrierCodeIsNotNull: {} },
-            },
-          },
-          'shipment'
-        ),
-      }),
-    })
+    // prepare temp table
+    return new CreateTableJQL(true, 'shipment', [
+      new Column('type', 'string'),
+      new Column('carrierCode', 'string'),
+      new Column('carrierName', 'string'),
+      new Column('month', 'string'),
+      ...summaryVariables.map(variable => new Column(variable, 'number')),
+    ])
   }
 }
 
-export default [[prepareParams(), prepareTable()], finalQuery()]
+export default [
+  createTable(),
+  // prepare data
+  [prepareParams('F'), prepareData('F')],
+  [prepareParams('R'), prepareData('R')],
+  [prepareParams('C'), prepareData('C')],
+
+  // new Query({
+
+  //   $from : 'shipment'
+  // })
+
+  finalQuery(['F', 'R', 'C']),
+]

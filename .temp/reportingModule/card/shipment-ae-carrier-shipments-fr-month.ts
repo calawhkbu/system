@@ -111,7 +111,7 @@ function prepareData(type: 'F' | 'R'): InsertJQL {
           ],
 
           data: {
-            filter: { carrierCodeIsNotNull: {} },
+            filter: { carrierIsNotNull: {} },
           },
         },
         'shipment'
