@@ -632,7 +632,6 @@ export const formatJson = {
                 name: 'F.O.B. Instructions',
                 type: 'list',
                 mandatory: false,
-
                 elementFormatList: [
                   {
                     index: 1,
@@ -4249,7 +4248,7 @@ export default class Edi850Parser extends BaseEdiParser {
               // k<ST['PO1'].length
               const product: any = {
                 // sdqQuantityPerPackage: _.get(PO1, 'SDQ.quantity'),
-                quantityPerPackage: _.get(PO1, 'PO4.grossVolumePerPack'),
+                quantityPerPackage: _.get(PO1, 'PO4.pack'),
                 productDescription: _.get(PO1, 'PID.description'),
                 quantity: _.get(PO1, 'quantityOrdered'),
                 quantityUnit: _.get(PO1, 'unitOfMeasureCode'),
@@ -4265,7 +4264,7 @@ export default class Edi850Parser extends BaseEdiParser {
                   pack: _.get(PO1, 'poLineNumber'),
                   buyerSKU: _.get(PO1, 'productId3'),
                   style: _.get(PO1, 'productId5'),
-                  price: _.get(PO1, 'productIdQualifier7'),
+                  price: _.get(PO1, 'productId6'),
                 },
               }
               const n9s = _.get(PO1, 'N9', []) || []
@@ -4370,8 +4369,6 @@ export default class Edi850Parser extends BaseEdiParser {
               }
               if (_.get(POC, 'CTP'))
               {
-                console.log('lllllllllllllllllllllllllllllllllll')
-                console.log(_.get(POC, 'CTP.unitPrice'))
                 poItem['product']['unitPrice'] =  _.get(POC, 'CTP.unitPrice')
               }
               const n9s = _.get(POC, 'N9', []) || []
