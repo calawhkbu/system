@@ -25,7 +25,7 @@ function pad(n: any, width: number, z: string) {
   return e.length >= width ? e : new Array(width - e.length + 1).join(z) + e
 }
 
-export default class EdiParser997 extends BaseEdiParser {
+export default class EdiParser315 extends BaseEdiParser {
   constructor(
     protected readonly allService: {
       swivelConfigService: SwivelConfigService
@@ -119,22 +119,26 @@ export default class EdiParser997 extends BaseEdiParser {
           const currentStatus = historyList[currentStatusIndex]
           const statusCodeMapper = {
             GITM: 'I',
+            LOBD:  'I',
             DLPT: 'VD',
             BDAR: 'VA',
             DSCH: 'UV',
             DECL: 'CT',
             PASS: 'OA',
             TMPS: 'D',
+            STCS: 'D',
             RCVE: 'RD',
           }
           const emptyLoadMapper = {
             GITM: 'E',
+            LOBD: 'L',
             DLPT: 'L',
             BDAR: 'L',
             DSCH: 'E',
             DECL: 'L',
             PASS: 'L',
             TMPS: 'L',
+            STCS: 'L',
             RCVE: 'E',
           }
           const isoCodeMapper = {
@@ -169,7 +173,9 @@ export default class EdiParser997 extends BaseEdiParser {
           }
           const trackingRefInf = _.get(element, 'trackingReference') || {}
           const flexDataInf = _.get(trackingRefInf, 'flexData') || {}
-          const bookingInf = _.get(flexDataInf, 'data')
+          const bookingInf = _.get(flexDataInf, 'data') || {}
+          const bookingContainers = _.get(bookingInf, 'bookingContainers') || []
+          const matchBookingContainers = bookingContainers.find(x => x.containerNo === containerNo)
           const statusCode = _.get(currentStatus, 'statusCode')
           let country = _.get(bookingInf, countryCodeMapper[statusCode])
           if (!country)
@@ -188,18 +194,19 @@ export default class EdiParser997 extends BaseEdiParser {
           }
           B4.elementList.push('', '') // not used
           B4.elementList.push(
-            statusCodeMapper[statusCode],
+            statusCodeMapper[statusCode] || 'AV',
             moment(_.get(currentStatus, 'statusDate')).format('YYYYMMDD'),
             moment(_.get(currentStatus, 'statusDate')).format('HHmm')
           )
           B4.elementList.push('') // not used
           B4.elementList.push(
-            (_.get(container, 'containerNo') || '').substr(0, 4),
-            (_.get(container, 'containerNo') || '').substr(4, 10)
+            (containerNo || '').substr(0, 4),
+            (containerNo || '').substr(4, 10)
           )
           B4.elementList.push(
-            emptyLoadMapper[_.get(currentStatus, 'statusCode')] || '',
-            isoCodeMapper[_.get(container, 'container')] || ' ',
+            emptyLoadMapper[_.get(currentStatus, 'statusCode')] || 'L',
+            (isoCodeMapper[_.get(container, 'container')] ||
+            _.get(matchBookingContainers, 'isoNo')) || ' ',
           )
           B4.elementList.push((country || '').substring(0, 30))
           B4.elementList.push('UN')
