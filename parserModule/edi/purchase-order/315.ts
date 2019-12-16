@@ -25,7 +25,7 @@ function pad(n: any, width: number, z: string) {
   return e.length >= width ? e : new Array(width - e.length + 1).join(z) + e
 }
 
-export default class EdiParser997 extends BaseEdiParser {
+export default class EdiParser315 extends BaseEdiParser {
   constructor(
     protected readonly allService: {
       swivelConfigService: SwivelConfigService
