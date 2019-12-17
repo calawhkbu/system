@@ -20,7 +20,7 @@ interface JSONObject {
 }
 
 function pad(n: any, width: number, z: string) {
-  const e = `${n}`
+  const e = `${n.toString()}`
   return e.length >= width ? e : new Array(width - e.length + 1).join(z) + e
 }
 
