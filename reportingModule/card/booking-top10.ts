@@ -102,15 +102,19 @@ function insertTop10Data() {
 
     if (showOther) {
       // use the code of the top10 to find the rest
-      const top10BookingCodeList = top10BookingList.map(x => x[codeColumnName])
+      const top10ShipmentCodeList = top10BookingList.map(x => x[codeColumnName])
+
       const otherBookingList = bookings.filter(
-        x => !top10BookingCodeList.includes(x[codeColumnName])
+        x => !top10ShipmentCodeList.includes(x[codeColumnName])
       )
 
       // sum up all the other
-      const otherSum = otherBookingList.reduce((accumulator, currentValue, currentIndex, array) => {
-        return accumulator + currentValue[summaryColumnName]
-      }, 0)
+      const otherSum = otherBookingList.reduce(
+        (accumulator, currentValue, currentIndex, array) => {
+          return accumulator + currentValue[summaryColumnName]
+        },
+        0
+      )
 
       // compose the record for other
       const otherResult = {}
@@ -120,6 +124,39 @@ function insertTop10Data() {
 
       top10BookingList.push(otherResult)
     }
+
+    else{
+      if (!(top10BookingList && top10BookingList.length)) {
+        throw new Error('top10BookingList is empty')
+      }
+    }
+
+    // if (!(bookings && bookings.length)) {
+    //   throw new Error('NO_DATA')
+    // }
+
+    // const top10BookingList = bookings.filter(x => x[codeColumnName]).slice(0, topX)
+
+    // if (showOther) {
+    //   // use the code of the top10 to find the rest
+    //   const top10BookingCodeList = top10BookingList.map(x => x[codeColumnName])
+    //   const otherBookingList = bookings.filter(
+    //     x => !top10BookingCodeList.includes(x[codeColumnName])
+    //   )
+
+    //   // sum up all the other
+    //   const otherSum = otherBookingList.reduce((accumulator, currentValue, currentIndex, array) => {
+    //     return accumulator + currentValue[summaryColumnName]
+    //   }, 0)
+
+    //   // compose the record for other
+    //   const otherResult = {}
+    //   otherResult[codeColumnName] = 'other'
+    //   otherResult[nameColumnName] = 'other'
+    //   otherResult[summaryColumnName] = otherSum
+
+    //   top10BookingList.push(otherResult)
+    // }
 
     return new InsertJQL('top10', ...top10BookingList)
   }
