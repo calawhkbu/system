@@ -212,7 +212,24 @@ export default class EdiParser997 extends BaseEdiParser {
           outboundSuccess = matchPo.outboundSuccess || false
         }
       }
-      if (segmentErrorList.length || elementErrorList.length) {
+      if (transactionSetSyntaxErrorList.length) {
+        transactionSetSyntaxErrorList.sort(function(a, b){ return transactionSetSyntaxErrorMapper[a.errorType] - transactionSetSyntaxErrorMapper[b.errorType]})
+        const AK5: JSONObject = {
+          segment: 'AK5',
+          elementList: [],
+        }
+        const firstErrorType = transactionSetSyntaxErrorList[0].errorType
+        if (outboundSuccess === true) {
+          AK5.elementList.push('E')
+        }else {
+          AK5.elementList.push('R')
+        }
+        AK5.elementList.push(
+          transactionSetSyntaxErrorMapper[firstErrorType]
+        )
+        loopObjectList.push(AK5)
+      }
+      else if (segmentErrorList.length || elementErrorList.length) {
         // let loopIndex = 1
         // for (const segmentError of segmentErrorList) {
         //   if (segmentErrorMapper[segmentError.errorType]) {
@@ -258,42 +275,7 @@ export default class EdiParser997 extends BaseEdiParser {
         }
         AK5.elementList.push('5')
         loopObjectList.push(AK5)
-        if (transactionSetSyntaxErrorList.length) {
-          for (const transactionSetSyntaxError of transactionSetSyntaxErrorList) {
-            const AK5: JSONObject = {
-              segment: 'AK5',
-              elementList: [],
-            }
-            if (outboundSuccess === true) {
-              AK5.elementList.push('E')
-            }else {
-              AK5.elementList.push('R')
-            }
-            AK5.elementList.push(
-              transactionSetSyntaxErrorMapper[transactionSetSyntaxError.errorType]
-            )
-            loopObjectList.push(AK5)
-          }
-        }
       } else {
-        if (transactionSetSyntaxErrorList.length) {
-          for (const transactionSetSyntaxError of transactionSetSyntaxErrorList) {
-            const AK5: JSONObject = {
-              segment: 'AK5',
-              elementList: [],
-            }
-            if (outboundSuccess === true) {
-              AK5.elementList.push('E')
-            } else {
-              AK5.elementList.push('R')
-            }
-
-            AK5.elementList.push(
-              transactionSetSyntaxErrorMapper[transactionSetSyntaxError.errorType]
-            )
-            loopObjectList.push(AK5)
-          }
-        } else {
           const AK5: JSONObject = {
             segment: 'AK5',
             elementList: [],
@@ -301,7 +283,6 @@ export default class EdiParser997 extends BaseEdiParser {
           AK5.elementList.push('A')
           loopObjectList.push(AK5)
         }
-      }
     }
   }
 }
