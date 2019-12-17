@@ -4089,8 +4089,6 @@ export default class Edi850Parser extends BaseEdiParser {
       }
     }
 
-    // return jsonData
-
     if (ediType === '850') {
       if (sts.length) {
         for (const ST of sts) {
@@ -4098,7 +4096,7 @@ export default class Edi850Parser extends BaseEdiParser {
           //   throw new Error('not correct edi type')
           // }
           if (
-            _.get(ST, 'transactionSetControlNumber') !== _.get(ST, 'SE.transactionSetControlNumber')
+            _.get(ST, 'transactionSetControlNumber') !== _.get(ST, 'SE.transactionSetControlNum')
           ) {
             const error: ParserError = {
               category: 'transactionSetSyntaxError',
