@@ -81,7 +81,6 @@ export default class EdiParser856 extends BaseEdiParser {
       BSN.elementList.push('0004')
       data.push(BSN)
       const loopObjectList: any[] = []
-      console.log(_.get(element, 'bookingPopackings'))
       const getNumOfLoopItem = 1 + (_.get(element, 'bookingPOPackings').length) + this.getNumOfPo(_.get(element, 'bookingPOPackings'))
       loopObjectList.push(this.getLoopObject(loopObjectList, getNumOfLoopItem, element))
       const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
@@ -117,7 +116,7 @@ export default class EdiParser856 extends BaseEdiParser {
     data.push(GE, IEA)
     _.set(returnJSON, 'data', data)
     // return cloneEntityJSON
-    // return returnJSON
+    return returnJSON
     const result = await super.export(returnJSON)
     return [result]
   }
@@ -376,7 +375,6 @@ export default class EdiParser856 extends BaseEdiParser {
         )
         const poList = []
         grouped.subscribe(val => poList.push(val))
-        console.log(poList)
         // for (const groupValue of grouped)
         // console.log(groupValue)
         let index = 1
@@ -531,12 +529,15 @@ export default class EdiParser856 extends BaseEdiParser {
               MEA.elementList.push('', 'VOL', (_.get(subPoList[itemIndex], 'bookVolume') || ' ').toString().substring(0, 20),  'CO')
               loopObjectList.push(MEA)
             }
-            const MEANUM: JSONObject = {
-              segement: 'MEA',
-              elementList: []
+            if (_.get(subPoList[itemIndex], 'bookCtns'))
+            {
+              const MEANUM: JSONObject = {
+                segement: 'MEA',
+                elementList: []
+              }
+              MEANUM.elementList.push('', 'NUM', (_.get(subPoList[itemIndex], 'bookCtns') || ' ').toString().substring(0, 20),  'CT')
+              loopObjectList.push(MEANUM)
             }
-            MEANUM.elementList.push('', 'NUM', (_.get(subPoList[itemIndex], 'bookCtns') || ' ').toString().substring(0, 20),  'CT')
-            loopObjectList.push(MEANUM)
             if (_.get(ItemList[itemIndex], 'bookQuantity'))
             {
               const MEA: JSONObject = {

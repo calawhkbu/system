@@ -50,9 +50,7 @@ function prepareParams(): Function {
     // limit/extend to 1 year
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    const year = !subqueries.date
-      ? moment().year()
-      : moment(subqueries.date.from, 'YYYY-MM-DD').year()
+    const year = (subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
 
     subqueries.date = {
       from: moment()
