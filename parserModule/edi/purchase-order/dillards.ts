@@ -69,9 +69,9 @@ export const formatJson = {
                 allowableValues: {
                   valueOptions: [
                     {
-                      value: '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
-                      name: '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
-                      overrideValue: '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
+                      value: '          ',
+                      name: '          ',
+                      overrideValue: '          ',
                     },
                   ],
                   allowAny: false,
@@ -105,9 +105,9 @@ export const formatJson = {
                 allowableValues: {
                   valueOptions: [
                     {
-                      value: '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
-                      name: '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
-                      overrideValue: '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
+                      value: '          ',
+                      name: '          ',
+                      overrideValue: '          ',
                     },
                   ],
                   allowAny: false,
@@ -543,7 +543,6 @@ export const formatJson = {
                 name: 'Reference Number',
                 type: 'repeatObject',
                 mandatory: false,
-
                 elementFormatList: [
                   {
                     index: 1,
@@ -632,7 +631,6 @@ export const formatJson = {
                 name: 'F.O.B. Instructions',
                 type: 'list',
                 mandatory: false,
-
                 elementFormatList: [
                   {
                     index: 1,
@@ -1826,8 +1824,8 @@ export const formatJson = {
                       },
                       {
                         index: 9,
-                        maximumLen: 1,
-                        minimumLen: 1,
+                        maximumLen: 2,
+                        minimumLen: 2,
                         name: 'Unit of Measure Code2',
                         key: 'unitOfMeasureCode2',
                         type: 'string',
@@ -2297,8 +2295,8 @@ export const formatJson = {
                     index: 2,
                     maximumLen: 9,
                     minimumLen: 4,
-                    name: 'Transaction Set Control Num',
-                    key: 'transactionSetControlNum',
+                    name: 'Transaction Set Control Number',
+                    key: 'transactionSetControlNumber',
                     type: 'integer',
                   },
                 ],
@@ -2415,9 +2413,9 @@ export const formatJson = {
                 allowableValues: {
                   valueOptions: [
                     {
-                      value: '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
-                      name: '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
-                      overrideValue: '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
+                      value: '          ',
+                      name: '          ',
+                      overrideValue: '          ',
                     },
                   ],
                   allowAny: false,
@@ -2451,9 +2449,9 @@ export const formatJson = {
                 allowableValues: {
                   valueOptions: [
                     {
-                      value: '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
-                      name: '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
-                      overrideValue: '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0',
+                      value: '          ',
+                      name: '          ',
+                      overrideValue: '          ',
                     },
                   ],
                   allowAny: false,
@@ -2821,7 +2819,6 @@ export const formatJson = {
                     },
                     type: 'string',
                   },
-
                   {
                     index: 3,
                     maximumLen: 10,
@@ -2942,8 +2939,8 @@ export const formatJson = {
                     index: 2,
                     maximumLen: 60,
                     minimumLen: 1,
-                    name: 'Organization Name ',
-                    key: 'organizationName',
+                    name: 'Organization Name',
+                    key: 'name',
                     type: 'string',
                   },
                   {
@@ -2987,7 +2984,7 @@ export const formatJson = {
                         maximumLen: 55,
                         minimumLen: 1,
                         name: 'Additional Name Information',
-                        key: 'additionalNameInformation',
+                        key: 'additionalNameInformation1',
                         type: 'string',
                       },
                       {
@@ -2995,7 +2992,7 @@ export const formatJson = {
                         maximumLen: 55,
                         minimumLen: 1,
                         name: 'Additional Name Information',
-                        key: 'additional Name Information',
+                        key: 'additionalNameInformation2',
                         type: 'string',
                       },
                     ],
@@ -3843,7 +3840,7 @@ export const formatJson = {
                     key: 'N9',
                     code: 'N9',
                     name: 'Reference Number',
-                    type: 'object',
+                    type: 'list',
                     mandatory: false,
                     elementFormatList: [
                       {
@@ -4090,8 +4087,6 @@ export default class Edi850Parser extends BaseEdiParser {
       }
     }
 
-    // return jsonData
-
     if (ediType === '850') {
       if (sts.length) {
         for (const ST of sts) {
@@ -4156,7 +4151,11 @@ export default class Edi850Parser extends BaseEdiParser {
               ? _.get(fob, 'description1')
               : null
           }
-          const n1s = _.get(ST, 'N1', []) || []
+          let n1s = _.get(ST, 'N1', []) || []
+          if (n1s && !n1s.length)
+          {
+            n1s = [n1s]
+          }
           if (n1s.length) {
             const partyMapper = {
               'Ship From': 'shipper',
@@ -4249,7 +4248,7 @@ export default class Edi850Parser extends BaseEdiParser {
               // k<ST['PO1'].length
               const product: any = {
                 // sdqQuantityPerPackage: _.get(PO1, 'SDQ.quantity'),
-                quantityPerPackage: _.get(PO1, 'PO4.grossVolumePerPack'),
+                quantityPerPackage: _.get(PO1, 'PO4.pack'),
                 productDescription: _.get(PO1, 'PID.description'),
                 quantity: _.get(PO1, 'quantityOrdered'),
                 quantityUnit: _.get(PO1, 'unitOfMeasureCode'),
@@ -4265,10 +4264,14 @@ export default class Edi850Parser extends BaseEdiParser {
                   pack: _.get(PO1, 'poLineNumber'),
                   buyerSKU: _.get(PO1, 'productId3'),
                   style: _.get(PO1, 'productId5'),
-                  price: _.get(PO1, 'productIdQualifier7'),
+                  price: _.get(PO1, 'productId6'),
                 },
               }
-              const n9s = _.get(PO1, 'N9', []) || []
+              let n9s = _.get(PO1, 'N9', []) || []
+              if (n9s && !n9s.length)
+              {
+                n9s = [n9s]
+              }
               if (n9s.length)
               {
                 for (const n9 of n9s)
@@ -4307,6 +4310,7 @@ export default class Edi850Parser extends BaseEdiParser {
             partyGroupCode,
             update: true,
             edi: true,
+            poOrder: _.get(ST, 'transactionSetControlNumber'),
             errors: errorList,
             isChange: _.get(ST, 'BCH.transactionSetPurpose') === 'Change',
             purpose: _.get(ST, 'BCH.transactionSetPurpose'),
@@ -4314,14 +4318,16 @@ export default class Edi850Parser extends BaseEdiParser {
             poDate: _.get(ST, 'BCH.purchaseOrderDate')
               ? moment.utc(_.get(ST, 'BCH.purchaseOrderDate')).toDate()
               : null,
-            dontShipBeforeDate: _.get(ST, 'DTM.shipNotBefore')
-              ? moment.utc(_.get(ST, 'DTM.shipNotBefore')).toDate()
+            dontShipBeforeDate: _.get(ST, 'DTM.startShip')
+              ? moment.utc(_.get(ST, 'DTM.startShip')).toDate()
               : null,
-            dontShipAfterDate: _.get(ST, 'DTM.doNotShipAfter')
-              ? moment.utc(_.get(ST, 'DTM.doNotShipAfter')).toDate()
+            dontShipAfterDate: _.get(ST, 'DTM.lastShip')
+              ? moment.utc(_.get(ST, 'DTM.lastShip')).toDate()
               : null,
             exitFactoryDateActual: _.get(ST, 'DTM.firstArrive')
               ? moment.utc(_.get(ST, 'DTM.firstArrive')).toDate()
+              : _.get(ST, 'DTM.startShip')
+              ? moment.utc(_.get(ST, 'DTM.startShip')).toDate()
               : null,
             consigneeId: _.get(ST, 'REF.DeptNumber'),
             venderId: _.get(ST, 'REF.Vender'),
@@ -4351,14 +4357,18 @@ export default class Edi850Parser extends BaseEdiParser {
                   upcen: _.get(POC, 'productId1').trim(),
                   size: (_.get(POC, 'productId2') || ''),
                   colorDesc: _.get(POC, 'productId4'),
-                  pack: _.get(POC, 'poLineNumber'),
+                  pack: _.get(POC, 'assignedIdentification'),
                   buyerSKU: _.get(POC, 'productId3'),
                   style: _.get(POC, 'productId5'),
+                  price: _.get(POC, 'productId6'),
                 },
+              }
+              if (_.get(POC, 'lineItemChange') === 'Add Item')
+              {
+                poItem['quantity'] = _.get(POC, 'quantityOrdered') ||  _.get(POC, 'quantityChange')
               }
               if (_.get(POC, 'lineItemChange') === 'Quantity Increase' || _.get(POC, 'lineItemChange') === 'Quantity Decrease')
               {
-                poItem['quantity'] = _.get(POC, 'quantityOrdered')
                 if (_.get(POC, 'lineItemChange') === 'Quantity Increase')
                 {
                   poItem['quantityChangeSign'] = '+'
@@ -4370,11 +4380,13 @@ export default class Edi850Parser extends BaseEdiParser {
               }
               if (_.get(POC, 'CTP'))
               {
-                console.log('lllllllllllllllllllllllllllllllllll')
-                console.log(_.get(POC, 'CTP.unitPrice'))
                 poItem['product']['unitPrice'] =  _.get(POC, 'CTP.unitPrice')
               }
-              const n9s = _.get(POC, 'N9', []) || []
+              let n9s = _.get(POC, 'N9', []) || []
+              if (n9s && !n9s.length)
+              {
+                n9s = [n9s]
+              }
               if (n9s.length)
               {
                 for (const n9 of n9s)
@@ -4388,7 +4400,11 @@ export default class Edi850Parser extends BaseEdiParser {
               _.set(po, 'purchaseOrderItems', poItemList)
             }
           }
-          const n1s = _.get(ST, 'N1', []) || []
+          let n1s = _.get(ST, 'N1', []) || []
+          if (n1s && !n1s.length)
+          {
+            n1s = [n1s]
+          }
           if (n1s.length) {
             const partyMapper = {
               'Ship From': 'shipper',
@@ -4418,6 +4434,8 @@ export default class Edi850Parser extends BaseEdiParser {
                     (_.get(N1, 'name') || '').substr(0, index) || _.get(N1, 'name')
                   )
                 }
+                _.set(po, `${newRole}AdditionalName1`, _.get(N1, 'N2.additionalNameInformation1'))
+                _.set(po, `${newRole}AdditionalName2`, _.get(N1, 'N2.additionalNameInformation2'))
                 _.set(po, `${newRole}PartyAddress1`, _.get(N1, 'N3.addressInformation'))
                 _.set(po, `${newRole}PartyAddress2`, _.get(N1, 'N3.additionalAddressInformation'))
                 _.set(po, `${newRole}PartyStateCode`, _.get(N1, 'N4.stateOrProvinceCode'))
@@ -4426,6 +4444,8 @@ export default class Edi850Parser extends BaseEdiParser {
               } else {
                 _.set(po, `${role.replace(/\s/g, '')}PartyName`, _.get(N1, 'name'))
                 _.set(po, `${role.replace(/\s/g, '')}PartyCode`, _.get(N1, 'identificationCode'))
+                _.set(po, `${role.replace(/\s/g, '')}AdditionalName1`, _.get(N1, 'N2.additionalNameInformation1'))
+                _.set(po, `${role.replace(/\s/g, '')}AdditionalName2`, _.get(N1, 'N2.additionalNameInformation2'))
                 _.set(
                   po,
                   `${role.replace(/\s/g, '')}PartyAddress1`,

@@ -10,6 +10,7 @@ const app = {
   requestHandler: async(
     { query, roles, roleService, partyGroup, party, partyService }: any,
     body: any,
+    constants: { [key: string]: any },
     helper: { [key: string]: Function }
   ) => {
     // resolve role filters
@@ -154,6 +155,7 @@ const app = {
   },
   responseHandler: (
     response: { responseBody: any; responseOptions: any },
+    constants: { [key: string]: any },
     helper: { [key: string]: Function }
   ) => {
     // parse results

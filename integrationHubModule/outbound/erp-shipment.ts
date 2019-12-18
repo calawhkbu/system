@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common'
 
 const app = {
-  constants: {
+  variable: {
     fieldNameMap: {
       billCargos: 'billCargo',
       billTransports: 'billTransport',
@@ -21,6 +21,7 @@ const app = {
   requestHandler: async(
     { party, partyGroup, partyService }: any,
     body: any,
+    constants: { [key: string]: any },
     helper: { [key: string]: Function }
   ) => {
     const [site, moduleTypeCode, houseNo] = body['options'].split('+')
@@ -39,7 +40,7 @@ const app = {
 
     // xHouseNo
     if (!houseNo) throw new BadRequestException('MISSING_HOUSE_NO')
-    requestBody.xHouseNo = app.constants.houseNo = houseNo
+    requestBody.xHouseNo = app.variable.houseNo = houseNo
 
     return {
       headers: {
@@ -55,11 +56,11 @@ const app = {
       responseBody = JSON.parse(JSON.parse(response.responseBody).d)[0]
     } catch (e) {
       console.error(e, e.stack, 'erp-shipment')
-      throw new NotFoundException(`SHIPMENT_${app.constants.houseNo.toLocaleUpperCase()}_NOT_FOUND`)
+      throw new NotFoundException(`SHIPMENT_${app.variable.houseNo.toLocaleUpperCase()}_NOT_FOUND`)
     }
 
     // rename
-    const { fieldNameMap } = app.constants
+    const { fieldNameMap } = app.variable
     for (const key of Object.keys(fieldNameMap)) {
       const value = responseBody[fieldNameMap[key]]
       delete responseBody[fieldNameMap[key]]

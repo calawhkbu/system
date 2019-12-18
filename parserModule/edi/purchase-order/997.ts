@@ -20,8 +20,19 @@ interface JSONObject {
 }
 
 function pad(n: any, width: number, z: string) {
-  const e = `${n}`
+  const e = `${n.toString()}`
   return e.length >= width ? e : new Array(width - e.length + 1).join(z) + e
+}
+
+interface ParserError {
+  category?: string
+  errorType?: string
+  errorIdex?: number
+  mainHeadIndex?: number
+  afterMainHeadLocation?: number
+  segmentPosition?: string
+  errorID?: string
+  message?: string
 }
 
 export default class EdiParser997 extends BaseEdiParser {
@@ -118,19 +129,24 @@ export default class EdiParser997 extends BaseEdiParser {
           x.category === 'transactionSetSyntaxError'
       )
       data.push(...filteredList)
-      if (errorList.length === 0) {
+      if ( _.get(entityJSON, 'poList').filter(x => x.outboundSuccess === true).length === 0)
+      {
+        AK9.elementList.push('R')
+      }
+      else if (errorList.length === 0) {
         AK9.elementList.push('A')
       } else {
-        if (noOfST > _.get(entityJSON, 'poList').length) {
+        if (noOfST > _.get(entityJSON, 'poList').filter(x => x.outboundSuccess === true).length) {
           AK9.elementList.push('P')
-        } else {
+        }
+        else {
           AK9.elementList.push('E')
         }
       }
       AK9.elementList.push(_.get(entityJSON, 'noSent').toString())
-      AK9.elementList.push(_.get(entityJSON, 'noSent').toString())
       AK9.elementList.push(_.get(entityJSON, 'poList').length.toString())
-    } else {
+      AK9.elementList.push(_.get(entityJSON, 'poList').filter(x => x.outboundSuccess === true).length.toString())
+    } else{
       AK9.elementList.push('R')
     }
     data.push(AK9)
@@ -176,15 +192,6 @@ export default class EdiParser997 extends BaseEdiParser {
       const transactionSetSyntaxErrorList: any[] = errorList.filter(
         x => x.category === 'transactionSetSyntaxError' && x.mainHeadIndex === i
       )
-      const AK2: JSONObject = {
-        segment: 'AK2',
-        elementList: [],
-      }
-      const strIndex = i.toString()
-      const pad = '0000'
-      const strIndexWithFormat = `${pad.substring(0, pad.length - strIndex.length)}${strIndex}`
-      AK2.elementList.push(_.get(entityJSON, 'ediType'), strIndexWithFormat)
-      loopObjectList.push(AK2)
       const segmentErrorMapper = {
         'Unrecognized SegmentID': '1',
         'Unexpected Segment': '2',
@@ -202,17 +209,66 @@ export default class EdiParser997 extends BaseEdiParser {
         'Transaction set Trailer Missing': '2',
         'Transaction Set in Header & Trailer Do Not Match': '3',
         'Number of Included Segments Does Not Match Actual Count': '4',
+        'One or More Segments in Error': '5'
       }
       const poList = _.get(entityJSON, 'poList')
       let outboundSuccess = false
-
+      if (segmentErrorList.length || elementErrorList.length) {
+        const error: ParserError = {
+          category: 'transactionSetSyntaxError',
+          errorType: 'One or More Segments in Error',
+          errorIdex: 0,
+          mainHeadIndex: i,
+          message: 'One or More Segments in Error!',
+        }
+        transactionSetSyntaxErrorList.push(error)
+      }
       if (poList) {
-        const matchPo = poList.find(x => x.poOrder === i)
+        const matchPo = poList[i - 1]
         if (matchPo) {
           outboundSuccess = matchPo.outboundSuccess || false
         }
       }
-      if (segmentErrorList.length || elementErrorList.length) {
+
+      if (transactionSetSyntaxErrorList.length) {
+        transactionSetSyntaxErrorList.sort(function(a, b){ return transactionSetSyntaxErrorMapper[a.errorType] - transactionSetSyntaxErrorMapper[b.errorType]})
+        for (const transactionSetSyntaxError of transactionSetSyntaxErrorList)
+        {
+          const AK2: JSONObject = {
+            segment: 'AK2',
+            elementList: [],
+          }
+          const strIndex = i.toString()
+          const pad = '0000'
+          const strIndexWithFormat = `${pad.substring(0, pad.length - strIndex.length)}${strIndex}`
+          AK2.elementList.push(_.get(entityJSON, 'ediType'), strIndexWithFormat)
+          loopObjectList.push(AK2)
+          const AK5: JSONObject = {
+            segment: 'AK5',
+            elementList: [],
+          }
+          const ErrorType = transactionSetSyntaxError.errorType
+          if (outboundSuccess === true) {
+            AK5.elementList.push('E')
+          }else {
+            AK5.elementList.push('R')
+          }
+          AK5.elementList.push(
+            transactionSetSyntaxErrorMapper[ErrorType]
+          )
+          loopObjectList.push(AK5)
+        }
+      }
+      else{
+        const AK2: JSONObject = {
+          segment: 'AK2',
+          elementList: [],
+        }
+        const strIndex = i.toString()
+        const pad = '0000'
+        const strIndexWithFormat = `${pad.substring(0, pad.length - strIndex.length)}${strIndex}`
+        AK2.elementList.push(_.get(entityJSON, 'ediType'), strIndexWithFormat)
+        loopObjectList.push(AK2)
         // let loopIndex = 1
         // for (const segmentError of segmentErrorList) {
         //   if (segmentErrorMapper[segmentError.errorType]) {
@@ -247,61 +303,17 @@ export default class EdiParser997 extends BaseEdiParser {
         //   )
         //   loopObjectList.push(AK4)
         // }
-        const AK5: JSONObject = {
-          segment: 'AK5',
-          elementList: [],
-        }
-        if (outboundSuccess === true) {
-          AK5.elementList.push('E')
-        } else {
-          AK5.elementList.push('R')
-        }
-        AK5.elementList.push('5')
-        loopObjectList.push(AK5)
-        if (transactionSetSyntaxErrorList.length) {
-          for (const transactionSetSyntaxError of transactionSetSyntaxErrorList) {
-            const AK5: JSONObject = {
-              segment: 'AK5',
-              elementList: [],
-            }
-            if (outboundSuccess === true) {
-              AK5.elementList.push('E')
-            }else {
-              AK5.elementList.push('R')
-            }
-            AK5.elementList.push(
-              transactionSetSyntaxErrorMapper[transactionSetSyntaxError.errorType]
-            )
-            loopObjectList.push(AK5)
-          }
-        }
-      } else {
-        if (transactionSetSyntaxErrorList.length) {
-          for (const transactionSetSyntaxError of transactionSetSyntaxErrorList) {
-            const AK5: JSONObject = {
-              segment: 'AK5',
-              elementList: [],
-            }
-            if (outboundSuccess === true) {
-              AK5.elementList.push('E')
-            } else {
-              AK5.elementList.push('R')
-            }
-
-            AK5.elementList.push(
-              transactionSetSyntaxErrorMapper[transactionSetSyntaxError.errorType]
-            )
-            loopObjectList.push(AK5)
-          }
-        } else {
           const AK5: JSONObject = {
             segment: 'AK5',
             elementList: [],
           }
-          AK5.elementList.push('A')
+          if (outboundSuccess === true) {
+            AK5.elementList.push('A')
+          }else {
+            AK5.elementList.push('R')
+          }
           loopObjectList.push(AK5)
         }
-      }
     }
   }
 }
