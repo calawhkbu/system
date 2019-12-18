@@ -21,7 +21,7 @@ interface JSONObject {
 }
 
 function pad(n: any, width: number, z: string) {
-  const e = `${n}`
+  const e = `${n.toString()}`
   return e.length >= width ? e : new Array(width - e.length + 1).join(z) + e
 }
 
@@ -220,6 +220,16 @@ export default class EdiParser315 extends BaseEdiParser {
                 elementList: [],
               }
               N9.elementList.push('BN', _.get(bookingInf, 'bookingNo').substring(0, 18), 'ORIGINAL BKG NBR')
+              data.push(N9)
+            }
+            const bolRef = (_.get(bookingInf, 'bookingReferences') || []).find(x => x.refName === 'MBL')
+            if (bolRef)
+            {
+              const N9: JSONObject = {
+                segment: 'N9',
+                elementList: [],
+              }
+              N9.elementList.push('BM', _.get(bolRef, 'refDescription') || ' '.substring(0, 18), 'BOL NUMBER')
               data.push(N9)
             }
             const Q2: JSONObject = {
