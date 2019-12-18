@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, NotImplementedException } from
 import moment = require('moment')
 
 const app = {
-  constants: {
+  variable: {
     months: [] as string[],
     site: '' as string,
     boundTypes: [] as string[],
@@ -15,6 +15,7 @@ const app = {
   requestHandler: async(
     { query, roleService, roles, partyGroup, partyService, party }: any,
     body: any,
+    constants: { [key: string]: any },
     helper: { [key: string]: Function }
   ) => {
     // resolve role filters
@@ -36,7 +37,7 @@ const app = {
     if (dateto.diff(datefr, 'years', true) > 1)
       throw new BadRequestException('DATE_RANGE_TOO_LARGE')
 
-    const months = (app.constants.months = [])
+    const months = (app.variable.months = [])
     const momentStart = moment(datefr).startOf('month')
     while (momentStart.isSameOrBefore(dateto)) {
       months.push(momentStart.format('YYYY-MM'))
@@ -70,13 +71,13 @@ const app = {
     } else {
       xbound = availableBoundTypes
     }
-    app.constants.boundTypes = xbound
+    app.variable.boundTypes = xbound
 
     // xsite
     const sites = helper.getOfficeParties('erp', party, subqueries.officePartyId)
     if (!sites.length) throw new BadRequestException('MISSING_SITE')
     if (sites.length > 1) throw new BadRequestException('TOO_MANY_SITES')
-    const xsite = (app.constants.site = sites[0])
+    const xsite = (app.variable.site = sites[0])
 
     // xdivision
     const availableDivisions = helper.getDivisions(roleFilters)
@@ -159,7 +160,7 @@ const app = {
     // parse results
     let responseBody = JSON.parse(JSON.parse(response.responseBody).d)
 
-    const { boundTypes, site, months } = app.constants
+    const { boundTypes, site, months } = app.variable
 
     // regroup results
     responseBody = responseBody.reduce((result, row) => {
