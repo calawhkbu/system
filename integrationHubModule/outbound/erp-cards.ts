@@ -13,7 +13,7 @@ export default {
       },
     }
   },
-  responseHandler: (response: { responseBody: any; responseOptions: any }, helper: { [key: string]: Function }) => {
+  responseHandler: (response: { responseBody: any; responseOptions: any }, constants: { [key: string]: any }, helper: { [key: string]: Function }) => {
     // parse results
     let responseBody = JSON.parse(JSON.parse(response.responseBody).d) as any[]
 

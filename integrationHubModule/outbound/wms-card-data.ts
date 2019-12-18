@@ -1,7 +1,7 @@
 import { NotImplementedException, BadRequestException } from '@nestjs/common'
 
 const app = {
-  constants: {
+  variable: {
     getPostProcessFunc: null as Function,
     partyGroup: null as any,
     card: null as any,
@@ -9,17 +9,17 @@ const app = {
     zyh: 0,
   },
   method: 'GET',
-  getUrl: async({ id, partyGroup: { api } }: any, params: any, helper: { [key: string]: Function }): Promise<string> => {
+  getUrl: async({ id, partyGroup: { api } }: any, params: any, constants: { [key: string]: any }, helper: { [key: string]: Function }): Promise<string> => {
     if (!api.wms || !api.wms.url) throw new NotImplementedException('wms_NOT_LINKED')
     if (!params.subqueries || !params.subqueries.type) throw new BadRequestException('MISSING_TYPE')
-    const card = app.constants.card = await helper.getCard({
+    const card = app.variable.card = await helper.getCard({
       method: 'POST',
       headers: {
         'content-type': 'application/json',
       },
       url: `${api.wms.url}/getschrptdata`,
       data: {
-        zyh: app.constants.zyh = id,
+        zyh: app.variable.zyh = id,
         zyd: params.subqueries.type.value,
         ...(api.wms.body || {}),
       },
@@ -27,9 +27,9 @@ const app = {
     return card.dlink
   },
   requestHandler: ({ getPostProcessFunc, partyGroup, user }: any): any => {
-    app.constants.getPostProcessFunc = getPostProcessFunc
-    app.constants.partyGroup = partyGroup
-    app.constants.user = user
+    app.variable.getPostProcessFunc = getPostProcessFunc
+    app.variable.partyGroup = partyGroup
+    app.variable.user = user
     const result = {
       headers: {
         'content-type': 'application/json',
@@ -40,9 +40,10 @@ const app = {
   },
   responseHandler: async(
     response: { responseBody: any; responseOptions: any },
+    constants: { [key: string]: any },
     helper: { [key: string]: Function }
   ) => {
-    const { card, getPostProcessFunc, partyGroup, user, zyh } = app.constants
+    const { card, getPostProcessFunc, partyGroup, user, zyh } = app.variable
 
     let responseBody = helper.parseData(response.responseBody, card)
 

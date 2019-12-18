@@ -2,7 +2,7 @@ import { BadRequestException, NotImplementedException } from '@nestjs/common'
 import moment = require('moment')
 
 const app = {
-  constants: {
+  variable: {
     sites: [] as string[],
     departments: [] as string[],
   },
@@ -14,6 +14,7 @@ const app = {
   requestHandler: async(
     { query, roles, roleService, partyGroup, party, partyService }: any,
     body: any,
+    constants: { [key: string]: any },
     helper: { [key: string]: Function }
   ) => {
     // resolve role filters
@@ -39,10 +40,10 @@ const app = {
     console.log(sites, 'erp-joblockrpt')
     if (!sites.length) throw new BadRequestException('MISSING_SITE')
     if (sites.length > 1) throw new BadRequestException('TOO_MANY_SITES')
-    const xsite = (app.constants.sites = sites)
+    const xsite = (app.variable.sites = sites)
 
     // xdivision (for later use)
-    app.constants.departments = helper.getDivisions(roleFilters, ['AE', 'AI', 'SE', 'SI'])
+    app.variable.departments = helper.getDivisions(roleFilters, ['AE', 'AI', 'SE', 'SI'])
 
     return {
       headers: {
@@ -87,7 +88,7 @@ const app = {
     }
 
     // filter unauthorized rows
-    const { sites, departments } = app.constants
+    const { sites, departments } = app.variable
     const result = [] as any[]
     for (const site of sites) {
       for (const department of departments) {
