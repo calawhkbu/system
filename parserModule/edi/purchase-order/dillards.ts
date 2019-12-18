@@ -4151,7 +4151,11 @@ export default class Edi850Parser extends BaseEdiParser {
               ? _.get(fob, 'description1')
               : null
           }
-          const n1s = _.get(ST, 'N1', []) || []
+          let n1s = _.get(ST, 'N1', []) || []
+          if (n1s && !n1s.length)
+          {
+            n1s = [n1s]
+          }
           if (n1s.length) {
             const partyMapper = {
               'Ship From': 'shipper',
@@ -4263,7 +4267,11 @@ export default class Edi850Parser extends BaseEdiParser {
                   price: _.get(PO1, 'productId6'),
                 },
               }
-              const n9s = _.get(PO1, 'N9', []) || []
+              let n9s = _.get(PO1, 'N9', []) || []
+              if (n9s && !n9s.length)
+              {
+                n9s = [n9s]
+              }
               if (n9s.length)
               {
                 for (const n9 of n9s)
@@ -4302,6 +4310,7 @@ export default class Edi850Parser extends BaseEdiParser {
             partyGroupCode,
             update: true,
             edi: true,
+            poOrder: _.get(ST, 'transactionSetControlNumber'),
             errors: errorList,
             isChange: _.get(ST, 'BCH.transactionSetPurpose') === 'Change',
             purpose: _.get(ST, 'BCH.transactionSetPurpose'),
@@ -4373,7 +4382,11 @@ export default class Edi850Parser extends BaseEdiParser {
               {
                 poItem['product']['unitPrice'] =  _.get(POC, 'CTP.unitPrice')
               }
-              const n9s = _.get(POC, 'N9', []) || []
+              let n9s = _.get(POC, 'N9', []) || []
+              if (n9s && !n9s.length)
+              {
+                n9s = [n9s]
+              }
               if (n9s.length)
               {
                 for (const n9 of n9s)
@@ -4387,7 +4400,11 @@ export default class Edi850Parser extends BaseEdiParser {
               _.set(po, 'purchaseOrderItems', poItemList)
             }
           }
-          const n1s = _.get(ST, 'N1', []) || []
+          let n1s = _.get(ST, 'N1', []) || []
+          if (n1s && !n1s.length)
+          {
+            n1s = [n1s]
+          }
           if (n1s.length) {
             const partyMapper = {
               'Ship From': 'shipper',
