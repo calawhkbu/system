@@ -12,7 +12,7 @@ const app = {
   },
   method: 'GET', // 'GET'|'POST'|'PUT'|'DELETE'|'HEAD'|'OPTIONS'
   getUrl: (headers: any, body: any, constants: { [key: string]: any }) => {
-    const [jobNo, houseNo, division] = body['options'].split(constants.primaryKeySeperator)
+    const [jobNo, houseNo, division] = body['primaryKey'].split(constants.primaryKeySeperator)
     return `${constants.url}/chat/get-bill-messages/${encodeURIComponent(houseNo)}?orderBy=[[%22createdAt%22,%22asc%22]]`
   },
   requestHandler: (headers: any, body: any, constants: { [key: string]: any }) => ({
