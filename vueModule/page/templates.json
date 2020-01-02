@@ -154,7 +154,7 @@
               "type": "router",
               "otherParams": {
                 "func": "push",
-                "path": "create/create",
+                "path": "/template/create",
                 "base": true
               }
             }]

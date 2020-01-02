@@ -1,10 +1,21 @@
 {
-  "components": [
-    {
+  "components": [{
       "is": "I18nText",
       "name": "default",
       "props": {
         "i18nKey": "Auth.Login"
+      }
+    },
+    {
+      "is": "Icon",
+      "props": {
+        "icon": "close"
+      }
+    },
+    {
+      "is": "Icon",
+      "props": {
+        "icon": "fab fa-weixin"
       }
     }
   ]
