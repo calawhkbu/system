@@ -1,36 +1,13 @@
 import {
-  ColumnExpression,
-  CreateTableJQL,
   FromTable,
-  InExpression,
-  BetweenExpression,
-  FunctionExpression,
-  BinaryExpression,
-  GroupBy,
   Query,
-  ResultColumn,
 } from 'node-jql'
 import { parseCode } from 'utils/function'
 
 function prepareShipmentParams(): Function {
   const fn = async function(require, session, params) {
-    const { Resultset } = require('node-jql-core')
-    const {
-      ColumnExpression,
-      CreateTableJQL,
-      FromTable,
-      InExpression,
-      BetweenExpression,
-      FunctionExpression,
-      BinaryExpression,
-      GroupBy,
-      Query,
-      ResultColumn,
-    } = require('node-jql')
-
     // import
     const { BadRequestException } = require('@nestjs/common')
-    const moment = require('moment')
 
     // script
     const subqueries = (params.subqueries = params.subqueries || {})

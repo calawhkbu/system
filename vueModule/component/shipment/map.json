@@ -65,19 +65,19 @@
                       },
                       {
                         "label": "ShipmentPage.carrier",
-                        "name": ["carrier.name", "carrierCode"],
+                        "name": ["carrier.name", "carrier.carrierName", "carrierName", "carrierCode"],
                         "component": "v-text-field",
                         "class": "xs-12"
                       },
                       {
                         "label": "ShipmentPage.portOfLoading",
-                        "name": ["pol.locationName", "portOfLoading"],
+                        "name": ["portOfLoading.name", "pol.locationName", "portOfLoadingName", "portOfLoadingCode"],
                         "component": "v-text-field",
                         "class": "xs-6"
                       },
                       {
                         "label": "ShipmentPage.portOfDischarge",
-                        "name": ["pod.locationName", "portOfDischarge"],
+                        "name": ["portOfDischarge.name", "pod.locationName", "portOfDischargeName", "portOfDischargeCode"],
                         "component": "v-text-field",
                         "class": "xs-6"
                       },

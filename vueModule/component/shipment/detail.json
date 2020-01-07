@@ -382,7 +382,24 @@
           "is": "AsyncComponent",
           "props": {
             "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/tracking-shipment"
+            "layoutName": "plugins/tracking",
+            "loadWhenDataLoaded": true,
+            "axiosBaseParams": [
+              "const trackingNos = [];",
+              "const data = context.$store.state.widget.data;",
+              "if (data.masterNo) { trackingNos.push(data.masterNo); }",
+              "if (data.shipmentContainers && data.shipmentContainers.length > 0) {",
+              "for (const containers of data.shipmentContainers) {",
+              "if (containers.carrierBookingNo) {trackingNos.push(containers.carrierBookingNo);}",
+              "if (containers.containerNo) {trackingNos.push(containers.containerNo);}",
+              "}",
+              "}",
+              "return {",
+              "url: 'api/tracking',",
+              "method: 'POST',",
+              "data: { trackingNos }",
+              "};"
+            ]
           }
         },
         {
@@ -392,7 +409,7 @@
             "layoutName": "plugins/alert",
             "axiosBaseParams": [
               "return {",
-              "url: 'api/alert/list/history-with-old',",
+              "url: 'api/alert/list/history',",
               "method: 'POST',",
               "data: {",
               "tableName: context.$route.params.page,",
