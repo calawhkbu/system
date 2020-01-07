@@ -1,8 +1,7 @@
 {
   "layout": "Plugin",
-  "lazy": true,
-  "width": "50%",
   "name": "Tracking",
+  "lazy": true,
   "remote": true,
   "loadWhenDataLoaded": true,
   "axiosBaseParams": [

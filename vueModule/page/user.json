@@ -20,13 +20,10 @@
           "url": "api/invitation"
         },
         "primaryKey": "id",
-        "modeFunction": "const modes = ['create', 'detail','edit'];\nconst selectedMode = isNaN(Number(mode)) ? mode : 'detail'\nif (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
+        "modeFunction": "const modes = ['create', 'detail', 'edit'];\nconst selectedMode = isNaN(Number(mode)) ? mode : 'detail'\nif (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
         "haveTermOnCreate": false,
         "haveTermOnEdit": false,
         "widgetComponentSetting": {
-          "quick-create": {
-            "readonly": false
-          },
           "create": {
             "readonly": false,
             "stepper": 0,
