@@ -22,7 +22,6 @@ class CreateAlertEvent extends BaseEvent {
     const tableName = parameters.tableName
     const primaryKey = parameters.primaryKey
     const alertType = parameters.alertType
-    const customMessage = parameters.customMessage
     const extraParam = parameters.extraParam
 
     const alertDbService = this.allService['AlertDbService'] as AlertDbService
@@ -31,9 +30,9 @@ class CreateAlertEvent extends BaseEvent {
       tableName,
       primaryKey,
       alertType,
-      customMessage,
       extraParam,
-      this.user
+      this.user,
+      this.transaction
     )
   }
 }

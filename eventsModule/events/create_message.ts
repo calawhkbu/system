@@ -2,9 +2,9 @@ import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
-import { Booking } from 'models/main/booking'
+import { AlertDbService } from 'modules/sequelize/alert/service'
 
-class CreateInvitationEvent extends BaseEvent {
+class CreateMessageEvent extends BaseEvent {
   constructor(
     protected readonly parameters: any,
     protected readonly eventConfig: EventConfig,
@@ -19,36 +19,21 @@ class CreateInvitationEvent extends BaseEvent {
   }
 
   public async mainFunction(parameters: any) {
-    console.log('Create Invitation Event Start', this.constructor.name)
-    const {
-      BookingService: entityService,
-      InvitationDbService: invitationDbService
-    } = this.allService
-    const {
-      data
-    } = parameters
-    let entity = data
-    if (data.hasOwnProperty('dataValues')) {
-      entity = JSON.parse(JSON.stringify(data.dataValues))
-    }
+    const tableName = parameters.tableName
+    const primaryKey = parameters.primaryKey
+    const customMessage = parameters.customMessage
+    const extraParam = parameters.extraParam
 
-    const invitationUpdatedEntity = (await invitationDbService.entityCreateInvitation(
-      entity,
-      'booking',
+    const alertDbService = this.allService['AlertDbService'] as AlertDbService
+
+    return await alertDbService.createMessage(
+      tableName,
+      primaryKey,
+      customMessage,
+      extraParam,
       this.user,
       this.transaction
-    )) as Booking
-
-    if (invitationUpdatedEntity) {
-      // warning: autoSave = true
-      return await entityService.save(
-        { ...entity, ...invitationUpdatedEntity },
-        this.user,
-        this.transaction,
-        true
-      )
-    }
-    console.log('Create Invitation Event End', this.constructor.name)
+    )
   }
 }
 
@@ -62,7 +47,7 @@ export default {
     user?: JwtPayload,
     transaction?: Transaction
   ) => {
-    const event = new CreateInvitationEvent(
+    const event = new CreateMessageEvent(
       parameters,
       eventConfig,
       repo,
