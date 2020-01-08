@@ -95,7 +95,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
               moment.utc(inputEstimatedDepartureDate).add(1, deplayAlertTimeRange[module])
             )
           ) {
-            await alertDbService.createAlert(tableName, primaryKey, `bookingEtdChanged`, null, {}, this.user)
+            await alertDbService.createAlert(tableName, primaryKey, `bookingEtdChanged`, {}, this.user)
           }
           if (
             !moment.utc(trackingEstimatedArrivalDate).isBetween(
@@ -103,7 +103,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
               moment.utc(inputEstimatedArrivalDate).add(1, deplayAlertTimeRange[module])
             )
           ) {
-            await alertDbService.createAlert(tableName, primaryKey, `bookingEtaChanged`, null, {}, this.user)
+            await alertDbService.createAlert(tableName, primaryKey, `bookingEtaChanged`, {}, this.user)
           }
           if (
             !moment.utc(trackingActualDepartureDate).isBetween(
@@ -111,7 +111,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
               moment.utc(inputActualDepartureDate).add(1, deplayAlertTimeRange[module])
             )
           ) {
-            await alertDbService.createAlert(tableName, primaryKey, `bookingAtdChanged`, null, {}, this.user)
+            await alertDbService.createAlert(tableName, primaryKey, `bookingAtdChanged`, {}, this.user)
           }
           if (
             !moment.utc(trackingActualArrivalDate).isBetween(
@@ -119,7 +119,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
               moment.utc(inputActualArrivalDate).add(1, deplayAlertTimeRange[module])
             )
           ) {
-            await alertDbService.createAlert(tableName, primaryKey, `bookingAtaChanged`, null, {}, this.user)
+            await alertDbService.createAlert(tableName, primaryKey, `bookingAtaChanged`, {}, this.user)
           }
         }
       }

@@ -3,7 +3,7 @@ import { Transaction } from 'sequelize'
 import { PartyGroup } from 'models/main/partyGroup'
 import { GetPartyAndPersonFromStandardEntityResult } from 'utils/party'
 
-export default async function entityCreateInvitaion(
+export default async function entityCreateInvitation(
   that: any,
   entity: any,
   tableName: string,
