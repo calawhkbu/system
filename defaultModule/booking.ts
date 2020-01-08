@@ -5,7 +5,6 @@ export default (user: JwtPayload) => {
   for (const party of user.parties) {
     if (party.partyGroupCode === user.selectedPartyGroup.code) {
       if (party.types.includes('forwarder')) {
-        console.log(party, 'test')
         myParty = {
           id: party.id,
           name: party.name,
@@ -17,8 +16,10 @@ export default (user: JwtPayload) => {
   }
   return {
     boundTypeCode: 'O',
-    forwarderParty: myParty,
-    forwarderPartyId: myParty.id,
-    forwarderPartyName: myParty.name,
+    bookingParty: {
+      forwarderParty: myParty,
+      forwarderPartyId: myParty.id,
+      forwarderPartyName: myParty.name,
+    }
   }
 }

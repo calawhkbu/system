@@ -23,7 +23,8 @@ const query = new QueryDef(
   new Query({
     $distinct: true,
     $select: [
-      new ResultColumn(new ColumnExpression('shipment', '*'))
+      new ResultColumn(new ColumnExpression('shipment', '*')),
+      new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
     ],
     $from: new FromTable(
       'shipment',
