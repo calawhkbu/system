@@ -116,7 +116,7 @@ export default class EdiParser856 extends BaseEdiParser {
     data.push(GE, IEA)
     _.set(returnJSON, 'data', data)
     // return cloneEntityJSON
-    return returnJSON
+    // return returnJSON
     const result = await super.export(returnJSON)
     return [result]
   }
@@ -446,16 +446,22 @@ export default class EdiParser856 extends BaseEdiParser {
           const totalItemNo = subPoList.length
 
           const bookingReferences = _.get(element, 'bookingReferences') || []
+          let haveCR = false
           if (bookingReferences.length)
           {
             for (const ref of bookingReferences)
             {
               const refMapper = {
                 MBL: 'BM',
+                folderNo: 'CR'
               }
               const refName = _.get(ref, 'refName')
               if (refMapper[refName])
               {
+                if (refMapper[refName] === 'CR')
+                {
+                  haveCR = true
+                }
                 const REF: JSONObject = {
                   segement : 'REF',
                   elementList : []
@@ -464,6 +470,10 @@ export default class EdiParser856 extends BaseEdiParser {
                 loopObjectList.push(REF)
               }
             }
+          }
+          if (!haveCR)
+          {
+            throw new Error('missing the CR')
           }
           const invoiceNo = _.get(element, 'invoiceNo')
           if (invoiceNo)
