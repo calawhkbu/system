@@ -12,7 +12,7 @@
       "hasReports": false,
       "showFilterBar": true,
       "enableShare": false,
-      "enableSetting": true,
+      "enableSetting": false,
       "nextPageComponent": "template",
       "clickFunction": {
         "type": "router",
@@ -32,7 +32,6 @@
         "configurations": {
           "i18nContext": "TemplatePage",
           "clickable": true,
-          "draggable": true,
           "sorting": {},
           "pagination": {
             "current": 0,
@@ -40,20 +39,15 @@
           }
         }
       },
-
-
-
-      "fieldOptions": [{
+      "fieldOptions": [
+        {
           "key": "id",
           "hidden": true
         },
-
-
         {
           "key": "isActive",
           "boolean": true
         },
-
         {
           "label": "",
           "key": "canDelete",
@@ -136,6 +130,7 @@
       "name": "middle-button",
       "is": "DynamicComponent",
       "props": {
+        "class": "button",
         "components": [{
           "is": "v-btn",
           "props": {

@@ -20,7 +20,6 @@
           "configurations": {
             "i18nContext": "CodeMasterPage",
             "clickable": true,
-            "draggable": true,
             "pagination": {
               "current": 0,
               "perPage": 20,

@@ -9,7 +9,7 @@
       "hasReports": false,
       "showFilterBar": true,
       "enableShare": true,
-      "enableSetting": true,
+      "enableSetting": false,
       "noPartyGroupFilters": true,
       "newReport": {
         "filters": {
