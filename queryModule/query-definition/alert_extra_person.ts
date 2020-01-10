@@ -8,6 +8,10 @@ import {
   IsNullExpression,
   InExpression,
   ResultColumn,
+  Value,
+  FunctionExpression,
+  AndExpressions,
+  OrExpressions,
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -46,63 +50,66 @@ const query = new QueryDef(
             new ColumnExpression('parties_person', 'partyId')
           ),
         ],
-      },
-      {
-        operator: 'LEFT',
-        table: 'person_contact',
-        $on: [
-          new BinaryExpression(
-            new ColumnExpression('person', 'id'),
-            '=',
-            new ColumnExpression('person_contact', 'personId')
-          ),
-        ],
       }
     ),
   })
 )
 
-query.register(
-  'primaryKey',
-  new Query({
-    $select: [
-      new ResultColumn(new ColumnExpression('person', 'id'), 'primaryKey'),
-    ]
-  })
-)
+query.register('invitationStatus', {
+  expression: new FunctionExpression(
+    new FunctionExpression(
+      'IF',
+      new AndExpressions([
+        new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
+      ]),
 
-query
-  .register(
-    'primaryKeyList',
-    new Query({
-      $where: new InExpression(new ColumnExpression('person', 'id'), false),
-    })
-  )
-  .register('value', 0)
+      new ColumnExpression('invitation', 'status'),
+      new Value('disabled')
+    )
+  ),
+  $as: 'invitationStatus',
+})
+
+// ---------------------------------
 
 query
   .register(
     'invitationStatus',
     new Query({
-      $where: new BinaryExpression(
-        `(CASE WHEN invitation.deletedAt is not null AND invitation.deletedBy is not null THEN 'disabled' else invitation.status END)`,
-        '='
+      $where: new InExpression(
+        new FunctionExpression(
+          new FunctionExpression(
+            'IF',
+            new AndExpressions([
+              new IsNullExpression(new ColumnExpression('invitation', 'deletedAt'), false),
+              new IsNullExpression(new ColumnExpression('invitation', 'deletedBy'), false),
+            ]),
+
+            new ColumnExpression('invitation', 'status'),
+            new Value('disabled')
+          )
+        ),
+        false
       ),
     })
   )
   .register('value', 0)
 
-query
+  query
   .register(
-    'invitationStatuses',
+    'personId',
     new Query({
-      $where: new InExpression(
-        new ColumnExpression(
-          `(CASE WHEN invitation.deletedAt is not null AND invitation.deletedBy is not null THEN 'disabled' else invitation.status END)`,
-          'status'
-        ),
-        false
-      ),
+      $where: new InExpression(new ColumnExpression('person', 'id'), false)
+    })
+  )
+  .register('value', 0)
+
+  query
+  .register(
+    'invitationId',
+    new Query({
+      $where: new InExpression(new ColumnExpression('invitation', 'id'), false)
     })
   )
   .register('value', 0)
@@ -116,32 +123,21 @@ query
   )
   .register('value', 0)
 
-query
+  query
   .register(
-    'firstName',
+    'nameLike',
     new Query({
-      $where: new RegexpExpression(new ColumnExpression('person', 'firstName'), false),
-    })
-  )
-  .register('value', 0)
+      $where: new OrExpressions([
+        new RegexpExpression(new ColumnExpression('person', 'firstName'), false),
+        new RegexpExpression(new ColumnExpression('person', 'lastName'), false),
+        new RegexpExpression(new ColumnExpression('person', 'displayName'), false)
 
-query
-  .register(
-    'lastName',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('person', 'lastName'), false),
+      ])
     })
   )
   .register('value', 0)
-
-query
-  .register(
-    'displayName',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('person', 'displayName'), false),
-    })
-  )
-  .register('value', 0)
+  .register('value', 1)
+  .register('value', 2)
 
 query
   .register(
@@ -176,9 +172,7 @@ query.register(
       new IsNullExpression(new ColumnExpression('parties_person', 'deletedAt'), false),
       new IsNullExpression(new ColumnExpression('parties_person', 'deletedBy'), false),
       new IsNullExpression(new ColumnExpression('party', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('party', 'deletedBy'), false),
-      new IsNullExpression(new ColumnExpression('person_contact', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('person_contact', 'deletedBy'), false),
+      new IsNullExpression(new ColumnExpression('party', 'deletedBy'), false)
     ],
   })
 )

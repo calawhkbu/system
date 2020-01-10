@@ -33,31 +33,31 @@ export default {
         return null
       },
       onEnterValidation: [
-        {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
-            const documents = (entity.documents || []).find(
-              doc => doc.fileName === 'Shipping Advice'
-            )
-            if (documents.length > 0) {
-              return true
-            }
-            return false
-          },
-          onError: async(entity: any, workflow: any) => {
-            return {}
-          },
-        },
-        {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
-            if (entity.commodity) {
-              return true
-            }
-            return false
-          },
-          onError: async(entity: any, workflow: any) => {
-            return {}
-          },
-        },
+        // {
+        //   rules: async(entity: any, user: { roles: { name: string }[] }) => {
+        //     const documents = (entity.documents || []).find(
+        //       doc => doc.fileName === 'Shipping Advice'
+        //     )
+        //     if (documents.length > 0) {
+        //       return true
+        //     }
+        //     return false
+        //   },
+        //   onError: async(entity: any, workflow: any) => {
+        //     return {}
+        //   },
+        // },
+        // {
+        //   rules: async(entity: any, user: { roles: { name: string }[] }) => {
+        //     if (entity.commodity) {
+        //       return true
+        //     }
+        //     return false
+        //   },
+        //   onError: async(entity: any, workflow: any) => {
+        //     return {}
+        //   },
+        // },
       ],
       afterEnterEvents: [],
       nextStatus: async(entity: any) => {
@@ -75,48 +75,48 @@ export default {
         return null
       },
       onEnterValidation: [
-        {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
-            console.log(user.roles)
-            if (user && user.roles.filter(role => ['Admin', 'User'].filter(r => r === role.name))) {
-              return true
-            }
-            return false
-          },
-          onError: async(entity: any, workflow: any) => {
-            return {
-              error: 'Workflow.NotAllowByRole',
-            }
-          },
-        },
-        {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
-            const documents = (entity.documents || []).find(
-              (doc: { fileName: string }) => doc.fileName === 'Shipping Advice'
-            )
-            if (documents) {
-              return true
-            }
-            return false
-          },
-          onError: async(entity: any, workflow: any) => {
-            return {
-              error: 'Workflow.MissingDocument',
-              components: [],
-            }
-          },
-        },
-        {
-          rules: async(entity: any, user: { roles: { name: string }[] }) => {
-            if (entity.commodity) {
-              return true
-            }
-            return false
-          },
-          onError: async(entity: any, workflow: any) => {
-            return {}
-          },
-        },
+        // {
+        //   rules: async(entity: any, user: { roles: { name: string }[] }) => {
+        //     console.log(user.roles)
+        //     if (user && user.roles.filter(role => ['Admin', 'User'].filter(r => r === role.name))) {
+        //       return true
+        //     }
+        //     return false
+        //   },
+        //   onError: async(entity: any, workflow: any) => {
+        //     return {
+        //       error: 'Workflow.NotAllowByRole',
+        //     }
+        //   },
+        // },
+        // {
+        //   rules: async(entity: any, user: { roles: { name: string }[] }) => {
+        //     const documents = (entity.documents || []).find(
+        //       (doc: { fileName: string }) => doc.fileName === 'Shipping Advice'
+        //     )
+        //     if (documents) {
+        //       return true
+        //     }
+        //     return false
+        //   },
+        //   onError: async(entity: any, workflow: any) => {
+        //     return {
+        //       error: 'Workflow.MissingDocument',
+        //       components: [],
+        //     }
+        //   },
+        // },
+        // {
+        //   rules: async(entity: any, user: { roles: { name: string }[] }) => {
+        //     if (entity.commodity) {
+        //       return true
+        //     }
+        //     return false
+        //   },
+        //   onError: async(entity: any, workflow: any) => {
+        //     return {}
+        //   },
+        // },
       ],
       afterEnterEvents: [],
       nextStatus: async(entity: any) => {

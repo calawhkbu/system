@@ -5,7 +5,7 @@
     "props": {
       "title": "Users",
       "back": "/admin",
-      "urlFormat": "/admin/users/{{ id }}",
+      "urlFormat": "/admin/users",
       "reportingKey": "users",
       "jql": "users",
       "hasReports": false,

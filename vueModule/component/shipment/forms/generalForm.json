@@ -1,154 +1,153 @@
 {
-  "components": [
-    {
-      "is": "WidgetForm",
-      "props": {
-        "fields": [
-          {
-            "label": "ShipmentPage.houseNo",
-            "name": "houseNo",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.masterNo",
-            "name": "masterNo",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.carrier",
-            "name": ["carrier.name", "carrierCode"],
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.vessel",
-            "name": "billTransports[0].transport",
-            "component": "v-text-field",
-            "checkDisplayWhen": "return form && form.moduleType && form.moduleType === 'SEA'",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.flightNo",
-            "name": "billTransports[0].transport",
-            "component": "v-text-field",
-            "checkDisplayWhen": "return form && form.moduleType && form.moduleType === 'AIR'",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.placeOfReceipt",
-            "name": ["plr.locationName", "placeOfReceipt"],
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.placeOfDelivery",
-            "name": ["pld.locationName", "portofDelivery"],
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.portOfLoading",
-            "name": ["pol.locationName", "portOfLoading"],
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.portOfDischarge",
-            "name": ["pod.locationName", "portOfDischarge"],
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.finalDestination",
-            "name": ["fd.locationName", "finalDestination"],
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.service",
-            "name": "service",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.departureDateEstimated",
-            "name": "estimatedDepartureDate",
-            "component": "DateTimePicker",
-            "class": "xs-6 md-3",
-            "props": {
-              "type": "datetime",
-              "utc": true,
-              "defaultFormat": "ddd MMM DD YYYY",
-              "useOwnFormat": true
-            }
-          },
-          {
-            "label": "ShipmentPage.arrivalDateEstimated",
-            "name": "estimatedArrivalDate",
-            "component": "DateTimePicker",
-            "class": "xs-6 md-3",
-            "props": {
-              "type": "datetime",
-              "utc": true,
-              "defaultFormat": "ddd MMM DD YYYY",
-              "useOwnFormat": true
-            }
-          },
-          {
-            "label": "ShipmentPage.incoTerms",
-            "name": "incoTerms",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.nominatedType",
-            "name": "nominatedType",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.issuingAgent",
-            "name": "issuingAgent",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.issueAt",
-            "name": "issueDate",
-            "component": "DateTimePicker",
-            "class": "xs-6 md-3",
-            "props": {
-              "type": "datetime",
-              "utc": true,
-              "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
-              "useOwnFormat": true
-            }
-          },
-          {
-            "label": "ShipmentPage.valueForCarriage",
-            "name": "valueForCarriage",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.valueForCustoms",
-            "name": "valueForCustoms",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.amountOfInsurance",
-            "name": "amountOfInsurance",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "class": "xs-6 md-3"
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [{
+          "label": "ShipmentPage.houseNo",
+          "name": "houseNo",
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.masterNo",
+          "name": "masterNo",
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.carrier",
+          "name": ["carrier.name", "carrier.carrierName", "carrierName", "carrierCode"],
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.vessel",
+          "name": "shipmentTransport[0].vesselName",
+          "component": "v-text-field",
+          "checkDisplayWhen": "return form && form.moduleType && form.moduleType === 'SEA'",
+          "_checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA'",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.flightNo",
+          "name": "shipmentTransport[0].voyageFlightNumber",
+          "component": "v-text-field",
+          "checkDisplayWhen": "return form && form.moduleType && form.moduleType === 'AIR'",
+          "_checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'AIR'",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.placeOfReceipt",
+          "name": ["placeOfReceipt.name", "plr.locationName", "placeOfReceiptName", "placeOfReceiptCode"],
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.placeOfDelivery",
+          "name": ["placeOfDelivery.name", "pld.locationName", "portofDeliveryName", "portofDeliveryCode"],
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.portOfLoading",
+          "name": ["portOfLoading.name", "pol.locationName", "portOfLoadingName", "portOfLoadingCode"],
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.portOfDischarge",
+          "name": ["portOfDischarge.name", "pod.locationName", "portOfDischargeName", "portOfDischargeCode"],
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.finalDestination",
+          "name": ["finalDestination.name", "fd.locationName", "finalDestinationName", "finalDestinationCode"],
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.service",
+          "name": "services",
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.departureDateEstimated",
+          "name": "estimatedDepartureDate",
+          "component": "DateTimePicker",
+          "class": "xs-6 md-3",
+          "props": {
+            "type": "datetime",
+            "utc": true,
+            "defaultFormat": "ddd MMM DD YYYY",
+            "useOwnFormat": true
           }
-        ]
-      }
+        },
+        {
+          "label": "ShipmentPage.arrivalDateEstimated",
+          "name": "estimatedArrivalDate",
+          "component": "DateTimePicker",
+          "class": "xs-6 md-3",
+          "props": {
+            "type": "datetime",
+            "utc": true,
+            "defaultFormat": "ddd MMM DD YYYY",
+            "useOwnFormat": true
+          }
+        },
+        {
+          "label": "ShipmentPage.incoTerms",
+          "name": "incoTerms",
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.nominatedType",
+          "name": "nominatedType",
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.issuingAgent",
+          "name": "issuingAgent",
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.issueAt",
+          "name": "issueDate",
+          "component": "DateTimePicker",
+          "class": "xs-6 md-3",
+          "props": {
+            "type": "datetime",
+            "utc": true,
+            "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+            "useOwnFormat": true
+          }
+        },
+        {
+          "label": "ShipmentPage.valueForCarriage",
+          "name": "valueForCarriage",
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.valueForCustoms",
+          "name": "valueForCustoms",
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.amountOfInsurance",
+          "name": "amountOfInsurance",
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "class": "xs-6 md-3"
+        }
+      ]
     }
-  ]
+  }]
 }

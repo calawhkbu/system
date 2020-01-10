@@ -14,28 +14,16 @@ import {
   IsNullExpression,
   OrExpressions,
   AndExpressions,
-  CreateFunctionJQL,
-  Unknown,
   Value,
 } from 'node-jql'
 
 const query = new QueryDef(
   new Query({
+    $distinct: true,
     $select: [
       new ResultColumn(new ColumnExpression('booking', '*')),
-      // avoid id being overwritten
       new ResultColumn(new ColumnExpression('booking', 'id'), 'bookingId'),
-
-      new ResultColumn(new ColumnExpression('flex_data', 'data')),
-
-      new ResultColumn(new ColumnExpression('booking_container', '*')),
-      new ResultColumn(new ColumnExpression('booking_popacking', '*')),
-      new ResultColumn(new ColumnExpression('finalWorkflow', '*')),
-
-      // new ResultColumn(new ColumnExpression('booking_reference', '*')),
     ],
-
-    $distinct: true,
     $from: new FromTable(
       'booking',
       {
@@ -43,75 +31,195 @@ const query = new QueryDef(
         table: 'flex_data',
         $on: [
           new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'booking'),
+          new BinaryExpression(new ColumnExpression('booking', 'id'), '=', new ColumnExpression('flex_data', 'primaryKey')),
+        ],
+      },
+      {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('booking_party', 'bookingId'), 'booking_party_booking_id'),
+              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyId')),
+              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyName')),
+              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyContactPersonId')),
+              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyContactIdentity')),
+              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyContactEmail')),
+              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyContactName')),
+              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyContactPhone')),
+              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyContacts')),
+              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyIdentity')),
+              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyAddress')),
+              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyCityCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyStateCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyCountryCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyZip')),
+              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyId')),
+              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyName')),
+              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyContactPersonId')),
+              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyContactIdentity')),
+              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyContactEmail')),
+              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyContactName')),
+              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyContactPhone')),
+              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyContacts')),
+              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyIdentity')),
+              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyAddress')),
+              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyCityCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyStateCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyCountryCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyZip')),
+              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyId')),
+              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyName')),
+              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyContactPersonId')),
+              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyContactIdentity')),
+              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyContactEmail')),
+              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyContactName')),
+              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyContactPhone')),
+              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyContacts')),
+              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyIdentity')),
+              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyAddress')),
+              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyCityCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyStateCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyCountryCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyZip')),
+              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyId')),
+              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyName')),
+              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyContactPersonId')),
+              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyContactIdentity')),
+              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyContactEmail')),
+              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyContactName')),
+              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyContactPhone')),
+              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyContacts')),
+              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyIdentity')),
+              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyAddress')),
+              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyCityCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyStateCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyCountryCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyZip')),
+              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyId')),
+              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyName')),
+              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyContactPersonId')),
+              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyContactIdentity')),
+              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyContactEmail')),
+              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyContactName')),
+              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyContactPhone')),
+              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyContacts')),
+              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyIdentity')),
+              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyAddress')),
+              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyCityCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyStateCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyCountryCode')),
+              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyZip')),
+              new ResultColumn(new ColumnExpression('flex_data', 'data'), 'booking_party_flex_data'),
+            ],
+            $from: new FromTable('booking_party', {
+              operator: 'LEFT',
+              table: new FromTable('flex_data', 'flex_data'),
+              $on: [
+                new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'booking_party'),
+                new BinaryExpression(new ColumnExpression('flex_data', 'primaryKey'), '=', new ColumnExpression('booking_party', 'id')),
+              ]
+            }),
+            $where: new AndExpressions({
+              expressions: [
+                new IsNullExpression(new ColumnExpression('booking_party', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('booking_party', 'deletedBy'), false),
+                new IsNullExpression(new ColumnExpression('flex_data', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
+              ]
+            }),
+          }),
+          $as: 'booking_party'
+        }),
+        $on: [
           new BinaryExpression(
             new ColumnExpression('booking', 'id'),
             '=',
-            new ColumnExpression('flex_data', 'primaryKey')
+            new ColumnExpression('booking_party', 'booking_party_booking_id')
           ),
         ],
       },
-
       {
         operator: 'LEFT',
-        table: 'code_master',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('booking_date', 'bookingId'), 'booking_date_booking_id'),
+              new ResultColumn(new ColumnExpression('booking_date', 'cargoReadyDateEstimated')),
+              new ResultColumn(new ColumnExpression('booking_date', 'cargoReadyDateActual')),
+              new ResultColumn(new ColumnExpression('booking_date', 'cargoReadyDateRemark')),
+              new ResultColumn(new ColumnExpression('booking_date', 'cYCutOffDateEstimated')),
+              new ResultColumn(new ColumnExpression('booking_date', 'cYCutOffDateActual')),
+              new ResultColumn(new ColumnExpression('booking_date', 'cYCutOffDateRemark')),
+              new ResultColumn(new ColumnExpression('booking_date', 'pickupDateEstimated')),
+              new ResultColumn(new ColumnExpression('booking_date', 'pickupDateActual')),
+              new ResultColumn(new ColumnExpression('booking_date', 'pickupDateRemark')),
+              new ResultColumn(new ColumnExpression('booking_date', 'departureDateEstimated')),
+              new ResultColumn(new ColumnExpression('booking_date', 'departureDateActual')),
+              new ResultColumn(new ColumnExpression('booking_date', 'departureDateRemark')),
+              new ResultColumn(new ColumnExpression('booking_date', 'arrivalDateEstimated')),
+              new ResultColumn(new ColumnExpression('booking_date', 'arrivalDateActual')),
+              new ResultColumn(new ColumnExpression('booking_date', 'arrivalDateRemark')),
+              new ResultColumn(new ColumnExpression('booking_date', 'finalDoorDeliveryDateEstimated')),
+              new ResultColumn(new ColumnExpression('booking_date', 'finalDoorDeliveryDateActual')),
+              new ResultColumn(new ColumnExpression('booking_date', 'finalDoorDeliveryDateRemark')),
+              new ResultColumn(new ColumnExpression('flex_data', 'data'), 'booking_date_flex_data'),
+            ],
+            $from: new FromTable('booking_date', {
+              operator: 'LEFT',
+              table: new FromTable('flex_data', 'flex_data'),
+              $on: [
+                new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'booking_date'),
+                new BinaryExpression(new ColumnExpression('flex_data', 'primaryKey'), '=', new ColumnExpression('booking_date', 'id')),
+              ]
+            }),
+            $where: new AndExpressions({
+              expressions: [
+                new IsNullExpression(new ColumnExpression('booking_date', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('booking_date', 'deletedBy'), false),
+                new IsNullExpression(new ColumnExpression('flex_data', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
+              ]
+            }),
+          }),
+          $as: 'booking_date'
+        }),
         $on: [
           new BinaryExpression(
-            new ColumnExpression('code_master', 'codeType'),
+            new ColumnExpression('booking', 'id'),
             '=',
-            new Value('CARRIER')
-          ),
-
-          new BinaryExpression(
-            new ColumnExpression('booking', 'carrierCode'),
-            '=',
-            new ColumnExpression('code_master', 'code')
+            new ColumnExpression('booking_date', 'booking_date_booking_id')
           ),
         ],
       },
-
-      // {
-      //   operator: 'LEFT',
-      //   table: new FromTable({
-      //     table: new Query({
-      //       $select: [
-      //         new ResultColumn(new ColumnExpression('booking_amount', 'bookingId'), 'bookingId'),
-      //         new ResultColumn(
-      //           new FunctionExpression(
-      //             'group_concat',
-      //             new ParameterExpression({
-      //               expression: new ColumnExpression('booking_amount', 'amountName'),
-      //               suffix: 'SEPARTOR \',\''
-      //             })
-      //           )
-      //         ),
-      //         new ResultColumn(
-      //           new FunctionExpression(
-      //             'group_concat',
-      //             new ParameterExpression({
-      //               expression: new ColumnExpression('booking_amount', 'currecyCode'),
-      //               suffix: 'SEPARTOR \',\''
-      //             })
-      //           )
-      //         ),
-      //         new ResultColumn(new FunctionExpression('SUM', 'amount'), 'amount'),
-      //       ],
-      //       $from: new FromTable('booking_amount', 'booking_amount'),
-      //       $group: new GroupBy([
-      //         new ColumnExpression('bookingId')
-      //       ])
-      //     }),
-      //     $as: 'booking_amount'
-      //   }),
-      //   $on: new BinaryExpression(new ColumnExpression('booking', 'id'), '=', new ColumnExpression('booking_amount', 'bookingId'))
-      // },
-      // {
-      //   operator: 'LEFT',
-      //   table: new FromTable('flex_data', 'booking_amount_flex_data'),
-      //   $on: [
-      //     new BinaryExpression(new ColumnExpression('booking_amount_flex_data', 'tableName'), '=', 'booking_amount'),
-      //     new BinaryExpression(new ColumnExpression('booking_amount', 'id'), '=', new ColumnExpression('booking_amount_flex_data', 'primaryKey'))
-      //   ]
-      // },
+      {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('booking_amount', 'bookingId'), 'bookingId'),
+            ],
+            $from: new FromTable('booking_amount', 'booking_amount', {
+              operator: 'LEFT',
+              table: new FromTable('flex_data', 'booking_amount_flex_data'),
+              $on: [
+                new BinaryExpression(new ColumnExpression('booking_amount_flex_data', 'tableName'), '=', 'booking_amount'),
+                new BinaryExpression(new ColumnExpression('booking_amount', 'id'), '=', new ColumnExpression('booking_amount_flex_data', 'primaryKey'))
+              ]
+            }),
+            $group: new GroupBy([
+              new ColumnExpression('bookingId')
+            ])
+          }),
+          $as: 'booking_amount'
+        }),
+        $on: new BinaryExpression(new ColumnExpression('booking', 'id'), '=', new ColumnExpression('booking_amount', 'bookingId'))
+      },
       {
         operator: 'LEFT',
         table: new FromTable({
@@ -425,10 +533,145 @@ const query = new QueryDef(
             new ColumnExpression('booking', 'id')
           ),
         ],
+      },
+      {
+        operator: 'LEFT',
+        table: new FromTable('code_master', 'carrier'),
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('carrier', 'codeType'),
+            '=',
+            new Value('CARRIER')
+          ),
+
+          new BinaryExpression(
+            new ColumnExpression('booking', 'carrierCode'),
+            '=',
+            new ColumnExpression('carrier', 'code')
+          ),
+        ],
+      },
+      {
+        operator: 'LEFT',
+        table: new FromTable('code_master', 'moduleType'),
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('moduleType', 'codeType'),
+            '=',
+            new Value('MODULE')
+          ),
+
+          new BinaryExpression(
+            new ColumnExpression('booking', 'moduleTypeCode'),
+            '=',
+            new ColumnExpression('moduleType', 'code')
+          ),
+        ],
+      },
+      {
+        operator: 'LEFT',
+        table: new FromTable('code_master', 'boundType'),
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('boundType', 'codeType'),
+            '=',
+            new Value('BOUND')
+          ),
+
+          new BinaryExpression(
+            new ColumnExpression('booking', 'boundTypeCode'),
+            '=',
+            new ColumnExpression('boundType', 'code')
+          ),
+        ],
+      },
+      {
+        operator: 'LEFT',
+        table: new FromTable('code_master', 'service'),
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('service', 'codeType'),
+            '=',
+            new Value('SERVTYPE')
+          ),
+
+          new BinaryExpression(
+            new ColumnExpression('booking', 'serviceCode'),
+            '=',
+            new ColumnExpression('service', 'code')
+          ),
+        ],
+      },
+      {
+        operator: 'LEFT',
+        table: new FromTable('code_master', 'incoTerms'),
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('incoTerms', 'codeType'),
+            '=',
+            new Value('INCOTERMS')
+          ),
+
+          new BinaryExpression(
+            new ColumnExpression('booking', 'incoTermsCode'),
+            '=',
+            new ColumnExpression('incoTerms', 'code')
+          ),
+        ],
+      },
+      {
+        operator: 'LEFT',
+        table: new FromTable('code_master', 'freightTerms'),
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('freightTerms', 'codeType'),
+            '=',
+            new Value('PAYTERMS')
+          ),
+
+          new BinaryExpression(
+            new ColumnExpression('booking', 'freightTermsCode'),
+            '=',
+            new ColumnExpression('freightTerms', 'code')
+          ),
+        ],
+      },
+      {
+        operator: 'LEFT',
+        table: new FromTable('code_master', 'otherTerms'),
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('otherTerms', 'codeType'),
+            '=',
+            new Value('PAYTERMS')
+          ),
+
+          new BinaryExpression(
+            new ColumnExpression('booking', 'otherTermsCode'),
+            '=',
+            new ColumnExpression('otherTerms', 'code')
+          ),
+        ],
       }
     ),
   })
 )
+
+// register fields
+query.register('id', {
+  expression: new ColumnExpression('booking', 'id'),
+  $as: 'id',
+})
+
+query.register('createdAt', {
+  expression: new ColumnExpression('booking', 'createdAt'),
+  $as: 'createdAt',
+})
+
+query.register('updatedAt', {
+  expression: new ColumnExpression('booking', 'updatedAt'),
+  $as: 'updatedAt',
+})
 
 query.register('totalBooking', {
   expression: new FunctionExpression({
@@ -501,8 +744,70 @@ query.register('cbm', {
   $as: 'cbm',
 })
 
+query.register('service', {
+  expression: new FunctionExpression(
+    'IFNULL',
+    new ColumnExpression('service', 'name'),
+    new ColumnExpression('booking', 'serviceCode')
+  ),
+  $as: 'service',
+})
+
+query.register('moduleType', {
+  expression: new FunctionExpression(
+    'IFNULL',
+    new ColumnExpression('moduleType', 'name'),
+    new ColumnExpression('booking', 'moduleTypeCode')
+  ),
+  $as: 'moduleType',
+})
+
+query.register('boundType', {
+  expression: new FunctionExpression(
+    'IFNULL',
+    new ColumnExpression('boundType', 'name'),
+    new ColumnExpression('booking', 'boundTypeCode')
+  ),
+  $as: 'boundType',
+})
+
+query.register('incoTerms', {
+  expression: new FunctionExpression(
+    'IFNULL',
+    new ColumnExpression('incoTerms', 'name'),
+    new ColumnExpression('booking', 'incoTermsCode')
+  ),
+  $as: 'incoTerms',
+})
+
+query.register('otherTerms', {
+  expression: new FunctionExpression(
+    'IFNULL',
+    new ColumnExpression('otherTerms', 'name'),
+    new ColumnExpression('booking', 'otherTermsCode')
+  ),
+  $as: 'otherTerms',
+})
+
+query.register('freightTerms', {
+  expression: new FunctionExpression(
+    'IFNULL',
+    new ColumnExpression('freightTerms', 'name'),
+    new ColumnExpression('booking', 'freightTermsCode')
+  ),
+  $as: 'freightTerms',
+})
+
 query.register('carrierName', {
-  expression: new ColumnExpression('code_master', 'name'),
+  expression: new FunctionExpression(
+    'IFNULL',
+    new ColumnExpression('carrier', 'name'),
+    new FunctionExpression(
+      'IFNULL',
+      new ColumnExpression('booking', 'carrierName'),
+      new ColumnExpression('booking', 'carrierCode')
+    )
+  ),
   $as: 'carrierName',
 })
 
@@ -529,7 +834,7 @@ query
   .register(
     'shipperPartyId',
     new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'shipperPartyId'), false),
+      $where: new InExpression(new ColumnExpression('booking_party', 'shipperPartyId'), false),
     })
   )
   .register('value', 0)
@@ -538,7 +843,7 @@ query
   .register(
     'consigneePartyId',
     new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'consigneePartyId'), false),
+      $where: new InExpression(new ColumnExpression('booking_party', 'consigneePartyId'), false),
     })
   )
   .register('value', 0)
@@ -547,7 +852,7 @@ query
   .register(
     'forwarderPartyId',
     new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'forwarderPartyId'), false),
+      $where: new InExpression(new ColumnExpression('booking_party', 'forwarderPartyId'), false),
     })
   )
   .register('value', 0)
@@ -556,7 +861,7 @@ query
   .register(
     'officePartyId',
     new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'forwarderPartyId'), false),
+      $where: new InExpression(new ColumnExpression('booking_party', 'forwarderPartyId'), false),
     })
   )
   .register('value', 0)
@@ -565,7 +870,7 @@ query
   .register(
     'agentPartyId',
     new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'agentPartyId'), false),
+      $where: new InExpression(new ColumnExpression('booking_party', 'agentPartyId'), false),
     })
   )
   .register('value', 0)
@@ -575,7 +880,7 @@ query
     'departureDateEstimated',
     new Query({
       $where: new BetweenExpression(
-        new ColumnExpression('booking', 'departureDateEstimated'),
+        new ColumnExpression('booking_date', 'departureDateEstimated'),
         false
       ),
     })
@@ -587,7 +892,7 @@ query
   .register(
     'arrivalDateEstimated',
     new Query({
-      $where: new BetweenExpression(new ColumnExpression('booking', 'arrivalDateEstimated'), false),
+      $where: new BetweenExpression(new ColumnExpression('booking_date', 'arrivalDateEstimated'), false),
     })
   )
   .register('from', 0)
@@ -652,7 +957,7 @@ query
   .register(
     'shipperPartyName',
     new Query({
-      $where: new RegexpExpression(new ColumnExpression('booking', 'shipperPartyName'), false),
+      $where: new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyName'), false),
     })
   )
   .register('value', 0)
@@ -660,7 +965,7 @@ query
 query.register(
   'shipperPartyCodeIsNotNull',
   new Query({
-    $where: new IsNullExpression(new ColumnExpression('booking', 'shipperPartyCode'), true),
+    $where: new IsNullExpression(new ColumnExpression('booking_party', 'shipperPartyCode'), true),
   })
 )
 
@@ -668,7 +973,7 @@ query
   .register(
     'consigneePartyName',
     new Query({
-      $where: new RegexpExpression(new ColumnExpression('booking', 'consigneePartyName'), false),
+      $where: new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyName'), false),
     })
   )
   .register('value', 0)
@@ -676,7 +981,7 @@ query
 query.register(
   'consigneePartyCodeIsNotNull',
   new Query({
-    $where: new IsNullExpression(new ColumnExpression('booking', 'consigneePartyCode'), true),
+    $where: new IsNullExpression(new ColumnExpression('booking_party', 'consigneePartyCode'), true),
   })
 )
 
@@ -684,7 +989,7 @@ query
   .register(
     'forwarderPartyName',
     new Query({
-      $where: new RegexpExpression(new ColumnExpression('booking', 'forwarderPartyName'), false),
+      $where: new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyName'), false),
     })
   )
   .register('value', 0)
@@ -692,7 +997,7 @@ query
 query.register(
   'forwarderPartyCodeIsNotNull',
   new Query({
-    $where: new IsNullExpression(new ColumnExpression('booking', 'forwarderPartyCode'), true),
+    $where: new IsNullExpression(new ColumnExpression('booking_party', 'forwarderPartyCode'), true),
   })
 )
 
@@ -700,7 +1005,7 @@ query
   .register(
     'notifyPartyPartyName',
     new Query({
-      $where: new RegexpExpression(new ColumnExpression('booking', 'notifyPartyPartyName'), false),
+      $where: new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyName'), false),
     })
   )
   .register('value', 0)
@@ -708,7 +1013,7 @@ query
 query.register(
   'notifyPartyPartyCodeIsNotNull',
   new Query({
-    $where: new IsNullExpression(new ColumnExpression('booking', 'notifyPartyPartyCode'), true),
+    $where: new IsNullExpression(new ColumnExpression('booking_party', 'notifyPartyPartyCode'), true),
   })
 )
 
@@ -724,7 +1029,7 @@ query
 query.register(
   'agentPartyCodeIsNotNull',
   new Query({
-    $where: new IsNullExpression(new ColumnExpression('booking', 'agentPartyCode'), true),
+    $where: new IsNullExpression(new ColumnExpression('booking_party', 'agentPartyCode'), true),
   })
 )
 
@@ -774,19 +1079,19 @@ query
           new RegexpExpression(new ColumnExpression('booking', 'portOfDischargeCode'), false),
           new RegexpExpression(new ColumnExpression('booking', 'placeOfDeliveryCode'), false),
           new RegexpExpression(new ColumnExpression('booking', 'finalDestinationCode'), false),
-          new RegexpExpression(new ColumnExpression('booking', 'shipperPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking', 'shipperPartyContactName'), false),
-          new RegexpExpression(new ColumnExpression('booking', 'consigneePartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking', 'consigneePartyContactName'), false),
-          new RegexpExpression(new ColumnExpression('booking', 'forwarderPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking', 'forwarderPartyContactName'), false),
-          new RegexpExpression(new ColumnExpression('booking', 'notifyPartyPartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyContactName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyContactName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyContactName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyName'), false),
           new RegexpExpression(
-            new ColumnExpression('booking', 'notifyPartyPartyContactName'),
+            new ColumnExpression('booking_party', 'notifyPartyPartyContactName'),
             false
           ),
-          new RegexpExpression(new ColumnExpression('booking', 'agentPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking', 'agentPartyContactName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyContactName'), false),
           // new RegexpExpression(new ColumnExpression('booking_amount', 'amountName'), false),
           new RegexpExpression(new ColumnExpression('booking_container', 'containerNo'), false),
           new RegexpExpression(new ColumnExpression('booking_container', 'sealNo'), false),
@@ -833,22 +1138,6 @@ query.register(
         new IsNullExpression(new ColumnExpression('booking', 'deletedBy'), false),
         new IsNullExpression(new ColumnExpression('flex_data', 'deletedAt'), false),
         new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
-        // new IsNullExpression(new ColumnExpression('booking_amount', 'deletedAt'), false),
-        // new IsNullExpression(new ColumnExpression('booking_amount', 'deletedBy'), false),
-        // new IsNullExpression(new ColumnExpression('booking_amount_flex_data', 'deletedAt'), false),
-        // new IsNullExpression(new ColumnExpression('booking_amount_flex_data', 'deletedBy'), false),
-        // new IsNullExpression(new ColumnExpression('booking_container', 'deletedAt'), false),
-        // new IsNullExpression(new ColumnExpression('booking_container', 'deletedBy'), false),
-        // new IsNullExpression(new ColumnExpression('booking_container_flex_data', 'deletedAt'), false),
-        // new IsNullExpression(new ColumnExpression('booking_container_flex_data', 'deletedBy'), false),
-        // new IsNullExpression(new ColumnExpression('booking_popacking', 'deletedAt'), false),
-        // new IsNullExpression(new ColumnExpression('booking_popacking', 'deletedBy'), false),
-        // new IsNullExpression(new ColumnExpression('booking_popacking_flex_data', 'deletedAt'), false),
-        // new IsNullExpression(new ColumnExpression('booking_popacking_flex_data', 'deletedBy'), false),
-        // new IsNullExpression(new ColumnExpression('booking_reference', 'deletedAt'), false),
-        // new IsNullExpression(new ColumnExpression('booking_reference', 'deletedBy'), false),
-        // new IsNullExpression(new ColumnExpression('booking_reference_flex_data', 'deletedAt'), false),
-        // new IsNullExpression(new ColumnExpression('booking_reference_flex_data', 'deletedBy'), false),
       ],
     }),
   })
