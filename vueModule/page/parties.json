@@ -1,0 +1,109 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "title": "Relationship",
+      "reportingKey": "connections",
+      "jql": "parties",
+      "hasReports": false,
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": false,
+      "noPartyGroupFilters": true,
+      "nextPageKey": "reportIdParams",
+      "newReport": {
+        "filters": {
+          "isActive": true,
+          "parties": true,
+          "contacts": true,
+          "showInfo": true
+        },
+        "configurations": {
+          "i18nContext": "Reporting",
+          "sorting": {},
+          "pagination": {
+            "current": 0,
+            "perPage": 20
+          }
+        }
+      },
+      "filters": [
+        {
+          "name": "shortName",
+          "type": "text"
+        }
+      ],
+      "fieldOptions": [
+        {
+          "key": "id",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "party",
+            "name": "id"
+          },
+          "hidden": true
+        },
+        {
+          "key": "shortName",
+          "width": 120
+        },
+        {
+          "key": "groupName",
+          "width": 160
+        },
+        {
+          "key": "partyTypes"
+        },
+        {
+          "key": "phone",
+          "width": 160
+        },
+        {
+          "key": "parties",
+          "clickFunction": {
+            "type": "router",
+            "otherParams": {
+              "func": "push",
+              "path": "relatedParties/{{ row.id }}",
+              "base": true
+            }
+          },
+          "width": 80
+        },
+        {
+          "key": "contacts",
+          "clickFunction": {
+            "type": "router",
+            "otherParams": {
+              "func": "push",
+              "path": "relatedPersons/{{ row.id }}",
+              "base": true
+            }
+          },
+          "width": 80
+        },
+        {
+          "key": "showInfo",
+          "label": "",
+          "tdComponent": {
+            "is": "icon",
+            "props": {
+              "class": "material-icons-outlined",
+              "icon": "info"
+            }
+          },
+          "clickFunction": {
+            "type": "router",
+            "otherParams": {
+              "func": "push",
+              "path": "partyDetail/{{ row.id }}",
+              "base": true
+            }
+          },
+          "width": 80
+        }
+      ]
+    }
+  }]
+}

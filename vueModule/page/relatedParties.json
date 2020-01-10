@@ -1,0 +1,96 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "SimpleTableTool",
+    "props": {
+      "reportingKey": "connections-parties",
+      "jql": "related-parties",
+      "reportUrl": "report/relatedParties/{{ context.detailPageParams }}",
+      "noPartyGroupFilters": true,
+      "showFilterBar": true,
+      "noNextPage": true,
+      "newReport": {
+        "filters": {
+          "isActive": true,
+          "id": 1
+        },
+        "configurations": {
+          "i18nContext": "Reporting",
+          "sorting": {},
+          "pagination": {
+            "current": 0,
+            "perPage": 20
+          }
+        }
+      },
+      "filters": [
+        {
+          "name": "shortName",
+          "type": "text"
+        }
+      ],
+      "fieldOptions": [
+        {
+          "key": "id",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "related_party",
+            "name": "partyBId"
+          },
+          "hidden": true
+        },
+        {
+          "key": "name",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "party",
+            "name": "name"
+          }
+        },
+        {
+          "key": "shortName",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "party",
+            "name": "shortName"
+          },
+          "width": 120
+        },
+        {
+          "key": "groupName",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "party",
+            "name": "groupName"
+          },
+          "width": 160
+        },
+        {
+          "key": "partyTypes",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "related_party",
+            "name": "partyTypes"
+          }
+        },
+        {
+          "key": "email",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "party",
+            "name": "email"
+          }
+        },
+        {
+          "key": "phone",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "party",
+            "name": "phone"
+          },
+          "width": 160
+        }
+      ]
+    }
+  }]
+}

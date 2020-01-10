@@ -1,0 +1,80 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "SimpleTableTool",
+    "props": {
+      "reportingKey": "connections-persons",
+      "jql": "related-persons",
+      "reportUrl": "report/relatedPersons/{{ context.detailPageParams }}",
+      "noPartyGroupFilters": true,
+      "showFilterBar": true,
+      "noNextPage": true,
+      "newReport": {
+        "filters": {
+          "isActive": true,
+          "id": 1
+        },
+        "configurations": {
+          "i18nContext": "Reporting",
+          "sorting": {},
+          "pagination": {
+            "current": 0,
+            "perPage": 20
+          }
+        }
+      },
+      "filters": [
+        {
+          "name": "name",
+          "type": "text"
+        }
+      ],
+      "fieldOptions": [
+        {
+          "key": "id",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "related_person",
+            "name": "id"
+          },
+          "hidden": true
+        },
+        {
+          "key": "personId",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "related_person",
+            "name": "personId"
+          },
+          "hidden": true
+        },
+        {
+          "key": "name",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "related_person",
+            "name": "name"
+          },
+          "width": 200
+        },
+        {
+          "key": "email",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "related_person",
+            "name": "email"
+          },
+          "width": 300
+        },
+        {
+          "key": "phone",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "related_person",
+            "name": "phone"
+          }
+        }
+      ]
+    }
+  }]
+}
