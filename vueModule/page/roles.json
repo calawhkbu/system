@@ -12,12 +12,11 @@
       "hasReports": false,
       "showFilterBar": true,
       "enableShare": false,
-      "enableSetting": true,
+      "enableSetting": false,
       "newReport": {
         "configurations": {
           "i18nContext": "RolePage",
           "clickable": true,
-          "draggable": true,
           "sorting": {},
           "pagination": {
             "current": 0,

@@ -4,7 +4,7 @@ const query = new Query({
   $from: new FromTable(
     {
       method: 'POST',
-      url: 'api/party/query/party',
+      url: 'api/party/query/related-party',
       columns: [
         {
           name: 'id',
@@ -33,18 +33,6 @@ const query = new Query({
         {
           name: 'phone',
           type: 'string',
-        },
-        {
-          name: 'parties',
-          type: 'number',
-        },
-        {
-          name: 'contacts',
-          type: 'number',
-        },
-        {
-          name: 'showInfo',
-          type: 'number',
         },
       ],
     },

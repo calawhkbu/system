@@ -160,6 +160,7 @@
       "name": "middle-button",
       "is": "DynamicComponent",
       "props": {
+        "class": "button",
         "components": [{
           "is": "v-btn",
           "props": {

@@ -6,32 +6,38 @@ import {
   RegexpExpression,
   ColumnExpression,
   BinaryExpression,
-  InExpression,
   IsNullExpression,
   FunctionExpression,
-  Unknown,
-  ExistsExpression,
+  ParameterExpression,
+  QueryExpression,
+  Value
 } from 'node-jql'
 
 const query = new QueryDef(
   new Query({
-    $distinct: true,
-
     $select: [
       new ResultColumn(new ColumnExpression('party', '*')),
-      new ResultColumn(new ColumnExpression('party', 'id'), 'partyId'),
-      new ResultColumn(new ColumnExpression('party_type', 'type')),
+      new ResultColumn(new ColumnExpression('partyTypes')),
     ],
-
     $from: new FromTable('party', {
       operator: 'LEFT',
-      table: 'party_type',
+      table: new FromTable(
+        new Query({
+          $select: [
+            new ResultColumn('partyId'),
+            new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('party_type', 'type'), 'SEPARATOR \', \'')), 'partyTypes'),
+          ],
+          $from: 'party_type',
+          $group: 'partyId',
+        }),
+        'party_type'
+      ),
       $on: new BinaryExpression(
         new ColumnExpression('party', 'id'),
         '=',
         new ColumnExpression('party_type', 'partyId')
       ),
-    }),
+    })
   })
 )
 
@@ -43,26 +49,48 @@ query.register('erpCode', {
   $as: 'erpCode',
 })
 
-// // not wokring, so comment it out
-// query
-//   .register(
-//     'thirdPartyCodeKey',
-//     new Query({
-//       $where: new BinaryExpression(
-//         new FunctionExpression(
-//           'JSON_UNQUOTE',
-//           new FunctionExpression(
-//             'JSON_EXTRACT',
-//             new ColumnExpression('party', 'thirdPartyCode'),
-//             new Unknown('string')
-//           )
-//         ),
-//         '='
-//       ),
-//     })
-//   )
-//   .register('key', 0)
-//   .register('value', 1)
+query.register('showInfo', {
+  expression: new Value(1),
+  $as: 'showInfo'
+})
+
+query.register('parties', {
+  expression: new QueryExpression(
+    new Query({
+      $select: [
+        new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('related_party', 'partyBId'))))
+      ],
+      $from: 'related_party',
+      $where: [
+        new BinaryExpression(
+          new ColumnExpression('party', 'id'),
+          '=',
+          new ColumnExpression('related_party', 'partyAId')
+        ),
+      ]
+    })
+  ),
+  $as: 'parties',
+})
+
+query.register('contacts', {
+  expression: new QueryExpression(
+    new Query({
+      $select: [
+        new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('related_person', 'email'))))
+      ],
+      $from: 'related_person',
+      $where: [
+        new BinaryExpression(
+          new ColumnExpression('party', 'id'),
+          '=',
+          new ColumnExpression('related_person', 'partyId')
+        ),
+      ]
+    })
+  ),
+  $as: 'contacts',
+})
 
 query
   .register(
@@ -136,14 +164,5 @@ query.register(
     ],
   })
 )
-
-query
-  .register(
-    'partyTypes',
-    new Query({
-      $where: new InExpression(new ColumnExpression('party_type', 'type'), false),
-    })
-  )
-  .register('value', 0)
 
 export default query

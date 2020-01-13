@@ -20,7 +20,6 @@
           "configurations": {
             "i18nContext": "LocationPage",
             "clickable": true,
-            "draggable": true,
             "sorting": {},
             "expanded" : {},
             "pagination": {

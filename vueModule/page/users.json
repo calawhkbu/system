@@ -11,7 +11,7 @@
       "hasReports": false,
       "showFilterBar": true,
       "enableShare": false,
-      "enableSetting": true,
+      "enableSetting": false,
       "noPartyGroupFilters": true,
       "nextPageComponent": "user",
       "clickFunction": {
@@ -31,7 +31,6 @@
         "configurations": {
           "i18nContext": "InvitationPage",
           "clickable": true,
-          "draggable": true,
           "sorting": {
             "direction": "DESC",
             "key": "updatedAt",
@@ -240,6 +239,7 @@
       "name": "middle-button",
       "is": "DynamicComponent",
       "props": {
+        "class": "button",
         "components": [{
           "is": "v-btn",
           "props": {
