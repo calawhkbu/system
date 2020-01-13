@@ -446,22 +446,16 @@ export default class EdiParser856 extends BaseEdiParser {
           const totalItemNo = subPoList.length
 
           const bookingReferences = _.get(element, 'bookingReferences') || []
-          let haveCR = false
           if (bookingReferences.length)
           {
             for (const ref of bookingReferences)
             {
               const refMapper = {
                 MBL: 'BM',
-                folderNo: 'CR'
               }
               const refName = _.get(ref, 'refName')
               if (refMapper[refName])
               {
-                if (refMapper[refName] === 'CR')
-                {
-                  haveCR = true
-                }
                 const REF: JSONObject = {
                   segement : 'REF',
                   elementList : []
@@ -471,10 +465,17 @@ export default class EdiParser856 extends BaseEdiParser {
               }
             }
           }
-          if (!haveCR)
+          const folderNo = _.get(element, 'folderNo')
+          if (!folderNo)
           {
             throw new Error('missing the CR')
           }
+          const REF: JSONObject = {
+            segement : 'REF',
+            elementList : []
+          }
+          REF.elementList.push('CR', folderNo)
+          loopObjectList.push(REF)
           const invoiceNo = _.get(element, 'invoiceNo')
           if (invoiceNo)
           {
