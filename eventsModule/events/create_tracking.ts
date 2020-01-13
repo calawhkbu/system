@@ -28,6 +28,70 @@ class CreateTrackingEvent extends BaseEvent {
   ) {
     super(parameters, eventConfig, repo, eventService, allService, user, transaction)
   }
+
+  private async getTrackingNoFromBooking(
+    {
+      moduleTypeCode = null,
+      carrierCode = null,
+      bookingDate = {},
+      bookingReference = [],
+      bookingContainers = []
+    }: any
+  ) {
+    if (moduleTypeCode && carrierCode && bookingDate.departureDateEstimated) {
+      let refName = null
+      if (moduleTypeCode === 'AIR') {
+        refName = 'MAWB'
+      } else if (moduleTypeCode === 'SEA') {
+        refName = 'MBL'
+      }
+      const masterNo = bookingReference.reduce((masterNo: string, bookingReference: BookingReference) => {
+        if (bookingReference.refName === refName) {
+          masterNo = bookingReference.refDescription
+        }
+        return masterNo
+      }, null)
+      let soNo = []
+      let containerNo = []
+      if (moduleTypeCode === 'SEA') {
+        soNo = bookingContainers.reduce((soNos: string[], bookingContainer: BookingContainer) => {
+          if (bookingContainer.soNo && bookingContainer.soNo.length) {
+            soNos.push(bookingContainer.soNo)
+          }
+          return soNos
+        }, [])
+        containerNo = bookingContainers.reduce((containerNos: string[], bookingContainer: BookingContainer) => {
+          if (bookingContainer.containerNo && bookingContainer.containerNo.length) {
+            containerNos.push(bookingContainer.containerNo)
+          }
+          return containerNos
+        }, [])
+      }
+      return { masterNo, soNo, containerNo }
+    }
+    return null
+  }
+  private async getTrackingNoFromShipment(
+    {
+      moduleTypeCode = null,
+      carrierCode = null,
+      shipmentDate = {},
+      trackingNos = null
+    }: any
+  ) {
+    if (moduleTypeCode && carrierCode && shipmentDate.departureDateEstimated) {
+      return trackingNos
+    }
+    return null
+  }
+  private async getTrackingNo(data: any, tableName: string) {
+    switch (tableName) {
+      case 'booking': return await this.getTrackingNoFromBooking(data)
+      case 'shipment': return await this.getTrackingNoFromShipment(data)
+      default: return null
+    }
+  }
+
   // parameters should be booking
   public async mainFunction(parameters: any) {
     console.log('Start Create Tracking Event ....', this.constructor.name)
@@ -38,53 +102,27 @@ class CreateTrackingEvent extends BaseEvent {
       TrackService: TrackService
     }
 
-    const {
-      moduleTypeCode = null,
-      carrierCode = null,
-      departureDateEstimated = null,
-      bookingReference = [],
-      bookingContainers = []
-    } = parameters.data
+    const { data, otherParameters } = parameters
 
-    if (moduleTypeCode && carrierCode && departureDateEstimated) {
+    const trackingNo = await this.getTrackingNo(data, otherParameters.tableName)
+    if (
+      trackingNo
+      && (
+        trackingNo.masterNo
+        || (trackingNo.soNo && trackingNo.soNo.length)
+        || (trackingNo.containerNo && trackingNo.containerNo.length)
+      )
+    ) {
       try {
-        let refName = null
-        if (moduleTypeCode === 'AIR') {
-          refName = 'MAWB'
-        } else if (moduleTypeCode === 'SEA') {
-          refName = 'MBL'
-        }
-        const masterNo = bookingReference.reduce((masterNo: string, bookingReference: BookingReference) => {
-          if (bookingReference.refName === refName) {
-            masterNo = bookingReference.refDescription
-          }
-          return masterNo
-        }, null)
-        let soNo = []
-        let containerNo = []
-        if (moduleTypeCode === 'SEA') {
-          soNo = bookingContainers.reduce((soNos: string[], bookingContainer: BookingContainer) => {
-            if (bookingContainer.soNo && bookingContainer.soNo.length) {
-              soNos.push(bookingContainer.soNo)
-            }
-            return soNos
-          }, [])
-          containerNo = bookingContainers.reduce((containerNos: string[], bookingContainer: BookingContainer) => {
-            if (bookingContainer.containerNo && bookingContainer.containerNo.length) {
-              containerNos.push(bookingContainer.containerNo)
-            }
-            return containerNos
-          }, [])
-        }
         const registerForm: RegisterTrackingForm = {
-          moduleTypeCode,
-          carrierCode,
-          departureDateEstimated,
-          masterNo,
-          soNo,
-          containerNo,
+          moduleTypeCode: data.moduleTypeCode,
+          carrierCode: data.carrierCode,
+          departureDateEstimated: data[`${otherParameters.tableName}Date`].departureDateEstimated,
+          masterNo: trackingNo.masterNo,
+          soNo: trackingNo.soNo,
+          containerNo: trackingNo.containerNo,
           flexData: {
-            booking: parameters.data
+            entity: parameters.data
           }
         }
         console.log(registerForm, this.constructor.name)

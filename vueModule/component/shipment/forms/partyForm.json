@@ -2,6 +2,7 @@
   "components": [{
     "is": "WidgetMoreForm",
     "props": {
+      "name": "shipmentParty",
       "mainKey": "Party",
       "formProps": {
         "z": {
@@ -56,7 +57,7 @@
       "addItemsOrFunc": ["Trucker", "Broker", "Factory", "Warehouse"],
 
       "fields": [{
-        "name": "{{flex}}{{key}}PartyName",
+        "name": "shipmentParty.{{flex}}{{key}}PartyName",
         "component": "v-text-field",
         "class": "xs-12 md-12"
       }],
@@ -68,109 +69,203 @@
         }
       },
       "hiddenFields": [{
-          "name": "{{flex}}{{key}}PartyName",
+          "name": "shipmentParty.{{flex}}{{key}}PartyName",
           "component": "v-text-field",
           "class": "xs-12 md-12"
         },
         {
-          "label": "Widget.countryCode",
-          "name": "{{flex}}{{key}}PartyCountryCode",
-          "component": "ReadField",
+          "label": "Widget.contactName",
+          "name": "shipmentParty.{{flex}}{{key}}PartyContactName",
+          "component": "v-text-field",
           "class": "xs-12 md-12",
-          "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyCountryCode",
-          "props": {
-            "resultProp": "name",
-            "axiosParams": {
-              "url": "api/code/query/code_master",
-              "method": "POST",
-              "data": {
-                "subqueries": {
-                  "codeType": {
-                    "value": "COUNTRY"
-                  },
-                  "code": {
-                    "value": "{{context.fixValue}}"
-                  }
-                }
-              }
+          "checkDisplayWhen": "return form && form.shipmentParty.{{flex}}{{key}}PartyContactName"
+        },
+        {
+          "label": "Widget.contactEmail",
+          "name": "shipmentParty.{{flex}}{{key}}PartyContactEmail",
+          "component": "v-text-field",
+          "class": "xs-12 md-12",
+          "readonlyClass": "xs-10 md-10",
+          "checkDisplayWhen": "return form && form.shipmentParty.{{flex}}{{key}}PartyContactEmail"
+        },
+        {
+          "label": "Widget.inviteEmail",
+          "name": "{{flex}}{{key}}PartyContactEmail",
+          "checkDisplayWhen": "return form && form.shipmentParty.{{flex}}{{key}}PartyContactEmail",
+          "component": "button-field",
+          "class": "hidden",
+          "readonlyClass": "xs-2",
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "email"
             }
+          }],
+          "props": {
+
+            "flat": true,
+            "icon": true,
+            "events": {
+              "click.stop": [{
+                "type": "axios",
+                "otherParams": {
+                  "axiosParams": {
+                    "url": "/api/invitation/invite/invite",
+                    "method": "POST",
+                    "data": {
+                      "entityId": "{{context.$store.state.widget.id}}",
+                      "tableName": "booking",
+                      "partyId": ["{{ '`${args[0]}${args[1]}PartyId`'  | calculate(flex,key) | getFrom(context.$store.state.widget.data)}}"],
+                      "partyType": ["{{key}}"],
+                      "person": {
+                        "userName": "{{ context.fixValue }}"
+                      }
+                    }
+                  }
+                },
+
+                "afterActions": [{
+                  "type": "notify",
+                  "otherParams": {
+                    "notification": "invite success"
+                  }
+                }]
+              }]
+
+
+            }
+
+
           }
         },
         {
-          "label": "Widget.stateCode",
-          "name": "{{flex}}{{key}}PartyStateCode",
-          "component": "ReadField",
+          "label": "Widget.contactPhone",
+          "name": "shipmentParty.{{flex}}{{key}}PartyContactPhone",
+          "component": "v-text-field",
           "class": "xs-12 md-12",
-          "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyStateCode",
-          "props": {
-            "resultProp": "name",
-            "axiosParams": {
-              "url": "api/code/query/code_master",
-              "method": "POST",
-              "data": {
-                "subqueries": {
-                  "codeType": {
-                    "value": "STATE-PROVINCE"
-                  },
-                  "code": {
-                    "value": "{{context.fixValue}}"
-                  }
-                }
-              }
-            }
-          }
+          "checkDisplayWhen": "return form && form.shipmentParty.{{flex}}{{key}}PartyContactPhone"
         },
         {
-          "label": "Widget.cityCode",
-          "name": "{{flex}}{{key}}PartyCityCode",
-          "component": "ReadField",
-          "class": "xs-12 md-12",
-          "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyCityCode",
+          "name": "shipmentParty.{{flex}}{{key}}PartyContacts",
+          "checkDisplayWhen": "return form && form.shipmentParty.{{flex}}{{key}}PartyContacts && form.shipmentParty.{{flex}}{{key}}PartyContacts.length > 0",
+          "component": "GridField",
+          "class": "xs-12",
+          "readonlyClass": "xs-12",
           "props": {
-            "resultProp": "name",
-            "axiosParams": {
-              "url": "api/code/query/code_master",
-              "method": "POST",
-              "data": {
-                "subqueries": {
-                  "codeType": {
-                    "value": "AIRPORT"
-                  },
-                  "code": {
-                    "value": "{{context.fixValue}}"
+            "overrideRowIndex": 1,
+            "fields": [{
+                "label": "Widget.contactXName",
+                "name": "Name",
+                "component": "v-text-field",
+                "class": "xs-12 md-12",
+                "readonlyClass": "xs-12 md-12"
+              },
+              {
+                "label": "Widget.contactXEmail",
+                "name": "Email",
+                "component": "v-text-field",
+                "class": "xs-12 md-12",
+                "readonlyClass": "xs-10 md-10"
+              },
+              {
+                "label": "Widget.inviteEmail",
+                "checkDisplayWhen": "return form.Email",
+                "name": "Email",
+                "component": "button-field",
+                "class": "hidden",
+                "readonlyClass": "xs-2 md-2",
+                "slots": [{
+                  "is": "Icon",
+                  "props": {
+                    "icon": "email"
                   }
+                }],
+                "props": {
+
+                  "flat": true,
+                  "icon": true,
+                  "events": {
+                    "click.stop": [{
+                      "type": "axios",
+                      "otherParams": {
+                        "axiosParams": {
+                          "url": "/api/invitation/invite/invite",
+                          "method": "POST",
+                          "data": {
+                            "entityId": "{{context.$store.state.widget.id}}",
+                            "tableName": "booking",
+                            "partyId": ["{{ '`${args[0]}${args[1]}PartyId`'  | calculate(flex,key) | getFrom(context.$store.state.widget.data)}}"],
+                            "partyType": ["{{key}}"],
+                            "person": {
+                              "userName": "{{ context.fixValue }}"
+                            }
+                          }
+                        }
+                      },
+
+                      "afterActions": [{
+                        "type": "notify",
+                        "otherParams": {
+                          "notification": "invite success"
+                        }
+                      }]
+                    }]
+
+
+                  }
+
+
                 }
+              },
+              {
+                "label": "Widget.contactXPhone",
+                "name": "Phone",
+                "component": "v-text-field",
+                "class": "xs-12 md-12",
+                "_readonlyClass": "xs-12 md-12"
               }
-            }
+            ]
           }
         },
         {
           "label": "Widget.contactAddress",
-          "name": "{{flex}}{{key}}PartyAddress",
-          "component": "v-text-field",
+          "name": "shipmentParty.{{flex}}{{key}}PartyAddress",
+          "component": "v-textarea",
+          "props": {
+            "auto-grow": true,
+            "rows": 5
+          },
           "class": "xs-12 md-12",
-          "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyAddress"
+          "checkDisplayWhen": "return form && form.shipmentParty.{{flex}}{{key}}PartyAddress"
         },
         {
-          "label": "Widget.contactName",
-          "name": "{{flex}}{{key}}PartyContactName",
+          "label": "Widget.countryCode",
+          "name": "shipmentParty.{{flex}}{{key}}PartyCountryCode",
           "component": "v-text-field",
           "class": "xs-12 md-12",
-          "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyContactName"
+          "checkDisplayWhen": "return form && form.shipmentParty.{{flex}}{{key}}PartyCountryCode"
         },
         {
-          "label": "Widget.contactPhone",
-          "name": "{{flex}}{{key}}PartyContactPhone",
+          "label": "Widget.stateCode",
+          "name": "shipmentParty.{{flex}}{{key}}PartyStateCode",
           "component": "v-text-field",
           "class": "xs-12 md-12",
-          "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyContactPhone"
+          "checkDisplayWhen": "return form && form.shipmentParty.{{flex}}{{key}}PartyStateCode"
         },
         {
-          "label": "Widget.contactEmail",
-          "name": "{{flex}}{{key}}PartyContactEmail",
+          "label": "Widget.cityCode",
+          "name": "shipmentParty.{{flex}}{{key}}PartyCityCode",
           "component": "v-text-field",
           "class": "xs-12 md-12",
-          "checkDisplayWhen": "return form && form.{{flex}}{{key}}PartyContactEmail"
+          "checkDisplayWhen": "return form && form.shipmentParty.{{flex}}{{key}}PartyCityCode"
+        },
+        {
+          "label": "Widget.zip",
+          "name": "shipmentParty.{{flex}}{{key}}PartyZip",
+          "component": "v-text-field",
+          "class": "xs-12 md-6",
+          "checkDisplayWhen": "return form && form.shipmentParty.{{flex}}{{key}}PartyZip",
+          "readonlyClass": "xs-12"
         }
       ]
     }

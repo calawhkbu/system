@@ -16,7 +16,7 @@
         },
         {
           "label": "ShipmentPage.carrier",
-          "name": ["carrier.name", "carrier.carrierName", "carrierName", "carrierCode"],
+          "name": ["carrier.name", "carrierName", "carrierCode"],
           "component": "v-text-field",
           "class": "xs-6 md-3"
         },
@@ -24,57 +24,55 @@
           "label": "ShipmentPage.vessel",
           "name": "shipmentTransport[0].vesselName",
           "component": "v-text-field",
-          "checkDisplayWhen": "return form && form.moduleType && form.moduleType === 'SEA'",
-          "_checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA'",
+          "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA'",
           "class": "xs-6 md-3"
         },
         {
           "label": "ShipmentPage.flightNo",
           "name": "shipmentTransport[0].voyageFlightNumber",
           "component": "v-text-field",
-          "checkDisplayWhen": "return form && form.moduleType && form.moduleType === 'AIR'",
-          "_checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'AIR'",
+          "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'AIR'",
           "class": "xs-6 md-3"
         },
         {
           "label": "ShipmentPage.placeOfReceipt",
-          "name": ["placeOfReceipt.name", "plr.locationName", "placeOfReceiptName", "placeOfReceiptCode"],
+          "name": ["placeOfReceipt.name", "placeOfReceiptName", "placeOfReceiptCode"],
           "component": "v-text-field",
           "class": "xs-6 md-3"
         },
         {
           "label": "ShipmentPage.placeOfDelivery",
-          "name": ["placeOfDelivery.name", "pld.locationName", "portofDeliveryName", "portofDeliveryCode"],
+          "name": ["placeOfDelivery.name", "portofDeliveryName", "portofDeliveryCode"],
           "component": "v-text-field",
           "class": "xs-6 md-3"
         },
         {
           "label": "ShipmentPage.portOfLoading",
-          "name": ["portOfLoading.name", "pol.locationName", "portOfLoadingName", "portOfLoadingCode"],
+          "name": ["portOfLoading.name", "portOfLoadingName", "portOfLoadingCode"],
           "component": "v-text-field",
           "class": "xs-6 md-3"
         },
         {
           "label": "ShipmentPage.portOfDischarge",
-          "name": ["portOfDischarge.name", "pod.locationName", "portOfDischargeName", "portOfDischargeCode"],
+          "name": ["portOfDischarge.name", "portOfDischargeName", "portOfDischargeCode"],
           "component": "v-text-field",
           "class": "xs-6 md-3"
         },
         {
           "label": "ShipmentPage.finalDestination",
-          "name": ["finalDestination.name", "fd.locationName", "finalDestinationName", "finalDestinationCode"],
+          "name": ["finalDestination.name", "finalDestinationName", "finalDestinationCode"],
           "component": "v-text-field",
           "class": "xs-6 md-3"
         },
         {
           "label": "ShipmentPage.service",
-          "name": "services",
+          "name": "serviceCode",
           "component": "v-text-field",
           "class": "xs-6 md-3"
         },
         {
           "label": "ShipmentPage.departureDateEstimated",
-          "name": "estimatedDepartureDate",
+          "name": "shipmentDate.departureDateEstimated",
           "component": "DateTimePicker",
           "class": "xs-6 md-3",
           "props": {
@@ -86,7 +84,7 @@
         },
         {
           "label": "ShipmentPage.arrivalDateEstimated",
-          "name": "estimatedArrivalDate",
+          "name": "shipmentDate.arrivalDateEstimated",
           "component": "DateTimePicker",
           "class": "xs-6 md-3",
           "props": {
@@ -98,13 +96,13 @@
         },
         {
           "label": "ShipmentPage.incoTerms",
-          "name": "incoTerms",
+          "name": "incoTermsCode",
           "component": "v-text-field",
           "class": "xs-6 md-3"
         },
         {
           "label": "ShipmentPage.nominatedType",
-          "name": "nominatedType",
+          "name": "nominatedTypeCode",
           "component": "v-text-field",
           "class": "xs-6 md-3"
         },

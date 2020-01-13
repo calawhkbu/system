@@ -140,6 +140,26 @@ export default {
   ],
   // purchase-order
   // shipment
+  afterCreate_shipment: [
+    // create tracking
+    {
+      condition: true,
+      eventName: 'create_tracking',
+      otherParameters: {
+        tableName: 'shipment'
+      }
+    },
+  ],
+  afterUpdate_shipment: [
+    // create tracking
+    {
+      condition: true,
+      eventName: 'create_tracking',
+      otherParameters: {
+        tableName: 'shipment'
+      }
+    },
+  ],
   // tracking
   afterCreate_tracking: [
     {

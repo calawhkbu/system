@@ -7,8 +7,7 @@
           "label": "ShipmentPage.cargos",
           "name": "billCargos",
           "component": "TableField",
-          "checkDisplayWhen": "return form && form.billCargos && form.billCargos.length",
-          "_checkDisplayWhen": "return form && form.shipmentCargos && form.shipmentCargos.length",
+          "checkDisplayWhen": "return form && form.shipmentCargos && form.shipmentCargos.length",
           "props": {
             "topLabel": true,
             "fields": [{
@@ -116,8 +115,7 @@
         {
           "label": "ShipmentPage.containers",
           "name": "billContainers",
-          "checkDisplayWhen": "return form && form.billContainers && form.billContainers.length",
-          "_checkDisplayWhen": "return form && form.shipmentContainers && form.shipmentContainers.length",
+          "checkDisplayWhen": "return form && form.shipmentContainers && form.shipmentContainers.length",
           "component": "TableField",
           "props": {
             "topLabel": true,

@@ -36,9 +36,9 @@ class TrackingUpdateDataEvent extends BaseEvent {
     return await bookingService.query(`
       SELECT
         base.tableName, base.primaryKey,
-        booking.moduleTypeCode as module,
-        booking.estimatedDepartureDate, booking.estimatedArrivalDate,
-        booking.actualDepartureDate, booking.actualArrivalDate
+        entity.moduleTypeCode as module,
+        entity.departureDateEstimated, entity.departureDateActual,
+        entity.arrivalDateEstimated, entity.arrivalDateActual
       FROM (
         SELECT 'booking' as tableName, br.bookingId as primaryKey
         FROM booking_reference br
@@ -48,7 +48,39 @@ class TrackingUpdateDataEvent extends BaseEvent {
         FROM booking_container bc
         WHERE (bc.soNo in (:soNo) OR bc.containerNo in (:containerNo))
       ) base
-      LEFT OUTER JOIN booking ON booking.id = base.primaryKey AND booking.partyGroupCode in (:partyGroupCode)
+      LEFT OUTER JOIN (
+        SELECT
+          booking.id, booking.moduleTypeCode,
+          booking_date.departureDateEstimated, booking_date.departureDateActual,
+          booking_date.arrivalDateEstimated, booking_date.arrivalDateActual
+        FROM booking
+        LEFT OUTER JOIN booking_date ON booking_date.bookingId = booking.id
+        WHERE booking.partyGroupCode = :partyGroupCode
+      ) entity ON entity.id = base.primaryKey
+      UNION
+      SELECT
+        base.tableName, base.primaryKey,
+        entity.moduleTypeCode as module,
+        entity.departureDateEstimated, entity.departureDateActual,
+        entity.arrivalDateEstimated, entity.arrivalDateActual
+      FROM (
+        SELECT 'shipment' as tableName, s.id as primaryKey
+        FROM shipment s
+        WHERE s.masterNo = :masterNo
+        UNION
+        SELECT 'shipment' as tableName, sc.shipmentId as primaryKey
+        FROM shipment_container sc
+        WHERE (sc.carrierBookingNo in (:soNo) OR sc.containerNo in (:containerNo))
+      ) base
+      LEFT OUTER JOIN (
+        SELECT
+          shipment.id, shipment.moduleTypeCode,
+          shipment_date.departureDateEstimated, shipment_date.departureDateActual,
+          shipment_date.arrivalDateEstimated, shipment_date.arrivalDateActual
+        FROM shipment
+        LEFT OUTER JOIN shipment_date ON shipment_date.bookingId = booking.id
+        WHERE shipment.partyGroupCode = :partyGroupCode
+      ) entity ON entity.id = base.primaryKey
     `, {
       raw: true,
       type: Sequelize.QueryTypes.SELECT,
@@ -95,7 +127,18 @@ class TrackingUpdateDataEvent extends BaseEvent {
               moment.utc(inputEstimatedDepartureDate).add(1, deplayAlertTimeRange[module])
             )
           ) {
-            await alertDbService.createAlert(tableName, primaryKey, `bookingEtdChanged`, {}, this.user)
+            await alertDbService.createAlert(
+              tableName, primaryKey,
+              {
+                tableName: `${tableName}`,
+                alertCategory: 'Exception',
+                alertType: `${tableName}EtdChanged`,
+                severity: 'high',
+                contactRoleList: [],
+                templatePath: ''
+              },
+              {}, this.user
+            )
           }
           if (
             !moment.utc(trackingEstimatedArrivalDate).isBetween(
@@ -103,7 +146,18 @@ class TrackingUpdateDataEvent extends BaseEvent {
               moment.utc(inputEstimatedArrivalDate).add(1, deplayAlertTimeRange[module])
             )
           ) {
-            await alertDbService.createAlert(tableName, primaryKey, `bookingEtaChanged`, {}, this.user)
+            await alertDbService.createAlert(
+              tableName, primaryKey,
+              {
+                tableName: `${tableName}`,
+                alertCategory: 'Exception',
+                alertType: `${tableName}EtaChanged`,
+                severity: 'high',
+                contactRoleList: [],
+                templatePath: ''
+              },
+              {}, this.user
+            )
           }
           if (
             !moment.utc(trackingActualDepartureDate).isBetween(
@@ -111,7 +165,18 @@ class TrackingUpdateDataEvent extends BaseEvent {
               moment.utc(inputActualDepartureDate).add(1, deplayAlertTimeRange[module])
             )
           ) {
-            await alertDbService.createAlert(tableName, primaryKey, `bookingAtdChanged`, {}, this.user)
+            await alertDbService.createAlert(
+              tableName, primaryKey,
+              {
+                tableName: `${tableName}`,
+                alertCategory: 'Exception',
+                alertType: `${tableName}AtdChanged`,
+                severity: 'high',
+                contactRoleList: [],
+                templatePath: ''
+              },
+              {}, this.user
+            )
           }
           if (
             !moment.utc(trackingActualArrivalDate).isBetween(
@@ -119,7 +184,18 @@ class TrackingUpdateDataEvent extends BaseEvent {
               moment.utc(inputActualArrivalDate).add(1, deplayAlertTimeRange[module])
             )
           ) {
-            await alertDbService.createAlert(tableName, primaryKey, `bookingAtaChanged`, {}, this.user)
+            await alertDbService.createAlert(
+              tableName, primaryKey,
+              {
+                tableName: `${tableName}`,
+                alertCategory: 'Exception',
+                alertType: `${tableName}AtaChanged`,
+                severity: 'high',
+                contactRoleList: [],
+                templatePath: ''
+              },
+              {}, this.user
+            )
           }
         }
       }
