@@ -34,8 +34,5 @@
       }
     }
   ],
-  "remove": "---",
-  "_components": [{
-    "is": "CustomEditor"
-  }]
+  "remove": "---"
 }

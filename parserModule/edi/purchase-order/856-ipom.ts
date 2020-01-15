@@ -247,8 +247,8 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push('2')
             TD5.elementList.push(scac)
             TD5.elementList.push('')// not used
-            TD5.elementList.push(' ')// not used
-            TD5.elementList.push('  ')// not used
+            TD5.elementList.push('')// not used // space or no space
+            TD5.elementList.push('')// not used // space or no space
             TD5.elementList.push('KL')
             TD5.elementList.push(_.get(element, 'portOfLoading').substring(0, 30))
             loopObjectList.push(TD5)
@@ -263,8 +263,8 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push('2')
             TD5.elementList.push(scac)
             TD5.elementList.push('')// not used
-            TD5.elementList.push(' ')// not used
-            TD5.elementList.push('  ')// not used
+            TD5.elementList.push('')// not used // space or no space
+            TD5.elementList.push('')// not used // space or no space
             TD5.elementList.push('PB')
             TD5.elementList.push(_.get(element, 'portOfDischarge').substring(0, 30))
             loopObjectList.push(TD5)
@@ -279,8 +279,8 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push('2')
             TD5.elementList.push(scac)
             TD5.elementList.push('') // not used
-            TD5.elementList.push(' ') // not used
-            TD5.elementList.push('  ') // not used
+            TD5.elementList.push('') // not used
+            TD5.elementList.push('') // not used
             TD5.elementList.push('OA')
             TD5.elementList.push(_.get(element, 'placeOfReceiptCode').substring(0, 30))
             loopObjectList.push(TD5)
@@ -319,7 +319,7 @@ export default class EdiParser856 extends BaseEdiParser {
             //   '40HC': 4500,
             //   '45HC': 9500,
             // }
-            TD3.elementList.push('  ') // not used
+            TD3.elementList.push('') // not used // space or no space
             TD3.elementList.push((_.get(container, 'containerNo') || ' ').substring(0, 4))
             TD3.elementList.push((_.get(container, 'containerNo') || ' ').substring(4, 10))
             if (_.get(container, 'sealNo1') && _.get(container, 'sealNo1'))
@@ -434,8 +434,8 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push('2')
             TD5.elementList.push(scac)
             TD5.elementList.push('') // not used
-            TD5.elementList.push(' ') // not used
-            TD5.elementList.push('  ') // not used
+            TD5.elementList.push('') // not used
+            TD5.elementList.push('') // not used
             TD5.elementList.push('OR')
             TD5.elementList.push((_.get(subPoList[0], 'pol') || _.get(element, 'portOfLoading')).substring(0, 30))
             loopObjectList.push(TD5)
@@ -450,8 +450,8 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push('2')
             TD5.elementList.push(scac)
             TD5.elementList.push('') // not used
-            TD5.elementList.push(' ') // not used
-            TD5.elementList.push('  ') // not used
+            TD5.elementList.push('') // not used
+            TD5.elementList.push('') // not used
             TD5.elementList.push('DL')
             TD5.elementList.push((_.get(subPoList[0], 'pod') || _.get(element, 'portOfDischarge')).substring(0, 30))
             loopObjectList.push(TD5)
