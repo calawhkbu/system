@@ -19,25 +19,7 @@ import {
 const query = new QueryDef(
   new Query({
     $from : new FromTable({
-
-      table : 'role',
-      joinClauses : [
-        new JoinClause(
-          {
-            operator: 'LEFT',
-            table: 'flex_data',
-            $on: [
-              new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'role'),
-              new BinaryExpression(
-                new ColumnExpression('role', 'id'),
-                '=',
-                new ColumnExpression('flex_data', 'primaryKey')
-              ),
-            ],
-          }
-
-        )
-      ]
+      table : 'role'
     }),
 
     $where : new OrExpressions([

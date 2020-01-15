@@ -6,7 +6,7 @@ import { OutboundService } from 'modules/integration-hub/services/outbound'
 
 // import { Booking } from 'models/main/booking';
 
-class Fm3kBookingEvent extends BaseEvent {
+class SendDataToExternalEvent extends BaseEvent {
   constructor(
     protected readonly parameters: any,
     protected readonly eventConfig: EventConfig,
@@ -21,20 +21,29 @@ class Fm3kBookingEvent extends BaseEvent {
   }
 
   public async mainFunction(parameters: any) {
-    const booking = parameters.data as Booking
+    console.log('Start sending booking to external ...', this.constructor.name)
 
-    const outboundService = this.allService['OutboundService'] as OutboundService
+    const {
+      data, outboundName, header = {}, body = {}
+    } = parameters
+    const {
+      OutboundService: outboundService
+    } = this.allService as { OutboundService: OutboundService }
 
-    const repo = 'system'
+    const selectedPartyGroupCode = this.user.selectedPartyGroup.code
 
-    const response = await outboundService.send(repo, 'fm3k-booking')
-
-    console.log('response')
-    console.log(response)
-
-    return {
-      response: 'response',
+    try {
+      const response = await outboundService.send(
+        `customer-${selectedPartyGroupCode}`,
+        outboundName,
+        header,
+        { data, ...body }
+      )
+      console.log(response, this.constructor.name)
+    } catch (e) {
+      console.error(e, e.stack, this.constructor.name)
     }
+    console.log('End sending booking to external ...', this.constructor.name)
   }
 }
 
@@ -48,7 +57,7 @@ export default {
     user?: JwtPayload,
     transaction?: Transaction
   ) => {
-    const event = new Fm3kBookingEvent(
+    const event = new SendDataToExternalEvent(
       parameters,
       eventConfig,
       repo,

@@ -57,30 +57,6 @@ query.register('canResetDefault',
   $as: 'canResetDefault'
 })
 
-query.register('flex_data_join', new Query({
-  $from: new FromTable({
-    table: 'code_master',
-    joinClauses: [
-      new JoinClause({
-        operator: 'LEFT',
-        table: 'flex_data',
-        $on: [
-          new BinaryExpression(
-            new ColumnExpression('flex_data', 'tableName'),
-            '=',
-            'code_master'
-          ),
-          new BinaryExpression(
-            new ColumnExpression('code_master', 'id'),
-            '=',
-            new ColumnExpression('flex_data', 'primaryKey')
-          ),
-        ],
-      })
-    ],
-  })
-}))
-
 query.register('isActive', {
   expression: new FunctionExpression(
     'IF',
