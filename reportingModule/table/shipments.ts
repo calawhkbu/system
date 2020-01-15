@@ -10,13 +10,13 @@ const query = new Query({
         { name: 'jobNo', type: 'string' },
         { name: 'masterNo', type: 'string' },
         { name: 'bookingNo', type: 'string' },
-        { name: 'poNo', type: 'string' },
-        { name: 'contractNo', type: 'string' },
+        { name: 'poNos', type: 'string' },
+        { name: 'contractNos', type: 'string' },
 
         { name: 'commodity', type: 'string' },
         { name: 'vessel', type: 'string' },
         { name: 'voyageFlightNumber', type: 'string' },
-        { name: 'division', type: 'string' },
+        { name: 'divisionCode', type: 'string' },
         { name: 'serviceCode', type: 'string' },
         { name: 'incoTermsCode', type: 'string' },
         { name: 'freightTermsCode', type: 'string' },
@@ -24,10 +24,9 @@ const query = new Query({
         { name: 'moduleTypeCode', type: 'string' },
         { name: 'boundTypeCode', type: 'string' },
         { name: 'carrierName', type: 'string' },
-        { name: 'nominatedType', type: 'string' },
+        { name: 'nominatedTypeCode', type: 'string' },
         { name: 'isDirect', type: 'boolean' },
         { name: 'isCoload', type: 'boolean' },
-        { name: 'serviceCode', type: 'string' },
 
         { name: 'jobDate', type: 'Date' },
         { name: 'departureDateEstimated', type: 'Date' },
@@ -49,7 +48,7 @@ const query = new Query({
         { name: 'agentPartyName', type: 'string' },
         { name: 'controllingCustomerPartyName', type: 'string' },
 
-        { name: 'primaryKey', type: 'string' },
+        { name: 'id', type: 'string' },
       ],
     },
     'shipment'

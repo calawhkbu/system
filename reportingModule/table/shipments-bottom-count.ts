@@ -26,7 +26,7 @@ function prepareShipmentParams(): Function {
 
     // console.log(subqueries)
 
-    if (!subqueries.primaryKeyListString && !subqueries.workflowStatusListString) {
+    if (!subqueries.primaryKeyListString && !subqueries.lastStatusListString) {
       throw new BadRequestException('MISSING_primaryKeyListString/workflowStatus')
     }
 
@@ -43,11 +43,11 @@ function prepareShipmentParams(): Function {
     }
 
     // workflowStatus case
-    if (subqueries.workflowStatusListString) {
-      if (!subqueries.workflowStatusListString && subqueries.workflowStatusListString !== '')
-        throw new BadRequestException('MISSING_workflowStatusListString')
+    if (subqueries.lastStatusListString) {
+      if (!subqueries.lastStatusListString && subqueries.lastStatusListString !== '')
+        throw new BadRequestException('MISSING_lastStatusListString')
 
-      const workflowStatusList = subqueries.workflowStatusListString.value.split(',')
+      const workflowStatusList = subqueries.lastStatusListString.value.split(',')
 
       subqueries.workflowStatusList = {
         value: workflowStatusList,
@@ -65,7 +65,7 @@ const query = new Query({
   $from: new FromTable(
     {
       method: 'POST',
-      url: 'api/shipment/query/old360-uber-count',
+      url: 'api/shipment/query/shipment/count',
       columns: [{ name: 'count', type: 'number' }],
     },
     'shipment'
