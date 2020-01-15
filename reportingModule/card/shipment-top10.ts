@@ -1,4 +1,4 @@
-import { CreateFunctionJQL, Value, Query } from 'node-jql'
+import { CreateFunctionJQL, Value, Query, ResultColumn, LimitOffset } from 'node-jql'
 
 import { parseCode } from 'utils/function'
 
@@ -12,9 +12,9 @@ function prepareParams(): Function {
     const subqueries = (params.subqueries = params.subqueries || {})
 
     // warning cannot display from frontend
-    if (!subqueries.xAxis) throw new BadRequestException('MISSING_xAxis')
-    if (!subqueries.yAxis) throw new BadRequestException('MISSING_yAxis')
-    if (!subqueries.topX) throw new BadRequestException('MISSING_topX')
+    if (!subqueries.xAxis) throw new Error('MISSING_xAxis')
+    if (!subqueries.yAxis) throw new Error('MISSING_yAxis')
+    if (!subqueries.topX) throw new Error('MISSING_topX')
 
     // most important part of this card
     // dynamically choose the fields and summary value
@@ -38,9 +38,10 @@ function prepareParams(): Function {
     // ------------------------------
 
     params.sorting = new OrderBy(summaryColumnName, 'DESC')
+
     // select
     params.fields = [...new Set([codeColumnName, summaryColumnName, nameColumnName])]
-    params.groupBy = [codeColumnName]
+    params.groupBy = [codeColumnName, nameColumnName]
 
     return params
   }
@@ -228,12 +229,14 @@ function prepareRawTable() {
             url: 'api/shipment/query/shipment',
             columns: [
               {
-                name: codeColumnName,
+                name: `group_${codeColumnName}`,
                 type: 'string',
+                $as : codeColumnName
               },
               {
-                name: nameColumnName,
+                name: `group_${nameColumnName}`,
                 type: 'string',
+                $as : nameColumnName
               },
               {
                 name: summaryColumnName,

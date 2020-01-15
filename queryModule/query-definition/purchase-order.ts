@@ -21,7 +21,6 @@ const query = new QueryDef(
   new Query({
     $select: [
       new ResultColumn(new ColumnExpression('purchase_order', '*')),
-      new ResultColumn(new ColumnExpression('flex_data', 'data')),
       new ResultColumn(new ColumnExpression('purchase_order_item', '*')),
       // avoid id being overwritten
       new ResultColumn(new ColumnExpression('purchase_order', 'id'), 'purchaseOrderId'),
@@ -29,22 +28,6 @@ const query = new QueryDef(
     $distinct: true,
     $from: new FromTable(
       'purchase_order',
-      {
-        operator: 'LEFT',
-        table: 'flex_data',
-        $on: [
-          new BinaryExpression(
-            new ColumnExpression('flex_data', 'tableName'),
-            '=',
-            'purchase_order'
-          ),
-          new BinaryExpression(
-            new ColumnExpression('purchase_order', 'id'),
-            '=',
-            new ColumnExpression('flex_data', 'primaryKey')
-          ),
-        ],
-      },
       {
         operator: 'LEFT',
         table: new FromTable({
@@ -215,22 +198,6 @@ const query = new QueryDef(
               'purchase_order_item',
               {
                 operator: 'LEFT',
-                table: new FromTable('flex_data', 'flex_data'),
-                $on: [
-                  new BinaryExpression(
-                    new ColumnExpression('flex_data', 'tableName'),
-                    '=',
-                    'purchase_order_item'
-                  ),
-                  new BinaryExpression(
-                    new ColumnExpression('flex_data', 'primaryKey'),
-                    '=',
-                    new ColumnExpression('purchase_order_item', 'id')
-                  ),
-                ],
-              },
-              {
-                operator: 'LEFT',
                 table: new FromTable('product', 'product'),
                 $on: [
                   new BinaryExpression(
@@ -261,9 +228,7 @@ const query = new QueryDef(
                 new IsNullExpression(
                   new ColumnExpression('purchase_order_item', 'deletedBy'),
                   false
-                ),
-                new IsNullExpression(new ColumnExpression('flex_data', 'deletedAt'), false),
-                new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
+                )
               ],
             }),
             $group: new GroupBy([new ColumnExpression('purchase_order_item', 'poId')]),
