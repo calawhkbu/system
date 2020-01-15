@@ -89,8 +89,7 @@
           "tdComponent": {
             "is": "icon",
             "props": {
-              "class": "material-icons-outlined",
-              "icon": "info"
+              "icon": "edit"
             }
           },
           "clickFunction": {
@@ -101,9 +100,40 @@
               "base": true
             }
           },
-          "width": 80
+          "width": 60
         }
       ]
-    }
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "partyDetail/create",
+                "base": true
+              }
+            }]
+          }
+        }]
+      }
+    }]
   }]
 }

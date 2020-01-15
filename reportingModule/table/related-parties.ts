@@ -7,11 +7,19 @@ const query = new Query({
       url: 'api/party/query/related-party',
       columns: [
         {
-          name: 'id',
+          name: 'partyAId',
           type: 'number',
         },
         {
-          name: 'name',
+          name: 'partyBId',
+          type: 'number',
+        },
+        {
+          name: 'partyAName',
+          type: 'string',
+        },
+        {
+          name: 'partyBName',
           type: 'string',
         },
         {
@@ -33,6 +41,10 @@ const query = new Query({
         {
           name: 'phone',
           type: 'string',
+        },
+        {
+          name: 'showDelete',
+          type: 'number',
         },
       ],
     },
