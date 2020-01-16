@@ -3,12 +3,21 @@
   "components": [{
     "is": "SimpleTableTool",
     "props": {
-      "reportingKey": "connections-parties",
+      "reportingKey": "related-parties",
       "jql": "related-parties",
-      "reportUrl": "report/relatedParties/{{ context.detailPageParams }}",
+      "reportUrl": "relationship/report/parties/{{ context.detailPageParams }}",
+      "back": "/parties",
       "noPartyGroupFilters": true,
       "showFilterBar": true,
-      "noNextPage": true,
+      "nextPageKey": "routeParams",
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/{{ partyBId }}",
+          "base": true
+        }
+      },
       "newReport": {
         "filters": {
           "isActive": true,
@@ -31,7 +40,16 @@
       ],
       "fieldOptions": [
         {
-          "key": "id",
+          "key": "partyAId",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "related_party",
+            "name": "partyAId"
+          },
+          "hidden": true
+        },
+        {
+          "key": "partyBId",
           "sql": {
             "classname": "ColumnExpression",
             "table": "related_party",
@@ -40,10 +58,19 @@
           "hidden": true
         },
         {
-          "key": "name",
+          "key": "partyAName",
           "sql": {
             "classname": "ColumnExpression",
             "table": "party",
+            "name": "name"
+          },
+          "hidden": true
+        },
+        {
+          "key": "partyBName",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "partyB",
             "name": "name"
           }
         },
@@ -51,7 +78,7 @@
           "key": "shortName",
           "sql": {
             "classname": "ColumnExpression",
-            "table": "party",
+            "table": "partyB",
             "name": "shortName"
           },
           "width": 120
@@ -60,7 +87,7 @@
           "key": "groupName",
           "sql": {
             "classname": "ColumnExpression",
-            "table": "party",
+            "table": "partyB",
             "name": "groupName"
           },
           "width": 160
@@ -77,7 +104,7 @@
           "key": "email",
           "sql": {
             "classname": "ColumnExpression",
-            "table": "party",
+            "table": "partyB",
             "name": "email"
           }
         },
@@ -85,12 +112,73 @@
           "key": "phone",
           "sql": {
             "classname": "ColumnExpression",
-            "table": "party",
+            "table": "partyB",
             "name": "phone"
           },
           "width": 160
+        },
+        {
+          "key": "showDelete",
+          "label": "",
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/relationship/party/{{row.partyAId}}/{{row.partyBId}}",
+                "method": "DELETE"
+              }
+            },
+            "afterActions": [
+              {
+                "type": "emit",
+                "otherParams": {
+                  "name": "refresh",
+                  "params": [true]
+                }
+              }
+            ]
+          },
+          "tdComponent": {
+            "is": "icon",
+            "props": {
+              "icon": "block"
+            }
+          },
+          "width": 60
         }
       ]
-    }
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "/create",
+                "base": true
+              }
+            }]
+          }
+        }]
+      }
+    }]
   }]
 }

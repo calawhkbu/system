@@ -8,6 +8,8 @@ import {
   IsNullExpression,
   FunctionExpression,
   ParameterExpression,
+  AndExpressions,
+  Value,
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -34,34 +36,51 @@ const query = new QueryDef(
       'related_party',
       {
         operator: 'LEFT',
-        table: 'party',
-        $on: new BinaryExpression(
-          new ColumnExpression('related_party', 'partyBId'),
-          '=',
-          new ColumnExpression('party', 'id'),
-        )
+        table: new FromTable('party', 'party'),
+        $on: new AndExpressions([
+          new IsNullExpression(new ColumnExpression('party', 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression('party', 'deletedBy'), false),
+          new BinaryExpression(
+            new ColumnExpression('related_party', 'partyAId'),
+            '=',
+            new ColumnExpression('party', 'id'),
+          )
+        ])
+      },
+      {
+        operator: 'LEFT',
+        table: new FromTable('party', 'partyB'),
+        $on: new AndExpressions([
+          new IsNullExpression(new ColumnExpression('partyB', 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression('partyB', 'deletedBy'), false),
+          new BinaryExpression(
+            new ColumnExpression('related_party', 'partyBId'),
+            '=',
+            new ColumnExpression('partyB', 'id'),
+          )
+        ])
       }
     )
   })
 )
 
-query
-  .register(
-    'id',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('related_party', 'partyAId'), '='),
-    })
-  )
-  .register('value', 0)
+query.register(
+  'partyAId',
+  new Query({
+    $where: new BinaryExpression(new ColumnExpression('related_party', 'partyAId'), '='),
+  })
+).register('value', 0)
 
 query.register(
-  'isActive',
+  'partyBId',
   new Query({
-    $where: [
-      new IsNullExpression(new ColumnExpression('party', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('party', 'deletedBy'), false),
-    ],
+    $where: new BinaryExpression(new ColumnExpression('related_party', 'partyBId'), '='),
   })
-)
+).register('value', 0)
+
+query.register('showDelete', {
+  expression: new Value(1),
+  $as: 'showDelete'
+})
 
 export default query

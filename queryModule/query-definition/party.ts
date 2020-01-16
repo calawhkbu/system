@@ -8,9 +8,12 @@ import {
   BinaryExpression,
   IsNullExpression,
   FunctionExpression,
+  ExistsExpression,
   ParameterExpression,
   QueryExpression,
-  Value
+  OrExpressions,
+  Value,
+  Unknown
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -153,6 +156,42 @@ query
       $where: new RegexpExpression(new ColumnExpression('party', 'email'), false),
     })
   )
+  .register('value', 0)
+
+query.register('unrelatedTo', new Query({
+  $where: new ExistsExpression(new Query({
+    $from: 'related_party',
+    $where: [
+      new BinaryExpression(new ColumnExpression('related_party', 'partyAId'), '=', new Unknown()),
+      new BinaryExpression(new ColumnExpression('related_party', 'partyBId'), '=', new ColumnExpression('party', 'id'))
+    ]
+  }), true)
+}))
+  .register('value', 0)
+
+query.register('q', new Query({
+  $where: new OrExpressions([
+    new RegexpExpression(new ColumnExpression('party', 'name'), false),
+    new RegexpExpression(new ColumnExpression('party', 'shortName'), false),
+    new RegexpExpression(new ColumnExpression('party', 'groupName'), false),
+    new RegexpExpression(new ColumnExpression('party', 'email'), false),
+    new RegexpExpression(new ColumnExpression('party', 'phone'), false),
+  ])
+}))
+  .register('value', 0)
+  .register('value', 1)
+  .register('value', 2)
+  .register('value', 3)
+  .register('value', 4)
+
+query.register('type', new Query({
+  $where: new ExistsExpression(new Query({
+    $from: 'related_party',
+    $where: [
+      new BinaryExpression(new ColumnExpression('related_party', 'type'), '=', new Unknown())
+    ]
+  }), true)
+}))
   .register('value', 0)
 
 query.register(
