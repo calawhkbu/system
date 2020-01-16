@@ -37,7 +37,7 @@
       "fixedKeys": [
         "cargoReady",
         "pickup",
-        "cYCutOff",
+        "cyCutOff",
         "departure",
         "arrival",
         "finalDoorDelivery"

@@ -28,109 +28,16 @@ const query = new QueryDef(
       'booking',
       {
         operator: 'LEFT',
-        table: 'flex_data',
-        $on: [
-          new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'booking'),
-          new BinaryExpression(new ColumnExpression('booking', 'id'), '=', new ColumnExpression('flex_data', 'primaryKey')),
-        ],
-      },
-      {
-        operator: 'LEFT',
         table: new FromTable({
           table: new Query({
             $select: [
-              new ResultColumn(new ColumnExpression('booking_party', 'bookingId'), 'booking_party_booking_id'),
-              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyId')),
-              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyName')),
-              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyContactPersonId')),
-              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyContactIdentity')),
-              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyContactEmail')),
-              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyContactName')),
-              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyContactPhone')),
-              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyContacts')),
-              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyIdentity')),
-              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyAddress')),
-              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyCityCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyStateCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyCountryCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'shipperPartyZip')),
-              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyId')),
-              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyName')),
-              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyContactPersonId')),
-              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyContactIdentity')),
-              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyContactEmail')),
-              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyContactName')),
-              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyContactPhone')),
-              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyContacts')),
-              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyIdentity')),
-              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyAddress')),
-              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyCityCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyStateCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyCountryCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'consigneePartyZip')),
-              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyId')),
-              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyName')),
-              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyContactPersonId')),
-              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyContactIdentity')),
-              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyContactEmail')),
-              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyContactName')),
-              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyContactPhone')),
-              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyContacts')),
-              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyIdentity')),
-              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyAddress')),
-              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyCityCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyStateCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyCountryCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'forwarderPartyZip')),
-              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyId')),
-              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyName')),
-              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyContactPersonId')),
-              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyContactIdentity')),
-              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyContactEmail')),
-              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyContactName')),
-              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyContactPhone')),
-              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyContacts')),
-              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyIdentity')),
-              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyAddress')),
-              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyCityCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyStateCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyCountryCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'notifyPartyPartyZip')),
-              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyId')),
-              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyName')),
-              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyContactPersonId')),
-              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyContactIdentity')),
-              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyContactEmail')),
-              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyContactName')),
-              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyContactPhone')),
-              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyContacts')),
-              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyIdentity')),
-              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyAddress')),
-              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyCityCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyStateCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyCountryCode')),
-              new ResultColumn(new ColumnExpression('booking_party', 'agentPartyZip')),
-              new ResultColumn(new ColumnExpression('flex_data', 'data'), 'booking_party_flex_data'),
+              new ResultColumn(new ColumnExpression('booking_party', '*')),
             ],
-            $from: new FromTable('booking_party', {
-              operator: 'LEFT',
-              table: new FromTable('flex_data', 'flex_data'),
-              $on: [
-                new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'booking_party'),
-                new BinaryExpression(new ColumnExpression('flex_data', 'primaryKey'), '=', new ColumnExpression('booking_party', 'id')),
-              ]
-            }),
+            $from: new FromTable('booking_party', 'booking_party'),
             $where: new AndExpressions({
               expressions: [
                 new IsNullExpression(new ColumnExpression('booking_party', 'deletedAt'), false),
                 new IsNullExpression(new ColumnExpression('booking_party', 'deletedBy'), false),
-                new IsNullExpression(new ColumnExpression('flex_data', 'deletedAt'), false),
-                new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
               ]
             }),
           }),
@@ -168,22 +75,13 @@ const query = new QueryDef(
               new ResultColumn(new ColumnExpression('booking_date', 'finalDoorDeliveryDateEstimated')),
               new ResultColumn(new ColumnExpression('booking_date', 'finalDoorDeliveryDateActual')),
               new ResultColumn(new ColumnExpression('booking_date', 'finalDoorDeliveryDateRemark')),
-              new ResultColumn(new ColumnExpression('flex_data', 'data'), 'booking_date_flex_data'),
+              new ResultColumn(new ColumnExpression('booking_date', 'flexData'), 'booking_date_flexData'),
             ],
-            $from: new FromTable('booking_date', {
-              operator: 'LEFT',
-              table: new FromTable('flex_data', 'flex_data'),
-              $on: [
-                new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'booking_date'),
-                new BinaryExpression(new ColumnExpression('flex_data', 'primaryKey'), '=', new ColumnExpression('booking_date', 'id')),
-              ]
-            }),
+            $from: new FromTable('booking_date', 'booking_date'),
             $where: new AndExpressions({
               expressions: [
                 new IsNullExpression(new ColumnExpression('booking_date', 'deletedAt'), false),
                 new IsNullExpression(new ColumnExpression('booking_date', 'deletedBy'), false),
-                new IsNullExpression(new ColumnExpression('flex_data', 'deletedAt'), false),
-                new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
               ]
             }),
           }),
@@ -204,14 +102,7 @@ const query = new QueryDef(
             $select: [
               new ResultColumn(new ColumnExpression('booking_amount', 'bookingId'), 'bookingId'),
             ],
-            $from: new FromTable('booking_amount', 'booking_amount', {
-              operator: 'LEFT',
-              table: new FromTable('flex_data', 'booking_amount_flex_data'),
-              $on: [
-                new BinaryExpression(new ColumnExpression('booking_amount_flex_data', 'tableName'), '=', 'booking_amount'),
-                new BinaryExpression(new ColumnExpression('booking_amount', 'id'), '=', new ColumnExpression('booking_amount_flex_data', 'primaryKey'))
-              ]
-            }),
+            $from: new FromTable('booking_amount', 'booking_amount'),
             $group: new GroupBy([
               new ColumnExpression('bookingId')
             ])
@@ -277,28 +168,11 @@ const query = new QueryDef(
                 'quantity'
               ),
             ],
-            $from: new FromTable('booking_container', 'booking_container', {
-              operator: 'LEFT',
-              table: new FromTable('flex_data', 'flex_data'),
-              $on: [
-                new BinaryExpression(
-                  new ColumnExpression('flex_data', 'tableName'),
-                  '=',
-                  'booking_container'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('flex_data', 'primaryKey'),
-                  '=',
-                  new ColumnExpression('booking_container', 'id')
-                ),
-              ],
-            }),
+            $from: new FromTable('booking_container', 'booking_container'),
             $where: new AndExpressions({
               expressions: [
                 new IsNullExpression(new ColumnExpression('booking_container', 'deletedAt'), false),
                 new IsNullExpression(new ColumnExpression('booking_container', 'deletedBy'), false),
-                new IsNullExpression(new ColumnExpression('flex_data', 'deletedAt'), false),
-                new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
               ],
             }),
             $group: new GroupBy([new ColumnExpression('booking_container', 'bookingId')]),
@@ -340,28 +214,11 @@ const query = new QueryDef(
                 'quantity'
               ),
             ],
-            $from: new FromTable('booking_popacking', 'booking_popacking', {
-              operator: 'LEFT',
-              table: new FromTable('flex_data', 'flex_data'),
-              $on: [
-                new BinaryExpression(
-                  new ColumnExpression('flex_data', 'tableName'),
-                  '=',
-                  'booking_popacking'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('flex_data', 'primaryKey'),
-                  '=',
-                  new ColumnExpression('booking_popacking', 'id')
-                ),
-              ],
-            }),
+            $from: new FromTable('booking_popacking', 'booking_popacking'),
             $where: new AndExpressions({
               expressions: [
                 new IsNullExpression(new ColumnExpression('booking_popacking', 'deletedAt'), false),
                 new IsNullExpression(new ColumnExpression('booking_popacking', 'deletedBy'), false),
-                new IsNullExpression(new ColumnExpression('flex_data', 'deletedAt'), false),
-                new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
               ],
             }),
             $group: new GroupBy([new ColumnExpression('booking_popacking', 'bookingId')]),
@@ -404,28 +261,11 @@ const query = new QueryDef(
                 'refDescription'
               ),
             ],
-            $from: new FromTable('booking_reference', 'booking_reference', {
-              operator: 'LEFT',
-              table: new FromTable('flex_data', 'flex_data'),
-              $on: [
-                new BinaryExpression(
-                  new ColumnExpression('flex_data', 'tableName'),
-                  '=',
-                  'booking_reference'
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('flex_data', 'primaryKey'),
-                  '=',
-                  new ColumnExpression('booking_reference', 'bookingId')
-                ),
-              ],
-            }),
+            $from: new FromTable('booking_reference', 'booking_reference'),
             $where: new AndExpressions({
               expressions: [
                 new IsNullExpression(new ColumnExpression('booking_reference', 'deletedAt'), false),
                 new IsNullExpression(new ColumnExpression('booking_reference', 'deletedBy'), false),
-                new IsNullExpression(new ColumnExpression('flex_data', 'deletedAt'), false),
-                new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
               ],
             }),
             $group: new GroupBy([new ColumnExpression('booking_reference', 'bookingId')]),
@@ -452,10 +292,6 @@ const query = new QueryDef(
               new ResultColumn(
                 new FunctionExpression('ANY_VALUE', new ColumnExpression('workflow', 'statusDate')),
                 'lastStatusDate'
-              ),
-              new ResultColumn(
-                new FunctionExpression('ANY_VALUE', new ColumnExpression('flex_data', 'data')),
-                'data'
               ),
             ],
 
@@ -500,22 +336,6 @@ const query = new QueryDef(
                   ),
                 ],
               },
-              {
-                operator: 'LEFT',
-                table: new FromTable('flex_data', 'flex_data'),
-                $on: [
-                  new BinaryExpression(
-                    new ColumnExpression('flex_data', 'tableName'),
-                    '=',
-                    'workflow'
-                  ),
-                  new BinaryExpression(
-                    new ColumnExpression('flex_data', 'primaryKey'),
-                    '=',
-                    new ColumnExpression('workflow', 'id')
-                  ),
-                ],
-              }
             ),
 
             $group: new GroupBy([
@@ -721,7 +541,7 @@ query.register('masterNo', {
 query.register('poNo', {
   expression: new FunctionExpression(
     'JSON_UNQUOTE',
-    new FunctionExpression('JSON_EXTRACT', new ColumnExpression('flex_data', 'data'), '$.poNo')
+    new FunctionExpression('JSON_EXTRACT', new ColumnExpression('booking', 'flexData'), '$.poNo')
   ),
   $as: 'poNo',
 })
@@ -1136,8 +956,6 @@ query.register(
       expressions: [
         new IsNullExpression(new ColumnExpression('booking', 'deletedAt'), false),
         new IsNullExpression(new ColumnExpression('booking', 'deletedBy'), false),
-        new IsNullExpression(new ColumnExpression('flex_data', 'deletedAt'), false),
-        new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
       ],
     }),
   })

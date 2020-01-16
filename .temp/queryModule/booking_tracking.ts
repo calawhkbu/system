@@ -23,18 +23,6 @@ const query = new QueryDef(
     $select: [new ResultColumn(new ColumnExpression('booking', 'id'), 'bookingId')],
     $from: new FromTable(
       'booking',
-      {
-        operator: 'LEFT',
-        table: 'flex_data',
-        $on: [
-          new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'booking'),
-          new BinaryExpression(
-            new ColumnExpression('booking', 'id'),
-            '=',
-            new ColumnExpression('flex_data', 'primaryKey')
-          ),
-        ],
-      },
       // {
       //   operator: 'LEFT',
       //   table: new FromTable({

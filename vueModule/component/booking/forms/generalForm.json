@@ -326,7 +326,7 @@
         },
         {
           "label": "BookingPage.contractNo",
-          "name": "flexData.data.contractNo",
+          "name": "flexData.contractNo",
           "component": "v-text-field",
           "class": "xs-12 md-3"
         },

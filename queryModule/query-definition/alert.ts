@@ -15,42 +15,11 @@ const query = new QueryDef(
   new Query({
     $select: [
       new ResultColumn(new ColumnExpression('alert', '*')),
-      new ResultColumn(new ColumnExpression('flex_data', 'data')),
     ],
 
-    $from: new FromTable('alert', {
-      operator: 'LEFT',
-      table: 'flex_data',
-      $on: [
-        new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'alert'),
-        new BinaryExpression(
-          new ColumnExpression('alert', 'id'),
-          '=',
-          new ColumnExpression('flex_data', 'primaryKey')
-        ),
-      ],
-    }),
+    $from: new FromTable('alert'),
   })
 )
-
-query
-  .register(
-    'partyGroupCode',
-    new Query({
-      $where: new BinaryExpression(
-        new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression(
-            'JSON_EXTRACT',
-            new ColumnExpression('flex_data', 'data'),
-            '$.partyGroupCode'
-          )
-        ),
-        '='
-      ),
-    })
-  )
-  .register('value', 0)
 
 query
   .register(
@@ -123,34 +92,13 @@ query
     })
   )
   .register('value', 1)
-query
-  .register(
-    'flexDataData',
-    new Query({
-      $where: new BinaryExpression(
-        new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression(
-            'JSON_EXTRACT',
-            new ColumnExpression('flex_data', 'data'),
-            new Unknown('string')
-          )
-        ),
-        '=',
-        new Unknown('string')
-      ),
-    })
-  )
-  .register('flexDataKey', 0)
-  .register('value', 1)
+
 query.register(
   'isActive',
   new Query({
     $where: [
       new IsNullExpression(new ColumnExpression('alert', 'deletedAt'), false),
       new IsNullExpression(new ColumnExpression('alert', 'deletedBy'), false),
-      new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
-      new IsNullExpression(new ColumnExpression('flex_data', 'deletedBy'), false),
     ],
   })
 )

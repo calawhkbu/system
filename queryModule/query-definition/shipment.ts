@@ -95,14 +95,42 @@ const query = new QueryDef(
       // LEFT JOIN shipment_date
       {
         operator: 'LEFT',
-        table: 'shipment_date',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('shipment_date', '*')),
+            ],
+            $from: new FromTable('shipment_date', 'shipment_date'),
+            $where: new AndExpressions({
+              expressions: [
+                new IsNullExpression(new ColumnExpression('shipment_date', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('shipment_date', 'deletedBy'), false),
+              ]
+            }),
+          }),
+          $as: 'shipment_date'
+        }),
         $on: new BinaryExpression(new ColumnExpression('shipment', 'id'), '=', new ColumnExpression('shipment_date', 'shipmentId'))
       },
 
       // LEFT JOIN shipment_party
       {
         operator: 'LEFT',
-        table: new FromTable('shipment_party'),
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('shipment_party', '*')),
+            ],
+            $from: new FromTable('shipment_party', 'shipment_party'),
+            $where: new AndExpressions({
+              expressions: [
+                new IsNullExpression(new ColumnExpression('shipment_party', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('shipment_party', 'deletedBy'), false),
+              ]
+            }),
+          }),
+          $as: 'shipment_party'
+        }),
         $on: new BinaryExpression(new ColumnExpression('shipment', 'id'), '=', new ColumnExpression('shipment_party', 'shipmentId'))
       },
 
@@ -839,6 +867,11 @@ query.registerQuery('shipmentAll', new Query({
 query
   .registerResultColumn(
     'id',
+    new ResultColumn(new ColumnExpression('shipment', 'id'))
+  )
+query
+  .registerResultColumn(
+    'primaryKey',
     new ResultColumn(new ColumnExpression('shipment', 'id'))
   )
 

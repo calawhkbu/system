@@ -15,24 +15,11 @@ const query = new QueryDef(
   new Query({
     $select: [
       new ResultColumn(new ColumnExpression('alert', '*')),
-      new ResultColumn(new ColumnExpression('flex_data', 'data')),
       new ResultColumn(new ColumnExpression('shipment', '*')),
     ],
 
     $from: new FromTable(
       'alert',
-      {
-        operator: 'LEFT',
-        table: 'flex_data',
-        $on: [
-          new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'alert'),
-          new BinaryExpression(
-            new ColumnExpression('alert', 'id'),
-            '=',
-            new ColumnExpression('flex_data', 'primaryKey')
-          ),
-        ],
-      },
       {
         operator: 'LEFT',
         table: 'shipment',
@@ -110,25 +97,6 @@ query
       ),
     })
   )
-  .register('value', 1)
-query
-  .register(
-    'flexDataData',
-    new Query({
-      $where: new BinaryExpression(
-        new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression(
-            'JSON_EXTRACT',
-            new ColumnExpression('flex_data', 'data'),
-            new Unknown('string')
-          )
-        ),
-        '='
-      ),
-    })
-  )
-  .register('flexDataKey', 0)
   .register('value', 1)
 query.register(
   'isActive',
