@@ -863,6 +863,12 @@ query.registerQuery('shipmentAll', new Query({
 
 //  register field =======================
 
+query
+  .registerResultColumn(
+    'primaryKeyListString',
+    new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id')) ), 'primaryKeyListString')
+  )
+
 // shipment table field
 query
   .registerResultColumn(
@@ -872,7 +878,7 @@ query
 query
   .registerResultColumn(
     'primaryKey',
-    new ResultColumn(new ColumnExpression('shipment', 'id'))
+    new ResultColumn(new ColumnExpression('shipment', 'id'), 'primaryKey')
   )
 
 query
@@ -1126,9 +1132,66 @@ const finalReportingGroupExpression = new CaseExpression({
 
 const lastStatusCodeExpression = new ColumnExpression('shipment_tracking', 'lastStatusCode')
 
+function lastStatusExpressionFunction(){
+
+  const lastStatusCodeMap = {
+
+    // left side is called laststatus
+    // right side is called lastStatusCode
+
+    notInTrack: [null, 'NEW', 'CANF', 'ERR'],
+    processing: ['BKCF', 'EPRL', 'STSP', 'BKD'],
+    cargoReady: ['GITM', 'LOBD', 'RCS', 'MNF', 'MAN'],
+    departure: ['DLPT', 'DEP'],
+    inTransit: ['TSLB', 'TSDC', 'TAP', 'TDE'],
+    arrival: ['BDAR', 'DSCH', 'DECL', 'PASS', 'TMPS', 'ARR', 'RWB', 'RCF', 'CUS', 'NFD'],
+    delivered: ['STCS', 'RCVE', 'END', 'DLV']
+
+  }
+
+  const cases = []
+
+  for (const lastStatus in lastStatusCodeMap) {
+    if (lastStatusCodeMap.hasOwnProperty(lastStatus)) {
+
+      const lastStatusCodeList = lastStatusCodeMap[lastStatus] as any[]
+
+      let condition = new InExpression(new ColumnExpression('shipment_tracking', 'lastStatusCode'), false, lastStatusCodeList) as IConditionalExpression
+
+      if (lastStatusCodeList.includes(null))
+      {
+
+        condition = new OrExpressions([
+          new IsNullExpression(new ColumnExpression('shipment_tracking', 'lastStatusCode'), false),
+          condition
+        ])
+
+      }
+
+      cases.push({
+        $when : condition,
+        $then : new Value(lastStatus)
+      } as ICase)
+
+    }
+  }
+
+  return new CaseExpression({
+    cases,
+    $else : new ColumnExpression('shipment_tracking', 'lastStatusCode')
+  })
+
+}
+
+const lastStatusExpression = lastStatusExpressionFunction()
+
 const alertTypeExpression = new ColumnExpression('alert', 'alertType')
 
-// const alertStatus = new
+const alertCategoryExpression = new ColumnExpression('alert', 'alertCategory')
+
+const alertStatusExpression = new ColumnExpression('alert', 'status')
+
+const alertCreatedAtExpression = new ColumnExpression('alert', 'createdAt')
 
 registerBoth('carrierCode', carrierCodeExpression)
 
@@ -1140,7 +1203,15 @@ registerBoth('reportingGroup', finalReportingGroupExpression)
 
 registerBoth('lastStatusCode', lastStatusCodeExpression)
 
+registerBoth('lastStatus', lastStatusExpression)
+
 registerBoth('alertType', alertTypeExpression)
+
+registerBoth('alertCategory', alertCategoryExpression)
+
+registerBoth('alertCreatedAt', alertCreatedAtExpression)
+
+registerBoth('alertStatus', alertStatusExpression)
 
 // ===========================
 
@@ -1395,7 +1466,16 @@ summaryFieldList.map(summaryField => {
 
   nestedSummaryList.map(x => {
 
+    x.cases.map(y => {
+
+      // total_F_cbm
+      const typeTotalExpression = summaryFieldExpression(summaryField, y.condition)
+      nestedSummaryResultColumnList[x.name].push(new ResultColumn(typeTotalExpression, `total_${y.typeCode}_${summaryField}`))
+
+    })
+
     nestedSummaryResultColumnList[x.name].push(new ResultColumn(totalValueExpression, `total_T_${summaryField}`))
+
     query.registerResultColumn(`${x.name}_${summaryField}Month`, (params) => nestedSummaryResultColumnList[x.name])
 
   })
@@ -1406,68 +1486,26 @@ summaryFieldList.map(summaryField => {
   // cbm/chargeableWeight
   query.register(summaryField, new ResultColumn(totalValueExpression, summaryField))
 
+  // cbmLastCurrent
+
+  const lastCurrentFn = (param) => {
+
+    const lastCondition = new BetweenExpression(new ColumnExpression('shipment', 'jobDate'), false, new Value(param.subqueries.date.lastFrom), new Value(param.subqueries.date.lastTo))
+    const lastSummaryField = summaryFieldExpression(summaryField, lastCondition)
+
+    const currentCondition = new BetweenExpression(new ColumnExpression('shipment', 'jobDate'), false, new Value(param.subqueries.date.currentFrom), new Value(param.subqueries.date.currentTo))
+    const currentSummaryField = summaryFieldExpression(summaryField, currentCondition)
+
+    return [
+      new ResultColumn(lastSummaryField, `${summaryField}Last`),
+      new ResultColumn(currentSummaryField, `${summaryField}Current`)
+    ]
+
+  }
+
+  query.registerResultColumn(`${summaryField}LastCurrent`, lastCurrentFn)
+
 })
-
-// ============= FRC
-// summaryFieldList.map(summaryField => {
-
-//   //  cmbMonth case
-//   const resultColumnList = [] as ResultColumn[]
-//   const frcResultColumnList = [] as ResultColumn[]
-
-//   months.forEach((month, index) => {
-
-//     const monthCondition = new BinaryExpression(new FunctionExpression('Month', new ColumnExpression('shipment', 'jobDate')), '=', index + 1)
-//     const countExpression = new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new FunctionExpression('IF', monthCondition, new ColumnExpression('shipment', 'id'), new Value(null)))), `${month}_${summaryField}`)
-//     const sumExpression = new ResultColumn(new FunctionExpression('SUM', new FunctionExpression('IF', monthCondition, new FunctionExpression('IFNULL', new ColumnExpression('shipment', summaryField), 0), 0)), `${month}_${summaryField}`)
-
-//     const MonthSumExpression = summaryField === 'totalShipment' ? countExpression : sumExpression
-
-//     resultColumnList.push(MonthSumExpression)
-
-//     frcList.map(x => {
-
-//       const frcCondition = new AndExpressions([
-//         monthCondition,
-//         x.condition
-//       ])
-
-//       const frcCountExpression = new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new FunctionExpression('IF', frcCondition, new ColumnExpression('shipment', 'id'), new Value(null)))), `${month}_${x.typeCode}_${summaryField}`)
-//       const frcSumExpression = new ResultColumn(new FunctionExpression('SUM', new FunctionExpression('IF', frcCondition, new FunctionExpression('IFNULL', new ColumnExpression('shipment', summaryField), 0), 0)), `${month}_${x.typeCode}_${summaryField}`)
-
-//       const frcMonthSumExpression = summaryField === 'totalShipment' ? frcCountExpression : frcSumExpression
-//       frcResultColumnList.push(frcMonthSumExpression)
-//     })
-
-//   })
-
-//   const totalValueExpression = (summaryField === 'totalShipment') ?
-//     new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))) :
-//     new FunctionExpression('SUM', new FunctionExpression('IFNULL', new ColumnExpression('shipment', summaryField), 0))
-
-//   frcList.map(x => {
-//     frcResultColumnList.push(new ResultColumn(totalValueExpression, `total_T_${summaryField}`))
-//   })
-
-//   frcResultColumnList.push(new ResultColumn(totalValueExpression, `total_T_${summaryField}`))
-
-//   resultColumnList.push(new ResultColumn(totalValueExpression, `total_${summaryField}`))
-
-//   const registerName = `${summaryField}Month`
-
-//   // cbmMonth
-//   query.registerResultColumn(registerName, (params) => resultColumnList)
-
-//   // cbm/chargeableWeight
-//   query.register(summaryField, new ResultColumn(totalValueExpression, summaryField))
-
-//   const frcRegisterName = `frc_${summaryField}Month`
-//   // cbmMonth
-//   query.registerResultColumn(frcRegisterName, (params) => frcResultColumnList)
-
-// })
-
-// cbmLastCurrent
 
 // register filter =========================
 
@@ -1485,6 +1523,10 @@ query
 
 // Shipment table filter ============================
 const shipmentTableFilterFieldList = [
+  {
+    name : 'primaryKeyList',
+    expression : new ColumnExpression('shipment', 'id')
+  },
   'id',
   'moduleTypeCode',
   'boundTypeCode',
@@ -1508,10 +1550,21 @@ const shipmentTableFilterFieldList = [
     expression: lastStatusCodeExpression
   },
   {
+    name: 'lastStatus',
+    expression: lastStatusExpression
+  },
+  {
     name: 'alertType',
     expression: alertTypeExpression
+  },
+  {
+    name : 'alertCategory',
+    expression : alertCategoryExpression
+  },
+  {
+    name : 'alertStatus',
+    expression : alertStatusExpression
   }
-
 ]
 
 shipmentTableFilterFieldList.map(filterField => {
@@ -1531,7 +1584,7 @@ shipmentTableFilterFieldList.map(filterField => {
     new Query({
       $where: new IsNullExpression(expression, true),
     })
-  ).register('value', 0)
+  )
 
 })
 
@@ -1646,7 +1699,7 @@ salesmanFieldList.map(salesmanField => {
     new Query({
       $where: new IsNullExpression(expression, true),
     })
-  ).register('value', 0)
+  )
 
 })
 
@@ -1669,7 +1722,6 @@ partyList.map(party => {
         $where: new IsNullExpression(new ColumnExpression('shipment_party', `${party}PartyId`), true),
       })
     )
-    .register('value', 0)
 
   // agent special case
   if (party === 'agent') {
@@ -1844,7 +1896,14 @@ query
       $where: new AndExpressions([
 
         // normal date case
-        new BetweenExpression(new ColumnExpression('shipment', 'jobDate'), false, new Unknown(), new Unknown()),
+
+        new OrExpressions([
+          new OrExpressions([
+            new IsNullExpression(new Unknown(), false),
+            new IsNullExpression(new Unknown(), false),
+          ]),
+          new BetweenExpression(new ColumnExpression('shipment', 'jobDate'), false, new Unknown(), new Unknown()),
+        ]),
 
         // last current date case
         new OrExpressions([
@@ -1868,15 +1927,18 @@ query
   .register('from', 0)
   .register('to', 1)
 
-  .register('dateLastFrom', 2)
-  .register('dateLastTo', 3)
-  .register('dateCurrentFrom', 4)
-  .register('dateCurrentTo', 5)
+  .register('from', 2)
+  .register('to', 3)
 
-  .register('dateLastFrom', 6)
-  .register('dateLastTo', 7)
-  .register('dateCurrentFrom', 8)
-  .register('dateCurrentTo', 9)
+  .register('lastFrom', 4)
+  .register('lastTo', 5)
+  .register('currentFrom', 6)
+  .register('currentTo', 7)
+
+  .register('lastFrom', 8)
+  .register('lastTo', 9)
+  .register('currentFrom', 10)
+  .register('currentTo', 11)
 
 query
   .register(
@@ -1887,34 +1949,48 @@ query
   )
 
 const dateList = [
-  'departure',
-  'arrival',
-  'oceanBill',
-  'cargoReady',
-  'cyCutOff',
-  'pickup',
-  'cargoReceipt',
-  'finalDoorDelivery'
+  'departureDateEstimated',
+  'departureDateAcutal',
+  'arrivalDateEstimated',
+  'arrivalDateActual',
+
+  'oceanBillDateEstimated',
+  'oceanBillDateAcutal',
+  'cargoReadyDateEstimated',
+  'cargoReadyDateActual',
+
+  'cyCutOffDateEstimated',
+  'cyCutOffDateAcutal',
+  'pickupDateEstimated',
+  'pickupDateActual',
+
+  'cargoReceiptDateEstimated',
+  'cargoReceiptDateAcutal',
+  'finalDoorDeliveryDateEstimated',
+  'finalDoorDeliveryDateActual',
+
+  {
+    name : 'alertCreatedAt',
+    expression : alertCreatedAtExpression
+
+  }
+
 ]
 
 dateList.map(date => {
 
-  const dateTypeList = ['Estimated', 'Acutal']
+  const dateColumnName = typeof date === 'string' ? date : date.name
+  const dateColumnExpression = typeof date === 'string' ? new ColumnExpression('shipment_date', date) : date.expression
 
-  dateTypeList.map(dateType => {
-    const dateColumnName = `${date}Date${dateType}`
-
-    query
-      .register(
-        dateColumnName,
-        new Query({
-          $where: new BetweenExpression(new ColumnExpression('shipment_date', dateColumnName), false),
-        })
-      )
-      .register('from', 0)
-      .register('to', 1)
-
-  })
+  query
+    .register(
+      dateColumnName,
+      new Query({
+        $where: new BetweenExpression(dateColumnExpression, false, new Unknown(), new Unknown()),
+      })
+    )
+    .register('from', 0)
+    .register('to', 1)
 
 })
 

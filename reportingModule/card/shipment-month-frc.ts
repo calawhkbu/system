@@ -41,6 +41,11 @@ function prepareParams(): Function {
 
     const topX = subqueries.topX.value
 
+    const specialMonth = {
+      name : `frc`,
+      typeCodeList : ['F', 'R', 'C', 'T']
+    }
+
     // ---------------------summaryVariables
 
     let summaryVariables: string[]
@@ -74,7 +79,7 @@ function prepareParams(): Function {
     // select
     params.fields = [
       // select Month statistics
-      ...summaryVariables.map(variable => `${variable}Month`),
+      ...summaryVariables.map(variable => `${specialMonth.name}_${variable}Month`),
       ...groupByVariables,
     ]
 
@@ -84,7 +89,7 @@ function prepareParams(): Function {
     ]
 
     // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
-    params.sorting = new OrderBy(`${summaryVariables[0]}Month`, 'DESC')
+    params.sorting = new OrderBy(`total_T_${summaryVariables[0]}`, 'DESC')
 
     params.limit = topX
 
@@ -128,6 +133,11 @@ function finalQuery(): Function {
 
     const topX = subqueries.topX.value
 
+    const specialMonth = {
+      name : `frc`,
+      typeCodeList : ['F', 'R', 'C', 'T']
+    }
+
     // ---------------------summaryVariables
 
     let summaryVariables: string[]
@@ -155,19 +165,17 @@ function finalQuery(): Function {
       ...groupByVariables.map(variable => new Column(variable, 'string', true)),
     ] as any[]
 
-    const types = ['F', 'R', 'C', 'T']
-
     summaryVariables.map(variable => {
 
-      types.map(type => {
+      specialMonth.typeCodeList.map(typeCode => {
 
         months.map(month => {
-          const columnName = `${month}_${type}_${variable}`
+          const columnName = `${month}_${typeCode}_${variable}`
           $select.push(new ResultColumn(new ColumnExpression(columnName)))
           columns.push(new Column(columnName, 'number'))
         })
 
-        const totalColumnName = `total_${type}_${variable}`
+        const totalColumnName = `total_${typeCode}_${variable}`
 
         $select.push(new ResultColumn(new ColumnExpression(totalColumnName)))
         columns.push(new Column(totalColumnName, 'number'))
@@ -184,7 +192,7 @@ function finalQuery(): Function {
       $from: new FromTable({
 
         method: 'POST',
-        url: 'api/shipment/query/shipment-frc',
+        url: 'api/shipment/query/shipment',
         columns
 
       }, 'shipment')

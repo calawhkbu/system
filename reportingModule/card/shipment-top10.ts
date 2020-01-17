@@ -229,14 +229,12 @@ function prepareRawTable() {
             url: 'api/shipment/query/shipment',
             columns: [
               {
-                name: `group_${codeColumnName}`,
+                name: codeColumnName,
                 type: 'string',
-                $as : codeColumnName
               },
               {
-                name: `group_${nameColumnName}`,
-                type: 'string',
-                $as : nameColumnName
+                name: nameColumnName,
+                type: 'string'
               },
               {
                 name: summaryColumnName,
