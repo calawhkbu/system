@@ -47,7 +47,7 @@ const query = new QueryDef(
           new BinaryExpression(
             new ColumnExpression('booking', 'id'),
             '=',
-            new ColumnExpression('booking_party', 'booking_party_booking_id')
+            new ColumnExpression('booking_party', 'id')
           ),
         ],
       },

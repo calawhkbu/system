@@ -28,14 +28,11 @@
           }
         }
       },
-      "filters": [
-        {
-          "name": "shortName",
-          "type": "text"
-        }
-      ],
-      "fieldOptions": [
-        {
+      "filters": [{
+        "name": "shortName",
+        "type": "text"
+      }],
+      "fieldOptions": [{
           "key": "id",
           "sql": {
             "classname": "ColumnExpression",
@@ -96,7 +93,7 @@
             "type": "router",
             "otherParams": {
               "func": "push",
-              "path": "partyDetail/{{ row.id }}",
+              "path": "party/detail/{{ row.id }}",
               "base": true
             }
           },

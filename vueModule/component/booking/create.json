@@ -505,11 +505,11 @@
                   }],
                   "relationMore": [{
                       "name": "freightTermsCode",
-                      "selector": "data.frieghtTermsCode"
+                      "selector": "flexData.frieghtTermsCode"
                     },
                     {
                       "name": "otherTermsCode",
-                      "selector": "data.otherTermsCode"
+                      "selector": "flexData.otherTermsCode"
                     }
                   ],
                   "props": {
@@ -518,17 +518,6 @@
                       "url": "api/code/query/code_master",
                       "method": "POST",
                       "data": {
-                        "fields": [{
-                            "classname": "ColumnExpression",
-                            "table": "code_master",
-                            "name": "*"
-                          },
-                          {
-                            "classname": "ColumnExpression",
-                            "table": "flex_data",
-                            "name": "data"
-                          }
-                        ],
                         "subqueries": {
                           "flex_data_join": true,
                           "codeType": {
