@@ -10,6 +10,7 @@ import {
   Unknown,
   IsNullExpression,
   ResultColumn,
+  ParameterExpression,
 } from 'node-jql'
 const query = new QueryDef(
   new Query({
@@ -21,6 +22,16 @@ const query = new QueryDef(
   })
 )
 
+// ===== register field
+
+query
+  .registerResultColumn(
+    'count',
+
+    new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))), 'count')
+  )
+
+// ======== register filter ====
 query
   .register(
     'primaryKey',
@@ -60,7 +71,7 @@ query
 
 query
   .register(
-    'categories',
+    'alertCategory',
     new Query({
       $where: new InExpression(new ColumnExpression('alert', 'alertCategory'), false),
     })
@@ -76,15 +87,15 @@ query
   .register('value', 0)
 query
   .register(
-    'moduleType',
+    'moduleTypeCode',
     new Query({
       $where: new BinaryExpression(
         new FunctionExpression(
           'JSON_UNQUOTE',
           new FunctionExpression(
             'JSON_EXTRACT',
-            new ColumnExpression('flex_data', 'data'),
-            '$.entity.moduleType.code'
+            new ColumnExpression('alert', 'flexData'),
+            '$.entity.moduleTypeCode'
           )
         ),
         '='

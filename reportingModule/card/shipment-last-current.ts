@@ -68,35 +68,37 @@ function prepareParams(): Function {
     const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     // ------------------------------
 
+    const from = subqueries.date.from
+
     let lastFrom: any
     let lastTo: any
     let currentFrom: any
     let currentTo: any
 
-    const currentYear = moment().year()
-    const currentMonth = moment().month()
+    const currentYear = moment(from).year()
+    const currentMonth = moment(from).month()
 
     if (lastCurrentUnit === 'year') {
 
-      lastFrom = moment().year(currentYear - 1).startOf('year').format('YYYY-MM-DD')
-      lastTo = moment().year(currentYear - 1).endOf('year').format('YYYY-MM-DD')
-      currentFrom = moment().year(currentYear).startOf('year').format('YYYY-MM-DD')
-      currentTo = moment().year(currentYear).endOf('year').format('YYYY-MM-DD')
+      lastFrom = moment(from).year(currentYear - 1).startOf('year').format('YYYY-MM-DD')
+      lastTo = moment(from).year(currentYear - 1).endOf('year').format('YYYY-MM-DD')
+      currentFrom = moment(from).year(currentYear).startOf('year').format('YYYY-MM-DD')
+      currentTo = moment(from).year(currentYear).endOf('year').format('YYYY-MM-DD')
 
     } else if (lastCurrentUnit === 'month') {
 
-      lastFrom = moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD')
-      lastTo = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD')
-      currentFrom = moment().month(currentMonth).startOf('month').format('YYYY-MM-DD')
-      currentTo = moment().month(currentMonth).endOf('month').format('YYYY-MM-DD')
+      lastFrom = moment(from).subtract(1, 'months').startOf('month').format('YYYY-MM-DD')
+      lastTo = moment(from).subtract(1, 'months').endOf('month').format('YYYY-MM-DD')
+      currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
+      currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
 
     } else if (lastCurrentUnit === 'lastYearCurrentMonth') {
 
       // asfasfdasw
-      lastFrom = moment().subtract(1, 'months').startOf('month').format('YYYY-MM-DD')
-      lastTo = moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD')
-      currentFrom = moment().month(currentMonth).startOf('month').format('YYYY-MM-DD')
-      currentTo = moment().month(currentMonth).endOf('month').format('YYYY-MM-DD')
+      lastFrom = moment(from).subtract(1, 'years').startOf('month').format('YYYY-MM-DD')
+      lastTo = moment(from).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
+      currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
+      currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
 
     } else {
       throw new Error('INVALID_lastCurrentUnit')
@@ -114,9 +116,9 @@ function prepareParams(): Function {
     }
 
     params.fields = [...new Set([codeColumnName, nameColumnName, ...metricFieldList])]
-    params.groupBy = [codeColumnName]
+    params.groupBy = [codeColumnName, nameColumnName]
 
-    params.sorting = new OrderBy(metricFieldList[0], 'DESC')
+    // params.sorting = new OrderBy(metricFieldList[0], 'DESC')
 
     params.limit = topX
 
