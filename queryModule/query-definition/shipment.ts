@@ -1668,7 +1668,6 @@ query
       ]),
     })
   )
-  .register('value', 0)
 
 // salesman filter =============================
 const salesmanFieldList = [
