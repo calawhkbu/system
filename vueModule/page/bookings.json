@@ -3,6 +3,7 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "title": "Booking",
       "reportingKey": "bookings",
       "jql": "bookings",
       "hasReports": true,

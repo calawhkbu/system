@@ -13,7 +13,8 @@ import {
   QueryExpression,
   OrExpressions,
   Value,
-  Unknown
+  Unknown,
+  GroupBy
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -39,6 +40,58 @@ const query = new QueryDef(
         new ColumnExpression('party', 'id'),
         '=',
         new ColumnExpression('party_type', 'partyId')
+      ),
+    }, {
+      operator: 'LEFT',
+      table: new FromTable(new Query({
+        $select: [
+          new ResultColumn(new ColumnExpression('related_person', 'partyId'), 'partyId'),
+          new ResultColumn({
+            expression: new FunctionExpression({
+              name: 'COUNT',
+              parameters: new ParameterExpression({
+                prefix: 'DISTINCT',
+                expression: new ColumnExpression('related_person', 'email'),
+              }),
+            }),
+            $as: 'count'
+          })
+        ],
+        $from: 'related_person',
+        $group: new GroupBy({
+          expressions: new ColumnExpression('related_person', 'partyId')
+        })
+      }), 'related_person_count'),
+      $on: new BinaryExpression(
+        new ColumnExpression('party', 'id'),
+        '=',
+        new ColumnExpression('related_person_count', 'partyId')
+      ),
+    }, {
+      operator: 'LEFT',
+      table: new FromTable(new Query({
+        $select: [
+          new ResultColumn(new ColumnExpression('related_party', 'partyBId'), 'partyBId'),
+          new ResultColumn({
+            expression: new FunctionExpression({
+              name: 'COUNT',
+              parameters: new ParameterExpression({
+                prefix: 'DISTINCT',
+                expression: new ColumnExpression('related_party', 'partyBId'),
+              }),
+            }),
+            $as: 'count'
+          })
+        ],
+        $from: 'related_party',
+        $group: new GroupBy({
+          expressions: new ColumnExpression('related_party', 'partyBId')
+        })
+      }), 'related_party_count'),
+      $on: new BinaryExpression(
+        new ColumnExpression('party', 'id'),
+        '=',
+        new ColumnExpression('related_party_count', 'partyBId')
       ),
     })
   })
@@ -149,13 +202,15 @@ query
   )
   .register('value', 0)
 
-query
-  .register(
-    'email',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('party', 'email'), false),
-    })
-  )
+query.register('relatedTo', new Query({
+  $where: new ExistsExpression(new Query({
+    $from: 'related_party',
+    $where: [
+      new BinaryExpression(new ColumnExpression('related_party', 'partyAId'), '=', new Unknown()),
+      new BinaryExpression(new ColumnExpression('related_party', 'partyBId'), '=', new ColumnExpression('party', 'id'))
+    ]
+  }), false)
+}))
   .register('value', 0)
 
 query.register('unrelatedTo', new Query({
@@ -174,8 +229,6 @@ query.register('q', new Query({
     new RegexpExpression(new ColumnExpression('party', 'name'), false),
     new RegexpExpression(new ColumnExpression('party', 'shortName'), false),
     new RegexpExpression(new ColumnExpression('party', 'groupName'), false),
-    new RegexpExpression(new ColumnExpression('party', 'email'), false),
-    new RegexpExpression(new ColumnExpression('party', 'phone'), false),
   ])
 }))
   .register('value', 0)
