@@ -8,6 +8,8 @@ export default {
   fill_template: [{ handlerName: 'fill_template' }],
   send_data_to_external: [{ handlerName: 'send_data_to_external' }],
   send_edi: [{ handlerName: 'send_edi' }],
+  create_related_party: [{handlerName: 'create_related_party'}],
+  create_related_person: [{handlerName: 'create_related_person'}],
   // start here
   // booking
   afterCreate_booking: [
@@ -74,6 +76,24 @@ export default {
         },
       },
     },
+    // create related party
+    {
+      condition: true,
+      eventName: 'create_related_party',
+      otherParameters: {
+        partyLodash: 'bookingParty',
+        fixedParty: ['shipper', 'consignee', 'forwarder', 'agent', 'notifyParty']
+      }
+    },
+    // create related person
+    {
+      condition: true,
+      eventName: 'create_related_person',
+      otherParameters: {
+        partyLodash: 'bookingParty',
+        fixedParty: ['shipper', 'consignee', 'forwarder', 'agent', 'notifyParty']
+      }
+    },
     // send fm3k
     {
       condition: true,
@@ -132,6 +152,24 @@ export default {
             }, [])
           },
         }
+      }
+    },
+    // create related party
+    {
+      condition: true,
+      eventName: 'create_related_party',
+      otherParameters: {
+        partyLodash: 'bookingParty',
+        fixedParty: ['shipper', 'consignee', 'forwarder', 'agent', 'notifyParty']
+      }
+    },
+    // create related person
+    {
+      condition: true,
+      eventName: 'create_related_person',
+      otherParameters: {
+        partyLodash: 'bookingParty',
+        fixedParty: ['shipper', 'consignee', 'forwarder', 'agent', 'notifyParty']
       }
     },
     // fill shipping order
@@ -220,6 +258,24 @@ export default {
         }
       }
     },
+    // create related party
+    {
+      condition: true,
+      eventName: 'create_related_party',
+      otherParameters: {
+        partyLodash: 'shipmentParty',
+        fixedParty: ['shipper', 'consignee', 'office', 'agent', 'roAgent', 'linerAgent', 'controllingCustomer']
+      }
+    },
+    // create related person
+    {
+      condition: true,
+      eventName: 'create_related_person',
+      otherParameters: {
+        partyLodash: 'shipmentParty',
+        fixedParty: ['shipper', 'consignee', 'office', 'agent', 'roAgent', 'linerAgent', 'controllingCustomer']
+      }
+    },
   ],
   afterUpdate_shipment: [
     // create tracking
@@ -236,6 +292,24 @@ export default {
           soNo: 'trackingNos.soNo',
           containerNo: 'trackingNos.containerNo'
         }
+      }
+    },
+    // create related party
+    {
+      condition: true,
+      eventName: 'create_related_party',
+      otherParameters: {
+        partyLodash: 'shipmentParty',
+        fixedParty: ['shipper', 'consignee', 'office', 'agent', 'roAgent', 'linerAgent', 'controllingCustomer']
+      }
+    },
+    // create related person
+    {
+      condition: true,
+      eventName: 'create_related_person',
+      otherParameters: {
+        partyLodash: 'shipmentParty',
+        fixedParty: ['shipper', 'consignee', 'office', 'agent', 'roAgent', 'linerAgent', 'controllingCustomer']
       }
     },
   ],

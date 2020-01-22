@@ -26,6 +26,10 @@
         "filters": {
           "invitationStatus": {
             "value": ["sent", "accepted"]
+          },
+          "isActive": {
+            "value": "active",
+            "locked": true
           }
         },
         "configurations": {
@@ -42,7 +46,8 @@
           },
           "pagination": {
             "current": 0,
-            "perPage": 20
+            "perPage": 20,
+            "remote": true
           }
         }
       },
@@ -193,6 +198,20 @@
         }
       ],
       "filters": [{
+          "name": "isActive",
+          "type": "list",
+          "props": {
+            "items": [{
+                "label": "active",
+                "value": "active"
+              },
+              {
+                "label": "deleted",
+                "value": "deleted"
+              }
+            ]
+          }
+        }, {
           "display": "status",
           "name": "invitationStatus",
           "i18nContext": "InvitationPage",

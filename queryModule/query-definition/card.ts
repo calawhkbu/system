@@ -7,13 +7,13 @@ import {
   AndExpressions,
   IsNullExpression,
   FromTable,
-  ResultColumn,
   RegexpExpression,
-  OrExpressions
+  OrExpressions,
+  Value,
+  Unknown,
 } from 'node-jql'
 
 const query = new QueryDef(new Query({
-
   $from : new FromTable('card')
 }))
 
@@ -89,7 +89,22 @@ query
     })
   )
   .register('value', 0)
-
+query.register('isActive', new Query({
+  $where : new OrExpressions([
+    new AndExpressions([
+      new BinaryExpression(new Value('active'), '=', new Unknown('string')),
+      // active case
+      new IsNullExpression(new ColumnExpression('card', 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression('card', 'deletedBy'), false)
+    ]),
+    new AndExpressions([
+      new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
+      // deleted case
+      new IsNullExpression(new ColumnExpression('card', 'deletedAt'), true),
+      new IsNullExpression(new ColumnExpression('card', 'deletedBy'), true)
+    ])
+  ])
+})).register('value', 0).register('value', 1)
 query
   .register(
     'q',

@@ -11,11 +11,11 @@ import {
   Unknown
 } from 'node-jql'
 
-const query = new QueryDef(new Query({$from: new FromTable('authentication', 'authentication')}))
+const query = new QueryDef(new Query({$from: new FromTable('api', 'api')}))
 
 // fields
 query.register('id', {
-  expression: new ColumnExpression('authentication', 'id'),
+  expression: new ColumnExpression('api', 'id'),
   $as: 'id',
 })
 
@@ -25,14 +25,14 @@ query.register('isActive', new Query({
     new AndExpressions([
       new BinaryExpression(new Value('active'), '=', new Unknown('string')),
       // active case
-      new IsNullExpression(new ColumnExpression('authentication', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('authentication', 'deletedBy'), false)
+      new IsNullExpression(new ColumnExpression('api', 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression('api', 'deletedBy'), false)
     ]),
     new AndExpressions([
       new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
       // deleted case
-      new IsNullExpression(new ColumnExpression('authentication', 'deletedAt'), true),
-      new IsNullExpression(new ColumnExpression('authentication', 'deletedBy'), true)
+      new IsNullExpression(new ColumnExpression('api', 'deletedAt'), true),
+      new IsNullExpression(new ColumnExpression('api', 'deletedBy'), true)
     ])
   ])
 }))

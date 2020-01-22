@@ -6,7 +6,11 @@ import {
   RegexpExpression,
   AndExpressions,
   Query,
-  FunctionExpression
+  FunctionExpression,
+  OrExpressions,
+  Unknown,
+  Value,
+  BinaryExpression
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -35,16 +39,23 @@ query
   )
   .register('value', 0)
 
-  query.register(
-    'isActive',
-    new Query({
-      $where: new AndExpressions({
-        expressions: [
-          new IsNullExpression(new ColumnExpression('tracking', 'deletedAt'), false),
-          new IsNullExpression(new ColumnExpression('tracking', 'deletedBy'), false),
-        ],
-      }),
-    })
-  )
+  query.register('isActive', new Query({
+    $where : new OrExpressions([
+      new AndExpressions([
+        new BinaryExpression(new Value('active'), '=', new Unknown('string')),
+        // active case
+        new IsNullExpression(new ColumnExpression('tracking', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('tracking', 'deletedBy'), false)
+      ]),
+      new AndExpressions([
+        new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
+        // deleted case
+        new IsNullExpression(new ColumnExpression('tracking', 'deletedAt'), true),
+        new IsNullExpression(new ColumnExpression('tracking', 'deletedBy'), true)
+      ])
+    ])
+  }))
+  .register('value', 0)
+  .register('value', 1)
 
 export default query

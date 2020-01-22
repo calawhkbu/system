@@ -8,10 +8,8 @@ import {
   OrExpressions,
   RegexpExpression,
   IsNullExpression,
-  JoinClause,
   AndExpressions,
-  ResultColumn,
-  GroupBy,
+  Unknown,
   Value,
   ExistsExpression,
 } from 'node-jql'
@@ -19,15 +17,11 @@ import {
 const query = new QueryDef(
   new Query({
     $from : new FromTable('code_master'),
-
     $where : new OrExpressions([
-
       new IsNullExpression(new ColumnExpression('code_master', 'partyGroupCode'), true),
-
       new AndExpressions([
         new IsNullExpression(new ColumnExpression('code_master', 'partyGroupCode'), false),
         new ExistsExpression(new Query({
-
           $from : new FromTable({
             table : 'code_master',
             $as : 'b'
@@ -37,12 +31,9 @@ const query = new QueryDef(
             new BinaryExpression(new ColumnExpression('b', 'code'), '=', new ColumnExpression('code_master', 'code')),
             new IsNullExpression(new ColumnExpression('b', 'partyGroupCode'), true)
           ]
-
         }), true)
-
       ])
     ])
-
   })
 )
 
@@ -111,5 +102,20 @@ query
   )
   .register('value', 0)
   .register('value', 1)
-
+query.register('isActive', new Query({
+    $where : new OrExpressions([
+      new AndExpressions([
+        new BinaryExpression(new Value('active'), '=', new Unknown('string')),
+        // active case
+        new IsNullExpression(new ColumnExpression('code_master', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('code_master', 'deletedBy'), false)
+      ]),
+      new AndExpressions([
+        new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
+        // deleted case
+        new IsNullExpression(new ColumnExpression('code_master', 'deletedAt'), true),
+        new IsNullExpression(new ColumnExpression('code_master', 'deletedBy'), true)
+      ])
+    ])
+  })).register('value', 0).register('value', 1)
 export default query

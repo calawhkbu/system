@@ -16,7 +16,9 @@
       "nextPageComponent": "tracking",
       "newReport": {
         "filters": {
-          "isActive": true
+          "isActive": {
+            "value": "active"
+          }
         },
         "configurations": {
           "i18nContext": "TrackingPage",
@@ -40,6 +42,24 @@
         "i18nContext": "TrackingPage",
         "name": "trackingNo",
         "type": "text"
+      }, {
+        "name": "isActive",
+        "type": "list",
+        "props": {
+          "items": [
+
+            {
+              "label": "active",
+              "value": "active"
+            },
+            {
+              "label": "deleted",
+              "value": "deleted"
+            }
+          ]
+
+
+        }
       }],
       "fieldOptions": [{
         "key": "id",
