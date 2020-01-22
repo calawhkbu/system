@@ -36,7 +36,7 @@ const app = {
       throw new BadRequestException('DATE_RANGE_TOO_LARGE')
 
     // xsite
-    const sites = helper.getOfficeParties('erp', party, subqueries.officePartyId)
+    const sites = helper.getOfficeParties('erp-site', party, subqueries.officePartyId)
     console.log(sites, 'erp-joblockrpt')
     if (!sites.length) throw new BadRequestException('MISSING_SITE')
     if (sites.length > 1) throw new BadRequestException('TOO_MANY_SITES')
