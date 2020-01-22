@@ -65,13 +65,11 @@
           "width": 150,
           "format": "YYYY-MM-DD"
         },
-
         {
           "label": "status",
           "key": "invitationStatus",
           "width": 150
         },
-
         {
           "label": "",
           "key": "canResend",
@@ -101,7 +99,6 @@
           },
           "width": 50
         },
-
         {
           "label": "",
           "key": "canDelete",
@@ -132,7 +129,6 @@
           },
           "width": 50
         },
-
         {
           "label": "",
           "key": "canRestore",
@@ -163,7 +159,6 @@
           },
           "width": 50
         },
-
         {
           "key": "userName",
           "sql": {

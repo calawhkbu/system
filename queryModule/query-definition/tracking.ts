@@ -1,15 +1,12 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { arrayMap } from 'classes/query/utils'
 import {
   BetweenExpression,
   BinaryExpression,
   ColumnExpression,
   FromTable,
-  FunctionExpression,
   InExpression,
   JoinClause,
   Query,
-  Value,
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -68,7 +65,6 @@ query
   )
   .register('from', 0)
   .register('to', 1)
-
 
 query
   .register(

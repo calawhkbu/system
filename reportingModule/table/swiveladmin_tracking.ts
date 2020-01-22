@@ -1,46 +1,35 @@
 import { Query, FromTable } from 'node-jql'
 
 const query = new Query({
+  $distinct: true,
   $from: new FromTable(
     {
       method: 'POST',
-      url: 'api/party/query/party',
+      url: 'api/tracking/query/swiveladmin_tracking',
       columns: [
         {
           name: 'id',
-          type: 'number',
+          type: 'string'
         },
         {
-          name: 'name',
+          name: 'trackingNo',
           type: 'string',
         },
         {
-          name: 'shortName',
+          name: 'lastStatus',
           type: 'string',
         },
         {
-          name: 'groupName',
+          name: 'lastStatusDate',
           type: 'string',
         },
         {
-          name: 'partyTypes',
+          name: 'updatedAt',
           type: 'string',
-        },
-        {
-          name: 'parties',
-          type: 'number',
-        },
-        {
-          name: 'contacts',
-          type: 'number',
-        },
-        {
-          name: 'showInfo',
-          type: 'number',
         },
       ],
     },
-    'party'
+    'tracking'
   ),
 })
 

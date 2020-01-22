@@ -1,1 +1,11 @@
-{}
+{
+  "fillParent": true,
+  "components": [{
+    "is": "Widget",
+    "props": {
+      "settingProp": {
+        "overrideType": "tracking"
+      }
+    }
+  }]
+}
