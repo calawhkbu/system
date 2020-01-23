@@ -162,22 +162,40 @@ export default class EdiParser856 extends BaseEdiParser {
           let totalShipUnit = 0
           for (const booking of _.get(element, 'bookingPOPackings'))
           {
+            let missingPosition = 1
             if (_.get(booking, 'bookWeight'))
             {
               totalWeight += _.get(booking, 'bookWeight')
+            }
+            else
+            {
+              throw new Error(`missing the bookWeight in bookingPOPackings ${missingPosition}`)
             }
             if (_.get(booking, 'bookVolume'))
             {
               totalVolume += _.get(booking, 'bookVolume')
             }
+            else
+            {
+              throw new Error(`missing the bookVolume in bookingPOPackings ${missingPosition}`)
+            }
             if (_.get(booking, 'bookQuantity'))
             {
               totalShipUnit += _.get(booking, 'bookQuantity')
+            }
+            else
+            {
+              throw new Error(`missing the bookQuantity in bookingPOPackings ${missingPosition}`)
             }
             if (_.get(booking, 'bookCtns'))
             {
               numberOfPacking += _.get(booking, 'bookCtns')
             }
+            else
+            {
+              throw new Error(`missing the bookCtns in bookingPOPackings ${missingPosition}`)
+            }
+            missingPosition++
           }
           if (totalWeight > 0)
           {
