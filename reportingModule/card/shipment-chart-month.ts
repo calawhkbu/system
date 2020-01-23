@@ -93,6 +93,11 @@ function insertData() {
       })
     })
 
+    if (! (finalResult && finalResult.length))
+    {
+      throw new Error('NO_DATA')
+    }
+
     return new InsertJQL('result', ...finalResult)
   }
 }

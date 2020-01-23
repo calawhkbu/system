@@ -443,12 +443,6 @@ export default [
   [prepareParams(), prepareTable()],
   prepareFinalTable(),
 
-  // new Query({
-
-  //   $from : 'final'
-
-  // })
-
   //
   prepareReportingGroupTable(),
   insertReportingGroupTable(),
