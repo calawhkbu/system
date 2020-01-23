@@ -10,6 +10,9 @@ import {
 } from 'node-jql'
 import moment = require('moment')
 
+const shipmentBottomSheetId = 'cb22011b-728d-489b-a64b-b881914be600'
+const bookingBottomSheetId = 'bde2d806-d2bb-490c-b3e3-9e4792f353dd'
+
 function prepareParams(): Function {
   return function(require, session, params) {
     // import
@@ -28,15 +31,15 @@ function prepareParams(): Function {
 
     const withinHours = params.subqueries.withinHours
 
-    // const alertCreatedAtJson = {
-    //     from : moment('2018-01-01'),
-    //     to : moment()
-    //   }
-
     const alertCreatedAtJson = {
-      from : moment().subtract(withinHours.value, 'hours'),
-      to : moment()
-    }
+        from : moment('2018-01-01'),
+        to : moment()
+      }
+
+    // const alertCreatedAtJson = {
+    //   from : moment().subtract(withinHours.value, 'hours'),
+    //   to : moment()
+    // }
 
     subqueries.alertCreatedAt = alertCreatedAtJson
 
@@ -72,14 +75,26 @@ function finalQuery(): Function {
 
     const withinHours = params.subqueries.withinHours
 
-    // const alertCreatedAtJson = {
-    //     from : moment('2018-01-01'),
-    //     to : moment()
-    //   }
-
     const alertCreatedAtJson = {
-      from : moment().subtract(withinHours.value, 'hours'),
-      to : moment()
+        from : moment('2018-01-01'),
+        to : moment()
+      }
+
+    // const alertCreatedAtJson = {
+    //   from : moment().subtract(withinHours.value, 'hours'),
+    //   to : moment()
+    // }
+
+    let bottomSheetId
+
+    if (entityType === 'shipment')
+    {
+      bottomSheetId = shipmentBottomSheetId
+    }
+
+    else if (entityType === 'booking')
+    {
+      bottomSheetId = bookingBottomSheetId
     }
 
     return new Query({
@@ -89,6 +104,7 @@ function finalQuery(): Function {
         new ResultColumn('alertType'),
         new ResultColumn('tableName'),
         new ResultColumn('count'),
+        new ResultColumn(new Value(bottomSheetId), `bottomSheetId`),
         new ResultColumn('primaryKeyListString')
       ],
 
@@ -128,7 +144,6 @@ function finalQuery(): Function {
 export default [
   [
     prepareParams(), finalQuery()
-
   ],
 ]
 

@@ -27,13 +27,13 @@ function prepareParams(): Function {
       xAxis === 'carrier'
         ? `carrierCode`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyName`
     // ------------------------------
 
@@ -64,13 +64,13 @@ function createTop10Table() {
       xAxis === 'carrier'
         ? `carrierCode`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyName`
     // ------------------------------
 
@@ -114,13 +114,13 @@ function insertTop10Data() {
       xAxis === 'carrier'
         ? `carrierCode`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyName`
 
     const showOther = subqueries.showOther || false
@@ -199,13 +199,13 @@ function prepareRawTable() {
       xAxis === 'carrier'
         ? `carrierCode`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyName`
     // ------------------------------
 
@@ -265,13 +265,13 @@ function finalQuery() {
       xAxis === 'carrier'
         ? `carrierCode`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyName`
     // ------------------------------
 

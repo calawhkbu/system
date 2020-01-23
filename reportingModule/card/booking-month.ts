@@ -45,7 +45,7 @@ function prepareParams(): Function {
     if (subqueries.summaryVariables && subqueries.summaryVariables.value)
     {
       // sumamary variable
-      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalBooking
     }
 
     else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
@@ -135,14 +135,13 @@ function finalQuery()
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
     const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
     const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
-
     const groupByVariables = [codeColumnName, nameColumnName]
 
     let summaryVariables: string[]
     if (subqueries.summaryVariables && subqueries.summaryVariables.value)
     {
       // sumamary variable
-      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalBooking
     }
 
     else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
@@ -178,10 +177,10 @@ function finalQuery()
       $from: new FromTable(
         {
           method: 'POST',
-          url: 'api/shipment/query/shipment',
+          url: 'api/booking/query/booking',
           columns
         },
-        'shipment'
+        'booking'
       )
     })
 
@@ -228,20 +227,16 @@ export const filters = [
     props: {
       items: [
         {
-          label: 'chargeableWeight',
-          value: 'chargeableWeight',
+          label: 'quantity',
+          value: 'quantity',
         },
         {
-          label: 'grossWeight',
-          value: 'grossWeight',
+          label: 'weight',
+          value: 'weight',
         },
         {
-          label: 'cbm',
-          value: 'cbm',
-        },
-        {
-          label: 'totalShipment',
-          value: 'totalShipment',
+          label: 'totalBooking',
+          value: 'totalBooking',
         },
       ],
       multi : false,
@@ -258,6 +253,12 @@ export const filters = [
           label: 'carrier',
           value: 'carrier',
         },
+
+        {
+          label: 'moduleType',
+          value: 'moduleType',
+        },
+
         {
           label: 'shipper',
           value: 'shipper',
@@ -270,10 +271,6 @@ export const filters = [
           label: 'agent',
           value: 'agent',
         },
-        {
-          label : 'moduleType',
-          value : 'moduleType'
-        }
       ],
       required: true,
     },
