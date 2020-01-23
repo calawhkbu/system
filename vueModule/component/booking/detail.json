@@ -674,6 +674,7 @@
       "slots": [{
           "is": "AsyncComponent",
           "props": {
+            "getDate": "bookingDate",
             "class": "xs-12 margin-topbottom-4",
             "layoutName": "plugins/tracking",
             "loadWhenDataLoaded": true,

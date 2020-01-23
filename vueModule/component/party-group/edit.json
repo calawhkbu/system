@@ -65,14 +65,14 @@
             "is": "AsyncComponent",
             "props": {
               "class": "margin-topbottom-4 xs-12",
-              "layoutName": "party-group/forms/party"
+              "layoutName": "party-group/forms/default-preference"
             }
           },
           {
             "is": "AsyncComponent",
             "props": {
               "class": "margin-topbottom-4 xs-12",
-              "layoutName": "party-group/forms/default-preference"
+              "layoutName": "party-group/forms/party"
             }
           },
           {

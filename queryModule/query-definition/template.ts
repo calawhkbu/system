@@ -92,7 +92,7 @@ query
   .register('value', 0)
 
 // will have 2 options, active and deleted
-query.register('activeStatus', new Query({
+query.register('isActive', new Query({
 
   $where: new OrExpressions([
 

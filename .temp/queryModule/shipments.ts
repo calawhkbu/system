@@ -789,7 +789,7 @@ query
   .register('value', 0)
 
 // Agent Group
-// TODO::
+// TODO:
 query
   .register(
     'agentGroup',

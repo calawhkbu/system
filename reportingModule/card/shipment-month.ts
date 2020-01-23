@@ -87,7 +87,7 @@ function prepareParams(): Function {
     ]
 
     // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
-    params.sorting = new OrderBy(`${summaryVariables[0]}Month`, 'DESC')
+    params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
 
     params.limit = topX
 

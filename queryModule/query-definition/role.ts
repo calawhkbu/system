@@ -7,10 +7,9 @@ import {
   InExpression,
   BinaryExpression,
   IsNullExpression,
-  ResultColumn,
-  JoinClause,
+  Unknown,
   AndExpressions,
-  GroupBy,
+  Value,
   FunctionExpression,
   OrExpressions,
   ExistsExpression,
@@ -19,25 +18,7 @@ import {
 const query = new QueryDef(
   new Query({
     $from : new FromTable({
-
-      table : 'role',
-      joinClauses : [
-        new JoinClause(
-          {
-            operator: 'LEFT',
-            table: 'flex_data',
-            $on: [
-              new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'role'),
-              new BinaryExpression(
-                new ColumnExpression('role', 'id'),
-                '=',
-                new ColumnExpression('flex_data', 'primaryKey')
-              ),
-            ],
-          }
-
-        )
-      ]
+      table : 'role'
     }),
 
     $where : new OrExpressions([
@@ -140,5 +121,22 @@ query
     })
   )
   .register('value', 0)
-
+  query.register('isActive', new Query({
+    $where : new OrExpressions([
+      new AndExpressions([
+        new BinaryExpression(new Value('active'), '=', new Unknown('string')),
+        // active case
+        new IsNullExpression(new ColumnExpression('role', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('role', 'deletedBy'), false)
+      ]),
+      new AndExpressions([
+        new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
+        // deleted case
+        new IsNullExpression(new ColumnExpression('role', 'deletedAt'), true),
+        new IsNullExpression(new ColumnExpression('role', 'deletedBy'), true)
+      ])
+    ])
+  }))
+  .register('value', 0)
+  .register('value', 1)
 export default query

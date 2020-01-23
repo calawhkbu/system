@@ -3,12 +3,21 @@
   "components": [{
     "is": "SimpleTableTool",
     "props": {
-      "reportingKey": "connections-persons",
+      "reportingKey": "related-persons",
       "jql": "related-persons",
-      "reportUrl": "report/relatedPersons/{{ context.detailPageParams }}",
+      "reportUrl": "relationship/report/persons/{{ context.detailPageParams }}",
+      "back": "/parties",
       "noPartyGroupFilters": true,
       "showFilterBar": true,
-      "noNextPage": true,
+      "nextPageKey": "routeParams",
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/{{ id }}",
+          "base": true
+        }
+      },
       "newReport": {
         "filters": {
           "isActive": true,
@@ -73,8 +82,90 @@
             "table": "related_person",
             "name": "phone"
           }
+        },
+        {
+          "key": "showResend",
+          "label": "",
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "TODO",
+                "method": "POST"
+              }
+            }
+          },
+          "tdComponent": {
+            "is": "icon",
+            "props": {
+              "icon": "email"
+            }
+          },
+          "width": 60
+        },
+        {
+          "key": "showDelete",
+          "label": "",
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/relationship/person/{{row.id}}",
+                "method": "DELETE"
+              }
+            },
+            "afterActions": [
+              {
+                "type": "emit",
+                "otherParams": {
+                  "name": "refresh",
+                  "params": [true]
+                }
+              }
+            ]
+          },
+          "tdComponent": {
+            "is": "icon",
+            "props": {
+              "icon": "block"
+            }
+          },
+          "width": 60
         }
       ]
-    }
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "/create",
+                "base": true
+              }
+            }]
+          }
+        }]
+      }
+    }]
   }]
 }

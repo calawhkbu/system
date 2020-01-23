@@ -24,10 +24,13 @@
       },
       "newReport": {
         "filters": {
+          "isActive": {
+            "value": "active",
+            "locked": true
+          },
           "extension": {
             "value": "pdf"
-          },
-          "isActive": true
+          }
         },
         "configurations": {
           "i18nContext": "TemplatePage",
@@ -39,8 +42,7 @@
           }
         }
       },
-      "fieldOptions": [
-        {
+      "fieldOptions": [{
           "key": "id",
           "hidden": true
         },
@@ -115,6 +117,20 @@
         }
       ],
       "filters": [{
+          "name": "isActive",
+          "type": "list",
+          "props": {
+            "items": [{
+                "label": "active",
+                "value": "active"
+              },
+              {
+                "label": "deleted",
+                "value": "deleted"
+              }
+            ]
+          }
+        }, {
           "name": "templateName",
           "i18nContext": "TemplatePage",
           "type": "text"

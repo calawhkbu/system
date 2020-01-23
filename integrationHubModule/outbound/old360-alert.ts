@@ -52,9 +52,7 @@ const app = {
           severity: alert.severity,
           status: 'closed',
           flexData: {
-            data: {
-              customMessage: alert.message,
-            },
+            customMessage: alert.message,
           },
         }
       }),

@@ -13,7 +13,7 @@ function prepareShipmentParams(): Function {
     const subqueries = (params.subqueries = params.subqueries || {})
 
     params.fields = [
-      'primaryKey',
+      'id',
       'houseNo',
       'masterNo',
       'jobDate',
@@ -26,16 +26,17 @@ function prepareShipmentParams(): Function {
       'arrivalDateEstimated',
     ]
 
-    // console.log(subqueries)
+    console.log(`aaa`)
+    console.log(subqueries)
 
-    if (!subqueries.primaryKeyListString && !subqueries.workflowStatusListString) {
-      throw new BadRequestException('MISSING_primaryKeyListString/workflowStatus')
-    }
+    // if (!subqueries.primaryKeyListString && !subqueries.lastStatus) {
+    //   throw new Error('MISSING_primaryKeyListString/workflowStatus')
+    // }
 
     if (subqueries.primaryKeyListString) {
       // get the primaryKeyList
       if (!subqueries.primaryKeyListString && subqueries.primaryKeyListString !== '')
-        throw new BadRequestException('MISSING_primaryKeyListString')
+        throw new Error('MISSING_primaryKeyListString')
 
       const primaryKeyList = subqueries.primaryKeyListString.value.split(',')
 
@@ -44,17 +45,14 @@ function prepareShipmentParams(): Function {
       }
     }
 
-    // workflowStatus case
-    if (subqueries.workflowStatusListString) {
-      if (!subqueries.workflowStatusListString && subqueries.workflowStatusListString !== '')
-        throw new BadRequestException('MISSING_workflowStatusListString')
-
-      const workflowStatusList = subqueries.workflowStatusListString.value.split(',')
-
-      subqueries.workflowStatusList = {
-        value: workflowStatusList,
-      }
+    // lastStatusList case
+    if (subqueries.lastStatus) {
+      if (!(subqueries.lastStatus.value && subqueries.lastStatus.value.length) )
+        throw new Error('MISSING_lastStatus')
     }
+
+    console.log(`bottomparams`)
+    console.log(params)
 
     return params
   }
@@ -67,9 +65,9 @@ const query = new Query({
   $from: new FromTable(
     {
       method: 'POST',
-      url: 'api/shipment/query/old360-uber',
+      url: 'api/shipment/query/shipment',
       columns: [
-        { name: 'primaryKey', type: 'string' },
+        { name: 'id', type: 'string' },
         { name: 'houseNo', type: 'string' },
         { name: 'masterNo', type: 'string' },
         { name: 'jobDate', type: 'Date' },

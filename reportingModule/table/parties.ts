@@ -27,14 +27,6 @@ const query = new Query({
           type: 'string',
         },
         {
-          name: 'email',
-          type: 'string',
-        },
-        {
-          name: 'phone',
-          type: 'string',
-        },
-        {
           name: 'parties',
           type: 'number',
         },

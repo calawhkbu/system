@@ -4,7 +4,7 @@
     "is": "TableTool",
     "props": {
       "title": "Relationship",
-      "reportingKey": "connections",
+      "reportingKey": "parties",
       "jql": "parties",
       "hasReports": false,
       "showFilterBar": true,
@@ -20,22 +20,34 @@
           "showInfo": true
         },
         "configurations": {
-          "i18nContext": "Reporting",
-          "sorting": {},
+          "i18nContext": "RelationshipPage",
+          "sorting": {
+            "direction": "DESC",
+            "key": "updatedAt",
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "party",
+              "name": "name"
+            }
+          },
           "pagination": {
+            "remote": true,
             "current": 0,
             "perPage": 20
           }
         }
       },
-      "filters": [
-        {
-          "name": "shortName",
-          "type": "text"
-        }
-      ],
-      "fieldOptions": [
-        {
+      "filters": [{
+        "name": "shortName",
+        "type": "text"
+      }, {
+        "name": "name",
+        "type": "text"
+      }, {
+        "name": "groupName",
+        "type": "text"
+      }],
+      "fieldOptions": [{
           "key": "id",
           "sql": {
             "classname": "ColumnExpression",
@@ -45,19 +57,20 @@
           "hidden": true
         },
         {
+          "key": "name",
+          "width": 300
+        },
+        {
           "key": "shortName",
-          "width": 120
+          "width": 150
         },
         {
           "key": "groupName",
-          "width": 160
+          "width": 150
         },
         {
-          "key": "partyTypes"
-        },
-        {
-          "key": "phone",
-          "width": 160
+          "key": "partyTypes",
+          "width": 200
         },
         {
           "key": "parties",
@@ -89,21 +102,51 @@
           "tdComponent": {
             "is": "icon",
             "props": {
-              "class": "material-icons-outlined",
-              "icon": "info"
+              "icon": "edit"
             }
           },
           "clickFunction": {
             "type": "router",
             "otherParams": {
               "func": "push",
-              "path": "partyDetail/{{ row.id }}",
+              "path": "party/detail/{{ row.id }}",
               "base": true
             }
           },
-          "width": 80
+          "width": 60
         }
       ]
-    }
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "party/create/create",
+                "base": true
+              }
+            }]
+          }
+        }]
+      }
+    }]
   }]
 }

@@ -472,7 +472,7 @@
                     "class": "padding-topbottom-8 padding-leftright-4"
                   },
                   "label": "BookingPage.poNo",
-                  "name": "flexData.data.poNo",
+                  "name": "flexData.poNo",
                   "component": "v-text-field",
                   "class": "xs-12 md-3 padding-topbottom-4"
                 },
@@ -505,11 +505,11 @@
                   }],
                   "relationMore": [{
                       "name": "freightTermsCode",
-                      "selector": "data.frieghtTermsCode"
+                      "selector": "flexData.frieghtTermsCode"
                     },
                     {
                       "name": "otherTermsCode",
-                      "selector": "data.otherTermsCode"
+                      "selector": "flexData.otherTermsCode"
                     }
                   ],
                   "props": {
@@ -518,17 +518,6 @@
                       "url": "api/code/query/code_master",
                       "method": "POST",
                       "data": {
-                        "fields": [{
-                            "classname": "ColumnExpression",
-                            "table": "code_master",
-                            "name": "*"
-                          },
-                          {
-                            "classname": "ColumnExpression",
-                            "table": "flex_data",
-                            "name": "data"
-                          }
-                        ],
                         "subqueries": {
                           "flex_data_join": true,
                           "codeType": {
@@ -588,7 +577,7 @@
                     "class": "padding-topbottom-8 padding-leftright-4"
                   },
                   "label": "BookingPage.specialInstruction",
-                  "name": "flexData.data.specialInstruction",
+                  "name": "flexData.specialInstruction",
                   "component": "v-textarea",
                   "class": "xs-12 md-6 padding-topbottom-4"
                 },

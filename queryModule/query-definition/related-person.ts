@@ -44,7 +44,7 @@ const query = new QueryDef(
           new ColumnExpression('related_person', 'phone'))
         , 'phone'),
         new ResultColumn(new ColumnExpression('related_person', 'deletedAt')),
-        new ResultColumn(new ColumnExpression('related_person', 'deletedBy')),
+        new ResultColumn(new ColumnExpression('related_person', 'deletedBy'))
       ],
       $from: new FromTable(
         'related_person',
@@ -63,26 +63,35 @@ const query = new QueryDef(
       table: 'party',
       $on: new BinaryExpression(new ColumnExpression('related_person', 'partyId'), '=', new ColumnExpression('party', 'id'))
     }),
-  })
-)
-
-query
-  .register(
-    'id',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('related_person', 'partyId'), '='),
-    })
-  )
-  .register('value', 0)
-
-query.register(
-  'isActive',
-  new Query({
     $where: [
       new IsNullExpression(new ColumnExpression('related_person', 'deletedAt'), false),
       new IsNullExpression(new ColumnExpression('related_person', 'deletedBy'), false),
     ],
   })
 )
+
+query.register(
+  'id',
+  new Query({
+    $where: new BinaryExpression(new ColumnExpression('related_person', 'id'), '='),
+  })
+).register('value', 0)
+
+query.register(
+  'partyId',
+  new Query({
+    $where: new BinaryExpression(new ColumnExpression('related_person', 'partyId'), '='),
+  })
+).register('value', 0)
+
+query.register('showDelete', {
+  expression: new Value(1),
+  $as: 'showDelete'
+})
+
+query.register('showResend', {
+  expression: new Value(1),
+  $as: 'showResend'
+})
 
 export default query

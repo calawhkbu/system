@@ -112,7 +112,7 @@ const app = {
     }
 
     // xsite
-    const sites = helper.getOfficeParties('erp', party, subqueries.officePartyId)
+    const sites = helper.getOfficeParties('erp-site', party, subqueries.officePartyId)
     if (!sites.length) throw new BadRequestException('MISSING_SITE')
     para.xsite = sites
 

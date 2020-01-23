@@ -26,6 +26,14 @@ const query = new Query({
           name: 'phone',
           type: 'string',
         },
+        {
+          name: 'showResend',
+          type: 'number',
+        },
+        {
+          name: 'showDelete',
+          type: 'number',
+        },
       ],
     },
     'person'

@@ -74,7 +74,7 @@ const app = {
     app.variable.boundTypes = xbound
 
     // xsite
-    const sites = helper.getOfficeParties('erp', party, subqueries.officePartyId)
+    const sites = helper.getOfficeParties('erp-site', party, subqueries.officePartyId)
     if (!sites.length) throw new BadRequestException('MISSING_SITE')
     if (sites.length > 1) throw new BadRequestException('TOO_MANY_SITES')
     const xsite = (app.variable.site = sites[0])

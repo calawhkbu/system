@@ -112,8 +112,8 @@ const app = {
   async prepareCard(responseBody: any, api: string, category: string, zyh: number, zyd: number, options: any) {
     const axiosResponse = await axios.request(options)
     const cards = JSON.parse(axiosResponse.data.d) as any[]
-    const baseCard = cards.filter(c => c.zyh === zyh)
-    const currentCard = baseCard.filter(c => c.zyd === zyd)
+    const baseCard = cards.filter(c => c.zyh === +zyh)
+    const currentCard = baseCard.filter(c => c.zyd === +zyd)
     if (!currentCard.length) throw new NotFoundException()
 
     let items: any[] | null = null
