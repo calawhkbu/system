@@ -426,35 +426,6 @@ const query = new QueryDef(
   })
 )
 
-function registerBoth(name: string, expression: IExpression) {
-
-  // check the content of the query param, see if the register field is a group By field
-  function checkIsGroupBy(name: string, param: IQueryParams) {
-
-    if (param.fields && param.fields && param.groupBy && param.groupBy.length) {
-      // if exist in both field and groupBy
-      return param.groupBy.includes(name) && param.fields.includes(name)
-    }
-
-    return false
-  }
-
-  const resultColumnFn = (param) => {
-    const isGroupBy = checkIsGroupBy(name, param)
-    const groupByName = `group_${name}`
-    return isGroupBy ? new ResultColumn(expression, groupByName) : new ResultColumn(expression, name)
-  }
-
-  const groupByFn = (param) => {
-    const isGroupBy = checkIsGroupBy(name, param)
-    const groupByName = `group_${name}`
-    return isGroupBy ? new GroupBy(groupByName) : new GroupBy(expression)
-  }
-
-  query.registerResultColumn(name, resultColumnFn as ResultColumnFn)
-  query.registerGroupBy(name, groupByFn as GroupByFn)
-}
-
 const carrierCodeExpression = new ColumnExpression('booking', 'carrierCode')
 
 const carrierNameExpression = new FunctionExpression(
@@ -612,20 +583,20 @@ const alertUpdatedAtExpression = new ColumnExpression('alert', 'updatedAt')
 
 const alertContentExpression = new ColumnExpression('alert', 'flexData')
 
-registerBoth('carrierName', carrierNameExpression)
-registerBoth('carrierCode', carrierCodeExpression)
+query.registerBoth('carrierName', carrierNameExpression)
+query.registerBoth('carrierCode', carrierCodeExpression)
 
-registerBoth('reportingGroup', reportingGroupExpression)
+query.registerBoth('reportingGroup', reportingGroupExpression)
 
-registerBoth('alertType', alertTypeExpression)
+query.registerBoth('alertType', alertTypeExpression)
 
-registerBoth('alertCategory', alertCategoryExpression)
-registerBoth('alertStatus', alertStatusExpression)
+query.registerBoth('alertCategory', alertCategoryExpression)
+query.registerBoth('alertStatus', alertStatusExpression)
 
-registerBoth('alertCreatedAt', alertCreatedAtExpression)
-registerBoth('alertUpdatedAt', alertUpdatedAtExpression)
+query.registerBoth('alertCreatedAt', alertCreatedAtExpression)
+query.registerBoth('alertUpdatedAt', alertUpdatedAtExpression)
 
-registerBoth('alertContent', alertContentExpression)
+query.registerBoth('alertContent', alertContentExpression)
 
 // register join
 query.registerQuery(
@@ -768,13 +739,13 @@ const jobMonthExpression = new FunctionExpression('CONCAT', new FunctionExpressi
 
 const jobWeekExpression = new FunctionExpression('LPAD', new FunctionExpression('WEEK', jobDateExpression), 2, '0')
 
-registerBoth('jobDate', jobDateExpression)
+query.registerBoth('jobDate', jobDateExpression)
 
-registerBoth('jobMonth', jobMonthExpression)
+query.registerBoth('jobMonth', jobMonthExpression)
 
-registerBoth('jobWeek', jobWeekExpression)
+query.registerBoth('jobWeek', jobWeekExpression)
 
-registerBoth('jobYear', jobYearExpression)
+query.registerBoth('jobYear', jobYearExpression)
 
 query.register(
   'count',
@@ -1442,7 +1413,7 @@ const isActiveConditionExpression = new AndExpressions([
   new IsNullExpression(new ColumnExpression('booking', 'deletedBy'), false)
 ])
 
-registerBoth('isActive', isActiveConditionExpression)
+query.registerBoth('isActive', isActiveConditionExpression)
 
 query.registerQuery('isActive', new Query({
 

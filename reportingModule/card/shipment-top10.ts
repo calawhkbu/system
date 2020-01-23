@@ -387,11 +387,11 @@ export const filters = [
           label: 'agent',
           value: 'agent',
         },
-        // // currently disabled
-        // {
-        //   label: 'agentGroup',
-        //   value: 'agentGroup',
-        // },
+        // currently disabled
+        {
+          label: 'agentGroup',
+          value: 'agentGroup',
+        },
         {
           label: 'controllingCustomer',
           value: 'controllingCustomer',

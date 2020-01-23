@@ -33,36 +33,6 @@ import { IQueryParams } from 'classes/query'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
-//  regist both result column field and group by
-function registerBoth(name: string, expression: IExpression) {
-
-  // check the content of the query param, see if the register field is a group By field
-  function checkIsGroupBy(name: string, param: IQueryParams) {
-
-    if (param.fields && param.fields && param.groupBy && param.groupBy.length) {
-      // if exist in both field and groupBy
-      return param.groupBy.includes(name) && param.fields.includes(name)
-    }
-
-    return false
-  }
-
-  const resultColumnFn = (param) => {
-    const isGroupBy = checkIsGroupBy(name, param)
-    const groupByName = `group_${name}`
-    return isGroupBy ? new ResultColumn(expression, groupByName) : new ResultColumn(expression, name)
-  }
-
-  const groupByFn = (param) => {
-    const isGroupBy = checkIsGroupBy(name, param)
-    const groupByName = `group_${name}`
-    return isGroupBy ? new GroupBy(groupByName) : new GroupBy(expression)
-  }
-
-  query.registerResultColumn(name, resultColumnFn as ResultColumnFn)
-  query.registerGroupBy(name, groupByFn as GroupByFn)
-}
-
 const months = [
   'January',
   'February',
@@ -1297,35 +1267,35 @@ const alertUpdatedAtExpression = new ColumnExpression('alert', 'updatedAt')
 
 const alertContentExpression = new ColumnExpression('alert', 'flexData')
 
-registerBoth('agentGroup', agentGroupExpression)
+query.registerBoth('agentGroup', agentGroupExpression)
 
-registerBoth('carrierCode', carrierCodeExpression)
+query.registerBoth('carrierCode', carrierCodeExpression)
 
-registerBoth('carrierName', carrierNameExpression)
+query.registerBoth('carrierName', carrierNameExpression)
 
-registerBoth('salesmanPersonCode', salesmanPersonCodeExpression)
+query.registerBoth('salesmanPersonCode', salesmanPersonCodeExpression)
 
-registerBoth('reportingGroup', reportingGroupExpression)
+query.registerBoth('reportingGroup', reportingGroupExpression)
 
-registerBoth('lastStatusCode', lastStatusCodeExpression)
+query.registerBoth('lastStatusCode', lastStatusCodeExpression)
 
-registerBoth('lastStatus', lastStatusExpression)
+query.registerBoth('lastStatus', lastStatusExpression)
 
-registerBoth('alertType', alertTypeExpression)
+query.registerBoth('alertType', alertTypeExpression)
 
-registerBoth('alertTitle', alertTitleExpression)
+query.registerBoth('alertTitle', alertTitleExpression)
 
-registerBoth('alertMessage', alertMessageExpression)
+query.registerBoth('alertMessage', alertMessageExpression)
 
-registerBoth('alertCategory', alertCategoryExpression)
+query.registerBoth('alertCategory', alertCategoryExpression)
 
-registerBoth('alertCreatedAt', alertCreatedAtExpression)
+query.registerBoth('alertCreatedAt', alertCreatedAtExpression)
 
-registerBoth('alertUpdatedAt', alertUpdatedAtExpression)
+query.registerBoth('alertUpdatedAt', alertUpdatedAtExpression)
 
-registerBoth('alertContent', alertContentExpression)
+query.registerBoth('alertContent', alertContentExpression)
 
-registerBoth('alertStatus', alertStatusExpression)
+query.registerBoth('alertStatus', alertStatusExpression)
 
 // ===========================
 
@@ -1393,7 +1363,7 @@ partyList.map(party => {
         break
     }
 
-    registerBoth(fieldName, expression)
+    query.registerBoth(fieldName, expression)
   })
 
 })
@@ -1428,13 +1398,13 @@ const jobMonthExpression = new FunctionExpression('CONCAT', new FunctionExpressi
 
 const jobWeekExpression = new FunctionExpression('LPAD', new FunctionExpression('WEEK', jobDateExpression), 2, '0')
 
-registerBoth('jobDate', jobDateExpression)
+query.registerBoth('jobDate', jobDateExpression)
 
-registerBoth('jobMonth', jobMonthExpression)
+query.registerBoth('jobMonth', jobMonthExpression)
 
-registerBoth('jobWeek', jobWeekExpression)
+query.registerBoth('jobWeek', jobWeekExpression)
 
-registerBoth('jobYear', jobYearExpression)
+query.registerBoth('jobYear', jobYearExpression)
 
 // summary fields  =================
 
@@ -1477,7 +1447,6 @@ const nestedSummaryList = [
       {
         typeCode: 'C',
         condition: new AndExpressions([
-          new BinaryExpression(new ColumnExpression('shipment', 'nominatedTypeCode'), '=', 'R'),
           new ExistsExpression(new Query({
 
             $from: 'party_type',
@@ -1519,7 +1488,7 @@ const summaryFieldList: (string | { name: string, expression: IExpression })[] =
 
 function summaryFieldExpression(summaryField: string | { name: string, expression: IExpression }, condition?: IConditionalExpression) {
 
-  const expression = typeof summaryField === 'string' ? new ColumnExpression('booking', summaryField) : summaryField.expression
+  const expression = typeof summaryField === 'string' ? new ColumnExpression('shipment', summaryField) : summaryField.expression
 
   if (condition) {
     const countIfExpression = new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new FunctionExpression('IF', condition, new ColumnExpression('shipment', 'id'), new Value(null))))
@@ -2174,23 +2143,15 @@ query
   .register('value', 42)
   .register('value', 43)
 
-// query.register(
-//   'isActive',
-//   new Query({
-//     $where: new AndExpressions({
-//       expressions: [
-//         new IsNullExpression(new ColumnExpression('shipment', 'deletedAt'), false),
-//         new IsNullExpression(new ColumnExpression('shipment', 'deletedBy'), false),
-//       ],
-//     }),
-//   })
-// )
-
 const isActiveExpression = new AndExpressions([
   new IsNullExpression(new ColumnExpression('shipment', 'deletedAt'), false),
   new IsNullExpression(new ColumnExpression('shipment', 'deletedBy'), false)
 ])
 
+// isActive field
+query.registerBoth('isActive', isActiveExpression)
+
+// isActive filter
 query.register('isActive', new Query({
 
   $where : new OrExpressions([

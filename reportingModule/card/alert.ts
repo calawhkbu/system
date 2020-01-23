@@ -55,7 +55,7 @@ function prepareParams(): Function {
 
     subqueries.alertJoin = true
 
-    params.fields = ['alertType', 'alertCategory', 'tableName', 'count', 'primaryKeyListString']
+    params.fields = ['alertType', 'alertCategory', 'tableName', 'count']
     params.groupBy = ['alertType', 'alertCategory', 'tableName']
 
     return params
@@ -104,8 +104,7 @@ function finalQuery(): Function {
         new ResultColumn('alertType'),
         new ResultColumn('tableName'),
         new ResultColumn('count'),
-        new ResultColumn(new Value(bottomSheetId), `bottomSheetId`),
-        new ResultColumn('primaryKeyListString')
+        new ResultColumn(new Value(bottomSheetId), `bottomSheetId`)
       ],
 
       $from: new FromTable(
@@ -124,10 +123,6 @@ function finalQuery(): Function {
             {
               name: 'tableName',
               type: 'string',
-            },
-            {
-              name : 'primaryKeyListString',
-              type : 'string'
             },
 
             { name: 'count', type: 'number'},
