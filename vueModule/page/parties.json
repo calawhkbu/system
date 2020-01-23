@@ -4,7 +4,7 @@
     "is": "TableTool",
     "props": {
       "title": "Relationship",
-      "reportingKey": "connections",
+      "reportingKey": "parties",
       "jql": "parties",
       "hasReports": false,
       "showFilterBar": true,
@@ -20,9 +20,18 @@
           "showInfo": true
         },
         "configurations": {
-          "i18nContext": "Reporting",
-          "sorting": {},
+          "i18nContext": "RelationshipPage",
+          "sorting": {
+            "direction": "DESC",
+            "key": "updatedAt",
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "party",
+              "name": "name"
+            }
+          },
           "pagination": {
+            "remote": true,
             "current": 0,
             "perPage": 20
           }
@@ -30,6 +39,12 @@
       },
       "filters": [{
         "name": "shortName",
+        "type": "text"
+      }, {
+        "name": "name",
+        "type": "text"
+      }, {
+        "name": "groupName",
         "type": "text"
       }],
       "fieldOptions": [{
@@ -42,19 +57,20 @@
           "hidden": true
         },
         {
+          "key": "name",
+          "width": 300
+        },
+        {
           "key": "shortName",
-          "width": 120
+          "width": 150
         },
         {
           "key": "groupName",
-          "width": 160
+          "width": 150
         },
         {
-          "key": "partyTypes"
-        },
-        {
-          "key": "phone",
-          "width": 160
+          "key": "partyTypes",
+          "width": 200
         },
         {
           "key": "parties",
@@ -124,7 +140,7 @@
               "type": "router",
               "otherParams": {
                 "func": "push",
-                "path": "partyDetail/create",
+                "path": "party/create/create",
                 "base": true
               }
             }]

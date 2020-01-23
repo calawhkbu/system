@@ -6,13 +6,9 @@ const query = new Query({
       method: 'POST',
       url: 'api/api/query/api',
       columns: [
-        { name: 'tableName', type: 'string' },
-        { name: 'primaryKey', type: 'string' },
-        { name: 'alertCategory', type: 'string' },
-        { name: 'alertType', type: 'string' },
-        { name: 'alertContent', type: 'string' },
-        { name: 'severity', type: 'string' },
-        { name: 'status', type: 'string' },
+        { name: 'name', type: 'string' },
+        { name: 'refreshToken', type: 'string' },
+        { name: 'updatedAt', type: 'string' },
       ],
     },
     'alert'

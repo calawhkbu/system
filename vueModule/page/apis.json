@@ -23,7 +23,11 @@
         }
       },
       "newReport": {
-        "filters": {},
+        "filters": {
+          "isActive": {
+            "value": "active"
+          }
+        },
         "configurations": {
           "i18nContext": "ApiPage",
           "clickable": true,
@@ -57,7 +61,27 @@
           "format": "YYYY-MM-DD"
         }
       ],
-      "filters": []
+      "filters": [{
+          "name": "isActive",
+          "type": "list",
+          "props": {
+            "items": [{
+                "label": "active",
+                "value": "active"
+              },
+              {
+                "label": "deleted",
+                "value": "deleted"
+              }
+            ]
+          }
+        },
+        {
+          "i18nContext": "APIPage",
+          "name": "name",
+          "type": "text"
+        }
+      ]
     },
     "slots": [{
       "name": "middle-button",

@@ -14,6 +14,11 @@
       "enableShare": false,
       "enableSetting": false,
       "newReport": {
+        "filters": {
+          "isActive": {
+            "value": "active"
+          }
+        },
         "configurations": {
           "i18nContext": "RolePage",
           "clickable": true,
@@ -38,11 +43,30 @@
           "type": "router",
           "otherParams": {
             "func": "push",
-            "path": "/role/create"
+            "path": "/role/create",
+            "base": true
           }
         }]
       }],
       "filters": [{
+        "name": "isActive",
+        "type": "list",
+        "props": {
+          "items": [
+
+            {
+              "label": "active",
+              "value": "active"
+            },
+            {
+              "label": "deleted",
+              "value": "deleted"
+            }
+          ]
+
+
+        }
+      }, {
         "name": "roleName",
         "type": "text"
       }],

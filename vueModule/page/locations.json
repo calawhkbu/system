@@ -1,186 +1,182 @@
 {
   "fillParent": true,
-  "components": [
-    {
-      "is": "TableTool",
-      "props": {
-        "back": "/admin",
-        "reportingKey": "locations",
-        "jql": "locations",
-        "showFilterBar": true,
-        "enableShare": false,
-        "enableSetting": false,
-        "noPartyGroupFilters": true,
-        "newReport": {
-          "filters" : {
-            "activeStatus" : {
-              "value" : "active"
-            }
-          },
-          "configurations": {
-            "i18nContext": "LocationPage",
-            "clickable": true,
-            "sorting": {},
-            "expanded" : {},
-            "pagination": {
-              "current": 0,
-              "perPage": 20,
-              "remote" : true
-            }
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "title": "Locations and Ports",
+      "back": "/admin",
+      "urlFormat": "/admin/locations",
+      "reportingKey": "locations",
+      "jql": "locations",
+      "hasReports": false,
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": false,
+      "noPartyGroupFilters": true,
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/location/{{id}}",
+          "base": true
+        }
+      },
+      "newReport": {
+        "filters": {
+          "isActive": {
+            "value": "active"
           }
         },
-
-      
-
-        "icons": [
-          {
-            "icon": "add",
-            "click": [
-              {
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "/location/create"
-                }
-              }
-            ]
-          }
-        ],
-
-        "fieldOptions": [
-          {
-            "key": "id",
-            "hidden": true
-          },
-
-          {
-            "key": "isActive",
-            "boolean": true
-          },
-          
-          {
-            "label": "",
-            "key": "canDelete",
-            "sortable": false,
-            "align": "center",
-            "clickFunction": {
-              "type": "axios",
-              "otherParams": {
-                "axiosParams": {
-                  "url": "/api/location/{{row.id}}",
-                  "method": "DELETE"
-                }
-              },
-              "afterActions": [
-                {
-                  "type": "notify",
-                  "otherParams": {
-                    "notification": "Notify.deleteSuccess"
-                  }
-                }
-              ]
-            },
-            "tdComponent": {
-              "hideIfFalse" : true,
-              "is": "icon",
-              "props": {
-                "icon": "delete"
-              }
-            },
-            "width": 50
-          },
-
-          {
-            "label": "",
-            "key": "canRestore",
-            "sortable": false,
-            "align": "center",
-            "clickFunction": {
-              "type": "axios",
-              "otherParams": {
-                "axiosParams": {
-                  "url": "/api/location/restore/{{row.id}}",
-                  "method": "POST"
-                }
-              },
-              "afterActions": [
-                {
-                  "type": "notify",
-                  "otherParams": {
-                    "notification": "Notify.restoreSuccess"
-                  }
-                }
-              ]
-            },
-            "tdComponent": {
-              "hideIfFalse" : true,
-              "is": "icon",
-              "props": {
-                "icon": "refresh"
-              }
-            },
-            "width": 50
-          }
-        ],
-        "filters": [
-          {
-
-            "display" : "moduleType",
-            "name" : "moduleTypeCode",
-            "i18nContext" : "Reporting",
-            "props" : {
-              "items" : [
-                {
-                  "label" : "AIR",
-                  "value" : "AIR"
-                },
-                {
-                  "label" : "SEA",
-                  "value" : "SEA"
-                },
-                {
-                  "label" : "XXX",
-                  "value" : "XXX"
-                }
-              ]
-            },
-            "type" : "list"
-
-          },
-          {
-            "name": "countryCode",
-            "i18nContext" : "LocationPage",
-            "type": "text"
-          },
-          {
-            "name" : "activeStatus",
-            "i18nContext" : "LocationPage",
-            "type" : "list",
-            "props" : {
-              "items" :[
-
-                {
-                  "label" : "active",
-                  "value" : "active"
-                },
-                {
-                  "label" : "deleted",
-                  "value" : "deleted"
-                }
-              ]
-
-
-            }
-          }
-        ],
-        "clickFunction": {
-          "type": "router",
-          "otherParams": {
-            "func": "push",
-            "path": "/location/{{id}}"
+        "configurations": {
+          "i18nContext": "LocationPage",
+          "clickable": true,
+          "pagination": {
+            "current": 0,
+            "perPage": 20,
+            "remote": true
           }
         }
+      },
+      "fieldOptions": [{
+          "key": "id",
+          "hidden": true
+        },
+        {
+          "label": "",
+          "key": "canDelete",
+          "sortable": false,
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/api/location/{{row.id}}",
+                "method": "DELETE"
+              }
+            },
+            "afterActions": [{
+              "type": "notify",
+              "otherParams": {
+                "notification": "Notify.deleteSuccess"
+              }
+            }]
+          },
+          "tdComponent": {
+            "hideIfFalse": true,
+            "is": "icon",
+            "props": {
+              "icon": "delete"
+            }
+          },
+          "width": 50
+        },
+        {
+          "label": "",
+          "key": "canRestore",
+          "sortable": false,
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/api/location/restore/{{row.id}}",
+                "method": "POST"
+              }
+            },
+            "afterActions": [{
+              "type": "notify",
+              "otherParams": {
+                "notification": "Notify.restoreSuccess"
+              }
+            }]
+          },
+          "tdComponent": {
+            "hideIfFalse": true,
+            "is": "icon",
+            "props": {
+              "icon": "refresh"
+            }
+          },
+          "width": 50
+        }
+      ],
+      "filters": [{
+          "display": "moduleType",
+          "name": "moduleTypeCode",
+          "i18nContext": "LocationPage",
+          "props": {
+            "items": [{
+                "label": "AIR",
+                "value": "AIR"
+              },
+              {
+                "label": "SEA",
+                "value": "SEA"
+              },
+              {
+                "label": "XXX",
+                "value": "XXX"
+              }
+            ]
+          },
+          "type": "list"
+        },
+        {
+          "name": "countryCode",
+          "i18nContext": "LocationPage",
+          "type": "text"
+        },
+        {
+          "name": "isActive",
+          "type": "list",
+          "props": {
+            "items": [
+
+              {
+                "label": "active",
+                "value": "active"
+              },
+              {
+                "label": "deleted",
+                "value": "deleted"
+              }
+            ]
+
+
+          }
+        }
+      ]
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "location/create",
+                "base": true
+              }
+            }]
+          }
+        }]
       }
-    }
-  ]
+    }]
+  }]
 }

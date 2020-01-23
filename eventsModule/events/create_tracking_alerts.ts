@@ -137,7 +137,10 @@ class TrackingUpdateDataEvent extends BaseEvent {
                 contactRoleList: [],
                 templatePath: ''
               },
-              {}, this.user
+              {
+                oldDate: moment.utc(inputEstimatedDepartureDate).format('YYYY-MM-DD HH:mm:ss'),
+                newDate: moment.utc(trackingEstimatedDepartureDate).format('YYYY-MM-DD HH:mm:ss')
+              }, this.user
             )
           }
           if (
@@ -156,7 +159,10 @@ class TrackingUpdateDataEvent extends BaseEvent {
                 contactRoleList: [],
                 templatePath: ''
               },
-              {}, this.user
+              {
+                oldDate: moment.utc(inputEstimatedArrivalDate).format('YYYY-MM-DD HH:mm:ss'),
+                newDate: moment.utc(trackingEstimatedArrivalDate).format('YYYY-MM-DD HH:mm:ss')
+              }, this.user
             )
           }
           if (
@@ -175,7 +181,10 @@ class TrackingUpdateDataEvent extends BaseEvent {
                 contactRoleList: [],
                 templatePath: ''
               },
-              {}, this.user
+              {
+                oldDate: moment.utc(inputActualDepartureDate).format('YYYY-MM-DD HH:mm:ss'),
+                newDate: moment.utc(trackingActualDepartureDate).format('YYYY-MM-DD HH:mm:ss')
+              }, this.user
             )
           }
           if (
@@ -194,7 +203,10 @@ class TrackingUpdateDataEvent extends BaseEvent {
                 contactRoleList: [],
                 templatePath: ''
               },
-              {}, this.user
+              {
+                oldDate: moment.utc(inputActualArrivalDate).format('YYYY-MM-DD HH:mm:ss'),
+                newDate: moment.utc(trackingActualArrivalDate).format('YYYY-MM-DD HH:mm:ss')
+              }, this.user
             )
           }
         }
