@@ -1,62 +1,54 @@
 {
   "layout": "v-card",
-  "style": {
-    "min-height": "300px"
-  },
-  "components": [
-    {
-      "is": "WidgetForm",
-      "props": {
-        "fields": [
-          {
-            "label": "alertPreference.title",
-            "name": "alertPreference.details",
-            "component": "TableField",
-            "class": "xs-12",
-            "props": {
-              "fields": [
-                {
-                  "label": "alertPreference.alertType",
-                  "name": "alertType",
-                  "component": "AsyncSelect",
-                  "props": {
-                    "axiosParams": {
-                      "method": "GET",
-                      "url": "/api/alert/getAlertConfig",
-                      "data": {}
-                    },
-                    "item-text": "alertType",
-                    "item-value": "alertType",
-                    "showValue": true
-                  }
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [{
+        "label": "alertPreference.title",
+        "name": "alertPreference.details",
+        "component": "TableField",
+        "class": "xs-12",
+        "props": {
+          "fields": [{
+              "label": "alertPreference.alertType",
+              "name": "alertType",
+              "component": "AsyncSelect",
+              "props": {
+                "axiosParams": {
+                  "method": "GET",
+                  "url": "/api/alert/getAlertConfig",
+                  "data": {}
                 },
+                "item-text": "alertType",
+                "item-value": "alertType",
+                "showValue": true
+              }
+            },
 
-                {
-                  "label": "alertPreference.notifyBy",
-                  "name": "notifyBy",
-                  "component": "AsyncSelect",
-                  "props": {
-                    "axiosParams": {
-                      "method": "GET",
-                      "url": "/api/alertPreference/notifyByOption/partyGroup/{{context.$store.state.widget.data.id}}",
-                      "data": {}
-                    },
-                    "item-text": "name",
-                    "item-value": "code",
-                    "showValue": true
-                  }
+            {
+              "label": "alertPreference.notifyBy",
+              "name": "notifyBy",
+              "component": "AsyncSelect",
+              "props": {
+                "axiosParams": {
+                  "method": "GET",
+                  "url": "/api/alertPreference/notifyByOption/partyGroup/{{context.$store.state.widget.data.id}}",
+                  "data": {}
                 },
+                "item-text": "name",
+                "item-value": "code",
+                "showValue": true
+              }
+            },
 
-                {
-                  "label": "alertPreference.active",
-                  "name": "active",
-                  "component": "BooleanField"
-                }
-              ]
+            {
+              "label": "alertPreference.active",
+              "name": "active",
+              "component": "BooleanField"
             }
-          }
-        ]
-      }
+          ]
+        }
+      }]
     }
-  ]
+  }]
 }

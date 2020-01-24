@@ -3,6 +3,7 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "title": "Booking",
       "reportingKey": "bookings",
       "jql": "bookings",
       "hasReports": true,
@@ -53,30 +54,15 @@
       "filters": [],
       "fieldOptions": [{
           "key": "id",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "booking",
-            "name": "id"
-          },
           "hidden": true
         },
         {
           "key": "createdAt",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "booking",
-            "name": "updatedAt"
-          },
           "width": 150,
           "format": "YYYY-MM-DD"
         },
         {
           "key": "updatedAt",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "booking",
-            "name": "updatedAt"
-          },
           "width": 150,
           "format": "YYYY-MM-DD"
         },
@@ -85,245 +71,60 @@
           "width": 150
         },
         {
-          "api": {
-            "arrayMapper": {
-              "keyKey": "code",
-              "valueKey": "name"
-            },
-            "axiosParams": {
-              "data": {
-                "subqueries": {
-                  "codeType": {
-                    "value": "SERVTYPE"
-                  }
-                }
-              },
-              "method": "POST",
-              "url": "api/code/query/code_master"
-            }
-          },
-          "key": "serviceCode",
-          "label": "serviceCode",
+          "key": "service",
+          "label": "serviceName",
           "width": 100
         },
         {
-          "api": {
-            "arrayMapper": {
-              "keyKey": "code",
-              "valueKey": "name"
-            },
-            "axiosParams": {
-              "data": {
-                "subqueries": {
-                  "codeType": {
-                    "value": "MODULE"
-                  }
-                }
-              },
-              "method": "POST",
-              "url": "api/code/query/code_master"
-            }
-          },
-          "key": "moduleTypeCode",
-          "label": "moduleType",
+          "key": "moduleType",
           "width": 100
         },
         {
-          "api": {
-            "arrayMapper": {
-              "keyKey": "code",
-              "valueKey": "name"
-            },
-            "axiosParams": {
-              "data": {
-                "subqueries": {
-                  "codeType": {
-                    "value": "BOUND"
-                  }
-                }
-              },
-              "method": "POST",
-              "url": "api/code/query/code_master"
-            }
-          },
-          "key": "boundTypeCode",
-          "label": "boundType",
+          "key": "boundType",
           "width": 100
         },
         {
-          "api": {
-            "arrayMapper": {
-              "keyKey": "code",
-              "valueKey": "name"
-            },
-            "axiosParams": {
-              "data": {
-                "subqueries": {
-                  "codeType": {
-                    "value": "INCOTERMS"
-                  }
-                }
-              },
-              "method": "POST",
-              "url": "api/code/query/code_master"
-            }
-          },
-          "key": "incoTermsCode",
-          "label": "incoTermsCode",
+          "key": "incoTerms",
           "width": 100
         },
         {
-          "api": {
-            "arrayMapper": {
-              "keyKey": "code",
-              "valueKey": "name"
-            },
-            "axiosParams": {
-              "data": {
-                "subqueries": {
-                  "codeType": {
-                    "value": "PAYTERMS"
-                  }
-                }
-              },
-              "method": "POST",
-              "url": "api/code/query/code_master"
-            }
-          },
-          "key": "otherTermsCode",
+          "key": "otherTerms",
           "label": "otherTerms",
           "width": 100
         },
         {
-          "api": {
-            "arrayMapper": {
-              "keyKey": "code",
-              "valueKey": "name"
-            },
-            "axiosParams": {
-              "data": {
-                "subqueries": {
-                  "codeType": {
-                    "value": "PAYTERMS"
-                  }
-                }
-              },
-              "method": "POST",
-              "url": "api/code/query/code_master"
-            }
-          },
-          "key": "freightTermsCode",
+          "key": "freightTerms",
           "label": "freightTermsCode",
           "width": 100
         },
         {
-          "api": {
-            "arrayMapper": {
-              "keyKey": "portCode",
-              "valueKey": "name"
-            },
-            "axiosParams": {
-              "data": {
-                "subqueries": {
-                  "portCode": {
-                    "value": "{{context.row.portOfDischargeCode}}"
-                  }
-                }
-              },
-              "method": "POST",
-              "url": "api/location/query/location"
-            }
-          },
-          "key": "portOfDischargeCode",
+          "key": "portOfDischargeName",
           "label": "portOfDischarge",
           "width": 100
         },
         {
-          "api": {
-            "arrayMapper": {
-              "keyKey": "portCode",
-              "valueKey": "name"
-            },
-            "axiosParams": {
-              "data": {
-                "subqueries": {
-                  "portCode": {
-                    "value": "{{context.row.portOfLoadingCode}}"
-                  }
-                }
-              },
-              "method": "POST",
-              "url": "api/location/query/location"
-            }
-          },
-          "key": "portOfLoadingCode",
+          "key": "portOfLoadingName",
           "label": "portOfLoading",
           "width": 100
         },
         {
-          "api": {
-            "arrayMapper": {
-              "keyKey": "portCode",
-              "valueKey": "name"
-            },
-            "axiosParams": {
-              "data": {
-                "subqueries": {
-                  "portCode": {
-                    "value": "{{context.row.placeOfReceiptCode}}"
-                  }
-                }
-              },
-              "method": "POST",
-              "url": "api/location/query/location"
-            }
-          },
-          "key": "placeOfReceiptCode",
+          "key": "placeOfReceiptName",
           "label": "placeOfReceipt",
           "width": 100
         },
         {
-          "api": {
-            "arrayMapper": {
-              "keyKey": "portCode",
-              "valueKey": "name"
-            },
-            "axiosParams": {
-              "data": {
-                "subqueries": {
-                  "portCode": {
-                    "value": "{{context.row.placeOfDeliveryCode}}"
-                  }
-                }
-              },
-              "method": "POST",
-              "url": "api/location/query/location"
-            }
-          },
-          "key": "placeOfDeliveryCode",
+          "key": "placeOfDeliveryName",
           "label": "placeOfDelivery",
           "width": 100
         },
         {
-          "api": {
-            "arrayMapper": {
-              "keyKey": "portCode",
-              "valueKey": "name"
-            },
-            "axiosParams": {
-              "data": {
-                "subqueries": {
-                  "portCode": {
-                    "value": "{{context.row.finalDestinationCode}}"
-                  }
-                }
-              },
-              "method": "POST",
-              "url": "api/location/query/location"
-            }
-          },
-          "key": "finalDestinationCode",
+          "key": "finalDestinationName",
           "label": "finalDestination",
+          "width": 100
+        },
+        {
+          "key": "carrierName",
+          "label": "carrier",
           "width": 100
         },
         {
@@ -360,6 +161,7 @@
       "name": "middle-button",
       "is": "DynamicComponent",
       "props": {
+        "class": "button",
         "components": [{
           "is": "v-btn",
           "props": {

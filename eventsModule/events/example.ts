@@ -18,14 +18,10 @@ class ExampleEvent extends BaseEvent {
   }
 
   public async mainFunction(parameters: any) {
+    console.log('Start Excecute...', this.constructor.name)
     console.log(JSON.stringify(parameters), 'parameters')
-    console.log('in main Excecute of Example')
-
-    console.log('in main Excecute of Example Finish')
-
-    return {
-      exampleResult: 'exampleValue',
-    }
+    console.log('End Excecute...', this.constructor.name)
+    return null
   }
 }
 

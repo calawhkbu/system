@@ -34,27 +34,27 @@ const query = new Query({
           type: 'string',
         },
         {
-          name: 'moduleTypeCode',
+          name: 'moduleType',
           type: 'string',
         },
         {
-          name: 'boundTypeCode',
+          name: 'boundType',
           type: 'string',
         },
         {
-          name: 'serviceCode',
+          name: 'service',
           type: 'string',
         },
         {
-          name: 'incoTermsCode',
+          name: 'incoTerms',
           type: 'string',
         },
         {
-          name: 'freightTermsCode',
+          name: 'freightTerms',
           type: 'string',
         },
         {
-          name: 'otherTermsCode',
+          name: 'otherTerms',
           type: 'string',
         },
         {
@@ -78,25 +78,29 @@ const query = new Query({
         //   type: 'string',
         // },
         {
-          name: 'placeOfReceiptCode',
+          name: 'placeOfReceiptName',
           type: 'string',
         },
         {
-          name: 'portOfLoadingCode',
+          name: 'portOfLoadingName',
           type: 'string',
         },
         {
-          name: 'portOfDischargeCode',
+          name: 'portOfDischargeName',
           type: 'string',
         },
         {
-          name: 'placeOfDeliveryCode',
+          name: 'placeOfDeliveryName',
           type: 'string',
         },
-        // {
-        //   name: 'finalDestinationCode',
-        //   type: 'string',
-        // },
+        {
+          name: 'finalDestinationName',
+          type: 'string',
+        },
+        {
+          name: 'carrierName',
+          type: 'string',
+        },
         {
           name: 'cargoReadyDateEstimated',
           type: 'string',

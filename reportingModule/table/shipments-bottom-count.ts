@@ -1,71 +1,28 @@
-import { Query, FromTable, ResultColumn, ColumnExpression } from 'node-jql'
+import { Query, FromTable } from 'node-jql'
 import { parseCode } from 'utils/function'
 
 function prepareShipmentParams(): Function {
   const fn = async function(require, session, params) {
-    const { Resultset } = require('node-jql-core')
-    const {
-      ColumnExpression,
-      CreateTableJQL,
-      FromTable,
-      InExpression,
-      BetweenExpression,
-      FunctionExpression,
-      BinaryExpression,
-      GroupBy,
-      Query,
-      ResultColumn,
-    } = require('node-jql')
-
     // import
     const { BadRequestException } = require('@nestjs/common')
-    const moment = require('moment')
 
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    params.fields = [
-      'primaryKey',
-      'houseNo',
-      'masterNo',
-      'jobDate',
-      'carrierName',
-      'shipperPartyName',
-      'consigneePartyName',
-      'portOfLoadingCode',
-      'portOfDischargeCode',
-      'departureDateEstimated',
-      'arrivalDateEstimated',
-    ]
+    // lastStatusList case
+    if (subqueries.lastStatus) {
+      if (!(subqueries.lastStatus.value && subqueries.lastStatus.value.length) )
+        throw new Error('MISSING_lastStatus')
 
-    // console.log(subqueries)
-
-    if (!subqueries.primaryKeyListString && !subqueries.workflowStatusListString) {
-      throw new BadRequestException('MISSING_primaryKeyListString/workflowStatus')
+      subqueries.lastStatusCodeJoin = true
     }
 
-    if (subqueries.primaryKeyListString) {
-      // get the primaryKeyList
-      if (!subqueries.primaryKeyListString && subqueries.primaryKeyListString !== '')
-        throw new BadRequestException('MISSING_primaryKeyListString')
+    // lastStatusList case
+    if (subqueries.alertType) {
+      if (!(subqueries.alertType.value && subqueries.alertType.value.length) )
+        throw new Error('MISSING_alertType')
 
-      const primaryKeyList = subqueries.primaryKeyListString.value.split(',')
-
-      subqueries.primaryKeyList = {
-        value: primaryKeyList,
-      }
-    }
-
-    // workflowStatus case
-    if (subqueries.workflowStatusListString) {
-      if (!subqueries.workflowStatusListString && subqueries.workflowStatusListString !== '')
-        throw new BadRequestException('MISSING_workflowStatusListString')
-
-      const workflowStatusList = subqueries.workflowStatusListString.value.split(',')
-
-      subqueries.workflowStatusList = {
-        value: workflowStatusList,
-      }
+        subqueries.alertJoin = true
     }
 
     return params
@@ -79,7 +36,7 @@ const query = new Query({
   $from: new FromTable(
     {
       method: 'POST',
-      url: 'api/shipment/query/old360-uber-count',
+      url: 'api/shipment/query/shipment/count',
       columns: [{ name: 'count', type: 'number' }],
     },
     'shipment'
@@ -87,5 +44,7 @@ const query = new Query({
 })
 
 export default [
-  [prepareShipmentParams(), query]
+  [
+    prepareShipmentParams(), query
+  ]
 ]

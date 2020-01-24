@@ -1,0 +1,78 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "back": "/admin",
+      "urlFormat": "/admin/trackings",
+      "title": "Tracking",
+      "reportingKey": "tracking",
+      "jql": "swiveladmin_tracking",
+      "hasReports": false,
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": false,
+      "noPartyGroupFilters": true,
+      "nextPageComponent": "tracking",
+      "newReport": {
+        "filters": {
+          "isActive": {
+            "value": "active"
+          }
+        },
+        "configurations": {
+          "i18nContext": "TrackingPage",
+          "sorting": {},
+          "pagination": {
+            "remote": true,
+            "current": 0,
+            "perPage": 20
+          }
+        }
+      },
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/detail/{{id}}",
+          "base": true
+        }
+      },
+      "filters": [{
+        "i18nContext": "TrackingPage",
+        "name": "trackingNo",
+        "type": "text"
+      }, {
+        "name": "isActive",
+        "type": "list",
+        "props": {
+          "items": [
+
+            {
+              "label": "active",
+              "value": "active"
+            },
+            {
+              "label": "deleted",
+              "value": "deleted"
+            }
+          ]
+
+
+        }
+      }],
+      "fieldOptions": [{
+        "key": "id",
+        "hidden": true
+      }, {
+        "key": "updatedAt",
+        "width": 150,
+        "format": "YYYY-MM-DD HH:mm:ss"
+      }, {
+        "key": "lastStatusDate",
+        "width": 150,
+        "format": "YYYY-MM-DD HH:mm:ss"
+      }]
+    }
+  }]
+}

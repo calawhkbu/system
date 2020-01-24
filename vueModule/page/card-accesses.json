@@ -1,176 +1,167 @@
 {
   "fillParent": true,
-  "components": [
-    {
-      "is": "TableTool",
-      "props": {
-        "back": "/admin",
-        "reportingKey": "card-accesses",
-        "jql": "card-accesses",
-        "showFilterBar": true,
-        "enableShare": false,
-        "enableSetting": false,
-        "noPartyGroupFilters": true,
-        "newReport": {
-          "filters": {
-            "activeStatus" : {
-              "value" : "active"
-            }
-          },
-          "configurations": {
-            "i18nContext": "CardAccessPage",
-            "clickable": true,
-            "draggable": true,
-            "pagination": {
-              "current": 0,
-              "perPage": 20,
-              "remote" : true
-            }
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "title": "Card Accesses",
+      "back": "/admin",
+      "urlFormat": "/admin/card-accesses",
+      "reportingKey": "card-accesses",
+      "jql": "card-accesses",
+      "hasReports": false,
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": false,
+      "noPartyGroupFilters": true,
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/card-access/{{id}}",
+          "base": true
+        }
+      },
+      "newReport": {
+        "filters": {
+          "isActive": {
+            "value": "active"
           }
         },
-
-        "icons": [
-          {
-            "icon": "add",
-            "click": [
-              {
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "/card-access/create"
-                }
-              }
-            ]
-          }
-        ],
-
-        "fieldOptions": [
-          {
-            "key": "id",
-            "sql": {
-              "classname":"ColumnExpression","table":"card_access","name":"id"
-            },
-            "hidden": true
-          },
-
-          {
-            "key": "name"
-          },          
-          {
-            "key": "partyGroupCode",
-            "hidden": true
-          },
-
-          {
-            "key": "disabled",
-            "boolean": true
-          },
-          {
-            "key": "partyGroupSpecific",
-            "boolean": true
-          },
-
-          {
-            "key": "isActive",
-            "hidden" : true,
-            "boolean": true
-          },
-          {
-            "label": "",
-            "key": "canDelete",
-            "boolean" : true,
-            "sortable": false,
-            "align": "center",
-            "clickFunction": {
-              "type": "axios",
-              "otherParams": {
-                "axiosParams": {
-                  "url": "/api/cardAccess/{{row.id}}",
-                  "method": "DELETE"
-                }
-              },
-              "afterActions": [
-                {
-                  "type": "notify",
-                  "otherParams": {
-                    "notification": "Notify.deleteSuccess"
-                  }
-                }
-              ]
-            },
-
-            "tdComponent": {
-              "is": "icon",
-              "hideIfFalse" : true,
-              "props": {
-                "icon": "delete"
-              }
-            },
-            "width": 50
-          },
-
-          {
-            "label": "",
-            "key": "canRestore",
-            "sortable": false,
-            "boolean" : true,
-            "align": "center",
-            "clickFunction": {
-              "type": "axios",
-              "otherParams": {
-                "axiosParams": {
-                  "url": "/api/cardAccess/restore/{{row.id}}",
-                  "method": "POST"
-                }
-              },
-              "afterActions": [
-                {
-                  "type": "notify",
-                  "otherParams": {
-                    "notification": "Notify.restoreSuccess"
-                  }
-                }
-              ]
-            },
-            "tdComponent": {
-              "is": "icon",
-              "props": {
-                "icon": "refresh"
-              }
-            },
-            "width": 50
-          }
-        ],
-        "filters" : [
-          {
-            "name" : "activeStatus",
-            "i18nContext" : "CardAccess",
-            "type" : "list",
-            "props" : {
-              "items" :[
-
-                {
-                  "label" : "active",
-                  "value" : "active"
-                },
-                {
-                  "label" : "deleted",
-                  "value" : "deleted"
-                }
-              ]
-
-
-            }
-          }
-        ],
-        "clickFunction": {
-          "type": "router",
-          "otherParams": {
-            "func": "push",
-            "path": "/card-access/{{id}}"
+        "configurations": {
+          "i18nContext": "CardAccessPage",
+          "clickable": true,
+          "pagination": {
+            "current": 0,
+            "perPage": 20,
+            "remote": true
           }
         }
+      },
+      "fieldOptions": [{
+          "key": "id",
+          "hidden": true
+        },
+        {
+          "key": "name"
+        },
+        {
+          "key": "disabled",
+          "boolean": true
+        },
+        {
+          "key": "partyGroupSpecific",
+          "boolean": true
+        },
+        {
+          "key": "partyGroupCode"
+        },
+        {
+          "label": "",
+          "key": "canDelete",
+          "boolean": true,
+          "sortable": false,
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/api/cardAccess/{{row.id}}",
+                "method": "DELETE"
+              }
+            },
+            "afterActions": [{
+              "type": "notify",
+              "otherParams": {
+                "notification": "Notify.deleteSuccess"
+              }
+            }]
+          },
+
+          "tdComponent": {
+            "is": "icon",
+            "hideIfFalse": true,
+            "props": {
+              "icon": "delete"
+            }
+          },
+          "width": 50
+        },
+        {
+          "label": "",
+          "key": "canRestore",
+          "sortable": false,
+          "boolean": true,
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/api/cardAccess/restore/{{row.id}}",
+                "method": "POST"
+              }
+            },
+            "afterActions": [{
+              "type": "notify",
+              "otherParams": {
+                "notification": "Notify.restoreSuccess"
+              }
+            }]
+          },
+          "tdComponent": {
+            "is": "icon",
+            "props": {
+              "icon": "refresh"
+            }
+          },
+          "width": 50
+        }
+      ],
+      "filters": [{
+        "name": "isActive",
+        "type": "list",
+        "props": {
+          "items": [{
+              "label": "active",
+              "value": "active"
+            },
+            {
+              "label": "deleted",
+              "value": "deleted"
+            }
+          ]
+        }
+      }]
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "card-access/create",
+                "base": true
+              }
+            }]
+          }
+        }]
       }
-    }
-  ]
+    }]
+  }]
 }

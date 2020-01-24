@@ -65,25 +65,25 @@
                       },
                       {
                         "label": "ShipmentPage.carrier",
-                        "name": ["carrier.name", "carrierCode"],
+                        "name": ["carrier.name", "carrierName", "carrierCode"],
                         "component": "v-text-field",
                         "class": "xs-12"
                       },
                       {
                         "label": "ShipmentPage.portOfLoading",
-                        "name": ["pol.locationName", "portOfLoading"],
+                        "name": ["portOfLoading.name", "portOfLoadingName", "portOfLoadingCode"],
                         "component": "v-text-field",
                         "class": "xs-6"
                       },
                       {
                         "label": "ShipmentPage.portOfDischarge",
-                        "name": ["pod.locationName", "portOfDischarge"],
+                        "name": ["portOfDischarge.name", "portOfDischargeName", "portOfDischargeCode"],
                         "component": "v-text-field",
                         "class": "xs-6"
                       },
                       {
                         "label": "ShipmentPage.departureDateEstimated",
-                        "name": "departureDateEstimated",
+                        "name": "shipmentDate.departureDateEstimated",
                         "component": "DateTimePicker",
                         "class": "xs-6",
                         "props": {
@@ -95,7 +95,7 @@
                       },
                       {
                         "label": "ShipmentPage.arrivalDateEstimated",
-                        "name": "arrivalDateEstimated",
+                        "name": "shipmentDate.arrivalDateEstimated",
                         "component": "DateTimePicker",
                         "class": "xs-6",
                         "props": {
@@ -107,7 +107,7 @@
                       },
                       {
                         "label": "ShipmentPage.departureDateActual",
-                        "name": "departureDateActual",
+                        "name": "shipmentDate.departureDateActual",
                         "component": "DateTimePicker",
                         "class": "xs-6",
                         "props": {
@@ -119,7 +119,7 @@
                       },
                       {
                         "label": "ShipmentPage.arrivalDateActual",
-                        "name": "arrivalDateActual",
+                        "name": "shipmentDate.arrivalDateActual",
                         "component": "DateTimePicker",
                         "class": "xs-6",
                         "props": {
@@ -136,13 +136,21 @@
                   "is": "SmallTracking",
                   "props": {
                     "axiosBaseParams": [
+                      "const trackingNos = [];",
                       "const data = context.$store.state.widget.data;",
+                      "if (data.trackingNos) {",
+                      "const { masterNo, containerNo, carrierBookingNo } = data.tracking",
+                      "if (masterNo) { trackingNos.push(masterNo) }",
+                      "if (containerNo && containerNo.length) { trackingNos.concat(containerNo) }",
+                      "if (carrierBookingNo && carrierBookingNo.length) { trackingNos.concat(carrierBookingNo) }",
+                      "}",
                       "return {",
-                      "url: `api/tracking/getold/${data.masterNo}`,",
-                      "method: 'get'",
-                      "}"
+                      "url: 'api/tracking',",
+                      "method: 'POST',",
+                      "data: { trackingNos }",
+                      "};"
                     ],
-                    "getModule": "moduleType",
+                    "getModule": "moduleTypeCode",
                     "icon": "statusCode",
                     "titleKey": {
                       "key": "key",
@@ -213,13 +221,13 @@
       "slots": [{
         "is": "Route",
         "props": {
-          "startPoint": "widget.data.portOfLoading",
-          "endPoint": "widget.data.portOfDischarge",
-          "estimatedStartTime": "widget.data.departureDateEstimated",
-          "actualStartTime": "widget.data.departureDateActual",
-          "estimatedEndTime": "widget.data.arrivalDateEstimated",
-          "actualEndTime": "widget.data.arrivalDateActual",
-          "mode": "widget.data.moduleType"
+          "startPoint": "widget.data.portOfLoadingCode",
+          "endPoint": "widget.data.portOfDischargeCode",
+          "estimatedStartTime": "widget.data.shipmentDate.departureDateEstimated",
+          "actualStartTime": "widget.data.shipmentDate.departureDateActual",
+          "estimatedEndTime": "widget.data.shipmentDate.arrivalDateEstimated",
+          "actualEndTime": "widget.data.shipmentDate.arrivalDateActual",
+          "mode": "widget.data.moduleTypeCode"
         }
       }]
     }

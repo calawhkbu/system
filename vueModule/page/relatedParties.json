@@ -1,0 +1,164 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "SimpleTableTool",
+    "props": {
+      "reportingKey": "related-parties",
+      "jql": "related-parties",
+      "reportUrl": "relationship/report/parties/{{ context.detailPageParams }}",
+      "back": "/parties",
+      "noPartyGroupFilters": true,
+      "showFilterBar": true,
+      "nextPageKey": "relatedParty",
+      "newReport": {
+        "filters": {
+          "isActive": {
+            "value": "active"
+          }
+        },
+        "configurations": {
+          "i18nContext": "PartyPage",
+          "sorting": {},
+          "pagination": {
+            "current": 0,
+            "perPage": 20
+          }
+        }
+      },
+      "filters": [{
+        "name": "shortName",
+        "type": "text"
+      }, {
+        "name": "groupName",
+        "type": "text"
+      }, {
+        "name": "partyTypes",
+        "type": "text"
+      }],
+      "fieldOptions": [{
+          "key": "partyAId",
+          "hidden": true
+        },
+        {
+          "key": "partyBId",
+          "hidden": true
+        },
+        {
+          "key": "partyAName",
+          "hidden": true
+        },
+        {
+          "key": "partyBName",
+          "width": 200
+        },
+        {
+          "key": "partyBShortName",
+          "width": 150
+        },
+        {
+          "key": "partyBGroupName",
+          "width": 150
+        },
+        {
+          "key": "partyTypes",
+          "width": 300,
+          "tdComponent": {
+            "is": "AsyncSelect",
+            "props": {
+              "multiple": true,
+              "name": "partyType",
+              "item-text": "name",
+              "item-value": "code",
+              "showValue": false,
+              "noDelete": true,
+              "axiosParams": {
+                "url": "api/code/query/code_master",
+                "method": "POST",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "PARTY_TYPE"
+                    }
+                  }
+                }
+              },
+              "onFixValueChangeFunc": [
+                "if (context.$attrs['row'].partyType !== value) {",
+                "(this.$Swivel.api.createPromise({",
+                "url:` /relationship/party/${context.$attrs['row'].partyAId}/${context.$attrs['row'].partyBId}`",
+                "method: 'DELETE'",
+                "})).then(() => {",
+                "this.$Swivel.api.createPromise({",
+                "method: 'POST',",
+                "url: 'relationship/party',",
+                "data: { ...context.$attrs['row'], partyTypes: [value] }",
+                "})",
+                "})",
+                "}"
+              ]
+            }
+          }
+        },
+        {
+          "key": "showDelete",
+          "label": "",
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/relationship/party/{{row.partyAId}}/{{row.partyBId}}",
+                "method": "DELETE"
+              }
+            },
+            "afterActions": [{
+              "type": "emit",
+              "otherParams": {
+                "name": "refresh",
+                "params": [true]
+              }
+            }]
+          },
+          "tdComponent": {
+            "is": "icon",
+            "props": {
+              "icon": "block"
+            }
+          },
+          "width": 60
+        }
+      ]
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "/create",
+                "base": true
+              }
+            }]
+          }
+        }]
+      }
+    }]
+  }]
+}

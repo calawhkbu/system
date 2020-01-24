@@ -1,12 +1,14 @@
 {
+  "name": "Tracking",
   "layout": "Plugin",
   "lazy": true,
-  "width": "50%",
-  "name": "Tracking",
   "remote": true,
   "shareProps": {
     "icon": "statusCode",
-    "titleKey": "key",
+    "titleKey": {
+      "key": "key",
+      "track": true
+    },
     "subTitleKeys": [
       "statusDescription",
       "statusPlace",

@@ -2,6 +2,7 @@
   "components": [{
     "is": "WidgetMoreForm",
     "props": {
+      "name": "bookingParty",
       "mainKey": "Party",
       "formProps": {
         "z": {
@@ -52,70 +53,70 @@
       "addItemsOrFunc": ["Trucker", "Broker", "Factory", "Warehouse"],
       "fields": [{
           "checkDisplayWhen": "return !(user && user.roles.find(x => x.roleName === 'INTERNAL'))",
-          "name": "{{flex}}{{key}}PartyName",
+          "name": "bookingParty.{{flex}}{{key}}PartyName",
           "component": "v-text-field",
           "class": "xs-12"
         },
         {
           "checkDisplayWhen": "return user && user.roles.find(x => x.roleName === 'INTERNAL')",
-          "name": "{{flex}}{{key}}Party",
+          "name": "bookingParty.{{flex}}{{key}}Party",
           "component": "AsyncAutoSuggest",
           "class": "xs-12",
-          "relation": "{{flex}}{{key}}Party",
+          "relation": "bookingParty.{{flex}}{{key}}Party",
           "relationMore": [{
-              "name": "{{flex}}{{key}}PartyId",
+              "name": "bookingParty.{{flex}}{{key}}PartyId",
               "selector": "id"
             },
             {
-              "name": "{{flex}}{{key}}PartyName",
+              "name": "bookingParty.{{flex}}{{key}}PartyName",
               "selector": "name"
             },
             {
-              "name": "{{flex}}{{key}}PartyPhone",
+              "name": "bookingParty.{{flex}}{{key}}PartyPhone",
               "selector": "partyPhone"
             },
             {
-              "name": "{{flex}}{{key}}PartyFax",
+              "name": "bookingParty.{{flex}}{{key}}PartyFax",
               "selector": "partyFax"
             },
             {
-              "name": "{{flex}}{{key}}PartyEmail",
+              "name": "bookingParty.{{flex}}{{key}}PartyEmail",
               "selector": "partyEmail"
             },
             {
-              "name": "{{flex}}{{key}}PartyAddress",
+              "name": "bookingParty.{{flex}}{{key}}PartyAddress",
               "selector": "partyAddress"
             },
             {
-              "name": "{{flex}}{{key}}PartyCityCode",
+              "name": "bookingParty.{{flex}}{{key}}PartyCityCode",
               "selector": "partyCityCode"
             },
             {
-              "name": "{{flex}}{{key}}PartyStateCode",
+              "name": "bookingParty.{{flex}}{{key}}PartyStateCode",
               "selector": "partyStateCode"
             },
             {
-              "name": "{{flex}}{{key}}PartyCountryCode",
+              "name": "bookingParty.{{flex}}{{key}}PartyCountryCode",
               "selector": "partyCountryCode"
             },
             {
-              "name": "{{flex}}{{key}}PartyZip",
+              "name": "bookingParty.{{flex}}{{key}}PartyZip",
               "selector": "partyZip"
             },
             {
-              "name": "{{flex}}{{key}}PartyContactPersonId",
+              "name": "bookingParty.{{flex}}{{key}}PartyContactPersonId",
               "selector": "contactPersonId"
             },
             {
-              "name": "{{flex}}{{key}}PartyContactPersonEmail",
+              "name": "bookingParty.{{flex}}{{key}}PartyContactPersonEmail",
               "selector": "contactPersonEmail"
             },
             {
-              "name": "{{flex}}{{key}}PartyContactPersonName",
+              "name": "bookingParty.{{flex}}{{key}}PartyContactPersonName",
               "selector": "contactPersonName"
             },
             {
-              "name": "{{flex}}{{key}}PartyContactPersonPhone",
+              "name": "bookingParty.{{flex}}{{key}}PartyContactPersonPhone",
               "selector": "contactPersonPhone"
             }
           ],
@@ -352,27 +353,28 @@
         },
         {
           "label": "Widget.contactName",
-          "name": "{{flex}}{{key}}PartyContactName",
+          "name": "bookingParty.{{flex}}{{key}}PartyContactName",
           "component": "v-text-field",
           "class": "xs-12 md-4",
           "checkDisplayWhen": "return !readonly"
         },
         {
           "label": "Widget.contactEmail",
-          "name": "{{flex}}{{key}}PartyContactEmail",
+          "name": "bookingParty.{{flex}}{{key}}PartyContactEmail",
           "component": "v-text-field",
           "class": "xs-12 md-4",
           "checkDisplayWhen": "return !readonly"
         },
+
         {
           "label": "Widget.contactPhone",
-          "name": "{{flex}}{{key}}PartyContactPhone",
+          "name": "bookingParty.{{flex}}{{key}}PartyContactPhone",
           "component": "v-text-field",
           "class": "xs-12 md-4",
           "checkDisplayWhen": "return !readonly"
         },
         {
-          "name": "{{flex}}{{key}}PartyContacts",
+          "name": "bookingParty.{{flex}}{{key}}PartyContacts",
           "component": "TableField",
           "class": "xs-12",
           "checkDisplayWhen": "return !readonly",
@@ -404,7 +406,7 @@
         },
         {
           "label": "Widget.address",
-          "name": "{{flex}}{{key}}PartyAddress",
+          "name": "bookingParty.{{flex}}{{key}}PartyAddress",
           "component": "v-textarea",
           "checkDisplayWhen": "return !readonly",
           "props": {
@@ -416,13 +418,13 @@
         },
         {
           "label": "Widget.city",
-          "name": "{{flex}}{{key}}PartyCityCode",
+          "name": "bookingParty.{{flex}}{{key}}PartyCityCode",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-4",
           "readonlyClass": "xs-12 md-6",
-          "relation": "{{flex}}{{key}}PartyCityCode",
+          "relation": "bookingParty.{{flex}}{{key}}PartyCityCode",
           "relationMore": [{
-            "name": "{{flex}}{{key}}PartyCityCode",
+            "name": "bookingParty.{{flex}}{{key}}PartyCityCode",
             "selector": "locationCode"
           }],
           "props": {
@@ -449,13 +451,13 @@
         },
         {
           "label": "Widget.state",
-          "name": "{{flex}}{{key}}PartyStateCode",
+          "name": "bookingParty.{{flex}}{{key}}PartyStateCode",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-4",
           "readonlyClass": "xs-12 md-3",
-          "relation": "{{flex}}{{key}}PartyStateCode",
+          "relation": "bookingParty.{{flex}}{{key}}PartyStateCode",
           "relationMore": [{
-            "name": "{{flex}}{{key}}PartyStateCode",
+            "name": "bookingParty.{{flex}}{{key}}PartyStateCode",
             "selector": "code"
           }],
           "props": {
@@ -485,13 +487,13 @@
         },
         {
           "label": "Widget.country",
-          "name": "{{flex}}{{key}}PartyCountryCode",
+          "name": "bookingParty.{{flex}}{{key}}PartyCountryCode",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-4",
           "readonlyClass": "xs-12 md-3",
-          "relation": "{{flex}}{{key}}PartyCountryCode",
+          "relation": "bookingParty.{{flex}}{{key}}PartyCountryCode",
           "relationMore": [{
-            "name": "{{flex}}{{key}}PartyCountryCode",
+            "name": "bookingParty.{{flex}}{{key}}PartyCountryCode",
             "selector": "code"
           }],
           "props": {
@@ -521,7 +523,7 @@
         },
         {
           "label": "Widget.zip",
-          "name": "{{flex}}{{key}}PartyZip",
+          "name": "bookingParty.{{flex}}{{key}}PartyZip",
           "component": "v-text-field",
           "class": "xs-12 md-6",
           "checkDisplayWhen": "return !readonly"
@@ -535,68 +537,69 @@
         }
       },
       "hiddenFields": [{
-          "name": "{{flex}}{{key}}Party",
+          "name": "bookingParty.{{flex}}{{key}}Party",
           "component": "AsyncAutoSuggest",
           "class": "xs-12",
-          "relation": "{{flex}}{{key}}Party",
+          "relation": "bookingParty.{{flex}}{{key}}Party",
           "relationMore": [{
-              "name": "{{flex}}{{key}}PartyId",
+              "name": "bookingParty.{{flex}}{{key}}PartyId",
               "selector": "id"
             },
             {
-              "name": "{{flex}}{{key}}PartyName",
+              "name": "bookingParty.{{flex}}{{key}}PartyName",
               "selector": "name"
             },
             {
-              "name": "{{flex}}{{key}}PartyPhone",
+              "name": "bookingParty.{{flex}}{{key}}PartyPhone",
               "selector": "partyPhone"
             },
             {
-              "name": "{{flex}}{{key}}PartyFax",
+              "name": "bookingParty.{{flex}}{{key}}PartyFax",
               "selector": "partyFax"
             },
             {
-              "name": "{{flex}}{{key}}PartyEmail",
+              "name": "bookingParty.{{flex}}{{key}}PartyEmail",
               "selector": "partyEmail"
             },
             {
-              "name": "{{flex}}{{key}}PartyAddress",
+              "name": "bookingParty.{{flex}}{{key}}PartyAddress",
               "selector": "partyAddress"
             },
             {
-              "name": "{{flex}}{{key}}PartyCityCode",
+              "name": "bookingParty.{{flex}}{{key}}PartyCityCode",
               "selector": "partyCityCode"
             },
             {
-              "name": "{{flex}}{{key}}PartyStateCode",
+              "name": "bookingParty.{{flex}}{{key}}PartyStateCode",
               "selector": "partyStateCode"
             },
             {
-              "name": "{{flex}}{{key}}PartyCountryCode",
+              "name": "bookingParty.{{flex}}{{key}}PartyCountryCode",
               "selector": "partyCountryCode"
             },
             {
-              "name": "{{flex}}{{key}}PartyZip",
+              "name": "bookingParty.{{flex}}{{key}}PartyZip",
               "selector": "partyZip"
             },
             {
-              "name": "{{flex}}{{key}}PartyContactPersonId",
+              "name": "bookingParty.{{flex}}{{key}}PartyContactPersonId",
               "selector": "contactPersonId"
             },
             {
-              "name": "{{flex}}{{key}}PartyContactPersonEmail",
+              "name": "bookingParty.{{flex}}{{key}}PartyContactPersonEmail",
               "selector": "contactPersonEmail"
             },
             {
-              "name": "{{flex}}{{key}}PartyContactPersonName",
+              "name": "bookingParty.{{flex}}{{key}}PartyContactPersonName",
               "selector": "contactPersonName"
             },
             {
-              "name": "{{flex}}{{key}}PartyContactPersonPhone",
+              "name": "bookingParty.{{flex}}{{key}}PartyContactPersonPhone",
               "selector": "contactPersonPhone"
             }
           ],
           "props": {
+            "key": "bookingParty.{{flex}}{{key}}PartyHidden",
             "canCreate": true,
             "canCreateValue": {
               "id": null,
@@ -626,28 +629,77 @@
         },
         {
           "label": "Widget.contactName",
-          "name": "{{flex}}{{key}}PartyContactName",
+          "name": "bookingParty.{{flex}}{{key}}PartyContactName",
           "component": "v-text-field",
           "class": "xs-6 md-6",
           "readonlyClass": "xs-6 md-6"
         },
         {
           "label": "Widget.contactEmail",
-          "name": "{{flex}}{{key}}PartyContactEmail",
+          "name": "bookingParty.{{flex}}{{key}}PartyContactEmail",
           "component": "v-text-field",
           "class": "xs-12 md-12",
-          "readonlyClass": "xs-12 md-12"
+          "readonlyClass": "xs-10 md-10"
         },
+        {
+          "label": "Widget.inviteEmail",
+          "name": "bookingParty.{{flex}}{{key}}PartyContactEmail",
+          "component": "button-field",
+          "class": "hidden",
+          "readonlyClass": "xs-2 md-2",
+          "checkDisplayWhen": "return form && form.bookingParty.{{flex}}{{key}}PartyContactEmail",
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "email"
+            }
+          }],
+          "props": {
 
+            "flat": true,
+            "icon": true,
+            "events": {
+              "click.stop": [{
+                "type": "axios",
+                "otherParams": {
+                  "axiosParams": {
+                    "url": "/api/invitation/invite/invite",
+                    "method": "POST",
+                    "data": {
+                      "entityId": "{{context.$store.state.widget.id}}",
+                      "tableName": "booking",
+                      "partyId": ["{{ '`${args[0]}${args[1]}PartyId`'  | calculate(flex,key) | getFrom(context.$store.state.widget.data)}}"],
+                      "partyType": ["{{key}}"],
+                      "person": {
+                        "userName": "{{ context.fixValue }}"
+                      }
+                    }
+                  }
+                },
+
+                "afterActions": [{
+                  "type": "notify",
+                  "otherParams": {
+                    "notification": "invite success"
+                  }
+                }]
+              }]
+
+
+            }
+
+
+          }
+        },
         {
           "label": "Widget.contactPhone",
-          "name": "{{flex}}{{key}}PartyContactPhone",
+          "name": "bookingParty.{{flex}}{{key}}PartyContactPhone",
           "component": "v-text-field",
           "class": "xs-12 md-12",
           "readonlyClass": "xs-12 md-12"
         },
         {
-          "name": "{{flex}}{{key}}PartyContacts",
+          "name": "bookingParty.{{flex}}{{key}}PartyContacts",
           "component": "GridField",
           "class": "xs-12",
           "readonlyClass": "xs-12",
@@ -660,15 +712,63 @@
                 "class": "xs-12 md-12",
                 "_readonlyClass": "xs-12 md-12"
               },
-
               {
                 "label": "Widget.contactXEmail",
                 "name": "Email",
                 "component": "v-text-field",
-                "class": "xs-9 md-9",
-                "_readonlyClass": "xs-12 md-12"
+                "class": "xs-12 md-12",
+                "readonlyClass": "xs-10 md-10"
               },
+              {
+                "label": "Widget.inviteEmail",
+                "checkDisplayWhen": "return form.Email",
+                "name": "Email",
+                "component": "button-field",
+                "class": "hidden",
+                "readonlyClass": "xs-2 md-2",
+                "slots": [{
+                  "is": "Icon",
+                  "props": {
+                    "icon": "email"
+                  }
+                }],
+                "props": {
 
+                  "flat": true,
+                  "icon": true,
+                  "events": {
+                    "click.stop": [{
+                      "type": "axios",
+                      "otherParams": {
+                        "axiosParams": {
+                          "url": "/api/invitation/invite/invite",
+                          "method": "POST",
+                          "data": {
+                            "entityId": "{{context.$store.state.widget.id}}",
+                            "tableName": "booking",
+                            "partyId": ["{{ '`${args[0]}${args[1]}PartyId`'  | calculate(flex,key) | getFrom(context.$store.state.widget.data)}}"],
+                            "partyType": ["{{key}}"],
+                            "person": {
+                              "userName": "{{ context.fixValue }}"
+                            }
+                          }
+                        }
+                      },
+
+                      "afterActions": [{
+                        "type": "notify",
+                        "otherParams": {
+                          "notification": "invite success"
+                        }
+                      }]
+                    }]
+
+
+                  }
+
+
+                }
+              },
               {
                 "label": "Widget.contactXPhone",
                 "name": "Phone",
@@ -681,7 +781,7 @@
         },
         {
           "label": "Widget.address",
-          "name": "{{flex}}{{key}}PartyAddress",
+          "name": "bookingParty.{{flex}}{{key}}PartyAddress",
           "component": "v-textarea",
           "props": {
             "auto-grow": true,
@@ -692,13 +792,13 @@
         },
         {
           "label": "Widget.city",
-          "name": "{{flex}}{{key}}PartyCityCode",
+          "name": "bookingParty.{{flex}}{{key}}PartyCityCode",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-4",
           "readonlyClass": "xs-12 md-4",
-          "relation": "{{flex}}{{key}}PartyCityCode",
+          "relation": "bookingParty.{{flex}}{{key}}PartyCityCode",
           "relationMore": [{
-            "name": "{{flex}}{{key}}PartyCityCode",
+            "name": "bookingParty.{{flex}}{{key}}PartyCityCode",
             "selector": "locationCode"
           }],
           "props": {
@@ -725,13 +825,13 @@
         },
         {
           "label": "Widget.state",
-          "name": "{{flex}}{{key}}PartyStateCode",
+          "name": "bookingParty.{{flex}}{{key}}PartyStateCode",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-4",
           "readonlyClass": "xs-12 md-4",
-          "relation": "{{flex}}{{key}}PartyStateCode",
+          "relation": "bookingParty.{{flex}}{{key}}PartyStateCode",
           "relationMore": [{
-            "name": "{{flex}}{{key}}PartyStateCode",
+            "name": "bookingParty.{{flex}}{{key}}PartyStateCode",
             "selector": "code"
           }],
           "props": {
@@ -761,13 +861,13 @@
         },
         {
           "label": "Widget.country",
-          "name": "{{flex}}{{key}}PartyCountryCode",
+          "name": "bookingParty.{{flex}}{{key}}PartyCountryCode",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-4",
           "readonlyClass": "xs-12 md-4",
-          "relation": "{{flex}}{{key}}PartyCountryCode",
+          "relation": "bookingParty.{{flex}}{{key}}PartyCountryCode",
           "relationMore": [{
-            "name": "{{flex}}{{key}}PartyCountryCode",
+            "name": "bookingParty.{{flex}}{{key}}PartyCountryCode",
             "selector": "code"
           }],
           "props": {
@@ -797,7 +897,7 @@
         },
         {
           "label": "Widget.zip",
-          "name": "{{flex}}{{key}}PartyZip",
+          "name": "bookingParty.{{flex}}{{key}}PartyZip",
           "component": "v-text-field",
           "class": "xs-12 md-6",
           "readonlyClass": "xs-12"

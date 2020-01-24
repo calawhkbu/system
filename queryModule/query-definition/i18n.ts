@@ -1,162 +1,59 @@
 import { QueryDef } from 'classes/query/QueryDef'
 import {
   Query,
-  ResultColumn,
   FromTable,
   OrExpressions,
   RegexpExpression,
   ColumnExpression,
   BinaryExpression,
-  InExpression,
   IsNullExpression,
   AndExpressions,
   FunctionExpression,
   Unknown,
   Value,
-  JoinClause,
-  GroupBy,
+  ExistsExpression,
 } from 'node-jql'
 
 const query = new QueryDef(
-
   new Query({
+    $from : new FromTable('i18n'),
 
-    // one more layer of select from to prevent overriding select i18n.*
-    $from: new FromTable({
+    $where : new OrExpressions([
 
-      $as: 'i18n',
-      table: new Query({
+      new IsNullExpression(new ColumnExpression('i18n', 'partyGroupCode'), true),
 
-        $select: [
-          new ResultColumn(new ColumnExpression('i18n', '*'))
-        ],
-        $from: new FromTable({
-          table: new Query({
+      new AndExpressions([
+        new IsNullExpression(new ColumnExpression('i18n', 'partyGroupCode'), false),
+        new ExistsExpression(new Query({
 
-            $select: [
-
-              new ResultColumn(new ColumnExpression('i18n', 'category'), 'category'),
-              new ResultColumn(new ColumnExpression('i18n', 'key'), 'key'),
-              new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('i18n', 'partyGroupCode')), 'partyGroupCode')
-
-            ],
-
-            $from: new FromTable('i18n'),
-            // warning !!! : deletedBy must be Null!!!!!!
-            // warning !!! : deletedBy must be Null!!!!!!
-            // warning !!! : deletedBy must be Null!!!!!!
-            // warning !!! : deletedBy must be Null!!!!!!
-            // warning !!! : deletedBy must be Null!!!!!!
-            // warning !!! : deletedBy must be Null!!!!!!
-            $where: [
-              new IsNullExpression(new ColumnExpression('i18n', 'deletedBy'), false),
-              new IsNullExpression(new ColumnExpression('i18n', 'deletedAt'), false)
-            ],
-
-            $group: new GroupBy([
-              'category', 'key'
-            ]),
-
+          $from : new FromTable({
+            table : 'i18n',
+            $as : 'b'
           }),
-          $as: 'leftTable',
-          joinClauses: [
-            new JoinClause(
-              'LEFT',
-              new FromTable('i18n'),
-
-              new AndExpressions([
-
-                // key is same
-                new BinaryExpression(
-                  new BinaryExpression(
-                    new ColumnExpression('leftTable', 'key'),
-                    '=',
-                    new ColumnExpression('i18n', 'key')
-                  )
-                ),
-
-                // category is same
-
-                new OrExpressions([
-
-                  // category is not null case
-                  new AndExpressions([
-
-                    new IsNullExpression(new ColumnExpression('leftTable', 'category'), true),
-
-                    new BinaryExpression(
-                      new BinaryExpression(
-                        new ColumnExpression('leftTable', 'category'),
-                        '=',
-                        new ColumnExpression('i18n', 'category')
-                      )
-                    )
-
-                  ]),
-
-                  // category is null case
-                  new AndExpressions([
-
-                    new IsNullExpression(new ColumnExpression('leftTable', 'category'), false),
-                    new IsNullExpression(new ColumnExpression('i18n', 'category'), false)
-
-                  ]),
-
-                ]),
-
-                // partyGroupCode is same
-
-                new OrExpressions([
-
-                  // partyGroupCode is not null case
-                  new AndExpressions([
-
-                    new IsNullExpression(new ColumnExpression('leftTable', 'partyGroupCode'), true),
-
-                    new BinaryExpression(
-                      new BinaryExpression(
-                        new ColumnExpression('leftTable', 'partyGroupCode'),
-                        '=',
-                        new ColumnExpression('i18n', 'partyGroupCode')
-                      )
-                    )
-
-                  ]),
-
-                  // partyGroupCode is null case
-                  new AndExpressions([
-
-                    new IsNullExpression(new ColumnExpression('leftTable', 'partyGroupCode'), false),
-                    new IsNullExpression(new ColumnExpression('i18n', 'partyGroupCode'), false)
-
-                  ]),
-
-                ])
-
-              ])
-
-            )
+          $where : [
+            new BinaryExpression(new ColumnExpression('b', 'category'), '=', new ColumnExpression('i18n', 'category')),
+            new BinaryExpression(new ColumnExpression('b', 'key'), '=', new ColumnExpression('i18n', 'key')),
+            new IsNullExpression(new ColumnExpression('b', 'partyGroupCode'), true)
           ]
-        })
-      })
 
-    })
+        }), true)
+
+      ])
+    ])
 
   })
-
 )
 
 query.register('canResetDefault',
-  {
-    expression: new FunctionExpression(
-      'IF',
-      new IsNullExpression(new ColumnExpression('i18n', 'partyGroupCode'), true),
-      1, 0
-    ),
+{
+  expression : new FunctionExpression(
+    'IF',
+    new IsNullExpression(new ColumnExpression('i18n', 'partyGroupCode'), true),
+    1, 0
+  ),
 
-    $as: 'canResetDefault'
-  })
-
+  $as: 'canResetDefault'
+})
 // ------------------- filter
 
 query
@@ -185,5 +82,36 @@ query
     })
   )
   .register('value', 0)
+
+  // isActive
+  const isActiveConditionExpression = new AndExpressions([
+    new IsNullExpression(new ColumnExpression('i18n', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('i18n', 'deletedBy'), false)
+  ])
+
+  query.registerBoth('isActive', isActiveConditionExpression)
+
+  query.registerQuery('isActive', new Query({
+
+    $where : new OrExpressions([
+
+      new AndExpressions([
+
+        new BinaryExpression(new Value('active'), '=', new Unknown('string')),
+        // active case
+        isActiveConditionExpression
+      ]),
+
+      new AndExpressions([
+        new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
+        // deleted case
+        new BinaryExpression(isActiveConditionExpression, '=', false)
+      ])
+
+    ])
+
+  }))
+  .register('value', 0)
+  .register('value', 1)
 
 export default query

@@ -1,11 +1,10 @@
 {
   "layout": "Plugin",
-  "lazy": true,
-  "transition": "slide-y-reverse-transition",
   "name": "Alert",
-  "remote": true,
+  "transition": "slide-y-reverse-transition",
   "loadWhenDataLoaded": true,
-  "loopGetData": 60000,
+  "lazy": true,
+  "remote": true,
   "shareProps": {
     "i18nContext": "Alert",
     "iconType": "",
@@ -21,5 +20,15 @@
   "baseSummaryProps": {
     "size": -3
   },
-  "baseDetailProps": {}
+  "baseDetailProps": {
+    "changeMessageStatusAxiosParams": {
+      "method": "POST",
+      "url": "api/alert/updateStatus/{{id}}"
+    },
+    "selects": {
+      "All": "return data",
+      "Exception": "return data.filter(m => m.alertCategory === 'Exception')",
+      "Message": "return data.filter(m => m.alertCategory === 'Message' || m.alertCategory === 'Notification')"
+    }
+  }
 }

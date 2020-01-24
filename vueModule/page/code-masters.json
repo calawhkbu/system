@@ -1,168 +1,157 @@
 {
   "fillParent": true,
-  "components": [
-    {
-      "is": "TableTool",
-      "props": {
-        "back": "/admin",
-        "reportingKey": "code-masters",
-        "jql": "code-masters",
-        "showFilterBar": true,
-        "enableShare": false,
-        "enableSetting": false,
-        "noPartyGroupFilters": true,
-        "newReport": {
-          "filters": {
-            "activeStatus" : {
-              "value" : "active"
-            }
-          },
-          "configurations": {
-            "i18nContext": "CodeMasterPage",
-            "clickable": true,
-            "draggable": true,
-            "pagination": {
-              "current": 0,
-              "perPage": 20,
-              "remote" : true
-            }
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "back": "/admin",
+      "reportingKey": "code-masters",
+      "urlFormat": "/admin/code-masters",
+      "jql": "code-masters",
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": false,
+      "noPartyGroupFilters": true,
+      "nextPageComponent": "code-master",
+      "newReport": {
+        "filters": {
+          "isActive": {
+            "value": "active",
+            "locked": true
           }
         },
-
-        "icons": [
-          {
-            "icon": "add",
-            "click": [
-              {
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "/code-master/create"
-                }
-              }
-            ]
+        "configurations": {
+          "i18nContext": "CodeMasterPage",
+          "clickable": true,
+          "pagination": {
+            "current": 0,
+            "perPage": 20,
+            "remote": true
           }
-        ],
+        }
+      },
 
-        "fieldOptions": [
-          {
-            "key": "id",
-            "hidden": true
-          },
-
-          {
-            "key": "partyGroupCode",
-            "hidden": true
-          },
-
-
-          {
-            "label": "",
-            "key": "canResetDefault",
-            "sortable": false,
-            "align": "center",
-            "clickFunction": {
-              "type": "axios",
-              "otherParams": {
-                "axiosParams": {
-                  "url": "/api/code/resetDefault/{{row.id}}",
-                  "method": "POST"
-                }
-              },
-              "afterActions": [
-                {
-                  "type": "notify",
-                  "otherParams": {
-                    "notification": "Notify.resetDefaultSuccess"
-                  }
-                }
-              ]
-            },
-            "tdComponent": {
-              "is": "icon",
-              "hideIfFalse" : true,
-              "props": {
-                "icon": "refresh"
-              }
-            },
-            "width": 50
-          }
-        ],
-
-        "filters"  : [
-
-          {
-
-            "name" : "activeStatus",
-            "i18nContext" : "CodeMasterPage",
-            "type" : "list",
-            "props" : {
-              "items" :[
-
-                {
-                  "label" : "active",
-                  "value" : "active"
-                },
-                {
-                  "label" : "deleted",
-                  "value" : "deleted"
-                }
-              ]
-
-
-            }
-          },
-          {
-            "name" : "codeType",
-            "i18nContext" : "CodeMasterPage",
-            "props" : {
-              "api" : {
-                "query" : {
-                  "data" : {
-                    "limit" : 5,
-                    "fields" : [
-                      "codeType"
-                    ],
-                    "subqueries" : {
-                      "codeTypeLike" : {
-                        "value" : "{{ q }}"
-                      }
-                    }
-                  },
-                  "labelKey" : "codeType",
-                  "method" : "POST",
-                  "url" : "api/code/query/code_master",
-                  "valueKey" : "codeType"
-                },
-                "resolve" : {
-                  "data" : {
-                    "fields" : ["codeType"],
-                    "subqueries" : {
-                      "codeType" : {
-                        "value" : "{{value}}"
-                      }
-                    }
-                  },
-                  "labelKey" : "codeType",
-                  "method" : "POST",
-                  "url" : "api/code/query/code_master",
-                  "valueKey" : "codeType"
-                }
-              },
-              "multi" : false
-            },
-            "type" : "autocomplete"
-          }
-
-        ],
-        "clickFunction": {
+      "icons": [{
+        "icon": "add",
+        "click": [{
           "type": "router",
           "otherParams": {
             "func": "push",
-            "path": "/code-master/{{id}}"
+            "path": "/code-master/create"
           }
+        }]
+      }],
+
+      "fieldOptions": [{
+          "key": "id",
+          "hidden": true
+        },
+
+        {
+          "key": "partyGroupCode",
+          "hidden": true
+        },
+
+
+        {
+          "label": "",
+          "key": "canResetDefault",
+          "sortable": false,
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/api/code/resetDefault/{{row.id}}",
+                "method": "POST"
+              }
+            },
+            "afterActions": [{
+              "type": "notify",
+              "otherParams": {
+                "notification": "Notify.resetDefaultSuccess"
+              }
+            }]
+          },
+          "tdComponent": {
+            "is": "icon",
+            "hideIfFalse": true,
+            "props": {
+              "icon": "refresh"
+            }
+          },
+          "width": 50
+        }
+      ],
+
+      "filters": [
+
+        {
+
+          "name": "isActive",
+          "type": "list",
+          "props": {
+            "items": [{
+                "label": "active",
+                "value": "active"
+              },
+              {
+                "label": "deleted",
+                "value": "deleted"
+              }
+            ]
+          }
+        },
+        {
+          "name": "codeType",
+          "i18nContext": "CodeMasterPage",
+          "props": {
+            "api": {
+              "query": {
+                "data": {
+                  "limit": 5,
+                  "fields": [
+                    "codeType"
+                  ],
+                  "subqueries": {
+                    "codeTypeLike": {
+                      "value": "{{ q }}"
+                    }
+                  }
+                },
+                "labelKey": "codeType",
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "valueKey": "codeType"
+              },
+              "resolve": {
+                "data": {
+                  "fields": ["codeType"],
+                  "subqueries": {
+                    "codeType": {
+                      "value": "{{value}}"
+                    }
+                  }
+                },
+                "labelKey": "codeType",
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "valueKey": "codeType"
+              }
+            },
+            "multi": false
+          },
+          "type": "autocomplete"
+        }
+
+      ],
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/detail/{{id}}",
+          "base": true
         }
       }
     }
-  ]
+  }]
 }

@@ -12,7 +12,7 @@
       "hasReports": false,
       "showFilterBar": true,
       "enableShare": false,
-      "enableSetting": true,
+      "enableSetting": false,
       "nextPageComponent": "template",
       "clickFunction": {
         "type": "router",
@@ -24,15 +24,17 @@
       },
       "newReport": {
         "filters": {
+          "isActive": {
+            "value": "active",
+            "locked": true
+          },
           "extension": {
             "value": "pdf"
-          },
-          "isActive": true
+          }
         },
         "configurations": {
           "i18nContext": "TemplatePage",
           "clickable": true,
-          "draggable": true,
           "sorting": {},
           "pagination": {
             "current": 0,
@@ -40,20 +42,14 @@
           }
         }
       },
-
-
-
       "fieldOptions": [{
           "key": "id",
           "hidden": true
         },
-
-
         {
           "key": "isActive",
           "boolean": true
         },
-
         {
           "label": "",
           "key": "canDelete",
@@ -121,6 +117,20 @@
         }
       ],
       "filters": [{
+          "name": "isActive",
+          "type": "list",
+          "props": {
+            "items": [{
+                "label": "active",
+                "value": "active"
+              },
+              {
+                "label": "deleted",
+                "value": "deleted"
+              }
+            ]
+          }
+        }, {
           "name": "templateName",
           "i18nContext": "TemplatePage",
           "type": "text"
@@ -136,6 +146,7 @@
       "name": "middle-button",
       "is": "DynamicComponent",
       "props": {
+        "class": "button",
         "components": [{
           "is": "v-btn",
           "props": {
@@ -154,7 +165,7 @@
               "type": "router",
               "otherParams": {
                 "func": "push",
-                "path": "create/create",
+                "path": "/template/create",
                 "base": true
               }
             }]

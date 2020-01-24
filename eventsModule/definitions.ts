@@ -5,11 +5,11 @@ export default {
   // should not be called directly, should be called after an event
   create_alert: [{ handlerName: 'create_alert' }], // create alert from entity
   create_tracking: [{ handlerName: 'create_tracking' }], // create tracking from entity
-  create_tracking_alerts: [{ handlerName: 'create_tracking_alerts' }], // update entity(booking) with a tracking
   fill_template: [{ handlerName: 'fill_template' }],
-  update_document_preview: [{ handlerName: 'update_document_preview' }],
-  fm3k_booking: [{ handlerName: 'fm3k_booking' }],
+  send_data_to_external: [{ handlerName: 'send_data_to_external' }],
   send_edi: [{ handlerName: 'send_edi' }],
+  create_related_party: [{handlerName: 'create_related_party'}],
+  create_related_person: [{handlerName: 'create_related_person'}],
   // start here
   // booking
   afterCreate_booking: [
@@ -26,12 +26,41 @@ export default {
         },
       },
     },
-    // create booking tracking
+    // create tracking
     {
       condition: true,
       eventName: 'create_tracking',
       otherParameters: {
-        tableName: 'booking'
+        tableName: 'booking',
+        loadashMapping: {
+          moduleTypeCode: 'moduleTypeCode',
+          carrierCode: 'carrierCode',
+          departureDateEstimated: 'bookingDate.departureDateEstimated',
+          masterNo: ({ moduleTypeCode, bookingReference = [] }: any) => {
+            return bookingReference.reduce((masterNo: string, { refName, refDescription }: any) => {
+              if (!masterNo && (refName === (moduleTypeCode === 'SEA' ? 'MBL' : 'MAWB'))) {
+                masterNo = refDescription
+              }
+              return masterNo
+            }, null)
+          },
+          soNo: ({ bookingContainers = []}: any) => {
+            return bookingContainers.reduce((nos: string[], { soNo }: any) => {
+              if (soNo) {
+                nos.push(soNo)
+              }
+              return soNo
+            }, [])
+          },
+          containerNo: ({ bookingContainers = []}: any) => {
+            return bookingContainers.reduce((nos: string[], { containerNo }: any) => {
+              if (containerNo) {
+                nos.push(containerNo)
+              }
+              return containerNo
+            }, [])
+          },
+        }
       }
     },
     // fill shipping order
@@ -47,10 +76,31 @@ export default {
         },
       },
     },
+    // create related party
+    {
+      condition: true,
+      eventName: 'create_related_party',
+      otherParameters: {
+        partyLodash: 'bookingParty',
+        fixedParty: ['shipper', 'consignee', 'forwarder', 'agent', 'notifyParty']
+      }
+    },
+    // create related person
+    {
+      condition: true,
+      eventName: 'create_related_person',
+      otherParameters: {
+        partyLodash: 'bookingParty',
+        fixedParty: ['shipper', 'consignee', 'forwarder', 'agent', 'notifyParty']
+      }
+    },
     // send fm3k
     {
       condition: true,
-      eventName: 'fm3k_booking'
+      eventName: 'send_data_to_external',
+      otherParameters: {
+        outboundName: 'fm3k-booking'
+      }
     },
   ],
   afterUpdate_booking: [
@@ -72,7 +122,54 @@ export default {
       condition: true,
       eventName: 'create_tracking',
       otherParameters: {
-        tableName: 'booking'
+        tableName: 'booking',
+        loadashMapping: {
+          moduleTypeCode: 'moduleTypeCode',
+          carrierCode: 'carrierCode',
+          departureDateEstimated: 'bookingDate.departureDateEstimated',
+          masterNo: ({ moduleTypeCode, bookingReference = [] }: any) => {
+            return bookingReference.reduce((masterNo: string, { refName, refDescription }: any) => {
+              if (!masterNo && (refName === (moduleTypeCode === 'SEA' ? 'MBL' : 'MAWB'))) {
+                masterNo = refDescription
+              }
+              return masterNo
+            }, null)
+          },
+          soNo: ({ bookingContainers = []}: any) => {
+            return bookingContainers.reduce((nos: string[], { soNo }: any) => {
+              if (soNo) {
+                nos.push(soNo)
+              }
+              return soNo
+            }, [])
+          },
+          containerNo: ({ bookingContainers = []}: any) => {
+            return bookingContainers.reduce((nos: string[], { containerNo }: any) => {
+              if (containerNo) {
+                nos.push(containerNo)
+              }
+              return containerNo
+            }, [])
+          },
+        }
+      }
+    },
+    // create related party
+    {
+      condition: true,
+      eventName: 'create_related_party',
+      otherParameters: {
+        partyLodash: 'bookingParty',
+        fixedParty: ['shipper', 'consignee', 'forwarder', 'agent', 'notifyParty']
+      }
+    },
+    // create related person
+    {
+      condition: true,
+      eventName: 'create_related_person',
+      otherParameters: {
+        partyLodash: 'bookingParty',
+        fixedParty: ['shipper', 'consignee', 'forwarder', 'agent', 'notifyParty']
       }
     },
     // fill shipping order
@@ -124,10 +221,14 @@ export default {
     // send fm3k
     {
       condition: true,
-      eventName: 'fm3k_booking'
+      eventName: 'send_data_to_external',
+      otherParameters: {
+        outboundName: 'fm3k-booking'
+      }
     },
   ],
   // documents
+  update_document_preview: [{ handlerName: 'update_document_preview' }],
   afterCreate_document: [
     {
       eventName: 'update_document_preview',
@@ -140,10 +241,94 @@ export default {
   ],
   // purchase-order
   // shipment
+  afterCreate_shipment: [
+    // create tracking
+    {
+      condition: true,
+      eventName: 'create_tracking',
+      otherParameters: {
+        tableName: 'shipment',
+        loadashMapping: {
+          moduleTypeCode: 'moduleTypeCode',
+          carrierCode: 'carrierCode',
+          departureDateEstimated: 'shipmentDate.departureDateEstimated',
+          masterNo: 'trackingNos.masterNo',
+          soNo: 'trackingNos.soNo',
+          containerNo: 'trackingNos.containerNo'
+        }
+      }
+    },
+    // create related party
+    {
+      condition: true,
+      eventName: 'create_related_party',
+      otherParameters: {
+        partyLodash: 'shipmentParty',
+        fixedParty: ['shipper', 'consignee', 'office', 'agent', 'roAgent', 'linerAgent', 'controllingCustomer']
+      }
+    },
+    // create related person
+    {
+      condition: true,
+      eventName: 'create_related_person',
+      otherParameters: {
+        partyLodash: 'shipmentParty',
+        fixedParty: ['shipper', 'consignee', 'office', 'agent', 'roAgent', 'linerAgent', 'controllingCustomer']
+      }
+    },
+  ],
+  afterUpdate_shipment: [
+    // create tracking
+    {
+      condition: true,
+      eventName: 'create_tracking',
+      otherParameters: {
+        tableName: 'shipment',
+        loadashMapping: {
+          moduleTypeCode: 'moduleTypeCode',
+          carrierCode: 'carrierCode',
+          departureDateEstimated: 'shipmentDate.departureDateEstimated',
+          masterNo: 'trackingNos.masterNo',
+          soNo: 'trackingNos.soNo',
+          containerNo: 'trackingNos.containerNo'
+        }
+      }
+    },
+    // create related party
+    {
+      condition: true,
+      eventName: 'create_related_party',
+      otherParameters: {
+        partyLodash: 'shipmentParty',
+        fixedParty: ['shipper', 'consignee', 'office', 'agent', 'roAgent', 'linerAgent', 'controllingCustomer']
+      }
+    },
+    // create related person
+    {
+      condition: true,
+      eventName: 'create_related_person',
+      otherParameters: {
+        partyLodash: 'shipmentParty',
+        fixedParty: ['shipper', 'consignee', 'office', 'agent', 'roAgent', 'linerAgent', 'controllingCustomer']
+      }
+    },
+  ],
   // tracking
+  create_tracking_alerts: [{ handlerName: 'create_tracking_alerts' }], // update entity(booking) with a tracking
+  tracking_error_update_reference_again: [
+    {
+      handlerName: 'tracking_error_update_reference_again',
+      otherParameters: {
+        maxErrorTime: 100
+      }
+    }
+  ], // update error ro change
   afterCreate_tracking: [
     {
       eventName: 'create_tracking_alerts',
+    },
+    {
+      eventName: 'tracking_error_update_reference_again',
     },
   ],
   afterUpdate_tracking: [
@@ -151,11 +336,12 @@ export default {
       eventName: 'create_tracking_alerts',
     },
     {
+      eventName: 'tracking_error_update_reference_again',
+    },
+    {
       eventName: 'send_edi',
     },
   ],
-
-
 } as {
   [eventName: string]: EventConfig[]
 }

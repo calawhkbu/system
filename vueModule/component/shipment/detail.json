@@ -381,15 +381,50 @@
       "slots": [{
           "is": "AsyncComponent",
           "props": {
+            "getDate": "shipmentDate",
             "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/tracking-shipment"
+            "layoutName": "plugins/tracking",
+            "loadWhenDataLoaded": true,
+            "axiosBaseParams": [
+              "const trackingNos = [];",
+              "const data = context.$store.state.widget.data;",
+              "if (data.trackingNos) {",
+              "const { masterNo, containerNo, carrierBookingNo } = data.trackingNos",
+              "if (masterNo) { trackingNos.push(masterNo) }",
+              "if (containerNo && containerNo.length) { trackingNos.concat(containerNo) }",
+              "if (carrierBookingNo && carrierBookingNo.length) { trackingNos.concat(carrierBookingNo) }",
+              "}",
+              "return {",
+              "url: 'api/tracking',",
+              "method: 'POST',",
+              "data: { trackingNos }",
+              "};"
+            ]
           }
         },
         {
           "is": "AsyncComponent",
           "props": {
             "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/alert-shipment"
+            "layoutName": "plugins/alert",
+            "axiosBaseParams": [
+              "return {",
+              "url: 'api/alert/list/history',",
+              "method: 'POST',",
+              "data: {",
+              "tableName: context.$route.params.page,",
+              "primaryKey: context.$route.params.params,",
+              "}",
+              "};"
+            ],
+            "sendMessageAxiosParams": [
+              "const primaryKey = encodeURIComponent(context.$route.params.params);",
+              "return {",
+              "url: `api/alert/message/shipment/${primaryKey}`,",
+              "method: 'POST',",
+              "data: { message: swig.message }",
+              "};"
+            ]
           }
         },
         {
@@ -398,10 +433,39 @@
             "class": "xs-12 margin-topbottom-4",
             "layoutName": "plugins/document",
             "axiosBaseParams": [
+              "const primaryKey = context.$route.params.params;",
+              "return {",
+              "url: 'api/document/document/shipment/{{primaryKey}}'.format({ primaryKey }),",
+              "};"
+            ],
+            "uploadAxiosParams": [
               "const primaryKey = encodeURIComponent(context.$route.params.params);",
               "return {",
-              "url: 'api/document/document/shipment/{{primaryKey | urlEncode }}'.format({ primaryKey}),",
+              "method: 'POST',",
+              "url: 'api/document/document/upload',",
+              "data: {",
+              "tableName: 'shipment', primaryKey,",
+              "fileName: swig.fileName,",
+              "fileData: { base64String: swig.base64String, extension: swig.extension }",
+              "}",
               "};"
+            ],
+            "downloadAxiosParams": [
+              "const primaryKey = encodeURIComponent(context.$route.params.params);",
+              "return {",
+              "responseType: 'blob',",
+              "method: 'POST',",
+              "url: 'api/document/document/download',",
+              "data: {tableName: 'shipment', primaryKey, fileName: swig.fileName}",
+              "}"
+            ],
+            "deleteAxiosParams": [
+              "const primaryKey = encodeURIComponent(context.$route.params.params);",
+              "return {",
+              "method: 'POST',",
+              "url: 'api/document/document/delete',",
+              "data: {tableName: 'shipment', primaryKey, fileName: swig.fileName}",
+              "}"
             ]
           }
         }

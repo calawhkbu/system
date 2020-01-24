@@ -1,4 +1,4 @@
-import { CreateFunctionJQL, Value, Query } from 'node-jql'
+import { CreateFunctionJQL, Value, Query, ResultColumn, LimitOffset } from 'node-jql'
 
 import { parseCode } from 'utils/function'
 
@@ -12,9 +12,9 @@ function prepareParams(): Function {
     const subqueries = (params.subqueries = params.subqueries || {})
 
     // warning cannot display from frontend
-    if (!subqueries.xAxis) throw new BadRequestException('MISSING_xAxis')
-    if (!subqueries.yAxis) throw new BadRequestException('MISSING_yAxis')
-    if (!subqueries.topX) throw new BadRequestException('MISSING_topX')
+    if (!subqueries.xAxis) throw new Error('MISSING_xAxis')
+    if (!subqueries.yAxis) throw new Error('MISSING_yAxis')
+    if (!subqueries.topX) throw new Error('MISSING_topX')
 
     // most important part of this card
     // dynamically choose the fields and summary value
@@ -27,20 +27,21 @@ function prepareParams(): Function {
       xAxis === 'carrier'
         ? `carrierCode`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyName`
     // ------------------------------
 
     params.sorting = new OrderBy(summaryColumnName, 'DESC')
+
     // select
     params.fields = [...new Set([codeColumnName, summaryColumnName, nameColumnName])]
-    params.groupBy = [codeColumnName]
+    params.groupBy = [codeColumnName, nameColumnName]
 
     return params
   }
@@ -63,13 +64,13 @@ function createTop10Table() {
       xAxis === 'carrier'
         ? `carrierCode`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyName`
     // ------------------------------
 
@@ -113,13 +114,13 @@ function insertTop10Data() {
       xAxis === 'carrier'
         ? `carrierCode`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyName`
 
     const showOther = subqueries.showOther || false
@@ -198,13 +199,13 @@ function prepareRawTable() {
       xAxis === 'carrier'
         ? `carrierCode`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyName`
     // ------------------------------
 
@@ -233,7 +234,7 @@ function prepareRawTable() {
               },
               {
                 name: nameColumnName,
-                type: 'string',
+                type: 'string'
               },
               {
                 name: summaryColumnName,
@@ -264,13 +265,13 @@ function finalQuery() {
       xAxis === 'carrier'
         ? `carrierCode`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
         : xAxis === 'agentGroup'
-        ? `agentGroupName`
+        ? `agentGroup`
         : `${xAxis}PartyName`
     // ------------------------------
 
@@ -386,11 +387,11 @@ export const filters = [
           label: 'agent',
           value: 'agent',
         },
-        // // currently disabled
-        // {
-        //   label: 'agentGroup',
-        //   value: 'agentGroup',
-        // },
+        // currently disabled
+        {
+          label: 'agentGroup',
+          value: 'agentGroup',
+        },
         {
           label: 'controllingCustomer',
           value: 'controllingCustomer',

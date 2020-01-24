@@ -1,35 +1,29 @@
 {
   "class": "grid",
-  "components": [
-    {
+  "components": [{
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 grid align-item-center padding-8",
-        "components": [
-          {
+        "components": [{
             "is": "v-btn",
             "props": {
               "flat": true,
               "icon": true
             },
-            "slots": [
-              {
-                "is": "Icon",
-                "props": {
-                  "icon": "arrow_back"
-                }
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
               }
-            ],
+            }],
             "events": {
-              "click.stop": [
-                {
-                  "type": "router",
-                  "otherParams": {
-                    "func": "push",
-                    "path": "/locations"
-                  }
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/admin/locations"
                 }
-              ]
+              }]
             }
           },
           {
@@ -52,24 +46,20 @@
               "flat": true,
               "class": "primary white-text"
             },
-            "slots": [
-              {
-                "is": "Icon",
-                "props": {
-                  "icon": "edit"
-                }
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "edit"
               }
-            ],
+            }],
             "events": {
-              "click.stop": [
-                {
-                  "type": "dispatch",
-                  "otherParams": {
-                    "name": "widget/changeMode",
-                    "mode": "edit"
-                  }
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "edit"
                 }
-              ]
+              }]
             }
           }
         ]
@@ -79,15 +69,13 @@
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 padding-left-8 padding-right-8 width-100 grid",
-        "components": [
-          {
-            "is": "AsyncComponent",
-            "props": {
-              "class": "margin-topbottom-4 xs-12",
-              "layoutName": "location/forms/general"
-            }
+        "components": [{
+          "is": "AsyncComponent",
+          "props": {
+            "class": "margin-topbottom-4 xs-12",
+            "layoutName": "location/forms/general"
           }
-        ]
+        }]
       }
     }
   ]

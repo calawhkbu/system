@@ -33,7 +33,7 @@ const app = {
   ) => {
     try {
       const data = JSON.parse(response.responseBody)
-      const flexDataData = data.flexData ? data.flexData.data || {} : {}
+      const flexDataData = data.flexData ? data.flexData || {} : {}
       for (const party of data.transactionParties || []) {
         const role = helper.convertParty(party.roleCode)
         let address = party.address1
@@ -99,7 +99,7 @@ const app = {
         }
       }
 
-      data.flexData = { data: flexDataData }
+      data.flexData = flexDataData
       data['departureDateEstimated'] =
         data['departureDateEstimated'] || data['estimatedDepartureDate'] || null
       data['arrivalDateEstimated'] =

@@ -52,7 +52,7 @@
 
         {
           "label": "CodeMasterPage.flexData",
-          "name": "flexData.data",
+          "name": "flexData",
           "component": "JsonField",
           "class": "xs-12"
         }

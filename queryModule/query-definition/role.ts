@@ -7,143 +7,42 @@ import {
   InExpression,
   BinaryExpression,
   IsNullExpression,
-  ResultColumn,
-  JoinClause,
+  Unknown,
   AndExpressions,
-  GroupBy,
+  Value,
   FunctionExpression,
   OrExpressions,
+  ExistsExpression,
 } from 'node-jql'
 
 const query = new QueryDef(
   new Query({
+    $from : new FromTable({
+      table : 'role'
+    }),
 
-    // one more layer of select from to prevent overriding select role.*
-    $from: new FromTable({
+    $where : new OrExpressions([
 
-      $as: 'role',
+      new IsNullExpression(new ColumnExpression('role', 'partyGroupCode'), true),
 
-      table: new Query({
+      new AndExpressions([
+        new IsNullExpression(new ColumnExpression('role', 'partyGroupCode'), false),
+        new ExistsExpression(new Query({
 
-        $select: [
-          new ResultColumn(new ColumnExpression('role', '*')),
-          new ResultColumn(new ColumnExpression('flex_data', 'data'))
-        ],
-        $from: new FromTable({
-          table: new Query({
-
-            $select: [
-              new ResultColumn(new ColumnExpression('role', 'roleName'), 'roleName'),
-              new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('role', 'partyGroupCode')), 'partyGroupCode')
-
-            ],
-
-            // warning !!! : deletedBy must be Null!!!!!!
-            // warning !!! : deletedBy must be Null!!!!!!
-            // warning !!! : deletedBy must be Null!!!!!!
-            // warning !!! : deletedBy must be Null!!!!!!
-            // warning !!! : deletedBy must be Null!!!!!!
-            // warning !!! : deletedBy must be Null!!!!!!
-            $where: [
-              new IsNullExpression(new ColumnExpression('role', 'deletedBy'), false),
-              new IsNullExpression(new ColumnExpression('role', 'deletedAt'), false)
-            ],
-
-            $from: new FromTable('role'),
-            $group: new GroupBy([
-              'roleName'
-            ]),
-
+          $from : new FromTable({
+            table : 'role',
+            $as : 'b'
           }),
-          $as: 'leftTable',
-          joinClauses: [
-            new JoinClause(
-              'LEFT',
-              new FromTable('role'),
-
-              new AndExpressions([
-
-                // roleName is same
-                new BinaryExpression(
-                  new BinaryExpression(
-                    new ColumnExpression('leftTable', 'roleName'),
-                    '=',
-                    new ColumnExpression('role', 'roleName')
-                  )
-                ),
-
-                // partyGroupCode is same
-                new OrExpressions([
-
-                  // partyGroupCode is not null case
-                  new AndExpressions([
-
-                    new IsNullExpression(new ColumnExpression('leftTable', 'partyGroupCode'), true),
-
-                    new BinaryExpression(
-                      new BinaryExpression(
-                        new ColumnExpression('leftTable', 'partyGroupCode'),
-                        '=',
-                        new ColumnExpression('role', 'partyGroupCode')
-                      )
-                    )
-
-                  ]),
-
-                  // partyGroupCode is null case
-                  new AndExpressions([
-
-                    new IsNullExpression(new ColumnExpression('leftTable', 'partyGroupCode'), false),
-                    new IsNullExpression(new ColumnExpression('role', 'partyGroupCode'), false)
-
-                  ]),
-
-                ])
-
-              ])
-
-            ),
-
-            // join flexData
-            new JoinClause(
-              {
-                operator: 'LEFT',
-                table: 'flex_data',
-                $on: [
-                  new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'role'),
-                  new BinaryExpression(
-                    new ColumnExpression('role', 'id'),
-                    '=',
-                    new ColumnExpression('flex_data', 'primaryKey')
-                  ),
-                ],
-              }
-
-            )
+          $where : [
+            new BinaryExpression(new ColumnExpression('b', 'roleGroup'), '=', new ColumnExpression('role', 'roleGroup')),
+            new BinaryExpression(new ColumnExpression('b', 'roleName'), '=', new ColumnExpression('role', 'roleName')),
+            new IsNullExpression(new ColumnExpression('b', 'partyGroupCode'), true)
           ]
-        })
-      })
 
-    })
+        }), true)
 
-    //   $select : [
-
-    //     new ResultColumn(new ColumnExpression('role', '*')),
-    //     new ResultColumn(new ColumnExpression('flex_data', 'data')),
-
-    //   ],
-    //   $from: new FromTable('role', {
-    //     operator: 'LEFT',
-    //     table: 'flex_data',
-    //     $on: [
-    //       new BinaryExpression(new ColumnExpression('flex_data', 'tableName'), '=', 'role'),
-    //       new BinaryExpression(
-    //         new ColumnExpression('role', 'id'),
-    //         '=',
-    //         new ColumnExpression('flex_data', 'primaryKey')
-    //       ),
-    //     ],
-    //   }),
+      ])
+    ])
 
   })
 )
@@ -222,5 +121,37 @@ query
     })
   )
   .register('value', 0)
+
+      // will have 2 options, active and deleted
+  // isActive
+  const isActiveConditionExpression = new AndExpressions([
+    new IsNullExpression(new ColumnExpression('role', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('role', 'deletedBy'), false),
+  ])
+
+  query.registerBoth('isActive', isActiveConditionExpression)
+
+  query.registerQuery('isActive', new Query({
+
+    $where : new OrExpressions([
+
+      new AndExpressions([
+
+        new BinaryExpression(new Value('active'), '=', new Unknown('string')),
+        // active case
+        isActiveConditionExpression
+      ]),
+
+      new AndExpressions([
+        new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
+        // deleted case
+        new BinaryExpression(isActiveConditionExpression, '=', false)
+      ])
+
+    ])
+
+  }))
+  .register('value', 0)
+  .register('value', 1)
 
 export default query

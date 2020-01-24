@@ -1,4 +1,4 @@
-import { Query, FromTable, FunctionExpression, ColumnExpression, ResultColumn } from 'node-jql'
+import { Query, FromTable } from 'node-jql'
 
 const query = new Query({
   $from: new FromTable(
@@ -10,10 +10,8 @@ const query = new Query({
         { name: 'id', type: 'number' },
         { name: 'name', type: 'string' },
         { name: 'partyGroupCode', type: 'string' },
-        { name:  'cardId', type: 'string' },
         { name: 'disabled', type: 'boolean' },
         { name: 'partyGroupSpecific', type: 'boolean' },
-        { name: 'isActive', type: 'number' },
         { name: 'canDelete', type: 'number' },
         { name: 'canRestore', type: 'number' }
       ],

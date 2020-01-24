@@ -75,7 +75,7 @@ export default class EdiParser856 extends BaseEdiParser {
         elementList: []
       }
       BSN.elementList.push('00')
-      BSN.elementList.push(_.get(element, 'bookingNo').substring(0, 30))
+      BSN.elementList.push((_.get(element, 'bookingNo') || '').substring(0, 30))
       BSN.elementList.push(moment(_.get(element, 'createdAt')).format('YYYYMMDD'))
       BSN.elementList.push(moment(_.get(element, 'createdAt')).format('HHmm'))
       BSN.elementList.push('0004')
@@ -116,7 +116,7 @@ export default class EdiParser856 extends BaseEdiParser {
     data.push(GE, IEA)
     _.set(returnJSON, 'data', data)
     // return cloneEntityJSON
-    return returnJSON
+    // return returnJSON
     const result = await super.export(returnJSON)
     return [result]
   }
@@ -162,22 +162,40 @@ export default class EdiParser856 extends BaseEdiParser {
           let totalShipUnit = 0
           for (const booking of _.get(element, 'bookingPOPackings'))
           {
+            let missingPosition = 1
             if (_.get(booking, 'bookWeight'))
             {
               totalWeight += _.get(booking, 'bookWeight')
+            }
+            else
+            {
+              throw new Error(`missing the bookWeight in bookingPOPackings ${missingPosition}`)
             }
             if (_.get(booking, 'bookVolume'))
             {
               totalVolume += _.get(booking, 'bookVolume')
             }
+            else
+            {
+              throw new Error(`missing the bookVolume in bookingPOPackings ${missingPosition}`)
+            }
             if (_.get(booking, 'bookQuantity'))
             {
               totalShipUnit += _.get(booking, 'bookQuantity')
+            }
+            else
+            {
+              throw new Error(`missing the bookQuantity in bookingPOPackings ${missingPosition}`)
             }
             if (_.get(booking, 'bookCtns'))
             {
               numberOfPacking += _.get(booking, 'bookCtns')
             }
+            else
+            {
+              throw new Error(`missing the bookCtns in bookingPOPackings ${missingPosition}`)
+            }
+            missingPosition++
           }
           if (totalWeight > 0)
           {
@@ -230,7 +248,11 @@ export default class EdiParser856 extends BaseEdiParser {
           HSU: 'SUDU',
           ONE: 'ONEY',
         }
-        const scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode.toString().length)}`
+        let scac = '    '
+        if (carrierCode)
+        {
+          scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode || ''.toString().length)}`
+        }
         if (_.get(element, 'portOfLoading') || _.get(element, 'portOfDischarge') || _.get(element, 'placeOfReceiptCode'))
         {
           if (_.get(element, 'portOfLoading'))
@@ -243,8 +265,8 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push('2')
             TD5.elementList.push(scac)
             TD5.elementList.push('')// not used
-            TD5.elementList.push(' ')// not used
-            TD5.elementList.push('  ')// not used
+            TD5.elementList.push('')// not used // space or no space
+            TD5.elementList.push('')// not used // space or no space
             TD5.elementList.push('KL')
             TD5.elementList.push(_.get(element, 'portOfLoading').substring(0, 30))
             loopObjectList.push(TD5)
@@ -259,8 +281,8 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push('2')
             TD5.elementList.push(scac)
             TD5.elementList.push('')// not used
-            TD5.elementList.push(' ')// not used
-            TD5.elementList.push('  ')// not used
+            TD5.elementList.push('')// not used // space or no space
+            TD5.elementList.push('')// not used // space or no space
             TD5.elementList.push('PB')
             TD5.elementList.push(_.get(element, 'portOfDischarge').substring(0, 30))
             loopObjectList.push(TD5)
@@ -275,8 +297,8 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push('2')
             TD5.elementList.push(scac)
             TD5.elementList.push('') // not used
-            TD5.elementList.push(' ') // not used
-            TD5.elementList.push('  ') // not used
+            TD5.elementList.push('') // not used
+            TD5.elementList.push('') // not used
             TD5.elementList.push('OA')
             TD5.elementList.push(_.get(element, 'placeOfReceiptCode').substring(0, 30))
             loopObjectList.push(TD5)
@@ -284,14 +306,17 @@ export default class EdiParser856 extends BaseEdiParser {
         }
         else
         {
-          const TD5: JSONObject = {
-            segement : 'TD5',
-            elementList : []
+          if (carrierCode)
+          {
+            const TD5: JSONObject = {
+              segement : 'TD5',
+              elementList : []
+            }
+            TD5.elementList.push('O')
+            TD5.elementList.push('2')
+            TD5.elementList.push(scac)
+            loopObjectList.push(TD5)
           }
-          TD5.elementList.push('O')
-          TD5.elementList.push('2')
-          TD5.elementList.push(scac)
-          loopObjectList.push(TD5)
         }
 
         if ((_.get(element, 'bookingContainers') || []).length)
@@ -312,7 +337,7 @@ export default class EdiParser856 extends BaseEdiParser {
             //   '40HC': 4500,
             //   '45HC': 9500,
             // }
-            TD3.elementList.push('  ') // not used
+            TD3.elementList.push('') // not used // space or no space
             TD3.elementList.push((_.get(container, 'containerNo') || ' ').substring(0, 4))
             TD3.elementList.push((_.get(container, 'containerNo') || ' ').substring(4, 10))
             if (_.get(container, 'sealNo1') && _.get(container, 'sealNo1'))
@@ -357,7 +382,11 @@ export default class EdiParser856 extends BaseEdiParser {
         }
         const vesselCode = _.get(element, 'vesselCode')
         const pad = '        '
-        const vesselCodeWithLength = `${vesselCode}${pad.substring(0, pad.length - vesselCode.toString().length)}`.substring(0, 8)
+        let vesselCodeWithLength = '        '
+        if (vesselCode)
+        {
+          vesselCodeWithLength = `${vesselCode}${pad.substring(0, pad.length - vesselCode.toString().length)}`.substring(0, 8)
+        }
         V1.elementList.push(vesselCodeWithLength)
         V1.elementList.push((_.get(element, 'vesselName') || '').substring(0, 28) )
         V1.elementList.push('')// not used
@@ -393,7 +422,7 @@ export default class EdiParser856 extends BaseEdiParser {
             segement : 'PRF',
             elementList : []
           }
-          PRF.elementList.push(_.get(subPoList[0], 'poNo').substring(0, 10))
+          PRF.elementList.push((_.get(subPoList[0], 'poNo') || '').substring(0, 10))
           if (_.get(subPoList[0], 'poDate'))
           {
             PRF.elementList.push('', '') // not used
@@ -408,7 +437,11 @@ export default class EdiParser856 extends BaseEdiParser {
             HSU: 'SUDU',
             ONE: 'ONEY',
           }
-          const scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode.toString().length)}`
+          let scac = '    '
+          if (carrierCode)
+          {
+            scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode.toString().length)}`
+          }
           if (_.get(subPoList[0], 'pol') || _.get(element, 'portOfLoading'))
           {
             const TD5: JSONObject = {
@@ -419,8 +452,8 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push('2')
             TD5.elementList.push(scac)
             TD5.elementList.push('') // not used
-            TD5.elementList.push(' ') // not used
-            TD5.elementList.push('  ') // not used
+            TD5.elementList.push('') // not used
+            TD5.elementList.push('') // not used
             TD5.elementList.push('OR')
             TD5.elementList.push((_.get(subPoList[0], 'pol') || _.get(element, 'portOfLoading')).substring(0, 30))
             loopObjectList.push(TD5)
@@ -435,8 +468,8 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push('2')
             TD5.elementList.push(scac)
             TD5.elementList.push('') // not used
-            TD5.elementList.push(' ') // not used
-            TD5.elementList.push('  ') // not used
+            TD5.elementList.push('') // not used
+            TD5.elementList.push('') // not used
             TD5.elementList.push('DL')
             TD5.elementList.push((_.get(subPoList[0], 'pod') || _.get(element, 'portOfDischarge')).substring(0, 30))
             loopObjectList.push(TD5)
@@ -465,6 +498,17 @@ export default class EdiParser856 extends BaseEdiParser {
               }
             }
           }
+          const folderNo = _.get(element, 'folderNo')
+          if (!folderNo)
+          {
+            throw new Error('missing the CR')
+          }
+          const REF: JSONObject = {
+            segement : 'REF',
+            elementList : []
+          }
+          REF.elementList.push('CR', folderNo)
+          loopObjectList.push(REF)
           const invoiceNo = _.get(element, 'invoiceNo')
           if (invoiceNo)
           {

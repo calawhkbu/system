@@ -23,12 +23,20 @@ const query = new Query({
           type: 'string',
         },
         {
-          name: 'email',
+          name: 'partyTypes',
           type: 'string',
         },
         {
-          name: 'phone',
-          type: 'string',
+          name: 'parties',
+          type: 'number',
+        },
+        {
+          name: 'contacts',
+          type: 'number',
+        },
+        {
+          name: 'showInfo',
+          type: 'number',
         },
       ],
     },
