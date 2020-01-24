@@ -284,6 +284,12 @@ export const filters = [
           label: 'agent',
           value: 'agent',
         },
+
+        // currently disabled
+        {
+          label: 'agentGroup',
+          value: 'agentGroup',
+        },
         {
           label : 'moduleType',
           value : 'moduleType'

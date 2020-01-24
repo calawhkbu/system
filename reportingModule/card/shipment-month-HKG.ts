@@ -56,8 +56,8 @@ function prepareParams(likeHouseNo_: string): Function {
     subqueries.viaHKG = true
     subqueries.likeHouseNo = { value: likeHouseNo_ }
 
-    const codeColumnName = `forwarderPartyCode`
-    const nameColumnName = `forwarderPartyName`
+    const codeColumnName = `officePartyCode`
+    const nameColumnName = `officePartyName`
 
     const groupByVariables = [codeColumnName, nameColumnName]
 
@@ -71,6 +71,9 @@ function prepareParams(likeHouseNo_: string): Function {
     params.groupBy = [
       ...groupByVariables
     ]
+
+    console.log(`params`)
+    console.log(params)
 
     return params
   }
@@ -185,7 +188,7 @@ function prepareData(hardCodeOfficePartyName_: string) {
       throw new Error('MISSING_summaryVariables')
     }
 
-    const codeColumnName = `forwarderPartyCode`
+    const codeColumnName = `officePartyCode`
 
     const groupByVariables = [codeColumnName]
 
@@ -286,6 +289,7 @@ export default [
   [prepareParams('XMN%'), prepareData('GGL XMN')],
 
   finalQuery(),
+
 ]
 
 export const filters = [
