@@ -1,31 +1,32 @@
 {
   "fillParent": true,
-  "components": [
-    {
-      "is": "GridTool",
-      "props": {
-        "reportingKey": "dashboard",
-        "hasReports": true,
-        "showFilterBar": true,
-        "enableShare": true,
-        "enableSetting": true,
-        "newReport": {
-          "filters": {
-            "date": {
-              "func": {
-                "args": {
-                  "unit": "year"
-                },
-                "key": "current"
-              }
-            }
+  "components": [{
+    "is": "GridTool",
+    "props": {
+      "reportingKey": "dashboard",
+      "hasReports": true,
+      "showFilterBar": true,
+      "enableShare": true,
+      "enableSetting": true,
+      "newReport": {
+        "filters": {
+          "isActive": {
+            "value": "active"
           },
-          "configurations": {
-            "i18nContext": "Reporting",
-            "colors": ["#4bc0c0", "#ff6384", "#ffcd56", "#c9cbcf", "#36a2eb", "#b19cd9"]
+          "date": {
+            "func": {
+              "args": {
+                "unit": "year"
+              },
+              "key": "current"
+            }
           }
+        },
+        "configurations": {
+          "i18nContext": "Reporting",
+          "colors": ["#4bc0c0", "#ff6384", "#ffcd56", "#c9cbcf", "#36a2eb", "#b19cd9"]
         }
       }
     }
-  ]
+  }]
 }

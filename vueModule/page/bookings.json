@@ -22,7 +22,9 @@
       },
       "newReport": {
         "filters": {
-          "isActive": true,
+          "isActive": {
+            "value": "active"
+          },
           "date": {
             "func": {
               "args": {
@@ -51,7 +53,21 @@
           }
         }
       },
-      "filters": [],
+      "filters": [{
+        "name": "isActive",
+        "type": "list",
+        "props": {
+          "items": [{
+              "label": "active",
+              "value": "active"
+            },
+            {
+              "label": "deleted",
+              "value": "deleted"
+            }
+          ]
+        }
+      }],
       "fieldOptions": [{
           "key": "id",
           "hidden": true
