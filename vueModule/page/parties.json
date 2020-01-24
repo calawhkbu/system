@@ -14,13 +14,15 @@
       "nextPageKey": "reportIdParams",
       "newReport": {
         "filters": {
-          "isActive": true,
+          "isActive": {
+            "value": "active"
+          },
           "parties": true,
           "contacts": true,
           "showInfo": true
         },
         "configurations": {
-          "i18nContext": "RelationshipPage",
+          "i18nContext": "PartyPage",
           "sorting": {
             "direction": "DESC",
             "key": "updatedAt",
@@ -38,6 +40,20 @@
         }
       },
       "filters": [{
+        "name": "isActive",
+        "type": "list",
+        "props": {
+          "items": [{
+              "label": "active",
+              "value": "active"
+            },
+            {
+              "label": "deleted",
+              "value": "deleted"
+            }
+          ]
+        }
+      }, {
         "name": "shortName",
         "type": "text"
       }, {

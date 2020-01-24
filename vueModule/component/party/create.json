@@ -30,36 +30,16 @@
         "is": "I18nText",
         "props": {
           "i18nContext": "PartyPage",
-          "i18nKey": "title",
-          "i18nOptions": {
-            "id": "{{context.$store.state.widget.data.name}}"
-          }
+          "i18nKey": "createTitle"
         }
       }, {
         "is": "v-spacer"
       }, {
-        "is": "v-btn",
+        "is": "WidgetSave",
         "props": {
-          "small": true,
           "icon": true,
           "flat": true,
           "class": "primary white-text"
-        },
-        "slots": [{
-          "is": "Icon",
-          "props": {
-            "small": true,
-            "icon": "edit"
-          }
-        }],
-        "events": {
-          "click.stop": [{
-            "type": "dispatch",
-            "otherParams": {
-              "name": "widget/changeMode",
-              "mode": "edit"
-            }
-          }]
         }
       }]
     }
