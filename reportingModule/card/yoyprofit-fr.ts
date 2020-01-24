@@ -157,8 +157,6 @@ function insertProfitData(currentYear_: boolean, nominatedType_: 'F' | 'R') {
 
 function processProfitSummary() {
   return function(require, session, params) {
-    const showMonth = params.subqueries.showMonth || false
-
     const {
       ResultColumn,
       FunctionExpression,
@@ -175,11 +173,7 @@ function processProfitSummary() {
     const isCurrentList = [true, false]
     const types = ['F', 'R']
 
-    const $select = []
-
-    if (showMonth) {
-      $select.push(new ResultColumn('month'))
-    }
+    const $select = ['month']
 
     profitSummaryVariables.map(variable => {
       isCurrentList.map(isCurrent => {
@@ -227,26 +221,4 @@ export default [
 
 // filters avaliable for this card
 // all card in DB record using this jql will have these filter
-export const filters = [
-  {
-    name: 'showMonth',
-    type: 'boolean',
-  },
-  {
-    name: 'showYear',
-    props: {
-      items: [
-        {
-          label: 'current',
-          value: 'current',
-        },
-        {
-          label: 'last',
-          value: 'last',
-        },
-      ],
-      required: true,
-    },
-    type: 'list',
-  },
-]
+export const filters = []

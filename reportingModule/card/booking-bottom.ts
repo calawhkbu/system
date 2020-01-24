@@ -35,16 +35,6 @@ function prepareBookingParams(): Function {
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    // get the primaryKeyList
-    if (!subqueries.primaryKeyListString && subqueries.primaryKeyListString !== '')
-      throw new BadRequestException('MISSING_primaryKeyListString')
-
-    const primaryKeyList = subqueries.primaryKeyListString.value.split(',')
-
-    subqueries.primaryKeyList = {
-      value: primaryKeyList,
-    }
-
     return params
   }
 
