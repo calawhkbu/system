@@ -43,20 +43,10 @@
       },
       "fieldOptions": [{
           "key": "id",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "api",
-            "name": "id"
-          },
           "hidden": true
         },
         {
           "key": "updatedAt",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "api",
-            "name": "updatedAt"
-          },
           "width": 150,
           "format": "YYYY-MM-DD"
         }

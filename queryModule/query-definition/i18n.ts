@@ -83,21 +83,35 @@ query
   )
   .register('value', 0)
 
-query.register('isActive', new Query({
+  // isActive
+  const isActiveConditionExpression = new AndExpressions([
+    new IsNullExpression(new ColumnExpression('i18n', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('i18n', 'deletedBy'), false)
+  ])
+
+  query.registerBoth('isActive', isActiveConditionExpression)
+
+  query.registerQuery('isActive', new Query({
+
     $where : new OrExpressions([
+
       new AndExpressions([
+
         new BinaryExpression(new Value('active'), '=', new Unknown('string')),
         // active case
-        new IsNullExpression(new ColumnExpression('i18n', 'deletedAt'), false),
-        new IsNullExpression(new ColumnExpression('i18n', 'deletedBy'), false)
+        isActiveConditionExpression
       ]),
+
       new AndExpressions([
         new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
         // deleted case
-        new IsNullExpression(new ColumnExpression('i18n', 'deletedAt'), true),
-        new IsNullExpression(new ColumnExpression('i18n', 'deletedBy'), true)
+        new BinaryExpression(isActiveConditionExpression, '=', false)
       ])
+
     ])
-  })).register('value', 0).register('value', 1)
+
+  }))
+  .register('value', 0)
+  .register('value', 1)
 
 export default query

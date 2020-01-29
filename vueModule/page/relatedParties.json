@@ -9,22 +9,15 @@
       "back": "/parties",
       "noPartyGroupFilters": true,
       "showFilterBar": true,
-      "nextPageKey": "routeParams",
-      "clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/{{ partyBId }}",
-          "base": true
-        }
-      },
+      "nextPageKey": "relatedParty",
       "newReport": {
         "filters": {
-          "isActive": true,
-          "id": 1
+          "isActive": {
+            "value": "active"
+          }
         },
         "configurations": {
-          "i18nContext": "Reporting",
+          "i18nContext": "PartyPage",
           "sorting": {},
           "pagination": {
             "current": 0,
@@ -32,90 +25,79 @@
           }
         }
       },
-      "filters": [
-        {
-          "name": "shortName",
-          "type": "text"
-        }
-      ],
-      "fieldOptions": [
-        {
+      "filters": [{
+        "name": "shortName",
+        "type": "text"
+      }, {
+        "name": "groupName",
+        "type": "text"
+      }, {
+        "name": "partyTypes",
+        "type": "text"
+      }],
+      "fieldOptions": [{
           "key": "partyAId",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "related_party",
-            "name": "partyAId"
-          },
           "hidden": true
         },
         {
           "key": "partyBId",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "related_party",
-            "name": "partyBId"
-          },
           "hidden": true
         },
         {
           "key": "partyAName",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "party",
-            "name": "name"
-          },
           "hidden": true
         },
         {
           "key": "partyBName",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "partyB",
-            "name": "name"
-          }
+          "width": 200
         },
         {
-          "key": "shortName",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "partyB",
-            "name": "shortName"
-          },
-          "width": 120
+          "key": "partyBShortName",
+          "width": 150
         },
         {
-          "key": "groupName",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "partyB",
-            "name": "groupName"
-          },
-          "width": 160
+          "key": "partyBGroupName",
+          "width": 150
         },
         {
           "key": "partyTypes",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "related_party",
-            "name": "partyTypes"
+          "width": 300,
+          "tdComponent": {
+            "is": "AsyncSelect",
+            "props": {
+              "multiple": true,
+              "name": "partyType",
+              "item-text": "name",
+              "item-value": "code",
+              "showValue": false,
+              "noDelete": true,
+              "axiosParams": {
+                "url": "api/code/query/code_master",
+                "method": "POST",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "PARTY_TYPE"
+                    }
+                  }
+                }
+              },
+              "onFixValueChangeFunc": [
+                "if (context.$attrs['row'].partyType !== value) {",
+                "(this.$Swivel.api.createPromise({",
+                "url:` /relationship/party/${context.$attrs['row'].partyAId}/${context.$attrs['row'].partyBId}`",
+                "method: 'DELETE'",
+                "})).then(() => {",
+                "this.$Swivel.api.createPromise({",
+                "method: 'POST',",
+                "url: 'relationship/party',",
+                "data: { ...context.$attrs['row'], partyTypes: [value] }",
+                "})",
+                "})",
+                "}"
+              ]
+            }
           }
-        },
-        {
-          "key": "email",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "partyB",
-            "name": "email"
-          }
-        },
-        {
-          "key": "phone",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "partyB",
-            "name": "phone"
-          },
-          "width": 160
         },
         {
           "key": "showDelete",
@@ -129,15 +111,13 @@
                 "method": "DELETE"
               }
             },
-            "afterActions": [
-              {
-                "type": "emit",
-                "otherParams": {
-                  "name": "refresh",
-                  "params": [true]
-                }
+            "afterActions": [{
+              "type": "emit",
+              "otherParams": {
+                "name": "refresh",
+                "params": [true]
               }
-            ]
+            }]
           },
           "tdComponent": {
             "is": "icon",

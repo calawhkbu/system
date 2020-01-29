@@ -23,23 +23,15 @@ const query = new Query({
           type: 'string',
         },
         {
-          name: 'shortName',
+          name: 'partyBShortName',
           type: 'string',
         },
         {
-          name: 'groupName',
+          name: 'partyBGroupName',
           type: 'string',
         },
         {
           name: 'partyTypes',
-          type: 'string',
-        },
-        {
-          name: 'email',
-          type: 'string',
-        },
-        {
-          name: 'phone',
           type: 'string',
         },
         {

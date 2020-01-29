@@ -14,17 +14,15 @@ import {
   OrderBy,
   MathExpression,
   IsNullExpression,
-  OrExpressions,
 } from 'node-jql'
-
 import { parseCode } from 'utils/function'
-import { months } from 'moment'
 
 function prepareParams(): Function {
   return function(require, session, params) {
     // import
     const moment = require('moment')
-    const { OrderBy } = require('node-jql')
+    const { BadRequestException } = require('@nestjs/common')
+
     const subqueries = (params.subqueries = params.subqueries || {})
 
     // idea : userGroupByVariable and userSummaryVariable is selected within filter by user
@@ -41,25 +39,24 @@ function prepareParams(): Function {
 
     const topX = subqueries.topX.value
 
-    const specialMonth = {
-      name : `fr`,
-      typeCodeList : ['F', 'R', 'T']
-    }
-
     // ---------------------summaryVariables
 
     let summaryVariables: string[]
-    if (subqueries.summaryVariables && subqueries.summaryVariables.value) {
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
       // sumamary variable
-      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalBooking
     }
 
-    else if (subqueries.summaryVariable && subqueries.summaryVariable.value) {
+    else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
       summaryVariables = [subqueries.summaryVariable.value]
     }
     else {
       throw new Error('MISSING_summaryVariables')
     }
+
+    // ----------------------- filter
 
     // limit/extend to 1 year
     const year = (subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
@@ -72,14 +69,15 @@ function prepareParams(): Function {
       .endOf('year')
       .format('YYYY-MM-DD')
 
-    subqueries[`${groupByEntity}IsNotNull`] = {
-      value: true
+    // select
+
+    subqueries[`${groupByEntity}IsNotNull`]  = {// shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+      value : true
     }
 
-    // select
     params.fields = [
       // select Month statistics
-      ...summaryVariables.map(variable => `${specialMonth.name}_${variable}Month`),
+      ...summaryVariables.map(variable => `${variable}Month`),
       ...groupByVariables,
     ]
 
@@ -89,16 +87,19 @@ function prepareParams(): Function {
     ]
 
     // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
-    params.sorting = new OrderBy(`total_T_${summaryVariables[0]}`, 'DESC')
+    params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
 
     params.limit = topX
 
+    console.log(`params`)
+    console.log(params)
+
     return params
   }
-
 }
 
-function finalQuery(): Function {
+function finalQuery()
+{
 
   return function(require, session, params) {
 
@@ -117,43 +118,43 @@ function finalQuery(): Function {
       'December',
     ]
 
+    const {
+      OrderBy,
+      CreateTableJQL,
+      Query,
+      ResultColumn,
+      ColumnExpression,
+      FunctionExpression,
+      IsNullExpression,
+      FromTable,
+      BadRequestException
+    } = require('node-jql')
+
     const subqueries = (params.subqueries = params.subqueries || {})
-
-    // idea : userGroupByVariable and userSummaryVariable is selected within filter by user
-
-    if (!subqueries.groupByEntity || !subqueries.groupByEntity.value) throw new Error('MISSING_groupByVariable')
-    if (!subqueries.topX || !subqueries.topX.value) throw new Error('MISSING_topX')
-
-    // -----------------------------groupBy variable
+    // groupBy variable
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
     const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
     const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
-
     const groupByVariables = [codeColumnName, nameColumnName]
 
-    const topX = subqueries.topX.value
-
-    const specialMonth = {
-      name : `fr`,
-      typeCodeList : ['F', 'R', 'T']
-    }
-
-    // ---------------------summaryVariables
-
     let summaryVariables: string[]
-    if (subqueries.summaryVariables && subqueries.summaryVariables.value) {
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
       // sumamary variable
-      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalBooking
     }
 
-    else if (subqueries.summaryVariable && subqueries.summaryVariable.value) {
+    else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
       summaryVariables = [subqueries.summaryVariable.value]
     }
     else {
       throw new Error('MISSING_summaryVariables')
     }
 
-    // -------------------------------------
+    const columns = [
+      ...groupByVariables.map(variable => ({ name: variable, type: 'string' })),
+    ]
 
     const $select = [
       new ResultColumn(new ColumnExpression(codeColumnName), 'code'),
@@ -161,41 +162,26 @@ function finalQuery(): Function {
       new ResultColumn(new Value(groupByEntity), 'groupByEntity'),
     ]
 
-    const columns = [
-      ...groupByVariables.map(variable => new Column(variable, 'string', true)),
-    ] as any[]
-
     summaryVariables.map(variable => {
-
-      specialMonth.typeCodeList.map(typeCode => {
-
-        months.map(month => {
-          const columnName = `${month}_${typeCode}_${variable}`
-          $select.push(new ResultColumn(new ColumnExpression(columnName)))
-          columns.push(new Column(columnName, 'number'))
-        })
-
-        const totalColumnName = `total_${typeCode}_${variable}`
-
-        $select.push(new ResultColumn(new ColumnExpression(totalColumnName)))
-        columns.push(new Column(totalColumnName, 'number'))
+      months.map(month => {
+        columns.push({ name: `${month}_${variable}`, type: 'number' })
+        $select.push(new ColumnExpression(`${month}_${variable}`))
 
       })
-
+      columns.push({ name: `total_${variable}`, type: 'number' })
+      $select.push(new ColumnExpression(`total_${variable}`))
     })
 
-    console.log(columns)
-
     return new Query({
-
       $select,
-      $from: new FromTable({
-
-        method: 'POST',
-        url: 'api/shipment/query/shipment',
-        columns
-
-      }, 'shipment')
+      $from: new FromTable(
+        {
+          method: 'POST',
+          url: 'api/booking/query/booking',
+          columns
+        },
+        'booking'
+      )
     })
 
   }
@@ -204,7 +190,6 @@ function finalQuery(): Function {
 export default [
 
   [prepareParams(), finalQuery()]
-
 ]
 
 export const filters = [
@@ -230,7 +215,7 @@ export const filters = [
           value: 50,
         }
       ],
-      multi: false,
+      multi : false,
       required: true,
     },
     type: 'list',
@@ -242,23 +227,19 @@ export const filters = [
     props: {
       items: [
         {
-          label: 'chargeableWeight',
-          value: 'chargeableWeight',
+          label: 'quantity',
+          value: 'quantity',
         },
         {
-          label: 'grossWeight',
-          value: 'grossWeight',
+          label: 'weight',
+          value: 'weight',
         },
         {
-          label: 'cbm',
-          value: 'cbm',
-        },
-        {
-          label: 'totalShipment',
-          value: 'totalShipment',
+          label: 'totalBooking',
+          value: 'totalBooking',
         },
       ],
-      multi: false,
+      multi : false,
       required: true,
     },
     type: 'list',
@@ -272,6 +253,12 @@ export const filters = [
           label: 'carrier',
           value: 'carrier',
         },
+
+        {
+          label: 'moduleType',
+          value: 'moduleType',
+        },
+
         {
           label: 'shipper',
           value: 'shipper',
@@ -284,15 +271,6 @@ export const filters = [
           label: 'agent',
           value: 'agent',
         },
-        // currently disabled
-        {
-          label: 'agentGroup',
-          value: 'agentGroup',
-        },
-        {
-          label : 'moduleType',
-          value : 'moduleType'
-        }
       ],
       required: true,
     },

@@ -26,33 +26,25 @@ function prepareShipmentParams(): Function {
       'arrivalDateEstimated',
     ]
 
-    console.log(`aaa`)
-    console.log(subqueries)
-
     // if (!subqueries.primaryKeyListString && !subqueries.lastStatus) {
     //   throw new Error('MISSING_primaryKeyListString/workflowStatus')
     // }
-
-    if (subqueries.primaryKeyListString) {
-      // get the primaryKeyList
-      if (!subqueries.primaryKeyListString && subqueries.primaryKeyListString !== '')
-        throw new Error('MISSING_primaryKeyListString')
-
-      const primaryKeyList = subqueries.primaryKeyListString.value.split(',')
-
-      subqueries.primaryKeyList = {
-        value: primaryKeyList,
-      }
-    }
 
     // lastStatusList case
     if (subqueries.lastStatus) {
       if (!(subqueries.lastStatus.value && subqueries.lastStatus.value.length) )
         throw new Error('MISSING_lastStatus')
+
+      subqueries.lastStatusCodeJoin = true
     }
 
-    console.log(`bottomparams`)
-    console.log(params)
+    // lastStatusList case
+    if (subqueries.alertType) {
+      if (!(subqueries.alertType.value && subqueries.alertType.value.length) )
+        throw new Error('MISSING_alertType')
+
+        subqueries.alertJoin = true
+    }
 
     return params
   }

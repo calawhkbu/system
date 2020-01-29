@@ -38,8 +38,8 @@ function prepareParams(): Function {
 
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
 
-    const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalShipment
-    const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalBooking
+    const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalBooking
 
     const metricList  = [metric1, metric2]
     const metricFieldList = metricList.map(metric => `${metric}LastCurrent`)
@@ -55,7 +55,7 @@ function prepareParams(): Function {
     const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
     const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
 
-    const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalBooking
     // ------------------------------
 
     const from = subqueries.date.from
@@ -147,8 +147,8 @@ function dataQuery(): Function {
 
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
 
-    const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalShipment
-    const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalBooking
+    const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalBooking
 
     const metricList  = [metric1, metric2]
     const metricFieldList = metricList.map(metric => `${metric}LastCurrent`)
@@ -160,12 +160,12 @@ function dataQuery(): Function {
       accumulator.push(`${currentValue}Current`)
       return accumulator }), [])
 
-      const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-      const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
+    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
 
     const topX = subqueries.topX.value
 
-    const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalBooking
     // ------------------------------
 
     const tableName = `final`
@@ -189,7 +189,7 @@ function dataQuery(): Function {
         $from: new FromTable(
           {
             method: 'POST',
-            url: 'api/shipment/query/shipment',
+            url: 'api/booking/query/booking',
             columns: [
               {
                 name: codeColumnName,
@@ -206,7 +206,7 @@ function dataQuery(): Function {
               })),
             ],
           },
-          'shipment'
+          'booking'
         ),
       })
 
@@ -223,8 +223,8 @@ function finalQuery(){
 
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
 
-    const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalShipment
-    const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalBooking
+    const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalBooking
 
     const metricList  = [metric1, metric2]
     const metricFieldList = metricList.map(metric => `${metric}LastCurrent`)
@@ -321,21 +321,10 @@ export const filters = [
     name: 'metric1',
     props: {
       items: [
+
         {
-          label: 'chargeableWeight',
-          value: 'chargeableWeight',
-        },
-        {
-          label: 'grossWeight',
-          value: 'grossWeight',
-        },
-        {
-          label: 'cbm',
-          value: 'cbm',
-        },
-        {
-          label: 'totalShipment',
-          value: 'totalShipment',
+          label: 'totalBooking',
+          value: 'totalBooking',
         },
       ],
       required: true,
@@ -349,20 +338,8 @@ export const filters = [
     props: {
       items: [
         {
-          label: 'chargeableWeight',
-          value: 'chargeableWeight',
-        },
-        {
-          label: 'grossWeight',
-          value: 'grossWeight',
-        },
-        {
-          label: 'cbm',
-          value: 'cbm',
-        },
-        {
-          label: 'totalShipment',
-          value: 'totalShipment',
+          label: 'totalBooking',
+          value: 'totalBooking',
         },
       ],
       required: true,
@@ -392,11 +369,16 @@ export const filters = [
           value: 'agent',
         },
 
-        // currently disabled
         {
-          label: 'agentGroup',
-          value: 'agentGroup',
+          label: 'moduleType',
+          value: 'moduleType',
         },
+
+        // currently disabled
+        // {
+        //   label: 'agentGroup',
+        //   value: 'agentGroup',
+        // },
         {
           label: 'controllingCustomer',
           value: 'controllingCustomer',

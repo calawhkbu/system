@@ -35,16 +35,12 @@ function prepareBookingParams(): Function {
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    // get the primaryKeyList
-    if (!subqueries.primaryKeyListString && subqueries.primaryKeyListString !== '')
-      throw new BadRequestException('MISSING_primaryKeyListString')
+    if (subqueries.alertType) {
+      if (!(subqueries.alertType.value && subqueries.alertType.value.length) )
+        throw new Error('MISSING_alertType')
 
-    const primaryKeyList = subqueries.primaryKeyListString.value.split(',')
-
-    subqueries.primaryKeyList = {
-      value: primaryKeyList,
+        subqueries.alertJoin = true
     }
-
     return params
   }
 

@@ -39,21 +39,34 @@ query
   )
   .register('value', 0)
 
-  query.register('isActive', new Query({
+  // will have 2 options, active and deleted
+  // isActive
+  const isActiveConditionExpression = new AndExpressions([
+    new IsNullExpression(new ColumnExpression('tracking', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('tracking', 'deletedBy'), false),
+  ])
+
+  query.registerBoth('isActive', isActiveConditionExpression)
+
+  query.registerQuery('isActive', new Query({
+
     $where : new OrExpressions([
+
       new AndExpressions([
+
         new BinaryExpression(new Value('active'), '=', new Unknown('string')),
         // active case
-        new IsNullExpression(new ColumnExpression('tracking', 'deletedAt'), false),
-        new IsNullExpression(new ColumnExpression('tracking', 'deletedBy'), false)
+        isActiveConditionExpression
       ]),
+
       new AndExpressions([
         new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
         // deleted case
-        new IsNullExpression(new ColumnExpression('tracking', 'deletedAt'), true),
-        new IsNullExpression(new ColumnExpression('tracking', 'deletedBy'), true)
+        new BinaryExpression(isActiveConditionExpression, '=', false)
       ])
+
     ])
+
   }))
   .register('value', 0)
   .register('value', 1)

@@ -34,8 +34,8 @@ function prepareParams(): Function {
 
     // -----------------------------groupBy variable
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : `${groupByEntity}PartyName`
+    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
 
     const groupByVariables = [codeColumnName, nameColumnName]
 
@@ -126,8 +126,8 @@ function finalQuery(): Function {
 
     // -----------------------------groupBy variable
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : `${groupByEntity}PartyName`
+    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
 
     const groupByVariables = [codeColumnName, nameColumnName]
 
@@ -272,18 +272,28 @@ export const filters = [
           label: 'carrier',
           value: 'carrier',
         },
-        // {
-        //   label: 'shipper',
-        //   value: 'shipper',
-        // },
-        // {
-        //   label: 'consignee',
-        //   value: 'consignee',
-        // },
-        // {
-        //   label: 'agent',
-        //   value: 'agent',
-        // },
+        {
+          label: 'shipper',
+          value: 'shipper',
+        },
+        {
+          label: 'consignee',
+          value: 'consignee',
+        },
+        {
+          label: 'agent',
+          value: 'agent',
+        },
+
+        // currently disabled
+        {
+          label: 'agentGroup',
+          value: 'agentGroup',
+        },
+        {
+          label : 'moduleType',
+          value : 'moduleType'
+        }
       ],
       required: true,
     },

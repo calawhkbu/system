@@ -99,7 +99,7 @@ function prepareParams(): Function {
     subqueries.lastStatusCodeJoin = true
 
     params.groupBy = ['lastStatus']
-    params.fields = ['lastStatus', 'count', 'primaryKeyListString']
+    params.fields = ['lastStatus', 'count']
 
     return params
   }
@@ -218,13 +218,6 @@ function prepareFinalQuery() {
           0),
         `${status}_count`)
       )
-
-      $select.push(
-        new ResultColumn(
-          new FunctionExpression('FIND', new BinaryExpression(new ColumnExpression('lastStatus'), '=', status), new ColumnExpression('primaryKeyListString')),
-        `${status}_primaryKeyListString`)
-      )
-
     })
 
     return new Query({
@@ -241,10 +234,6 @@ function prepareFinalQuery() {
             {
               name: 'lastStatus',
               type: 'string'
-            },
-            {
-              name : 'primaryKeyListString',
-              type : 'string'
             }
           ],
         },

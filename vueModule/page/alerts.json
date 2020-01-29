@@ -10,10 +10,13 @@
       "showFilterBar": true,
       "enableShare": true,
       "enableSetting": false,
-      "noPartyGroupFilters": true,
+      "noPartyGroupFilters": false,
       "newReport": {
         "filters": {
-          "isActive": true
+          "isActive": true,
+          "entityType" : {
+            "value" : "shipment"
+          }
         },
         "configurations": {
           "i18nContext": "Alert",
@@ -30,7 +33,8 @@
           },
           "pagination": {
             "current": 0,
-            "perPage": 20
+            "perPage": 20,
+            "remote" : true
           }
         }
       },
@@ -52,76 +56,84 @@
           },
           "hidden": true
         },
+
+        {
+          "key": "alertTitle",
+          "i18nContext": "Alert",
+          "i18nOptions" : "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
+        },
+
+        {
+          "key": "alertMessage",
+          "i18nContext": "Alert",
+          "i18nOptions" : "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
+        },
+
         {
           "key": "alertCategory",
           "i18nContext": "Alert"
         },
         {
           "key": "alertType",
-          "i18nContext": "Alert",
-          "sql": {
-            "classname": "FunctionExpression",
-            "name": "CONCAT",
-            "parameters": [{
-                "classname": "ColumnExpression",
-                "table": "alert",
-                "name": "alertType"
-              },
-              {
-                "classname": "Value",
-                "type": "String",
-                "value": "Title"
-              }
-            ]
-          },
-          "sql2": "concat(alert.alertType, 'Title')"
+          "i18nContext": "Alert"
         },
         {
           "key": "alertContent",
           "i18nContext": "Alert",
-          "sql": {
-            "classname": "FunctionExpression",
-            "name": "IFNULL",
-            "parameters": [{
-                "classname": "FunctionExpression",
-                "name": "JSON_UNQUOTE",
-                "parameters": [{
-                  "classname": "FunctionExpression",
-                  "name": "JSON_EXTRACT",
-                  "parameters": [{
-                      "classname": "ColumnExpression",
-                      "table": "flex_data",
-                      "name": "data"
-                    },
-                    {
-                      "classname": "Value",
-                      "type": "String",
-                      "value": "$.customMessage"
-                    }
-                  ]
-                }]
-              },
-              {
-                "classname": "FunctionExpression",
-                "name": "CONCAT",
-                "parameters": [{
-                    "classname": "ColumnExpression",
-                    "table": "alert",
-                    "name": "alertType"
-                  },
-                  {
-                    "classname": "Value",
-                    "type": "String",
-                    "value": "Title"
-                  }
-                ]
-              }
-            ]
-          },
-          "sql2": "IFNULL(JSON_UNQUOTE(JSON_EXTRACT(flex_data.data, '$.customMessage')), concat(alert.alertType, 'Message'))"
+          "hidden" : true
+        },
+
+        {
+          "key": "alertUpdatedAt",
+          "i18nContext": "Alert",
+          "hidden" : true
+        },
+        {
+          "key": "alertCreatedAt",
+          "i18nContext": "Alert",
+          "hidden" : true
         }
       ],
-      "filters": [],
+      "filters": [
+        {
+          "display": "entityType",
+          "name": "entityType",
+          "props": {
+            "items": [
+              {
+                "label": "booking",
+                "value": "booking"
+              },
+              {
+                "label": "shipment",
+                "value": "shipment"
+              }
+            ],
+            "required": true
+          },
+          "type": "list"
+        },
+
+
+        {
+          "name": "alertUpdatedAt",
+          "type" : "date"
+        },
+        {
+          "name": "alertCreatedAt",
+          "type" : "date"
+        },
+        {
+          "display": "date",
+          "name": "date",
+          "type" : "date",
+          "props": {
+            "required" : false
+          }
+
+        }
+
+      ],
       "clickFunction": {
         "type": "router",
         "otherParams": {

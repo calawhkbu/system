@@ -1,15 +1,17 @@
 import { QueryDef } from 'classes/query/QueryDef'
 import {
   Query,
-  ResultColumn,
   FromTable,
   ColumnExpression,
   BinaryExpression,
   IsNullExpression,
-  FunctionExpression,
-  ParameterExpression,
   AndExpressions,
   Value,
+  ResultColumn,
+  FunctionExpression,
+  ParameterExpression,
+  RegexpExpression,
+  InExpression
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -64,6 +66,46 @@ const query = new QueryDef(
   })
 )
 
+query.register('showDelete', {
+  expression: new Value(1),
+  $as: 'showDelete'
+})
+
+query.register('partyAId', {
+  expression: new ColumnExpression('related_party', 'partyAId'),
+  $as: 'partyAId'
+})
+
+query.register('partyBId', {
+  expression: new ColumnExpression('related_party', 'partyBId'),
+  $as: 'partyBId'
+})
+
+query.register('partyAName', {
+  expression: new ColumnExpression('party', 'name'),
+  $as: 'partyAName'
+})
+
+query.register('partyBName', {
+  expression: new ColumnExpression('partyB', 'name'),
+  $as: 'partyBName'
+})
+
+query.register('partyBShortName', {
+  expression: new ColumnExpression('partyB', 'shortName'),
+  $as: 'partyBShortName'
+})
+
+query.register('partyBGroupName', {
+  expression: new ColumnExpression('partyB', 'groupName'),
+  $as: 'partyBGroupName'
+})
+
+query.register('partyType', {
+  expression: new ColumnExpression('related_party', 'partyType'),
+  $as: 'partyType'
+})
+
 query.register(
   'partyAId',
   new Query({
@@ -78,9 +120,25 @@ query.register(
   })
 ).register('value', 0)
 
-query.register('showDelete', {
-  expression: new Value(1),
-  $as: 'showDelete'
-})
+query.register(
+  'shortName',
+  new Query({
+    $where: new RegexpExpression(new ColumnExpression('partyB', 'shortName'), false),
+  })
+).register('value', 0)
+
+query.register(
+  'groupName',
+  new Query({
+    $where: new RegexpExpression(new ColumnExpression('partyB', 'groupName'), false),
+  })
+).register('value', 0)
+
+query.register(
+  'partyType',
+  new Query({
+    $where: new InExpression(new ColumnExpression('related_party', 'partyType'), false),
+  })
+).register('value', 0)
 
 export default query
