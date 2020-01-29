@@ -116,7 +116,7 @@ export default class EdiParser856 extends BaseEdiParser {
     data.push(GE, IEA)
     _.set(returnJSON, 'data', data)
     // return cloneEntityJSON
-    // sreturn returnJSON
+    // return returnJSON
     const result = await super.export(returnJSON)
     return [result]
   }
@@ -528,6 +528,16 @@ export default class EdiParser856 extends BaseEdiParser {
             }
             REF.elementList.push('IK', invoiceNo)
             loopObjectList.push(REF)
+          }
+          if (_.get(element, 'cargoReceipt'))
+          {
+            const DTM: JSONObject = {
+                segement : 'DTM',
+                elementList : []
+            }
+            DTM.elementList.push('050')
+            DTM.elementList.push(moment(_.get(element, 'cargoReceipt')).format('YYYYMMDD'))
+            loopObjectList.push(DTM)
           }
           while (itemIndex < totalItemNo)
           {
