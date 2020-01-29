@@ -37,36 +37,6 @@
         }
       }, {
         "is": "v-spacer"
-      }, {
-        "is": "v-btn",
-        "props": {
-          "small": true,
-          "icon": true,
-          "flat": true,
-          "class": "primary white-text"
-        },
-        "slots": [{
-          "is": "Icon",
-          "props": {
-            "small": true,
-            "icon": "edit"
-          }
-        }],
-        "events": {
-          "click.stop": [{
-            "type": "dispatch",
-            "otherParams": {
-              "name": "widget/changeMode",
-              "mode": "detail"
-            },
-            "afterActions": [{
-              "type": "dispatch",
-              "otherParams": {
-                "name": "widget/resetData"
-              }
-            }]
-          }]
-        }
       }]
     }
   }, {
