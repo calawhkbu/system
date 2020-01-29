@@ -226,7 +226,7 @@ export default class EdiParser856 extends BaseEdiParser {
               elementList: []
             }
             MEA.elementList.push('')// not used
-            MEA.elementList.push( 'NM', numberOfPacking.toString().substring(0, 20), 'CT')
+            MEA.elementList.push( 'NUM', numberOfPacking.toString().substring(0, 20), 'CT')
             loopObjectList.push(MEA)
           }
           if (totalShipUnit > 0)
@@ -356,6 +356,16 @@ export default class EdiParser856 extends BaseEdiParser {
         const refNO = (_.get(element, 'service') === 'CFS' || 'CY') ? 'CFS/CF' : 'MICP'
         REF.elementList.push('KK', refNO)
         loopObjectList.push(REF)
+        if (_.get(element, 'cargoReceipt'))
+        {
+          const DTM: JSONObject = {
+              segement : 'DTM',
+              elementList : []
+          }
+          DTM.elementList.push('050')
+          DTM.elementList.push(moment(_.get(element, 'cargoReceipt')).format('YYYYMMDD'))
+          loopObjectList.push(DTM)
+        }
         if (_.get(element, 'estimatedDepartureDate'))
         {
           const DTM: JSONObject = {
@@ -518,6 +528,16 @@ export default class EdiParser856 extends BaseEdiParser {
             }
             REF.elementList.push('IK', invoiceNo)
             loopObjectList.push(REF)
+          }
+          if (_.get(element, 'cargoReceipt'))
+          {
+            const DTM: JSONObject = {
+                segement : 'DTM',
+                elementList : []
+            }
+            DTM.elementList.push('050')
+            DTM.elementList.push(moment(_.get(element, 'cargoReceipt')).format('YYYYMMDD'))
+            loopObjectList.push(DTM)
           }
           while (itemIndex < totalItemNo)
           {

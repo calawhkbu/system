@@ -6,6 +6,7 @@ const query = new Query({
       method: 'POST',
       url: 'api/api/query/api',
       columns: [
+        { name: 'id', type: 'string' },
         { name: 'name', type: 'string' },
         { name: 'refreshToken', type: 'string' },
         { name: 'updatedAt', type: 'string' },

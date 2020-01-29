@@ -162,7 +162,7 @@ function dataQuery(): Function {
 
       const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
       const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
-  
+
     const topX = subqueries.topX.value
 
     const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalShipment
@@ -393,10 +393,10 @@ export const filters = [
         },
 
         // currently disabled
-        // {
-        //   label: 'agentGroup',
-        //   value: 'agentGroup',
-        // },
+        {
+          label: 'agentGroup',
+          value: 'agentGroup',
+        },
         {
           label: 'controllingCustomer',
           value: 'controllingCustomer',

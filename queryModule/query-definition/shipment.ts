@@ -943,7 +943,6 @@ const agentGroupExpression = new CaseExpression({
 })
 
 const carrierCodeExpression = new FunctionExpression('IFNULL',
-  new ColumnExpression('shipment', 'carrierCode'),
   new CaseExpression({
 
     cases: [
@@ -970,13 +969,12 @@ const carrierCodeExpression = new FunctionExpression('IFNULL',
 
     $else: new ColumnExpression('shipment', 'carrierCode')
 
-  })
+  }),
+  new ColumnExpression('shipment', 'carrierCode')
 )
 
 const carrierNameExpression = new FunctionExpression('IFNULL',
   new FunctionExpression('IFNULL',
-    new ColumnExpression('shipment', 'carrierName'),
-
     new CaseExpression({
 
       cases: [{
@@ -1016,7 +1014,8 @@ const carrierNameExpression = new FunctionExpression('IFNULL',
 
       $else: new ColumnExpression('shipment', 'carrierName')
 
-    })
+    }),
+    new ColumnExpression('shipment', 'carrierName')
   ),
   carrierCodeExpression
 )
@@ -1049,137 +1048,335 @@ const salesmanPersonCodeExpression = new CaseExpression({
   $else: null
 })
 
-const reportingGroupExpression = new CaseExpression({
+const defaultReportingGroupExpression = new CaseExpression({
 
   cases: [
     {
       $when: new AndExpressions([
-        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'AE'),
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+        new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'O'),
         new BinaryExpression(new ColumnExpression('shipment', 'isDirect'), '=', 0)
       ]),
       $then: new Value('AC')
     },
     {
       $when: new AndExpressions([
-        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'AE'),
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+        new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'O'),
         new BinaryExpression(new ColumnExpression('shipment', 'isDirect'), '=', 1)
       ]),
       $then: new Value('AD')
+    },
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+        new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'I'),
+        new BinaryExpression(new ColumnExpression('shipment', 'isDirect'), '=', 0)
+      ]),
+      $then: new Value('AM')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+        new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'I'),
+        new BinaryExpression(new ColumnExpression('shipment', 'isDirect'), '=', 1)
+      ]),
+      $then: new Value('AN')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+        new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'M')
+      ]),
+      $then: new Value('AZ')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
+        new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'O'),
+        new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'FCL')
+      ]),
+      $then: new Value('SA')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
+        new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'O'),
+        new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'LCL')
+      ]),
+      $then: new Value('SB')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
+        new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'O'),
+        new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'Consol')
+      ]),
+      $then: new Value('SC')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
+        new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'I'),
+        new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'FCL')
+      ]),
+      $then: new Value('SR')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
+        new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'I'),
+        new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'LCL')
+      ]),
+      $then: new Value('SS')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
+        new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'I'),
+        new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'Consol')
+      ]),
+      $then: new Value('ST')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
+        new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'M'),
+      ]),
+      $then: new Value('SZ')
+    },
+
+  ],
+
+  $else: new Value(null)
+})
+
+// CASE
+// WHEN b.division = 'AE' AND b.isDirect = 0 THEN 'AC'
+// WHEN b.division = 'AE' AND b.isDirect = 1 THEN 'AD'
+// WHEN b.division = 'AI' AND b.isDirect = 0 THEN 'AM'
+// WHEN b.division = 'AI' AND b.isDirect = 1 THEN 'AN'
+// WHEN b.division = 'TA' THEN 'AW'
+// WHEN office.partyId = 7351496 AND b.division = 'TAE' THEN 'AU'
+// WHEN office.partyId = 7351496 AND b.division = 'TAI' THEN 'AV'
+// WHEN b.division = 'MM' THEN 'AX'
+// WHEN b.division = 'AM' THEN 'AZ'
+// WHEN b.division = 'SE' AND b.shipmentType = 'FCL' THEN 'SA'
+// WHEN b.division = 'SE' AND b.shipmentType = 'LCL' THEN 'SB'
+// WHEN b.division = 'SE' AND b.shipmentType = 'Consol' THEN 'SC'
+// WHEN b.division = 'SI' AND b.shipmentType = 'FCL' THEN 'SR'
+// WHEN b.division = 'SI' AND b.shipmentType = 'LCL' THEN 'SS'
+// WHEN b.division = 'SI' AND b.shipmentType = 'Consol' THEN 'ST'
+// WHEN office.partyId = 7351496 AND b.division = 'TSE' THEN 'SU'
+// WHEN office.partyId = 7351496 AND b.division = 'TSI' THEN 'SV'
+// WHEN b.division = 'TS' THEN 'SW'
+// WHEN b.division = 'SM' THEN 'SZ'
+// WHEN b.division = 'LOG' THEN 'ZL'
+// ELSE LEFT(b.division, 2)
+// END
+
+const gglTaiwanOfficeOld360Id = 7351496
+const gglreportingGroupExpression = new CaseExpression({
+
+  cases: [
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'AE'),
+        new BinaryExpression(new ColumnExpression('shipment', 'isDirect'), '=', 0),
+      ]),
+      $then: new Value('AC')
+    },
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'AE'),
+        new BinaryExpression(new ColumnExpression('shipment', 'isDirect'), '=', 1),
+      ]),
+      $then: new Value('AD')
+    },
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'AI'),
+        new BinaryExpression(new ColumnExpression('shipment', 'isDirect'), '=', 0),
+      ]),
+      $then: new Value('AM')
+    },
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'AI'),
+        new BinaryExpression(new ColumnExpression('shipment', 'isDirect'), '=', 1),
+      ]),
+      $then: new Value('AN')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TA'),
+      ]),
+      $then: new Value('AW')
+    },
+
+    // -------------------------
+
+    {
+      $when: new AndExpressions([
+
+        new BinaryExpression(new FunctionExpression(
+          'JSON_UNQUOTE',
+          new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
+        ), '=', gglTaiwanOfficeOld360Id),
+
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TAE')
+      ]),
+      $then: new Value('AU')
+    },
+
+    {
+      $when: new AndExpressions([
+
+        new BinaryExpression(new FunctionExpression(
+          'JSON_UNQUOTE',
+          new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
+        ), '=', gglTaiwanOfficeOld360Id),
+
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TAE')
+      ]),
+      $then: new Value('AU')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'MM'),
+      ]),
+      $then: new Value('AX')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'AM'),
+      ]),
+      $then: new Value('AZ')
+    },
+
+    // SEA case =================================
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'SE'),
+        new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'FCL'),
+      ]),
+      $then: new Value('SA')
+    },
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'SE'),
+        new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'LCL'),
+      ]),
+      $then: new Value('SB')
+    },
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'SE'),
+        new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'Consol'),
+      ]),
+      $then: new Value('SC')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'SI'),
+        new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'FCL'),
+      ]),
+      $then: new Value('SR')
+    },
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'SI'),
+        new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'LCL'),
+      ]),
+      $then: new Value('SS')
+    },
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'SI'),
+        new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'Consol'),
+      ]),
+      $then: new Value('ST')
+    },
+
+    // -------------------------
+
+    {
+      $when: new AndExpressions([
+
+        new BinaryExpression(new FunctionExpression(
+          'JSON_UNQUOTE',
+          new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
+        ), '=', gglTaiwanOfficeOld360Id),
+
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TSE')
+      ]),
+      $then: new Value('SU')
+    },
+
+    {
+      $when: new AndExpressions([
+
+        new BinaryExpression(new FunctionExpression(
+          'JSON_UNQUOTE',
+          new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
+        ), '=', gglTaiwanOfficeOld360Id),
+
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TSI')
+      ]),
+      $then: new Value('SV')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TS'),
+      ]),
+      $then: new Value('SW')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'SM'),
+      ]),
+      $then: new Value('SZ')
+    },
+
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'LOG'),
+      ]),
+      $then: new Value('ZL')
+    },
+
+  ],
+
+  $else: new FunctionExpression('LEFT', new ColumnExpression('shipment', 'divisionCode'), 2)
+})
+
+const reportingGroupExpression = new CaseExpression({
+
+  cases: [
+    {
+      $when: new BinaryExpression(new ColumnExpression('shipment', 'partyGroupCode'), '=', 'GGL'),
+      $then: gglreportingGroupExpression
     }
 
   ],
 
-  $else: new CaseExpression({
-
-    cases: [
-      {
-        $when: new AndExpressions([
-          new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
-          new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'O'),
-          new BinaryExpression(new ColumnExpression('shipment', 'isDirect'), '=', 0)
-        ]),
-        $then: new Value('AC')
-      },
-      {
-        $when: new AndExpressions([
-          new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
-          new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'O'),
-          new BinaryExpression(new ColumnExpression('shipment', 'isDirect'), '=', 1)
-        ]),
-        $then: new Value('AD')
-      },
-      {
-        $when: new AndExpressions([
-          new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
-          new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'I'),
-          new BinaryExpression(new ColumnExpression('shipment', 'isDirect'), '=', 0)
-        ]),
-        $then: new Value('AM')
-      },
-
-      {
-        $when: new AndExpressions([
-          new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
-          new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'I'),
-          new BinaryExpression(new ColumnExpression('shipment', 'isDirect'), '=', 1)
-        ]),
-        $then: new Value('AN')
-      },
-
-      {
-        $when: new AndExpressions([
-          new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
-          new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'M')
-        ]),
-        $then: new Value('AZ')
-      },
-
-      {
-        $when: new AndExpressions([
-          new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
-          new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'O'),
-          new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'FCL')
-        ]),
-        $then: new Value('SA')
-      },
-
-      {
-        $when: new AndExpressions([
-          new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
-          new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'O'),
-          new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'LCL')
-        ]),
-        $then: new Value('SB')
-      },
-
-      {
-        $when: new AndExpressions([
-          new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
-          new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'O'),
-          new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'Consol')
-        ]),
-        $then: new Value('SC')
-      },
-
-      {
-        $when: new AndExpressions([
-          new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
-          new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'I'),
-          new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'FCL')
-        ]),
-        $then: new Value('SR')
-      },
-
-      {
-        $when: new AndExpressions([
-          new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
-          new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'I'),
-          new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'LCL')
-        ]),
-        $then: new Value('SS')
-      },
-
-      {
-        $when: new AndExpressions([
-          new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
-          new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'I'),
-          new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'Consol')
-        ]),
-        $then: new Value('ST')
-      },
-
-      {
-        $when: new AndExpressions([
-          new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
-          new BinaryExpression(new ColumnExpression('shipment', 'boundTypeCode'), '=', 'M'),
-        ]),
-        $then: new Value('SZ')
-      },
-
-    ],
-
-    $else: new Value(null)
-  })
+  $else: defaultReportingGroupExpression
 
 })
 
@@ -1619,6 +1816,12 @@ const shipmentTableFilterFieldList = [
   'isCoload',
   'houseNo',
   {
+
+    name : 'agentGroup',
+    expression : agentGroupExpression
+
+  },
+  {
     name: 'carrierCode',
     expression: carrierCodeExpression
   },
@@ -1658,14 +1861,14 @@ shipmentTableFilterFieldList.map(filterField => {
   const name = (typeof filterField === 'string') ? filterField : filterField.name
 
   // normal value IN list filter
-  query.register(name,
+  query.registerQuery(name,
     new Query({
       $where: new InExpression(expression, false),
     })
   ).register('value', 0)
 
   // Is not Null filter
-  query.register(`${name}IsNotNull`,
+  query.registerQuery(`${name}IsNotNull`,
     new Query({
       $where: new IsNullExpression(expression, true),
     })
@@ -1675,7 +1878,7 @@ shipmentTableFilterFieldList.map(filterField => {
 
 // warning!! previously only register carrierCodeIsNotNull and carrierNameIsNotNull, need to register carrierIsNotNull
 query
-  .register(
+  .registerQuery(
     'carrierIsNotNull',
     new Query({
       $where: new IsNullExpression(carrierCodeExpression, true),
@@ -1684,7 +1887,7 @@ query
 
 // Bill Type
 query
-  .register(
+  .registerQuery(
     'billTypeCode',
     new Query({
       $where: new CaseExpression({
@@ -1735,7 +1938,7 @@ query
   .register('value', 2)
 
 query
-  .register(
+  .registerQuery(
     'likeHouseNo',
     new Query({
       $where: new LikeExpression(new ColumnExpression('shipment', 'houseNo'), false),
@@ -1744,7 +1947,7 @@ query
   .register('value', 0)
 
 query
-  .register(
+  .registerQuery(
     'notLikeHouseNo',
     new Query({
       $where: new LikeExpression(new ColumnExpression('shipment', 'houseNo'), true),
@@ -1753,7 +1956,7 @@ query
   .register('value', 0)
 
 query
-  .register(
+  .registerQuery(
     'ignoreHouseNo_GZH_XMN',
     new Query({
       $where: new AndExpressions([
@@ -1781,14 +1984,14 @@ salesmanFieldList.map(salesmanField => {
 
   //  warning : a bit difference from normal filter
   // normal value = value filter
-  query.register(name,
+  query.registerQuery(name,
     new Query({
       $where: new BinaryExpression(expression, '=', new Unknown()),
     })
   ).register('value', 0)
 
   // Is not Null filter
-  query.register(`${name}IsNotNull`,
+  query.registerQuery(`${name}IsNotNull`,
     new Query({
       $where: new IsNullExpression(expression, true),
     })
@@ -1824,7 +2027,7 @@ partyList.map(party => {
 
   query
     .register(
-      `${party}PartyName`,
+      `${partyTableName}PartyName`,
       new Query({
         $where: new RegexpExpression(partyNameExpression, false),
       })
@@ -1833,23 +2036,13 @@ partyList.map(party => {
 
   query
     .register(
-      `${party}IsNotNull`,
+      `${partyTableName}IsNotNull`,
       new Query({
         $where: new IsNullExpression(partyIdExpression, true),
       })
     )
 
 })
-
-// Agent Group Filter
-query
-  .register(
-    'agentGroup',
-    new Query({
-      $where: new InExpression(agentGroupExpression, false),
-    })
-  )
-  .register('value', 0)
 
 function controllingCustomerIncludeRoleExpression($not: boolean, partyTypeList?: string[]) {
 
@@ -1882,7 +2075,7 @@ function isColoaderExpression() {
 }
 
 query
-  .register(
+  .registerQuery(
     'controllingCustomerIncludeRole',
     new Query({
       $where: controllingCustomerIncludeRoleExpression(false),
@@ -1891,7 +2084,7 @@ query
   .register('value', 0)
 
 query
-  .register(
+  .registerQuery(
     'controllingCustomerExcludeRole',
     new Query({
 
@@ -1900,7 +2093,7 @@ query
   )
   .register('value', 0)
 
-query.register('isColoader',
+query.registerQuery('isColoader',
 
   new Query({
     $where: isColoaderExpression(),
@@ -1910,11 +2103,14 @@ query.register('isColoader',
 
 function viaHKGExpression() {
 
-  const officePartyList = [7351490]
-  return new InExpression(new ColumnExpression('shipment_party', 'officePartyId'), false, officePartyList)
+  const old360PartyIdList = [7351490]
+  return new InExpression(new FunctionExpression(
+    'JSON_UNQUOTE',
+    new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
+  ), false, old360PartyIdList)
 }
 
-query.register('viaHKG',
+query.registerQuery('viaHKG',
 
   new Query({
     $where: viaHKGExpression(),
@@ -2154,7 +2350,7 @@ query.registerBoth('isActive', isActiveExpression)
 // isActive filter
 query.register('isActive', new Query({
 
-  $where : new OrExpressions([
+  $where: new OrExpressions([
 
     new AndExpressions([
 
@@ -2172,7 +2368,7 @@ query.register('isActive', new Query({
   ])
 
 }))
-.register('value', 0)
-.register('value', 1)
+  .register('value', 0)
+  .register('value', 1)
 
 export default query

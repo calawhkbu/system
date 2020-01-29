@@ -274,7 +274,6 @@ function finalQuery() {
     } = require('node-jql')
 
     const summaryVariables = params.subqueries.summaryVariables.value
-    const showMonth = params.subqueries.showMonth
 
     const isCurrentList = [true, false]
     const types = ['F', 'R', 'total']
@@ -295,9 +294,7 @@ function finalQuery() {
       })
     })
 
-    if (showMonth) {
-      $select.push(new ResultColumn(new ColumnExpression('month', 'month'), 'month'))
-    }
+    $select.push(new ResultColumn(new ColumnExpression('month', 'month'), 'month'))
 
     return new Query({
       $select,
@@ -332,26 +329,4 @@ export default [
 
 // filters avaliable for this card
 // all card in DB record using this jql will have these filter
-export const filters = [
-  {
-    name: 'showMonth',
-    type: 'boolean',
-  },
-  {
-    name: 'showYear',
-    props: {
-      items: [
-        {
-          label: 'current',
-          value: 'current',
-        },
-        {
-          label: 'last',
-          value: 'last',
-        },
-      ],
-      required: true,
-    },
-    type: 'list',
-  },
-]
+export const filters = []
