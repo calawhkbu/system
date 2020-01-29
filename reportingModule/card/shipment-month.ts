@@ -266,6 +266,12 @@ export const filters = [
           label: 'consignee',
           value: 'consignee',
         },
+
+        // currently disabled
+        {
+          label: 'agentGroup',
+          value: 'agentGroup',
+        },
         {
           label: 'agent',
           value: 'agent',

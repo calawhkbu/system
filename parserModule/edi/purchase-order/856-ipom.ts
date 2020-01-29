@@ -116,7 +116,7 @@ export default class EdiParser856 extends BaseEdiParser {
     data.push(GE, IEA)
     _.set(returnJSON, 'data', data)
     // return cloneEntityJSON
-    // return returnJSON
+    // sreturn returnJSON
     const result = await super.export(returnJSON)
     return [result]
   }
@@ -356,6 +356,16 @@ export default class EdiParser856 extends BaseEdiParser {
         const refNO = (_.get(element, 'service') === 'CFS' || 'CY') ? 'CFS/CF' : 'MICP'
         REF.elementList.push('KK', refNO)
         loopObjectList.push(REF)
+        if (_.get(element, 'cargoReceipt'))
+        {
+          const DTM: JSONObject = {
+              segement : 'DTM',
+              elementList : []
+          }
+          DTM.elementList.push('050')
+          DTM.elementList.push(moment(_.get(element, 'cargoReceipt')).format('YYYYMMDD'))
+          loopObjectList.push(DTM)
+        }
         if (_.get(element, 'estimatedDepartureDate'))
         {
           const DTM: JSONObject = {
