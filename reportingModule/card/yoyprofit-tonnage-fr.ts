@@ -82,7 +82,7 @@ function prepareProfitParams(currentYear_: boolean, nominatedType_: 'F' | 'R'): 
         .format('YYYY-MM-DD')
     }
 
-    subqueries.nominatedTypeCode = { value: nominatedType_ }
+    subqueries.nominatedTypeCode = { value: [nominatedType_] }
     return params
   }
   let code = fn.toString()
@@ -273,13 +273,13 @@ function prepareTonnageParams(currentYear_: boolean, nominatedType_: 'F' | 'R'):
         .format('YYYY-MM-DD')
     }
 
-    subqueries.nominatedTypeCode = { value: nominatedType_ }
+    subqueries.nominatedTypeCode = { value: [nominatedType_] }
     const tonnageSummaryVariables = params.subqueries.tonnageSummaryVariables.value
     //  const tonnageSummaryVariables = ['chargeableWeight', 'cbm', 'totalShipment']
 
     params.fields = ['jobMonth', 'nominatedTypeCode', ...tonnageSummaryVariables]
     params.groupBy = ['jobMonth', 'nominatedTypeCode']
-
+    console.log(params, 'hihihihi')
     return params
   }
   let code = fn.toString()
@@ -428,13 +428,9 @@ function finalQuery() {
     const profitSummaryVariables = params.subqueries.profitSummaryVariables.value
     // const profitSummaryVariables = ['grossProfit', 'profitShare', 'profitShareCost', 'profitShareIncome', 'revenue']
 
-    const showMonth = params.subqueries.showMonth || false
-
     const $select = []
 
-    if (showMonth) {
-      $select.push(new ResultColumn(new ColumnExpression('profit', 'month')))
-    }
+    $select.push(new ResultColumn(new ColumnExpression('profit', 'month')))
 
     currentOrLastList.map(currentOrLast => {
       types.map(type => {
@@ -505,26 +501,30 @@ export default [
 
 // filters avaliable for this card
 // all card in DB record using this jql will have these filter
-export const filters = [
-  {
-    name: 'showMonth',
-    type: 'boolean',
+export const filters = [{
+  display: 'tonnageSummaryVariables',
+  name: 'tonnageSummaryVariables',
+  props: {
+    items: [
+      {
+        label: 'chargeableWeight',
+        value: 'chargeableWeight',
+      },
+      {
+        label: 'grossWeight',
+        value: 'grossWeight',
+      },
+      {
+        label: 'cbm',
+        value: 'cbm',
+      },
+      {
+        label: 'totalShipment',
+        value: 'totalShipment',
+      },
+    ],
+    multi : false,
+    required: true,
   },
-  {
-    name: 'showYear',
-    props: {
-      items: [
-        {
-          label: 'current',
-          value: 'current',
-        },
-        {
-          label: 'last',
-          value: 'last',
-        },
-      ],
-      required: true,
-    },
-    type: 'list',
-  },
-]
+  type: 'list',
+},]
