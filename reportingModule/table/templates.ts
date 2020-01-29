@@ -4,7 +4,7 @@ const query = new Query({
   $from: new FromTable(
     {
       method: 'POST',
-      url: 'api/template',
+      url: 'api/template/query/template',
       columns: [
         {
           name: 'id',
