@@ -579,7 +579,7 @@ export default class EdiParser856 extends BaseEdiParser {
                 segement: 'MEA',
                 elementList: []
               }
-              MEANUM.elementList.push('', 'NUM', (_.get(subPoList[itemIndex], 'bookCtns') || ' ').toString().substring(0, 20),  'CT')
+              MEANUM.elementList.push('', 'NM', (_.get(subPoList[itemIndex], 'bookCtns') || ' ').toString().substring(0, 20),  'CT')
               loopObjectList.push(MEANUM)
             }
             if (_.get(ItemList[itemIndex], 'bookQuantity'))
