@@ -71,6 +71,7 @@
               "item-value": "code",
               "showValue": false,
               "noDelete": true,
+              "updateValue": "return value.split(', ')",
               "axiosParams": {
                 "url": "api/code/query/code_master",
                 "method": "POST",
@@ -83,18 +84,12 @@
                 }
               },
               "onFixValueChangeFunc": [
-                "if (context.$attrs['row'].partyType !== value) {",
-                "(this.$Swivel.api.createPromise({",
-                "url:` /relationship/party/${context.$attrs['row'].partyAId}/${context.$attrs['row'].partyBId}`",
-                "method: 'DELETE'",
-                "})).then(() => {",
+                "console.log({ ...context.$attrs['row'], partyTypes: value })",
                 "this.$Swivel.api.createPromise({",
                 "method: 'POST',",
                 "url: 'relationship/party',",
-                "data: { ...context.$attrs['row'], partyTypes: [value] }",
-                "})",
-                "})",
-                "}"
+                "data: { ...context.$attrs['row'], partyTypes: value }",
+                "})"
               ]
             }
           }
