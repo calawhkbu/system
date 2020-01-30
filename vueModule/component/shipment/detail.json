@@ -3,86 +3,71 @@
   "components": [{
       "is": "DynamicComponent",
       "props": {
-        "class": "xs-12 grid align-item-center padding-4",
+        "class": "xs-12 grid min-height-28 align-item-center full-width",
         "components": [{
-          "is": "DynamicComponent",
-          "props": {
-            "class": "xs-12 align-item-center flex",
-            "components": [{
-                "is": "v-btn",
-                "props": {
-                  "flat": true,
-                  "icon": true
-                },
-                "slots": [{
-                  "is": "Icon",
-                  "props": {
-                    "icon": "arrow_back"
-                  }
-                }],
-                "events": {
-                  "click.stop": [{
-                    "type": "router",
-                    "otherParams": {
-                      "func": "go",
-                      "go": -1
-                    }
-                  }]
-                }
-              },
-              {
-                "is": "I18nText",
-                "if": "return context.$vuetify.breakpoint.mdAndUp",
-                "props": {
-                  "class": "title hidden-xs-only hidden-sm-only",
-                  "i18nKey": "ShipmentPage.title",
-                  "i18nOptions": {
-                    "title": "{{context.$store.state.widget.data.houseNo}}"
-                  }
-                }
-              },
-              {
-                "is": "I18nText",
-                "if": "return !context.$vuetify.breakpoint.mdAndUp",
-                "props": {
-                  "class": "subheading hidden-md-and-up",
-                  "i18nKey": "ShipmentPage.title",
-                  "i18nOptions": {
-                    "title": "{{context.$store.state.widget.data.houseNo}}"
-                  }
-                }
-              },
-              {
-                "is": "v-spacer"
-              },
-              {
-                "is": "v-btn",
-                "props": {
-                  "icon": true,
-                  "flat": true
-                },
-                "slots": [{
-                  "is": "Icon",
-                  "props": {
-                    "icon": "map"
-                  }
-                }],
-                "events": {
-                  "click.stop": [{
-                    "type": "dispatch",
-                    "otherParams": {
-                      "name": "widget/changeMode",
-                      "mode": "map"
-                    }
-                  }]
-                }
-              },
-              {
-                "is": "BookmarkButton"
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
               }
-            ]
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "go",
+                  "go": -1
+                }
+              }]
+            }
+          }, {
+            "is": "I18nText",
+            "props": {
+              "i18nKey": "ShipmentPage.title",
+              "i18nOptions": {
+                "title": "{{context.$store.state.widget.data.houseNo}}"
+              }
+            }
+          }, {
+            "is": "v-spacer"
+          }, {
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "icon": true,
+              "flat": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "map"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "map"
+                }
+              }]
+            }
+          },
+          {
+            "is": "BookmarkButton",
+            "props": {
+              "small": true,
+              "icon": true,
+              "flat": true
+            }
           }
-        }]
+        ]
       }
     },
     {
