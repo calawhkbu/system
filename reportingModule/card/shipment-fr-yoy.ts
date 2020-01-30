@@ -275,3 +275,7 @@ export default [
     $from: 'result'
   })
 ]
+
+// filters avaliable for this card
+// all card in DB record using this jql will have these filter
+export const filters = []

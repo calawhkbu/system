@@ -19,10 +19,10 @@
           }],
           "events": {
             "click.stop": [{
-              "type": "dispatch",
+              "type": "router",
               "otherParams": {
-                "name": "widget/changeMode",
-                "mode": "detail"
+                "func": "push",
+                "path": "/apis"
               }
             }]
           }
@@ -35,7 +35,8 @@
               "id": "{{context.$store.state.widget.data.name}}"
             }
           }
-        }, {
+        },
+        {
           "is": "v-spacer"
         },
         {

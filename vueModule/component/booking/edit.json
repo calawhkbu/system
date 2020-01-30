@@ -3,10 +3,11 @@
   "components": [{
       "is": "DynamicComponent",
       "props": {
-        "class": "xs-12 grid align-item-center",
+        "class": "xs-12 grid min-height-28 align-item-center full-width",
         "components": [{
             "is": "v-btn",
             "props": {
+              "small": true,
               "flat": true,
               "icon": true
             },

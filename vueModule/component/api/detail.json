@@ -79,36 +79,31 @@
               "class": "xs-12"
             },
             {
-              "label": "ApiPage.backend",
-              "name": "refreshToken",
-              "component": "DetailReadOnlyField",
-              "class": "xs-12",
-              "props": {
-                "detail": [
-                  "<p>Authorization: Bearer {{value}}</p>"
-                ]
-              }
-            },
-            {
               "label": "ApiPage.widget",
               "name": "refreshToken",
               "component": "DetailReadOnlyField",
               "class": "xs-12",
               "props": {
                 "detail": [
-                  "<pre><code>",
                   "<html>",
-                  "<head>",
-                  "<meta charset=\"utf-8\">",
-                  "<script src=\"https://unpkg.com/vue\"></script>",
-                  "",
-                  "",
-                  "</head>",
-                  "<body>",
-                  "",
-                  "</body>",
-                  "</html>",
-                  "</code></pre>"
+                  "  <head>",
+                  "    <meta charset=\"utf-8\">",
+                  "    <script src=\"https://unpkg.com/vue\"></script>",
+                  "    <script src=\"{{frontendUrl}}/widget/swivel-widget.js\"></script>",
+                  "  </head>",
+                  "  <body>",
+                  "    <!--",
+                  "      Api Token: For Security widget",
+                  "      Name: Required, Widget Name",
+                  "      Data: Required, JSON stringify for props using in widget",
+                  "    -->",
+                  "    <swivel-widget",
+                  "      apiToken=\"{{value}}\"",
+                  "      name=\"{Widget Name}\"",
+                  "      data=\"{Widget Props}\"",
+                  "    />",
+                  "  </body>",
+                  "</html>"
                 ]
               }
             }

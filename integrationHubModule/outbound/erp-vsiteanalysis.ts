@@ -29,6 +29,7 @@ const app = {
     if (!party.length) throw new ForbiddenException('NO_ACCESS_RIGHT')
 
     const subqueries = query.subqueries || {}
+    console.log(subqueries, 'erp-vsiteanalysis:system')
 
     // datefr && dateto
     if (!subqueries.date) throw new BadRequestException('MISSING_DATE_RANGE')

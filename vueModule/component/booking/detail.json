@@ -3,117 +3,109 @@
   "components": [{
       "is": "DynamicComponent",
       "props": {
-        "class": "xs-12 grid",
+        "class": "xs-12 grid min-height-28 align-item-center full-width",
         "components": [{
-          "is": "DynamicComponent",
-          "props": {
-            "class": "xs-12 align-item-center padding-8 flex",
-            "components": [{
-                "is": "v-btn",
-                "props": {
-                  "flat": true,
-                  "icon": true
-                },
-                "slots": [{
-                  "is": "Icon",
-                  "props": {
-                    "icon": "arrow_back"
-                  }
-                }],
-                "events": {
-                  "click.stop": [{
-                    "type": "router",
-                    "otherParams": {
-                      "func": "push",
-                      "path": "/{{ p[0] }}/{{ p[1] }}"
-                    }
-                  }]
-                }
-              },
-              {
-                "is": "I18nText",
-                "if": "return context.$vuetify.breakpoint.mdAndUp",
-                "props": {
-                  "class": "headline hidden-xs-only hidden-sm-only",
-                  "i18nKey": "BookingPage.title",
-                  "i18nOptions": {
-                    "title": "{{context.$store.state.widget.data.bookingNo}}"
-                  }
-                }
-              },
-              {
-                "is": "I18nText",
-                "if": "return !context.$vuetify.breakpoint.mdAndUp",
-                "props": {
-                  "class": "subheading hidden-md-and-up",
-                  "i18nKey": "BookingPage.title",
-                  "i18nOptions": {
-                    "title": "{{context.$store.state.widget.data.bookingNo}}"
-                  }
-                }
-              },
-              {
-                "is": "v-spacer"
-              },
-              {
-                "is": "SaveEntityTemplateButton",
-                "props": {
-
-                  "blackList": ["id"],
-                  "axiosParams": "{ \"method\" : \"POST\",\"url\" : \"/default\",\"data\" : { \"tableName\" : \"booking\" , \"name\" : {{name | safe}},\"value\" : {{value | safe }}   }   }"
-                }
-              },
-              {
-                "is": "BookmarkButton"
-              },
-              {
-                "is": "v-btn",
-                "props": {
-                  "icon": true,
-                  "flat": true
-                },
-                "slots": [{
-                  "is": "Icon",
-                  "props": {
-                    "icon": "map"
-                  }
-                }],
-                "events": {
-                  "click.stop": [{
-                    "type": "dispatch",
-                    "otherParams": {
-                      "name": "widget/changeMode",
-                      "mode": "map"
-                    }
-                  }]
-                }
-              },
-              {
-                "is": "v-btn",
-                "props": {
-                  "icon": true,
-                  "flat": true,
-                  "class": "primary white-text"
-                },
-                "slots": [{
-                  "is": "Icon",
-                  "props": {
-                    "icon": "edit"
-                  }
-                }],
-                "events": {
-                  "click.stop": [{
-                    "type": "dispatch",
-                    "otherParams": {
-                      "name": "widget/changeMode",
-                      "mode": "edit"
-                    }
-                  }]
-                }
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
               }
-            ]
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/{{ p[0] }}/{{ p[1] }}"
+                }
+              }]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "class": "headline",
+              "i18nKey": "BookingPage.title",
+              "i18nOptions": {
+                "title": "{{context.$store.state.widget.data.bookingNo}}"
+              }
+            }
+          },
+          {
+            "is": "v-spacer"
+          },
+          {
+            "is": "SaveEntityTemplateButton",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true,
+              "blackList": ["id"],
+              "axiosParams": "{ \"method\" : \"POST\",\"url\" : \"/default\",\"data\" : { \"tableName\" : \"booking\" , \"name\" : {{name | safe}},\"value\" : {{value | safe }}   }   }"
+            }
+          },
+          {
+            "is": "BookmarkButton",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true
+            }
+          },
+          {
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "map"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "map"
+                }
+              }]
+            }
+          },
+          {
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true,
+              "class": "primary white-text"
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "edit"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "edit"
+                }
+              }]
+            }
           }
-        }]
+        ]
       }
     },
     {
@@ -699,7 +691,7 @@
               "}",
               "}",
               "return {",
-              "url: 'api/tracking',",
+              "url: 'api/tracking/get',",
               "method: 'POST',",
               "data: { trackingNos }",
               "};"
