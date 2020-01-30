@@ -24,6 +24,7 @@ const app = {
         zyd: params.subqueries.type.value,
       },
     })
+    console.log(card.dlink, 'erp-card-data:system')
     return card.dlink
   },
   requestHandler: ({ getPostProcessFunc, partyGroup, user }: any): any => {

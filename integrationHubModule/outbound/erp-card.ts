@@ -18,6 +18,7 @@ const app = {
     app.variable.partyGroup = partyGroup
     app.variable.getPostProcessFunc = getPostProcessFunc
     if (!params.subqueries || !params.subqueries.type) throw new BadRequestException()
+    console.log('zyh = ' + id + ', zyd = ' + params.subqueries.type.value, 'erp-card:system')
     return {
       headers: {
         'content-type': 'application/json',
