@@ -22,7 +22,7 @@
         },
         {
           "label": "ShipmentPage.vessel",
-          "name": "vesselName",
+          "name": "vessel",
           "component": "v-text-field",
           "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA'",
           "class": "xs-6 md-3"
