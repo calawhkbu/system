@@ -1699,84 +1699,64 @@ function summaryFieldExpression(summaryField: string | { name: string, expressio
 
 }
 
+const lastTimeCondition = (params) => {
+
+  if (!params.subqueries.date.lastFrom) {
+    throw new Error('params.subqueries missing date.lastFrom')
+  }
+
+  return new BetweenExpression(jobDateExpression, false, new Value(params.subqueries.date.lastFrom), new Value(params.subqueries.date.lastTo))
+}
+const currentTimeCondition = (params) => {
+
+  if (!params.subqueries.date.currentFrom) {
+    throw new Error('params.subqueries missing date.currentFrom')
+  }
+
+  return new BetweenExpression(jobDateExpression, false, new Value(params.subqueries.date.currentFrom), new Value(params.subqueries.date.currentTo))
+}
+const monthConditionExpression = (month) => {
+  const index = months.findIndex(x => x === month)
+  return new BinaryExpression(new FunctionExpression('Month', jobDateExpression), '=', index + 1)
+}
+
 summaryFieldList.map((summaryField: string | { name: string, expression: IExpression }) => {
 
   const summaryFieldName = typeof summaryField === 'string' ? summaryField : summaryField.name
 
-  //  cmbMonth case
-  const resultColumnList = [] as ResultColumn[]
-
-  const nestedSummaryResultColumnList = {} as { [name: string]: ResultColumn[] }
-
-  nestedSummaryList.map(x => {
-    nestedSummaryResultColumnList[x.name] = [] as ResultColumn[]
-  })
-
-  months.forEach((month, index) => {
-
-    const monthCondition = new BinaryExpression(new FunctionExpression('Month', jobDateExpression), '=', index + 1)
-
-    const monthSumExpression = summaryFieldExpression(summaryField, monthCondition)
-    resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_${summaryFieldName}`))
-
-    // ====frc===================
-
-    nestedSummaryList.map(x => {
-
-      // January_T_cbm
-      nestedSummaryResultColumnList[x.name].push(new ResultColumn(monthSumExpression, `${month}_T_${summaryFieldName}`))
-
-      x.cases.map(y => {
-        const condition = new AndExpressions([
-          monthCondition,
-          y.condition
-        ])
-
-        // January_F_cbm
-        const frcMonthSumExpression = summaryFieldExpression(summaryField, condition)
-        nestedSummaryResultColumnList[x.name].push(new ResultColumn(frcMonthSumExpression, `${month}_${y.typeCode}_${summaryFieldName}`))
-
-      })
-
-    })
-
-  })
-
-  const totalValueExpression = summaryFieldExpression(summaryField)
-
-  resultColumnList.push(new ResultColumn(totalValueExpression, `total_${summaryFieldName}`))
-
-  nestedSummaryList.map(x => {
-
-    x.cases.map(y => {
-
-      // total_F_cbm
-      const typeTotalExpression = summaryFieldExpression(summaryField, y.condition)
-      nestedSummaryResultColumnList[x.name].push(new ResultColumn(typeTotalExpression, `total_${y.typeCode}_${summaryFieldName}`))
-
-    })
-
-    nestedSummaryResultColumnList[x.name].push(new ResultColumn(totalValueExpression, `total_T_${summaryFieldName}`))
-
-    query.registerResultColumn(`${x.name}_${summaryFieldName}Month`, (params) => nestedSummaryResultColumnList[x.name])
-
-  })
-
-  // cbmMonth
-  query.registerResultColumn(`${summaryFieldName}Month`, (params) => resultColumnList)
-
   // cbm/chargeableWeight
-  query.register(summaryFieldName, new ResultColumn(totalValueExpression, summaryFieldName))
+  const basicFn = (params) => {
+    const totalValueExpression = summaryFieldExpression(summaryField)
+    return new ResultColumn(totalValueExpression, summaryFieldName)
+  }
+
+  query.registerResultColumn(summaryFieldName, basicFn)
+
+  // cbmMonth case
+  const monthFn: ResultColumnFn = (params) => {
+
+    const resultColumnList = [] as ResultColumn[]
+
+    months.forEach((month, index) => {
+      const monthSumExpression = summaryFieldExpression(summaryField, monthConditionExpression(month))
+      resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_${summaryFieldName}`))
+    })
+
+    const totalValueExpression = summaryFieldExpression(summaryField)
+    resultColumnList.push(new ResultColumn(totalValueExpression, `total_${summaryFieldName}`))
+
+    return resultColumnList
+  }
+
+  query.registerResultColumn(`${summaryFieldName}Month`, monthFn)
+
+  // ==================================
 
   // cbmLastCurrent
+  const lastCurrentFn = (params) => {
 
-  const lastCurrentFn = (param) => {
-
-    const lastCondition = new BetweenExpression(jobDateExpression, false, new Value(param.subqueries.date.lastFrom), new Value(param.subqueries.date.lastTo))
-    const lastSummaryField = summaryFieldExpression(summaryField, lastCondition)
-
-    const currentCondition = new BetweenExpression(jobDateExpression, false, new Value(param.subqueries.date.currentFrom), new Value(param.subqueries.date.currentTo))
-    const currentSummaryField = summaryFieldExpression(summaryField, currentCondition)
+    const lastSummaryField = summaryFieldExpression(summaryField, lastTimeCondition(params))
+    const currentSummaryField = summaryFieldExpression(summaryField, currentTimeCondition(params))
 
     return [
       new ResultColumn(lastSummaryField, `${summaryFieldName}Last`),
@@ -1786,6 +1766,190 @@ summaryFieldList.map((summaryField: string | { name: string, expression: IExpres
   }
 
   query.registerResultColumn(`${summaryFieldName}LastCurrent`, lastCurrentFn)
+
+  // cbmMonthLastCurrent
+  const monthLastCurrentFn = (params) => {
+    const resultColumnList = []
+
+    months.forEach((month, index) => {
+
+      const monthLastCondition = new AndExpressions([
+        monthConditionExpression(month),
+        lastTimeCondition(params)
+      ])
+
+      const monthCurrentCondition = new AndExpressions([
+        monthConditionExpression(month),
+        currentTimeCondition(params)
+      ])
+
+      const monthLastSumExpression = summaryFieldExpression(summaryField, monthLastCondition)
+      const monthCurrentSumExpression = summaryFieldExpression(summaryField, monthLastCondition)
+
+      resultColumnList.push(new ResultColumn(monthLastSumExpression, `${month}_${summaryFieldName}Last`))
+      resultColumnList.push(new ResultColumn(monthCurrentSumExpression, `${month}_${summaryFieldName}Current`))
+    })
+
+    const totalLastSumExpression = summaryFieldExpression(summaryField, lastTimeCondition(params))
+    const totalCurrentSumExpression = summaryFieldExpression(summaryField, currentTimeCondition(params))
+
+    resultColumnList.push(new ResultColumn(totalLastSumExpression, `total_${summaryFieldName}Last`))
+    resultColumnList.push(new ResultColumn(totalCurrentSumExpression, `total_${summaryFieldName}Current`))
+
+    return resultColumnList
+  }
+
+  query.registerResultColumn(`${summaryField}MonthLastCurrent`, monthLastCurrentFn)
+
+  // ======================================
+
+  nestedSummaryList.map(x => {
+
+    const nestedMonthFn = (params) => {
+
+      const resultColumnList = [] as ResultColumn[]
+
+      months.forEach((month, index) => {
+        const monthCondition = monthConditionExpression(month)
+        const monthSumExpression = summaryFieldExpression(summaryField, monthCondition)
+
+        // January_T_cbm
+        resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_T_${summaryFieldName}`))
+
+        x.cases.map(y => {
+          const condition = new AndExpressions([
+            monthCondition,
+            y.condition
+          ])
+
+          // January_F_cbm
+          const frcMonthSumExpression = summaryFieldExpression(summaryField, condition)
+          resultColumnList.push(new ResultColumn(frcMonthSumExpression, `${month}_${y.typeCode}_${summaryFieldName}`))
+
+        })
+
+      })
+
+      x.cases.map(y => {
+        // total_F_cbm
+        const typeTotalExpression = summaryFieldExpression(summaryField, y.condition)
+        resultColumnList.push(new ResultColumn(typeTotalExpression, `total_${y.typeCode}_${summaryFieldName}`))
+
+      })
+
+      // total_T_cbm
+      const totalValueExpression = summaryFieldExpression(summaryField)
+      resultColumnList.push(new ResultColumn(totalValueExpression, `total_T_${summaryFieldName}`))
+
+      return resultColumnList
+    }
+    // frc_cbmMonth
+    query.registerResultColumn(`${x.name}_${summaryFieldName}Month`, nestedMonthFn)
+
+    const nestedLastCurrentFn = (params) => {
+
+      const resultColumnList = [] as ResultColumn[]
+
+      // for easier looping
+      const lastCurrentList = [
+        {
+          name: 'Last',
+          condition: lastTimeCondition(params)
+        },
+        {
+          name: 'Current',
+          condition: currentTimeCondition(params)
+        }
+
+      ]
+      lastCurrentList.forEach(lastOrCurrent => {
+
+        const lastCurrentCondition = lastOrCurrent.condition
+        // F_cbmLast
+        x.cases.map(y => {
+          resultColumnList.push(new ResultColumn(
+            summaryFieldExpression(summaryField, new AndExpressions([lastCurrentCondition, y.condition])), `${y.typeCode}_${summaryField}${lastOrCurrent.name}`
+          ))
+
+        })
+
+        // T_cbmLast
+        const totalValueExpression = summaryFieldExpression(summaryField, lastCurrentCondition)
+        resultColumnList.push(new ResultColumn(totalValueExpression, `T_${summaryFieldName}${lastOrCurrent.name}`))
+
+      })
+
+      return resultColumnList
+
+    }
+
+    query.registerResultColumn(`${x.name}_${summaryFieldName}LastCurrent`, nestedLastCurrentFn)
+
+    const nestedMonthLastCurrentFn = (params) => {
+
+      // for easier looping
+      const lastCurrentList = [
+        {
+          name: 'Last',
+          condition: lastTimeCondition(params)
+        },
+        {
+          name: 'Current',
+          condition: currentTimeCondition(params)
+        }
+
+      ]
+
+      const resultColumnList = [] as ResultColumn[]
+
+      lastCurrentList.forEach(lastOrCurrent => {
+
+        const lastCurrentCondition = lastOrCurrent.condition
+
+        months.forEach((month, index) => {
+
+          // warning
+          const monthCondition = new AndExpressions([monthConditionExpression(month), lastCurrentCondition])
+          const monthSumExpression = summaryFieldExpression(summaryField, monthCondition)
+
+          // January_T_cbmLast
+          resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_T_${summaryFieldName}${lastOrCurrent.name}`))
+
+          x.cases.map(y => {
+            const condition = new AndExpressions([
+              monthCondition,
+              y.condition
+            ])
+
+            // January_F_cbmLast
+            const frcMonthSumExpression = summaryFieldExpression(summaryField, condition)
+            resultColumnList.push(new ResultColumn(frcMonthSumExpression, `${month}_${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`))
+
+          })
+
+        })
+
+        x.cases.map(y => {
+
+          const condition = new AndExpressions([y.condition, lastCurrentCondition])
+          // total_F_cbm
+          const typeTotalExpression = summaryFieldExpression(summaryField, condition)
+          resultColumnList.push(new ResultColumn(typeTotalExpression, `total_${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`))
+
+        })
+
+        // total_T_cbm
+        const totalValueExpression = summaryFieldExpression(summaryField, lastCurrentCondition)
+        resultColumnList.push(new ResultColumn(totalValueExpression, `total_T_${summaryFieldName}${lastOrCurrent.name}`))
+
+      })
+
+      return resultColumnList
+    }
+    // frc_cbmMonthLastCurrent
+    query.registerResultColumn(`${x.name}_${summaryFieldName}MonthLastCurrent`, nestedMonthLastCurrentFn)
+
+  })
 
 })
 
@@ -1817,8 +1981,8 @@ const shipmentTableFilterFieldList = [
   'houseNo',
   {
 
-    name : 'agentGroup',
-    expression : agentGroupExpression
+    name: 'agentGroup',
+    expression: agentGroupExpression
 
   },
   {

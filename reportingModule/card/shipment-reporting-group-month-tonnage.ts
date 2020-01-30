@@ -281,4 +281,5 @@ export default [
     $from: 'result',
     $group: 'moduleTypeCode',
   }),
+
 ]
