@@ -79,17 +79,6 @@
               "class": "xs-12"
             },
             {
-              "label": "ApiPage.backend",
-              "name": "refreshToken",
-              "component": "DetailReadOnlyField",
-              "class": "xs-12",
-              "props": {
-                "detail": [
-                  "Authorization: Bearer {{value}}"
-                ]
-              }
-            },
-            {
               "label": "ApiPage.widget",
               "name": "refreshToken",
               "component": "DetailReadOnlyField",
@@ -97,24 +86,23 @@
               "props": {
                 "detail": [
                   "<html>",
-                  "<head>",
-                  "<meta charset=\"utf-8\">",
-                  "<script src=\"https://unpkg.com/vue\"></script>",
-                  "<script src=\"{{frontendUrl}}/widget/swivel-widget.js\"></script>",
-                  "</head>",
-                  "<body>",
-                  "<!--",
-                  "Api Token: For Security widget",
-                  "Name: Required, Widget Name",
-                  "Data: Required, JSON stringify for props using in widget",
-                  "-->",
-                  "<swivel-widget",
-                  "apiToken=\"{{value}}\"",
-                  "name=\"{Widget Name}\"",
-                  "data=\"{Widget Props}\"",
-                  ">",
-                  "</swivel-widget>",
-                  "</body>",
+                  "  <head>",
+                  "    <meta charset=\"utf-8\">",
+                  "    <script src=\"https://unpkg.com/vue\"></script>",
+                  "    <script src=\"{{frontendUrl}}/widget/swivel-widget.js\"></script>",
+                  "  </head>",
+                  "  <body>",
+                  "    <!--",
+                  "      Api Token: For Security widget",
+                  "      Name: Required, Widget Name",
+                  "      Data: Required, JSON stringify for props using in widget",
+                  "    -->",
+                  "    <swivel-widget",
+                  "      apiToken=\"{{value}}\"",
+                  "      name=\"{Widget Name}\"",
+                  "      data=\"{Widget Props}\"",
+                  "    />",
+                  "  </body>",
                   "</html>"
                 ]
               }
