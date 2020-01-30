@@ -226,7 +226,7 @@ export default class EdiParser856 extends BaseEdiParser {
               elementList: []
             }
             MEA.elementList.push('')// not used
-            MEA.elementList.push( 'NUM', numberOfPacking.toString().substring(0, 20), 'CT')
+            MEA.elementList.push( 'NM', numberOfPacking.toString().substring(0, 20), 'CT')
             loopObjectList.push(MEA)
           }
           if (totalShipUnit > 0)
@@ -599,7 +599,7 @@ export default class EdiParser856 extends BaseEdiParser {
                 segement: 'MEA',
                 elementList: []
               }
-              MEANUM.elementList.push('', 'NUM', (_.get(subPoList[itemIndex], 'bookCtns') || ' ').toString().substring(0, 20),  'CT')
+              MEANUM.elementList.push('', 'NM', (_.get(subPoList[itemIndex], 'bookCtns') || ' ').toString().substring(0, 20),  'CT')
               loopObjectList.push(MEANUM)
             }
             if (_.get(ItemList[itemIndex], 'bookQuantity'))
