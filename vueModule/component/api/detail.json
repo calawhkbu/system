@@ -111,7 +111,7 @@
                   "<swivel-widget",
                   "apiToken=\"{{value}}\"",
                   "name=\"{Widget Name}\"",
-                  "data=\"{Widget Props}\""
+                  "data=\"{Widget Props}\"",
                   ">",
                   "</swivel-widget>",
                   "</body>",
