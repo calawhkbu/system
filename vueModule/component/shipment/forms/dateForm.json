@@ -41,7 +41,7 @@
         "houseBillConfirmation",
         "masterBillReleased",
         "preAlertSend",
-        "ediSendDate",
+        "ediSend",
         "cargoRolloverStatus",
         "departure",
         "arrival",

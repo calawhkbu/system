@@ -21,8 +21,8 @@
               "click.stop": [{
                 "type": "router",
                 "otherParams": {
-                  "func": "go",
-                  "go": -1
+                  "func": "push",
+                  "path": "/{{ p[0] }}/{{ p[1] }}"
                 }
               }]
             }
