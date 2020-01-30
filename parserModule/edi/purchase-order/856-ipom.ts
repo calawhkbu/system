@@ -356,6 +356,16 @@ export default class EdiParser856 extends BaseEdiParser {
         const refNO = (_.get(element, 'service') === 'CFS' || 'CY') ? 'CFS/CF' : 'MICP'
         REF.elementList.push('KK', refNO)
         loopObjectList.push(REF)
+        if (_.get(element, 'cargoReceipt'))
+        {
+          const DTM: JSONObject = {
+              segement : 'DTM',
+              elementList : []
+          }
+          DTM.elementList.push('050')
+          DTM.elementList.push(moment(_.get(element, 'cargoReceipt')).format('YYYYMMDD'))
+          loopObjectList.push(DTM)
+        }
         if (_.get(element, 'estimatedDepartureDate'))
         {
           const DTM: JSONObject = {
@@ -519,6 +529,16 @@ export default class EdiParser856 extends BaseEdiParser {
             REF.elementList.push('IK', invoiceNo)
             loopObjectList.push(REF)
           }
+          if (_.get(element, 'cargoReceipt'))
+          {
+            const DTM: JSONObject = {
+                segement : 'DTM',
+                elementList : []
+            }
+            DTM.elementList.push('050')
+            DTM.elementList.push(moment(_.get(element, 'cargoReceipt')).format('YYYYMMDD'))
+            loopObjectList.push(DTM)
+          }
           while (itemIndex < totalItemNo)
           {
             const HLI: JSONObject = {
@@ -579,7 +599,7 @@ export default class EdiParser856 extends BaseEdiParser {
                 segement: 'MEA',
                 elementList: []
               }
-              MEANUM.elementList.push('', 'NUM', (_.get(subPoList[itemIndex], 'bookCtns') || ' ').toString().substring(0, 20),  'CT')
+              MEANUM.elementList.push('', 'NM', (_.get(subPoList[itemIndex], 'bookCtns') || ' ').toString().substring(0, 20),  'CT')
               loopObjectList.push(MEANUM)
             }
             if (_.get(ItemList[itemIndex], 'bookQuantity'))
