@@ -26,7 +26,7 @@
           "if (!modes.includes(selectedMode)) {throw new Error('This mode (' + selectedMode + ') is not allowed');}",
           "return selectedMode"
         ],
-        "haveTermOnCreate": true,
+        "haveTermOnCreate": false,
         "haveTermOnEdit": false,
         "widgetComponentSetting": {
           "create": {
