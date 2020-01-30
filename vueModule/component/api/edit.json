@@ -19,10 +19,10 @@
         }],
         "events": {
           "click.stop": [{
-            "type": "router",
+            "type": "dispatch",
             "otherParams": {
-              "func": "push",
-              "path": "/apis"
+              "name": "widget/changeMode",
+              "mode": "detail"
             }
           }]
         }
@@ -79,18 +79,11 @@
         "props": {
           "class": "xs-12",
           "fields": [{
-              "label": "ApiPage.name",
-              "name": "name",
-              "component": "v-text-field",
-              "class": "xs-12"
-            },
-            {
-              "label": "ApiPage.password",
-              "name": "password",
-              "component": "v-text-field",
-              "class": "xs-12"
-            }
-          ]
+            "label": "ApiPage.name",
+            "name": "name",
+            "component": "v-text-field",
+            "class": "xs-12"
+          }]
         }
       }]
     }
