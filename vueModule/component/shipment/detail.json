@@ -26,7 +26,8 @@
                 }
               }]
             }
-          }, {
+          },
+          {
             "is": "I18nText",
             "props": {
               "i18nKey": "ShipmentPage.title",
@@ -397,7 +398,7 @@
               "url: 'api/alert/list/history',",
               "method: 'POST',",
               "data: {",
-              "tableName: context.$route.params.page,",
+              "tableName: 'shipment',",
               "primaryKey: context.$route.params.params,",
               "}",
               "};"
