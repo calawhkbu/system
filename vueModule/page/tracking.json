@@ -33,6 +33,9 @@
             "readonly": false,
             "saveIcon": "create"
           },
+          "detail": {
+            "readonly": true
+          },
           "edit": {
             "readonly": false,
             "saveIcon": "save"
