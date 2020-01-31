@@ -81,7 +81,7 @@
             {
               "name": "details.trackingContainers",
               "label": "TrackingPage.containers",
-              "component": "GridFrield",
+              "component": "GridField",
               "class": "xs-12",
               "props": {
                 "overrideRowIndex": 1,
