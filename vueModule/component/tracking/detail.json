@@ -235,7 +235,7 @@
                       }
                     }, {
                       "label": "TrackingPage.statusDate",
-                      "name": "statusCode",
+                      "name": "statusDate",
                       "component": "DateTimePicker",
                       "colGroupProps": {
                         "style": {
@@ -406,7 +406,7 @@
                   }
                 }, {
                   "label": "TrackingPage.statusDate",
-                  "name": "statusCode",
+                  "name": "statusDate",
                   "component": "DateTimePicker",
                   "colGroupProps": {
                     "style": {
