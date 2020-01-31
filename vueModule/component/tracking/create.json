@@ -19,17 +19,17 @@
           }],
           "events": {
             "click.stop": [{
-              "type": "dispatch",
+              "type": "router",
               "otherParams": {
-                "name": "widget/changeMode",
-                "mode": "detail"
+                "func": "push",
+                "path": "/trackings"
               }
             }]
           }
         }, {
           "is": "I18nText",
           "props": {
-            "i18nContext": "ApiPage",
+            "i18nContext": "TrackingPage",
             "i18nKey": "title",
             "i18nOptions": {
               "id": "{{context.$store.state.widget.data.name}}"
@@ -392,7 +392,7 @@
                   }
                 }, {
                   "label": "TrackingPage.statusDate",
-                  "name": "statusDate",
+                  "name": "statusCode",
                   "component": "DateTimePicker",
                   "colGroupProps": {
                     "style": {
