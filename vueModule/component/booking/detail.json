@@ -52,6 +52,7 @@
           {
             "is": "BookmarkButton",
             "props": {
+              "entity": "booking",
               "small": true,
               "flat": true,
               "icon": true
