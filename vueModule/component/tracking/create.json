@@ -5,63 +5,49 @@
     "props": {
       "class": "xs-12 grid min-height-28 align-item-center full-width",
       "components": [{
-        "is": "v-btn",
-        "props": {
-          "small": true,
-          "flat": true,
-          "icon": true
-        },
-        "slots": [{
-          "is": "Icon",
-          "props": {
-            "icon": "arrow_back"
-          }
-        }],
-        "events": {
-          "click.stop": [{
-            "type": "router",
-            "otherParams": {
-              "func": "push",
-              "path": "/trackings"
-            }
-          }]
-        }
-      }, {
-        "is": "I18nText",
-        "props": {
-          "i18nContext": "TrackingPage",
-          "i18nKey": "title",
-          "i18nOptions": {
-            "id": "{{context.$store.state.widget.data.name}}"
-          }
-        }
-      }, {
-        "is": "v-spacer"
-      }, {
-        "is": "v-btn",
-        "props": {
-          "small": true,
-          "icon": true,
-          "flat": true,
-          "class": "primary white-text"
-        },
-        "slots": [{
-          "is": "Icon",
+          "is": "v-btn",
           "props": {
             "small": true,
-            "icon": "edit"
-          }
-        }],
-        "events": {
-          "click.stop": [{
-            "type": "dispatch",
-            "otherParams": {
-              "name": "widget/changeMode",
-              "mode": "edit"
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "arrow_back"
             }
-          }]
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "/trackings"
+              }
+            }]
+          }
+        }, {
+          "is": "I18nText",
+          "props": {
+            "i18nContext": "TrackingPage",
+            "i18nKey": "title",
+            "i18nOptions": {
+              "id": "{{context.$store.state.widget.data.name}}"
+            }
+          }
+        }, {
+          "is": "v-spacer"
+        },
+        {
+          "is": "WidgetSave",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true,
+            "color": "primary"
+          }
         }
-      }]
+      ]
     }
   }, {
     "is": "DynamicComponent",
@@ -406,7 +392,7 @@
                   }
                 }, {
                   "label": "TrackingPage.statusDate",
-                  "name": "statusDate",
+                  "name": "statusCode",
                   "component": "DateTimePicker",
                   "colGroupProps": {
                     "style": {

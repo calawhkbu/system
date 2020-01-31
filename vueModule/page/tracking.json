@@ -4,7 +4,43 @@
     "is": "Widget",
     "props": {
       "settingProp": {
-        "overrideType": "tracking"
+        "overrideType": "tracking",
+        "initAxiosParams": {
+          "url": "api/tracking/{{context.$route.params.params}}"
+        },
+        "defaultAxiosParams": {
+          "url": "default/tracking"
+        },
+        "validateAxiosParams": {
+          "method": "post",
+          "url": "api/tracking/validate/{{id}}"
+        },
+        "saveAxiosParams": {
+          "method": "post",
+          "url": "api/tracking"
+        },
+        "primaryKey": "id",
+        "modeFunction": [
+          "const modes = ['create', 'detail','edit'];",
+          "const selectedMode = isNaN(Number(mode)) ? mode : 'detail'",
+          "if (!modes.includes(selectedMode)) {throw new Error('This mode (' + selectedMode + ') is not allowed');}",
+          "return selectedMode"
+        ],
+        "haveTermOnCreate": false,
+        "haveTermOnEdit": false,
+        "widgetComponentSetting": {
+          "create": {
+            "readonly": false,
+            "saveIcon": "create"
+          },
+          "detail": {
+            "readonly": true
+          },
+          "edit": {
+            "readonly": false,
+            "saveIcon": "save"
+          }
+        }
       }
     }
   }]
