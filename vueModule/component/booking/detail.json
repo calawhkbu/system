@@ -7,6 +7,7 @@
         "components": [{
             "is": "v-btn",
             "props": {
+              "small": true,
               "flat": true,
               "icon": true
             },
@@ -29,7 +30,7 @@
           {
             "is": "I18nText",
             "props": {
-              "class": "headline hidden-xs-only hidden-sm-only",
+              "class": "headline",
               "i18nKey": "BookingPage.title",
               "i18nOptions": {
                 "title": "{{context.$store.state.widget.data.bookingNo}}"

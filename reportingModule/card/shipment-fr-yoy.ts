@@ -34,297 +34,246 @@ const months = [
   'December',
 ]
 
-function prepareParams(currentYear_: boolean): Function {
-  const fn = function(require, session, params) {
+function prepareParams(): Function {
+  return function(require, session, params) {
     const moment = require('moment')
+
+    const { OrderBy } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    const { BadRequestException } = require('@nestjs/common')
+    let summaryVariables: string[] = []
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
+      // sumamary variable
+      summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
+    }
 
-    if (!subqueries.summaryVariables) throw new BadRequestException('MISSING_summaryVariable')
-    const summaryVariables = subqueries.summaryVariables.value
+    if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
+      summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
+    }
+
+    if (!(summaryVariables && summaryVariables.length)){
+      throw new Error('MISSING_summaryVariables')
+    }
 
     if (subqueries.date) {
-      let year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
-      if (!currentYear_) year -= 1
-      subqueries.date.from = moment()
-        .year(year)
-        .startOf('year')
-        .format('YYYY-MM-DD')
-      subqueries.date.to = moment()
-        .year(year)
-        .endOf('year')
-        .format('YYYY-MM-DD')
+      const year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
+      subqueries.date = {
+        currentFrom: moment().year(year).startOf('year').format('YYYY-MM-DD'),
+        currentTo: moment().year(year).endOf('year').format('YYYY-MM-DD'),
+
+        lastFrom: moment().year(year - 1).startOf('year').format('YYYY-MM-DD'),
+        lastTo: moment().year(year - 1).endOf('year').format('YYYY-MM-DD'),
+
+      }
     }
 
     // select
-    params.fields = ['nominatedTypeCode', 'jobMonth', ...summaryVariables]
+    params.fields = [ ...summaryVariables.map(x => `fr_${x}MonthLastCurrent`)]
 
-    // group by
-    params.groupBy = ['nominatedTypeCode', 'jobMonth']
+    params.sorting = new OrderBy(`total_T_${summaryVariables[0]}Current`, 'DESC')
 
     return params
   }
-  let code = fn.toString()
-  code = code.replace(new RegExp('currentYear_', 'g'), String(currentYear_))
-  return parseCode(code)
+
 }
 
-function prepareTable(tableName_: string, currentYear_: boolean) {
-  const fn = function(require, session, params) {
-    const {
-      ColumnExpression,
-      CreateTableJQL,
-      FromTable,
-      FunctionExpression,
-      GroupBy,
-      Query,
-      ResultColumn,
-      BinaryExpression,
-      Value,
-    } = require('node-jql')
+// create Table first
+function createTable() {
 
-    const summaryVariables = params.subqueries.summaryVariables.value as string[]
-    const types = ['F', 'R']
+  return function(require, session, params) {
 
-    const $select = [
-      new ResultColumn(
-        new FunctionExpression('MONTHNAME', new ColumnExpression('jobMonth'), 'YYYY-MM'),
-        'month'
-      ),
+    const subqueries = (params.subqueries = params.subqueries || {})
 
-      new ResultColumn(new Value(currentYear_), 'currentYear'),
-      new ResultColumn(new ColumnExpression('nominatedTypeCode')),
-    ]
+    let summaryVariables: string[] = []
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
+      // sumamary variable
+      summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
+    }
 
-    summaryVariables.map(variable => {
-      types.map(type => {
-        $select.push(
-          new ResultColumn(
-            new FunctionExpression(
-              'SUM',
-              new FunctionExpression(
-                'if',
-                new BinaryExpression(new ColumnExpression('nominatedTypeCode'), '=', type),
-                new ColumnExpression(variable),
-                0
-              )
-            ),
-            `${type}_${variable}`
-          )
-        )
+    if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
+      summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
+    }
+
+    if (!(summaryVariables && summaryVariables.length)){
+      throw new Error('MISSING_summaryVariables')
+    }
+
+    const columns = [{
+      name: 'month',
+      type: 'string'
+    }]
+
+    const typeCodeList = ['F', 'R', 'T']
+
+    summaryVariables.map(summaryVariable => {
+
+      typeCodeList.map(typeCode => {
+        columns.push({
+          name: `${typeCode}_${summaryVariable}Last`,
+          type: 'number'
+        })
+
+        columns.push({
+          name: `${typeCode}_${summaryVariable}Current`,
+          type: 'number'
+        })
+
       })
 
-      $select.push(
-        new ResultColumn(
-          new FunctionExpression('SUM', new ColumnExpression(variable)),
-          `total_${variable}`
-        )
-      )
+    })
+
+    return new CreateTableJQL({
+
+      name: 'result',
+      columns
+    })
+  }
+
+}
+
+function insertTable() {
+
+  return async function(require, session, params) {
+
+    const { InsertJQL } = require('node-jql')
+    const { Resultset } = require('node-jql-core')
+
+    const subqueries = (params.subqueries = params.subqueries || {})
+
+    let summaryVariables: string[] = []
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
+      // sumamary variable
+      summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
+    }
+
+    if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
+      summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
+    }
+
+    if (!(summaryVariables && summaryVariables.length)){
+      throw new Error('MISSING_summaryVariables')
+    }
+
+    const typeCodeList = ['F', 'R', 'T']
+
+    const queryResultList = new Resultset(await session.query(new Query('raw'))).toArray() as any[]
+    const queryResultObject = queryResultList[0]
+
+    const resultList = months.map(month => {
+
+      const insertObject = {
+        month
+      }
+
+      summaryVariables.map(summaryVariable => {
+
+        typeCodeList.map(typeCode => {
+
+          const insertColumnNameLast = `${typeCode}_${summaryVariable}Last`
+          const insertColumnNameCurrent = `${typeCode}_${summaryVariable}Current`
+
+          const columnNameLast = `${month}_${typeCode}_${summaryVariable}Last`
+          const columnNameCurrent = `${month}_${typeCode}_${summaryVariable}Current`
+
+          insertObject[insertColumnNameLast] = queryResultObject[columnNameLast]
+          insertObject[insertColumnNameCurrent] = queryResultObject[columnNameCurrent]
+
+        })
+      })
+      return insertObject
+
+    })
+
+    return new InsertJQL('result', ...resultList)
+
+  }
+
+}
+
+function prepareRaw() {
+
+  return function(require, session, params) {
+
+    const subqueries = (params.subqueries = params.subqueries || {})
+
+    let summaryVariables: string[] = []
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
+      // sumamary variable
+      summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
+    }
+
+    if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
+      summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
+    }
+
+    if (!(summaryVariables && summaryVariables.length)){
+      throw new Error('MISSING_summaryVariables')
+    }
+
+    const typeCodeList = ['F', 'R', 'T']
+
+    const columns = []
+
+    summaryVariables.map(summaryVariable => {
+
+      months.map(month => {
+        typeCodeList.map(typeCode => {
+
+          columns.push({
+            name: `${month}_${typeCode}_${summaryVariable}Last`,
+            type: 'number'
+          })
+
+          columns.push({
+            name: `${month}_${typeCode}_${summaryVariable}Current`,
+            type: 'number'
+          })
+
+        })
+      })
     })
 
     return new CreateTableJQL({
       $temporary: true,
-      name: tableName_,
+      name: 'raw',
 
       $as: new Query({
-        $select,
-
         $from: new FromTable(
           {
             method: 'POST',
             url: 'api/shipment/query/shipment',
-            columns: [
-              { name: 'jobMonth', type: 'string' },
-              { name: 'nominatedTypeCode', type: 'string' },
-
-              ...summaryVariables.map(variable => ({ name: variable, type: 'number' })),
-            ],
+            columns
           },
           'shipment'
-        ),
-
-        $group: new GroupBy(new ColumnExpression('jobMonth')),
-        // $group : new GroupBy(['jobMonth', 'nominatedTypeCode'])
-      }),
-    })
-  }
-
-  let code = fn.toString()
-  code = code.replace(new RegExp('currentYear_', 'g'), String(currentYear_))
-  code = code.replace(new RegExp('tableName_', 'g'), `'${tableName_}'`)
-  return parseCode(code)
-}
-
-function prepareUnionTable(): CreateTableJQL {
-  const tableName = 'union'
-
-  return new CreateTableJQL({
-    $temporary: true,
-    name: tableName,
-
-    $as: new Query({
-      $from: 'current',
-      $union: new Query({
-        $from: 'last',
-      }),
-    }),
-  })
-}
-
-function prepareFinalTable() {
-  return function(require, session, params) {
-    const {
-      Query,
-      ResultColumn,
-      ColumnExpression,
-      FunctionExpression,
-      AndExpressions,
-      BinaryExpression,
-      CreateTableJQL,
-      GroupBy,
-    } = require('node-jql')
-
-    const summaryVariables = params.subqueries.summaryVariables.value
-
-    const types = ['F', 'R', 'total']
-    const isCurrentList = [true, false]
-
-    const tableName = 'final'
-
-    const $select = [new ResultColumn(new ColumnExpression('month'))]
-
-    summaryVariables.map(variable => {
-      isCurrentList.map(isCurrent => {
-        types.map(type => {
-          $select.push(
-            new ResultColumn(
-              new FunctionExpression(
-                'IFNULL',
-                new FunctionExpression(
-                  'FIND',
-
-                  new AndExpressions([
-                    new BinaryExpression(new ColumnExpression('currentYear'), '=', isCurrent),
-                    new BinaryExpression(
-                      new ColumnExpression('month'),
-                      '=',
-                      new ColumnExpression('month')
-                    ),
-                  ]),
-
-                  new ColumnExpression(`${type}_${variable}`)
-                ),
-                0
-              ),
-              `${isCurrent ? 'current' : 'last'}_${type}_${variable}`
-            )
-          )
-        })
-      })
-    })
-
-    return new CreateTableJQL({
-      $temporary: true,
-      name: tableName,
-
-      $as: new Query({
-        $select,
-
-        $group: new GroupBy(new ColumnExpression('month')),
-
-        $from: 'union',
-      }),
-    })
-  }
-}
-
-function prepareMonthTable(name: string): CreateTableJQL {
-  return new CreateTableJQL({
-    $temporary: true,
-    name,
-    columns: [new Column('month', 'string'), new Column('order', 'number')],
-  })
-}
-
-function insertMonthTable(name: string): InsertJQL {
-  const result = []
-
-  for (let index = 0; index < months.length; index++) {
-    result.push({
-      month: months[index],
-      order: index,
-    })
-  }
-
-  return new InsertJQL(name, ...result)
-}
-
-function finalQuery() {
-  return function(require, session, params) {
-    const {
-      Query,
-      ResultColumn,
-      ColumnExpression,
-      FunctionExpression,
-      FromTable,
-      BinaryExpression,
-      OrderBy,
-    } = require('node-jql')
-
-    const summaryVariables = params.subqueries.summaryVariables.value
-
-    const isCurrentList = [true, false]
-    const types = ['F', 'R', 'total']
-
-    const $select = []
-
-    summaryVariables.map(variable => {
-      isCurrentList.map(isCurrent => {
-        types.map(type => {
-          const columnName = `${isCurrent ? 'current' : 'last'}_${type}_${variable}`
-          $select.push(
-            new ResultColumn(
-              new FunctionExpression('IFNULL', new ColumnExpression('final', columnName), 0),
-              columnName
-            )
-          )
-        })
-      })
-    })
-
-    $select.push(new ResultColumn(new ColumnExpression('month', 'month'), 'month'))
-
-    return new Query({
-      $select,
-      $from: new FromTable('month', 'month', {
-        operator: 'LEFT',
-        table: 'final',
-        $on: new BinaryExpression(
-          new ColumnExpression('final', 'month'),
-          '=',
-          new ColumnExpression('month', 'month')
-        ),
+        )
       }),
 
-      $order: new OrderBy(new ColumnExpression('month', 'order')),
     })
+
   }
+
 }
 
 export default [
   // prepare 2 table and union them
-  [prepareParams(true), prepareTable('current', true)],
-  [prepareParams(false), prepareTable('last', false)],
-  prepareUnionTable(),
 
-  prepareMonthTable('month'),
-  insertMonthTable('month'),
+  [prepareParams(), createTable()],
+  [prepareParams(), prepareRaw()],
+  insertTable(),
 
-  prepareFinalTable(),
+  new Query({
 
-  finalQuery(),
+    $from: 'result'
+  })
 ]
 
 // filters avaliable for this card

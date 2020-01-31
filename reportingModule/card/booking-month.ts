@@ -41,18 +41,19 @@ function prepareParams(): Function {
 
     // ---------------------summaryVariables
 
-    let summaryVariables: string[]
+    let summaryVariables: string[] = []
     if (subqueries.summaryVariables && subqueries.summaryVariables.value)
     {
       // sumamary variable
-      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalBooking
+      summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
     }
 
-    else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    if (subqueries.summaryVariable && subqueries.summaryVariable.value)
     {
-      summaryVariables = [subqueries.summaryVariable.value]
+      summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
     }
-    else {
+
+    if (!(summaryVariables && summaryVariables.length)){
       throw new Error('MISSING_summaryVariables')
     }
 
@@ -137,18 +138,19 @@ function finalQuery()
     const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
     const groupByVariables = [codeColumnName, nameColumnName]
 
-    let summaryVariables: string[]
+    let summaryVariables: string[] = []
     if (subqueries.summaryVariables && subqueries.summaryVariables.value)
     {
       // sumamary variable
-      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalBooking
+      summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
     }
 
-    else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    if (subqueries.summaryVariable && subqueries.summaryVariable.value)
     {
-      summaryVariables = [subqueries.summaryVariable.value]
+      summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
     }
-    else {
+
+    if (!(summaryVariables && summaryVariables.length)){
       throw new Error('MISSING_summaryVariables')
     }
 

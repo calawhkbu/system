@@ -5,39 +5,50 @@
     "props": {
       "class": "xs-12 grid min-height-28 align-item-center full-width",
       "components": [{
-        "is": "v-btn",
-        "props": {
-          "small": true,
-          "flat": true,
-          "icon": true
-        },
-        "slots": [{
-          "is": "Icon",
+          "is": "v-btn",
           "props": {
-            "icon": "arrow_back"
-          }
-        }],
-        "events": {
-          "click.stop": [{
-            "type": "router",
-            "otherParams": {
-              "func": "push",
-              "path": "/apis"
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "arrow_back"
             }
-          }]
-        }
-      }, {
-        "is": "I18nText",
-        "props": {
-          "i18nContext": "ApiPage",
-          "i18nKey": "title",
-          "i18nOptions": {
-            "id": "{{context.$store.state.widget.data.name}}"
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "/apis"
+              }
+            }]
+          }
+        }, {
+          "is": "I18nText",
+          "props": {
+            "i18nContext": "ApiPage",
+            "i18nKey": "title",
+            "i18nOptions": {
+              "id": "{{context.$store.state.widget.data.name}}"
+            }
+          }
+        },
+        {
+          "is": "v-spacer"
+        },
+        {
+          "is": "WidgetSave",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true,
+            "color": "primary"
           }
         }
-      }, {
-        "is": "v-spacer"
-      }]
+      ]
     }
   }, {
     "is": "DynamicComponent",
@@ -49,18 +60,11 @@
         "props": {
           "class": "xs-12",
           "fields": [{
-              "label": "ApiPage.name",
-              "name": "name",
-              "component": "v-text-field",
-              "class": "xs-12"
-            },
-            {
-              "label": "ApiPage.password",
-              "name": "password",
-              "component": "v-text-field",
-              "class": "xs-12"
-            }
-          ]
+            "label": "ApiPage.name",
+            "name": "name",
+            "component": "v-text-field",
+            "class": "xs-12"
+          }]
         }
       }]
     }

@@ -244,8 +244,8 @@ function finalQuery(){
 
     for (const [index, metric] of metricList.entries()) {
 
-      $select.push(new ResultColumn(new ColumnExpression(`${metric}Current`), `current_metric${index + 1}`))
-      $select.push(new ResultColumn(new ColumnExpression(`${metric}Last`), `last_metric${index + 1}`))
+      $select.push(new ResultColumn(new ColumnExpression(`${metric}Current`), `metric${index + 1}Current`))
+      $select.push(new ResultColumn(new ColumnExpression(`${metric}Last`), `metric${index + 1}Last`))
 
       $select.push(new ResultColumn(new Value(metric), `metric${index + 1}`))
 
@@ -392,7 +392,6 @@ export const filters = [
           value: 'agent',
         },
 
-        // currently disabled
         {
           label: 'agentGroup',
           value: 'agentGroup',

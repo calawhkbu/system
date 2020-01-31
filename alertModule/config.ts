@@ -18,6 +18,31 @@ export const alertConfigList = [
     active : true
 
   } as AlertConfig,
+
+  {
+    alertCategory: 'Message',
+    alertType: 'bookingMessage',
+    tableName: 'booking',
+    templatePath: 'message/booking-message',
+    severity: 'medium',
+    contactRoleList: 'all',
+
+    active : true
+
+  } as AlertConfig,
+
+  {
+    alertCategory: 'Message',
+    alertType: 'shipmentMessage',
+    tableName: 'shipment',
+    templatePath: 'message/shipment-message',
+    severity: 'medium',
+    contactRoleList: 'all',
+
+    active : true
+
+  } as AlertConfig,
+
   {
 
     tableName: 'shipment',
