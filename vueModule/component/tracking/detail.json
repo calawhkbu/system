@@ -79,7 +79,7 @@
               "class": "xs-12"
             },
             {
-              "name": "details.trackingContainers",
+              "name": "trackingContainers",
               "label": "TrackingPage.containers",
               "component": "GridField",
               "class": "xs-12",
@@ -165,6 +165,74 @@
                         }
                       }
                     }]
+                  }
+                }]
+              }
+            },
+            {
+              "label": "TrackingPage.status",
+              "name": "trackingStatus",
+              "checkDisplayWhen": "return form && from.trackingContainers && from.trackingContainers.length === 0",
+              "component": "TableField",
+              "class": "xs-12",
+              "props": {
+                "fields": [{
+                  "label": "TrackingPage.isEstimated",
+                  "name": "isEstimated",
+                  "component": "v-checkbox",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "5%"
+                    }
+                  }
+                }, {
+                  "label": "TrackingPage.statusCode",
+                  "name": "statusCode",
+                  "component": "LocalAutoSuggest",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "20%"
+                    }
+                  },
+                  "props": {
+                    "canCreate": true,
+                    "funcItems": [{
+                      "text": "1",
+                      "value": "111"
+                    }]
+                  }
+                }, {
+                  "label": "TrackingPage.statusDate",
+                  "name": "statusCode",
+                  "component": "DateTimePicker",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "15%"
+                    }
+                  },
+                  "props": {
+                    "type": "datetime",
+                    "utc": true,
+                    "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                    "useOwnFormat": true
+                  }
+                }, {
+                  "label": "TrackingPage.statusDescription",
+                  "name": "statusDescription",
+                  "component": "v-text-field",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "40%"
+                    }
+                  }
+                }, {
+                  "label": "TrackingPage.statusPlace",
+                  "name": "statusPlace",
+                  "component": "v-text-field",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "20%"
+                    }
                   }
                 }]
               }
