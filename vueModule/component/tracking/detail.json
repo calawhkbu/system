@@ -172,7 +172,7 @@
             {
               "label": "TrackingPage.status",
               "name": "trackingStatus",
-              "checkDisplayWhen": "return form && from.trackingContainers && from.trackingContainers.length === 0",
+              "checkDisplayWhen": "return form && form.trackingContainers && form.trackingContainers.length === 0",
               "component": "TableField",
               "class": "xs-12",
               "props": {
