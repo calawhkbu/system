@@ -41,18 +41,19 @@ function prepareParams(): Function {
 
     // ---------------------summaryVariables
 
-    let summaryVariables: string[]
+    let summaryVariables: string[] = []
     if (subqueries.summaryVariables && subqueries.summaryVariables.value)
     {
       // sumamary variable
-      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+      summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
     }
 
-    else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    if (subqueries.summaryVariable && subqueries.summaryVariable.value)
     {
-      summaryVariables = [subqueries.summaryVariable.value]
+      summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
     }
-    else {
+
+    if (!(summaryVariables && summaryVariables.length)){
       throw new Error('MISSING_summaryVariables')
     }
 
@@ -90,9 +91,6 @@ function prepareParams(): Function {
     params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
 
     params.limit = topX
-
-    console.log(`params`)
-    console.log(params)
 
     return params
   }
@@ -138,18 +136,19 @@ function finalQuery()
 
     const groupByVariables = [codeColumnName, nameColumnName]
 
-    let summaryVariables: string[]
+    let summaryVariables: string[] = []
     if (subqueries.summaryVariables && subqueries.summaryVariables.value)
     {
       // sumamary variable
-      summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+      summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
     }
 
-    else if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    if (subqueries.summaryVariable && subqueries.summaryVariable.value)
     {
-      summaryVariables = [subqueries.summaryVariable.value]
+      summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
     }
-    else {
+
+    if (!(summaryVariables && summaryVariables.length)){
       throw new Error('MISSING_summaryVariables')
     }
 
