@@ -81,6 +81,7 @@
             {
               "name": "trackingContainers",
               "label": "TrackingPage.containers",
+              "checkDisplayWhen": "return form && form.trackingContainers && form.trackingContainers.length > 0",
               "component": "GridField",
               "class": "xs-12",
               "props": {
@@ -106,6 +107,7 @@
                   "component": "TableField",
                   "class": "xs-12",
                   "props": {
+                    "topLabel": true,
                     "fields": [{
                       "label": "TrackingPage.isEstimated",
                       "name": "isEstimated",
@@ -176,6 +178,7 @@
               "component": "TableField",
               "class": "xs-12",
               "props": {
+                "topLabel": true,
                 "fields": [{
                   "label": "TrackingPage.isEstimated",
                   "name": "isEstimated",
