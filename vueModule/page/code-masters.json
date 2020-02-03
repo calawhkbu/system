@@ -3,6 +3,7 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "title": "Code",
       "back": "/admin",
       "reportingKey": "code-masters",
       "urlFormat": "/admin/code-masters",
@@ -29,29 +30,14 @@
           }
         }
       },
-
-      "icons": [{
-        "icon": "add",
-        "click": [{
-          "type": "router",
-          "otherParams": {
-            "func": "push",
-            "path": "/code-master/create"
-          }
-        }]
-      }],
-
       "fieldOptions": [{
           "key": "id",
           "hidden": true
         },
-
         {
           "key": "partyGroupCode",
           "hidden": true
         },
-
-
         {
           "label": "",
           "key": "canResetDefault",
@@ -82,10 +68,7 @@
           "width": 50
         }
       ],
-
-      "filters": [
-
-        {
+      "filters": [{
 
           "name": "isActive",
           "type": "list",
@@ -142,7 +125,6 @@
           },
           "type": "autocomplete"
         }
-
       ],
       "clickFunction": {
         "type": "router",
@@ -152,6 +134,37 @@
           "base": true
         }
       }
-    }
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "code-master/create",
+                "base": true
+              }
+            }]
+          }
+        }]
+      }
+    }]
   }]
 }

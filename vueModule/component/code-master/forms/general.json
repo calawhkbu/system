@@ -6,7 +6,7 @@
       "fields": [{
           "label": "CodeMasterPage.codeType",
           "name": "codeType",
-          "class": "xs-4",
+          "class": "xs-12",
           "component": "AsyncAutoSuggest",
           "props": {
             "searchValueParams": {
@@ -40,14 +40,14 @@
           "label": "CodeMasterPage.code",
           "name": "code",
           "component": "v-text-field",
-          "class": "xs-4"
+          "class": "xs-6"
         },
 
         {
           "label": "CodeMasterPage.name",
           "name": "name",
           "component": "v-text-field",
-          "class": "xs-4"
+          "class": "xs-6"
         },
 
         {
