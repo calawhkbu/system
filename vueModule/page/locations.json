@@ -3,7 +3,7 @@
   "components": [{
     "is": "TableTool",
     "props": {
-      "title": "Locations and Ports",
+      "title": "locationTitle",
       "back": "/admin",
       "urlFormat": "/admin/locations",
       "reportingKey": "locations",
@@ -30,6 +30,14 @@
         "configurations": {
           "i18nContext": "LocationPage",
           "clickable": true,
+          "sorting": {
+            "key": "name",
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "location",
+              "name": "name"
+            }
+          },
           "pagination": {
             "current": 0,
             "perPage": 20,

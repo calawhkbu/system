@@ -16,31 +16,7 @@ import {
 
 const query = new QueryDef(
   new Query({
-    $from : new FromTable('i18n'),
-
-    $where : new OrExpressions([
-
-      new IsNullExpression(new ColumnExpression('i18n', 'partyGroupCode'), true),
-
-      new AndExpressions([
-        new IsNullExpression(new ColumnExpression('i18n', 'partyGroupCode'), false),
-        new ExistsExpression(new Query({
-
-          $from : new FromTable({
-            table : 'i18n',
-            $as : 'b'
-          }),
-          $where : [
-            new BinaryExpression(new ColumnExpression('b', 'category'), '=', new ColumnExpression('i18n', 'category')),
-            new BinaryExpression(new ColumnExpression('b', 'key'), '=', new ColumnExpression('i18n', 'key')),
-            new IsNullExpression(new ColumnExpression('b', 'partyGroupCode'), true)
-          ]
-
-        }), true)
-
-      ])
-    ])
-
+    $from : new FromTable('i18n')
   })
 )
 
@@ -55,6 +31,30 @@ query.register('canResetDefault',
   $as: 'canResetDefault'
 })
 // ------------------- filter
+
+query
+  .register(
+    'groupParty',
+    new Query({
+      $where : new OrExpressions([
+        new IsNullExpression(new ColumnExpression('i18n', 'partyGroupCode'), true),
+        new AndExpressions([
+          new IsNullExpression(new ColumnExpression('i18n', 'partyGroupCode'), false),
+          new ExistsExpression(new Query({
+            $from : new FromTable({
+              table : 'i18n',
+              $as : 'b'
+            }),
+            $where : [
+              new BinaryExpression(new ColumnExpression('b', 'category'), '=', new ColumnExpression('i18n', 'category')),
+              new BinaryExpression(new ColumnExpression('b', 'key'), '=', new ColumnExpression('i18n', 'key')),
+              new IsNullExpression(new ColumnExpression('b', 'partyGroupCode'), true)
+            ]
+          }), true)
+        ])
+      ])
+    })
+  )
 
 query
   .register(
