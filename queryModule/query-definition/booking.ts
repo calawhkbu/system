@@ -19,6 +19,8 @@ import {
   CaseExpression,
   Unknown,
   IConditionalExpression,
+  OrderBy,
+  ICase,
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
 
@@ -700,6 +702,229 @@ query.registerQuery(
   })
 )
 
+const firstTableExpression = new Query({
+  $select: [
+    new ResultColumn('bookingId', 'bookingId'),
+    new ResultColumn('refDescription', 'trackingNo'),
+    new ResultColumn(new Value(3), 'priority')
+  ],
+
+  $from: new FromTable('booking_reference'),
+
+  $where : new OrExpressions([
+    new BinaryExpression(new ColumnExpression('refName'), '=', 'MBL'),
+    new BinaryExpression(new ColumnExpression('refName'), '=', 'MAWB')
+  ]),
+
+  $union: new Query({
+
+    $select: [
+      new ResultColumn(new ColumnExpression('bookingId'), 'bookingId'),
+      new ResultColumn(new ColumnExpression('soNo'), 'trackingNo'),
+      new ResultColumn(new Value(2), 'priority')
+    ],
+
+    $from: new FromTable({
+      table: 'booking_container',
+    }),
+    $union: new Query({
+
+      $select: [
+
+        new ResultColumn(new ColumnExpression('bookingId'), 'bookingId'),
+        new ResultColumn(new ColumnExpression('containerNo'), 'trackingNo'),
+        new ResultColumn(new Value(1), 'priority')
+      ],
+
+      $from: new FromTable({
+        table: 'booking_container',
+      }),
+
+      $union: new Query({
+
+        $select: [
+
+          new ResultColumn('id', 'bookingId'),
+          new ResultColumn(new Value(null), 'trackingNo'),
+          new ResultColumn(new Value(0), 'priority')
+        ],
+
+        $from: new FromTable({
+          table: 'booking'
+        })
+
+      })
+
+    })
+
+  })
+
+})
+
+const bookingTrackingExpression = new Query({
+
+  $select: [
+    new ResultColumn(new ColumnExpression('booking', 'bookingId')),
+    new ResultColumn(new ColumnExpression('booking', 'trackingNo')),
+    new ResultColumn(new ColumnExpression('tracking', 'lastStatusCode')),
+    new ResultColumn(new ColumnExpression('tracking', 'updatedAt')),
+    new ResultColumn(new ColumnExpression('booking', 'priority'))
+
+  ],
+
+  $from: new FromTable({
+    table: firstTableExpression,
+    $as: 'booking',
+    joinClauses: [
+      {
+        operator: 'LEFT',
+        table: 'tracking',
+        $on: new BinaryExpression(new ColumnExpression('tracking', 'trackingNo'), '=', new ColumnExpression('booking', 'trackingNo'))
+      }
+    ],
+  }),
+
+  $order: [
+    new OrderBy(new ColumnExpression('booking', 'bookingId')),
+    new OrderBy(new ColumnExpression('booking', 'priority')),
+  ]
+
+})
+
+const minTableExpression = new Query({
+
+  // priority = 3
+  $select: [
+    new ResultColumn('bookingId', 'bookingId'),
+    new ResultColumn('refDescription', 'trackingNo'),
+    new ResultColumn(new FunctionExpression('IF', new IsNullExpression(new ColumnExpression('tracking', 'lastStatusCode'), false), new Value(0), new Value(3)), 'priority'),
+    new ResultColumn(new ColumnExpression('tracking', 'updatedAt'))
+  ],
+
+  $from: new FromTable('booking_reference', {
+    operator: 'LEFT',
+    table: 'tracking',
+    $on: new BinaryExpression(new ColumnExpression('tracking', 'trackingNo'), '=', new ColumnExpression('booking_reference', 'refDescription'))
+  }),
+
+  $where : new OrExpressions([
+    new BinaryExpression(new ColumnExpression('refName'), '=', 'MBL'),
+    new BinaryExpression(new ColumnExpression('refName'), '=', 'MAWB')
+  ]),
+
+  // priority = 2
+
+  $union: new Query({
+
+    $select: [
+      new ResultColumn(new ColumnExpression('bookingId'), 'bookingId'),
+      new ResultColumn(new ColumnExpression('soNo'), 'trackingNo'),
+      new ResultColumn(new FunctionExpression('IF', new IsNullExpression(new ColumnExpression('tracking', 'lastStatusCode'), false), new Value(0), new Value(2)), 'priority'),
+      new ResultColumn(new ColumnExpression('tracking', 'updatedAt'))
+    ],
+
+    $from: new FromTable('booking_container', {
+      operator: 'LEFT',
+      table: 'tracking',
+      $on: new BinaryExpression(new ColumnExpression('tracking', 'trackingNo'), '=', new ColumnExpression('booking_container', 'soNo'))
+    }),
+
+    // priority = 1
+    $union: new Query({
+
+      $select: [
+
+        new ResultColumn(new ColumnExpression('bookingId'), 'bookingId'),
+        new ResultColumn(new ColumnExpression('containerNo'), 'trackingNo'),
+        new ResultColumn(new FunctionExpression('IF', new IsNullExpression(new ColumnExpression('tracking', 'lastStatusCode'), false), new Value(0), new Value(1)), 'priority'),
+        new ResultColumn(new ColumnExpression('tracking', 'updatedAt'))
+      ],
+
+      $from: new FromTable('booking_container', {
+        operator: 'LEFT',
+        table: 'tracking',
+        $on: new BinaryExpression(new ColumnExpression('tracking', 'trackingNo'), '=', new ColumnExpression('booking_container', 'containerNo'))
+      }),
+
+    })
+
+  })
+
+})
+
+const bookingProrityTableExpression = new Query({
+  $select: [
+    new ResultColumn(new ColumnExpression('min_table', 'bookingId')),
+    new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('min_table', 'priority')), 'max_priority'),
+    new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('min_table', 'updatedAt')), 'max_updatedAt')
+  ],
+
+  $from: new FromTable({
+    table: minTableExpression,
+    $as: 'min_table',
+  }),
+  $group: new GroupBy(new ColumnExpression('min_table', 'bookingId'))
+
+})
+
+const finalTableExpression = new Query({
+
+  $select: [
+    new ResultColumn(new ColumnExpression('booking_tracking', 'bookingId')),
+    new ResultColumn(new ColumnExpression('booking_tracking', 'lastStatusCode'))
+  ],
+
+  $from: new FromTable({
+
+    table: bookingTrackingExpression,
+    $as: 'booking_tracking',
+
+    joinClauses: [{
+
+      operator: 'LEFT',
+      table: new FromTable({
+        table: bookingProrityTableExpression,
+        $as: 'booking_priority'
+      }),
+      $on: [
+        new BinaryExpression(new ColumnExpression('booking_tracking', 'bookingId'), '=', new ColumnExpression('booking_priority', 'bookingId'))
+
+      ]
+    }]
+  }),
+
+  $where: [
+    new BinaryExpression(new ColumnExpression('booking_priority', 'max_priority'), '=', new ColumnExpression('booking_tracking', 'priority')),
+    new OrExpressions([
+      new BinaryExpression(new ColumnExpression('booking_priority', 'max_updatedAt'), '=', new ColumnExpression('booking_tracking', 'updatedAt')),
+      new IsNullExpression(new ColumnExpression('booking_tracking', 'updatedAt'), false)
+
+    ])
+
+  ]
+
+})
+
+query.registerQuery(
+  'lastStatusJoin', new Query({
+
+    $from: new FromTable('booking', {
+
+      operator: 'LEFT',
+      table: new FromTable({
+
+        table: finalTableExpression,
+        $as: 'booking_tracking',
+      }),
+      $on: new BinaryExpression(new ColumnExpression('booking_tracking', 'bookingId'), '=', new ColumnExpression('booking', 'id'))
+
+    })
+
+  })
+)
+
+// ===================================
+
 // register fields
 query.register('id', {
   expression: new ColumnExpression('booking', 'id'),
@@ -727,6 +952,64 @@ query.register('totalBooking', {
   }),
   $as: 'totalBooking',
 })
+
+const lastStatusCodeExpression = new ColumnExpression('booking_tracking', 'lastStatusCode')
+
+function lastStatusExpressionFunction() {
+
+  const lastStatusCodeMap = {
+
+    // left side is called laststatus
+    // right side is called lastStatusCode
+
+    notInTrack: [null, 'NEW', 'CANF', 'ERR'],
+    processing: ['BKCF', 'EPRL', 'STSP', 'BKD'],
+    cargoReady: ['GITM', 'LOBD', 'RCS', 'MNF', 'MAN'],
+    departure: ['DLPT', 'DEP'],
+    inTransit: ['TSLB', 'TSDC', 'TAP', 'TDE'],
+    arrival: ['BDAR', 'DSCH', 'DECL', 'PASS', 'TMPS', 'ARR', 'RWB', 'RCF', 'CUS', 'NFD'],
+    delivered: ['STCS', 'RCVE', 'END', 'DLV']
+
+  }
+
+  const cases = []
+
+  for (const lastStatus in lastStatusCodeMap) {
+    if (lastStatusCodeMap.hasOwnProperty(lastStatus)) {
+
+      const lastStatusCodeList = lastStatusCodeMap[lastStatus] as any[]
+
+      let condition = new InExpression(lastStatusCodeExpression, false, lastStatusCodeList) as IConditionalExpression
+
+      if (lastStatusCodeList.includes(null)) {
+
+        condition = new OrExpressions([
+          new IsNullExpression(lastStatusCodeExpression, false),
+          condition
+        ])
+
+      }
+
+      cases.push({
+        $when: condition,
+        $then: new Value(lastStatus)
+      } as ICase)
+
+    }
+  }
+
+  return new CaseExpression({
+    cases,
+    $else: lastStatusCodeExpression
+  })
+
+}
+
+const lastStatusExpression = lastStatusExpressionFunction()
+
+query.registerBoth('lastStatusCode', lastStatusCodeExpression)
+
+query.registerBoth('lastStatus', lastStatusExpression)
 
 //  register date field
 const jobDateExpression = new ColumnExpression('booking', 'createdAt')
@@ -1029,7 +1312,15 @@ const shipmentTableFilterFieldList = [
   {
     name: 'alertContent',
     expression: alertContentExpression
-  }
+  },
+  {
+    name: 'lastStatusCode',
+    expression: lastStatusCodeExpression
+  },
+  {
+    name: 'lastStatus',
+    expression: lastStatusExpression
+  },
 ]
 
 shipmentTableFilterFieldList.map(filterField => {
