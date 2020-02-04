@@ -253,7 +253,7 @@ export default class EdiParser856 extends BaseEdiParser {
         {
           scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode || ''.toString().length)}`
         }
-        if (_.get(element, 'portOfLoading') || _.get(element, 'portOfDischarge') || _.get(element, 'placeOfReceiptCode'))
+        if (_.get(element, 'portOfLoading') || _.get(element, 'portOfDischarge'))// || _.get(element, 'placeOfReceiptCode'))
         {
           if (_.get(element, 'portOfLoading'))
           {
@@ -287,22 +287,22 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push(_.get(element, 'portOfDischarge').substring(0, 30))
             loopObjectList.push(TD5)
           }
-          if (_.get(element, 'placeOfReceiptCode'))
-          {
-            const TD5: JSONObject = {
-                segement : 'TD5',
-                elementList : []
-            }
-            TD5.elementList.push('O')
-            TD5.elementList.push('2')
-            TD5.elementList.push(scac)
-            TD5.elementList.push('') // not used
-            TD5.elementList.push('') // not used
-            TD5.elementList.push('') // not used
-            TD5.elementList.push('OA')
-            TD5.elementList.push(_.get(element, 'placeOfReceiptCode').substring(0, 30))
-            loopObjectList.push(TD5)
-          }
+          // if (_.get(element, 'placeOfReceiptCode'))
+          // {
+            // const TD5: JSONObject = {
+          //      segement : 'TD5',
+          //      elementList : []
+          //  }
+          //  TD5.elementList.push('O')
+          //  TD5.elementList.push('2')
+          //  TD5.elementList.push(scac)
+          //  TD5.elementList.push('') // not used
+          //  TD5.elementList.push('') // not used
+          //  TD5.elementList.push('') // not used
+          //  TD5.elementList.push('OA')
+          //  TD5.elementList.push(_.get(element, 'placeOfReceiptCode').substring(0, 30))
+          //  loopObjectList.push(TD5)
+          // }
         }
         else
         {
