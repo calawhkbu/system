@@ -46,7 +46,7 @@ function prepareShipmentParams(): Function {
 
     }
 
-    // lastStatusList case
+    // lastStatus case
     if (subqueries.lastStatus) {
       if (!(subqueries.lastStatus.value && subqueries.lastStatus.value.length) )
         throw new Error('MISSING_lastStatus')
@@ -54,15 +54,7 @@ function prepareShipmentParams(): Function {
       subqueries.lastStatusJoin = true
     }
 
-    // lastStatusList case
-    if (subqueries.lastStatus) {
-      if (!(subqueries.lastStatus.value && subqueries.lastStatus.value.length) )
-        throw new Error('MISSING_lastStatus')
-
-      subqueries.lastStatusJoin = true
-    }
-
-    // lastStatusList case
+    // alertType case
     if (subqueries.alertType) {
       if (!(subqueries.alertType.value && subqueries.alertType.value.length) )
         throw new Error('MISSING_alertType')

@@ -31,15 +31,15 @@ function prepareParams(): Function {
 
     const withinHours = params.subqueries.withinHours
 
-    const alertCreatedAtJson = {
-        from : moment('2018-01-01'),
-        to : moment()
-      }
-
     // const alertCreatedAtJson = {
-    //   from : moment().subtract(withinHours.value, 'hours'),
-    //   to : moment()
-    // }
+    //     from : moment('2018-01-01'),
+    //     to : moment()
+    //   }
+
+    const alertCreatedAtJson = {
+      from : moment().subtract(withinHours.value, 'hours'),
+      to : moment()
+    }
 
     subqueries.alertCreatedAt = alertCreatedAtJson
 
@@ -75,15 +75,15 @@ function finalQuery(): Function {
 
     const withinHours = params.subqueries.withinHours
 
-    const alertCreatedAtJson = {
-        from : moment('2018-01-01'),
-        to : moment()
-      }
-
     // const alertCreatedAtJson = {
-    //   from : moment().subtract(withinHours.value, 'hours'),
-    //   to : moment()
-    // }
+    //     from : moment('2018-01-01'),
+    //     to : moment()
+    //   }
+
+    const alertCreatedAtJson = {
+      from : moment().subtract(withinHours.value, 'hours'),
+      to : moment()
+    }
 
     let bottomSheetId
 
