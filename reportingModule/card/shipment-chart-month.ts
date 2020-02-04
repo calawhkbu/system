@@ -25,9 +25,21 @@ function prepareParams(): Function {
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    if (!subqueries.summaryVariables) throw new BadRequestException('MISSING_summaryVariables')
-    let summaryVariables = subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
-    summaryVariables = Array.isArray(summaryVariables) ? summaryVariables : [summaryVariables]
+    let summaryVariables: string[] = []
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
+      // sumamary variable
+      summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
+    }
+
+    if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
+      summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
+    }
+
+    if (!(summaryVariables && summaryVariables.length)){
+      throw new Error('MISSING_summaryVariables')
+    }
 
     // limit/extend to 1 year
     const year = subqueries.date ?  moment(subqueries.date.from, 'YYYY-MM-DD').year() : moment().year()
@@ -74,8 +86,23 @@ function insertData() {
     const { CreateTableJQL, FromTable, Query } = require('node-jql')
     const { Resultset } = require('node-jql-core')
 
-    let summaryVariables = params.subqueries.summaryVariables.value // should be chargeableWeight/cbm/grossWeight/totalShipment
-    summaryVariables = Array.isArray(summaryVariables) ? summaryVariables : [summaryVariables]
+    const subqueries = (params.subqueries = params.subqueries || {})
+
+    let summaryVariables: string[] = []
+    if (subqueries.summaryVariables && subqueries.summaryVariables.value)
+    {
+      // sumamary variable
+      summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
+    }
+
+    if (subqueries.summaryVariable && subqueries.summaryVariable.value)
+    {
+      summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
+    }
+
+    if (!(summaryVariables && summaryVariables.length)){
+      throw new Error('MISSING_summaryVariables')
+    }
 
     const rawResultList = new Resultset(await session.query(new Query('raw'))).toArray() as any[]
 

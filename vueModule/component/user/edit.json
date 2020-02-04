@@ -3,10 +3,11 @@
   "components": [{
       "is": "DynamicComponent",
       "props": {
-        "class": "xs-12 grid align-item-center padding-8",
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
         "components": [{
             "is": "v-btn",
             "props": {
+              "small": true,
               "flat": true,
               "icon": true
             },
@@ -29,11 +30,20 @@
           {
             "is": "I18nText",
             "props": {
-              "class": "headline",
-              "i18nKey": "InvitationPage.title",
-              "i18nOptions": {
-                "title": "sometitle"
-              }
+              "i18nContext": "InvitationPage",
+              "i18nKey": "title"
+            }
+          },
+          {
+            "is": "v-spacer"
+          },
+          {
+            "is": "WidgetSave",
+            "props": {
+              "small": true,
+              "icon": true,
+              "flat": true,
+              "class": "primary white-text"
             }
           }
         ]
@@ -65,13 +75,6 @@
             }
           }
         ]
-      }
-    },
-    {
-      "is": "WidgetSave",
-      "props": {
-        "fab": true,
-        "color": "primary"
       }
     }
   ]

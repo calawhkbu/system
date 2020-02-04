@@ -56,7 +56,7 @@ function prepareParamsOld(lastStatusCodeMapString_: string): Function {
       // compose the subqueries of lastStatusCode
       let lastStatusCodeList = []
 
-      subqueries['lastStatusCodeJoin'] = true
+      subqueries['lastStatusJoin'] = true
 
       lastStatusList.forEach(status => {
         lastStatusCodeList = lastStatusCodeList.concat(lastStatusCodeMap[status] || [])
@@ -96,7 +96,7 @@ function prepareParams(): Function {
     if (!subqueries.lastStatus || !subqueries.lastStatus.value)
       throw new Error('MISSING_lastStatus')
 
-    subqueries.lastStatusCodeJoin = true
+    subqueries.lastStatusJoin = true
 
     params.groupBy = ['lastStatus']
     params.fields = ['lastStatus', 'count']

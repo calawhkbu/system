@@ -1,35 +1,30 @@
 {
   "class": "grid",
-  "components": [
-    {
+  "components": [{
       "is": "DynamicComponent",
       "props": {
-        "class": "xs-12 grid align-item-center padding-8",
-        "components": [
-          {
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
+        "components": [{
             "is": "v-btn",
             "props": {
+              "small": true,
               "flat": true,
               "icon": true
             },
-            "slots": [
-              {
-                "is": "Icon",
-                "props": {
-                  "icon": "arrow_back"
-                }
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
               }
-            ],
+            }],
             "events": {
-              "click.stop": [
-                {
-                  "type": "dispatch",
-                  "otherParams": {
-                    "name": "widget/changeMode",
-                    "mode": "detail"
-                  }
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "detail"
                 }
-              ]
+              }]
             }
           },
           {
@@ -48,7 +43,9 @@
           {
             "is": "WidgetSave",
             "props": {
-              "fab": true,
+              "small": true,
+              "flat": true,
+              "icon": true,
               "color": "primary"
             }
           }
@@ -59,15 +56,13 @@
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 padding-left-8 padding-right-8 width-100 grid",
-        "components": [
-          {
-            "is": "AsyncComponent",
-            "props": {
-              "class": "margin-topbottom-4 xs-12",
-              "layoutName": "location/forms/general"
-            }
+        "components": [{
+          "is": "AsyncComponent",
+          "props": {
+            "class": "margin-topbottom-4 xs-12",
+            "layoutName": "location/forms/general"
           }
-        ]
+        }]
       }
     }
   ]

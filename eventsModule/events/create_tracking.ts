@@ -32,13 +32,14 @@ class CreateTrackingEvent extends BaseEvent {
   private async getTrackingNo(
     data: any,
     {
-      moduleTypeCode, carrierCode, departureDateEstimated, masterNo, soNo, containerNo
+      isTracking, moduleTypeCode, carrierCode, departureDateEstimated, masterNo, soNo, containerNo
     }: { [name: string]: string|((data: any) => any) }
   ): Promise<RegisterTrackingForm|null> {
+    const tracking = this.getValueFromData(data, isTracking, null)
     const moduleTypeCodeData = this.getValueFromData(data, moduleTypeCode, null)
     const carrierCodeData = this.getValueFromData(data, carrierCode, null)
     const departureDateEstimatedData = this.getValueFromData(data, departureDateEstimated, null)
-    if (moduleTypeCodeData && carrierCodeData && departureDateEstimatedData) {
+    if (tracking && moduleTypeCodeData && carrierCodeData && departureDateEstimatedData) {
       const masterNoData = this.getValueFromData(data, masterNo, null)
       const soNoData = moduleTypeCodeData === 'SEA' ? this.getValueFromData(data, soNo, []) : []
       const containerNoData = moduleTypeCodeData === 'SEA' ? this.getValueFromData(data, containerNo, []) : []
