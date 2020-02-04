@@ -2,19 +2,61 @@ import { Query, FromTable } from 'node-jql'
 import { parseCode } from 'utils/function'
 
 function prepareShipmentParams(): Function {
-  const fn = async function(require, session, params) {
-    // import
-    const { BadRequestException } = require('@nestjs/common')
-
+  return function(require, session, params) {
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
+
+    params.fields = [
+      'id',
+      'houseNo',
+      'masterNo',
+      'jobDate',
+      'carrierName',
+      'shipperPartyName',
+      'consigneePartyName',
+      'portOfLoadingCode',
+      'portOfDischargeCode',
+      'departureDateEstimated',
+      'arrivalDateEstimated',
+    ]
+
+    // used in mapCard to bottom sheet
+    if (subqueries.location || subqueries.locationCode) {
+      if (!(subqueries.location && subqueries.location.value))
+        throw new Error('MISSING_location')
+
+        if (!(subqueries.locationCode && subqueries.locationCode.value))
+        throw new Error('MISSING_locationCode')
+
+      const location = subqueries.location.value
+      const locationCode = `${location}Code`
+
+      const subqueriesName = `${location}Join`
+      const locationCodeValue = subqueries.locationCode.value
+
+      // portOfLoadingCode = 'ABC'
+      subqueries[locationCode] = {
+        value : locationCodeValue
+      }
+
+      subqueries[subqueriesName] = true
+
+    }
 
     // lastStatusList case
     if (subqueries.lastStatus) {
       if (!(subqueries.lastStatus.value && subqueries.lastStatus.value.length) )
         throw new Error('MISSING_lastStatus')
 
-      subqueries.lastStatusCodeJoin = true
+      subqueries.lastStatusJoin = true
+    }
+
+    // lastStatusList case
+    if (subqueries.lastStatus) {
+      if (!(subqueries.lastStatus.value && subqueries.lastStatus.value.length) )
+        throw new Error('MISSING_lastStatus')
+
+      subqueries.lastStatusJoin = true
     }
 
     // lastStatusList case
@@ -28,8 +70,6 @@ function prepareShipmentParams(): Function {
     return params
   }
 
-  const code = fn.toString()
-  return parseCode(code)
 }
 
 const query = new Query({

@@ -33,6 +33,7 @@ export default {
       otherParameters: {
         tableName: 'booking',
         loadashMapping: {
+          isTracking: 'tracking',
           moduleTypeCode: 'moduleTypeCode',
           carrierCode: 'carrierCode',
           departureDateEstimated: 'bookingDate.departureDateEstimated',
@@ -124,6 +125,7 @@ export default {
       otherParameters: {
         tableName: 'booking',
         loadashMapping: {
+          isTracking: 'tracking',
           moduleTypeCode: 'moduleTypeCode',
           carrierCode: 'carrierCode',
           departureDateEstimated: 'bookingDate.departureDateEstimated',
@@ -249,6 +251,7 @@ export default {
       otherParameters: {
         tableName: 'shipment',
         loadashMapping: {
+          isTracking: 'tracking',
           moduleTypeCode: 'moduleTypeCode',
           carrierCode: 'carrierCode',
           departureDateEstimated: 'shipmentDate.departureDateEstimated',
@@ -285,6 +288,7 @@ export default {
       otherParameters: {
         tableName: 'shipment',
         loadashMapping: {
+          isTracking: 'tracking',
           moduleTypeCode: 'moduleTypeCode',
           carrierCode: 'carrierCode',
           departureDateEstimated: 'shipmentDate.departureDateEstimated',

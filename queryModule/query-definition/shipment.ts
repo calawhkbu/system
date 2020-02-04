@@ -383,7 +383,7 @@ const finalTableExpression = new Query({
 
 })
 
-query.registerQuery('lastStatusCodeJoin', new Query({
+query.registerQuery('lastStatusJoin', new Query({
 
   $from: new FromTable('shipment', {
 
@@ -422,6 +422,33 @@ query.registerQuery(
 
   })
 )
+
+locationList.map(location => {
+
+  const subqueriesName = `${location}Join`
+  const locationCode = `${location}Code`
+
+  // location join (e.g. portOfLoadingJoin)
+  query.registerQuery(
+    subqueriesName, new Query({
+
+      $from: new FromTable('shipment', {
+
+        operator: 'LEFT',
+        table: 'location',
+        $on: [
+          new BinaryExpression(new ColumnExpression('location', 'portCode'), '=', new ColumnExpression('shipment', locationCode)),
+        ]
+      }),
+
+      $where: new IsNullExpression(new ColumnExpression('shipment', locationCode), true)
+
+    })
+  )
+
+})
+
+// =======================================
 
 query.registerQuery('shipmentAll', new Query({
 
@@ -1974,7 +2001,6 @@ const shipmentTableFilterFieldList = [
   'boundTypeCode',
   'nominatedTypeCode',
   'shipmentTypeCode',
-  'portOfLoadingCode',
   'divisionCode',
   'isDirect',
   'isCoload',
