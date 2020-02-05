@@ -147,7 +147,7 @@
               },
               {
                 "label": "ShipmentPage.sealNo",
-                "name": "sealNo1",
+                "name": "sealNo",
                 "colGroupProps": {
                   "style": {
                     "width": "15%"

@@ -55,11 +55,14 @@
         "class": "xs-12 md-6 padding-20 min-height-200 margin-auto"
       },
       "addItemsOrFunc": ["Trucker", "Broker", "Factory", "Warehouse"],
-
       "fields": [{
         "name": "shipmentParty.{{flex}}{{key}}PartyName",
         "component": "v-text-field",
-        "class": "xs-12 md-12"
+        "class": "xs-12 md-10"
+      }, {
+        "name": "shipmentParty.{{flex}}{{key}}Party.shortName",
+        "component": "v-text-field",
+        "class": "xs-12 md-2"
       }],
       "hiddenFieldsProps": {
         "style": {
@@ -71,7 +74,11 @@
       "hiddenFields": [{
           "name": "shipmentParty.{{flex}}{{key}}PartyName",
           "component": "v-text-field",
-          "class": "xs-12 md-12"
+          "class": "xs-12 md-10"
+        }, {
+          "name": "shipmentParty.{{flex}}{{key}}Party.shortName",
+          "component": "v-text-field",
+          "class": "xs-12 md-2"
         },
         {
           "label": "Widget.contactName",
