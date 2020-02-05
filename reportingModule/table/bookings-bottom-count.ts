@@ -77,10 +77,39 @@ function prepareBookingParams(): Function {
 
     // alertType case
     if (subqueries.alertType) {
+
       if (!(subqueries.alertType.value && subqueries.alertType.value.length) )
         throw new Error('MISSING_alertType')
 
         subqueries.alertJoin = true
+
+        let alertCreatedAtJson: { from: any, to: any}
+
+        if (!subqueries.withinHours)
+        {
+
+          const selectedDate = (subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment())
+          const currentMonth = selectedDate.month()
+          alertCreatedAtJson = {
+            from: selectedDate.month(currentMonth).startOf('month').format('YYYY-MM-DD'),
+            to: selectedDate.month(currentMonth).endOf('month').format('YYYY-MM-DD'),
+          }
+        }
+
+        else
+        {
+
+          const withinHours = params.subqueries.withinHours
+          alertCreatedAtJson = {
+            from : moment().subtract(withinHours.value, 'hours'),
+            to : moment()
+          }
+
+        }
+
+        subqueries.date = undefined
+        subqueries.alertCreatedAt = alertCreatedAtJson
+
     }
 
     return params
