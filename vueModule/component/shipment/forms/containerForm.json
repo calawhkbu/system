@@ -43,6 +43,7 @@
                   }
                 },
                 "props": {
+                  "class": "text-right",
                   "type": "number",
                   "min": 0,
                   "step": 1,
@@ -70,6 +71,7 @@
                   }
                 },
                 "props": {
+                  "class": "text-right",
                   "type": "number",
                   "min": 0
                 }
@@ -95,6 +97,7 @@
                 "name": "cbm",
                 "component": "NumberField",
                 "props": {
+                  "class": "text-right",
                   "type": "number",
                   "min": 0
                 }
@@ -170,6 +173,7 @@
                   }
                 },
                 "props": {
+                  "class": "text-right",
                   "type": "number",
                   "min": 0
                 }
@@ -195,6 +199,7 @@
                   }
                 },
                 "props": {
+                  "class": "text-right",
                   "type": "number",
                   "min": 0
                 }
@@ -220,6 +225,7 @@
                   }
                 },
                 "props": {
+                  "class": "text-right",
                   "type": "number",
                   "min": 0
                 }
