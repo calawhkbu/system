@@ -523,7 +523,7 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5OR.elementList.push('') // not used
             TD5OR.elementList.push('') // not used
             TD5OR.elementList.push('OR')
-            TD5OR.elementList.push((_.get(subPoList[0], 'pol') || _.get(element, 'portOfLoading')).substring(0, 30))
+            TD5OR.elementList.push((_.get(element, 'placeOfReceipt') || ' ').substring(0, 30))
             loopObjectList.push(TD5OR)
           // }
           // if (_.get(subPoList[0], 'pod') || _.get(element, 'portOfDischarge'))
