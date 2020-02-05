@@ -304,7 +304,10 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5PB.elementList.push(_.get(element, 'portOfDischarge').substring(0, 30))
             loopObjectList.push(TD5PB)
           // }
-
+          if (!_.get(element, 'finalDestination'))
+          {
+            throw new Error('there is no finalDesination')
+          }
           const TD5DE: JSONObject = {
             segement : 'TD5',
             elementList : []
@@ -316,7 +319,7 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5DE.elementList.push('') // not used
             TD5DE.elementList.push('') // not used
             TD5DE.elementList.push('DE')
-            TD5DE.elementList.push(_.get(element, 'portOfDischarge').substring(0, 30))
+            TD5DE.elementList.push((_.get(element, 'finalDestination') || ' ').substring(0, 30))
             loopObjectList.push(TD5DE)
           const TD5DL: JSONObject = {
             segement : 'TD5',
@@ -329,7 +332,7 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5DL.elementList.push('') // not used
             TD5DL.elementList.push('') // not used
             TD5DL.elementList.push('DL')
-            TD5DL.elementList.push(_.get(element, 'portOfDischarge').substring(0, 30))
+            TD5DL.elementList.push((_.get(element, 'finalDestination') || ' ').substring(0, 30))
             loopObjectList.push(TD5DL)
              // if (_.get(element, 'portOfLoading'))
           // {
@@ -520,7 +523,7 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5OR.elementList.push('') // not used
             TD5OR.elementList.push('') // not used
             TD5OR.elementList.push('OR')
-            TD5OR.elementList.push((_.get(subPoList[0], 'pol') || _.get(element, 'portOfLoading')).substring(0, 30))
+            TD5OR.elementList.push((_.get(element, 'placeOfReceipt') || ' ').substring(0, 30))
             loopObjectList.push(TD5OR)
           // }
           // if (_.get(subPoList[0], 'pod') || _.get(element, 'portOfDischarge'))
@@ -536,7 +539,7 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push('') // not used
             TD5.elementList.push('') // not used
             TD5.elementList.push('DL')
-            TD5.elementList.push((_.get(subPoList[0], 'pod') || _.get(element, 'portOfDischarge')).substring(0, 30))
+            TD5.elementList.push((_.get(element, 'finalDestination') || ' ').substring(0, 30))
             loopObjectList.push(TD5)
           // }
 
