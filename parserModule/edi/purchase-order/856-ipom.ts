@@ -163,7 +163,7 @@ export default class EdiParser856 extends BaseEdiParser {
           for (const booking of _.get(element, 'bookingPOPackings'))
           {
             let missingPosition = 1
-            if (_.get(booking, 'bookWeight'))
+            if (_.get(booking, 'bookWeight') || _.get(booking, 'bookWeight') === 0)
             {
               totalWeight += _.get(booking, 'bookWeight')
             }
@@ -171,7 +171,7 @@ export default class EdiParser856 extends BaseEdiParser {
             {
               throw new Error(`missing the bookWeight in bookingPOPackings ${missingPosition}`)
             }
-            if (_.get(booking, 'bookVolume'))
+            if (_.get(booking, 'bookVolume') || _.get(booking, 'bookVolume') === 0)
             {
               totalVolume += _.get(booking, 'bookVolume')
             }
@@ -179,7 +179,7 @@ export default class EdiParser856 extends BaseEdiParser {
             {
               throw new Error(`missing the bookVolume in bookingPOPackings ${missingPosition}`)
             }
-            if (_.get(booking, 'bookQuantity'))
+            if (_.get(booking, 'bookQuantity') || _.get(booking, 'bookQuantity') === 0)
             {
               totalShipUnit += _.get(booking, 'bookQuantity')
             }
@@ -187,7 +187,7 @@ export default class EdiParser856 extends BaseEdiParser {
             {
               throw new Error(`missing the bookQuantity in bookingPOPackings ${missingPosition}`)
             }
-            if (_.get(booking, 'bookCtns'))
+            if (_.get(booking, 'bookCtns') || _.get(booking, 'bookCtns') === 0)
             {
               numberOfPacking += _.get(booking, 'bookCtns')
             }
@@ -253,7 +253,7 @@ export default class EdiParser856 extends BaseEdiParser {
         {
           scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode || ''.toString().length)}`
         }
-        if (_.get(element, 'portOfLoading') || _.get(element, 'portOfDischarge') || _.get(element, 'placeOfReceiptCode'))
+        if (_.get(element, 'portOfLoading') || _.get(element, 'portOfDischarge') || _.get(element, 'containerPoint'))
         {
           if (_.get(element, 'portOfLoading'))
           {
@@ -287,12 +287,12 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push(_.get(element, 'portOfDischarge').substring(0, 30))
             loopObjectList.push(TD5)
           }
-          if (_.get(element, 'placeOfReceiptCode'))
+          if (_.get(element, 'containerPoint'))
           {
             const TD5: JSONObject = {
-                segement : 'TD5',
-                elementList : []
-            }
+            segement : 'TD5',
+            elementList : []
+          }
             TD5.elementList.push('O')
             TD5.elementList.push('2')
             TD5.elementList.push(scac)
@@ -300,7 +300,7 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push('') // not used
             TD5.elementList.push('') // not used
             TD5.elementList.push('OA')
-            TD5.elementList.push(_.get(element, 'placeOfReceiptCode').substring(0, 30))
+            TD5.elementList.push(_.get(element, 'containerPoint').substring(0, 30))
             loopObjectList.push(TD5)
           }
         }
@@ -364,6 +364,16 @@ export default class EdiParser856 extends BaseEdiParser {
           }
           DTM.elementList.push('050')
           DTM.elementList.push(moment(_.get(element, 'cargoReceipt')).format('YYYYMMDD'))
+          loopObjectList.push(DTM)
+        }
+        if (_.get(element, 'actualDepartureDate'))
+        {
+          const DTM: JSONObject = {
+              segement : 'DTM',
+              elementList : []
+          }
+          DTM.elementList.push('ABK')
+          DTM.elementList.push(moment(_.get(element, 'actualDepartureDate')).format('YYYYMMDD'))
           loopObjectList.push(DTM)
         }
         if (_.get(element, 'estimatedDepartureDate'))
@@ -495,6 +505,7 @@ export default class EdiParser856 extends BaseEdiParser {
             {
               const refMapper = {
                 MBL: 'BM',
+                HBL: 'FN'
               }
               const refName = _.get(ref, 'refName')
               if (refMapper[refName])

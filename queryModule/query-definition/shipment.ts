@@ -1433,12 +1433,12 @@ function lastStatusExpressionFunction() {
 
       const lastStatusCodeList = lastStatusCodeMap[lastStatus] as any[]
 
-      let condition = new InExpression(new ColumnExpression('shipment_tracking', 'lastStatusCode'), false, lastStatusCodeList) as IConditionalExpression
+      let condition = new InExpression(lastStatusCodeExpression, false, lastStatusCodeList) as IConditionalExpression
 
       if (lastStatusCodeList.includes(null)) {
 
         condition = new OrExpressions([
-          new IsNullExpression(new ColumnExpression('shipment_tracking', 'lastStatusCode'), false),
+          new IsNullExpression(lastStatusCodeExpression, false),
           condition
         ])
 
@@ -1454,7 +1454,7 @@ function lastStatusExpressionFunction() {
 
   return new CaseExpression({
     cases,
-    $else: new ColumnExpression('shipment_tracking', 'lastStatusCode')
+    $else: lastStatusCodeExpression
   })
 
 }
