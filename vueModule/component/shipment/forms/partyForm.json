@@ -57,6 +57,7 @@
       "addItemsOrFunc": ["Trucker", "Broker", "Factory", "Warehouse"],
 
       "fields": [{
+        "label": "Widget.Name",
         "name": "shipmentParty.{{flex}}{{key}}PartyName",
         "component": "v-text-field",
         "class": "xs-12 md-12"

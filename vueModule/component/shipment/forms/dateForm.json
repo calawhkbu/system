@@ -6,7 +6,7 @@
       "mainKey": "Date",
       "formProps": {
         "z": {
-          "class": "xs-12 padding-4"
+          "class": "xs-12 padding-leftright-4"
         }
       },
       "labelProps": {
@@ -58,7 +58,7 @@
       "alwaysShowKeys": ["oceanBill", "departure", "arrival"],
       "canAdd": true,
       "canAddProps": {
-        "class": "xs-12 padding-20 min-height-200 margin-auto"
+        "class": "xs-12 md-6 padding-20 min-height-200 margin-auto"
       },
       "fields": [{
           "label": "Widget.estimatedDate",
