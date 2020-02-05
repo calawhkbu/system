@@ -645,6 +645,16 @@ export default class EdiParser856 extends BaseEdiParser {
             SLN.elementList.push((_.get(subPoList[itemIndex], 'bookQuantity') || ' ').toString().substring(0, 15))
             SLN.elementList.push('PC')
             loopObjectList.push(SLN)
+            const PID: JSONObject = {
+              segement: 'PID',
+              elementList : []
+            }
+            PID.elementList.push('F')
+            PID.elementList.push('')// not used
+            PID.elementList.push('')
+            PID.elementList.push('')
+            PID.elementList.push((_.get(subPoList[itemIndex], 'productDescription') || ' ').toString().substring(0, 20))
+            loopObjectList.push(PID)
             if (_.get(ItemList[itemIndex], 'bookWeight') || _.get(ItemList[itemIndex], 'bookWeight') === 0)
               {
                   const MEA: JSONObject = {
