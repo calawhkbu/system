@@ -6,7 +6,7 @@
       "mainKey": "Date",
       "formProps": {
         "z": {
-          "class": "xs-12 padding-4"
+          "class": "xs-12 padding-leftright-4"
         }
       },
       "labelProps": {
@@ -18,10 +18,7 @@
         "cargoReady": {
           "class": "font-110 blue--text"
         },
-        "cYCutOff": {
-          "class": "font-110 teal--text"
-        },
-        "pickup": {
+        "cargoReceipt": {
           "class": "font-110 green--text"
         },
         "departure": {
@@ -29,13 +26,9 @@
         },
         "arrival": {
           "class": "font-110 indigo--text"
-        },
-        "finalDoorDelivery": {
-          "class": "font-110 pink--text"
         }
       },
       "fixedKeys": [
-        "oceanBill",
         "cargoReady",
         "scheduleAssigned",
         "scheduleApproaved",
@@ -69,15 +62,13 @@
       ],
       "alwaysShowKeys": [
         "cargoReady",
-        "cYCutOff",
-        "pickup",
+        "cargoReceipt",
         "departure",
-        "arrival",
-        "finalDoorDelivery"
+        "arrival"
       ],
       "canAdd": true,
       "canAddProps": {
-        "class": "xs-12 padding-20 min-height-200 margin-auto"
+        "class": "xs-12 md-6 padding-20 min-height-200 margin-auto"
       },
       "fields": [{
           "label": "Widget.estimatedDate",

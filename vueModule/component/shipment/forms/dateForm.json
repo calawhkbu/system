@@ -15,6 +15,12 @@
           "i18nContext": "Widget",
           "class": "font-110"
         },
+        "cargoReady": {
+          "class": "font-110 blue--text"
+        },
+        "cargoReceipt": {
+          "class": "font-110 green--text"
+        },
         "departure": {
           "class": "font-110 brown--text"
         },
@@ -55,7 +61,12 @@
         "finalDoorDelivery",
         "returnEmptyContainer"
       ],
-      "alwaysShowKeys": ["oceanBill", "departure", "arrival"],
+      "alwaysShowKeys": [
+        "cargoReady",
+        "cargoReceipt",
+        "departure",
+        "arrival"
+      ],
       "canAdd": true,
       "canAddProps": {
         "class": "xs-12 md-6 padding-20 min-height-200 margin-auto"
