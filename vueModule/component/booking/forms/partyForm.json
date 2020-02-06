@@ -6,7 +6,7 @@
       "mainKey": "Party",
       "formProps": {
         "z": {
-          "class": "xs-12 md-6 padding-4"
+          "class": "xs-12 md-6 padding-leftright-4"
         }
       },
       "labelProps": {
@@ -25,7 +25,16 @@
           "class": "font-110 blue--text"
         },
         "agent": {
+          "class": "font-110 purple--text"
+        },
+        "linerAgent": {
+          "class": "font-110 lime--text"
+        },
+        "roAgent": {
           "class": "font-110 brown--text"
+        },
+        "controllingCustomer": {
+          "class": "font-110 orange--text"
         },
         "notifyParty": {
           "class": "font-110 pink--text"
@@ -44,8 +53,28 @@
           "fixValue": "{{fixValue}}"
         }
       },
-      "fixedKeys": ["shipper", "consignee", "forwarder", "agent", "notifyParty"],
-      "alwaysShowKeys": ["shipper", "consignee", "forwarder", "agent", "notifyParty"],
+      "fixedKeys": [
+        "shipper",
+        "consignee",
+        "agent",
+        "forwarder",
+        "office",
+        "roAgent",
+        "linerAgent",
+        "controllingCustomer",
+        "notifyParty"
+      ],
+      "alwaysShowKeys": [
+        "shipper",
+        "consignee",
+        "agent",
+        "forwarder",
+        "office",
+        "roAgent",
+        "linerAgent",
+        "controllingCustomer",
+        "notifyParty"
+      ],
       "canAdd": true,
       "canAddProps": {
         "class": "xs-12 md-6 padding-20 min-height-200 margin-auto"
@@ -365,7 +394,6 @@
           "class": "xs-12 md-4",
           "checkDisplayWhen": "return !readonly"
         },
-
         {
           "label": "Widget.contactPhone",
           "name": "bookingParty.{{flex}}{{key}}PartyContactPhone",
@@ -421,6 +449,7 @@
           "name": "bookingParty.{{flex}}{{key}}PartyCityCode",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-4",
+          "checkDisplayWhen": "return !readonly",
           "readonlyClass": "xs-12 md-6",
           "relation": "bookingParty.{{flex}}{{key}}PartyCityCode",
           "relationMore": [{
@@ -455,6 +484,7 @@
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-4",
           "readonlyClass": "xs-12 md-3",
+          "checkDisplayWhen": "return !readonly",
           "relation": "bookingParty.{{flex}}{{key}}PartyStateCode",
           "relationMore": [{
             "name": "bookingParty.{{flex}}{{key}}PartyStateCode",
@@ -491,6 +521,7 @@
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-4",
           "readonlyClass": "xs-12 md-3",
+          "checkDisplayWhen": "return !readonly",
           "relation": "bookingParty.{{flex}}{{key}}PartyCountryCode",
           "relationMore": [{
             "name": "bookingParty.{{flex}}{{key}}PartyCountryCode",
