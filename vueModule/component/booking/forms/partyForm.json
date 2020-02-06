@@ -374,6 +374,7 @@
                 "limit": 5
               }
             },
+            "ellipsis": false,
             "item-text": "name",
             "item-value": "erpCode"
           }
