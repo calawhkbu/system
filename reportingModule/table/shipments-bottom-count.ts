@@ -1,5 +1,6 @@
 import { Query, FromTable } from 'node-jql'
 import { parseCode } from 'utils/function'
+import moment = require('moment')
 
 function prepareShipmentParams(): Function {
   return function(require, session, params) {
@@ -25,7 +26,7 @@ function prepareShipmentParams(): Function {
       if (!(subqueries.location && subqueries.location.value))
         throw new Error('MISSING_location')
 
-        if (!(subqueries.locationCode && subqueries.locationCode.value))
+      if (!(subqueries.locationCode && subqueries.locationCode.value))
         throw new Error('MISSING_locationCode')
 
       const location = subqueries.location.value
@@ -36,7 +37,7 @@ function prepareShipmentParams(): Function {
 
       // portOfLoadingCode = 'ABC'
       subqueries[locationCode] = {
-        value : locationCodeValue
+        value: locationCodeValue
       }
 
       subqueries[subqueriesName] = true
@@ -45,7 +46,7 @@ function prepareShipmentParams(): Function {
 
     // lastStatus case
     if (subqueries.lastStatus) {
-      if (!(subqueries.lastStatus.value && subqueries.lastStatus.value.length) )
+      if (!(subqueries.lastStatus.value && subqueries.lastStatus.value.length))
         throw new Error('MISSING_lastStatus')
 
       subqueries.lastStatusJoin = true
@@ -53,10 +54,38 @@ function prepareShipmentParams(): Function {
 
     // alertType case
     if (subqueries.alertType) {
-      if (!(subqueries.alertType.value && subqueries.alertType.value.length) )
+      if (!(subqueries.alertType.value && subqueries.alertType.value.length))
         throw new Error('MISSING_alertType')
 
-        subqueries.alertJoin = true
+      subqueries.alertJoin = true
+
+      let alertCreatedAtJson: { from: any, to: any}
+
+      if (!subqueries.withinHours)
+      {
+
+        const selectedDate = (subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment())
+        const currentMonth = selectedDate.month()
+        alertCreatedAtJson = {
+          from: selectedDate.month(currentMonth).startOf('month').format('YYYY-MM-DD'),
+          to: selectedDate.month(currentMonth).endOf('month').format('YYYY-MM-DD'),
+        }
+      }
+
+      else
+      {
+
+        const withinHours = params.subqueries.withinHours
+        alertCreatedAtJson = {
+          from : moment().subtract(withinHours.value, 'hours'),
+          to : moment()
+        }
+
+      }
+
+      subqueries.date = undefined
+      subqueries.alertCreatedAt = alertCreatedAtJson
+
     }
 
     return params
