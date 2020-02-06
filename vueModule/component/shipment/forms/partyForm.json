@@ -28,7 +28,7 @@
           "class": "font-110 purple--text"
         },
         "linerAgent": {
-          "class": "font-110 lime--text"
+          "class": "font-110 amber--text"
         },
         "roAgent": {
           "class": "font-110 brown--text"
@@ -57,7 +57,6 @@
         "shipper",
         "consignee",
         "agent",
-        "forwarder",
         "office",
         "roAgent",
         "linerAgent",
@@ -68,7 +67,6 @@
         "shipper",
         "consignee",
         "agent",
-        "forwarder",
         "office",
         "roAgent",
         "linerAgent",
