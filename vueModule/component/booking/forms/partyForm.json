@@ -188,6 +188,38 @@
                   }
                 }]
               },
+              "nameKey": "name",
+              "api": {
+                "url": "api/party",
+                "method": "POST",
+                "item-text": "name",
+                "item-value": "thirdPartyCode.erp"
+              },
+              "defaultValue": {
+                "types": [{
+                  "type": "{{key}}"
+                }]
+              },
+              "parseReturnValue": {
+                "contactPersonEmail": null,
+                "contactPersonId": null,
+                "contactPersonName": null,
+                "erpCode": "{{thirdPartyCode.erp}}",
+                "id": "{{id}}",
+                "name": "{{name}}",
+                "old360Id": null,
+                "partyAddress": "{{address}}",
+                "partyCityCode": "{{cityCode}}",
+                "partyCountryCode": "{{countryCode}}",
+                "partyEmail": null,
+                "partyFax": null,
+                "partyId": "{{id}}",
+                "partyName": "{{name}}",
+                "partyPhone": null,
+                "partyStateCode": null,
+                "partyZip": "{{zip}}",
+                "shortName": "{{shortName}}"
+              },
               "fields": [{
                   "label": "Widget.partyName",
                   "name": "name",
@@ -325,39 +357,7 @@
                   "class": "xs-12 md-6",
                   "readonlyClass": "hidden"
                 }
-              ],
-              "nameKey": "name",
-              "api": {
-                "url": "api/party",
-                "method": "POST",
-                "item-text": "name",
-                "item-value": "thirdPartyCode.erp"
-              },
-              "defaultValue": {
-                "types": [{
-                  "type": "{{key}}"
-                }]
-              },
-              "parseReturnValue": {
-                "contactPersonEmail": null,
-                "contactPersonId": null,
-                "contactPersonName": null,
-                "erpCode": "{{thirdPartyCode.erp}}",
-                "id": "{{id}}",
-                "name": "{{name}}",
-                "old360Id": null,
-                "partyAddress": "{{address}}",
-                "partyCityCode": "{{cityCode}}",
-                "partyCountryCode": "{{countryCode}}",
-                "partyEmail": null,
-                "partyFax": null,
-                "partyId": "{{id}}",
-                "partyName": "{{name}}",
-                "partyPhone": null,
-                "partyStateCode": null,
-                "partyZip": "{{zip}}",
-                "shortName": "{{shortName}}"
-              }
+              ]
             },
             "searchTextParams": {
               "url": "api/party/query/party_auto_suggest",
