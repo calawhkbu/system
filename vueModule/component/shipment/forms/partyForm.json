@@ -93,7 +93,6 @@
           "name": "{{flex}}{{key}}PartyContactEmail",
           "checkDisplayWhen": "return form && form.shipmentParty.{{flex}}{{key}}PartyContactEmail",
           "component": "button-field",
-          "class": "hidden",
           "readonlyClass": "xs-2",
           "slots": [{
             "is": "Icon",
@@ -114,7 +113,7 @@
                     "method": "POST",
                     "data": {
                       "entityId": "{{context.$store.state.widget.id}}",
-                      "tableName": "booking",
+                      "tableName": "shipment",
                       "partyId": ["{{ '`${args[0]}${args[1]}PartyId`'  | calculate(flex,key) | getFrom(context.$store.state.widget.data)}}"],
                       "partyType": ["{{key}}"],
                       "person": {
@@ -172,7 +171,6 @@
                 "checkDisplayWhen": "return form.Email",
                 "name": "Email",
                 "component": "button-field",
-                "class": "hidden",
                 "readonlyClass": "xs-2 md-2",
                 "slots": [{
                   "is": "Icon",
@@ -193,7 +191,7 @@
                           "method": "POST",
                           "data": {
                             "entityId": "{{context.$store.state.widget.id}}",
-                            "tableName": "booking",
+                            "tableName": "shipment",
                             "partyId": ["{{ '`${args[0]}${args[1]}PartyId`'  | calculate(flex,key) | getFrom(context.$store.state.widget.data)}}"],
                             "partyType": ["{{key}}"],
                             "person": {

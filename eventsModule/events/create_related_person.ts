@@ -25,6 +25,7 @@ class CreateRelatedPersonEvent extends BaseEvent {
     } = this.allService as {
       RelatedPersonDatabaseService: RelatedPersonDatabaseService
     }
+
     for (const relatedPerson of relatedPeople) {
       try {
         await service.save(relatedPerson, this.user, this.transaction)
@@ -37,21 +38,20 @@ class CreateRelatedPersonEvent extends BaseEvent {
   public async mainFunction(
     {
       data,
-      otherParameters
+      partyLodash,
+      fixedParty
     }: {
       data: any,
-      otherParameters: {
-        partyLodash: string
-        fixedParty: string[]
-      }
+      partyLodash: string
+      fixedParty: string[]
     }
   ) {
     console.log('Start Excecute [Create Related Person]...', this.constructor.name)
-    const party = _.get(data, otherParameters.partyLodash, {})
+    const party = _.get(data, partyLodash, {})
     if (party) {
       const relatedPeople: RelatedPerson[] = []
       const allParty = [
-        ..._.get(otherParameters, 'fixedParty', []),
+        ...(fixedParty || []),
         ..._.get(party, 'flexData.moreParty', [])
       ]
       const partyId = {}
