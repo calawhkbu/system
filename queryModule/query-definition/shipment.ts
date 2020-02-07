@@ -2434,6 +2434,95 @@ query
   .register(
     'q',
     new Query({
+      $from: new FromTable('shipment', {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('shipment_container', 'shipmentId'), 'shipment_container_shipmentId'),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({ expression: new ColumnExpression('shipment_container', 'contractNo'), suffix: 'SEPARATOR \', \'' })
+                ),
+                'contractNo'
+              ),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({ expression: new ColumnExpression('shipment_container', 'containerNo'), suffix: 'SEPARATOR \', \'' })
+                ),
+                'containerNo'
+              ),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({ expression: new ColumnExpression('shipment_container', 'sealNo'), suffix: 'SEPARATOR \', \'' })
+                ),
+                'sealNo'
+              ),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({ expression: new ColumnExpression('shipment_container', 'sealNo2'), suffix: 'SEPARATOR \', \'' })
+                ),
+                'sealNo2'
+              ),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({ expression: new ColumnExpression('shipment_container', 'carrierBookingNo'), suffix: 'SEPARATOR \', \'' })
+                ),
+                'carrierBookingNo'
+              ),
+            ],
+            $from: new FromTable('shipment_container'),
+            $where: new AndExpressions({
+              expressions: [
+                new IsNullExpression(new ColumnExpression('shipment_container', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('shipment_container', 'deletedBy'), false)
+              ]
+            }),
+            $group: new GroupBy([
+              new ColumnExpression('shipment_container', 'shipmentId')
+            ]),
+          }),
+          $as: 'shipment_container'
+        }),
+        $on: [
+          new BinaryExpression(new ColumnExpression('shipment_container', 'shipment_container_shipmentId'), '=', new ColumnExpression('shipment', 'id')),
+        ]
+      }, {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('shipment_po', 'shipmentId'), 'shipment_po_shipmentId'),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({ expression: new ColumnExpression('shipment_po', 'poNo'), suffix: 'SEPARATOR \', \'' })
+                ),
+                'poNo'
+              )
+            ],
+            $from: new FromTable('shipment_po'),
+            $where: new AndExpressions({
+              expressions: [
+                new IsNullExpression(new ColumnExpression('shipment_po', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('shipment_po', 'deletedBy'), false)
+              ]
+            }),
+            $group: new GroupBy([
+              new ColumnExpression('shipment_po', 'shipmentId')
+            ]),
+          }),
+          $as: 'shipment_po'
+        }),
+        $on: [
+          new BinaryExpression(new ColumnExpression('shipment_po', 'shipment_po_shipmentId'), '=', new ColumnExpression('shipment', 'id')),
+        ]
+      }),
       $where: new OrExpressions({
         expressions: [
           new RegexpExpression(new ColumnExpression('shipment_party', 'agentPartyCode'), false),

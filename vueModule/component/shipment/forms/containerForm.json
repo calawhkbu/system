@@ -43,6 +43,7 @@
                   }
                 },
                 "props": {
+                  "right": true,
                   "type": "number",
                   "min": 0,
                   "step": 1,
@@ -70,6 +71,7 @@
                   }
                 },
                 "props": {
+                  "right": true,
                   "type": "number",
                   "min": 0
                 }
@@ -95,6 +97,7 @@
                 "name": "cbm",
                 "component": "NumberField",
                 "props": {
+                  "right": true,
                   "type": "number",
                   "min": 0
                 }
@@ -144,7 +147,7 @@
               },
               {
                 "label": "ShipmentPage.sealNo",
-                "name": "sealNo1",
+                "name": "sealNo",
                 "colGroupProps": {
                   "style": {
                     "width": "15%"
@@ -170,6 +173,7 @@
                   }
                 },
                 "props": {
+                  "right": true,
                   "type": "number",
                   "min": 0
                 }
@@ -195,6 +199,7 @@
                   }
                 },
                 "props": {
+                  "right": true,
                   "type": "number",
                   "min": 0
                 }
@@ -220,6 +225,7 @@
                   }
                 },
                 "props": {
+                  "right": true,
                   "type": "number",
                   "min": 0
                 }

@@ -10,6 +10,8 @@ export default {
   send_edi: [{ handlerName: 'send_edi' }],
   create_related_party: [{handlerName: 'create_related_party'}],
   create_related_person: [{handlerName: 'create_related_person'}],
+
+  invitation_create_related_person : [{ handlerName : 'invitation_create_related_person' }],
   // start here
   // booking
   afterCreate_booking: [
@@ -196,15 +198,6 @@ export default {
         ],
       },
       afterEvent: [
-        // warning: not using !!!!!!! auto invitation is now abandoned
-        // update personId / create Invitation
-        // {
-        //   condition : true,
-        //   handlerName : 'entity_create_invitation',
-        //   previousParameters : {
-        //     tableName : 'booking'
-        //   }
-        // },
         {
           eventName: 'fill_template',
           previousParameters: {
@@ -346,6 +339,13 @@ export default {
       eventName: 'send_edi',
     },
   ],
+
+  afterCreate_invitation : [
+    {
+      eventName: 'invitation_create_related_person'
+    }
+  ]
+
 } as {
   [eventName: string]: EventConfig[]
 }
