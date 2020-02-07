@@ -6,7 +6,7 @@
       "mainKey": "Date",
       "formProps": {
         "z": {
-          "class": "xs-12 padding-4"
+          "class": "xs-12 padding-leftright-4"
         }
       },
       "labelProps": {
@@ -14,6 +14,12 @@
           "isComponent": "v-label",
           "i18nContext": "Widget",
           "class": "font-110"
+        },
+        "cargoReady": {
+          "class": "font-110 blue--text"
+        },
+        "cargoReceipt": {
+          "class": "font-110 green--text"
         },
         "departure": {
           "class": "font-110 brown--text"
@@ -55,10 +61,15 @@
         "finalDoorDelivery",
         "returnEmptyContainer"
       ],
-      "alwaysShowKeys": ["oceanBill", "departure", "arrival"],
+      "alwaysShowKeys": [
+        "cargoReady",
+        "cargoReceipt",
+        "departure",
+        "arrival"
+      ],
       "canAdd": true,
       "canAddProps": {
-        "class": "xs-12 padding-20 min-height-200 margin-auto"
+        "class": "xs-12 md-6 padding-20 min-height-200 margin-auto"
       },
       "fields": [{
           "label": "Widget.estimatedDate",

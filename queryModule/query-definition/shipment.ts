@@ -383,7 +383,7 @@ const finalTableExpression = new Query({
 
 })
 
-query.registerQuery('lastStatusCodeJoin', new Query({
+query.registerQuery('lastStatusJoin', new Query({
 
   $from: new FromTable('shipment', {
 
@@ -422,6 +422,33 @@ query.registerQuery(
 
   })
 )
+
+locationList.map(location => {
+
+  const subqueriesName = `${location}Join`
+  const locationCode = `${location}Code`
+
+  // location join (e.g. portOfLoadingJoin)
+  query.registerQuery(
+    subqueriesName, new Query({
+
+      $from: new FromTable('shipment', {
+
+        operator: 'LEFT',
+        table: 'location',
+        $on: [
+          new BinaryExpression(new ColumnExpression('location', 'portCode'), '=', new ColumnExpression('shipment', locationCode)),
+        ]
+      }),
+
+      $where: new IsNullExpression(new ColumnExpression('shipment', locationCode), true)
+
+    })
+  )
+
+})
+
+// =======================================
 
 query.registerQuery('shipmentAll', new Query({
 
@@ -1406,12 +1433,12 @@ function lastStatusExpressionFunction() {
 
       const lastStatusCodeList = lastStatusCodeMap[lastStatus] as any[]
 
-      let condition = new InExpression(new ColumnExpression('shipment_tracking', 'lastStatusCode'), false, lastStatusCodeList) as IConditionalExpression
+      let condition = new InExpression(lastStatusCodeExpression, false, lastStatusCodeList) as IConditionalExpression
 
       if (lastStatusCodeList.includes(null)) {
 
         condition = new OrExpressions([
-          new IsNullExpression(new ColumnExpression('shipment_tracking', 'lastStatusCode'), false),
+          new IsNullExpression(lastStatusCodeExpression, false),
           condition
         ])
 
@@ -1427,7 +1454,7 @@ function lastStatusExpressionFunction() {
 
   return new CaseExpression({
     cases,
-    $else: new ColumnExpression('shipment_tracking', 'lastStatusCode')
+    $else: lastStatusCodeExpression
   })
 
 }
@@ -1974,7 +2001,6 @@ const shipmentTableFilterFieldList = [
   'boundTypeCode',
   'nominatedTypeCode',
   'shipmentTypeCode',
-  'portOfLoadingCode',
   'divisionCode',
   'isDirect',
   'isCoload',
@@ -2408,6 +2434,95 @@ query
   .register(
     'q',
     new Query({
+      $from: new FromTable('shipment', {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('shipment_container', 'shipmentId'), 'shipment_container_shipmentId'),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({ expression: new ColumnExpression('shipment_container', 'contractNo'), suffix: 'SEPARATOR \', \'' })
+                ),
+                'contractNo'
+              ),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({ expression: new ColumnExpression('shipment_container', 'containerNo'), suffix: 'SEPARATOR \', \'' })
+                ),
+                'containerNo'
+              ),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({ expression: new ColumnExpression('shipment_container', 'sealNo'), suffix: 'SEPARATOR \', \'' })
+                ),
+                'sealNo'
+              ),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({ expression: new ColumnExpression('shipment_container', 'sealNo2'), suffix: 'SEPARATOR \', \'' })
+                ),
+                'sealNo2'
+              ),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({ expression: new ColumnExpression('shipment_container', 'carrierBookingNo'), suffix: 'SEPARATOR \', \'' })
+                ),
+                'carrierBookingNo'
+              ),
+            ],
+            $from: new FromTable('shipment_container'),
+            $where: new AndExpressions({
+              expressions: [
+                new IsNullExpression(new ColumnExpression('shipment_container', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('shipment_container', 'deletedBy'), false)
+              ]
+            }),
+            $group: new GroupBy([
+              new ColumnExpression('shipment_container', 'shipmentId')
+            ]),
+          }),
+          $as: 'shipment_container'
+        }),
+        $on: [
+          new BinaryExpression(new ColumnExpression('shipment_container', 'shipment_container_shipmentId'), '=', new ColumnExpression('shipment', 'id')),
+        ]
+      }, {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('shipment_po', 'shipmentId'), 'shipment_po_shipmentId'),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({ expression: new ColumnExpression('shipment_po', 'poNo'), suffix: 'SEPARATOR \', \'' })
+                ),
+                'poNo'
+              )
+            ],
+            $from: new FromTable('shipment_po'),
+            $where: new AndExpressions({
+              expressions: [
+                new IsNullExpression(new ColumnExpression('shipment_po', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('shipment_po', 'deletedBy'), false)
+              ]
+            }),
+            $group: new GroupBy([
+              new ColumnExpression('shipment_po', 'shipmentId')
+            ]),
+          }),
+          $as: 'shipment_po'
+        }),
+        $on: [
+          new BinaryExpression(new ColumnExpression('shipment_po', 'shipment_po_shipmentId'), '=', new ColumnExpression('shipment', 'id')),
+        ]
+      }),
       $where: new OrExpressions({
         expressions: [
           new RegexpExpression(new ColumnExpression('shipment_party', 'agentPartyCode'), false),

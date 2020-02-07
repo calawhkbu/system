@@ -86,6 +86,21 @@ export default class EdiParser856 extends BaseEdiParser {
       const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
       data.push(...filteredList)
       await this.removeEmptyElementListObject(data)
+      const bookingAmountList = _.get(element, 'bookingAmount')
+      const e890Info = bookingAmountList.find(x => x.type === 'OceanFreight')
+      const SACE890: JSONObject = {
+        segement: 'SAC',
+        elementList: []
+      }
+      SACE890.elementList.push('C', 'E890', '', '',  _.get(e890Info, 'amount') || ' ')
+      data.push(SACE890)
+      const b510Info = bookingAmountList.find(x => x.type === 'Consolidation')
+      const SACEB510: JSONObject = {
+        segement: 'SAC',
+        elementList: []
+      }
+      SACEB510.elementList.push('C', 'B510', '', '',  _.get(b510Info, 'amount') || ' ')
+      data.push(SACEB510)
       const CTT: JSONObject = {
         segement : 'CTT',
         elementList : []
@@ -163,7 +178,7 @@ export default class EdiParser856 extends BaseEdiParser {
           for (const booking of _.get(element, 'bookingPOPackings'))
           {
             let missingPosition = 1
-            if (_.get(booking, 'bookWeight'))
+            if (_.get(booking, 'bookWeight') || _.get(booking, 'bookWeight') === 0)
             {
               totalWeight += _.get(booking, 'bookWeight')
             }
@@ -171,7 +186,7 @@ export default class EdiParser856 extends BaseEdiParser {
             {
               throw new Error(`missing the bookWeight in bookingPOPackings ${missingPosition}`)
             }
-            if (_.get(booking, 'bookVolume'))
+            if (_.get(booking, 'bookVolume') || _.get(booking, 'bookVolume') === 0)
             {
               totalVolume += _.get(booking, 'bookVolume')
             }
@@ -179,7 +194,7 @@ export default class EdiParser856 extends BaseEdiParser {
             {
               throw new Error(`missing the bookVolume in bookingPOPackings ${missingPosition}`)
             }
-            if (_.get(booking, 'bookQuantity'))
+            if (_.get(booking, 'bookQuantity') || _.get(booking, 'bookQuantity') === 0)
             {
               totalShipUnit += _.get(booking, 'bookQuantity')
             }
@@ -187,7 +202,7 @@ export default class EdiParser856 extends BaseEdiParser {
             {
               throw new Error(`missing the bookQuantity in bookingPOPackings ${missingPosition}`)
             }
-            if (_.get(booking, 'bookCtns'))
+            if (_.get(booking, 'bookCtns') || _.get(booking, 'bookCtns') === 0)
             {
               numberOfPacking += _.get(booking, 'bookCtns')
             }
@@ -197,7 +212,7 @@ export default class EdiParser856 extends BaseEdiParser {
             }
             missingPosition++
           }
-          if (totalWeight > 0)
+          if (totalWeight >= 0)
           {
             const MEA: JSONObject = {
               segement: 'MEA',
@@ -208,7 +223,7 @@ export default class EdiParser856 extends BaseEdiParser {
             MEA.elementList.push( 'WT', totalWeight.toString().substring(0, 20), 'KG')
             loopObjectList.push(MEA)
           }
-          if (totalVolume > 0)
+          if (totalVolume >= 0)
           {
             const MEA: JSONObject = {
               segement: 'MEA',
@@ -219,7 +234,7 @@ export default class EdiParser856 extends BaseEdiParser {
             MEA.elementList.push( 'VOL', totalVolume.toString().substring(0, 20), 'CO')
             loopObjectList.push(MEA)
           }
-          if (numberOfPacking > 0)
+          if (numberOfPacking >= 0)
           {
             const MEA: JSONObject = {
               segement: 'MEA',
@@ -229,7 +244,7 @@ export default class EdiParser856 extends BaseEdiParser {
             MEA.elementList.push( 'NM', numberOfPacking.toString().substring(0, 20), 'CT')
             loopObjectList.push(MEA)
           }
-          if (totalShipUnit > 0)
+          if (totalShipUnit >= 0)
           {
             const MEA: JSONObject = {
               segement: 'MEA',
@@ -247,77 +262,109 @@ export default class EdiParser856 extends BaseEdiParser {
           HII: 'HLCU',
           HSU: 'SUDU',
           ONE: 'ONEY',
+          MSK: 'MAEU'
         }
         let scac = '    '
         if (carrierCode)
         {
           scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode || ''.toString().length)}`
         }
-        if (_.get(element, 'portOfLoading') || _.get(element, 'portOfDischarge') || _.get(element, 'placeOfReceiptCode'))
-        {
-          if (_.get(element, 'portOfLoading'))
-          {
-            const TD5: JSONObject = {
-                segement : 'TD5',
-                elementList : []
-            }
-            TD5.elementList.push('O')
-            TD5.elementList.push('2')
-            TD5.elementList.push(scac)
-            TD5.elementList.push('')// not used
-            TD5.elementList.push('')// not used // space or no space
-            TD5.elementList.push('')// not used // space or no space
-            TD5.elementList.push('KL')
-            TD5.elementList.push(_.get(element, 'portOfLoading').substring(0, 30))
-            loopObjectList.push(TD5)
-          }
-          if (_.get(element, 'portOfDischarge'))
-          {
-            const TD5: JSONObject = {
-                segement : 'TD5',
-                elementList : []
-            }
-            TD5.elementList.push('O')
-            TD5.elementList.push('2')
-            TD5.elementList.push(scac)
-            TD5.elementList.push('')// not used
-            TD5.elementList.push('')// not used // space or no space
-            TD5.elementList.push('')// not used // space or no space
-            TD5.elementList.push('PB')
-            TD5.elementList.push(_.get(element, 'portOfDischarge').substring(0, 30))
-            loopObjectList.push(TD5)
-          }
-          if (_.get(element, 'placeOfReceiptCode'))
-          {
-            const TD5: JSONObject = {
-                segement : 'TD5',
-                elementList : []
-            }
-            TD5.elementList.push('O')
-            TD5.elementList.push('2')
-            TD5.elementList.push(scac)
-            TD5.elementList.push('') // not used
-            TD5.elementList.push('') // not used
-            TD5.elementList.push('') // not used
-            TD5.elementList.push('OA')
-            TD5.elementList.push(_.get(element, 'placeOfReceiptCode').substring(0, 30))
-            loopObjectList.push(TD5)
-          }
-        }
-        else
-        {
-          if (carrierCode)
-          {
-            const TD5: JSONObject = {
+        // if (_.get(element, 'portOfLoading') || _.get(element, 'portOfDischarge') || _.get(element, 'containerPoint'))
+        // {
+          // if (_.get(element, 'containerPoint'))
+          // {
+            const TD5OA: JSONObject = {
               segement : 'TD5',
               elementList : []
             }
-            TD5.elementList.push('O')
-            TD5.elementList.push('2')
-            TD5.elementList.push(scac)
-            loopObjectList.push(TD5)
+              TD5OA.elementList.push('O')
+              TD5OA.elementList.push('2')
+              TD5OA.elementList.push(scac)
+              TD5OA.elementList.push('') // not used
+              TD5OA.elementList.push('') // not used
+              TD5OA.elementList.push('') // not used
+              TD5OA.elementList.push('OA')
+              TD5OA.elementList.push(_.get(element, 'containerPoint').substring(0, 30))
+              loopObjectList.push(TD5OA)
+            // }
+
+          // if (_.get(element, 'portOfDischarge'))
+          // {
+            const TD5PB: JSONObject = {
+                segement : 'TD5',
+                elementList : []
+            }
+            TD5PB.elementList.push('O')
+            TD5PB.elementList.push('2')
+            TD5PB.elementList.push(scac)
+            TD5PB.elementList.push('')// not used
+            TD5PB.elementList.push('')// not used // space or no space
+            TD5PB.elementList.push('')// not used // space or no space
+            TD5PB.elementList.push('PB')
+            TD5PB.elementList.push(_.get(element, 'portOfDischarge').substring(0, 30))
+            loopObjectList.push(TD5PB)
+          // }
+          if (!_.get(element, 'finalDestination'))
+          {
+            throw new Error('there is no finalDesination')
           }
-        }
+          const TD5DE: JSONObject = {
+            segement : 'TD5',
+            elementList : []
+          }
+            TD5DE.elementList.push('O')
+            TD5DE.elementList.push('2')
+            TD5DE.elementList.push(scac)
+            TD5DE.elementList.push('') // not used
+            TD5DE.elementList.push('') // not used
+            TD5DE.elementList.push('') // not used
+            TD5DE.elementList.push('DE')
+            TD5DE.elementList.push((_.get(element, 'finalDestination') || ' ').substring(0, 30))
+            loopObjectList.push(TD5DE)
+          const TD5DL: JSONObject = {
+            segement : 'TD5',
+            elementList : []
+          }
+            TD5DL.elementList.push('O')
+            TD5DL.elementList.push('2')
+            TD5DL.elementList.push(scac)
+            TD5DL.elementList.push('') // not used
+            TD5DL.elementList.push('') // not used
+            TD5DL.elementList.push('') // not used
+            TD5DL.elementList.push('DL')
+            TD5DL.elementList.push((_.get(element, 'finalDestination') || ' ').substring(0, 30))
+            loopObjectList.push(TD5DL)
+             // if (_.get(element, 'portOfLoading'))
+          // {
+            const TD5KL: JSONObject = {
+              segement : 'TD5',
+              elementList : []
+            }
+            TD5KL.elementList.push('O')
+            TD5KL.elementList.push('2')
+            TD5KL.elementList.push(scac)
+            TD5KL.elementList.push('')// not used
+            TD5KL.elementList.push('')// not used // space or no space
+            TD5KL.elementList.push('')// not used // space or no space
+            TD5KL.elementList.push('KL')
+            TD5KL.elementList.push(_.get(element, 'portOfLoading').substring(0, 30))
+            loopObjectList.push(TD5KL)
+          // }
+        // }
+        // else
+        // {
+        //  if (carrierCode)
+        //  {
+        //    const TD5: JSONObject = {
+        //      segement : 'TD5',
+        //      elementList : []
+        //    }
+        //    TD5.elementList.push('O')
+        //    TD5.elementList.push('2')
+        //    TD5.elementList.push(scac)
+        //    loopObjectList.push(TD5)
+        //  }
+        // }
 
         if ((_.get(element, 'bookingContainers') || []).length)
         {
@@ -364,6 +411,16 @@ export default class EdiParser856 extends BaseEdiParser {
           }
           DTM.elementList.push('050')
           DTM.elementList.push(moment(_.get(element, 'cargoReceipt')).format('YYYYMMDD'))
+          loopObjectList.push(DTM)
+        }
+        if (_.get(element, 'estimatedDepartureDate'))
+        {
+          const DTM: JSONObject = {
+              segement : 'DTM',
+              elementList : []
+          }
+          DTM.elementList.push('ABK')
+          DTM.elementList.push(moment(_.get(element, 'estimatedDepartureDate')).format('YYYYMMDD'))
           loopObjectList.push(DTM)
         }
         if (_.get(element, 'estimatedDepartureDate'))
@@ -446,30 +503,31 @@ export default class EdiParser856 extends BaseEdiParser {
             HII: 'HLCU',
             HSU: 'SUDU',
             ONE: 'ONEY',
+            MSK: 'MAEU'
           }
           let scac = '    '
           if (carrierCode)
           {
             scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode.toString().length)}`
           }
-          if (_.get(subPoList[0], 'pol') || _.get(element, 'portOfLoading'))
-          {
-            const TD5: JSONObject = {
+          // if (_.get(subPoList[0], 'pol') || _.get(element, 'portOfLoading'))
+          // {
+            const TD5OR: JSONObject = {
               segement : 'TD5',
               elementList : []
             }
-            TD5.elementList.push('O')
-            TD5.elementList.push('2')
-            TD5.elementList.push(scac)
-            TD5.elementList.push('') // not used
-            TD5.elementList.push('') // not used
-            TD5.elementList.push('') // not used
-            TD5.elementList.push('OR')
-            TD5.elementList.push((_.get(subPoList[0], 'pol') || _.get(element, 'portOfLoading')).substring(0, 30))
-            loopObjectList.push(TD5)
-          }
-          if (_.get(subPoList[0], 'pod') || _.get(element, 'portOfDischarge'))
-          {
+            TD5OR.elementList.push('O')
+            TD5OR.elementList.push('2')
+            TD5OR.elementList.push(scac)
+            TD5OR.elementList.push('') // not used
+            TD5OR.elementList.push('') // not used
+            TD5OR.elementList.push('') // not used
+            TD5OR.elementList.push('OR')
+            TD5OR.elementList.push((_.get(element, 'placeOfReceipt') || ' ').substring(0, 30))
+            loopObjectList.push(TD5OR)
+          // }
+          // if (_.get(subPoList[0], 'pod') || _.get(element, 'portOfDischarge'))
+          // {
             const TD5: JSONObject = {
               segement : 'TD5',
               elementList : []
@@ -481,33 +539,48 @@ export default class EdiParser856 extends BaseEdiParser {
             TD5.elementList.push('') // not used
             TD5.elementList.push('') // not used
             TD5.elementList.push('DL')
-            TD5.elementList.push((_.get(subPoList[0], 'pod') || _.get(element, 'portOfDischarge')).substring(0, 30))
+            TD5.elementList.push((_.get(element, 'finalDestination') || ' ').substring(0, 30))
             loopObjectList.push(TD5)
-          }
+          // }
 
           // const ItemList = _.get(element, 'bookingPOPackings') // find packing# however in this case packing# same as Item #
           const totalItemNo = subPoList.length
 
           const bookingReferences = _.get(element, 'bookingReferences') || []
-          if (bookingReferences.length)
-          {
-            for (const ref of bookingReferences)
-            {
-              const refMapper = {
-                MBL: 'BM',
-              }
-              const refName = _.get(ref, 'refName')
-              if (refMapper[refName])
-              {
-                const REF: JSONObject = {
-                  segement : 'REF',
-                  elementList : []
-                }
-                REF.elementList.push(refMapper[refName], _.get(ref, 'refDescription'))
-                loopObjectList.push(REF)
-              }
-            }
+          const refBMinfo = bookingReferences.find(x => x.refName === 'MBL')
+          const REFBM: JSONObject = {
+            segement : 'REF',
+            elementList : []
           }
+          REFBM.elementList.push('BM', _.get(refBMinfo, 'refDescription') || ' ')
+          loopObjectList.push(REFBM)
+          const refFNinfo = bookingReferences.find(x => x.refName === 'HBL')
+          const REFFN: JSONObject = {
+            segement : 'REF',
+            elementList : []
+          }
+          REFFN.elementList.push('FN', _.get(refFNinfo, 'refDescription') || ' ')
+          loopObjectList.push(REFFN)
+          // if (bookingReferences.length)
+          // {
+            // for (const ref of bookingReferences)
+            // {
+              // const refMapper = {
+              //  MBL: 'BM',
+              //  HBL: 'FN'
+              // }
+              // const refName = _.get(ref, 'refName')
+              // if (refMapper[refName])
+              // {
+                // const REF: JSONObject = {
+                //  segement : 'REF',
+                //  elementList : []
+                // }
+                // REF.elementList.push(refMapper[refName], _.get(ref, 'refDescription'))
+                // loopObjectList.push(REF)
+              // }
+            // }
+          // }
           const folderNo = _.get(element, 'folderNo')
           if (!folderNo)
           {
@@ -575,40 +648,50 @@ export default class EdiParser856 extends BaseEdiParser {
             SLN.elementList.push((_.get(subPoList[itemIndex], 'bookQuantity') || ' ').toString().substring(0, 15))
             SLN.elementList.push('PC')
             loopObjectList.push(SLN)
-            if (_.get(ItemList[itemIndex], 'bookWeight'))
+            const PID: JSONObject = {
+              segement: 'PID',
+              elementList : []
+            }
+            PID.elementList.push('F')
+            PID.elementList.push('')// not used
+            PID.elementList.push('')
+            PID.elementList.push('')
+            PID.elementList.push((_.get(subPoList[itemIndex], 'productDescription') || ' ').toString().substring(0, 20))
+            loopObjectList.push(PID)
+            if (_.get(ItemList[itemIndex], 'bookWeight') || _.get(ItemList[itemIndex], 'bookWeight') === 0)
               {
                   const MEA: JSONObject = {
                     segement: 'MEA',
                     elementList: []
                 }
-                MEA.elementList.push('', 'WT', (_.get(subPoList[itemIndex], 'bookWeight') || ' ').toString().substring(0, 20),  'KG')
+                MEA.elementList.push('', 'WT', (_.get(subPoList[itemIndex], 'bookWeight')).toString().substring(0, 20),  'KG')
                 loopObjectList.push(MEA)
               }
-            if (_.get(ItemList[itemIndex], 'bookVolume'))
+            if (_.get(ItemList[itemIndex], 'bookVolume') || _.get(ItemList[itemIndex], 'bookVolume') === 0)
             {
                 const MEA: JSONObject = {
                   segement: 'MEA',
                   elementList: []
               }
-              MEA.elementList.push('', 'VOL', (_.get(subPoList[itemIndex], 'bookVolume') || ' ').toString().substring(0, 20),  'CO')
+              MEA.elementList.push('', 'VOL', (_.get(subPoList[itemIndex], 'bookVolume')).toString().substring(0, 20),  'CO')
               loopObjectList.push(MEA)
             }
-            if (_.get(subPoList[itemIndex], 'bookCtns'))
+            if (_.get(subPoList[itemIndex], 'bookCtns') || _.get(subPoList[itemIndex], 'bookCtns') === 0)
             {
               const MEANUM: JSONObject = {
                 segement: 'MEA',
                 elementList: []
               }
-              MEANUM.elementList.push('', 'NM', (_.get(subPoList[itemIndex], 'bookCtns') || ' ').toString().substring(0, 20),  'CT')
+              MEANUM.elementList.push('', 'NM', (_.get(subPoList[itemIndex], 'bookCtns')).toString().substring(0, 20),  'CT')
               loopObjectList.push(MEANUM)
             }
-            if (_.get(ItemList[itemIndex], 'bookQuantity'))
+            if (_.get(ItemList[itemIndex], 'bookQuantity') || _.get(subPoList[itemIndex], 'bookCtns') === 0)
             {
               const MEA: JSONObject = {
                   segement: 'MEA',
                   elementList: []
               }
-              MEA.elementList.push('', 'SU', (_.get(subPoList[itemIndex], 'bookQuantity') || ' ').toString().substring(0, 20),  'PC')
+              MEA.elementList.push('', 'SU', (_.get(subPoList[itemIndex], 'bookQuantity')).toString().substring(0, 20),  'PC')
               loopObjectList.push(MEA)
             }
 

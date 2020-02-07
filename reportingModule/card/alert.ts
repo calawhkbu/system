@@ -22,33 +22,43 @@ function prepareParams(): Function {
     const subqueries = (params.subqueries = params.subqueries || {})
 
     if (!subqueries.entityType) throw new Error('MISSING_ENTITY_TYPE')
+
     if (['shipment', 'booking', 'purchase-order'].indexOf(subqueries.entityType.value) === -1)
       throw new Error(
         `INVALID_ENTITY_TYPE_${String(subqueries.type.value).toLocaleUpperCase()}`
       )
 
-    if (!subqueries.withinHours) throw new Error('MISSING_withinHours')
+    let alertCreatedAtJson: { from: any, to: any }
 
-    const withinHours = params.subqueries.withinHours
+    if (!subqueries.withinHours) {
 
-    const alertCreatedAtJson = {
-        from : moment('2018-01-01'),
-        to : moment()
+      const selectedDate = (subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment())
+      const currentMonth = selectedDate.month()
+      alertCreatedAtJson = {
+        from: selectedDate.month(currentMonth).startOf('month').format('YYYY-MM-DD'),
+        to: selectedDate.month(currentMonth).endOf('month').format('YYYY-MM-DD'),
+      }
+    }
+
+    else {
+
+      const withinHours = params.subqueries.withinHours
+      alertCreatedAtJson = {
+        from: moment().subtract(withinHours.value, 'hours'),
+        to: moment()
       }
 
-    // const alertCreatedAtJson = {
-    //   from : moment().subtract(withinHours.value, 'hours'),
-    //   to : moment()
-    // }
+    }
 
+    subqueries.date = undefined
     subqueries.alertCreatedAt = alertCreatedAtJson
 
     subqueries.alertStatus = {
-      value : ['open']
+      value: ['open']
     }
 
     subqueries.alertCategory = {
-      value : ['Exception', 'Notification']
+      value: ['Exception', 'Notification']
     }
 
     subqueries.date = undefined
@@ -73,33 +83,41 @@ function finalQuery(): Function {
 
     const entityType = subqueries.entityType.value
 
-    const withinHours = params.subqueries.withinHours
+    let alertCreatedAtJson: { from: any, to: any }
+    if (!subqueries.withinHours) {
 
-    const alertCreatedAtJson = {
-        from : moment('2018-01-01'),
-        to : moment()
+      const selectedDate = (subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment())
+      const currentMonth = selectedDate.month()
+      alertCreatedAtJson = {
+        from: selectedDate.month(currentMonth).startOf('month').format('YYYY-MM-DD'),
+        to: selectedDate.month(currentMonth).endOf('month').format('YYYY-MM-DD'),
       }
 
-    // const alertCreatedAtJson = {
-    //   from : moment().subtract(withinHours.value, 'hours'),
-    //   to : moment()
-    // }
+    }
+
+    else {
+      const withinHours = params.subqueries.withinHours
+
+      alertCreatedAtJson = {
+        from: moment().subtract(withinHours.value, 'hours'),
+        to: moment()
+      }
+
+    }
 
     let bottomSheetId
 
-    if (entityType === 'shipment')
-    {
+    if (entityType === 'shipment') {
       bottomSheetId = shipmentBottomSheetId
     }
 
-    else if (entityType === 'booking')
-    {
+    else if (entityType === 'booking') {
       bottomSheetId = bookingBottomSheetId
     }
 
     return new Query({
 
-      $select : [
+      $select: [
         new ResultColumn('alertCategory'),
         new ResultColumn('alertType'),
         new ResultColumn('tableName'),
@@ -125,7 +143,7 @@ function finalQuery(): Function {
               type: 'string',
             },
 
-            { name: 'count', type: 'number'},
+            { name: 'count', type: 'number' },
           ],
         },
         'alert'
@@ -168,23 +186,23 @@ export const filters = [
     type: 'list',
   },
   {
-    name : 'withinHours',
-    props : {
-      items : [
+    name: 'withinHours',
+    props: {
+      items: [
         {
-          label : '12hrs',
-          value : 12
+          label: '12hrs',
+          value: 12
         },
         {
-          label : '24hrs',
-          value : 24
+          label: '24hrs',
+          value: 24
         },
         {
-          label : '36hrs',
-          value : 36
+          label: '36hrs',
+          value: 36
         }
       ]
     },
-    type : 'list'
+    type: 'list'
   }
 ]

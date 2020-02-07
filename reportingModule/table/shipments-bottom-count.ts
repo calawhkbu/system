@@ -1,35 +1,96 @@
 import { Query, FromTable } from 'node-jql'
 import { parseCode } from 'utils/function'
+import moment = require('moment')
 
 function prepareShipmentParams(): Function {
-  const fn = async function(require, session, params) {
-    // import
-    const { BadRequestException } = require('@nestjs/common')
-
+  return function(require, session, params) {
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    // lastStatusList case
-    if (subqueries.lastStatus) {
-      if (!(subqueries.lastStatus.value && subqueries.lastStatus.value.length) )
-        throw new Error('MISSING_lastStatus')
+    params.fields = [
+      'id',
+      'houseNo',
+      'masterNo',
+      'jobDate',
+      'carrierName',
+      'shipperPartyName',
+      'consigneePartyName',
+      'portOfLoadingCode',
+      'portOfDischargeCode',
+      'departureDateEstimated',
+      'arrivalDateEstimated',
+    ]
 
-      subqueries.lastStatusCodeJoin = true
+    // used in mapCard to bottom sheet
+    if (subqueries.location || subqueries.locationCode) {
+      if (!(subqueries.location && subqueries.location.value))
+        throw new Error('MISSING_location')
+
+      if (!(subqueries.locationCode && subqueries.locationCode.value))
+        throw new Error('MISSING_locationCode')
+
+      const location = subqueries.location.value
+      const locationCode = `${location}Code`
+
+      const subqueriesName = `${location}Join`
+      const locationCodeValue = subqueries.locationCode.value
+
+      // portOfLoadingCode = 'ABC'
+      subqueries[locationCode] = {
+        value: locationCodeValue
+      }
+
+      subqueries[subqueriesName] = true
+
     }
 
-    // lastStatusList case
+    // lastStatus case
+    if (subqueries.lastStatus) {
+      if (!(subqueries.lastStatus.value && subqueries.lastStatus.value.length))
+        throw new Error('MISSING_lastStatus')
+
+      subqueries.lastStatusJoin = true
+    }
+
+    // alertType case
     if (subqueries.alertType) {
-      if (!(subqueries.alertType.value && subqueries.alertType.value.length) )
+      if (!(subqueries.alertType.value && subqueries.alertType.value.length))
         throw new Error('MISSING_alertType')
 
-        subqueries.alertJoin = true
+      subqueries.alertJoin = true
+
+      let alertCreatedAtJson: { from: any, to: any}
+
+      if (!subqueries.withinHours)
+      {
+
+        const selectedDate = (subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment())
+        const currentMonth = selectedDate.month()
+        alertCreatedAtJson = {
+          from: selectedDate.month(currentMonth).startOf('month').format('YYYY-MM-DD'),
+          to: selectedDate.month(currentMonth).endOf('month').format('YYYY-MM-DD'),
+        }
+      }
+
+      else
+      {
+
+        const withinHours = params.subqueries.withinHours
+        alertCreatedAtJson = {
+          from : moment().subtract(withinHours.value, 'hours'),
+          to : moment()
+        }
+
+      }
+
+      subqueries.date = undefined
+      subqueries.alertCreatedAt = alertCreatedAtJson
+
     }
 
     return params
   }
 
-  const code = fn.toString()
-  return parseCode(code)
 }
 
 const query = new Query({

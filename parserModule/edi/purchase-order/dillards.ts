@@ -4246,6 +4246,23 @@ export default class Edi850Parser extends BaseEdiParser {
             const poItemList: any[] = []
             for (const PO1 of po1) {
               // k<ST['PO1'].length
+              let sln = _.get(PO1, 'SLN')
+              if (!_.get(PO1, 'SLN').length)
+              {
+                sln = [sln]
+              }
+              const packInfoList = []
+              for (const SLN of sln)
+              {
+                const packInfo: any = {
+                  subLine: _.get(SLN, 'assignedIdentification'),
+                  unitPrice: _.get(SLN, 'unitPrice'),
+                  size: (_.get(SLN, 'productId2') || ''),
+                  quantity: _.get(SLN, 'quantity'),
+                  quantityUnit: _.get(SLN, 'unitOfMeasureCode'),
+                }
+                packInfoList.push(packInfo)
+              }
               const product: any = {
                 // sdqQuantityPerPackage: _.get(PO1, 'SDQ.quantity'),
                 quantityPerPackage: _.get(PO1, 'PO4.pack'),
@@ -4254,18 +4271,19 @@ export default class Edi850Parser extends BaseEdiParser {
                 quantityUnit: _.get(PO1, 'unitOfMeasureCode'),
                 volume: _.get(PO1, 'PO4.grossVolumePerPack'),
                 product: {
-                  subLine: _.get(PO1, 'SLN.assignedIdentification'),
+                  // subLine: _.get(PO1, 'SLN.assignedIdentification'),
                   poLineNo: _.get(PO1, 'poLineNumber'),
-                  unitPrice: _.get(PO1, 'unitPrice'),
+                  // unitPrice: _.get(PO1, 'SLN.unitPrice'),
                   priceUnit: _.get(PO1, 'basisOfUnitPrice'),
                   upcen: _.get(PO1, 'productId1').trim(),
-                  size: (_.get(PO1, 'productId2') || ''),
+                  // size: (_.get(PO1, 'SLN.productId2') || ''),
                   colorDesc: _.get(PO1, 'productId4'),
                   pack: _.get(PO1, 'poLineNumber'),
                   buyerSKU: _.get(PO1, 'productId3'),
                   style: _.get(PO1, 'productId5'),
                   price: _.get(PO1, 'productId6'),
                 },
+                packInfo : packInfoList,
               }
               let n9s = _.get(PO1, 'N9', []) || []
               if (n9s && !n9s.length)
@@ -4337,6 +4355,23 @@ export default class Edi850Parser extends BaseEdiParser {
           if (poc.length) {
             const poItemList: any[] = []
             for (const POC of poc) {
+              let sln = _.get(POC, 'SLN')
+              if (!_.get(POC, 'SLN').length)
+              {
+                sln = [sln]
+              }
+              const packInfoList = []
+              for (const SLN of sln)
+              {
+                const packInfo: any = {
+                  subLine: _.get(SLN, 'assignedIdentification'),
+                  unitPrice: _.get(SLN, 'unitPrice'),
+                  size: (_.get(SLN, 'productId2') || ''),
+                  quantity: _.get(SLN, 'quantity'),
+                  quantityUnit: _.get(SLN, 'unitOfMeasureCode'),
+                }
+                packInfoList.push(packInfo)
+              }
               const poItem: any = {
                 perPackageQuantity: _.get(POC, 'PO4.pack'),
                 addItem: _.get(POC, 'lineItemChange') === 'Add Item',
@@ -4348,20 +4383,21 @@ export default class Edi850Parser extends BaseEdiParser {
                 quantityUnit: _.get(POC, 'unitOfMeasureCode'),
                 quantityChange: _.get(POC, 'quantityChange'),
                 volume: _.get(POC, 'PO4.grossVolumePerPack'),
-                htsCode: _.get(POC, 'SLN.productId2'),
+                // htsCode: _.get(POC, 'SLN.productId2'),
                 product: {
                   poLineNo: _.get(POC, 'assignedIdentification'),
-                  subLine: _.get(POC, 'SLN.assignedIdentification'),
-                  unitPrice: _.get(POC, 'unitPrice'),
+                  // subLine: _.get(POC, 'SLN.assignedIdentification'),
+                  // unitPrice: _.get(POC, 'SLN.unitPrice'),
                   priceUnit: _.get(POC, 'basisOfUnitPriceCode'),
                   upcen: _.get(POC, 'productId1').trim(),
-                  size: (_.get(POC, 'productId2') || ''),
+                  // size: (_.get(POC, 'SLN.productId2') || ''),
                   colorDesc: _.get(POC, 'productId4'),
                   pack: _.get(POC, 'assignedIdentification'),
                   buyerSKU: _.get(POC, 'productId3'),
                   style: _.get(POC, 'productId5'),
                   price: _.get(POC, 'productId6'),
                 },
+                packInfo : packInfoList,
               }
               if (_.get(POC, 'lineItemChange') === 'Add Item')
               {

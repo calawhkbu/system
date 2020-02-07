@@ -14,7 +14,7 @@ function prepareShipmentParams(): Function {
       if (!(subqueries.lastStatus.value && subqueries.lastStatus.value.length) )
         throw new Error('MISSING_lastStatus')
 
-      subqueries.lastStatusCodeJoin = true
+      subqueries.lastStatusJoin = true
     }
 
     // lastStatusList case
