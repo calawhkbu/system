@@ -15,33 +15,31 @@ const query = new QueryDef(
       `
         (
           SELECT
-            tracking_reference.*, masterNo AS trackingNo, 'masterNo' AS type
+            tracking_reference.id, tracking_reference.partyGroupCode,
+            tracking_reference.trackingType, tracking_reference.carrierCode, tracking_reference.carrierCode2,
+            tracking_reference.departureDateEstimated, tracking_reference.mode, masterNo AS trackingNo, 'masterNo' AS type
           FROM
             tracking_reference
           WHERE
-            tracking_reference.deletedAt IS NULL
-            AND
-            tracking_reference.deletedBy IS NULL
+            tracking_reference.deletedAt IS NULL AND tracking_reference.deletedBy IS NULL AND masterNo is not null
           UNION
           SELECT
-            tracking_reference.*, soTable.trackingNo AS trackingNo, 'soNo' AS type
+            tracking_reference.id, tracking_reference.partyGroupCode,
+            tracking_reference.trackingType, tracking_reference.carrierCode, tracking_reference.carrierCode2,
+            tracking_reference.departureDateEstimated, tracking_reference.mode, soTable.trackingNo AS trackingNo, 'soNo' AS type
           FROM
             tracking_reference,
             JSON_TABLE(soNo, "$[*]" COLUMNS (trackingNo VARCHAR(100) PATH "$")) soTable
-          WHERE
-            tracking_reference.deletedAt IS NULL
-            AND
-            tracking_reference.deletedBy IS NULL
+          WHERE tracking_reference.deletedAt IS NULL AND tracking_reference.deletedBy IS NULL AND soTable.trackingNo is not null
           UNION
           SELECT
-            tracking_reference.*, containerTable.trackingNo AS trackingNo, 'containerNo' AS type
+            tracking_reference.id, tracking_reference.partyGroupCode,
+            tracking_reference.trackingType, tracking_reference.carrierCode, tracking_reference.carrierCode2,
+            tracking_reference.departureDateEstimated, tracking_reference.mode, containerTable.trackingNo AS trackingNo, 'containerNo' AS type
           FROM
             tracking_reference,
             JSON_TABLE(containerNo, "$[*]" COLUMNS (trackingNo VARCHAR(100) PATH "$")) containerTable
-          WHERE
-            tracking_reference.deletedAt IS NULL
-            AND
-            tracking_reference.deletedBy IS NULL
+          WHERE tracking_reference.deletedAt IS NULL AND tracking_reference.deletedBy IS NULL AND containerTable.trackingNo is not null
         )
       `,
       'tracking_reference',
