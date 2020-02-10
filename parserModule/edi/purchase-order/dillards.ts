@@ -2219,6 +2219,66 @@ export const formatJson = {
                         type: 'string',
                       },
                     ],
+                    segmentFormatList: [
+                      {
+                        key: 'CTP',
+                        code: 'CTP',
+                        name: 'Pricing Information',
+                        type: 'object',
+                        mandatory: false,
+                        elementFormatList: [
+                          {
+                            index: 1,
+                            maximumLen: 2,
+                            minimumLen: 2,
+                            name: 'Class of Trade',
+                            key: 'classOfTrade',
+                            allowableValues: {
+                              valueOptions: [
+                                {
+                                  value: 'RS',
+                                  name: 'Resale',
+                                  overrideValue: 'Resale',
+                                },
+                              ],
+                              allowAny: true,
+                            },
+                            type: 'string',
+                          },
+                          {
+                            index: 2,
+                            maximumLen: 3,
+                            minimumLen: 3,
+                            name: 'Price Code Qualifier',
+                            key: 'priceCodeQualifier',
+                            allowableValues: {
+                              valueOptions: [
+                                {
+                                  value: 'UCP',
+                                  name: 'Cost',
+                                  overrideValue: 'Cost',
+                                },
+                                {
+                                  value: 'RTL',
+                                  name: 'Resale Price',
+                                  overrideValue: 'Resale Price',
+                                },
+                              ],
+                              allowAny: true,
+                            },
+                            type: 'string',
+                          },
+                          {
+                            index: 3,
+                            maximumLen: 14,
+                            minimumLen: 1,
+                            name: 'Unit Price',
+                            key: 'unitPrice',
+                            type: 'decimal',
+                          },
+                        ],
+                      },
+                    ]
                   },
                 ],
               },
@@ -3769,7 +3829,7 @@ export const formatJson = {
                         key: 'productId3',
                         type: 'string',
                       },
-                    ],
+                    ]
                   },
                   {
                     code: 'SDQ',
@@ -4154,7 +4214,9 @@ export default class Edi850Parser extends BaseEdiParser {
           let n1s = _.get(ST, 'N1', []) || []
           if (n1s && !n1s.length)
           {
-            n1s = [n1s]
+            n1s = _.get(ST, 'N1')
+            ? [_.get(ST, 'N1')]
+            : []
           }
           if (n1s.length) {
             const partyMapper = {
@@ -4246,10 +4308,12 @@ export default class Edi850Parser extends BaseEdiParser {
             const poItemList: any[] = []
             for (const PO1 of po1) {
               // k<ST['PO1'].length
-              let sln = _.get(PO1, 'SLN')
-              if (!_.get(PO1, 'SLN').length)
+              let sln = _.get(PO1, 'SLN') || []
+              if (!sln.length)
               {
-                sln = [sln]
+                sln = _.get(PO1, 'SLN')
+                ? [_.get(PO1, 'SLN')]
+                : []
               }
               const packInfoList = []
               for (const SLN of sln)
@@ -4257,7 +4321,7 @@ export default class Edi850Parser extends BaseEdiParser {
                 const packInfo: any = {
                   subLine: _.get(SLN, 'assignedIdentification'),
                   unitPrice: _.get(SLN, 'unitPrice'),
-                  size: (_.get(SLN, 'productId2') || ''),
+                  size: _.get(SLN, 'productId2'),
                   quantity: _.get(SLN, 'quantity'),
                   quantityUnit: _.get(SLN, 'unitOfMeasureCode'),
                 }
@@ -4281,7 +4345,7 @@ export default class Edi850Parser extends BaseEdiParser {
                   pack: _.get(PO1, 'poLineNumber'),
                   buyerSKU: _.get(PO1, 'productId3'),
                   style: _.get(PO1, 'productId5'),
-                  price: _.get(PO1, 'productId6'),
+                  price: _.get(PO1, 'unitPrice'),
                 },
                 packInfo : packInfoList,
               }
@@ -4290,11 +4354,26 @@ export default class Edi850Parser extends BaseEdiParser {
               {
                 n9s = [n9s]
               }
+              const n9Requirement = {
+                department: 'department',
+                mic : 'mic',
+                groupCode : 'groupCode',
+                labelCode: 'labelCode',
+                label: 'label',
+                hangtag: 'hangtag',
+                tracking: 'tracking',
+                concatenated: 'concatenated',
+                hts: 'hts',
+                specialPackageing: 'specialPackageing'
+              }
               if (n9s.length)
               {
                 for (const n9 of n9s)
                 {
-                  product[_.get(n9, 'referenceNumberQual')] = _.get(n9, 'referenceNumber')
+                  if (n9Requirement[_.get(n9, 'referenceNumberQual')])
+                  {
+                    product[_.get(n9, 'referenceNumberQual')] = _.get(n9, 'referenceNumber')
+                  }
                 }
               }
               poItemList.push(product)
@@ -4355,18 +4434,21 @@ export default class Edi850Parser extends BaseEdiParser {
           if (poc.length) {
             const poItemList: any[] = []
             for (const POC of poc) {
-              let sln = _.get(POC, 'SLN')
-              if (!_.get(POC, 'SLN').length)
+              let sln = _.get(POC, 'SLN') || []
+              if (!sln.length)
               {
-                sln = [sln]
+                sln = _.get(POC, 'SLN')
+                ? [_.get(POC, 'SLN')]
+                : []
               }
+
               const packInfoList = []
               for (const SLN of sln)
               {
                 const packInfo: any = {
                   subLine: _.get(SLN, 'assignedIdentification'),
                   unitPrice: _.get(SLN, 'unitPrice'),
-                  size: (_.get(SLN, 'productId2') || ''),
+                  size: _.get(SLN, 'productId2'),
                   quantity: _.get(SLN, 'quantity'),
                   quantityUnit: _.get(SLN, 'unitOfMeasureCode'),
                 }
@@ -4395,9 +4477,9 @@ export default class Edi850Parser extends BaseEdiParser {
                   pack: _.get(POC, 'assignedIdentification'),
                   buyerSKU: _.get(POC, 'productId3'),
                   style: _.get(POC, 'productId5'),
-                  price: _.get(POC, 'productId6'),
+                  price: _.get(POC, 'unitPrice'),
                 },
-                packInfo : packInfoList,
+                packInfo : packInfoList || null,
               }
               if (_.get(POC, 'lineItemChange') === 'Add Item')
               {
@@ -4423,11 +4505,26 @@ export default class Edi850Parser extends BaseEdiParser {
               {
                 n9s = [n9s]
               }
+              const n9Requirement = {
+                department: 'department',
+                mic : 'mic',
+                groupCode : 'groupCode',
+                labelCode: 'labelCode',
+                label: 'label',
+                hangtag: 'hangtag',
+                tracking: 'tracking',
+                concatenated: 'concatenated',
+                hts: 'hts',
+                specialPackageing: 'specialPackageing'
+              }
               if (n9s.length)
               {
                 for (const n9 of n9s)
                 {
-                  poItem[_.get(n9, 'referenceNumberQual')] = _.get(n9, 'referenceNumber')
+                  if (n9Requirement[_.get(n9, 'referenceNumberQual')])
+                  {
+                    poItem[_.get(n9, 'referenceNumberQual')] = _.get(n9, 'referenceNumber')
+                  }
                 }
               }
               poItemList.push(poItem)
@@ -4439,7 +4536,9 @@ export default class Edi850Parser extends BaseEdiParser {
           let n1s = _.get(ST, 'N1', []) || []
           if (n1s && !n1s.length)
           {
-            n1s = [n1s]
+            n1s = _.get(ST, 'N1')
+            ? [_.get(ST, 'N1')]
+            : []
           }
           if (n1s.length) {
             const partyMapper = {

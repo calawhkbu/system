@@ -754,7 +754,6 @@
                 "checkDisplayWhen": "return form.Email",
                 "name": "Email",
                 "component": "button-field",
-                "class": "hidden",
                 "readonlyClass": "xs-2 md-2",
                 "slots": [{
                   "is": "Icon",
