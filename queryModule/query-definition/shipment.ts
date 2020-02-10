@@ -280,7 +280,7 @@ const shipmentTrackingExpression = new Query({
 
 })
 
-const minTableExpression = new Query({
+const maxTableExpression = new Query({
   $select: [
     new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
     new ResultColumn('masterNo', 'trackingNo'),
@@ -332,16 +332,16 @@ const minTableExpression = new Query({
 
 const shipmentProrityTableExpression = new Query({
   $select: [
-    new ResultColumn(new ColumnExpression('min_table', 'shipmentId')),
-    new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('min_table', 'priority')), 'max_priority'),
-    new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('min_table', 'updatedAt')), 'max_updatedAt')
+    new ResultColumn(new ColumnExpression('max_table', 'shipmentId')),
+    new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('max_table', 'priority')), 'max_priority'),
+    new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('max_table', 'updatedAt')), 'max_updatedAt')
   ],
 
   $from: new FromTable({
-    table: minTableExpression,
-    $as: 'min_table',
+    table: maxTableExpression,
+    $as: 'max_table',
   }),
-  $group: new GroupBy(new ColumnExpression('min_table', 'shipmentId'))
+  $group: new GroupBy(new ColumnExpression('max_table', 'shipmentId'))
 
 })
 
