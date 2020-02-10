@@ -4354,11 +4354,26 @@ export default class Edi850Parser extends BaseEdiParser {
               {
                 n9s = [n9s]
               }
+              const n9Requirement = {
+                department: 'department',
+                mic : 'mic',
+                groupCode : 'groupCode',
+                labelCode: 'labelCode',
+                label: 'label',
+                hangtag: 'hangtag',
+                tracking: 'tracking',
+                concatenated: 'concatenated',
+                hts: 'hts',
+                specialPackageing: 'specialPackageing'
+              }
               if (n9s.length)
               {
                 for (const n9 of n9s)
                 {
-                  product[_.get(n9, 'referenceNumberQual')] = _.get(n9, 'referenceNumber')
+                  if (n9Requirement[_.get(n9, 'referenceNumberQual')])
+                  {
+                    product[_.get(n9, 'referenceNumberQual')] = _.get(n9, 'referenceNumber')
+                  }
                 }
               }
               poItemList.push(product)
@@ -4490,11 +4505,27 @@ export default class Edi850Parser extends BaseEdiParser {
               {
                 n9s = [n9s]
               }
+              const n9Requirement = {
+                department: 'department',
+                mic : 'mic',
+                groupCode : 'groupCode',
+                labelCode: 'labelCode',
+                label: 'label',
+                hangtag: 'hangtag',
+                tracking: 'tracking',
+                concatenated: 'concatenated',
+                hts: 'hts',
+                specialPackageing: 'specialPackageing'
+              }
+              
               if (n9s.length)
               {
                 for (const n9 of n9s)
                 {
-                  poItem[_.get(n9, 'referenceNumberQual')] = _.get(n9, 'referenceNumber')
+                  if (n9Requirement[_.get(n9, 'referenceNumberQual')])
+                  {
+                    poItem[_.get(n9, 'referenceNumberQual')] = _.get(n9, 'referenceNumber')
+                  }
                 }
               }
               poItemList.push(poItem)
