@@ -65,7 +65,7 @@
               "class": "xs-12"
             },
             {
-              "name": "trackingContainers",
+              "name": "details.trackingContainers",
               "label": "TrackingPage.containers",
               "component": "GridField",
               "class": "xs-12",
@@ -259,7 +259,7 @@
             },
             {
               "label": "TrackingPage.status",
-              "name": "trackingStatus",
+              "name": "details.trackingStatus",
               "component": "TableField",
               "class": "xs-12",
               "props": {
