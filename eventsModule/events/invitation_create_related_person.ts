@@ -25,7 +25,6 @@ class InvitationCreateRelatedPersonEvent extends BaseEvent {
     console.log('Start Excecute...', this.constructor.name)
 
     const invitation = parameters.data as Invitation
-    console.log(JSON.stringify(parameters), 'parameters')
 
     const {
       RelatedPersonDatabaseService: service
@@ -37,18 +36,49 @@ class InvitationCreateRelatedPersonEvent extends BaseEvent {
 
     const personPhoneContact = person.contacts.find(x => x.contactType === 'phone')
     const phone = personPhoneContact ? personPhoneContact.content : undefined
-    const relatedPersonDataList = partyIdList.map(partyId => {
+
+    const nameString = (person.firstName || '') + (person.lastName || '')
+
+    const name = nameString.length ? nameString : undefined
+
+    // find all existing relatedPerson in the db, update the existing, create the rest
+    const existingRelatedPersonList = await (service as RelatedPersonDatabaseService).find({
+      where : {
+        email : person.userName,
+        partyId : partyIdList
+      }
+    })
+
+    let dataList = existingRelatedPersonList.map(x => {
+      const data = x.dataValues
+      // update the personId to existing record
+      data.personId = person.id
+      return data
+
+    })
+
+    const existingRelatedPersonPartyIdList = existingRelatedPersonList.map(x => x.partyId)
+    const newRelatedPersonPartyIdList = partyIdList.filter(x => !existingRelatedPersonPartyIdList.includes(x))
+
+    const relatedPersonDataList = newRelatedPersonPartyIdList.map(partyId => {
 
       return {
         personId : person.id,
         partyId,
         email : person.userName,
-        // question : use what name?
-        name : person.userName,
+        name,
         phone
 
       } as RelatedPerson
     })
+
+    dataList = dataList.concat(relatedPersonDataList)
+
+    console.log(`dataList`)
+    console.log(dataList)
+
+    // debug
+    return null
 
     const relatedPersonList = await (service as RelatedPersonDatabaseService).save(relatedPersonDataList, this.user, this.transaction)
     console.log('End Excecute...', this.constructor.name)

@@ -1980,20 +1980,6 @@ summaryFieldList.map((summaryField: string | { name: string, expression: IExpres
 
 })
 
-// register filter =========================
-
-query
-  .registerQuery(
-    'lastStatusCodeIncludeNull',
-    new Query({
-      $where: new OrExpressions([
-        new InExpression(lastStatusCodeExpression, false, new Unknown()),
-        new IsNullExpression(lastStatusCodeExpression, false)
-      ])
-    })
-  )
-  .register('value', 0)
-
 // Shipment table filter ============================
 const shipmentTableFilterFieldList = [
   'id',
