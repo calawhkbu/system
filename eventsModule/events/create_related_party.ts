@@ -37,21 +37,20 @@ class CreateRelatedPartyEvent extends BaseEvent {
   public async mainFunction(
     {
       data,
-      otherParameters
+      partyLodash,
+      fixedParty
     }: {
       data: any,
-      otherParameters: {
-        partyLodash: string
-        fixedParty: string[]
-      }
+      partyLodash: string
+      fixedParty: string[]
     }
   ) {
     console.log('Start Excecute [Create Related Party]...', this.constructor.name)
-    const party = _.get(data, otherParameters.partyLodash, {})
+    const party = _.get(data, partyLodash, {})
     if (party) {
       const relatedParties: RelatedParty[] = []
       const allParty = [
-        ..._.get(otherParameters, 'fixedParty', []),
+        ...(fixedParty || []),
         ..._.get(party, 'flexData.moreParty', [])
       ]
       const partyId = {}
