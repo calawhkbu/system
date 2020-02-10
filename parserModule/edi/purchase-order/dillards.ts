@@ -4154,7 +4154,9 @@ export default class Edi850Parser extends BaseEdiParser {
           let n1s = _.get(ST, 'N1', []) || []
           if (n1s && !n1s.length)
           {
-            n1s = [n1s]
+            n1s = _.get(ST, 'N1')
+            ? [_.get(ST, 'N1')]
+            : []
           }
           if (n1s.length) {
             const partyMapper = {
@@ -4246,10 +4248,12 @@ export default class Edi850Parser extends BaseEdiParser {
             const poItemList: any[] = []
             for (const PO1 of po1) {
               // k<ST['PO1'].length
-              let sln = _.get(PO1, 'SLN')
-              if (!_.get(PO1, 'SLN').length)
+              let sln = _.get(PO1, 'SLN') || []
+              if (!sln.length)
               {
-                sln = [sln]
+                sln = _.get(PO1, 'SLN')
+                ? [_.get(PO1, 'SLN')]
+                : []
               }
               const packInfoList = []
               for (const SLN of sln)
@@ -4257,7 +4261,7 @@ export default class Edi850Parser extends BaseEdiParser {
                 const packInfo: any = {
                   subLine: _.get(SLN, 'assignedIdentification'),
                   unitPrice: _.get(SLN, 'unitPrice'),
-                  size: (_.get(SLN, 'productId2') || ''),
+                  size: _.get(SLN, 'productId2'),
                   quantity: _.get(SLN, 'quantity'),
                   quantityUnit: _.get(SLN, 'unitOfMeasureCode'),
                 }
@@ -4355,18 +4359,21 @@ export default class Edi850Parser extends BaseEdiParser {
           if (poc.length) {
             const poItemList: any[] = []
             for (const POC of poc) {
-              let sln = _.get(POC, 'SLN')
-              if (!_.get(POC, 'SLN').length)
+              let sln = _.get(POC, 'SLN') || []
+              if (!sln.length)
               {
-                sln = [sln]
+                sln = _.get(POC, 'SLN')
+                ? [_.get(POC, 'SLN')]
+                : []
               }
+
               const packInfoList = []
               for (const SLN of sln)
               {
                 const packInfo: any = {
                   subLine: _.get(SLN, 'assignedIdentification'),
                   unitPrice: _.get(SLN, 'unitPrice'),
-                  size: (_.get(SLN, 'productId2') || ''),
+                  size: _.get(SLN, 'productId2'),
                   quantity: _.get(SLN, 'quantity'),
                   quantityUnit: _.get(SLN, 'unitOfMeasureCode'),
                 }
@@ -4397,7 +4404,7 @@ export default class Edi850Parser extends BaseEdiParser {
                   style: _.get(POC, 'productId5'),
                   price: _.get(POC, 'productId6'),
                 },
-                packInfo : packInfoList,
+                packInfo : packInfoList || null,
               }
               if (_.get(POC, 'lineItemChange') === 'Add Item')
               {
@@ -4439,7 +4446,9 @@ export default class Edi850Parser extends BaseEdiParser {
           let n1s = _.get(ST, 'N1', []) || []
           if (n1s && !n1s.length)
           {
-            n1s = [n1s]
+            n1s = _.get(ST, 'N1')
+            ? [_.get(ST, 'N1')]
+            : []
           }
           if (n1s.length) {
             const partyMapper = {
