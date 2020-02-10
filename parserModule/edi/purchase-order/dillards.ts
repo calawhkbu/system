@@ -4345,7 +4345,7 @@ export default class Edi850Parser extends BaseEdiParser {
                   pack: _.get(PO1, 'poLineNumber'),
                   buyerSKU: _.get(PO1, 'productId3'),
                   style: _.get(PO1, 'productId5'),
-                  price: _.get(PO1, 'productId6'),
+                  price: _.get(PO1, 'unitPrice'),
                 },
                 packInfo : packInfoList,
               }
@@ -4477,7 +4477,7 @@ export default class Edi850Parser extends BaseEdiParser {
                   pack: _.get(POC, 'assignedIdentification'),
                   buyerSKU: _.get(POC, 'productId3'),
                   style: _.get(POC, 'productId5'),
-                  price: _.get(POC, 'productId6'),
+                  price: _.get(POC, 'unitPrice'),
                 },
                 packInfo : packInfoList || null,
               }
@@ -4517,7 +4517,6 @@ export default class Edi850Parser extends BaseEdiParser {
                 hts: 'hts',
                 specialPackageing: 'specialPackageing'
               }
-              
               if (n9s.length)
               {
                 for (const n9 of n9s)
