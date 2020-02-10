@@ -2219,6 +2219,66 @@ export const formatJson = {
                         type: 'string',
                       },
                     ],
+                    segmentFormatList: [
+                      {
+                        key: 'CTP',
+                        code: 'CTP',
+                        name: 'Pricing Information',
+                        type: 'object',
+                        mandatory: false,
+                        elementFormatList: [
+                          {
+                            index: 1,
+                            maximumLen: 2,
+                            minimumLen: 2,
+                            name: 'Class of Trade',
+                            key: 'classOfTrade',
+                            allowableValues: {
+                              valueOptions: [
+                                {
+                                  value: 'RS',
+                                  name: 'Resale',
+                                  overrideValue: 'Resale',
+                                },
+                              ],
+                              allowAny: true,
+                            },
+                            type: 'string',
+                          },
+                          {
+                            index: 2,
+                            maximumLen: 3,
+                            minimumLen: 3,
+                            name: 'Price Code Qualifier',
+                            key: 'priceCodeQualifier',
+                            allowableValues: {
+                              valueOptions: [
+                                {
+                                  value: 'UCP',
+                                  name: 'Cost',
+                                  overrideValue: 'Cost',
+                                },
+                                {
+                                  value: 'RTL',
+                                  name: 'Resale Price',
+                                  overrideValue: 'Resale Price',
+                                },
+                              ],
+                              allowAny: true,
+                            },
+                            type: 'string',
+                          },
+                          {
+                            index: 3,
+                            maximumLen: 14,
+                            minimumLen: 1,
+                            name: 'Unit Price',
+                            key: 'unitPrice',
+                            type: 'decimal',
+                          },
+                        ],
+                      },
+                    ]
                   },
                 ],
               },
@@ -3769,7 +3829,7 @@ export const formatJson = {
                         key: 'productId3',
                         type: 'string',
                       },
-                    ],
+                    ]
                   },
                   {
                     code: 'SDQ',
