@@ -254,7 +254,7 @@
           }
         },
         {
-          "label": "Widget.contactAddress",
+          "label": "Widget.address",
           "name": ["shipmentParty.{{flex}}{{key}}PartyAddress", "shipmentParty.{{flex}}{{key}}Party.address"],
           "component": "v-textarea",
           "props": {
@@ -265,24 +265,24 @@
           "checkDisplayWhen": "return form && form.shipmentParty && (form.shipmentParty.{{flex}}{{key}}PartyAddress || form.shipmentParty.{{flex}}{{key}}Party.address)"
         },
         {
-          "label": "Widget.cityCode",
+          "label": "Widget.city",
           "name": ["shipmentParty.{{flex}}{{key}}PartyCityCode", "shipmentParty.{{flex}}{{key}}Party.cityCode"],
           "component": "v-text-field",
-          "class": "xs-12 md-12",
+          "class": "xs-12 md-4",
           "checkDisplayWhen": "return form && form.shipmentParty && (form.shipmentParty.{{flex}}{{key}}PartyCityCode || form.shipmentParty.{{flex}}{{key}}Party.cityCode)"
         },
         {
-          "label": "Widget.stateCode",
+          "label": "Widget.state",
           "name": ["shipmentParty.{{flex}}{{key}}PartyStateCode", "shipmentParty.{{flex}}{{key}}Party.stateCode"],
           "component": "v-text-field",
-          "class": "xs-12 md-12",
+          "class": "xs-12 md-4",
           "checkDisplayWhen": "return form && form.shipmentParty && (form.shipmentParty.{{flex}}{{key}}PartyStateCode || form.shipmentParty.{{flex}}{{key}}Party.stateCode)"
         },
         {
-          "label": "Widget.countryCode",
+          "label": "Widget.country",
           "name": ["shipmentParty.{{flex}}{{key}}PartyCountryCode", "shipmentParty.{{flex}}{{key}}Party.countryCode"],
           "component": "v-text-field",
-          "class": "xs-12 md-12",
+          "class": "xs-12 md-4",
           "checkDisplayWhen": "return form && form.shipmentParty && (form.shipmentParty.{{flex}}{{key}}PartyCountryCode || form.shipmentParty.{{flex}}{{key}}Party.countryCode)"
         },
         {
