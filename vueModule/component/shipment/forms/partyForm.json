@@ -91,7 +91,7 @@
         }
       },
       "hiddenFields": [{
-          "name": ["shipmentParty.{{flex}}{{key}}PartyName", "shipmentParty.{{flex}}{{key}}Party.name"],
+          "name": "shipmentParty.{{flex}}{{key}}PartyName",
           "component": "v-text-field",
           "class": "xs-12 md-8"
         },
