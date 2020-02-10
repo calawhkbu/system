@@ -14,8 +14,10 @@
               "item-text": "value",
               "item-value": "key",
               "axiosParams": {
+                "method" : "GET",
                 "url": "i18n/available-languages"
-              }
+              },
+              "loadOnReadOnly" : true
             }
           },
           {

@@ -2,6 +2,7 @@
 import { AlertConfig, AlertFlexDataConfig } from 'models/main/alert'
 import { AlertPreference, AlertPreferenceDetail } from 'models/main/alertPreference'
 import { IQueryParams } from 'classes/query'
+import { BinaryExpression, ColumnExpression, IConditionalExpression, AndExpressions, MathExpression, ParameterExpression, FunctionExpression, BetweenExpression, Value } from 'node-jql'
 
 export const schedulerActive = false
 
@@ -15,7 +16,7 @@ export const alertConfigList = [
     severity: 'medium',
     contactRoleList: 'all',
 
-    active : true
+    active: true
 
   } as AlertConfig,
 
@@ -27,7 +28,7 @@ export const alertConfigList = [
     severity: 'medium',
     contactRoleList: 'all',
 
-    active : true
+    active: true
 
   } as AlertConfig,
 
@@ -39,7 +40,7 @@ export const alertConfigList = [
     severity: 'medium',
     contactRoleList: 'all',
 
-    active : true
+    active: true
 
   } as AlertConfig,
 
@@ -50,10 +51,10 @@ export const alertConfigList = [
     severity: 'medium',
     alertType: 'sayHello',
 
-    templatePath : 'message/shipment-message',
+    templatePath: 'message/shipment-message',
 
     schedule: '0 * * ? * *',
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
       subqueries: {
         moduleTypeCode: { value: ['AIR'] },
@@ -63,19 +64,95 @@ export const alertConfigList = [
 
     } as IQueryParams,
 
-    extraPersonIdQuery : {
+    extraPersonIdQuery: {
       subqueries: {
       },
-      limit : 1
+      limit: 1
     } as IQueryParams,
 
     contactRoleList: ['shipper', 'consignee'],
 
     // saveAsNewAlertTimeDiff : 0,
 
-    resend : true, // resend to everyone or just send to those not yet receive
+    resend: true, // resend to everyone or just send to those not yet receive
 
-    active: true
+    active: false
+
+  } as AlertConfig,
+
+  {
+    tableName: 'booking',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'missingCarrierBooking',
+
+    templatePath: 'alert/booking-alert',
+    schedule: '0 * * ? * *',
+    queryName: 'booking',
+    query: {
+
+      conditions: new AndExpressions([
+        new BinaryExpression(
+          new FunctionExpression('NOW'),
+          '>=',
+          new FunctionExpression(
+            'DATE_ADD',
+            new ColumnExpression('booking_date', 'departureDateEstimated'),
+            new ParameterExpression({
+              prefix: 'INTERVAL',
+              expression: new Value(7),
+              suffix: 'DAY',
+            })
+          ),
+        ),
+      ]),
+
+      limit: 1
+
+    } as IQueryParams,
+
+    contactRoleList: ['shipper', 'consignee'],
+
+    resend: false,
+    active: false
+
+  } as AlertConfig,
+
+  {
+    tableName: 'booking',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'missingCarrierBooking',
+
+    templatePath: 'alert/booking-alert',
+    schedule: '0 * * ? * *',
+    queryName: 'booking',
+    query: {
+
+      conditions: new AndExpressions([
+        new BinaryExpression(
+          new FunctionExpression('NOW'),
+          '>=',
+          new FunctionExpression(
+            'DATE_ADD',
+            new ColumnExpression('booking_date', 'departureDateEstimated'),
+            new ParameterExpression({
+              prefix: 'INTERVAL',
+              expression: new Value(7),
+              suffix: 'DAY',
+            })
+          ),
+        ),
+      ]),
+
+      limit: 1
+
+    } as IQueryParams,
+
+    contactRoleList: ['shipper', 'consignee'],
+
+    resend: false,
+    active: false
 
   } as AlertConfig
 
@@ -123,12 +200,12 @@ export const alertFlexDataConfigList = [
       'shipperPartyId',
       'consigneePartyId'
     ],
-    primaryKeyName : 'id'
+    primaryKeyName: 'id'
   },
 
   {
     tableName: 'shipment',
-    primaryKeyName : 'id',
+    primaryKeyName: 'id',
     variableList: 'all'
   }
 
