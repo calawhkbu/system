@@ -356,6 +356,56 @@
               ]
             }]
           }
+        },
+        {
+          "is": "DynamicComponent",
+          "props": {
+            "layout": "v-card",
+            "class": "margin-topbottom-8",
+            "components": [{
+              "is": "MouseHidden",
+              "slots": [{
+                  "name": "hidden",
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "flex max-height-0",
+                    "components": [{
+                      "is": "v-spacer"
+                    }]
+                  }
+                },
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "components": [{
+                        "is": "v-card-title",
+                        "props": {
+                          "primary-title": true,
+                          "class": "padding-4 min-height-48 bold uppercase"
+                        },
+                        "slots": [{
+                          "is": "I18nText",
+                          "props": {
+                            "i18nContext": "ShipmentPage",
+                            "i18nKey": "reference"
+                          }
+                        }]
+                      },
+                      {
+                        "is": "v-divider"
+                      },
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "shipment/forms/reference"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }]
+          }
         }
       ]
     },
