@@ -4340,13 +4340,14 @@ export default class Edi850Parser extends BaseEdiParser {
                   // unitPrice: _.get(PO1, 'SLN.unitPrice'),
                   priceUnit: _.get(PO1, 'basisOfUnitPrice'),
                   upcen: _.get(PO1, 'productId1').trim(),
-                  // size: (_.get(PO1, 'SLN.productId2') || ''),
                   colorDesc: _.get(PO1, 'productId4'),
                   pack: _.get(PO1, 'poLineNumber'),
                   buyerSKU: _.get(PO1, 'productId3'),
                   style: _.get(PO1, 'productId5'),
                   price: _.get(PO1, 'unitPrice'),
                 },
+                size: _.get(PO1, 'SLN') ? null : (_.get(PO1, 'productId2') || ''),
+                packCode: _.get(PO1, 'SLN') ? (_.get(PO1, 'productId2') || '') : null,
                 packInfo : packInfoList,
               }
               let n9s = _.get(PO1, 'N9', []) || []
@@ -4472,13 +4473,14 @@ export default class Edi850Parser extends BaseEdiParser {
                   // unitPrice: _.get(POC, 'SLN.unitPrice'),
                   priceUnit: _.get(POC, 'basisOfUnitPriceCode'),
                   upcen: _.get(POC, 'productId1').trim(),
-                  // size: (_.get(POC, 'SLN.productId2') || ''),
                   colorDesc: _.get(POC, 'productId4'),
                   pack: _.get(POC, 'assignedIdentification'),
                   buyerSKU: _.get(POC, 'productId3'),
                   style: _.get(POC, 'productId5'),
                   price: _.get(POC, 'unitPrice'),
                 },
+                size: _.get(POC, 'SLN') ? null : (_.get(POC, 'productId2') || ''),
+                packCode: _.get(POC, 'SLN') ? (_.get(POC, 'productId2') || '') : null,
                 packInfo : packInfoList || null,
               }
               if (_.get(POC, 'lineItemChange') === 'Add Item')
