@@ -62,10 +62,11 @@
               "label": "TrackingPage.trackingNo",
               "name": "trackingNo",
               "component": "v-text-field",
-              "class": "xs-12"
+              "class": "xs-12",
+              "readonly": true
             },
             {
-              "name": "trackingContainers",
+              "name": "details.trackingContainers",
               "label": "TrackingPage.containers",
               "component": "GridField",
               "class": "xs-12",
@@ -259,7 +260,7 @@
             },
             {
               "label": "TrackingPage.status",
-              "name": "trackingStatus",
+              "name": "details.trackingStatus",
               "component": "TableField",
               "class": "xs-12",
               "props": {
