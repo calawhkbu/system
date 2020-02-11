@@ -1650,18 +1650,22 @@ query
           new RegexpExpression(new ColumnExpression('booking', 'placeOfDeliveryCode'), false),
           new RegexpExpression(new ColumnExpression('booking', 'finalDestinationCode'), false),
           new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyContactName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyContactName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyContactName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyName'), false),
-          new RegexpExpression(
-            new ColumnExpression('booking_party', 'notifyPartyPartyContactName'),
-            false
-          ),
+          new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyCode'), false),
           new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyContactName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyCode'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyCode'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'controllingCustomerPartyCode'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'controllingCustomerPartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'linerAgentPartyCode'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'linerAgentPartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'officePartyCode'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'officePartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'roAgentPartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'roAgentPartyCode'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyCode'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyName'), false),
           // new RegexpExpression(new ColumnExpression('booking_amount', 'amountName'), false),
           new RegexpExpression(new ColumnExpression('booking_container', 'containerNo'), false),
           new RegexpExpression(new ColumnExpression('booking_container', 'sealNo'), false),
@@ -1697,7 +1701,15 @@ query
   .register('value', 23)
   .register('value', 24)
   .register('value', 25)
-// .register('value', 26)
+  .register('value', 26)
+  .register('value', 27)
+  .register('value', 28)
+  .register('value', 29)
+  .register('value', 30)
+  .register('value', 31)
+  .register('value', 32)
+  .register('value', 33)
+  // .register('value', 34)
 
 const isActiveConditionExpression = new AndExpressions([
   new IsNullExpression(new ColumnExpression('booking', 'deletedAt'), false),
