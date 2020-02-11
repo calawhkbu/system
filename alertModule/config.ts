@@ -6,7 +6,7 @@ import { BinaryExpression, ColumnExpression, IConditionalExpression, AndExpressi
 import { ShipmentService } from 'modules/sequelize/shipment/services/shipment'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 
-export const schedulerActive = true
+export const schedulerActive = false
 
 export const alertConfigList = [
 
