@@ -11,6 +11,8 @@ export default {
   create_related_party: [{handlerName: 'create_related_party'}],
   create_related_person: [{handlerName: 'create_related_person'}],
 
+  update_or_create_related_person: [{handlerName: 'update_or_create_related_person'}],
+
   invitation_create_related_person : [{ handlerName : 'invitation_create_related_person' }],
   // start here
   // booking
@@ -91,7 +93,7 @@ export default {
     // create related person
     {
       condition: true,
-      eventName: 'create_related_person',
+      eventName: 'update_or_create_related_person',
       otherParameters: {
         partyLodash: 'bookingParty',
         fixedParty: ['shipper', 'consignee', 'forwarder', 'agent', 'notifyParty']
@@ -161,7 +163,7 @@ export default {
     // create related party
     {
       condition: true,
-      eventName: 'create_related_party',
+      eventName: 'updacreate_related_party',
       otherParameters: {
         partyLodash: 'bookingParty',
         fixedParty: ['shipper', 'consignee', 'forwarder', 'agent', 'notifyParty']
@@ -170,7 +172,7 @@ export default {
     // create related person
     {
       condition: true,
-      eventName: 'create_related_person',
+      eventName: 'update_or_create_related_person',
       otherParameters: {
         partyLodash: 'bookingParty',
         fixedParty: ['shipper', 'consignee', 'forwarder', 'agent', 'notifyParty']
