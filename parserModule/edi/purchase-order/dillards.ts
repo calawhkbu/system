@@ -4346,7 +4346,8 @@ export default class Edi850Parser extends BaseEdiParser {
                   style: _.get(PO1, 'productId5'),
                   price: _.get(PO1, 'unitPrice'),
                 },
-                size: (_.get(PO1, 'productId2') || ''),
+                size: _.get(PO1, 'SLN') ? null : (_.get(PO1, 'productId2') || ''),
+                packCode: _.get(PO1, 'SLN') ? (_.get(PO1, 'productId2') || '') : null,
                 packInfo : packInfoList,
               }
               let n9s = _.get(PO1, 'N9', []) || []
@@ -4478,7 +4479,8 @@ export default class Edi850Parser extends BaseEdiParser {
                   style: _.get(POC, 'productId5'),
                   price: _.get(POC, 'unitPrice'),
                 },
-                size: (_.get(POC, 'productId2') || ''),
+                size: _.get(POC, 'SLN') ? null : (_.get(POC, 'productId2') || ''),
+                packCode: _.get(POC, 'SLN') ? (_.get(POC, 'productId2') || '') : null,
                 packInfo : packInfoList || null,
               }
               if (_.get(POC, 'lineItemChange') === 'Add Item')
