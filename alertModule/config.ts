@@ -1,10 +1,12 @@
 
-import { AlertConfig, AlertFlexDataConfig } from 'models/main/alert'
+import { AlertConfig, AlertFlexDataConfig, Alert } from 'models/main/alert'
 import { AlertPreference, AlertPreferenceDetail } from 'models/main/alertPreference'
 import { IQueryParams } from 'classes/query'
 import { BinaryExpression, ColumnExpression, IConditionalExpression, AndExpressions, MathExpression, ParameterExpression, FunctionExpression, BetweenExpression, Value } from 'node-jql'
+import { ShipmentService } from 'modules/sequelize/shipment/services/shipment'
+import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 
-export const schedulerActive = false
+export const schedulerActive = true
 
 export const alertConfigList = [
 
@@ -14,10 +16,7 @@ export const alertConfigList = [
     tableName: 'booking',
     templatePath: 'message/new-booking-preview',
     severity: 'medium',
-    contactRoleList: 'all',
-
-    active: true
-
+    contactRoleList: 'all'
   } as AlertConfig,
 
   {
@@ -26,10 +25,7 @@ export const alertConfigList = [
     tableName: 'booking',
     templatePath: 'message/booking-message',
     severity: 'medium',
-    contactRoleList: 'all',
-
-    active: true
-
+    contactRoleList: 'all'
   } as AlertConfig,
 
   {
@@ -38,9 +34,7 @@ export const alertConfigList = [
     tableName: 'shipment',
     templatePath: 'message/shipment-message',
     severity: 'medium',
-    contactRoleList: 'all',
-
-    active: true
+    contactRoleList: 'all'
 
   } as AlertConfig,
 
@@ -54,6 +48,9 @@ export const alertConfigList = [
     templatePath: 'message/shipment-message',
 
     schedule: '0 * * ? * *',
+
+    active: false,
+
     queryName: 'shipment',
     query: {
       subqueries: {
@@ -76,8 +73,6 @@ export const alertConfigList = [
 
     resend: true, // resend to everyone or just send to those not yet receive
 
-    active: false
-
   } as AlertConfig,
 
   {
@@ -125,7 +120,13 @@ export const alertConfigList = [
     alertType: 'missingCarrierBooking',
 
     templatePath: 'alert/booking-alert',
+    contactRoleList: ['shipper', 'consignee'],
+
+    resend: false,
+
     schedule: '0 * * ? * *',
+    active: false,
+
     queryName: 'booking',
     query: {
 
@@ -147,12 +148,62 @@ export const alertConfigList = [
 
       limit: 1
 
-    } as IQueryParams,
+    } as IQueryParams
 
-    contactRoleList: ['shipper', 'consignee'],
+  } as AlertConfig,
 
-    resend: false,
-    active: false
+  {
+    tableName : 'shipment',
+    alertCategory : 'Exception',
+    alertType : 'funcTest',
+    templatePath: 'alert/shipment-alert',
+    severity : 'medium',
+    contactRoleList : [],
+
+    schedule: '0 * * ? * *',
+    active : false,
+
+    query : async(alertConfig: AlertConfig, user: JwtPayload, allService: any) => {
+
+      const shipmentService = allService.ShipmentService as ShipmentService
+      return await shipmentService.find({
+
+        where : {
+          moduleTypeCode : 'AIR'
+        },
+      }, user )
+    }
+
+  } as AlertConfig,
+
+  {
+
+    tableName : 'shipment',
+    alertCategory : 'Exception',
+    alertType : 'funcTest',
+    templatePath: 'alert/shipment-alert',
+    severity : 'medium',
+    contactRoleList : [],
+
+    schedule: '0 * * ? * *',
+    active : false,
+
+    queryName : 'shipment',
+    query : {
+
+      subqueries : {
+
+        date : {
+          from : '2019-01-01',
+          to : '2019-12-31'
+        },
+        statusJoin : true,
+        statusCode : {
+          value : ['RECV']
+        }
+      }
+
+    } as IQueryParams
 
   } as AlertConfig
 

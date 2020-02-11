@@ -345,7 +345,7 @@ const shipmentProrityTableExpression = new Query({
 
 })
 
-const finalTableExpression = new Query({
+const shipmentTrackingLastStatusCodeTableExpression = new Query({
 
   $select: [
     new ResultColumn(new ColumnExpression('shipment_tracking', 'shipmentId')),
@@ -390,11 +390,81 @@ query.registerQuery('lastStatusJoin', new Query({
     operator: 'LEFT',
     table: new FromTable({
 
-      table: finalTableExpression,
-      $as: 'shipment_tracking',
+      table: shipmentTrackingLastStatusCodeTableExpression,
+      $as: 'shipment_tracking_last_status',
 
     }),
-    $on: new BinaryExpression(new ColumnExpression('shipment_tracking', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))
+    $on: new BinaryExpression(new ColumnExpression('shipment_tracking_last_status', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))
+
+  })
+
+}))
+
+const shipmentTrackingStatusCodeTableExpression = new Query({
+
+  $select: [
+    new ResultColumn(new ColumnExpression('shipment_tracking', 'shipmentId')),
+    new ResultColumn(new ColumnExpression('shipment_tracking', 'trackingNo')),
+    new ResultColumn(new ColumnExpression('tracking_status', 'statusCode'))
+  ],
+
+  $from: new FromTable({
+
+    table: shipmentTrackingExpression,
+    $as: 'shipment_tracking',
+
+    joinClauses: [
+      {
+
+      operator: 'LEFT',
+      table: new FromTable({
+        table: shipmentProrityTableExpression,
+        $as: 'shipment_priority'
+      }),
+      $on: [
+        new BinaryExpression(new ColumnExpression('shipment_tracking', 'shipmentId'), '=', new ColumnExpression('shipment_priority', 'shipmentId'))
+
+      ]
+    },
+    {
+
+      operator: 'LEFT',
+      table: 'tracking',
+      $on: [
+        new BinaryExpression(new ColumnExpression('tracking', 'trackingNo'), '=', new ColumnExpression('shipment_tracking', 'trackingNo'))
+      ]
+    },
+    {
+
+      operator: 'LEFT',
+      table: 'tracking_status',
+      $on: [
+        new BinaryExpression(new ColumnExpression('tracking_status', 'trackingId'), '=', new ColumnExpression('tracking', 'id'))
+      ]
+    }
+  ]
+
+  }),
+
+  $where: [
+    new BinaryExpression(new ColumnExpression('shipment_priority', 'max_priority'), '=', new ColumnExpression('shipment_tracking', 'priority'))
+  ]
+
+})
+
+query.registerQuery('statusJoin', new Query(
+  {
+    $from : new FromTable('shipment', {
+
+      operator: 'LEFT',
+      table : new FromTable({
+
+        table: shipmentTrackingStatusCodeTableExpression,
+        $as: 'shipment_tracking_status',
+
+      }),
+
+      $on: new BinaryExpression(new ColumnExpression('shipment_tracking_status', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))
 
   })
 
@@ -1407,9 +1477,11 @@ const reportingGroupExpression = new CaseExpression({
 
 })
 
-const lastStatusCodeExpression = new ColumnExpression('shipment_tracking', 'lastStatusCode')
+const lastStatusCodeExpression = new ColumnExpression('shipment_tracking_last_status', 'lastStatusCode')
 
-function lastStatusExpressionFunction() {
+const statusCodeExpression = new ColumnExpression('shipment_tracking_status', 'statusCode')
+
+function statusExpressionMapFunction(originalExpression: IExpression) {
 
   const lastStatusCodeMap = {
 
@@ -1433,12 +1505,12 @@ function lastStatusExpressionFunction() {
 
       const lastStatusCodeList = lastStatusCodeMap[lastStatus] as any[]
 
-      let condition = new InExpression(lastStatusCodeExpression, false, lastStatusCodeList) as IConditionalExpression
+      let condition = new InExpression(originalExpression, false, lastStatusCodeList) as IConditionalExpression
 
       if (lastStatusCodeList.includes(null)) {
 
         condition = new OrExpressions([
-          new IsNullExpression(lastStatusCodeExpression, false),
+          new IsNullExpression(originalExpression, false),
           condition
         ])
 
@@ -1454,12 +1526,13 @@ function lastStatusExpressionFunction() {
 
   return new CaseExpression({
     cases,
-    $else: lastStatusCodeExpression
+    $else: originalExpression
   })
 
 }
 
-const lastStatusExpression = lastStatusExpressionFunction()
+const statusExpression = statusExpressionMapFunction(statusCodeExpression)
+const lastStatusExpression = statusExpressionMapFunction(lastStatusCodeExpression)
 
 const alertTypeExpression = new ColumnExpression('alert', 'alertType')
 
@@ -1501,9 +1574,13 @@ query.registerBoth('salesmanPersonCode', salesmanPersonCodeExpression)
 
 query.registerBoth('reportingGroup', reportingGroupExpression)
 
+// tracking lastStatus
 query.registerBoth('lastStatusCode', lastStatusCodeExpression)
-
 query.registerBoth('lastStatus', lastStatusExpression)
+
+// tracking status
+query.registerBoth('statusCode', statusCodeExpression)
+query.registerBoth('status', statusExpression)
 
 query.registerBoth('alertType', alertTypeExpression)
 
@@ -2005,6 +2082,8 @@ const shipmentTableFilterFieldList = [
     name: 'carrierName',
     expression: carrierNameExpression
   },
+
+  // tracking last status
   {
     name: 'lastStatusCode',
     expression: lastStatusCodeExpression
@@ -2013,6 +2092,17 @@ const shipmentTableFilterFieldList = [
     name: 'lastStatus',
     expression: lastStatusExpression
   },
+
+  // tracking status
+  {
+    name: 'statusCode',
+    expression: statusCodeExpression
+  },
+  {
+    name: 'status',
+    expression: statusExpression
+  },
+
   {
     name: 'alertType',
     expression: alertTypeExpression
