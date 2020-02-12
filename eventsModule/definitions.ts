@@ -92,7 +92,7 @@ export default {
     },
     // create related person
     {
-      condition: true,
+      condition: false,
       eventName: 'update_or_create_related_person',
       otherParameters: {
         partyLodash: 'bookingParty',
@@ -171,7 +171,7 @@ export default {
     },
     // create related person
     {
-      condition: true,
+      condition: false,
       eventName: 'update_or_create_related_person',
       otherParameters: {
         partyLodash: 'bookingParty',
