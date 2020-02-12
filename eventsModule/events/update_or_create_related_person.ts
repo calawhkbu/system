@@ -6,7 +6,6 @@ import _ = require('lodash')
 import { RelatedPersonDatabaseService } from 'modules/sequelize/relatedPerson/service'
 import { RelatedPerson } from 'models/main/relatedPerson'
 import { getPartyAndPersonFromStandardEntity } from 'utils/party'
-import { Person } from 'models/main/person'
 
 class UpdateOrCreateRelatedPersonEvent extends BaseEvent {
   constructor(
@@ -71,9 +70,6 @@ class UpdateOrCreateRelatedPersonEvent extends BaseEvent {
 
     const resultList = await this.checkExist(relatedPeople)
 
-    console.log(`resultList`)
-    console.log(resultList)
-
     for (const relatedPerson of resultList) {
       try {
         await service.save(relatedPerson, this.user, this.transaction)
@@ -95,6 +91,8 @@ class UpdateOrCreateRelatedPersonEvent extends BaseEvent {
     }
   ) {
     console.log('Start Excecute [Create Related Person]...', this.constructor.name)
+
+    // extract shipmentParty from shipment object
     const party = _.get(data, partyLodash, {})
 
     const partyResult = await getPartyAndPersonFromStandardEntity(party)
@@ -110,44 +108,34 @@ class UpdateOrCreateRelatedPersonEvent extends BaseEvent {
 
         peopleList.forEach(person => {
 
-          relatedPeople.push({
-            partyId,
-            email : person.userName,
-            name: person.userName,
-            phone: person.userName
-          } as RelatedPerson)
+          const phoneContact = person.contacts.find(x => x.contactType === 'phone')
+          const phone = phoneContact ? phoneContact.content : undefined
+
+          const emailContact = person.contacts.find(x => x.contactType === 'email')
+          const email = emailContact ? emailContact.content : undefined
+
+          const name = person.displayName || undefined
+
+          if (name || phone || email)
+          {
+            relatedPeople.push({
+              partyId,
+              email,
+              name,
+              phone
+            } as RelatedPerson)
+
+          }
 
         })
 
       }
-    }
 
-    if (party) {
-      const relatedPeople: RelatedPerson[] = []
-      const allParty = [
-        ...(fixedParty || []),
-        ..._.get(party, 'flexData.moreParty', [])
-      ]
-      const partyId = {}
-      for (const morePartyName of allParty) {
-        partyId[morePartyName] = _.get(party, `${morePartyName}PartyId`, null) || _.get(party, `flexData.${morePartyName}PartyId`, null)
-      }
-      console.log(`debug_partyId`)
-      console.log(partyId)
-
-      console.log(`debug_allParty`)
-      console.log(allParty)
-      for (const partyA of allParty) {
-        if (partyId[partyA]) {
-          relatedPeople.push({
-            partyId: partyId[partyA],
-            email: _.get(party, `${partyA}PartyContactEmail`, null) || _.get(party, `flexData.${partyA}PartyContactEmail`, null),
-            name: _.get(party, `${partyA}PartyContactName`, null) || _.get(party, `flexData.${partyA}PartyContactName`, null),
-            phone: _.get(party, `${partyA}PartyContactPhone`, null) || _.get(party, `flexData.${partyA}PartyContactPhone`, null)
-          } as RelatedPerson)
-        }
-      }
       if (relatedPeople.length) {
+
+        console.log(`debug_relatedPeople`)
+        console.log(relatedPeople)
+
         await this.createorUpdateRelatedPeople(relatedPeople)
       }
     }

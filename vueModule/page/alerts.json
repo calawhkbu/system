@@ -13,7 +13,9 @@
       "noPartyGroupFilters": false,
       "newReport": {
         "filters": {
-          "isActive": true,
+          "isActive": {
+            "value" : "active"
+          },
           "entityType" : {
             "value" : "shipment"
           }
@@ -38,22 +40,14 @@
           }
         }
       },
-      "fieldOptions": [{
+      "fieldOptions": [
+        {
           "key": "tableName",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "alert",
-            "name": "tableName"
-          },
           "hidden": true
         },
         {
+          "i18nContext": "Alert",
           "key": "primaryKey",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "alert",
-            "name": "primaryKey"
-          },
           "hidden": true
         },
 
