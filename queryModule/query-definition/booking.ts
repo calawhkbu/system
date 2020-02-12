@@ -575,6 +575,28 @@ const reportingGroupExpression = new CaseExpression({
 })
 
 const alertTypeExpression = new ColumnExpression('alert', 'alertType')
+const alertTableNameExpression = new ColumnExpression('alert', 'tableName')
+const alertPrimaryKeyExpression = new ColumnExpression('alert', 'primaryKey')
+
+const alertSeverityExpression = new ColumnExpression('alert', 'severity')
+const alertTitleExpression = new FunctionExpression('CONCAT', new ColumnExpression('alert', 'alertType'), new Value('Title'))
+
+const alertMessageExpression = new CaseExpression({
+  cases: [
+    {
+      // retrieve custom message from flexData
+      $when: new BinaryExpression(new ColumnExpression('alert', 'alertCategory'), '=', 'Message'),
+      $then: new FunctionExpression(
+        'JSON_UNQUOTE',
+        new FunctionExpression('JSON_EXTRACT', new ColumnExpression('alert', 'flexData'), '$.customMessage')
+      )
+    }
+
+  ],
+
+  // shipmentEtaChanged => shipmentEtaChangedTitle, later will put in i18n
+  $else: new FunctionExpression('CONCAT', new ColumnExpression('alert', 'alertType'), new Value('Message'))
+})
 
 const alertCategoryExpression = new ColumnExpression('alert', 'alertCategory')
 
@@ -590,15 +612,27 @@ query.registerBoth('carrierCode', carrierCodeExpression)
 
 query.registerBoth('reportingGroup', reportingGroupExpression)
 
+query.registerBoth('alertTableName', alertTableNameExpression)
+
+query.registerBoth('alertPrimaryKey', alertPrimaryKeyExpression)
+
+query.registerBoth('alertSeverity', alertSeverityExpression)
+
 query.registerBoth('alertType', alertTypeExpression)
 
+query.registerBoth('alertTitle', alertTitleExpression)
+
+query.registerBoth('alertMessage', alertMessageExpression)
+
 query.registerBoth('alertCategory', alertCategoryExpression)
-query.registerBoth('alertStatus', alertStatusExpression)
 
 query.registerBoth('alertCreatedAt', alertCreatedAtExpression)
+
 query.registerBoth('alertUpdatedAt', alertUpdatedAtExpression)
 
 query.registerBoth('alertContent', alertContentExpression)
+
+query.registerBoth('alertStatus', alertStatusExpression)
 
 // register join
 query.registerQuery(
@@ -1035,6 +1069,12 @@ query.register(
   new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('booking', 'id'))), 'count')
 )
 
+query
+.register(
+  'alertCount',
+  new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))), 'alertCount')
+)
+
 query.register('houseNo', {
   expression: new FunctionExpression(
     'IF',
@@ -1300,6 +1340,10 @@ const shipmentTableFilterFieldList = [
   {
     name: 'alertType',
     expression: alertTypeExpression
+  },
+  {
+    name: 'alertSeverity',
+    expression: alertSeverityExpression
   },
   {
     name: 'alertCategory',
@@ -1650,18 +1694,22 @@ query
           new RegexpExpression(new ColumnExpression('booking', 'placeOfDeliveryCode'), false),
           new RegexpExpression(new ColumnExpression('booking', 'finalDestinationCode'), false),
           new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyContactName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyContactName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyContactName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyName'), false),
-          new RegexpExpression(
-            new ColumnExpression('booking_party', 'notifyPartyPartyContactName'),
-            false
-          ),
+          new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyCode'), false),
           new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyContactName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyCode'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyCode'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'controllingCustomerPartyCode'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'controllingCustomerPartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'linerAgentPartyCode'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'linerAgentPartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'officePartyCode'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'officePartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'roAgentPartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'roAgentPartyCode'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyCode'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyName'), false),
           // new RegexpExpression(new ColumnExpression('booking_amount', 'amountName'), false),
           new RegexpExpression(new ColumnExpression('booking_container', 'containerNo'), false),
           new RegexpExpression(new ColumnExpression('booking_container', 'sealNo'), false),
@@ -1697,7 +1745,15 @@ query
   .register('value', 23)
   .register('value', 24)
   .register('value', 25)
-// .register('value', 26)
+  .register('value', 26)
+  .register('value', 27)
+  .register('value', 28)
+  .register('value', 29)
+  .register('value', 30)
+  .register('value', 31)
+  .register('value', 32)
+  .register('value', 33)
+  // .register('value', 34)
 
 const isActiveConditionExpression = new AndExpressions([
   new IsNullExpression(new ColumnExpression('booking', 'deletedAt'), false),

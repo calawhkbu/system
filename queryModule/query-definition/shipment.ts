@@ -1534,8 +1534,13 @@ function statusExpressionMapFunction(originalExpression: IExpression) {
 const statusExpression = statusExpressionMapFunction(statusCodeExpression)
 const lastStatusExpression = statusExpressionMapFunction(lastStatusCodeExpression)
 
-const alertTypeExpression = new ColumnExpression('alert', 'alertType')
+//  alert related field
 
+const alertTypeExpression = new ColumnExpression('alert', 'alertType')
+const alertTableNameExpression = new ColumnExpression('alert', 'tableName')
+const alertPrimaryKeyExpression = new ColumnExpression('alert', 'primaryKey')
+
+const alertSeverityExpression = new ColumnExpression('alert', 'severity')
 const alertTitleExpression = new FunctionExpression('CONCAT', new ColumnExpression('alert', 'alertType'), new Value('Title'))
 
 const alertMessageExpression = new CaseExpression({
@@ -1581,6 +1586,12 @@ query.registerBoth('lastStatus', lastStatusExpression)
 // tracking status
 query.registerBoth('statusCode', statusCodeExpression)
 query.registerBoth('status', statusExpression)
+
+query.registerBoth('alertTableName', alertTableNameExpression)
+
+query.registerBoth('alertPrimaryKey', alertPrimaryKeyExpression)
+
+query.registerBoth('alertSeverity', alertSeverityExpression)
 
 query.registerBoth('alertType', alertTypeExpression)
 
@@ -1687,6 +1698,12 @@ query
   .register(
     'count',
     new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))), 'count')
+  )
+
+  query
+  .register(
+    'alertCount',
+    new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))), 'alertCount')
   )
 
 const jobDateExpression = new ColumnExpression('shipment', 'jobDate')
@@ -2106,6 +2123,10 @@ const shipmentTableFilterFieldList = [
   {
     name: 'alertType',
     expression: alertTypeExpression
+  },
+  {
+    name: 'alertSeverity',
+    expression: alertSeverityExpression
   },
   {
     name: 'alertCategory',
@@ -2601,28 +2622,20 @@ query
       }),
       $where: new OrExpressions({
         expressions: [
-          new RegexpExpression(new ColumnExpression('shipment_party', 'agentPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'agentPartyName'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'bookingNo'), false),
-          new RegexpExpression(new ColumnExpression('shipment', 'carrierCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment', 'carrierName'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'consigneePartyCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'consigneePartyName'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'containerNos'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'contractNos'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'controllingCustomerPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'controllingCustomerPartyName'), false),
-          new RegexpExpression(new ColumnExpression('shipment', 'cSalesmanPersonCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment', 'divisionCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment', 'finalDestinationCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment', 'finalDestinationName'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'houseNo'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'jobNo'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'linerAgentPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'linerAgentPartyName'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'masterNo'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'officePartyCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'officePartyName'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'divisionCode'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'carrierCode'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'carrierName'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'cSalesmanPersonCode'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'sSalesmanPersonCode'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'vessel'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'voyageFlightNumber'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'xrayStatus'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'placeOfDeliveryCode'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'placeOfDeliveryName'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'placeOfReceiptCode'), false),
@@ -2631,14 +2644,24 @@ query
           new RegexpExpression(new ColumnExpression('shipment', 'portOfDischargeName'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'portOfLoadingCode'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'portOfLoadingName'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'finalDestinationCode'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'finalDestinationName'), false),
+          new RegexpExpression(new ColumnExpression('shipment_party', 'agentPartyCode'), false),
+          new RegexpExpression(new ColumnExpression('shipment_party', 'agentPartyName'), false),
+          new RegexpExpression(new ColumnExpression('shipment_party', 'consigneePartyCode'), false),
+          new RegexpExpression(new ColumnExpression('shipment_party', 'consigneePartyName'), false),
+          new RegexpExpression(new ColumnExpression('shipment_party', 'notifyPartyPartyCode'), false),
+          new RegexpExpression(new ColumnExpression('shipment_party', 'notifyPartyPartyName'), false),
+          new RegexpExpression(new ColumnExpression('shipment_party', 'controllingCustomerPartyCode'), false),
+          new RegexpExpression(new ColumnExpression('shipment_party', 'controllingCustomerPartyName'), false),
+          new RegexpExpression(new ColumnExpression('shipment_party', 'linerAgentPartyCode'), false),
+          new RegexpExpression(new ColumnExpression('shipment_party', 'linerAgentPartyName'), false),
+          new RegexpExpression(new ColumnExpression('shipment_party', 'officePartyCode'), false),
+          new RegexpExpression(new ColumnExpression('shipment_party', 'officePartyName'), false),
           new RegexpExpression(new ColumnExpression('shipment_party', 'roAgentPartyName'), false),
           new RegexpExpression(new ColumnExpression('shipment_party', 'roAgentPartyCode'), false),
           new RegexpExpression(new ColumnExpression('shipment_party', 'shipperPartyCode'), false),
           new RegexpExpression(new ColumnExpression('shipment_party', 'shipperPartyName'), false),
-          new RegexpExpression(new ColumnExpression('shipment', 'sSalesmanPersonCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment', 'vessel'), false),
-          new RegexpExpression(new ColumnExpression('shipment', 'voyageFlightNumber'), false),
-          new RegexpExpression(new ColumnExpression('shipment', 'xrayStatus'), false),
           new RegexpExpression(new ColumnExpression('shipment_container', 'contractNo'), false),
           new RegexpExpression(new ColumnExpression('shipment_container', 'containerNo'), false),
           new RegexpExpression(new ColumnExpression('shipment_container', 'sealNo'), false),
@@ -2693,6 +2716,9 @@ query
   .register('value', 41)
   .register('value', 42)
   .register('value', 43)
+  .register('value', 44)
+  .register('value', 45)
+  .register('value', 46)
 
 const isActiveExpression = new AndExpressions([
   new IsNullExpression(new ColumnExpression('shipment', 'deletedAt'), false),
