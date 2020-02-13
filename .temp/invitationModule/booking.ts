@@ -3,6 +3,7 @@ import { Transaction } from 'sequelize'
 import { PartyGroup } from 'models/main/partyGroup'
 import { GetPartyAndPersonFromStandardEntityResult } from 'utils/party'
 
+// not using ine event!!
 export default async function entityCreateInvitation(
   that: any,
   entity: any,

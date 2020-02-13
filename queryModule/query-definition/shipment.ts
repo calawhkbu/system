@@ -1534,8 +1534,13 @@ function statusExpressionMapFunction(originalExpression: IExpression) {
 const statusExpression = statusExpressionMapFunction(statusCodeExpression)
 const lastStatusExpression = statusExpressionMapFunction(lastStatusCodeExpression)
 
-const alertTypeExpression = new ColumnExpression('alert', 'alertType')
+//  alert related field
 
+const alertTypeExpression = new ColumnExpression('alert', 'alertType')
+const alertTableNameExpression = new ColumnExpression('alert', 'tableName')
+const alertPrimaryKeyExpression = new ColumnExpression('alert', 'primaryKey')
+
+const alertSeverityExpression = new ColumnExpression('alert', 'severity')
 const alertTitleExpression = new FunctionExpression('CONCAT', new ColumnExpression('alert', 'alertType'), new Value('Title'))
 
 const alertMessageExpression = new CaseExpression({
@@ -1581,6 +1586,12 @@ query.registerBoth('lastStatus', lastStatusExpression)
 // tracking status
 query.registerBoth('statusCode', statusCodeExpression)
 query.registerBoth('status', statusExpression)
+
+query.registerBoth('alertTableName', alertTableNameExpression)
+
+query.registerBoth('alertPrimaryKey', alertPrimaryKeyExpression)
+
+query.registerBoth('alertSeverity', alertSeverityExpression)
 
 query.registerBoth('alertType', alertTypeExpression)
 
@@ -1687,6 +1698,12 @@ query
   .register(
     'count',
     new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))), 'count')
+  )
+
+  query
+  .register(
+    'alertCount',
+    new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))), 'alertCount')
   )
 
 const jobDateExpression = new ColumnExpression('shipment', 'jobDate')
@@ -2106,6 +2123,10 @@ const shipmentTableFilterFieldList = [
   {
     name: 'alertType',
     expression: alertTypeExpression
+  },
+  {
+    name: 'alertSeverity',
+    expression: alertSeverityExpression
   },
   {
     name: 'alertCategory',

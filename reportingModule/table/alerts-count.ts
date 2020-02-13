@@ -12,17 +12,7 @@ function prepareParams(): Function {
     subqueries.alertJoin = true
 
     params.fields = [
-      'alertTableName',
-      'alertPrimaryKey',
-      'alertCategory',
-      'alertType',
-      'alertTitle',
-      'alertMessage',
-      'alertContent',
-      'alertSeverity',
-      'alertStatus',
-      'alertCreatedAt',
-      'alertUpdatedAt'
+      'alertCount',
     ]
 
     return params
@@ -64,17 +54,7 @@ function finalQuery(){
           method: 'POST',
           url,
           columns: [
-            { name: 'alertTableName', type: 'string', $as : 'tableName' },
-            { name: 'alertPrimaryKey', type: 'string', $as : 'primaryKey' },
-            { name: 'alertCategory', type: 'string' },
-            { name: 'alertType', type: 'string' },
-            { name: 'alertTitle', type: 'string' },
-            { name: 'alertMessage', type: 'string' },
-            { name: 'alertContent', type: 'object' },
-            { name: 'alertSeverity', type: 'string' , $as: 'severity'},
-            { name: 'alertStatus', type: 'string', $as: 'status'},
-            { name : 'alertUpdatedAt' , type : 'string' },
-            { name : 'alertCreatedAt' , type : 'string' }
+            { name: 'alertCount', type: 'number', $as : 'count' },
           ],
         },
         'alert'
