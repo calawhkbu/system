@@ -5,7 +5,7 @@ const query = new Query({
   $from: new FromTable(
     {
       method: 'POST',
-      url: 'api/tracking/query/swiveladmin_tracking',
+      url: 'api/tracking/query/tracking',
       columns: [
         {
           name: 'id',
