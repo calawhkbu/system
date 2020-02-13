@@ -284,7 +284,7 @@ export default class EdiParser856 extends BaseEdiParser {
               TD5OA.elementList.push('') // not used
               TD5OA.elementList.push('') // not used
               TD5OA.elementList.push('OA')
-              TD5OA.elementList.push(_.get(element, 'containerPoint').substring(0, 30))
+              TD5OA.elementList.push(_.get(element, 'portOfLoading').substring(0, 30))
               loopObjectList.push(TD5OA)
             // }
 

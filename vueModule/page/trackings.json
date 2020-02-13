@@ -7,7 +7,7 @@
       "urlFormat": "/admin/trackings",
       "title": "Tracking",
       "reportingKey": "tracking",
-      "jql": "swiveladmin_tracking",
+      "jql": "tracking",
       "hasReports": false,
       "showFilterBar": true,
       "enableShare": false,
