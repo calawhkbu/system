@@ -4,7 +4,6 @@ import {
   BinaryExpression,
   ColumnExpression,
   FromTable,
-  JoinClause,
   Query,
   IsNullExpression,
   RegexpExpression,
@@ -15,43 +14,7 @@ import {
   Value,
 } from 'node-jql'
 
-const query = new QueryDef(
-  new Query({
-    $from: new FromTable(
-      'tracking',
-      new JoinClause(
-        'LEFT',
-        new FromTable({
-          table: `
-          (
-            (
-              SELECT \`tracking_reference\`.*, \`masterNo\` AS \`trackingNo\`, 'masterNo' AS \`type\`
-              FROM \`tracking_reference\`
-            )
-            UNION
-            (
-              SELECT \`tracking_reference\`.*, \`soTable\`.\`trackingNo\`, 'soNo' AS \`type\`
-              FROM  \`tracking_reference\`,  JSON_TABLE(\`soNo\`, "$[*]" COLUMNS (\`trackingNo\` VARCHAR(100) PATH "$")) \`soTable\`
-            )
-            UNION (
-              SELECT  \`tracking_reference\`.* , \`containerTable\`.\`trackingNo\`, 'containerNo' as \`type\`
-              FROM \`tracking_reference\`,  JSON_TABLE(\`containerNo\`, "$[*]" COLUMNS (\`trackingNo\` VARCHAR(100) PATH "$")) \`containerTable\`
-            )
-          )
-          `,
-          $as: 'tracking_reference',
-        }),
-        new BinaryExpression(
-          new BinaryExpression(
-            new ColumnExpression('tracking', 'trackingNo'),
-            '=',
-            new ColumnExpression('tracking_reference', 'trackingNo')
-          )
-        )
-      ),
-    ),
-  })
-)
+const query = new QueryDef(new Query({ $from: new FromTable('tracking', 'tracking') }))
 
 query.register('lastStatus', {
   expression: new FunctionExpression(
