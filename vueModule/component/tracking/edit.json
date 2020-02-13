@@ -113,7 +113,8 @@
                         }
                       },
                       "props": {
-                        "canCreate": true,
+                        "item-text": "text",
+                        "item-value": "value",
                         "funcItems": [{
                             "text": "Sent to shipper",
                             "value": "STSP"
