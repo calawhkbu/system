@@ -69,6 +69,17 @@ query.register('id', {
   $as: 'id',
 })
 
+query.register('trackingNo', {
+  expression: new ColumnExpression('tracking', 'trackingNo'),
+  $as: 'trackingNo',
+})
+
+query.register('updatedAt', {
+  expression: new ColumnExpression('tracking', 'updatedAt'),
+  $as: 'updatedAt',
+})
+
+
 query.register('trackingNo', new Query({
   $where: new RegexpExpression(new ColumnExpression('tracking', 'trackingNo'), false)
 })).register('value', 0)
