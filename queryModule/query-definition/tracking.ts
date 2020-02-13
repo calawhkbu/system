@@ -64,6 +64,11 @@ query.register('lastStatus', {
   $as: 'lastStatus',
 })
 
+query.register('id', {
+  expression: new ColumnExpression('tracking', 'id'),
+  $as: 'id',
+})
+
 query.register('trackingNo', new Query({
   $where: new RegexpExpression(new ColumnExpression('tracking', 'trackingNo'), false)
 })).register('value', 0)
