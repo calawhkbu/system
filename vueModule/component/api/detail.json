@@ -22,8 +22,7 @@
             "type": "router",
             "otherParams": {
               "func": "push",
-              "path": "/admin/apis",
-              "base": true
+              "path": "/admin/apis"
             }
           }]
         }
@@ -78,6 +77,39 @@
               "name": "name",
               "component": "v-text-field",
               "class": "xs-12"
+            },
+            {
+              "label": "ApiPage.backend",
+              "name": "refreshToken",
+              "component": "DetailReadOnlyField",
+              "class": "xs-12",
+              "props": {
+                "apiParams": {
+                  "method": "POST",
+                  "url": "auth/api/login/{{value}}/100y"
+                },
+                "detail": [
+                  "<html>",
+                  "  <head>",
+                  "    <meta charset=\"utf-8\">",
+                  "    <script src=\"https://unpkg.com/vue\"></script>",
+                  "    <script src=\"{{frontendUrl}}/widget/swivel-widget.js\"></script>",
+                  "  </head>",
+                  "  <body>",
+                  "    <!--",
+                  "      Api Token: For Security widget",
+                  "      Name: Required, Widget Name",
+                  "      Data: Required, JSON stringify for props using in widget",
+                  "    -->",
+                  "    <swivel-widget",
+                  "      apiToken=\"{{value}}\"",
+                  "      name=\"{Widget Name}\"",
+                  "      data=\"{Widget Props}\"",
+                  "    />",
+                  "  </body>",
+                  "</html>"
+                ]
+              }
             },
             {
               "label": "ApiPage.widget",
