@@ -696,7 +696,8 @@
               "method: 'POST',",
               "data: { trackingNos }",
               "};"
-            ]
+            ],
+            "createI18nKey": "bookingReceivedByForwarder"
           }
         },
         {

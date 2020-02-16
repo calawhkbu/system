@@ -436,7 +436,9 @@
               "method: 'POST',",
               "data: { trackingNos }",
               "};"
-            ]
+            ],
+            "createdAtKey": "shipmentCreateTime",
+            "createI18nKey": "shipmentReceivedByForwarder"
           }
         },
         {

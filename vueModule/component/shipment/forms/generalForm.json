@@ -41,12 +41,6 @@
           "class": "xs-6 md-3"
         },
         {
-          "label": "ShipmentPage.placeOfDelivery",
-          "name": ["placeOfDelivery.name", "portofDeliveryName", "portofDeliveryCode"],
-          "component": "v-text-field",
-          "class": "xs-6 md-3"
-        },
-        {
           "label": "ShipmentPage.portOfLoading",
           "name": ["portOfLoading.name", "portOfLoadingName", "portOfLoadingCode"],
           "component": "v-text-field",
@@ -55,6 +49,12 @@
         {
           "label": "ShipmentPage.portOfDischarge",
           "name": ["portOfDischarge.name", "portOfDischargeName", "portOfDischargeCode"],
+          "component": "v-text-field",
+          "class": "xs-6 md-3"
+        },
+        {
+          "label": "ShipmentPage.placeOfDelivery",
+          "name": ["placeOfDelivery.name", "portofDeliveryName", "portofDeliveryCode"],
           "component": "v-text-field",
           "class": "xs-6 md-3"
         },
