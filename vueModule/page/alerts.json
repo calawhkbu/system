@@ -21,7 +21,7 @@
           }
         },
         "configurations": {
-          "i18nContext": "Alert",
+          "i18nContext": "AlertPage",
           "clickable": true,
           "draggable": true,
           "sorting": {
