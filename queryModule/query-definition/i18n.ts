@@ -76,7 +76,7 @@ query
 
 query
   .register(
-    'categoryLike',
+    'category',
     new Query({
       $where: new RegexpExpression(new ColumnExpression('i18n', 'category'), false, new Unknown('string')),
     })
