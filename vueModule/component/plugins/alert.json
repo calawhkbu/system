@@ -4,6 +4,7 @@
   "transition": "slide-y-reverse-transition",
   "loadWhenDataLoaded": true,
   "lazy": true,
+  "hide-overlay": true,
   "remote": true,
   "shareProps": {
     "i18nContext": "Alert",
