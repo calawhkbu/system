@@ -86,33 +86,15 @@
               "props": {
                 "apiParams": {
                   "method": "POST",
-                  "url": "auth/api/login/{{value}}/100y"
+                  "url": "auth/api/login/{{value}}/99y"
                 },
                 "detail": [
-                  "<html>",
-                  "  <head>",
-                  "    <meta charset=\"utf-8\">",
-                  "    <script src=\"https://unpkg.com/vue\"></script>",
-                  "    <script src=\"{{frontendUrl}}/widget/swivel-widget.js\"></script>",
-                  "  </head>",
-                  "  <body>",
-                  "    <!--",
-                  "      Api Token: For Security widget",
-                  "      Name: Required, Widget Name",
-                  "      Data: Required, JSON stringify for props using in widget",
-                  "    -->",
-                  "    <swivel-widget",
-                  "      apiToken=\"{{value}}\"",
-                  "      name=\"{Widget Name}\"",
-                  "      data=\"{Widget Props}\"",
-                  "    />",
-                  "  </body>",
-                  "</html>"
+                  "Authentication: Bearer {{accessToken}}"
                 ]
               }
             },
             {
-              "label": "ApiPage.widget",
+              "label": "ApiPage.TrackingWidget",
               "name": "refreshToken",
               "component": "DetailReadOnlyField",
               "class": "xs-12",
@@ -125,15 +107,56 @@
                   "    <script src=\"{{frontendUrl}}/widget/swivel-widget.js\"></script>",
                   "  </head>",
                   "  <body>",
-                  "    <!--",
-                  "      Api Token: For Security widget",
-                  "      Name: Required, Widget Name",
-                  "      Data: Required, JSON stringify for props using in widget",
-                  "    -->",
                   "    <swivel-widget",
                   "      apiToken=\"{{value}}\"",
-                  "      name=\"{Widget Name}\"",
-                  "      data=\"{Widget Props}\"",
+                  "      name=\"BillTrackingWidget\"",
+                  "      data=\"{ masterNo: '', containerNo: [] }\"",
+                  "    />",
+                  "  </body>",
+                  "</html>"
+                ]
+              }
+            },
+            {
+              "label": "ApiPage.LoginWidget",
+              "name": "refreshToken",
+              "component": "DetailReadOnlyField",
+              "class": "xs-12",
+              "props": {
+                "detail": [
+                  "<html>",
+                  "  <head>",
+                  "    <meta charset=\"utf-8\">",
+                  "    <script src=\"https://unpkg.com/vue\"></script>",
+                  "    <script src=\"{{frontendUrl}}/widget/swivel-widget.js\"></script>",
+                  "  </head>",
+                  "  <body>",
+                  "    <swivel-widget",
+                  "      apiToken=\"{{value}}\"",
+                  "      name=\"LoginWidget\"",
+                  "    />",
+                  "  </body>",
+                  "</html>"
+                ]
+              }
+            },
+            {
+              "label": "ApiPage.SearchBillWidget",
+              "name": "refreshToken",
+              "component": "DetailReadOnlyField",
+              "class": "xs-12",
+              "props": {
+                "detail": [
+                  "<html>",
+                  "  <head>",
+                  "    <meta charset=\"utf-8\">",
+                  "    <script src=\"https://unpkg.com/vue\"></script>",
+                  "    <script src=\"{{frontendUrl}}/widget/swivel-widget.js\"></script>",
+                  "  </head>",
+                  "  <body>",
+                  "    <swivel-widget",
+                  "      apiToken=\"{{value}}\"",
+                  "      name=\"SearchBillWidget\"",
                   "    />",
                   "  </body>",
                   "</html>"

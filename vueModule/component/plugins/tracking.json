@@ -2,6 +2,7 @@
   "name": "Tracking",
   "layout": "Plugin",
   "lazy": true,
+  "hide-overlay": true,
   "remote": true,
   "shareProps": {
     "icon": "statusCode",

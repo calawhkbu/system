@@ -1,6 +1,7 @@
 {
   "layout": "Plugin",
   "lazy": true,
+  "hide-overlay": true,
   "name": "Document",
   "shareProps": {
     "i18nKey": "Document",
