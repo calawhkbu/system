@@ -1801,7 +1801,14 @@ const nestedSummaryList = [
   }[]
 }[]
 
-const summaryFieldList: (string | { name: string, expression: IExpression })[] = ['totalShipment', 'cbm', 'chargeableWeight', 'grossWeight', 'teu']
+const summaryFieldList: (string | { name: string, expression: IExpression })[] = [
+  'totalShipment',
+  'cbm',
+  'chargeableWeight',
+  'grossWeight',
+  'teu',
+  'quantity'
+]
 
 function summaryFieldExpression(summaryField: string | { name: string, expression: IExpression }, condition?: IConditionalExpression) {
 

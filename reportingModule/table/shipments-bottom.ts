@@ -91,7 +91,7 @@ function prepareShipmentParams(): Function {
 
     if (subqueries.primaryKeyListString) {
 
-      const countLimit = 100
+      const countLimit = 100000
       const count = Number.parseInt((subqueries.primaryKeyListString.countString as string), 10)
 
       // if too many, just query again
