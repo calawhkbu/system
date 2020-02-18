@@ -29,7 +29,7 @@ function prepareShipmentParams(): Function {
       if (!(subqueries.location && subqueries.location.value))
         throw new Error('MISSING_location')
 
-        if (!(subqueries.locationCode && subqueries.locationCode.value))
+      if (!(subqueries.locationCode && subqueries.locationCode.value))
         throw new Error('MISSING_locationCode')
 
       const location = subqueries.location.value
@@ -40,7 +40,7 @@ function prepareShipmentParams(): Function {
 
       // portOfLoadingCode = 'ABC'
       subqueries[locationCode] = {
-        value : locationCodeValue
+        value: locationCodeValue
       }
 
       subqueries[subqueriesName] = true
@@ -49,7 +49,7 @@ function prepareShipmentParams(): Function {
 
     // lastStatus case
     if (subqueries.lastStatus) {
-      if (!(subqueries.lastStatus.value && subqueries.lastStatus.value.length) )
+      if (!(subqueries.lastStatus.value && subqueries.lastStatus.value.length))
         throw new Error('MISSING_lastStatus')
 
       subqueries.lastStatusJoin = true
@@ -58,42 +58,61 @@ function prepareShipmentParams(): Function {
     // alertType case
     if (subqueries.alertType) {
 
-      if (!(subqueries.alertType.value && subqueries.alertType.value.length) )
+      if (!(subqueries.alertType.value && subqueries.alertType.value.length))
         throw new Error('MISSING_alertType')
 
-        subqueries.alertJoin = true
+      subqueries.alertJoin = true
 
-        let alertCreatedAtJson: { from: any, to: any}
+      let alertCreatedAtJson: { from: any, to: any }
 
-        if (!subqueries.withinHours)
-        {
+      if (!subqueries.withinHours) {
+        const selectedDate = (subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment())
+        const currentMonth = selectedDate.month()
+        alertCreatedAtJson = {
+          from: selectedDate.month(currentMonth).startOf('month').format('YYYY-MM-DD'),
+          to: selectedDate.month(currentMonth).endOf('month').format('YYYY-MM-DD'),
+        }
+      }
 
-          const selectedDate = (subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment())
-          const currentMonth = selectedDate.month()
-          alertCreatedAtJson = {
-            from: selectedDate.month(currentMonth).startOf('month').format('YYYY-MM-DD'),
-            to: selectedDate.month(currentMonth).endOf('month').format('YYYY-MM-DD'),
-          }
+      else {
+
+        const withinHours = params.subqueries.withinHours
+        alertCreatedAtJson = {
+          from: moment().subtract(withinHours.value, 'hours'),
+          to: moment()
         }
 
-        else
-        {
+      }
 
-          const withinHours = params.subqueries.withinHours
-          alertCreatedAtJson = {
-            from : moment().subtract(withinHours.value, 'hours'),
-            to : moment()
-          }
-
-        }
-
-        subqueries.date = undefined
-        subqueries.alertCreatedAt = alertCreatedAtJson
+      subqueries.date = undefined
+      subqueries.alertCreatedAt = alertCreatedAtJson
 
     }
 
-    console.log(`bottomSheetParams`)
-    console.log(params)
+    if (subqueries.primaryKeyListString) {
+
+      const countLimit = 100
+      const count = Number.parseInt((subqueries.primaryKeyListString.countString as string), 10)
+
+      // if too many, just query again
+      if (count > countLimit)
+      {
+        subqueries.primaryKeyListString = undefined
+      }
+
+      else {
+        const primaryKeyListString = subqueries.primaryKeyListString.value as string
+        const idList = primaryKeyListString.split(',')
+
+        // reset params.subqueries, just id left
+        params.subqueries = {
+          id : {
+            value: idList
+          }
+        }
+
+      }
+    }
 
     return params
   }

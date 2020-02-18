@@ -1010,11 +1010,10 @@ query
     new ResultColumn(new ColumnExpression('shipment', 'id'))
   )
 
-// query
-//   .registerResultColumn(
-//     'primaryKey',
-//     new ResultColumn(new ColumnExpression('shipment', 'id'), 'primaryKey')
-//   )
+  // warning !!! will not contain all if the list is too large
+  query.registerResultColumn('primaryKeyListString',
+    new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))), 'primaryKeyListString')
+  )
 
 query
   .registerResultColumn(
