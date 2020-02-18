@@ -87,6 +87,10 @@
             }
           ]
         }
+      }, {
+        "i18nContext": "I18nPage",
+        "name": "category",
+        "type": "text"
       }],
       "clickFunction": {
         "type": "router",
