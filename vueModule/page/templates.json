@@ -29,7 +29,7 @@
             "locked": true
           },
           "extension": {
-            "value": "pdf"
+            "value": "xlsx"
           }
         },
         "configurations": {
@@ -138,7 +138,14 @@
         {
           "name": "extension",
           "i18nContext": "TemplatePage",
-          "type": "text"
+          "type": "list",
+          "props": [{
+            "label": "Excel",
+            "value": "xlsx"
+          }, {
+            "label": "PDF",
+            "value": "pdf"
+          }]
         }
       ]
     },

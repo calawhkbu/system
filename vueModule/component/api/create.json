@@ -22,8 +22,7 @@
               "type": "router",
               "otherParams": {
                 "func": "push",
-                "path": "/admin/apis",
-                "base": true
+                "path": "/admin/apis"
               }
             }]
           }

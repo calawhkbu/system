@@ -113,6 +113,31 @@ function prepareBookingParams(): Function {
 
     }
 
+    if (subqueries.primaryKeyListString) {
+
+      const countLimit = 100
+      const count = Number.parseInt((subqueries.primaryKeyListString.countString as string), 10)
+
+      // if too many, just query again
+      if (count > countLimit)
+      {
+        subqueries.primaryKeyListString = undefined
+      }
+
+      else {
+        const primaryKeyListString = subqueries.primaryKeyListString.value as string
+        const idList = primaryKeyListString.split(',')
+
+        // reset params.subqueries, just id left
+        params.subqueries = {
+          id : {
+            value: idList
+          }
+        }
+
+      }
+    }
+
     return params
   }
 
