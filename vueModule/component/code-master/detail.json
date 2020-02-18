@@ -30,8 +30,8 @@
           {
             "is": "I18nText",
             "props": {
-              "class": "headline",
-              "i18nKey": "CodeMasterPage.title"
+              "i18nContext": "CodeMasterPage",
+              "i18nKey": "title"
             }
           },
           {
