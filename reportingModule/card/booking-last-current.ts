@@ -37,6 +37,8 @@ function prepareParams(): Function {
     // dynamically choose the fields and summary value
 
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
 
     const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalBooking
     const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalBooking
@@ -51,9 +53,6 @@ function prepareParams(): Function {
       return accumulator }), [])
 
     const topX = subqueries.topX.value
-
-    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
 
     const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalBooking
     // ------------------------------
@@ -146,6 +145,8 @@ function dataQuery(): Function {
     const subqueries = (params.subqueries = params.subqueries || {})
 
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
 
     const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalBooking
     const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalBooking
@@ -159,9 +160,6 @@ function dataQuery(): Function {
       accumulator.push(`${currentValue}Last`)
       accumulator.push(`${currentValue}Current`)
       return accumulator }), [])
-
-    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
 
     const topX = subqueries.topX.value
 
@@ -222,6 +220,8 @@ function finalQuery(){
     const subqueries = (params.subqueries = params.subqueries || {})
 
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+    const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
 
     const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalBooking
     const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalBooking
@@ -368,21 +368,23 @@ export const filters = [
           label: 'agent',
           value: 'agent',
         },
-
         {
-          label: 'moduleType',
-          value: 'moduleType',
+          label: 'agentGroup',
+          value: 'agentGroup',
         },
 
-        // currently disabled
-        // {
-        //   label: 'agentGroup',
-        //   value: 'agentGroup',
-        // },
         {
           label: 'controllingCustomer',
           value: 'controllingCustomer',
         },
+        {
+          label : 'moduleType',
+          value : 'moduleType'
+        },
+        {
+          label : 'houseNo',
+          value : 'houseNo'
+        }
       ],
       required: true,
     },

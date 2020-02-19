@@ -14,14 +14,14 @@
       "newReport": {
         "filters": {
           "isActive": {
-            "value" : "active"
+            "value": "active"
           },
-          "entityType" : {
-            "value" : "shipment"
+          "entityType": {
+            "value": "shipment"
           }
         },
         "configurations": {
-          "i18nContext": "Alert",
+          "i18nContext": "AlertPage",
           "clickable": true,
           "draggable": true,
           "sorting": {
@@ -36,65 +36,54 @@
           "pagination": {
             "current": 0,
             "perPage": 20,
-            "remote" : true
+            "remote": true
           }
         }
       },
-      "fieldOptions": [
-        {
+      "fieldOptions": [{
           "key": "tableName",
           "hidden": true
         },
         {
-          "i18nContext": "Alert",
           "key": "primaryKey",
           "hidden": true
         },
 
         {
           "key": "alertTitle",
-          "i18nContext": "Alert",
-          "i18nOptions" : "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
+          "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
         },
 
         {
           "key": "alertMessage",
-          "i18nContext": "Alert",
-          "i18nOptions" : "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
+          "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
         },
 
         {
-          "key": "alertCategory",
-          "i18nContext": "Alert"
+          "key": "alertCategory"
         },
         {
-          "key": "alertType",
-          "i18nContext": "Alert"
+          "key": "alertType"
         },
         {
           "key": "alertContent",
-          "i18nContext": "Alert",
-          "hidden" : true
+          "hidden": true
         },
 
         {
           "key": "alertUpdatedAt",
-          "i18nContext": "Alert",
-          "hidden" : true
+          "hidden": true
         },
         {
           "key": "alertCreatedAt",
-          "i18nContext": "Alert",
-          "hidden" : true
+          "hidden": true
         }
       ],
-      "filters": [
-        {
+      "filters": [{
           "display": "entityType",
           "name": "entityType",
           "props": {
-            "items": [
-              {
+            "items": [{
                 "label": "booking",
                 "value": "booking"
               },
@@ -111,18 +100,18 @@
 
         {
           "name": "alertUpdatedAt",
-          "type" : "date"
+          "type": "date"
         },
         {
           "name": "alertCreatedAt",
-          "type" : "date"
+          "type": "date"
         },
         {
           "display": "date",
           "name": "date",
-          "type" : "date",
+          "type": "date",
           "props": {
-            "required" : false
+            "required": false
           }
 
         }

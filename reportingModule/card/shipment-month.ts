@@ -32,8 +32,8 @@ function prepareParams(): Function {
 
     // -----------------------------groupBy variable
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
+    const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
 
     const groupByVariables = [codeColumnName, nameColumnName]
 
@@ -131,8 +131,8 @@ function finalQuery()
     const subqueries = (params.subqueries = params.subqueries || {})
     // groupBy variable
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const codeColumnName = groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
+    const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
 
     const groupByVariables = [codeColumnName, nameColumnName]
 
@@ -242,6 +242,15 @@ export const filters = [
           label: 'totalShipment',
           value: 'totalShipment',
         },
+        {
+          label: 'teu',
+          value: 'teu',
+        },
+
+        {
+          label: 'quantity',
+          value: 'quantity',
+        },
       ],
       multi : false,
       required: true,
@@ -265,19 +274,26 @@ export const filters = [
           label: 'consignee',
           value: 'consignee',
         },
-
-        // currently disabled
-        {
-          label: 'agentGroup',
-          value: 'agentGroup',
-        },
         {
           label: 'agent',
           value: 'agent',
         },
         {
+          label: 'agentGroup',
+          value: 'agentGroup',
+        },
+
+        {
+          label: 'controllingCustomer',
+          value: 'controllingCustomer',
+        },
+        {
           label : 'moduleType',
           value : 'moduleType'
+        },
+        {
+          label : 'houseNo',
+          value : 'houseNo'
         }
       ],
       required: true,

@@ -7,6 +7,7 @@
         "components": [{
             "is": "v-btn",
             "props": {
+              "small": true,
               "flat": true,
               "icon": true
             },
@@ -29,11 +30,8 @@
           {
             "is": "I18nText",
             "props": {
-              "class": "headline",
-              "i18nKey": "CardAccessPage.title",
-              "i18nOptions": {
-                "title": "sometitle"
-              }
+              "i18nContext": "CardAccessPage",
+              "i18nKey": "title"
             }
           },
           {
@@ -43,8 +41,9 @@
             "is": "WidgetSave",
             "props": {
               "small": true,
-              "fab": true,
-              "color": "primary white-text"
+              "flat": true,
+              "icon": true,
+              "color": "primary"
             }
           }
         ]

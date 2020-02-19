@@ -22,7 +22,7 @@ const bookingBottomSheetId = 'bde2d806-d2bb-490c-b3e3-9e4792f353dd'
 
 function prepareParams(): Function {
 
-  const fn =  function(require, session, params) {
+  const fn = function(require, session, params) {
 
     // import
     const moment = require('moment')
@@ -42,7 +42,7 @@ function prepareParams(): Function {
     subqueries.lastStatusJoin = true
 
     params.groupBy = ['lastStatus']
-    params.fields = ['lastStatus', 'count']
+    params.fields = ['primaryKeyListString', 'lastStatus', 'count']
 
     return params
   }
@@ -60,13 +60,11 @@ function prepareFinalQuery() {
 
     let bottomSheetId
 
-    if (entityType === 'shipment')
-    {
+    if (entityType === 'shipment') {
       bottomSheetId = shipmentBottomSheetId
     }
 
-    else if (entityType === 'booking')
-    {
+    else if (entityType === 'booking') {
       bottomSheetId = bookingBottomSheetId
     }
 
@@ -77,15 +75,24 @@ function prepareFinalQuery() {
     ]
 
     lastStatusList.map(status => {
+
+      $select.push(new ResultColumn(
+        new FunctionExpression('FIND',
+
+          new BinaryExpression(new ColumnExpression('lastStatus'), '=', status),
+          new ColumnExpression('primaryKeyListString')
+        ), `${status}_primaryKeyListString`))
+
       $select.push(
         new ResultColumn(
           new FunctionExpression('IFNULL',
             new FunctionExpression('SUM',
               new FunctionExpression('IF', new BinaryExpression(new ColumnExpression('lastStatus'), '=', status), new ColumnExpression('count'), 0)
-          ),
-          0),
-        `${status}_count`)
+            ),
+            0),
+          `${status}_count`)
       )
+
     })
 
     return new Query({
@@ -101,6 +108,10 @@ function prepareFinalQuery() {
             },
             {
               name: 'lastStatus',
+              type: 'string'
+            },
+            {
+              name: 'primaryKeyListString',
               type: 'string'
             }
           ],

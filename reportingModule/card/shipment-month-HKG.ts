@@ -317,6 +317,14 @@ export const filters = [
           label: 'totalShipment',
           value: 'totalShipment',
         },
+        {
+          label: 'teu',
+          value: 'teu',
+        },
+        {
+          label: 'quantity',
+          value: 'quantity',
+        },
       ],
       multi : false,
       required: true,

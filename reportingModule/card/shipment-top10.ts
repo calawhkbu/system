@@ -320,22 +320,22 @@ export const filters = [
     display: 'controllingCustomerExcludeRole',
     name: 'controllingCustomerExcludeRole',
     type: 'list',
-    default: ['AGT', 'CLR', 'FWD'],
+    default: ['agent', 'forwarder', 'coloader'],
     disabled: true,
     props: {
       multi: true,
       items: [
         {
           label: 'agent',
-          value: 'AGT',
+          value: 'agent',
         },
         {
           label: 'forwarder',
-          value: 'FWD',
+          value: 'forwarder',
         },
         {
           label: 'coloader',
-          value: 'CLR',
+          value: 'coloader',
         },
       ],
     },
@@ -360,6 +360,14 @@ export const filters = [
         {
           label: 'totalShipment',
           value: 'totalShipment',
+        },
+        {
+          label: 'teu',
+          value: 'teu',
+        },
+        {
+          label: 'quantity',
+          value: 'quantity',
         },
       ],
       required: true,

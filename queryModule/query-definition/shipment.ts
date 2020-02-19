@@ -1010,11 +1010,10 @@ query
     new ResultColumn(new ColumnExpression('shipment', 'id'))
   )
 
-// query
-//   .registerResultColumn(
-//     'primaryKey',
-//     new ResultColumn(new ColumnExpression('shipment', 'id'), 'primaryKey')
-//   )
+  // warning !!! will not contain all if the list is too large
+  query.registerResultColumn('primaryKeyListString',
+    new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))), 'primaryKeyListString')
+  )
 
 query
   .registerResultColumn(
@@ -1802,7 +1801,14 @@ const nestedSummaryList = [
   }[]
 }[]
 
-const summaryFieldList: (string | { name: string, expression: IExpression })[] = ['totalShipment', 'cbm', 'chargeableWeight', 'grossWeight', 'teu']
+const summaryFieldList: (string | { name: string, expression: IExpression })[] = [
+  'totalShipment',
+  'cbm',
+  'chargeableWeight',
+  'grossWeight',
+  'teu',
+  'quantity'
+]
 
 function summaryFieldExpression(summaryField: string | { name: string, expression: IExpression }, condition?: IConditionalExpression) {
 
@@ -2718,7 +2724,6 @@ query
   .register('value', 43)
   .register('value', 44)
   .register('value', 45)
-  .register('value', 46)
 
 const isActiveExpression = new AndExpressions([
   new IsNullExpression(new ColumnExpression('shipment', 'deletedAt'), false),

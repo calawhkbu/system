@@ -1704,8 +1704,8 @@ query
           new RegexpExpression(new ColumnExpression('booking_party', 'controllingCustomerPartyName'), false),
           new RegexpExpression(new ColumnExpression('booking_party', 'linerAgentPartyCode'), false),
           new RegexpExpression(new ColumnExpression('booking_party', 'linerAgentPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'officePartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'officePartyName'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyCode'), false),
+          new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyName'), false),
           new RegexpExpression(new ColumnExpression('booking_party', 'roAgentPartyName'), false),
           new RegexpExpression(new ColumnExpression('booking_party', 'roAgentPartyCode'), false),
           new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyCode'), false),
@@ -1752,8 +1752,7 @@ query
   .register('value', 30)
   .register('value', 31)
   .register('value', 32)
-  .register('value', 33)
-  // .register('value', 34)
+  // .register('value', 33)
 
 const isActiveConditionExpression = new AndExpressions([
   new IsNullExpression(new ColumnExpression('booking', 'deletedAt'), false),
