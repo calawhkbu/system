@@ -3,7 +3,7 @@
   "components": [{
       "is": "DynamicComponent",
       "props": {
-        "class": "xs-12 grid min-height-28 align-item-center full-width",
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
         "components": [{
             "is": "v-btn",
             "props": {
@@ -30,7 +30,8 @@
           {
             "is": "I18nText",
             "props": {
-              "i18nKey": "ShipmentPage.title",
+              "i18nContext": "ShipmentPage",
+              "i18nKey": "title",
               "i18nOptions": {
                 "title": "{{context.$store.state.widget.data.houseNo}}"
               }

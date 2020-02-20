@@ -48,6 +48,7 @@
             "slots": [{
               "is": "Icon",
               "props": {
+                "small": true,
                 "icon": "edit"
               }
             }],

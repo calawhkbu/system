@@ -30,11 +30,8 @@
           {
             "is": "I18nText",
             "props": {
-              "class": "headline",
-              "i18nKey": "LocationPage.title",
-              "i18nOptions": {
-                "title": "sometitle"
-              }
+              "i18nContext": "LocationPage",
+              "i18nKey": "title"
             }
           },
           {
