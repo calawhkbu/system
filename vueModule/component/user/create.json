@@ -43,7 +43,7 @@
               "small": true,
               "icon": true,
               "flat": true,
-              "class": "primary white-text"
+              "class": "primary"
             }
           }
         ]
