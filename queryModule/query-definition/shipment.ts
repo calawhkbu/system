@@ -1535,6 +1535,8 @@ const lastStatusExpression = statusExpressionMapFunction(lastStatusCodeExpressio
 
 //  alert related field
 
+const alertIdExpression = new ColumnExpression('alert', 'id')
+
 const alertTypeExpression = new ColumnExpression('alert', 'alertType')
 const alertTableNameExpression = new ColumnExpression('alert', 'tableName')
 const alertPrimaryKeyExpression = new ColumnExpression('alert', 'primaryKey')
@@ -1585,6 +1587,8 @@ query.registerBoth('lastStatus', lastStatusExpression)
 // tracking status
 query.registerBoth('statusCode', statusCodeExpression)
 query.registerBoth('status', statusExpression)
+
+query.registerBoth('alertId', alertIdExpression)
 
 query.registerBoth('alertTableName', alertTableNameExpression)
 
