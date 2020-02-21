@@ -965,6 +965,11 @@ query.register('id', {
   $as: 'id',
 })
 
+  // warning !!! will not contain all if the list is too large
+  query.registerResultColumn('primaryKeyListString',
+    new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('booking', 'id'))), 'primaryKeyListString')
+  )
+
 query.register('createdAt', {
   expression: new ColumnExpression('booking', 'createdAt'),
   $as: 'createdAt',
