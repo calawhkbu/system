@@ -47,7 +47,7 @@ export const alertConfigList = [
 
     templatePath: 'message/shipment-message',
 
-    schedule: '0 * * ? * *',
+    schedule: '*/2 * * * *',
 
     active: false,
 
@@ -56,9 +56,10 @@ export const alertConfigList = [
       subqueries: {
         moduleTypeCode: { value: ['AIR'] },
         boundTypeCode: { value: ['O'] },
+        isActive : { value : 'active' }
       },
-      limit: 1
 
+      limit : 100
     } as IQueryParams,
 
     extraPersonIdQuery: {
@@ -123,6 +124,8 @@ export const alertConfigList = [
     contactRoleList: ['shipper', 'consignee'],
 
     resend: false,
+
+    // schedule: '0 * * ? * *',
 
     schedule: '0 * * ? * *',
     active: false,
@@ -251,13 +254,13 @@ export const alertFlexDataConfigList = [
       'shipperPartyId',
       'consigneePartyId'
     ],
-    primaryKeyName: 'id'
-  },
+    primaryKeyName: 'id',
+  } as AlertFlexDataConfig,
 
   {
     tableName: 'shipment',
     primaryKeyName: 'id',
     variableList: 'all'
-  }
+  } as AlertFlexDataConfig
 
 ] as AlertFlexDataConfig[]

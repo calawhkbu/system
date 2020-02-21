@@ -20,6 +20,60 @@ function prepareParams(): Function {
 
   return function(require, session, params) {
 
+    function calculateLastCurrent(lastCurrentUnit: string)
+    {
+      const from = subqueries.date.from
+
+      const currentYear = moment(from).year()
+      const currentMonth = moment(from).month()
+      const currentWeek = moment(from).week()
+
+      let lastFrom, lastTo, currentFrom, currentTo
+
+      if (lastCurrentUnit === 'year') {
+
+        lastFrom = moment(from).year(currentYear - 1).startOf('year').format('YYYY-MM-DD')
+        lastTo = moment(from).year(currentYear - 1).endOf('year').format('YYYY-MM-DD')
+        currentFrom = moment(from).year(currentYear).startOf('year').format('YYYY-MM-DD')
+        currentTo = moment(from).year(currentYear).endOf('year').format('YYYY-MM-DD')
+
+      } else if (lastCurrentUnit === 'month') {
+
+        lastFrom = moment(from).subtract(1, 'months').startOf('month').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'months').endOf('month').format('YYYY-MM-DD')
+        currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
+        currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
+
+      } else if (lastCurrentUnit === 'week') {
+
+        lastFrom = moment(from).subtract(1, 'weeks').startOf('week').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'weeks').endOf('week').format('YYYY-MM-DD')
+        currentFrom = moment(from).week(currentWeek).startOf('week').format('YYYY-MM-DD')
+        currentTo = moment(from).week(currentWeek).endOf('week').format('YYYY-MM-DD')
+      }
+
+      else if (lastCurrentUnit === 'day') {
+        lastFrom = moment(from).subtract(1, 'days').startOf('day').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'days').endOf('day').format('YYYY-MM-DD')
+        currentFrom = moment(from).startOf('day').format('YYYY-MM-DD')
+        currentTo = moment(from).endOf('day').format('YYYY-MM-DD')
+      }
+
+      else if (lastCurrentUnit === 'lastYearCurrentMonth') {
+
+        // asfasfdasw
+        lastFrom = moment(from).subtract(1, 'years').startOf('month').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
+        currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
+        currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
+
+      } else {
+        throw new Error('INVALID_lastCurrentUnit')
+      }
+
+      return { lastFrom, lastTo, currentFrom, currentTo }
+    }
+
     const moment = require('moment')
     const { OrderBy } = require('node-jql')
 
@@ -57,41 +111,7 @@ function prepareParams(): Function {
     const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalBooking
     // ------------------------------
 
-    const from = subqueries.date.from
-
-    let lastFrom: any
-    let lastTo: any
-    let currentFrom: any
-    let currentTo: any
-
-    const currentYear = moment(from).year()
-    const currentMonth = moment(from).month()
-
-    if (lastCurrentUnit === 'year') {
-
-      lastFrom = moment(from).year(currentYear - 1).startOf('year').format('YYYY-MM-DD')
-      lastTo = moment(from).year(currentYear - 1).endOf('year').format('YYYY-MM-DD')
-      currentFrom = moment(from).year(currentYear).startOf('year').format('YYYY-MM-DD')
-      currentTo = moment(from).year(currentYear).endOf('year').format('YYYY-MM-DD')
-
-    } else if (lastCurrentUnit === 'month') {
-
-      lastFrom = moment(from).subtract(1, 'months').startOf('month').format('YYYY-MM-DD')
-      lastTo = moment(from).subtract(1, 'months').endOf('month').format('YYYY-MM-DD')
-      currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
-      currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
-
-    } else if (lastCurrentUnit === 'lastYearCurrentMonth') {
-
-      // asfasfdasw
-      lastFrom = moment(from).subtract(1, 'years').startOf('month').format('YYYY-MM-DD')
-      lastTo = moment(from).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
-      currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
-      currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
-
-    } else {
-      throw new Error('INVALID_lastCurrentUnit')
-    }
+    const { lastFrom, lastTo, currentFrom, currentTo } = calculateLastCurrent(lastCurrentUnit)
 
     subqueries.date = {
       lastFrom,
@@ -107,7 +127,7 @@ function prepareParams(): Function {
     params.fields = [...new Set([codeColumnName, nameColumnName, ...metricFieldList])]
     params.groupBy = [codeColumnName, nameColumnName]
 
-    // params.sorting = new OrderBy(metricFieldList[0], 'DESC')
+    params.sorting = new OrderBy(metricFieldList[0], 'DESC')
 
     params.limit = topX
 
@@ -286,6 +306,14 @@ export const filters = [
         {
           label: '50',
           value: 50,
+        },
+        {
+          label: '100',
+          value: 100,
+        },
+        {
+          label: '1000',
+          value: 1000,
         }
       ],
       multi : false,
@@ -306,6 +334,16 @@ export const filters = [
         {
           label: 'month',
           value: 'month',
+        },
+
+        {
+          label: 'week',
+          value: 'week',
+        },
+
+        {
+          label: 'day',
+          value: 'day',
         },
         {
           label: 'lastYearCurrentMonth',
@@ -376,6 +414,20 @@ export const filters = [
         {
           label: 'controllingCustomer',
           value: 'controllingCustomer',
+        },
+
+        {
+          label: 'linerAgent',
+          value: 'linerAgent',
+        },
+
+        {
+          label: 'roAgent',
+          value: 'roAgent',
+        },
+        {
+          label: 'office',
+          value: 'office',
         },
         {
           label : 'moduleType',

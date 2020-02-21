@@ -231,9 +231,17 @@ export const filters = [
         {
           label: '50',
           value: 50,
+        },
+        {
+          label: '100',
+          value: 100,
+        },
+        {
+          label: '1000',
+          value: 1000,
         }
       ],
-      multi: false,
+      multi : false,
       required: true,
     },
     type: 'list',
@@ -304,6 +312,20 @@ export const filters = [
           label: 'controllingCustomer',
           value: 'controllingCustomer',
         },
+
+        {
+          label: 'linerAgent',
+          value: 'linerAgent',
+        },
+
+        {
+          label: 'roAgent',
+          value: 'roAgent',
+        },
+        {
+          label: 'office',
+          value: 'office',
+        },
         {
           label : 'moduleType',
           value : 'moduleType'
@@ -316,5 +338,5 @@ export const filters = [
       required: true,
     },
     type: 'list',
-  }
+  },
 ]
