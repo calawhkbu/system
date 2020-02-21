@@ -41,8 +41,9 @@
             "is": "WidgetSave",
             "props": {
               "small": true,
-              "fab": true,
-              "color": "primary white-text"
+              "flat": true,
+              "icon": true,
+              "color": "primary"
             }
           }
         ]

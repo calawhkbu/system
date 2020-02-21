@@ -3,7 +3,7 @@
   "components": [{
       "is": "DynamicComponent",
       "props": {
-        "class": "xs-12 grid min-height-28 align-item-center full-width",
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
         "components": [{
             "is": "v-btn",
             "props": {
@@ -36,8 +36,8 @@
           {
             "is": "I18nText",
             "props": {
-              "class": "headline",
-              "i18nKey": "BookingPage.updateTitle",
+              "i18nContext": "BookingPage",
+              "i18nKey": "updateTitle",
               "i18nOptions": {
                 "title": "{{context.$store.state.widget.data.bookingNo}}"
               }

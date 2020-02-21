@@ -42,61 +42,65 @@ const query = new QueryDef(
         '=',
         new ColumnExpression('party_type', 'partyId')
       ),
-    }, {
-      operator: 'LEFT',
-      table: new FromTable(new Query({
-        $select: [
-          new ResultColumn(new ColumnExpression('related_person', 'partyId'), 'partyId'),
-          new ResultColumn({
-            expression: new FunctionExpression({
-              name: 'COUNT',
-              parameters: new ParameterExpression({
-                prefix: 'DISTINCT',
-                expression: new ColumnExpression('related_person', 'email'),
-              }),
-            }),
-            $as: 'count'
-          })
-        ],
-        $from: 'related_person',
-        $group: new GroupBy({
-          expressions: new ColumnExpression('related_person', 'partyId')
-        })
-      }), 'related_person_count'),
-      $on: new BinaryExpression(
-        new ColumnExpression('party', 'id'),
-        '=',
-        new ColumnExpression('related_person_count', 'partyId')
-      ),
-    }, {
-      operator: 'LEFT',
-      table: new FromTable(new Query({
-        $select: [
-          new ResultColumn(new ColumnExpression('related_party', 'partyBId'), 'partyBId'),
-          new ResultColumn({
-            expression: new FunctionExpression({
-              name: 'COUNT',
-              parameters: new ParameterExpression({
-                prefix: 'DISTINCT',
-                expression: new ColumnExpression('related_party', 'partyBId'),
-              }),
-            }),
-            $as: 'count'
-          })
-        ],
-        $from: 'related_party',
-        $group: new GroupBy({
-          expressions: new ColumnExpression('related_party', 'partyBId')
-        })
-      }), 'related_party_count'),
-      $on: new BinaryExpression(
-        new ColumnExpression('party', 'id'),
-        '=',
-        new ColumnExpression('related_party_count', 'partyBId')
-      ),
     })
   })
 )
+
+query.registerQuery('relation_join', new Query({
+  $from: new FromTable('party', {
+    operator: 'LEFT',
+    table: new FromTable(new Query({
+      $select: [
+        new ResultColumn(new ColumnExpression('related_person', 'partyId'), 'partyId'),
+        new ResultColumn({
+          expression: new FunctionExpression({
+            name: 'COUNT',
+            parameters: new ParameterExpression({
+              prefix: 'DISTINCT',
+              expression: new ColumnExpression('related_person', 'email'),
+            }),
+          }),
+          $as: 'count'
+        })
+      ],
+      $from: 'related_person',
+      $group: new GroupBy({
+        expressions: new ColumnExpression('related_person', 'partyId')
+      })
+    }), 'related_person_count'),
+    $on: new BinaryExpression(
+      new ColumnExpression('party', 'id'),
+      '=',
+      new ColumnExpression('related_person_count', 'partyId')
+    ),
+  }, {
+    operator: 'LEFT',
+    table: new FromTable(new Query({
+      $select: [
+        new ResultColumn(new ColumnExpression('related_party', 'partyBId'), 'partyBId'),
+        new ResultColumn({
+          expression: new FunctionExpression({
+            name: 'COUNT',
+            parameters: new ParameterExpression({
+              prefix: 'DISTINCT',
+              expression: new ColumnExpression('related_party', 'partyBId'),
+            }),
+          }),
+          $as: 'count'
+        })
+      ],
+      $from: 'related_party',
+      $group: new GroupBy({
+        expressions: new ColumnExpression('related_party', 'partyBId')
+      })
+    }), 'related_party_count'),
+    $on: new BinaryExpression(
+      new ColumnExpression('party', 'id'),
+      '=',
+      new ColumnExpression('related_party_count', 'partyBId')
+    ),
+  })
+}))
 
 query.register('erpCode', {
   expression: new FunctionExpression(

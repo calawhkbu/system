@@ -29,11 +29,8 @@
         }, {
           "is": "I18nText",
           "props": {
-            "i18nContext": "ApiPage",
-            "i18nKey": "title",
-            "i18nOptions": {
-              "id": "{{context.$store.state.widget.data.name}}"
-            }
+            "i18nContext": "TrackingPage",
+            "i18nKey": "title"
           }
         }, {
           "is": "v-spacer"

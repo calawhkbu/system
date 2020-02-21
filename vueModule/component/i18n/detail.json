@@ -41,8 +41,9 @@
             "is": "v-btn",
             "props": {
               "small": true,
-              "fab": true,
-              "color": "primary white-text margin-0"
+              "icon": true,
+              "flat": true,
+              "class": "primary white-text"
             },
             "slots": [{
               "is": "Icon",
