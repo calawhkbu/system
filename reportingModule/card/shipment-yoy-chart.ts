@@ -18,7 +18,6 @@ import {
 } from 'node-jql'
 
 import { parseCode } from 'utils/function'
-import moment = require('moment')
 
 const months = [
   'January',
@@ -37,7 +36,7 @@ const months = [
 
 function prepareParams(currentYear_: boolean): Function {
   const fn = function(require, session, params) {
-    const moment = require('moment')
+    const { moment } = params.packages
     const { OrderBy } = require('node-jql')
     const { BadRequestException } = require('@nestjs/common')
 

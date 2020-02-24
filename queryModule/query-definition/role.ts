@@ -95,6 +95,16 @@ query
   )
   .register('value', 0)
 
+query.register(
+  'q',
+  new Query({
+    $where: new OrExpressions([
+      new RegexpExpression(new ColumnExpression('role', 'roleName'), false),
+    ])
+  })
+)
+  .register('value', 0)
+
 query
   .register(
     'shareable',

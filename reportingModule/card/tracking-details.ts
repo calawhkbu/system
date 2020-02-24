@@ -17,7 +17,7 @@ function prepareParams(): Function {
   return function(require, session, params) {
     // import
     const { BadRequestException } = require('@nestjs/common')
-    const moment = require('moment')
+    const { moment } = params.packages
 
     // script
     const subqueries = params.subqueries || {}
@@ -54,7 +54,6 @@ function prepareStatusMasterTable() {
 
 function prepareTrackingTable() {
   return function(require, session, params) {
-    console.log(params)
 
     const { Resultset } = require('node-jql-core')
     const {

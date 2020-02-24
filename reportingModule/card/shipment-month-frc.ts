@@ -18,12 +18,11 @@ import {
 } from 'node-jql'
 
 import { parseCode } from 'utils/function'
-import { months } from 'moment'
 
 function prepareParams(): Function {
   return function(require, session, params) {
     // import
-    const moment = require('moment')
+    const { moment } = params.packages
     const { OrderBy } = require('node-jql')
     const subqueries = (params.subqueries = params.subqueries || {})
 

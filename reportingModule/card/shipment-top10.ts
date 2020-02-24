@@ -4,8 +4,6 @@ import { parseCode } from 'utils/function'
 
 function prepareParams(): Function {
   const fn = function(require, session, params) {
-    const moment = require('moment')
-
     const { OrderBy } = require('node-jql')
     const { BadRequestException } = require('@nestjs/common')
 
