@@ -27,7 +27,8 @@ import {
   IExpression,
   IResultColumn,
   OrderBy,
-  IConditionalExpression
+  IConditionalExpression,
+  MathExpression
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
 
@@ -47,6 +48,27 @@ const months = [
   'November',
   'December',
 ]
+
+const percentageChangeFunction = (oldExpression: IExpression, newExpression: IExpression) => {
+
+  const conditionExpression = new CaseExpression({
+    cases: [
+      {
+        $when: new OrExpressions([
+          new BinaryExpression(oldExpression, '=', 0),
+          new BinaryExpression(newExpression, '=', 0)
+        ]),
+        $then: new MathExpression(newExpression, '-', oldExpression)
+      } as ICase
+    ],
+
+    $else: new MathExpression(new MathExpression(newExpression, '-', oldExpression), '/', oldExpression)
+
+  })
+
+  return conditionExpression
+
+}
 
 const agentPartyIdExpression = new CaseExpression({
 
@@ -416,33 +438,33 @@ const shipmentTrackingStatusCodeTableExpression = new Query({
     joinClauses: [
       {
 
-      operator: 'LEFT',
-      table: new FromTable({
-        table: shipmentProrityTableExpression,
-        $as: 'shipment_priority'
-      }),
-      $on: [
-        new BinaryExpression(new ColumnExpression('shipment_tracking', 'shipmentId'), '=', new ColumnExpression('shipment_priority', 'shipmentId'))
+        operator: 'LEFT',
+        table: new FromTable({
+          table: shipmentProrityTableExpression,
+          $as: 'shipment_priority'
+        }),
+        $on: [
+          new BinaryExpression(new ColumnExpression('shipment_tracking', 'shipmentId'), '=', new ColumnExpression('shipment_priority', 'shipmentId'))
 
-      ]
-    },
-    {
+        ]
+      },
+      {
 
-      operator: 'LEFT',
-      table: 'tracking',
-      $on: [
-        new BinaryExpression(new ColumnExpression('tracking', 'trackingNo'), '=', new ColumnExpression('shipment_tracking', 'trackingNo'))
-      ]
-    },
-    {
+        operator: 'LEFT',
+        table: 'tracking',
+        $on: [
+          new BinaryExpression(new ColumnExpression('tracking', 'trackingNo'), '=', new ColumnExpression('shipment_tracking', 'trackingNo'))
+        ]
+      },
+      {
 
-      operator: 'LEFT',
-      table: 'tracking_status',
-      $on: [
-        new BinaryExpression(new ColumnExpression('tracking_status', 'trackingId'), '=', new ColumnExpression('tracking', 'id'))
-      ]
-    }
-  ]
+        operator: 'LEFT',
+        table: 'tracking_status',
+        $on: [
+          new BinaryExpression(new ColumnExpression('tracking_status', 'trackingId'), '=', new ColumnExpression('tracking', 'id'))
+        ]
+      }
+    ]
 
   }),
 
@@ -454,10 +476,10 @@ const shipmentTrackingStatusCodeTableExpression = new Query({
 
 query.registerQuery('statusJoin', new Query(
   {
-    $from : new FromTable('shipment', {
+    $from: new FromTable('shipment', {
 
       operator: 'LEFT',
-      table : new FromTable({
+      table: new FromTable({
 
         table: shipmentTrackingStatusCodeTableExpression,
         $as: 'shipment_tracking_status',
@@ -466,9 +488,9 @@ query.registerQuery('statusJoin', new Query(
 
       $on: new BinaryExpression(new ColumnExpression('shipment_tracking_status', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))
 
-  })
+    })
 
-}))
+  }))
 
 //  alert Join
 // warning !!! this join will create duplicate record of shipment
@@ -1010,10 +1032,10 @@ query
     new ResultColumn(new ColumnExpression('shipment', 'id'))
   )
 
-  // warning !!! will not contain all if the list is too large
-  query.registerResultColumn('primaryKeyListString',
-    new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))), 'primaryKeyListString')
-  )
+// warning !!! will not contain all if the list is too large
+query.registerResultColumn('primaryKeyListString',
+  new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))), 'primaryKeyListString')
+)
 
 query
   .registerResultColumn(
@@ -1703,7 +1725,7 @@ query
     new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))), 'count')
   )
 
-  query
+query
   .register(
     'alertCount',
     new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))), 'alertCount')
@@ -1889,9 +1911,12 @@ summaryFieldList.map((summaryField: string | { name: string, expression: IExpres
     const lastSummaryField = summaryFieldExpression(summaryField, lastTimeCondition(params))
     const currentSummaryField = summaryFieldExpression(summaryField, currentTimeCondition(params))
 
+    const lastCurrentPercentageChangeExpression = percentageChangeFunction(lastSummaryField, currentSummaryField)
+
     return [
       new ResultColumn(lastSummaryField, `${summaryFieldName}Last`),
-      new ResultColumn(currentSummaryField, `${summaryFieldName}Current`)
+      new ResultColumn(currentSummaryField, `${summaryFieldName}Current`),
+      new ResultColumn(lastCurrentPercentageChangeExpression, `${summaryFieldName}LastCurrentPercentageChange`)
     ]
 
   }
@@ -1917,15 +1942,21 @@ summaryFieldList.map((summaryField: string | { name: string, expression: IExpres
       const monthLastSumExpression = summaryFieldExpression(summaryField, monthLastCondition)
       const monthCurrentSumExpression = summaryFieldExpression(summaryField, monthLastCondition)
 
+      const monthLastCurrentPercentageChangeExpression = percentageChangeFunction(monthLastSumExpression, monthCurrentSumExpression)
+
       resultColumnList.push(new ResultColumn(monthLastSumExpression, `${month}_${summaryFieldName}Last`))
       resultColumnList.push(new ResultColumn(monthCurrentSumExpression, `${month}_${summaryFieldName}Current`))
+      resultColumnList.push(new ResultColumn(monthLastCurrentPercentageChangeExpression, `${month}_${summaryFieldName}LastCurrentPercentageChange`))
+
     })
 
     const totalLastSumExpression = summaryFieldExpression(summaryField, lastTimeCondition(params))
     const totalCurrentSumExpression = summaryFieldExpression(summaryField, currentTimeCondition(params))
+    const totalLastCurrentPercentageChangeExpression = percentageChangeFunction(totalLastSumExpression, totalCurrentSumExpression)
 
     resultColumnList.push(new ResultColumn(totalLastSumExpression, `total_${summaryFieldName}Last`))
     resultColumnList.push(new ResultColumn(totalCurrentSumExpression, `total_${summaryFieldName}Current`))
+    resultColumnList.push(new ResultColumn(totalLastCurrentPercentageChangeExpression, `total_${summaryFieldName}LastCurrentPercentageChange`))
 
     return resultColumnList
   }

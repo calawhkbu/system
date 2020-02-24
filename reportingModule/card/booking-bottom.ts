@@ -30,7 +30,7 @@ function prepareBookingParams(): Function {
 
     // import
     const { BadRequestException } = require('@nestjs/common')
-    const moment = require('moment')
+    const { moment } = params.packages
 
     // script
     const subqueries = (params.subqueries = params.subqueries || {})

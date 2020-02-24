@@ -8,13 +8,14 @@ import {
   ResultColumn,
   Value,
 } from 'node-jql'
-import moment = require('moment')
 
 const shipmentBottomSheetId = 'cb22011b-728d-489b-a64b-b881914be600'
 const bookingBottomSheetId = 'bde2d806-d2bb-490c-b3e3-9e4792f353dd'
 
 function prepareParams(): Function {
   return function(require, session, params) {
+
+    const { moment } = params.packages
     // import
     const { BadRequestException } = require('@nestjs/common')
 
@@ -76,6 +77,7 @@ function finalQuery(): Function {
 
   return function(require, session, params) {
     // import
+    const { moment } = params.packages
     const { BadRequestException } = require('@nestjs/common')
 
     // script

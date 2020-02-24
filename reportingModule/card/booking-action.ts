@@ -17,7 +17,7 @@ function prepareParams(): Function {
   return function(require, session, params) {
     // import
     const { BadRequestException } = require('@nestjs/common')
-    const moment = require('moment')
+    const { moment } = params.packages
 
     // script
     const subqueries = (params.subqueries = params.subqueries || {})
@@ -334,7 +334,7 @@ function insertNextStatusTable() {
   const fn = async function(require, session, params) {
     const { Resultset } = require('node-jql-core')
     const { InsertJQL, Query } = require('node-jql')
-    const moment = require('moment')
+    const { moment } = params.packages
 
     const result = [] as any[]
 

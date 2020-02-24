@@ -74,7 +74,7 @@ function prepareParams(): Function {
       return { lastFrom, lastTo, currentFrom, currentTo }
     }
 
-    const moment = require('moment')
+    const { moment } = params.packages
     const { OrderBy } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
