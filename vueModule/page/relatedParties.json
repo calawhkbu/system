@@ -18,7 +18,15 @@
         },
         "configurations": {
           "i18nContext": "PartyPage",
-          "sorting": {},
+          "sorting": {
+            "direction": "DESC",
+            "key": "updatedAt",
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "party",
+              "name": "partyBName"
+            }
+          },
           "pagination": {
             "current": 0,
             "perPage": 20
@@ -27,13 +35,16 @@
       },
       "filters": [{
         "name": "shortName",
-        "type": "text"
+        "type": "text",
+        "i18nContext": "PartyPage"
       }, {
         "name": "groupName",
-        "type": "text"
+        "type": "text",
+        "i18nContext": "PartyPage"
       }, {
         "name": "partyTypes",
-        "type": "text"
+        "type": "text",
+        "i18nContext": "PartyPage"
       }],
       "fieldOptions": [{
           "key": "partyAId",
@@ -48,18 +59,22 @@
           "hidden": true
         },
         {
+          "i18nContext": "PartyPage",
           "key": "partyBName",
           "width": 200
         },
         {
+          "i18nContext": "PartyPage",
           "key": "partyBShortName",
           "width": 150
         },
         {
+          "i18nContext": "PartyPage",
           "key": "partyBGroupName",
           "width": 150
         },
         {
+          "i18nContext": "PartyPage",
           "key": "partyTypes",
           "width": 300,
           "tdComponent": {
@@ -84,7 +99,6 @@
                 }
               },
               "onFixValueChangeFunc": [
-                "console.log({ ...context.$attrs['row'], partyTypes: value })",
                 "this.$Swivel.api.createPromise({",
                 "method: 'POST',",
                 "url: 'relationship/party',",
@@ -130,28 +144,52 @@
       "props": {
         "class": "button",
         "components": [{
-          "is": "v-btn",
+          "is": "Dialog",
           "props": {
-            "small": true,
-            "flat": true,
-            "icon": true
+            "button": {
+              "layout": "v-btn",
+              "small": true,
+              "flat": true,
+              "icon": true,
+              "components": [{
+                "is": "Icon",
+                "props": {
+                  "icon": "add"
+                }
+              }]
+            }
           },
           "slots": [{
-            "is": "Icon",
-            "props": {
-              "icon": "add"
-            }
-          }],
-          "events": {
-            "click.stop": [{
-              "type": "router",
-              "otherParams": {
-                "func": "push",
-                "path": "/create",
-                "base": true
-              }
+            "is": "v-card",
+            "slots": [{
+              "is": "Form",
+              "props": {
+                "form": {
+                  "partyId": null,
+                  "partyRoles": []
+                },
+                "fields": []
+              },
+              "slots": [{
+                "name": "pre-form",
+                "is": "DynamicComponent",
+                "props": {
+                  "class": "flex",
+                  "components": [{
+                    "is": "I18nText",
+                    "props": {
+                      "i18nContext": "PartyForm",
+                      "i18nKey": "createParty"
+                    }
+                  }, {
+                    "is": "v-spacer"
+                  }]
+                }
+              }, {
+                "name": "post-form"
+              }]
             }]
-          }
+          }]
         }]
       }
     }]
