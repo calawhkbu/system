@@ -58,7 +58,7 @@
                 "limit": 5
               }
             },
-            "item-text": "name",
+            "item-text": "shortName",
             "item-value": "id"
           }
         },
