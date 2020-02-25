@@ -98,12 +98,20 @@
                     "method": "GET"
                   }
                 },
-                "afterActions": [{
-                  "type": "notify",
-                  "otherParams": {
-                    "notification": "Notify.resendSuccess"
+                "afterActions": [
+                  {
+                    "type": "dispatch",
+                    "otherParams": {
+                      "name": "widget/refreshData"
+                    }
+                  },
+                  {
+                    "type": "notify",
+                    "otherParams": {
+                      "notification": "Notify.resendSuccess"
+                    }
                   }
-                }]
+              ]
               }]
             }
           },
