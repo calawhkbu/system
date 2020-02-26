@@ -21,9 +21,15 @@
               "click.stop": [{
                 "type": "dispatch",
                 "otherParams": {
-                  "name": "widget/changeMode",
-                  "mode": "detail"
-                }
+                  "name": "widget/resetData"
+                },
+                "afterActions": [{
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "detail"
+                  }
+                }]
               }]
             }
           },
