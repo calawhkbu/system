@@ -87,6 +87,15 @@
             "item-text": "roleName",
             "item-value": "id"
           }
+        },
+
+        {
+          "checkDisplayWhen" : "return mode === 'create'",
+          "canEdit": "return mode === 'create'",
+          "label": "InvitationPage.sendInvitation",
+          "name": "sendInvitation",
+          "component": "BooleanField",
+          "class": "xs-6"
         }
       ]
     }
