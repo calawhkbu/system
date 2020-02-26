@@ -197,7 +197,9 @@
           }
         }
       ],
-      "filters": [{
+      "filters": [
+        
+        {
           "name": "isActive",
           "type": "list",
           "props": {
@@ -224,6 +226,10 @@
               {
                 "value": "accepted",
                 "label": "accepted"
+              },
+              {
+                "value": "pending",
+                "label": "pending"
               },
               {
                 "value": "disabled",
