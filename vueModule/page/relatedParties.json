@@ -80,6 +80,7 @@
           "tdComponent": {
             "is": "AsyncSelect",
             "props": {
+              "class": "padding-0 margin-0",
               "multiple": true,
               "name": "partyType",
               "item-text": "name",
@@ -146,6 +147,8 @@
         "components": [{
           "is": "Dialog",
           "props": {
+            "width": "50%",
+            "persistent": true,
             "button": {
               "layout": "v-btn",
               "small": true,
@@ -157,38 +160,161 @@
                   "icon": "add"
                 }
               }]
+            },
+            "closeButton": {
+              "class": "margin-4 zindex-1 right",
+              "flat": true,
+              "icon": true,
+              "small": true
             }
           },
           "slots": [{
-            "is": "v-card",
-            "slots": [{
-              "is": "Form",
-              "props": {
-                "form": {
-                  "partyId": null,
-                  "partyRoles": []
-                },
-                "fields": []
-              },
-              "slots": [{
-                "name": "pre-form",
-                "is": "DynamicComponent",
+            "is": "DynamicComponent",
+            "props": {
+              "components": [{
+                "is": "Form",
                 "props": {
-                  "class": "flex",
-                  "components": [{
-                    "is": "I18nText",
+                  "submitActions": [{
+                    "type": "function",
+                    "otherParams": {
+                      "func": [
+                        "const form = { ...otherParams.form, partyAId: context.detailPageParams }",
+                        "console.log(form)",
+                        "return Promise.resolve(context.$Swivel.api.createPromise({",
+                        "method: 'POST',",
+                        "url: 'relationship/party',",
+                        "data: { ...otherParams.form, partyAId: context.detailPageParams }",
+                        "}))"
+                      ]
+                    },
+                    "afterActions": [{
+                        "type": "dispatch",
+                        "otherParams": {
+                          "name": "dialog/updateDialog"
+                        }
+                      },
+                      {
+                        "type": "notify",
+                        "otherParams": {
+                          "notification": "PartyPage.partyConnected"
+                        }
+                      },
+                      {
+                        "type": "emit",
+                        "otherParams": {
+                          "name": "refresh",
+                          "params": [true]
+                        }
+                      }
+                    ]
+                  }],
+                  "formContainerProps": {
+                    "class": "padding-4"
+                  },
+                  "onSubmitResetForm": true,
+                  "showErrorOnNotification": true,
+                  "form": {
+                    "partyAId": null,
+                    "partyA": null,
+                    "partyBId": null,
+                    "partyB": null,
+                    "partyTypes": []
+                  },
+                  "fields": [{
+                    "label": "PartyPage.partyBName",
+                    "component": "AsyncAutoSuggest",
+                    "class": "xs-12",
+                    "validator": ["required"],
+                    "name": "partyB",
+                    "relation": "partyB",
+                    "relationMore": [{
+                      "name": "partyBId",
+                      "selector": "id"
+                    }],
                     "props": {
-                      "i18nContext": "PartyForm",
-                      "i18nKey": "createParty"
+                      "required": true,
+                      "searchTextParams": {
+                        "url": "api/party/query/party_auto_suggest",
+                        "method": "POST",
+                        "data": {
+                          "subqueries": {
+                            "q": {
+                              "value": "{{context.search}}"
+                            }
+                          },
+                          "limit": 5
+                        }
+                      },
+                      "ellipsis": false,
+                      "item-text": "name",
+                      "item-value": "erpCode"
                     }
                   }, {
-                    "is": "v-spacer"
+                    "label": "PartyPage.partyTypes",
+                    "component": "AsyncSelect",
+                    "name": "partyTypes",
+                    "class": "xs-12",
+                    "validator": ["required"],
+                    "props": {
+                      "required": true,
+                      "multiple": true,
+                      "item-text": "name",
+                      "item-value": "code",
+                      "showValue": false,
+                      "noDelete": true,
+                      "axiosParams": {
+                        "url": "api/code/query/code_master",
+                        "method": "POST",
+                        "data": {
+                          "subqueries": {
+                            "codeType": {
+                              "value": "PARTY_TYPE"
+                            }
+                          }
+                        }
+                      }
+                    }
                   }]
-                }
-              }, {
-                "name": "post-form"
+                },
+                "slots": [{
+                  "name": "pre-form",
+                  "is": "DynamicComponent",
+                  "props": {
+                    "layout": "v-card-title",
+                    "class": "flex min-height-28 padding-4",
+                    "components": [{
+                      "is": "I18nText",
+                      "props": {
+                        "i18nContext": "PartyPage",
+                        "i18nKey": "createParty"
+                      }
+                    }, {
+                      "is": "v-spacer"
+                    }]
+                  }
+                }, {
+                  "name": "post-form",
+                  "is": "DynamicComponent",
+                  "props": {
+                    "layout": "v-card-actions",
+                    "class": "flex min-height-28 padding-4",
+                    "components": [{
+                      "is": "v-btn",
+                      "props": {
+                        "flat": true,
+                        "type": "submit"
+                      },
+                      "slots": [{
+                        "is": "I18nText",
+                        "props": {
+                          "i18nKey": "submit"
+                        }
+                      }]
+                    }]
+                  }
+                }]
               }]
-            }]
+            }
           }]
         }]
       }
