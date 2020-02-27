@@ -35,8 +35,16 @@ const query = new QueryDef(
           $from: 'party_type',
           $group: 'partyId',
         }),
-        'party_type'
+        'party_type_concat'
       ),
+      $on: new BinaryExpression(
+        new ColumnExpression('party', 'id'),
+        '=',
+        new ColumnExpression('party_type_concat', 'partyId')
+      ),
+    }, {
+      operator: 'LEFT',
+      table: 'party_type',
       $on: new BinaryExpression(
         new ColumnExpression('party', 'id'),
         '=',
@@ -108,6 +116,11 @@ query.register('erpCode', {
     new FunctionExpression('JSON_EXTRACT', new ColumnExpression('party', 'thirdPartyCode'), '$.erp')
   ),
   $as: 'erpCode',
+})
+
+query.register('patryTypes', {
+  expression: new ColumnExpression('party_type_concat', 'id'),
+  $as: 'patryTypes',
 })
 
 query.register('showInfo', {
