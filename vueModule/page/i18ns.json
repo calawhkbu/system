@@ -95,6 +95,10 @@
         "i18nContext": "I18nPage",
         "name": "category",
         "type": "text"
+      }, {
+        "i18nContext": "I18nPage",
+        "name": "key",
+        "type": "text"
       }],
       "clickFunction": {
         "type": "router",
