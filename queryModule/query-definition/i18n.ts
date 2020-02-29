@@ -83,6 +83,15 @@ query
   )
   .register('value', 0)
 
+query
+  .register(
+    'key',
+    new Query({
+      $where: new RegexpExpression(new ColumnExpression('i18n', 'key'), false, new Unknown('string')),
+    })
+  )
+  .register('value', 0)
+
   // isActive
   const isActiveConditionExpression = new AndExpressions([
     new IsNullExpression(new ColumnExpression('i18n', 'deletedAt'), false),
