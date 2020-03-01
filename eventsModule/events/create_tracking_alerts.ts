@@ -78,7 +78,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
           shipment_date.departureDateEstimated, shipment_date.departureDateActual,
           shipment_date.arrivalDateEstimated, shipment_date.arrivalDateActual
         FROM shipment
-        LEFT OUTER JOIN shipment_date ON shipment_date.shipmentId = booking.id
+        LEFT OUTER JOIN shipment_date ON shipment_date.shipmentId = shipment.id
         WHERE shipment.partyGroupCode = :partyGroupCode
       ) entity ON entity.id = base.primaryKey
     `, {
