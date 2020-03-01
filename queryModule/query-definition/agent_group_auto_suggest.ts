@@ -10,6 +10,7 @@ import {
   AndExpressions,
   Unknown,
   Value,
+  FromTable,
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -18,7 +19,15 @@ const query = new QueryDef(
     $select: [
       new ResultColumn('groupName')
     ],
-    $from: 'party'
+    $from: new FromTable('party', {
+      operator: 'LEFT',
+      table: 'party_type',
+      $on: new BinaryExpression(
+        new ColumnExpression('party', 'id'),
+        '=',
+        new ColumnExpression('party_type', 'partyId')
+      ),
+    })
   })
 )
 
@@ -28,6 +37,17 @@ query
     new Query({
       $where: new RegexpExpression(
         new ColumnExpression('party', 'groupName'), false, new Unknown('string'),
+      ),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
+    'value',
+    new Query({
+      $where: new BinaryExpression(
+        new ColumnExpression('party', 'groupName'), '=', new Unknown('string'),
       ),
     })
   )
