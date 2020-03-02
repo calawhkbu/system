@@ -53,20 +53,10 @@
       },
       "fieldOptions": [{
           "key": "id",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "invitation",
-            "name": "id"
-          },
           "hidden": true
         },
         {
           "key": "updatedAt",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "person",
-            "name": "updatedAt"
-          },
           "width": 150,
           "format": "YYYY-MM-DD"
         },
@@ -165,36 +155,16 @@
           "width": 50
         },
         {
-          "key": "userName",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "person",
-            "name": "userName"
-          }
+          "key": "userName"
         },
         {
-          "key": "firstName",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "person",
-            "name": "firstName"
-          }
+          "key": "firstName"
         },
         {
-          "key": "lastName",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "person",
-            "name": "lastName"
-          }
+          "key": "lastName"
         },
         {
-          "key": "displayName",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "person",
-            "name": "displayName"
-          }
+          "key": "displayName"
         }
       ],
       "filters": [
