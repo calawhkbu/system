@@ -3,6 +3,7 @@ import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import { EdiService } from 'modules/edi/service'
+import { TrackingReference } from 'models/main/trackingReference'
 import { TrackingReferenceService } from 'modules/sequelize/trackingReference/service'
 
 
@@ -42,12 +43,9 @@ class SendEdiEvent extends BaseEvent {
         }
       }
       if (sendIt) {
-        const references: any[] = await trackingReferenceService.reportQuery('tracking_table', {
-          fields: [['tracking_reference', 'id'], ['tracking_reference', 'partyGroupCode']],
-          subqueries: {
-            trackingNo: { value: data.trackingNo },
-          }
-        })
+        const references: TrackingReference[] = await trackingReferenceService.getTrackingReference(
+          [data.trackingNo], this.user, this.transaction
+        )
         for (const { id, partyGroupCode } of references) {
           if (['ECXD'].includes(partyGroupCode)) {
             const value = {
