@@ -1499,7 +1499,6 @@ const reportingGroupExpression = new CaseExpression({
 })
 
 const lastStatusCodeExpression = new ColumnExpression('shipment_tracking_last_status', 'lastStatusCode')
-
 const statusCodeExpression = new ColumnExpression('shipment_tracking_status', 'statusCode')
 
 function statusExpressionMapFunction(originalExpression: IExpression) {
