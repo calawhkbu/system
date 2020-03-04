@@ -2759,6 +2759,27 @@ query
   .register('value', 44)
   .register('value', 45)
 
+query
+  .register(
+    'widgetQ',
+    new Query({
+      $where: new OrExpressions({
+        expressions: [
+          new RegexpExpression(new ColumnExpression('shipment', 'houseNo'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'jobNo'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'masterNo'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'containerNos'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'carrierBookingNos'), false),
+        ],
+      }),
+    })
+  )
+  .register('value', 0)
+  .register('value', 1)
+  .register('value', 2)
+  .register('value', 3)
+  .register('value', 4)
+
 const isActiveExpression = new AndExpressions([
   new IsNullExpression(new ColumnExpression('shipment', 'deletedAt'), false),
   new IsNullExpression(new ColumnExpression('shipment', 'deletedBy'), false)

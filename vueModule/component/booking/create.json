@@ -686,9 +686,10 @@
                   "component": "Term",
                   "class": "xs-12 padding-topbottom-4",
                   "props": {
+                    "width": "70%",
                     "type": "booking-term",
                     "termProps": {
-                      "class": "margin-leftright-4 padding-leftright-4 min-height-200 max-height-300 overflow-auto"
+                      "class": "margin-leftright-4 padding-leftright-4 min-height-400 max-height-500 overflow-auto"
                     }
                   }
                 }
