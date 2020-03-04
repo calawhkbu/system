@@ -28,7 +28,7 @@ class CreateRelatedPersonEvent extends BaseEvent {
 
     for (const relatedPerson of relatedPeople) {
       try {
-        await service.save(relatedPerson, this.user, this.transaction)
+        await service.save(relatedPerson, this.user)
       } catch (e) {
         console.error(e, e.stack, this.constructor.name)
       }
@@ -46,34 +46,35 @@ class CreateRelatedPersonEvent extends BaseEvent {
       fixedParty: string[]
     }
   ) {
-    console.log('Start Excecute [Create Related Person]...', this.constructor.name)
-    const party = _.get(data, partyLodash, {})
-    if (party) {
-      const relatedPeople: RelatedPerson[] = []
-      const allParty = [
-        ...(fixedParty || []),
-        ..._.get(party, 'flexData.moreParty', [])
-      ]
-      const partyId = {}
-      for (const morePartyName of allParty) {
-        partyId[morePartyName] = _.get(party, `${morePartyName}PartyId`, null) || _.get(party, `flexData.${morePartyName}PartyId`, null)
-      }
-      console.log(partyId)
-      for (const partyA of allParty) {
-        if (partyId[partyA]) {
-          relatedPeople.push({
-            partyId: partyId[partyA],
-            email: _.get(party, `${partyA}PartyContactEmail`, null) || _.get(party, `flexData.${partyA}PartyContactEmail`, null),
-            name: _.get(party, `${partyA}PartyContactName`, null) || _.get(party, `flexData.${partyA}PartyContactName`, null),
-            phone: _.get(party, `${partyA}PartyContactPhone`, null) || _.get(party, `flexData.${partyA}PartyContactPhone`, null)
-          } as RelatedPerson)
+    console.debug('Start Excecute [Create Related Person]...', this.constructor.name)
+    if (data.billStatus === null) {
+      const party = _.get(data, partyLodash, {})
+      if (party) {
+        const relatedPeople: RelatedPerson[] = []
+        const allParty = [
+          ...(fixedParty || []),
+          ..._.get(party, 'flexData.moreParty', [])
+        ]
+        const partyId = {}
+        for (const morePartyName of allParty) {
+          partyId[morePartyName] = _.get(party, `${morePartyName}PartyId`, null) || _.get(party, `flexData.${morePartyName}PartyId`, null)
+        }
+        for (const partyA of allParty) {
+          if (partyId[partyA]) {
+            relatedPeople.push({
+              partyId: partyId[partyA],
+              email: _.get(party, `${partyA}PartyContactEmail`, null) || _.get(party, `flexData.${partyA}PartyContactEmail`, null),
+              name: _.get(party, `${partyA}PartyContactName`, null) || _.get(party, `flexData.${partyA}PartyContactName`, null),
+              phone: _.get(party, `${partyA}PartyContactPhone`, null) || _.get(party, `flexData.${partyA}PartyContactPhone`, null)
+            } as RelatedPerson)
+          }
+        }
+        if (relatedPeople.length) {
+          await this.createRelatedPeople(relatedPeople)
         }
       }
-      if (relatedPeople.length) {
-        await this.createRelatedPeople(relatedPeople)
-      }
     }
-    console.log('End Excecute [Create Related Person]...', this.constructor.name)
+    console.debug('End Excecute [Create Related Person]...', this.constructor.name)
     return null
   }
 }
