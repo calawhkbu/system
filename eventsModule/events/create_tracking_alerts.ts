@@ -99,6 +99,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
   }
 
   public async mainFunction(parameters: any) {
+    console.debug(`Event Started [Create Tracking Alert]`, this.constructor.name)
     const {
       AlertDbService: alertDbService,
       TrackingReferenceService: trackingReferenceService,
@@ -212,12 +213,8 @@ class TrackingUpdateDataEvent extends BaseEvent {
         }
       }
     }
-
-    console.log('in main Excecute of TrackingUpdateData Finish')
-
-    return {
-      exampleResult: 'exampleValue',
-    }
+    console.debug(`Event Ended [Create Tracking Alert]`, this.constructor.name)
+    return null
   }
 }
 
