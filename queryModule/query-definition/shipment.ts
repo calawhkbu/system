@@ -2768,8 +2768,8 @@ query
           new RegexpExpression(new ColumnExpression('shipment', 'houseNo'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'jobNo'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'masterNo'), false),
-          new RegexpExpression(new ColumnExpression('shipment_container', 'containerNo'), false),
-          new RegexpExpression(new ColumnExpression('shipment_container', 'carrierBookingNo'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'containerNos'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'carrierBookingNos'), false),
         ],
       }),
     })
