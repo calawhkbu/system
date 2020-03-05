@@ -27,7 +27,19 @@ class CreateRelatedPartyEvent extends BaseEvent {
     }
     for (const relatedParty of relatedParties) {
       try {
-        await service.save(relatedParty, this.user)
+        const found = await service.findOne(
+          {
+            where: {
+              partyAId: relatedParty.partyAId,
+              partyBId: relatedParty.partyBId,
+              partyType: relatedParty.partyType
+            }
+          },
+          this.user
+        )
+        if (!found) {
+          await service.save(relatedParty, this.user)
+        }
       } catch (e) {
         console.error(e, e.stack, this.constructor.name)
       }
