@@ -22,7 +22,7 @@ class InvitationCreateRelatedPersonEvent extends BaseEvent {
   }
 
   public async mainFunction(parameters: any) {
-    console.log('Start Excecute...', this.constructor.name)
+    console.debug('Start Excecute...', this.constructor.name)
 
     const invitation = parameters.data as Invitation
 
@@ -74,14 +74,14 @@ class InvitationCreateRelatedPersonEvent extends BaseEvent {
 
     dataList = dataList.concat(relatedPersonDataList)
 
-    console.log(`dataList`)
-    console.log(dataList)
+    // console.debug(`dataList`)
+    // console.debug(dataList)
 
     // debug
     return null
 
     const relatedPersonList = await (service as RelatedPersonDatabaseService).save(relatedPersonDataList, this.user, this.transaction)
-    console.log('End Excecute...', this.constructor.name)
+    console.debug('End Excecute...', this.constructor.name)
     return relatedPersonList
 
   }
