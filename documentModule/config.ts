@@ -2,26 +2,17 @@ import { DocumentStorageConfig, EntityConfig } from 'models/main/document'
 import { Shipment } from 'models/main/shipment'
 import { Booking } from 'models/main/booking'
 
+// usually should not call into here as each party should have their own sftp config
 export const documentStorageConfig = {
 
   maxFileSize: 1048576,
   recyclePrefix: 'recycle',
   defaultHandlerName: 'sftp',
+
+  // set this to true so that is will sarch by serverName
+  searchServerName : true,
+
   handlerList: [
-
-    {
-      handlerName: 'sftp',
-      config: {
-
-        baseDir : '',
-        host: '47.90.28.106',
-        os : 'window',
-        port: 22,
-        username: 'sftp-DEV',
-        password : 'Swivel!'
-
-      }
-    }
   ]
 
 } as DocumentStorageConfig
