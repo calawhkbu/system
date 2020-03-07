@@ -1,61 +1,27 @@
 {
-  "start": "---",
-  "layout": "CardLayout",
+  "fillParent": true,
   "components": [{
-      "is": "I18nText",
-      "props": {
-        "style": {
-          "flex": 0.9,
-          "width": "100%",
-          "text-align": "center"
-        },
-        "i18nKey": "Coming soon!"
-      }
-    },
-    {
-      "is": "v-btn",
-      "props": {
-        "flat": true
-      },
-      "slots": [{
-        "is": "I18nText",
-        "props": {
-          "i18nKey": "ErrorLayout.Back"
-        }
-      }],
-      "events": {
-        "click.stop": [{
-          "type": "router",
-          "otherParams": {
-            "func": "go",
-            "go": -1
-          }
-        }]
-      }
-    }
-  ],
-  "remove": "---",
-  "_components": [{
     "is": "Widget",
     "props": {
       "settingProp": {
+        "overrideType": "purchase-order",
         "initAxiosParams": {
-          "url": "api/booking/{{context.$route.params.params}}"
+          "url": "api/purchase-order/{{context.$route.params.params}}"
         },
         "defaultAxiosParams": {
-          "url": "default/booking"
+          "url": "default/purchase-order"
         },
         "validateAxiosParams": {
           "method": "post",
-          "url": "api/booking/validate/{{id}}"
+          "url": "api/purchase-order/validate/{{id}}"
         },
         "saveAxiosParams": {
           "method": "post",
-          "url": "api/booking"
+          "url": "api/purchase-order"
         },
         "primaryKey": "id",
-        "modeFunction": "const modes = ['assignment', 'quick-create', 'create', 'detail', 'edit', 'create-import'];const selectedMode = isNaN(Number(mode)) ? mode : 'detail'\n          if (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
-        "haveTermOnCreate": true,
+        "modeFunction": "const modes = ['create', 'detail','edit', 'map', // 'import', 'copy'\n]\nconst selectedMode = isNaN(Number(mode)) ? mode : 'detail'\n          if (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
+        "haveTermOnCreate": false,
         "haveTermOnEdit": false,
         "widgetComponentSetting": {
           "quick-create": {

@@ -1,0 +1,70 @@
+{
+  "class": "grid",
+  "components": [{
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
+        "components": [{
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/{{ p[0] }}/{{ p[1] }}"
+                }
+              }]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "i18nContext": "ShipmentPage",
+              "i18nKey": "title",
+              "i18nOptions": {
+                "title": "{{context.$store.state.widget.data.houseNo}}"
+              }
+            }
+          }, {
+            "is": "v-spacer"
+          }
+        ]
+      }
+    },
+    {
+      "is": "WidgetImport",
+      "props": {
+        "tableName": "shipment",
+        "importKey": "houseNo",
+        "importAxiosParams": {
+          "method": "post",
+          "url": ""
+        },
+        "importFormProps": {
+          "fields": [{
+            "label": "ShipmentPage.houseNo",
+            "name": "houseNo",
+            "component": "v-text-field",
+            "class": "xs-6 md-3"
+          }, {
+            "label": "ShipmentPage.masterNo",
+            "name": "masterNo",
+            "component": "v-text-field",
+            "class": "xs-6 md-3"
+          }]
+        }
+      }
+    }
+  ]
+}
