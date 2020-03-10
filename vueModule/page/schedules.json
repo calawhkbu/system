@@ -3,17 +3,17 @@
   "components": [{
     "is": "TableTool",
     "props": {
-      "title": "API",
+      "title": "Manual Schedule",
       "back": "/admin",
-      "urlFormat": "/admin/apis",
-      "reportingKey": "apis",
-      "jql": "apis",
+      "urlFormat": "/admin/schedules",
+      "reportingKey": "schedules",
+      "jql": "schedules",
       "hasReports": false,
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
       "noPartyGroupFilters": true,
-      "nextPageComponent": "api",
+      "nextPageComponent": "schedule",
       "clickFunction": {
         "type": "router",
         "otherParams": {
@@ -29,7 +29,7 @@
           }
         },
         "configurations": {
-          "i18nContext": "ApiPage",
+          "i18nContext": "SchedulePage",
           "clickable": true,
           "sorting": {
             "direction": "DESC",
@@ -67,7 +67,7 @@
           }
         },
         {
-          "i18nContext": "APIPage",
+          "i18nContext": "SchedulePage",
           "name": "name",
           "type": "text"
         }
@@ -96,7 +96,7 @@
               "type": "router",
               "otherParams": {
                 "func": "push",
-                "path": "api/create",
+                "path": "schedule/create",
                 "base": true
               }
             }]

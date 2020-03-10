@@ -4,20 +4,20 @@
     "is": "Widget",
     "props": {
       "settingProp": {
-        "overrideType": "api",
+        "overrideType": "schedule",
         "initAxiosParams": {
-          "url": "api/api/{{context.$route.params.params}}"
+          "url": "api/schedule/{{context.$route.params.params}}"
         },
         "defaultAxiosParams": {
-          "url": "default/api"
+          "url": "default/schedule"
         },
         "validateAxiosParams": {
           "method": "post",
-          "url": "api/api/validate/{{id}}"
+          "url": "api/schedule/validate/{{id}}"
         },
         "saveAxiosParams": {
           "method": "post",
-          "url": "api/api"
+          "url": "api/schedule"
         },
         "primaryKey": "id",
         "modeFunction": [

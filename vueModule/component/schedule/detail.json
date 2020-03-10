@@ -22,18 +22,15 @@
             "type": "router",
             "otherParams": {
               "func": "push",
-              "path": "/admin/apis"
+              "path": "/admin/schedules"
             }
           }]
         }
       }, {
         "is": "I18nText",
         "props": {
-          "i18nContext": "ApiPage",
-          "i18nKey": "title",
-          "i18nOptions": {
-            "id": "{{context.$store.state.widget.data.name}}"
-          }
+          "i18nContext": "SchedulePage",
+          "i18nKey": "title"
         }
       }, {
         "is": "v-spacer"
@@ -73,95 +70,193 @@
         "props": {
           "class": "xs-12",
           "fields": [{
-              "label": "ApiPage.name",
-              "name": "name",
+              "label": "SchedulePage.routeCode",
+              "name": "routeCode",
               "component": "v-text-field",
               "class": "xs-12"
-            },
-            {
-              "label": "ApiPage.backend",
-              "name": "refreshToken",
-              "component": "DetailReadOnlyField",
+            }, {
+              "label": "SchedulePage.carrier",
+              "name": "carrier",
+              "component": "AsyncAutoSuggest",
               "class": "xs-12",
+              "relation": "carrier",
+              "more": [{
+                "name": "carrierCode",
+                "selector": "code"
+              }],
               "props": {
-                "apiParams": {
+                "searchValueParams": {
                   "method": "POST",
-                  "url": "auth/api/login/{{value}}/99y"
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "CARRIER"
+                      },
+                      "code": {
+                        "value": "{{context.autoSuggestModel}}"
+                      }
+                    }
+                  }
                 },
-                "detail": [
-                  "Authentication: Bearer {{accessToken}}"
-                ]
+                "searchTextParams": {
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "CARRIER"
+                      },
+                      "q": {
+                        "value": "{{context.search}}"
+                      }
+                    },
+                    "limit": 5
+                  }
+                },
+                "item-text": "name",
+                "item-value": "code"
               }
             },
             {
-              "label": "ApiPage.TrackingWidget",
-              "name": "refreshToken",
-              "component": "DetailReadOnlyField",
-              "class": "xs-12",
+              "label": "SchedulePage.vessel",
+              "name": "vessel",
+              "component": "v-text-field",
+              "class": "xs-6"
+            },
+            {
+              "label": "SchedulePage.voyage",
+              "name": "voyage",
+              "component": "v-text-field",
+              "class": "xs-6"
+            },
+            {
+              "label": "SchedulePage.portOfLoading",
+              "name": "portOfLoading",
+              "component": "AsyncAutoSuggest",
+              "class": "xs-6",
+              "more": [{
+                "name": "portOfLoadingCode",
+                "selector": "portCode"
+              }],
               "props": {
-                "detail": [
-                  "<html>",
-                  "  <head>",
-                  "    <meta charset=\"utf-8\">",
-                  "    <script src=\"https://unpkg.com/vue\"></script>",
-                  "    <script src=\"{{frontendUrl}}/widget/swivel-widget.js\"></script>",
-                  "  </head>",
-                  "  <body>",
-                  "    <swivel-widget",
-                  "      apiToken=\"{{value}}\"",
-                  "      name=\"BillTrackingWidget\"",
-                  "      data=\"{ masterNo: '', containerNo: [] }\"",
-                  "    />",
-                  "  </body>",
-                  "</html>"
-                ]
+                "searchValueParams": {
+                  "method": "POST",
+                  "url": "api/location/query/location",
+                  "data": {
+                    "subqueries": {
+                      "moduleTypeCode": {
+                        "value": "SEA"
+                      },
+                      "ports": {
+                        "value": "{{context.autoSuggestModel}}"
+                      }
+                    }
+                  }
+                },
+                "searchTextParams": {
+                  "method": "POST",
+                  "url": "api/location/query/location",
+                  "data": {
+                    "subqueries": {
+                      "moduleTypeCode": {
+                        "value": "SEA"
+                      },
+                      "q": {
+                        "value": "{{context.search}}"
+                      }
+                    },
+                    "limit": 5
+                  }
+                },
+                "item-text": "name",
+                "item-value": "portCode"
               }
             },
             {
-              "label": "ApiPage.LoginWidget",
-              "name": "refreshToken",
-              "component": "DetailReadOnlyField",
-              "class": "xs-12",
+              "label": "SchedulePage.portOfDischarge",
+              "name": "portOfDischarge",
+              "component": "AsyncAutoSuggest",
+              "class": "xs-6",
+              "more": [{
+                "name": "portOfDischargeCode",
+                "selector": "portCode"
+              }],
               "props": {
-                "detail": [
-                  "<html>",
-                  "  <head>",
-                  "    <meta charset=\"utf-8\">",
-                  "    <script src=\"https://unpkg.com/vue\"></script>",
-                  "    <script src=\"{{frontendUrl}}/widget/swivel-widget.js\"></script>",
-                  "  </head>",
-                  "  <body>",
-                  "    <swivel-widget",
-                  "      apiToken=\"{{value}}\"",
-                  "      name=\"LoginWidget\"",
-                  "    />",
-                  "  </body>",
-                  "</html>"
-                ]
+                "searchValueParams": {
+                  "method": "POST",
+                  "url": "api/location/query/location",
+                  "data": {
+                    "subqueries": {
+                      "moduleTypeCode": {
+                        "value": "SEA"
+                      },
+                      "ports": {
+                        "value": "{{context.autoSuggestModel}}"
+                      }
+                    }
+                  }
+                },
+                "searchTextParams": {
+                  "method": "POST",
+                  "url": "api/location/query/location",
+                  "data": {
+                    "subqueries": {
+                      "moduleTypeCode": {
+                        "value": "SEA"
+                      },
+                      "q": {
+                        "value": "{{context.search}}"
+                      }
+                    },
+                    "limit": 5
+                  }
+                },
+                "item-text": "name",
+                "item-value": "portCode"
               }
             },
             {
-              "label": "ApiPage.SearchBillWidget",
-              "name": "refreshToken",
-              "component": "DetailReadOnlyField",
-              "class": "xs-12",
+              "label": "SchedulePage.cyCutOffDate",
+              "name": "cyCutOffDate",
+              "component": "DateTimePicker",
+              "class": "xs-4",
               "props": {
-                "detail": [
-                  "<html>",
-                  "  <head>",
-                  "    <meta charset=\"utf-8\">",
-                  "    <script src=\"https://unpkg.com/vue\"></script>",
-                  "    <script src=\"{{frontendUrl}}/widget/swivel-widget.js\"></script>",
-                  "  </head>",
-                  "  <body>",
-                  "    <swivel-widget",
-                  "      apiToken=\"{{value}}\"",
-                  "      name=\"SearchBillWidget\"",
-                  "    />",
-                  "  </body>",
-                  "</html>"
-                ]
+                "type": "datetime",
+                "utc": true,
+                "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                "useOwnFormat": true
               }
+            },
+            {
+              "label": "SchedulePage.estimatedDepartureDate",
+              "name": "estimatedDepartureDate",
+              "component": "DateTimePicker",
+              "class": "xs-4",
+              "props": {
+                "type": "datetime",
+                "utc": true,
+                "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                "useOwnFormat": true
+              }
+            },
+            {
+              "label": "SchedulePage.estimatedArrivalDate",
+              "name": "estimatedArrivalDate",
+              "component": "DateTimePicker",
+              "class": "xs-4",
+              "props": {
+                "type": "datetime",
+                "utc": true,
+                "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                "useOwnFormat": true
+              }
+            },
+            {
+              "label": "SchedulePage.isTransit",
+              "name": "isTransit",
+              "component": "BooleanField",
+              "class": "xs-12"
             }
           ]
         }
