@@ -62,7 +62,38 @@
             "name": "masterNo",
             "component": "v-text-field",
             "class": "xs-6 md-3"
-          }]
+          }, {
+            "label": "ShipmentPage.jobNo",
+            "name": "jobNo",
+            "component": "v-text-field",
+            "class": "xs-6 md-3"
+          }, {
+            "label": "ShipmentPage.partyGroupCode",
+            "name": "partyGroupCode",
+            "component": "v-text-field",
+            "class": "xs-6 md-3"
+          },{
+            "label": "ShipmentPage.divisionCode",
+            "name": "divisionCode",
+            "component": "v-text-field",
+            "class": "xs-6 md-3"
+          },{
+            "label": "ShipmentPage.carrierCode",
+            "name": "carrierCode",
+            "component": "v-text-field",
+            "class": "xs-6 md-3"
+          },
+          {
+            "label": "ShipmentPage.officePartyId",
+            "name": "shipmentParty.officePartyId",
+            "component": "v-text-field",
+            "class": "xs-6 md-3"
+          }
+        
+        
+        
+        
+        ]
         }
       }
     }

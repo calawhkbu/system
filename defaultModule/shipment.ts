@@ -13,10 +13,10 @@ export default (user: JwtPayload) => {
   }
   return {
     boundTypeCode: 'O',
-    bookingParty: {
-      forwarderParty: myParty,
-      forwarderPartyId: myParty.id,
-      forwarderPartyName: myParty.name,
+    shipmentParty: {
+      officeParty: myParty,
+      officePartyId: myParty.id,
+      officePartyName: myParty.name,
     }
   }
 }

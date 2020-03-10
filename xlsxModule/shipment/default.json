@@ -1,0 +1,10 @@
+{
+
+  "jobNo" : "yourjobNo",
+  "partyGroupCode" : "yourpartyGroupCode",
+  "divisionCode" : "yourcode",
+  "masterNo" : "yourMasterNo",
+  "houseNo" : "yourHouseNo",
+  "carrierCode" : "yourCarrierCode",
+  "portOfLoadingCode" : "yourPortOfLoadingCode"
+}
