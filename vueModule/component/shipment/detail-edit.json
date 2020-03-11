@@ -39,35 +39,73 @@
           }, {
             "is": "v-spacer"
           }, {
-            "is": "v-btn",
+            "is": "ToolTip",
             "props": {
-              "small": true,
-              "icon": true,
-              "flat": true
-            },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "map"
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "v-btn",
+                  "props": {
+                    "small": true,
+                    "icon": true,
+                    "flat": true
+                  },
+                  "slots": [{
+                    "is": "Icon",
+                    "props": {
+                      "icon": "map"
+                    }
+                  }],
+                  "events": {
+                    "click.stop": [{
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "widget/changeMode",
+                        "mode": "map"
+                      }
+                    }]
+                  }
+                }]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "ShipmentPage",
+                    "i18nKey": "map"
+                  }
+                }]
               }
-            }],
-            "events": {
-              "click.stop": [{
-                "type": "dispatch",
-                "otherParams": {
-                  "name": "widget/changeMode",
-                  "mode": "map"
-                }
-              }]
             }
           },
           {
-            "is": "BookmarkButton",
+            "is": "ToolTip",
             "props": {
-              "entity": "shipment",
-              "small": true,
-              "icon": true,
-              "flat": true
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "BookmarkButton",
+                  "props": {
+                    "entity": "shipment",
+                    "small": true,
+                    "icon": true,
+                    "flat": true
+                  }
+                }]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "ShipmentPage",
+                    "i18nKey": "bookmark"
+                  }
+                }]
+              }
             }
           }
         ]
