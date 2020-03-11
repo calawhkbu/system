@@ -11,12 +11,61 @@ import {
   Unknown
 } from 'node-jql'
 
-const query = new QueryDef(new Query({$from: new FromTable('schedule', 'schedule')}))
+const query = new QueryDef(new Query({
+  $from: new FromTable('schedule', 'schedule', {
+    operator: 'LEFT',
+    table: new FromTable('code_master', 'carrier'),
+    $on: [
+      new BinaryExpression(
+        new ColumnExpression('carrier', 'codeType'),
+        '=',
+        'CARRIER'
+      ),
+      new BinaryExpression(
+        new ColumnExpression('carrier', 'code'),
+        '=',
+        new ColumnExpression('schedule', 'carrierCode')
+      ),
+    ],
+  }, {
+    operator: 'LEFT',
+    table: new FromTable('location', 'portOfLoading'),
+    $on: [
+      new BinaryExpression(
+        new ColumnExpression('portOfLoading', 'portCode'),
+        '=',
+        new ColumnExpression('schedule', 'portOfLoadingCode')
+      ),
+    ],
+  }, {
+    operator: 'LEFT',
+    table: new FromTable('location', 'portOfDischarge'),
+    $on: [
+      new BinaryExpression(
+        new ColumnExpression('portOfDischarge', 'portCode'),
+        '=',
+        new ColumnExpression('schedule', 'portOfDischargeCode')
+      ),
+    ],
+  })
+}))
 
 // fields
 query.register('id', {
   expression: new ColumnExpression('schedule', 'id'),
   $as: 'id',
+})
+query.register('carrier', {
+  expression: new ColumnExpression('carrier', 'name'),
+  $as: 'carrier',
+})
+query.register('portOfLoading', {
+  expression: new ColumnExpression('portOfLoading', 'name'),
+  $as: 'portOfLoading',
+})
+query.register('portOfDischarge', {
+  expression: new ColumnExpression('portOfDischarge', 'name'),
+  $as: 'portOfDischarge',
 })
 
 // query

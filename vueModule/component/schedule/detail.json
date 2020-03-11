@@ -217,8 +217,8 @@
               }
             },
             {
-              "label": "SchedulePage.cyCutOffDate",
-              "name": "cyCutOffDate",
+              "label": "SchedulePage.cyCutoffDate",
+              "name": "cyCutoffDate",
               "component": "DateTimePicker",
               "class": "xs-4",
               "props": {

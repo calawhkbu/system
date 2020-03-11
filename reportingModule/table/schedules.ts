@@ -7,17 +7,15 @@ const query = new Query({
       url: 'api/schedule/query/schedule',
       columns: [
         { name: 'id', type: 'string' },
-        { name: 'routeCode', type: 'string' },
-        { name: 'carrierCode', type: 'string' },
+        { name: 'carrier', type: 'string' },
         { name: 'routeCode', type: 'string' },
         { name: 'vessel', type: 'string' },
         { name: 'voyage', type: 'string' },
-        { name: 'portOfLoadingCode', type: 'string' },
-        { name: 'portOfDischargeCode', type: 'string' },
+        { name: 'portOfLoading', type: 'string' },
+        { name: 'portOfDischarge', type: 'string' },
+        { name: 'cyCutoffDate', type: 'string' },
         { name: 'estimatedDepartureDate', type: 'string' },
-        { name: 'estimatedArrivalDate', type: 'string' },
-        { name: 'isTransit', type: 'boolean' },
-        { name: 'cyCutoffDate', type: 'string' }
+        { name: 'estimatedArrivalDate', type: 'string' }
       ],
     },
     'alert'

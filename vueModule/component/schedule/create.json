@@ -207,8 +207,8 @@
               }
             },
             {
-              "label": "SchedulePage.cyCutOffDate",
-              "name": "estimatedArrivalDate",
+              "label": "SchedulePage.cyCutoffDate",
+              "name": "cyCutoffDate",
               "component": "DateTimePicker",
               "class": "xs-4",
               "props": {

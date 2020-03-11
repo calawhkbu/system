@@ -33,7 +33,7 @@
           "clickable": true,
           "sorting": {
             "direction": "DESC",
-            "key": "updatedAt"
+            "key": "estimatedDepartureDate"
           },
           "pagination": {
             "current": 0,
@@ -46,32 +46,36 @@
           "hidden": true
         },
         {
-          "key": "updatedAt",
+          "key": "cyCutoffDate",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "estimatedDepartureDate",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "estimatedArrivalDate",
           "width": 150,
           "format": "YYYY-MM-DD"
         }
       ],
       "filters": [{
-          "name": "isActive",
-          "type": "list",
-          "props": {
-            "items": [{
-                "label": "active",
-                "value": "active"
-              },
-              {
-                "label": "deleted",
-                "value": "deleted"
-              }
-            ]
-          }
-        },
-        {
-          "i18nContext": "SchedulePage",
-          "name": "name",
-          "type": "text"
+        "name": "isActive",
+        "type": "list",
+        "props": {
+          "items": [{
+              "label": "active",
+              "value": "active"
+            },
+            {
+              "label": "deleted",
+              "value": "deleted"
+            }
+          ]
         }
-      ]
+      }]
     },
     "slots": [{
       "name": "middle-button",
