@@ -513,7 +513,7 @@
               "data: { trackingNos }",
               "};"
             ],
-            "createdAtKey": "shipmentCreateTime",
+            "createdAtKey": "issueDate",
             "createI18nKey": "shipmentReceivedByForwarder"
           }
         },
