@@ -3,7 +3,7 @@ import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 export default (user: JwtPayload) => {
   let myParty: any = {}
   for (const party of user.parties) {
-    if (party.partyGroupCode === user.selectedPartyGroup.code && party.types.includes('forwarder')) {
+    if (party.partyGroupCode === user.selectedPartyGroup.code && (party.types.includes('forwarder') || party.types.includes('office')) ) {
       myParty = {
         id: party.id,
         name: party.name,
@@ -14,6 +14,8 @@ export default (user: JwtPayload) => {
   return {
     boundTypeCode: 'O',
     bookingParty: {
+
+      forwarderPartyCode : myParty.erpCode,
       forwarderParty: myParty,
       forwarderPartyId: myParty.id,
       forwarderPartyName: myParty.name,

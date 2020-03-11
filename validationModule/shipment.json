@@ -1,0 +1,11 @@
+[
+  {
+    "field": "houseNo",
+    "validator": "required"
+  },
+
+  {
+    "field": "jobNo",
+    "validator": "required"
+  }
+]

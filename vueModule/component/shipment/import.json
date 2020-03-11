@@ -51,6 +51,40 @@
           "method": "post",
           "url": ""
         },
+
+        "importFormLayout" : {
+          "class": "xs-12 md-8",
+          "style": {
+            "padding-left": "4px",
+            "padding-bottom": "4px"
+          },
+          "components": [
+            {
+              "is": "v-card",
+              "slots": [{
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "shipment/forms/generalForm"
+                }
+              }
+            ]
+            },
+
+            {
+              "is": "v-card",
+              "slots": [{
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "shipment/forms/containerForm"
+                }
+              }]
+            }
+
+
+
+          ]
+        },
+
         "importFormProps": {
           "fields": [{
             "label": "ShipmentPage.houseNo",

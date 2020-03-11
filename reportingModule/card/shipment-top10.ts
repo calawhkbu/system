@@ -364,6 +364,10 @@ export const filters = [
           value: 'teu',
         },
         {
+          label: 'teuInReport',
+          value: 'teuInReport',
+        },
+        {
           label: 'quantity',
           value: 'quantity',
         },
