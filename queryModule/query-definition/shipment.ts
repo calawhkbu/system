@@ -70,6 +70,17 @@ const percentageChangeFunction = (oldExpression: IExpression, newExpression: IEx
 
 }
 
+const shipmentIsActiveExpression = (shipmentTableName) => {
+
+  return new AndExpressions([
+
+    new IsNullExpression(new ColumnExpression(shipmentTableName, 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression(shipmentTableName, 'deletedBy'), false),
+    new IsNullExpression(new ColumnExpression(shipmentTableName, 'billStatus'), false),
+  ])
+
+}
+
 const agentPartyIdExpression = new CaseExpression({
 
   cases: [
@@ -114,8 +125,9 @@ const agentPartyCodeExpression = new CaseExpression({
 const partyList = [
 
   {
-    name: 'shipper',
+    name : 'shipper',
   },
+
   {
     name: 'consignee',
   },
@@ -137,7 +149,15 @@ const partyList = [
     partyIdExpression: agentPartyIdExpression,
     partyCodeExpression: agentPartyCodeExpression
   }
-]
+] as {
+
+  name: string,
+  partyNameExpression?: IExpression,
+  partyIdExpression?: IExpression,
+  partyCodeExpression?: IExpression,
+  partyNameInReportExpression?: IExpression
+
+}[]
 const locationList = ['portOfLoading', 'portOfDischarge', 'placeOfDelivery', 'placeOfReceipt', 'finalDestination']
 
 const query = new QueryDef(
@@ -218,7 +238,7 @@ const query = new QueryDef(
 
 // register join =====================
 
-const firstTableExpression = new Query({
+const shipmentId_trackingNo_priority_fullTable = new Query({
   $select: [
     new ResultColumn('id', 'shipmentId'),
     new ResultColumn('masterNo', 'trackingNo'),
@@ -284,7 +304,7 @@ const shipmentTrackingExpression = new Query({
   ],
 
   $from: new FromTable({
-    table: firstTableExpression,
+    table: shipmentId_trackingNo_priority_fullTable,
     $as: 'shipment',
     joinClauses: [
       {
@@ -302,7 +322,8 @@ const shipmentTrackingExpression = new Query({
 
 })
 
-const maxTableExpression = new Query({
+// only for temp table, don't use it directly
+const shipmentId_trackingNo_priority_table = new Query({
   $select: [
     new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
     new ResultColumn('masterNo', 'trackingNo'),
@@ -352,22 +373,122 @@ const maxTableExpression = new Query({
 
 })
 
-const shipmentProrityTableExpression = new Query({
+// shipmentId <=> maxPriority
+const shipmentId_maxPriority_table = new Query({
   $select: [
-    new ResultColumn(new ColumnExpression('max_table', 'shipmentId')),
-    new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('max_table', 'priority')), 'max_priority'),
-    new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('max_table', 'updatedAt')), 'max_updatedAt')
+    new ResultColumn(new ColumnExpression('shipmentId_trackingNo_priority_table', 'shipmentId')),
+    new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('shipmentId_trackingNo_priority_table', 'priority')), 'maxPriority'),
+    new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('shipmentId_trackingNo_priority_table', 'updatedAt')), 'max_updatedAt')
   ],
 
   $from: new FromTable({
-    table: maxTableExpression,
-    $as: 'max_table',
+    table: shipmentId_trackingNo_priority_table,
+    $as: 'shipmentId_trackingNo_priority_table',
   }),
-  $group: new GroupBy(new ColumnExpression('max_table', 'shipmentId'))
+  $group: new GroupBy(new ColumnExpression('shipmentId_trackingNo_priority_table', 'shipmentId'))
 
 })
 
+// the final map shipmentId <=> trackingNo
+const shipmentId_trackingNo_map_table = new Query({
+
+  $select : [
+    new ResultColumn(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'shipmentId'), 'shipmentId'),
+    new ResultColumn(new ColumnExpression('shipmentId_maxPriority_table', 'shipmentId'), 'trackingNo'),
+  ],
+
+  $from : new FromTable({
+    table : shipmentId_trackingNo_priority_fullTable,
+    $as : 'shipmentId_trackingNo_priority_fullTable',
+
+    joinClauses : [
+    {
+      operator: 'LEFT',
+      table: new FromTable({
+        table: shipmentId_maxPriority_table,
+        $as: 'shipmentId_maxPriority_table'
+      }),
+      $on : new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'shipmentId'), '=', new ColumnExpression('shipmentId_maxPriority_table', 'shipmentId')),
+        new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'priority'), '=', new ColumnExpression('shipmentId_maxPriority_table', 'maxPriority'))
+      ])
+      }
+    ]
+  }),
+  $where : [
+    new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'priority'), '=', new ColumnExpression('shipmentId_maxPriority_table', 'maxPriority')),
+  ],
+})
+
 const shipmentTrackingLastStatusCodeTableExpression = new Query({
+
+  $select : [
+    new ResultColumn(new ColumnExpression('shipmentId_trackingNo_map_table', 'shipmentId'), 'shipmentId'),
+    new ResultColumn(new ColumnExpression('shipmentId_trackingNo_map_table', 'trackingNo'), 'trackingNo'),
+    new ResultColumn(new ColumnExpression('tracking', 'id'), 'trackingId'),
+    new ResultColumn(new ColumnExpression('tracking', 'lastStatusCode'), 'lastStatusCode'),
+    new ResultColumn(new ColumnExpression('tracking', 'lastStatusDate'), 'lastStatusDate')
+
+  ],
+
+  $from : new FromTable({
+    table : shipmentId_trackingNo_map_table,
+    $as : 'shipmentId_trackingNo_map_table',
+    joinClauses : [
+      {
+        operator : 'LEFT',
+        table : new FromTable({
+          table : 'tracking'
+        }),
+        $on : [
+          new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_map_table', 'trackingNo'), '=', new ColumnExpression('tracking', 'trackingNo'))
+        ]
+      }
+    ]
+  })
+
+})
+
+const shipmentTrackingStatusCodeTableExpression = new Query({
+
+  $select : [
+    new ResultColumn(new ColumnExpression('shipmentId_trackingNo_map_table', 'shipmentId'), 'shipmentId'),
+    new ResultColumn(new ColumnExpression('shipmentId_trackingNo_map_table', 'trackingNo'), 'trackingNo'),
+    new ResultColumn(new ColumnExpression('tracking_status', 'trackingId'), 'trackingId'),
+    new ResultColumn(new ColumnExpression('tracking_status', 'statusCode'), 'statusCode'),
+    new ResultColumn(new ColumnExpression('tracking_status', 'statusDate'), 'statusDate'),
+  ],
+
+  $from : new FromTable({
+    table : shipmentId_trackingNo_map_table,
+    $as : 'shipmentId_trackingNo_map_table',
+    joinClauses : [
+      {
+        operator : 'LEFT',
+        table : new FromTable({
+          table : 'tracking'
+        }),
+        $on : [
+          new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_map_table', 'trackingNo'), '=', new ColumnExpression('tracking', 'trackingNo'))
+        ]
+      },
+      {
+        operator : 'LEFT',
+        table : new FromTable({
+          table : 'tracking_status'
+        }),
+
+        $on : [
+          new BinaryExpression(new ColumnExpression('tracking', 'id'), '=', new ColumnExpression('tracking_status', 'trackingId'))
+        ]
+
+      }
+    ]
+  })
+
+})
+
+const shipmentTrackingLastStatusCodeTableExpressionOld = new Query({
 
   $select: [
     new ResultColumn(new ColumnExpression('shipment_tracking', 'shipmentId')),
@@ -383,7 +504,7 @@ const shipmentTrackingLastStatusCodeTableExpression = new Query({
 
       operator: 'LEFT',
       table: new FromTable({
-        table: shipmentProrityTableExpression,
+        table: shipmentId_maxPriority_table,
         $as: 'shipment_priority'
       }),
       $on: [
@@ -394,7 +515,7 @@ const shipmentTrackingLastStatusCodeTableExpression = new Query({
   }),
 
   $where: [
-    new BinaryExpression(new ColumnExpression('shipment_priority', 'max_priority'), '=', new ColumnExpression('shipment_tracking', 'priority')),
+    new BinaryExpression(new ColumnExpression('shipment_priority', 'maxPriority'), '=', new ColumnExpression('shipment_tracking', 'priority')),
     new OrExpressions([
       new BinaryExpression(new ColumnExpression('shipment_priority', 'max_updatedAt'), '=', new ColumnExpression('shipment_tracking', 'updatedAt')),
       new IsNullExpression(new ColumnExpression('shipment_tracking', 'updatedAt'), false)
@@ -413,16 +534,16 @@ query.registerQuery('lastStatusJoin', new Query({
     table: new FromTable({
 
       table: shipmentTrackingLastStatusCodeTableExpression,
-      $as: 'shipment_tracking_last_status',
+      $as: 'shipmentTrackingLastStatusCodeTable',
 
     }),
-    $on: new BinaryExpression(new ColumnExpression('shipment_tracking_last_status', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))
+    $on: new BinaryExpression(new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))
 
   })
 
 }))
 
-const shipmentTrackingStatusCodeTableExpression = new Query({
+const shipmentTrackingStatusCodeTableExpressionOld = new Query({
 
   $select: [
     new ResultColumn(new ColumnExpression('shipment_tracking', 'shipmentId')),
@@ -440,7 +561,7 @@ const shipmentTrackingStatusCodeTableExpression = new Query({
 
         operator: 'LEFT',
         table: new FromTable({
-          table: shipmentProrityTableExpression,
+          table: shipmentId_maxPriority_table,
           $as: 'shipment_priority'
         }),
         $on: [
@@ -469,7 +590,7 @@ const shipmentTrackingStatusCodeTableExpression = new Query({
   }),
 
   $where: [
-    new BinaryExpression(new ColumnExpression('shipment_priority', 'max_priority'), '=', new ColumnExpression('shipment_tracking', 'priority'))
+    new BinaryExpression(new ColumnExpression('shipment_priority', 'maxPriority'), '=', new ColumnExpression('shipment_tracking', 'priority'))
   ]
 
 })
@@ -482,11 +603,11 @@ query.registerQuery('statusJoin', new Query(
       table: new FromTable({
 
         table: shipmentTrackingStatusCodeTableExpression,
-        $as: 'shipment_tracking_status',
+        $as: 'shipmentTrackingStatusCodeTable',
 
       }),
 
-      $on: new BinaryExpression(new ColumnExpression('shipment_tracking_status', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))
+      $on: new BinaryExpression(new ColumnExpression('shipmentTrackingStatusCodeTable', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))
 
     })
 
@@ -1498,8 +1619,9 @@ const reportingGroupExpression = new CaseExpression({
 
 })
 
-const lastStatusCodeExpression = new ColumnExpression('shipment_tracking_last_status', 'lastStatusCode')
-const statusCodeExpression = new ColumnExpression('shipment_tracking_status', 'statusCode')
+const lastStatusCodeExpression = new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusCode')
+
+const statusCodeExpression = new ColumnExpression('shipmentTrackingStatusCodeTable', 'statusCode')
 
 function statusExpressionMapFunction(originalExpression: IExpression) {
 
@@ -1654,6 +1776,10 @@ query.registerBoth('alertStatus', alertStatusExpression)
 
 // party field ======================
 const partyFieldList = [
+
+  //  very special case , get back the value from the party join
+  'PartyNameInReport',
+
   'PartyId',
   'PartyName',
   'PartyCode',
@@ -1670,9 +1796,11 @@ const partyFieldList = [
 partyList.map(party => {
 
   const partyTableName = party.name
+
   const partyIdExpression = party.partyIdExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyId`)
   const partyNameExpression = party.partyNameExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyName`)
   const partyCodeExpression = party.partyCodeExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyCode`)
+  const partyNameInReportExpression = party.partyNameInReportExpression || new ColumnExpression(party.name, `name`)
 
   partyFieldList.map(partyField => {
 
@@ -1692,6 +1820,11 @@ partyList.map(party => {
 
       case 'PartyId':
         expression = partyIdExpression
+        break
+
+        // PartyReportName will get from party join instead of shipment_party direct;y
+      case 'PartyNameInReport':
+        expression = partyNameInReportExpression
         break
 
       default:
@@ -1826,28 +1959,74 @@ const nestedSummaryList = [
   }[]
 }[]
 
-const summaryFieldList: (string | { name: string, expression: IExpression })[] = [
-  'totalShipment',
-  'cbm',
-  'chargeableWeight',
-  'grossWeight',
-  'teu',
-  'quantity'
+interface SummaryField {
+  name: string,
+  expression: IExpression,
+  inReportExpression?: IExpression
+
+  summaryType: 'count' | 'sum',
+  summaryExpression?: IExpression,
+  summaryIfExpression?: (conditon) => IExpression
+}
+
+const summaryFieldList: SummaryField[] = [
+
+  {
+    name : 'totalShipment',
+    summaryType : 'count',
+    expression : new ColumnExpression('shipment', 'id')
+  },
+  {
+    name : 'cbm',
+    summaryType : 'sum',
+    expression : new ColumnExpression('shipment', 'cbm'),
+  },
+  {
+    name : 'chargeableWeight',
+    summaryType : 'sum',
+    expression : new ColumnExpression('shipment', 'chargeableWeight'),
+  },
+  {
+    name : 'grossWeight',
+    summaryType : 'sum',
+    expression : new ColumnExpression('shipment', 'grossWeight'),
+  },
+  {
+    name : 'teu',
+    summaryType : 'sum',
+    expression : new ColumnExpression('shipment', 'teu'),
+
+    inReportExpression : new FunctionExpression('IF',
+    new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'FCL'),
+    new ColumnExpression('shipment', 'teu'),
+    new FunctionExpression('ROUND', new MathExpression(new ColumnExpression('shipment', 'cbm'), '/', new Value(25)), new Value(3))
+    )
+
+  },
+
+  {
+    name : 'quantity',
+    summaryType : 'sum',
+    expression : new ColumnExpression('shipment', 'quantity'),
+  }
 ]
 
-function summaryFieldExpression(summaryField: string | { name: string, expression: IExpression }, condition?: IConditionalExpression) {
+function summaryFieldExpression(summaryField: SummaryField , isInReport: boolean, condition?: IConditionalExpression) {
 
-  const expression = typeof summaryField === 'string' ? new ColumnExpression('shipment', summaryField) : summaryField.expression
+  const expression = isInReport && summaryField.inReportExpression ? summaryField.inReportExpression : summaryField.expression
 
   if (condition) {
+
     const countIfExpression = new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new FunctionExpression('IF', condition, new ColumnExpression('shipment', 'id'), new Value(null))))
     const sumIfExpression = new FunctionExpression('SUM', new FunctionExpression('IF', condition, new FunctionExpression('IFNULL', expression, 0), 0))
-    return summaryField === 'totalShipment' ? countIfExpression : sumIfExpression
+
+    return summaryField.summaryIfExpression ? summaryField.summaryIfExpression(condition) : summaryField.summaryType === 'count' ? countIfExpression : sumIfExpression
   }
 
-  return (summaryField === 'totalShipment') ?
-    new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))) :
-    new FunctionExpression('SUM', new FunctionExpression('IFNULL', expression, 0))
+  const sumExpression = new FunctionExpression('SUM', new FunctionExpression('IFNULL', expression, 0))
+  const countExpression = new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', expression))
+
+  return summaryField.summaryType === 'count' ? countExpression : sumExpression
 
 }
 
@@ -1859,6 +2038,7 @@ const lastTimeCondition = (params) => {
 
   return new BetweenExpression(jobDateExpression, false, new Value(params.subqueries.date.lastFrom), new Value(params.subqueries.date.lastTo))
 }
+
 const currentTimeCondition = (params) => {
 
   if (!params.subqueries.date.currentFrom) {
@@ -1872,209 +2052,117 @@ const monthConditionExpression = (month) => {
   return new BinaryExpression(new FunctionExpression('Month', jobDateExpression), '=', index + 1)
 }
 
-summaryFieldList.map((summaryField: string | { name: string, expression: IExpression }) => {
+const isInReportList = [true, false]
 
-  const summaryFieldName = typeof summaryField === 'string' ? summaryField : summaryField.name
+isInReportList.map(isInReport => {
 
-  // cbm/chargeableWeight
-  const basicFn = (params) => {
-    const totalValueExpression = summaryFieldExpression(summaryField)
-    return new ResultColumn(totalValueExpression, summaryFieldName)
-  }
+  summaryFieldList.map((summaryField) => {
 
-  query.registerResultColumn(summaryFieldName, basicFn)
+    const summaryFieldName = isInReport ? `${summaryField.name}InReport` : summaryField.name
 
-  // cbmMonth case
-  const monthFn: ResultColumnFn = (params) => {
+    // cbm/chargeableWeight
+    const basicFn = (params) => {
+      const totalValueExpression = summaryFieldExpression(summaryField, isInReport)
+      return new ResultColumn(totalValueExpression, summaryFieldName)
+    }
 
-    const resultColumnList = [] as ResultColumn[]
+    query.registerResultColumn(summaryFieldName, basicFn)
 
-    months.forEach((month, index) => {
-      const monthSumExpression = summaryFieldExpression(summaryField, monthConditionExpression(month))
-      resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_${summaryFieldName}`))
-    })
-
-    const totalValueExpression = summaryFieldExpression(summaryField)
-    resultColumnList.push(new ResultColumn(totalValueExpression, `total_${summaryFieldName}`))
-
-    return resultColumnList
-  }
-
-  query.registerResultColumn(`${summaryFieldName}Month`, monthFn)
-
-  // ==================================
-
-  // cbmLastCurrent
-  const lastCurrentFn = (params) => {
-
-    const lastSummaryField = summaryFieldExpression(summaryField, lastTimeCondition(params))
-    const currentSummaryField = summaryFieldExpression(summaryField, currentTimeCondition(params))
-
-    const lastCurrentPercentageChangeExpression = percentageChangeFunction(lastSummaryField, currentSummaryField)
-
-    return [
-      new ResultColumn(lastSummaryField, `${summaryFieldName}Last`),
-      new ResultColumn(currentSummaryField, `${summaryFieldName}Current`),
-      new ResultColumn(lastCurrentPercentageChangeExpression, `${summaryFieldName}LastCurrentPercentageChange`)
-    ]
-
-  }
-
-  query.registerResultColumn(`${summaryFieldName}LastCurrent`, lastCurrentFn)
-
-  // cbmMonthLastCurrent
-  const monthLastCurrentFn = (params) => {
-    const resultColumnList = []
-
-    months.forEach((month, index) => {
-
-      const monthLastCondition = new AndExpressions([
-        monthConditionExpression(month),
-        lastTimeCondition(params)
-      ])
-
-      const monthCurrentCondition = new AndExpressions([
-        monthConditionExpression(month),
-        currentTimeCondition(params)
-      ])
-
-      const monthLastSumExpression = summaryFieldExpression(summaryField, monthLastCondition)
-      const monthCurrentSumExpression = summaryFieldExpression(summaryField, monthLastCondition)
-
-      const monthLastCurrentPercentageChangeExpression = percentageChangeFunction(monthLastSumExpression, monthCurrentSumExpression)
-
-      resultColumnList.push(new ResultColumn(monthLastSumExpression, `${month}_${summaryFieldName}Last`))
-      resultColumnList.push(new ResultColumn(monthCurrentSumExpression, `${month}_${summaryFieldName}Current`))
-      resultColumnList.push(new ResultColumn(monthLastCurrentPercentageChangeExpression, `${month}_${summaryFieldName}LastCurrentPercentageChange`))
-
-    })
-
-    const totalLastSumExpression = summaryFieldExpression(summaryField, lastTimeCondition(params))
-    const totalCurrentSumExpression = summaryFieldExpression(summaryField, currentTimeCondition(params))
-    const totalLastCurrentPercentageChangeExpression = percentageChangeFunction(totalLastSumExpression, totalCurrentSumExpression)
-
-    resultColumnList.push(new ResultColumn(totalLastSumExpression, `total_${summaryFieldName}Last`))
-    resultColumnList.push(new ResultColumn(totalCurrentSumExpression, `total_${summaryFieldName}Current`))
-    resultColumnList.push(new ResultColumn(totalLastCurrentPercentageChangeExpression, `total_${summaryFieldName}LastCurrentPercentageChange`))
-
-    return resultColumnList
-  }
-
-  query.registerResultColumn(`${summaryField}MonthLastCurrent`, monthLastCurrentFn)
-
-  // ======================================
-
-  nestedSummaryList.map(x => {
-
-    const nestedMonthFn = (params) => {
+    // cbmMonth case
+    const monthFn: ResultColumnFn = (params) => {
 
       const resultColumnList = [] as ResultColumn[]
 
       months.forEach((month, index) => {
-        const monthCondition = monthConditionExpression(month)
-        const monthSumExpression = summaryFieldExpression(summaryField, monthCondition)
-
-        // January_T_cbm
-        resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_T_${summaryFieldName}`))
-
-        x.cases.map(y => {
-          const condition = new AndExpressions([
-            monthCondition,
-            y.condition
-          ])
-
-          // January_F_cbm
-          const frcMonthSumExpression = summaryFieldExpression(summaryField, condition)
-          resultColumnList.push(new ResultColumn(frcMonthSumExpression, `${month}_${y.typeCode}_${summaryFieldName}`))
-
-        })
-
+        const monthSumExpression = summaryFieldExpression(summaryField, isInReport, monthConditionExpression(month))
+        resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_${summaryFieldName}`))
       })
 
-      x.cases.map(y => {
-        // total_F_cbm
-        const typeTotalExpression = summaryFieldExpression(summaryField, y.condition)
-        resultColumnList.push(new ResultColumn(typeTotalExpression, `total_${y.typeCode}_${summaryFieldName}`))
-
-      })
-
-      // total_T_cbm
-      const totalValueExpression = summaryFieldExpression(summaryField)
-      resultColumnList.push(new ResultColumn(totalValueExpression, `total_T_${summaryFieldName}`))
+      const totalValueExpression = summaryFieldExpression(summaryField, isInReport)
+      resultColumnList.push(new ResultColumn(totalValueExpression, `total_${summaryFieldName}`))
 
       return resultColumnList
     }
-    // frc_cbmMonth
-    query.registerResultColumn(`${x.name}_${summaryFieldName}Month`, nestedMonthFn)
 
-    const nestedLastCurrentFn = (params) => {
+    query.registerResultColumn(`${summaryFieldName}Month`, monthFn)
 
-      const resultColumnList = [] as ResultColumn[]
+    // ==================================
 
-      // for easier looping
-      const lastCurrentList = [
-        {
-          name: 'Last',
-          condition: lastTimeCondition(params)
-        },
-        {
-          name: 'Current',
-          condition: currentTimeCondition(params)
-        }
+    // cbmLastCurrent
+    const lastCurrentFn = (params) => {
 
+      console.log(`debug_params`)
+      console.log(params)
+
+      const lastSummaryField = summaryFieldExpression(summaryField, isInReport, lastTimeCondition(params))
+      const currentSummaryField = summaryFieldExpression(summaryField, isInReport, currentTimeCondition(params))
+
+      const lastCurrentPercentageChangeExpression = percentageChangeFunction(lastSummaryField, currentSummaryField)
+
+      return [
+        new ResultColumn(lastSummaryField, `${summaryFieldName}Last`),
+        new ResultColumn(currentSummaryField, `${summaryFieldName}Current`),
+        new ResultColumn(lastCurrentPercentageChangeExpression, `${summaryFieldName}LastCurrentPercentageChange`)
       ]
-      lastCurrentList.forEach(lastOrCurrent => {
-
-        const lastCurrentCondition = lastOrCurrent.condition
-        // F_cbmLast
-        x.cases.map(y => {
-          resultColumnList.push(new ResultColumn(
-            summaryFieldExpression(summaryField, new AndExpressions([lastCurrentCondition, y.condition])), `${y.typeCode}_${summaryField}${lastOrCurrent.name}`
-          ))
-
-        })
-
-        // T_cbmLast
-        const totalValueExpression = summaryFieldExpression(summaryField, lastCurrentCondition)
-        resultColumnList.push(new ResultColumn(totalValueExpression, `T_${summaryFieldName}${lastOrCurrent.name}`))
-
-      })
-
-      return resultColumnList
 
     }
 
-    query.registerResultColumn(`${x.name}_${summaryFieldName}LastCurrent`, nestedLastCurrentFn)
+    query.registerResultColumn(`${summaryFieldName}LastCurrent`, lastCurrentFn)
 
-    const nestedMonthLastCurrentFn = (params) => {
+    // cbmMonthLastCurrent
+    const monthLastCurrentFn = (params) => {
+      const resultColumnList = []
 
-      // for easier looping
-      const lastCurrentList = [
-        {
-          name: 'Last',
-          condition: lastTimeCondition(params)
-        },
-        {
-          name: 'Current',
-          condition: currentTimeCondition(params)
-        }
+      months.forEach((month, index) => {
 
-      ]
+        const monthLastCondition = new AndExpressions([
+          monthConditionExpression(month),
+          lastTimeCondition(params)
+        ])
 
-      const resultColumnList = [] as ResultColumn[]
+        const monthCurrentCondition = new AndExpressions([
+          monthConditionExpression(month),
+          currentTimeCondition(params)
+        ])
 
-      lastCurrentList.forEach(lastOrCurrent => {
+        const monthLastSumExpression = summaryFieldExpression(summaryField, isInReport, monthLastCondition)
+        const monthCurrentSumExpression = summaryFieldExpression(summaryField, isInReport, monthLastCondition)
 
-        const lastCurrentCondition = lastOrCurrent.condition
+        const monthLastCurrentPercentageChangeExpression = percentageChangeFunction(monthLastSumExpression, monthCurrentSumExpression)
+
+        resultColumnList.push(new ResultColumn(monthLastSumExpression, `${month}_${summaryFieldName}Last`))
+        resultColumnList.push(new ResultColumn(monthCurrentSumExpression, `${month}_${summaryFieldName}Current`))
+        resultColumnList.push(new ResultColumn(monthLastCurrentPercentageChangeExpression, `${month}_${summaryFieldName}LastCurrentPercentageChange`))
+
+      })
+
+      const totalLastSumExpression = summaryFieldExpression(summaryField, isInReport, lastTimeCondition(params))
+      const totalCurrentSumExpression = summaryFieldExpression(summaryField, isInReport, currentTimeCondition(params))
+      const totalLastCurrentPercentageChangeExpression = percentageChangeFunction(totalLastSumExpression, totalCurrentSumExpression)
+
+      resultColumnList.push(new ResultColumn(totalLastSumExpression, `total_${summaryFieldName}Last`))
+      resultColumnList.push(new ResultColumn(totalCurrentSumExpression, `total_${summaryFieldName}Current`))
+      resultColumnList.push(new ResultColumn(totalLastCurrentPercentageChangeExpression, `total_${summaryFieldName}LastCurrentPercentageChange`))
+
+      return resultColumnList
+    }
+
+    query.registerResultColumn(`${summaryField}MonthLastCurrent`, monthLastCurrentFn)
+
+    // ======================================
+
+    nestedSummaryList.map(x => {
+
+      const nestedMonthFn = (params) => {
+
+        const resultColumnList = [] as ResultColumn[]
 
         months.forEach((month, index) => {
+          const monthCondition = monthConditionExpression(month)
+          const monthSumExpression = summaryFieldExpression(summaryField, isInReport, monthCondition)
 
-          // warning
-          const monthCondition = new AndExpressions([monthConditionExpression(month), lastCurrentCondition])
-          const monthSumExpression = summaryFieldExpression(summaryField, monthCondition)
-
-          // January_T_cbmLast
-          resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_T_${summaryFieldName}${lastOrCurrent.name}`))
+          // January_T_cbm
+          resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_T_${summaryFieldName}`))
 
           x.cases.map(y => {
             const condition = new AndExpressions([
@@ -2082,33 +2170,134 @@ summaryFieldList.map((summaryField: string | { name: string, expression: IExpres
               y.condition
             ])
 
-            // January_F_cbmLast
-            const frcMonthSumExpression = summaryFieldExpression(summaryField, condition)
-            resultColumnList.push(new ResultColumn(frcMonthSumExpression, `${month}_${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`))
+            // January_F_cbm
+            const frcMonthSumExpression = summaryFieldExpression(summaryField, isInReport, condition)
+            resultColumnList.push(new ResultColumn(frcMonthSumExpression, `${month}_${y.typeCode}_${summaryFieldName}`))
 
           })
 
         })
 
         x.cases.map(y => {
-
-          const condition = new AndExpressions([y.condition, lastCurrentCondition])
           // total_F_cbm
-          const typeTotalExpression = summaryFieldExpression(summaryField, condition)
-          resultColumnList.push(new ResultColumn(typeTotalExpression, `total_${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`))
+          const typeTotalExpression = summaryFieldExpression(summaryField, isInReport, y.condition)
+          resultColumnList.push(new ResultColumn(typeTotalExpression, `total_${y.typeCode}_${summaryFieldName}`))
 
         })
 
         // total_T_cbm
-        const totalValueExpression = summaryFieldExpression(summaryField, lastCurrentCondition)
-        resultColumnList.push(new ResultColumn(totalValueExpression, `total_T_${summaryFieldName}${lastOrCurrent.name}`))
+        const totalValueExpression = summaryFieldExpression(summaryField, isInReport)
+        resultColumnList.push(new ResultColumn(totalValueExpression, `total_T_${summaryFieldName}`))
 
-      })
+        return resultColumnList
+      }
+      // frc_cbmMonth
+      query.registerResultColumn(`${x.name}_${summaryFieldName}Month`, nestedMonthFn)
 
-      return resultColumnList
-    }
-    // frc_cbmMonthLastCurrent
-    query.registerResultColumn(`${x.name}_${summaryFieldName}MonthLastCurrent`, nestedMonthLastCurrentFn)
+      const nestedLastCurrentFn = (params) => {
+
+        const resultColumnList = [] as ResultColumn[]
+
+        // for easier looping
+        const lastCurrentList = [
+          {
+            name: 'Last',
+            condition: lastTimeCondition(params)
+          },
+          {
+            name: 'Current',
+            condition: currentTimeCondition(params)
+          }
+
+        ]
+        lastCurrentList.forEach(lastOrCurrent => {
+
+          const lastCurrentCondition = lastOrCurrent.condition
+          // F_cbmLast
+          x.cases.map(y => {
+            resultColumnList.push(new ResultColumn(
+              summaryFieldExpression(summaryField, isInReport, new AndExpressions([lastCurrentCondition, y.condition])), `${y.typeCode}_${summaryField}${lastOrCurrent.name}`
+            ))
+
+          })
+
+          // T_cbmLast
+          const totalValueExpression = summaryFieldExpression(summaryField, isInReport, lastCurrentCondition)
+          resultColumnList.push(new ResultColumn(totalValueExpression, `T_${summaryFieldName}${lastOrCurrent.name}`))
+
+        })
+
+        return resultColumnList
+
+      }
+
+      query.registerResultColumn(`${x.name}_${summaryFieldName}LastCurrent`, nestedLastCurrentFn)
+
+      const nestedMonthLastCurrentFn = (params) => {
+
+        // for easier looping
+        const lastCurrentList = [
+          {
+            name: 'Last',
+            condition: lastTimeCondition(params)
+          },
+          {
+            name: 'Current',
+            condition: currentTimeCondition(params)
+          }
+
+        ]
+
+        const resultColumnList = [] as ResultColumn[]
+
+        lastCurrentList.forEach(lastOrCurrent => {
+
+          const lastCurrentCondition = lastOrCurrent.condition
+
+          months.forEach((month, index) => {
+
+            // warning
+            const monthCondition = new AndExpressions([monthConditionExpression(month), lastCurrentCondition])
+            const monthSumExpression = summaryFieldExpression(summaryField, isInReport, monthCondition)
+
+            // January_T_cbmLast
+            resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_T_${summaryFieldName}${lastOrCurrent.name}`))
+
+            x.cases.map(y => {
+              const condition = new AndExpressions([
+                monthCondition,
+                y.condition
+              ])
+
+              // January_F_cbmLast
+              const frcMonthSumExpression = summaryFieldExpression(summaryField, isInReport, condition)
+              resultColumnList.push(new ResultColumn(frcMonthSumExpression, `${month}_${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`))
+
+            })
+
+          })
+
+          x.cases.map(y => {
+
+            const condition = new AndExpressions([y.condition, lastCurrentCondition])
+            // total_F_cbm
+            const typeTotalExpression = summaryFieldExpression(summaryField, isInReport, condition)
+            resultColumnList.push(new ResultColumn(typeTotalExpression, `total_${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`))
+
+          })
+
+          // total_T_cbm
+          const totalValueExpression = summaryFieldExpression(summaryField, isInReport, lastCurrentCondition)
+          resultColumnList.push(new ResultColumn(totalValueExpression, `total_T_${summaryFieldName}${lastOrCurrent.name}`))
+
+        })
+
+        return resultColumnList
+      }
+      // frc_cbmMonthLastCurrent
+      query.registerResultColumn(`${x.name}_${summaryFieldName}MonthLastCurrent`, nestedMonthLastCurrentFn)
+
+    })
 
   })
 
@@ -2126,7 +2315,6 @@ const shipmentTableFilterFieldList = [
   'isCoload',
   'houseNo',
   {
-
     name: 'agentGroup',
     expression: agentGroupExpression
 
@@ -2201,6 +2389,12 @@ shipmentTableFilterFieldList.map(filterField => {
     })
   )
 
+  query.registerQuery(`${name}IsNull`,
+  new Query({
+    $where: new IsNullExpression(expression, false),
+  })
+)
+
 })
 
 // warning!! previously only register carrierCodeIsNotNull and carrierNameIsNotNull, need to register carrierIsNotNull
@@ -2234,8 +2428,8 @@ query
                     new BinaryExpression(new ColumnExpression('shipment', 'partyGroupCode'), '=', new ColumnExpression('b2', 'partyGroupCode')),
                     new BinaryExpression(new ColumnExpression('shipment', 'jobNo'), '=', new ColumnExpression('b2', 'jobNo')),
                     new BinaryExpression(new ColumnExpression('b2', 'billTypeCode'), '=', 'H'),
-                    new IsNullExpression(new ColumnExpression('b2', 'deletedBy'), false),
-                    new IsNullExpression(new ColumnExpression('b2', 'deletedAt'), false),
+
+                    shipmentIsActiveExpression('b2')
                   ]
 
                 }), true)
@@ -2292,6 +2486,53 @@ query
       ]),
     })
   )
+
+// used for exist/ not exist statusCode
+const withoutStatusCodeCondition = (withoutStatusCodeParam) => {
+
+  console.log(`debug_withoutStatusCodeParam`)
+  console.log(withoutStatusCodeParam)
+
+  if (!(withoutStatusCodeParam && withoutStatusCodeParam.value)) {
+    throw new Error('params.subqueries.withoutStatusCodeParam missing')
+  }
+
+  const { statusCode, isEstimated, statusDate } = withoutStatusCodeParam.value as { statusCode: string[], isEstimated: boolean, statusDate: { from: 'string' | IExpression, to: 'string' | IExpression } }
+
+  const conditionExpression = new ExistsExpression({
+
+    query : new Query({
+
+      $from : 'tracking_status',
+      $where : [
+
+        new BinaryExpression(new ColumnExpression('tracking_status', 'trackingId'), '=', new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'trackingId')),
+
+        new BinaryExpression(new ColumnExpression('tracking_status', 'isEstimated'), '=', isEstimated),
+        new BetweenExpression(new ColumnExpression('tracking_status', 'statusCode'), false, statusDate.from, statusDate.to),
+        new InExpression(new ColumnExpression('tracking_status', 'statusCode'), false, statusCode)
+      ]
+
+    }),
+
+    $not : true
+
+  })
+
+  return conditionExpression
+}
+
+const withoutStatusCodeFn = (params) => {
+
+  return new Query({
+
+    $where : withoutStatusCodeCondition(params)
+
+  })
+
+}
+
+query.registerQuery('withoutStatusCode', withoutStatusCodeFn)
 
 // salesman filter =============================
 const salesmanFieldList = [
@@ -2759,13 +3000,29 @@ query
   .register('value', 44)
   .register('value', 45)
 
-const isActiveExpression = new AndExpressions([
-  new IsNullExpression(new ColumnExpression('shipment', 'deletedAt'), false),
-  new IsNullExpression(new ColumnExpression('shipment', 'deletedBy'), false)
-])
+query
+  .register(
+    'widgetQ',
+    new Query({
+      $where: new OrExpressions({
+        expressions: [
+          new RegexpExpression(new ColumnExpression('shipment', 'houseNo'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'jobNo'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'masterNo'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'containerNos'), false),
+          new RegexpExpression(new ColumnExpression('shipment', 'carrierBookingNos'), false),
+        ],
+      }),
+    })
+  )
+  .register('value', 0)
+  .register('value', 1)
+  .register('value', 2)
+  .register('value', 3)
+  .register('value', 4)
 
 // isActive field
-query.registerBoth('isActive', isActiveExpression)
+query.registerBoth('isActive', shipmentIsActiveExpression('shipment'))
 
 // isActive filter
 query.register('isActive', new Query({
@@ -2776,13 +3033,13 @@ query.register('isActive', new Query({
 
       new BinaryExpression(new Value('active'), '=', new Unknown('string')),
       // active case
-      isActiveExpression
+      shipmentIsActiveExpression('shipment')
     ]),
 
     new AndExpressions([
       new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
       // deleted case
-      new BinaryExpression(isActiveExpression, '=', false)
+      new BinaryExpression(shipmentIsActiveExpression('shipment'), '=', false)
     ])
 
   ])

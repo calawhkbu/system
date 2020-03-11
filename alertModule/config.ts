@@ -53,8 +53,6 @@ export const alertConfigList = [
 
     queryName: 'shipment',
     query: {
-
-      fields: ['id'],
       subqueries: {
         statusJoin: true,
         statusCode: {
@@ -78,6 +76,16 @@ export const alertConfigList = [
         ),
       ])
 
+    } as IQueryParams,
+
+    // all those with statusCode STSP/RCS will be OK
+    closeQuery : {
+      subqueries : {
+        statusJoin: true,
+        statusCode: {
+          value: ['STSP', 'RCS']
+        }
+      }
     } as IQueryParams
 
   } as AlertConfig,

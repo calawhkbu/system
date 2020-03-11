@@ -12,12 +12,15 @@
     },
     "subTitleKeys": [
       "statusDescription",
-      "statusPlace",
       {
         "key": "statusDate",
         "is": "Datetime",
-        "format": "YYYY-MM-DD HH:mm:ss"
-      }
+        "format": "YYYY-MM-DD HH:mm:ss",
+        "style": {
+          "color": "#5da751"
+        }
+      },
+      "statusPlace"
     ],
     "iconMap": {
       "BKCF": "tracking/bkcf",

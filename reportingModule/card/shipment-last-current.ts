@@ -25,8 +25,8 @@ function prepareParams(): Function {
       const from = subqueries.date.from
 
       const currentYear = moment(from).year()
-      const currentMonth = moment(from).month()
-      const currentWeek = moment(from).week()
+      const currentMonth = moment().month()
+      const currentWeek = moment().week()
 
       let lastFrom, lastTo, currentFrom, currentTo
 
@@ -61,9 +61,9 @@ function prepareParams(): Function {
 
       else if (lastCurrentUnit === 'lastYearCurrentMonth') {
 
-        // asfasfdasw
-        lastFrom = moment(from).subtract(1, 'years').startOf('month').format('YYYY-MM-DD')
-        lastTo = moment(from).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
+        // special case !!!
+        lastFrom = moment(from).month(currentMonth).subtract(1, 'years').startOf('month').format('YYYY-MM-DD')
+        lastTo = moment(from).month(currentMonth).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
         currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
         currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
 
@@ -92,8 +92,7 @@ function prepareParams(): Function {
 
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
     const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
-
+    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyNameInReport`
     const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
@@ -211,8 +210,7 @@ function dataQuery(): Function {
 
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
     const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
-
+    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyNameInReport`
     const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
@@ -287,8 +285,7 @@ function finalQuery() {
 
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
     const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
-
+    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyNameInReport`
     const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
@@ -428,6 +425,10 @@ export const filters = [
           value: 'teu',
         },
         {
+          label: 'teuInReport',
+          value: 'teuInReport',
+        },
+        {
           label: 'quantity',
           value: 'quantity',
         },
@@ -463,6 +464,10 @@ export const filters = [
         {
           label: 'teu',
           value: 'teu',
+        },
+        {
+          label: 'teuInReport',
+          value: 'teuInReport',
         },
 
         {

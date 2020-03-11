@@ -172,7 +172,7 @@
                       {
                         "is": "AsyncComponent",
                         "props": {
-                          "layoutName": "booking/forms/generalForm"
+                          "layoutName": "purchase-order/forms/general"
                         }
                       }
                     ]
@@ -264,7 +264,7 @@
                               {
                                 "is": "AsyncComponent",
                                 "props": {
-                                  "layoutName": "booking/forms/partyForm"
+                                  "layoutName": "purchase-order/forms/partyForm"
                                 }
                               }
                             ]
@@ -353,7 +353,7 @@
                               {
                                 "is": "AsyncComponent",
                                 "props": {
-                                  "layoutName": "booking/forms/dateForm"
+                                  "layoutName": "purchase-order/forms/dateForm"
                                 }
                               }
                             ]
@@ -441,7 +441,7 @@
                       {
                         "is": "AsyncComponent",
                         "props": {
-                          "layoutName": "booking/forms/containerForm"
+                          "layoutName": "purchase-order/forms/containerForm"
                         }
                       }
                     ]
@@ -525,7 +525,7 @@
                       {
                         "is": "AsyncComponent",
                         "props": {
-                          "layoutName": "booking/forms/referenceForm"
+                          "layoutName": "purchase-order/forms/referenceForm"
                         }
                       }
                     ]
@@ -543,20 +543,6 @@
         "class": "xs-12 md-4 padding-8"
       },
       "slots": [{
-          "is": "AsyncComponent",
-          "props": {
-            "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/tracking"
-          }
-        },
-        {
-          "is": "AsyncComponent",
-          "props": {
-            "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/workflow"
-          }
-        },
-        {
           "is": "AsyncComponent",
           "props": {
             "class": "xs-12 margin-topbottom-4",

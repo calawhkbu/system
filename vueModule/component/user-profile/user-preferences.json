@@ -29,18 +29,12 @@
               "otherParams": {
                 "name": "auth/submitConfiguration"
               },
+              "errorMessage": "UserProfilePage.UpdateUserPreferencesFail",
               "afterActions": [{
-                "type": "dispatch",
+                "type": "notify",
                 "otherParams": {
-                  "name": "config/updateAll"
-                },
-                "errorMessage": "UserProfilePage.UpdateUserPreferencesFail",
-                "afterActions": [{
-                  "type": "notify",
-                  "otherParams": {
-                    "notification": "UserProfilePage.UpdateUserPreferencesSuccess"
-                  }
-                }]
+                  "notification": "UserProfilePage.UpdateUserPreferencesSuccess"
+                }
               }]
             }],
             "fields": [{

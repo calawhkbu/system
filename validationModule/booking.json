@@ -27,9 +27,5 @@
     "field": "commodity",
     "validator": "required",
     "part": "BookingPage.GeneralForm"
-  },
-  {
-    "field": "bookingParty.forwarderPartyId",
-    "validator": "required"
   }
 ]
