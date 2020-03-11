@@ -134,7 +134,7 @@ export const entityConfigList = [
         ],
 
         isActive : (entity: Shipment) => {
-          return entity.serviceCode === 'FCL/FCL'
+          return entity.serviceCode && entity.serviceCode === 'FCL/FCL'
         },
         allowFillTemplate: false
       },
@@ -149,7 +149,7 @@ export const entityConfigList = [
         ],
 
         isActive : (entity: Shipment) => {
-          return entity.serviceCode.startsWith('LCL/LC')
+          return entity.serviceCode && entity.serviceCode.startsWith('LCL/LC')
         },
         allowFillTemplate: false
       },
