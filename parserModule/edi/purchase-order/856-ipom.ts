@@ -80,9 +80,9 @@ export default class EdiParser856 extends BaseEdiParser {
       BSN.elementList.push(moment(_.get(element, 'createdAt')).format('HHmm'))
       BSN.elementList.push('0004')
       data.push(BSN)
-      const loopObjectList: any[] = []
+      let loopObjectList: any[] = []
       const getNumOfLoopItem = 1 + (_.get(element, 'bookingPOPackings').length) + this.getNumOfPo(_.get(element, 'bookingPOPackings'))
-      loopObjectList.push(await this.getLoopObject(loopObjectList, getNumOfLoopItem, element))
+      loopObjectList = await this.getLoopObject(loopObjectList, getNumOfLoopItem, element)
       const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
       data.push(...filteredList)
       await this.removeEmptyElementListObject(data)
