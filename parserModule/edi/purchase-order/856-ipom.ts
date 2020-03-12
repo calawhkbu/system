@@ -82,7 +82,7 @@ export default class EdiParser856 extends BaseEdiParser {
       data.push(BSN)
       const loopObjectList: any[] = []
       const getNumOfLoopItem = 1 + (_.get(element, 'bookingPOPackings').length) + this.getNumOfPo(_.get(element, 'bookingPOPackings'))
-      loopObjectList.push(this.getLoopObject(loopObjectList, getNumOfLoopItem, element))
+      loopObjectList.push(await this.getLoopObject(loopObjectList, getNumOfLoopItem, element))
       const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
       data.push(...filteredList)
       await this.removeEmptyElementListObject(data)
@@ -133,7 +133,7 @@ export default class EdiParser856 extends BaseEdiParser {
     // return cloneEntityJSON
     // return returnJSON
     const result = await super.export(returnJSON)
-    return [result]
+    // return [result]
   }
   async removeEmptyElementListObject(data)
   {
@@ -175,9 +175,9 @@ export default class EdiParser856 extends BaseEdiParser {
           let numberOfPacking = 0
           let totalVolume = 0
           let totalShipUnit = 0
+          let missingPosition = 1
           for (const booking of _.get(element, 'bookingPOPackings'))
           {
-            let missingPosition = 1
             if (_.get(booking, 'bookWeight') || _.get(booking, 'bookWeight') === 0)
             {
               totalWeight += _.get(booking, 'bookWeight')
