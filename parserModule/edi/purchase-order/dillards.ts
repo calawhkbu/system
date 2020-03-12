@@ -4631,6 +4631,8 @@ export default class Edi850Parser extends BaseEdiParser {
           holeEdi.poList.push(po)
         }
       }
+    }else{
+      throw new Error('wrong type')
     }
 
     // return errorList
