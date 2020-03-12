@@ -3,7 +3,7 @@
   "components": [{
       "is": "DynamicComponent",
       "props": {
-        "class": "xs-12 grid min-height-28 align-item-center full-width",
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
         "components": [{
             "is": "v-btn",
             "props": {
@@ -21,9 +21,15 @@
               "click.stop": [{
                 "type": "dispatch",
                 "otherParams": {
-                  "name": "widget/changeMode",
-                  "mode": "detail"
-                }
+                  "name": "widget/resetData"
+                },
+                "afterActions": [{
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "detail"
+                  }
+                }]
               }]
             }
           },

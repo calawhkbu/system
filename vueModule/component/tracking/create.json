@@ -3,7 +3,7 @@
   "components": [{
     "is": "DynamicComponent",
     "props": {
-      "class": "xs-12 grid min-height-28 align-item-center full-width",
+      "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
       "components": [{
           "is": "v-btn",
           "props": {
@@ -22,7 +22,7 @@
               "type": "router",
               "otherParams": {
                 "func": "push",
-                "path": "/trackings"
+                "path": "/admin/trackings"
               }
             }]
           }
@@ -30,10 +30,7 @@
           "is": "I18nText",
           "props": {
             "i18nContext": "TrackingPage",
-            "i18nKey": "title",
-            "i18nOptions": {
-              "id": "{{context.$store.state.widget.data.name}}"
-            }
+            "i18nKey": "title"
           }
         }, {
           "is": "v-spacer"

@@ -8,46 +8,93 @@ import {
   FromTable,
   CreateTableJQL,
 } from 'node-jql'
-import moment = require('moment')
 
-const tempQuery = new CreateTableJQL({
-  $temporary: true,
-  name: 'temp',
-  $as: new Query({
-    $select: [
-      new ResultColumn('*'),
-      new ResultColumn(
-        new FunctionExpression('QUARTER', new ColumnExpression('month'), 'YYYY-MM'),
-        'quarter'
-      ),
-    ],
-    $from: new FromTable(
-      {
-        url: 'demo',
-        columns: [
-          {
-            name: 'group',
-            type: 'string',
-          },
-          {
-            name: 'month',
-            type: 'string',
-          },
-          {
-            name: 'value',
-            type: 'number',
-          },
-          {
-            name: 'flag',
-            type: 'boolean',
-          },
+function tempQuery()
+{
+  return function(require, session, params)
+  {
+    const { moment } = params.packages
+    return new CreateTableJQL({
+      $temporary: true,
+      name: 'temp',
+      $as: new Query({
+        $select: [
+          new ResultColumn('*'),
+          new ResultColumn(
+            new FunctionExpression('QUARTER', new ColumnExpression('month'), 'YYYY-MM'),
+            'quarter'
+          ),
         ],
-      },
-      'Test'
-    ),
-    $where: new BinaryExpression(new ColumnExpression('group'), '=', String(moment().year())),
-  }),
-})
+        $from: new FromTable(
+          {
+            url: 'demo',
+            columns: [
+              {
+                name: 'group',
+                type: 'string',
+              },
+              {
+                name: 'month',
+                type: 'string',
+              },
+              {
+                name: 'value',
+                type: 'number',
+              },
+              {
+                name: 'flag',
+                type: 'boolean',
+              },
+            ],
+          },
+          'Test'
+        ),
+        $where: new BinaryExpression(new ColumnExpression('group'), '=', String(moment().year())),
+      }),
+    })
+
+  }
+
+}
+
+// const tempQuery = new CreateTableJQL({
+//   $temporary: true,
+//   name: 'temp',
+//   $as: new Query({
+//     $select: [
+//       new ResultColumn('*'),
+//       new ResultColumn(
+//         new FunctionExpression('QUARTER', new ColumnExpression('month'), 'YYYY-MM'),
+//         'quarter'
+//       ),
+//     ],
+//     $from: new FromTable(
+//       {
+//         url: 'demo',
+//         columns: [
+//           {
+//             name: 'group',
+//             type: 'string',
+//           },
+//           {
+//             name: 'month',
+//             type: 'string',
+//           },
+//           {
+//             name: 'value',
+//             type: 'number',
+//           },
+//           {
+//             name: 'flag',
+//             type: 'boolean',
+//           },
+//         ],
+//       },
+//       'Test'
+//     ),
+//     $where: new BinaryExpression(new ColumnExpression('group'), '=', String(moment().year())),
+//   }),
+// })
 
 const query = new Query({
   $select: [
@@ -59,4 +106,4 @@ const query = new Query({
   $group: 'quarter',
 })
 
-export default [tempQuery.toJson(), query.toJson()]
+export default [tempQuery(), query.toJson()]

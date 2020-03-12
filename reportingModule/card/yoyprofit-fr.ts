@@ -52,7 +52,7 @@ function createProfitTable() {
 
 function prepareProfitParams(currentYear_: boolean, nominatedType_: 'F' | 'R'): Function {
   const fn = function(require, session, params) {
-    const moment = require('moment')
+    const { moment } = params.packages
     const subqueries = (params.subqueries = params.subqueries || {})
     if (subqueries.date) {
       let year = moment(subqueries.date.from, 'YYYY-MM-DD').year()

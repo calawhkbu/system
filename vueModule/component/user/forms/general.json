@@ -8,7 +8,7 @@
           "name": "person.userName",
           "component": "v-text-field",
           "class": "xs-6",
-          "canEdit": "return mode === 'create' "
+          "canEdit": "return mode === 'create' || form.status === 'pending' "
         },
 
         {
@@ -58,7 +58,7 @@
                 "limit": 5
               }
             },
-            "item-text": "name",
+            "item-text": "shortName",
             "item-value": "id"
           }
         },
@@ -87,6 +87,15 @@
             "item-text": "roleName",
             "item-value": "id"
           }
+        },
+
+        {
+          "checkDisplayWhen" : "return mode === 'create'",
+          "canEdit": "return mode === 'create'",
+          "label": "InvitationPage.sendInvitation",
+          "name": "sendInvitation",
+          "component": "BooleanField",
+          "class": "xs-6"
         }
       ]
     }

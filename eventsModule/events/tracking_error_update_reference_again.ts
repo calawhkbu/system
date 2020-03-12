@@ -29,7 +29,11 @@ class TrackingErrorUpdateReferenceAgainEvent extends BaseEvent {
       }: {
         TrackingReferenceService: TrackingReferenceService
       } = this.allService
-      for (const { id, mode, trackingType } of (await trackingReferenceService.getTrackingReference([data.trackingNo], this.user, this.transaction))) {
+      for (const {
+        id, mode, trackingType
+      } of (await trackingReferenceService.getTrackingReference(
+        [data.trackingNo], this.user, this.transaction
+      ))) {
         if (trackingType === 'SEA') {
           let newMode = mode
           if (mode === 'masterNo') {

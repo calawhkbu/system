@@ -21,20 +21,23 @@
               "click.stop": [{
                 "type": "dispatch",
                 "otherParams": {
-                  "name": "widget/changeMode",
-                  "mode": "detail"
-                }
+                  "name": "widget/resetData"
+                },
+                "afterActions": [{
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "detail"
+                  }
+                }]
               }]
             }
           },
           {
             "is": "I18nText",
             "props": {
-              "class": "headline",
-              "i18nKey": "LocationPage.title",
-              "i18nOptions": {
-                "title": "sometitle"
-              }
+              "i18nContext": "LocationPage",
+              "i18nKey": "title"
             }
           },
           {

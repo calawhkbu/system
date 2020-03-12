@@ -103,6 +103,7 @@ query
   )
   .register('value', 0)
   .register('value', 1)
+  .register('value', 2)
 
 // -----------------------
 

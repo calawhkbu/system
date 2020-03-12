@@ -55,13 +55,16 @@
         }
       }, {
         "name": "shortName",
-        "type": "text"
+        "type": "text",
+        "i18nContext": "PartyPage"
       }, {
         "name": "name",
-        "type": "text"
+        "type": "text",
+        "i18nContext": "PartyPage"
       }, {
         "name": "groupName",
-        "type": "text"
+        "type": "text",
+        "i18nContext": "PartyPage"
       }],
       "fieldOptions": [{
           "key": "id",
@@ -101,6 +104,7 @@
           "width": 80
         },
         {
+          "hidden": true,
           "key": "contacts",
           "clickFunction": {
             "type": "router",

@@ -43,6 +43,12 @@
           "hidden": true
         },
         {
+          "key": "category"
+        },
+        {
+          "key": "key"
+        },
+        {
           "label": "canResetDefault",
           "key": "canResetDefault",
           "sortable": false,
@@ -68,10 +74,8 @@
             "props": {
               "icon": "refresh"
             }
-          },
-          "width": 50
+          }
         }
-
       ],
       "filters": [{
         "name": "isActive",
@@ -90,6 +94,10 @@
       }, {
         "i18nContext": "I18nPage",
         "name": "category",
+        "type": "text"
+      }, {
+        "i18nContext": "I18nPage",
+        "name": "key",
         "type": "text"
       }],
       "clickFunction": {

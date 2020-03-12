@@ -22,7 +22,7 @@ function prepareParams(): Function {
   const fn =  function(require, session, params) {
 
     // import
-    const moment = require('moment')
+    const { moment } = params.packages
 
     // script
     const subqueries = params.subqueries || {}

@@ -2,7 +2,7 @@
 import { AlertConfig, AlertFlexDataConfig, Alert } from 'models/main/alert'
 import { AlertPreference, AlertPreferenceDetail } from 'models/main/alertPreference'
 import { IQueryParams } from 'classes/query'
-import { BinaryExpression, ColumnExpression, IConditionalExpression, AndExpressions, MathExpression, ParameterExpression, FunctionExpression, BetweenExpression, Value } from 'node-jql'
+import { BinaryExpression, ColumnExpression, IConditionalExpression, AndExpressions, MathExpression, ParameterExpression, FunctionExpression, BetweenExpression, Value, IsNullExpression } from 'node-jql'
 import { ShipmentService } from 'modules/sequelize/shipment/services/shipment'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 
@@ -19,6 +19,7 @@ export const alertConfigList = [
     contactRoleList: 'all'
   } as AlertConfig,
 
+  // Alert for message (booking / shipment)
   {
     alertCategory: 'Message',
     alertType: 'bookingMessage',
@@ -38,53 +39,26 @@ export const alertConfigList = [
 
   } as AlertConfig,
 
+  // missingCarrierBooking
   {
-
     tableName: 'shipment',
     alertCategory: 'Exception',
+    alertType: 'missingCarrierBooking',
+    templatePath: 'alert/shipment-alert',
     severity: 'medium',
-    alertType: 'sayHello',
-
-    templatePath: 'message/shipment-message',
+    contactRoleList: ['shipper', 'consignee', 'createUser'],
 
     schedule: '0 * * ? * *',
-
     active: false,
 
     queryName: 'shipment',
     query: {
       subqueries: {
-        moduleTypeCode: { value: ['AIR'] },
-        boundTypeCode: { value: ['O'] },
+        statusJoin: true,
+        statusCode: {
+          value: ['STSP', 'RCS']
+        }
       },
-      limit: 1
-
-    } as IQueryParams,
-
-    extraPersonIdQuery: {
-      subqueries: {
-      },
-      limit: 1
-    } as IQueryParams,
-
-    contactRoleList: ['shipper', 'consignee'],
-
-    // saveAsNewAlertTimeDiff : 0,
-
-    resend: true, // resend to everyone or just send to those not yet receive
-
-  } as AlertConfig,
-
-  {
-    tableName: 'booking',
-    alertCategory: 'Exception',
-    severity: 'medium',
-    alertType: 'missingCarrierBooking',
-
-    templatePath: 'alert/booking-alert',
-    schedule: '0 * * ? * *',
-    queryName: 'booking',
-    query: {
 
       conditions: new AndExpressions([
         new BinaryExpression(
@@ -92,7 +66,7 @@ export const alertConfigList = [
           '>=',
           new FunctionExpression(
             'DATE_ADD',
-            new ColumnExpression('booking_date', 'departureDateEstimated'),
+            new ColumnExpression('shipment_date', 'departureDateEstimated'),
             new ParameterExpression({
               prefix: 'INTERVAL',
               expression: new Value(7),
@@ -100,43 +74,441 @@ export const alertConfigList = [
             })
           ),
         ),
-      ]),
-
-      limit: 1
+      ])
 
     } as IQueryParams,
 
-    contactRoleList: ['shipper', 'consignee'],
-
-    resend: false,
-    active: false
+    // all those with statusCode STSP/RCS will be OK
+    closeQuery : {
+      subqueries : {
+        statusJoin: true,
+        statusCode: {
+          value: ['STSP', 'RCS']
+        }
+      }
+    } as IQueryParams
 
   } as AlertConfig,
 
+  // customsCompliance(SEA)
   {
-    tableName: 'booking',
+
+    tableName: 'shipment',
     alertCategory: 'Exception',
+    alertType: 'customsCompliance(SEA)',
+    templatePath: 'alert/shipment-alert',
     severity: 'medium',
-    alertType: 'missingCarrierBooking',
-
-    templatePath: 'alert/booking-alert',
-    contactRoleList: ['shipper', 'consignee'],
-
-    resend: false,
+    contactRoleList: [],
 
     schedule: '0 * * ? * *',
     active: false,
 
-    queryName: 'booking',
+    queryName: 'shipment',
     query: {
 
+      fields: ['id'],
+      subqueries: {
+        moduleTypeCode: {
+          value: ['SEA']
+        },
+        statusJoin: true,
+        statusCode: {
+          value: ['DLPT']
+        }
+      },
+
       conditions: new AndExpressions([
+
+        new IsNullExpression(new ColumnExpression('shipment_date', 'edisendDateActual'), false),
+
         new BinaryExpression(
           new FunctionExpression('NOW'),
           '>=',
           new FunctionExpression(
             'DATE_ADD',
-            new ColumnExpression('booking_date', 'departureDateEstimated'),
+            new ColumnExpression('shipment_date', 'ediSendDateActual'),
+            new ParameterExpression({
+              prefix: 'INTERVAL',
+              expression: new Value(48),
+              suffix: 'HOUR',
+            })
+          ),
+        ),
+      ])
+
+    } as IQueryParams
+
+  },
+
+  // customersCompliance(AIR)
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    alertType: 'customsCompliance(AIR)',
+    templatePath: 'alert/shipment-alert',
+    severity: 'medium',
+    contactRoleList: [],
+
+    schedule: '0 * * ? * *',
+    active: false,
+
+    queryName: 'shipment',
+    query: {
+
+      fields: ['id'],
+      subqueries: {
+        moduleTypeCode: {
+          value: ['AIR']
+        },
+        statusJoin: true,
+        statusCode: {
+          value: ['DEP']
+        }
+      },
+
+      conditions: new AndExpressions([
+
+        new IsNullExpression(new ColumnExpression('shipment_date', 'edisendDateActual'), false),
+
+        new BinaryExpression(
+          new FunctionExpression('NOW'),
+          '>=',
+          new FunctionExpression(
+            'DATE_ADD',
+            new ColumnExpression('shipment_date', 'ediSendDateActual'),
+            new ParameterExpression({
+              prefix: 'INTERVAL',
+              expression: new Value(2),
+              suffix: 'HOUR',
+            })
+          ),
+        ),
+      ])
+
+    } as IQueryParams
+
+  },
+
+  // preAlertCompliance(SEA)
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    alertType: 'preAlertCompliance(SEA)',
+    templatePath: 'alert/shipment-alert',
+    severity: 'medium',
+    contactRoleList: [],
+
+    schedule: '0 * * ? * *',
+    active: false,
+
+    queryName: 'shipment',
+    query: {
+
+      fields: ['id'],
+      subqueries: {
+        moduleTypeCode: {
+          value: ['SEA']
+        },
+        statusJoin: true,
+        statusCode: {
+          value: ['DLPT']
+        }
+      },
+
+      conditions: new AndExpressions([
+
+        new IsNullExpression(new ColumnExpression('shipment_date', 'preAlertsendDateActual'), false),
+
+        new BinaryExpression(
+          new FunctionExpression('NOW'),
+          '>=',
+          new FunctionExpression(
+            'DATE_ADD',
+            new ColumnExpression('shipment_date', 'preAlertsendDateActual'),
+            new ParameterExpression({
+              prefix: 'INTERVAL',
+              expression: new Value(2),
+              suffix: 'DAY',
+            })
+          ),
+        ),
+      ])
+
+    } as IQueryParams
+
+  },
+
+  // preAlertCompliance(AIR)
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    alertType: 'preAlertCompliance(AIR)',
+    templatePath: 'alert/shipment-alert',
+    severity: 'medium',
+    contactRoleList: [],
+
+    schedule: '0 * * ? * *',
+    active: false,
+
+    queryName: 'shipment',
+    query: {
+
+      fields: ['id'],
+      subqueries: {
+
+        isDirect : {
+          value : [0]
+        },
+        moduleTypeCode: {
+          value: ['AIR']
+        },
+        statusJoin: true,
+        statusCode: {
+          value: ['DEP']
+        }
+      },
+
+      conditions: new AndExpressions([
+
+        new IsNullExpression(new ColumnExpression('shipment_date', 'preAlertsendDateActual'), false),
+
+        new BinaryExpression(
+          new FunctionExpression('NOW'),
+          '>=',
+          new FunctionExpression(
+            'DATE_ADD',
+            new ColumnExpression('shipment_date', 'preAlertsendDateActual'),
+            new ParameterExpression({
+              prefix: 'INTERVAL',
+              expression: new Value(2),
+              suffix: 'DAY',
+            })
+          ),
+        ),
+      ])
+
+    } as IQueryParams
+
+  },
+
+  // billComplianceWarning ?
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    alertType: 'billComplianceWarning',
+    templatePath: 'alert/shipment-alert',
+    severity: 'medium',
+    contactRoleList: [],
+
+    schedule: '0 * * ? * *',
+    active: false,
+
+    queryName: 'shipment',
+    query: {
+
+      fields: ['id'],
+      subqueries: {
+        statusJoin: true,
+        statusCode: {
+          value: ['BDAR', 'ARR']
+        }
+      },
+
+      conditions: new AndExpressions([
+
+        new IsNullExpression(new ColumnExpression('shipment_date', 'billingDateActual'), false),
+
+        new BinaryExpression(
+          new FunctionExpression('NOW'),
+          '>=',
+          new FunctionExpression(
+            'DATE_ADD',
+            new ColumnExpression('shipment_date', 'arrivalDateActual'),
+            new ParameterExpression({
+              prefix: 'INTERVAL',
+              expression: new Value(5),
+              suffix: 'DAY',
+            })
+          ),
+        ),
+      ])
+
+    } as IQueryParams
+  },
+
+  // billComplianceAlert ?
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    alertType: 'billComplianceAlert',
+    templatePath: 'alert/shipment-alert',
+    severity: 'medium',
+    contactRoleList: [],
+
+    schedule: '0 * * ? * *',
+    active: false,
+
+    queryName: 'shipment',
+    query: {
+
+      fields: ['id'],
+      subqueries: {
+        statusJoin: true,
+        statusCode: {
+          value: ['BDAR', 'ARR']
+        }
+      },
+
+      conditions: new AndExpressions([
+
+        new IsNullExpression(new ColumnExpression('shipment_date', 'billingDateActual'), false),
+
+        new BinaryExpression(
+          new FunctionExpression('NOW'),
+          '>=',
+          new FunctionExpression(
+            'DATE_ADD',
+            new ColumnExpression('shipment_date', 'arrivalDateActual'),
+            new ParameterExpression({
+              prefix: 'INTERVAL',
+              expression: new Value(5),
+              suffix: 'DAY',
+            })
+          ),
+        ),
+      ])
+
+    } as IQueryParams
+  },
+
+  // NOA alert ?
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    alertType: 'NOAAlert',
+    templatePath: 'alert/shipment-alert',
+    severity: 'medium',
+    contactRoleList: [],
+
+    schedule: '0 * * ? * *',
+    active: false,
+
+    queryName: 'shipment',
+    query: {
+
+      fields: ['id'],
+      subqueries: {
+        statusJoin: true,
+        statusCode: {
+          value: ['BDAR', 'ARR']
+        }
+      },
+
+      conditions: new AndExpressions([
+
+        new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateActual'), false),
+
+        new BinaryExpression(
+          new FunctionExpression('NOW'),
+          '>=',
+          new FunctionExpression(
+            'DATE_ADD',
+            new ColumnExpression('shipment_date', 'arrivalDateActual'),
+            new ParameterExpression({
+              prefix: 'INTERVAL',
+              expression: new Value(5),
+              suffix: 'DAY',
+            })
+          ),
+        ),
+      ])
+
+    } as IQueryParams,
+
+  },
+
+  // billingComplianceActual
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    alertType: 'billingComplianceActual',
+    templatePath: 'alert/shipment-alert',
+    severity: 'medium',
+    contactRoleList: [],
+
+    schedule: '0 * * ? * *',
+    active: false,
+
+    queryName: 'shipment',
+    query: {
+
+      fields: ['id'],
+      subqueries: {
+        statusJoin: true,
+        statusCode: {
+          value: ['STCS', 'DLV']
+        }
+      },
+
+      conditions: new AndExpressions([
+
+        new BinaryExpression(
+          new FunctionExpression('NOW'),
+          '>=',
+          new FunctionExpression(
+            'DATE_ADD',
+            new ColumnExpression('shipment_date', 'sentToConsigneeDateActual'),
+            new ParameterExpression({
+              prefix: 'INTERVAL',
+              expression: new Value(5),
+              suffix: 'DAY',
+            })
+          ),
+        ),
+      ])
+
+    } as IQueryParams,
+
+  },
+
+  // for SEA
+  // detentionWarning
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    alertType: 'detentionWarning',
+    templatePath: 'alert/shipment-alert',
+    severity: 'medium',
+    contactRoleList: [],
+
+    schedule: '0 * * ? * *',
+    active: false,
+
+    queryName: 'shipment',
+    query: {
+
+      fields: ['id'],
+      subqueries: {
+        moduleTypeCode : {
+          value : ['SEA']
+        },
+        statusJoin: true,
+        statusCode: {
+          value: ['RCVE']
+        }
+      },
+
+      conditions: new AndExpressions([
+
+        new BinaryExpression(
+          new FunctionExpression('NOW'),
+          '>=',
+          new FunctionExpression(
+            'DATE_ADD',
+            new ColumnExpression('shipment_date', 'sentToConsigneeDateActual'),
             new ParameterExpression({
               prefix: 'INTERVAL',
               expression: new Value(7),
@@ -144,73 +516,137 @@ export const alertConfigList = [
             })
           ),
         ),
-      ]),
+      ])
 
-      limit: 1
+    } as IQueryParams,
 
-    } as IQueryParams
+  },
 
-  } as AlertConfig,
-
+  // for SEA
+  // detentionAlert
   {
-    tableName : 'shipment',
-    alertCategory : 'Exception',
-    alertType : 'funcTest',
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    alertType: 'detentionAlert',
     templatePath: 'alert/shipment-alert',
-    severity : 'medium',
-    contactRoleList : [],
+    severity: 'medium',
+    contactRoleList: [],
 
     schedule: '0 * * ? * *',
-    active : false,
+    active: false,
 
-    query : async(alertConfig: AlertConfig, user: JwtPayload, allService: any) => {
+    queryName: 'shipment',
+    query: {
 
-      const shipmentService = allService.ShipmentService as ShipmentService
-      return await shipmentService.find({
-
-        where : {
-          moduleTypeCode : 'AIR'
+      fields: ['id'],
+      subqueries: {
+        moduleTypeCode : {
+          value : ['SEA']
         },
-      }, user )
-    }
-
-  } as AlertConfig,
-
-  {
-
-    tableName : 'shipment',
-    alertCategory : 'Exception',
-    alertType : 'funcTest',
-    templatePath: 'alert/shipment-alert',
-    severity : 'medium',
-    contactRoleList : [],
-
-    schedule: '0 * * ? * *',
-    active : false,
-
-    queryName : 'shipment',
-    query : {
-
-      subqueries : {
-
-        date : {
-          from : '2019-01-01',
-          to : '2019-12-31'
-        },
-        statusJoin : true,
-        statusCode : {
-          value : ['RECV']
+        statusJoin: true,
+        statusCode: {
+          value: ['RCVE']
         }
-      }
+      },
 
-    } as IQueryParams
+      conditions: new AndExpressions([
 
-  } as AlertConfig
+        new BinaryExpression(
+          new FunctionExpression('NOW'),
+          '>=',
+          new FunctionExpression(
+            'DATE_ADD',
+            new ColumnExpression('shipment_date', 'sentToConsigneeDateActual'),
+            new ParameterExpression({
+              prefix: 'INTERVAL',
+              expression: new Value(5),
+              suffix: 'DAY',
+            })
+          ),
+        ),
+      ])
+
+    } as IQueryParams,
+
+  },
+
+  // for SEA
+  // detentionActual
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    alertType: 'detentionActual',
+    templatePath: 'alert/shipment-alert',
+    severity: 'medium',
+    contactRoleList: [],
+
+    schedule: '0 * * ? * *',
+    active: false,
+
+    queryName: 'shipment',
+    query: {
+
+      fields: ['id'],
+      subqueries: {
+        moduleTypeCode : {
+          value : ['SEA']
+        },
+        statusJoin: true,
+        statusCode: {
+          value: ['RCVE']
+        }
+      },
+
+      conditions: new AndExpressions([
+
+        new BinaryExpression(
+          new FunctionExpression('NOW'),
+          '>=',
+          new FunctionExpression(
+            'DATE_ADD',
+            new ColumnExpression('shipment_date', 'sentToConsigneeDateActual'),
+            new ParameterExpression({
+              prefix: 'INTERVAL',
+              expression: new Value(30),
+              suffix: 'DAY',
+            })
+          ),
+        ),
+      ])
+
+    } as IQueryParams,
+
+  },
+
+  // example of running function
+
+  // {
+  //   tableName : 'shipment',
+  //   alertCategory : 'Exception',
+  //   alertType : 'funcTest',
+  //   templatePath: 'alert/shipment-alert',
+  //   severity : 'medium',
+  //   contactRoleList : [],
+
+  //   schedule: '0 * * ? * *',
+  //   active : false,
+
+  //   query : async(alertConfig: AlertConfig, user: JwtPayload, allService: any) => {
+
+  //     const shipmentService = allService.ShipmentService as ShipmentService
+  //     return await shipmentService.find({
+
+  //       where : {
+  //         moduleTypeCode : 'AIR'
+  //       },
+  //     }, user )
+  //   }
+
+  // } as AlertConfig,
 
 ] as AlertConfig[]
 
 export const alertPreferenceDetailList = [
-
   {
     alertType: 'bookingMessage',
     notifyBy: 'email',
@@ -240,24 +676,14 @@ export const alertPreferenceDetailList = [
 export const alertFlexDataConfigList = [
   {
     tableName: 'booking',
-    variableList: [
-      'partyGroupCode',
-      'bookingNo',
-      'moduleTypeCode',
-      'boundTypeCode',
-      'agentPartyId',
-      'forwarderPartyId',
-      'notifyPartyPartyId',
-      'shipperPartyId',
-      'consigneePartyId'
-    ],
-    primaryKeyName: 'id'
-  },
+    variableList: 'all',
+    primaryKeyName: 'id',
+  } as AlertFlexDataConfig,
 
   {
     tableName: 'shipment',
     primaryKeyName: 'id',
     variableList: 'all'
-  }
+  } as AlertFlexDataConfig
 
 ] as AlertFlexDataConfig[]

@@ -67,7 +67,7 @@ function createProfitTable() {
 
 function prepareProfitParams(currentYear_: boolean, nominatedType_: 'F' | 'R'): Function {
   const fn = function(require, session, params) {
-    const moment = require('moment')
+    const { moment } = params.packages
     const subqueries = (params.subqueries = params.subqueries || {})
     if (subqueries.date) {
       let year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
@@ -229,8 +229,20 @@ function createTonnagetable() {
   return function(require, session, params) {
     const { CreateTableJQL } = require('node-jql')
 
-    const tonnageSummaryVariables = params.subqueries.tonnageSummaryVariables.value
-    //  const tonnageSummaryVariables = ['chargeableWeight', 'cbm', 'totalShipment']
+    // ------------------------
+
+    const subqueries = (params.subqueries = params.subqueries || {})
+
+    let tonnageSummaryVariables: string[] = []
+    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value)
+    {
+      // sumamary variable
+      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value ) ? subqueries.tonnageSummaryVariables.value  : [subqueries.tonnageSummaryVariables.value ]
+    }
+
+    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)){
+      throw new Error('MISSING_summaryVariables')
+    }
 
     return new CreateTableJQL({
       name: 'tonnage_raw',
@@ -258,7 +270,7 @@ function createTonnagetable() {
 
 function prepareTonnageParams(currentYear_: boolean, nominatedType_: 'F' | 'R'): Function {
   const fn = function(require, session, params) {
-    const moment = require('moment')
+    const { moment } = params.packages
     const subqueries = (params.subqueries = params.subqueries || {})
     if (subqueries.date) {
       let year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
@@ -274,8 +286,17 @@ function prepareTonnageParams(currentYear_: boolean, nominatedType_: 'F' | 'R'):
     }
 
     subqueries.nominatedTypeCode = { value: [nominatedType_] }
-    const tonnageSummaryVariables = params.subqueries.tonnageSummaryVariables.value
-    //  const tonnageSummaryVariables = ['chargeableWeight', 'cbm', 'totalShipment']
+
+    let tonnageSummaryVariables: string[] = []
+    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value)
+    {
+      // sumamary variable
+      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value ) ? subqueries.tonnageSummaryVariables.value  : [subqueries.tonnageSummaryVariables.value ]
+    }
+
+    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)){
+      throw new Error('MISSING_tonnageSummaryVariables')
+    }
 
     params.fields = ['jobMonth', 'nominatedTypeCode', ...tonnageSummaryVariables]
     params.groupBy = ['jobMonth', 'nominatedTypeCode']
@@ -300,8 +321,18 @@ function insertTonnageData(currentYear_: boolean, nominatedType_: 'F' | 'R') {
       Query,
     } = require('node-jql')
 
-    const tonnageSummaryVariables = params.subqueries.tonnageSummaryVariables.value
-    //  const tonnageSummaryVariables = ['chargeableWeight', 'cbm', 'totalShipment']
+    const subqueries = (params.subqueries = params.subqueries || {})
+
+    let tonnageSummaryVariables: string[] = []
+    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value)
+    {
+      // sumamary variable
+      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value ) ? subqueries.tonnageSummaryVariables.value  : [subqueries.tonnageSummaryVariables.value ]
+    }
+
+    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)){
+      throw new Error('MISSING_tonnageSummaryVariables')
+    }
 
     return new InsertJQL({
       name: 'tonnage_raw',
@@ -362,8 +393,18 @@ function processTonnageSummary() {
       AndExpressions,
     } = require('node-jql')
 
-    const tonnageSummaryVariables = params.subqueries.tonnageSummaryVariables.value
-    //  const tonnageSummaryVariables = ['chargeableWeight', 'cbm', 'totalShipment']
+    const subqueries = (params.subqueries = params.subqueries || {})
+
+    let tonnageSummaryVariables: string[] = []
+    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value)
+    {
+      // sumamary variable
+      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value ) ? subqueries.tonnageSummaryVariables.value  : [subqueries.tonnageSummaryVariables.value ]
+    }
+
+    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)){
+      throw new Error('MISSING_tonnageSummaryVariables')
+    }
 
     const isCurrentList = [true, false]
 
@@ -422,10 +463,20 @@ function finalQuery() {
       Query,
     } = require('node-jql')
 
-    const tonnageSummaryVariables = params.subqueries.tonnageSummaryVariables.value
-    //  const tonnageSummaryVariables = ['chargeableWeight', 'cbm', 'totalShipment']
+    const subqueries = (params.subqueries = params.subqueries || {})
 
-    const profitSummaryVariables = params.subqueries.profitSummaryVariables.value
+    let tonnageSummaryVariables: string[] = []
+    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value)
+    {
+      // sumamary variable
+      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value ) ? subqueries.tonnageSummaryVariables.value  : [subqueries.tonnageSummaryVariables.value ]
+    }
+
+    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)){
+      throw new Error('MISSING_tonnageSummaryVariables')
+    }
+
+    const profitSummaryVariables = subqueries.profitSummaryVariables.value
     // const profitSummaryVariables = ['grossProfit', 'profitShare', 'profitShareCost', 'profitShareIncome', 'revenue']
 
     const $select = []
@@ -527,4 +578,4 @@ export const filters = [{
     required: true,
   },
   type: 'list',
-},]
+}, ]

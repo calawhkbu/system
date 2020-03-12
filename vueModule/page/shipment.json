@@ -8,14 +8,33 @@
         "initAxiosParams": {
           "url": "api/shipment/{{context.$route.params.params | urlEncode }}"
         },
-        "primaryKey": "houseNo",
+        "defaultAxiosParams": {
+          "url": "default/shipment"
+        },
+        "validateAxiosParams": {
+          "method": "post",
+          "url": "api/shipment/validate/{{id}}"
+        },
+        "saveAxiosParams": {
+          "method": "post",
+          "url": "api/shipment"
+        },
         "modeFunction": [
-          "return 'detail';"
+          "const modes = ['detail-edit', 'import'];",
+          "const selectedMode = isNaN(Number(mode)) ? mode : 'detail-edit';",
+          "if (!modes.includes(selectedMode)) {",
+          "throw new Error(`This mode (${selectedMode}) is not allowed`)",
+          "}",
+          "return selectedMode"
         ],
+        "afterSaveMode": "detail-edit",
         "haveTermOnCreate": false,
         "haveTermOnEdit": false,
         "widgetComponentSetting": {
-          "detail": {
+          "import": {
+
+          },
+          "detail-edit": {
             "readonly": true
           }
         }

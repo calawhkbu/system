@@ -3,10 +3,11 @@
   "components": [{
       "is": "DynamicComponent",
       "props": {
-        "class": "xs-12 grid align-item-center padding-8",
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
         "components": [{
             "is": "v-btn",
             "props": {
+              "small": true,
               "flat": true,
               "icon": true
             },
@@ -29,11 +30,8 @@
           {
             "is": "I18nText",
             "props": {
-              "class": "headline",
-              "i18nKey": "TemplatePage.title",
-              "i18nOptions": {
-                "title": "sometitle"
-              }
+              "i18nContext": "TemplatePage",
+              "i18nKey": "title"
             }
           },
           {
@@ -42,9 +40,10 @@
           {
             "is": "WidgetSave",
             "props": {
-              "icon": true,
+              "small": true,
               "flat": true,
-              "class": "primary white-text"
+              "icon": true,
+              "color": "primary"
             }
           }
         ]

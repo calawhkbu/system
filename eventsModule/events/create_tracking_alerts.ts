@@ -78,7 +78,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
           shipment_date.departureDateEstimated, shipment_date.departureDateActual,
           shipment_date.arrivalDateEstimated, shipment_date.arrivalDateActual
         FROM shipment
-        LEFT OUTER JOIN shipment_date ON shipment_date.shipmentId = booking.id
+        LEFT OUTER JOIN shipment_date ON shipment_date.shipmentId = shipment.id
         WHERE shipment.partyGroupCode = :partyGroupCode
       ) entity ON entity.id = base.primaryKey
     `, {
@@ -99,6 +99,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
   }
 
   public async mainFunction(parameters: any) {
+    console.debug(`Event Started [Create Tracking Alert]`, this.constructor.name)
     const {
       AlertDbService: alertDbService,
       TrackingReferenceService: trackingReferenceService,
@@ -212,12 +213,8 @@ class TrackingUpdateDataEvent extends BaseEvent {
         }
       }
     }
-
-    console.log('in main Excecute of TrackingUpdateData Finish')
-
-    return {
-      exampleResult: 'exampleValue',
-    }
+    console.debug(`Event Ended [Create Tracking Alert]`, this.constructor.name)
+    return null
   }
 }
 

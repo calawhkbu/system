@@ -20,7 +20,7 @@ import { parseCode } from 'utils/function'
 function prepareParams(): Function {
   return function(require, session, params) {
     // import
-    const moment = require('moment')
+    const { moment } = params.packages
     const { BadRequestException } = require('@nestjs/common')
 
     const subqueries = (params.subqueries = params.subqueries || {})
@@ -31,9 +31,11 @@ function prepareParams(): Function {
     if (!subqueries.topX || !subqueries.topX.value) throw new Error('MISSING_topX')
 
     // -----------------------------groupBy variable
+
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
+
+    const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyNameInReport`
 
     const groupByVariables = [codeColumnName, nameColumnName]
 
@@ -69,8 +71,6 @@ function prepareParams(): Function {
       .year(year)
       .endOf('year')
       .format('YYYY-MM-DD')
-
-    // select
 
     subqueries[`${groupByEntity}IsNotNull`]  = {// shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
       value : true
@@ -131,8 +131,9 @@ function finalQuery()
     const subqueries = (params.subqueries = params.subqueries || {})
     // groupBy variable
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
+
+    const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyNameInReport`
 
     const groupByVariables = [codeColumnName, nameColumnName]
 
@@ -213,6 +214,14 @@ export const filters = [
         {
           label: '50',
           value: 50,
+        },
+        {
+          label: '100',
+          value: 100,
+        },
+        {
+          label: '1000',
+          value: 1000,
         }
       ],
       multi : false,
@@ -220,12 +229,12 @@ export const filters = [
     },
     type: 'list',
   },
-
   {
     display: 'summaryVariable',
     name: 'summaryVariable',
     props: {
       items: [
+
         {
           label: 'chargeableWeight',
           value: 'chargeableWeight',
@@ -245,6 +254,10 @@ export const filters = [
         {
           label: 'teu',
           value: 'teu',
+        },
+        {
+          label: 'teuInReport',
+          value: 'teuInReport',
         },
 
         {
@@ -287,6 +300,20 @@ export const filters = [
           label: 'controllingCustomer',
           value: 'controllingCustomer',
         },
+
+        {
+          label: 'linerAgent',
+          value: 'linerAgent',
+        },
+
+        {
+          label: 'roAgent',
+          value: 'roAgent',
+        },
+        {
+          label: 'office',
+          value: 'office',
+        },
         {
           label : 'moduleType',
           value : 'moduleType'
@@ -299,5 +326,5 @@ export const filters = [
       required: true,
     },
     type: 'list',
-  }
+  },
 ]

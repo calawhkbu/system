@@ -3,7 +3,7 @@
   "components": [{
       "is": "DynamicComponent",
       "props": {
-        "class": "xs-12 grid min-height-28 align-item-center full-width",
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
         "components": [{
             "is": "v-btn",
             "props": {
@@ -30,7 +30,8 @@
           {
             "is": "I18nText",
             "props": {
-              "i18nKey": "ShipmentPage.title",
+              "i18nContext": "ShipmentPage",
+              "i18nKey": "title",
               "i18nOptions": {
                 "title": "{{context.$store.state.widget.data.houseNo}}"
               }
@@ -38,35 +39,73 @@
           }, {
             "is": "v-spacer"
           }, {
-            "is": "v-btn",
+            "is": "ToolTip",
             "props": {
-              "small": true,
-              "icon": true,
-              "flat": true
-            },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "map"
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "v-btn",
+                  "props": {
+                    "small": true,
+                    "icon": true,
+                    "flat": true
+                  },
+                  "slots": [{
+                    "is": "Icon",
+                    "props": {
+                      "icon": "map"
+                    }
+                  }],
+                  "events": {
+                    "click.stop": [{
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "widget/changeMode",
+                        "mode": "map"
+                      }
+                    }]
+                  }
+                }]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "ShipmentPage",
+                    "i18nKey": "map"
+                  }
+                }]
               }
-            }],
-            "events": {
-              "click.stop": [{
-                "type": "dispatch",
-                "otherParams": {
-                  "name": "widget/changeMode",
-                  "mode": "map"
-                }
-              }]
             }
           },
           {
-            "is": "BookmarkButton",
+            "is": "ToolTip",
             "props": {
-              "entity": "shipment",
-              "small": true,
-              "icon": true,
-              "flat": true
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "BookmarkButton",
+                  "props": {
+                    "entity": "shipment",
+                    "small": true,
+                    "icon": true,
+                    "flat": true
+                  }
+                }]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "ShipmentPage",
+                    "i18nKey": "bookmark"
+                  }
+                }]
+              }
             }
           }
         ]
@@ -96,11 +135,12 @@
                   "axiosBaseParams": [
                     "const trackingNos = [];",
                     "const data = context.$store.state.widget.data;",
-                    "if (data.trackingNos) {",
-                    "const { masterNo, containerNo, carrierBookingNo } = data.trackingNos",
-                    "if (masterNo) { trackingNos.push(masterNo) }",
-                    "if (containerNo && containerNo.length) { trackingNos.concat(containerNo) }",
-                    "if (carrierBookingNo && carrierBookingNo.length) { trackingNos.concat(carrierBookingNo) }",
+                    "if (data.masterNo) { trackingNos.push(data.masterNo) }",
+                    "if (data.shipmentContainers && data.shipmentContainers.length > 0) {",
+                    "for (const container of data.shipmentContainers) {",
+                    "if (container.carrierBookingNo) { trackingNos.push(container.carrierBookingNo) }",
+                    "if (container.containerNo) { trackingNos.push(container.containerNo) }",
+                    "}",
                     "}",
                     "return {",
                     "url: 'api/tracking/get',",
@@ -500,11 +540,12 @@
             "axiosBaseParams": [
               "const trackingNos = [];",
               "const data = context.$store.state.widget.data;",
-              "if (data.trackingNos) {",
-              "const { masterNo, containerNo, carrierBookingNo } = data.trackingNos",
-              "if (masterNo) { trackingNos.push(masterNo) }",
-              "if (containerNo && containerNo.length) { trackingNos.concat(containerNo) }",
-              "if (carrierBookingNo && carrierBookingNo.length) { trackingNos.concat(carrierBookingNo) }",
+              "if (data.masterNo) { trackingNos.push(data.masterNo) }",
+              "if (data.shipmentContainers && data.shipmentContainers.length > 0) {",
+              "for (const container of data.shipmentContainers) {",
+              "if (container.carrierBookingNo) { trackingNos.push(container.carrierBookingNo) }",
+              "if (container.containerNo) { trackingNos.push(container.containerNo) }",
+              "}",
               "}",
               "return {",
               "url: 'api/tracking/get',",
@@ -512,7 +553,7 @@
               "data: { trackingNos }",
               "};"
             ],
-            "createdAtKey": "shipmentCreateTime",
+            "createdAtKey": "issueDate",
             "createI18nKey": "shipmentReceivedByForwarder"
           }
         },

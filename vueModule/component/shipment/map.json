@@ -14,7 +14,7 @@
               "type": "dispatch",
               "otherParams": {
                 "name": "widget/changeMode",
-                "mode": "detail"
+                "mode": "detail-edit"
               }
             }]
           },
@@ -145,7 +145,7 @@
                       "if (carrierBookingNo && carrierBookingNo.length) { trackingNos.concat(carrierBookingNo) }",
                       "}",
                       "return {",
-                      "url: 'api/tracking',",
+                      "url: 'api/tracking/get',",
                       "method: 'POST',",
                       "data: { trackingNos }",
                       "};"

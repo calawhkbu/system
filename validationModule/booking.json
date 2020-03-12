@@ -1,5 +1,4 @@
-[
-  {
+[{
     "field": "boundTypeCode",
     "validator": "required",
     "part": "BookingPage.GeneralForm"

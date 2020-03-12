@@ -17,6 +17,7 @@ const query = new QueryDef(
           SELECT
             tracking_reference.id, tracking_reference.partyGroupCode,
             tracking_reference.trackingType, tracking_reference.carrierCode, tracking_reference.carrierCode2,
+            tracking_reference.yundang,
             tracking_reference.departureDateEstimated, tracking_reference.mode, masterNo AS trackingNo, 'masterNo' AS type
           FROM
             tracking_reference
@@ -26,6 +27,7 @@ const query = new QueryDef(
           SELECT
             tracking_reference.id, tracking_reference.partyGroupCode,
             tracking_reference.trackingType, tracking_reference.carrierCode, tracking_reference.carrierCode2,
+            tracking_reference.yundang,
             tracking_reference.departureDateEstimated, tracking_reference.mode, soTable.trackingNo AS trackingNo, 'soNo' AS type
           FROM
             tracking_reference,
@@ -35,6 +37,7 @@ const query = new QueryDef(
           SELECT
             tracking_reference.id, tracking_reference.partyGroupCode,
             tracking_reference.trackingType, tracking_reference.carrierCode, tracking_reference.carrierCode2,
+            tracking_reference.yundang,
             tracking_reference.departureDateEstimated, tracking_reference.mode, containerTable.trackingNo AS trackingNo, 'containerNo' AS type
           FROM
             tracking_reference,

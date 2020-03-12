@@ -20,7 +20,7 @@ import { parseCode } from 'utils/function'
 function prepareParams(likeHouseNo_: string): Function {
   const fn = function(require, session, params) {
     // import
-    const moment = require('moment')
+    const { moment } = params.packages
     const subqueries = (params.subqueries = params.subqueries || {})
 
     // ---------------------summaryVariables
@@ -320,6 +320,10 @@ export const filters = [
         {
           label: 'teu',
           value: 'teu',
+        },
+        {
+          label: 'teuInReport',
+          value: 'teuInReport',
         },
         {
           label: 'quantity',

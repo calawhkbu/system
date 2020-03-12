@@ -18,9 +18,9 @@ class ExampleEvent extends BaseEvent {
   }
 
   public async mainFunction(parameters: any) {
-    console.log('Start Excecute...', this.constructor.name)
-    console.log(JSON.stringify(parameters), 'parameters')
-    console.log('End Excecute...', this.constructor.name)
+    console.debug('Start Excecute...', this.constructor.name)
+    console.debug(JSON.stringify(parameters), 'parameters')
+    console.debug('End Excecute...', this.constructor.name)
     return null
   }
 }

@@ -20,7 +20,7 @@ const months = [
 function prepareParams(): Function {
   return function(require, session, params) {
     // import
-    const moment = require('moment')
+    const { moment } = params.packages
     const { BadRequestException } = require('@nestjs/common')
 
     const subqueries = (params.subqueries = params.subqueries || {})
@@ -222,6 +222,10 @@ export const filters = [
         {
           label: 'teu',
           value: 'teu',
+        },
+        {
+          label: 'teuInReport',
+          value: 'teuInReport',
         },
         {
           label: 'quantity',

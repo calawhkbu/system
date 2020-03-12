@@ -21,9 +21,15 @@
               "click.stop": [{
                 "type": "dispatch",
                 "otherParams": {
-                  "name": "widget/changeMode",
-                  "mode": "detail"
-                }
+                  "name": "widget/resetData"
+                },
+                "afterActions": [{
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "detail"
+                  }
+                }]
               }]
             }
           },
@@ -43,7 +49,7 @@
               "small": true,
               "icon": true,
               "flat": true,
-              "class": "primary white-text"
+              "class": "primary"
             }
           }
         ]

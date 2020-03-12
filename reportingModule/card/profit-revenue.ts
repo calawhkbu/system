@@ -14,7 +14,7 @@ import {
 function prepareParams(): Function {
   return function(require, session, params) {
     // import
-    const moment = require('moment')
+    const { moment } = params.packages
 
     // script
     const subqueries = (params.subqueries = params.subqueries || {})

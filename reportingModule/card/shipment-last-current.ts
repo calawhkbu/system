@@ -12,6 +12,7 @@ import {
   ResultColumn,
   FunctionExpression,
   OrderBy,
+  IExpression,
 } from 'node-jql'
 
 import { parseCode } from 'utils/function'
@@ -20,7 +21,60 @@ function prepareParams(): Function {
 
   return function(require, session, params) {
 
-    const moment = require('moment')
+    function calculateLastCurrent(lastCurrentUnit: string) {
+      const from = subqueries.date.from
+
+      const currentYear = moment(from).year()
+      const currentMonth = moment().month()
+      const currentWeek = moment().week()
+
+      let lastFrom, lastTo, currentFrom, currentTo
+
+      if (lastCurrentUnit === 'year') {
+
+        lastFrom = moment(from).year(currentYear - 1).startOf('year').format('YYYY-MM-DD')
+        lastTo = moment(from).year(currentYear - 1).endOf('year').format('YYYY-MM-DD')
+        currentFrom = moment(from).year(currentYear).startOf('year').format('YYYY-MM-DD')
+        currentTo = moment(from).year(currentYear).endOf('year').format('YYYY-MM-DD')
+
+      } else if (lastCurrentUnit === 'month') {
+
+        lastFrom = moment(from).subtract(1, 'months').startOf('month').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'months').endOf('month').format('YYYY-MM-DD')
+        currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
+        currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
+
+      } else if (lastCurrentUnit === 'week') {
+
+        lastFrom = moment(from).subtract(1, 'weeks').startOf('week').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'weeks').endOf('week').format('YYYY-MM-DD')
+        currentFrom = moment(from).week(currentWeek).startOf('week').format('YYYY-MM-DD')
+        currentTo = moment(from).week(currentWeek).endOf('week').format('YYYY-MM-DD')
+      }
+
+      else if (lastCurrentUnit === 'day') {
+        lastFrom = moment(from).subtract(1, 'days').startOf('day').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'days').endOf('day').format('YYYY-MM-DD')
+        currentFrom = moment(from).startOf('day').format('YYYY-MM-DD')
+        currentTo = moment(from).endOf('day').format('YYYY-MM-DD')
+      }
+
+      else if (lastCurrentUnit === 'lastYearCurrentMonth') {
+
+        // special case !!!
+        lastFrom = moment(from).month(currentMonth).subtract(1, 'years').startOf('month').format('YYYY-MM-DD')
+        lastTo = moment(from).month(currentMonth).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
+        currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
+        currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
+
+      } else {
+        throw new Error('INVALID_lastCurrentUnit')
+      }
+
+      return { lastFrom, lastTo, currentFrom, currentTo }
+    }
+
+    const { moment } = params.packages
     const { OrderBy } = require('node-jql')
 
     const subqueries = (params.subqueries = params.subqueries || {})
@@ -37,61 +91,28 @@ function prepareParams(): Function {
     // dynamically choose the fields and summary value
 
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
-
+    const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyNameInReport`
     const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const metricList  = [metric1, metric2]
+    const metricList = [metric1, metric2]
     const metricFieldList = metricList.map(metric => `${metric}LastCurrent`)
 
     const metricColumnList = metricList.reduce(((accumulator, currentValue) => {
 
       accumulator.push(`${currentValue}Last`)
       accumulator.push(`${currentValue}Current`)
-      return accumulator }), [])
+      return accumulator
+    }), [])
 
     const topX = subqueries.topX.value
+    const sortingDirection = !(subqueries.sortingDirection && subqueries.sortingDirection.value) ? 'DESC' : subqueries.sortingDirection.value
 
     const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     // ------------------------------
 
-    const from = subqueries.date.from
-
-    let lastFrom: any
-    let lastTo: any
-    let currentFrom: any
-    let currentTo: any
-
-    const currentYear = moment(from).year()
-    const currentMonth = moment(from).month()
-
-    if (lastCurrentUnit === 'year') {
-
-      lastFrom = moment(from).year(currentYear - 1).startOf('year').format('YYYY-MM-DD')
-      lastTo = moment(from).year(currentYear - 1).endOf('year').format('YYYY-MM-DD')
-      currentFrom = moment(from).year(currentYear).startOf('year').format('YYYY-MM-DD')
-      currentTo = moment(from).year(currentYear).endOf('year').format('YYYY-MM-DD')
-
-    } else if (lastCurrentUnit === 'month') {
-
-      lastFrom = moment(from).subtract(1, 'months').startOf('month').format('YYYY-MM-DD')
-      lastTo = moment(from).subtract(1, 'months').endOf('month').format('YYYY-MM-DD')
-      currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
-      currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
-
-    } else if (lastCurrentUnit === 'lastYearCurrentMonth') {
-
-      // asfasfdasw
-      lastFrom = moment(from).subtract(1, 'years').startOf('month').format('YYYY-MM-DD')
-      lastTo = moment(from).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
-      currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
-      currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
-
-    } else {
-      throw new Error('INVALID_lastCurrentUnit')
-    }
+    const { lastFrom, lastTo, currentFrom, currentTo } = calculateLastCurrent(lastCurrentUnit)
 
     subqueries.date = {
       lastFrom,
@@ -100,14 +121,57 @@ function prepareParams(): Function {
       currentTo
     }
 
-    subqueries[`${groupByEntity}IsNotNull`]  = {// should be carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
-      value : true
+    subqueries[`${groupByEntity}IsNotNull`] = {// should be carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+      value: true
     }
 
     params.fields = [...new Set([codeColumnName, nameColumnName, ...metricFieldList])]
     params.groupBy = [codeColumnName, nameColumnName]
 
-    // params.sorting = new OrderBy(metricFieldList[0], 'DESC')
+    params.sorting = []
+
+    if (subqueries.sorting && subqueries.sorting.value) {
+
+      const sortingExpressionMap = {} as { [name: string]: OrderBy }
+
+        (['ASC', 'DESC']).forEach(sortingDirection => {
+
+            for (const [index, metric] of metricList.entries()) {
+
+              ['Last', 'Current'].forEach(lastOrCurrent => {
+
+              const columnName = `${metric}${lastOrCurrent}`
+
+              const sortingExpressionMapName = `metric${index + 1}${lastOrCurrent}_${sortingDirection}`
+
+              sortingExpressionMap[sortingExpressionMapName] = new OrderBy(columnName, sortingDirection)
+
+            })
+
+            const columnName = `${metric}LastCurrentPercentageChange`
+            const sortingExpressionMapName = `metric${index + 1}PercentageChange_${sortingDirection}`
+
+            sortingExpressionMap[sortingExpressionMapName] = new OrderBy(columnName, sortingDirection)
+
+          }
+
+        })
+
+      const sortingValueList = subqueries.sorting.value as string[]
+
+      sortingValueList.forEach(sortingValue => {
+
+        const orderByExpression = sortingExpressionMap[sortingValue]
+
+        params.sorting.push(orderByExpression)
+
+      })
+
+    }
+
+    // metricFieldList[0] = totalShipmentLastCurrent
+    // metricList[0] = totalShipment
+    // params.sorting = new OrderBy(`${metricList[0]}Current`, sortingDirection)
 
     params.limit = topX
 
@@ -145,13 +209,12 @@ function dataQuery(): Function {
     const subqueries = (params.subqueries = params.subqueries || {})
 
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
-
+    const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyNameInReport`
     const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const metricList  = [metric1, metric2]
+    const metricList = [metric1, metric2]
     const metricFieldList = metricList.map(metric => `${metric}LastCurrent`)
 
     // for easy looping
@@ -159,7 +222,8 @@ function dataQuery(): Function {
 
       accumulator.push(`${currentValue}Last`)
       accumulator.push(`${currentValue}Current`)
-      return accumulator }), [])
+      return accumulator
+    }), [])
 
     const topX = subqueries.topX.value
 
@@ -172,7 +236,7 @@ function dataQuery(): Function {
       $temporary: true,
       name: tableName,
 
-      $as :  new Query({
+      $as: new Query({
         $select: [
           new ResultColumn(new ColumnExpression(codeColumnName), 'code'),
           new ResultColumn(new ColumnExpression(nameColumnName), 'name'),
@@ -213,20 +277,19 @@ function dataQuery(): Function {
   }
 }
 
-function finalQuery(){
+function finalQuery() {
 
-  return function(require, session, params){
+  return function(require, session, params) {
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-    const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyName`
-
+    const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyNameInReport`
     const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const metricList  = [metric1, metric2]
+    const metricList = [metric1, metric2]
     const metricFieldList = metricList.map(metric => `${metric}LastCurrent`)
 
     // for easy looping
@@ -234,7 +297,8 @@ function finalQuery(){
 
       accumulator.push(`${currentValue}Last`)
       accumulator.push(`${currentValue}Current`)
-      return accumulator }), [])
+      return accumulator
+    }), [])
 
     const $select = [
       new ResultColumn(new ColumnExpression('code')),
@@ -253,7 +317,7 @@ function finalQuery(){
 
     return new Query({
       $select,
-      $from : 'final'
+      $from: 'final'
     })
 
   }
@@ -286,9 +350,17 @@ export const filters = [
         {
           label: '50',
           value: 50,
+        },
+        {
+          label: '100',
+          value: 100,
+        },
+        {
+          label: '1000',
+          value: 1000,
         }
       ],
-      multi : false,
+      multi: false,
       required: true,
     },
     type: 'list',
@@ -306,6 +378,17 @@ export const filters = [
         {
           label: 'month',
           value: 'month',
+        },
+        {
+
+          label: 'week',
+          value: 'week'
+        },
+        {
+
+          label: 'day',
+          value: 'day'
+
         },
         {
           label: 'lastYearCurrentMonth',
@@ -340,6 +423,10 @@ export const filters = [
         {
           label: 'teu',
           value: 'teu',
+        },
+        {
+          label: 'teuInReport',
+          value: 'teuInReport',
         },
         {
           label: 'quantity',
@@ -377,6 +464,10 @@ export const filters = [
         {
           label: 'teu',
           value: 'teu',
+        },
+        {
+          label: 'teuInReport',
+          value: 'teuInReport',
         },
 
         {
@@ -420,17 +511,93 @@ export const filters = [
           label: 'controllingCustomer',
           value: 'controllingCustomer',
         },
+
         {
-          label : 'moduleType',
-          value : 'moduleType'
+          label: 'linerAgent',
+          value: 'linerAgent',
+        },
+
+        {
+          label: 'roAgent',
+          value: 'roAgent',
         },
         {
-          label : 'houseNo',
-          value : 'houseNo'
+          label: 'office',
+          value: 'office',
+        },
+        {
+          label: 'moduleType',
+          value: 'moduleType'
+        },
+        {
+          label: 'houseNo',
+          value: 'houseNo'
         }
       ],
       required: true,
     },
     type: 'list',
   },
+
+  {
+    display: 'sorting',
+    name: 'sorting',
+    type : 'list',
+    props: {
+      multi : true,
+      items: [
+        {
+          label: 'metric1Current_ASC',
+          value: 'metric1Current_ASC'
+        },
+        {
+          label: 'metric1Last_ASC',
+          value: 'metric1Last_ASC'
+        },
+        {
+          label: 'metric1PercentageChange_ASC',
+          value: 'metric1PercentageChange_ASC'
+        },
+
+        {
+          label: 'metric2Current_ASC',
+          value: 'metric2Current_ASC'
+        },
+        {
+          label: 'metric2Last_ASC',
+          value: 'metric2Last_ASC'
+        },
+        {
+          label: 'metric2PercentageChange_ASC',
+          value: 'metric2PercentageChange_ASC'
+        },
+        {
+          label: 'metric1Current_DESC',
+          value: 'metric1Current_DESC'
+        },
+        {
+          label: 'metric1Last_DESC',
+          value: 'metric1Last_DESC'
+        },
+        {
+          label: 'metric1PercentageChange_DESC',
+          value: 'metric1PercentageChange_DESC'
+        },
+
+        {
+          label: 'metric2Current_DESC',
+          value: 'metric2Current_DESC'
+        },
+        {
+          label: 'metric2Last_DESC',
+          value: 'metric2Last_DESC'
+        },
+        {
+          label: 'metric2PercentageChange_DESC',
+          value: 'metric2PercentageChange_DESC'
+        },
+      ]
+    }
+
+  }
 ]
