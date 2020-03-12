@@ -394,7 +394,7 @@ const shipmentId_trackingNo_map_table = new Query({
 
   $select : [
     new ResultColumn(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'shipmentId'), 'shipmentId'),
-    new ResultColumn(new ColumnExpression('shipmentId_maxPriority_table', 'shipmentId'), 'trackingNo'),
+    new ResultColumn(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'trackingNo'), 'trackingNo'),
   ],
 
   $from : new FromTable({

@@ -24,18 +24,7 @@ const query = new QueryDef(
       new ResultColumn(new ColumnExpression('party', 'shortName'), 'shortName'),
       new ResultColumn(new ColumnExpression('party', 'id'), 'partyId'),
       new ResultColumn(new ColumnExpression('party', 'name'), 'partyName'),
-
-      new ResultColumn(
-        new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression(
-            'JSON_EXTRACT',
-            new ColumnExpression('party', 'thirdPartyCode'),
-            '$.erp'
-          )
-        ),
-        'erpCode'
-      ),
+      new ResultColumn(new ColumnExpression('party', 'erpCode'), 'erpCode'),
 
       new ResultColumn(
         new FunctionExpression(
@@ -137,16 +126,7 @@ query
     'erpCode',
     new Query({
       $where: new BinaryExpression(
-        new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression(
-            'JSON_EXTRACT',
-            new ColumnExpression('party', 'thirdPartyCode'),
-            new Value('$.erp')
-          )
-        ),
-        '=',
-        new Unknown()
+        new ColumnExpression('party', 'erpCode'), '=', new Unknown()
       ),
     })
   )
@@ -211,23 +191,8 @@ query
     new Query({
       $where: new OrExpressions([
         new RegexpExpression(new ColumnExpression('party', 'name'), false, new Unknown('string')),
-        new RegexpExpression(
-          new ColumnExpression('party', 'shortName'),
-          false,
-          new Unknown('string')
-        ),
-        new RegexpExpression(
-          new FunctionExpression(
-            'JSON_UNQUOTE',
-            new FunctionExpression(
-              'JSON_EXTRACT',
-              new ColumnExpression('party', 'thirdPartyCode'),
-              '$.erp'
-            )
-          ),
-          false,
-          new Unknown('string')
-        ),
+        new RegexpExpression(new ColumnExpression('party', 'shortName'), false, new Unknown('string')),
+        new RegexpExpression(new ColumnExpression('party', 'erpCode'), false, new Unknown('string')),
       ]),
     })
   )
