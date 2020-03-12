@@ -80,9 +80,9 @@ export default class EdiParser856 extends BaseEdiParser {
       BSN.elementList.push(moment(_.get(element, 'createdAt')).format('HHmm'))
       BSN.elementList.push('0004')
       data.push(BSN)
-      const loopObjectList: any[] = []
+      let loopObjectList: any[] = []
       const getNumOfLoopItem = 1 + (_.get(element, 'bookingPOPackings').length) + this.getNumOfPo(_.get(element, 'bookingPOPackings'))
-      loopObjectList.push(this.getLoopObject(loopObjectList, getNumOfLoopItem, element))
+      loopObjectList = await this.getLoopObject(loopObjectList, getNumOfLoopItem, element)
       const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
       data.push(...filteredList)
       await this.removeEmptyElementListObject(data)
@@ -175,9 +175,9 @@ export default class EdiParser856 extends BaseEdiParser {
           let numberOfPacking = 0
           let totalVolume = 0
           let totalShipUnit = 0
+          let missingPosition = 1
           for (const booking of _.get(element, 'bookingPOPackings'))
           {
-            let missingPosition = 1
             if (_.get(booking, 'bookWeight') || _.get(booking, 'bookWeight') === 0)
             {
               totalWeight += _.get(booking, 'bookWeight')
@@ -256,6 +256,7 @@ export default class EdiParser856 extends BaseEdiParser {
           }
         }
         const carrierCode = _.get(element, 'carrierCode')
+
         const pad2 = '    '
         const scacMapper = {
           MSC: 'MSCU',
@@ -265,9 +266,13 @@ export default class EdiParser856 extends BaseEdiParser {
           MSK: 'MAEU'
         }
         let scac = '    '
+        if (!carrierCode || (!scacMapper[carrierCode] && carrierCode.length < 4))
+        {
+          throw new Error('missing carrierCode')
+        }
         if (carrierCode)
         {
-          scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode || ''.toString().length)}`
+          scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode.length || ''.toString().length)}`
         }
         // if (_.get(element, 'portOfLoading') || _.get(element, 'portOfDischarge') || _.get(element, 'containerPoint'))
         // {
