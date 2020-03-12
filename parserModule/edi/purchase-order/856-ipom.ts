@@ -133,7 +133,7 @@ export default class EdiParser856 extends BaseEdiParser {
     // return cloneEntityJSON
     // return returnJSON
     const result = await super.export(returnJSON)
-    // return [result]
+    return [result]
   }
   async removeEmptyElementListObject(data)
   {
