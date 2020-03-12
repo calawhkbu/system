@@ -256,18 +256,24 @@ export default class EdiParser856 extends BaseEdiParser {
           }
         }
         const carrierCode = _.get(element, 'carrierCode')
+
         const pad2 = '    '
         const scacMapper = {
           MSC: 'MSCU',
           HII: 'HLCU',
           HSU: 'SUDU',
           ONE: 'ONEY',
-          MSK: 'MAEU'
+          MSK: 'MAEU',
+          CMA: 'CMDU'
         }
         let scac = '    '
+        if (!carrierCode || (!scacMapper[carrierCode] && carrierCode.length < 4))
+        {
+          throw new Error('missing carrierCode')
+        }
         if (carrierCode)
         {
-          scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode || ''.toString().length)}`
+          scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode.length || ''.toString().length)}`
         }
         // if (_.get(element, 'portOfLoading') || _.get(element, 'portOfDischarge') || _.get(element, 'containerPoint'))
         // {
@@ -503,7 +509,8 @@ export default class EdiParser856 extends BaseEdiParser {
             HII: 'HLCU',
             HSU: 'SUDU',
             ONE: 'ONEY',
-            MSK: 'MAEU'
+            MSK: 'MAEU',
+            CMA: 'CMDU'
           }
           let scac = '    '
           if (carrierCode)

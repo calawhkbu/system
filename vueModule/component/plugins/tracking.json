@@ -18,7 +18,8 @@
         "format": "YYYY-MM-DD HH:mm:ss",
         "style": {
           "color": "#5da751"
-        }
+        },
+        "externalOnly": true
       },
       "statusPlace"
     ],

@@ -14,6 +14,7 @@
       "enableSetting": false,
       "noPartyGroupFilters": true,
       "nextPageComponent": "user",
+      "noCache": true,
       "clickFunction": {
         "type": "router",
         "otherParams": {

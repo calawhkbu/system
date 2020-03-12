@@ -241,36 +241,40 @@ const query = new QueryDef(
 const shipmentId_trackingNo_priority_fullTable = new Query({
   $select: [
     new ResultColumn('id', 'shipmentId'),
-    new ResultColumn('masterNo', 'trackingNo'),
+    new ResultColumn(new ColumnExpression('masterNo'), 'trackingNo'),
     new ResultColumn(new Value(3), 'priority')
   ],
-
   $from: new FromTable('shipment'),
-
+  $where: new IsNullExpression({
+    left: new ColumnExpression('masterNo'),
+    $not: true
+  }),
   $union: new Query({
-
     $select: [
       new ResultColumn(new ColumnExpression('shipmentId'), 'shipmentId'),
       new ResultColumn(new ColumnExpression('carrierBookingNo'), 'trackingNo'),
       new ResultColumn(new Value(2), 'priority')
     ],
-
     $from: new FromTable({
       table: 'shipment_container',
     }),
+    $where: new IsNullExpression({
+      left: new ColumnExpression('carrierBookingNo'),
+      $not: true
+    }),
     $union: new Query({
-
       $select: [
-
         new ResultColumn(new ColumnExpression('shipmentId'), 'shipmentId'),
         new ResultColumn(new ColumnExpression('containerNo'), 'trackingNo'),
         new ResultColumn(new Value(1), 'priority')
       ],
-
       $from: new FromTable({
         table: 'shipment_container',
       }),
-
+      $where: new IsNullExpression({
+        left: new ColumnExpression('carrierBookingNo'),
+        $not: true
+      }),
       $union: new Query({
 
         $select: [
@@ -293,7 +297,6 @@ const shipmentId_trackingNo_priority_fullTable = new Query({
 })
 
 const shipmentTrackingExpression = new Query({
-
   $select: [
     new ResultColumn(new ColumnExpression('shipment', 'shipmentId')),
     new ResultColumn(new ColumnExpression('shipment', 'trackingNo')),
@@ -302,7 +305,6 @@ const shipmentTrackingExpression = new Query({
     new ResultColumn(new ColumnExpression('shipment', 'priority'))
 
   ],
-
   $from: new FromTable({
     table: shipmentId_trackingNo_priority_fullTable,
     $as: 'shipment',
@@ -314,12 +316,10 @@ const shipmentTrackingExpression = new Query({
       }
     ],
   }),
-
   $order: [
     new OrderBy(new ColumnExpression('shipment', 'shipmentId')),
     new OrderBy(new ColumnExpression('shipment', 'priority')),
   ]
-
 })
 
 // only for temp table, don't use it directly
@@ -336,6 +336,18 @@ const shipmentId_trackingNo_priority_table = new Query({
     table: 'tracking',
     $on: new BinaryExpression(new ColumnExpression('tracking', 'trackingNo'), '=', new ColumnExpression('shipment', 'masterNo'))
   }),
+  $where: new AndExpressions({
+    expressions: [
+      new IsNullExpression({
+        left: new ColumnExpression('masterNo'),
+        $not: true
+      }),
+      new IsNullExpression({
+        left: new ColumnExpression('tracking', 'lastStatusCode'),
+        $not: true
+      })
+    ]
+  }),
 
   $union: new Query({
 
@@ -351,6 +363,18 @@ const shipmentId_trackingNo_priority_table = new Query({
       table: 'tracking',
       $on: new BinaryExpression(new ColumnExpression('tracking', 'trackingNo'), '=', new ColumnExpression('shipment_container', 'carrierBookingNo'))
     }),
+    $where: new AndExpressions({
+      expressions: [
+        new IsNullExpression({
+          left: new ColumnExpression('carrierBookingNo'),
+          $not: true
+        }),
+        new IsNullExpression({
+          left: new ColumnExpression('tracking', 'lastStatusCode'),
+          $not: true
+        })
+      ]
+    }),
     $union: new Query({
 
       $select: [
@@ -365,6 +389,18 @@ const shipmentId_trackingNo_priority_table = new Query({
         operator: 'LEFT',
         table: 'tracking',
         $on: new BinaryExpression(new ColumnExpression('tracking', 'trackingNo'), '=', new ColumnExpression('shipment_container', 'containerNo'))
+      }),
+      $where: new AndExpressions({
+        expressions: [
+          new IsNullExpression({
+            left: new ColumnExpression('containerNo'),
+            $not: true
+          }),
+          new IsNullExpression({
+            left: new ColumnExpression('tracking', 'lastStatusCode'),
+            $not: true
+          })
+        ]
       }),
 
     })
@@ -414,10 +450,7 @@ const shipmentId_trackingNo_map_table = new Query({
       ])
       }
     ]
-  }),
-  $where : [
-    new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'priority'), '=', new ColumnExpression('shipmentId_maxPriority_table', 'maxPriority')),
-  ],
+  })
 })
 
 const shipmentTrackingLastStatusCodeTableExpression = new Query({
