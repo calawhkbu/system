@@ -263,7 +263,8 @@ export default class EdiParser856 extends BaseEdiParser {
           HII: 'HLCU',
           HSU: 'SUDU',
           ONE: 'ONEY',
-          MSK: 'MAEU'
+          MSK: 'MAEU',
+          CMA: 'CMDU'
         }
         let scac = '    '
         if (!carrierCode || (!scacMapper[carrierCode] && carrierCode.length < 4))
@@ -508,7 +509,8 @@ export default class EdiParser856 extends BaseEdiParser {
             HII: 'HLCU',
             HSU: 'SUDU',
             ONE: 'ONEY',
-            MSK: 'MAEU'
+            MSK: 'MAEU',
+            CMA: 'CMDU'
           }
           let scac = '    '
           if (carrierCode)
