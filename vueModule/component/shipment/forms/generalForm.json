@@ -74,6 +74,8 @@
           "label": "ShipmentPage.departureDateEstimated",
           "name": "shipmentDate.departureDateEstimated",
           "component": "DateTimePicker",
+
+          "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0)",
           "class": "xs-6 md-3",
           "props": {
             "type": "datetime",

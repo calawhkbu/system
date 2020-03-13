@@ -1740,9 +1740,7 @@ const dateStatusExpression = new CaseExpression({
 
         ])
 
-      ])
-
-,
+      ]),
       $then : new Value('inDelivery')
     } as ICase,
 
@@ -1782,11 +1780,12 @@ const dateStatusExpression = new CaseExpression({
         $then : new Value('arrival')
       } as ICase,
 
-    //  ( no ATA and ( ATD <= NOW || ETD + 2 <= now )) then inTransit
+    //  ( no ATA and no ETA and ( ATD <= NOW || ETD + 2 <= now )) then inTransit
     {
       $when : new AndExpressions([
 
         new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateActual'), false),
+        new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateEstimated'), false),
 
         new OrExpressions([
           new BinaryExpression(new ColumnExpression('shipment_date', 'departureDateActual'), '<=', new FunctionExpression('NOW')),
@@ -1803,11 +1802,12 @@ const dateStatusExpression = new CaseExpression({
       $then : new Value('inTransit')
     } as ICase,
 
-    //  ( no ATA and !(ATD <= NOW || ETD + 2 <= now )) then departure
+    //  ( no ATA and no ETA and !(ATD <= NOW || ETD + 2 <= now )) then departure
     {
       $when : new AndExpressions([
 
         new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateActual'), false),
+        new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateEstimated'), false),
 
         new BinaryExpression(
           new OrExpressions([
@@ -1831,12 +1831,12 @@ const dateStatusExpression = new CaseExpression({
     // dont have ATD
     {
       $when : new IsNullExpression(new ColumnExpression('shipment_date', 'departureDateActual'), false),
-      $then : new Value('upcoming')
+      $then : new Value('processing')
     } as ICase,
 
   ],
 
-  $else : new Value(null)
+  $else : new Value('notInTrack')
 })
 
 const statusExpression = statusExpressionMapFunction(statusCodeExpression)
