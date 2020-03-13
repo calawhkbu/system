@@ -125,7 +125,7 @@ const agentPartyCodeExpression = new CaseExpression({
 const partyList = [
 
   {
-    name : 'shipper',
+    name: 'shipper',
   },
 
   {
@@ -428,26 +428,26 @@ const shipmentId_maxPriority_table = new Query({
 // the final map shipmentId <=> trackingNo
 const shipmentId_trackingNo_map_table = new Query({
 
-  $select : [
+  $select: [
     new ResultColumn(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'shipmentId'), 'shipmentId'),
     new ResultColumn(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'trackingNo'), 'trackingNo'),
   ],
 
-  $from : new FromTable({
-    table : shipmentId_trackingNo_priority_fullTable,
-    $as : 'shipmentId_trackingNo_priority_fullTable',
+  $from: new FromTable({
+    table: shipmentId_trackingNo_priority_fullTable,
+    $as: 'shipmentId_trackingNo_priority_fullTable',
 
-    joinClauses : [
-    {
-      operator: 'LEFT',
-      table: new FromTable({
-        table: shipmentId_maxPriority_table,
-        $as: 'shipmentId_maxPriority_table'
-      }),
-      $on : new AndExpressions([
-        new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'shipmentId'), '=', new ColumnExpression('shipmentId_maxPriority_table', 'shipmentId')),
-        new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'priority'), '=', new ColumnExpression('shipmentId_maxPriority_table', 'maxPriority'))
-      ])
+    joinClauses: [
+      {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: shipmentId_maxPriority_table,
+          $as: 'shipmentId_maxPriority_table'
+        }),
+        $on: new AndExpressions([
+          new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'shipmentId'), '=', new ColumnExpression('shipmentId_maxPriority_table', 'shipmentId')),
+          new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'priority'), '=', new ColumnExpression('shipmentId_maxPriority_table', 'maxPriority'))
+        ])
       }
     ]
   })
@@ -455,7 +455,7 @@ const shipmentId_trackingNo_map_table = new Query({
 
 const shipmentTrackingLastStatusCodeTableExpression = new Query({
 
-  $select : [
+  $select: [
     new ResultColumn(new ColumnExpression('shipmentId_trackingNo_map_table', 'shipmentId'), 'shipmentId'),
     new ResultColumn(new ColumnExpression('shipmentId_trackingNo_map_table', 'trackingNo'), 'trackingNo'),
     new ResultColumn(new ColumnExpression('tracking', 'id'), 'trackingId'),
@@ -464,16 +464,16 @@ const shipmentTrackingLastStatusCodeTableExpression = new Query({
 
   ],
 
-  $from : new FromTable({
-    table : shipmentId_trackingNo_map_table,
-    $as : 'shipmentId_trackingNo_map_table',
-    joinClauses : [
+  $from: new FromTable({
+    table: shipmentId_trackingNo_map_table,
+    $as: 'shipmentId_trackingNo_map_table',
+    joinClauses: [
       {
-        operator : 'LEFT',
-        table : new FromTable({
-          table : 'tracking'
+        operator: 'LEFT',
+        table: new FromTable({
+          table: 'tracking'
         }),
-        $on : [
+        $on: [
           new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_map_table', 'trackingNo'), '=', new ColumnExpression('tracking', 'trackingNo'))
         ]
       }
@@ -484,7 +484,7 @@ const shipmentTrackingLastStatusCodeTableExpression = new Query({
 
 const shipmentTrackingStatusCodeTableExpression = new Query({
 
-  $select : [
+  $select: [
     new ResultColumn(new ColumnExpression('shipmentId_trackingNo_map_table', 'shipmentId'), 'shipmentId'),
     new ResultColumn(new ColumnExpression('shipmentId_trackingNo_map_table', 'trackingNo'), 'trackingNo'),
     new ResultColumn(new ColumnExpression('tracking_status', 'trackingId'), 'trackingId'),
@@ -492,26 +492,26 @@ const shipmentTrackingStatusCodeTableExpression = new Query({
     new ResultColumn(new ColumnExpression('tracking_status', 'statusDate'), 'statusDate'),
   ],
 
-  $from : new FromTable({
-    table : shipmentId_trackingNo_map_table,
-    $as : 'shipmentId_trackingNo_map_table',
-    joinClauses : [
+  $from: new FromTable({
+    table: shipmentId_trackingNo_map_table,
+    $as: 'shipmentId_trackingNo_map_table',
+    joinClauses: [
       {
-        operator : 'LEFT',
-        table : new FromTable({
-          table : 'tracking'
+        operator: 'LEFT',
+        table: new FromTable({
+          table: 'tracking'
         }),
-        $on : [
+        $on: [
           new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_map_table', 'trackingNo'), '=', new ColumnExpression('tracking', 'trackingNo'))
         ]
       },
       {
-        operator : 'LEFT',
-        table : new FromTable({
-          table : 'tracking_status'
+        operator: 'LEFT',
+        table: new FromTable({
+          table: 'tracking_status'
         }),
 
-        $on : [
+        $on: [
           new BinaryExpression(new ColumnExpression('tracking', 'id'), '=', new ColumnExpression('tracking_status', 'trackingId'))
         ]
 
@@ -1706,6 +1706,138 @@ function statusExpressionMapFunction(originalExpression: IExpression) {
 
 }
 
+const extraDateExpression = new FunctionExpression('IF', new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'), new Value(0.5), new Value(2))
+
+const dateStatusExpression = new CaseExpression({
+
+  cases: [
+
+    // (have ATA && (ATA + 2 <= now) || ( have ETA && ( ETA + 4 <= now ))) then inDelivery
+    {
+      $when:
+        new OrExpressions([
+          new AndExpressions([
+            new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateActual'), true),
+            new BinaryExpression(
+
+              new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'arrivalDateActual'), new ParameterExpression({
+                prefix: 'INTERVAL',
+                expression: extraDateExpression,
+                suffix: 'DAY'
+              })), '<=', new FunctionExpression('NOW'))
+          ]),
+
+          new AndExpressions([
+
+            new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateEstimated'), true),
+
+            new BinaryExpression(
+
+              new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'arrivalDateEstimated'), new ParameterExpression({
+                prefix: 'INTERVAL',
+                expression: extraDateExpression,
+                suffix: 'DAY'
+              })), '<=', new FunctionExpression('NOW'))
+
+          ])
+
+        ]),
+      $then: new Value('inDelivery')
+    } as ICase,
+
+    // (have ATA && (ATA + 2 > now) || ( have ETA && ( ETA + 2 <= now ))  then arrival
+    {
+      $when:
+        new OrExpressions([
+          new AndExpressions([
+
+            new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateActual'), true),
+            new BinaryExpression(
+
+              new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'arrivalDateActual'), new ParameterExpression({
+                prefix: 'INTERVAL',
+                expression: extraDateExpression,
+                suffix: 'DAY'
+              })), '>', new FunctionExpression('NOW'))
+          ]),
+
+          new AndExpressions([
+
+            new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateEstimated'), true),
+
+            new BinaryExpression(
+
+              new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'arrivalDateEstimated'), new ParameterExpression({
+                prefix: 'INTERVAL',
+                expression: extraDateExpression,
+                suffix: 'DAY'
+              })), '<=', new FunctionExpression('NOW'))
+
+          ])
+
+        ]),
+      $then: new Value('arrival')
+    } as ICase,
+
+    //  ( no ATA and no ETA and ( ATD <= NOW || ETD + 2 <= now )) then inTransit
+    {
+      $when: new AndExpressions([
+
+        new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateActual'), false),
+        new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateEstimated'), false),
+
+        new OrExpressions([
+          new BinaryExpression(new ColumnExpression('shipment_date', 'departureDateActual'), '<=', new FunctionExpression('NOW')),
+          new BinaryExpression(
+
+            new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'departureDateEstimated'), new ParameterExpression({
+              prefix: 'INTERVAL',
+              expression: extraDateExpression,
+              suffix: 'DAY'
+            })), '<=', new FunctionExpression('NOW'))
+        ])
+
+      ]),
+      $then: new Value('inTransit')
+    } as ICase,
+
+    //  ( no ATA and no ETA and !(ATD <= NOW || ETD + 2 <= now )) then departure
+    {
+      $when: new AndExpressions([
+
+        new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateActual'), false),
+        new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateEstimated'), false),
+
+        new BinaryExpression(
+          new OrExpressions([
+            new BinaryExpression(new ColumnExpression('shipment_date', 'departureDateActual'), '<=', new FunctionExpression('NOW')),
+            new BinaryExpression(
+
+              new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'departureDateEstimated'), new ParameterExpression({
+                prefix: 'INTERVAL',
+                expression: extraDateExpression,
+                suffix: 'DAY'
+              })), '<=', new FunctionExpression('NOW'))
+          ]),
+          '=',
+          false
+        )
+
+      ]),
+      $then: new Value('departure')
+    } as ICase,
+
+    // dont have ATD
+    {
+      $when: new IsNullExpression(new ColumnExpression('shipment_date', 'departureDateActual'), false),
+      $then: new Value('upcoming')
+    } as ICase,
+
+  ],
+
+  $else: new Value(null)
+})
+
 const statusExpression = statusExpressionMapFunction(statusCodeExpression)
 const lastStatusExpression = statusExpressionMapFunction(lastStatusCodeExpression)
 
@@ -1763,6 +1895,9 @@ query.registerBoth('lastStatus', lastStatusExpression)
 // tracking status
 query.registerBoth('statusCode', statusCodeExpression)
 query.registerBoth('status', statusExpression)
+
+// dateStatus
+query.registerBoth('dateStatus', dateStatusExpression)
 
 query.registerBoth('alertId', alertIdExpression)
 
@@ -1855,7 +1990,7 @@ partyList.map(party => {
         expression = partyIdExpression
         break
 
-        // PartyReportName will get from party join instead of shipment_party direct;y
+      // PartyReportName will get from party join instead of shipment_party direct;y
       case 'PartyNameInReport':
         expression = partyNameInReportExpression
         break
@@ -2005,46 +2140,46 @@ interface SummaryField {
 const summaryFieldList: SummaryField[] = [
 
   {
-    name : 'totalShipment',
-    summaryType : 'count',
-    expression : new ColumnExpression('shipment', 'id')
+    name: 'totalShipment',
+    summaryType: 'count',
+    expression: new ColumnExpression('shipment', 'id')
   },
   {
-    name : 'cbm',
-    summaryType : 'sum',
-    expression : new ColumnExpression('shipment', 'cbm'),
+    name: 'cbm',
+    summaryType: 'sum',
+    expression: new ColumnExpression('shipment', 'cbm'),
   },
   {
-    name : 'chargeableWeight',
-    summaryType : 'sum',
-    expression : new ColumnExpression('shipment', 'chargeableWeight'),
+    name: 'chargeableWeight',
+    summaryType: 'sum',
+    expression: new ColumnExpression('shipment', 'chargeableWeight'),
   },
   {
-    name : 'grossWeight',
-    summaryType : 'sum',
-    expression : new ColumnExpression('shipment', 'grossWeight'),
+    name: 'grossWeight',
+    summaryType: 'sum',
+    expression: new ColumnExpression('shipment', 'grossWeight'),
   },
   {
-    name : 'teu',
-    summaryType : 'sum',
-    expression : new ColumnExpression('shipment', 'teu'),
+    name: 'teu',
+    summaryType: 'sum',
+    expression: new ColumnExpression('shipment', 'teu'),
 
-    inReportExpression : new FunctionExpression('IF',
-    new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'FCL'),
-    new ColumnExpression('shipment', 'teu'),
-    new FunctionExpression('ROUND', new MathExpression(new ColumnExpression('shipment', 'cbm'), '/', new Value(25)), new Value(3))
+    inReportExpression: new FunctionExpression('IF',
+      new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'FCL'),
+      new ColumnExpression('shipment', 'teu'),
+      new FunctionExpression('ROUND', new MathExpression(new ColumnExpression('shipment', 'cbm'), '/', new Value(25)), new Value(3))
     )
 
   },
 
   {
-    name : 'quantity',
-    summaryType : 'sum',
-    expression : new ColumnExpression('shipment', 'quantity'),
+    name: 'quantity',
+    summaryType: 'sum',
+    expression: new ColumnExpression('shipment', 'quantity'),
   }
 ]
 
-function summaryFieldExpression(summaryField: SummaryField , isInReport: boolean, condition?: IConditionalExpression) {
+function summaryFieldExpression(summaryField: SummaryField, isInReport: boolean, condition?: IConditionalExpression) {
 
   const expression = isInReport && summaryField.inReportExpression ? summaryField.inReportExpression : summaryField.expression
 
@@ -2382,6 +2517,12 @@ const shipmentTableFilterFieldList = [
   },
 
   {
+
+    name: 'dateStatus',
+    expression: dateStatusExpression
+  },
+
+  {
     name: 'alertType',
     expression: alertTypeExpression
   },
@@ -2423,10 +2564,10 @@ shipmentTableFilterFieldList.map(filterField => {
   )
 
   query.registerQuery(`${name}IsNull`,
-  new Query({
-    $where: new IsNullExpression(expression, false),
-  })
-)
+    new Query({
+      $where: new IsNullExpression(expression, false),
+    })
+  )
 
 })
 
@@ -2534,10 +2675,10 @@ const withoutStatusCodeCondition = (withoutStatusCodeParam) => {
 
   const conditionExpression = new ExistsExpression({
 
-    query : new Query({
+    query: new Query({
 
-      $from : 'tracking_status',
-      $where : [
+      $from: 'tracking_status',
+      $where: [
 
         new BinaryExpression(new ColumnExpression('tracking_status', 'trackingId'), '=', new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'trackingId')),
 
@@ -2548,7 +2689,7 @@ const withoutStatusCodeCondition = (withoutStatusCodeParam) => {
 
     }),
 
-    $not : true
+    $not: true
 
   })
 
@@ -2559,7 +2700,7 @@ const withoutStatusCodeFn = (params) => {
 
   return new Query({
 
-    $where : withoutStatusCodeCondition(params)
+    $where: withoutStatusCodeCondition(params)
 
   })
 
