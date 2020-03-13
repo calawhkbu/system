@@ -1706,6 +1706,139 @@ function statusExpressionMapFunction(originalExpression: IExpression) {
 
 }
 
+const dateStatusExpression = new CaseExpression({
+  cases : [
+
+    // (have ATA && (ATA + 2 <= now) || ( have ETA && ( ETA + 4 <= now ))) then inDelivery
+    {
+      $when :
+
+      new OrExpressions([
+
+        new AndExpressions([
+          new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateActual'), true),
+          new BinaryExpression(
+
+            new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'arrivalDateActual'), new ParameterExpression({
+              prefix : 'INTERVAL',
+              expression : new Value(2),
+              suffix : 'DAY'
+            })), '<=', new FunctionExpression('NOW'))
+        ]),
+
+        new AndExpressions([
+
+          new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateEstimated'), true),
+
+          new BinaryExpression(
+
+            new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'arrivalDateEstimated'), new ParameterExpression({
+              prefix : 'INTERVAL',
+              expression : new Value(2),
+              suffix : 'DAY'
+            })), '<=', new FunctionExpression('NOW'))
+
+        ])
+
+      ])
+
+,
+      $then : new Value('inDelivery')
+    } as ICase,
+
+    // (have ATA && (ATA + 2 > now) || ( have ETA && ( ETA + 2 <= now ))  then arrival
+    {
+        $when :
+
+        new OrExpressions([
+
+          new AndExpressions([
+
+            new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateActual'), true),
+            new BinaryExpression(
+
+              new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'arrivalDateActual'), new ParameterExpression({
+                prefix : 'INTERVAL',
+                expression : new Value(2),
+                suffix : 'DAY'
+              })), '>', new FunctionExpression('NOW'))
+          ]),
+
+          new AndExpressions([
+
+            new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateEstimated'), true),
+
+            new BinaryExpression(
+
+              new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'arrivalDateEstimated'), new ParameterExpression({
+                prefix : 'INTERVAL',
+                expression : new Value(2),
+                suffix : 'DAY'
+              })), '<=', new FunctionExpression('NOW'))
+
+          ])
+
+        ]),
+        $then : new Value('arrival')
+      } as ICase,
+
+    //  ( no ATA and ( ATD <= NOW || ETD + 2 <= now )) then inTransit
+    {
+      $when : new AndExpressions([
+
+        new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateActual'), false),
+
+        new OrExpressions([
+          new BinaryExpression(new ColumnExpression('shipment_date', 'departureDateActual'), '<=', new FunctionExpression('NOW')),
+          new BinaryExpression(
+
+            new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'departureDateEstimated'), new ParameterExpression({
+              prefix : 'INTERVAL',
+              expression : new Value(2),
+              suffix : 'DAY'
+            })), '<=', new FunctionExpression('NOW'))
+        ])
+
+      ]),
+      $then : new Value('inTransit')
+    } as ICase,
+
+    //  ( no ATA and !(ATD <= NOW || ETD + 2 <= now )) then departure
+    {
+      $when : new AndExpressions([
+
+        new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateActual'), false),
+
+        new BinaryExpression(
+          new OrExpressions([
+            new BinaryExpression(new ColumnExpression('shipment_date', 'departureDateActual'), '<=', new FunctionExpression('NOW')),
+            new BinaryExpression(
+
+              new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'departureDateEstimated'), new ParameterExpression({
+                prefix : 'INTERVAL',
+                expression : new Value(2),
+                suffix : 'DAY'
+              })), '<=', new FunctionExpression('NOW'))
+          ]),
+          '=',
+          false
+        )
+
+      ]),
+      $then : new Value('departure')
+    } as ICase,
+
+    // dont have ATD
+    {
+      $when : new IsNullExpression(new ColumnExpression('shipment_date', 'departureDateActual'), false),
+      $then : new Value('upcoming')
+    } as ICase,
+
+  ],
+
+  $else : new Value(null)
+})
+
 const statusExpression = statusExpressionMapFunction(statusCodeExpression)
 const lastStatusExpression = statusExpressionMapFunction(lastStatusCodeExpression)
 
@@ -1763,6 +1896,9 @@ query.registerBoth('lastStatus', lastStatusExpression)
 // tracking status
 query.registerBoth('statusCode', statusCodeExpression)
 query.registerBoth('status', statusExpression)
+
+// dateStatus
+query.registerBoth('dateStatus', dateStatusExpression)
 
 query.registerBoth('alertId', alertIdExpression)
 
@@ -2379,6 +2515,12 @@ const shipmentTableFilterFieldList = [
   {
     name: 'status',
     expression: statusExpression
+  },
+
+  {
+
+    name : 'dateStatus',
+    expression : dateStatusExpression
   },
 
   {
