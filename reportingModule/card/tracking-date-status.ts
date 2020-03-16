@@ -38,6 +38,12 @@ function prepareParams(): Function {
     if (!subqueries.dateStatus || !subqueries.dateStatus.value)
       throw new Error('MISSING_dateStatus')
 
+    subqueries.dateStatus = {
+
+      today : moment().format('YYYY-MM-DD'),
+      currentTime : moment().format('YYYY-MM-DD HH:mm:ss'),
+      ...subqueries.dateStatus
+    }
     subqueries.dateStatusJoin = true
 
     params.groupBy = ['dateStatus']
