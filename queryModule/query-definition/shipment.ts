@@ -1,4 +1,4 @@
-import { QueryDef, ResultColumnFn, GroupByFn } from 'classes/query/QueryDef'
+import { QueryDef, ResultColumnFn, GroupByFn, QueryFn } from 'classes/query/QueryDef'
 import {
   Query,
   FromTable,
@@ -31,6 +31,7 @@ import {
   MathExpression
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
+import { now } from '../../../../swivel-backend-new/node_modules/moment/moment'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -1708,7 +1709,276 @@ function statusExpressionMapFunction(originalExpression: IExpression) {
 
 const extraDateExpression = new FunctionExpression('IF', new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'), new Value(0.5), new Value(2))
 
-const dateStatusExpression = new CaseExpression({
+const dateStatusExpressionWithParams = (params: IQueryParams) => {
+  const subqueryParam = params.subqueries.dateStatus
+
+  return dateStatusExpression(subqueryParam)
+
+}
+
+const dateStatusExpression = (subqueryParam) => {
+
+  const rawATAExpression = new ColumnExpression('shipment_date', 'arrivalDateActual')
+  const rawETAExpression = new ColumnExpression('shipment_date', 'arrivalDateEstimated')
+
+  const rawATDExpression = new ColumnExpression('shipment_date', 'departureDateActual')
+  const rawETDExpression = new ColumnExpression('shipment_date', 'departureDateEstimated')
+
+  const addDateExpression = (expression: IExpression, mode: 'add' | 'sub', value, unit: 'DAY' | 'HOUR' | 'MINUTE') => {
+
+    const extraDateExpression = new ParameterExpression({
+      prefix: 'INTERVAL',
+      expression: value,
+      suffix: unit
+    })
+
+    return new FunctionExpression(mode === 'add' ? 'DATE_ADD' : 'DATE_SUB', expression, extraDateExpression)
+
+  }
+
+  const moduleTypeCodeCondition = (moduleTypeCode) => {
+    return  new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', moduleTypeCode)
+  }
+
+  const AIRDateStatusExpression = (subqueryParam) =>
+  {
+
+    // convert a date to 23:59 of that day
+    const convertToEndOfDate = (dateExpression) => addDateExpression(addDateExpression(new FunctionExpression('DATE', dateExpression), 'add', 1, 'DAY'), 'sub', 1, 'MINUTE')
+
+    // convert a date to 00:01 of that day
+    const convertToStartOfDate = (dateExpression) => addDateExpression(new FunctionExpression('DATE', dateExpression), 'sub', 1, 'MINUTE')
+
+    // const todayExpression = new FunctionExpression('NOW')
+    const todayExpression = new Value(subqueryParam.today)
+    const currentTimeExpression = new Value(subqueryParam.currentTime)
+
+    const calculatedATAExpression = new CaseExpression({
+      cases : [
+        {
+          $when : new IsNullExpression(rawETAExpression, true),
+          $then : convertToEndOfDate(rawETAExpression)
+        },
+        {
+          $when : new IsNullExpression(rawETDExpression, true),
+          $then : convertToEndOfDate(addDateExpression(rawETDExpression, 'add', 2, 'DAY'))
+        }
+
+      ],
+
+      $else : new Value(null)
+
+    })
+
+    const calculatedATDExpression = convertToStartOfDate(addDateExpression(rawETDExpression, 'add', 1, 'DAY'))
+    const finalATAExpression = new FunctionExpression('IFNULL', rawATAExpression, calculatedATAExpression)
+    const finalATDExpression = new FunctionExpression('IFNULL', rawATDExpression, calculatedATDExpression)
+
+    const finalATAInPast = new BinaryExpression(finalATAExpression, '<=', currentTimeExpression)
+    const finalATDInPast = new BinaryExpression(new FunctionExpression('DATE', finalATDExpression), '<=', todayExpression)
+
+    return new CaseExpression({
+
+      cases : [
+
+        {
+          $when : finalATAInPast,
+          $then : new CaseExpression({
+
+            cases : [
+              {
+                $when : new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 'add', 1, 'DAY')), '<=', currentTimeExpression),
+                $then : new Value('inDelivery')
+              },
+
+              // {
+              //   $when : new OrExpressions([
+
+              //       new BetweenExpression(currentTimeExpression, false, finalATAExpression, convertToEndOfDate(addDateExpression(rawATAExpression, 'add', 1, 'DAY'))),
+              //       new BetweenExpression(currentTimeExpression, false, addDateExpression(convertToEndOfDate(new FunctionExpression('DATE', finalATAExpression)), 'sub', 2, 'HOUR'), convertToEndOfDate(addDateExpression(rawATAExpression, 'add', 1, 'DAY'))),
+              //     ]),
+              //   $then : new Value('arrival')
+              // }
+
+            ],
+
+            $else : new Value('arrival')
+          })
+        },
+        // {
+        //   $when : new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 'add', 1, 'DAY')), '>=', todayExpression),
+        //   $then : new Value('inDelivery')
+        // },
+        // {
+        //   $when : new AndExpressions([
+        //     new IsNullExpression(rawATAExpression, true),
+        //     new OrExpressions([
+        //       new BetweenExpression(currentTimeExpression, false, finalATAExpression, convertToEndOfDate(addDateExpression(rawATAExpression, 'add', 1, 'DAY'))),
+        //       new BetweenExpression(currentTimeExpression, false, finalATAExpression, convertToEndOfDate(addDateExpression(rawATAExpression, 'add', 1, 'DAY')))
+        //     ])
+        //   ]),
+        //   $then : new Value('arrival')
+        // },
+
+        {
+
+          $when : finalATDInPast,
+          $then : new CaseExpression({
+
+            cases : [
+              {
+                $when : new BinaryExpression(new FunctionExpression('DATE', finalATDExpression), '=', todayExpression),
+                $then : new Value('departure')
+              },
+
+            ],
+
+            $else : new Value('inTransit')
+          })
+        }
+
+        // {
+        //   $when : new AndExpressions([
+        //     new IsNullExpression(rawATAExpression, false),
+        //     new BinaryExpression(finalATAExpression, '<', currentTimeExpression)
+        //   ]),
+        //   $then : new Value('inTransit')
+        // },
+        // {
+
+        //   $when : new AndExpressions([
+        //     new IsNullExpression(rawATAExpression, false),
+        //     new BinaryExpression(finalATDExpression, '>=', currentTimeExpression)
+        //   ]),
+        //   $then : new Value('departure')
+        // },
+        // {
+
+        //   $when : new AndExpressions([
+        //     new IsNullExpression(rawATAExpression, false),
+        //     new BinaryExpression(finalATDExpression, '<', currentTimeExpression)
+        //   ]),
+        //   $then : new Value('upcoming')
+        // }
+
+      ],
+      $else : new Value('upcoming')
+    })
+
+  }
+
+  const SEADateStatusExpression = (subqueryParam) => {
+
+  const todayExpression = new Value(subqueryParam.today)
+  const currentTimeExpression = new Value(subqueryParam.currentTime)
+
+    const calculatedATAExpression = addDateExpression(rawETAExpression, 'add', 2, 'DAY')
+    const calculatedATDExpression = addDateExpression(rawETDExpression, 'add', 1, 'DAY')
+    const finalATAExpression = new FunctionExpression('IFNULL', rawATAExpression, calculatedATAExpression)
+    const finalATDExpression = new FunctionExpression('IFNULL', rawATDExpression, calculatedATDExpression)
+
+    const finalATAInPast = new BinaryExpression(finalATAExpression, '<=', todayExpression)
+    const finalATDInPast = new BinaryExpression(finalATDExpression, '<=', todayExpression)
+
+    return new CaseExpression({
+
+      cases : [
+
+        {
+          $when : finalATAInPast,
+          $then : new CaseExpression({
+            cases : [
+              {
+                $when : new BinaryExpression(addDateExpression(finalATAExpression, 'add', 3, 'DAY'), '<=', todayExpression),
+                $then : new Value('inDelivery')
+              } as ICase,
+
+              {
+                $when : new BetweenExpression(todayExpression, false, finalATAExpression, addDateExpression(finalATAExpression, 'add', 2, 'DAY')),
+                $then : new Value('arrival')
+              } as ICase,
+            ],
+
+            $else : new Value('upcoming')
+          }
+          )
+        },
+
+        {
+          $when : finalATDInPast,
+          $then : new CaseExpression({
+            cases : [
+              {
+                $when : new AndExpressions([
+                  new BinaryExpression(addDateExpression(finalATDExpression, 'add', 3, 'DAY'), '<=', todayExpression)
+                ]),
+                $then : new Value('inTransit')
+              } as ICase,
+              {
+                $when : new AndExpressions([
+                  new BetweenExpression(finalATDExpression, false, todayExpression, addDateExpression(todayExpression, 'add', 3, 'DAY'))
+                ]),
+                $then : new Value('departure')
+              } as ICase,
+            ],
+
+            $else : new Value('upcoming')
+          }
+          )
+        },
+
+        // {
+        //   $when : new AndExpressions([
+        //     new IsNullExpression(finalATAExpression, false),
+        //     new BinaryExpression(addDateExpression(finalATDExpression, 'add', 3, 'DAY'), '<=', todayExpression)
+        //   ]),
+        //   $then : new Value('inTransit')
+        // } as ICase,
+        // {
+        //   $when : new AndExpressions([
+
+        //     new IsNullExpression(finalATAExpression, false),
+        //     new BetweenExpression(finalATDExpression, false, todayExpression, addDateExpression(todayExpression, 'add', 3, 'DAY'))
+
+        //   ]),
+        //   $then : new Value('departure')
+        // } as ICase,
+
+        // {
+        //   $when : new AndExpressions([
+        //     new IsNullExpression(finalATAExpression, false),
+        //     new BinaryExpression(finalATDExpression, '<', todayExpression)
+        //   ]),
+        //   $then : new Value('upcoming')
+        // } as ICase,
+
+      ],
+
+      $else : new Value('upcoming')
+    })
+  }
+
+  const result = new CaseExpression({
+
+    cases : [
+      {
+        $when : new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+        $then : AIRDateStatusExpression(subqueryParam)
+      },
+      {
+        $when : new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
+        $then : SEADateStatusExpression(subqueryParam)
+      }
+
+    ],
+    $else : new Value(null)
+  })
+
+  return result
+
+}
+
+const dateStatusExpressionOld = new CaseExpression({
 
   cases: [
 
@@ -1897,7 +2167,7 @@ query.registerBoth('statusCode', statusCodeExpression)
 query.registerBoth('status', statusExpression)
 
 // dateStatus
-query.registerBoth('dateStatus', dateStatusExpression)
+query.registerBoth('dateStatus', (params) => dateStatusExpressionWithParams(params))
 
 query.registerBoth('alertId', alertIdExpression)
 
@@ -2515,7 +2785,6 @@ const shipmentTableFilterFieldList = [
     name: 'status',
     expression: statusExpression
   },
-
   {
 
     name: 'dateStatus',
@@ -2542,32 +2811,65 @@ const shipmentTableFilterFieldList = [
     name: 'alertContent',
     expression: alertContentExpression
   }
-]
+] as {
+  name: string
+  expression: IExpression |  ((subqueryParam) => IExpression)
+}[]
 
 shipmentTableFilterFieldList.map(filterField => {
 
-  const expression = (typeof filterField === 'string') ? new ColumnExpression('shipment', filterField) : filterField.expression
   const name = (typeof filterField === 'string') ? filterField : filterField.name
 
-  // normal value IN list filter
-  query.registerQuery(name,
-    new Query({
-      $where: new InExpression(expression, false),
-    })
-  ).register('value', 0)
+  const expressionFn = (subqueryParam) => {
+    return (typeof filterField === 'string') ? new ColumnExpression('shipment', filterField) : typeof filterField.expression === 'function' ? filterField.expression(subqueryParam) : filterField.expression
+  }
 
-  // Is not Null filter
-  query.registerQuery(`${name}IsNotNull`,
-    new Query({
-      $where: new IsNullExpression(expression, true),
-    })
-  )
+  const inFilterQueryFn = ((subqueryParam) => {
 
-  query.registerQuery(`${name}IsNull`,
-    new Query({
-      $where: new IsNullExpression(expression, false),
+    const valueList = subqueryParam['value']
+
+    return new Query({
+      $where: new InExpression(expressionFn(subqueryParam), false, valueList),
     })
-  )
+  }) as QueryFn
+
+  const IsNotNullQueryFn = ((subqueryParam) => {
+    return new Query({
+      $where: new InExpression(expressionFn(subqueryParam), true),
+    })
+  }) as QueryFn
+
+  const IsNullQueryFn = ((subqueryParam) => {
+    return new Query({
+      $where: new InExpression(expressionFn(subqueryParam), false),
+    })
+  }) as QueryFn
+
+  query.registerQuery(name, inFilterQueryFn)
+  query.registerQuery(`${name}IsNotNull`, IsNotNullQueryFn)
+  query.registerQuery(`${name}IsNull`, IsNullQueryFn)
+
+  // ===== old
+
+  // // normal value IN list filter
+  // query.registerQuery(name,
+  //   new Query({
+  //     $where: new InExpression(expression, false),
+  //   })
+  // ).register('value', 0)
+
+  // // Is not Null filter
+  // query.registerQuery(`${name}IsNotNull`,
+  //   new Query({
+  //     $where: new IsNullExpression(expression, true),
+  //   })
+  // )
+
+  // query.registerQuery(`${name}IsNull`,
+  //   new Query({
+  //     $where: new IsNullExpression(expression, false),
+  //   })
+  // )
 
 })
 
