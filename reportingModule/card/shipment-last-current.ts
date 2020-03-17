@@ -25,8 +25,9 @@ function prepareParams(): Function {
       const from = subqueries.date.from
 
       const currentYear = moment(from).year()
-      const currentMonth = moment().month()
-      const currentWeek = moment().week()
+      const currentQuarter = moment(from).quarter()
+      const currentMonth = moment(from).month()
+      const currentWeek = moment(from).week()
 
       let lastFrom, lastTo, currentFrom, currentTo
 
@@ -36,6 +37,13 @@ function prepareParams(): Function {
         lastTo = moment(from).year(currentYear - 1).endOf('year').format('YYYY-MM-DD')
         currentFrom = moment(from).year(currentYear).startOf('year').format('YYYY-MM-DD')
         currentTo = moment(from).year(currentYear).endOf('year').format('YYYY-MM-DD')
+
+      } else if (lastCurrentUnit === 'quarter') {
+
+        lastFrom = moment(from).subtract(1, 'quarters').startOf('quarter').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'quarters').endOf('quarter').format('YYYY-MM-DD')
+        currentFrom = moment(from).quarter(currentQuarter).startOf('quarter').format('YYYY-MM-DD')
+        currentTo = moment(from).quarter(currentQuarter).endOf('quarter').format('YYYY-MM-DD')
 
       } else if (lastCurrentUnit === 'month') {
 
@@ -107,8 +115,6 @@ function prepareParams(): Function {
     }), [])
 
     const topX = subqueries.topX.value
-    const sortingDirection = !(subqueries.sortingDirection && subqueries.sortingDirection.value) ? 'DESC' : subqueries.sortingDirection.value
-
     const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     // ------------------------------
 
@@ -374,6 +380,11 @@ export const filters = [
         {
           label: 'year',
           value: 'year',
+        },
+
+        {
+          label: 'quarter',
+          value: 'quarter',
         },
         {
           label: 'month',
