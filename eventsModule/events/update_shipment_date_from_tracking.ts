@@ -67,16 +67,14 @@ class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
             UPDATE shipment_date
             SET ${dateQuery}
             WHERE shipmentId IN (
-              SELECT id
+              SELECT shipment.id
               FROM shipment
+              LEFT OUTER JOIN shipment_container ON shipment_container.shipmentId = shipment.id
               WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
               AND (
-                masterNo = "${data.trackingNo}"
-                OR id in (
-                  SELECT shipmentId
-                  FROM shipment_container
-                  WHERE carrierBookingNo = "${data.trackingNo}" OR containerNo = "${data.trackingNo}"
-                )
+                shipment.masterNo = "${data.trackingNo}"
+                OR shipment_container.carrierBookingNo = "${data.trackingNo}"
+                OR shipment_container.containerNo = "${data.trackingNo}"
               )
             )
           `
@@ -85,20 +83,20 @@ class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
             UPDATE booking_date
             SET ${dateQuery}
             WHERE bookingId IN (
-              SELECT id
+              SELECT booking.id
               FROM booking
+              LEFT OUTER JOIN booking_reference booking_reference_SEA ON booking_reference_SEA.bookingId = booking.id AND booking_reference_SEA.refName = "MBL"
+              LEFT OUTER JOIN booking_reference booking_reference_AIR ON booking_reference_AIR.bookingId = booking.id AND booking_reference_AIR.refName = "MAWB"
+              LEFT OUTER JOIN booking_container ON booking_container.bookingId = booking.id
               WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
               AND (
-                id in (
-                  SELECT bookingId
-                  FROM booking_reference
-                  WHERE refDescription = "${data.trackingNo}"
-                )
-                OR id in (
-                  SELECT bookingId
-                  FROM booking_container
-                  WHERE carrierBookingNo = "${data.trackingNo}" OR containerNo = "${data.trackingNo}"
-                )
+                booking_reference_SEA.refDescription = "${data.trackingNo}"
+                OR
+                booking_reference_AIR.refDescription = "${data.trackingNo}"
+                OR
+                booking_container.soNo = "${data.trackingNo}"
+                OR
+                booking_container.containerNo = "${data.trackingNo}"
               )
             )
           `
