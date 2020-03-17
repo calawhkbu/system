@@ -47,7 +47,7 @@ class UpdateTrackingIdBackToEntityEvent extends BaseEvent {
         const shipmentQuery = `
           UPDATE shipment
           SET currentTrackingNo = "${data.trackingNo}"
-          WHERE ${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'}
+          WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
           AND currentTrackingNo is null
           AND (
             masterNo = "${data.trackingNo}"
@@ -63,7 +63,7 @@ class UpdateTrackingIdBackToEntityEvent extends BaseEvent {
         const bookingQuery = `
           UPDATE booking
           SET currentTrackingNo = "${data.trackingNo}"
-          WHERE ${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'}
+          WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
           AND currentTrackingNo is null
           AND (
             id in (SELECT bookingId FROM booking_reference WHERE refDescription = "${data.trackingNo}" AND refName in ("MBL", "MAWB"))

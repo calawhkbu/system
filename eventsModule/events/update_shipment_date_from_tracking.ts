@@ -69,7 +69,7 @@ class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
             WHERE shipmentId IN (
               SELECT id
               FROM shipment
-              WHERE ${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'}
+              WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
               AND (
                 masterNo = "${data.trackingNo}"
                 OR id in (
@@ -87,7 +87,7 @@ class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
             WHERE bookingId IN (
               SELECT id
               FROM booking
-              WHERE ${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'}
+              WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
               AND (
                 id in (
                   SELECT bookingId
