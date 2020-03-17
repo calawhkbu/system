@@ -313,21 +313,41 @@ export default {
     },
   ],
   // tracking
-  create_tracking_alerts: [{ handlerName: 'create_tracking_alerts' }], // update entity(booking) with a tracking
+  create_tracking_alerts: [
+    {// update entity(booking) with a tracking
+      handlerName: 'create_tracking_alerts'
+    }
+  ],
   tracking_error_update_reference_again: [
-    {
+    { // update error ro change
       handlerName: 'tracking_error_update_reference_again',
       otherParameters: {
         maxErrorTime: 100
       }
     }
-  ], // update error ro change
+  ],
+  update_tracking_back_to_entity: [
+    {// update tracking id to entity
+      handlerName: 'update_tracking_back_to_entity'
+    }
+  ],
+  update_shipment_date_from_tracking: [
+    {// update tracking id to entity
+      handlerName: 'update_shipment_date_from_tracking'
+    }
+  ],
   afterCreate_tracking: [
     {
       eventName: 'create_tracking_alerts',
     },
     {
       eventName: 'tracking_error_update_reference_again',
+    },
+    {
+      eventName: 'update_tracking_back_to_entity'
+    },
+    {
+      eventName: 'update_shipment_date_from_tracking',
     },
   ],
   afterUpdate_tracking: [
@@ -336,6 +356,12 @@ export default {
     },
     {
       eventName: 'tracking_error_update_reference_again',
+    },
+    {
+      eventName: 'update_tracking_back_to_entity'
+    },
+    {
+      eventName: 'update_shipment_date_from_tracking',
     },
     {
       eventName: 'send_edi',
