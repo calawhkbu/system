@@ -2564,7 +2564,7 @@ isInReportList.map(isInReport => {
         ])
 
         const monthLastSumExpression = summaryFieldExpression(summaryField, isInReport, monthLastCondition)
-        const monthCurrentSumExpression = summaryFieldExpression(summaryField, isInReport, monthLastCondition)
+        const monthCurrentSumExpression = summaryFieldExpression(summaryField, isInReport, monthCurrentCondition)
 
         const monthLastCurrentPercentageChangeExpression = percentageChangeFunction(monthLastSumExpression, monthCurrentSumExpression)
 
@@ -2585,7 +2585,7 @@ isInReportList.map(isInReport => {
       return resultColumnList
     }
 
-    query.registerResultColumn(`${summaryField}MonthLastCurrent`, monthLastCurrentFn)
+    query.registerResultColumn(`${summaryFieldName}MonthLastCurrent`, monthLastCurrentFn)
 
     // ======================================
 
@@ -2632,6 +2632,7 @@ isInReportList.map(isInReport => {
       // frc_cbmMonth
       query.registerResultColumn(`${x.name}_${summaryFieldName}Month`, nestedMonthFn)
 
+      // frc_cbmLastCurrent
       const nestedLastCurrentFn = (params) => {
 
         const resultColumnList = [] as ResultColumn[]
@@ -2671,6 +2672,7 @@ isInReportList.map(isInReport => {
 
       query.registerResultColumn(`${x.name}_${summaryFieldName}LastCurrent`, nestedLastCurrentFn)
 
+      // frc_cbmMonthLastCurrent
       const nestedMonthLastCurrentFn = (params) => {
 
         // for easier looping
@@ -2732,7 +2734,6 @@ isInReportList.map(isInReport => {
 
         return resultColumnList
       }
-      // frc_cbmMonthLastCurrent
       query.registerResultColumn(`${x.name}_${summaryFieldName}MonthLastCurrent`, nestedMonthLastCurrentFn)
 
     })

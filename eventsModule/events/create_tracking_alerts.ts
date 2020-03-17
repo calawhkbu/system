@@ -42,11 +42,11 @@ class TrackingUpdateDataEvent extends BaseEvent {
       FROM (
         SELECT 'booking' as tableName, br.bookingId as primaryKey
         FROM booking_reference br
-        WHERE br.refDescription = :masterNo
+        WHERE br.refDescription in (:trackingNos)
         UNION
         SELECT 'booking' as tableName, bc.bookingId as primaryKey
         FROM booking_container bc
-        WHERE (bc.soNo in (:soNo) OR bc.containerNo in (:containerNo))
+        WHERE (bc.soNo in (:trackingNos) OR bc.containerNo in (:trackingNos))
       ) base
       LEFT OUTER JOIN (
         SELECT
@@ -66,11 +66,11 @@ class TrackingUpdateDataEvent extends BaseEvent {
       FROM (
         SELECT 'shipment' as tableName, s.id as primaryKey
         FROM shipment s
-        WHERE s.masterNo = :masterNo
+        WHERE s.masterNo in (:trackingNos)
         UNION
         SELECT 'shipment' as tableName, sc.shipmentId as primaryKey
         FROM shipment_container sc
-        WHERE (sc.carrierBookingNo in (:soNo) OR sc.containerNo in (:containerNo))
+        WHERE (sc.carrierBookingNo in (:trackingNos) OR sc.containerNo in (:trackingNos))
       ) base
       LEFT OUTER JOIN (
         SELECT
@@ -85,7 +85,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
       raw: true,
       type: Sequelize.QueryTypes.SELECT,
       transaction: this.transaction,
-      replacements: { masterNo, soNo, containerNo, partyGroupCode }
+      replacements: { trackingNos: [masterNo].concat(soNo || [], containerNo || []), partyGroupCode }
     })
   }
 
@@ -116,6 +116,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
     } = parameters.data as Tracking
     if (trackingNo) {
       for (const trackingReference of await this.getTrackingReference([trackingNo])) {
+        const partyGroupCode = trackingReference.partyGroupCode
         for (const {
           tableName, primaryKey,
           module,
@@ -141,7 +142,11 @@ class TrackingUpdateDataEvent extends BaseEvent {
               {
                 oldDate: moment.utc(inputEstimatedDepartureDate).format('YYYY-MM-DD HH:mm:ss'),
                 newDate: moment.utc(trackingEstimatedDepartureDate).format('YYYY-MM-DD HH:mm:ss')
-              }, this.user
+              }, {
+                selectedPartyGroup: {
+                  code: partyGroupCode
+                }
+              } as JwtPayload
             )
           }
           if (
@@ -163,7 +168,11 @@ class TrackingUpdateDataEvent extends BaseEvent {
               {
                 oldDate: moment.utc(inputEstimatedArrivalDate).format('YYYY-MM-DD HH:mm:ss'),
                 newDate: moment.utc(trackingEstimatedArrivalDate).format('YYYY-MM-DD HH:mm:ss')
-              }, this.user
+              }, {
+                selectedPartyGroup: {
+                  code: partyGroupCode
+                }
+              } as JwtPayload
             )
           }
           if (
@@ -185,7 +194,11 @@ class TrackingUpdateDataEvent extends BaseEvent {
               {
                 oldDate: moment.utc(inputActualDepartureDate).format('YYYY-MM-DD HH:mm:ss'),
                 newDate: moment.utc(trackingActualDepartureDate).format('YYYY-MM-DD HH:mm:ss')
-              }, this.user
+              }, {
+                selectedPartyGroup: {
+                  code: partyGroupCode
+                }
+              } as JwtPayload
             )
           }
           if (
@@ -207,7 +220,11 @@ class TrackingUpdateDataEvent extends BaseEvent {
               {
                 oldDate: moment.utc(inputActualArrivalDate).format('YYYY-MM-DD HH:mm:ss'),
                 newDate: moment.utc(trackingActualArrivalDate).format('YYYY-MM-DD HH:mm:ss')
-              }, this.user
+              }, {
+                selectedPartyGroup: {
+                  code: partyGroupCode
+                }
+              } as JwtPayload
             )
           }
         }
