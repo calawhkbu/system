@@ -1790,35 +1790,11 @@ const dateStatusExpression = (subqueryParam) => {
                 $when : new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 'add', 1, 'DAY')), '<=', currentTimeExpression),
                 $then : new Value('inDelivery')
               },
-
-              // {
-              //   $when : new OrExpressions([
-
-              //       new BetweenExpression(currentTimeExpression, false, finalATAExpression, convertToEndOfDate(addDateExpression(rawATAExpression, 'add', 1, 'DAY'))),
-              //       new BetweenExpression(currentTimeExpression, false, addDateExpression(convertToEndOfDate(new FunctionExpression('DATE', finalATAExpression)), 'sub', 2, 'HOUR'), convertToEndOfDate(addDateExpression(rawATAExpression, 'add', 1, 'DAY'))),
-              //     ]),
-              //   $then : new Value('arrival')
-              // }
-
             ],
 
             $else : new Value('arrival')
           })
         },
-        // {
-        //   $when : new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 'add', 1, 'DAY')), '>=', todayExpression),
-        //   $then : new Value('inDelivery')
-        // },
-        // {
-        //   $when : new AndExpressions([
-        //     new IsNullExpression(rawATAExpression, true),
-        //     new OrExpressions([
-        //       new BetweenExpression(currentTimeExpression, false, finalATAExpression, convertToEndOfDate(addDateExpression(rawATAExpression, 'add', 1, 'DAY'))),
-        //       new BetweenExpression(currentTimeExpression, false, finalATAExpression, convertToEndOfDate(addDateExpression(rawATAExpression, 'add', 1, 'DAY')))
-        //     ])
-        //   ]),
-        //   $then : new Value('arrival')
-        // },
 
         {
 
@@ -1836,30 +1812,6 @@ const dateStatusExpression = (subqueryParam) => {
             $else : new Value('inTransit')
           })
         }
-
-        // {
-        //   $when : new AndExpressions([
-        //     new IsNullExpression(rawATAExpression, false),
-        //     new BinaryExpression(finalATAExpression, '<', currentTimeExpression)
-        //   ]),
-        //   $then : new Value('inTransit')
-        // },
-        // {
-
-        //   $when : new AndExpressions([
-        //     new IsNullExpression(rawATAExpression, false),
-        //     new BinaryExpression(finalATDExpression, '>=', currentTimeExpression)
-        //   ]),
-        //   $then : new Value('departure')
-        // },
-        // {
-
-        //   $when : new AndExpressions([
-        //     new IsNullExpression(rawATAExpression, false),
-        //     new BinaryExpression(finalATDExpression, '<', currentTimeExpression)
-        //   ]),
-        //   $then : new Value('upcoming')
-        // }
 
       ],
       $else : new Value('upcoming')
@@ -1909,15 +1861,9 @@ const dateStatusExpression = (subqueryParam) => {
                 ]),
                 $then : new Value('inTransit')
               } as ICase,
-              {
-                $when : new AndExpressions([
-                  new BetweenExpression(finalATDExpression, false, todayExpression, addDateExpression(todayExpression, 'add', 3, 'DAY'))
-                ]),
-                $then : new Value('departure')
-              } as ICase,
             ],
 
-            $else : new Value('upcoming')
+            $else : new Value('departure')
           }
           )
         },
