@@ -344,7 +344,10 @@ export const filters = [
     name: 'lastCurrentUnit',
     props: {
       items: [
-
+        {
+          label: 'year',
+          value: 'year',
+        },
         {
           label: 'quarter',
           value: 'quarter',
@@ -353,11 +356,6 @@ export const filters = [
           label: 'month',
           value: 'month',
         },
-        {
-          label: 'previousYear',
-          value: 'previousYear',
-        },
-
         {
           label: 'previousQuarter',
           value: 'previousQuarter',
