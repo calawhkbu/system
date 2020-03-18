@@ -7,7 +7,7 @@
   "axiosBaseParams": [
     "const data = context.$store.state.widget.data;",
     "return {",
-    "url: `api/tracking/getold`,",
+    "url: `api/swivel-tracking/getold`,",
     "method: 'post',",
     "data: {",
     "masterNo: data.masterNo,",

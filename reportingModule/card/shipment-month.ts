@@ -19,8 +19,47 @@ import { parseCode } from 'utils/function'
 
 function prepareParams(): Function {
   return function(require, session, params) {
+
+    function guessSortingExpression(sortingValue: string, subqueries)
+    {
+      const variablePart = sortingValue.substr(0, sortingValue.lastIndexOf('_'))
+      const sortingDirection = sortingValue.substr(sortingValue.lastIndexOf('_') + 1)
+
+      if (!['ASC', 'DESC'].includes(sortingDirection))
+      {
+        throw new Error(`cannot guess sortingDirection`)
+      }
+
+      // here will handle 2 special cases : metric , summaryVariable
+
+      const metricRegex = new RegExp('metric[0-9]+')
+      const summaryVariableRegex = new RegExp('summaryVariable')
+
+      let finalColumnName: string
+
+      // summaryVariable case
+      if (summaryVariableRegex.test(variablePart))
+      {
+        finalColumnName = variablePart.replace('summaryVariable', subqueries.summaryVariable.value)
+      }
+
+      //
+      else if (metricRegex.test(variablePart))
+      {
+        const metricPart = variablePart.match(metricRegex)[0]
+        const metricValue = subqueries[metricPart].value
+        finalColumnName = variablePart.replace(metricPart, metricValue)
+      }
+
+      else {
+        finalColumnName = variablePart
+      }
+
+      return new OrderBy(finalColumnName, sortingDirection)
+    }
     // import
     const { moment } = params.packages
+    const { OrderBy } = require('node-jql')
     const { BadRequestException } = require('@nestjs/common')
 
     const subqueries = (params.subqueries = params.subqueries || {})
@@ -87,8 +126,30 @@ function prepareParams(): Function {
       ...groupByVariables,
     ]
 
-    // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
-    params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
+    // // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
+    // params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
+
+    params.sorting = []
+
+    if (subqueries.sorting && subqueries.sorting.value) {
+
+      const sortingValueList = subqueries.sorting.value as string[]
+
+      sortingValueList.forEach(sortingValue => {
+
+        // will try to find in sortingExpressionMap first, if not found , just use the normal value
+        const orderByExpression = guessSortingExpression(sortingValue, subqueries)
+        params.sorting.push(orderByExpression)
+
+      })
+
+    }
+
+    else {
+
+      params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
+
+    }
 
     params.limit = topX
 
@@ -327,4 +388,34 @@ export const filters = [
     },
     type: 'list',
   },
+
+  {
+    display: 'sorting',
+    name: 'sorting',
+    type: 'list',
+    props: {
+      multi: true,
+      items: [
+
+        {
+          label: 'total_totalShipment_ASC',
+          value: 'total_totalShipment_ASC'
+        },
+
+        {
+          label: 'total_totalShipment_DESC',
+          value: 'total_totalShipment_DESC'
+        },
+        {
+          label: 'total_summaryVariable_ASC',
+          value: 'total_summaryVariable_ASC'
+        },
+        {
+          label: 'total_summaryVariable_DESC',
+          value: 'total_summaryVariable_DESC'
+        }
+      ]
+    }
+
+  }
 ]
