@@ -58,10 +58,10 @@ function prepareParams(): Function {
       }
       else if (lastCurrentUnit === 'previousQuarter') {
 
-        lastFrom = moment(from).subtract(1, 'quaters').startOf('quater').format('YYYY-MM-DD')
-        lastTo = moment(from).subtract(1, 'quaters').endOf('quater').format('YYYY-MM-DD')
-        currentFrom = moment(from).quater(currentQuarter).startOf('quater').format('YYYY-MM-DD')
-        currentTo = moment(from).quater(currentQuarter).endOf('quater').format('YYYY-MM-DD')
+        lastFrom = moment(from).subtract(1, 'quarters').startOf('quarter').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'quarters').endOf('quarter').format('YYYY-MM-DD')
+        currentFrom = moment(from).quarter(currentQuarter).startOf('quarter').format('YYYY-MM-DD')
+        currentTo = moment(from).quarter(currentQuarter).endOf('quarter').format('YYYY-MM-DD')
 
       }
       else if (lastCurrentUnit === 'previousMonth') {
