@@ -20,11 +20,11 @@ function prepareParams(): Function {
 
   return function(require, session, params) {
 
-    function calculateLastCurrent(lastCurrentUnit: string)
-    {
+    function calculateLastCurrent(lastCurrentUnit: string) {
       const from = subqueries.date.from
 
       const currentYear = moment(from).year()
+      const currentQuarter = moment(from).quarter()
       const currentMonth = moment(from).month()
       const currentWeek = moment(from).week()
 
@@ -36,6 +36,13 @@ function prepareParams(): Function {
         lastTo = moment(from).year(currentYear - 1).endOf('year').format('YYYY-MM-DD')
         currentFrom = moment(from).year(currentYear).startOf('year').format('YYYY-MM-DD')
         currentTo = moment(from).year(currentYear).endOf('year').format('YYYY-MM-DD')
+
+      } else if (lastCurrentUnit === 'quarter') {
+
+        lastFrom = moment(from).subtract(1, 'quaters').startOf('quater').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'quaters').endOf('quater').format('YYYY-MM-DD')
+        currentFrom = moment(from).quater(currentQuarter).startOf('quater').format('YYYY-MM-DD')
+        currentTo = moment(from).quater(currentQuarter).endOf('quater').format('YYYY-MM-DD')
 
       } else if (lastCurrentUnit === 'month') {
 
@@ -62,10 +69,10 @@ function prepareParams(): Function {
       else if (lastCurrentUnit === 'lastYearCurrentMonth') {
 
         // special case !!!
-        lastFrom = moment().month(currentMonth).subtract(1, 'years').startOf('month').format('YYYY-MM-DD')
-        lastTo = moment().month(currentMonth).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
-        currentFrom = moment().month(currentMonth).month(currentMonth).startOf('month').format('YYYY-MM-DD')
-        currentTo = moment().month(currentMonth).month(currentMonth).endOf('month').format('YYYY-MM-DD')
+        lastFrom = moment(from).month(currentMonth).subtract(1, 'years').startOf('month').format('YYYY-MM-DD')
+        lastTo = moment(from).month(currentMonth).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
+        currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
+        currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
 
       } else {
         throw new Error('INVALID_lastCurrentUnit')
@@ -330,6 +337,10 @@ export const filters = [
         {
           label: 'year',
           value: 'year',
+        },
+        {
+          label: 'quarter',
+          value: 'quarter',
         },
         {
           label: 'month',

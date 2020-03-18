@@ -1,5 +1,5 @@
 {
-  "class": "grid",
+  "class": "grid full-height",
   "components": [{
       "is": "DynamicComponent",
       "props": {
@@ -31,10 +31,7 @@
             "is": "I18nText",
             "props": {
               "i18nContext": "ShipmentPage",
-              "i18nKey": "title",
-              "i18nOptions": {
-                "title": "{{context.$store.state.widget.data.houseNo}}"
-              }
+              "i18nKey": "importTitle"
             }
           }, {
             "is": "v-spacer"
@@ -43,92 +40,226 @@
       }
     },
     {
-      "is": "WidgetImport",
+      "is": "DynamicComponent",
       "props": {
-        "tableName": "shipment",
-        "importKey": "houseNo",
-        "importAxiosParams": {
-          "method": "post",
-          "url": ""
-        },
-
-        "importFormLayout" : {
-          "class": "xs-12 md-8",
-          "style": {
-            "padding-left": "4px",
-            "padding-bottom": "4px"
-          },
-          "components": [
-            {
-              "is": "v-card",
-              "slots": [{
-                "is": "AsyncComponent",
-                "props": {
-                  "layoutName": "shipment/forms/generalForm"
-                }
-              }
-            ]
+        "class": "xs-12 md-8 padding-left-8 padding-right-8",
+        "components": [{
+          "is": "WidgetImport",
+          "props": {
+            "tableName": "shipment",
+            "importKey": "houseNo",
+            "importAxiosParams": {
+              "method": "post",
+              "url": ""
             },
-
-            {
-              "is": "v-card",
-              "slots": [{
-                "is": "AsyncComponent",
+            "importFormLayout": {
+              "components": [{
+                "is": "DynamicComponent",
                 "props": {
-                  "layoutName": "shipment/forms/containerForm"
+                  "layout": "v-card",
+                  "class": "xs-12 padding-left-4 padding-right-4",
+                  "components": [{
+                    "is": "WidgetForm",
+                    "props": {
+                      "fields": [{
+                          "label": "ShipmentPage.houseNo",
+                          "name": "houseNo",
+                          "component": "v-text-field",
+                          "class": "xs-6 md-3"
+                        }, {
+                          "label": "ShipmentPage.jobNo",
+                          "name": "jobNo",
+                          "component": "v-text-field",
+                          "class": "xs-6 md-3"
+                        }, {
+                          "label": "ShipmentPage.divisionCode",
+                          "name": "divisionCode",
+                          "component": "v-text-field",
+                          "class": "xs-6 md-3"
+                        }, {
+                          "label": "ShipmentPage.carrier",
+                          "name": "carrierCode",
+                          "component": "AsyncAutoSuggest",
+                          "class": "xs-6 md-3",
+                          "relation": "carrierCode",
+                          "more": [{
+                            "name": "carrierCode",
+                            "selector": "code"
+                          }],
+                          "props": {
+                            "searchValueParams": {
+                              "method": "POST",
+                              "url": "api/code/query/code_master",
+                              "data": {
+                                "subqueries": {
+                                  "codeType": {
+                                    "value": "CARRIER"
+                                  },
+                                  "code": {
+                                    "value": "{{context.autoSuggestModel}}"
+                                  }
+                                }
+                              }
+                            },
+                            "searchTextParams": {
+                              "method": "POST",
+                              "url": "api/code/query/code_master",
+                              "data": {
+                                "subqueries": {
+                                  "codeType": {
+                                    "value": "CARRIER"
+                                  },
+                                  "q": {
+                                    "value": "{{context.search}}"
+                                  }
+                                },
+                                "limit": 5
+                              }
+                            },
+                            "item-text": "name",
+                            "item-value": "code"
+                          }
+                        }, {
+                          "label": "ShipmentPage.portOfLoading",
+                          "name": "portOfLoadingCode",
+                          "component": "AsyncAutoSuggest",
+                          "class": "xs-12 md-3",
+                          "more": [{
+                            "name": "portOfLoadingCode",
+                            "selector": "portCode"
+                          }],
+                          "props": {
+                            "searchValueParams": {
+                              "method": "POST",
+                              "url": "api/location/query/location",
+                              "data": {
+                                "subqueries": {
+                                  "moduleTypeCode": {
+                                    "value": "{{context.form.moduleTypeCode}}"
+                                  },
+                                  "ports": {
+                                    "value": "{{context.autoSuggestModel}}"
+                                  }
+                                }
+                              }
+                            },
+                            "searchTextParams": {
+                              "method": "POST",
+                              "url": "api/location/query/location",
+                              "data": {
+                                "subqueries": {
+                                  "moduleTypeCode": {
+                                    "value": "{{context.form.moduleTypeCode}}"
+                                  },
+                                  "q": {
+                                    "value": "{{context.search}}"
+                                  }
+                                },
+                                "limit": 5
+                              }
+                            },
+                            "item-text": "name",
+                            "item-value": "portCode"
+                          }
+                        }, {
+                          "label": "ShipmentPage.portOfDischarge",
+                          "name": "portOfDischargeCode",
+                          "component": "AsyncAutoSuggest",
+                          "class": "xs-12 md-3",
+                          "more": [{
+                            "name": "portOfDischargeCode",
+                            "selector": "portCode"
+                          }],
+                          "props": {
+                            "searchValueParams": {
+                              "method": "POST",
+                              "url": "api/location/query/location",
+                              "data": {
+                                "subqueries": {
+                                  "moduleTypeCode": {
+                                    "value": "{{context.form.moduleTypeCode}}"
+                                  },
+                                  "ports": {
+                                    "value": "{{context.autoSuggestModel}}"
+                                  }
+                                }
+                              }
+                            },
+                            "searchTextParams": {
+                              "method": "POST",
+                              "url": "api/location/query/location",
+                              "data": {
+                                "subqueries": {
+                                  "moduleTypeCode": {
+                                    "value": "{{context.form.moduleTypeCode}}"
+                                  },
+                                  "q": {
+                                    "value": "{{context.search}}"
+                                  }
+                                },
+                                "limit": 5
+                              }
+                            },
+                            "item-text": "name",
+                            "item-value": "portCode"
+                          }
+                        }, {
+                          "label": "ShipmentPage.departureDateEstimated",
+                          "name": "shipmentDate.departureDateEstimated",
+                          "component": "DateTimePicker",
+
+                          "checkDisplayWhen": "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0)",
+                          "class": "xs-6 md-3",
+                          "props": {
+                            "type": "datetime",
+                            "utc": true,
+                            "defaultFormat": "ddd MMM DD YYYY",
+                            "useOwnFormat": true
+                          }
+                        },
+                        {
+                          "label": "ShipmentPage.arrivalDateEstimated",
+                          "name": "shipmentDate.arrivalDateEstimated",
+                          "component": "DateTimePicker",
+                          "class": "xs-6 md-3",
+                          "props": {
+                            "type": "datetime",
+                            "utc": true,
+                            "defaultFormat": "ddd MMM DD YYYY",
+                            "useOwnFormat": true
+                          }
+                        }
+                      ]
+                    }
+                  }, {
+                    "is": "WidgetForm",
+                    "props": {
+                      "fields": [{
+                        "label": "ShipmentPage.containers",
+                        "name": "shipmentContainers",
+                        "component": "TableField",
+                        "props": {
+                          "topLabel": true,
+                          "fields": [{
+                              "label": "ShipmentPage.containerNo",
+                              "name": "containerNo",
+                              "component": "v-text-field"
+                            },
+                            {
+                              "label": "ShipmentPage.carrierBookingNo",
+                              "name": "carrierBookingNo",
+                              "component": "v-text-field"
+                            }
+                          ]
+                        }
+                      }]
+                    }
+                  }]
                 }
               }]
             }
-
-
-
-          ]
-        },
-
-        "importFormProps": {
-          "fields": [{
-            "label": "ShipmentPage.houseNo",
-            "name": "houseNo",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          }, {
-            "label": "ShipmentPage.masterNo",
-            "name": "masterNo",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          }, {
-            "label": "ShipmentPage.jobNo",
-            "name": "jobNo",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          }, {
-            "label": "ShipmentPage.partyGroupCode",
-            "name": "partyGroupCode",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },{
-            "label": "ShipmentPage.divisionCode",
-            "name": "divisionCode",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },{
-            "label": "ShipmentPage.carrierCode",
-            "name": "carrierCode",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
-          },
-          {
-            "label": "ShipmentPage.officePartyId",
-            "name": "shipmentParty.officePartyId",
-            "component": "v-text-field",
-            "class": "xs-6 md-3"
           }
-        
-        
-        
-        
-        ]
-        }
+        }]
       }
     }
   ]

@@ -1,55 +1,18 @@
 {
-  "jobNo": "yourjobNo",
-  "divisionCode": "yourcode",
-  "masterNo": "yourMasterNo",
-  "houseNo": "yourHouseNo",
-
-  "portOfLoadingCode": "yourPortOfLoadingCode",
-
-  "carrierCode": "yourCarrierCode",
-  "moduleTypeCode": "AIR",
-  "shipmentParty": {
-    "consigneePartyCode": "consigneeCode",
-    "consigneePartyName": "consigneeName",
-
-    "shipperPartyCode": "shipperCode",
-    "shipperPartyName": "shipperName"
-  },
-
-  "shipmentCargos" : [
-    {
-
-      "commodity" : "myCommodity1",
-      "hscode" : "myhscode1"
-    },
-    {
-
-      "commodity" : "myCommodity22",
-      "hscode" : "myhscode22"
-    }
-
-
-  ],
-
-  "shipmentContainers": [
-    {
-      "containerNo": "myContainerNo11",
-      "sealNo": "mySealNo11",
-      "carrierbookingNo": "myCarrierBookingNo11",
-      "carrierCode": "myCarrierCode11"
-    },
-    {
-      "containerNo": "myContainerNo22",
-      "sealNo": "mySealNo22",
-      "carrierbookingNo": "myCarrierBookingNo22",
-      "carrierCode": "myCarrierCode22"
-    }
-  ],
-
+  "jobNo": "--JOB NO--",
+  "divisionCode": "--DIVISION--",
+  "houseNo": "--HOUSE NO--",
+  "moduleTypeCode": "SHA",
+  "portOfLoadingCode": "HKHKG",
+  "portOfDischargeCode": "CNSHA",
+  "carrierCode": "OOCL",
+  "masterNo": "ONEY12233443565646543654",
+  "shipmentContainers": [{
+    "containerNo": "myContainerNo11",
+    "carrierbookingNo": "myCarrierBookingNo11"
+  }],
   "shipmentDate": {
-    "arrivalDateEstimated": "2019-01-01",
-    "arrivalDateActual": "2019-01-01",
     "departureDateEstimated": "2019-01-01",
-    "departureDateActual": "2019-01-01"
+    "arrivalDateEstimated": "2019-01-01"
   }
 }

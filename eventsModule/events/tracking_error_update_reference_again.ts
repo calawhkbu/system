@@ -47,7 +47,7 @@ class TrackingErrorUpdateReferenceAgainEvent extends BaseEvent {
             {
               id,
               mode: newMode,
-              yundang: false
+              yundang: 0
             } as TrackingReference,
             this.user,
             this.transaction

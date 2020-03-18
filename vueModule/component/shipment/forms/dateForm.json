@@ -67,14 +67,20 @@
         "departure",
         "arrival"
       ],
+
+      "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['cargoReady','cyCutOff'].includes(key))",
+
       "canAdd": true,
       "canAddProps": {
         "class": "xs-12 md-6 padding-20 min-height-200 margin-auto"
       },
-      "fields": [{
+      "fields": [
+        {
           "label": "Widget.estimatedDate",
           "name": "shipmentDate.{{flex}}{{key}}DateEstimated",
           "component": "DateTimePicker",
+
+          "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['departure'].includes('{{key}}')) ",
 
           "class": "xs-6",
           "props": {
@@ -109,6 +115,8 @@
           "name": "shipmentDate.{{flex}}{{key}}DateEstimated",
           "component": "DateTimePicker",
 
+          "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['departure'].includes('{{key}}')) ",
+
           "class": "xs-6",
           "props": {
             "type": "datetime",
@@ -121,6 +129,7 @@
           "label": "Widget.actualDate",
           "name": "shipmentDate.{{flex}}{{key}}DateActual",
           "component": "DateTimePicker",
+
           "class": "xs-6",
           "props": {
             "type": "datetime",
@@ -133,6 +142,7 @@
           "label": "Widget.remark",
           "name": "shipmentDate.{{flex}}{{key}}Remark",
           "component": "v-text-field",
+          "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['departure'].includes('{{key}}')) ",
           "class": "xs-12 md-12"
         }
       ]
