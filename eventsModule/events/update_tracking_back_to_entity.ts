@@ -59,7 +59,7 @@ class UpdateTrackingIdBackToEntityEvent extends BaseEvent {
           await trackingReferenceService.query(`
             UPDATE shipment
             SET currentTrackingNo = "${data.trackingNo}"
-            WHERE ${idsQuery.join(',')}
+            WHERE ${idsQuery.join(' OR ')}
           `)
         }
         // booking
