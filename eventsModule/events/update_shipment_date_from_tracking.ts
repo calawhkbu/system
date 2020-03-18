@@ -106,7 +106,7 @@ class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
           //   await trackingReferenceService.query(`
           //     UPDATE booking_date
           //     SET ${dateQuery}
-          //     WHERE ${idsQuery.join(',')}
+          //     WHERE ${idsQuery.join(' OR ')}
           //   `)
           // }
         }

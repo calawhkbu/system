@@ -151,7 +151,7 @@
                     "}",
                     "}",
                     "return {",
-                    "url: 'api/tracking/get',",
+                    "url: 'api/swivel-tracking/get',",
                     "method: 'POST',",
                     "data: { trackingNos }",
                     "};"
@@ -775,7 +775,7 @@
               "}",
               "}",
               "return {",
-              "url: 'api/tracking/get',",
+              "url: 'api/swivel-tracking/get',",
               "method: 'POST',",
               "data: { trackingNos }",
               "};"
