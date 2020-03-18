@@ -55,25 +55,39 @@ class UpdateTrackingIdBackToEntityEvent extends BaseEvent {
         `
         const ids = await trackingReferenceService.query(selectQuery, { type: Sequelize.QueryTypes.SELECT })
         if (ids && ids.length) {
-          const idsQuery = ids.map(id => `id = ${id}`)
+          const idsQuery = ids.map(({ id }) => (`id = ${id}`))
           await trackingReferenceService.query(`
             UPDATE shipment
             SET currentTrackingNo = "${data.trackingNo}"
             WHERE ${idsQuery.join(',')}
           `)
         }
-        // const bookingQuery = `
-        //   UPDATE booking
-        //   SET currentTrackingNo = "${data.trackingNo}"
+        // booking
+        // const selectBookingQuery = `
+        //   SELECT booking.id
+        //   FROM booking
+        //   LEFT OUTER JOIN booking_reference booking_reference_SEA
+        //     ON booking_reference_SEA.bookingId = booking.id AND booking_reference_SEA.refName = "MBL"
+        //   LEFT OUTER JOIN booking_reference booking_reference_AIR
+        //     ON booking_reference_AIR.bookingId = booking.id AND booking_reference_AIR.refName = "MAWB"
+        //   LEFT OUTER JOIN booking_container ON booking_container.bookingId = booking.id
         //   WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
-        //   AND currentTrackingNo is null
         //   AND (
-        //     id in (SELECT bookingId FROM booking_reference WHERE refDescription = "${data.trackingNo}" AND refName in ("MBL", "MAWB"))
-        //     OR
-        //     id in (SELECT bookingId FROM booking_container WHERE soNo = "${data.trackingNo}" OR containerNo = "${data.trackingNo}")
+        //     booking_reference_SEA.refDescription = "${data.trackingNo}"
+        //     OR booking_reference_AIR.refDescription = "${data.trackingNo}"
+        //     OR booking_container.soNo = "${data.trackingNo}"
+        //     OR booking_container.containerNo = "${data.trackingNo}"
         //   )
         // `
-        // await trackingReferenceService.query(bookingQuery)
+        // const bookingIds = await trackingReferenceService.query(selectBookingQuery, { type: Sequelize.QueryTypes.SELECT })
+        // if (bookingIds && bookingIds.length) {
+        //   const bidsQuery = bookingIds.map(({ id }) => (`id = ${id}`))
+        //   await trackingReferenceService.query(`
+        //     UPDATE booking
+        //     SET currentTrackingNo = "${data.trackingNo}"
+        //     WHERE ${bidsQuery.join(',')}
+        //   `)
+        // }
       }
     }
     console.debug('End Excecute (UpdateTrackingIdBackToEntityEvent) ...', this.constructor.name)
