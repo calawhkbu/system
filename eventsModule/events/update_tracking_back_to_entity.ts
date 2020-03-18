@@ -85,7 +85,7 @@ class UpdateTrackingIdBackToEntityEvent extends BaseEvent {
         //   await trackingReferenceService.query(`
         //     UPDATE booking
         //     SET currentTrackingNo = "${data.trackingNo}"
-        //     WHERE ${bidsQuery.join(',')}
+        //     WHERE ${bidsQuery.join(' OR ')}
         //   `)
         // }
       }
