@@ -85,6 +85,7 @@ export default class EdiParser856 extends BaseEdiParser {
       loopObjectList = await this.getLoopObject(loopObjectList, getNumOfLoopItem, element)
       const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
       data.push(...filteredList)
+
       await this.removeEmptyElementListObject(data)
       const bookingAmountList = _.get(element, 'bookingAmount')
       const e890Info = bookingAmountList.find(x => x.type === 'OceanFreight')
@@ -391,8 +392,8 @@ export default class EdiParser856 extends BaseEdiParser {
             //   '45HC': 9500,
             // }
             TD3.elementList.push('') // not used // space or no space
-            TD3.elementList.push((_.get(container, 'containerNo') || ' ').substring(0, 4))
-            TD3.elementList.push((_.get(container, 'containerNo') || ' ').substring(4, 10))
+            TD3.elementList.push((_.get(container, 'containerNo') || ' ').substr(0, 4))
+            TD3.elementList.push((_.get(container, 'containerNo') || ' ').substr(4, 10))
             if (_.get(container, 'sealNo1') && _.get(container, 'sealNo1'))
             {
               TD3.elementList.push('', '', '', '', '') // not used
@@ -671,7 +672,7 @@ export default class EdiParser856 extends BaseEdiParser {
                     segement: 'MEA',
                     elementList: []
                 }
-                MEA.elementList.push('', 'WT', (_.get(subPoList[itemIndex], 'bookWeight')).toString().substring(0, 20),  'KG')
+                MEA.elementList.push('', 'WT', (_.get(subPoList[itemIndex], 'bookWeight') || '').toString().substring(0, 20),  'KG')
                 loopObjectList.push(MEA)
               }
             if (_.get(ItemList[itemIndex], 'bookVolume') || _.get(ItemList[itemIndex], 'bookVolume') === 0)
@@ -680,7 +681,7 @@ export default class EdiParser856 extends BaseEdiParser {
                   segement: 'MEA',
                   elementList: []
               }
-              MEA.elementList.push('', 'VOL', (_.get(subPoList[itemIndex], 'bookVolume')).toString().substring(0, 20),  'CO')
+              MEA.elementList.push('', 'VOL', (_.get(subPoList[itemIndex], 'bookVolume') || '').toString().substring(0, 20),  'CO')
               loopObjectList.push(MEA)
             }
             if (_.get(subPoList[itemIndex], 'bookCtns') || _.get(subPoList[itemIndex], 'bookCtns') === 0)
@@ -689,7 +690,7 @@ export default class EdiParser856 extends BaseEdiParser {
                 segement: 'MEA',
                 elementList: []
               }
-              MEANUM.elementList.push('', 'NM', (_.get(subPoList[itemIndex], 'bookCtns')).toString().substring(0, 20),  'CT')
+              MEANUM.elementList.push('', 'NM', (_.get(subPoList[itemIndex], 'bookCtns') || '').toString().substring(0, 20),  'CT')
               loopObjectList.push(MEANUM)
             }
             if (_.get(ItemList[itemIndex], 'bookQuantity') || _.get(subPoList[itemIndex], 'bookCtns') === 0)
@@ -698,7 +699,7 @@ export default class EdiParser856 extends BaseEdiParser {
                   segement: 'MEA',
                   elementList: []
               }
-              MEA.elementList.push('', 'SU', (_.get(subPoList[itemIndex], 'bookQuantity')).toString().substring(0, 20),  'PC')
+              MEA.elementList.push('', 'SU', (_.get(subPoList[itemIndex], 'bookQuantity') || '').toString().substring(0, 20),  'PC')
               loopObjectList.push(MEA)
             }
 
