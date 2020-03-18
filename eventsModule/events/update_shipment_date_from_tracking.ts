@@ -1,7 +1,7 @@
 import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
-import { Transaction } from 'sequelize'
+import { Transaction, Sequelize } from 'sequelize'
 import { Tracking } from 'models/main/tracking'
 import { TrackingReference } from 'models/main/trackingReference'
 import { TrackingReferenceService } from 'modules/sequelize/trackingReference/service'
@@ -63,44 +63,48 @@ class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
           if (ataQuery) {
             dateQuery = `${dateQuery ? `${dateQuery},` : ''}${ataQuery}`
           }
-          const shipmentQuery = `
-            UPDATE shipment_date
-            SET ${dateQuery}
-            WHERE shipmentId IN (
-              SELECT shipment.id
-              FROM shipment
-              LEFT OUTER JOIN shipment_container ON shipment_container.shipmentId = shipment.id
-              WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
-              AND (
-                shipment.masterNo = "${data.trackingNo}"
-                OR shipment_container.carrierBookingNo = "${data.trackingNo}"
-                OR shipment_container.containerNo = "${data.trackingNo}"
-              )
+          const selectQuery = `
+            SELECT shipment.id
+            FROM shipment
+            LEFT OUTER JOIN shipment_container ON shipment_container.shipmentId = shipment.id
+            WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
+            AND (
+              shipment.masterNo = "${data.trackingNo}"
+              OR shipment_container.carrierBookingNo = "${data.trackingNo}"
+              OR shipment_container.containerNo = "${data.trackingNo}"
             )
           `
-          await trackingReferenceService.query(shipmentQuery)
-          const bookingQuery = `
-            UPDATE booking_date
-            SET ${dateQuery}
-            WHERE bookingId IN (
-              SELECT booking.id
-              FROM booking
-              LEFT OUTER JOIN booking_reference booking_reference_SEA ON booking_reference_SEA.bookingId = booking.id AND booking_reference_SEA.refName = "MBL"
-              LEFT OUTER JOIN booking_reference booking_reference_AIR ON booking_reference_AIR.bookingId = booking.id AND booking_reference_AIR.refName = "MAWB"
-              LEFT OUTER JOIN booking_container ON booking_container.bookingId = booking.id
-              WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
-              AND (
-                booking_reference_SEA.refDescription = "${data.trackingNo}"
-                OR
-                booking_reference_AIR.refDescription = "${data.trackingNo}"
-                OR
-                booking_container.soNo = "${data.trackingNo}"
-                OR
-                booking_container.containerNo = "${data.trackingNo}"
-              )
-            )
-          `
-          await trackingReferenceService.query(bookingQuery)
+          const ids = await trackingReferenceService.query(selectQuery, { type: Sequelize.QueryTypes.SELECT })
+          if (ids && ids.length) {
+            const idsQuery = ids.map(id => `shipmentId = ${id}`)
+            await trackingReferenceService.query(`
+              UPDATE shipment_date
+              SET ${dateQuery}
+              WHERE ${idsQuery.join(',')}
+            `)
+          }
+          // const bookingQuery = `
+          //   UPDATE booking_date
+          //   SET ${dateQuery}
+          //   WHERE bookingId IN (
+          //     SELECT booking.id
+          //     FROM booking
+          //     LEFT OUTER JOIN booking_reference booking_reference_SEA ON booking_reference_SEA.bookingId = booking.id AND booking_reference_SEA.refName = "MBL"
+          //     LEFT OUTER JOIN booking_reference booking_reference_AIR ON booking_reference_AIR.bookingId = booking.id AND booking_reference_AIR.refName = "MAWB"
+          //     LEFT OUTER JOIN booking_container ON booking_container.bookingId = booking.id
+          //     WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
+          //     AND (
+          //       booking_reference_SEA.refDescription = "${data.trackingNo}"
+          //       OR
+          //       booking_reference_AIR.refDescription = "${data.trackingNo}"
+          //       OR
+          //       booking_container.soNo = "${data.trackingNo}"
+          //       OR
+          //       booking_container.containerNo = "${data.trackingNo}"
+          //     )
+          //   )
+          // `
+          // await trackingReferenceService.query(bookingQuery)
         }
       }
     }
