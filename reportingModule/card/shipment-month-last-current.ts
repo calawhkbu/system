@@ -20,6 +20,67 @@ import { parseCode } from 'utils/function'
 function prepareParams(): Function {
   return function(require, session, params) {
 
+    function calculateLastCurrent(lastCurrentUnit: string) {
+      const from = subqueries.date.from
+
+      const currentYear = moment(from).year()
+      const currentQuarter = moment(from).quarter()
+      const currentMonth = moment(from).month()
+      const currentWeek = moment(from).week()
+
+      let lastFrom, lastTo, currentFrom, currentTo
+
+      if (lastCurrentUnit === 'year') {
+
+        lastFrom = moment(from).year(currentYear - 1).startOf('year').format('YYYY-MM-DD')
+        lastTo = moment(from).year(currentYear - 1).endOf('year').format('YYYY-MM-DD')
+        currentFrom = moment(from).year(currentYear).startOf('year').format('YYYY-MM-DD')
+        currentTo = moment(from).year(currentYear).endOf('year').format('YYYY-MM-DD')
+      }
+      else if (lastCurrentUnit === 'quarter') {
+
+        lastFrom = moment(from).subtract(1, 'quaters').startOf('quater').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'quaters').endOf('quater').format('YYYY-MM-DD')
+        currentFrom = moment(from).quater(currentQuarter).startOf('quater').format('YYYY-MM-DD')
+        currentTo = moment(from).quater(currentQuarter).endOf('quater').format('YYYY-MM-DD')
+
+      }
+      else if (lastCurrentUnit === 'month') {
+
+        lastFrom = moment(from).subtract(1, 'months').startOf('month').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'months').endOf('month').format('YYYY-MM-DD')
+        currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
+        currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
+
+      }
+      else if (lastCurrentUnit === 'week') {
+        lastFrom = moment(from).subtract(1, 'weeks').startOf('week').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'weeks').endOf('week').format('YYYY-MM-DD')
+        currentFrom = moment(from).week(currentWeek).startOf('week').format('YYYY-MM-DD')
+        currentTo = moment(from).week(currentWeek).endOf('week').format('YYYY-MM-DD')
+      }
+      else if (lastCurrentUnit === 'day') {
+        lastFrom = moment(from).subtract(1, 'days').startOf('day').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'days').endOf('day').format('YYYY-MM-DD')
+        currentFrom = moment(from).startOf('day').format('YYYY-MM-DD')
+        currentTo = moment(from).endOf('day').format('YYYY-MM-DD')
+      }
+      else if (lastCurrentUnit === 'lastYearCurrentMonth') {
+
+        // special case !!!
+        lastFrom = moment(from).month(currentMonth).subtract(1, 'years').startOf('month').format('YYYY-MM-DD')
+        lastTo = moment(from).month(currentMonth).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
+        currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
+        currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
+
+      }
+      else {
+        throw new Error('INVALID_lastCurrentUnit')
+      }
+
+      return { lastFrom, lastTo, currentFrom, currentTo }
+    }
+
     function guessSortingExpression(sortingValue: string, subqueries)
     {
       const variablePart = sortingValue.substr(0, sortingValue.lastIndexOf('_'))
@@ -57,6 +118,7 @@ function prepareParams(): Function {
 
       return new OrderBy(finalColumnName, sortingDirection)
     }
+
     // import
     const { moment } = params.packages
     const { OrderBy } = require('node-jql')
@@ -98,18 +160,18 @@ function prepareParams(): Function {
       throw new Error('MISSING_summaryVariables')
     }
 
-    // ----------------------- filter
+    const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    // ------------------------------
+    const { lastFrom, lastTo, currentFrom, currentTo } = calculateLastCurrent(lastCurrentUnit)
 
-    // limit/extend to 1 year
-    const year = (subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
-    subqueries.date.from = moment()
-      .year(year)
-      .startOf('year')
-      .format('YYYY-MM-DD')
-    subqueries.date.to = moment()
-      .year(year)
-      .endOf('year')
-      .format('YYYY-MM-DD')
+    subqueries.date = {
+      lastFrom,
+      lastTo,
+      currentFrom,
+      currentTo
+    }
+
+    // ----------------------- filter
 
     subqueries[`${groupByEntity}IsNotNull`]  = {// shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
       value : true
@@ -117,7 +179,7 @@ function prepareParams(): Function {
 
     params.fields = [
       // select Month statistics
-      ...summaryVariables.map(variable => `${variable}Month`),
+      ...summaryVariables.map(variable => `${variable}MonthLastCurrent`),
       ...groupByVariables,
     ]
 
@@ -126,8 +188,7 @@ function prepareParams(): Function {
       ...groupByVariables,
     ]
 
-    // // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
-    // params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
+    params.limit = topX
 
     params.sorting = []
 
@@ -144,14 +205,6 @@ function prepareParams(): Function {
       })
 
     }
-
-    else {
-
-      params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
-
-    }
-
-    params.limit = topX
 
     return params
   }
@@ -225,13 +278,32 @@ function finalQuery()
     ]
 
     summaryVariables.map(variable => {
-      months.map(month => {
-        columns.push({ name: `${month}_${variable}`, type: 'number' })
-        $select.push(new ColumnExpression(`${month}_${variable}`))
 
+      months.map(month => {
+
+        ['Last', 'Current'].map(lastOrCurrent => {
+
+          // January_cbmLast
+          columns.push({ name: `${month}_${variable}${lastOrCurrent}`, type: 'number' })
+          $select.push(new ColumnExpression(`${month}_${variable}${lastOrCurrent}`))
+        })
+
+        // January_cbmLastCurrentPercentageChange
+        columns.push({ name: `${month}_${variable}LastCurrentPercentageChange`, type: 'number' })
+        $select.push(new ColumnExpression(`${month}_${variable}LastCurrentPercentageChange`))
+
+      });
+
+      // total_cbmLast
+      ['Last', 'Current'].map(lastOrCurrent => {
+        columns.push({ name: `total_${variable}${lastOrCurrent}`, type: 'number' })
+        $select.push(new ColumnExpression(`total_${variable}${lastOrCurrent}`))
       })
-      columns.push({ name: `total_${variable}`, type: 'number' })
-      $select.push(new ColumnExpression(`total_${variable}`))
+
+      // total_cbmLastCurrentPercentageChange
+      columns.push({ name: `total_${variable}LastCurrentPercentageChange`, type: 'number' })
+      $select.push(new ColumnExpression(`total_${variable}LastCurrentPercentageChange`))
+
     })
 
     return new Query({
@@ -252,6 +324,7 @@ function finalQuery()
 export default [
 
   [prepareParams(), finalQuery()]
+
 ]
 
 export const filters = [
@@ -396,24 +469,56 @@ export const filters = [
     props: {
       multi: true,
       items: [
-
         {
-          label: 'total_totalShipment_ASC',
-          value: 'total_totalShipment_ASC'
+          label: 'total_summaryVariableCurrent_ASC',
+          value: 'total_summaryVariableCurrent_ASC'
+        },
+        {
+          label: 'total_summaryVariableCurrent_DESC',
+          value: 'total_summaryVariableCurrent_DESC'
+        },
+        {
+          label: 'total_summaryVariableLast_ASC',
+          value: 'total_summaryVariableLast_ASC'
+        },
+        {
+          label: 'total_summaryVariableLast_DESC',
+          value: 'total_summaryVariableLast_DESC'
+        },
+        {
+          label: 'total_summaryVariablePercentageChange_ASC',
+          value: 'total_summaryVariablePercentageChange_ASC'
+        },
+        {
+          label: 'total_summaryVariablePercentageChange_DESC',
+          value: 'total_summaryVariablePercentageChange_DESC'
         },
 
         {
-          label: 'total_totalShipment_DESC',
-          value: 'total_totalShipment_DESC'
+          label: 'total_totalShipmentLast_ASC',
+          value: 'total_totalShipmentLast_ASC'
         },
         {
-          label: 'total_summaryVariable_ASC',
-          value: 'total_summaryVariable_ASC'
+          label: 'total_totalShipmentLast_DESC',
+          value: 'total_totalShipmentLast_DESC'
         },
         {
-          label: 'total_summaryVariable_DESC',
-          value: 'total_summaryVariable_DESC'
-        }
+          label: 'total_totalShipmentCurrent_ASC',
+          value: 'total_totalShipmentCurrent_ASC'
+        },
+        {
+          label: 'total_totalShipmentCurrent_DESC',
+          value: 'total_totalShipmentCurrent_DESC'
+        },
+        {
+          label: 'total_totalShipmentPercentageChange_ASC',
+          value: 'total_totalShipmentPercentageChange_ASC'
+        },
+        {
+          label: 'total_totalShipmentPercentageChange_DESC',
+          value: 'total_totalShipmentPercentageChange_DESC'
+        },
+
       ]
     }
 

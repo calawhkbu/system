@@ -1892,14 +1892,9 @@ const dateStatusExpression = (subqueryParam) => {
                 $when : new BinaryExpression(addDateExpression(finalATAExpression, 'add', 3, 'DAY'), '<=', todayExpression),
                 $then : new Value('inDelivery')
               } as ICase,
-
-              {
-                $when : new BetweenExpression(todayExpression, false, finalATAExpression, addDateExpression(finalATAExpression, 'add', 2, 'DAY')),
-                $then : new Value('arrival')
-              } as ICase,
             ],
 
-            $else : new Value('upcoming')
+            $else : new Value('arrival')
           }
           )
         },
@@ -2535,12 +2530,12 @@ isInReportList.map(isInReport => {
       const lastSummaryField = summaryFieldExpression(summaryField, isInReport, lastTimeCondition(params))
       const currentSummaryField = summaryFieldExpression(summaryField, isInReport, currentTimeCondition(params))
 
-      const lastCurrentPercentageChangeExpression = percentageChangeFunction(lastSummaryField, currentSummaryField)
+      const PercentageChangeExpression = percentageChangeFunction(lastSummaryField, currentSummaryField)
 
       return [
         new ResultColumn(lastSummaryField, `${summaryFieldName}Last`),
         new ResultColumn(currentSummaryField, `${summaryFieldName}Current`),
-        new ResultColumn(lastCurrentPercentageChangeExpression, `${summaryFieldName}LastCurrentPercentageChange`)
+        new ResultColumn(PercentageChangeExpression, `${summaryFieldName}PercentageChange`)
       ]
 
     }
@@ -2566,21 +2561,21 @@ isInReportList.map(isInReport => {
         const monthLastSumExpression = summaryFieldExpression(summaryField, isInReport, monthLastCondition)
         const monthCurrentSumExpression = summaryFieldExpression(summaryField, isInReport, monthCurrentCondition)
 
-        const monthLastCurrentPercentageChangeExpression = percentageChangeFunction(monthLastSumExpression, monthCurrentSumExpression)
+        const monthPercentageChangeExpression = percentageChangeFunction(monthLastSumExpression, monthCurrentSumExpression)
 
         resultColumnList.push(new ResultColumn(monthLastSumExpression, `${month}_${summaryFieldName}Last`))
         resultColumnList.push(new ResultColumn(monthCurrentSumExpression, `${month}_${summaryFieldName}Current`))
-        resultColumnList.push(new ResultColumn(monthLastCurrentPercentageChangeExpression, `${month}_${summaryFieldName}LastCurrentPercentageChange`))
+        resultColumnList.push(new ResultColumn(monthPercentageChangeExpression, `${month}_${summaryFieldName}PercentageChange`))
 
       })
 
       const totalLastSumExpression = summaryFieldExpression(summaryField, isInReport, lastTimeCondition(params))
       const totalCurrentSumExpression = summaryFieldExpression(summaryField, isInReport, currentTimeCondition(params))
-      const totalLastCurrentPercentageChangeExpression = percentageChangeFunction(totalLastSumExpression, totalCurrentSumExpression)
+      const totalPercentageChangeExpression = percentageChangeFunction(totalLastSumExpression, totalCurrentSumExpression)
 
       resultColumnList.push(new ResultColumn(totalLastSumExpression, `total_${summaryFieldName}Last`))
       resultColumnList.push(new ResultColumn(totalCurrentSumExpression, `total_${summaryFieldName}Current`))
-      resultColumnList.push(new ResultColumn(totalLastCurrentPercentageChangeExpression, `total_${summaryFieldName}LastCurrentPercentageChange`))
+      resultColumnList.push(new ResultColumn(totalPercentageChangeExpression, `total_${summaryFieldName}PercentageChange`))
 
       return resultColumnList
     }

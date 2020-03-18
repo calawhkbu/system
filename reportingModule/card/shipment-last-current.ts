@@ -82,6 +82,79 @@ function prepareParams(): Function {
       return { lastFrom, lastTo, currentFrom, currentTo }
     }
 
+    function guessSortingExpression(sortingValue: string, subqueries)
+    {
+      const variablePart = sortingValue.substr(0, sortingValue.lastIndexOf('_'))
+      const sortingDirection = sortingValue.substr(sortingValue.lastIndexOf('_') + 1)
+
+      if (!['ASC', 'DESC'].includes(sortingDirection))
+      {
+        throw new Error(`cannot guess sortingDirection`)
+      }
+
+      // here will handle 2 special cases : metric , summaryVariable
+
+      const metricRegex = new RegExp('metric[0-9]+')
+      const summaryVariableRegex = new RegExp('summaryVariable')
+
+      let finalColumnName: string
+
+      // summaryVariable case
+      if (summaryVariableRegex.test(variablePart))
+      {
+        finalColumnName = variablePart.replace('summaryVariable', subqueries.summaryVariable.value)
+      }
+
+      //
+      else if (metricRegex.test(variablePart))
+      {
+        const metricPart = variablePart.match(metricRegex)[0]
+        const metricValue = subqueries[metricPart].value
+        finalColumnName = variablePart.replace(metricPart, metricValue)
+      }
+
+      else {
+        finalColumnName = variablePart
+      }
+
+      return new OrderBy(finalColumnName, sortingDirection)
+    }
+
+    // function composeSortingExpressionMap(subqueries) {
+
+    //   const sortingExpressionMap = {} as { [name: string]: OrderBy }
+
+    //   (['ASC', 'DESC']).forEach(sortingDirection => {
+
+    //     if (metricList) {
+
+    //       for (const [index, metric] of metricList.entries()) {
+
+    //         ['Last', 'Current'].forEach(lastOrCurrent => {
+
+    //           const columnName = `${metric}${lastOrCurrent}`
+
+    //           const sortingExpressionMapName = `metric${index + 1}${lastOrCurrent}_${sortingDirection}`
+
+    //           sortingExpressionMap[sortingExpressionMapName] = new OrderBy(columnName, sortingDirection)
+
+    //         })
+
+    //         const columnName = `${metric}LastCurrentPercentageChange`
+    //         const sortingExpressionMapName = `metric${index + 1}PercentageChange_${sortingDirection}`
+
+    //         sortingExpressionMap[sortingExpressionMapName] = new OrderBy(columnName, sortingDirection)
+
+    //       }
+
+    //     }
+
+    //   })
+
+    //   return sortingExpressionMap
+
+    // }
+
     const { moment } = params.packages
     const { OrderBy } = require('node-jql')
 
@@ -138,42 +211,37 @@ function prepareParams(): Function {
 
     if (subqueries.sorting && subqueries.sorting.value) {
 
-      const sortingExpressionMap = {} as { [name: string]: OrderBy }
-
-        (['ASC', 'DESC']).forEach(sortingDirection => {
-
-            for (const [index, metric] of metricList.entries()) {
-
-              ['Last', 'Current'].forEach(lastOrCurrent => {
-
-              const columnName = `${metric}${lastOrCurrent}`
-
-              const sortingExpressionMapName = `metric${index + 1}${lastOrCurrent}_${sortingDirection}`
-
-              sortingExpressionMap[sortingExpressionMapName] = new OrderBy(columnName, sortingDirection)
-
-            })
-
-            const columnName = `${metric}LastCurrentPercentageChange`
-            const sortingExpressionMapName = `metric${index + 1}PercentageChange_${sortingDirection}`
-
-            sortingExpressionMap[sortingExpressionMapName] = new OrderBy(columnName, sortingDirection)
-
-          }
-
-        })
-
       const sortingValueList = subqueries.sorting.value as string[]
 
       sortingValueList.forEach(sortingValue => {
 
-        const orderByExpression = sortingExpressionMap[sortingValue]
-
+        // will try to find in sortingExpressionMap first, if not found , just use the normal value
+        const orderByExpression = guessSortingExpression(sortingValue, subqueries)
         params.sorting.push(orderByExpression)
 
       })
 
     }
+
+    // if (subqueries.sorting && subqueries.sorting.value) {
+
+    //   const sortingExpressionMap = composeSortingExpressionMap(subqueries)
+
+    //   const sortingValueList = subqueries.sorting.value as string[]
+
+    //   sortingValueList.forEach(sortingValue => {
+
+    //     if (!sortingExpressionMap[sortingValue]) {
+    //       throw new Error('sortingValue not found in sortingExpressionMap')
+    //     }
+
+    //     // will try to find in sortingExpressionMap first, if not found , just use the normal value
+    //     const orderByExpression = sortingExpressionMap[sortingValue]
+    //     params.sorting.push(orderByExpression)
+
+    //   })
+
+    // }
 
     // metricFieldList[0] = totalShipmentLastCurrent
     // metricList[0] = totalShipment
@@ -553,9 +621,9 @@ export const filters = [
   {
     display: 'sorting',
     name: 'sorting',
-    type : 'list',
+    type: 'list',
     props: {
-      multi : true,
+      multi: true,
       items: [
         {
           label: 'metric1Current_ASC',
