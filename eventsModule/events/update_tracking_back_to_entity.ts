@@ -1,7 +1,7 @@
 import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
-import { Transaction } from 'sequelize'
+import { Transaction, Sequelize } from 'sequelize'
 import { Tracking } from 'models/main/tracking'
 import { TrackingReference } from 'models/main/trackingReference'
 import { TrackingReferenceService } from 'modules/sequelize/trackingReference/service'
@@ -38,40 +38,42 @@ class UpdateTrackingIdBackToEntityEvent extends BaseEvent {
         [data.trackingNo], this.user
       )
       if (trackingReferences && trackingReferences.length) {
-        console.log(trackingReferences, this.constructor.name)
         const partyGroupQuery = trackingReferences.map(({ partyGroupCode }: TrackingReference) => {
           return `partyGroupCode = "${partyGroupCode}"`
         })
-        console.log(partyGroupQuery, this.constructor.name)
         // shipment
-        const shipmentQuery = `
-          UPDATE shipment
-          SET currentTrackingNo = "${data.trackingNo}"
+        const selectQuery = `
+          SELECT shipment.id
+          FROM shipment
+          LEFT OUTER JOIN shipment_container ON shipment_container.shipmentId = shipment.id
           WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
-          AND currentTrackingNo is null
           AND (
-            masterNo = "${data.trackingNo}"
-            OR
-            id in (
-              SELECT shipmentId
-              FROM shipment_container
-              WHERE carrierBookingNo = "${data.trackingNo}" OR containerNo = "${data.trackingNo}"
-            )
+            shipment.masterNo = "${data.trackingNo}"
+            OR shipment_container.carrierBookingNo = "${data.trackingNo}"
+            OR shipment_container.containerNo = "${data.trackingNo}"
           )
         `
-        await trackingReferenceService.query(shipmentQuery)
-        const bookingQuery = `
-          UPDATE booking
-          SET currentTrackingNo = "${data.trackingNo}"
-          WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
-          AND currentTrackingNo is null
-          AND (
-            id in (SELECT bookingId FROM booking_reference WHERE refDescription = "${data.trackingNo}" AND refName in ("MBL", "MAWB"))
-            OR
-            id in (SELECT bookingId FROM booking_container WHERE soNo = "${data.trackingNo}" OR containerNo = "${data.trackingNo}")
-          )
-        `
-        await trackingReferenceService.query(bookingQuery)
+        const ids = await trackingReferenceService.query(selectQuery, { type: Sequelize.QueryTypes.SELECT })
+        if (ids && ids.length) {
+          const idsQuery = ids.map(id => `id = ${id}`)
+          await trackingReferenceService.query(`
+            UPDATE shipment
+            SET currentTrackingNo = "${data.trackingNo}"
+            WHERE ${idsQuery.join(',')}
+          `)
+        }
+        // const bookingQuery = `
+        //   UPDATE booking
+        //   SET currentTrackingNo = "${data.trackingNo}"
+        //   WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
+        //   AND currentTrackingNo is null
+        //   AND (
+        //     id in (SELECT bookingId FROM booking_reference WHERE refDescription = "${data.trackingNo}" AND refName in ("MBL", "MAWB"))
+        //     OR
+        //     id in (SELECT bookingId FROM booking_container WHERE soNo = "${data.trackingNo}" OR containerNo = "${data.trackingNo}")
+        //   )
+        // `
+        // await trackingReferenceService.query(bookingQuery)
       }
     }
     console.debug('End Excecute (UpdateTrackingIdBackToEntityEvent) ...', this.constructor.name)
