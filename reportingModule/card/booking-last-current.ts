@@ -36,37 +36,17 @@ function prepareParams(): Function {
         lastTo = moment(from).year(currentYear - 1).endOf('year').format('YYYY-MM-DD')
         currentFrom = moment(from).year(currentYear).startOf('year').format('YYYY-MM-DD')
         currentTo = moment(from).year(currentYear).endOf('year').format('YYYY-MM-DD')
-
-      } else if (lastCurrentUnit === 'quarter') {
-
-        lastFrom = moment(from).subtract(1, 'quaters').startOf('quater').format('YYYY-MM-DD')
-        lastTo = moment(from).subtract(1, 'quaters').endOf('quater').format('YYYY-MM-DD')
-        currentFrom = moment(from).quater(currentQuarter).startOf('quater').format('YYYY-MM-DD')
-        currentTo = moment(from).quater(currentQuarter).endOf('quater').format('YYYY-MM-DD')
-
-      } else if (lastCurrentUnit === 'month') {
-
-        lastFrom = moment(from).subtract(1, 'months').startOf('month').format('YYYY-MM-DD')
-        lastTo = moment(from).subtract(1, 'months').endOf('month').format('YYYY-MM-DD')
-        currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
-        currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
-
-      } else if (lastCurrentUnit === 'week') {
-
-        lastFrom = moment(from).subtract(1, 'weeks').startOf('week').format('YYYY-MM-DD')
-        lastTo = moment(from).subtract(1, 'weeks').endOf('week').format('YYYY-MM-DD')
-        currentFrom = moment(from).week(currentWeek).startOf('week').format('YYYY-MM-DD')
-        currentTo = moment(from).week(currentWeek).endOf('week').format('YYYY-MM-DD')
       }
+      else if (lastCurrentUnit === 'quarter') {
 
-      else if (lastCurrentUnit === 'day') {
-        lastFrom = moment(from).subtract(1, 'days').startOf('day').format('YYYY-MM-DD')
-        lastTo = moment(from).subtract(1, 'days').endOf('day').format('YYYY-MM-DD')
-        currentFrom = moment(from).startOf('day').format('YYYY-MM-DD')
-        currentTo = moment(from).endOf('day').format('YYYY-MM-DD')
+        // special case !!!
+        lastFrom = moment(from).quarter(currentQuarter).subtract(1, 'years').startOf('quarter').format('YYYY-MM-DD')
+        lastTo = moment(from).quarter(currentQuarter).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
+        currentFrom = moment(from).quarter(currentQuarter).startOf('quarter').format('YYYY-MM-DD')
+        currentTo = moment(from).quarter(currentQuarter).endOf('month').format('YYYY-MM-DD')
+
       }
-
-      else if (lastCurrentUnit === 'lastYearCurrentMonth') {
+      else if (lastCurrentUnit === 'month') {
 
         // special case !!!
         lastFrom = moment(from).month(currentMonth).subtract(1, 'years').startOf('month').format('YYYY-MM-DD')
@@ -74,7 +54,37 @@ function prepareParams(): Function {
         currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
         currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
 
-      } else {
+      }
+      else if (lastCurrentUnit === 'previousQuarter') {
+
+        lastFrom = moment(from).subtract(1, 'quarters').startOf('quarter').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'quarters').endOf('quarter').format('YYYY-MM-DD')
+        currentFrom = moment(from).quarter(currentQuarter).startOf('quarter').format('YYYY-MM-DD')
+        currentTo = moment(from).quarter(currentQuarter).endOf('quarter').format('YYYY-MM-DD')
+
+      }
+      else if (lastCurrentUnit === 'previousMonth') {
+
+        lastFrom = moment(from).subtract(1, 'months').startOf('month').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'months').endOf('month').format('YYYY-MM-DD')
+        currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
+        currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
+
+      }
+      else if (lastCurrentUnit === 'previousWeek') {
+        lastFrom = moment(from).subtract(1, 'weeks').startOf('week').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'weeks').endOf('week').format('YYYY-MM-DD')
+        currentFrom = moment(from).week(currentWeek).startOf('week').format('YYYY-MM-DD')
+        currentTo = moment(from).week(currentWeek).endOf('week').format('YYYY-MM-DD')
+      }
+      else if (lastCurrentUnit === 'previousDay') {
+        lastFrom = moment(from).subtract(1, 'days').startOf('day').format('YYYY-MM-DD')
+        lastTo = moment(from).subtract(1, 'days').endOf('day').format('YYYY-MM-DD')
+        currentFrom = moment(from).startOf('day').format('YYYY-MM-DD')
+        currentTo = moment(from).endOf('day').format('YYYY-MM-DD')
+      }
+
+      else {
         throw new Error('INVALID_lastCurrentUnit')
       }
 
@@ -346,20 +356,26 @@ export const filters = [
           label: 'month',
           value: 'month',
         },
+        {
+          label: 'previousQuarter',
+          value: 'previousQuarter',
+        },
+        {
+          label: 'previousMonth',
+          value: 'previousMonth',
+        },
+        {
 
+          label: 'previousWeek',
+          value: 'previousWeek'
+        },
         {
-          label: 'week',
-          value: 'week',
+
+          label: 'previousDay',
+          value: 'previousDay'
+
         },
 
-        {
-          label: 'day',
-          value: 'day',
-        },
-        {
-          label: 'lastYearCurrentMonth',
-          value: 'lastYearCurrentMonth',
-        },
       ],
       required: true,
     },

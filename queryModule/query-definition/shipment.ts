@@ -1181,11 +1181,6 @@ query.registerQuery('shipmentAll', new Query({
 //  register field =======================
 
 // shipment table field
-query
-  .registerResultColumn(
-    'id',
-    new ResultColumn(new ColumnExpression('shipment', 'id'))
-  )
 
 // warning !!! will not contain all if the list is too large
 query.registerResultColumn('primaryKeyListString',
@@ -1199,6 +1194,16 @@ query
   )
 
 // //  IFNULL(carrier.carrierCode, billTransport.carrierCode)
+
+const idExpression = new ColumnExpression('shipment', 'id')
+
+const primaryKeyListStringExpression = new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id')))
+
+const partyGroupCodeExpression = new ColumnExpression('shipment', 'partyGroupCode')
+
+const currentTrackingNoExpression = new ColumnExpression('shipment', 'currentTrackingNo')
+
+const haveCurrentTrackingNoExpression = new FunctionExpression('IF', new IsNullExpression(currentTrackingNoExpression, false), '', '.')
 
 const agentGroupExpression = new CaseExpression({
 
@@ -1790,35 +1795,11 @@ const dateStatusExpression = (subqueryParam) => {
                 $when : new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 'add', 1, 'DAY')), '<=', currentTimeExpression),
                 $then : new Value('inDelivery')
               },
-
-              // {
-              //   $when : new OrExpressions([
-
-              //       new BetweenExpression(currentTimeExpression, false, finalATAExpression, convertToEndOfDate(addDateExpression(rawATAExpression, 'add', 1, 'DAY'))),
-              //       new BetweenExpression(currentTimeExpression, false, addDateExpression(convertToEndOfDate(new FunctionExpression('DATE', finalATAExpression)), 'sub', 2, 'HOUR'), convertToEndOfDate(addDateExpression(rawATAExpression, 'add', 1, 'DAY'))),
-              //     ]),
-              //   $then : new Value('arrival')
-              // }
-
             ],
 
             $else : new Value('arrival')
           })
         },
-        // {
-        //   $when : new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 'add', 1, 'DAY')), '>=', todayExpression),
-        //   $then : new Value('inDelivery')
-        // },
-        // {
-        //   $when : new AndExpressions([
-        //     new IsNullExpression(rawATAExpression, true),
-        //     new OrExpressions([
-        //       new BetweenExpression(currentTimeExpression, false, finalATAExpression, convertToEndOfDate(addDateExpression(rawATAExpression, 'add', 1, 'DAY'))),
-        //       new BetweenExpression(currentTimeExpression, false, finalATAExpression, convertToEndOfDate(addDateExpression(rawATAExpression, 'add', 1, 'DAY')))
-        //     ])
-        //   ]),
-        //   $then : new Value('arrival')
-        // },
 
         {
 
@@ -1836,30 +1817,6 @@ const dateStatusExpression = (subqueryParam) => {
             $else : new Value('inTransit')
           })
         }
-
-        // {
-        //   $when : new AndExpressions([
-        //     new IsNullExpression(rawATAExpression, false),
-        //     new BinaryExpression(finalATAExpression, '<', currentTimeExpression)
-        //   ]),
-        //   $then : new Value('inTransit')
-        // },
-        // {
-
-        //   $when : new AndExpressions([
-        //     new IsNullExpression(rawATAExpression, false),
-        //     new BinaryExpression(finalATDExpression, '>=', currentTimeExpression)
-        //   ]),
-        //   $then : new Value('departure')
-        // },
-        // {
-
-        //   $when : new AndExpressions([
-        //     new IsNullExpression(rawATAExpression, false),
-        //     new BinaryExpression(finalATDExpression, '<', currentTimeExpression)
-        //   ]),
-        //   $then : new Value('upcoming')
-        // }
 
       ],
       $else : new Value('upcoming')
@@ -1892,14 +1849,9 @@ const dateStatusExpression = (subqueryParam) => {
                 $when : new BinaryExpression(addDateExpression(finalATAExpression, 'add', 3, 'DAY'), '<=', todayExpression),
                 $then : new Value('inDelivery')
               } as ICase,
-
-              {
-                $when : new BetweenExpression(todayExpression, false, finalATAExpression, addDateExpression(finalATAExpression, 'add', 2, 'DAY')),
-                $then : new Value('arrival')
-              } as ICase,
             ],
 
-            $else : new Value('upcoming')
+            $else : new Value('arrival')
           }
           )
         },
@@ -1914,15 +1866,9 @@ const dateStatusExpression = (subqueryParam) => {
                 ]),
                 $then : new Value('inTransit')
               } as ICase,
-              {
-                $when : new AndExpressions([
-                  new BetweenExpression(finalATDExpression, false, todayExpression, addDateExpression(todayExpression, 'add', 3, 'DAY'))
-                ]),
-                $then : new Value('departure')
-              } as ICase,
             ],
 
-            $else : new Value('upcoming')
+            $else : new Value('departure')
           }
           )
         },
@@ -2147,6 +2093,13 @@ const alertCreatedAtExpression = new ColumnExpression('alert', 'createdAt')
 const alertUpdatedAtExpression = new ColumnExpression('alert', 'updatedAt')
 
 const alertContentExpression = new ColumnExpression('alert', 'flexData')
+
+query.registerBoth('id', idExpression)
+query.registerBoth('primaryKeyListString', primaryKeyListStringExpression)
+query.registerBoth('partyGroupCode', partyGroupCodeExpression)
+
+query.registerBoth('currentTrackingNo', currentTrackingNoExpression)
+query.registerBoth('haveCurrentTrackingNo', haveCurrentTrackingNoExpression)
 
 query.registerBoth('agentGroup', agentGroupExpression)
 
@@ -2535,12 +2488,12 @@ isInReportList.map(isInReport => {
       const lastSummaryField = summaryFieldExpression(summaryField, isInReport, lastTimeCondition(params))
       const currentSummaryField = summaryFieldExpression(summaryField, isInReport, currentTimeCondition(params))
 
-      const lastCurrentPercentageChangeExpression = percentageChangeFunction(lastSummaryField, currentSummaryField)
+      const PercentageChangeExpression = percentageChangeFunction(lastSummaryField, currentSummaryField)
 
       return [
         new ResultColumn(lastSummaryField, `${summaryFieldName}Last`),
         new ResultColumn(currentSummaryField, `${summaryFieldName}Current`),
-        new ResultColumn(lastCurrentPercentageChangeExpression, `${summaryFieldName}LastCurrentPercentageChange`)
+        new ResultColumn(PercentageChangeExpression, `${summaryFieldName}PercentageChange`)
       ]
 
     }
@@ -2566,21 +2519,21 @@ isInReportList.map(isInReport => {
         const monthLastSumExpression = summaryFieldExpression(summaryField, isInReport, monthLastCondition)
         const monthCurrentSumExpression = summaryFieldExpression(summaryField, isInReport, monthCurrentCondition)
 
-        const monthLastCurrentPercentageChangeExpression = percentageChangeFunction(monthLastSumExpression, monthCurrentSumExpression)
+        const monthPercentageChangeExpression = percentageChangeFunction(monthLastSumExpression, monthCurrentSumExpression)
 
         resultColumnList.push(new ResultColumn(monthLastSumExpression, `${month}_${summaryFieldName}Last`))
         resultColumnList.push(new ResultColumn(monthCurrentSumExpression, `${month}_${summaryFieldName}Current`))
-        resultColumnList.push(new ResultColumn(monthLastCurrentPercentageChangeExpression, `${month}_${summaryFieldName}LastCurrentPercentageChange`))
+        resultColumnList.push(new ResultColumn(monthPercentageChangeExpression, `${month}_${summaryFieldName}PercentageChange`))
 
       })
 
       const totalLastSumExpression = summaryFieldExpression(summaryField, isInReport, lastTimeCondition(params))
       const totalCurrentSumExpression = summaryFieldExpression(summaryField, isInReport, currentTimeCondition(params))
-      const totalLastCurrentPercentageChangeExpression = percentageChangeFunction(totalLastSumExpression, totalCurrentSumExpression)
+      const totalPercentageChangeExpression = percentageChangeFunction(totalLastSumExpression, totalCurrentSumExpression)
 
       resultColumnList.push(new ResultColumn(totalLastSumExpression, `total_${summaryFieldName}Last`))
       resultColumnList.push(new ResultColumn(totalCurrentSumExpression, `total_${summaryFieldName}Current`))
-      resultColumnList.push(new ResultColumn(totalLastCurrentPercentageChangeExpression, `total_${summaryFieldName}LastCurrentPercentageChange`))
+      resultColumnList.push(new ResultColumn(totalPercentageChangeExpression, `total_${summaryFieldName}PercentageChange`))
 
       return resultColumnList
     }
@@ -2753,6 +2706,13 @@ const shipmentTableFilterFieldList = [
   'isDirect',
   'isCoload',
   'houseNo',
+
+  {
+    name : 'currentTrackingNo',
+    expression : currentTrackingNoExpression
+
+  },
+
   {
     name: 'agentGroup',
     expression: agentGroupExpression

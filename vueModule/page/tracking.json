@@ -6,18 +6,18 @@
       "settingProp": {
         "overrideType": "tracking",
         "initAxiosParams": {
-          "url": "api/tracking/{{context.$route.params.params}}"
+          "url": "api/swivel-tracking/{{context.$route.params.params}}"
         },
         "defaultAxiosParams": {
           "url": "default/tracking"
         },
         "validateAxiosParams": {
           "method": "post",
-          "url": "api/tracking/validate/{{id}}"
+          "url": "api/swivel-tracking/validate/{{id}}"
         },
         "saveAxiosParams": {
           "method": "post",
-          "url": "api/tracking"
+          "url": "api/swivel-tracking"
         },
         "primaryKey": "id",
         "modeFunction": [
