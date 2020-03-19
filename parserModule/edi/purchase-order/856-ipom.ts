@@ -407,7 +407,7 @@ export default class EdiParser856 extends BaseEdiParser {
             segement: 'REF',
             elementList: []
         }
-        const refNO = (_.get(element, 'service') === 'CFS' || 'CY') ? 'CFS/CF' : 'MICP'
+        const refNO = (_.get(element, 'service') === 'CFS' || 'CY') ? 'CFS/CY' : 'MICP'
         REF.elementList.push('KK', refNO)
         loopObjectList.push(REF)
         if (_.get(element, 'cargoReceipt'))
