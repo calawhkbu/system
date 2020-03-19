@@ -1181,11 +1181,6 @@ query.registerQuery('shipmentAll', new Query({
 //  register field =======================
 
 // shipment table field
-query
-  .registerResultColumn(
-    'id',
-    new ResultColumn(new ColumnExpression('shipment', 'id'))
-  )
 
 // warning !!! will not contain all if the list is too large
 query.registerResultColumn('primaryKeyListString',
@@ -1199,6 +1194,16 @@ query
   )
 
 // //  IFNULL(carrier.carrierCode, billTransport.carrierCode)
+
+const idExpression = new ColumnExpression('shipment', 'id')
+
+const primaryKeyListStringExpression = new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id')))
+
+const partyGroupCodeExpression = new ColumnExpression('shipment', 'partyGroupCode')
+
+const currentTrackingNoExpression = new ColumnExpression('shipment', 'currentTrackingNo')
+
+const haveCurrentTrackingNoExpression = new FunctionExpression('IF', new IsNullExpression(currentTrackingNoExpression, false), '', '.')
 
 const agentGroupExpression = new CaseExpression({
 
@@ -2089,6 +2094,13 @@ const alertUpdatedAtExpression = new ColumnExpression('alert', 'updatedAt')
 
 const alertContentExpression = new ColumnExpression('alert', 'flexData')
 
+query.registerBoth('id', idExpression)
+query.registerBoth('primaryKeyListString', primaryKeyListStringExpression)
+query.registerBoth('partyGroupCode', partyGroupCodeExpression)
+
+query.registerBoth('currentTrackingNo', currentTrackingNoExpression)
+query.registerBoth('haveCurrentTrackingNo', haveCurrentTrackingNoExpression)
+
 query.registerBoth('agentGroup', agentGroupExpression)
 
 query.registerBoth('carrierCode', carrierCodeExpression)
@@ -2694,6 +2706,13 @@ const shipmentTableFilterFieldList = [
   'isDirect',
   'isCoload',
   'houseNo',
+
+  {
+    name : 'currentTrackingNo',
+    expression : currentTrackingNoExpression
+
+  },
+
   {
     name: 'agentGroup',
     expression: agentGroupExpression
