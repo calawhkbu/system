@@ -22,6 +22,7 @@ function prepareShipmentParams(): Function {
       'portOfDischargeCode',
       'departureDateEstimated',
       'arrivalDateEstimated',
+      'haveCurrentTrackingNo'
     ]
 
     // used in mapCard to bottom sheet
@@ -136,6 +137,7 @@ const query = new Query({
         { name: 'portOfDischargeCode', type: 'string' },
         { name: 'departureDateEstimated', type: 'Date' },
         { name: 'arrivalDateEstimated', type: 'Date' },
+        { name: 'haveCurrentTrackingNo', type: 'Date' },
       ],
     },
     'shipment'

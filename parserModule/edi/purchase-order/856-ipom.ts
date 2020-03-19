@@ -132,7 +132,7 @@ export default class EdiParser856 extends BaseEdiParser {
     data.push(GE, IEA)
     _.set(returnJSON, 'data', data)
     // return cloneEntityJSON
-    // return returnJSON
+    return returnJSON
     const result = await super.export(returnJSON)
     return [result]
   }
@@ -672,7 +672,7 @@ export default class EdiParser856 extends BaseEdiParser {
                     segement: 'MEA',
                     elementList: []
                 }
-                MEA.elementList.push('', 'WT', (_.get(subPoList[itemIndex], 'bookWeight') || '').toString().substring(0, 20),  'KG')
+                MEA.elementList.push('', 'WT', _.get(subPoList[itemIndex], 'bookWeight').toString().substring(0, 20),  'KG')
                 loopObjectList.push(MEA)
               }
             if (_.get(ItemList[itemIndex], 'bookVolume') || _.get(ItemList[itemIndex], 'bookVolume') === 0)
@@ -681,7 +681,7 @@ export default class EdiParser856 extends BaseEdiParser {
                   segement: 'MEA',
                   elementList: []
               }
-              MEA.elementList.push('', 'VOL', (_.get(subPoList[itemIndex], 'bookVolume') || '').toString().substring(0, 20),  'CO')
+              MEA.elementList.push('', 'VOL', _.get(subPoList[itemIndex], 'bookVolume').toString().substring(0, 20),  'CO')
               loopObjectList.push(MEA)
             }
             if (_.get(subPoList[itemIndex], 'bookCtns') || _.get(subPoList[itemIndex], 'bookCtns') === 0)
@@ -690,16 +690,16 @@ export default class EdiParser856 extends BaseEdiParser {
                 segement: 'MEA',
                 elementList: []
               }
-              MEANUM.elementList.push('', 'NM', (_.get(subPoList[itemIndex], 'bookCtns') || '').toString().substring(0, 20),  'CT')
+              MEANUM.elementList.push('', 'NM', _.get(subPoList[itemIndex], 'bookCtns').toString().substring(0, 20),  'CT')
               loopObjectList.push(MEANUM)
             }
-            if (_.get(ItemList[itemIndex], 'bookQuantity') || _.get(subPoList[itemIndex], 'bookCtns') === 0)
+            if (_.get(ItemList[itemIndex], 'bookQuantity') || _.get(subPoList[itemIndex], 'bookQuantity') === 0)
             {
               const MEA: JSONObject = {
                   segement: 'MEA',
                   elementList: []
               }
-              MEA.elementList.push('', 'SU', (_.get(subPoList[itemIndex], 'bookQuantity') || '').toString().substring(0, 20),  'PC')
+              MEA.elementList.push('', 'SU', _.get(subPoList[itemIndex], 'bookQuantity').toString().substring(0, 20),  'PC')
               loopObjectList.push(MEA)
             }
 
