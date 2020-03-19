@@ -6,6 +6,7 @@ const query = new Query({
       method: 'POST',
       url: 'api/shipment/query/shipment',
       columns: [
+
         { name: 'houseNo', type: 'string' },
         { name: 'jobNo', type: 'string' },
         { name: 'masterNo', type: 'string' },
@@ -49,6 +50,7 @@ const query = new Query({
         { name: 'controllingCustomerPartyName', type: 'string' },
 
         { name: 'id', type: 'string' },
+        { name: 'haveCurrentTrackingNo', type: 'string' },
       ],
     },
     'shipment'
