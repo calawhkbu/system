@@ -132,7 +132,7 @@ export default class EdiParser856 extends BaseEdiParser {
     data.push(GE, IEA)
     _.set(returnJSON, 'data', data)
     // return cloneEntityJSON
-    return returnJSON
+    // return returnJSON
     const result = await super.export(returnJSON)
     return [result]
   }
