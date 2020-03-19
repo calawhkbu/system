@@ -132,7 +132,7 @@ export default class EdiParser856 extends BaseEdiParser {
     data.push(GE, IEA)
     _.set(returnJSON, 'data', data)
     // return cloneEntityJSON
-    return returnJSON
+    // return returnJSON
     const result = await super.export(returnJSON)
     return [result]
   }
@@ -407,7 +407,12 @@ export default class EdiParser856 extends BaseEdiParser {
             segement: 'REF',
             elementList: []
         }
-        const refNO = (_.get(element, 'service') === 'CFS' || 'CY') ? 'CFS/CF' : 'MICP'
+        const servciesMap = {
+          CFS : 'CFS/CY',
+          CY : 'CFS/CY',
+          SD : 'CFS/SD'
+        }
+        const refNO = servciesMap[_.get(element, 'service')] ? servciesMap[_.get(element, 'service')] : 'MICP'
         REF.elementList.push('KK', refNO)
         loopObjectList.push(REF)
         if (_.get(element, 'cargoReceipt'))
