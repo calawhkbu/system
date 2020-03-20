@@ -50,9 +50,6 @@
                 "subqueries": {
                   "q": {
                     "value": "{{context.search}}"
-                  },
-                  "isBranch": {
-                    "value": 1
                   }
                 },
                 "limit": 5

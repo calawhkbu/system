@@ -483,6 +483,12 @@ function finalQuery() {
 
     $select.push(new ResultColumn(new ColumnExpression('profit', 'month')))
 
+    for (const [index, tonnageSummaryVariable] of tonnageSummaryVariables.entries()) {
+
+      $select.push(new ResultColumn(new Value(tonnageSummaryVariable), `tonnageSummaryVariable${index}`))
+
+    }
+
     currentOrLastList.map(currentOrLast => {
       types.map(type => {
         tonnageSummaryVariables.map(variable => {
