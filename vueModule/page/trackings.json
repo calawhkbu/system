@@ -60,6 +60,18 @@
 
 
         }
+      }, {
+        "name": "manual",
+        "type": "list",
+        "props": {
+          "items": [{
+            "label": "yes",
+            "value": true
+          }, {
+            "label": "no",
+            "value": false
+          }]
+        }
       }],
       "fieldOptions": [{
         "key": "id",

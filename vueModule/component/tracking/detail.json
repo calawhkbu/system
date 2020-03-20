@@ -107,7 +107,7 @@
                     "fields": [{
                       "label": "TrackingPage.isEstimated",
                       "name": "isEstimated",
-                      "component": "v-checkbox",
+                      "component": "BooleanField",
                       "colGroupProps": {
                         "style": {
                           "width": "5%"
@@ -279,7 +279,7 @@
                 "fields": [{
                   "label": "TrackingPage.isEstimated",
                   "name": "isEstimated",
-                  "component": "v-checkbox",
+                  "component": "BooleanField",
                   "colGroupProps": {
                     "style": {
                       "width": "5%"
