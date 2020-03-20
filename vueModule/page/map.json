@@ -8,6 +8,7 @@
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
+      "noExternal": true,
       "newReport": {
         "filters": {
           "isActive": {
