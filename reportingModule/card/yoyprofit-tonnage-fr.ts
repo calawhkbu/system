@@ -16,6 +16,9 @@ import {
   InsertJQL,
   Column,
   MathExpression,
+  IColumn,
+  CaseExpression,
+  ICase,
 } from 'node-jql'
 
 import { parseCode } from 'utils/function'
@@ -206,7 +209,7 @@ function processProfitSummary() {
                 ),
                 0
               ),
-              `${isCurrent ? 'current' : 'last'}_${type}_${variable}`
+              `${type}_${variable}${isCurrent ? 'Current' : 'Last'}`
             )
           )
         })
@@ -225,6 +228,158 @@ function processProfitSummary() {
   }
 }
 
+function createMonthTable() {
+  return new CreateTableJQL(true, 'monthTable', [
+    new Column('month', 'string'),
+  ])
+
+}
+
+function insertMonthTable() {
+
+  const dataList = months.map(month => {
+    return {
+      month
+    }
+  })
+
+  console.log(dataList)
+
+  return new InsertJQL('monthTable', ...dataList)
+}
+
+function prepareTonnageParams2() {
+
+  return function(require, session, params) {
+
+    const prefix = 'fr'
+    const types = ['F', 'R']
+
+    const { moment } = params.packages
+    const subqueries = (params.subqueries = params.subqueries || {})
+
+    const from = subqueries.date.from
+    const currentYear = moment(from).year()
+
+    const lastFrom = moment(from).year(currentYear - 1).startOf('year').format('YYYY-MM-DD')
+    const lastTo = moment(from).year(currentYear - 1).endOf('year').format('YYYY-MM-DD')
+    const currentFrom = moment(from).year(currentYear).startOf('year').format('YYYY-MM-DD')
+    const currentTo = moment(from).year(currentYear).endOf('year').format('YYYY-MM-DD')
+
+    subqueries.date = {
+      lastFrom,
+      lastTo,
+      currentFrom,
+      currentTo,
+    }
+
+    let tonnageSummaryVariables: string[] = []
+    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value) {
+      // sumamary variable
+      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value) ? subqueries.tonnageSummaryVariables.value : [subqueries.tonnageSummaryVariables.value]
+    }
+
+    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)) {
+      throw new Error('MISSING_tonnageSummaryVariables')
+    }
+
+    params.fields = [
+      ...tonnageSummaryVariables.map(tonnageSummaryVariable => {
+
+        return `${prefix}_${tonnageSummaryVariable}MonthLastCurrent`
+
+      })
+    ]
+    console.log(params, 'hihihihi')
+    return params
+  }
+}
+
+function tonnageQuery() {
+
+  return function(require, session, params) {
+
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ]
+
+    const prefix = 'fr'
+    const types = ['F', 'R']
+    const subqueries = (params.subqueries = params.subqueries || {})
+
+    let tonnageSummaryVariables: string[] = []
+    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value) {
+      // sumamary variable
+      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value) ? subqueries.tonnageSummaryVariables.value : [subqueries.tonnageSummaryVariables.value]
+    }
+
+    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)) {
+      throw new Error('MISSING_tonnageSummaryVariables')
+    }
+
+    console.log(`tonnageSummaryVariables`)
+    console.log(tonnageSummaryVariables)
+
+    const columns = [] as IColumn[]
+
+    months.map(month => {
+
+      types.map(type => {
+
+        ['Last', 'Current'].map(lastOrCurrent => {
+
+          tonnageSummaryVariables.map(tonnageSummaryVariable => {
+
+            const columnName = `${month}_${type}_${tonnageSummaryVariable}${lastOrCurrent}`
+
+            console.log(`columnName`)
+            console.log(columnName)
+
+            columns.push({
+
+              name: columnName,
+              type: 'number',
+
+            })
+
+          })
+
+        })
+
+      })
+
+    })
+
+    return new CreateTableJQL({
+      name: 'tonnage',
+      $temporary: true,
+      $as: new Query({
+        $from: new FromTable(
+          {
+            method: 'POST',
+            url: `api/shipment/query/shipment`,
+            columns
+          },
+          'shipment'
+        ),
+      }),
+    })
+
+  }
+
+}
+
 function createTonnagetable() {
   return function(require, session, params) {
     const { CreateTableJQL } = require('node-jql')
@@ -234,13 +389,12 @@ function createTonnagetable() {
     const subqueries = (params.subqueries = params.subqueries || {})
 
     let tonnageSummaryVariables: string[] = []
-    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value)
-    {
+    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value) {
       // sumamary variable
-      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value ) ? subqueries.tonnageSummaryVariables.value  : [subqueries.tonnageSummaryVariables.value ]
+      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value) ? subqueries.tonnageSummaryVariables.value : [subqueries.tonnageSummaryVariables.value]
     }
 
-    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)){
+    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)) {
       throw new Error('MISSING_summaryVariables')
     }
 
@@ -288,13 +442,12 @@ function prepareTonnageParams(currentYear_: boolean, nominatedType_: 'F' | 'R'):
     subqueries.nominatedTypeCode = { value: [nominatedType_] }
 
     let tonnageSummaryVariables: string[] = []
-    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value)
-    {
+    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value) {
       // sumamary variable
-      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value ) ? subqueries.tonnageSummaryVariables.value  : [subqueries.tonnageSummaryVariables.value ]
+      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value) ? subqueries.tonnageSummaryVariables.value : [subqueries.tonnageSummaryVariables.value]
     }
 
-    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)){
+    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)) {
       throw new Error('MISSING_tonnageSummaryVariables')
     }
 
@@ -324,13 +477,12 @@ function insertTonnageData(currentYear_: boolean, nominatedType_: 'F' | 'R') {
     const subqueries = (params.subqueries = params.subqueries || {})
 
     let tonnageSummaryVariables: string[] = []
-    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value)
-    {
+    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value) {
       // sumamary variable
-      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value ) ? subqueries.tonnageSummaryVariables.value  : [subqueries.tonnageSummaryVariables.value ]
+      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value) ? subqueries.tonnageSummaryVariables.value : [subqueries.tonnageSummaryVariables.value]
     }
 
-    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)){
+    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)) {
       throw new Error('MISSING_tonnageSummaryVariables')
     }
 
@@ -396,13 +548,12 @@ function processTonnageSummary() {
     const subqueries = (params.subqueries = params.subqueries || {})
 
     let tonnageSummaryVariables: string[] = []
-    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value)
-    {
+    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value) {
       // sumamary variable
-      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value ) ? subqueries.tonnageSummaryVariables.value  : [subqueries.tonnageSummaryVariables.value ]
+      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value) ? subqueries.tonnageSummaryVariables.value : [subqueries.tonnageSummaryVariables.value]
     }
 
-    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)){
+    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)) {
       throw new Error('MISSING_tonnageSummaryVariables')
     }
 
@@ -450,87 +601,107 @@ function processTonnageSummary() {
 }
 
 function finalQuery() {
+
   return function(require, session, params) {
-    const currentOrLastList = ['current', 'last']
-    const types = ['F', 'R']
-
-    const {
-      ResultColumn,
-      ColumnExpression,
-      FromTable,
-      JoinClause,
-      BinaryExpression,
-      Query,
-    } = require('node-jql')
-
     const subqueries = (params.subqueries = params.subqueries || {})
 
     let tonnageSummaryVariables: string[] = []
-    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value)
-    {
+    if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables.value) {
       // sumamary variable
-      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value ) ? subqueries.tonnageSummaryVariables.value  : [subqueries.tonnageSummaryVariables.value ]
+      tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value) ? subqueries.tonnageSummaryVariables.value : [subqueries.tonnageSummaryVariables.value]
     }
 
-    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)){
+    if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)) {
       throw new Error('MISSING_tonnageSummaryVariables')
     }
 
-    const profitSummaryVariables = subqueries.profitSummaryVariables.value
-    // const profitSummaryVariables = ['grossProfit', 'profitShare', 'profitShareCost', 'profitShareIncome', 'revenue']
+    const profitSummaryVariables = params.subqueries.profitSummaryVariables.value
 
-    const $select = []
+    const $select = [
+      new ResultColumn(new ColumnExpression('monthTable', 'month')),
+      new ResultColumn(new Value(tonnageSummaryVariables[0]), `tonnageSummaryVariable0`)
+    ]
 
-    $select.push(new ResultColumn(new ColumnExpression('profit', 'month')))
+    const lastOrCurentList = ['Last', 'Current']
+    const types = ['F', 'R']
 
-    for (const [index, tonnageSummaryVariable] of tonnageSummaryVariables.entries()) {
+    lastOrCurentList.map(lastOrCurrent => {
 
-      $select.push(new ResultColumn(new Value(tonnageSummaryVariable), `tonnageSummaryVariable${index}`))
-
-    }
-
-    currentOrLastList.map(currentOrLast => {
       types.map(type => {
-        tonnageSummaryVariables.map(variable => {
+
+        profitSummaryVariables.map(profitSummaryVariable => {
+
+          const profitSummaryVariableName = `${type}_${profitSummaryVariable}${lastOrCurrent}`
+
+          $select.push(new ResultColumn(new ColumnExpression('profit', profitSummaryVariableName), profitSummaryVariableName))
+
+        })
+
+        tonnageSummaryVariables.map(tonnageSummaryVariable => {
+
+          const tonnageSummaryVariableName = `${type}_${tonnageSummaryVariable}${lastOrCurrent}`
+
+          const tonnageSummaryCaseExpression = new CaseExpression({
+            cases: [...months.map(month => {
+
+              return {
+                $when: new BinaryExpression(new ColumnExpression('monthTable', 'month'), '=', month),
+                $then: new ColumnExpression('tonnage', `${month}_${tonnageSummaryVariableName}`)
+
+              } as ICase
+            })
+            ],
+            $else: new Value(null)
+          })
+
           $select.push(
             new ResultColumn(
-              new ColumnExpression('tonnage', `${currentOrLast}_${type}_${variable}`)
+              tonnageSummaryCaseExpression, `${tonnageSummaryVariableName}`
             )
           )
         })
 
-        profitSummaryVariables.map(variable => {
-          $select.push(
-            new ResultColumn(new ColumnExpression('profit', `${currentOrLast}_${type}_${variable}`))
-          )
-        })
       })
+
     })
 
     return new Query({
+
       $select,
 
-      $from: new FromTable(
-        'profit',
+      $from: new FromTable('monthTable',
 
         new JoinClause({
           table: 'tonnage',
           operator: 'LEFT',
           $on: [
+            new Value(true)
+          ],
+        }),
+
+        new JoinClause({
+          table: 'profit',
+          operator: 'LEFT',
+          $on: [
             new BinaryExpression(
               new ColumnExpression('profit', 'month'),
               '=',
-              new ColumnExpression('tonnage', 'month')
+              new ColumnExpression('monthTable', 'month')
             ),
           ],
-        })
+        }),
+
       ),
+
     })
+
   }
+
 }
 
 export default [
   // prepare all profit table
+
   createProfitTable(),
   [prepareProfitParams(true, 'F'), insertProfitData(true, 'F')],
   [prepareProfitParams(false, 'F'), insertProfitData(false, 'F')],
@@ -539,21 +710,27 @@ export default [
 
   processProfitSummary(),
 
+  createMonthTable(),
+  insertMonthTable(),
+  [prepareTonnageParams2(), tonnageQuery()],
+  finalQuery()
+  // [prepareTonnageParams2(), tonnageQuery()]
+
   // new Query({
 
   //   $from : 'profit'
   // })
 
-  // prepareTonnage Data
-  createTonnagetable(),
-  [prepareTonnageParams(true, 'F'), insertTonnageData(true, 'F')],
-  [prepareTonnageParams(false, 'F'), insertTonnageData(false, 'F')],
-  [prepareTonnageParams(true, 'R'), insertTonnageData(true, 'R')],
-  [prepareTonnageParams(false, 'R'), insertTonnageData(false, 'R')],
+  // // prepareTonnage Data
+  // createTonnagetable(),
+  // [prepareTonnageParams(true, 'F'), insertTonnageData(true, 'F')],
+  // [prepareTonnageParams(false, 'F'), insertTonnageData(false, 'F')],
+  // [prepareTonnageParams(true, 'R'), insertTonnageData(true, 'R')],
+  // [prepareTonnageParams(false, 'R'), insertTonnageData(false, 'R')],
 
-  processTonnageSummary(),
+  // processTonnageSummary(),
 
-  finalQuery(),
+  // finalQuery(),
 ]
 
 // filters avaliable for this card
@@ -580,7 +757,7 @@ export const filters = [{
         value: 'totalShipment',
       },
     ],
-    multi : false,
+    multi: false,
     required: true,
   },
   type: 'list',
