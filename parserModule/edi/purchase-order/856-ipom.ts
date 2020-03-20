@@ -43,6 +43,7 @@ export default class EdiParser856 extends BaseEdiParser {
         segement: 'ISA',
         elementList : []
     }
+
     const bookingNo = _.get(entityJSON[0], 'bookingNo')
     const removeCharbookingNo = bookingNo.replace(/-/g, '')
     const controlNo = await this.getNewSeq(process.env.NODE_ENV === 'production' ? '856-ipom' : '856-ipom-dev')
@@ -81,8 +82,8 @@ export default class EdiParser856 extends BaseEdiParser {
       BSN.elementList.push('0004')
       data.push(BSN)
       let loopObjectList: any[] = []
-      const getNumOfLoopItem = 1 + (_.get(element, 'bookingPOPackings').length) + this.getNumOfPo(_.get(element, 'bookingPOPackings'))
-      loopObjectList = await this.getLoopObject(loopObjectList, getNumOfLoopItem, element)
+      const getNumOfLoopItem = (_.get(element, 'bookingContainers').length) + (_.get(element, 'bookingPOPackings').length) + this.getNumOfPo(_.get(element, 'bookingPOPackings'))
+      loopObjectList = await this.getLoopObject(loopObjectList, element)
       const filteredList = loopObjectList.filter(value => Object.keys(value).length !== 0)
       data.push(...filteredList)
 
@@ -133,7 +134,10 @@ export default class EdiParser856 extends BaseEdiParser {
     _.set(returnJSON, 'data', data)
     // return cloneEntityJSON
     // return returnJSON
+    // sconst edtResult = this.toExport(returnJSON)
+    // return edtResult
     const result = await super.export(returnJSON)
+    // return result['ediResults']['item1']
     return [result]
   }
   async removeEmptyElementListObject(data)
@@ -156,28 +160,31 @@ export default class EdiParser856 extends BaseEdiParser {
     }
     return data
   }
-  async getLoopObject(loopObjectList, getNumOfLoopItem, element)
+
+  async getLoopObject(loopObjectList, element)
   {
-    for (let i = 1; i <= getNumOfLoopItem; i++)
+    if ((_.get(element, 'bookingContainers') || []).length)
     {
-      if (i === 1) // information of shipment
+      for (const container of element.bookingContainers)
       {
+        let shipmentCumanlateNo = 1
+        const poList = this.getTargetPoList(element, container.containerNo)
         const HL: JSONObject = {
           segement : 'HL',
           elementList : []
         }
-        HL.elementList.push(i.toString().substring(0, 12))
+        HL.elementList.push(shipmentCumanlateNo.toString().substring(0, 12))
         HL.elementList.push('')// not used
         HL.elementList.push('S')
         loopObjectList.push(HL)
-        if ((_.get(element, 'bookingPOPackings') || []).length)
+        if (poList.length)
         {
           let totalWeight = 0
           let numberOfPacking = 0
           let totalVolume = 0
           let totalShipUnit = 0
           let missingPosition = 1
-          for (const booking of _.get(element, 'bookingPOPackings'))
+          for (const booking of poList)
           {
             if (_.get(booking, 'bookWeight') || _.get(booking, 'bookWeight') === 0)
             {
@@ -257,7 +264,6 @@ export default class EdiParser856 extends BaseEdiParser {
           }
         }
         const carrierCode = _.get(element, 'carrierCode')
-
         const pad2 = '    '
         const scacMapper = {
           MSC: 'MSCU',
@@ -276,136 +282,94 @@ export default class EdiParser856 extends BaseEdiParser {
         {
           scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode.length || ''.toString().length)}`
         }
-        // if (_.get(element, 'portOfLoading') || _.get(element, 'portOfDischarge') || _.get(element, 'containerPoint'))
-        // {
-          // if (_.get(element, 'containerPoint'))
-          // {
-            const TD5OA: JSONObject = {
-              segement : 'TD5',
-              elementList : []
-            }
-              TD5OA.elementList.push('O')
-              TD5OA.elementList.push('2')
-              TD5OA.elementList.push(scac)
-              TD5OA.elementList.push('') // not used
-              TD5OA.elementList.push('') // not used
-              TD5OA.elementList.push('') // not used
-              TD5OA.elementList.push('OA')
-              TD5OA.elementList.push(_.get(element, 'portOfLoading').substring(0, 30))
-              loopObjectList.push(TD5OA)
-            // }
-
-          // if (_.get(element, 'portOfDischarge'))
-          // {
-            const TD5PB: JSONObject = {
-                segement : 'TD5',
-                elementList : []
-            }
-            TD5PB.elementList.push('O')
-            TD5PB.elementList.push('2')
-            TD5PB.elementList.push(scac)
-            TD5PB.elementList.push('')// not used
-            TD5PB.elementList.push('')// not used // space or no space
-            TD5PB.elementList.push('')// not used // space or no space
-            TD5PB.elementList.push('PB')
-            TD5PB.elementList.push(_.get(element, 'portOfDischarge').substring(0, 30))
-            loopObjectList.push(TD5PB)
-          // }
-          if (!_.get(element, 'finalDestination'))
-          {
-            throw new Error('there is no finalDesination')
-          }
-          const TD5DE: JSONObject = {
-            segement : 'TD5',
-            elementList : []
-          }
-            TD5DE.elementList.push('O')
-            TD5DE.elementList.push('2')
-            TD5DE.elementList.push(scac)
-            TD5DE.elementList.push('') // not used
-            TD5DE.elementList.push('') // not used
-            TD5DE.elementList.push('') // not used
-            TD5DE.elementList.push('DE')
-            TD5DE.elementList.push((_.get(element, 'finalDestination') || ' ').substring(0, 30))
-            loopObjectList.push(TD5DE)
-          const TD5DL: JSONObject = {
-            segement : 'TD5',
-            elementList : []
-          }
-            TD5DL.elementList.push('O')
-            TD5DL.elementList.push('2')
-            TD5DL.elementList.push(scac)
-            TD5DL.elementList.push('') // not used
-            TD5DL.elementList.push('') // not used
-            TD5DL.elementList.push('') // not used
-            TD5DL.elementList.push('DL')
-            TD5DL.elementList.push((_.get(element, 'finalDestination') || ' ').substring(0, 30))
-            loopObjectList.push(TD5DL)
-             // if (_.get(element, 'portOfLoading'))
-          // {
-            const TD5KL: JSONObject = {
-              segement : 'TD5',
-              elementList : []
-            }
-            TD5KL.elementList.push('O')
-            TD5KL.elementList.push('2')
-            TD5KL.elementList.push(scac)
-            TD5KL.elementList.push('')// not used
-            TD5KL.elementList.push('')// not used // space or no space
-            TD5KL.elementList.push('')// not used // space or no space
-            TD5KL.elementList.push('KL')
-            TD5KL.elementList.push(_.get(element, 'portOfLoading').substring(0, 30))
-            loopObjectList.push(TD5KL)
-          // }
-        // }
-        // else
-        // {
-        //  if (carrierCode)
-        //  {
-        //    const TD5: JSONObject = {
-        //      segement : 'TD5',
-        //      elementList : []
-        //    }
-        //    TD5.elementList.push('O')
-        //    TD5.elementList.push('2')
-        //    TD5.elementList.push(scac)
-        //    loopObjectList.push(TD5)
-        //  }
-        // }
-
-        if ((_.get(element, 'bookingContainers') || []).length)
-        {
-          for (const container of element.bookingContainers)
-          {
-            const TD3: JSONObject = {
-              segement: 'TD3',
-              elementList: []
-            }
-            // const isoCodeMapper = {
-            //   '20OT': 2251,
-            //   '40OT': 4351,
-            //   '40HRF': 4662,
-            //   '45HRF': 9532,
-            //   '20RF': 2232,
-            //   '40RF': 4332,
-            //   '40HC': 4500,
-            //   '45HC': 9500,
-            // }
-            TD3.elementList.push('') // not used // space or no space
-            TD3.elementList.push((_.get(container, 'containerNo') || ' ').substr(0, 4))
-            TD3.elementList.push((_.get(container, 'containerNo') || ' ').substr(4, 10))
-            if (_.get(container, 'sealNo1') && _.get(container, 'sealNo1'))
-            {
-              TD3.elementList.push('', '', '', '', '') // not used
-              TD3.elementList.push(_.get(container, 'sealNo1'))
-              TD3.elementList.push(_.get(container, 'isoNo'))
-            }
-            loopObjectList.push(TD3)
-          }
+        const TD5OA: JSONObject = {
+          segement : 'TD5',
+          elementList : []
         }
+        TD5OA.elementList.push('O')
+        TD5OA.elementList.push('2')
+        TD5OA.elementList.push(scac)
+        TD5OA.elementList.push('') // not used
+        TD5OA.elementList.push('') // not used
+        TD5OA.elementList.push('') // not used
+        TD5OA.elementList.push('OA')
+        TD5OA.elementList.push(_.get(element, 'portOfLoading').substring(0, 30))
+        loopObjectList.push(TD5OA)
+
+        const TD5PB: JSONObject = {
+          segement : 'TD5',
+          elementList : []
+        }
+        TD5PB.elementList.push('O')
+        TD5PB.elementList.push('2')
+        TD5PB.elementList.push(scac)
+        TD5PB.elementList.push('')// not used
+        TD5PB.elementList.push('')// not used // space or no space
+        TD5PB.elementList.push('')// not used // space or no space
+        TD5PB.elementList.push('PB')
+        TD5PB.elementList.push(_.get(element, 'portOfDischarge').substring(0, 30))
+        loopObjectList.push(TD5PB)
+
+        if (!_.get(element, 'finalDestination'))
+        {
+          throw new Error('there is no finalDesination')
+        }
+        const TD5DE: JSONObject = {
+          segement : 'TD5',
+          elementList : []
+        }
+        TD5DE.elementList.push('O')
+        TD5DE.elementList.push('2')
+        TD5DE.elementList.push(scac)
+        TD5DE.elementList.push('') // not used
+        TD5DE.elementList.push('') // not used
+        TD5DE.elementList.push('') // not used
+        TD5DE.elementList.push('DE')
+        TD5DE.elementList.push((_.get(element, 'finalDestination') || ' ').substring(0, 30))
+        loopObjectList.push(TD5DE)
+        const TD5DL: JSONObject = {
+          segement : 'TD5',
+          elementList : []
+        }
+        TD5DL.elementList.push('O')
+        TD5DL.elementList.push('2')
+        TD5DL.elementList.push(scac)
+        TD5DL.elementList.push('') // not used
+        TD5DL.elementList.push('') // not used
+        TD5DL.elementList.push('') // not used
+        TD5DL.elementList.push('DL')
+        TD5DL.elementList.push((_.get(element, 'finalDestination') || ' ').substring(0, 30))
+        loopObjectList.push(TD5DL)
+        const TD5KL: JSONObject = {
+          segement : 'TD5',
+          elementList : []
+        }
+        TD5KL.elementList.push('O')
+        TD5KL.elementList.push('2')
+        TD5KL.elementList.push(scac)
+        TD5KL.elementList.push('')// not used
+        TD5KL.elementList.push('')// not used // space or no space
+        TD5KL.elementList.push('')// not used // space or no space
+        TD5KL.elementList.push('KL')
+        TD5KL.elementList.push(_.get(element, 'portOfLoading').substring(0, 30))
+        loopObjectList.push(TD5KL)
+        const TD3: JSONObject = {
+          segement: 'TD3',
+          elementList: []
+        }
+        TD3.elementList.push('') // not used // space or no space
+        TD3.elementList.push((_.get(container, 'containerNo') || ' ').substr(0, 4))
+        TD3.elementList.push((_.get(container, 'containerNo') || ' ').substr(4, 10))
+        if (_.get(container, 'sealNo1') && _.get(container, 'sealNo1'))
+        {
+          TD3.elementList.push('', '', '', '', '') // not used
+          TD3.elementList.push(_.get(container, 'sealNo1'))
+          TD3.elementList.push(_.get(container, 'isoNo'))
+        }
+        loopObjectList.push(TD3)
         const REF: JSONObject = {
-            segement: 'REF',
-            elementList: []
+          segement: 'REF',
+          elementList: []
         }
         const servciesMap = {
           CFS : 'CFS/CY',
@@ -471,252 +435,264 @@ export default class EdiParser856 extends BaseEdiParser {
         V1.elementList.push('')// not used
         V1.elementList.push((_.get(element, 'voyageFlightNumber') || '').substring(0, 10))
         loopObjectList.push(V1)
-      }
-      else
-      {
-        const ItemList = _.get(element, 'bookingPOPackings')
-        const source = from(ItemList)
-        const grouped = source.pipe(
-          groupBy(item => item.poNo),
-          // return each item in group as array
-          mergeMap(group => group.pipe(toArray()))
-        )
-        const poList = []
-        grouped.subscribe(val => poList.push(val))
-        // for (const groupValue of grouped)
-        // console.log(groupValue)
-        let index = 1
-        for (const subPoList of poList)
-        {
-          let itemIndex = 0
-          const HLO: JSONObject = {
-            segement : 'HL',
-            elementList : []
-          }
-          HLO.elementList.push(i.toString().substr(0, 12))
-          HLO.elementList.push('1')
-          HLO.elementList.push('O')
-          loopObjectList.push(HLO)
-          const PRF: JSONObject = {
-            segement : 'PRF',
-            elementList : []
-          }
-          PRF.elementList.push((_.get(subPoList[0], 'poNo') || '').substring(0, 10))
-          if (_.get(subPoList[0], 'poDate'))
-          {
-            PRF.elementList.push('', '') // not used
-            PRF.elementList.push(moment(_.get(subPoList[0], 'poDate')).format('YYYYMMDD'))
-          }
-          loopObjectList.push(PRF)
-          const carrierCode = _.get(element, 'carrierCode')
-          const pad2 = '    '
-          const scacMapper = {
-            MSC: 'MSCU',
-            HII: 'HLCU',
-            HSU: 'SUDU',
-            ONE: 'ONEY',
-            MSK: 'MAEU',
-            CMA: 'CMDU'
-          }
-          let scac = '    '
-          if (carrierCode)
-          {
-            scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode.toString().length)}`
-          }
-          // if (_.get(subPoList[0], 'pol') || _.get(element, 'portOfLoading'))
-          // {
-            const TD5OR: JSONObject = {
-              segement : 'TD5',
-              elementList : []
-            }
-            TD5OR.elementList.push('O')
-            TD5OR.elementList.push('2')
-            TD5OR.elementList.push(scac)
-            TD5OR.elementList.push('') // not used
-            TD5OR.elementList.push('') // not used
-            TD5OR.elementList.push('') // not used
-            TD5OR.elementList.push('OR')
-            TD5OR.elementList.push((_.get(element, 'placeOfReceipt') || ' ').substring(0, 30))
-            loopObjectList.push(TD5OR)
-          // }
-          // if (_.get(subPoList[0], 'pod') || _.get(element, 'portOfDischarge'))
-          // {
-            const TD5: JSONObject = {
-              segement : 'TD5',
-              elementList : []
-            }
-            TD5.elementList.push('O')
-            TD5.elementList.push('2')
-            TD5.elementList.push(scac)
-            TD5.elementList.push('') // not used
-            TD5.elementList.push('') // not used
-            TD5.elementList.push('') // not used
-            TD5.elementList.push('DL')
-            TD5.elementList.push((_.get(element, 'finalDestination') || ' ').substring(0, 30))
-            loopObjectList.push(TD5)
-          // }
-
-          // const ItemList = _.get(element, 'bookingPOPackings') // find packing# however in this case packing# same as Item #
-          const totalItemNo = subPoList.length
-
-          const bookingReferences = _.get(element, 'bookingReferences') || []
-          const refBMinfo = bookingReferences.find(x => x.refName === 'MBL')
-          const REFBM: JSONObject = {
-            segement : 'REF',
-            elementList : []
-          }
-          REFBM.elementList.push('BM', _.get(refBMinfo, 'refDescription') || ' ')
-          loopObjectList.push(REFBM)
-          const refFNinfo = bookingReferences.find(x => x.refName === 'HBL')
-          const REFFN: JSONObject = {
-            segement : 'REF',
-            elementList : []
-          }
-          REFFN.elementList.push('FN', _.get(refFNinfo, 'refDescription') || ' ')
-          loopObjectList.push(REFFN)
-          // if (bookingReferences.length)
-          // {
-            // for (const ref of bookingReferences)
-            // {
-              // const refMapper = {
-              //  MBL: 'BM',
-              //  HBL: 'FN'
-              // }
-              // const refName = _.get(ref, 'refName')
-              // if (refMapper[refName])
-              // {
-                // const REF: JSONObject = {
-                //  segement : 'REF',
-                //  elementList : []
-                // }
-                // REF.elementList.push(refMapper[refName], _.get(ref, 'refDescription'))
-                // loopObjectList.push(REF)
-              // }
-            // }
-          // }
-          const folderNo = _.get(element, 'folderNo')
-          if (!folderNo)
-          {
-            throw new Error('missing the CR')
-          }
-          const REF: JSONObject = {
-            segement : 'REF',
-            elementList : []
-          }
-          REF.elementList.push('CR', folderNo)
-          loopObjectList.push(REF)
-          const invoiceNo = _.get(element, 'invoiceNo')
-          if (invoiceNo)
-          {
-            const REF: JSONObject = {
-              segement : 'REF',
-              elementList : []
-            }
-            REF.elementList.push('IK', invoiceNo)
-            loopObjectList.push(REF)
-          }
-          if (_.get(element, 'cargoReceipt'))
-          {
-            const DTM: JSONObject = {
-                segement : 'DTM',
-                elementList : []
-            }
-            DTM.elementList.push('050')
-            DTM.elementList.push(moment(_.get(element, 'cargoReceipt')).format('YYYYMMDD'))
-            loopObjectList.push(DTM)
-          }
-          while (itemIndex < totalItemNo)
-          {
-            const HLI: JSONObject = {
-              segement : 'HL',
-              elementList : []
-            }
-            HLI.elementList.push((i + itemIndex + 1).toString().substring(0, 12))
-            HLI.elementList.push(i.toString().substring(0, 12))
-            HLI.elementList.push('I')
-            loopObjectList.push(HLI)
-            const LIN: JSONObject = {
-              segement : 'LIN',
-              elementList : []
-            }
-            LIN.elementList.push(index.toString().substring(0, 6))
-            LIN.elementList.push('SK')
-            LIN.elementList.push((_.get(subPoList[itemIndex], 'style') || ' ').substring(0, 30))
-            LIN.elementList.push('BO')
-            LIN.elementList.push((_.get(subPoList[itemIndex], 'colorDesc') || ' ').substring(0, 30))
-            LIN.elementList.push('IZ')
-            LIN.elementList.push((_.get(subPoList[itemIndex], 'size') || ' ').substring(0, 30))
-            LIN.elementList.push('')
-            LIN.elementList.push('')
-            LIN.elementList.push('')
-            LIN.elementList.push('')
-            loopObjectList.push(LIN)
-            const SLN: JSONObject = {
-              segement: 'SLN',
-              elementList : []
-            }
-            SLN.elementList.push('1')
-            SLN.elementList.push('')// not used
-            SLN.elementList.push('I')
-            SLN.elementList.push((_.get(subPoList[itemIndex], 'bookQuantity') || ' ').toString().substring(0, 15))
-            SLN.elementList.push('PC')
-            loopObjectList.push(SLN)
-            const PID: JSONObject = {
-              segement: 'PID',
-              elementList : []
-            }
-            PID.elementList.push('F')
-            PID.elementList.push('')// not used
-            PID.elementList.push('')
-            PID.elementList.push('')
-            PID.elementList.push((_.get(subPoList[itemIndex], 'productDescription') || ' ').toString().substring(0, 20))
-            loopObjectList.push(PID)
-            if (_.get(ItemList[itemIndex], 'bookWeight') || _.get(ItemList[itemIndex], 'bookWeight') === 0)
-              {
-                  const MEA: JSONObject = {
-                    segement: 'MEA',
-                    elementList: []
-                }
-                MEA.elementList.push('', 'WT', _.get(subPoList[itemIndex], 'bookWeight').toString().substring(0, 20),  'KG')
-                loopObjectList.push(MEA)
-              }
-            if (_.get(ItemList[itemIndex], 'bookVolume') || _.get(ItemList[itemIndex], 'bookVolume') === 0)
-            {
-                const MEA: JSONObject = {
-                  segement: 'MEA',
-                  elementList: []
-              }
-              MEA.elementList.push('', 'VOL', _.get(subPoList[itemIndex], 'bookVolume').toString().substring(0, 20),  'CO')
-              loopObjectList.push(MEA)
-            }
-            if (_.get(subPoList[itemIndex], 'bookCtns') || _.get(subPoList[itemIndex], 'bookCtns') === 0)
-            {
-              const MEANUM: JSONObject = {
-                segement: 'MEA',
-                elementList: []
-              }
-              MEANUM.elementList.push('', 'NM', _.get(subPoList[itemIndex], 'bookCtns').toString().substring(0, 20),  'CT')
-              loopObjectList.push(MEANUM)
-            }
-            if (_.get(ItemList[itemIndex], 'bookQuantity') || _.get(subPoList[itemIndex], 'bookQuantity') === 0)
-            {
-              const MEA: JSONObject = {
-                  segement: 'MEA',
-                  elementList: []
-              }
-              MEA.elementList.push('', 'SU', _.get(subPoList[itemIndex], 'bookQuantity').toString().substring(0, 20),  'PC')
-              loopObjectList.push(MEA)
-            }
-
-            index++
-            itemIndex++
-          }
-          i += itemIndex + 1
-        }
+        shipmentCumanlateNo++
+        loopObjectList = this.handleOrder(poList, shipmentCumanlateNo, loopObjectList, element)
       }
     }
     return loopObjectList
   }
+  handleOrder(poList, shipmentCumanlateNo, loopObjectList, element)
+  {
+    let i = shipmentCumanlateNo
+    const ItemList = poList
+    const source = from(ItemList)
+    const grouped = source.pipe(
+      groupBy(item => item.poNo),
+      // return each item in group as array
+      mergeMap(group => group.pipe(toArray()))
+    )
+    const shipmentPoList = []
+    grouped.subscribe(val => shipmentPoList.push(val))
+    let index = 1
+    for (const subPoList of shipmentPoList)
+    {
+      let itemIndex = 0
+      const HLO: JSONObject = {
+        segement : 'HL',
+        elementList : []
+      }
+      HLO.elementList.push(i.toString().substr(0, 12))
+      HLO.elementList.push('1')
+      HLO.elementList.push('O')
+      loopObjectList.push(HLO)
+      const PRF: JSONObject = {
+        segement : 'PRF',
+        elementList : []
+      }
+      PRF.elementList.push((_.get(subPoList[0], 'poNo') || '').substring(0, 10))
+      if (_.get(subPoList[0], 'poDate'))
+      {
+        PRF.elementList.push('', '') // not used
+        PRF.elementList.push(moment(_.get(subPoList[0], 'poDate')).format('YYYYMMDD'))
+      }
+      loopObjectList.push(PRF)
+      const carrierCode = _.get(element, 'carrierCode')
+      const pad2 = '    '
+      const scacMapper = {
+        MSC: 'MSCU',
+        HII: 'HLCU',
+        HSU: 'SUDU',
+        ONE: 'ONEY',
+        MSK: 'MAEU',
+        CMA: 'CMDU'
+      }
+      let scac = '    '
+      if (carrierCode)
+      {
+        scac = scacMapper[carrierCode] || `${carrierCode}${pad2.substring(0, pad2.length - carrierCode.toString().length)}`
+      }
+      // if (_.get(subPoList[0], 'pol') || _.get(element, 'portOfLoading'))
+      // {
+        const TD5OR: JSONObject = {
+          segement : 'TD5',
+          elementList : []
+        }
+        TD5OR.elementList.push('O')
+        TD5OR.elementList.push('2')
+        TD5OR.elementList.push(scac)
+        TD5OR.elementList.push('') // not used
+        TD5OR.elementList.push('') // not used
+        TD5OR.elementList.push('') // not used
+        TD5OR.elementList.push('OR')
+        TD5OR.elementList.push((_.get(element, 'placeOfReceipt') || ' ').substring(0, 30))
+        loopObjectList.push(TD5OR)
+      // }
+      // if (_.get(subPoList[0], 'pod') || _.get(element, 'portOfDischarge'))
+      // {
+        const TD5: JSONObject = {
+          segement : 'TD5',
+          elementList : []
+        }
+        TD5.elementList.push('O')
+        TD5.elementList.push('2')
+        TD5.elementList.push(scac)
+        TD5.elementList.push('') // not used
+        TD5.elementList.push('') // not used
+        TD5.elementList.push('') // not used
+        TD5.elementList.push('DL')
+        TD5.elementList.push((_.get(element, 'finalDestination') || ' ').substring(0, 30))
+        loopObjectList.push(TD5)
+      // }
+
+      // const ItemList = _.get(element, 'bookingPOPackings') // find packing# however in this case packing# same as Item #
+      const totalItemNo = subPoList.length
+
+      const bookingReferences = _.get(element, 'bookingReferences') || []
+      const refBMinfo = bookingReferences.find(x => x.refName === 'MBL')
+      const REFBM: JSONObject = {
+        segement : 'REF',
+        elementList : []
+      }
+      REFBM.elementList.push('BM', _.get(refBMinfo, 'refDescription') || ' ')
+      loopObjectList.push(REFBM)
+      const refFNinfo = bookingReferences.find(x => x.refName === 'HBL')
+      const REFFN: JSONObject = {
+        segement : 'REF',
+        elementList : []
+      }
+      REFFN.elementList.push('FN', _.get(refFNinfo, 'refDescription') || ' ')
+      loopObjectList.push(REFFN)
+      // if (bookingReferences.length)
+      // {
+        // for (const ref of bookingReferences)
+        // {
+          // const refMapper = {
+          //  MBL: 'BM',
+          //  HBL: 'FN'
+          // }
+          // const refName = _.get(ref, 'refName')
+          // if (refMapper[refName])
+          // {
+            // const REF: JSONObject = {
+            //  segement : 'REF',
+            //  elementList : []
+            // }
+            // REF.elementList.push(refMapper[refName], _.get(ref, 'refDescription'))
+            // loopObjectList.push(REF)
+          // }
+        // }
+      // }
+      const folderNo = _.get(element, 'folderNo')
+      if (!folderNo)
+      {
+        throw new Error('missing the CR')
+      }
+      const REF: JSONObject = {
+        segement : 'REF',
+        elementList : []
+      }
+      REF.elementList.push('CR', folderNo)
+      loopObjectList.push(REF)
+      const invoiceNo = _.get(element, 'invoiceNo')
+      if (invoiceNo)
+      {
+        const REF: JSONObject = {
+          segement : 'REF',
+          elementList : []
+        }
+        REF.elementList.push('IK', invoiceNo)
+        loopObjectList.push(REF)
+      }
+      if (_.get(element, 'cargoReceipt'))
+      {
+        const DTM: JSONObject = {
+            segement : 'DTM',
+            elementList : []
+        }
+        DTM.elementList.push('050')
+        DTM.elementList.push(moment(_.get(element, 'cargoReceipt')).format('YYYYMMDD'))
+        loopObjectList.push(DTM)
+      }
+      while (itemIndex < totalItemNo)
+      {
+        const HLI: JSONObject = {
+          segement : 'HL',
+          elementList : []
+        }
+        HLI.elementList.push((i + itemIndex + 1).toString().substring(0, 12))
+        HLI.elementList.push(i.toString().substring(0, 12))
+        HLI.elementList.push('I')
+        loopObjectList.push(HLI)
+        const LIN: JSONObject = {
+          segement : 'LIN',
+          elementList : []
+        }
+        LIN.elementList.push(index.toString().substring(0, 6))
+        LIN.elementList.push('SK')
+        LIN.elementList.push((_.get(subPoList[itemIndex], 'style') || ' ').substring(0, 30))
+        LIN.elementList.push('BO')
+        LIN.elementList.push((_.get(subPoList[itemIndex], 'colorDesc') || ' ').substring(0, 30))
+        LIN.elementList.push('IZ')
+        LIN.elementList.push((_.get(subPoList[itemIndex], 'size') || ' ').substring(0, 30))
+        LIN.elementList.push('')
+        LIN.elementList.push('')
+        LIN.elementList.push('')
+        LIN.elementList.push('')
+        loopObjectList.push(LIN)
+        const SLN: JSONObject = {
+          segement: 'SLN',
+          elementList : []
+        }
+        SLN.elementList.push('1')
+        SLN.elementList.push('')// not used
+        SLN.elementList.push('I')
+        SLN.elementList.push((_.get(subPoList[itemIndex], 'bookQuantity') || ' ').toString().substring(0, 15))
+        SLN.elementList.push('PC')
+        loopObjectList.push(SLN)
+        const PID: JSONObject = {
+          segement: 'PID',
+          elementList : []
+        }
+        PID.elementList.push('F')
+        PID.elementList.push('')// not used
+        PID.elementList.push('')
+        PID.elementList.push('')
+        PID.elementList.push((_.get(subPoList[itemIndex], 'productDescription') || ' ').toString().substring(0, 20))
+        loopObjectList.push(PID)
+        if (_.get(ItemList[itemIndex], 'bookWeight') || _.get(ItemList[itemIndex], 'bookWeight') === 0)
+          {
+              const MEA: JSONObject = {
+                segement: 'MEA',
+                elementList: []
+            }
+            MEA.elementList.push('', 'WT', _.get(subPoList[itemIndex], 'bookWeight').toString().substring(0, 20),  'KG')
+            loopObjectList.push(MEA)
+          }
+        if (_.get(ItemList[itemIndex], 'bookVolume') || _.get(ItemList[itemIndex], 'bookVolume') === 0)
+        {
+            const MEA: JSONObject = {
+              segement: 'MEA',
+              elementList: []
+          }
+          MEA.elementList.push('', 'VOL', _.get(subPoList[itemIndex], 'bookVolume').toString().substring(0, 20),  'CO')
+          loopObjectList.push(MEA)
+        }
+        if (_.get(subPoList[itemIndex], 'bookCtns') || _.get(subPoList[itemIndex], 'bookCtns') === 0)
+        {
+          const MEANUM: JSONObject = {
+            segement: 'MEA',
+            elementList: []
+          }
+          MEANUM.elementList.push('', 'NM', _.get(subPoList[itemIndex], 'bookCtns').toString().substring(0, 20),  'CT')
+          loopObjectList.push(MEANUM)
+        }
+        if (_.get(ItemList[itemIndex], 'bookQuantity') || _.get(subPoList[itemIndex], 'bookQuantity') === 0)
+        {
+          const MEA: JSONObject = {
+              segement: 'MEA',
+              elementList: []
+          }
+          MEA.elementList.push('', 'SU', _.get(subPoList[itemIndex], 'bookQuantity').toString().substring(0, 20),  'PC')
+          loopObjectList.push(MEA)
+        }
+
+        index++
+        itemIndex++
+      }
+      i += itemIndex + 1
+    }
+    return loopObjectList
+  }
+  getTargetPoList(element, containerNo)
+  {
+    let poList = []
+    if ((_.get(element, 'bookingPOPackings') || []).length)
+    {
+      poList = _.get(element, 'bookingPOPackings').filter(x => x.containerNo === containerNo)
+    }
+    return poList
+  }
+
   getNumOfPo(Item) {
     const uniquePo = []
     for (const po of Item) {
@@ -727,4 +703,38 @@ export default class EdiParser856 extends BaseEdiParser {
     return uniquePo.length
   }
 
+  toExport(returnJSON)
+  {
+    let result = ''
+    for (const item of returnJSON['data'])
+    {
+        const elementList = (item['elementList'])
+        for (let i = elementList.Count - 1; i > -1; i--)
+        {
+            if (elementList[i] === '')
+            {
+                elementList.RemoveAt(i)
+            }
+            else{
+                break
+            }
+        }
+        if (elementList.Count === 0)
+        {
+            continue
+        }
+
+        result += item['segement']
+
+        for (const element of item['elementList'])
+        {
+            result += formatJson.elementSeperator[0]
+            result += element
+        }
+        result += formatJson.segmentSeperator[0]
+    }
+    // string result = (string) json["data"][1]["segement"];
+
+    return result
+  }
 }
