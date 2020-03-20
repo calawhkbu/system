@@ -37,10 +37,14 @@ const months = [
 
 // hardcode all reportingGroup and divided into SEA and AIR
 const moduleTypeCodeList = {
+
   AIR: ['AC', 'AD', 'AM', 'AN', 'AW', 'AX', 'AZ'],
   SEA: ['SA', 'SB', 'SC', 'SR', 'SS', 'ST', 'SW', 'SZ'],
   LOG: ['ZL'],
+
 }
+
+const convertToTeuModuleTypeCodeList = ['SA', 'SR']
 
 function prepareParams(): Function {
   return function(require, session, params) {
@@ -50,7 +54,9 @@ function prepareParams(): Function {
     // limit/extend to 1 year
     const subqueries = (params.subqueries = params.subqueries || {})
 
-    const year = (subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
+    const year = !subqueries.date
+      ? moment().year()
+      : moment(subqueries.date.from, 'YYYY-MM-DD').year()
 
     subqueries.date = {
       from: moment()
@@ -134,6 +140,7 @@ function prepareTable(): CreateTableJQL {
 }
 
 function prepareFinalTable(): CreateTableJQL {
+
   const $select = [
     new ResultColumn(new ColumnExpression('moduleTypeCode')),
     new ResultColumn(new ColumnExpression('reportingGroup')),
@@ -155,6 +162,7 @@ function prepareFinalTable(): CreateTableJQL {
         ),
         `${month}_value`
       )
+
     )
   })
 
@@ -217,14 +225,35 @@ function prepareResultTable(): CreateTableJQL {
   const sumList = []
 
   const $select = [
+
+    // moduleType + unit
     new ResultColumn(
-      new ColumnExpression('reportingGroupTable', 'moduleTypeCode'),
+
+      new FunctionExpression('CONCAT',
+        new ColumnExpression('reportingGroupTable', 'moduleTypeCode'),
+        new FunctionExpression('IF',
+
+          new BinaryExpression(
+            new ColumnExpression('reportingGroupTable', 'moduleTypeCode'), '=', 'AIR'
+          ),
+          new Value(' (KG)'),
+          new Value(' (CBM)')
+        )
+      ),
+
       'moduleTypeCode'
     ),
     new ResultColumn(
       new ColumnExpression('reportingGroupTable', 'reportingGroup'),
       'reportingGroup'
     ),
+
+    // convert unit column
+    new ResultColumn(
+      new FunctionExpression('IF',
+        new InExpression(new ColumnExpression('reportingGroupTable', 'reportingGroup'), false, convertToTeuModuleTypeCodeList), new Value('( Convertion Unit: TEU)'), new Value('')
+      ), 'convertionUnit'
+    )
   ]
 
   months.map(month => {
@@ -272,6 +301,7 @@ export default [
   prepareResultTable(),
 
   new Query({
+
     $select: [
       new ResultColumn('moduleTypeCode', '__id'),
       new ResultColumn('moduleTypeCode', '__value'),
@@ -281,5 +311,4 @@ export default [
     $from: 'result',
     $group: 'moduleTypeCode',
   }),
-
 ]

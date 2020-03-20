@@ -42,7 +42,6 @@ query.register('updatedAt', {
   $as: 'updatedAt',
 })
 
-
 query.register('trackingNo', new Query({
   $where: new RegexpExpression(new ColumnExpression('tracking', 'trackingNo'), false)
 })).register('value', 0)
@@ -53,6 +52,10 @@ query.register('date', new Query({
 
 query.register('lastStatus', new Query({
   $where: new BinaryExpression(new ColumnExpression('tracking', 'lastStatus'), '=')
+})).register('value', 0)
+
+query.register('manual', new Query({
+  $where: new BinaryExpression(new ColumnExpression('tracking', 'manual'), '=')
 })).register('value', 0)
 
 // isActive
