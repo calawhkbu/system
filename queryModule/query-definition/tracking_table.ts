@@ -15,7 +15,7 @@ const query = new QueryDef(
       `
         (
           SELECT
-            tracking_reference.id, tracking_reference.partyGroupCode,
+            max(tracking_reference.id) as id, max(tracking_reference.partyGroupCode) as partyGroupCode,
             tracking_reference.trackingType, tracking_reference.carrierCode, tracking_reference.carrierCode2,
             tracking_reference.yundang,
             tracking_reference.departureDateEstimated, tracking_reference.mode, masterNo AS trackingNo, 'masterNo' AS type
@@ -23,9 +23,12 @@ const query = new QueryDef(
             tracking_reference
           WHERE
             tracking_reference.deletedAt IS NULL AND tracking_reference.deletedBy IS NULL AND masterNo is not null
+          GROUP BY tracking_reference.trackingType, tracking_reference.carrierCode, tracking_reference.carrierCode2,
+            tracking_reference.yundang,
+            tracking_reference.departureDateEstimated, tracking_reference.mode, trackingNo, type
           UNION
           SELECT
-            tracking_reference.id, tracking_reference.partyGroupCode,
+            max(tracking_reference.id) as id, max(tracking_reference.partyGroupCode) as partyGroupCode,
             tracking_reference.trackingType, tracking_reference.carrierCode, tracking_reference.carrierCode2,
             tracking_reference.yundang,
             tracking_reference.departureDateEstimated, tracking_reference.mode, soTable.trackingNo AS trackingNo, 'soNo' AS type
@@ -33,9 +36,12 @@ const query = new QueryDef(
             tracking_reference,
             JSON_TABLE(soNo, "$[*]" COLUMNS (trackingNo VARCHAR(100) PATH "$")) soTable
           WHERE tracking_reference.deletedAt IS NULL AND tracking_reference.deletedBy IS NULL AND soTable.trackingNo is not null
+          GROUP BY tracking_reference.trackingType, tracking_reference.carrierCode, tracking_reference.carrierCode2,
+            tracking_reference.yundang,
+            tracking_reference.departureDateEstimated, tracking_reference.mode, trackingNo, type
           UNION
           SELECT
-            tracking_reference.id, tracking_reference.partyGroupCode,
+            max(tracking_reference.id) as id, max(tracking_reference.partyGroupCode) as partyGroupCode,
             tracking_reference.trackingType, tracking_reference.carrierCode, tracking_reference.carrierCode2,
             tracking_reference.yundang,
             tracking_reference.departureDateEstimated, tracking_reference.mode, containerTable.trackingNo AS trackingNo, 'containerNo' AS type
@@ -43,6 +49,9 @@ const query = new QueryDef(
             tracking_reference,
             JSON_TABLE(containerNo, "$[*]" COLUMNS (trackingNo VARCHAR(100) PATH "$")) containerTable
           WHERE tracking_reference.deletedAt IS NULL AND tracking_reference.deletedBy IS NULL AND containerTable.trackingNo is not null
+          GROUP BY tracking_reference.trackingType, tracking_reference.carrierCode, tracking_reference.carrierCode2,
+            tracking_reference.yundang,
+            tracking_reference.departureDateEstimated, tracking_reference.mode, trackingNo, type
         )
       `,
       'tracking_reference',

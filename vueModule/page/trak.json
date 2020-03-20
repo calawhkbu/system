@@ -1,0 +1,32 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "GridTool",
+    "props": {
+      "reportingKey": "trak",
+      "hasReports": true,
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": false,
+      "noExternal": true,
+      "newReport": {
+        "filters": {
+          "isActive": {
+            "value": "active"
+          },
+          "date": {
+            "func": {
+              "args": {
+                "unit": "year"
+              },
+              "key": "current"
+            }
+          }
+        },
+        "configurations": {
+          "i18nContext": "Reporting"
+        }
+      }
+    }
+  }]
+}
