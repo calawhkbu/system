@@ -157,6 +157,7 @@ const partyList = [
   partyIdExpression?: IExpression,
   partyCodeExpression?: IExpression,
   partyNameInReportExpression?: IExpression
+  partyShortNameInReportExpression?: IExpression
 
 }[]
 const locationList = ['portOfLoading', 'portOfDischarge', 'placeOfDelivery', 'placeOfReceipt', 'finalDestination']
@@ -2170,6 +2171,7 @@ const partyFieldList = [
 
   //  very special case , get back the value from the party join
   'PartyNameInReport',
+  'PartyShortNameInReport',
 
   'PartyId',
   'PartyName',
@@ -2192,6 +2194,7 @@ partyList.map(party => {
   const partyNameExpression = party.partyNameExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyName`)
   const partyCodeExpression = party.partyCodeExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyCode`)
   const partyNameInReportExpression = party.partyNameInReportExpression || new ColumnExpression(party.name, `name`)
+  const partyShortNameInReportExpression = party.partyShortNameInReportExpression || new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression)
 
   partyFieldList.map(partyField => {
 
@@ -2216,6 +2219,10 @@ partyList.map(party => {
       // PartyReportName will get from party join instead of shipment_party direct;y
       case 'PartyNameInReport':
         expression = partyNameInReportExpression
+        break
+
+      case 'PartyShortNameInReport':
+        expression = partyShortNameInReportExpression
         break
 
       default:
