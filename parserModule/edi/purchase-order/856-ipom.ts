@@ -1,4 +1,4 @@
-// 2020-03-20
+// 2020-03-23
 import { SwivelConfigService } from 'modules/swivel-config/service'
 import { OutboundService } from 'modules/integration-hub/services/outbound'
 
@@ -375,7 +375,7 @@ export default class EdiParser856 extends BaseEdiParser {
         const servciesMap = {
           CFS : 'CFS/DOOR',
           CY : 'CY/DOOR',
-          SD : 'CFS/SD'
+          // SD : 'CFS/SD'
         }
         const refNO = servciesMap[_.get(element, 'service')] ? servciesMap[_.get(element, 'service')] : 'MICP'
         REF.elementList.push('KK', refNO)
