@@ -2,6 +2,7 @@
   "components": [{
     "is": "WidgetMoreForm",
     "props": {
+      "small": true,
       "name": "shipmentDate",
       "mainKey": "Date",
       "formProps": {
@@ -67,6 +68,7 @@
         "returnEmptyContainer"
       ],
       "checkDisplayWhen": [
+        "if (!['departure', 'arrival'].includes(key)) { return false }",
         "const estimated = context._.get(form, `${key}DateEstimated`, null);",
         "const actual = context._.get(form, `${key}DateActual`, null);",
         "return estimated || actual"

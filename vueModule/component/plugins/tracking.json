@@ -6,12 +6,8 @@
   "remote": true,
   "shareProps": {
     "icon": "statusCode",
-    "titleKey": {
-      "key": "key",
-      "track": true
-    },
-    "subTitleKeys": [
-      {
+    "titleKey": "statusCode",
+    "subTitleKeys": [{
         "key": "statusDate",
         "is": "Datetime",
         "format": "YYYY-MM-DD HH:mm:ss",

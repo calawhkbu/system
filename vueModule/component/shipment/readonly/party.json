@@ -2,6 +2,7 @@
   "components": [{
     "is": "WidgetMoreForm",
     "props": {
+      "small": true,
       "name": "shipmentParty",
       "mainKey": "Party",
       "formProps": {

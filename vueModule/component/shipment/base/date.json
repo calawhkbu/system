@@ -1,6 +1,6 @@
 {
   "layout": "v-card",
-  "class": "min-height-300",
+  "class": "min-height-220",
   "components": [{
     "is": "MouseHidden",
     "props": {
