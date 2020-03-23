@@ -68,7 +68,7 @@
         "returnEmptyContainer"
       ],
       "checkDisplayWhen": [
-        "if (!['departure', 'arrival'].includes(key)) { return false }",
+        "if (!['departure', 'arrival', 'oceanBill'].includes(key)) { return false }",
         "const estimated = context._.get(form, `${key}DateEstimated`, null);",
         "const actual = context._.get(form, `${key}DateActual`, null);",
         "return estimated || actual"
