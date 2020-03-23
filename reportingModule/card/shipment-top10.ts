@@ -32,7 +32,7 @@ function prepareParams(): Function {
         ? `carrierName`
         : xAxis === 'agentGroup'
         ? `agentGroup`
-        : `${xAxis}PartyName`
+        : `${xAxis}PartyShortNameInReport`
     // ------------------------------
 
     params.sorting = new OrderBy(summaryColumnName, 'DESC')
@@ -69,7 +69,7 @@ function createTop10Table() {
         ? `carrierName`
         : xAxis === 'agentGroup'
         ? `agentGroup`
-        : `${xAxis}PartyName`
+        : `${xAxis}PartyShortNameInReport`
     // ------------------------------
 
     return new CreateTableJQL({
@@ -119,7 +119,7 @@ function insertTop10Data() {
         ? `carrierName`
         : xAxis === 'agentGroup'
         ? `agentGroup`
-        : `${xAxis}PartyName`
+        : `${xAxis}PartyShortNameInReport`
 
     const showOther = subqueries.showOther || false
     const topX = subqueries.topX.value
@@ -204,7 +204,7 @@ function prepareRawTable() {
         ? `carrierName`
         : xAxis === 'agentGroup'
         ? `agentGroup`
-        : `${xAxis}PartyName`
+        : `${xAxis}PartyShortNameInReport`
     // ------------------------------
 
     return new CreateTableJQL({
@@ -270,7 +270,7 @@ function finalQuery() {
         ? `carrierName`
         : xAxis === 'agentGroup'
         ? `agentGroup`
-        : `${xAxis}PartyName`
+        : `${xAxis}PartyShortNameInReport`
     // ------------------------------
 
     return new Query({
@@ -397,7 +397,10 @@ export const filters = [
           label: 'agent',
           value: 'agent',
         },
-        // currently disabled
+        {
+          label: 'office',
+          value: 'office',
+        },
         {
           label: 'agentGroup',
           value: 'agentGroup',
