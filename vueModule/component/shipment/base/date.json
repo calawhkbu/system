@@ -1,0 +1,62 @@
+{
+  "layout": "v-card",
+  "class": "min-height-220",
+  "components": [{
+    "is": "MouseHidden",
+    "props": {
+      "hiddenProps": {
+        "style": {
+          "position": "absolute",
+          "right": "0px",
+          "top": "0px"
+        }
+      }
+    },
+    "slots": [{
+      "name": "hidden",
+      "is": "DynamicComponent",
+      "props": {
+        "components": [{
+          "is": "RightDrawer",
+          "props": {
+            "hide-overlay": true,
+            "buttonComponentProps": {
+              "icon": true,
+              "small": true,
+              "class": "zindex-3"
+            }
+          },
+          "slots": [{
+            "name": "button",
+            "is": "Icon",
+            "props": {
+              "icon": "open_in_new"
+            }
+          }, {
+            "name": "default",
+            "is": "DynamicComponent",
+            "props": {
+              "class": "full-width",
+              "components": [{
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "shipment/forms/date"
+                }
+              }]
+            }
+          }]
+        }]
+      }
+    }, {
+      "is": "DynamicComponent",
+      "props": {
+        "components": [{
+          "is": "AsyncComponent",
+          "props": {
+            "layoutName": "shipment/readonly/date"
+          }
+        }]
+      }
+    }]
+  }]
+}

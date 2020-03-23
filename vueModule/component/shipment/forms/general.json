@@ -6,77 +6,75 @@
           "label": "ShipmentPage.houseNo",
           "name": "houseNo",
           "component": "v-text-field",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.masterNo",
           "name": "masterNo",
           "component": "v-text-field",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.carrier",
-          "name": ["carrierName","carrier.name", "carrierCode"],
+          "name": ["carrierName", "carrier.name", "carrierCode"],
           "component": "v-text-field",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.vessel",
           "name": "vessel",
           "component": "v-text-field",
           "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA'",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.flightNo",
           "name": "voyageFlightNumber",
           "component": "v-text-field",
           "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'AIR'",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.placeOfReceipt",
-          "name": ["placeOfReceipt.name", "placeOfReceiptName", "placeOfReceiptCode"],
+          "name": ["placeOfReceiptName", "placeOfReceipt.name", "placeOfReceiptCode"],
           "component": "v-text-field",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.portOfLoading",
-          "name": ["portOfLoading.name", "portOfLoadingName", "portOfLoadingCode"],
+          "name": ["portOfLoadingName", "portOfLoading.name", "portOfLoadingCode"],
           "component": "v-text-field",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.portOfDischarge",
-          "name": ["portOfDischarge.name", "portOfDischargeName", "portOfDischargeCode"],
+          "name": ["portOfDischargeName", "portOfDischarge.name", "portOfDischargeCode"],
           "component": "v-text-field",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.placeOfDelivery",
-          "name": ["placeOfDelivery.name", "portofDeliveryName", "portofDeliveryCode"],
+          "name": ["placeofDeliveryName", "placeOfDelivery.name", "placeofDeliveryCode"],
           "component": "v-text-field",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.finalDestination",
-          "name": ["finalDestination.name", "finalDestinationName", "finalDestinationCode"],
+          "name": ["finalDestinationName", "finalDestination.name", "finalDestinationCode"],
           "component": "v-text-field",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.service",
           "name": "serviceCode",
           "component": "v-text-field",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.departureDateEstimated",
           "name": "shipmentDate.departureDateEstimated",
           "component": "DateTimePicker",
-
-          "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0)",
-          "class": "xs-6 md-3",
+          "class": "xs-12",
           "props": {
             "type": "datetime",
             "utc": true,
@@ -88,7 +86,7 @@
           "label": "ShipmentPage.arrivalDateEstimated",
           "name": "shipmentDate.arrivalDateEstimated",
           "component": "DateTimePicker",
-          "class": "xs-6 md-3",
+          "class": "xs-12",
           "props": {
             "type": "datetime",
             "utc": true,
@@ -100,25 +98,25 @@
           "label": "ShipmentPage.incoTerms",
           "name": "incoTermsCode",
           "component": "v-text-field",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.nominatedType",
           "name": ["nominatedType.name", "nominatedTypeCode"],
           "component": "v-text-field",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.issuingAgent",
           "name": "issuingAgent",
           "component": "v-text-field",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.issueAt",
           "name": "issueDate",
           "component": "DateTimePicker",
-          "class": "xs-6 md-3",
+          "class": "xs-12",
           "props": {
             "type": "datetime",
             "utc": true,
@@ -130,22 +128,19 @@
           "label": "ShipmentPage.valueForCarriage",
           "name": "valueForCarriage",
           "component": "v-text-field",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.valueForCustoms",
           "name": "valueForCustoms",
           "component": "v-text-field",
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         },
         {
           "label": "ShipmentPage.amountOfInsurance",
           "name": "amountOfInsurance",
           "component": "v-text-field",
-          "class": "xs-6 md-3"
-        },
-        {
-          "class": "xs-6 md-3"
+          "class": "xs-12"
         }
       ]
     }
