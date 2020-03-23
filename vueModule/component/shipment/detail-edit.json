@@ -3,10 +3,11 @@
   "components": [{
       "is": "DynamicComponent",
       "props": {
-        "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-2",
         "components": [{
             "is": "v-btn",
             "props": {
+              "class": "margin-0",
               "small": true,
               "flat": true,
               "icon": true
@@ -36,9 +37,11 @@
                 "title": "{{context.$store.state.widget.data.houseNo}}"
               }
             }
-          }, {
+          },
+          {
             "is": "v-spacer"
-          }, {
+          },
+          {
             "is": "ToolTip",
             "props": {
               "bottom": true,
@@ -47,6 +50,7 @@
                 "components": [{
                   "is": "v-btn",
                   "props": {
+                    "class": "margin-0",
                     "small": true,
                     "icon": true,
                     "flat": true
@@ -89,6 +93,7 @@
                 "components": [{
                   "is": "BookmarkButton",
                   "props": {
+                    "class": "margin-0",
                     "entity": "shipment",
                     "small": true,
                     "icon": true,
@@ -128,28 +133,7 @@
             "tabItemComponents": [{
                 "is": "AsyncComponent",
                 "props": {
-                  "getDate": "shipmentDate",
-                  "class": "xs-12 margin-topbottom-4",
-                  "layoutName": "plugins/tracking",
-                  "loadWhenDataLoaded": true,
-                  "axiosBaseParams": [
-                    "const trackingNos = [];",
-                    "const data = context.$store.state.widget.data;",
-                    "if (data.masterNo) { trackingNos.push(data.masterNo) }",
-                    "if (data.shipmentContainers && data.shipmentContainers.length > 0) {",
-                    "for (const container of data.shipmentContainers) {",
-                    "if (container.carrierBookingNo) { trackingNos.push(container.carrierBookingNo) }",
-                    "if (container.containerNo) { trackingNos.push(container.containerNo) }",
-                    "}",
-                    "}",
-                    "return {",
-                    "url: 'api/swivel-tracking/get',",
-                    "method: 'POST',",
-                    "data: { trackingNos }",
-                    "};"
-                  ],
-                  "createdAtKey": "issueDate",
-                  "createI18nKey": "shipmentReceivedByForwarder"
+                  "layoutName": "shipment/base/tracking"
                 }
               },
               {
@@ -157,7 +141,7 @@
                 "slots": [{
                   "is": "AsyncComponent",
                   "props": {
-                    "layoutName": "shipment/forms/generalForm"
+                    "layoutName": "shipment/base/general"
                   }
                 }]
               },
@@ -166,7 +150,7 @@
                 "slots": [{
                   "is": "AsyncComponent",
                   "props": {
-                    "layoutName": "shipment/forms/containerForm"
+                    "layoutName": "shipment/base/container"
                   }
                 }]
               }
@@ -186,7 +170,7 @@
                 "slots": [{
                   "is": "AsyncComponent",
                   "props": {
-                    "layoutName": "shipment/forms/partyForm"
+                    "layoutName": "shipment/base/party"
                   }
                 }]
               },
@@ -195,7 +179,7 @@
                 "slots": [{
                   "is": "AsyncComponent",
                   "props": {
-                    "layoutName": "shipment/forms/dateForm"
+                    "layoutName": "shipment/base/date"
                   }
                 }]
               }
@@ -213,418 +197,126 @@
             "tabItemComponents": [{
                 "is": "AsyncComponent",
                 "props": {
-                  "class": "xs-12 margin-topbottom-4",
-                  "layoutName": "plugins/alert",
-                  "axiosBaseParams": [
-                    "return {",
-                    "url: 'api/alert/list/history',",
-                    "method: 'POST',",
-                    "data: {",
-                    "tableName: 'shipment',",
-                    "primaryKey: context.$route.params.params,",
-                    "}",
-                    "};"
-                  ],
-                  "sendMessageAxiosParams": [
-                    "const primaryKey = encodeURIComponent(context.$route.params.params);",
-                    "return {",
-                    "url: `api/alert/message/shipment/${primaryKey}`,",
-                    "method: 'POST',",
-                    "data: { message: swig.message }",
-                    "};"
-                  ]
+                  "layoutName": "shipment/base/alert"
                 }
               },
               {
                 "is": "AsyncComponent",
                 "props": {
-                  "class": "xs-12 margin-topbottom-4",
-                  "layoutName": "plugins/document",
-                  "axiosBaseParams": [
-                    "const primaryKey = context.$route.params.params;",
-                    "return {",
-                    "url: 'api/document/document/shipment/{{primaryKey}}'.format({ primaryKey }),",
-                    "};"
-                  ],
-                  "uploadAxiosParams": [
-                    "const primaryKey = encodeURIComponent(context.$route.params.params);",
-                    "return {",
-                    "method: 'POST',",
-                    "url: 'api/document/document/upload',",
-                    "data: {",
-                    "tableName: 'shipment', primaryKey,",
-                    "fileName: swig.fileName,",
-                    "fileData: { base64String: swig.base64String, extension: swig.extension }",
-                    "}",
-                    "};"
-                  ],
-                  "downloadAxiosParams": [
-                    "const primaryKey = encodeURIComponent(context.$route.params.params);",
-                    "return {",
-                    "responseType: 'blob',",
-                    "method: 'POST',",
-                    "url: 'api/document/document/download',",
-                    "data: {tableName: 'shipment', primaryKey, fileName: swig.fileName}",
-                    "}"
-                  ],
-                  "deleteAxiosParams": [
-                    "const primaryKey = encodeURIComponent(context.$route.params.params);",
-                    "return {",
-                    "method: 'POST',",
-                    "url: 'api/document/document/delete',",
-                    "data: {tableName: 'shipment', primaryKey, fileName: swig.fileName}",
-                    "}"
-                  ]
+                  "layoutName": "shipment/base/document"
                 }
               }
             ]
+          },
+          {
+            "index": "alertAndDocument",
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "ShipmentPage",
+                "i18nKey": "reference"
+              }
+            }],
+            "tabItemComponents": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "shipment/base/reference"
+              }
+            }]
           }
         ]
       }
     },
     {
-      "is": "div",
+      "is": "DynamicComponent",
       "if": "return context.$vuetify.breakpoint.mdAndUp",
       "props": {
-        "class": "xs-12 md-8 padding-left-8 padding-right-8"
-      },
-      "slots": [{
+        "class": "xs-12 grid full-width padding-2",
+        "components": [{
           "is": "DynamicComponent",
           "props": {
-            "class": "grid margin-bottom-8",
+            "class": "xs-8 grid padding-2",
             "components": [{
-                "is": "div",
+                "is": "DynamicComponent",
                 "props": {
-                  "class": "xs-12 md-6 padding-right-4"
-                },
-                "slots": [{
-                  "is": "DynamicComponent",
-                  "props": {
-                    "layout": "v-card",
-                    "components": [{
-                      "is": "MouseHidden",
-                      "slots": [{
-                        "is": "DynamicComponent",
+                  "class": "xs-12 grid padding-bottom-2",
+                  "components": [{
+                    "is": "DynamicComponent",
+                    "props": {
+                      "class": "xs-6 padding-right-2",
+                      "components": [{
+                        "is": "AsyncComponent",
                         "props": {
-                          "components": [{
-                              "is": "v-card-title",
-                              "props": {
-                                "primary-title": true,
-                                "class": "padding-4 min-height-48 bold uppercase"
-                              },
-                              "slots": [{
-                                "is": "I18nText",
-                                "props": {
-                                  "i18nContext": "ShipmentPage",
-                                  "i18nKey": "PartyForm"
-                                }
-                              }]
-                            },
-                            {
-                              "is": "v-divider"
-                            },
-                            {
-                              "is": "AsyncComponent",
-                              "props": {
-                                "layoutName": "shipment/forms/partyForm"
-                              }
-                            }
-                          ]
+                          "layoutName": "shipment/base/party"
                         }
                       }]
-                    }]
-                  }
-                }]
+                    }
+                  }, {
+                    "is": "DynamicComponent",
+                    "props": {
+                      "class": "xs-6 padding-left-2",
+                      "components": [{
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "shipment/base/date"
+                        }
+                      }]
+                    }
+                  }]
+                }
               },
               {
-                "is": "div",
+                "is": "AsyncComponent",
                 "props": {
-                  "class": "xs-12 md-6 padding-left-4"
-                },
-                "slots": [{
-                  "is": "DynamicComponent",
-                  "props": {
-                    "layout": "v-card",
-                    "components": [{
-                      "is": "MouseHidden",
-                      "slots": [{
-                        "is": "DynamicComponent",
-                        "props": {
-                          "components": [{
-                              "is": "v-card-title",
-                              "props": {
-                                "primary-title": true,
-                                "class": "padding-4 min-height-48 bold uppercase"
-                              },
-                              "slots": [{
-                                "is": "I18nText",
-                                "props": {
-                                  "i18nContext": "ShipmentPage",
-                                  "i18nKey": "DateForm"
-                                }
-                              }]
-                            },
-                            {
-                              "is": "v-divider"
-                            },
-                            {
-                              "is": "AsyncComponent",
-                              "props": {
-                                "layoutName": "shipment/forms/dateForm"
-                              }
-                            }
-                          ]
-                        }
-                      }]
-                    }]
-                  }
-                }]
+                  "class": "xs-12 margin-bottom-2",
+                  "layoutName": "shipment/base/general"
+                }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-bottom-2",
+                  "layoutName": "shipment/base/container"
+                }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-bottom-2",
+                  "layoutName": "shipment/base/reference"
+                }
               }
             ]
           }
-        },
-        {
+        }, {
           "is": "DynamicComponent",
           "props": {
-            "layout": "v-card",
-            "class": "margin-topbottom-8",
+            "class": "xs-4 padding-2",
             "components": [{
-              "is": "MouseHidden",
-              "slots": [{
-                "is": "DynamicComponent",
+                "is": "AsyncComponent",
                 "props": {
-                  "components": [{
-                      "is": "v-card-title",
-                      "props": {
-                        "primary-title": true,
-                        "class": "padding-4 min-height-48 bold uppercase"
-                      },
-                      "slots": [{
-                        "is": "I18nText",
-                        "props": {
-                          "i18nContext": "ShipmentPage",
-                          "i18nKey": "GeneralForm"
-                        }
-                      }]
-                    },
-                    {
-                      "is": "v-divider"
-                    },
-                    {
-                      "is": "AsyncComponent",
-                      "props": {
-                        "layoutName": "shipment/forms/generalForm"
-                      }
-                    }
-                  ]
+                  "class": "xs-12 margin-bottom-2",
+                  "layoutName": "shipment/base/tracking"
                 }
-              }]
-            }]
-          }
-        },
-        {
-          "is": "DynamicComponent",
-          "props": {
-            "layout": "v-card",
-            "class": "margin-topbottom-8",
-            "components": [{
-              "is": "MouseHidden",
-              "slots": [{
-                  "name": "hidden",
-                  "is": "DynamicComponent",
-                  "props": {
-                    "class": "flex max-height-0",
-                    "components": [{
-                      "is": "v-spacer"
-                    }]
-                  }
-                },
-                {
-                  "is": "DynamicComponent",
-                  "props": {
-                    "components": [{
-                        "is": "v-card-title",
-                        "props": {
-                          "primary-title": true,
-                          "class": "padding-4 min-height-48 bold uppercase"
-                        },
-                        "slots": [{
-                          "is": "I18nText",
-                          "props": {
-                            "i18nContext": "ShipmentPage",
-                            "i18nKey": "ContainerForm"
-                          }
-                        }]
-                      },
-                      {
-                        "is": "v-divider"
-                      },
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "layoutName": "shipment/forms/containerForm"
-                        }
-                      }
-                    ]
-                  }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-bottom-2",
+                  "layoutName": "shipment/base/alert"
                 }
-              ]
-            }]
-          }
-        },
-        {
-          "is": "DynamicComponent",
-          "props": {
-            "layout": "v-card",
-            "class": "margin-topbottom-8",
-            "components": [{
-              "is": "MouseHidden",
-              "slots": [{
-                  "name": "hidden",
-                  "is": "DynamicComponent",
-                  "props": {
-                    "class": "flex max-height-0",
-                    "components": [{
-                      "is": "v-spacer"
-                    }]
-                  }
-                },
-                {
-                  "is": "DynamicComponent",
-                  "props": {
-                    "components": [{
-                        "is": "v-card-title",
-                        "props": {
-                          "primary-title": true,
-                          "class": "padding-4 min-height-48 bold uppercase"
-                        },
-                        "slots": [{
-                          "is": "I18nText",
-                          "props": {
-                            "i18nContext": "ShipmentPage",
-                            "i18nKey": "reference"
-                          }
-                        }]
-                      },
-                      {
-                        "is": "v-divider"
-                      },
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "layoutName": "shipment/forms/reference"
-                        }
-                      }
-                    ]
-                  }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-bottom-2",
+                  "layoutName": "shipment/base/document"
                 }
-              ]
-            }]
-          }
-        }
-      ]
-    },
-    {
-      "is": "div",
-      "if": "return context.$vuetify.breakpoint.mdAndUp",
-      "props": {
-        "class": "xs-12 md-4 padding-leftright-8"
-      },
-      "slots": [{
-          "is": "AsyncComponent",
-          "props": {
-            "getDate": "shipmentDate",
-            "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/tracking",
-            "loadWhenDataLoaded": true,
-            "axiosBaseParams": [
-              "const trackingNos = [];",
-              "const data = context.$store.state.widget.data;",
-              "if (data.masterNo) { trackingNos.push(data.masterNo) }",
-              "if (data.shipmentContainers && data.shipmentContainers.length > 0) {",
-              "for (const container of data.shipmentContainers) {",
-              "if (container.carrierBookingNo) { trackingNos.push(container.carrierBookingNo) }",
-              "if (container.containerNo) { trackingNos.push(container.containerNo) }",
-              "}",
-              "}",
-              "return {",
-              "url: 'api/swivel-tracking/get',",
-              "method: 'POST',",
-              "data: { trackingNos }",
-              "};"
-            ],
-            "createdAtKey": "issueDate",
-            "createI18nKey": "shipmentReceivedByForwarder"
-          }
-        },
-        {
-          "is": "AsyncComponent",
-          "props": {
-            "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/alert",
-            "axiosBaseParams": [
-              "return {",
-              "url: 'api/alert/list/history',",
-              "method: 'POST',",
-              "data: {",
-              "tableName: 'shipment',",
-              "primaryKey: context.$route.params.params,",
-              "}",
-              "};"
-            ],
-            "sendMessageAxiosParams": [
-              "const primaryKey = encodeURIComponent(context.$route.params.params);",
-              "return {",
-              "url: `api/alert/message/shipment/${primaryKey}`,",
-              "method: 'POST',",
-              "data: { message: swig.message }",
-              "};"
+              }
             ]
           }
-        },
-        {
-          "is": "AsyncComponent",
-          "props": {
-            "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/document",
-            "axiosBaseParams": [
-              "const primaryKey = context.$route.params.params;",
-              "return {",
-              "url: 'api/document/document/shipment/{{primaryKey}}'.format({ primaryKey }),",
-              "};"
-            ],
-            "uploadAxiosParams": [
-              "const primaryKey = encodeURIComponent(context.$route.params.params);",
-              "return {",
-              "method: 'POST',",
-              "url: 'api/document/document/upload',",
-              "data: {",
-              "tableName: 'shipment', primaryKey,",
-              "fileName: swig.fileName,",
-              "fileData: { base64String: swig.base64String, extension: swig.extension }",
-              "}",
-              "};"
-            ],
-            "downloadAxiosParams": [
-              "const primaryKey = encodeURIComponent(context.$route.params.params);",
-              "return {",
-              "responseType: 'blob',",
-              "method: 'POST',",
-              "url: 'api/document/document/download',",
-              "data: {tableName: 'shipment', primaryKey, fileName: swig.fileName}",
-              "}"
-            ],
-            "deleteAxiosParams": [
-              "const primaryKey = encodeURIComponent(context.$route.params.params);",
-              "return {",
-              "method: 'POST',",
-              "url: 'api/document/document/delete',",
-              "data: {tableName: 'shipment', primaryKey, fileName: swig.fileName}",
-              "}"
-            ]
-          }
-        }
-      ]
+        }]
+      }
     }
   ]
 }

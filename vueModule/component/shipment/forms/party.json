@@ -6,38 +6,38 @@
       "mainKey": "Party",
       "formProps": {
         "z": {
-          "class": "xs-12 md-6 padding-leftright-4"
+          "class": "xs-12 padding-leftright-4"
         }
       },
       "labelProps": {
         "z": {
           "isComponent": "v-label",
           "i18nContext": "Widget",
-          "class": "font-110"
+          "class": "font-100"
         },
         "shipper": {
-          "class": "font-110 teal--text required form-label"
+          "class": "font-100 teal--text required form-label"
         },
         "consignee": {
-          "class": "font-110 green--text required form-label"
+          "class": "font-100 green--text required form-label"
         },
         "office": {
-          "class": "font-110 blue--text"
+          "class": "font-100 blue--text"
         },
         "agent": {
-          "class": "font-110 purple--text"
+          "class": "font-100 purple--text"
         },
         "linerAgent": {
-          "class": "font-110 amber--text"
+          "class": "font-100 amber--text"
         },
         "roAgent": {
-          "class": "font-110 brown--text"
+          "class": "font-100 brown--text"
         },
         "controllingCustomer": {
-          "class": "font-110 orange--text"
+          "class": "font-100 orange--text"
         },
         "notifyParty": {
-          "class": "font-110 pink--text"
+          "class": "font-100 pink--text"
         }
       },
       "fieldProps": {
@@ -63,45 +63,17 @@
         "controllingCustomer",
         "notifyParty"
       ],
-      "alwaysShowKeys": [
-        "shipper",
-        "consignee",
-        "agent",
-        "office",
-        "roAgent",
-        "linerAgent",
-        "controllingCustomer",
-        "notifyParty"
-      ],
       "canAdd": true,
       "canAddProps": {
         "class": "xs-12 md-6 padding-20 min-height-200 margin-auto"
       },
       "addItemsOrFunc": ["Trucker", "Broker", "Factory", "Warehouse"],
       "fields": [{
-        "name": "shipmentParty.{{flex}}{{key}}PartyName",
-        "component": "v-text-field",
-        "class": "xs-12 md-12"
-      }],
-      "hiddenFieldsProps": {
-        "style": {
-          "width": "500px",
-          "max-width": "100%",
-          "z-index": 1
-        }
-      },
-
-      "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['shipper','office','notifyParty'].includes(key))",
-      "hiddenFields": [
-        {
           "name": "shipmentParty.{{flex}}{{key}}Party",
           "component": "AsyncAutoSuggest",
-
-          "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['agent','consignee','controllingCustomer'].includes('{{key}}'))",
           "class": "xs-12 md-8",
           "relation": "shipmentParty.{{flex}}{{key}}Party",
-          "relationMore": [
-            {
+          "relationMore": [{
               "name": "shipmentParty.{{flex}}{{key}}PartyId",
               "selector": "id"
             },
@@ -404,7 +376,6 @@
         {
           "label": "Widget.contactName",
           "name": "shipmentParty.{{flex}}{{key}}PartyContactName",
-          "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['agent','consignee','controllingCustomer'].includes('{{key}}'))",
           "component": "v-text-field",
           "class": "xs-12 md-12"
         },
@@ -412,17 +383,15 @@
           "label": "Widget.contactEmail",
           "name": "shipmentParty.{{flex}}{{key}}PartyContactEmail",
           "component": "v-text-field",
-
-          "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['agent','consignee','controllingCustomer'].includes('{{key}}'))",
           "class": "xs-12 md-12",
           "readonlyClass": "xs-10 md-10"
         },
         {
           "label": "Widget.inviteEmail",
           "name": "shipmentParty.{{flex}}{{key}}PartyContactEmail",
-          "checkDisplayWhen": "return form && form.shipmentParty && form.shipmentParty.{{flex}}{{key}}PartyContactEmail",
           "component": "button-field",
           "readonlyClass": "xs-2",
+          "checkDisplayWhen": "return form && form.shipmentParty && form.shipmentParty.{{flex}}{{key}}PartyContactEmail",
           "slots": [{
             "is": "Icon",
             "props": {
@@ -463,16 +432,12 @@
         {
           "label": "Widget.contactPhone",
           "name": "shipmentParty.{{flex}}{{key}}PartyContactPhone",
-
-          "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['agent','consignee','controllingCustomer'].includes('{{key}}'))",
           "component": "v-text-field",
           "class": "xs-12 md-12"
         },
         {
           "name": "shipmentParty.{{flex}}{{key}}PartyContacts",
           "component": "GridField",
-
-          "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['agent','consignee'].includes('{{key}}'))",
           "class": "xs-12",
           "readonlyClass": "xs-12",
           "props": {
@@ -547,7 +512,6 @@
         {
           "label": "Widget.address",
           "name": ["shipmentParty.{{flex}}{{key}}PartyAddress", "shipmentParty.{{flex}}{{key}}Party.address"],
-          "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['agent','consignee','controllingCustomer'].includes('{{key}}'))",
           "component": "v-textarea",
           "props": {
             "auto-grow": true,
@@ -558,7 +522,6 @@
         {
           "label": "Widget.city",
           "name": ["shipmentParty.{{flex}}{{key}}PartyCityCode", "shipmentParty.{{flex}}{{key}}Party.cityCode"],
-          "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['agent','consignee','controllingCustomer'].includes('{{key}}'))",
           "component": "v-text-field",
           "class": "xs-12 md-3",
           "readonlyClass": "xs-12 md-3"
@@ -566,7 +529,6 @@
         {
           "label": "Widget.state",
           "name": ["shipmentParty.{{flex}}{{key}}PartyStateCode", "shipmentParty.{{flex}}{{key}}Party.stateCode"],
-          "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['agent','consignee','controllingCustomer'].includes('{{key}}'))",
           "component": "v-text-field",
           "class": "xs-12 md-4",
           "readonlyClass": "xs-12 md-3"
@@ -574,7 +536,6 @@
         {
           "label": "Widget.country",
           "name": ["shipmentParty.{{flex}}{{key}}PartyCountryCode", "shipmentParty.{{flex}}{{key}}Party.countryCode"],
-          "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['agent','consignee','controllingCustomer'].includes('{{key}}'))",
           "component": "v-text-field",
           "class": "xs-12 md-4",
           "readonlyClass": "xs-12 md-3"
@@ -582,7 +543,6 @@
         {
           "label": "Widget.zip",
           "name": ["shipmentParty.{{flex}}{{key}}PartyZip", "shipmentParty.{{flex}}{{key}}Party.zip"],
-          "checkDisplayWhen" : "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['agent','consignee','controllingCustomer'].includes('{{key}}'))",
           "component": "v-text-field",
           "class": "xs-12",
           "readonlyClass": "xs-12 md-3"

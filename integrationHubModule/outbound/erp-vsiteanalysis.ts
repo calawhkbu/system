@@ -13,7 +13,7 @@ const app = {
     return `${api.erp.url}/vsiteanalysis`
   },
   requestHandler: async(
-    { query, roleService, roles, partyGroup, partyService, party }: any,
+    { query, roleService, roles, partyGroup, partyService, party, user }: any,
     body: any,
     constants: { [key: string]: any },
     helper: { [key: string]: Function }
@@ -91,7 +91,8 @@ const app = {
 
     // xsalesman
     let xsalesman = ''
-    if (subqueries.salesmanCode) xsalesman = subqueries.salesmanCode.value
+    if (user.thirdPartyCode && user.thirdPartyCode.erp) xsalesman = user.thirdPartyCode.erp 
+    else if (subqueries.salesmanCode) xsalesman = subqueries.salesmanCode.value
 
     // xfreehand
     let xfreehand = ''
