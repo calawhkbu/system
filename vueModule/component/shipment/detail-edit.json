@@ -268,7 +268,7 @@
               {
                 "is": "AsyncComponent",
                 "props": {
-                  "class": "xs-12 margin-bottom-2",
+                  "class": "xs-12 margin-bottom-2 padding-top-4",
                   "layoutName": "shipment/base/general"
                 }
               },

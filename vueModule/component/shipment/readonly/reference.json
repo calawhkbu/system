@@ -4,7 +4,7 @@
     "props": {
       "fields": [{
         "label": "ShipmentPage.references",
-        "name": "bookingReference",
+        "name": "shipmentReference",
         "component": "TableField",
         "class": "xs-12",
         "props": {
