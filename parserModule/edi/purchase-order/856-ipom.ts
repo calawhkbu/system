@@ -373,8 +373,8 @@ export default class EdiParser856 extends BaseEdiParser {
           elementList: []
         }
         const servciesMap = {
-          CFS : 'CFS/CY',
-          CY : 'CFS/CY',
+          CFS : 'CFS/DOOR',
+          CY : 'CY/DOOR',
           SD : 'CFS/SD'
         }
         const refNO = servciesMap[_.get(element, 'service')] ? servciesMap[_.get(element, 'service')] : 'MICP'
