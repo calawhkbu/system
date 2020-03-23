@@ -4,8 +4,7 @@
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 grid min-height-28 align-item-center full-width padding-2",
-        "components": [
-          {
+        "components": [{
             "is": "v-btn",
             "props": {
               "small": true,
@@ -131,28 +130,7 @@
             "tabItemComponents": [{
                 "is": "AsyncComponent",
                 "props": {
-                  "getDate": "shipmentDate",
-                  "class": "xs-12 margin-topbottom-4",
-                  "layoutName": "plugins/tracking",
-                  "loadWhenDataLoaded": true,
-                  "axiosBaseParams": [
-                    "const trackingNos = [];",
-                    "const data = context.$store.state.widget.data;",
-                    "if (data.masterNo) { trackingNos.push(data.masterNo) }",
-                    "if (data.shipmentContainers && data.shipmentContainers.length > 0) {",
-                    "for (const container of data.shipmentContainers) {",
-                    "if (container.carrierBookingNo) { trackingNos.push(container.carrierBookingNo) }",
-                    "if (container.containerNo) { trackingNos.push(container.containerNo) }",
-                    "}",
-                    "}",
-                    "return {",
-                    "url: 'api/swivel-tracking/get',",
-                    "method: 'POST',",
-                    "data: { trackingNos }",
-                    "};"
-                  ],
-                  "createdAtKey": "issueDate",
-                  "createI18nKey": "shipmentReceivedByForwarder"
+                  "layoutName": "shipment/base/tracking"
                 }
               },
               {
@@ -160,7 +138,7 @@
                 "slots": [{
                   "is": "AsyncComponent",
                   "props": {
-                    "layoutName": "shipment/forms/generalForm"
+                    "layoutName": "shipment/base/general"
                   }
                 }]
               },
@@ -169,7 +147,7 @@
                 "slots": [{
                   "is": "AsyncComponent",
                   "props": {
-                    "layoutName": "shipment/forms/containerForm"
+                    "layoutName": "shipment/base/container"
                   }
                 }]
               }
@@ -189,7 +167,7 @@
                 "slots": [{
                   "is": "AsyncComponent",
                   "props": {
-                    "layoutName": "shipment/forms/partyForm"
+                    "layoutName": "shipment/base/party"
                   }
                 }]
               },
@@ -198,7 +176,7 @@
                 "slots": [{
                   "is": "AsyncComponent",
                   "props": {
-                    "layoutName": "shipment/forms/dateForm"
+                    "layoutName": "shipment/base/date"
                   }
                 }]
               }
@@ -216,71 +194,32 @@
             "tabItemComponents": [{
                 "is": "AsyncComponent",
                 "props": {
-                  "class": "xs-12 margin-topbottom-4",
-                  "layoutName": "plugins/alert",
-                  "axiosBaseParams": [
-                    "return {",
-                    "url: 'api/alert/list/history',",
-                    "method: 'POST',",
-                    "data: {",
-                    "tableName: 'shipment',",
-                    "primaryKey: context.$route.params.params,",
-                    "}",
-                    "};"
-                  ],
-                  "sendMessageAxiosParams": [
-                    "const primaryKey = encodeURIComponent(context.$route.params.params);",
-                    "return {",
-                    "url: `api/alert/message/shipment/${primaryKey}`,",
-                    "method: 'POST',",
-                    "data: { message: swig.message }",
-                    "};"
-                  ]
+                  "layoutName": "shipment/base/alert"
                 }
               },
               {
                 "is": "AsyncComponent",
                 "props": {
-                  "class": "xs-12 margin-topbottom-4",
-                  "layoutName": "plugins/document",
-                  "axiosBaseParams": [
-                    "const primaryKey = context.$route.params.params;",
-                    "return {",
-                    "url: 'api/document/document/shipment/{{primaryKey}}'.format({ primaryKey }),",
-                    "};"
-                  ],
-                  "uploadAxiosParams": [
-                    "const primaryKey = encodeURIComponent(context.$route.params.params);",
-                    "return {",
-                    "method: 'POST',",
-                    "url: 'api/document/document/upload',",
-                    "data: {",
-                    "tableName: 'shipment', primaryKey,",
-                    "fileName: swig.fileName,",
-                    "fileData: { base64String: swig.base64String, extension: swig.extension }",
-                    "}",
-                    "};"
-                  ],
-                  "downloadAxiosParams": [
-                    "const primaryKey = encodeURIComponent(context.$route.params.params);",
-                    "return {",
-                    "responseType: 'blob',",
-                    "method: 'POST',",
-                    "url: 'api/document/document/download',",
-                    "data: {tableName: 'shipment', primaryKey, fileName: swig.fileName}",
-                    "}"
-                  ],
-                  "deleteAxiosParams": [
-                    "const primaryKey = encodeURIComponent(context.$route.params.params);",
-                    "return {",
-                    "method: 'POST',",
-                    "url: 'api/document/document/delete',",
-                    "data: {tableName: 'shipment', primaryKey, fileName: swig.fileName}",
-                    "}"
-                  ]
+                  "layoutName": "shipment/base/document"
                 }
               }
             ]
+          },
+          {
+            "index": "alertAndDocument",
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "ShipmentPage",
+                "i18nKey": "reference"
+              }
+            }],
+            "tabItemComponents": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "shipment/base/reference"
+              }
+            }]
           }
         ]
       }
@@ -290,160 +229,90 @@
       "if": "return context.$vuetify.breakpoint.mdAndUp",
       "props": {
         "class": "xs-12 grid full-width padding-2",
-        "components": [
-          {
-            "is": "DynamicComponent",
-            "props": {
-              "class": "xs-8 grid padding-2",
-              "components": [
-                {
-                  "is": "DynamicComponent",
-                  "props": {
-                    "class": "xs-12 grid",
-                    "components": [
-                      {
+        "components": [{
+          "is": "DynamicComponent",
+          "props": {
+            "class": "xs-8 grid padding-2",
+            "components": [{
+                "is": "DynamicComponent",
+                "props": {
+                  "class": "xs-12 grid padding-bottom-2",
+                  "components": [{
+                    "is": "DynamicComponent",
+                    "props": {
+                      "class": "xs-6 padding-right-2",
+                      "components": [{
                         "is": "AsyncComponent",
                         "props": {
-                          "class": "xs-6",
-                          "layoutName": "shipment/forms/party"
+                          "layoutName": "shipment/base/party"
                         }
-                      },
-                      {
+                      }]
+                    }
+                  }, {
+                    "is": "DynamicComponent",
+                    "props": {
+                      "class": "xs-6 padding-left-2",
+                      "components": [{
                         "is": "AsyncComponent",
                         "props": {
-                          "class": "xs-6",
-                          "layoutName": "shipment/forms/date"
+                          "layoutName": "shipment/base/date"
                         }
-                      }
-                    ]
-                  }
-                },
-                {
-                  "is": "AsyncComponent",
-                  "props": {
-                    "class": "xs-6",
-                    "layoutName": "shipment/forms/general"
-                  }
-                },
-                {
-                  "is": "AsyncComponent",
-                  "props": {
-                    "class": "xs-6",
-                    "layoutName": "shipment/forms/container"
-                  }
-                },
-                {
-                  "is": "AsyncComponent",
-                  "props": {
-                    "class": "xs-6",
-                    "layoutName": "shipment/forms/reference"
-                  }
+                      }]
+                    }
+                  }]
                 }
-              ]
-            }
-          }, {
-            "is": "DynamicComponent",
-            "props": {
-              "class": "xs-4 padding-2 grid",
-              "components": [
-                {
-                  "is": "AsyncComponent",
-                  "props": {
-                    "getDate": "shipmentDate",
-                    "class": "xs-12 margin-topbottom-2",
-                    "layoutName": "plugins/tracking",
-                    "loadWhenDataLoaded": true,
-                    "axiosBaseParams": [
-                      "const trackingNos = [];",
-                      "const data = context.$store.state.widget.data;",
-                      "if (data.masterNo) { trackingNos.push(data.masterNo) }",
-                      "if (data.shipmentContainers && data.shipmentContainers.length > 0) {",
-                      "for (const container of data.shipmentContainers) {",
-                      "if (container.carrierBookingNo) { trackingNos.push(container.carrierBookingNo) }",
-                      "if (container.containerNo) { trackingNos.push(container.containerNo) }",
-                      "}",
-                      "}",
-                      "return {",
-                      "url: 'api/swivel-tracking/get',",
-                      "method: 'POST',",
-                      "data: { trackingNos }",
-                      "};"
-                    ],
-                    "createdAtKey": "issueDate",
-                    "createI18nKey": "shipmentReceivedByForwarder"
-                  }
-                },
-                {
-                  "is": "AsyncComponent",
-                  "props": {
-                    "class": "xs-12 margin-topbottom-2",
-                    "layoutName": "plugins/alert",
-                    "axiosBaseParams": [
-                      "return {",
-                      "url: 'api/alert/list/history',",
-                      "method: 'POST',",
-                      "data: {",
-                      "tableName: 'shipment',",
-                      "primaryKey: context.$route.params.params,",
-                      "}",
-                      "};"
-                    ],
-                    "sendMessageAxiosParams": [
-                      "const primaryKey = encodeURIComponent(context.$route.params.params);",
-                      "return {",
-                      "url: `api/alert/message/shipment/${primaryKey}`,",
-                      "method: 'POST',",
-                      "data: { message: swig.message }",
-                      "};"
-                    ]
-                  }
-                },
-                {
-                  "is": "AsyncComponent",
-                  "props": {
-                    "class": "xs-12 margin-topbottom-2",
-                    "layoutName": "plugins/document",
-                    "axiosBaseParams": [
-                      "const primaryKey = context.$route.params.params;",
-                      "return {",
-                      "url: 'api/document/document/shipment/{{primaryKey}}'.format({ primaryKey }),",
-                      "};"
-                    ],
-                    "uploadAxiosParams": [
-                      "const primaryKey = encodeURIComponent(context.$route.params.params);",
-                      "return {",
-                      "method: 'POST',",
-                      "url: 'api/document/document/upload',",
-                      "data: {",
-                      "tableName: 'shipment', primaryKey,",
-                      "fileName: swig.fileName,",
-                      "fileData: { base64String: swig.base64String, extension: swig.extension }",
-                      "}",
-                      "};"
-                    ],
-                    "downloadAxiosParams": [
-                      "const primaryKey = encodeURIComponent(context.$route.params.params);",
-                      "return {",
-                      "responseType: 'blob',",
-                      "method: 'POST',",
-                      "url: 'api/document/document/download',",
-                      "data: {tableName: 'shipment', primaryKey, fileName: swig.fileName}",
-                      "}"
-                    ],
-                    "deleteAxiosParams": [
-                      "const primaryKey = encodeURIComponent(context.$route.params.params);",
-                      "return {",
-                      "method: 'POST',",
-                      "url: 'api/document/document/delete',",
-                      "data: {tableName: 'shipment', primaryKey, fileName: swig.fileName}",
-                      "}"
-                    ]
-                  }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-bottom-2",
+                  "layoutName": "shipment/base/general"
                 }
-              ]
-            }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-bottom-2",
+                  "layoutName": "shipment/base/container"
+                }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-bottom-2",
+                  "layoutName": "shipment/base/reference"
+                }
+              }
+            ]
           }
-        ]
+        }, {
+          "is": "DynamicComponent",
+          "props": {
+            "class": "xs-4 padding-2",
+            "components": [{
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-bottom-2",
+                  "layoutName": "shipment/base/tracking"
+                }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-bottom-2",
+                  "layoutName": "shipment/base/alert"
+                }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-bottom-2",
+                  "layoutName": "shipment/base/document"
+                }
+              }
+            ]
+          }
+        }]
       }
     }
   ]

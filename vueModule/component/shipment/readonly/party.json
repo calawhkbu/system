@@ -1,0 +1,90 @@
+{
+  "components": [{
+    "is": "WidgetMoreForm",
+    "props": {
+      "name": "shipmentParty",
+      "mainKey": "Party",
+      "formProps": {
+        "z": {
+          "class": "xs-12 md-6 padding-leftright-1"
+        }
+      },
+      "labelProps": {
+        "z": {
+          "isComponent": "v-label",
+          "i18nContext": "Widget",
+          "class": "font-90"
+        },
+        "shipper": {
+          "class": "font-90"
+        },
+        "consignee": {
+          "class": "font-90"
+        },
+        "office": {
+          "class": "font-90"
+        },
+        "agent": {
+          "class": "font-90"
+        },
+        "linerAgent": {
+          "class": "font-90"
+        },
+        "roAgent": {
+          "class": "font-90"
+        },
+        "controllingCustomer": {
+          "class": "font-90 orange--text"
+        },
+        "notifyParty": {
+          "class": "font-90 pink--text"
+        }
+      },
+      "fieldProps": {
+        "z": {
+          "thirdPartyCode.erp": "{{thirdPartyCode.erp}}",
+          "id": "{{id}}",
+          "name": "{{name}}",
+          "address": "{{address}}",
+          "cityCode": "{{cityCode}}",
+          "countryCode": "{{countryCode}}",
+          "zip": "{{zip}}",
+          "shortName": "{{shortName}}",
+          "fixValue": "{{fixValue}}"
+        }
+      },
+      "fixedKeys": [
+        "shipper",
+        "consignee",
+        "agent",
+        "office",
+        "roAgent",
+        "linerAgent",
+        "controllingCustomer",
+        "notifyParty"
+      ],
+      "alwaysShowKeys": [
+        "shipper",
+        "consignee",
+        "agent",
+        "office",
+        "roAgent",
+        "linerAgent",
+        "controllingCustomer",
+        "notifyParty"
+      ],
+      "checkDisplayWhen": [
+        "return form[`${key}PartyId`] || form[`${key}PartyName`]"
+      ],
+      "extraGridProps": {
+        "class": "xs-12 md-6 padding-leftright-1"
+      },
+      "canAdd": false,
+      "fields": [{
+        "name": "shipmentParty.{{flex}}{{key}}PartyName",
+        "component": "v-text-field",
+        "class": "xs-12 md-12"
+      }]
+    }
+  }]
+}
