@@ -33,6 +33,7 @@
             "props": {
               "i18nContext": "ShipmentPage",
               "i18nKey": "title",
+              "html": true,
               "i18nOptions": {
                 "title": "{{context.$store.state.widget.data.houseNo}}"
               }
@@ -195,18 +196,11 @@
               }
             }],
             "tabItemComponents": [{
-                "is": "AsyncComponent",
-                "props": {
-                  "layoutName": "shipment/base/alert"
-                }
-              },
-              {
-                "is": "AsyncComponent",
-                "props": {
-                  "layoutName": "shipment/base/document"
-                }
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "shipment/base/document"
               }
-            ]
+            }]
           },
           {
             "index": "alertAndDocument",
@@ -297,13 +291,6 @@
                 "props": {
                   "class": "xs-12 margin-bottom-2",
                   "layoutName": "shipment/base/tracking"
-                }
-              },
-              {
-                "is": "AsyncComponent",
-                "props": {
-                  "class": "xs-12 margin-bottom-2",
-                  "layoutName": "shipment/base/alert"
                 }
               },
               {
