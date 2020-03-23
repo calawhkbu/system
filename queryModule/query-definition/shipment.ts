@@ -2608,7 +2608,7 @@ isInReportList.map(isInReport => {
           // F_cbmLast
           x.cases.map(y => {
             resultColumnList.push(new ResultColumn(
-              summaryFieldExpression(summaryField, isInReport, new AndExpressions([lastCurrentCondition, y.condition])), `${y.typeCode}_${summaryField}${lastOrCurrent.name}`
+              summaryFieldExpression(summaryField, isInReport, new AndExpressions([lastCurrentCondition, y.condition])), `${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`
             ))
 
           })
