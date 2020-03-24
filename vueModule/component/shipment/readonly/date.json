@@ -10,7 +10,7 @@
           "class": "xs-12 padding-leftright-2",
           "formContainerProps": {
             "style": {
-              "margin-top": "-5px"
+              "margin-top": "-2px"
             }
           }
         }
