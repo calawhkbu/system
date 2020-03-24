@@ -2803,13 +2803,13 @@ shipmentTableFilterFieldList.map(filterField => {
 
   const IsNotNullQueryFn = ((subqueryParam) => {
     return new Query({
-      $where: new InExpression(expressionFn(subqueryParam), true),
+      $where: new IsNullExpression(expressionFn(subqueryParam), true),
     })
   }) as QueryFn
 
   const IsNullQueryFn = ((subqueryParam) => {
     return new Query({
-      $where: new InExpression(expressionFn(subqueryParam), false),
+      $where: new IsNullExpression(expressionFn(subqueryParam), false),
     })
   }) as QueryFn
 
