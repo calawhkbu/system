@@ -14,7 +14,7 @@ export default {
       'agentPartyName',
     ],
     subTitle: `
-    <div>{{entity.portOfLoadingName}} => {{entity.portOfDischargeName}} / {{entity.shipperPartyName}} / {{entity.consigneePartyName}} </div>
+    <div>{{entity.portOfLoadingName}} => {{entity.portOfDischargeName}} / {{entity.shipperPartyName}} / {{entity.consigneePartyName}} / {{entity.agentPartyName}} </div>
     `,
     limit: 10,
     charLimit: 50
