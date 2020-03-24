@@ -139,6 +139,9 @@
               },
               {
                 "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
                 "slots": [{
                   "is": "AsyncComponent",
                   "props": {
@@ -148,6 +151,9 @@
               },
               {
                 "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
                 "slots": [{
                   "is": "AsyncComponent",
                   "props": {
@@ -168,6 +174,9 @@
             }],
             "tabItemComponents": [{
                 "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
                 "slots": [{
                   "is": "AsyncComponent",
                   "props": {
@@ -177,6 +186,9 @@
               },
               {
                 "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
                 "slots": [{
                   "is": "AsyncComponent",
                   "props": {
