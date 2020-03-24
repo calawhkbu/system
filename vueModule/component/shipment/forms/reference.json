@@ -13,6 +13,7 @@
               "label": "ShipmentPage.poNo",
               "name": "shipmentPo",
               "component": "TextField",
+              "checkDisplayWhen": "return form.shipmentPo && form.shipmentPo.length > 0",
               "class": "xs-12",
               "props": {
                 "updateValue": [
