@@ -3344,6 +3344,41 @@ query
         $on: [
           new BinaryExpression(new ColumnExpression('shipment_po', 'shipment_po_shipmentId'), '=', new ColumnExpression('shipment', 'id')),
         ]
+      }, {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('shipment_reference', 'shipmentId'), 'shipment_reference_shipmentId'),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({ expression: new ColumnExpression('shipment_reference', 'refDescription'), suffix: 'SEPARATOR \', \'' })
+                ),
+                'shipIds'
+              )
+            ],
+            $from: new FromTable('shipment_reference'),
+            $where: new AndExpressions({
+              expressions: [
+                new BinaryExpression(new ColumnExpression('shipment_reference', 'refName'), '=', 'Shipment Reference ID'),
+                new AndExpressions({
+                  expressions: [
+                    new IsNullExpression(new ColumnExpression('shipment_reference', 'deletedAt'), false),
+                    new IsNullExpression(new ColumnExpression('shipment_reference', 'deletedBy'), false)
+                  ]
+                })
+              ]
+            }),
+            $group: new GroupBy([
+              new ColumnExpression('shipment_reference', 'shipmentId')
+            ]),
+          }),
+          $as: 'shipment_reference_shipId'
+        }),
+        $on: [
+          new BinaryExpression(new ColumnExpression('shipment_reference_shipId', 'shipment_reference_shipmentId'), '=', new ColumnExpression('shipment', 'id')),
+        ]
       }),
       $where: new OrExpressions({
         expressions: [
@@ -3393,6 +3428,7 @@ query
           new RegexpExpression(new ColumnExpression('shipment_container', 'sealNo2'), false),
           new RegexpExpression(new ColumnExpression('shipment_container', 'carrierBookingNo'), false),
           new RegexpExpression(new ColumnExpression('shipment_po', 'poNo'), false),
+          new RegexpExpression(new ColumnExpression('shipment_reference_shipId', 'shipIds'), false),
         ],
       }),
     })
@@ -3443,6 +3479,7 @@ query
   .register('value', 43)
   .register('value', 44)
   .register('value', 45)
+  .register('value', 46)
 
 query
   .register(

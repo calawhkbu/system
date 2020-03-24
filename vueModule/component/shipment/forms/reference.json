@@ -10,6 +10,16 @@
         "props": {
           "topLabel": true,
           "fields": [{
+              "label": "ShipmentPage.poNo",
+              "name": "shipmentPo",
+              "component": "TextField",
+              "class": "xs-12",
+              "props": {
+                "updateValue": [
+                  "return Array.isArray(value) ? value.map(v => v.poNo).join(',') : value"
+                ]
+              }
+            }, {
               "label": "ShipmentPage.refName",
               "name": "refName",
               "class": "xs-12 md-5",
