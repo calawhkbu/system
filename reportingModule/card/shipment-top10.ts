@@ -24,12 +24,20 @@ function prepareParams(): Function {
     const codeColumnName =
       xAxis === 'carrier'
         ? `carrierCode`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
         : `${xAxis}PartyShortNameInReport`
@@ -61,12 +69,20 @@ function createTop10Table() {
     const codeColumnName =
       xAxis === 'carrier'
         ? `carrierCode`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
         : `${xAxis}PartyShortNameInReport`
@@ -111,12 +127,20 @@ function insertTop10Data() {
     const codeColumnName =
       xAxis === 'carrier'
         ? `carrierCode`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
         : `${xAxis}PartyShortNameInReport`
@@ -196,12 +220,20 @@ function prepareRawTable() {
     const codeColumnName =
       xAxis === 'carrier'
         ? `carrierCode`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
         : `${xAxis}PartyShortNameInReport`
@@ -262,12 +294,20 @@ function finalQuery() {
     const codeColumnName =
       xAxis === 'carrier'
         ? `carrierCode`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
         : `${xAxis}PartyShortNameInReport`
@@ -367,10 +407,12 @@ export const filters = [
           label: 'teuInReport',
           value: 'teuInReport',
         },
+
         {
           label: 'quantity',
           value: 'quantity',
         },
+
       ],
       required: true,
     },
@@ -409,6 +451,15 @@ export const filters = [
           label: 'controllingCustomer',
           value: 'controllingCustomer',
         },
+        {
+          label: 'portOfLoading',
+          value: 'portOfLoadingCode',
+        },
+
+        {
+          label: 'portOfDischarge',
+          value: 'portOfDischargeCode',
+        }
       ],
       required: true,
     },
