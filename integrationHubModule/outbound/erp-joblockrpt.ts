@@ -27,6 +27,7 @@ const app = {
     party = await helper.resolveParties(partyService, partyGroup, party)
 
     const subqueries = query.subqueries || {}
+    console.log(subqueries, 'erp-joblockrpt')
 
     // datefr && dateto
     if (!subqueries.date) throw new BadRequestException('MISSING_DATE_RANGE')
@@ -37,13 +38,12 @@ const app = {
 
     // xsite
     const sites = helper.getOfficeParties('erp-site', party, subqueries.officePartyId)
-    console.log(sites, 'erp-joblockrpt')
     if (!sites.length) throw new BadRequestException('MISSING_SITE')
     if (sites.length > 1) throw new BadRequestException('TOO_MANY_SITES')
     const xsite = (app.variable.sites = sites)
 
     // xdivision (for later use)
-    app.variable.departments = helper.getDivisions(roleFilters, ['AE', 'AI', 'SE', 'SI'])
+    app.variable.departments = helper.getDivisions(roleFilters, ['AE', 'AI', 'SE', 'SI', 'LOG'])
 
     return {
       headers: {

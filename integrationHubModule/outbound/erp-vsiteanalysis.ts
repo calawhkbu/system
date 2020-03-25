@@ -2,6 +2,7 @@ import { BadRequestException, ForbiddenException, NotImplementedException } from
 import moment = require('moment')
 
 const app = {
+  consumeError: true,
   variable: {
     months: [] as string[],
     site: '' as string,
@@ -13,7 +14,7 @@ const app = {
     return `${api.erp.url}/vsiteanalysis`
   },
   requestHandler: async(
-    { query, roleService, roles, partyGroup, partyService, party, user }: any,
+    { query, roles, roleService, partyGroup, party, partyService, user }: any,
     body: any,
     constants: { [key: string]: any },
     helper: { [key: string]: Function }
@@ -29,7 +30,7 @@ const app = {
     if (!party.length) throw new ForbiddenException('NO_ACCESS_RIGHT')
 
     const subqueries = query.subqueries || {}
-    console.log(subqueries, 'erp-vsiteanalysis:system')
+    console.log(subqueries, 'erp-vsiteanalysis')
 
     // datefr && dateto
     if (!subqueries.date) throw new BadRequestException('MISSING_DATE_RANGE')
@@ -53,6 +54,7 @@ const app = {
     } else if (subqueries.moduleTypeCode) {
       // warning : getting the first one only
       xmodule = availableModuleTypes.find(type => type === subqueries.moduleTypeCode.value[0])
+
       if (!xmodule) throw new BadRequestException('INVALID_MODULE_TYPE')
     } else if (availableModuleTypes.length === 1) {
       xmodule = availableModuleTypes[0]
@@ -68,6 +70,7 @@ const app = {
     } else if (subqueries.boundTypeCode) {
       // warning : getting the first one only
       xbound = availableBoundTypes.filter(type => type === subqueries.boundTypeCode.value[0])
+
       if (!xbound) throw new BadRequestException('INVALID_BOUND_TYPE')
     } else {
       xbound = availableBoundTypes
@@ -77,29 +80,37 @@ const app = {
     // xsite
     const sites = helper.getOfficeParties('erp-site', party, subqueries.officePartyId)
     if (!sites.length) throw new BadRequestException('MISSING_SITE')
-    if (sites.length > 1) throw new BadRequestException('TOO_MANY_SITES')
-    const xsite = (app.variable.site = sites[0])
+    if (!subqueries.viaHKG && sites.length > 1) throw new BadRequestException('TOO_MANY_SITES')
+    let xsite = (app.variable.site = sites[0])
+
+    // via HKG => xsite = 'HKG'
+    if (subqueries.viaHKG) {
+      if (helper.findParty('erp-site', party, 'HKG')) {
+        xsite = (app.variable.site = 'HKG')
+      }
+      else {
+        throw new BadRequestException('NO_ACCESS_RIGHT')
+      }
+    }
 
     // xdivision
     const availableDivisions = helper.getDivisions(roleFilters)
 
     // warning : getting the first one only
     const xdivision = subqueries.division
-      ? availableDivisions.find(division => division === subqueries.division.value[0])
+      ? availableDivisions.find(division => subqueries.division.value.indexOf(division) > -1)
       : availableDivisions.find(division => division === 'Total')
     if (!xdivision) throw new BadRequestException('MISSING_DIVISION')
 
     // xsalesman
     let xsalesman = ''
-    if (user.thirdPartyCode && user.thirdPartyCode.erp) xsalesman = user.thirdPartyCode.erp 
+    if (user.thirdPartyCode && user.thirdPartyCode.erp) xsalesman = user.thirdPartyCode.erp
     else if (subqueries.salesmanCode) xsalesman = subqueries.salesmanCode.value
 
     // xfreehand
+    // warning : getting the first one only
     let xfreehand = ''
-    if (subqueries.nominatedTypeCode)
-      xfreehand = Array.isArray(subqueries.nominatedTypeCode.value)
-        ? subqueries.nominatedTypeCode.value[0]
-        : subqueries.nominatedTypeCode.value
+    if (subqueries.nominatedTypeCode) xfreehand = subqueries.nominatedTypeCode.value[0]
 
     // xicltype && xigntype
     const xCustomer = {
@@ -108,8 +119,8 @@ const app = {
     }
 
     if (subqueries.isColoader) {
-      // filter isColoader cannot be used together with includeCustomer OR excludeCustomer
-      if (subqueries.includeCustomer || subqueries.excludeCustomer)
+      // filter isColoader cannot be used together with controllingCustomerIncludeRole OR controllingCustomerExcludeRole
+      if (subqueries.controllingCustomerIncludeRole || subqueries.controllingCustomerExcludeRole)
         throw new BadRequestException('ISCOLOADER_INCLUDE_EXCLUDE_CUSTOMER_CANNOT_EXIST_BOTH')
 
       if (subqueries.isColoader.value) {
@@ -119,25 +130,31 @@ const app = {
       }
     }
 
-    if (subqueries.includeCustomer && subqueries.excludeCustomer)
+    if (subqueries.controllingCustomerIncludeRole && subqueries.controllingCustomerExcludeRole)
       throw new BadRequestException('INCLUDE_EXCLUDE_CUSTOMER_EITHER_ONE')
-
-    if (subqueries.includeCustomer)
-      xCustomer.xicltype = (Array.isArray(subqueries.includeCustomer.value)
-        ? subqueries.includeCustomer.value
-        : [subqueries.includeCustomer.value]
-      ).join('')
-
-    if (subqueries.excludeCustomer)
-      xCustomer.xigntype = (Array.isArray(subqueries.excludeCustomer.value)
-        ? subqueries.excludeCustomer.value
-        : [subqueries.excludeCustomer.value]
-      ).join('')
+    if (subqueries.controllingCustomerIncludeRole) {
+      const values = subqueries.controllingCustomerIncludeRole.value.map(v => helper.getRole(v))
+      xCustomer.xicltype = values.join('')
+    }
+    else if (subqueries.controllingCustomerExcludeRole) {
+      const values = subqueries.controllingCustomerExcludeRole.value.map(v => helper.getRole(v))
+      xCustomer.xigntype = values.join('')
+    }
 
     // xgrpname
     // warning : getting the first one only
     let xgrpname = ''
     if (subqueries.agentGroup) xgrpname = subqueries.agentGroup.value[0]
+
+    // inblno && exblno
+    const xHouseNo = {
+      inblno: '',
+      exblno: '',
+    }
+    if (subqueries.likeHouseNo && subqueries.notLikeHouseNo)
+      throw new BadRequestException('LIKE_NOTLIKE_HOUSENO_EITHER_ONE')
+    if (subqueries.likeHouseNo) xHouseNo.inblno = subqueries.likeHouseNo.value
+    if (subqueries.notLikeHouseNo) xHouseNo.exblno = subqueries.notLikeHouseNo.value
 
     return {
       headers: {
@@ -155,6 +172,7 @@ const app = {
         xfreehand,
         ...xCustomer,
         xgrpname,
+        ...xHouseNo,
       }),
     }
   },
@@ -162,7 +180,7 @@ const app = {
     // parse results
     let responseBody = JSON.parse(JSON.parse(response.responseBody).d)
 
-    const { boundTypes, site, months } = app.variable
+    const { boundTypes, months, site } = app.variable
 
     // regroup results
     responseBody = responseBody.reduce((result, row) => {
@@ -171,22 +189,37 @@ const app = {
       if (!resultRow)
         result.push((resultRow = { officePartyCode: row.xsite, currency: row.currency, jobMonth }))
 
-      resultRow.revenue =
-        (resultRow.revenue || 0) +
-        boundTypes.reduce(
-          (result, type) => result + (row[`${type.toLocaleLowerCase()}sales`] || 0),
-          0
-        )
-      resultRow.cost =
-        (resultRow.cost || 0) +
-        boundTypes.reduce(
-          (result, type) => result + (row[`${type.toLocaleLowerCase()}cost`] || 0),
-          0
-        )
       resultRow.grossProfit =
         (resultRow.grossProfit || 0) +
         boundTypes.reduce(
           (result, type) => result + (row[`${type.toLocaleLowerCase()}profit`] || 0),
+          0
+        )
+      resultRow.profitShareIncome =
+        (resultRow.profitShareIncome || 0) +
+        boundTypes.reduce(
+          (result, type) => result + (row[`${type.toLocaleLowerCase()}ps_income`] || 0),
+          0
+        )
+      resultRow.profitShareCost =
+        (resultRow.profitShareCost || 0) +
+        boundTypes.reduce(
+          (result, type) => result + (row[`${type.toLocaleLowerCase()}ps_cost`] || 0),
+          0
+        )
+      resultRow.profitShare =
+        (resultRow.profitShare || 0) +
+        boundTypes.reduce((result, type) => result + (row[`${type.toLocaleLowerCase()}ps`] || 0), 0)
+      resultRow.otherProfit =
+        (resultRow.otherProfit || 0) +
+        boundTypes.reduce(
+          (result, type) => result + (row[`${type.toLocaleLowerCase()}othprofit`] || 0),
+          0
+        )
+      resultRow.revenue =
+        (resultRow.revenue || 0) +
+        boundTypes.reduce(
+          (result, type) => result + (row[`${type.toLocaleLowerCase()}sales`] || 0),
           0
         )
 
@@ -209,10 +242,14 @@ const app = {
           officePartyCode: site,
           currency,
           jobMonth: month,
-          revenue: 0,
-          cost: 0,
           grossProfit: 0,
+          profitShareIncome: 0,
+          profitShareCost: 0,
+          profitShare: 0,
+          otherProfit: 0,
+          revenue: 0,
         }
+      row.gpPercent = row.revenue ? row.grossProfit / row.revenue : NaN
       result.push(row)
     }
 
@@ -220,9 +257,13 @@ const app = {
       officePartyCode: string,
       currency: string,
       jobMonth: string,
+      grossProfit: number,
+      profitShareIncome: number,
+      profitShareCost: number,
+      profitShare: number,
+      otherProfit: number,
       revenue: number,
-      cost: number,
-      grossProfit: number
+      gpPercent: number,
     } */
 
     return { ...response, responseBody: result }
