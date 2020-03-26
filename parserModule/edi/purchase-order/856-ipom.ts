@@ -1,4 +1,3 @@
-// 2020-03-20
 import { SwivelConfigService } from 'modules/swivel-config/service'
 import { OutboundService } from 'modules/integration-hub/services/outbound'
 
@@ -76,8 +75,12 @@ export default class EdiParser856 extends BaseEdiParser {
         segement: 'BSN',
         elementList: []
       }
+      const container = _.get(element, 'bookingContainers')
+      const containerNo = _.get(container[0], 'containerNo')
+      const bookingNo = (_.get(element, 'bookingNo') || '')
+      const newBookingNo = `${bookingNo}-${containerNo}`
       BSN.elementList.push('00')
-      BSN.elementList.push((_.get(element, 'bookingNo') || '').substring(0, 30))
+      BSN.elementList.push(newBookingNo.substring(0, 30))
       BSN.elementList.push(moment(_.get(element, 'createdAt')).format('YYYYMMDD'))
       BSN.elementList.push(moment(_.get(element, 'createdAt')).format('HHmm'))
       BSN.elementList.push('0004')
@@ -135,7 +138,7 @@ export default class EdiParser856 extends BaseEdiParser {
     _.set(returnJSON, 'data', data)
     // return cloneEntityJSON
     // return returnJSON
-    // sconst edtResult = this.toExport(returnJSON)
+    // const edtResult = this.toExport(returnJSON)
     // return edtResult
     const result = await super.export(returnJSON)
     // return result['ediResults']['item1']
