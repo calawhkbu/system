@@ -157,6 +157,7 @@ const partyList = [
   partyIdExpression?: IExpression,
   partyCodeExpression?: IExpression,
   partyNameInReportExpression?: IExpression
+  partyShortNameInReportExpression?: IExpression
 
 }[]
 const locationList = ['portOfLoading', 'portOfDischarge', 'placeOfDelivery', 'placeOfReceipt', 'finalDestination']
@@ -2170,6 +2171,7 @@ const partyFieldList = [
 
   //  very special case , get back the value from the party join
   'PartyNameInReport',
+  'PartyShortNameInReport',
 
   'PartyId',
   'PartyName',
@@ -2192,6 +2194,7 @@ partyList.map(party => {
   const partyNameExpression = party.partyNameExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyName`)
   const partyCodeExpression = party.partyCodeExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyCode`)
   const partyNameInReportExpression = party.partyNameInReportExpression || new ColumnExpression(party.name, `name`)
+  const partyShortNameInReportExpression = party.partyShortNameInReportExpression || new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression)
 
   partyFieldList.map(partyField => {
 
@@ -2216,6 +2219,10 @@ partyList.map(party => {
       // PartyReportName will get from party join instead of shipment_party direct;y
       case 'PartyNameInReport':
         expression = partyNameInReportExpression
+        break
+
+      case 'PartyShortNameInReport':
+        expression = partyShortNameInReportExpression
         break
 
       default:
@@ -2796,13 +2803,13 @@ shipmentTableFilterFieldList.map(filterField => {
 
   const IsNotNullQueryFn = ((subqueryParam) => {
     return new Query({
-      $where: new InExpression(expressionFn(subqueryParam), true),
+      $where: new IsNullExpression(expressionFn(subqueryParam), true),
     })
   }) as QueryFn
 
   const IsNullQueryFn = ((subqueryParam) => {
     return new Query({
-      $where: new InExpression(expressionFn(subqueryParam), false),
+      $where: new IsNullExpression(expressionFn(subqueryParam), false),
     })
   }) as QueryFn
 
@@ -3337,6 +3344,41 @@ query
         $on: [
           new BinaryExpression(new ColumnExpression('shipment_po', 'shipment_po_shipmentId'), '=', new ColumnExpression('shipment', 'id')),
         ]
+      }, {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('shipment_reference', 'shipmentId'), 'shipment_reference_shipmentId'),
+              new ResultColumn(
+                new FunctionExpression(
+                  'group_concat',
+                  new ParameterExpression({ expression: new ColumnExpression('shipment_reference', 'refDescription'), suffix: 'SEPARATOR \', \'' })
+                ),
+                'shipIds'
+              )
+            ],
+            $from: new FromTable('shipment_reference'),
+            $where: new AndExpressions({
+              expressions: [
+                new BinaryExpression(new ColumnExpression('shipment_reference', 'refName'), '=', 'Shipment Reference ID'),
+                new AndExpressions({
+                  expressions: [
+                    new IsNullExpression(new ColumnExpression('shipment_reference', 'deletedAt'), false),
+                    new IsNullExpression(new ColumnExpression('shipment_reference', 'deletedBy'), false)
+                  ]
+                })
+              ]
+            }),
+            $group: new GroupBy([
+              new ColumnExpression('shipment_reference', 'shipmentId')
+            ]),
+          }),
+          $as: 'shipment_reference_shipId'
+        }),
+        $on: [
+          new BinaryExpression(new ColumnExpression('shipment_reference_shipId', 'shipment_reference_shipmentId'), '=', new ColumnExpression('shipment', 'id')),
+        ]
       }),
       $where: new OrExpressions({
         expressions: [
@@ -3386,6 +3428,7 @@ query
           new RegexpExpression(new ColumnExpression('shipment_container', 'sealNo2'), false),
           new RegexpExpression(new ColumnExpression('shipment_container', 'carrierBookingNo'), false),
           new RegexpExpression(new ColumnExpression('shipment_po', 'poNo'), false),
+          new RegexpExpression(new ColumnExpression('shipment_reference_shipId', 'shipIds'), false),
         ],
       }),
     })
@@ -3436,6 +3479,7 @@ query
   .register('value', 43)
   .register('value', 44)
   .register('value', 45)
+  .register('value', 46)
 
 query
   .register(

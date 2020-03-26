@@ -3,24 +3,27 @@
     "is": "WidgetForm",
     "props": {
       "fields": [{
+        "label": "ShipmentPage.poNo",
+        "name": "shipmentPo",
+        "component": "TextField",
+        "checkDisplayWhen": "return form.shipmentPo && form.shipmentPo.length > 0",
+        "class": "xs-12",
+        "props": {
+          "updateValue": [
+            "return Array.isArray(value) ? value.map(v => v.poNo).join(',') : value"
+          ]
+        }
+      }, {
         "label": "ShipmentPage.references",
         "name": "shipmentReference",
         "component": "TableField",
         "class": "xs-12",
         "props": {
+          "labelProps": {
+            "class": "font-90"
+          },
           "topLabel": true,
           "fields": [{
-              "label": "ShipmentPage.poNo",
-              "name": "shipmentPo",
-              "component": "TextField",
-              "checkDisplayWhen": "return form.shipmentPo && form.shipmentPo.length > 0",
-              "class": "xs-12",
-              "props": {
-                "updateValue": [
-                  "return Array.isArray(value) ? value.map(v => v.poNo).join(',') : value"
-                ]
-              }
-            }, {
               "label": "ShipmentPage.refName",
               "name": "refName",
               "class": "xs-12 md-5",

@@ -236,7 +236,7 @@ const app = {
       'SI LCL',
       'SI Consol',
       'SM',
-      'Logistics',
+      'LOG',
       'Total',
     ]
   ): string[] {
@@ -257,7 +257,7 @@ const app = {
     if (flag_sea && flag_o) result.push(...['SE', 'SE FCL', 'SE LCL', 'SE Consol'])
     if (flag_sea && flag_i) result.push(...['SI', 'SI FCL', 'SI LCL', 'SI Consol'])
     if (flag_sea && flag_m) result.push(...['SM'])
-    if (flag_log) result.push('Logistics')
+    if (flag_log) result.push('LOG')
 
     if (result.length === 15) result.push('Total')
 
@@ -293,7 +293,7 @@ const app = {
         return 9
       case 'SM':
         return 'B'
-      case 'Logistics':
+      case 'LOG':
         return 0
       default:
         throw new BadRequestException(`Unavailable division '${division}'`)

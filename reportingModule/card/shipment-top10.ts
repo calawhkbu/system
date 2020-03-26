@@ -24,15 +24,23 @@ function prepareParams(): Function {
     const codeColumnName =
       xAxis === 'carrier'
         ? `carrierCode`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
-        : `${xAxis}PartyName`
+        : `${xAxis}PartyShortNameInReport`
     // ------------------------------
 
     params.sorting = new OrderBy(summaryColumnName, 'DESC')
@@ -61,15 +69,23 @@ function createTop10Table() {
     const codeColumnName =
       xAxis === 'carrier'
         ? `carrierCode`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
-        : `${xAxis}PartyName`
+        : `${xAxis}PartyShortNameInReport`
     // ------------------------------
 
     return new CreateTableJQL({
@@ -111,15 +127,23 @@ function insertTop10Data() {
     const codeColumnName =
       xAxis === 'carrier'
         ? `carrierCode`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
-        : `${xAxis}PartyName`
+        : `${xAxis}PartyShortNameInReport`
 
     const showOther = subqueries.showOther || false
     const topX = subqueries.topX.value
@@ -196,15 +220,23 @@ function prepareRawTable() {
     const codeColumnName =
       xAxis === 'carrier'
         ? `carrierCode`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
-        : `${xAxis}PartyName`
+        : `${xAxis}PartyShortNameInReport`
     // ------------------------------
 
     return new CreateTableJQL({
@@ -262,15 +294,23 @@ function finalQuery() {
     const codeColumnName =
       xAxis === 'carrier'
         ? `carrierCode`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
         : `${xAxis}PartyCode`
     const nameColumnName =
       xAxis === 'carrier'
         ? `carrierName`
+        : xAxis === 'portOfLoadingCode'
+        ? `portOfLoadingCode`
+        : xAxis === 'portOfDischargeCode'
+        ? `portOfDischargeCode`
         : xAxis === 'agentGroup'
         ? `agentGroup`
-        : `${xAxis}PartyName`
+        : `${xAxis}PartyShortNameInReport`
     // ------------------------------
 
     return new Query({
@@ -367,10 +407,12 @@ export const filters = [
           label: 'teuInReport',
           value: 'teuInReport',
         },
+
         {
           label: 'quantity',
           value: 'quantity',
         },
+
       ],
       required: true,
     },
@@ -397,7 +439,10 @@ export const filters = [
           label: 'agent',
           value: 'agent',
         },
-        // currently disabled
+        {
+          label: 'office',
+          value: 'office',
+        },
         {
           label: 'agentGroup',
           value: 'agentGroup',
@@ -406,6 +451,15 @@ export const filters = [
           label: 'controllingCustomer',
           value: 'controllingCustomer',
         },
+        {
+          label: 'portOfLoading',
+          value: 'portOfLoadingCode',
+        },
+
+        {
+          label: 'portOfDischarge',
+          value: 'portOfDischargeCode',
+        }
       ],
       required: true,
     },
