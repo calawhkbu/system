@@ -49,8 +49,10 @@
             "tableName": "shipment",
             "importKey": "houseNo",
             "importAxiosParams": {
-              "method": "post",
-              "url": ""
+              "z": {
+                "method": "POST",
+                "url": "api/document/import"
+              }
             },
             "importFormLayout": {
               "components": [{
