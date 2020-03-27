@@ -22,7 +22,7 @@ const query = new QueryDef(
           FROM
             tracking_reference
           WHERE
-            tracking_reference.deletedAt IS NULL AND tracking_reference.deletedBy IS NULL AND masterNo is not null
+            tracking_reference.deletedAt IS NULL AND tracking_reference.deletedBy IS NULL AND masterNo is not null and mode = 'masterNo'
           GROUP BY tracking_reference.trackingType, tracking_reference.carrierCode, tracking_reference.carrierCode2,
             tracking_reference.yundang,
             tracking_reference.departureDateEstimated, tracking_reference.mode, trackingNo, type
@@ -35,7 +35,7 @@ const query = new QueryDef(
           FROM
             tracking_reference,
             JSON_TABLE(soNo, "$[*]" COLUMNS (trackingNo VARCHAR(100) PATH "$")) soTable
-          WHERE tracking_reference.deletedAt IS NULL AND tracking_reference.deletedBy IS NULL AND soTable.trackingNo is not null
+          WHERE tracking_reference.deletedAt IS NULL AND tracking_reference.deletedBy IS NULL AND soTable.trackingNo is not null and mode = 'soNo'
           GROUP BY tracking_reference.trackingType, tracking_reference.carrierCode, tracking_reference.carrierCode2,
             tracking_reference.yundang,
             tracking_reference.departureDateEstimated, tracking_reference.mode, trackingNo, type
@@ -48,7 +48,7 @@ const query = new QueryDef(
           FROM
             tracking_reference,
             JSON_TABLE(containerNo, "$[*]" COLUMNS (trackingNo VARCHAR(100) PATH "$")) containerTable
-          WHERE tracking_reference.deletedAt IS NULL AND tracking_reference.deletedBy IS NULL AND containerTable.trackingNo is not null
+          WHERE tracking_reference.deletedAt IS NULL AND tracking_reference.deletedBy IS NULL AND containerTable.trackingNo is not null and mode = 'containerNo'
           GROUP BY tracking_reference.trackingType, tracking_reference.carrierCode, tracking_reference.carrierCode2,
             tracking_reference.yundang,
             tracking_reference.departureDateEstimated, tracking_reference.mode, trackingNo, type
