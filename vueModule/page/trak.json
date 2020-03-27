@@ -11,19 +11,146 @@
       "noExternal": true,
       "newReport": {
         "filters": {
-          "isActive": {
-            "value": "active"
-          },
           "date": {
             "func": {
+              "key": "current",
               "args": {
                 "unit": "year"
-              },
-              "key": "current"
+              }
             }
+          },
+          "isActive": {
+            "value": "active"
           }
         },
         "configurations": {
+          "cards": [{
+              "uuid": "c1e32641-4f68-45aa-8dd6-34910bdca213",
+              "cardId": "fda6edaf-6a90-44a8-989b-9008898f439b",
+              "params": {
+                "name": "SEA SHIPMENT",
+                "filters": {
+                  "entityType": {
+                    "value": "shipment"
+                  },
+                  "lastStatus": {
+                    "value": [
+                      "processing",
+                      "departure",
+                      "inTransit",
+                      "arrival"
+                    ]
+                  },
+                  "moduleTypeCode": {
+                    "value": [
+                      "SEA"
+                    ]
+                  }
+                }
+              },
+              "layouts": {
+                "lg": {
+                  "h": 6,
+                  "w": 12,
+                  "x": 0,
+                  "y": 0,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "md": {
+                  "h": 10,
+                  "w": 12,
+                  "x": 0,
+                  "y": 0,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "sm": {
+                  "h": 10,
+                  "w": 4,
+                  "x": 0,
+                  "y": 0,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "xs": {
+                  "h": 10,
+                  "w": 4,
+                  "x": 0,
+                  "y": 0,
+                  "minH": 6,
+                  "minW": 2
+                }
+              }
+            },
+            {
+              "uuid": "832e9c02-5e36-4a20-a2fa-6ef79e3d2020",
+              "cardId": "fda6edaf-6a90-44a8-989b-9008898f439b",
+              "params": {
+                "name": "AIR SHIPMENT",
+                "filters": {
+                  "entityType": {
+                    "value": "shipment"
+                  },
+                  "lastStatus": {
+                    "value": [
+                      "processing",
+                      "departure",
+                      "inTransit",
+                      "arrival"
+                    ]
+                  },
+                  "moduleTypeCode": {
+                    "value": [
+                      "AIR"
+                    ]
+                  }
+                }
+              },
+              "layouts": {
+                "lg": {
+                  "h": 7,
+                  "w": 12,
+                  "x": 0,
+                  "y": 6,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "md": {
+                  "h": 10,
+                  "w": 12,
+                  "x": 0,
+                  "y": 10,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "sm": {
+                  "h": 10,
+                  "w": 4,
+                  "x": 0,
+                  "y": 10,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "xs": {
+                  "h": 10,
+                  "w": 4,
+                  "x": 0,
+                  "y": 10,
+                  "minH": 6,
+                  "minW": 2
+                }
+              }
+            }
+          ],
+          "colors": [
+            "#4bc0c0",
+            "#ff6384",
+            "#ffcd56",
+            "#c9cbcf",
+            "#36a2eb",
+            "#b19cd9"
+          ],
           "i18nContext": "Reporting"
         }
       }
