@@ -13,6 +13,7 @@
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
+      "noCache": true,
       "newReport": {
         "filters": {
           "isActive": {
