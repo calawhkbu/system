@@ -12,6 +12,7 @@
       "enableShare": false,
       "enableSetting": false,
       "noPartyGroupFilters": true,
+      "noCache": true,
       "nextPageComponent": "i18n",
       "newReport": {
         "filters": {
