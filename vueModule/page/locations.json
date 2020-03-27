@@ -13,6 +13,7 @@
       "enableShare": false,
       "enableSetting": false,
       "noPartyGroupFilters": true,
+      "noCache": true,
       "clickFunction": {
         "type": "router",
         "otherParams": {

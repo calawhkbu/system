@@ -11,6 +11,7 @@
       "enableShare": false,
       "enableSetting": false,
       "noPartyGroupFilters": true,
+      "noCache": true,
       "nextPageKey": "reportIdParams",
       "newReport": {
         "filters": {
