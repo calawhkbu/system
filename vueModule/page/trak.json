@@ -25,21 +25,82 @@
         },
         "configurations": {
           "cards": [{
-              "uuid": "c1e32641-4f68-45aa-8dd6-34910bdca213",
-              "cardId": "fda6edaf-6a90-44a8-989b-9008898f439b",
+              "uuid": "d3ab5a2b-a19f-4de0-bc8b-46d813ba0e70",
+              "cardId": "078b8472-8d7e-45d7-963d-9c90d1642471",
               "params": {
-                "name": "SEA SHIPMENT",
+                "name": "AIR SHIPMENT",
                 "filters": {
+                  "dateStatus": {
+                    "value": [
+                      "upcoming",
+                      "departure",
+                      "inTransit",
+                      "arrival",
+                      "inDelivery"
+                    ]
+                  },
                   "entityType": {
                     "value": "shipment"
                   },
-                  "lastStatus": {
+                  "moduleTypeCode": {
                     "value": [
-                      "processing",
+                      "AIR"
+                    ]
+                  }
+                }
+              },
+              "layouts": {
+                "lg": {
+                  "h": 6,
+                  "w": 12,
+                  "x": 0,
+                  "y": 6,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "md": {
+                  "h": 10,
+                  "w": 12,
+                  "x": 0,
+                  "y": 20,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "sm": {
+                  "h": 10,
+                  "w": 4,
+                  "x": 0,
+                  "y": 20,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "xs": {
+                  "h": 10,
+                  "w": 4,
+                  "x": 0,
+                  "y": 20,
+                  "minH": 6,
+                  "minW": 2
+                }
+              }
+            },
+            {
+              "uuid": "c9eb531b-011c-44b9-982d-cd7c982810ed",
+              "cardId": "078b8472-8d7e-45d7-963d-9c90d1642471",
+              "params": {
+                "name": "SEA SHIPMENT",
+                "filters": {
+                  "dateStatus": {
+                    "value": [
+                      "upcoming",
                       "departure",
                       "inTransit",
-                      "arrival"
+                      "arrival",
+                      "inDelivery"
                     ]
+                  },
+                  "entityType": {
+                    "value": "shipment"
                   },
                   "moduleTypeCode": {
                     "value": [
@@ -78,65 +139,6 @@
                   "w": 4,
                   "x": 0,
                   "y": 0,
-                  "minH": 6,
-                  "minW": 2
-                }
-              }
-            },
-            {
-              "uuid": "832e9c02-5e36-4a20-a2fa-6ef79e3d2020",
-              "cardId": "fda6edaf-6a90-44a8-989b-9008898f439b",
-              "params": {
-                "name": "AIR SHIPMENT",
-                "filters": {
-                  "entityType": {
-                    "value": "shipment"
-                  },
-                  "lastStatus": {
-                    "value": [
-                      "processing",
-                      "departure",
-                      "inTransit",
-                      "arrival"
-                    ]
-                  },
-                  "moduleTypeCode": {
-                    "value": [
-                      "AIR"
-                    ]
-                  }
-                }
-              },
-              "layouts": {
-                "lg": {
-                  "h": 7,
-                  "w": 12,
-                  "x": 0,
-                  "y": 6,
-                  "minH": 6,
-                  "minW": 2
-                },
-                "md": {
-                  "h": 10,
-                  "w": 12,
-                  "x": 0,
-                  "y": 10,
-                  "minH": 6,
-                  "minW": 2
-                },
-                "sm": {
-                  "h": 10,
-                  "w": 4,
-                  "x": 0,
-                  "y": 10,
-                  "minH": 6,
-                  "minW": 2
-                },
-                "xs": {
-                  "h": 10,
-                  "w": 4,
-                  "x": 0,
-                  "y": 10,
                   "minH": 6,
                   "minW": 2
                 }
