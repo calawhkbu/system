@@ -259,7 +259,7 @@ const app = {
     if (flag_sea && flag_m) result.push(...['SM'])
     if (flag_log) result.push('LOG')
 
-    if (result.length === 15) result.push('Total')
+    if (result.length === 13) result.push('Total')
 
     return result.filter(r => allowed.indexOf(r) > -1)
   },
