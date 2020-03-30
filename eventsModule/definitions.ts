@@ -351,21 +351,21 @@ export default {
     },
   ],
   afterUpdate_tracking: [
-    {
-      eventName: 'create_tracking_alerts',
-    },
-    {
-      eventName: 'tracking_error_update_reference_again',
-    },
+    // {
+    //   eventName: 'create_tracking_alerts',
+    // },
+    // {
+    //   eventName: 'tracking_error_update_reference_again',
+    // },
     {
       eventName: 'update_tracking_back_to_entity'
     },
-    {
-      eventName: 'update_shipment_date_from_tracking',
-    },
-    {
-      eventName: 'send_edi',
-    },
+    // {
+    //   eventName: 'update_shipment_date_from_tracking',
+    // },
+    // {
+    //   eventName: 'send_edi',
+    // },
   ],
 
   afterCreate_invitation : [

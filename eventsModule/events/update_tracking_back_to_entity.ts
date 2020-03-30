@@ -5,6 +5,7 @@ import { Transaction, Sequelize } from 'sequelize'
 import { Tracking } from 'models/main/tracking'
 import { TrackingReference } from 'models/main/trackingReference'
 import { TrackingReferenceService } from 'modules/sequelize/trackingReference/service'
+import { ShipmentService } from 'modules/sequelize/shipment/services/shipment'
 
 class UpdateTrackingIdBackToEntityEvent extends BaseEvent {
   constructor(
@@ -20,7 +21,7 @@ class UpdateTrackingIdBackToEntityEvent extends BaseEvent {
     super(parameters, eventConfig, repo, eventService, allService, user, transaction)
   }
 
-  public async mainFunction(
+  public async mainFunction2(
     {
       data
     }: {
@@ -92,6 +93,60 @@ class UpdateTrackingIdBackToEntityEvent extends BaseEvent {
     }
     console.debug('End Excecute (UpdateTrackingIdBackToEntityEvent) ...', this.constructor.name)
     return null
+  }
+
+  public async mainFunction(
+    {
+      entityList
+    }: {
+      entityList: { originalEntity: Tracking, updatedEntity: Tracking, latestEntity: Tracking }[]
+    }
+  ) {
+
+    const {
+      TrackingReferenceService: trackingReferenceService,
+      ShipmentService : shipmentService,
+    }: {
+      TrackingReferenceService: TrackingReferenceService,
+      ShipmentService: ShipmentService
+    } = this.allService
+
+    const trackingNoList = [] as string[]
+
+    entityList.map(({ originalEntity, updatedEntity, latestEntity }) => {
+
+      // only do things if have lastStatusCode
+      if (latestEntity && latestEntity.lastStatusCode && !['ERR', 'CANF'].includes(latestEntity.lastStatusCode)) {
+        trackingNoList.push(latestEntity.trackingNo)
+      }
+    })
+
+    const trackingReferenceList = await trackingReferenceService.getTrackingReference(trackingNoList)
+
+    console.log(`trackingReferenceList`)
+    console.log(trackingReferenceList)
+
+    // const idListQuery = `
+    // SELECT shipment.id
+    // FROM shipment
+    // LEFT OUTER JOIN shipment_container ON shipment_container.shipmentId = shipment.id
+    // WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
+    // AND (
+    //   shipment.masterNo = "${latestEntity.trackingNo}"
+    //   OR shipment_container.carrierBookingNo = "${latestEntity.trackingNo}"
+    //   OR shipment_container.containerNo = "${latestEntity.trackingNo}"
+    // )
+    // `
+
+    // const finalUpdateQuery = `UPDATE shipment SET currentTrackingNo = "" where id in ( ${} ) `
+
+    const finalUpdateQueryList = [
+    ]
+
+    console.log(`entityList`)
+    console.log(entityList)
+
+    return undefined
   }
 }
 
