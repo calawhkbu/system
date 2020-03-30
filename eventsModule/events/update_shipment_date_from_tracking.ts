@@ -189,7 +189,7 @@ class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
                 trackingNo,
                 estimatedDepartureDate, estimatedArrivalDate,
                 actualDepartureDate, actualArrivalDate
-              } = trackingNoList.find(t => t === masterNo || t === carrierBookingNo || t === containerNo)
+              } = trackingNoList.find(t => t.trackingNo === masterNo || t.trackingNo === carrierBookingNo || t.trackingNo === containerNo)
               if (trackingNo) {
                 const finalUpdateTrckingNoQuery = `UPDATE shipment SET currentTrackingNo = "${trackingNo}" where id in (${id})`
                 await trackingReferenceService.query(finalUpdateTrckingNoQuery)
