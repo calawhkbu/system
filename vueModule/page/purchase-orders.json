@@ -1,4 +1,40 @@
 {
+  "start": "---",
+  "layout": "CardLayout",
+  "components": [{
+      "is": "I18nText",
+      "props": {
+        "style": {
+          "flex": 0.9,
+          "width": "100%",
+          "text-align": "center"
+        },
+        "i18nKey": "Coming soon!"
+      }
+    },
+    {
+      "is": "v-btn",
+      "props": {
+        "flat": true
+      },
+      "slots": [{
+        "is": "I18nText",
+        "props": {
+          "i18nKey": "ErrorLayout.Back"
+        }
+      }],
+      "events": {
+        "click.stop": [{
+          "type": "router",
+          "otherParams": {
+            "func": "go",
+            "go": -1
+          }
+        }]
+      }
+    }
+  ],
+  "remove": "---",
   "fillParent": true,
   "components": [{
     "is": "TableTool",

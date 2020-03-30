@@ -15,7 +15,7 @@
             "func": {
               "key": "current",
               "args": {
-                "unit": "year"
+                "unit": "month"
               }
             }
           },
