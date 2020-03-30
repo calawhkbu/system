@@ -322,7 +322,7 @@ export default {
     { // update error ro change
       handlerName: 'tracking_error_update_reference_again',
       otherParameters: {
-        maxErrorTime: 100
+        maxErrorTime: 12
       }
     }
   ],
@@ -337,15 +337,15 @@ export default {
     }
   ],
   afterCreate_tracking: [
-    {
-      eventName: 'create_tracking_alerts',
-    },
+    // {
+    //   eventName: 'create_tracking_alerts',
+    // },
     {
       eventName: 'tracking_error_update_reference_again',
     },
-    {
-      eventName: 'update_tracking_back_to_entity'
-    },
+    // {
+    //   eventName: 'update_tracking_back_to_entity'
+    // },
     {
       eventName: 'update_shipment_date_from_tracking',
     },
@@ -354,15 +354,15 @@ export default {
     // {
     //   eventName: 'create_tracking_alerts',
     // },
-    // {
-    //   eventName: 'tracking_error_update_reference_again',
-    // },
     {
-      eventName: 'update_tracking_back_to_entity'
+      eventName: 'tracking_error_update_reference_again',
     },
     // {
-    //   eventName: 'update_shipment_date_from_tracking',
+    //   eventName: 'update_tracking_back_to_entity'
     // },
+    {
+      eventName: 'update_shipment_date_from_tracking',
+    },
     // {
     //   eventName: 'send_edi',
     // },
