@@ -44,7 +44,7 @@ function prepareParams(): Function {
         lastFrom = moment(from).quarter(currentQuarter).subtract(1, 'years').startOf('quarter').format('YYYY-MM-DD')
         lastTo = moment(from).quarter(currentQuarter).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
         currentFrom = moment(from).quarter(currentQuarter).startOf('quarter').format('YYYY-MM-DD')
-        currentTo = moment(from).quarter(currentQuarter).endOf('month').format('YYYY-MM-DD')
+        currentTo = moment(from).quarter(currentQuarter).endOf('quarter').format('YYYY-MM-DD')
 
       }
       else if (lastCurrentUnit === 'month') {
