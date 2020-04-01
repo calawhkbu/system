@@ -35,6 +35,12 @@
             }
           },
           {
+            "is": "AuthUrl",
+            "props": {
+              "userName": "{{context.$store.state.widget.data.person.userName}}"
+            }
+          },
+          {
             "is": "v-spacer"
           },
           {
