@@ -13,6 +13,7 @@ function prepareShipmentParams(): Function {
       'masterNo',
       'jobDate',
       'carrierName',
+      'carrierCode',
       'shipperPartyName',
       'consigneePartyName',
       'portOfLoadingCode',

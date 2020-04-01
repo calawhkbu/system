@@ -132,7 +132,7 @@ class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
       // ShipmentService: ShipmentService
     } = this.allService
 
-    const trackingNoList = entityList.reduce((
+    const trackingNoList = (entityList || []).reduce((
       trackingNos: any[],
       { originalEntity, updatedEntity, latestEntity }
     ) => {
