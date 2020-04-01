@@ -44,23 +44,40 @@ class TrackingErrorUpdateReferenceAgainEvent extends BaseEvent {
     const trackingReferences = await trackingReferenceService.getTrackingReference(trackingNoList, this.user, this.transaction)
     await trackingReferenceService.save(
       trackingReferences.reduce((selected: TrackingReference[], {
-        id, mode, trackingType, flexData
+        id, mode, trackingType, flexData, masterNo = null, soNo = [], containerNo = []
       }: TrackingReference) => {
         if (trackingType === 'SEA') {
           let newMode = mode
           if (mode === 'masterNo') {
-            newMode = 'soNo'
+            if (soNo && soNo.length) {
+              newMode = 'soNo'
+            }
+            if (containerNo && containerNo.length) {
+              newMode = 'containerNo'
+            }
           } else if (mode === 'soNo') {
-            newMode = 'containerNo'
+            if (containerNo && containerNo.length) {
+              newMode = 'containerNo'
+            }
+            if (masterNo) {
+              newMode = 'containerNo'
+            }
           } else if (mode === 'containerNo') {
-            newMode = 'masterNo'
+            if (masterNo) {
+              newMode = 'containerNo'
+            }
+            if (soNo && soNo.length) {
+              newMode = 'soNo'
+            }
           }
-          selected.push({
-            id,
-            mode: newMode,
-            flexData,
-            yundang: 0
-          } as TrackingReference)
+          if (newMode !== mode) {
+            selected.push({
+              id,
+              mode: newMode,
+              flexData,
+              yundang: 0
+            } as TrackingReference)
+          }
         }
         return selected
       }, []),
