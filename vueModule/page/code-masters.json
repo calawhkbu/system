@@ -124,6 +124,10 @@
             "multi": false
           },
           "type": "autocomplete"
+        },
+        {
+          "name": "code",
+          "type": "text"
         }
       ],
       "clickFunction": {
