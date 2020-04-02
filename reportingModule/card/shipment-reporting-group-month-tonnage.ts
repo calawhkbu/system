@@ -318,8 +318,8 @@ function prepareResultTable(): CreateTableJQL {
     // convert unit column
     new ResultColumn(
       new FunctionExpression('IF',
-        new InExpression(new ColumnExpression('reportingGroupTable', 'reportingGroup'), false, convertToTeuModuleTypeCodeList), new Value('( Convertion Unit: TEU)'), new Value('')
-      ), 'convertionUnit'
+        new InExpression(new ColumnExpression('reportingGroupTable', 'reportingGroup'), false, convertToTeuModuleTypeCodeList), new Value('(Conversion Unit: TEU)'), new Value('')
+      ), 'conversionUnit'
     )
   ]
 
