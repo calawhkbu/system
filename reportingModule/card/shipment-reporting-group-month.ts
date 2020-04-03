@@ -19,11 +19,92 @@ import {
 } from 'node-jql'
 
 import { parseCode } from 'utils/function'
+import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 
-// hardcode all reportingGroup and divided into SEA and AIR
-const moduleTypeCodeList = {
-  AIR: ['AC', 'AD', 'AM', 'AN', 'AZ'],
-  SEA: ['SA', 'SB', 'SC', 'SR', 'SS', 'ST'],
+function insertReportingGroupTable() {
+
+  return function(require, session, params) {
+
+    const { user } = params.packages
+
+    const name = 'reportingGroupTable'
+    // hardcode all reportingGroup and divided into SEA and AIR
+    const moduleTypeCodeList = {
+      AIR: ['AC', 'AD', 'AM', 'AN', 'AZ'],
+      SEA: ['SA', 'SB', 'SC', 'SR', 'SS', 'ST'],
+    }
+
+    const reportingGroupList = {
+      AC : ['AIR', 'EXPORT'],
+      AD : ['AIR', 'EXPORT'],
+      AM : ['AIR', 'IMPORT'],
+      AN : ['AIR', 'IMPORT'],
+
+      AX : ['AIR', 'MISCELLANEOUS'],
+      AZ : ['AIR', 'MISCELLANEOUS'],
+
+      SA : ['SEA', 'EXPORT'],
+      SB : ['SEA', 'EXPORT'],
+      SC : ['SEA', 'EXPORT'],
+
+      SR : ['SEA', 'IMPORT'],
+      SS : ['SEA', 'IMPORT'],
+      ST : ['SEA', 'IMPORT'],
+
+      SW : ['SEA', 'MISCELLANEOUS'],
+      SZ : ['SEA', 'MISCELLANEOUS'],
+
+      LZ : ['LOGISTICS']
+
+    }
+
+    const searchUserRoleList = [ 'AIR', 'SEA', 'LOGISTICS', 'EXPORT', 'IMPORT', 'MISCELLANEOUS']
+
+    function getAllowReportingGroup(user: JwtPayload)
+    {
+
+      const userRoleList = user.selectedRoles.filter(x => searchUserRoleList.includes(x.name)).map(x => x.name)
+
+      const allowReportingGroupList = []
+
+      for (const reportingGroup of Object.keys(reportingGroupList)){
+
+        const reportingGroupObject = reportingGroupList[reportingGroup] as string[]
+
+        if (reportingGroupObject.every(x => userRoleList.includes(x)))
+        {
+          allowReportingGroupList.push(reportingGroup)
+        }
+
+      }
+
+      return allowReportingGroupList
+
+    }
+
+    const insertList = []
+
+    const allowReportingGroupList = getAllowReportingGroup(user)
+
+    for (const moduleTypeCode in moduleTypeCodeList) {
+      if (moduleTypeCodeList.hasOwnProperty(moduleTypeCode)) {
+        const reportingGroupList = moduleTypeCodeList[moduleTypeCode] as string[]
+
+        reportingGroupList.map((reportingGroup: string) => {
+
+          if (allowReportingGroupList.includes(reportingGroup))
+          {
+            insertList.push({ reportingGroup, moduleTypeCode })
+          }
+
+        })
+      }
+    }
+
+    return new InsertJQL(name, ...insertList)
+
+  }
+
 }
 
 function prepareParams(): Function {
@@ -145,24 +226,6 @@ function prepareReportingGroupTable(): CreateTableJQL {
     name,
     columns: [new Column('moduleTypeCode', 'string'), new Column('reportingGroup', 'string')],
   })
-}
-
-function insertReportingGroupTable(): InsertJQL {
-  const name = 'reportingGroupTable'
-
-  const insertList = []
-
-  for (const moduleTypeCode in moduleTypeCodeList) {
-    if (moduleTypeCodeList.hasOwnProperty(moduleTypeCode)) {
-      const reportingGroupList = moduleTypeCodeList[moduleTypeCode] as string[]
-
-      reportingGroupList.map((reportingGroup: string) => {
-        insertList.push({ reportingGroup, moduleTypeCode })
-      })
-    }
-  }
-
-  return new InsertJQL(name, ...insertList)
 }
 
 function prepareResultTable() {

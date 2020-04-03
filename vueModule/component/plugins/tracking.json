@@ -17,7 +17,8 @@
         "externalOnly": true
       },
       "statusDescription",
-      "statusPlace"
+      "statusPlace",
+      "details.pieces"
     ],
     "iconMap": {
       "BKCF": "tracking/bkcf",

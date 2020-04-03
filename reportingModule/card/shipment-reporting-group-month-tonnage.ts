@@ -17,6 +17,7 @@ import {
   CreateFunctionJQL,
   MathExpression,
 } from 'node-jql'
+import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 
 const months = [
   'January',
@@ -36,15 +37,99 @@ const months = [
 // warning : this card have some special handling on showing cbm and chargeable Weight!!!!!
 
 // hardcode all reportingGroup and divided into SEA and AIR
-const moduleTypeCodeList = {
-
-  AIR: ['AC', 'AD', 'AM', 'AN', 'AW', 'AX', 'AZ'],
-  SEA: ['SA', 'SB', 'SC', 'SR', 'SS', 'ST', 'SW', 'SZ'],
-  LOG: ['ZL'],
-
-}
 
 const convertToTeuModuleTypeCodeList = ['SA', 'SR']
+
+function insertReportingGroupTable() {
+
+  return function(require, session, params) {
+
+    const { user } = params.packages
+
+    const name = 'reportingGroupTable'
+    // hardcode all reportingGroup and divided into SEA and AIR
+
+    // controll what to show
+    const moduleTypeCodeList = {
+
+      AIR: ['AC', 'AD', 'AM', 'AN', 'AW', 'AX', 'AZ'],
+      SEA: ['SA', 'SB', 'SC', 'SR', 'SS', 'ST', 'SW', 'SZ'],
+      LOG: ['ZL'],
+
+    }
+
+    // control the security
+    const reportingGroupList = {
+      AC : ['AIR', 'EXPORT'],
+      AD : ['AIR', 'EXPORT'],
+      AM : ['AIR', 'IMPORT'],
+      AN : ['AIR', 'IMPORT'],
+
+      AX : ['AIR', 'MISCELLANEOUS'],
+      AZ : ['AIR', 'MISCELLANEOUS'],
+
+      SA : ['SEA', 'EXPORT'],
+      SB : ['SEA', 'EXPORT'],
+      SC : ['SEA', 'EXPORT'],
+
+      SR : ['SEA', 'IMPORT'],
+      SS : ['SEA', 'IMPORT'],
+      ST : ['SEA', 'IMPORT'],
+
+      SW : ['SEA', 'MISCELLANEOUS'],
+      SZ : ['SEA', 'MISCELLANEOUS'],
+
+      LZ : ['LOGISTICS']
+
+    }
+
+    const searchUserRoleList = [ 'AIR', 'SEA', 'LOGISTICS', 'EXPORT', 'IMPORT', 'MISCELLANEOUS']
+
+    function getAllowReportingGroup(user: JwtPayload)
+    {
+
+      const userRoleList = user.selectedRoles.filter(x => searchUserRoleList.includes(x.name)).map(x => x.name)
+      const allowReportingGroupList = []
+
+      for (const reportingGroup of Object.keys(reportingGroupList)){
+
+        const reportingGroupObject = reportingGroupList[reportingGroup] as string[]
+
+        if (reportingGroupObject.every(x => userRoleList.includes(x)))
+        {
+          allowReportingGroupList.push(reportingGroup)
+        }
+
+      }
+
+      return allowReportingGroupList
+
+    }
+
+    const insertList = []
+
+    const allowReportingGroupList = getAllowReportingGroup(user)
+
+    for (const moduleTypeCode in moduleTypeCodeList) {
+      if (moduleTypeCodeList.hasOwnProperty(moduleTypeCode)) {
+        const reportingGroupList = moduleTypeCodeList[moduleTypeCode] as string[]
+
+        reportingGroupList.map((reportingGroup: string) => {
+
+          if (allowReportingGroupList.includes(reportingGroup))
+          {
+            insertList.push({ reportingGroup, moduleTypeCode })
+          }
+
+        })
+      }
+    }
+
+    return new InsertJQL(name, ...insertList)
+
+  }
+
+}
 
 function prepareParams(): Function {
   return function(require, session, params) {
@@ -193,24 +278,6 @@ function prepareReportingGroupTable(): CreateTableJQL {
   })
 }
 
-function insertReportingGroupTable(): InsertJQL {
-  const name = 'reportingGroupTable'
-
-  const insertList = []
-
-  for (const moduleTypeCode in moduleTypeCodeList) {
-    if (moduleTypeCodeList.hasOwnProperty(moduleTypeCode)) {
-      const reportingGroupList = moduleTypeCodeList[moduleTypeCode] as string[]
-
-      reportingGroupList.map((reportingGroup: string) => {
-        insertList.push({ reportingGroup, moduleTypeCode })
-      })
-    }
-  }
-
-  return new InsertJQL(name, ...insertList)
-}
-
 function prepareResultTable(): CreateTableJQL {
   function composeSumExpression(dumbList: any[]): MathExpression {
     if (dumbList.length === 2) {
@@ -251,8 +318,8 @@ function prepareResultTable(): CreateTableJQL {
     // convert unit column
     new ResultColumn(
       new FunctionExpression('IF',
-        new InExpression(new ColumnExpression('reportingGroupTable', 'reportingGroup'), false, convertToTeuModuleTypeCodeList), new Value('( Convertion Unit: TEU)'), new Value('')
-      ), 'convertionUnit'
+        new InExpression(new ColumnExpression('reportingGroupTable', 'reportingGroup'), false, convertToTeuModuleTypeCodeList), new Value('(Conversion Unit: TEU)'), new Value('')
+      ), 'conversionUnit'
     )
   ]
 

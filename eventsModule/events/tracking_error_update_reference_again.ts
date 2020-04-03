@@ -20,41 +20,70 @@ class TrackingErrorUpdateReferenceAgainEvent extends BaseEvent {
     super(parameters, eventConfig, repo, eventService, allService, user, transaction)
   }
 
-  public async mainFunction(parameters: any) {
+  public async mainFunction({
+    entityList, maxErrorTime
+  }: {
+    entityList: { originalEntity: Tracking, updatedEntity: Tracking, latestEntity: Tracking }[],
+    maxErrorTime: number
+  }) {
     console.log('Start Excecute...', this.constructor.name)
-    const { data, maxErrorTime } = parameters as { data: Tracking, maxErrorTime: number }
-    if (data.errorTime > maxErrorTime) {
-      const {
-        TrackingReferenceService: trackingReferenceService,
-      }: {
-        TrackingReferenceService: TrackingReferenceService
-      } = this.allService
-      for (const {
-        id, mode, trackingType
-      } of (await trackingReferenceService.getTrackingReference(
-        [data.trackingNo], this.user, this.transaction
-      ))) {
+    const {
+      TrackingReferenceService: trackingReferenceService,
+    }: {
+      TrackingReferenceService: TrackingReferenceService
+    } = this.allService
+    const trackingNoList = entityList.reduce((
+      trackingNos: any[],
+      { originalEntity, updatedEntity, latestEntity }
+    ) => {
+      if (latestEntity.errorTime > maxErrorTime) {
+        trackingNos.push(latestEntity.trackingNo)
+      }
+      return trackingNos
+    }, [])
+    const trackingReferences = await trackingReferenceService.getTrackingReference(trackingNoList, this.user, this.transaction)
+    await trackingReferenceService.save(
+      trackingReferences.reduce((selected: TrackingReference[], {
+        id, mode, trackingType, flexData, masterNo = null, soNo = [], containerNo = []
+      }: TrackingReference) => {
         if (trackingType === 'SEA') {
           let newMode = mode
           if (mode === 'masterNo') {
-            newMode = 'soNo'
+            if (soNo && soNo.length) {
+              newMode = 'soNo'
+            }
+            if (containerNo && containerNo.length) {
+              newMode = 'containerNo'
+            }
           } else if (mode === 'soNo') {
-            newMode = 'containerNo'
+            if (containerNo && containerNo.length) {
+              newMode = 'containerNo'
+            }
+            if (masterNo) {
+              newMode = 'containerNo'
+            }
           } else if (mode === 'containerNo') {
-            newMode = 'masterNo'
+            if (masterNo) {
+              newMode = 'containerNo'
+            }
+            if (soNo && soNo.length) {
+              newMode = 'soNo'
+            }
           }
-          await trackingReferenceService.save(
-            {
+          if (newMode !== mode) {
+            selected.push({
               id,
               mode: newMode,
+              flexData,
               yundang: 0
-            } as TrackingReference,
-            this.user,
-            this.transaction
-          )
+            } as TrackingReference)
+          }
         }
-      }
-    }
+        return selected
+      }, []),
+      this.user,
+      this.transaction
+    )
     console.log('End Excecute...', this.constructor.name)
   }
 }

@@ -78,9 +78,9 @@ query
 
   query
   .register(
-    'portCode',
+    'portCodes',
     new Query({
-      $where: new RegexpExpression(new ColumnExpression('portCode'), false),
+      $where: new InExpression(new ColumnExpression('portCode'), false),
     })
   )
   .register('value', 0)
