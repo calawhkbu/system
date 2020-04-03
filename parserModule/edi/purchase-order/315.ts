@@ -1,3 +1,4 @@
+// 2020/04/02
 import { SwivelConfigService } from 'modules/swivel-config/service'
 import { OutboundService } from 'modules/integration-hub/services/outbound'
 
@@ -203,10 +204,19 @@ export default class EdiParser315 extends BaseEdiParser {
             (containerNo || '').substr(0, 4),
             (containerNo || '').substr(4, 10)
           )
+          let isoNo = isoCodeMapper[_.get(container, 'container')]
+          if (!isoNo)
+          {
+
+            isoNo = _.get(matchBookingContainers, 'isoNo')
+          }
+          if (!isoNo)
+          {
+            throw new Error('there is no isoNo please check!')
+          }
           B4.elementList.push(
             emptyLoadMapper[_.get(currentStatus, 'statusCode')] || 'L',
-            (isoCodeMapper[_.get(container, 'container')] ||
-            _.get(matchBookingContainers, 'isoNo')) || ' ',
+            isoNo,
           )
           B4.elementList.push((country || '').substring(0, 30))
           B4.elementList.push('UN')
