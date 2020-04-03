@@ -1,5 +1,5 @@
-import { BaseEvent } from 'modules/events/base-event'
-import { EventService, EventConfig } from 'modules/events/service'
+import BaseEventHandler from 'modules/events/baseEventHandler'
+import { EventService, EventConfig, EventData, EventHandlerConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import { stringify } from 'querystring'
@@ -14,10 +14,10 @@ interface CheckerObjectResult {
   result: any
 }
 
-class CheckerEvent extends BaseEvent {
+export default class CheckerEventHandler extends BaseEventHandler {
   constructor(
-    protected readonly parameters: any,
-    protected readonly eventConfig: EventConfig,
+    protected  eventDataList: EventData<any>[],
+    protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
     protected readonly allService: any,
@@ -25,10 +25,10 @@ class CheckerEvent extends BaseEvent {
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
   ) {
-    super(parameters, eventConfig, repo, eventService, allService, user, transaction)
+    super(eventDataList, eventHandlerConfig, repo, eventService, allService, user, transaction)
   }
 
-  runCheckerFunction(checkerObject: CheckerObject, parameters: any) {
+  runCheckerFunction(checkerObject: CheckerObject, eventData: EventData<any>) {
     const checkerFunction = checkerObject.checkerFunction as Function
     const resultName = checkerObject.resultName as string
     // if checkerFunction is not provided, use checkerFunctionName is find function from checkerFunctionMap
@@ -38,57 +38,44 @@ class CheckerEvent extends BaseEvent {
       throw new Error('checkerFunction / checkerFunctionName  is not provided')
     }
 
-    result = checkerFunction(parameters)
+    result = checkerFunction(eventData)
 
     return {
       resultName,
       result,
-    }
+    } as CheckerObjectResult
   }
 
-  public async mainFunction(parameters: any) {
+  public async mainFunction(eventDataList: EventData<any>[]) {
+
+    console.log(`in checker`)
     const checkerResult = {}
-    if (!parameters.checker) {
-      throw new Error('checker param is not found in checker Event')
-    }
+    const finalEventDataList = eventDataList.map(eventData => {
 
-    const checkerList = parameters['checker']
+      if (!eventData.checker) {
+        throw new Error('checker param is not found in checker Event')
+      }
 
-    checkerList.forEach((checkerObject: CheckerObject) => {
-      const checkerObjectResult = this.runCheckerFunction(
-        checkerObject,
-        parameters
-      ) as CheckerObjectResult
-      checkerResult[checkerObjectResult.resultName] = checkerObjectResult.result
+      const checkerList = eventData.checker
+
+      checkerList.forEach((checkerObject: CheckerObject) => {
+        const { resultName, result } = this.runCheckerFunction(
+          checkerObject,
+          eventData
+        )
+        checkerResult[resultName] = result
+      })
+
+      // remove checker from parameters
+      delete eventData['checker']
+
+      // add checkerResult into the result
+      return { ...eventData, ...{ checkerResult } }
+
     })
 
-    // remove checker from parameters
-    delete parameters['checker']
+    return finalEventDataList
 
-    // add checkerResult into the result
-    return { ...parameters, ...{ checkerResult } }
   }
-}
 
-export default {
-  execute: async(
-    parameters: any,
-    eventConfig: EventConfig,
-    repo: string,
-    eventService: any,
-    allService: any,
-    user?: JwtPayload,
-    transaction?: Transaction
-  ) => {
-    const event = new CheckerEvent(
-      parameters,
-      eventConfig,
-      repo,
-      eventService,
-      allService,
-      user,
-      transaction
-    )
-    return await event.execute()
-  },
 }
