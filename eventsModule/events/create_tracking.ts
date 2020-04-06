@@ -39,7 +39,8 @@ class CreateTrackingEvent extends BaseEvent {
     const moduleTypeCodeData = this.getValueFromData(data, moduleTypeCode, null)
     const carrierCodeData = this.getValueFromData(data, carrierCode, null)
     const departureDateEstimatedData = this.getValueFromData(data, departureDateEstimated, null)
-    if (tracking && moduleTypeCodeData && carrierCodeData && departureDateEstimatedData) {
+    const needCarrier = moduleTypeCodeData === 'AIR' ? true : carrierCodeData
+    if (tracking && moduleTypeCodeData && needCarrier && departureDateEstimatedData) {
       const masterNoData = this.getValueFromData(data, masterNo, null)
       const soNoData = moduleTypeCodeData === 'SEA' ? this.getValueFromData(data, soNo, []) : []
       const containerNoData = moduleTypeCodeData === 'SEA' ? this.getValueFromData(data, containerNo, []) : []
