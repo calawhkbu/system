@@ -6,7 +6,6 @@ import { EdiService } from 'modules/edi/service'
 import { TrackingReference } from 'models/main/trackingReference'
 import { TrackingReferenceService } from 'modules/sequelize/trackingReference/service'
 
-
 class SendEdiEvent extends BaseEvent {
   constructor(
     protected readonly parameters: any,

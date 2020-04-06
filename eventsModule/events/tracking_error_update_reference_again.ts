@@ -1,15 +1,15 @@
-import { BaseEvent } from 'modules/events/base-event'
-import { EventService, EventConfig } from 'modules/events/service'
+import { EventService, EventConfig, EventHandlerConfig, EventData } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import { Tracking } from 'models/main/tracking'
 import { TrackingReference } from 'models/main/trackingReference'
 import { TrackingReferenceService } from 'modules/sequelize/trackingReference/service'
+import BaseEventHandler from 'modules/events/baseEventHandler'
 
-class TrackingErrorUpdateReferenceAgainEvent extends BaseEvent {
+export default class TrackingErrorUpdateReferenceAgainEvent extends BaseEventHandler {
   constructor(
-    protected readonly parameters: any,
-    protected readonly eventConfig: EventConfig,
+    protected  eventDataList: EventData<any>[],
+    protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
     protected readonly allService: any,
@@ -17,24 +17,21 @@ class TrackingErrorUpdateReferenceAgainEvent extends BaseEvent {
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
   ) {
-    super(parameters, eventConfig, repo, eventService, allService, user, transaction)
+    super(eventDataList, eventHandlerConfig, repo, eventService, allService, user, transaction)
   }
 
-  public async mainFunction({
-    entityList, maxErrorTime
-  }: {
-    entityList: { originalEntity: Tracking, updatedEntity: Tracking, latestEntity: Tracking }[],
-    maxErrorTime: number
-  }) {
+  public async mainFunction(eventDataList: EventData<Tracking>[]) {
     console.log('Start Excecute...', this.constructor.name)
+
     const {
       TrackingReferenceService: trackingReferenceService,
     }: {
       TrackingReferenceService: TrackingReferenceService
     } = this.allService
-    const trackingNoList = entityList.reduce((
+
+    const trackingNoList = eventDataList.reduce((
       trackingNos: any[],
-      { originalEntity, updatedEntity, latestEntity }
+      { originalEntity, updatedEntity, latestEntity, maxErrorTime }
     ) => {
       if (latestEntity.errorTime > maxErrorTime) {
         trackingNos.push(latestEntity.trackingNo)
@@ -84,29 +81,9 @@ class TrackingErrorUpdateReferenceAgainEvent extends BaseEvent {
       this.user,
       this.transaction
     )
-    console.log('End Excecute...', this.constructor.name)
-  }
-}
 
-export default {
-  execute: async(
-    parameters: any,
-    eventConfig: EventConfig,
-    repo: string,
-    eventService: any,
-    allService: any,
-    user?: JwtPayload,
-    transaction?: Transaction
-  ) => {
-    const event = new TrackingErrorUpdateReferenceAgainEvent(
-      parameters,
-      eventConfig,
-      repo,
-      eventService,
-      allService,
-      user,
-      transaction
-    )
-    return await event.execute()
-  },
+    console.log('End Excecute...', this.constructor.name)
+    return trackingNoList
+
+  }
 }

@@ -1,5 +1,4 @@
-import { BaseEvent } from 'modules/events/base-event'
-import { EventService, EventConfig } from 'modules/events/service'
+import { EventService, EventConfig, EventHandlerConfig, EventData } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction, Sequelize } from 'sequelize'
 import { Tracking } from 'models/main/tracking'
@@ -8,11 +7,12 @@ import { TrackingReferenceService } from 'modules/sequelize/trackingReference/se
 import { ShipmentService } from 'modules/sequelize/shipment/services/shipment'
 
 import BluebirdPromise = require('bluebird')
+import BaseEventHandler from 'modules/events/baseEventHandler'
 
-class UpdateTrackingIdBackToEntityEvent extends BaseEvent {
+export default class UpdateTrackingIdBackToEntityEvent extends BaseEventHandler {
   constructor(
-    protected readonly parameters: any,
-    protected readonly eventConfig: EventConfig,
+    protected  eventDataList: EventData<any>[],
+    protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
     protected readonly allService: any,
@@ -20,7 +20,7 @@ class UpdateTrackingIdBackToEntityEvent extends BaseEvent {
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
   ) {
-    super(parameters, eventConfig, repo, eventService, allService, user, transaction)
+    super(eventDataList, eventHandlerConfig, repo, eventService, allService, user, transaction)
   }
 
   public async mainFunction2(
@@ -98,11 +98,7 @@ class UpdateTrackingIdBackToEntityEvent extends BaseEvent {
   }
 
   public async mainFunction(
-    {
-      entityList
-    }: {
-      entityList: { originalEntity: Tracking, updatedEntity: Tracking, latestEntity: Tracking }[]
-    }
+    eventDataList: EventData<Tracking>[]
   ) {
 
     const {
@@ -113,7 +109,7 @@ class UpdateTrackingIdBackToEntityEvent extends BaseEvent {
       ShipmentService: ShipmentService
     } = this.allService
 
-    const trackingNoList = entityList.reduce((
+    const trackingNoList = eventDataList.reduce((
       trackingNos: string[],
       { originalEntity, updatedEntity, latestEntity }
     ) => {
@@ -169,27 +165,4 @@ class UpdateTrackingIdBackToEntityEvent extends BaseEvent {
 
     return undefined
   }
-}
-
-export default {
-  execute: async(
-    parameters: any,
-    eventConfig: EventConfig,
-    repo: string,
-    eventService: any,
-    allService: any,
-    user?: JwtPayload,
-    transaction?: Transaction
-  ) => {
-    const event = new UpdateTrackingIdBackToEntityEvent(
-      parameters,
-      eventConfig,
-      repo,
-      eventService,
-      allService,
-      user,
-      transaction
-    )
-    return await event.execute()
-  },
 }
