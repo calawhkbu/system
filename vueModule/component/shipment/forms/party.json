@@ -366,7 +366,6 @@
         {
           "label": "Widget.shortName",
           "name": "shipmentParty.{{flex}}{{key}}Party.shortName",
-
           "component": "v-text-field",
           "class": "xs-12 md-4",
           "props": {
@@ -376,12 +375,14 @@
         {
           "label": "Widget.contactName",
           "name": "shipmentParty.{{flex}}{{key}}PartyContactName",
+          "checkDisplayWhen": "return form && form.shipmentParty && form.shipmentParty.{{flex}}{{key}}PartyContactName",
           "component": "v-text-field",
           "class": "xs-12 md-12"
         },
         {
           "label": "Widget.contactEmail",
           "name": "shipmentParty.{{flex}}{{key}}PartyContactEmail",
+          "checkDisplayWhen": "return form && form.shipmentParty && form.shipmentParty.{{flex}}{{key}}PartyContactEmail",
           "component": "v-text-field",
           "class": "xs-12 md-12",
           "readonlyClass": "xs-10 md-10"
@@ -432,6 +433,7 @@
         {
           "label": "Widget.contactPhone",
           "name": "shipmentParty.{{flex}}{{key}}PartyContactPhone",
+          "checkDisplayWhen": "return form && form.shipmentParty && form.shipmentParty.{{flex}}{{key}}PartyContactPhone",
           "component": "v-text-field",
           "class": "xs-12 md-12"
         },
@@ -441,7 +443,6 @@
           "class": "xs-12",
           "readonlyClass": "xs-12",
           "props": {
-            "overrideRowIndex": 1,
             "fields": [{
                 "label": "Widget.contactXName",
                 "name": "Name",
@@ -458,7 +459,7 @@
               },
               {
                 "label": "Widget.inviteEmail",
-                "checkDisplayWhen": "return form.Email",
+                "checkDisplayWhen": "return form.Email && mode.includes('detail')",
                 "name": "Email",
                 "component": "button-field",
                 "readonlyClass": "xs-2 md-2",

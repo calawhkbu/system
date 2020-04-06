@@ -19,15 +19,24 @@
         "filters": {
           "isActive": {
             "value": "active"
+          },
+          "manual": {
+            "value": true
           }
         },
         "configurations": {
           "i18nContext": "TrackingPage",
-          "sorting": {},
+          "sorting": {
+            "expression": {
+              "classname": "ColumnExpression",
+              "name": "updatedAt"
+            },
+            "order": "DESC"
+          },
           "pagination": {
             "remote": true,
             "current": 0,
-            "perPage": 20
+            "perPage": 30
           }
         }
       },
