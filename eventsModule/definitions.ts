@@ -38,7 +38,7 @@ export default {
 
     {
 
-      condition : false,
+      condition : true,
       handlerName : 'checker',
       otherParameters : {
 
@@ -68,7 +68,13 @@ export default {
         }
       ]
 
-    } as EventHandlerConfig
+    } as EventHandlerConfig,
+
+    {
+      eventName : 'test',
+      condition : true
+
+    } as EventConfig
 
   ],
 

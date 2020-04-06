@@ -1,22 +1,26 @@
-import { BaseEvent } from 'modules/events/base-event'
-import { EventService, EventConfig } from 'modules/events/service'
+
+import { EventService, EventConfig, EventHandlerConfig, EventData } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import _ = require('lodash')
 import { RelatedPartyDatabaseService } from 'modules/sequelize/relatedParty/service'
 import { RelatedParty } from 'models/main/relatedParty'
+import BaseEventHandler from 'modules/events/baseEventHandler'
+import { Shipment } from 'models/main/shipment'
+import { Booking } from 'models/main/booking'
 
-class CreateRelatedPartyEvent extends BaseEvent {
+export default class CreateRelatedPartyEvent extends BaseEventHandler {
   constructor(
-    protected readonly parameters: any,
-    protected readonly eventConfig: EventConfig,
+    protected  eventDataList: EventData<any>[],
+    protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
     protected readonly allService: any,
+
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
   ) {
-    super(parameters, eventConfig, repo, eventService, allService, user, transaction)
+    super(eventDataList, eventHandlerConfig, repo, eventService, allService, user, transaction)
   }
 
   private async createRelatedParty(relatedParties: RelatedParty[]) {
@@ -35,7 +39,9 @@ class CreateRelatedPartyEvent extends BaseEvent {
               partyType: relatedParty.partyType
             }
           },
-          this.user
+          false,
+          this.user,
+          this.transaction
         )
         if (!found) {
           await service.save(relatedParty, this.user)
@@ -46,72 +52,54 @@ class CreateRelatedPartyEvent extends BaseEvent {
     }
   }
 
-  public async mainFunction(
-    {
-      data,
-      partyLodash,
-      fixedParty
-    }: {
-      data: any,
-      partyLodash: string
-      fixedParty: string[]
-    }
-  ) {
+    // {
+    //   data: any,
+    //   partyLodash: string
+    //   fixedParty: string[]
+    // }
+  public async mainFunction(eventDataList: EventData<any>[]) {
     console.debug('Start Excecute [Create Related Party]...', this.constructor.name)
-    if (data.billStatus === null) {
-      const party = _.get(data, partyLodash, {})
-      if (party) {
-        const relatedParties: RelatedParty[] = []
-        const allParty = [
-          ...(fixedParty || []),
-          ..._.get(party, 'flexData.moreParty', [])
-        ]
-        const partyId = {}
-        for (const morePartyName of allParty) {
-          partyId[morePartyName] = _.get(party, `${morePartyName}PartyId`, null) || _.get(party, `flexData.${morePartyName}PartyId`, null)
-        }
-        for (const partyA of allParty) {
-          if (partyId[partyA]) {
-            for (const partyB of allParty) {
-              if (partyA !== partyB && partyId[partyB]) {
-                relatedParties.push({
-                  partyAId: partyId[partyB],
-                  partyBId: partyId[partyA],
-                  partyType: partyA
-                } as RelatedParty)
+
+    const createRelatedParties: RelatedParty[] = []
+
+    eventDataList.map(eventData => {
+
+      const { latestEntity, partyLodash, fixedParty } = eventData as EventData<Shipment>
+
+      if (latestEntity.billStatus === null) {
+        const party = _.get(latestEntity, partyLodash, {})
+        if (party) {
+          const allParty = [
+            ...(fixedParty || []),
+            ..._.get(party, 'flexData.moreParty', [])
+          ]
+          const partyId = {}
+          for (const morePartyName of allParty) {
+            partyId[morePartyName] = _.get(party, `${morePartyName}PartyId`, null) || _.get(party, `flexData.${morePartyName}PartyId`, null)
+          }
+          for (const partyA of allParty) {
+            if (partyId[partyA]) {
+              for (const partyB of allParty) {
+                if (partyA !== partyB && partyId[partyB]) {
+                  createRelatedParties.push({
+                    partyAId: partyId[partyB],
+                    partyBId: partyId[partyA],
+                    partyType: partyA
+                  } as RelatedParty)
+                }
               }
             }
           }
         }
-        if (relatedParties.length) {
-          await this.createRelatedParty(relatedParties)
-        }
       }
+
+    })
+
+    if (createRelatedParties.length) {
+      await this.createRelatedParty(createRelatedParties)
     }
+
     console.debug('End Excecute [Create Related Party]...', this.constructor.name)
     return null
   }
-}
-
-export default {
-  execute: async(
-    parameters: any,
-    eventConfig: EventConfig,
-    repo: string,
-    eventService: any,
-    allService: any,
-    user?: JwtPayload,
-    transaction?: Transaction
-  ) => {
-    const event = new CreateRelatedPartyEvent(
-      parameters,
-      eventConfig,
-      repo,
-      eventService,
-      allService,
-      user,
-      transaction
-    )
-    return await event.execute()
-  },
 }

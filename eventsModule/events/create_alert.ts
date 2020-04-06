@@ -4,7 +4,7 @@ import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import { AlertDbService } from 'modules/sequelize/alert/service'
 
-class CreateAlertEvent extends BaseEventHandler {
+export default class CreateAlertEvent extends BaseEventHandler {
   constructor(
     protected  eventDataList: EventData<any>[],
     protected readonly eventHandlerConfig: EventHandlerConfig,
