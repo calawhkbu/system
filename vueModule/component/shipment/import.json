@@ -52,7 +52,7 @@
             "importAxiosParams": {
               "z": {
                 "method": "POST",
-                "url": "api/document/import"
+                "url": "api/shipment/import"
               }
             },
             "importFormLayout": {
