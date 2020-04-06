@@ -1,11 +1,4 @@
-[
-  {
-    "field": "houseNo",
-    "validator": "required"
-  },
-
-  {
-    "field": "jobNo",
-    "validator": "required"
-  }
-]
+[{
+  "field": "houseNo",
+  "validator": "required"
+}]
