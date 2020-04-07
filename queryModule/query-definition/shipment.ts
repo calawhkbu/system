@@ -458,6 +458,48 @@ const shipmentId_trackingNo_map_table = new Query({
 const shipmentTrackingLastStatusCodeTableExpression = new Query({
 
   $select: [
+    new ResultColumn(new ColumnExpression('tracking', 'trackingNo')),
+    new ResultColumn(new ColumnExpression('tracking', 'lastStatusCode')),
+    new ResultColumn(new ColumnExpression('tracking', 'lastStatusDate')),
+    new ResultColumn(new ColumnExpression('tracking', 'lastEstimatedUpdateDate')),
+    new ResultColumn(new ColumnExpression('tracking', 'lastActualUpdateDate'))
+  ],
+
+  $from : 'tracking'
+
+})
+
+const shipmentTrackingStatusCodeTableExpression = new Query({
+
+  $select: [
+    new ResultColumn(new ColumnExpression('tracking', 'trackingNo')),
+    new ResultColumn(new ColumnExpression('tracking', 'lastStatusCode')),
+    new ResultColumn(new ColumnExpression('tracking', 'lastStatusDate')),
+    new ResultColumn(new ColumnExpression('tracking', 'lastEstimatedUpdateDate')),
+    new ResultColumn(new ColumnExpression('tracking', 'lastActualUpdateDate')),
+
+    new ResultColumn(new ColumnExpression('tracking_status', 'trackingId')),
+    new ResultColumn(new ColumnExpression('tracking_status', 'statusCode')),
+    new ResultColumn(new ColumnExpression('tracking_status', 'statusDate')),
+  ],
+
+  $from : new FromTable({
+    table : 'tracking',
+    joinClauses : [
+
+      {
+        operator : 'LEFT',
+        $on : new BinaryExpression(new ColumnExpression('tracking_status', 'trackingId'), '=', new ColumnExpression('tracking', 'id')),
+        table : new FromTable('tracking_status')
+      }
+    ]
+  })
+
+})
+
+const shipmentTrackingLastStatusCodeTableExpressionOld = new Query({
+
+  $select: [
     new ResultColumn(new ColumnExpression('shipmentId_trackingNo_map_table', 'shipmentId'), 'shipmentId'),
     new ResultColumn(new ColumnExpression('shipmentId_trackingNo_map_table', 'trackingNo'), 'trackingNo'),
     new ResultColumn(new ColumnExpression('tracking', 'id'), 'trackingId'),
@@ -484,7 +526,7 @@ const shipmentTrackingLastStatusCodeTableExpression = new Query({
 
 })
 
-const shipmentTrackingStatusCodeTableExpression = new Query({
+const shipmentTrackingStatusCodeTableExpressionOld = new Query({
 
   $select: [
     new ResultColumn(new ColumnExpression('shipmentId_trackingNo_map_table', 'shipmentId'), 'shipmentId'),
@@ -523,45 +565,24 @@ const shipmentTrackingStatusCodeTableExpression = new Query({
 
 })
 
-const shipmentTrackingLastStatusCodeTableExpressionOld = new Query({
-
-  $select: [
-    new ResultColumn(new ColumnExpression('shipment_tracking', 'shipmentId')),
-    new ResultColumn(new ColumnExpression('shipment_tracking', 'lastStatusCode'))
-  ],
-
-  $from: new FromTable({
-
-    table: shipmentTrackingExpression,
-    $as: 'shipment_tracking',
-
-    joinClauses: [{
-
-      operator: 'LEFT',
-      table: new FromTable({
-        table: shipmentId_maxPriority_table,
-        $as: 'shipment_priority'
-      }),
-      $on: [
-        new BinaryExpression(new ColumnExpression('shipment_tracking', 'shipmentId'), '=', new ColumnExpression('shipment_priority', 'shipmentId'))
-
-      ]
-    }]
-  }),
-
-  $where: [
-    new BinaryExpression(new ColumnExpression('shipment_priority', 'maxPriority'), '=', new ColumnExpression('shipment_tracking', 'priority')),
-    new OrExpressions([
-      new BinaryExpression(new ColumnExpression('shipment_priority', 'max_updatedAt'), '=', new ColumnExpression('shipment_tracking', 'updatedAt')),
-      new IsNullExpression(new ColumnExpression('shipment_tracking', 'updatedAt'), false)
-
-    ])
-
-  ]
-
-})
-
 query.registerQuery('lastStatusJoin', new Query({
+
+  $from: new FromTable('shipment', {
+
+    operator: 'LEFT',
+    table: new FromTable({
+
+      table: shipmentTrackingLastStatusCodeTableExpression,
+      $as: 'shipmentTrackingLastStatusCodeTable',
+
+    }),
+    $on: new BinaryExpression(new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'trackingNo'), '=', new ColumnExpression('shipment', 'currentTrackingNo'))
+
+  })
+
+}))
+
+query.registerQuery('lastStatusJoinOld', new Query({
 
   $from: new FromTable('shipment', {
 
@@ -578,59 +599,25 @@ query.registerQuery('lastStatusJoin', new Query({
 
 }))
 
-const shipmentTrackingStatusCodeTableExpressionOld = new Query({
-
-  $select: [
-    new ResultColumn(new ColumnExpression('shipment_tracking', 'shipmentId')),
-    new ResultColumn(new ColumnExpression('shipment_tracking', 'trackingNo')),
-    new ResultColumn(new ColumnExpression('tracking_status', 'statusCode'))
-  ],
-
-  $from: new FromTable({
-
-    table: shipmentTrackingExpression,
-    $as: 'shipment_tracking',
-
-    joinClauses: [
-      {
-
-        operator: 'LEFT',
-        table: new FromTable({
-          table: shipmentId_maxPriority_table,
-          $as: 'shipment_priority'
-        }),
-        $on: [
-          new BinaryExpression(new ColumnExpression('shipment_tracking', 'shipmentId'), '=', new ColumnExpression('shipment_priority', 'shipmentId'))
-
-        ]
-      },
-      {
-
-        operator: 'LEFT',
-        table: 'tracking',
-        $on: [
-          new BinaryExpression(new ColumnExpression('tracking', 'trackingNo'), '=', new ColumnExpression('shipment_tracking', 'trackingNo'))
-        ]
-      },
-      {
-
-        operator: 'LEFT',
-        table: 'tracking_status',
-        $on: [
-          new BinaryExpression(new ColumnExpression('tracking_status', 'trackingId'), '=', new ColumnExpression('tracking', 'id'))
-        ]
-      }
-    ]
-
-  }),
-
-  $where: [
-    new BinaryExpression(new ColumnExpression('shipment_priority', 'maxPriority'), '=', new ColumnExpression('shipment_tracking', 'priority'))
-  ]
-
-})
-
 query.registerQuery('statusJoin', new Query(
+  {
+    $from: new FromTable('shipment', {
+
+      operator: 'LEFT',
+      table: new FromTable({
+
+        table: shipmentTrackingStatusCodeTableExpression,
+        $as: 'shipmentTrackingStatusCodeTable',
+
+      }),
+
+      $on: new BinaryExpression(new ColumnExpression('shipmentTrackingStatusCodeTable', 'trackingNo'), '=', new ColumnExpression('shipment', 'currentTrackingNo'))
+
+    })
+
+  }))
+
+query.registerQuery('statusJoinOld', new Query(
   {
     $from: new FromTable('shipment', {
 
