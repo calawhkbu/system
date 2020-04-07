@@ -67,103 +67,38 @@
     "is": "DynamicComponent",
     "props": {
       "layout": "v-card",
-      "class": "xs-12 margin-bottom-8",
+      "class": "xs-12 margin-bottom-2",
       "components": [{
         "is": "WidgetForm",
         "props": {
           "class": "xs-12",
           "fields": [{
-              "label": "ApiPage.name",
-              "name": "name",
-              "component": "v-text-field",
-              "class": "xs-12"
-            },
-            {
-              "label": "ApiPage.backend",
-              "name": "refreshToken",
-              "component": "DetailReadOnlyField",
-              "class": "xs-12",
-              "props": {
-                "apiParams": {
-                  "method": "POST",
-                  "url": "auth/api/login/{{value}}/99y"
-                },
-                "detail": [
-                  "Authentication: Bearer {{accessToken}}"
-                ]
-              }
-            },
-            {
-              "label": "ApiPage.TrackingWidget",
-              "name": "refreshToken",
-              "component": "DetailReadOnlyField",
-              "class": "xs-12",
-              "props": {
-                "detail": [
-                  "<html>",
-                  "  <head>",
-                  "    <meta charset=\"utf-8\">",
-                  "    <script src=\"https://unpkg.com/vue\"></script>",
-                  "    <script src=\"{{frontendUrl}}/widget/swivel-widget.js\"></script>",
-                  "  </head>",
-                  "  <body>",
-                  "    <swivel-widget",
-                  "      apitoken=\"{{value}}\"",
-                  "      name=\"BillTrackingWidget\"",
-                  "      data=\"{ masterNo: '', containerNo: [] }\"",
-                  "    />",
-                  "  </body>",
-                  "</html>"
-                ]
-              }
-            },
-            {
-              "label": "ApiPage.LoginWidget",
-              "name": "refreshToken",
-              "component": "DetailReadOnlyField",
-              "class": "xs-12",
-              "props": {
-                "detail": [
-                  "<html>",
-                  "  <head>",
-                  "    <meta charset=\"utf-8\">",
-                  "    <script src=\"https://unpkg.com/vue\"></script>",
-                  "    <script src=\"{{frontendUrl}}/widget/swivel-widget.js\"></script>",
-                  "  </head>",
-                  "  <body>",
-                  "    <swivel-widget",
-                  "      apitoken=\"{{value}}\"",
-                  "      name=\"LoginWidget\"",
-                  "    />",
-                  "  </body>",
-                  "</html>"
-                ]
-              }
-            },
-            {
-              "label": "ApiPage.SearchBillWidget",
-              "name": "refreshToken",
-              "component": "DetailReadOnlyField",
-              "class": "xs-12",
-              "props": {
-                "detail": [
-                  "<html>",
-                  "  <head>",
-                  "    <meta charset=\"utf-8\">",
-                  "    <script src=\"https://unpkg.com/vue\"></script>",
-                  "    <script src=\"{{frontendUrl}}/widget/swivel-widget.js\"></script>",
-                  "  </head>",
-                  "  <body>",
-                  "    <swivel-widget",
-                  "      apitoken=\"{{value}}\"",
-                  "      name=\"SearchBillWidget\"",
-                  "    />",
-                  "  </body>",
-                  "</html>"
-                ]
-              }
-            }
-          ]
+            "label": "ApiPage.name",
+            "name": "name",
+            "component": "v-text-field",
+            "class": "xs-12"
+          }]
+        }
+      }]
+    }
+  }, {
+    "is": "DynamicComponent",
+    "props": {
+      "layout": "v-card",
+      "class": "margin-bottom-2",
+      "components": [{
+        "is": "FrontendWidgetHelper"
+      }]
+    }
+  }, {
+    "is": "DynamicComponent",
+    "props": {
+      "layout": "v-card",
+      "class": "margin-bottom-2 full-width",
+      "components": [{
+        "is": "BackendApiHelper",
+        "props": {
+          "refreshToken": "$store.state.widget.data.refreshToken"
         }
       }]
     }

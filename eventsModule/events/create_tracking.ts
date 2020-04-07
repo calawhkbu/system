@@ -3,6 +3,7 @@ import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import _ = require('lodash')
+import moment = require('moment')
 
 import { TrackService } from 'modules/tracking/services'
 
@@ -40,14 +41,14 @@ class CreateTrackingEvent extends BaseEvent {
     const carrierCodeData = this.getValueFromData(data, carrierCode, null)
     const departureDateEstimatedData = this.getValueFromData(data, departureDateEstimated, null)
     const needCarrier = moduleTypeCodeData === 'AIR' ? true : carrierCodeData
-    if (tracking && moduleTypeCodeData && needCarrier && departureDateEstimatedData) {
+    if (tracking && moduleTypeCodeData && needCarrier) {
       const masterNoData = this.getValueFromData(data, masterNo, null)
       const soNoData = moduleTypeCodeData === 'SEA' ? this.getValueFromData(data, soNo, []) : []
       const containerNoData = moduleTypeCodeData === 'SEA' ? this.getValueFromData(data, containerNo, []) : []
       return {
         moduleTypeCode: moduleTypeCodeData,
         carrierCode: carrierCodeData,
-        departureDateEstimated: departureDateEstimatedData,
+        departureDateEstimated: departureDateEstimatedData || moment.utc().format('YYYY-MM-DD 00:00:00'),
         masterNo: masterNoData,
         soNo: soNoData.reduce((s: string[], no: string) => {
           if (no) {
