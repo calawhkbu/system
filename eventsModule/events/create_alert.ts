@@ -1,13 +1,13 @@
-import { BaseEvent } from 'modules/events/base-event'
-import { EventService, EventConfig } from 'modules/events/service'
+import BaseEventHandler from 'modules/events/baseEventHandler'
+import { EventService, EventConfig, EventData, EventHandlerConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import { AlertDbService } from 'modules/sequelize/alert/service'
 
-class CreateAlertEvent extends BaseEvent {
+export default class CreateAlertEvent extends BaseEventHandler {
   constructor(
-    protected readonly parameters: any,
-    protected readonly eventConfig: EventConfig,
+    protected  eventDataList: EventData<any>[],
+    protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
     protected readonly allService: any,
@@ -15,47 +15,33 @@ class CreateAlertEvent extends BaseEvent {
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
   ) {
-    super(parameters, eventConfig, repo, eventService, allService, user, transaction)
+    super(eventDataList, eventHandlerConfig, repo, eventService, allService, user, transaction)
   }
 
-  public async mainFunction(parameters: any) {
-    const tableName = parameters.tableName
-    const primaryKey = parameters.primaryKey
-    const alertType = parameters.alertType
-    const extraParam = parameters.extraParam
+  public async mainFunction(eventDataList: EventData<any>[]) {
 
     const alertDbService = this.allService['AlertDbService'] as AlertDbService
 
-    return await alertDbService.createAlert(
-      tableName,
-      primaryKey,
-      alertType,
-      extraParam,
-      this.user,
-      this.transaction
-    )
-  }
-}
+    const promiseList = eventDataList.map(eventData => {
 
-export default {
-  execute: async(
-    parameters: any,
-    eventConfig: EventConfig,
-    repo: string,
-    eventService: any,
-    allService: any,
-    user?: JwtPayload,
-    transaction?: Transaction
-  ) => {
-    const event = new CreateAlertEvent(
-      parameters,
-      eventConfig,
-      repo,
-      eventService,
-      allService,
-      user,
-      transaction
-    )
-    return await event.execute()
-  },
+      const tableName = eventData.tableName
+      const primaryKey = eventData.primaryKey
+      const alertType = eventData.alertType
+      const extraParam = eventData.extraParam
+
+      // todo : later change to bulk
+      return alertDbService.createAlert(
+        tableName,
+        primaryKey,
+        alertType,
+        extraParam,
+        this.user,
+        this.transaction
+      )
+
+    })
+
+    return await Promise.all(promiseList)
+
+  }
 }

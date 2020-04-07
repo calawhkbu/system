@@ -1,7 +1,11 @@
-import { EventConfig } from 'modules/events/service'
+import { EventConfig, EventData, EventHandlerConfig } from 'modules/events/service'
 import { diff } from 'modules/events/checkerFunction'
+import { Booking } from 'models/main/booking'
 
 export default {
+
+  test: [{ handlerName: 'test' }], // create alert from entity
+
   // should not be called directly, should be called after an event
   create_alert: [{ handlerName: 'create_alert' }], // create alert from entity
   create_tracking: [{ handlerName: 'create_tracking' }], // create tracking from entity
@@ -15,6 +19,65 @@ export default {
 
   invitation_create_related_person : [{ handlerName : 'invitation_create_related_person' }],
   // start here
+
+  // test
+
+  testAll : [
+    // {
+    //   condition : true,
+    //   eventName : 'test',
+    //   otherParameters : {
+
+    //     alertType : 'booking',
+    //     tableName: 'booking',
+    //     primaryKey : (eventData: EventData<Booking>) => {
+    //       return eventData.latestEntity.id
+    //     }
+    //   }
+    // },
+
+    {
+
+      condition : true,
+      handlerName : 'checker',
+      otherParameters : {
+
+        checker: [
+          {
+            resultName: 'haveDiff',
+            checkerFunction: (eventData: EventData<Booking>) => {
+              const difference = diff(
+                eventData.originalEntity,
+                eventData.latestEntity,
+                undefined,
+                ['documents'],
+                ['createdAt', 'createdBy', 'updatedAt', 'updatedBy']
+              )
+              return difference ? true : false
+            },
+          },
+        ],
+      },
+      afterEvent : [
+
+        {
+          eventName : 'test',
+          condition : (eventData: EventData<any>) => {
+            return eventData.checkerResult.haveDiff as boolean
+          }
+        }
+      ]
+
+    } as EventHandlerConfig,
+
+    {
+      eventName : 'test',
+      condition : true
+
+    } as EventConfig
+
+  ],
+
   // booking
   afterCreate_booking: [
     // create new booking alert and should move to workflow later
@@ -375,5 +438,5 @@ export default {
   ]
 
 } as {
-  [eventName: string]: EventConfig[]
+  [eventName: string]: (EventConfig | EventHandlerConfig)[]
 }

@@ -1,27 +1,27 @@
-import { BaseEvent } from 'modules/events/base-event'
-import { EventService, EventConfig } from 'modules/events/service'
+import { EventService, EventConfig, EventData, EventHandlerConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import _ = require('lodash')
 import { RelatedPersonDatabaseService } from 'modules/sequelize/relatedPerson/service'
 import { RelatedPerson } from 'models/main/relatedPerson'
 import { getPartyAndPersonFromStandardEntity } from 'utils/party'
+import BaseEventHandler from 'modules/events/baseEventHandler'
 
-class UpdateOrCreateRelatedPersonEvent extends BaseEvent {
+export default class UpdateOrCreateRelatedPersonEvent extends BaseEventHandler {
   constructor(
-    protected readonly parameters: any,
-    protected readonly eventConfig: EventConfig,
+    protected eventDataList: EventData<any>[],
+    protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
     protected readonly allService: any,
+
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
   ) {
-    super(parameters, eventConfig, repo, eventService, allService, user, transaction)
+    super(eventDataList, eventHandlerConfig, repo, eventService, allService, user, transaction)
   }
 
-  private async checkExist(relatedPeople: RelatedPerson[])
-  {
+  private async checkExist(relatedPeople: RelatedPerson[]) {
     const {
       RelatedPersonDatabaseService: service
     } = this.allService as {
@@ -40,9 +40,9 @@ class UpdateOrCreateRelatedPersonEvent extends BaseEvent {
     partyIdList = [... new Set(partyIdList.filter(x => !!x))]
 
     const checkList = await service.find({
-      where : {
-        partyId : partyIdList,
-        email : emailList
+      where: {
+        partyId: partyIdList,
+        email: emailList
       }
     }, this.user, this.transaction)
 
@@ -50,8 +50,7 @@ class UpdateOrCreateRelatedPersonEvent extends BaseEvent {
 
       const existed = checkList.find(x => x.partyId === relatedPerson.partyId && x.email === relatedPerson.email)
 
-      if (existed)
-      {
+      if (existed) {
         relatedPerson.id = existed.id
       }
       return relatedPerson
@@ -79,90 +78,65 @@ class UpdateOrCreateRelatedPersonEvent extends BaseEvent {
     }
   }
 
-  public async mainFunction(
-    {
-      data,
-      partyLodash,
-      fixedParty
-    }: {
-      data: any,
-      partyLodash: string
-      fixedParty: string[]
-    }
-  ) {
+  public async mainFunction(eventDataList: EventData<any>[]) {
+
     console.log('Start Excecute [Create Related Person]...', this.constructor.name)
 
-    // extract shipmentParty from shipment object
-    const party = _.get(data, partyLodash, {})
+    const relatedPeople: RelatedPerson[] = []
 
-    const partyResult = await getPartyAndPersonFromStandardEntity(party)
+    eventDataList.map(async eventData => {
 
-    if (Object.keys(partyResult).length)
-    {
-      const relatedPeople: RelatedPerson[] = []
+      const { latestEntity, partyLodash, fixedParty } = eventData as EventData<any>
 
-      for (const partyType of Object.keys(partyResult)) {
+      // extract shipmentParty from shipment object
+      const party = _.get(latestEntity, partyLodash, {})
 
-        const peopleList = partyResult[partyType].people
-        const partyId = partyResult[partyType].party.id
+      const partyResult = await getPartyAndPersonFromStandardEntity(party)
 
-        peopleList.forEach(person => {
+      if (Object.keys(partyResult).length) {
 
-          const phoneContact = person.contacts.find(x => x.contactType === 'phone')
-          const phone = phoneContact ? phoneContact.content : undefined
+        for (const partyType of Object.keys(partyResult)) {
 
-          const emailContact = person.contacts.find(x => x.contactType === 'email')
-          const email = emailContact ? emailContact.content : undefined
+          const peopleList = partyResult[partyType].people
+          const partyId = partyResult[partyType].party.id
 
-          const name = person.displayName || undefined
+          peopleList.forEach(person => {
 
-          if (name || phone || email)
-          {
-            relatedPeople.push({
-              partyId,
-              email,
-              name,
-              phone
-            } as RelatedPerson)
+            const phoneContact = person.contacts.find(x => x.contactType === 'phone')
+            const phone = phoneContact ? phoneContact.content : undefined
 
-          }
+            const emailContact = person.contacts.find(x => x.contactType === 'email')
+            const email = emailContact ? emailContact.content : undefined
 
-        })
+            const name = person.displayName || undefined
+
+            if (name || phone || email) {
+              relatedPeople.push({
+                partyId,
+                email,
+                name,
+                phone
+              } as RelatedPerson)
+
+            }
+
+          })
+
+        }
 
       }
 
-      if (relatedPeople.length) {
+    })
 
-        console.log(`debug_relatedPeople`)
-        console.log(relatedPeople)
+    if (relatedPeople.length) {
 
-        await this.createorUpdateRelatedPeople(relatedPeople)
-      }
+      console.log(`debug_relatedPeople`)
+      console.log(relatedPeople)
+
+      await this.createorUpdateRelatedPeople(relatedPeople)
     }
+
     console.log('End Excecute [Create Related Person]...', this.constructor.name)
     return null
   }
-}
-
-export default {
-  execute: async(
-    parameters: any,
-    eventConfig: EventConfig,
-    repo: string,
-    eventService: any,
-    allService: any,
-    user?: JwtPayload,
-    transaction?: Transaction
-  ) => {
-    const event = new UpdateOrCreateRelatedPersonEvent(
-      parameters,
-      eventConfig,
-      repo,
-      eventService,
-      allService,
-      user,
-      transaction
-    )
-    return await event.execute()
-  },
 }
