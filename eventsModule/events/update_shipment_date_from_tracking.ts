@@ -84,7 +84,7 @@ class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
             await trackingReferenceService.query(`
               UPDATE shipment
               SET currentTrackingNo = "${data.trackingNo}"
-              WHERE (${idsQuery.join(' OR ')}) AND currentTrackingNo is null
+              WHERE ${idsQuery.join(' OR ')}
             `)
           }
         }
