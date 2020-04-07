@@ -385,7 +385,7 @@ export default {
     { // update error ro change
       handlerName: 'tracking_error_update_reference_again',
       otherParameters: {
-        maxErrorTime: 12
+        maxErrorTime: 28
       }
     }
   ],
