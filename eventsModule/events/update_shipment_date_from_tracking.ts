@@ -49,67 +49,44 @@ class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
         const partyGroupQuery = trackingReferences.map(({ partyGroupCode }: TrackingReference) => {
           return `partyGroupCode = "${partyGroupCode}"`
         })
-        const etdQuery = estimatedDepartureDate ? `departureDateEstimated = "${moment.utc(estimatedDepartureDate).format('YYYY-MM-DD HH:mm:ss')}"` : null
-        const etaQuery = estimatedArrivalDate ? `arrivalDateEstimated = "${moment.utc(estimatedArrivalDate).format('YYYY-MM-DD HH:mm:ss')}"` : null
-        const atdQuery = actualDepartureDate ? `departureDateActual = "${moment.utc(actualDepartureDate).format('YYYY-MM-DD HH:mm:ss')}"` : null
-        const ataQuery = actualArrivalDate ? `arrivalDateActual = "${moment.utc(actualArrivalDate).format('YYYY-MM-DD HH:mm:ss')}"` : null
-        if (etdQuery || etaQuery || atdQuery || ataQuery) {
-          let dateQuery = etdQuery || null
-          if (etaQuery) {
-            dateQuery = `${dateQuery ? `${dateQuery},` : ''}${etaQuery}`
+        const selectQuery = `
+          SELECT shipment.id
+          FROM shipment
+          LEFT OUTER JOIN shipment_container ON shipment_container.shipmentId = shipment.id
+          WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
+          AND (
+            shipment.masterNo = "${data.trackingNo}"
+            OR shipment_container.carrierBookingNo = "${data.trackingNo}"
+            OR shipment_container.containerNo = "${data.trackingNo}"
+          )
+        `
+        const ids = await trackingReferenceService.query(selectQuery, { type: Sequelize.QueryTypes.SELECT })
+        if (ids && ids.length) {
+          const idsQuery = ids.map(({ id }) => (`shipmentId = ${id}`))
+          const etdQuery = estimatedDepartureDate ? `departureDateEstimated = "${moment.utc(estimatedDepartureDate).format('YYYY-MM-DD HH:mm:ss')}"` : null
+          const etaQuery = estimatedArrivalDate ? `arrivalDateEstimated = "${moment.utc(estimatedArrivalDate).format('YYYY-MM-DD HH:mm:ss')}"` : null
+          const atdQuery = actualDepartureDate ? `departureDateActual = "${moment.utc(actualDepartureDate).format('YYYY-MM-DD HH:mm:ss')}"` : null
+          const ataQuery = actualArrivalDate ? `arrivalDateActual = "${moment.utc(actualArrivalDate).format('YYYY-MM-DD HH:mm:ss')}"` : null
+          if (etdQuery || etaQuery || atdQuery || ataQuery) {
+            let dateQuery = etdQuery || null
+            if (etaQuery) {
+              dateQuery = `${dateQuery ? `${dateQuery},` : ''}${etaQuery}`
+            }
+            if (atdQuery) {
+              dateQuery = `${dateQuery ? `${dateQuery},` : ''}${atdQuery}`
+            }
+            if (ataQuery) {
+              dateQuery = `${dateQuery ? `${dateQuery},` : ''}${ataQuery}`
+            }
+            await trackingReferenceService.query(`UPDATE shipment_date SET ${dateQuery} WHERE ${idsQuery.join(' OR ')}`)
           }
-          if (atdQuery) {
-            dateQuery = `${dateQuery ? `${dateQuery},` : ''}${atdQuery}`
-          }
-          if (ataQuery) {
-            dateQuery = `${dateQuery ? `${dateQuery},` : ''}${ataQuery}`
-          }
-          const selectQuery = `
-            SELECT shipment.id
-            FROM shipment
-            LEFT OUTER JOIN shipment_container ON shipment_container.shipmentId = shipment.id
-            WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
-            AND (
-              shipment.masterNo = "${data.trackingNo}"
-              OR shipment_container.carrierBookingNo = "${data.trackingNo}"
-              OR shipment_container.containerNo = "${data.trackingNo}"
-            )
-          `
-          const ids = await trackingReferenceService.query(selectQuery, { type: Sequelize.QueryTypes.SELECT })
-          if (ids && ids.length) {
-            const idsQuery = ids.map(({ id }) => (`shipmentId = ${id}`))
+          if (data.lastStatusCode && !['ERR', 'CANF'].includes(data.lastStatusCode)) {
             await trackingReferenceService.query(`
-              UPDATE shipment_date
-              SET ${dateQuery}
-              WHERE ${idsQuery.join(' OR ')}
+              UPDATE shipment
+              SET currentTrackingNo = "${data.trackingNo}"
+              WHERE (${idsQuery.join(' OR ')}) AND currentTrackingNo is null
             `)
           }
-          // booking
-          // const selectBookingQuery = `
-          //   SELECT booking.id
-          //   FROM booking
-          //   LEFT OUTER JOIN booking_reference booking_reference_SEA
-          //     ON booking_reference_SEA.bookingId = booking.id AND booking_reference_SEA.refName = "MBL"
-          //   LEFT OUTER JOIN booking_reference booking_reference_AIR
-          //     ON booking_reference_AIR.bookingId = booking.id AND booking_reference_AIR.refName = "MAWB"
-          //   LEFT OUTER JOIN booking_container ON booking_container.bookingId = booking.id
-          //   WHERE (${partyGroupQuery && partyGroupQuery.length > 0 ? partyGroupQuery.join(' OR ') : '1=1'})
-          //   AND (
-          //     booking_reference_SEA.refDescription = "${data.trackingNo}"
-          //     OR booking_reference_AIR.refDescription = "${data.trackingNo}"
-          //     OR booking_container.soNo = "${data.trackingNo}"
-          //     OR booking_container.containerNo = "${data.trackingNo}"
-          //   )
-          // `
-          // const bookingIds = await trackingReferenceService.query(selectBookingQuery, { type: Sequelize.QueryTypes.SELECT })
-          // if (bookingIds && bookingIds.length) {
-          //   const idsQuery = bookingIds.map(({ id }) => (`bookingId = ${id}`))
-          //   await trackingReferenceService.query(`
-          //     UPDATE booking_date
-          //     SET ${dateQuery}
-          //     WHERE ${idsQuery.join(' OR ')}
-          //   `)
-          // }
         }
       }
     }
