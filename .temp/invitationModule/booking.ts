@@ -15,9 +15,7 @@ export default async function entityCreateInvitation(
   ) => Promise<GetPartyAndPersonFromStandardEntityResult>
 ) {
   const start = Date.now()
-  const entityData = entity.hasOwnProperty('dataValues')
-    ? JSON.parse(JSON.stringify(entity.dataValues))
-    : entity || {}
+  const entityData = entity || {}
   const entityFlexData =
     entityData.flexData && entityData.flexData.data ? entityData.flexData.data : {}
   console.debug(`Create Invitation to ${tableName} [ID: ${entity.id}]`)
