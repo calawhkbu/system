@@ -1,9 +1,9 @@
-import BaseEventHandler from 'modules/events/baseEventHandler'
 import { EventService, EventConfig, EventData, EventHandlerConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
+import BaseEventHandler from 'modules/events/baseEventHandler'
 
-export default class ExampleEvent extends BaseEventHandler {
+export default class TestEvent extends BaseEventHandler {
   constructor(
     protected  eventDataList: EventData<any>[],
     protected readonly eventHandlerConfig: EventHandlerConfig,
@@ -21,6 +21,6 @@ export default class ExampleEvent extends BaseEventHandler {
     console.debug('Start Excecute...', this.constructor.name)
     console.debug(JSON.stringify(eventDataList), 'parameters')
     console.debug('End Excecute...', this.constructor.name)
-    return null
+    return eventDataList
   }
 }

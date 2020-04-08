@@ -1,16 +1,17 @@
-import { BaseEvent } from 'modules/events/base-event'
-import { EventService, EventConfig } from 'modules/events/service'
+import { EventService, EventConfig, EventHandlerConfig, EventData } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import { Invitation } from 'models/main/invitation'
 import { InvitationDbService } from 'modules/sequelize/invitation/service'
 import { RelatedPerson } from 'models/main/relatedPerson'
 import { RelatedPersonDatabaseService } from 'modules/sequelize/relatedPerson/service'
+import BaseEventHandler from 'modules/events/baseEventHandler'
+import { IFindOptions } from 'sequelize-typescript'
 
-class InvitationCreateRelatedPersonEvent extends BaseEvent {
+export default class InvitationCreateRelatedPersonEvent extends BaseEventHandler {
   constructor(
-    protected readonly parameters: any,
-    protected readonly eventConfig: EventConfig,
+    protected  eventDataList: EventData<any>[],
+    protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
     protected readonly allService: any,
@@ -18,94 +19,95 @@ class InvitationCreateRelatedPersonEvent extends BaseEvent {
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
   ) {
-    super(parameters, eventConfig, repo, eventService, allService, user, transaction)
+    super(eventDataList, eventHandlerConfig, repo, eventService, allService, user, transaction)
   }
 
-  public async mainFunction(parameters: any) {
+  public async mainFunction(eventDataList: EventData<Invitation>[]) {
     console.debug('Start Excecute...', this.constructor.name)
 
-    const invitation = parameters.data as Invitation
-
     const {
-      RelatedPersonDatabaseService: service
-    } = this.allService
+      RelatedPersonDatabaseService: relatedPersonDatabaseService
+    } = this.allService as {
+      RelatedPersonDatabaseService: RelatedPersonDatabaseService
 
-    const person = invitation.person
+    }
 
-    const partyIdList = person.parties.map(x => x.id)
+    const createRelatedPersonList = []
 
-    const personPhoneContact = person.contacts.find(x => x.contactType === 'phone')
-    const phone = personPhoneContact ? personPhoneContact.content : undefined
+    const relatedPersonRawDataList = []
 
-    const nameString = (person.firstName || '') + (person.lastName || '')
+    eventDataList.map(eventData => {
 
-    const name = nameString.length ? nameString : undefined
+      const { latestEntity } = eventData
 
-    // find all existing relatedPerson in the db, update the existing, create the rest
-    const existingRelatedPersonList = await (service as RelatedPersonDatabaseService).find({
-      where : {
-        email : person.userName,
-        partyId : partyIdList
-      }
+      const person = latestEntity.person
+
+      const partyIdList = person.parties.map(x => x.id)
+
+      // extra the useful information from person
+      const personPhoneContact = person.contacts.find(x => x.contactType === 'phone')
+      const phone = personPhoneContact ? personPhoneContact.content : undefined
+
+      const nameString = (person.firstName || '') + (person.lastName || '')
+      const name = nameString.length ? nameString : undefined
+
+      const dataList = partyIdList.map(partyId => {
+
+        return {
+          email : person.userName,
+          partyId,
+          name,
+          phone,
+          personId : person.id
+
+        } as RelatedPerson
+      })
+
+      relatedPersonRawDataList.concat(dataList)
+
     })
 
-    let dataList = existingRelatedPersonList.map(x => {
-      const data = x.dataValues
-      // update the personId to existing record
-      data.personId = person.id
-      return data
+    const findOptions = {
 
-    })
+      where : relatedPersonDatabaseService.generateOrFilter(relatedPersonRawDataList, ['email', 'partyId'])
 
-    const existingRelatedPersonPartyIdList = existingRelatedPersonList.map(x => x.partyId)
-    const newRelatedPersonPartyIdList = partyIdList.filter(x => !existingRelatedPersonPartyIdList.includes(x))
+    } as IFindOptions<RelatedPerson>
 
-    const relatedPersonDataList = newRelatedPersonPartyIdList.map(partyId => {
+    const existingRelatedPersonList = await relatedPersonDatabaseService.find(findOptions, this.user, this.transaction)
 
-      return {
-        personId : person.id,
-        partyId,
-        email : person.userName,
-        name,
-        phone
+    const rawEntityMap = relatedPersonRawDataList.map(x => ({ rawData : x }))
+    const entityMap = relatedPersonDatabaseService.mergeEntityList(rawEntityMap, existingRelatedPersonList, 'rawData', 'foundEntity') as {  rawData: RelatedPerson , foundEntity: RelatedPerson}[]
 
+    // create not found case
+    const needCreateEntityList = entityMap.filter(x => !x.foundEntity).map(x => x.rawData)
+
+    const createdEntityList = await relatedPersonDatabaseService.create(needCreateEntityList, this.user, this.transaction)
+
+    // update existing case
+
+    const foundEntityMap = entityMap.filter(x => !!x.foundEntity)
+
+    const entityToUpdateMap = foundEntityMap.map( ({ rawData, foundEntity}) => {
+      const entityToUpdate =  {
+        ...foundEntity,
+        personId : rawData.personId
       } as RelatedPerson
+
+      return { rawData, foundEntity, entityToUpdate}
     })
 
-    dataList = dataList.concat(relatedPersonDataList)
+    const updatedEntityList = await relatedPersonDatabaseService.update(
+      entityToUpdateMap.map(x => (x.entityToUpdate)),
+      entityToUpdateMap.map(x => (x.foundEntity)),
+      this.user,
+      this.transaction,
+      true
+    )
 
-    // console.debug(`dataList`)
-    // console.debug(dataList)
+    const result = createRelatedPersonList.concat(updatedEntityList)
 
-    // debug
-    return null
-
-    const relatedPersonList = await (service as RelatedPersonDatabaseService).save(relatedPersonDataList, this.user, this.transaction)
     console.debug('End Excecute...', this.constructor.name)
-    return relatedPersonList
+    return result
 
   }
-}
-
-export default {
-  execute: async(
-    parameters: any,
-    eventConfig: EventConfig,
-    repo: string,
-    eventService: any,
-    allService: any,
-    user?: JwtPayload,
-    transaction?: Transaction
-  ) => {
-    const event = new InvitationCreateRelatedPersonEvent(
-      parameters,
-      eventConfig,
-      repo,
-      eventService,
-      allService,
-      user,
-      transaction
-    )
-    return await event.execute()
-  },
 }

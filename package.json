@@ -30,5 +30,8 @@
     "prepare:tslint": "ln -s ../../../swivel-backend-new/node_modules/tslint node_modules/tslint",
     "prepare:typescript": "ln -s ../../../swivel-backend-new/node_modules/typescript node_modules/typescript",
     "export": "node export"
+  },
+  "dependencies": {
+    "sequelize-typescript": "^0.6.11"
   }
 }

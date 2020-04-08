@@ -1,5 +1,5 @@
-import { BaseEvent } from 'modules/events/base-event'
-import { EventService, EventConfig } from 'modules/events/service'
+
+import { EventService, EventConfig, EventHandlerConfig, EventData } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction, Sequelize } from 'sequelize'
 import { Tracking } from 'models/main/tracking'
@@ -7,11 +7,12 @@ import { TrackingReference } from 'models/main/trackingReference'
 import { TrackingReferenceService } from 'modules/sequelize/trackingReference/service'
 import moment = require('moment')
 import BluebirdPromise = require('bluebird')
+import BaseEventHandler from 'modules/events/baseEventHandler'
 
-class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
+export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandler {
   constructor(
-    protected readonly parameters: any,
-    protected readonly eventConfig: EventConfig,
+    protected  eventDataList: EventData<any>[],
+    protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
     protected readonly allService: any,
@@ -19,7 +20,7 @@ class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
   ) {
-    super(parameters, eventConfig, repo, eventService, allService, user, transaction)
+    super(eventDataList, eventHandlerConfig, repo, eventService, allService, user, transaction)
   }
 
   public async mainFunction2(
@@ -84,7 +85,7 @@ class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
             await trackingReferenceService.query(`
               UPDATE shipment
               SET currentTrackingNo = "${data.trackingNo}"
-              WHERE ${idsQuery.join(' OR ')}
+              WHERE (${idsQuery.join(' OR ')}) AND currentTrackingNo is null
             `)
           }
         }
@@ -93,13 +94,7 @@ class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
     console.debug('Start Excecute (UpdateShipmentDateFromTrackingEvent) ...', this.constructor.name)
     return null
   }
-  public async mainFunction(
-    {
-      entityList
-    }: {
-      entityList: { originalEntity: Tracking, updatedEntity: Tracking, latestEntity: Tracking }[]
-    }
-  ) {
+  public async mainFunction(eventDataList: EventData<Tracking>[]) {
 
     const {
       TrackingReferenceService: trackingReferenceService,
@@ -109,7 +104,7 @@ class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
       // ShipmentService: ShipmentService
     } = this.allService
 
-    const trackingNoList = (entityList || []).reduce((
+    const trackingNoList = (eventDataList || []).reduce((
       trackingNos: any[],
       { originalEntity, updatedEntity, latestEntity }
     ) => {
@@ -201,27 +196,4 @@ class UpdateShipmentDateFromTrackingEvent extends BaseEvent {
 
     return undefined
   }
-}
-
-export default {
-  execute: async (
-    parameters: any,
-    eventConfig: EventConfig,
-    repo: string,
-    eventService: any,
-    allService: any,
-    user?: JwtPayload,
-    transaction?: Transaction
-  ) => {
-    const event = new UpdateShipmentDateFromTrackingEvent(
-      parameters,
-      eventConfig,
-      repo,
-      eventService,
-      allService,
-      user,
-      transaction
-    )
-    return await event.execute()
-  },
 }

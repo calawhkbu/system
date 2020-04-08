@@ -6,7 +6,6 @@ import { EdiService } from 'modules/edi/service'
 import { TrackingReference } from 'models/main/trackingReference'
 import { TrackingReferenceService } from 'modules/sequelize/trackingReference/service'
 
-
 class SendEdiEvent extends BaseEvent {
   constructor(
     protected readonly parameters: any,
@@ -49,7 +48,7 @@ class SendEdiEvent extends BaseEvent {
         for (const { id, partyGroupCode } of references) {
           if (['ECXD'].includes(partyGroupCode)) {
             const value = {
-              ...data.dataValues,
+              ...data,
               trackingReference: await trackingReferenceService.findOne(id)
             }
             console.log(value, 'EDI')

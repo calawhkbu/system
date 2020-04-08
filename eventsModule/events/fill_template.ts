@@ -1,18 +1,19 @@
-import { BaseEvent } from 'modules/events/base-event'
-import { EventService, EventConfig } from 'modules/events/service'
+
+import { EventService, EventConfig, EventHandlerConfig, EventData } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 
 import { DocumentDbService } from 'modules/sequelize/document/service'
+import BaseEventHandler from 'modules/events/baseEventHandler'
 
 // // debug
 
 // import { DocumentDbService } from '../../../../swivel-backend-new/src/modules/sequelize/document/service';
 
-class FillTemplateEvent extends BaseEvent {
+export default class FillTemplateEvent extends BaseEventHandler {
   constructor(
-    protected readonly parameters: any,
-    protected readonly eventConfig: EventConfig,
+    protected eventDataList: EventData<any>[],
+    protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
     protected readonly allService: any,
@@ -20,48 +21,30 @@ class FillTemplateEvent extends BaseEvent {
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
   ) {
-    super(parameters, eventConfig, repo, eventService, allService, user, transaction)
+    super(eventDataList, eventHandlerConfig, repo, eventService, allService, user, transaction)
   }
 
-  public async mainFunction(parameters: any) {
-    const tableName = parameters.tableName
-    const primaryKey = parameters.primaryKey
-    const fileName = parameters.fileName
-    const outputFileType = parameters.outputFileType
+  public async mainFunction(eventDataList: EventData<any>[]) {
 
-    const doucmentDbService = this.allService['DocumentDbService'] as DocumentDbService
-    const newDocument = await doucmentDbService.fillTemplate(
-      tableName,
-      primaryKey,
-      fileName,
-      outputFileType,
-      this.user,
-      this.transaction
-    )
+    const promiseList = eventDataList.map(async eventData => {
 
-    return newDocument
+      const { latestEntity, tableName, primaryKey, fileName, outputFileType } = eventData as EventData<any>
+
+      const doucmentDbService = this.allService['DocumentDbService'] as DocumentDbService
+      const newDocument = await doucmentDbService.fillTemplate(
+        tableName,
+        primaryKey,
+        fileName,
+        outputFileType,
+        this.user,
+        this.transaction
+      )
+
+      return newDocument
+
+    })
+
+    return await Promise.all(promiseList)
+
   }
-}
-
-export default {
-  execute: async(
-    parameters: any,
-    eventConfig: EventConfig,
-    repo: string,
-    eventService: any,
-    allService: any,
-    user?: JwtPayload,
-    transaction?: Transaction
-  ) => {
-    const event = new FillTemplateEvent(
-      parameters,
-      eventConfig,
-      repo,
-      eventService,
-      allService,
-      user,
-      transaction
-    )
-    return await event.execute()
-  },
 }

@@ -1,19 +1,20 @@
-import { BaseEvent } from 'modules/events/base-event'
-import { EventService, EventConfig } from 'modules/events/service'
+
+import { EventService, EventConfig, EventHandlerConfig, EventData } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 
 import { DocumentDbService } from 'modules/sequelize/document/service'
 import { Document } from 'models/main/document'
+import BaseEventHandler from 'modules/events/baseEventHandler'
 
 // debug
 // import { Document } from '../../../../swivel-backend-new/src/models/main/document';
 // import { DocumentDbService } from '../../../../swivel-backend-new/src/modules/sequelize/document/service';
 
-class UpdateDocumentPreviewEvent extends BaseEvent {
+export default class UpdateDocumentPreviewEvent extends BaseEventHandler {
   constructor(
-    protected readonly parameters: any,
-    protected readonly eventConfig: EventConfig,
+    protected  eventDataList: EventData<any>[],
+    protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
     protected readonly allService: any,
@@ -21,44 +22,27 @@ class UpdateDocumentPreviewEvent extends BaseEvent {
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
   ) {
-    super(parameters, eventConfig, repo, eventService, allService, user, transaction)
+    super(eventDataList, eventHandlerConfig, repo, eventService, allService, user, transaction)
   }
 
-  public async mainFunction(parameters: any) {
+  public async mainFunction(eventDataList: EventData<Document>[]) {
     const documentService = this.allService['DocumentDbService'] as DocumentDbService
 
-    const document = parameters.data as Document
+    const promiseList = eventDataList.map(async eventData => {
 
-    await documentService.updateDocumentPreviewImage(
-      document.tableName,
-      document.primaryKey,
-      document.fileName,
-      this.user
-    )
+      const { latestEntity } = eventData
 
-    return {}
+      await documentService.updateDocumentPreviewImage(
+        latestEntity.tableName,
+        latestEntity.primaryKey,
+        latestEntity.fileName,
+        this.user
+      )
+
+    })
+
+    await Promise.all(promiseList)
+
+    return []
   }
-}
-
-export default {
-  execute: async(
-    parameters: any,
-    eventConfig: EventConfig,
-    repo: string,
-    eventService: any,
-    allService: any,
-    user?: JwtPayload,
-    transaction?: Transaction
-  ) => {
-    const event = new UpdateDocumentPreviewEvent(
-      parameters,
-      eventConfig,
-      repo,
-      eventService,
-      allService,
-      user,
-      transaction
-    )
-    return await event.execute()
-  },
 }

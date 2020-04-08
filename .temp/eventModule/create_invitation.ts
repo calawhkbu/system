@@ -28,9 +28,6 @@ class CreateInvitationEvent extends BaseEvent {
       data
     } = parameters
     let entity = data
-    if (data.hasOwnProperty('dataValues')) {
-      entity = JSON.parse(JSON.stringify(data.dataValues))
-    }
 
     const invitationUpdatedEntity = (await invitationDbService.entityCreateInvitation(
       entity,
