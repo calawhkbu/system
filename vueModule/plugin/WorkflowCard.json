@@ -1,7 +1,0 @@
-{
-  "layout": "WorkflowCard",
-  "remote": true,
-  "axios": {
-    "url": "api/workflow/{{tableName}}/{{primaryKey}}"
-  }
-}

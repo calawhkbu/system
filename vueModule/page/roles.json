@@ -1,50 +1,123 @@
 {
-  "layout": "MainLayout",
+  "fillParent": true,
   "components": [{
     "is": "TableTool",
     "props": {
+      "title": "Roles",
+      "back": "/admin",
+      "urlFormat": "/admin/roles/{{ id }}",
       "reportingKey": "roles",
       "jql": "roles",
-      "back": "/admin",
-      "icons": [
-      ],
-      "_clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/role/{{id}}"
-        }
-      },
+      "noPartyGroupFilters": true,
+      "hasReports": false,
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
+      "noCache": true,
       "newReport": {
+        "filters": {
+          "isActive": {
+            "value": "active"
+          }
+        },
         "configurations": {
-          "i18nContext": "Reporting",
+          "i18nContext": "RolePage",
           "clickable": true,
-          "draggable": true,
           "sorting": {},
           "pagination": {
-            "remote": {},
             "current": 0,
-            "perPage": 25
+            "perPage": 20,
+            "remote": true
           }
         }
       },
-      "fieldOptions": [
-        {
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/admin/roles/detail/{{id}}"
+        }
+      },
+      "nextPageComponent": "role",
+      "icons": [{
+        "icon": "add",
+        "click": [{
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "/role/create",
+            "base": true
+          }
+        }]
+      }],
+      "filters": [{
+        "name": "isActive",
+        "type": "list",
+        "props": {
+          "items": [
+
+            {
+              "label": "active",
+              "value": "active"
+            },
+            {
+              "label": "deleted",
+              "value": "deleted"
+            }
+          ]
+
+
+        }
+      }, {
+        "name": "roleName",
+        "type": "text"
+      }],
+      "fieldOptions": [{
           "key": "id",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "role",
+            "name": "id"
+          },
           "hidden": true
         },
         {
           "key": "roleName"
         },
         {
-          "key":" roleGroup"
+          "key": "roleGroup"
         },
         {
-          "key": "filter"
+          "label": "",
+          "key": "canResetDefault",
+          "sortable": false,
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/api/role/resetDefault/{{row.id}}",
+                "method": "POST"
+              }
+            },
+            "afterActions": [{
+              "type": "notify",
+              "otherParams": {
+                "notification": "Notify.resetDefaultSuccess"
+              }
+            }]
+          },
+
+          "tdComponent": {
+            "hideIfFalse": true,
+            "is": "icon",
+            "props": {
+              "icon": "refresh"
+            }
+          },
+          "width": 50
         }
+
       ]
     }
   }]

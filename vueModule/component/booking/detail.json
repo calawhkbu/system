@@ -1,0 +1,854 @@
+{
+  "class": "grid",
+  "components": [{
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
+        "components": [{
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/{{ p[0] }}/{{ p[1] }}"
+                }
+              }]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "i18nContext": "BookingPage",
+              "i18nKey": "title",
+              "i18nOptions": {
+                "title": "{{context.$store.state.widget.data.bookingNo}}"
+              }
+            }
+          },
+          {
+            "is": "v-spacer"
+          },
+          {
+            "is": "SaveEntityTemplateButton",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true,
+              "blackList": ["id"],
+              "axiosParams": "{ \"method\" : \"POST\",\"url\" : \"/default\",\"data\" : { \"tableName\" : \"booking\" , \"name\" : {{name | safe}},\"value\" : {{value | safe }}   }   }"
+            }
+          },
+          {
+            "is": "BookmarkButton",
+            "props": {
+              "entity": "booking",
+              "small": true,
+              "flat": true,
+              "icon": true
+            }
+          },
+          {
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "map"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "map"
+                }
+              }]
+            }
+          },
+          {
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true,
+              "class": "primary white-text"
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "edit"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "edit"
+                }
+              }]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "WidgetTab",
+      "if": "return !context.$vuetify.breakpoint.mdAndUp",
+      "props": {
+        "show-arrows": true,
+        "tabComponents": [{
+            "index": "gereral",
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "BookingPage",
+                "i18nKey": "GeneralForm"
+              }
+            }],
+            "tabItemComponents": [{
+                "is": "AsyncComponent",
+                "props": {
+                  "getDate": "bookingDate",
+                  "class": "xs-12 margin-topbottom-4",
+                  "layoutName": "plugins/tracking",
+                  "loadWhenDataLoaded": true,
+                  "axiosBaseParams": [
+                    "const trackingNos = [];",
+                    "const data = context.$store.state.widget.data;",
+                    "if (data.bookingReference && data.bookingReference.length > 0) {",
+                    "for (const reference of data.bookingReference || []) {",
+                    "if ((reference.refName === 'MAWB' || reference.refName === 'MBL') && reference.refDescription){",
+                    "trackingNos.push(reference.refDescription)",
+                    "}",
+                    "}",
+                    "}",
+                    "if (data.bookingContainers && data.bookingContainers.length > 0) {",
+                    "for (const containers of data.bookingContainers) {",
+                    "if (containers.soNo){",
+                    "trackingNos.push(containers.soNo)",
+                    "}",
+                    "if (containers.containerNo){",
+                    "trackingNos.push(containers.containerNo)",
+                    "}",
+                    "}",
+                    "}",
+                    "return {",
+                    "url: 'api/swivel-tracking/get',",
+                    "method: 'POST',",
+                    "data: { trackingNos }",
+                    "};"
+                  ],
+                  "createI18nKey": "bookingReceivedByForwarder"
+                }
+              },
+              {
+                "is": "v-card",
+                "slots": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "booking/forms/generalForm"
+                  }
+                }]
+              },
+              {
+                "is": "v-card",
+                "slots": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "booking/forms/containerForm"
+                  }
+                }]
+              }
+            ]
+          },
+          {
+            "index": "partyDateAndReference",
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "BookingPage",
+                "i18nKey": "PartyAndDate"
+              }
+            }],
+            "tabItemComponents": [{
+                "is": "v-card",
+                "slots": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "booking/forms/partyForm"
+                  }
+                }]
+              },
+              {
+                "is": "v-card",
+                "slots": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "booking/forms/dateForm"
+                  }
+                }]
+              },
+              {
+                "is": "v-card",
+                "slots": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "booking/forms/referenceForm"
+                  }
+                }]
+              }
+            ]
+          },
+          {
+            "index": "alertWorkflowAndDocument",
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "Plugin",
+                "i18nKey": "alert"
+              }
+            }],
+            "tabItemComponents": [{
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-topbottom-4",
+                  "layoutName": "plugins/alert",
+                  "axiosBaseParams": [
+                    "const primaryKey = encodeURIComponent(context.$route.params.params);",
+                    "return {",
+                    "url: 'api/alert/list/history',",
+                    "method: 'POST',",
+                    "data: { tableName: 'booking', primaryKey }",
+                    "};"
+                  ],
+                  "sendMessageAxiosParams": [
+                    "const primaryKey = encodeURIComponent(context.$route.params.params);",
+                    "return {",
+                    "url: `api/alert/message/booking/${primaryKey}`,",
+                    "method: 'POST',",
+                    "data: { message: swig.message }",
+                    "};"
+                  ]
+                }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-topbottom-4",
+                  "layoutName": "plugins/document",
+                  "axiosBaseParams": [
+                    "const primaryKey = encodeURIComponent(context.$route.params.params);",
+                    "return {",
+                    "url: 'api/document/document/booking/{{primaryKey}}'.format({ primaryKey }),",
+                    "};"
+                  ],
+                  "uploadAxiosParams": [
+                    "const primaryKey = encodeURIComponent(context.$route.params.params);",
+                    "return {",
+                    "method: 'POST',",
+                    "url: 'api/document/document/upload',",
+                    "data: {",
+                    "tableName: 'booking', primaryKey,",
+                    "fileName: swig.fileName,",
+                    "fileData: { base64String: swig.base64String, extension: swig.extension }",
+                    "}",
+                    "};"
+                  ],
+                  "downloadAxiosParams": [
+                    "const primaryKey = encodeURIComponent(context.$route.params.params);",
+                    "return {",
+                    "responseType: 'blob',",
+                    "method: 'POST',",
+                    "url: 'api/document/document/download',",
+                    "data: {tableName: 'booking', primaryKey, fileName: swig.fileName}",
+                    "}"
+                  ],
+                  "deleteAxiosParams": [
+                    "const primaryKey = encodeURIComponent(context.$route.params.params);",
+                    "return {",
+                    "method: 'POST',",
+                    "url: 'api/document/document/delete',",
+                    "data: {tableName: 'booking', primaryKey, fileName: swig.fileName}",
+                    "}"
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "is": "div",
+      "if": "return context.$vuetify.breakpoint.mdAndUp",
+      "props": {
+        "class": "xs-12 md-8 padding-left-8 padding-right-8"
+      },
+      "slots": [{
+          "is": "DynamicComponent",
+          "props": {
+            "layout": "v-card",
+            "class": "margin-topbottom-8",
+            "components": [{
+              "is": "MouseHidden",
+              "slots": [{
+                  "name": "hidden",
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "flex max-height-0",
+                    "components": [{
+                        "is": "v-spacer"
+                      },
+                      {
+                        "is": "v-btn",
+                        "props": {
+                          "small": true,
+                          "fab": true,
+                          "color": "primary",
+                          "class": "no-margin zindex-10 no-padding margin-right-4 margin-top-4"
+                        },
+                        "slots": [{
+                          "is": "Icon",
+                          "props": {
+                            "icon": "edit"
+                          }
+                        }],
+                        "events": {
+                          "click.stop": [{
+                            "type": "dispatch",
+                            "otherParams": {
+                              "name": "widget/changeMode",
+                              "mode": "edit"
+                            },
+                            "afterActions": [{
+                              "type": "dispatch",
+                              "otherParams": {
+                                "name": "widget/updateComponentSetting",
+                                "value": {
+                                  "stepper": 0
+                                }
+                              }
+                            }]
+                          }]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "components": [{
+                        "is": "v-card-title",
+                        "props": {
+                          "primary-title": true,
+                          "class": "padding-4 min-height-48 bold uppercase"
+                        },
+                        "slots": [{
+                          "is": "I18nText",
+                          "props": {
+                            "i18nContext": "BookingPage",
+                            "i18nKey": "GeneralForm"
+                          }
+                        }]
+                      },
+                      {
+                        "is": "v-divider"
+                      },
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/forms/generalForm"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }]
+          }
+        },
+        {
+          "is": "DynamicComponent",
+          "props": {
+            "class": "grid margin-topbottom-8",
+            "components": [{
+                "is": "div",
+                "props": {
+                  "class": "xs-12 md-6 padding-right-4 margin-topbottom-8"
+                },
+                "slots": [{
+                  "is": "DynamicComponent",
+                  "props": {
+                    "layout": "v-card",
+                    "components": [{
+                      "is": "MouseHidden",
+                      "slots": [{
+                          "name": "hidden",
+                          "is": "DynamicComponent",
+                          "props": {
+                            "class": "flex max-height-0",
+                            "components": [{
+                                "is": "v-spacer"
+                              },
+                              {
+                                "is": "v-btn",
+                                "props": {
+                                  "small": true,
+                                  "fab": true,
+                                  "color": "primary",
+                                  "class": "no-margin zindex-10 no-padding margin-right-4 margin-top-4"
+                                },
+                                "slots": [{
+                                  "is": "Icon",
+                                  "props": {
+                                    "icon": "edit"
+                                  }
+                                }],
+                                "events": {
+                                  "click.stop": [{
+                                    "type": "dispatch",
+                                    "otherParams": {
+                                      "name": "widget/changeMode",
+                                      "mode": "edit"
+                                    },
+                                    "afterActions": [{
+                                      "type": "dispatch",
+                                      "otherParams": {
+                                        "name": "widget/updateComponentSetting",
+                                        "value": {
+                                          "stepper": 1
+                                        }
+                                      }
+                                    }]
+                                  }]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "is": "DynamicComponent",
+                          "props": {
+                            "components": [{
+                                "is": "v-card-title",
+                                "props": {
+                                  "primary-title": true,
+                                  "class": "padding-4 min-height-48 bold uppercase"
+                                },
+                                "slots": [{
+                                  "is": "I18nText",
+                                  "props": {
+                                    "i18nContext": "BookingPage",
+                                    "i18nKey": "PartyForm"
+                                  }
+                                }]
+                              },
+                              {
+                                "is": "v-divider"
+                              },
+                              {
+                                "is": "AsyncComponent",
+                                "props": {
+                                  "layoutName": "booking/forms/partyForm"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }]
+                  }
+                }]
+              },
+              {
+                "is": "div",
+                "props": {
+                  "class": "xs-12 md-6 padding-left-4 margin-topbottom-8"
+                },
+                "slots": [{
+                  "is": "DynamicComponent",
+                  "props": {
+                    "layout": "v-card",
+                    "components": [{
+                      "is": "MouseHidden",
+                      "slots": [{
+                          "name": "hidden",
+                          "is": "DynamicComponent",
+                          "props": {
+                            "class": "flex max-height-0",
+                            "components": [{
+                                "is": "v-spacer"
+                              },
+                              {
+                                "is": "v-btn",
+                                "props": {
+                                  "small": true,
+                                  "fab": true,
+                                  "color": "primary",
+                                  "class": "no-margin zindex-10 no-padding margin-right-4 margin-top-4"
+                                },
+                                "slots": [{
+                                  "is": "Icon",
+                                  "props": {
+                                    "icon": "edit"
+                                  }
+                                }],
+                                "events": {
+                                  "click.stop": [{
+                                    "type": "dispatch",
+                                    "otherParams": {
+                                      "name": "widget/changeMode",
+                                      "mode": "edit"
+                                    },
+                                    "afterActions": [{
+                                      "type": "dispatch",
+                                      "otherParams": {
+                                        "name": "widget/updateComponentSetting",
+                                        "value": {
+                                          "stepper": 2
+                                        }
+                                      }
+                                    }]
+                                  }]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "is": "DynamicComponent",
+                          "props": {
+                            "components": [{
+                                "is": "v-card-title",
+                                "props": {
+                                  "primary-title": true,
+                                  "class": "padding-4 min-height-48 bold uppercase"
+                                },
+                                "slots": [{
+                                  "is": "I18nText",
+                                  "props": {
+                                    "i18nContext": "BookingPage",
+                                    "i18nKey": "DateForm"
+                                  }
+                                }]
+                              },
+                              {
+                                "is": "v-divider"
+                              },
+                              {
+                                "is": "AsyncComponent",
+                                "props": {
+                                  "layoutName": "booking/forms/dateForm"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }]
+                  }
+                }]
+              }
+            ]
+          }
+        },
+        {
+          "is": "DynamicComponent",
+          "props": {
+            "layout": "v-card",
+            "class": "xs-12 margin-topbottom-8",
+            "components": [{
+              "is": "MouseHidden",
+              "slots": [{
+                  "name": "hidden",
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "flex max-height-0",
+                    "components": [{
+                        "is": "v-spacer"
+                      },
+                      {
+                        "is": "v-btn",
+                        "props": {
+                          "small": true,
+                          "fab": true,
+                          "color": "primary",
+                          "class": "no-margin zindex-10 no-padding margin-right-4 margin-top-4"
+                        },
+                        "slots": [{
+                          "is": "Icon",
+                          "props": {
+                            "icon": "edit"
+                          }
+                        }],
+                        "events": {
+                          "click.stop": [{
+                            "type": "dispatch",
+                            "otherParams": {
+                              "name": "widget/changeMode",
+                              "mode": "edit"
+                            },
+                            "afterActions": [{
+                              "type": "dispatch",
+                              "otherParams": {
+                                "name": "widget/updateComponentSetting",
+                                "value": {
+                                  "stepper": 3
+                                }
+                              }
+                            }]
+                          }]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "components": [{
+                        "is": "v-card-title",
+                        "props": {
+                          "primary-title": true,
+                          "class": "padding-4 min-height-48 bold uppercase"
+                        },
+                        "slots": [{
+                          "is": "I18nText",
+                          "props": {
+                            "i18nContext": "BookingPage",
+                            "i18nKey": "ContainerForm"
+                          }
+                        }]
+                      },
+                      {
+                        "is": "v-divider"
+                      },
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/forms/containerForm"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }]
+          }
+        },
+        {
+          "is": "DynamicComponent",
+          "props": {
+            "layout": "v-card",
+            "class": "xs-12 margin-topbottom-8",
+            "components": [{
+              "is": "MouseHidden",
+              "slots": [{
+                  "name": "hidden",
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "flex max-height-0",
+                    "components": [{
+                        "is": "v-spacer"
+                      },
+                      {
+                        "is": "v-btn",
+                        "props": {
+                          "small": true,
+                          "fab": true,
+                          "color": "primary",
+                          "class": "no-margin zindex-10 no-padding margin-right-4 margin-top-4"
+                        },
+                        "slots": [{
+                          "is": "Icon",
+                          "props": {
+                            "icon": "edit"
+                          }
+                        }],
+                        "events": {
+                          "click.stop": [{
+                            "type": "dispatch",
+                            "otherParams": {
+                              "name": "widget/changeMode",
+                              "mode": "edit"
+                            },
+                            "afterActions": [{
+                              "type": "dispatch",
+                              "otherParams": {
+                                "name": "widget/updateComponentSetting",
+                                "value": {
+                                  "stepper": 4
+                                }
+                              }
+                            }]
+                          }]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "components": [{
+                        "is": "v-card-title",
+                        "props": {
+                          "primary-title": true,
+                          "class": "padding-4 min-height-48 bold uppercase"
+                        },
+                        "slots": [{
+                          "is": "I18nText",
+                          "props": {
+                            "i18nContext": "BookingPage",
+                            "i18nKey": "Reference"
+                          }
+                        }]
+                      },
+                      {
+                        "is": "v-divider"
+                      },
+                      {
+                        "is": "AsyncComponent",
+                        "props": {
+                          "layoutName": "booking/forms/referenceForm"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }]
+          }
+        }
+      ]
+    },
+    {
+      "is": "div",
+      "if": "return context.$vuetify.breakpoint.mdAndUp",
+      "props": {
+        "class": "xs-12 md-4 padding-8"
+      },
+      "slots": [{
+          "is": "AsyncComponent",
+          "props": {
+            "getDate": "bookingDate",
+            "class": "xs-12 margin-topbottom-4",
+            "layoutName": "plugins/tracking",
+            "loadWhenDataLoaded": true,
+            "axiosBaseParams": [
+              "const trackingNos = [];",
+              "const data = context.$store.state.widget.data;",
+              "if (data.bookingReference && data.bookingReference.length > 0) {",
+              "for (const reference of data.bookingReference || []) {",
+              "if ((reference.refName === 'MAWB' || reference.refName === 'MBL') && reference.refDescription){",
+              "trackingNos.push(reference.refDescription)",
+              "}",
+              "}",
+              "}",
+              "if (data.bookingContainers && data.bookingContainers.length > 0) {",
+              "for (const containers of data.bookingContainers) {",
+              "if (containers.soNo){",
+              "trackingNos.push(containers.soNo)",
+              "}",
+              "if (containers.containerNo){",
+              "trackingNos.push(containers.containerNo)",
+              "}",
+              "}",
+              "}",
+              "return {",
+              "url: 'api/swivel-tracking/get',",
+              "method: 'POST',",
+              "data: { trackingNos }",
+              "};"
+            ],
+            "createI18nKey": "bookingReceivedByForwarder"
+          }
+        },
+        {
+          "is": "AsyncComponent",
+          "props": {
+            "class": "xs-12 margin-topbottom-4",
+            "layoutName": "plugins/alert",
+            "axiosBaseParams": [
+              "const primaryKey = encodeURIComponent(context.$route.params.params);",
+              "return {",
+              "url: 'api/alert/list/history',",
+              "method: 'POST',",
+              "data: { tableName: 'booking', primaryKey }",
+              "};"
+            ],
+            "sendMessageAxiosParams": [
+              "const primaryKey = encodeURIComponent(context.$route.params.params);",
+              "return {",
+              "url: `api/alert/message/booking/${primaryKey}`,",
+              "method: 'POST',",
+              "data: { message: swig.message }",
+              "};"
+            ]
+          }
+        },
+        {
+          "is": "AsyncComponent",
+          "props": {
+            "class": "xs-12 margin-topbottom-4",
+            "layoutName": "plugins/document",
+            "axiosBaseParams": [
+              "const primaryKey = encodeURIComponent(context.$route.params.params);",
+              "return {",
+              "url: 'api/document/document/booking/{{primaryKey}}'.format({ primaryKey }),",
+              "};"
+            ],
+            "uploadAxiosParams": [
+              "const primaryKey = encodeURIComponent(context.$route.params.params);",
+              "return {",
+              "method: 'POST',",
+              "url: 'api/document/document/upload',",
+              "data: {",
+              "tableName: 'booking', primaryKey,",
+              "fileName: swig.fileName,",
+              "fileData: { base64String: swig.base64String, extension: swig.extension }",
+              "}",
+              "};"
+            ],
+            "downloadAxiosParams": [
+              "const primaryKey = encodeURIComponent(context.$route.params.params);",
+              "return {",
+              "responseType: 'blob',",
+              "method: 'POST',",
+              "url: 'api/document/document/download',",
+              "data: {tableName: 'booking', primaryKey, fileName: swig.fileName}",
+              "}"
+            ],
+            "deleteAxiosParams": [
+              "const primaryKey = encodeURIComponent(context.$route.params.params);",
+              "return {",
+              "method: 'POST',",
+              "url: 'api/document/document/delete',",
+              "data: {tableName: 'booking', primaryKey, fileName: swig.fileName}",
+              "}"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

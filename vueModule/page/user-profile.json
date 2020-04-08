@@ -1,5 +1,4 @@
 {
-  "layout": "MainLayout",
   "components": [
     {
       "is": "DynamicComponent",
@@ -30,21 +29,54 @@
       }
     },
     {
-      "is": "AsyncComponent",
+      "is": "DynamicComponent",
       "props": {
-        "layoutName": "user-profile/basic-information"
-      }
-    },
-    {
-      "is": "AsyncComponent",
-      "props": {
-        "layoutName": "user-profile/user-preferences"
-      }
-    },
-    {
-      "is": "AsyncComponent",
-      "props": {
-        "layoutName": "user-profile/notification-preferences"
+        "class": "grid",
+        "components": [
+          {
+            "is": "DynamicComponent",
+            "props": {
+              "class": "xs-12 md-5",
+              "style": {
+                "padding": "4px"
+              },
+              "components": [
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "user-profile/basic-information"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "DynamicComponent",
+            "props": {
+              "class": "xs-12 md-7",
+              "style": {
+                "padding": "4px"
+              },
+              "components": [
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "user-profile/user-preferences",
+                    "style": {
+                      "margin-bottom": "8px"
+                    }
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "user-profile/notification-preferences"
+                  }
+                }
+              ]
+            }
+          }
+        ]
       }
     }
   ],

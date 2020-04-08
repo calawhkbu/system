@@ -1,0 +1,63 @@
+{
+  "layout": "v-card",
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [{
+          "label": "CardAccessPage.cardId",
+          "name": "cardId",
+          "class": "xs-12",
+          "component": "AsyncAutoSuggest",
+          "props": {
+            "searchValueParams": {
+              "method": "GET",
+              "url": "card/query/card",
+              "data": {
+                "subqueries": {
+                  "uuid": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
+                }
+              }
+            },
+            "searchTextParams": {
+              "method": "POST",
+              "url": "card/query/card",
+              "data": {
+                "subqueries": {
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "name",
+            "item-value": "uuid"
+          }
+        },
+
+        {
+          "label": "CardAccessPage.disabled",
+          "name": "disabled",
+          "component": "BooleanField",
+          "class": "xs-3"
+        },
+
+        {
+          "label": "CardAccessPage.partyGroupSpecific",
+          "name": "partyGroupSpecific",
+          "component": "BooleanField",
+          "class": "xs-3"
+        },
+        {
+          "label": "CardAccessPage.partyGroupCode",
+          "name": "partyGroupCode",
+          "component": "v-text-field",
+          "class": "xs-6"
+        }
+
+      ]
+    }
+  }]
+}

@@ -1,0 +1,171 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "SimpleTableTool",
+    "props": {
+      "reportingKey": "related-persons",
+      "jql": "related-persons",
+      "reportUrl": "relationship/report/persons/{{ context.detailPageParams }}",
+      "back": "/parties",
+      "noPartyGroupFilters": true,
+      "showFilterBar": true,
+      "nextPageKey": "routeParams",
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/{{ id }}",
+          "base": true
+        }
+      },
+      "newReport": {
+        "filters": {
+          "isActive": true,
+          "id": 1
+        },
+        "configurations": {
+          "i18nContext": "Reporting",
+          "sorting": {},
+          "pagination": {
+            "current": 0,
+            "perPage": 20
+          }
+        }
+      },
+      "filters": [
+        {
+          "name": "name",
+          "type": "text"
+        }
+      ],
+      "fieldOptions": [
+        {
+          "key": "id",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "related_person",
+            "name": "id"
+          },
+          "hidden": true
+        },
+        {
+          "key": "personId",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "related_person",
+            "name": "personId"
+          },
+          "hidden": true
+        },
+        {
+          "key": "name",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "related_person",
+            "name": "name"
+          },
+          "width": 200
+        },
+        {
+          "key": "email",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "related_person",
+            "name": "email"
+          },
+          "width": 300
+        },
+        {
+          "key": "phone",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "related_person",
+            "name": "phone"
+          }
+        },
+        {
+          "key": "showResend",
+          "label": "",
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "TODO",
+                "method": "POST"
+              }
+            }
+          },
+          "tdComponent": {
+            "is": "icon",
+            "props": {
+              "icon": "email"
+            }
+          },
+          "width": 60
+        },
+        {
+          "key": "showDelete",
+          "label": "",
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/relationship/person/{{row.id}}",
+                "method": "DELETE"
+              }
+            },
+            "afterActions": [
+              {
+                "type": "emit",
+                "otherParams": {
+                  "name": "refresh",
+                  "params": [true]
+                }
+              }
+            ]
+          },
+          "tdComponent": {
+            "is": "icon",
+            "props": {
+              "icon": "block"
+            }
+          },
+          "width": 60
+        }
+      ]
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "/create",
+                "base": true
+              }
+            }]
+          }
+        }]
+      }
+    }]
+  }]
+}

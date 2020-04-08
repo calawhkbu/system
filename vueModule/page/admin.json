@@ -1,16 +1,14 @@
 {
-  "layout": "MainLayout",
-  "createdFunctions": [
-    {
-      "type": "dispatch",
-      "otherParams": {
-        "name": "auth/getMenu"
-      }
-    }
-  ],
   "components": [
     {
-      "is": "AdminPage"
+      "is": "SimpleGridTool",
+      "props": {
+        "reportingKey": "admin",
+        "i18nContext": "AdminPage",
+        "nextPageKey": "reportIdParams",
+        "reportUrl": "report/admin",
+        "noAnimation": true
+      }
     }
   ]
 }

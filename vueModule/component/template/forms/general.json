@@ -1,0 +1,62 @@
+{
+  "components": [{
+      "is": "WidgetForm",
+      "props": {
+        "fields": [{
+            "label": "TemplatePage.templateName",
+            "name": "templateName",
+            "component": "v-text-field",
+            "class": "xs-12",
+            "canEdit": "return mode === 'create' "
+          },
+          {
+            "label": "TemplatePage.format",
+            "name": "format",
+            "component": "JsonField",
+            "class": "xs-12"
+          }
+        ]
+      }
+    },
+    {
+      "is": "UploadDownloadButton",
+      "props": {
+
+
+
+        "uploadParams": {
+
+          "allowFileType" : {
+            "url" : "/api/template/get/allowFileType",
+            "method" : "GET"
+          },
+
+    
+          "axiosParams": {
+            "method": "POST",
+            "url": "/api/template/upload",
+            "data": {
+              "templateName": "{{context.$store.state.widget.data.templateName}}",
+              "fileData" : {
+                "base64String": "{{base64String}}",
+                "extension": "{{extension}}"
+              }
+            }
+          }
+        },
+        "downloadParams": {
+          "fileName": "{{context.$store.state.widget.data.templateName}}",
+          "extension": "{{context.$store.state.widget.data.extension}}",
+          "axiosParams": {
+            "responseType": "blob",
+            "method": "POST",
+            "url": "/api/template/download",
+            "data": {
+              "templateName": "{{context.$store.state.widget.data.templateName}}"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

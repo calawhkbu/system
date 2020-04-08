@@ -1,48 +1,173 @@
 {
-  "layout": "MainLayout",
+  "fillParent": true,
   "components": [{
     "is": "TableTool",
     "props": {
-      "reportingKey": "connections",
+      "title": "Relationship",
+      "reportingKey": "parties",
       "jql": "parties",
+      "hasReports": false,
       "showFilterBar": true,
       "enableShare": false,
       "enableSetting": false,
+      "noPartyGroupFilters": true,
+      "noCache": true,
+      "nextPageKey": "reportIdParams",
       "newReport": {
-        "filter": {
-          "isActive": true
+        "filters": {
+          "isActive": {
+            "value": "active"
+          },
+          "parties": true,
+          "contacts": true,
+          "showInfo": true
         },
         "configurations": {
-          "i18nContext": "Reporting",
-          "clickable": true,
-          "draggable": true,
-          "sorting": {},
+          "i18nContext": "PartyPage",
+          "sorting": {
+            "direction": "DESC",
+            "key": "updatedAt",
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "party",
+              "name": "name"
+            }
+          },
           "pagination": {
-            "remote": {},
+            "remote": true,
             "current": 0,
-            "perPage": 25
+            "perPage": 20
           }
         }
       },
-      "filters": [
-        {
-          "name": "name",
-          "type": "text"
+      "filters": [{
+        "name": "isActive",
+        "type": "list",
+        "props": {
+          "items": [{
+              "label": "active",
+              "value": "active"
+            },
+            {
+              "label": "deleted",
+              "value": "deleted"
+            }
+          ]
         }
-      ],
-      "fieldOptions": [
-        {
+      }, {
+        "name": "shortName",
+        "type": "text",
+        "i18nContext": "PartyPage"
+      }, {
+        "name": "name",
+        "type": "text",
+        "i18nContext": "PartyPage"
+      }, {
+        "name": "groupName",
+        "type": "text",
+        "i18nContext": "PartyPage"
+      }],
+      "fieldOptions": [{
           "key": "id",
-          "sql": "pa.id"
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "party",
+            "name": "id"
+          },
+          "hidden": true
+        },
+        {
+          "key": "name",
+          "width": 300
+        },
+        {
+          "key": "shortName",
+          "width": 150
+        },
+        {
+          "key": "groupName",
+          "width": 150
+        },
+        {
+          "key": "partyTypes",
+          "width": 200
+        },
+        {
+          "key": "parties",
+          "clickFunction": {
+            "type": "router",
+            "otherParams": {
+              "func": "push",
+              "path": "relatedParties/{{ row.id }}",
+              "base": true
+            }
+          },
+          "width": 80
+        },
+        {
+          "hidden": true,
+          "key": "contacts",
+          "clickFunction": {
+            "type": "router",
+            "otherParams": {
+              "func": "push",
+              "path": "relatedPersons/{{ row.id }}",
+              "base": true
+            }
+          },
+          "width": 80
+        },
+        {
+          "key": "showInfo",
+          "label": "",
+          "tdComponent": {
+            "is": "icon",
+            "props": {
+              "icon": "edit"
+            }
+          },
+          "clickFunction": {
+            "type": "router",
+            "otherParams": {
+              "func": "push",
+              "path": "party/detail/{{ row.id }}",
+              "base": true
+            }
+          },
+          "width": 60
         }
-      ],
-      "_clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "/party/{{id}}"
-        }
+      ]
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "party/create/create",
+                "base": true
+              }
+            }]
+          }
+        }]
       }
-    }
+    }]
   }]
 }

@@ -1,24 +1,167 @@
 import { QueryDef } from 'classes/query/QueryDef'
-import { Query, TableOrSubquery, LikeExpression, ColumnExpression, InExpression, BinaryExpression, IsNullExpression } from 'node-jql'
+import {
+  Query,
+  FromTable,
+  RegexpExpression,
+  ColumnExpression,
+  InExpression,
+  BinaryExpression,
+  IsNullExpression,
+  Unknown,
+  AndExpressions,
+  Value,
+  FunctionExpression,
+  OrExpressions,
+  ExistsExpression,
+} from 'node-jql'
 
-const query = new QueryDef(new Query({
-  $from: new TableOrSubquery(['role', 'r'])
-}))
+const query = new QueryDef(
+  new Query({
+    $from : new FromTable({
+      table : 'role'
+    }),
 
-query.register('id', new Query({
-  $where: new BinaryExpression({ left: new ColumnExpression(['r', 'id']), operator: '=' })
-})).register('value', 0)
+    $where : new OrExpressions([
 
-query.register('partyGroupCode', new Query({
-  $where: new BinaryExpression({ left: new ColumnExpression(['r', 'partyGroupCode']), operator: '=' })
-})).register('value', 0)
+      new IsNullExpression(new ColumnExpression('role', 'partyGroupCode'), true),
 
-query.register('name', new Query({
-  $where: new LikeExpression({ left: new ColumnExpression(['r', 'roleName']), operator: 'REGEXP' })
-})).register('value', 0)
+      new AndExpressions([
+        new IsNullExpression(new ColumnExpression('role', 'partyGroupCode'), false),
+        new ExistsExpression(new Query({
 
-query.register('group', new Query({
-  $where: new InExpression({ left: new ColumnExpression(['r', 'roleGroup']) })
-})).register('value', 0)
+          $from : new FromTable({
+            table : 'role',
+            $as : 'b'
+          }),
+          $where : [
+            new BinaryExpression(new ColumnExpression('b', 'roleGroup'), '=', new ColumnExpression('role', 'roleGroup')),
+            new BinaryExpression(new ColumnExpression('b', 'roleName'), '=', new ColumnExpression('role', 'roleName')),
+            new IsNullExpression(new ColumnExpression('b', 'partyGroupCode'), true)
+          ]
+
+        }), true)
+
+      ])
+    ])
+
+  })
+)
+
+query.register('canResetDefault',
+{
+  expression : new FunctionExpression(
+    'IF',
+    new IsNullExpression(new ColumnExpression('role', 'partyGroupCode'), true),
+    1, 0
+  ),
+
+  $as: 'canResetDefault'
+})
+
+// ----------------- filter stuff
+query
+  .register(
+    'id',
+    new Query({
+      $where: new BinaryExpression(new ColumnExpression('role', 'id'), '='),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
+    'partyGroupCode',
+    new Query({
+      $where: new BinaryExpression(new ColumnExpression('role', 'partyGroupCode'), '='),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
+    'name',
+    new Query({
+      $where: new RegexpExpression(new ColumnExpression('role', 'roleName'), false),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
+    'group',
+    new Query({
+      $where: new InExpression(new ColumnExpression('role', 'roleGroup'), null),
+    })
+  )
+  .register('value', 0)
+
+query.register(
+  'q',
+  new Query({
+    $where: new OrExpressions([
+      new RegexpExpression(new ColumnExpression('role', 'roleName'), false),
+    ])
+  })
+)
+  .register('value', 0)
+
+query
+  .register(
+    'shareable',
+    new Query({
+      $where: new BinaryExpression(new ColumnExpression('role', 'shareable'), '='),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
+    'hidden',
+    new Query({
+      $where: new BinaryExpression(new ColumnExpression('role', 'hidden'), '='),
+    })
+  )
+  .register('value', 0)
+
+query
+  .register(
+    'canMultiSelect',
+    new Query({
+      $where: new BinaryExpression(new ColumnExpression('role', 'canMultiSelect'), '='),
+    })
+  )
+  .register('value', 0)
+
+      // will have 2 options, active and deleted
+  // isActive
+  const isActiveConditionExpression = new AndExpressions([
+    new IsNullExpression(new ColumnExpression('role', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('role', 'deletedBy'), false),
+  ])
+
+  query.registerBoth('isActive', isActiveConditionExpression)
+
+  query.registerQuery('isActive', new Query({
+
+    $where : new OrExpressions([
+
+      new AndExpressions([
+
+        new BinaryExpression(new Value('active'), '=', new Unknown('string')),
+        // active case
+        isActiveConditionExpression
+      ]),
+
+      new AndExpressions([
+        new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
+        // deleted case
+        new BinaryExpression(isActiveConditionExpression, '=', false)
+      ])
+
+    ])
+
+  }))
+  .register('value', 0)
+  .register('value', 1)
 
 export default query

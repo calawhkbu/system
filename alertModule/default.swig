@@ -5,14 +5,10 @@
     "tableName": "booking",
     "templatePath": "message/booking-message",
     "severity": "medium",
+    "variableList": [],
 
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
-    "extraContactPersonSql": {
-      "where": {
-        "userName": "marco.lor@swivelsoftware.com"
-      }
-    },
 
     "active": true
   },
@@ -23,16 +19,94 @@
     "tableName": "shipment",
     "templatePath": "message/shipment-message",
     "severity": "medium",
+    "variableList": [],
 
-    "contactRoleList": ["forwarder", "shipper", "consignee"],
+    "contactRoleList": [],
 
-    "extraContactPersonSql": {
-      "where": {
-        "userName": "marco.lor@swivelsoftware.com"
-      }
-    },
 
     "active": true
+  },
+
+
+  {
+    "alertCategory": "Notification",
+    "alertType": "newBooking",
+    "tableName": "booking",
+    "templatePath": "message/new-booking-preview",
+    "severity": "medium",
+    "resend": true,
+    "variableList" : "all",
+
+    "contactRoleList": "all",
+
+    "active": true
+  },
+
+  {
+    "alertCategory": "Exception",
+    "alertType": "bookingEtaChanged",
+    "tableName": "booking",
+    "templatePath": "alert/booking-alert",
+
+    "severity": "medium",
+
+    "variableList": [],
+
+    "contactRoleList": [],
+
+    "extraContactPersonSql": null,
+
+    "active": false
+  },
+
+  {
+    "alertCategory": "Exception",
+    "alertType": "bookingEtdChanged",
+    "tableName": "booking",
+    "templatePath": "alert/booking-alert",
+
+    "severity": "medium",
+
+    "variableList": [],
+    "contactRoleList": ["shipper", "forwarder"],
+
+    "extraContactPersonSql": null,
+
+    "active": false
+  },
+
+  {
+    "alertCategory": "Exception",
+    "alertType": "bookingAtaChanged",
+    "tableName": "booking",
+    "templatePath": "alert/booking-alert",
+
+    "severity": "medium",
+
+    "variableList": [],
+
+    "contactRoleList": ["shipper", "forwarder"],
+
+    "extraContactPersonSql": null,
+
+    "active": false
+  },
+
+  {
+    "alertCategory": "Exception",
+    "alertType": "bookingAtdChanged",
+    "tableName": "booking",
+    "templatePath": "alert/booking-alert",
+
+    "severity": "medium",
+
+    "variableList": [],
+
+    "contactRoleList": ["shipper", "forwarder"],
+
+    "extraContactPersonSql": null,
+
+    "active": false
   },
 
   {
@@ -42,7 +116,9 @@
 
     "severity": "medium",
 
-    "contactRoleList": ["shipper","forwarder"],
+    "variableList": [],
+
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 
@@ -56,9 +132,43 @@
 
     "severity": "medium",
 
-    "contactRoleList": ["shipper","forwarder"],
+    "variableList": [],
+
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
+
+    "active": false
+  },
+
+
+  {
+    "alertCategory": "Exception",
+    "alertType": "shipmentAtaChanged",
+    "tableName" : "shipment",
+    "templatePath": "alert/shipment-alert",
+
+    "severity": "medium",
+    "contactRoleList": [],
+
+    "variableList": [],
+    "extraContactPersonSql": null,
+
+    "active": false
+  },
+
+  {
+    "alertCategory": "Exception",
+    "alertType": "shipmentAtdChanged",
+    "tableName" : "shipment",
+
+    "templatePath": "alert/shipment-alert",
+    "severity": "medium",
+    "contactRoleList": [],
+
+    "extraContactPersonSql": null,
+
+    "variableList": [],
 
     "active": false
   },
@@ -86,25 +196,24 @@
               "name": "b.departureDateEstimated"
             },
             "start": {
-                "classname" : "FunctionExpression",
-                "name" : "NOW"
+              "classname": "FunctionExpression",
+              "name": "NOW"
             },
             "end": {
-                "classname" : "FunctionExpression",
-                "name" : "DATE_ADD",
-                "parameters" : [
-                    {
-                        "classname" : "FunctionExpression",
-                        "name" : "NOW"
-                    },
-                    {
-                        "classname" : "ParameterExpression",
-                        "prefix" : "INTERVAL",
-                        "expression": 7,
-                        "suffix": "DAY"
-                    }
-
-                ]
+              "classname": "FunctionExpression",
+              "name": "DATE_ADD",
+              "parameters": [
+                {
+                  "classname": "FunctionExpression",
+                  "name": "NOW"
+                },
+                {
+                  "classname": "ParameterExpression",
+                  "prefix": "INTERVAL",
+                  "expression": 7,
+                  "suffix": "DAY"
+                }
+              ]
             }
           }
         ]
@@ -113,7 +222,10 @@
 
     "alertCategory": "Exception",
     "alertType": "lateShip",
-    "templatePath": "alert/shipment-alert",
+
+    "variableList": ["shipperPartyCode"],
+
+    "templatePath": "alert/booking-alert",
 
     "severity": "medium",
 
@@ -125,7 +237,7 @@
       }
     },
 
-    "active": true
+    "active": false
   },
 
   {
@@ -135,7 +247,8 @@
 
     "severity": "medium",
 
-    "contactRoleList": ["shipper","forwarder"],
+    "variableList": [],
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 
@@ -149,7 +262,8 @@
 
     "severity": "medium",
 
-    "contactRoleList": ["shipper","forwarder"],
+    "variableList": [],
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 
@@ -161,9 +275,10 @@
     "alertType": "MblMissing",
     "templatePath": "alert/shipment-alert",
 
+    "variableList": [],
     "severity": "medium",
 
-    "contactRoleList": ["shipper","forwarder"],
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 
@@ -177,20 +292,24 @@
 
     "severity": "medium",
 
-    "contactRoleList": ["shipper","forwarder"],
+    "variableList": [],
+    "contactRoleList": ["shipper", "forwarder"],
 
     "extraContactPersonSql": null,
 
     "active": false
   },
 
+
+
   {
     "alertCategory": "Exception",
-    "alertType": "arrivalDelayed(AIR)",
-    "tableName": "shipment",
-    "templatePath": "message/shipment-alert",
+    "alertType": "bookingArrivalDelayed(AIR)",
+    "tableName": "booking",
+    "templatePath": "message/booking-alert",
     "severity": "medium",
 
+    "variableList": [],
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
     "extraContactPersonSql": null,
@@ -199,11 +318,12 @@
   },
   {
     "alertCategory": "Exception",
-    "alertType": "arrivalDelayed(SEA)",
-    "tableName": "shipment",
-    "templatePath": "message/shipment-alert",
+    "alertType": "bookingArrivalDelayed(SEA)",
+    "tableName": "booking",
+    "templatePath": "message/booking-alert",
     "severity": "medium",
 
+    "variableList": [],
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
     "extraContactPersonSql": null,
@@ -212,11 +332,12 @@
   },
   {
     "alertCategory": "Exception",
-    "alertType": "departureDelayed(AIR)",
-    "tableName": "shipment",
-    "templatePath": "message/shipment-alert",
+    "alertType": "bookingDepartureDelayed(AIR)",
+    "tableName": "booking",
+    "templatePath": "message/booking-alert",
     "severity": "medium",
 
+    "variableList": [],
     "contactRoleList": ["forwarder", "shipper", "consignee"],
 
     "extraContactPersonSql": null,
@@ -225,12 +346,70 @@
   },
   {
     "alertCategory": "Exception",
-    "alertType": "departureDelayed(SEA)",
+    "alertType": "bookingDepartureDelayed(SEA)",
+    "tableName": "booking",
+    "templatePath": "message/booking-alert",
+    "severity": "medium",
+
+    "contactRoleList": ["forwarder", "shipper", "consignee"],
+
+    "variableList": [],
+    "extraContactPersonSql": null,
+
+    "active": false
+  },
+
+  {
+    "alertCategory": "Exception",
+    "alertType": "shipmentArrivalDelayed(AIR)",
     "tableName": "shipment",
     "templatePath": "message/shipment-alert",
     "severity": "medium",
 
-    "contactRoleList": ["forwarder", "shipper", "consignee"],
+    "variableList": [],
+    "contactRoleList": [],
+
+    "extraContactPersonSql": null,
+
+    "active": false
+  },
+  {
+    "alertCategory": "Exception",
+    "alertType": "shipmentArrivalDelayed(SEA)",
+    "tableName": "shipment",
+    "templatePath": "message/shipment-alert",
+    "severity": "medium",
+
+    "variableList": [],
+    "contactRoleList": [],
+
+    "extraContactPersonSql": null,
+
+    "active": false
+  },
+  {
+    "alertCategory": "Exception",
+    "alertType": "shipmentDepartureDelayed(AIR)",
+    "tableName": "shipment",
+    "templatePath": "message/shipment-alert",
+    "severity": "medium",
+
+    "variableList": [],
+    "contactRoleList": [],
+
+    "extraContactPersonSql": null,
+
+    "active": false
+  },
+  {
+    "alertCategory": "Exception",
+    "alertType": "shipmentDepartureDelayed(SEA)",
+    "tableName": "shipment",
+    "templatePath": "message/shipment-alert",
+    "severity": "medium",
+
+    "variableList": [],
+    "contactRoleList": [],
 
     "extraContactPersonSql": null,
 

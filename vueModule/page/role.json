@@ -1,49 +1,48 @@
 {
-  "layout": "MainLayout",
-  "components": [
-    {
-      "initUrl": "api/role/{{id}}",
-      "saveUrl": "api/role",
-      "primaryKey": "id",
-      "topSlots": [
-        {
-          "is": "v-btn",
-          "props": {
-            "flat": true,
-            "icon": true
-          },
-          "events": {
-            "click.stop": [
-              {
-                "type": "router",
-                "otherParams": {
-                  "func": "go",
-                  "go": -1
-                }
-              }
-            ]
-          },
-          "slots": [
-            {
-              "is": "Icon",
-              "props": {
-                "icon": "arrow_back"
-              }
-            }
-          ]
+  "fillParent": true,
+  "components": [{
+    "is": "Widget",
+    "props": {
+      "settingProp": {
+        "overrideType": "role",
+        "initAxiosParams": {
+          "url": "api/role/{{context.$route.params.params}}"
         },
-        {
-          "is": "I18nText",
-          "props": {
-            "class": "headline",
-            "i18nKey": "UserPage.title",
-            "swig": true
+        "defaultAxiosParams": {
+          "url": "default/role"
+        },
+        "validateAxiosParams": {
+          "method": "post",
+          "url": "api/role/validate/{{id}}"
+        },
+        "saveAxiosParams": {
+          "method": "post",
+          "url": "api/role"
+        },
+        "primaryKey": "id",
+        "modeFunction": "const modes = ['create', 'detail','edit']\nconst selectedMode = isNaN(Number(mode)) ? mode : 'detail'\n          if (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
+        "haveTermOnCreate": false,
+        "haveTermOnEdit": false,
+        "widgetComponentSetting": {
+          "quick-create": {
+            "readonly": false
+          },
+          "create": {
+            "readonly": false,
+            "stepper": 0,
+            "next": false,
+            "saveIcon": "create"
+          },
+          "detail": {
+            "readonly": true
+          },
+          "edit": {
+            "readonly": false,
+            "stepper": 0,
+            "saveIcon": "save"
           }
         }
-      ],
-      "components": {
-        "assignment": []
       }
     }
-  ]
+  }]
 }

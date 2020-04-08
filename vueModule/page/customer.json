@@ -1,142 +1,62 @@
 {
-  "layout": "MainLayout",
-  "components": [
-    {
-      "is": "Widget",
-      "props": {
-        "initUrl": "api/partyGroup/{{id}}",
-        "saveUrl": "api/partyGroup",
-        "primaryKey": "id",
-        "canEdit": true,
-        "topSlots": [
-          {
-            "is": "v-btn",
-            "props": {
-              "flat": true,
-              "icon": true
-            },
-            "events": {
-              "click.stop": [
-                {
-                  "type": "router",
-                  "otherParams": {
-                    "func": "go",
-                    "go": -1
-                  }
-                }
-              ]
-            },
-            "slots": [
-              {
-                "is": "Icon",
-                "props": {
-                  "icon": "arrow_back"
-                }
-              }
-            ]
+  "fillParent": true,
+  "components": [{
+    "is": "Widget",
+    "props": {
+      "settingProp": {
+        "overrideType": "party-group",
+        "initAxiosParams": {
+          "url": "api/partyGroup/{{context.$route.params.params}}"
+        },
+        "defaultAxiosParams": {
+          "url": "default/partyGroup"
+        },
+        "validateAxiosParams": {
+          "method": "post",
+          "url": "api/partyGroup/validate/{{id}}"
+        },
+        "saveAxiosParams": {
+          "method": "post",
+          "url": "api/partyGroup/default"
+        },
+        "afterSaveAction": [{
+          "type": "commit",
+          "otherParams": {
+            "name": "auth/resetlastGetProfileTime",
+            "type": "local"
           },
-          {
-            "is": "DynamicComponent",
-            "props": {
-              "style": {
-                "align-items": "center",
-                "box-sizing": "border-box",
-                "position": "sticky",
-                "justify-content": "center",
-                "flex-shrink": 0,
-                "display": "flex"
-              },
-              "components": [
-                {
-                  "is": "I18nText",
-                  "props": {
-                    "class": "headline",
-                    "i18nKey": "CustomerPage.title"
-                  }
-                },
-                {
-                  "is": "span",
-                  "props": {
-                    "class": "flex-grow"
-                  }
-                }
-              ]
+          "afterActions": [{
+            "type": "dispatch",
+            "otherParams": {
+              "name": "auth/getUserProfile",
+              "type": "local"
             }
+          }]
+        }],
+        "primaryKey": "id",
+        "modeFunction": "return 'detail'",
+        "haveTermOnCreate": false,
+        "haveTermOnEdit": false,
+        "widgetComponentSetting": {
+          "quick-create": {
+            "readonly": false
+          },
+          "create": {
+            "readonly": false,
+            "stepper": 0,
+            "next": false,
+            "saveIcon": "create"
+          },
+          "detail": {
+            "readonly": true
+          },
+          "edit": {
+            "readonly": false,
+            "stepper": 0,
+            "saveIcon": "save"
           }
-        ],
-        "components": {
-          "assignment": [
-            {
-              "is": "AsyncComponent",
-              "props": {
-                "class": "xs-12",
-                "layoutName": "customer/basic-information"
-              }
-            },
-            {
-              "is": "AsyncComponent",
-              "props": {
-                "class": "xs-12",
-                "layoutName": "customer/default-preference"
-              }
-            },
-            {
-              "is": "AsyncComponent",
-              "props": {
-                "class": "xs-12",
-                "layoutName": "customer/party"
-              }
-            }
-          ],
-          "edit": [
-            {
-              "is": "WidgetPanel",
-              "props": {
-                "initUrl": "api/partyGroup/{{id}}",
-                "saveUrl": "api/partyGroup",
-                "primaryKey": "id"
-              },
-              "slots": [
-                {
-                  "name": "default",
-                  "is": "DynamicComponent",
-                  "props": {
-                    "components": [
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "class": "xs-12",
-                          "layoutName": "customer/basic-information"
-                        }
-                      },
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "class": "xs-12",
-                          "layoutName": "customer/default-preference"
-                        }
-                      },
-                      {
-                        "is": "AsyncComponent",
-                        "props": {
-                          "class": "xs-12",
-                          "layoutName": "customer/party"
-                        }
-                      }
-                    ]
-                  }
-                }
-              ]
-            },
-            {
-
-            }
-          ],
-          "create": [
-
-          ]
         }
       }
     }
-  ]
+  }]
 }

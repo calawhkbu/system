@@ -1,33 +1,46 @@
 {
-  "layout": "MainLayout",
+  "fillParent": true,
   "components": [{
     "is": "TableTool",
     "props": {
-      "showFilterBar": true,
-      "enableShare": false,
-      "enableSetting": false,
       "reportingKey": "alerts",
       "jql": "alerts",
-      "urlFormat": "/alerts{{ id|if('/', '') }}{{ id }}",
+      "showDefault": true,
+      "hasReports": false,
+      "showFilterBar": true,
+      "enableShare": true,
+      "enableSetting": false,
+      "noPartyGroupFilters": false,
       "newReport": {
+        "filters": {
+          "isActive": {
+            "value": "active"
+          },
+          "entityType": {
+            "value": "shipment"
+          }
+        },
         "configurations": {
-          "i18nContext": "Reporting",
+          "i18nContext": "AlertPage",
           "clickable": true,
           "draggable": true,
-          "sorting": {},
+          "sorting": {
+            "direction": "DESC",
+            "key": "updatedAt",
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "alert",
+              "name": "updatedAt"
+            }
+          },
           "pagination": {
-            "remote": {},
             "current": 0,
-            "perPage": 25
+            "perPage": 20,
+            "remote": true
           }
         }
       },
-      "fieldOptions": [
-        {
-          "key": "id",
-          "hidden": true
-        },
-        {
+      "fieldOptions": [{
           "key": "tableName",
           "hidden": true
         },
@@ -35,22 +48,83 @@
           "key": "primaryKey",
           "hidden": true
         },
+
         {
-          "key": "createdAt",
-          "datetime": "YYYY-MM-DD HH:mm:ss"
+          "key": "alertTitle",
+          "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
+        },
+
+        {
+          "key": "alertMessage",
+          "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
+        },
+
+        {
+          "key": "alertCategory"
         },
         {
-          "key": "updatedAt",
-          "datetime": "YYYY-MM-DD HH:mm:ss"
+          "key": "alertType"
+        },
+        {
+          "key": "alertContent",
+          "hidden": true
+        },
+
+        {
+          "key": "alertUpdatedAt",
+          "hidden": true
+        },
+        {
+          "key": "alertCreatedAt",
+          "hidden": true
         }
+      ],
+      "filters": [{
+          "display": "entityType",
+          "name": "entityType",
+          "props": {
+            "items": [{
+                "label": "booking",
+                "value": "booking"
+              },
+              {
+                "label": "shipment",
+                "value": "shipment"
+              }
+            ],
+            "required": true
+          },
+          "type": "list"
+        },
+
+
+        {
+          "name": "alertUpdatedAt",
+          "type": "date"
+        },
+        {
+          "name": "alertCreatedAt",
+          "type": "date"
+        },
+        {
+          "display": "date",
+          "name": "date",
+          "type": "date",
+          "props": {
+            "required": false
+          }
+
+        }
+
       ],
       "clickFunction": {
         "type": "router",
         "otherParams": {
           "func": "push",
-          "path": "/{{tableName}}/{{primaryKey}}"
+          "path": "alerts/default/{{tableName}}/{{primaryKey}}"
         }
-      }
+      },
+      "icons": []
     }
   }]
 }
