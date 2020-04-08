@@ -403,9 +403,6 @@ export default {
     // {
     //   eventName: 'create_tracking_alerts',
     // },
-    {
-      eventName: 'tracking_error_update_reference_again',
-    },
     // {
     //   eventName: 'update_tracking_back_to_entity'
     // },
@@ -417,9 +414,6 @@ export default {
     // {
     //   eventName: 'create_tracking_alerts',
     // },
-    {
-      eventName: 'tracking_error_update_reference_again',
-    },
     // {
     //   eventName: 'update_tracking_back_to_entity'
     // },
