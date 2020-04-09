@@ -91,7 +91,7 @@
         },
         {
           "label": "Widget.remark",
-          "name": "shipmentDate.{{flex}}{{key}}Remark",
+          "name": "shipmentDate.{{flex}}{{key}}DateRemark",
           "component": "v-text-field",
           "checkDisplayWhen": "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['departure'].includes('{{key}}')) ",
           "class": "xs-12 md-12"
