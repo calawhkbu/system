@@ -204,20 +204,25 @@ const app = {
     return result
   },
 
-  // interpret selected site
-  getOfficeParties(system: string, parties: any[], selected?: { value: number[] }): string[] {
-    const result = [] as string[]
+  // interpret selected site for mapping
+  getOfficeNames(system: string, parties: any[], selected?: { value: number[] }): any {
+    const result = {} as any
     if (selected) {
       const party = parties.find(({ id }) => selected.value.indexOf(id) > -1)
       if (party && party.thirdPartyCode && party.thirdPartyCode[system])
-        result.push(party.thirdPartyCode[system])
+        result[party.thirdPartyCode[system]] = party.shortName
     } else {
-      for (const { thirdPartyCode } of parties) {
+      for (const { thirdPartyCode, shortName } of parties) {
         if (thirdPartyCode && typeof thirdPartyCode[system] === 'string')
-          result.push(thirdPartyCode[system])
+          result[thirdPartyCode[system]] = shortName
       }
     }
     return result
+  },
+
+  // interpret selected site
+  getOfficeParties(system: string, parties: any[], selected?: { value: number[] }): string[] {
+    return Object.keys(app.getOfficeNames(system, parties, selected))
   },
 
   // interpret divisions
