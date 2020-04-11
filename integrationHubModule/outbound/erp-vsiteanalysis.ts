@@ -99,8 +99,7 @@ const app = {
     // warning : getting the first one only
     const xdivision = subqueries.division
       ? availableDivisions.find(division => subqueries.division.value.indexOf(division) > -1)
-      : availableDivisions.find(division => division === 'Total')
-    if (!xdivision) throw new BadRequestException('MISSING_DIVISION')
+      : 'Total'
 
     // xsalesman
     let xsalesman = ''
