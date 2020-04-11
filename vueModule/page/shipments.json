@@ -1,0 +1,309 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "title": "Shipment",
+      "reportingKey": "shipments",
+      "jql": "shipments",
+      "hasReports": true,
+      "showFilterBar": true,
+      "enableShare": true,
+      "enableSetting": true,
+      "noPartyGroupFilters": false,
+      "nextPageComponent": "shipment",
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "detail/{{id}}",
+          "base": true
+        }
+      },
+      "newReport": {
+        "filters": {
+          "isActive": {
+            "value": "active"
+          },
+          "date": {
+            "func": {
+              "args": {
+                "unit": "year"
+              },
+              "key": "current"
+            }
+          }
+        },
+        "configurations": {
+          "i18nContext": "ShipmentPage",
+          "clickable": true,
+          "draggable": true,
+          "pagination": {
+            "current": 0,
+            "perPage": 20
+          }
+        }
+      },
+      "filters": [{
+        "name": "isActive",
+        "type": "list",
+        "props": {
+          "items": [{
+              "label": "active",
+              "value": "active"
+            },
+            {
+              "label": "deleted",
+              "value": "deleted"
+            }
+          ]
+        }
+      }],
+      "fieldOptions" : [
+        {
+          "hidden" : true,
+          "key" : "id"
+        },
+        {
+          "key" : "haveCurrentTrackingNo",
+          "label" : ""
+        },
+        {
+          "format" : "YYYY-MM-DD",
+          "key" : "jobDate"
+        },
+        {
+          "boolean" : true,
+          "key" : "isDirect"
+        },
+        {
+          "boolean" : true,
+          "key" : "isCoload"
+        },
+        {
+          "key" : "nominatedTypeCode",
+          "label" : "nominatedType"
+        },
+        {
+          "key" : "carrierName",
+          "label" : "carrier"
+        },
+        {
+          "key" : "masterNo",
+          "width" : 140
+        },
+        {
+          "api" : {
+            "arrayMapper" : {
+              "keyKey" : "code",
+              "valueKey" : "name"
+            },
+            "axiosParams" : {
+              "data" : {
+                "subqueries" : {
+                  "codeType" : {
+                    "value" : "SERVTYPE"
+                  }
+                }
+              },
+              "method" : "POST",
+              "url" : "api/code/query/code_master"
+            }
+          },
+          "key" : "serviceCode",
+          "label" : "service"
+        },
+        {
+          "api" : {
+            "arrayMapper" : {
+              "keyKey" : "code",
+              "valueKey" : "name"
+            },
+            "axiosParams" : {
+              "data" : {
+                "subqueries" : {
+                  "codeType" : {
+                    "value" : "MODULE"
+                  }
+                }
+              },
+              "method" : "POST",
+              "url" : "api/code/query/code_master"
+            }
+          },
+          "key" : "moduleTypeCode",
+          "label" : "moduleType"
+        },
+        {
+          "api" : {
+            "arrayMapper" : {
+              "keyKey" : "code",
+              "valueKey" : "name"
+            },
+            "axiosParams" : {
+              "data" : {
+                "subqueries" : {
+                  "codeType" : {
+                    "value" : "BOUND"
+                  }
+                }
+              },
+              "method" : "POST",
+              "url" : "api/code/query/code_master"
+            }
+          },
+          "key" : "boundTypeCode",
+          "label" : "boundType"
+        },
+        {
+          "api" : {
+            "arrayMapper" : {
+              "keyKey" : "code",
+              "valueKey" : "name"
+            },
+            "axiosParams" : {
+              "data" : {
+                "subqueries" : {
+                  "codeType" : {
+                    "value" : "INCOTERMS"
+                  }
+                }
+              },
+              "method" : "POST",
+              "url" : "api/code/query/code_master"
+            }
+          },
+          "key" : "incoTermsCode",
+          "label" : "incoTerms"
+        },
+        {
+          "api" : {
+            "arrayMapper" : {
+              "keyKey" : "code",
+              "valueKey" : "name"
+            },
+            "axiosParams" : {
+              "data" : {
+                "subqueries" : {
+                  "codeType" : {
+                    "value" : "PAYTERMS"
+                  }
+                }
+              },
+              "method" : "POST",
+              "url" : "api/code/query/code_master"
+            }
+          },
+          "key" : "otherTermsCode",
+          "label" : "otherTerms"
+        },
+        {
+          "api" : {
+            "arrayMapper" : {
+              "keyKey" : "code",
+              "valueKey" : "name"
+            },
+            "axiosParams" : {
+              "data" : {
+                "subqueries" : {
+                  "codeType" : {
+                    "value" : "PAYTERMS"
+                  }
+                }
+              },
+              "method" : "POST",
+              "url" : "api/code/query/code_master"
+            }
+          },
+          "key" : "freightTermsCode",
+          "label" : "freightTerms"
+        },
+        {
+          "format" : "YYYY-MM-DD",
+          "key" : "departureDateEstimated"
+        },
+        {
+          "format" : "YYYY-MM-DD",
+          "key" : "arrivalDateEstimated"
+        },
+        {
+          "key" : "shipperPartyName",
+          "label" : "shipper"
+        },
+        {
+          "key" : "forwarderPartyName",
+          "label" : "forwarder"
+        },
+        {
+          "key" : "consigneePartyName",
+          "label" : "consignee"
+        },
+        {
+          "key" : "linerAgentPartyName",
+          "label" : "linerAgent"
+        },
+        {
+          "key" : "roAgentPartyName",
+          "label" : "roAgent"
+        },
+        {
+          "key" : "agentPartyName",
+          "label" : "agent"
+        },
+        {
+          "key" : "controllingCustomerPartyName",
+          "label" : "controllingCustomer"
+        },
+        {
+          "key" : "salesmanCode",
+          "label" : "salesman"
+        },
+        {
+          "key" : "quantity"
+        },
+        {
+          "api" : {
+            "arrayMapper" : {
+              "keyKey" : "code",
+              "valueKey" : "name"
+            },
+            "axiosParams" : {
+              "data" : {
+                "subqueries" : {
+                  "codeType" : {
+                    "value" : "SHIPTYPE"
+                  }
+                }
+              },
+              "method" : "POST",
+              "url" : "api/code/query/code_master"
+            }
+          },
+          "key" : "shipmentTypeCode",
+          "label" : "shipmentType"
+        },
+        {
+          "key" : "placeOfReceiptName",
+          "label" : "placeOfReceipt"
+        },
+        {
+          "key" : "portOfLoadingName",
+          "label" : "portOfLoading"
+        },
+        {
+          "key" : "portOfDischargeName",
+          "label" : "portOfDischarge"
+        },
+        {
+          "key" : "placeOfDeliveryName",
+          "label" : "placeOfDelivery"
+        },
+        {
+          "key" : "finalDestinationName",
+          "label" : "finalDestination"
+        }
+      ]
+    },
+    "slots": []
+  }]
+}
