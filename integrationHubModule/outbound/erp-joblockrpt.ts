@@ -4,6 +4,7 @@ import moment = require('moment')
 const app = {
   variable: {
     sites: [] as string[],
+    siteNames: [] as string[],
     departments: [] as string[],
   },
   method: 'POST',
@@ -37,6 +38,7 @@ const app = {
       throw new BadRequestException('DATE_RANGE_TOO_LARGE')
 
     // xsite
+    app.variable.siteNames = helper.getOfficeNames('erp-site', party, subqueries.officePartyId)
     const sites = helper.getOfficeParties('erp-site', party, subqueries.officePartyId)
     if (!sites.length) throw new BadRequestException('MISSING_SITE')
     if (sites.length > 1) throw new BadRequestException('TOO_MANY_SITES')
@@ -59,6 +61,8 @@ const app = {
   responseHandler: (response: { responseBody: any; responseOptions: any }) => {
     // parse results
     const responseBody = JSON.parse(JSON.parse(response.responseBody).d)
+
+    const { sites, siteNames, departments } = app.variable
 
     // rename fields
     for (const row of responseBody) {
@@ -88,7 +92,6 @@ const app = {
     }
 
     // filter unauthorized rows
-    const { sites, departments } = app.variable
     const result = [] as any[]
     for (const site of sites) {
       for (const department of departments) {
@@ -105,6 +108,7 @@ const app = {
             departmentCode: department,
             officePartyCode: site,
           }
+        row.officePartyCode = siteNames[row.officePartyCode]
         result.push(row)
       }
     }
