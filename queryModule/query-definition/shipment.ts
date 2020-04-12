@@ -1190,6 +1190,7 @@ const primaryKeyListStringExpression = new FunctionExpression('GROUP_CONCAT', ne
 const partyGroupCodeExpression = new ColumnExpression('shipment', 'partyGroupCode')
 
 const currentTrackingNoExpression = new ColumnExpression('shipment', 'currentTrackingNo')
+const batchNumberExpression = new ColumnExpression('shipment', 'batchNumber')
 
 const haveCurrentTrackingNoExpression = new FunctionExpression('IF', new IsNullExpression(currentTrackingNoExpression, false), '', '.')
 
@@ -2702,9 +2703,13 @@ const shipmentTableFilterFieldList = [
   'houseNo',
 
   {
+    name : 'batchNumber',
+    expression : batchNumberExpression
+  },
+
+  {
     name : 'currentTrackingNo',
     expression : currentTrackingNoExpression
-
   },
 
   {
