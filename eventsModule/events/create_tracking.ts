@@ -3,6 +3,7 @@ import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import _ = require('lodash')
 import moment = require('moment')
+import BluebirdPromise = require('bluebird')
 
 import { TrackService } from 'modules/tracking/services'
 
@@ -18,7 +19,7 @@ import BaseEventHandler from 'modules/events/baseEventHandler'
 // import { BookingReference } from '../../../../swivel-backend-new/src/models/main/bookingReference';
 // import { BookingContainer } from '../../../../swivel-backend-new/src/models/main/bookingContainer';
 
-class CreateTrackingEvent extends BaseEventHandler {
+export default class CreateTrackingEvent extends BaseEventHandler {
   constructor(
     protected  eventDataList: EventData<any>[],
     protected readonly eventHandlerConfig: EventHandlerConfig,
@@ -77,31 +78,29 @@ class CreateTrackingEvent extends BaseEventHandler {
     } = this.allService as {
       TrackService: TrackService
     }
-
-    const promiseList = eventDataList.map(async eventData => {
-
-      const { latestEntity, loadashMapping, tableName } = eventData
-
-      if (latestEntity.billStatus === null) {
-        try {
-          const registerForm = await this.getTrackingNo(latestEntity, loadashMapping)
-          if (registerForm) {
-            await trackService.register(registerForm, this.user)
+    await BluebirdPromise.map(
+      eventDataList,
+      async({ latestEntity, loadashMapping, tableName }) => {
+        if (latestEntity.billStatus === null) {
+          try {
+            const registerForm = await this.getTrackingNo(latestEntity, loadashMapping)
+            console.log(registerForm)
+            if (registerForm) {
+              await trackService.register(registerForm, this.user)
+            }
+          } catch (e) {
+            console.error(`
+              We cannot create tracking on below ${tableName}:\n
+              ID: ${latestEntity['id']}\n
+              Register Form:\n
+              ${JSON.stringify(latestEntity)}\n
+            `, null, this.constructor.name)
+            console.error(e, e.stack, this.constructor.name)
           }
-        } catch (e) {
-          console.error(`
-            We cannot create tracking on below ${tableName}:\n
-            ID: ${latestEntity['id']}\n
-            Register Form:\n
-            ${JSON.stringify(latestEntity)}\n
-          `, null, this.constructor.name)
-          console.error(e, e.stack, this.constructor.name)
         }
-      }
-
-    })
-
-    const resultList = await Promise.all(promiseList)
+      },
+      { concurrency: 30 }
+    )
     console.debug('End Create Tracking Event ....', this.constructor.name)
     return[]
 
