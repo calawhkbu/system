@@ -66,6 +66,14 @@
           "key" : "id"
         },
         {
+          "key" : "poNos",
+          "label" : "poNo"
+        },
+        {
+          "key" : "contractNos",
+          "label" : "contractNo"
+        },
+        {
           "key" : "haveCurrentTrackingNo",
           "label" : ""
         },
@@ -228,6 +236,14 @@
           "key" : "arrivalDateEstimated"
         },
         {
+          "format" : "YYYY-MM-DD",
+          "key" : "departureDateActual"
+        },
+        {
+          "format" : "YYYY-MM-DD",
+          "key" : "arrivalDateActual"
+        },
+        {
           "key" : "shipperPartyName",
           "label" : "shipper"
         },
@@ -250,6 +266,10 @@
         {
           "key" : "agentPartyName",
           "label" : "agent"
+        },
+        {
+          "key" : "officePartyName",
+          "label" : "office"
         },
         {
           "key" : "controllingCustomerPartyName",
