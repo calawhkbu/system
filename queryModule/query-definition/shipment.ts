@@ -1190,6 +1190,7 @@ const primaryKeyListStringExpression = new FunctionExpression('GROUP_CONCAT', ne
 const partyGroupCodeExpression = new ColumnExpression('shipment', 'partyGroupCode')
 
 const currentTrackingNoExpression = new ColumnExpression('shipment', 'currentTrackingNo')
+const batchNumberExpression = new ColumnExpression('shipment', 'batchNumber')
 
 const haveCurrentTrackingNoExpression = new FunctionExpression('IF', new IsNullExpression(currentTrackingNoExpression, false), '', '.')
 
@@ -2704,7 +2705,6 @@ const shipmentTableFilterFieldList = [
   {
     name : 'currentTrackingNo',
     expression : currentTrackingNoExpression
-
   },
 
   {
@@ -2966,7 +2966,7 @@ const withoutStatusCodeFn = (params) => {
 query.registerQuery('withoutStatusCode', withoutStatusCodeFn)
 
 // salesman filter =============================
-const salesmanFieldList = [
+const singleEqualFieldList = [
   'rSalesmanPersonCode',
   'sSalesmanPersonCode',
   'cSalesmanPersonCode',
@@ -2974,12 +2974,17 @@ const salesmanFieldList = [
     name: 'salesmanPersonCode',
     expression: salesmanPersonCodeExpression,
   },
+
+  {
+    name : 'batchNumber',
+    expression : batchNumberExpression
+  },
 ]
 
-salesmanFieldList.map(salesmanField => {
+singleEqualFieldList.map(singleEqualField => {
 
-  const expression = (typeof salesmanField === 'string') ? new ColumnExpression('shipment', salesmanField) : salesmanField.expression
-  const name = (typeof salesmanField === 'string') ? salesmanField : salesmanField.name
+  const expression = (typeof singleEqualField === 'string') ? new ColumnExpression('shipment', singleEqualField) : singleEqualField.expression
+  const name = (typeof singleEqualField === 'string') ? singleEqualField : singleEqualField.name
 
   //  warning : a bit difference from normal filter
   // normal value = value filter
