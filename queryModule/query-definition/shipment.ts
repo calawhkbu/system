@@ -3243,130 +3243,6 @@ query
   .register(
     'q',
     new Query({
-      $from: new FromTable('shipment', {
-        operator: 'LEFT',
-        table: new FromTable({
-          table: new Query({
-            $select: [
-              new ResultColumn(new ColumnExpression('shipment_container', 'shipmentId'), 'shipment_container_shipmentId'),
-              new ResultColumn(
-                new FunctionExpression(
-                  'group_concat',
-                  new ParameterExpression({ expression: new ColumnExpression('shipment_container', 'contractNo'), suffix: 'SEPARATOR \', \'' })
-                ),
-                'contractNo'
-              ),
-              new ResultColumn(
-                new FunctionExpression(
-                  'group_concat',
-                  new ParameterExpression({ expression: new ColumnExpression('shipment_container', 'containerNo'), suffix: 'SEPARATOR \', \'' })
-                ),
-                'containerNo'
-              ),
-              new ResultColumn(
-                new FunctionExpression(
-                  'group_concat',
-                  new ParameterExpression({ expression: new ColumnExpression('shipment_container', 'sealNo'), suffix: 'SEPARATOR \', \'' })
-                ),
-                'sealNo'
-              ),
-              new ResultColumn(
-                new FunctionExpression(
-                  'group_concat',
-                  new ParameterExpression({ expression: new ColumnExpression('shipment_container', 'sealNo2'), suffix: 'SEPARATOR \', \'' })
-                ),
-                'sealNo2'
-              ),
-              new ResultColumn(
-                new FunctionExpression(
-                  'group_concat',
-                  new ParameterExpression({ expression: new ColumnExpression('shipment_container', 'carrierBookingNo'), suffix: 'SEPARATOR \', \'' })
-                ),
-                'carrierBookingNo'
-              ),
-            ],
-            $from: new FromTable('shipment_container'),
-            $where: new AndExpressions({
-              expressions: [
-                new IsNullExpression(new ColumnExpression('shipment_container', 'deletedAt'), false),
-                new IsNullExpression(new ColumnExpression('shipment_container', 'deletedBy'), false)
-              ]
-            }),
-            $group: new GroupBy([
-              new ColumnExpression('shipment_container', 'shipmentId')
-            ]),
-          }),
-          $as: 'shipment_container'
-        }),
-        $on: [
-          new BinaryExpression(new ColumnExpression('shipment_container', 'shipment_container_shipmentId'), '=', new ColumnExpression('shipment', 'id')),
-        ]
-      }, {
-        operator: 'LEFT',
-        table: new FromTable({
-          table: new Query({
-            $select: [
-              new ResultColumn(new ColumnExpression('shipment_po', 'shipmentId'), 'shipment_po_shipmentId'),
-              new ResultColumn(
-                new FunctionExpression(
-                  'group_concat',
-                  new ParameterExpression({ expression: new ColumnExpression('shipment_po', 'poNo'), suffix: 'SEPARATOR \', \'' })
-                ),
-                'poNo'
-              )
-            ],
-            $from: new FromTable('shipment_po'),
-            $where: new AndExpressions({
-              expressions: [
-                new IsNullExpression(new ColumnExpression('shipment_po', 'deletedAt'), false),
-                new IsNullExpression(new ColumnExpression('shipment_po', 'deletedBy'), false)
-              ]
-            }),
-            $group: new GroupBy([
-              new ColumnExpression('shipment_po', 'shipmentId')
-            ]),
-          }),
-          $as: 'shipment_po'
-        }),
-        $on: [
-          new BinaryExpression(new ColumnExpression('shipment_po', 'shipment_po_shipmentId'), '=', new ColumnExpression('shipment', 'id')),
-        ]
-      }, {
-        operator: 'LEFT',
-        table: new FromTable({
-          table: new Query({
-            $select: [
-              new ResultColumn(new ColumnExpression('shipment_reference', 'shipmentId'), 'shipment_reference_shipmentId'),
-              new ResultColumn(
-                new FunctionExpression(
-                  'group_concat',
-                  new ParameterExpression({ expression: new ColumnExpression('shipment_reference', 'refDescription'), suffix: 'SEPARATOR \', \'' })
-                ),
-                'shipIds'
-              )
-            ],
-            $from: new FromTable('shipment_reference'),
-            $where: new AndExpressions({
-              expressions: [
-                new BinaryExpression(new ColumnExpression('shipment_reference', 'refName'), '=', 'Shipment Reference ID'),
-                new AndExpressions({
-                  expressions: [
-                    new IsNullExpression(new ColumnExpression('shipment_reference', 'deletedAt'), false),
-                    new IsNullExpression(new ColumnExpression('shipment_reference', 'deletedBy'), false)
-                  ]
-                })
-              ]
-            }),
-            $group: new GroupBy([
-              new ColumnExpression('shipment_reference', 'shipmentId')
-            ]),
-          }),
-          $as: 'shipment_reference_shipId'
-        }),
-        $on: [
-          new BinaryExpression(new ColumnExpression('shipment_reference_shipId', 'shipment_reference_shipmentId'), '=', new ColumnExpression('shipment', 'id')),
-        ]
-      }),
       $where: new OrExpressions({
         expressions: [
           new RegexpExpression(new ColumnExpression('shipment', 'bookingNo'), false),
@@ -3409,13 +3285,52 @@ query
           new RegexpExpression(new ColumnExpression('shipment_party', 'roAgentPartyCode'), false),
           new RegexpExpression(new ColumnExpression('shipment_party', 'shipperPartyCode'), false),
           new RegexpExpression(new ColumnExpression('shipment_party', 'shipperPartyName'), false),
-          new RegexpExpression(new ColumnExpression('shipment_container', 'contractNo'), false),
-          new RegexpExpression(new ColumnExpression('shipment_container', 'containerNo'), false),
-          new RegexpExpression(new ColumnExpression('shipment_container', 'sealNo'), false),
-          new RegexpExpression(new ColumnExpression('shipment_container', 'sealNo2'), false),
-          new RegexpExpression(new ColumnExpression('shipment_container', 'carrierBookingNo'), false),
-          new RegexpExpression(new ColumnExpression('shipment_po', 'poNo'), false),
-          new RegexpExpression(new ColumnExpression('shipment_reference_shipId', 'shipIds'), false),
+          new InExpression(
+            'id',
+            false,
+            new Query({
+              $select: [
+                new ResultColumn('shipmentId')
+              ],
+              $from: new FromTable('shipment_container'),
+              $where: new OrExpressions({
+                expressions: [
+                  new RegexpExpression(new ColumnExpression('shipment_container', 'contractNo'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_container', 'containerNo'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_container', 'sealNo'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_container', 'sealNo2'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_container', 'carrierBookingNo'), false),
+                ]
+              })
+            })
+          ),
+          new InExpression(
+            'id',
+            false,
+            new Query({
+              $select: [
+                new ResultColumn('shipmentId')
+              ],
+              $from: new FromTable('shipment_po'),
+              $where: new RegexpExpression(new ColumnExpression('shipment_po', 'poNo'), false)
+            })
+          ),
+          new InExpression(
+            'id',
+            false,
+            new Query({
+              $select: [
+                new ResultColumn('shipmentId')
+              ],
+              $from: new FromTable('shipment_reference'),
+              $where: new AndExpressions({
+                expressions: [
+                  new BinaryExpression(new ColumnExpression('shipment_reference', 'refName'), '=', 'Shipment Reference ID'),
+                  new RegexpExpression(new ColumnExpression('shipment_reference', 'refDescription'), false),
+                ]
+              })
+            })
+          )
         ],
       }),
     })

@@ -81,7 +81,7 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
             }
             await trackingReferenceService.query(`UPDATE shipment_date SET ${dateQuery} WHERE ${idsQuery.join(' OR ')}`)
           }
-          if (data.lastStatusCode && !['ERR', 'CANF'].includes(data.lastStatusCode)) {
+          if (data.trackingStatus && data.trackingStatus.length && !['ERR', 'CANF'].includes(data.lastStatusCode)) {
             await trackingReferenceService.query(`
               UPDATE shipment
               SET currentTrackingNo = "${data.trackingNo}"
