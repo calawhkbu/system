@@ -7,15 +7,7 @@
   "shareProps": {
     "icon": "statusCode",
     "titleKey": "statusCode",
-    "subTitleKeys": [{
-        "key": "statusDate",
-        "is": "Datetime",
-        "format": "YYYY-MM-DD HH:mm:ss",
-        "style": {
-          "color": "#5da751"
-        },
-        "externalOnly": true
-      },
+    "subTitleKeys": [
       "statusDescription",
       "statusPlace",
       "details"
