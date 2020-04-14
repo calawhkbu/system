@@ -39,7 +39,6 @@ export default class CreateRelatedPartyEvent extends BaseEventHandler {
               partyType: relatedParty.partyType
             }
           },
-          false,
           this.user,
           this.transaction
         )
