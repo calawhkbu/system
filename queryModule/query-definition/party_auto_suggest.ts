@@ -8,6 +8,7 @@ import {
   ColumnExpression,
   BinaryExpression,
   InExpression,
+  ExistsExpression,
   IsNullExpression,
   AndExpressions,
   FunctionExpression,
@@ -46,22 +47,9 @@ const query = new QueryDef(
       new ResultColumn(new ColumnExpression('party', 'stateCode'), 'partyStateCode'),
       new ResultColumn(new ColumnExpression('party', 'countryCode'), 'partyCountryCode'),
       new ResultColumn(new ColumnExpression('party', 'zip'), 'partyZip'),
-      new ResultColumn(new ColumnExpression('person', 'id'), 'contactPersonId'),
-      new ResultColumn(new ColumnExpression('person', 'displayName'), 'contactPersonName'),
-      // TODO new ResultColumn({ expression: 'TODO', $as: 'contactPersonPhone' }),
-      new ResultColumn(new ColumnExpression('person', 'userName'), 'contactPersonEmail'),
     ],
     $from: new FromTable(
       'party',
-      {
-        operator: 'LEFT',
-        table: 'party_type',
-        $on: new BinaryExpression(
-          new ColumnExpression('party', 'id'),
-          '=',
-          new ColumnExpression('party_type', 'partyId')
-        ),
-      },
       {
         operator: 'LEFT',
         table: 'party_group',
@@ -71,24 +59,6 @@ const query = new QueryDef(
           new ColumnExpression('party', 'partyGroupCode')
         ),
       },
-      {
-        operator: 'LEFT',
-        table: 'parties_person',
-        $on: new BinaryExpression(
-          new ColumnExpression('party', 'id'),
-          '=',
-          new ColumnExpression('parties_person', 'partyId')
-        ),
-      },
-      {
-        operator: 'LEFT',
-        table: 'person',
-        $on: new BinaryExpression(
-          new ColumnExpression('person', 'id'),
-          '=',
-          new ColumnExpression('parties_person', 'personId')
-        ),
-      }
     ),
   })
 )
@@ -167,7 +137,13 @@ query
   .register(
     'partyTypes',
     new Query({
-      $where: new InExpression(new ColumnExpression('party_type', 'type'), false),
+      $where: new ExistsExpression(new Query({
+        $from: 'party_type',
+        $where : [
+          new BinaryExpression(new ColumnExpression('party_type', 'partyId'), '=', new ColumnExpression('party', 'id')),
+          new BinaryExpression(new ColumnExpression('party_type', 'type'), '=')
+        ]
+      }), false)
     })
   )
   .register('value', 0)
