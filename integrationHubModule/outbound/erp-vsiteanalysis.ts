@@ -49,7 +49,7 @@ const app = {
     // xmodule
     const availableModuleTypes = helper.getModuleTypes(roleFilters)
     let xmodule: string
-    if (availableModuleTypes.length === 0) {
+    if (availableModuleTypes.length === 0 && subqueries.moduleTypeCode) {
       throw new ForbiddenException('NO_ACCESS_RIGHT')
     } else if (subqueries.moduleTypeCode) {
       // warning : getting the first one only
