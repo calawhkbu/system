@@ -188,7 +188,7 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
                     dateQuery = `${dateQuery ? `${dateQuery},` : ''}${ataQuery}`
                   }
                   if (dateQuery) {
-                    const finalUpdateQuery = `UPDATE shipment_date SET ${dateQuery} where id in (${id})`
+                    const finalUpdateQuery = `UPDATE shipment_date SET ${dateQuery} where shipmentId in (${id})`
                     return await trackingReferenceService.query(finalUpdateQuery)
                   }
                 }
