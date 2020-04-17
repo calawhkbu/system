@@ -115,6 +115,7 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
         if (estimatedDepartureDate || estimatedArrivalDate || actualDepartureDate || actualArrivalDate) {
           trackingNos.push({
             trackingNo: latestEntity.trackingNo,
+            isClosed: latestEntity.isClosed,
             lastStatusCode, trackingStatus,
             estimatedDepartureDate, estimatedArrivalDate,
             actualDepartureDate, actualArrivalDate
@@ -172,30 +173,43 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
                   const finalUpdateTrckingNoQuery = `UPDATE shipment SET currentTrackingNo = "${trackingNo}" where id in (${id}) AND currentTrackingNo is null`
                   await trackingReferenceService.query(finalUpdateTrckingNoQuery)
                 }
-                const etdQuery = estimatedDepartureDate ? `departureDateEstimated = "${moment.utc(estimatedDepartureDate).format('YYYY-MM-DD HH:mm:ss')}"` : null
-                const etaQuery = estimatedArrivalDate ? `arrivalDateEstimated = "${moment.utc(estimatedArrivalDate).format('YYYY-MM-DD HH:mm:ss')}"` : null
-                const atdQuery = actualDepartureDate ? `departureDateActual = "${moment.utc(actualDepartureDate).format('YYYY-MM-DD HH:mm:ss')}"` : null
-                const ataQuery = actualArrivalDate ? `arrivalDateActual = "${moment.utc(actualArrivalDate).format('YYYY-MM-DD HH:mm:ss')}"` : null
-                if (etdQuery || etaQuery || atdQuery || ataQuery) {
-                  let dateQuery = etdQuery || null
-                  if (etaQuery) {
-                    dateQuery = `${dateQuery ? `${dateQuery},` : ''}${etaQuery}`
-                  }
-                  if (atdQuery) {
-                    dateQuery = `${dateQuery ? `${dateQuery},` : ''}${atdQuery}`
-                  }
-                  if (ataQuery) {
-                    dateQuery = `${dateQuery ? `${dateQuery},` : ''}${ataQuery}`
-                  }
-                  if (dateQuery) {
-                    const finalUpdateQuery = `UPDATE shipment_date SET ${dateQuery} where shipmentId in (${id})`
-                    return await trackingReferenceService.query(finalUpdateQuery)
-                  }
+                if (estimatedDepartureDate) {
+                  await trackingReferenceService.query(`
+                    UPDATE shipment_date
+                    SET departureDateEstimated = "${moment.utc(estimatedDepartureDate).format('YYYY-MM-DD HH:mm:ss')}"
+                    WHERE shipmentId in (${id})
+                    AND actualArrivalDate is null
+                  `)
+                }
+                if (actualDepartureDate) {
+                  await trackingReferenceService.query(`
+                    UPDATE shipment_date
+                    SET departureDateActual = "${moment.utc(actualDepartureDate).format('YYYY-MM-DD HH:mm:ss')}"
+                    WHERE shipmentId in (${id})
+                    AND actualArrivalDate is null
+                  `)
+                }
+                if (estimatedArrivalDate) {
+                  await trackingReferenceService.query(`
+                    UPDATE shipment_date
+                    SET arrivalDateEstimated = "${moment.utc(estimatedArrivalDate).format('YYYY-MM-DD HH:mm:ss')}"
+                    WHERE shipmentId in (${id})
+                    AND actualArrivalDate is null
+                  `)
+                }
+                if (actualArrivalDate) {
+                  const newATA = moment.utc(actualArrivalDate).format('YYYY-MM-DD HH:mm:ss')
+                  await trackingReferenceService.query(`
+                    UPDATE shipment_date
+                    SET arrivalDateActual = "${newATA}"
+                    WHERE shipmentId in (${id})
+                    AND (actualArrivalDate is null or actualArrivalDate >= DATE_SUB("${newATA}", INTERVAL 45 day))
+                  `)
                 }
               }
               return null
             },
-            { concurrency: 5 }
+            { concurrency: 10 }
           )
         }
       }
