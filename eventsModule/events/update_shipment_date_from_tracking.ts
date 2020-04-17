@@ -89,6 +89,7 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
   //   return null
   // }
   public async mainFunction(eventDataList: EventData<Tracking>[]) {
+    const partyGroupCode = ['DEV', 'GGL', 'DT', 'STD', 'ECX']
 
     const {
       TrackingReferenceService: trackingReferenceService,
@@ -125,94 +126,88 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
       return trackingNos
     }, [])
     if (trackingNoList && trackingNoList.length) {
-      const trackingReferenceList = await trackingReferenceService.getTrackingReference(trackingNoList.map(({ trackingNo }) => trackingNo))
-      if (trackingReferenceList && trackingReferenceList.length) {
-        const selectedPartyGroupCode = trackingReferenceList.reduce((partyGroupCodes: string[], { partyGroupCode }: TrackingReference) => {
-          if (partyGroupCode && !partyGroupCodes.find(s => s === partyGroupCode)) {
-            partyGroupCodes.push(partyGroupCode)
-          }
-          return partyGroupCodes
-        }, [])
-        const partyGroupQuery = selectedPartyGroupCode.map(partyGroupCode => `(partyGroupCode = "${partyGroupCode}")`)
-        const trackingNo = trackingNoList.reduce((tcs: string[], { trackingNo }) => {
-          if (trackingNo && !tcs.find(s => s === trackingNo)) {
-            tcs.push(trackingNo)
-          }
-          return tcs
-        }, [])
-        const trackingNoQuery = trackingNo.map((trackingNo) => {
-          return `(shipment.masterNo = "${trackingNo}" OR shipment_container.carrierBookingNo = "${trackingNo}" OR shipment_container.containerNo = "${trackingNo}")`
-        })
-        const selectQuery = `
-          SELECT shipment.id, shipment.masterNo, shipment_container.carrierBookingNo, shipment_container.containerNo
-          FROM shipment
-          LEFT OUTER JOIN shipment_container ON shipment_container.shipmentId = shipment.id
-          WHERE (${partyGroupQuery && partyGroupQuery.length ? partyGroupQuery.join(' OR ') : '1=1'})
-          AND (${trackingNoQuery && trackingNoQuery.length ? trackingNoQuery.join(' OR ') : '1=1'})
-        `
-        const ids = await trackingReferenceService.query(selectQuery, { type: Sequelize.QueryTypes.SELECT })
-        if (ids && ids.length) {
-          await BluebirdPromise.map(
-            ids,
-            async({ id, masterNo, carrierBookingNo, containerNo }) => {
-              const {
-                trackingNo,
-                lastStatusCode, trackingStatus,
-                estimatedDepartureDate, estimatedArrivalDate,
-                actualDepartureDate, actualArrivalDate
-              } = trackingNoList.find(t => t.trackingNo === masterNo || t.trackingNo === carrierBookingNo || t.trackingNo === containerNo)
-              if (trackingNo) {
-                //
-                //           await trackingReferenceService.query(`
-                //             UPDATE shipment
-                //             SET currentTrackingNo = "${data.trackingNo}"
-                //             WHERE (${idsQuery.join(' OR ')}) AND currentTrackingNo is null
-                //           `)
-                //         }
-                if (trackingStatus && trackingStatus.length && !['ERR', 'CANF'].includes(lastStatusCode)) {
-                  const finalUpdateTrckingNoQuery = `UPDATE shipment SET currentTrackingNo = "${trackingNo}" where id in (${id}) AND currentTrackingNo is null`
-                  await trackingReferenceService.query(finalUpdateTrckingNoQuery)
-                }
-                if (estimatedDepartureDate) {
-                  await trackingReferenceService.query(`
-                    UPDATE shipment_date
-                    SET departureDateEstimated = "${moment.utc(estimatedDepartureDate).format('YYYY-MM-DD HH:mm:ss')}"
-                    WHERE shipmentId in (${id})
-                    AND arrivalDateActual is null
-                  `)
-                }
-                if (actualDepartureDate) {
-                  await trackingReferenceService.query(`
-                    UPDATE shipment_date
-                    SET departureDateActual = "${moment.utc(actualDepartureDate).format('YYYY-MM-DD HH:mm:ss')}"
-                    WHERE shipmentId in (${id})
-                    AND arrivalDateActual is null
-                  `)
-                }
-                if (estimatedArrivalDate) {
-                  await trackingReferenceService.query(`
-                    UPDATE shipment_date
-                    SET arrivalDateEstimated = "${moment.utc(estimatedArrivalDate).format('YYYY-MM-DD HH:mm:ss')}"
-                    WHERE shipmentId in (${id})
-                    AND arrivalDateActual is null
-                  `)
-                }
-                if (actualArrivalDate) {
-                  const newATA = moment.utc(actualArrivalDate).format('YYYY-MM-DD HH:mm:ss')
-                  await trackingReferenceService.query(`
-                    UPDATE shipment_date
-                    SET arrivalDateActual = "${newATA}"
-                    WHERE shipmentId in (${id})
-                    AND (arrivalDateActual is null or arrivalDateActual >= DATE_SUB("${newATA}", INTERVAL 45 day))
-                  `)
-                }
+      const partyGroupQuery = partyGroupCode.map(partyGroupCode => `(partyGroupCode = "${partyGroupCode}")`)
+      const trackingNoQuery = trackingNoList.reduce((tcs: string[], { trackingNo }) => {
+        if (trackingNo && !tcs.find(s => s === trackingNo)) {
+          tcs.push(`(
+            shipment.masterNo = "${trackingNo}"
+            OR
+            shipment_container.carrierBookingNo = "${trackingNo}"
+            OR
+            shipment_container.containerNo = "${trackingNo}"
+          )`)
+        }
+        return tcs
+      }, [])
+      const ids = await trackingReferenceService.query(`
+        SELECT shipment.id, shipment.masterNo, shipment_container.carrierBookingNo, shipment_container.containerNo
+        FROM shipment
+        LEFT OUTER JOIN shipment_container ON shipment_container.shipmentId = shipment.id
+        WHERE (${partyGroupQuery && partyGroupQuery.length ? partyGroupQuery.join(' OR ') : '1=1'})
+        AND (${trackingNoQuery && trackingNoQuery.length ? trackingNoQuery.join(' OR ') : '1=1'})
+      `, { type: Sequelize.QueryTypes.SELECT })
+      if (ids && ids.length) {
+        const querys = ids.reduce((querys: string[], { id, masterNo, carrierBookingNo, containerNo }) => {
+          const found = trackingNoList.find(t => t.trackingNo === masterNo || t.trackingNo === carrierBookingNo || t.trackingNo === containerNo)
+          if (found) {
+            const {
+              trackingNo,
+              lastStatusCode, trackingStatus,
+              estimatedDepartureDate, estimatedArrivalDate,
+              actualDepartureDate, actualArrivalDate
+            } = found
+            if (trackingNo) {
+              if (trackingStatus && trackingStatus.length && !['ERR', 'CANF'].includes(lastStatusCode)) {
+                querys.push(`
+                  UPDATE shipment
+                  SET currentTrackingNo = "${trackingNo}"
+                  WHERE id in (${id})
+                  AND currentTrackingNo is null
+                `)
               }
-              return null
-            },
+              if (estimatedDepartureDate) {
+                querys.push(`
+                  UPDATE shipment_date
+                  SET departureDateEstimated = "${moment.utc(estimatedDepartureDate).format('YYYY-MM-DD HH:mm:ss')}"
+                  WHERE shipmentId in (${id})
+                  AND arrivalDateActual is null
+                `)
+              }
+              if (actualDepartureDate) {
+                querys.push(`
+                  UPDATE shipment_date
+                  SET departureDateActual = "${moment.utc(actualDepartureDate).format('YYYY-MM-DD HH:mm:ss')}"
+                  WHERE shipmentId in (${id})
+                  AND arrivalDateActual is null
+                `)
+              }
+              if (estimatedArrivalDate) {
+                querys.push(`
+                  UPDATE shipment_date
+                  SET arrivalDateEstimated = "${moment.utc(estimatedArrivalDate).format('YYYY-MM-DD HH:mm:ss')}"
+                  WHERE shipmentId in (${id})
+                  AND arrivalDateActual is null
+                `)
+              }
+              if (actualArrivalDate) {
+                const newATA = moment.utc(actualArrivalDate).format('YYYY-MM-DD HH:mm:ss')
+                querys.push(`
+                  UPDATE shipment_date
+                  SET arrivalDateActual = "${newATA}"
+                  WHERE shipmentId in (${id})
+                  AND (arrivalDateActual is null or arrivalDateActual >= DATE_SUB("${newATA}", INTERVAL 45 day))
+                `)
+              }
+            }
+          }
+          return querys
+        }, [])
+          await BluebirdPromise.map(
+            querys,
+            async(query: string) => await trackingReferenceService.query(query, this.transaction),
             { concurrency: 10 }
           )
         }
-      }
     }
 
     return undefined
