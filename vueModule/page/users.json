@@ -15,7 +15,7 @@
       "noPartyGroupFilters": true,
       "nextPageComponent": "user",
       "noCache": true,
-      "refreshWithBack": true,
+      "refreshWhenBack": true,
       "clickFunction": {
         "type": "router",
         "otherParams": {
