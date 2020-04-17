@@ -12,7 +12,7 @@
       "enableSetting": false,
       "noPartyGroupFilters": true,
       "noCache": true,
-      "refreshWithBack": true,
+      "refreshWhenBack": true,
       "nextPageKey": "reportIdParams",
       "newReport": {
         "filters": {

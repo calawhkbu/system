@@ -14,7 +14,7 @@
       "enableSetting": false,
       "noPartyGroupFilters": true,
       "noCache": true,
-      "refreshWithBack": true,
+      "refreshWhenBack": true,
       "nextPageComponent": "schedule",
       "clickFunction": {
         "type": "router",

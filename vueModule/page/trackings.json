@@ -15,7 +15,7 @@
       "noPartyGroupFilters": true,
       "nextPageComponent": "tracking",
       "noCache": true,
-      "refreshWithBack": true,
+      "refreshWhenBack": true,
       "newReport": {
         "filters": {
           "isActive": {
