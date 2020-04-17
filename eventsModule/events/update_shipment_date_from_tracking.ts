@@ -178,7 +178,7 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
                     UPDATE shipment_date
                     SET departureDateEstimated = "${moment.utc(estimatedDepartureDate).format('YYYY-MM-DD HH:mm:ss')}"
                     WHERE shipmentId in (${id})
-                    AND actualArrivalDate is null
+                    AND arrivalDateActual is null
                   `)
                 }
                 if (actualDepartureDate) {
@@ -186,7 +186,7 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
                     UPDATE shipment_date
                     SET departureDateActual = "${moment.utc(actualDepartureDate).format('YYYY-MM-DD HH:mm:ss')}"
                     WHERE shipmentId in (${id})
-                    AND actualArrivalDate is null
+                    AND arrivalDateActual is null
                   `)
                 }
                 if (estimatedArrivalDate) {
@@ -194,7 +194,7 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
                     UPDATE shipment_date
                     SET arrivalDateEstimated = "${moment.utc(estimatedArrivalDate).format('YYYY-MM-DD HH:mm:ss')}"
                     WHERE shipmentId in (${id})
-                    AND actualArrivalDate is null
+                    AND arrivalDateActual is null
                   `)
                 }
                 if (actualArrivalDate) {
@@ -203,7 +203,7 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
                     UPDATE shipment_date
                     SET arrivalDateActual = "${newATA}"
                     WHERE shipmentId in (${id})
-                    AND (actualArrivalDate is null or actualArrivalDate >= DATE_SUB("${newATA}", INTERVAL 45 day))
+                    AND (arrivalDateActual is null or arrivalDateActual >= DATE_SUB("${newATA}", INTERVAL 45 day))
                   `)
                 }
               }
