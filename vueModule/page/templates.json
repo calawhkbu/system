@@ -14,7 +14,7 @@
       "enableShare": false,
       "enableSetting": false,
       "noCache": true,
-      "refreshWithBack": true,
+      "refreshWhenBack": true,
       "nextPageComponent": "template",
       "clickFunction": {
         "type": "router",

@@ -13,7 +13,7 @@
       "enableSetting": false,
       "noPartyGroupFilters": true,
       "noCache": true,
-      "refreshWithBack": true,
+      "refreshWhenBack": true,
       "nextPageComponent": "i18n",
       "newReport": {
         "filters": {
