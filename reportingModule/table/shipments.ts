@@ -51,6 +51,7 @@ const query = new Query({
         { name: 'controllingCustomerPartyName', type: 'string' },
 
         { name: 'id', type: 'string' },
+        { name: 'shipId', type: 'string' },
         { name: 'haveCurrentTrackingNo', type: 'string' },
         { name: 'batchNumber', type: 'string' },
       ],
