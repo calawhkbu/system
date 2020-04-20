@@ -61,8 +61,8 @@
         }
       }],
       "fieldOptions": [{
-          "label": "shipmentId",
-          "key": "id"
+          "key": "id",
+          "hidden" : true
         },
         {
           "key": "poNos",
