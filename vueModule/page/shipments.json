@@ -62,7 +62,7 @@
       }],
       "fieldOptions" : [
         {
-          "hidden" : true,
+          "label" : "shipmentId",
           "key" : "id"
         },
         {
