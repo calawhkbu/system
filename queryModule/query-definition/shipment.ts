@@ -1185,6 +1185,22 @@ query
 
 const idExpression = new ColumnExpression('shipment', 'id')
 
+const shipIdExpression = new QueryExpression(new Query({
+
+  $select : [
+    new ResultColumn(new ColumnExpression('shipment_reference', 'refDescription'))
+  ],
+
+  $from : 'shipment_reference',
+
+  $where : [
+    new BinaryExpression(new ColumnExpression('shipment_reference', 'refName'), '=', 'Shipment Reference ID'),
+    new BinaryExpression(new ColumnExpression('shipment_reference', 'shipmentId'), '=', idExpression)
+  ],
+  $limit : 1
+
+}))
+
 const primaryKeyListStringExpression = new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id')))
 
 const partyGroupCodeExpression = new ColumnExpression('shipment', 'partyGroupCode')
@@ -2100,6 +2116,8 @@ query.registerBoth('salesmanPersonCode', salesmanPersonCodeExpression)
 
 query.registerBoth('reportingGroup', reportingGroupExpression)
 
+query.registerBoth('shipId', shipIdExpression)
+
 // tracking lastStatus
 query.registerBoth('lastStatusCode', lastStatusCodeExpression)
 query.registerBoth('lastStatus', lastStatusExpression)
@@ -2701,6 +2719,11 @@ const shipmentTableFilterFieldList = [
   'isDirect',
   'isCoload',
   'houseNo',
+
+  {
+    name : 'shipId',
+    expression : shipIdExpression
+  },
 
   {
     name : 'currentTrackingNo',
