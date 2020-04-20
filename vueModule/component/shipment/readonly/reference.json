@@ -5,12 +5,15 @@
       "fields": [{
         "label": "ShipmentPage.poNo",
         "name": "shipmentPo",
-        "component": "TextField",
+        "component": "MultiField",
         "checkDisplayWhen": "return form.shipmentPo && form.shipmentPo.length > 0",
         "class": "xs-12",
         "props": {
           "updateValue": [
-            "return Array.isArray(value) ? value.map(v => v.poNo).join(',') : value"
+            "return Array.isArray(value) ? value.map(v => v.poNo) : [value]"
+          ],
+          "onCheckFixValueFunc": [
+            "return value.map(v => ({ poNo: v }))"
           ]
         }
       }, {
