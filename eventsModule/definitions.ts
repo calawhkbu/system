@@ -313,9 +313,25 @@ export default {
           moduleTypeCode: 'moduleTypeCode',
           carrierCode: 'carrierCode',
           departureDateEstimated: 'shipmentDate.departureDateEstimated',
-          masterNo: 'trackingNos.masterNo',
-          soNo: 'trackingNos.soNo',
-          containerNo: 'trackingNos.containerNo'
+          masterNo: ({ masterNo }: any) => {
+            return masterNo
+          },
+          soNo: ({ shipmentContainers = []}: any) => {
+            return shipmentContainers.reduce((nos: string[], { carrierBookingNo }: any) => {
+              if (carrierBookingNo) {
+                nos.push(carrierBookingNo)
+              }
+              return carrierBookingNo
+            }, [])
+          },
+          containerNo: ({ shipmentContainers = []}: any) => {
+            return shipmentContainers.reduce((nos: string[], { containerNo }: any) => {
+              if (containerNo) {
+                nos.push(containerNo)
+              }
+              return containerNo
+            }, [])
+          }
         }
       }
     },
