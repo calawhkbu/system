@@ -322,7 +322,7 @@ export default {
               if (carrierBookingNo) {
                 nos.push(carrierBookingNo)
               }
-              return carrierBookingNo
+              return nos
             }, [])
           },
           containerNo: ({ shipmentContainers = [] }: any) => {
@@ -331,7 +331,7 @@ export default {
               if (containerNo) {
                 nos.push(containerNo)
               }
-              return containerNo
+              return nos
             }, [])
           }
         }
@@ -377,7 +377,7 @@ export default {
               if (carrierBookingNo) {
                 nos.push(carrierBookingNo)
               }
-              return carrierBookingNo
+              return nos
             }, [])
           },
           containerNo: ({ shipmentContainers = [] }: any) => {
@@ -386,7 +386,7 @@ export default {
               if (containerNo) {
                 nos.push(containerNo)
               }
-              return containerNo
+              return nos
             }, [])
           }
         }
