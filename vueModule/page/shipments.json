@@ -16,7 +16,7 @@
         "type": "router",
         "otherParams": {
           "func": "push",
-          "path": "detail/{{id}}",
+          "path": "detail-edit/{{id}}",
           "base": true
         }
       },
@@ -60,268 +60,267 @@
           ]
         }
       }],
-      "fieldOptions" : [
-        {
-          "label" : "shipmentId",
-          "key" : "id"
+      "fieldOptions": [{
+          "label": "shipmentId",
+          "key": "id"
         },
         {
-          "key" : "poNos",
-          "label" : "poNo"
+          "key": "poNos",
+          "label": "poNo"
         },
         {
-          "key" : "contractNos",
-          "label" : "contractNo"
+          "key": "contractNos",
+          "label": "contractNo"
         },
         {
-          "key" : "haveCurrentTrackingNo",
-          "label" : ""
+          "key": "haveCurrentTrackingNo",
+          "label": ""
         },
         {
-          "format" : "YYYY-MM-DD",
-          "key" : "jobDate"
+          "format": "YYYY-MM-DD",
+          "key": "jobDate"
         },
         {
-          "boolean" : true,
-          "key" : "isDirect"
+          "boolean": true,
+          "key": "isDirect"
         },
         {
-          "boolean" : true,
-          "key" : "isCoload"
+          "boolean": true,
+          "key": "isCoload"
         },
         {
-          "key" : "nominatedTypeCode",
-          "label" : "nominatedType"
+          "key": "nominatedTypeCode",
+          "label": "nominatedType"
         },
         {
-          "key" : "carrierName",
-          "label" : "carrier"
+          "key": "carrierName",
+          "label": "carrier"
         },
         {
-          "key" : "masterNo",
-          "width" : 140
+          "key": "masterNo",
+          "width": 140
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "code",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "codeType" : {
-                    "value" : "SERVTYPE"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "SERVTYPE"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/code/query/code_master"
+              "method": "POST",
+              "url": "api/code/query/code_master"
             }
           },
-          "key" : "serviceCode",
-          "label" : "service"
+          "key": "serviceCode",
+          "label": "service"
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "code",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "codeType" : {
-                    "value" : "MODULE"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "MODULE"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/code/query/code_master"
+              "method": "POST",
+              "url": "api/code/query/code_master"
             }
           },
-          "key" : "moduleTypeCode",
-          "label" : "moduleType"
+          "key": "moduleTypeCode",
+          "label": "moduleType"
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "code",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "codeType" : {
-                    "value" : "BOUND"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "BOUND"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/code/query/code_master"
+              "method": "POST",
+              "url": "api/code/query/code_master"
             }
           },
-          "key" : "boundTypeCode",
-          "label" : "boundType"
+          "key": "boundTypeCode",
+          "label": "boundType"
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "code",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "codeType" : {
-                    "value" : "INCOTERMS"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "INCOTERMS"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/code/query/code_master"
+              "method": "POST",
+              "url": "api/code/query/code_master"
             }
           },
-          "key" : "incoTermsCode",
-          "label" : "incoTerms"
+          "key": "incoTermsCode",
+          "label": "incoTerms"
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "code",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "codeType" : {
-                    "value" : "PAYTERMS"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "PAYTERMS"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/code/query/code_master"
+              "method": "POST",
+              "url": "api/code/query/code_master"
             }
           },
-          "key" : "otherTermsCode",
-          "label" : "otherTerms"
+          "key": "otherTermsCode",
+          "label": "otherTerms"
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "code",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "codeType" : {
-                    "value" : "PAYTERMS"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "PAYTERMS"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/code/query/code_master"
+              "method": "POST",
+              "url": "api/code/query/code_master"
             }
           },
-          "key" : "freightTermsCode",
-          "label" : "freightTerms"
+          "key": "freightTermsCode",
+          "label": "freightTerms"
         },
         {
-          "format" : "YYYY-MM-DD",
-          "key" : "departureDateEstimated"
+          "format": "YYYY-MM-DD",
+          "key": "departureDateEstimated"
         },
         {
-          "format" : "YYYY-MM-DD",
-          "key" : "arrivalDateEstimated"
+          "format": "YYYY-MM-DD",
+          "key": "arrivalDateEstimated"
         },
         {
-          "format" : "YYYY-MM-DD",
-          "key" : "departureDateActual"
+          "format": "YYYY-MM-DD",
+          "key": "departureDateActual"
         },
         {
-          "format" : "YYYY-MM-DD",
-          "key" : "arrivalDateActual"
+          "format": "YYYY-MM-DD",
+          "key": "arrivalDateActual"
         },
         {
-          "key" : "shipperPartyName",
-          "label" : "shipper"
+          "key": "shipperPartyName",
+          "label": "shipper"
         },
         {
-          "key" : "forwarderPartyName",
-          "label" : "forwarder"
+          "key": "forwarderPartyName",
+          "label": "forwarder"
         },
         {
-          "key" : "consigneePartyName",
-          "label" : "consignee"
+          "key": "consigneePartyName",
+          "label": "consignee"
         },
         {
-          "key" : "linerAgentPartyName",
-          "label" : "linerAgent"
+          "key": "linerAgentPartyName",
+          "label": "linerAgent"
         },
         {
-          "key" : "roAgentPartyName",
-          "label" : "roAgent"
+          "key": "roAgentPartyName",
+          "label": "roAgent"
         },
         {
-          "key" : "agentPartyName",
-          "label" : "agent"
+          "key": "agentPartyName",
+          "label": "agent"
         },
         {
-          "key" : "officePartyName",
-          "label" : "office"
+          "key": "officePartyName",
+          "label": "office"
         },
         {
-          "key" : "controllingCustomerPartyName",
-          "label" : "controllingCustomer"
+          "key": "controllingCustomerPartyName",
+          "label": "controllingCustomer"
         },
         {
-          "key" : "salesmanCode",
-          "label" : "salesman"
+          "key": "salesmanCode",
+          "label": "salesman"
         },
         {
-          "key" : "quantity"
+          "key": "quantity"
         },
         {
-          "api" : {
-            "arrayMapper" : {
-              "keyKey" : "code",
-              "valueKey" : "name"
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
             },
-            "axiosParams" : {
-              "data" : {
-                "subqueries" : {
-                  "codeType" : {
-                    "value" : "SHIPTYPE"
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "SHIPTYPE"
                   }
                 }
               },
-              "method" : "POST",
-              "url" : "api/code/query/code_master"
+              "method": "POST",
+              "url": "api/code/query/code_master"
             }
           },
-          "key" : "shipmentTypeCode",
-          "label" : "shipmentType"
+          "key": "shipmentTypeCode",
+          "label": "shipmentType"
         },
         {
-          "key" : "placeOfReceiptName",
-          "label" : "placeOfReceipt"
+          "key": "placeOfReceiptName",
+          "label": "placeOfReceipt"
         },
         {
-          "key" : "portOfLoadingName",
-          "label" : "portOfLoading"
+          "key": "portOfLoadingName",
+          "label": "portOfLoading"
         },
         {
-          "key" : "portOfDischargeName",
-          "label" : "portOfDischarge"
+          "key": "portOfDischargeName",
+          "label": "portOfDischarge"
         },
         {
-          "key" : "placeOfDeliveryName",
-          "label" : "placeOfDelivery"
+          "key": "placeOfDeliveryName",
+          "label": "placeOfDelivery"
         },
         {
-          "key" : "finalDestinationName",
-          "label" : "finalDestination"
+          "key": "finalDestinationName",
+          "label": "finalDestination"
         }
       ]
     },
