@@ -10,6 +10,7 @@ const query = new Query({
         { name: 'houseNo', type: 'string' },
         { name: 'jobNo', type: 'string' },
         { name: 'masterNo', type: 'string' },
+
         { name: 'bookingNo', type: 'string' },
         { name: 'poNos', type: 'string' },
         { name: 'contractNos', type: 'string' },
@@ -51,6 +52,7 @@ const query = new Query({
 
         { name: 'id', type: 'string' },
         { name: 'haveCurrentTrackingNo', type: 'string' },
+        { name: 'batchNumber', type: 'string' },
       ],
     },
     'shipment'
