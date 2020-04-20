@@ -35,7 +35,6 @@
             "name": "default",
             "is": "DynamicComponent",
             "props": {
-              "layout": "v-card",
               "class": "full-width full-height",
               "components": [{
                 "is": "AsyncComponent",
