@@ -1303,13 +1303,17 @@ const carrierNameExpression = new FunctionExpression('IFNULL',
   carrierCodeExpression
 )
 
-const salesmanPersonCodeExpression = new CaseExpression({
+const rSalesmanCodeExpression = new ColumnExpression('shipment', 'rSalesmanPersonCode')
+const cSalesmanCodeExpression = new ColumnExpression('shipment', 'cSalesmanPersonCode')
+const sSalesmanCodeExpression = new ColumnExpression('shipment', 'sSalesmanPersonCode')
+
+const salesmanCodeExpression = new CaseExpression({
   cases: [
     {
       $when: new IsNullExpression(
-        new ColumnExpression('shipment', 'rSalesmanPersonCode'), true
+        rSalesmanCodeExpression, true
       ),
-      $then: new ColumnExpression('shipment', 'rSalesmanPersonCode')
+      $then: rSalesmanCodeExpression
     },
     {
       $when: new BinaryExpression(
@@ -1317,7 +1321,7 @@ const salesmanPersonCodeExpression = new CaseExpression({
         '=',
         'O'
       ),
-      $then: new ColumnExpression('shipment', 'sSalesmanPersonCode')
+      $then: sSalesmanCodeExpression
     },
     {
       $when: new BinaryExpression(
@@ -1325,7 +1329,7 @@ const salesmanPersonCodeExpression = new CaseExpression({
         '=',
         'I'
       ),
-      $then: new ColumnExpression('shipment', 'cSalesmanPersonCode')
+      $then: cSalesmanCodeExpression
     }
   ],
   $else: null
@@ -2112,7 +2116,7 @@ query.registerBoth('carrierCode', carrierCodeExpression)
 
 query.registerBoth('carrierName', carrierNameExpression)
 
-query.registerBoth('salesmanPersonCode', salesmanPersonCodeExpression)
+query.registerBoth('salesmanCode', salesmanCodeExpression)
 
 query.registerBoth('reportingGroup', reportingGroupExpression)
 
@@ -2990,12 +2994,25 @@ query.registerQuery('withoutStatusCode', withoutStatusCodeFn)
 
 // salesman filter =============================
 const singleEqualFieldList = [
-  'rSalesmanPersonCode',
-  'sSalesmanPersonCode',
-  'cSalesmanPersonCode',
+
   {
-    name: 'salesmanPersonCode',
-    expression: salesmanPersonCodeExpression,
+    name: 'salesmanCode',
+    expression: salesmanCodeExpression,
+  },
+
+  {
+    name: 'rSalesmanCode',
+    expression: rSalesmanCodeExpression,
+  },
+
+  {
+    name: 'sSalesmanCode',
+    expression: sSalesmanCodeExpression,
+  },
+
+  {
+    name: 'cSalesmanCode',
+    expression: cSalesmanCodeExpression,
   },
 
   {
