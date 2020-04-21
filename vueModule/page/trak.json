@@ -13,9 +13,10 @@
         "filters": {
           "date": {
             "func": {
-              "key": "current",
+              "key": "range",
               "args": {
-                "unit": "month"
+                "unit": "day",
+                "value": 30
               }
             }
           },
