@@ -78,6 +78,11 @@ function insertReportingGroupTable() {
 
       }
 
+      if (!(allowReportingGroupList && allowReportingGroupList.length))
+      {
+        throw new Error('allowReportingGroupList is empty')
+      }
+
       return allowReportingGroupList
 
     }
