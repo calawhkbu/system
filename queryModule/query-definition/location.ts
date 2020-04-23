@@ -71,7 +71,7 @@ query
   .register(
     'portCode',
     new Query({
-      $where: new RegexpExpression(new ColumnExpression('portCode'), false),
+      $where: new BinaryExpression(new ColumnExpression('portCode'), '='),
     })
   )
   .register('value', 0)
