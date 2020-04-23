@@ -35,8 +35,8 @@
     }
   ],
   "remove": "---",
-  "fillParent": true,
-  "components": [{
+  "_fillParent": true,
+  "_components": [{
     "is": "TableTool",
     "props": {
       "reportingKey": "purchase-orders",
