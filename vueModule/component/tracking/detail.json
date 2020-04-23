@@ -70,7 +70,7 @@
         "props": {
           "class": "xs-12",
           "fields": [{
-              "label": "TrackingPage.trackingNo",
+              "label": "TrackingPage.source",
               "name": "source",
               "component": "v-text-field",
               "class": "xs-12",
