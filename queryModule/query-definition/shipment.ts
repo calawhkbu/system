@@ -28,7 +28,8 @@ import {
   IResultColumn,
   OrderBy,
   IConditionalExpression,
-  MathExpression
+  MathExpression,
+  ColumnsExpression
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
 import { now } from '../../../../swivel-backend-new/node_modules/moment/moment'
@@ -167,11 +168,32 @@ const query = new QueryDef(
     // $distinct: true,
     $select: [
       new ResultColumn(new ColumnExpression('shipment', '*')),
+      new ResultColumn(new ColumnExpression('shipment_isMinCreatedAt', 'isMinCreatedAt'), 'isMinCreatedAt'),
       new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
       new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentPartyId'),
     ],
     $from: new FromTable(
       'shipment',
+
+        // LEFT JOIN shipment_date
+        {
+          operator: 'LEFT',
+          table: new FromTable({
+            table: new Query({
+              $select: [
+                new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
+                new ResultColumn(
+
+                    new BinaryExpression(
+                      new ColumnExpression('shipment', 'createdAt'), '=', new FunctionExpression('MIN', new ColumnExpression('shipment', 'createdAt')))
+                , 'isMinCreatedAt', ['shipment', 'houseNo']),
+              ],
+              $from: new FromTable('shipment', 'shipment')
+            }),
+            $as: 'shipment_isMinCreatedAt'
+          }),
+          $on: new BinaryExpression(new ColumnExpression('shipment', 'id'), '=', new ColumnExpression('shipment_isMinCreatedAt', 'shipmentId'))
+        },
 
       // LEFT JOIN shipment_date
       {
