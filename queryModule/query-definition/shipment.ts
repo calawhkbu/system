@@ -83,6 +83,8 @@ const shipmentIsActiveExpression = (shipmentTableName) => {
 
 }
 
+const isMinCreatedAtExpression = new ColumnExpression('shipment_isMinCreatedAt', 'isMinCreatedAt')
+
 const agentPartyIdExpression = new CaseExpression({
 
   cases: [
@@ -3040,6 +3042,11 @@ const singleEqualFieldList = [
   {
     name : 'batchNumber',
     expression : batchNumberExpression
+  },
+
+  {
+    name : 'isMinCreatedAt',
+    expression : isMinCreatedAtExpression
   },
 ]
 
