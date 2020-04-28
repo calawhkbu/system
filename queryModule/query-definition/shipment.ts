@@ -190,7 +190,10 @@ const query = new QueryDef(
                       new ColumnExpression('shipment', 'createdAt'), '=', new FunctionExpression('MIN', new ColumnExpression('shipment', 'createdAt')))
                 , 'isMinCreatedAt', ['shipment', 'houseNo']),
               ],
-              $from: new FromTable('shipment', 'shipment')
+              $from: new FromTable('shipment', 'shipment'),
+
+              $where : shipmentIsActiveExpression('shipment')
+
             }),
             $as: 'shipment_isMinCreatedAt'
           }),
