@@ -52,7 +52,7 @@
                         "class": "xs-1 md-1 max-width-300",
                         "axiosParams": {
                           "method": "GET",
-                          "url": "/default/booking/list"
+                          "url": "/entityTemplate/booking/list"
                         }
                       }
                     }
@@ -98,7 +98,7 @@
                     "class": "max-width-300",
                     "axiosParams": {
                       "method": "GET",
-                      "url": "/default/booking/list"
+                      "url": "/entityTemplate/booking/list"
                     }
                   }
                 }
@@ -794,7 +794,7 @@
                     "class": "max-width-300",
                     "axiosParams": {
                       "method": "GET",
-                      "url": "/default/booking/list"
+                      "url": "/entityTemplate/booking/list"
                     }
                   }
                 }
