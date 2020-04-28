@@ -66,7 +66,13 @@
         },
         {
           "key": "poNos",
-          "label": "poNo"
+          "label": "poNo",
+          "tdComponent" : {
+            "is" : "Swig",
+            "props" : {
+              "html" : "{{ 'args[0].poNos.split(`,`).join(`<br>`)' | calculate(row) | safe }}"
+            }
+          }
         },
         {
           "key": "contractNos",
