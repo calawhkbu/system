@@ -3364,7 +3364,7 @@ query
           new RegexpExpression(new ColumnExpression('shipment_party', 'shipperPartyCode'), false),
           new RegexpExpression(new ColumnExpression('shipment_party', 'shipperPartyName'), false),
           new InExpression(
-            'id',
+            new ColumnExpression('shipment', 'id'),
             false,
             new Query({
               $select: [
@@ -3383,7 +3383,7 @@ query
             })
           ),
           new InExpression(
-            'id',
+            new ColumnExpression('shipment', 'id'),
             false,
             new Query({
               $select: [
@@ -3394,7 +3394,7 @@ query
             })
           ),
           new InExpression(
-            'id',
+            new ColumnExpression('shipment', 'id'),
             false,
             new Query({
               $select: [
