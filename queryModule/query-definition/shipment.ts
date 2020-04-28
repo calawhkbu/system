@@ -184,11 +184,12 @@ const query = new QueryDef(
             table: new Query({
               $select: [
                 new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
-                new ResultColumn(
 
-                    new BinaryExpression(
-                      new ColumnExpression('shipment', 'createdAt'), '=', new FunctionExpression('MIN', new ColumnExpression('shipment', 'createdAt')))
-                , 'isMinCreatedAt', ['shipment', 'houseNo']),
+                new ResultColumn(
+                  new BinaryExpression(
+                    new ColumnExpression('shipment', 'createdAt'), '=', new FunctionExpression('MIN', new ColumnExpression('shipment', 'createdAt'))),
+                    'isMinCreatedAt', new ColumnExpression('shipment', 'houseNo'), new ColumnExpression('shipment', 'partyGroupCode')),
+
               ],
               $from: new FromTable('shipment', 'shipment'),
 
