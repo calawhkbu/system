@@ -1752,7 +1752,13 @@ function statusExpressionMapFunction(originalExpression: IExpression) {
 const extraDateExpression = new FunctionExpression('IF', new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'), new Value(0.5), new Value(2))
 
 const dateStatusExpressionWithParams = (params: IQueryParams) => {
+
   const subqueryParam = params.subqueries.dateStatus
+
+  if (!subqueryParam)
+  {
+    throw new Error(`missing dateStatus in subqueries`)
+  }
 
   return dateStatusExpression(subqueryParam)
 
@@ -2751,6 +2757,12 @@ const shipmentTableFilterFieldList = [
   'isDirect',
   'isCoload',
   'houseNo',
+  'jobNo',
+
+  {
+    name : 'reportingGroup',
+    expression : reportingGroupExpression
+  },
 
   {
     name : 'shipId',

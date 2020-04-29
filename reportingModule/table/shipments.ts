@@ -13,6 +13,7 @@ const query = new Query({
 
         { name: 'bookingNo', type: 'string' },
         { name: 'poNos', type: 'string' },
+        { name : 'containerNos', type : 'string' },
         { name: 'contractNos', type: 'string' },
 
         { name: 'commodity', type: 'string' },
