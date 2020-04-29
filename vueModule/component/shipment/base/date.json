@@ -38,9 +38,103 @@
             "props": {
               "class": "full-width",
               "components": [{
-                "is": "AsyncComponent",
+                "is": "WidgetMoreForm",
                 "props": {
-                  "layoutName": "shipment/forms/date"
+                  "name": "shipmentDate",
+                  "mainKey": "Date",
+                  "formProps": {
+                    "z": {
+                      "class": "xs-12 padding-leftright-4"
+                    }
+                  },
+                  "labelProps": {
+                    "z": {
+                      "isComponent": "v-label",
+                      "i18nContext": "Widget",
+                      "class": "font-110"
+                    },
+                    "cargoReady": {
+                      "class": "font-110 blue--text"
+                    },
+                    "cargoReceipt": {
+                      "class": "font-110 green--text"
+                    },
+                    "departure": {
+                      "class": "font-110 brown--text"
+                    },
+                    "arrival": {
+                      "class": "font-110 indigo--text"
+                    }
+                  },
+                  "fixedKeys": [
+                    "oceanBill",
+                    "cargoReady",
+                    "scheduleAssigned",
+                    "scheduleApproaved",
+                    "spaceConfirmation",
+                    "bookingSubmit",
+                    "cyCutOff",
+                    "documentCutOff",
+                    "pickup",
+                    "shipperLoad",
+                    "returnLoad",
+                    "cargoReceipt",
+                    "shipperDocumentSubmit",
+                    "shipperInstructionSubmit",
+                    "houseBillDraftSubmit",
+                    "houseBillConfirmation",
+                    "masterBillReleased",
+                    "preAlertSend",
+                    "ediSend",
+                    "cargoRolloverStatus",
+                    "departure",
+                    "arrival",
+                    "inboundTransfer",
+                    "onRail",
+                    "arrivalAtDepot",
+                    "availableForPickup",
+                    "pickupCargoBeforeDemurrage",
+                    "finalCargo",
+                    "cargoPickupWithDemurrage",
+                    "finalDoorDelivery",
+                    "returnEmptyContainer"
+                  ],
+                  "canAdd": true,
+                  "canAddProps": {
+                    "class": "xs-12 md-6 padding-20 min-height-200 margin-auto"
+                  },
+                  "fields": [{
+                      "label": "Widget.estimatedDate",
+                      "name": "shipmentDate.{{flex}}{{key}}DateEstimated",
+                      "component": "DateTimePicker",
+                      "class": "xs-6",
+                      "props": {
+                        "type": "datetime",
+                        "utc": true,
+                        "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                        "useOwnFormat": true
+                      }
+                    },
+                    {
+                      "label": "Widget.actualDate",
+                      "name": "shipmentDate.{{flex}}{{key}}DateActual",
+                      "component": "DateTimePicker",
+                      "class": "xs-6",
+                      "props": {
+                        "type": "datetime",
+                        "utc": true,
+                        "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                        "useOwnFormat": true
+                      }
+                    },
+                    {
+                      "label": "Widget.remark",
+                      "name": "shipmentDate.{{flex}}{{key}}DateRemark",
+                      "component": "v-text-field",
+                      "checkDisplayWhen": "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['departure'].includes('{{key}}')) ",
+                      "class": "xs-12 md-12"
+                    }
+                  ]
                 }
               }]
             }
@@ -51,9 +145,107 @@
       "is": "DynamicComponent",
       "props": {
         "components": [{
-          "is": "AsyncComponent",
+          "is": "WidgetMoreForm",
           "props": {
-            "layoutName": "shipment/readonly/date"
+            "small": true,
+            "name": "shipmentDate",
+            "mainKey": "Date",
+            "formProps": {
+              "z": {
+                "class": "xs-12 padding-leftright-2",
+                "formContainerProps": {
+                  "style": {
+                    "margin-top": "-2px"
+                  }
+                }
+              }
+            },
+            "labelProps": {
+              "z": {
+                "isComponent": "v-label",
+                "i18nContext": "Widget",
+                "class": "font-110"
+              },
+              "cargoReady": {
+                "class": "font-110"
+              },
+              "cargoReceipt": {
+                "class": "font-110"
+              },
+              "departure": {
+                "class": "font-110"
+              },
+              "arrival": {
+                "class": "font-110"
+              }
+            },
+            "fixedKeys": [
+              "oceanBill",
+              "cargoReady",
+              "scheduleAssigned",
+              "scheduleApproaved",
+              "spaceConfirmation",
+              "bookingSubmit",
+              "cyCutOff",
+              "documentCutOff",
+              "pickup",
+              "shipperLoad",
+              "returnLoad",
+              "cargoReceipt",
+              "shipperDocumentSubmit",
+              "shipperInstructionSubmit",
+              "houseBillDraftSubmit",
+              "houseBillConfirmation",
+              "masterBillReleased",
+              "preAlertSend",
+              "ediSend",
+              "cargoRolloverStatus",
+              "departure",
+              "arrival",
+              "inboundTransfer",
+              "onRail",
+              "arrivalAtDepot",
+              "availableForPickup",
+              "pickupCargoBeforeDemurrage",
+              "finalCargo",
+              "cargoPickupWithDemurrage",
+              "finalDoorDelivery",
+              "returnEmptyContainer"
+            ],
+            "checkDisplayWhen": [
+              "if (!['departure', 'arrival', 'oceanBill'].includes(key)) { return false }",
+              "const estimated = context._.get(form, `${key}DateEstimated`, null);",
+              "const actual = context._.get(form, `${key}DateActual`, null);",
+              "return estimated || actual"
+            ],
+            "canAdd": false,
+            "fields": [{
+                "label": "Widget.estimatedDate",
+                "name": "shipmentDate.{{flex}}{{key}}DateEstimated",
+                "component": "DateTimePicker",
+                "class": "xs-6",
+                "props": {
+                  "right": true,
+                  "type": "datetime",
+                  "utc": true,
+                  "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                  "useOwnFormat": true
+                }
+              },
+              {
+                "label": "Widget.actualDate",
+                "name": "shipmentDate.{{flex}}{{key}}DateActual",
+                "component": "DateTimePicker",
+                "class": "xs-6",
+                "props": {
+                  "right": true,
+                  "type": "datetime",
+                  "utc": true,
+                  "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                  "useOwnFormat": true
+                }
+              }
+            ]
           }
         }]
       }
