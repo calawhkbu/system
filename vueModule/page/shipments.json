@@ -73,7 +73,29 @@
             "current": 0,
             "perPage": 20,
             "remote": true
-          }
+          },
+
+          "fields" : [
+            "moduleTypeCode",
+            "houseNo",
+            "masterNo",
+            "poNos",
+            "carrierName",
+            "jobDate",
+            "departureDateEstimated",
+            "departureDateActual",
+            "arrivalDateEstimated",
+            "arrivalDateActual",
+            "portOfLoadingName",
+            "portOfDischargeName",
+            "controllingCustomerPartyName",
+            "shipperPartyName",
+            "consigneePartyName",
+            "linerAgentPartyName",
+            "roAgentPartyName",
+            "agentPartyName",
+            "haveCurrentTrackingNo"
+          ]
         }
       },
       "filters": [{
