@@ -13,12 +13,43 @@
       "noPartyGroupFilters": false,
       "nextPageComponent": "shipment",
       "clickFunction": {
-        "type": "router",
+        "changeRow": [
+          "console.log(row)",
+          "return {",
+          "...row,",
+          "shipmentParty: {",
+          "officePartyName: row.officePartyName,",
+          "shipperPartyName: row.shipperPartyName,",
+          "consigneePartyName: row.consigneePartyName,",
+          "roAgentPartyName: row.roAgentPartyName,",
+          "linerAgentPartyName: row.linerAgentPartyName,",
+          "agentPartyName: row.agentPartyName,",
+          "controllingCustomerPartyName: row.controllingCustomerPartyName,",
+          "notifyPartyPartyName: row.notifyPartyPartyName,",
+          "},",
+          "shipmentDate: {",
+          "departureDateEstimated: row.departureDateEstimated,",
+          "departureDateActual: row.departureDateActual,",
+          "arrivalDateEstimated: row.arrivalDateEstimated,",
+          "arrivalDateActual: row.arrivalDateActual,",
+          "},",
+          "shipmentContainers: row.containerNos ? row.containerNos.split(',').map(no => ({ containerNo: no })) : [],",
+          "shipmentPo: row.poNos ? row.poNos.split(',').map(no => ({ poNo: no})) : [],",
+          "...(row.shipId ? {shipmentReference: [{refName: 'Shipment Reference ID', refDescription: row.shipId}]} : {})",
+          "};"
+        ],
+        "type": "dispatch",
         "otherParams": {
-          "func": "push",
-          "path": "detail-edit/{{id}}",
-          "base": true
-        }
+          "name": "widget/initShortData"
+        },
+        "afterActions": [{
+          "type": "router",
+          "otherParams": {
+            "base": true,
+            "func": "push",
+            "path": "shipment/{{row.id | urlEncode }}"
+          }
+        }]
       },
       "newReport": {
         "filters": {
@@ -62,14 +93,14 @@
       }],
       "fieldOptions": [{
           "key": "id",
-          "hidden" : true
+          "hidden": true
         },
         {
           "key": "poNos",
           "label": "poNo",
-          "tdComponent" : {
-            "props" : {
-              "html" : "{{ 'args[0].poNos ? args[0].poNos.split(`,`).join(`<br>`) : ``' | calculate(row) | safe }}"
+          "tdComponent": {
+            "props": {
+              "html": "{{ 'args[0].poNos ? args[0].poNos.split(`,`).join(`<br>`) : ``' | calculate(row) | safe }}"
             }
           }
         },
@@ -77,17 +108,17 @@
         {
           "key": "containerNos",
           "label": "containerNo",
-          "tdComponent" : {
-            "props" : {
-              "html" : "{{ 'args[0].containerNos ? args[0].containerNos.split(`,`).join(`<br>`) : ``' | calculate(row) | safe }}"
+          "tdComponent": {
+            "props": {
+              "html": "{{ 'args[0].containerNos ? args[0].containerNos.split(`,`).join(`<br>`) : ``' | calculate(row) | safe }}"
             }
           }
         },
 
 
         {
-          "key" : "dateStatus",
-          "label" : "dateStatus"
+          "key": "dateStatus",
+          "label": "dateStatus"
         },
 
         {

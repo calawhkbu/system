@@ -672,7 +672,7 @@
               "notifyParty"
             ],
             "checkDisplayWhen": [
-              "return form[`${key}PartyId`] || form[`${key}PartyName`]"
+              "return form && (form[`${key}PartyId`] || form[`${key}PartyName`])"
             ],
             "extraGridProps": {
               "class": "xs-12 md-6 padding-leftright-1"
