@@ -68,12 +68,28 @@
           "key": "poNos",
           "label": "poNo",
           "tdComponent" : {
-            "is" : "Swig",
             "props" : {
-              "html" : "{{ 'args[0].poNos.split(`,`).join(`<br>`)' | calculate(row) | safe }}"
+              "html" : "{{ 'args[0].poNos ? args[0].poNos.split(`,`).join(`<br>`) : ``' | calculate(row) | safe }}"
             }
           }
         },
+
+        {
+          "key": "containerNos",
+          "label": "containerNo",
+          "tdComponent" : {
+            "props" : {
+              "html" : "{{ 'args[0].containerNos ? args[0].containerNos.split(`,`).join(`<br>`) : ``' | calculate(row) | safe }}"
+            }
+          }
+        },
+
+
+        {
+          "key" : "dateStatus",
+          "label" : "dateStatus"
+        },
+
         {
           "key": "contractNos",
           "label": "contractNo"
