@@ -2757,6 +2757,12 @@ const shipmentTableFilterFieldList = [
   'isDirect',
   'isCoload',
   'houseNo',
+  'jobNo',
+
+  {
+    name : 'reportingGroup',
+    expression : reportingGroupExpression
+  },
 
   {
     name : 'shipId',
