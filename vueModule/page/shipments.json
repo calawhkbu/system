@@ -47,7 +47,7 @@
           "otherParams": {
             "base": true,
             "func": "push",
-            "path": "shipment/{{row.id | urlEncode }}"
+            "path": "detail-edit/{{row.id | urlEncode }}"
           }
         }]
       },
@@ -75,7 +75,7 @@
             "remote": true
           },
 
-          "fields" : [
+          "fields": [
             "moduleTypeCode",
             "houseNo",
             "masterNo",
