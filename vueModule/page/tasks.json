@@ -1,0 +1,129 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "title": "Tasks",
+      "back": "/admin",
+      "urlFormat": "/admin/tasks",
+      "reportingKey": "tasks",
+      "jql": "tasks",
+      "hasReports": false,
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": false,
+      "noPartyGroupFilters": true,
+      "nextPageComponent": "task",
+      "noCache": true,
+      "refreshWhenBack": true,
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/detail/{{id}}",
+          "base": true
+        }
+      },
+      "newReport": {
+        "filters": {
+          "status": {
+            "value": ["pending", "running", "closed","cancelled"]
+          }
+        },
+        "configurations": {
+          "i18nContext": "TaskPage",
+          "clickable": true,
+          "sorting": {
+            "direction": "DESC",
+            "key": "registerAt"
+          },
+          "pagination": {
+            "current": 0,
+            "perPage": 20,
+            "remote": true
+          }
+        }
+      },
+      "fieldOptions": [{
+          "key": "id",
+          "hidden": true
+        },
+        {
+          "key": "updatedAt",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "label": "status",
+          "key": "status",
+          "width": 150
+        }
+      ],
+      "filters": [
+        {
+          "display": "status",
+          "name": "status",
+          "i18nContext": "TaskPage",
+          "props": {
+            "multi": true,
+            "items": [
+              {
+                "value": "closed",
+                "label": "closed"
+              },
+              {
+                "value": "running",
+                "label": "running"
+              },
+              {
+                "value": "pending",
+                "label": "pending"
+              },
+              {
+                "value": "cancelled",
+                "label": "cancelled"
+              }
+            ]
+          },
+          "type": "list"
+        },
+        {
+          "display": "taskName",
+          "name": "taskName",
+          "type": "text"
+        }
+      ]
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "task/create",
+                "base": true
+              }
+            }]
+          }
+        }]
+      }
+    }]
+  }]
+}
