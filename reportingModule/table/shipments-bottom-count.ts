@@ -12,7 +12,6 @@ function prepareShipmentParams(): Function {
       'houseNo',
       'masterNo',
       'jobDate',
-      'carrierName',
       'carrierCode',
       'shipperPartyName',
       'consigneePartyName',
