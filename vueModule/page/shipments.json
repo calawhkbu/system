@@ -47,7 +47,7 @@
           "otherParams": {
             "base": true,
             "func": "push",
-            "path": "detail-edit/{{row.id | urlEncode }}"
+            "path": "detail-edit/{{id}}"
           }
         }]
       },
