@@ -90,7 +90,7 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
   // }
   public async mainFunction(eventDataList: EventData<Tracking>[]) {
     const start = Date.now()
-    const partyGroupCode = ['DEV', 'GGL', 'DT', 'STD', 'ECX']
+    const partyGroupCode = ['DEV', 'GGL', 'DT', 'STD', 'ECX', 'ASW']
 
     const {
       TrackingReferenceService: trackingReferenceService,
