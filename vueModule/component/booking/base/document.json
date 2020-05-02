@@ -1,0 +1,44 @@
+{
+  "components": [{
+    "is": "AsyncComponent",
+    "props": {
+      "class": "xs-12 margin-topbottom-2",
+      "layoutName": "plugins/document",
+      "axiosBaseParams": [
+        "const primaryKey = context.$route.params.params;",
+        "return {",
+        "url: 'api/document/document/booking/{{primaryKey}}'.format({ primaryKey }),",
+        "};"
+      ],
+      "uploadAxiosParams": [
+        "const primaryKey = encodeURIComponent(context.$route.params.params);",
+        "return {",
+        "method: 'POST',",
+        "url: 'api/document/document/upload',",
+        "data: {",
+        "tableName: 'booking', primaryKey,",
+        "fileName: swig.fileName,",
+        "fileData: { base64String: swig.base64String, extension: swig.extension }",
+        "}",
+        "};"
+      ],
+      "downloadAxiosParams": [
+        "const primaryKey = encodeURIComponent(context.$route.params.params);",
+        "return {",
+        "responseType: 'blob',",
+        "method: 'POST',",
+        "url: 'api/document/document/download',",
+        "data: {tableName: 'booking', primaryKey, fileName: swig.fileName}",
+        "}"
+      ],
+      "deleteAxiosParams": [
+        "const primaryKey = encodeURIComponent(context.$route.params.params);",
+        "return {",
+        "method: 'POST',",
+        "url: 'api/document/document/delete',",
+        "data: {tableName: 'booking', primaryKey, fileName: swig.fileName}",
+        "}"
+      ]
+    }
+  }]
+}
