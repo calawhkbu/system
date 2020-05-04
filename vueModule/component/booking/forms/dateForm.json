@@ -16,16 +16,16 @@
           "class": "font-110"
         },
         "cargoReady": {
-          "class": "font-110 blue--text"
+          "class": "font-110"
         },
         "cargoReceipt": {
-          "class": "font-110 green--text"
+          "class": "font-110"
         },
         "departure": {
-          "class": "font-110 brown--text"
+          "class": "font-110"
         },
         "arrival": {
-          "class": "font-110 indigo--text"
+          "class": "font-110"
         }
       },
       "fixedKeys": [

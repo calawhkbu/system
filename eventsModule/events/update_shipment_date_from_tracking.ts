@@ -89,7 +89,8 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
   //   return null
   // }
   public async mainFunction(eventDataList: EventData<Tracking>[]) {
-    const partyGroupCode = ['DEV', 'GGL', 'DT', 'STD', 'ECX']
+    const start = Date.now()
+    const partyGroupCode = ['DEV', 'GGL', 'DT', 'STD', 'ECX', 'ASW']
 
     const {
       TrackingReferenceService: trackingReferenceService,
@@ -209,7 +210,7 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
           )
         }
     }
-
+    console.log(Date.now() - start, 'YUNDANG-TIME')
     return undefined
   }
 }
