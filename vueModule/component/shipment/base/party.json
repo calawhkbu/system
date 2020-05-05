@@ -51,31 +51,31 @@
                     "z": {
                       "isComponent": "v-label",
                       "i18nContext": "Widget",
-                      "class": "font-100"
+                      "class": "font-90"
                     },
                     "shipper": {
-                      "class": "font-100 teal--text required form-label"
+                      "class": "font-90"
                     },
                     "consignee": {
-                      "class": "font-100 green--text required form-label"
+                      "class": "font-90"
                     },
                     "office": {
-                      "class": "font-100 blue--text"
+                      "class": "font-90"
                     },
                     "agent": {
-                      "class": "font-100 purple--text"
+                      "class": "font-90"
                     },
                     "linerAgent": {
-                      "class": "font-100 amber--text"
+                      "class": "font-90"
                     },
                     "roAgent": {
-                      "class": "font-100 brown--text"
+                      "class": "font-90"
                     },
                     "controllingCustomer": {
-                      "class": "font-100 orange--text"
+                      "class": "font-90"
                     },
                     "notifyParty": {
-                      "class": "font-100 pink--text"
+                      "class": "font-90"
                     }
                   },
                   "fieldProps": {
@@ -632,10 +632,10 @@
                 "class": "font-90"
               },
               "controllingCustomer": {
-                "class": "font-90 orange--text"
+                "class": "font-90"
               },
               "notifyParty": {
-                "class": "font-90 pink--text"
+                "class": "font-90"
               }
             },
             "fieldProps": {
