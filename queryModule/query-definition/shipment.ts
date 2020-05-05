@@ -1363,6 +1363,20 @@ const salesmanCodeExpression = new CaseExpression({
   $else: null
 })
 
+// AIR export non direct = AC
+// AIR export direct = AD
+// AIR import non direct = AM
+// AIR import direct = AN
+// AIR misc = AZ
+
+// SEA export FCL = SA
+// SEA export LCL = SB
+// SEA export Consol = SC
+// SEA import FCL = SR
+// SEA import LCL = ST
+// SEA import Consol = SS
+// Sea boundType M  = SZ
+
 const defaultReportingGroupExpression = new CaseExpression({
 
   cases: [
@@ -1399,7 +1413,6 @@ const defaultReportingGroupExpression = new CaseExpression({
       ]),
       $then: new Value('AN')
     },
-
     {
       $when: new AndExpressions([
         new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
