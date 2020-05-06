@@ -1199,15 +1199,15 @@ query.registerQuery('shipmentAll', new Query({
 // shipment table field
 
 // warning !!! will not contain all if the list is too large
-query.registerResultColumn('primaryKeyListString',
-  new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))), 'primaryKeyListString')
-)
+// query.registerResultColumn('primaryKeyListString',
+//   new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))), 'primaryKeyListString')
+// )
 
-query
-  .registerResultColumn(
-    'partyGroupCode',
-    new ResultColumn(new ColumnExpression('shipment', 'partyGroupCode'))
-  )
+// query
+//   .registerResultColumn(
+//     'partyGroupCode',
+//     new ResultColumn(new ColumnExpression('shipment', 'partyGroupCode'))
+//  )
 
 // //  IFNULL(carrier.carrierCode, billTransport.carrierCode)
 
