@@ -1244,8 +1244,8 @@ const defaultReportingGroupExpression = new CaseExpression({
 // WHEN b.division = 'AI' AND b.isDirect = 0 THEN 'AM'
 // WHEN b.division = 'AI' AND b.isDirect = 1 THEN 'AN'
 // WHEN b.division = 'TA' THEN 'AW'
-// WHEN office.partyId = 7351496 AND b.division = 'TAE' THEN 'AU'
-// WHEN office.partyId = 7351496 AND b.division = 'TAI' THEN 'AV'
+// WHEN office.thirdPartyCode.old360  = 7351496 AND b.division = 'TAE' THEN 'AU'
+// WHEN office.thirdPartyCode.old360 = 7351496 AND b.division = 'TAI' THEN 'AV'
 // WHEN b.division = 'MM' THEN 'AX'
 // WHEN b.division = 'AM' THEN 'AZ'
 // WHEN b.division = 'SE' AND b.shipmentType = 'FCL' THEN 'SA'
@@ -1254,8 +1254,8 @@ const defaultReportingGroupExpression = new CaseExpression({
 // WHEN b.division = 'SI' AND b.shipmentType = 'FCL' THEN 'SR'
 // WHEN b.division = 'SI' AND b.shipmentType = 'LCL' THEN 'SS'
 // WHEN b.division = 'SI' AND b.shipmentType = 'Consol' THEN 'ST'
-// WHEN office.partyId = 7351496 AND b.division = 'TSE' THEN 'SU'
-// WHEN office.partyId = 7351496 AND b.division = 'TSI' THEN 'SV'
+// WHEN office.thirdPartyCode.old360 = 7351496 AND b.division = 'TSE' THEN 'SU'
+// WHEN office.thirdPartyCode.old360 = 7351496 AND b.division = 'TSI' THEN 'SV'
 // WHEN b.division = 'TS' THEN 'SW'
 // WHEN b.division = 'SM' THEN 'SZ'
 // WHEN b.division = 'LOG' THEN 'ZL'
@@ -1790,7 +1790,7 @@ query.groupField('carrierName', carrierNameExpression)
 
 query.groupField('salesmanCode', salesmanCodeExpression)
 
-query.groupField('reportingGroup', reportingGroupExpression, undefined, 'table:shipment_party')
+query.groupField('reportingGroup', reportingGroupExpression, undefined, 'table:office')
 
 query.groupField('shipId', shipIdExpression)
 
