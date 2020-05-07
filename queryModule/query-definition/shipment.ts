@@ -1,4 +1,4 @@
-import { QueryDef, ResultColumnFn, GroupByFn, QueryFn } from 'classes/query/QueryDef'
+import { QueryDef, ResultColumnArg, SubqueryArg } from 'classes/query/QueryDef'
 import {
   Query,
   FromTable,
@@ -29,10 +29,12 @@ import {
   OrderBy,
   IConditionalExpression,
   MathExpression,
-  ColumnsExpression
+  ColumnsExpression,
+  IQuery
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
 import { now } from '../../../../swivel-backend-new/node_modules/moment/moment'
+import { IQueryResult } from 'node-jql-core'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -82,8 +84,6 @@ const shipmentIsActiveExpression = (shipmentTableName) => {
   ])
 
 }
-
-const isMinCreatedAtExpression = new ColumnExpression('shipment_isMinCreatedAt', 'isMinCreatedAt')
 
 const agentPartyIdExpression = new CaseExpression({
 
@@ -149,23 +149,103 @@ const partyList = [
   },
   {
     name: 'agent',
-    partyNameExpression: agentPartyNameExpression,
-    partyIdExpression: agentPartyIdExpression,
-    partyCodeExpression: agentPartyCodeExpression
+    partyNameExpression: {
+      expression : agentPartyNameExpression,
+      companion : 'table:shipment_party'
+    },
+    partyIdExpression: {
+      expression : agentPartyIdExpression,
+      companion : 'table:shipment_party'
+    },
+    partyCodeExpression: {
+      expression : agentPartyCodeExpression,
+      companion : 'table:shipment_party'
+    }
   }
 ] as {
 
   name: string,
-  partyNameExpression?: IExpression,
-  partyIdExpression?: IExpression,
-  partyCodeExpression?: IExpression,
-  partyNameInReportExpression?: IExpression
-  partyShortNameInReportExpression?: IExpression
+  partyNameExpression?: {
+    companion: string[],
+    expression: IExpression
+  },
+  partyIdExpression?: {
+    companion: string[],
+    expression: IExpression
+  },
+  partyCodeExpression?: {
+    companion: string[],
+    expression: IExpression
+  },
+  partyNameInReportExpression?: {
+    companion: string[],
+    expression: IExpression
+  }
+  partyShortNameInReportExpression?: {
+    companion: string[],
+    expression: IExpression
+  }
 
 }[]
 const locationList = ['portOfLoading', 'portOfDischarge', 'placeOfDelivery', 'placeOfReceipt', 'finalDestination']
 
-const query = new QueryDef(
+const query = new QueryDef((params: IQueryParams) => {
+
+  const baseQuery =   new Query({
+    // $distinct: true,
+    $select: [
+      new ResultColumn(new ColumnExpression('shipment', '*')),
+      new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
+      new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentPartyId'),
+    ],
+    $from: new FromTable(
+
+      {
+        table : 'shipment',
+      }
+
+    ),
+  })
+
+  const specialName = 'isMinCreatedAt'
+
+  const { fields, conditions, subqueries } = params
+
+  if (subqueries[specialName]) {
+
+    const { newSubqueries, [specialName] : dumb } = params.subqueries
+
+    const newParams = {
+      fields: [
+        new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
+        new ResultColumn(new BinaryExpression(new ColumnExpression('shipment', 'createdAt'), '=', new FunctionExpression('MIN', new ColumnExpression('shipment', 'createdAt'))),
+        'isMinCreatedAt',
+        new ColumnExpression('shipment', 'houseNo'),
+        new ColumnExpression('shipment', 'partyGroupCode')),
+      ],
+      subqueries: newSubqueries,
+      conditions
+    } as IQueryParams
+
+    baseQuery.$from[0].joinClauses.push(
+      new JoinClause({
+        operator :  'LEFT',
+        table : new FromTable(query.apply(newParams), 'shipment_isMinCreatedAt'),
+        $on : new BinaryExpression(new ColumnExpression('shipment', 'id'), '=', new ColumnExpression('shipment_isMinCreatedAt', 'shipmentId'))
+      })
+    )
+  }
+
+  return baseQuery
+})
+
+query.registerQuery('isMinCreatedAt', new Query({
+
+  $where : new BinaryExpression(new ColumnExpression('shipment_isMinCreatedAt', 'isMinCreatedAt'), '=', true)
+
+}))
+
+const queryOld = new QueryDef(
   new Query({
     // $distinct: true,
     $select: [
@@ -270,11 +350,13 @@ query.table('shipment_party', new Query({
 
 }))
 
-// party join
+// party join : table:office, table:shipper etc
 partyList.map(party => {
 
   const partyTableName = party.name
-  const partyIdExpression = party.partyIdExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyId`)
+
+  const companion = (party.partyIdExpression && party.partyIdExpression.companion) ? party.partyIdExpression.companion : [`table:shipment_party`]
+  const partyIdExpression = (party.partyIdExpression && party.partyIdExpression.expression) ? party.partyIdExpression.expression :  new ColumnExpression('shipment_party', `${partyTableName}PartyId`)
 
   query.table(partyTableName, new Query({
 
@@ -296,10 +378,11 @@ partyList.map(party => {
       ]
     })
 
-  }), 'table:shipment_party')
+  }), ...companion)
 
 })
 
+// used for statusJoin
 const shipmentTrackingLastStatusCodeTableExpression = new Query({
 
   $select: [
@@ -342,8 +425,7 @@ const shipmentTrackingStatusCodeTableExpression = new Query({
 
 })
 
-// lastStatusJoin
-
+// statusJoin : table:statusJoin
 query.table('statusJoin', new Query(
   {
     $from: new FromTable('shipment', {
@@ -362,6 +444,7 @@ query.table('statusJoin', new Query(
 
   }))
 
+// lastStatusJoin : table:lastStatusJoin
 query.table('lastStatusJoin', new Query({
 
   $from: new FromTable('shipment', {
@@ -382,6 +465,8 @@ query.table('lastStatusJoin', new Query({
 //  alert Join
 // warning !!! this join will create duplicate record of shipment
 // plz use wisely, mainly use together with group by
+
+// alertJoin : table:alertJoin
 query.table('alertJoin', new Query({
 
     $from: new FromTable('shipment', {
@@ -401,7 +486,7 @@ query.table('alertJoin', new Query({
   })
 )
 
-// location table join
+// location table :  table:portOfLoading, table:portOfDischarge
 locationList.map(location => {
 
   const joinTableName = `${location}Join`
@@ -426,6 +511,7 @@ locationList.map(location => {
 
 })
 
+// shipment_amount table :  table:shipment_amount
 query.table('shipment_amount', new Query({
 
   $from : new FromTable({
@@ -470,6 +556,7 @@ query.table('shipment_amount', new Query({
   })
 }))
 
+// shipment_cargo table :  table:shipment_cargo
 query.table('shipment_cargo', new Query({
 
   $from : new FromTable({
@@ -579,6 +666,7 @@ query.table('shipment_cargo', new Query({
   })
 }))
 
+// shipment_container table :  table:shipment_container
 query.table('shipment_container', new Query({
 
   $from : new FromTable({
@@ -786,6 +874,7 @@ query.table('shipment_container', new Query({
   })
 }))
 
+// shipment_po table :  table:shipment_po
 query.table('shipment_po', new Query({
 
   $from : new FromTable({
@@ -836,6 +925,7 @@ query.table('shipment_po', new Query({
   })
 }))
 
+// shipment_reference table :  table:shipment_reference
 query.table('shipment_reference', new Query({
 
   $from : new FromTable({
@@ -876,6 +966,7 @@ query.table('shipment_reference', new Query({
   })
 }))
 
+// shipment_transport table :  table:shipment_transport
 query.table('shipment_transport', new Query({
 
   $from : new FromTable({
@@ -1795,39 +1886,35 @@ query.groupField('reportingGroup', reportingGroupExpression, undefined, 'table:o
 query.groupField('shipId', shipIdExpression)
 
 // tracking lastStatus
-query.registerBoth('lastStatusCode', lastStatusCodeExpression)
-query.registerBoth('lastStatus', lastStatusExpression)
+query.registerBoth('lastStatusCode', lastStatusCodeExpression, undefined, 'table:lastStatusJoin')
+query.registerBoth('lastStatus', lastStatusExpression, undefined, 'table:lastStatusJoin')
 
 // tracking status
-query.registerBoth('statusCode', statusCodeExpression)
-query.registerBoth('status', statusExpression)
+query.registerBoth('statusCode', statusCodeExpression, undefined, 'table:lastStatusJoin')
+query.registerBoth('status', statusExpression, undefined, 'table:lastStatusJoin')
 
 // dateStatus
-query.registerBoth('dateStatus', (params) => dateStatusExpressionWithParams(params))
+query.registerBoth('dateStatus', (params) => dateStatusExpressionWithParams(params), undefined, 'table:shipment_date')
 
-query.registerBoth('alertId', alertIdExpression)
+query.registerBoth('alertId', alertIdExpression, undefined, 'table:alertJoin')
 
-query.registerBoth('alertTableName', alertTableNameExpression)
+query.registerBoth('alertTableName', alertTableNameExpression, undefined, 'table:alertJoin')
 
-query.registerBoth('alertPrimaryKey', alertPrimaryKeyExpression)
+query.registerBoth('alertPrimaryKey', alertPrimaryKeyExpression, undefined, 'table:alertJoin')
 
-query.registerBoth('alertSeverity', alertSeverityExpression)
+query.registerBoth('alertSeverity', alertSeverityExpression, undefined, 'table:alertJoin')
 
-query.registerBoth('alertType', alertTypeExpression)
+query.registerBoth('alertType', alertTypeExpression, undefined, 'table:alertJoin')
 
-query.registerBoth('alertTitle', alertTitleExpression)
+query.registerBoth('alertTitle', alertTitleExpression, undefined, 'table:alertJoin')
 
-query.registerBoth('alertMessage', alertMessageExpression)
+query.registerBoth('alertMessage', alertMessageExpression, undefined, 'table:alertJoin')
 
-query.registerBoth('alertCategory', alertCategoryExpression)
+query.registerBoth('alertCategory', alertCategoryExpression, undefined, 'table:alertJoin')
 
-query.registerBoth('alertCreatedAt', alertCreatedAtExpression)
+query.registerBoth('alertContent', alertContentExpression, undefined, 'table:alertJoin')
 
-query.registerBoth('alertUpdatedAt', alertUpdatedAtExpression)
-
-query.registerBoth('alertContent', alertContentExpression)
-
-query.registerBoth('alertStatus', alertStatusExpression)
+query.registerBoth('alertStatus', alertStatusExpression, undefined, 'table:alertJoin')
 
 // ===========================
 
@@ -1868,52 +1955,92 @@ const partyFieldList = [
   'PartyAddress'
 ]
 
-partyList.map(party => {
+  partyList.map(party => {
 
   const partyTableName = party.name
 
-  const partyIdExpression = party.partyIdExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyId`)
-  const partyNameExpression = party.partyNameExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyName`)
-  const partyCodeExpression = party.partyCodeExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyCode`)
-  const partyNameInReportExpression = party.partyNameInReportExpression || new ColumnExpression(party.name, `name`)
-  const partyShortNameInReportExpression = party.partyShortNameInReportExpression || new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression)
+  const partyIdExpression = party.partyIdExpression  || { expression : new ColumnExpression('shipment_party', `${partyTableName}PartyId`), companion : ['table:shipment_party']}
+  const partyNameExpression = party.partyNameExpression ||  { expression :  new ColumnExpression('shipment_party', `${partyTableName}PartyName`), companion : ['table:shipment_party']}
+  const partyCodeExpression = party.partyCodeExpression || { expression :  new ColumnExpression('shipment_party', `${partyTableName}PartyCode`), companion : ['table:shipment_party']}
+  const partyNameInReportExpression = party.partyNameInReportExpression || { expression :  new ColumnExpression(party.name, `name`), companion : [`table:${party.name}`]}
+  const partyShortNameInReportExpression = party.partyShortNameInReportExpression ||  { expression : new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion : [`table:${party.name}`]}
 
   partyFieldList.map(partyField => {
 
     const fieldName = `${partyTableName}${partyField}`
 
-    let expression: IExpression
+    let finalExpressionInfo: { expression: IExpression, companion: string[] }
 
     switch (partyField) {
 
       case 'PartyCode':
-        expression = partyCodeExpression
+        finalExpressionInfo = partyCodeExpression
         break
 
       case 'PartyName':
-        expression = partyNameExpression
+        finalExpressionInfo = partyNameExpression
         break
 
       case 'PartyId':
-        expression = partyIdExpression
+        finalExpressionInfo = partyIdExpression
         break
 
       // PartyReportName will get from party join instead of shipment_party direct;y
       case 'PartyNameInReport':
-        expression = partyNameInReportExpression
+        finalExpressionInfo = partyNameInReportExpression
         break
 
       case 'PartyShortNameInReport':
-        expression = partyShortNameInReportExpression
+        finalExpressionInfo = partyShortNameInReportExpression
         break
 
       default:
-        expression = new ColumnExpression('shipment_party', fieldName) as IExpression
+        finalExpressionInfo = { expression : new ColumnExpression('shipment_party', fieldName) as IExpression, companion : ['table:shipment_party'] }
         break
     }
 
-    query.registerBoth(fieldName, expression)
+    query.registerBoth(fieldName, finalExpressionInfo.expression, undefined, ...finalExpressionInfo.companion)
+
   })
+
+  query
+  .register(
+    `${partyTableName}PartyId`,
+    new Query({
+      $where: new InExpression(partyIdExpression.expression, false),
+    }),
+    ...partyIdExpression.companion
+  )
+  .register('value', 0)
+
+query
+  .register(
+    `${partyTableName}PartyCode`,
+    new Query({
+      $where: new InExpression(partyCodeExpression.expression, false),
+    }),
+    ...partyCodeExpression.companion
+  )
+  .register('value', 0)
+
+query
+  .register(
+    `${partyTableName}PartyName`,
+    new Query({
+      $where: new RegexpExpression(partyNameExpression.expression, false),
+    }),
+    ...partyNameExpression.companion
+  )
+  .register('value', 0)
+
+query
+  .register(
+    `${partyTableName}IsNotNull`,
+    new Query({
+      $where: new IsNullExpression(partyIdExpression.expression, true),
+    }),
+    ...partyIdExpression.companion
+  )
 
 })
 
@@ -2149,7 +2276,7 @@ isInReportList.map(isInReport => {
     query.registerResultColumn(summaryFieldName, basicFn)
 
     // cbmMonth case
-    const monthFn: ResultColumnFn = (params) => {
+    const monthFn: ResultColumnArg = (params) => {
 
       const resultColumnList = [] as ResultColumn[]
 
@@ -2402,7 +2529,7 @@ const shipmentTableFilterFieldList = [
   {
     name : 'reportingGroup',
     expression : reportingGroupExpression,
-    companion : []
+    companion : ['table:office']
   },
 
   {
@@ -2496,50 +2623,24 @@ shipmentTableFilterFieldList.map(filterField => {
     return new Query({
       $where: new InExpression(expressionFn(subqueryParam), false, valueList),
     })
-  }) as QueryFn
+  }) as SubqueryArg
 
   const IsNotNullQueryFn = ((subqueryParam) => {
     return new Query({
       $where: new IsNullExpression(expressionFn(subqueryParam), true),
     })
-  }) as QueryFn
+  }) as SubqueryArg
 
   const IsNullQueryFn = ((subqueryParam) => {
     return new Query({
       $where: new IsNullExpression(expressionFn(subqueryParam), false),
     })
-  }) as QueryFn
+  }) as SubqueryArg
 
   query.subquery(`${name}`, inFilterQueryFn, ...companion)
   query.subquery(`${name}In`, inFilterQueryFn, ...companion)
   query.subquery(`${name}IsNotNull`, IsNotNullQueryFn, ...companion)
   query.subquery(`${name}IsNull`, IsNullQueryFn, ...companion)
-
-  // query.registerQuery(name, inFilterQueryFn)
-  // query.registerQuery(`${name}IsNotNull`, IsNotNullQueryFn)
-  // query.registerQuery(`${name}IsNull`, IsNullQueryFn)
-
-  // ===== old
-
-  // // normal value IN list filter
-  // query.registerQuery(name,
-  //   new Query({
-  //     $where: new InExpression(expression, false),
-  //   })
-  // ).register('value', 0)
-
-  // // Is not Null filter
-  // query.registerQuery(`${name}IsNotNull`,
-  //   new Query({
-  //     $where: new IsNullExpression(expression, true),
-  //   })
-  // )
-
-  // query.registerQuery(`${name}IsNull`,
-  //   new Query({
-  //     $where: new IsNullExpression(expression, false),
-  //   })
-  // )
 
 })
 
@@ -2707,11 +2808,6 @@ const singleEqualFieldList = [
     name : 'batchNumber',
     expression : batchNumberExpression
   },
-
-  {
-    name : 'isMinCreatedAt',
-    expression : isMinCreatedAtExpression
-  },
 ]
 
 singleEqualFieldList.map(singleEqualField => {
@@ -2736,50 +2832,50 @@ singleEqualFieldList.map(singleEqualField => {
 
 })
 
-// shipment party Filter================================
-partyList.map(party => {
+// // shipment party Filter================================
+// partyList.map(party => {
 
-  const partyTableName = party.name
-  const partyIdExpression = party.partyIdExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyId`)
-  const partyNameExpression = party.partyNameExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyName`)
-  const partyCodeExpression = party.partyCodeExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyCode`)
+//   const partyTableName = party.name
+//   const partyIdExpression = party.partyIdExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyId`)
+//   const partyNameExpression = party.partyNameExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyName`)
+//   const partyCodeExpression = party.partyCodeExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyCode`)
 
-  query
-    .register(
-      `${partyTableName}PartyId`,
-      new Query({
-        $where: new InExpression(partyIdExpression, false),
-      })
-    )
-    .register('value', 0)
+//   query
+//     .register(
+//       `${partyTableName}PartyId`,
+//       new Query({
+//         $where: new InExpression(partyIdExpression, false),
+//       })
+//     )
+//     .register('value', 0)
 
-  query
-    .register(
-      `${partyTableName}PartyCode`,
-      new Query({
-        $where: new InExpression(partyCodeExpression, false),
-      })
-    )
-    .register('value', 0)
+//   query
+//     .register(
+//       `${partyTableName}PartyCode`,
+//       new Query({
+//         $where: new InExpression(partyCodeExpression, false),
+//       })
+//     )
+//     .register('value', 0)
 
-  query
-    .register(
-      `${partyTableName}PartyName`,
-      new Query({
-        $where: new RegexpExpression(partyNameExpression, false),
-      })
-    )
-    .register('value', 0)
+//   query
+//     .register(
+//       `${partyTableName}PartyName`,
+//       new Query({
+//         $where: new RegexpExpression(partyNameExpression, false),
+//       })
+//     )
+//     .register('value', 0)
 
-  query
-    .register(
-      `${partyTableName}IsNotNull`,
-      new Query({
-        $where: new IsNullExpression(partyIdExpression, true),
-      })
-    )
+//   query
+//     .register(
+//       `${partyTableName}IsNotNull`,
+//       new Query({
+//         $where: new IsNullExpression(partyIdExpression, true),
+//       })
+//     )
 
-})
+// })
 
 function controllingCustomerIncludeRoleExpression($not: boolean, partyTypeList?: string[]) {
 
@@ -2948,28 +3044,38 @@ const dateList = [
 
   {
     name: 'alertCreatedAt',
-    expression: alertCreatedAtExpression
+    expression: alertCreatedAtExpression,
+    companion : ['table:alert']
   },
 
   {
     name: 'alertUpdatedAt',
-    expression: alertUpdatedAtExpression
+    expression: alertUpdatedAtExpression,
+    companion : ['table:alert']
 
   }
 
-]
+] as (string | {
+  name: string,
+  expression: IExpression,
+  companion: string[]
+}) []
 
 dateList.map(date => {
 
   const dateColumnName = typeof date === 'string' ? date : date.name
   const dateColumnExpression = typeof date === 'string' ? new ColumnExpression('shipment_date', date) : date.expression
+  const companion = typeof date === 'string' ? ['table:shipment_date'] : date.companion
+
+  query.registerBoth(dateColumnName, dateColumnExpression, undefined, ...companion)
 
   query
     .register(
       dateColumnName,
       new Query({
         $where: new BetweenExpression(dateColumnExpression, false, new Unknown(), new Unknown()),
-      })
+      }),
+      ...companion
     )
     .register('from', 0)
     .register('to', 1)
