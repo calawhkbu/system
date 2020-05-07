@@ -2,7 +2,7 @@
   "class": "grid full-width",
   "components": [{
       "is": "DynamicComponent",
-      "if": "\n        const setting = context.$store.state.widget.componentSetting || {}\n        return !setting.next\n      ",
+      "if": "const setting = context.$store.state.widget.componentSetting || {};return !setting.next;",
       "props": {
         "class": "grid full-width",
         "components": [{
