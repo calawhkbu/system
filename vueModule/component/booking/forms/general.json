@@ -2,6 +2,7 @@
   "components": [{
     "is": "WidgetForm",
     "props": {
+      "class": "padding-top-10",
       "fields": [{
           "label": "BookingPage.moduleType",
           "name": "moduleTypeCode",

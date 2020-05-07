@@ -9,9 +9,11 @@ export default function fixCardsLayout(cards: any[], original: any[]) {
         const oldLayouts = card.layouts
         const lgLayout = { ...(oldLayouts.lg || oldLayouts.md || {}) } as any
         lgLayout.w = 12
+        lgLayout.h = 25
         lgLayout.hr = 1
         const smLayout = { ...(oldLayouts.sm || oldLayouts.xs || {}) } as any
         smLayout.w = 4
+        smLayout.h = 12
         smLayout.hr = 1
         card.layouts = {
           lg: lgLayout,
@@ -36,9 +38,11 @@ export default function fixCardsLayout(cards: any[], original: any[]) {
           card1LgLayout.x = 0
           card2LgLayout.x = 6
           card1LgLayout.w = card2LgLayout.w = 6
+          card1LgLayout.h = card2LgLayout.h = 16
           card1LgLayout.hr = card2LgLayout.hr = 0.7
         } else {
           card1LgLayout.w = card2LgLayout.w = 12
+          card1LgLayout.h = card2LgLayout.h = 13
           card1LgLayout.hr = card2LgLayout.hr = 0.5
         }
         const card1SmLayout = {
@@ -48,6 +52,7 @@ export default function fixCardsLayout(cards: any[], original: any[]) {
           ...(card2OldLayouts.sm || card2OldLayouts.xs || {}),
         } as any
         card1SmLayout.w = card2SmLayout.w = 4
+        card1SmLayout.h = card2SmLayout.h = 8
         card1SmLayout.hr = card2SmLayout.hr = 0.7
         card1.layouts = {
           lg: card1LgLayout,
@@ -67,9 +72,11 @@ export default function fixCardsLayout(cards: any[], original: any[]) {
           const oldLayouts = card.layouts
           const lgLayout = { ...(oldLayouts.lg || oldLayouts.md || {}) } as any
           lgLayout.w = 12
+          lgLayout.h = 13
           lgLayout.hr = 0.5
           const smLayout = { ...(oldLayouts.sm || oldLayouts.xs || {}) } as any
           smLayout.w = 4
+          smLayout.h = 8
           smLayout.hr = 0.7
           card.layouts = {
             lg: lgLayout,

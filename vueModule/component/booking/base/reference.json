@@ -16,13 +16,44 @@
       "is": "DynamicComponent",
       "props": {
         "components": [{
+          "is": "v-btn",
+          "props": {
+            "icon": true,
+            "small": true,
+            "class": "zindex-3 margin-0"
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "edit"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "dispatch",
+              "otherParams": {
+                "name": "widget/changeMode",
+                "mode": "edit"
+              },
+              "afterActions": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/updateComponentSetting",
+                  "value": {
+                    "stepper": 4
+                  }
+                }
+              }]
+            }]
+          }
+        }, {
           "is": "RightDrawer",
           "props": {
             "hide-overlay": true,
             "buttonComponentProps": {
               "icon": true,
               "small": true,
-              "class": "zindex-3"
+              "class": "zindex-3 margin-0"
             }
           },
           "slots": [{
@@ -127,13 +158,29 @@
       "is": "DynamicComponent",
       "props": {
         "components": [{
+          "is": "v-card-title",
+          "props": {
+            "class": "bold uppercase padding-0 min-height-28 padding-leftright-4"
+          },
+          "slots": [{
+            "is": "I18nText",
+            "props": {
+              "i18nContext": "BookingPage",
+              "i18nKey": "referenceForm"
+            }
+          }]
+        }, {
+          "is": "v-divider"
+        }, {
           "is": "WidgetForm",
           "props": {
+            "class": "padding-top-10",
             "fields": [{
                 "label": "BookingPage.references",
                 "name": "bookingReference",
                 "component": "TableField",
                 "class": "xs-12",
+                "checkDisplayWhen": "return form && form.bookingReference && form.bookingReference.length",
                 "props": {
                   "topLabel": true,
                   "fields": [{
@@ -186,25 +233,29 @@
                 "label": "BookingPage.shipMarks",
                 "name": "shipMarks",
                 "component": "v-textarea",
-                "class": "xs-12 md-6"
+                "checkDisplayWhen": "return form && form.shipMarks",
+                "class": "xs-6"
               },
               {
                 "label": "BookingPage.goodsDescription",
                 "name": "goodsDescription",
                 "component": "v-textarea",
-                "class": "xs-12 md-6"
+                "checkDisplayWhen": "return form && form.goodsDescription",
+                "class": "xs-6"
               },
               {
                 "label": "BookingPage.remark",
                 "name": "remark",
                 "component": "v-textarea",
-                "class": "xs-12 md-6"
+                "checkDisplayWhen": "return form && form.remark",
+                "class": "xs-6"
               },
               {
                 "label": "BookingPage.specialInstruction",
                 "name": "flexData.specialInstruction",
                 "component": "v-textarea",
-                "class": "xs-12 md-6"
+                "checkDisplayWhen": "return form && form.flexData && form.flexData.specialInstruction",
+                "class": "xs-6"
               }
             ]
           }

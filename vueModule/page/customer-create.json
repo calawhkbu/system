@@ -35,7 +35,7 @@
     }
   ],
   "remove": "---",
-  "fillParent": true,
+  "_fillParent": true,
   "_components": [{
     "is": "Widget",
     "props": {

@@ -9,16 +9,17 @@ export default (user: JwtPayload) => {
         name: party.name,
         erpCode: party.thirdPartyCode.erp
       }
+      break
     }
   }
   return {
     boundTypeCode: 'O',
     bookingParty: {
-
       forwarderPartyCode : myParty.erpCode,
       forwarderParty: myParty,
       forwarderPartyId: myParty.id,
       forwarderPartyName: myParty.name,
-    }
+    },
+    bookingDate: {}
   }
 }
