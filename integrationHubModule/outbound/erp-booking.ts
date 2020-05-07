@@ -4,16 +4,14 @@ export default {
   method: 'POST', // 'GET'|'POST'|'PUT'|'DELETE'|'HEAD'|'OPTIONS'
 
   getUrl: (headers: any, body: any) => {
-    return `http://demoerp.swivelsoftware.com/booking360.ashx`
+    return `http://demoerpapp.swivelsoftware.com/swivelapi.asmx?op=booking_360api`
   },
   requestHandler: (headers: any, body: any) => {
     return {
       headers: {
         'content-type': 'application/json',
       },
-      body: {
-        ...body,
-      },
+      body: JSON.stringify({ bokjson: body }),
       json: true,
     }
   },
