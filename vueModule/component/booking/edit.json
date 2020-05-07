@@ -3,10 +3,11 @@
   "components": [{
       "is": "DynamicComponent",
       "props": {
-        "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-2",
         "components": [{
             "is": "v-btn",
             "props": {
+              "class": "margin-0",
               "small": true,
               "flat": true,
               "icon": true
@@ -59,7 +60,7 @@
             "components": [{
               "is": "AsyncComponent",
               "props": {
-                "layoutName": "booking/forms/generalForm"
+                "layoutName": "booking/forms/general"
               }
             }]
           },
@@ -70,7 +71,7 @@
             "components": [{
               "is": "AsyncComponent",
               "props": {
-                "layoutName": "booking/forms/partyForm"
+                "layoutName": "booking/forms/party"
               }
             }]
           },
@@ -81,7 +82,7 @@
             "components": [{
               "is": "AsyncComponent",
               "props": {
-                "layoutName": "booking/forms/dateForm"
+                "layoutName": "booking/forms/date"
               }
             }]
           },
@@ -92,7 +93,7 @@
             "components": [{
               "is": "AsyncComponent",
               "props": {
-                "layoutName": "booking/forms/containerForm"
+                "layoutName": "booking/forms/container"
               }
             }]
           },
@@ -103,7 +104,7 @@
             "components": [{
               "is": "AsyncComponent",
               "props": {
-                "layoutName": "booking/forms/referenceForm"
+                "layoutName": "booking/forms/reference"
               }
             }]
           }

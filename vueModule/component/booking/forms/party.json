@@ -9,6 +9,9 @@
           "class": "xs-12 md-6 padding-leftright-1"
         }
       },
+      "extraGridProps": {
+        "class": "xs-12 md-6 padding-leftright-1"
+      },
       "labelProps": {
         "z": {
           "isComponent": "v-label",
@@ -16,28 +19,14 @@
           "class": "font-90"
         },
         "shipper": {
+          "isComponent": "v-label",
+          "i18nContext": "Widget",
           "class": "font-90 required"
         },
         "consignee": {
+          "isComponent": "v-label",
+          "i18nContext": "Widget",
           "class": "font-90 required"
-        },
-        "forwarder": {
-          "class": "font-90"
-        },
-        "agent": {
-          "class": "font-90"
-        },
-        "linerAgent": {
-          "class": "font-90"
-        },
-        "roAgent": {
-          "class": "font-90"
-        },
-        "controllingCustomer": {
-          "class": "font-90"
-        },
-        "notifyParty": {
-          "class": "font-90"
         }
       },
       "fieldProps": {
@@ -63,26 +52,12 @@
         "controllingCustomer",
         "notifyParty"
       ],
-      "alwaysShowKeys": [
-        "shipper",
-        "consignee",
-        "agent",
-        "forwarder",
-        "roAgent",
-        "linerAgent",
-        "controllingCustomer",
-        "notifyParty"
-      ],
-      "checkDisplayWhen": [
-        "return form && (form[`${key}PartyId`] || form[`${key}PartyName`])"
-      ],
       "canAdd": true,
       "canAddProps": {
-        "class": "xs-12 md-6 padding-20 min-height-200 margin-auto"
+        "class": "xs-12 md-6 min-height-200 padding-leftright-1"
       },
       "addItemsOrFunc": ["Trucker", "Broker", "Factory", "Warehouse"],
-      "fields": [
-        {
+      "fields": [{
           "name": "bookingParty.{{flex}}{{key}}Party",
           "component": "AsyncAutoSuggest",
           "class": "xs-12",
