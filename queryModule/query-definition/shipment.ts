@@ -175,33 +175,47 @@ const query = new QueryDef(
       new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentPartyId'),
     ],
     $from: new FromTable(
-      'shipment',
 
+      {
+        table : 'shipment',
         // LEFT JOIN shipment_date
-        {
+
+         joinClauses : [{
           operator: 'LEFT',
           table: new FromTable({
             table: new Query({
               $select: [
-                new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
+                new ResultColumn(new ColumnExpression('shipment_dumb', 'id'), 'shipmentId'),
 
                 new ResultColumn(
                   new BinaryExpression(
-                    new ColumnExpression('shipment', 'createdAt'), '=', new FunctionExpression('MIN', new ColumnExpression('shipment', 'createdAt'))),
-                    'isMinCreatedAt', new ColumnExpression('shipment', 'houseNo'), new ColumnExpression('shipment', 'partyGroupCode')),
+                    new ColumnExpression('shipment_dumb', 'createdAt'), '=', new FunctionExpression('MIN', new ColumnExpression('shipment_dumb', 'createdAt'))),
+                    'isMinCreatedAt', new ColumnExpression('shipment_dumb', 'houseNo'), new ColumnExpression('shipment_dumb', 'partyGroupCode')),
 
               ],
-              $from: new FromTable('shipment', 'shipment'),
+              $from: new FromTable('shipment', 'shipment_dumb'),
 
-              $where : shipmentIsActiveExpression('shipment')
+              $where : shipmentIsActiveExpression('shipment_dumb')
 
             }),
             $as: 'shipment_isMinCreatedAt'
           }),
           $on: new BinaryExpression(new ColumnExpression('shipment', 'id'), '=', new ColumnExpression('shipment_isMinCreatedAt', 'shipmentId'))
-        },
+        }],
 
-      // LEFT JOIN shipment_date
+      }
+
+    ),
+  })
+)
+
+// all shipment join
+query.table('shipment_date', new Query({
+
+  $from : new FromTable({
+
+    table : 'shipment',
+    joinClauses : [
       {
         operator: 'LEFT',
         table: new FromTable({
@@ -220,9 +234,18 @@ const query = new QueryDef(
           $as: 'shipment_date'
         }),
         $on: new BinaryExpression(new ColumnExpression('shipment', 'id'), '=', new ColumnExpression('shipment_date', 'shipmentId'))
-      },
+      }
+    ]
+  })
 
-      // LEFT JOIN shipment_party
+}))
+
+query.table('shipment_party', new Query({
+
+  $from : new FromTable({
+
+    table : 'shipment',
+    joinClauses : [
       {
         operator: 'LEFT',
         table: new FromTable({
@@ -242,14 +265,24 @@ const query = new QueryDef(
         }),
         $on: new BinaryExpression(new ColumnExpression('shipment', 'id'), '=', new ColumnExpression('shipment_party', 'shipmentId'))
       },
+    ]
+  })
 
-      //  loop all party, and perform LEFT JOIN
-      ...partyList.map(party => {
+}))
 
-        const partyTableName = party.name
-        const partyIdExpression = party.partyIdExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyId`)
+// party join
+partyList.map(party => {
 
-        return ({
+  const partyTableName = party.name
+  const partyIdExpression = party.partyIdExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyId`)
+
+  query.table(partyTableName, new Query({
+
+    $from : new FromTable({
+
+      table : 'shipment',
+      joinClauses : [
+        {
           operator: 'LEFT',
           table: new FromTable('party', partyTableName),
           $on: [
@@ -259,228 +292,12 @@ const query = new QueryDef(
               new ColumnExpression(partyTableName, 'id')
             ),
           ],
-        }) as IJoinClause
-      }),
-
-    ),
-  })
-)
-
-// register join =====================
-
-const shipmentId_trackingNo_priority_fullTable = new Query({
-  $select: [
-    new ResultColumn('id', 'shipmentId'),
-    new ResultColumn(new ColumnExpression('masterNo'), 'trackingNo'),
-    new ResultColumn(new Value(3), 'priority')
-  ],
-  $from: new FromTable('shipment'),
-  $where: new IsNullExpression({
-    left: new ColumnExpression('masterNo'),
-    $not: true
-  }),
-  $union: new Query({
-    $select: [
-      new ResultColumn(new ColumnExpression('shipmentId'), 'shipmentId'),
-      new ResultColumn(new ColumnExpression('carrierBookingNo'), 'trackingNo'),
-      new ResultColumn(new Value(2), 'priority')
-    ],
-    $from: new FromTable({
-      table: 'shipment_container',
-    }),
-    $where: new IsNullExpression({
-      left: new ColumnExpression('carrierBookingNo'),
-      $not: true
-    }),
-    $union: new Query({
-      $select: [
-        new ResultColumn(new ColumnExpression('shipmentId'), 'shipmentId'),
-        new ResultColumn(new ColumnExpression('containerNo'), 'trackingNo'),
-        new ResultColumn(new Value(1), 'priority')
-      ],
-      $from: new FromTable({
-        table: 'shipment_container',
-      }),
-      $where: new IsNullExpression({
-        left: new ColumnExpression('carrierBookingNo'),
-        $not: true
-      }),
-      $union: new Query({
-
-        $select: [
-
-          new ResultColumn('id', 'shipmentId'),
-          new ResultColumn(new Value(null), 'trackingNo'),
-          new ResultColumn(new Value(0), 'priority')
-        ],
-
-        $from: new FromTable({
-          table: 'shipment'
-        })
-
-      })
-
-    })
-
-  })
-
-})
-
-const shipmentTrackingExpression = new Query({
-  $select: [
-    new ResultColumn(new ColumnExpression('shipment', 'shipmentId')),
-    new ResultColumn(new ColumnExpression('shipment', 'trackingNo')),
-    new ResultColumn(new ColumnExpression('tracking', 'lastStatusCode')),
-    new ResultColumn(new ColumnExpression('tracking', 'updatedAt')),
-    new ResultColumn(new ColumnExpression('shipment', 'priority'))
-
-  ],
-  $from: new FromTable({
-    table: shipmentId_trackingNo_priority_fullTable,
-    $as: 'shipment',
-    joinClauses: [
-      {
-        operator: 'LEFT',
-        table: 'tracking',
-        $on: new BinaryExpression(new ColumnExpression('tracking', 'trackingNo'), '=', new ColumnExpression('shipment', 'trackingNo'))
-      }
-    ],
-  }),
-  $order: [
-    new OrderBy(new ColumnExpression('shipment', 'shipmentId')),
-    new OrderBy(new ColumnExpression('shipment', 'priority')),
-  ]
-})
-
-// only for temp table, don't use it directly
-const shipmentId_trackingNo_priority_table = new Query({
-  $select: [
-    new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
-    new ResultColumn('masterNo', 'trackingNo'),
-    new ResultColumn(new FunctionExpression('IF', new IsNullExpression(new ColumnExpression('tracking', 'lastStatusCode'), false), new Value(0), new Value(3)), 'priority'),
-    new ResultColumn(new ColumnExpression('tracking', 'updatedAt'))
-  ],
-
-  $from: new FromTable('shipment', {
-    operator: 'LEFT',
-    table: 'tracking',
-    $on: new BinaryExpression(new ColumnExpression('tracking', 'trackingNo'), '=', new ColumnExpression('shipment', 'masterNo'))
-  }),
-  $where: new AndExpressions({
-    expressions: [
-      new IsNullExpression({
-        left: new ColumnExpression('masterNo'),
-        $not: true
-      }),
-      new IsNullExpression({
-        left: new ColumnExpression('tracking', 'lastStatusCode'),
-        $not: true
-      })
-    ]
-  }),
-
-  $union: new Query({
-
-    $select: [
-      new ResultColumn(new ColumnExpression('shipmentId'), 'shipmentId'),
-      new ResultColumn(new ColumnExpression('carrierBookingNo'), 'trackingNo'),
-      new ResultColumn(new FunctionExpression('IF', new IsNullExpression(new ColumnExpression('tracking', 'lastStatusCode'), false), new Value(0), new Value(2)), 'priority'),
-      new ResultColumn(new ColumnExpression('tracking', 'updatedAt'))
-    ],
-
-    $from: new FromTable('shipment_container', {
-      operator: 'LEFT',
-      table: 'tracking',
-      $on: new BinaryExpression(new ColumnExpression('tracking', 'trackingNo'), '=', new ColumnExpression('shipment_container', 'carrierBookingNo'))
-    }),
-    $where: new AndExpressions({
-      expressions: [
-        new IsNullExpression({
-          left: new ColumnExpression('carrierBookingNo'),
-          $not: true
-        }),
-        new IsNullExpression({
-          left: new ColumnExpression('tracking', 'lastStatusCode'),
-          $not: true
-        })
+        }
       ]
-    }),
-    $union: new Query({
-
-      $select: [
-
-        new ResultColumn(new ColumnExpression('shipmentId'), 'shipmentId'),
-        new ResultColumn(new ColumnExpression('containerNo'), 'trackingNo'),
-        new ResultColumn(new FunctionExpression('IF', new IsNullExpression(new ColumnExpression('tracking', 'lastStatusCode'), false), new Value(0), new Value(1)), 'priority'),
-        new ResultColumn(new ColumnExpression('tracking', 'updatedAt'))
-      ],
-
-      $from: new FromTable('shipment_container', {
-        operator: 'LEFT',
-        table: 'tracking',
-        $on: new BinaryExpression(new ColumnExpression('tracking', 'trackingNo'), '=', new ColumnExpression('shipment_container', 'containerNo'))
-      }),
-      $where: new AndExpressions({
-        expressions: [
-          new IsNullExpression({
-            left: new ColumnExpression('containerNo'),
-            $not: true
-          }),
-          new IsNullExpression({
-            left: new ColumnExpression('tracking', 'lastStatusCode'),
-            $not: true
-          })
-        ]
-      }),
-
     })
 
-  })
+  }), 'table:shipment_party')
 
-})
-
-// shipmentId <=> maxPriority
-const shipmentId_maxPriority_table = new Query({
-  $select: [
-    new ResultColumn(new ColumnExpression('shipmentId_trackingNo_priority_table', 'shipmentId')),
-    new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('shipmentId_trackingNo_priority_table', 'priority')), 'maxPriority'),
-    new ResultColumn(new FunctionExpression('MAX', new ColumnExpression('shipmentId_trackingNo_priority_table', 'updatedAt')), 'max_updatedAt')
-  ],
-
-  $from: new FromTable({
-    table: shipmentId_trackingNo_priority_table,
-    $as: 'shipmentId_trackingNo_priority_table',
-  }),
-  $group: new GroupBy(new ColumnExpression('shipmentId_trackingNo_priority_table', 'shipmentId'))
-
-})
-
-// the final map shipmentId <=> trackingNo
-const shipmentId_trackingNo_map_table = new Query({
-
-  $select: [
-    new ResultColumn(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'shipmentId'), 'shipmentId'),
-    new ResultColumn(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'trackingNo'), 'trackingNo'),
-  ],
-
-  $from: new FromTable({
-    table: shipmentId_trackingNo_priority_fullTable,
-    $as: 'shipmentId_trackingNo_priority_fullTable',
-
-    joinClauses: [
-      {
-        operator: 'LEFT',
-        table: new FromTable({
-          table: shipmentId_maxPriority_table,
-          $as: 'shipmentId_maxPriority_table'
-        }),
-        $on: new AndExpressions([
-          new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'shipmentId'), '=', new ColumnExpression('shipmentId_maxPriority_table', 'shipmentId')),
-          new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_priority_fullTable', 'priority'), '=', new ColumnExpression('shipmentId_maxPriority_table', 'maxPriority'))
-        ])
-      }
-    ]
-  })
 })
 
 const shipmentTrackingLastStatusCodeTableExpression = new Query({
@@ -525,109 +342,9 @@ const shipmentTrackingStatusCodeTableExpression = new Query({
 
 })
 
-const shipmentTrackingLastStatusCodeTableExpressionOld = new Query({
+// lastStatusJoin
 
-  $select: [
-    new ResultColumn(new ColumnExpression('shipmentId_trackingNo_map_table', 'shipmentId'), 'shipmentId'),
-    new ResultColumn(new ColumnExpression('shipmentId_trackingNo_map_table', 'trackingNo'), 'trackingNo'),
-    new ResultColumn(new ColumnExpression('tracking', 'id'), 'trackingId'),
-    new ResultColumn(new ColumnExpression('tracking', 'lastStatusCode'), 'lastStatusCode'),
-    new ResultColumn(new ColumnExpression('tracking', 'lastStatusDate'), 'lastStatusDate')
-
-  ],
-
-  $from: new FromTable({
-    table: shipmentId_trackingNo_map_table,
-    $as: 'shipmentId_trackingNo_map_table',
-    joinClauses: [
-      {
-        operator: 'LEFT',
-        table: new FromTable({
-          table: 'tracking'
-        }),
-        $on: [
-          new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_map_table', 'trackingNo'), '=', new ColumnExpression('tracking', 'trackingNo'))
-        ]
-      }
-    ]
-  })
-
-})
-
-const shipmentTrackingStatusCodeTableExpressionOld = new Query({
-
-  $select: [
-    new ResultColumn(new ColumnExpression('shipmentId_trackingNo_map_table', 'shipmentId'), 'shipmentId'),
-    new ResultColumn(new ColumnExpression('shipmentId_trackingNo_map_table', 'trackingNo'), 'trackingNo'),
-    new ResultColumn(new ColumnExpression('tracking_status', 'trackingId'), 'trackingId'),
-    new ResultColumn(new ColumnExpression('tracking_status', 'statusCode'), 'statusCode'),
-    new ResultColumn(new ColumnExpression('tracking_status', 'statusDate'), 'statusDate'),
-  ],
-
-  $from: new FromTable({
-    table: shipmentId_trackingNo_map_table,
-    $as: 'shipmentId_trackingNo_map_table',
-    joinClauses: [
-      {
-        operator: 'LEFT',
-        table: new FromTable({
-          table: 'tracking'
-        }),
-        $on: [
-          new BinaryExpression(new ColumnExpression('shipmentId_trackingNo_map_table', 'trackingNo'), '=', new ColumnExpression('tracking', 'trackingNo'))
-        ]
-      },
-      {
-        operator: 'LEFT',
-        table: new FromTable({
-          table: 'tracking_status'
-        }),
-
-        $on: [
-          new BinaryExpression(new ColumnExpression('tracking', 'id'), '=', new ColumnExpression('tracking_status', 'trackingId'))
-        ]
-
-      }
-    ]
-  })
-
-})
-
-query.registerQuery('lastStatusJoin', new Query({
-
-  $from: new FromTable('shipment', {
-
-    operator: 'LEFT',
-    table: new FromTable({
-
-      table: shipmentTrackingLastStatusCodeTableExpression,
-      $as: 'shipmentTrackingLastStatusCodeTable',
-
-    }),
-    $on: new BinaryExpression(new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'trackingNo'), '=', new ColumnExpression('shipment', 'currentTrackingNo'))
-
-  })
-
-}))
-
-query.registerQuery('lastStatusJoinOld', new Query({
-
-  $from: new FromTable('shipment', {
-
-    operator: 'LEFT',
-    table: new FromTable({
-
-      table: shipmentTrackingLastStatusCodeTableExpression,
-      $as: 'shipmentTrackingLastStatusCodeTable',
-
-    }),
-    $on: new BinaryExpression(new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))
-
-  })
-
-}))
-
-query.registerQuery('statusJoin', new Query(
+query.table('statusJoin', new Query(
   {
     $from: new FromTable('shipment', {
 
@@ -645,29 +362,27 @@ query.registerQuery('statusJoin', new Query(
 
   }))
 
-query.registerQuery('statusJoinOld', new Query(
-  {
-    $from: new FromTable('shipment', {
+query.table('lastStatusJoin', new Query({
 
-      operator: 'LEFT',
-      table: new FromTable({
+  $from: new FromTable('shipment', {
 
-        table: shipmentTrackingStatusCodeTableExpression,
-        $as: 'shipmentTrackingStatusCodeTable',
+    operator: 'LEFT',
+    table: new FromTable({
 
-      }),
+      table: shipmentTrackingLastStatusCodeTableExpression,
+      $as: 'shipmentTrackingLastStatusCodeTable',
 
-      $on: new BinaryExpression(new ColumnExpression('shipmentTrackingStatusCodeTable', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))
+    }),
+    $on: new BinaryExpression(new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'trackingNo'), '=', new ColumnExpression('shipment', 'currentTrackingNo'))
 
-    })
+  })
 
-  }))
+}))
 
 //  alert Join
 // warning !!! this join will create duplicate record of shipment
 // plz use wisely, mainly use together with group by
-query.registerQuery(
-  'alertJoin', new Query({
+query.table('alertJoin', new Query({
 
     $from: new FromTable('shipment', {
 
@@ -686,14 +401,14 @@ query.registerQuery(
   })
 )
 
+// location table join
 locationList.map(location => {
 
-  const subqueriesName = `${location}Join`
+  const joinTableName = `${location}Join`
   const locationCode = `${location}Code`
 
   // location join (e.g. portOfLoadingJoin)
-  query.registerQuery(
-    subqueriesName, new Query({
+  query.table(joinTableName, new Query({
 
       $from: new FromTable('shipment', {
 
@@ -711,14 +426,12 @@ locationList.map(location => {
 
 })
 
-// =======================================
+query.table('shipment_amount', new Query({
 
-query.registerQuery('shipmentAll', new Query({
+  $from : new FromTable({
 
-  $from: new FromTable({
-
-    table: 'shipment',
-    joinClauses: [
+    table : 'shipment',
+    joinClauses : [
 
       {
         operator: 'LEFT',
@@ -750,7 +463,20 @@ query.registerQuery('shipmentAll', new Query({
             new ColumnExpression('shipment_amount', 'shipment_amount_shipmentId')
           ),
         ]
-      },
+      }
+
+    ]
+
+  })
+}))
+
+query.table('shipment_cargo', new Query({
+
+  $from : new FromTable({
+
+    table : 'shipment',
+    joinClauses : [
+
       {
         operator: 'LEFT',
         table: new FromTable({
@@ -847,6 +573,17 @@ query.registerQuery('shipmentAll', new Query({
           ),
         ]
       },
+
+    ]
+
+  })
+}))
+
+query.table('shipment_container', new Query({
+
+  $from : new FromTable({
+    table : 'shipment',
+    joinClauses : [
       {
         operator: 'LEFT',
         table: new FromTable({
@@ -1045,6 +782,15 @@ query.registerQuery('shipmentAll', new Query({
           ),
         ]
       },
+    ]
+  })
+}))
+
+query.table('shipment_po', new Query({
+
+  $from : new FromTable({
+    table : 'shipment',
+    joinClauses : [
       {
         operator: 'LEFT',
         table: new FromTable({
@@ -1086,6 +832,15 @@ query.registerQuery('shipmentAll', new Query({
           ),
         ]
       },
+    ]
+  })
+}))
+
+query.table('shipment_reference', new Query({
+
+  $from : new FromTable({
+    table : 'shipment',
+    joinClauses : [
       {
         operator: 'LEFT',
         table: new FromTable({
@@ -1117,6 +872,16 @@ query.registerQuery('shipmentAll', new Query({
           ),
         ]
       },
+    ]
+  })
+}))
+
+query.table('shipment_transport', new Query({
+
+  $from : new FromTable({
+    table : 'shipment',
+    joinClauses : [
+
       {
         operator: 'LEFT',
         table: new FromTable({
@@ -1188,33 +953,18 @@ query.registerQuery('shipmentAll', new Query({
           ),
         ]
       },
-
     ]
   })
-
 }))
+
+// =======================================
 
 //  register field =======================
 
 // shipment table field
 
-// warning !!! will not contain all if the list is too large
-// query.registerResultColumn('primaryKeyListString',
-//   new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))), 'primaryKeyListString')
-// )
-
-// query
-//   .registerResultColumn(
-//     'partyGroupCode',
-//     new ResultColumn(new ColumnExpression('shipment', 'partyGroupCode'))
-//  )
-
-// //  IFNULL(carrier.carrierCode, billTransport.carrierCode)
-
 const idExpression = new ColumnExpression('shipment', 'id')
-
 const shipIdExpression = new QueryExpression(new Query({
-
   $select : [
     new ResultColumn(new ColumnExpression('shipment_reference', 'refDescription'))
   ],
@@ -1709,7 +1459,6 @@ const reportingGroupExpression = new CaseExpression({
 })
 
 const lastStatusCodeExpression = new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusCode')
-
 const statusCodeExpression = new ColumnExpression('shipmentTrackingStatusCodeTable', 'statusCode')
 
 function statusExpressionMapFunction(originalExpression: IExpression) {
@@ -1772,9 +1521,7 @@ const dateStatusExpressionWithParams = (params: IQueryParams) => {
   {
     throw new Error(`missing dateStatus in subqueries`)
   }
-
   return dateStatusExpression(subqueryParam)
-
 }
 
 const dateStatusExpression = (subqueryParam) => {
@@ -1980,136 +1727,6 @@ const dateStatusExpression = (subqueryParam) => {
 
 }
 
-const dateStatusExpressionOld = new CaseExpression({
-
-  cases: [
-
-    // (have ATA && (ATA + 2 <= now) || ( have ETA && ( ETA + 4 <= now ))) then inDelivery
-    {
-      $when:
-        new OrExpressions([
-          new AndExpressions([
-            new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateActual'), true),
-            new BinaryExpression(
-
-              new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'arrivalDateActual'), new ParameterExpression({
-                prefix: 'INTERVAL',
-                expression: extraDateExpression,
-                suffix: 'DAY'
-              })), '<=', new FunctionExpression('NOW'))
-          ]),
-
-          new AndExpressions([
-
-            new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateEstimated'), true),
-
-            new BinaryExpression(
-
-              new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'arrivalDateEstimated'), new ParameterExpression({
-                prefix: 'INTERVAL',
-                expression: extraDateExpression,
-                suffix: 'DAY'
-              })), '<=', new FunctionExpression('NOW'))
-
-          ])
-
-        ]),
-      $then: new Value('inDelivery')
-    } as ICase,
-
-    // (have ATA && (ATA + 2 > now) || ( have ETA && ( ETA + 2 <= now ))  then arrival
-    {
-      $when:
-        new OrExpressions([
-          new AndExpressions([
-
-            new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateActual'), true),
-            new BinaryExpression(
-
-              new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'arrivalDateActual'), new ParameterExpression({
-                prefix: 'INTERVAL',
-                expression: extraDateExpression,
-                suffix: 'DAY'
-              })), '>', new FunctionExpression('NOW'))
-          ]),
-
-          new AndExpressions([
-
-            new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateEstimated'), true),
-
-            new BinaryExpression(
-
-              new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'arrivalDateEstimated'), new ParameterExpression({
-                prefix: 'INTERVAL',
-                expression: extraDateExpression,
-                suffix: 'DAY'
-              })), '<=', new FunctionExpression('NOW'))
-
-          ])
-
-        ]),
-      $then: new Value('arrival')
-    } as ICase,
-
-    //  ( no ATA and no ETA and ( ATD <= NOW || ETD + 2 <= now )) then inTransit
-    {
-      $when: new AndExpressions([
-
-        new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateActual'), false),
-        new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateEstimated'), false),
-
-        new OrExpressions([
-          new BinaryExpression(new ColumnExpression('shipment_date', 'departureDateActual'), '<=', new FunctionExpression('NOW')),
-          new BinaryExpression(
-
-            new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'departureDateEstimated'), new ParameterExpression({
-              prefix: 'INTERVAL',
-              expression: extraDateExpression,
-              suffix: 'DAY'
-            })), '<=', new FunctionExpression('NOW'))
-        ])
-
-      ]),
-      $then: new Value('inTransit')
-    } as ICase,
-
-    //  ( no ATA and no ETA and !(ATD <= NOW || ETD + 2 <= now )) then departure
-    {
-      $when: new AndExpressions([
-
-        new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateActual'), false),
-        new IsNullExpression(new ColumnExpression('shipment_date', 'arrivalDateEstimated'), false),
-
-        new BinaryExpression(
-          new OrExpressions([
-            new BinaryExpression(new ColumnExpression('shipment_date', 'departureDateActual'), '<=', new FunctionExpression('NOW')),
-            new BinaryExpression(
-
-              new FunctionExpression('DATE_ADD', new ColumnExpression('shipment_date', 'departureDateEstimated'), new ParameterExpression({
-                prefix: 'INTERVAL',
-                expression: extraDateExpression,
-                suffix: 'DAY'
-              })), '<=', new FunctionExpression('NOW'))
-          ]),
-          '=',
-          false
-        )
-
-      ]),
-      $then: new Value('departure')
-    } as ICase,
-
-    // dont have ATD
-    {
-      $when: new IsNullExpression(new ColumnExpression('shipment_date', 'departureDateActual'), false),
-      $then: new Value('upcoming')
-    } as ICase,
-
-  ],
-
-  $else: new Value(null)
-})
-
 const statusExpression = statusExpressionMapFunction(statusCodeExpression)
 const lastStatusExpression = statusExpressionMapFunction(lastStatusCodeExpression)
 
@@ -2150,24 +1767,32 @@ const alertUpdatedAtExpression = new ColumnExpression('alert', 'updatedAt')
 
 const alertContentExpression = new ColumnExpression('alert', 'flexData')
 
-query.registerBoth('id', idExpression)
-query.registerBoth('primaryKeyListString', primaryKeyListStringExpression)
-query.registerBoth('partyGroupCode', partyGroupCodeExpression)
+const expressionList = [
 
-query.registerBoth('currentTrackingNo', currentTrackingNoExpression)
-query.registerBoth('haveCurrentTrackingNo', haveCurrentTrackingNoExpression)
+  {
+    name : 'id',
+    expression : idExpression,
+  }
 
-query.registerBoth('agentGroup', agentGroupExpression)
+]
 
-query.registerBoth('carrierCode', carrierCodeExpression)
+query.groupField('id', idExpression)
+query.groupField('primaryKeyListString', primaryKeyListStringExpression)
+query.groupField('partyGroupCode', partyGroupCodeExpression)
+query.groupField('currentTrackingNo', currentTrackingNoExpression)
+query.groupField('haveCurrentTrackingNo', haveCurrentTrackingNoExpression)
 
-query.registerBoth('carrierName', carrierNameExpression)
+query.groupField('agentGroup', agentGroupExpression, undefined, 'table:consignee', 'table:agent')
 
-query.registerBoth('salesmanCode', salesmanCodeExpression)
+query.groupField('carrierCode', carrierCodeExpression)
 
-query.registerBoth('reportingGroup', reportingGroupExpression)
+query.groupField('carrierName', carrierNameExpression)
 
-query.registerBoth('shipId', shipIdExpression)
+query.groupField('salesmanCode', salesmanCodeExpression)
+
+query.groupField('reportingGroup', reportingGroupExpression, undefined, 'table:shipment_party')
+
+query.groupField('shipId', shipIdExpression)
 
 // tracking lastStatus
 query.registerBoth('lastStatusCode', lastStatusCodeExpression)
@@ -2566,7 +2191,7 @@ isInReportList.map(isInReport => {
 
     // cbmMonthLastCurrent
     const monthLastCurrentFn = (params) => {
-      const resultColumnList = []
+      const resultColumnList = [] as ResultColumn[]
 
       months.forEach((month, index) => {
 
@@ -2761,6 +2386,8 @@ isInReportList.map(isInReport => {
 
 // Shipment table filter ============================
 const shipmentTableFilterFieldList = [
+
+  // base field
   'id',
   'moduleTypeCode',
   'boundTypeCode',
@@ -2774,7 +2401,8 @@ const shipmentTableFilterFieldList = [
 
   {
     name : 'reportingGroup',
-    expression : reportingGroupExpression
+    expression : reportingGroupExpression,
+    companion : []
   },
 
   {
@@ -2790,7 +2418,6 @@ const shipmentTableFilterFieldList = [
   {
     name: 'agentGroup',
     expression: agentGroupExpression
-
   },
   {
     name: 'carrierCode',
@@ -2848,7 +2475,8 @@ const shipmentTableFilterFieldList = [
   }
 ] as {
   name: string
-  expression: IExpression |  ((subqueryParam) => IExpression)
+  expression: IExpression |  ((subqueryParam) => IExpression),
+  companion?: string[]
 }[]
 
 shipmentTableFilterFieldList.map(filterField => {
@@ -2858,6 +2486,8 @@ shipmentTableFilterFieldList.map(filterField => {
   const expressionFn = (subqueryParam) => {
     return (typeof filterField === 'string') ? new ColumnExpression('shipment', filterField) : typeof filterField.expression === 'function' ? filterField.expression(subqueryParam) : filterField.expression
   }
+
+  const companion = (typeof filterField === 'string') ? [] : (filterField.companion && filterField.companion.length) ? filterField.companion : []
 
   const inFilterQueryFn = ((subqueryParam) => {
 
@@ -2880,9 +2510,14 @@ shipmentTableFilterFieldList.map(filterField => {
     })
   }) as QueryFn
 
-  query.registerQuery(name, inFilterQueryFn)
-  query.registerQuery(`${name}IsNotNull`, IsNotNullQueryFn)
-  query.registerQuery(`${name}IsNull`, IsNullQueryFn)
+  query.subquery(`${name}`, inFilterQueryFn, ...companion)
+  query.subquery(`${name}In`, inFilterQueryFn, ...companion)
+  query.subquery(`${name}IsNotNull`, IsNotNullQueryFn, ...companion)
+  query.subquery(`${name}IsNull`, IsNullQueryFn, ...companion)
+
+  // query.registerQuery(name, inFilterQueryFn)
+  // query.registerQuery(`${name}IsNotNull`, IsNotNullQueryFn)
+  // query.registerQuery(`${name}IsNull`, IsNullQueryFn)
 
   // ===== old
 
