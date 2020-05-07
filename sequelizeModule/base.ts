@@ -10,16 +10,7 @@ export default async function getDefaultParams(
   transaction?: Transaction
 ): Promise<IConditionalExpression> {
   if (user) {
-    const roleService = this.helper.roleService || this
-    const roles =
-      user.selectedRoles && user.selectedRoles.length
-        ? await (roleService as any).find({
-            where: {
-              id: { $in: user.selectedRoles.map(role => role.id) },
-            },
-            transaction,
-          })
-        : []
+    const roles = user.selectedRoles || []
     if (roles.length) {
       const rolesExpressions = roles
         .reduce((all: { group: string; roles: any[] }[], result: Role) => {
