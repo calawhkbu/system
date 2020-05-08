@@ -33,8 +33,6 @@ import {
   IQuery
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { now } from '../../../../swivel-backend-new/node_modules/moment/moment'
-import { IQueryResult } from 'node-jql-core'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -151,15 +149,15 @@ const partyList = [
     name: 'agent',
     partyNameExpression: {
       expression : agentPartyNameExpression,
-      companion : 'table:shipment_party'
+      companion : ['table:shipment_party']
     },
     partyIdExpression: {
       expression : agentPartyIdExpression,
-      companion : 'table:shipment_party'
+      companion : ['table:shipment_party']
     },
     partyCodeExpression: {
       expression : agentPartyCodeExpression,
-      companion : 'table:shipment_party'
+      companion : ['table:shipment_party']
     }
   }
 ] as {
@@ -428,8 +426,8 @@ const shipmentTrackingStatusCodeTableExpression = new Query({
 
 })
 
-// statusJoin : table:statusJoin
-query.table('statusJoin', new Query(
+// statusJoin : table:status
+query.table('status', new Query(
   {
     $from: new FromTable('shipment', {
 
@@ -447,8 +445,8 @@ query.table('statusJoin', new Query(
 
   }))
 
-// lastStatusJoin : table:lastStatusJoin
-query.table('lastStatusJoin', new Query({
+// lastStatusJoin : table:lastStatus
+query.table('lastStatus', new Query({
 
   $from: new FromTable('shipment', {
 
@@ -469,8 +467,8 @@ query.table('lastStatusJoin', new Query({
 // warning !!! this join will create duplicate record of shipment
 // plz use wisely, mainly use together with group by
 
-// alertJoin : table:alertJoin
-query.table('alertJoin', new Query({
+// alertJoin : table:alert
+query.table('alert', new Query({
 
     $from: new FromTable('shipment', {
 
@@ -492,20 +490,28 @@ query.table('alertJoin', new Query({
 // location table :  table:portOfLoading, table:portOfDischarge
 locationList.map(location => {
 
-  const joinTableName = `${location}Join`
+  const joinTableName = `${location}`
   const locationCode = `${location}Code`
 
   // location join (e.g. portOfLoadingJoin)
   query.table(joinTableName, new Query({
 
-      $from: new FromTable('shipment', {
+      $from: new FromTable({
+
+        table : 'shipment',
+
+        joinClauses : [{
 
         operator: 'LEFT',
-        table: 'location',
+        table:  new FromTable({
+          table : 'location',
+          $as : `${location}`
+        }),
         $on: [
-          new BinaryExpression(new ColumnExpression('location', 'portCode'), '=', new ColumnExpression('shipment', locationCode)),
+          new BinaryExpression(new ColumnExpression(`${location}`, 'portCode'), '=', new ColumnExpression('shipment', locationCode)),
         ]
-      }),
+      }]
+    }),
 
       $where: new IsNullExpression(new ColumnExpression('shipment', locationCode), true)
 
@@ -1889,35 +1895,35 @@ query.registerBoth('reportingGroup', reportingGroupExpression, 'table:office')
 query.registerBoth('shipId', shipIdExpression)
 
 // tracking lastStatus
-query.registerBoth('lastStatusCode', lastStatusCodeExpression, 'table:lastStatusJoin')
-query.registerBoth('lastStatus', lastStatusExpression, 'table:lastStatusJoin')
+query.registerBoth('lastStatusCode', lastStatusCodeExpression, 'table:lastStatus')
+query.registerBoth('lastStatus', lastStatusExpression, 'table:lastStatus')
 
 // tracking status
-query.registerBoth('statusCode', statusCodeExpression, 'table:lastStatusJoin')
-query.registerBoth('status', statusExpression, 'table:lastStatusJoin')
+query.registerBoth('statusCode', statusCodeExpression, 'table:lastStatus')
+query.registerBoth('status', statusExpression, 'table:lastStatus')
 
 // dateStatus
 query.registerBoth('dateStatus', (params) => dateStatusExpressionWithParams(params), 'table:shipment_date')
 
-query.registerBoth('alertId', alertIdExpression, 'table:alertJoin')
+query.registerBoth('alertId', alertIdExpression, 'table:alert')
 
-query.registerBoth('alertTableName', alertTableNameExpression, 'table:alertJoin')
+query.registerBoth('alertTableName', alertTableNameExpression, 'table:alert')
 
-query.registerBoth('alertPrimaryKey', alertPrimaryKeyExpression, 'table:alertJoin')
+query.registerBoth('alertPrimaryKey', alertPrimaryKeyExpression, 'table:alert')
 
-query.registerBoth('alertSeverity', alertSeverityExpression, 'table:alertJoin')
+query.registerBoth('alertSeverity', alertSeverityExpression, 'table:alert')
 
-query.registerBoth('alertType', alertTypeExpression, 'table:alertJoin')
+query.registerBoth('alertType', alertTypeExpression, 'table:alert')
 
-query.registerBoth('alertTitle', alertTitleExpression, 'table:alertJoin')
+query.registerBoth('alertTitle', alertTitleExpression, 'table:alert')
 
-query.registerBoth('alertMessage', alertMessageExpression, 'table:alertJoin')
+query.registerBoth('alertMessage', alertMessageExpression, 'table:alert')
 
-query.registerBoth('alertCategory', alertCategoryExpression, 'table:alertJoin')
+query.registerBoth('alertCategory', alertCategoryExpression, 'table:alert')
 
-query.registerBoth('alertContent', alertContentExpression, 'table:alertJoin')
+query.registerBoth('alertContent', alertContentExpression, 'table:alert')
 
-query.registerBoth('alertStatus', alertStatusExpression, 'table:alertJoin')
+query.registerBoth('alertStatus', alertStatusExpression, 'table:alert')
 
 // ===========================
 
@@ -2563,29 +2569,30 @@ const shipmentTableFilterFieldList = [
   {
     name: 'lastStatusCode',
     expression: lastStatusCodeExpression,
-    companion : ['table:lastStatusJoin']
+    companion : ['table:lastStatus']
   },
   {
     name: 'lastStatus',
     expression: lastStatusExpression,
-    companion : ['table:lastStatusJoin']
+    companion : ['table:lastStatus']
   },
 
   // tracking status
   {
     name: 'statusCode',
     expression: statusCodeExpression,
-    companion : ['table:statusJoin']
+    companion : ['table:status']
   },
   {
     name: 'status',
     expression: statusExpression,
-    companion : ['table:statusJoin']
+    companion : ['table:status']
   },
   {
 
     name: 'dateStatus',
-    expression: dateStatusExpression
+    expression: dateStatusExpression,
+    companion : ['table:shipment_date']
   },
 
   {
@@ -2968,16 +2975,37 @@ query.registerQuery('viaHKG',
 
 locationList.map(location => {
 
-  const columnName = `${location}Code`
+  const locationCode = `${location}Code`
+  const locationLatitude = `${location}Latitude`
+  const locationLongitude = `${location}Longitude`
   // Port of Loading
+
+  const locationTable = `table:${location}`
+
+  // portOfLoadingCode
   query
     .register(
-      columnName,
+      `${location}Code`,
       new Query({
-        $where: new InExpression(new ColumnExpression('shipment', columnName), false),
+        $where: new InExpression(new ColumnExpression('shipment', `${location}Code`), false),
       })
     )
     .register('value', 0)
+
+    query
+    .registerBoth(
+      `${location}Latitude`,
+      new ColumnExpression(`${location}`, `latitude`),
+      locationTable // as companion
+    )
+
+    query
+    .registerBoth(
+      `${location}Longitude`,
+      new ColumnExpression(`${location}`, `longitude`),
+      locationTable // as companion
+    )
+
 })
 
 // Date Filter=================
@@ -3080,6 +3108,11 @@ dateList.map(date => {
   const dateColumnExpression = typeof date === 'string' ? new ColumnExpression('shipment_date', date) : date.expression
   const companion = typeof date === 'string' ? ['table:shipment_date'] : date.companion
 
+  if (dateColumnName === 'alertCreatedAt'){
+    console.log(`companion`)
+    console.log(companion)
+
+  }
   query.registerBoth(dateColumnName, dateColumnExpression, ...companion)
 
   query
