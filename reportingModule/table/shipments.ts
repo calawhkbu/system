@@ -55,6 +55,7 @@ const query = new Query({
         { name: 'shipId', type: 'string' },
         { name: 'haveCurrentTrackingNo', type: 'string' },
         { name: 'batchNumber', type: 'string' },
+        { name: 'lastStatusCodeOrDescription', type: 'string' },
       ],
     },
     'shipment'

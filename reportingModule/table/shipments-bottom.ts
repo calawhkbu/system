@@ -36,16 +36,12 @@ function prepareShipmentParams(): Function {
       const location = subqueries.location.value
       const locationCode = `${location}Code`
 
-      const subqueriesName = `${location}Join`
       const locationCodeValue = subqueries.locationCode.value
 
       // portOfLoadingCode = 'ABC'
       subqueries[locationCode] = {
         value: locationCodeValue
       }
-
-      subqueries[subqueriesName] = true
-
     }
 
     // lastStatus case
