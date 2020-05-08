@@ -4,6 +4,7 @@
     "props": {
       "settingProp": {
         "overrideType": "shipment",
+        "loadingWording": "Loading Carrier Details...",
         "initAxiosParams": {
           "url": "api/shipment/{{context.$route.params.params | urlEncode }}"
         },
