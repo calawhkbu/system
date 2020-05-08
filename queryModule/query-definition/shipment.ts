@@ -1867,23 +1867,23 @@ const expressionList = [
 
 ]
 
-query.groupField('id', idExpression)
-query.groupField('primaryKeyListString', primaryKeyListStringExpression)
-query.groupField('partyGroupCode', partyGroupCodeExpression)
-query.groupField('currentTrackingNo', currentTrackingNoExpression)
-query.groupField('haveCurrentTrackingNo', haveCurrentTrackingNoExpression)
+query.registerBoth('id', idExpression)
+query.registerBoth('primaryKeyListString', primaryKeyListStringExpression)
+query.registerBoth('partyGroupCode', partyGroupCodeExpression)
+query.registerBoth('currentTrackingNo', currentTrackingNoExpression)
+query.registerBoth('haveCurrentTrackingNo', haveCurrentTrackingNoExpression)
 
-query.groupField('agentGroup', agentGroupExpression, undefined, 'table:consignee', 'table:agent')
+query.registerBoth('agentGroup', agentGroupExpression, undefined, 'table:consignee', 'table:agent')
 
-query.groupField('carrierCode', carrierCodeExpression)
+query.registerBoth('carrierCode', carrierCodeExpression)
 
-query.groupField('carrierName', carrierNameExpression)
+query.registerBoth('carrierName', carrierNameExpression)
 
-query.groupField('salesmanCode', salesmanCodeExpression)
+query.registerBoth('salesmanCode', salesmanCodeExpression)
 
-query.groupField('reportingGroup', reportingGroupExpression, undefined, 'table:office')
+query.registerBoth('reportingGroup', reportingGroupExpression, undefined, 'table:office')
 
-query.groupField('shipId', shipIdExpression)
+query.registerBoth('shipId', shipIdExpression)
 
 // tracking lastStatus
 query.registerBoth('lastStatusCode', lastStatusCodeExpression, undefined, 'table:lastStatusJoin')
