@@ -227,6 +227,9 @@ const query = new QueryDef((params: IQueryParams) => {
       conditions
     } as IQueryParams
 
+    console.log(`newSubqueries`)
+    console.log(newSubqueries)
+
     baseQuery.$from[0].joinClauses.push(
       new JoinClause({
         operator :  'LEFT',
@@ -2544,7 +2547,8 @@ const shipmentTableFilterFieldList = [
 
   {
     name: 'agentGroup',
-    expression: agentGroupExpression
+    expression: agentGroupExpression,
+    companion : ['table:consignee', 'table:agent']
   },
   {
     name: 'carrierCode',
@@ -2558,21 +2562,25 @@ const shipmentTableFilterFieldList = [
   // tracking last status
   {
     name: 'lastStatusCode',
-    expression: lastStatusCodeExpression
+    expression: lastStatusCodeExpression,
+    companion : ['table:lastStatusJoin']
   },
   {
     name: 'lastStatus',
-    expression: lastStatusExpression
+    expression: lastStatusExpression,
+    companion : ['table:lastStatusJoin']
   },
 
   // tracking status
   {
     name: 'statusCode',
-    expression: statusCodeExpression
+    expression: statusCodeExpression,
+    companion : ['table:statusJoin']
   },
   {
     name: 'status',
-    expression: statusExpression
+    expression: statusExpression,
+    companion : ['table:statusJoin']
   },
   {
 
@@ -2582,23 +2590,28 @@ const shipmentTableFilterFieldList = [
 
   {
     name: 'alertType',
-    expression: alertTypeExpression
+    expression: alertTypeExpression,
+    companion : ['table:alert']
   },
   {
     name: 'alertSeverity',
-    expression: alertSeverityExpression
+    expression: alertSeverityExpression,
+    companion : ['table:alert']
   },
   {
     name: 'alertCategory',
-    expression: alertCategoryExpression
+    expression: alertCategoryExpression,
+    companion : ['table:alert']
   },
   {
     name: 'alertStatus',
-    expression: alertStatusExpression
+    expression: alertStatusExpression,
+    companion : ['table:alert']
   },
   {
     name: 'alertContent',
-    expression: alertContentExpression
+    expression: alertContentExpression,
+    companion : ['table:alert']
   }
 ] as {
   name: string
