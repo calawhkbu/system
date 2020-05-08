@@ -213,7 +213,7 @@ const query = new QueryDef((params: IQueryParams) => {
 
   if (subqueries[specialName]) {
 
-    const { newSubqueries, [specialName] : dumb } = params.subqueries
+    const { [specialName] : dumb, ...newSubqueries } = params.subqueries
 
     const newParams = {
       fields: [
