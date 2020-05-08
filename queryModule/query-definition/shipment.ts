@@ -1,4 +1,4 @@
-import { QueryDef, ResultColumnArg, SubqueryArg } from 'classes/query/QueryDef'
+import { QueryDef, ResultColumnArg, SubqueryArg, ExpressionArg } from 'classes/query/QueryDef'
 import {
   Query,
   FromTable,
@@ -389,6 +389,7 @@ const shipmentTrackingLastStatusCodeTableExpression = new Query({
   $select: [
     new ResultColumn(new ColumnExpression('tracking', 'trackingNo')),
     new ResultColumn(new ColumnExpression('tracking', 'lastStatusCode')),
+    new ResultColumn(new ColumnExpression('tracking', 'lastStatusDescription')),
     new ResultColumn(new ColumnExpression('tracking', 'lastStatusDate')),
     new ResultColumn(new ColumnExpression('tracking', 'lastEstimatedUpdateDate')),
     new ResultColumn(new ColumnExpression('tracking', 'lastActualUpdateDate'))
@@ -1559,6 +1560,8 @@ const reportingGroupExpression = new CaseExpression({
 })
 
 const lastStatusCodeExpression = new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusCode')
+const lastStatusCodeOrDescriptionExpression = new FunctionExpression('IFNULL', new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusCode'), new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusDescription'))
+
 const statusCodeExpression = new ColumnExpression('shipmentTrackingStatusCodeTable', 'statusCode')
 
 function statusExpressionMapFunction(originalExpression: IExpression) {
@@ -1621,6 +1624,7 @@ const dateStatusExpressionWithParams = (params: IQueryParams) => {
   {
     throw new Error(`missing dateStatus in subqueries`)
   }
+
   return dateStatusExpression(subqueryParam)
 }
 
@@ -1896,6 +1900,8 @@ query.registerBoth('shipId', shipIdExpression)
 
 // tracking lastStatus
 query.registerBoth('lastStatusCode', lastStatusCodeExpression, 'table:lastStatus')
+query.registerBoth('lastStatusCodeOrDescription', lastStatusCodeOrDescriptionExpression, 'table:lastStatus')
+
 query.registerBoth('lastStatus', lastStatusExpression, 'table:lastStatus')
 
 // tracking status
@@ -1903,7 +1909,7 @@ query.registerBoth('statusCode', statusCodeExpression, 'table:lastStatus')
 query.registerBoth('status', statusExpression, 'table:lastStatus')
 
 // dateStatus
-query.registerBoth('dateStatus', (params) => dateStatusExpressionWithParams(params), 'table:shipment_date')
+query.registerBoth('dateStatus', ((params: IQueryParams) => dateStatusExpressionWithParams(params)) as ExpressionArg, 'table:shipment_date')
 
 query.registerBoth('alertId', alertIdExpression, 'table:alert')
 
@@ -2571,6 +2577,13 @@ const shipmentTableFilterFieldList = [
     expression: lastStatusCodeExpression,
     companion : ['table:lastStatus']
   },
+
+  {
+    name: 'lastStatusCodeOrDescription',
+    expression: lastStatusCodeOrDescriptionExpression,
+    companion : ['table:lastStatus']
+  },
+
   {
     name: 'lastStatus',
     expression: lastStatusExpression,
