@@ -1873,7 +1873,7 @@ query.registerBoth('partyGroupCode', partyGroupCodeExpression)
 query.registerBoth('currentTrackingNo', currentTrackingNoExpression)
 query.registerBoth('haveCurrentTrackingNo', haveCurrentTrackingNoExpression)
 
-query.registerBoth('agentGroup', agentGroupExpression, undefined, 'table:consignee', 'table:agent')
+query.registerBoth('agentGroup', agentGroupExpression, 'table:consignee', 'table:agent')
 
 query.registerBoth('carrierCode', carrierCodeExpression)
 
@@ -1881,40 +1881,40 @@ query.registerBoth('carrierName', carrierNameExpression)
 
 query.registerBoth('salesmanCode', salesmanCodeExpression)
 
-query.registerBoth('reportingGroup', reportingGroupExpression, undefined, 'table:office')
+query.registerBoth('reportingGroup', reportingGroupExpression, 'table:office')
 
 query.registerBoth('shipId', shipIdExpression)
 
 // tracking lastStatus
-query.registerBoth('lastStatusCode', lastStatusCodeExpression, undefined, 'table:lastStatusJoin')
-query.registerBoth('lastStatus', lastStatusExpression, undefined, 'table:lastStatusJoin')
+query.registerBoth('lastStatusCode', lastStatusCodeExpression, 'table:lastStatusJoin')
+query.registerBoth('lastStatus', lastStatusExpression, 'table:lastStatusJoin')
 
 // tracking status
-query.registerBoth('statusCode', statusCodeExpression, undefined, 'table:lastStatusJoin')
-query.registerBoth('status', statusExpression, undefined, 'table:lastStatusJoin')
+query.registerBoth('statusCode', statusCodeExpression, 'table:lastStatusJoin')
+query.registerBoth('status', statusExpression, 'table:lastStatusJoin')
 
 // dateStatus
-query.registerBoth('dateStatus', (params) => dateStatusExpressionWithParams(params), undefined, 'table:shipment_date')
+query.registerBoth('dateStatus', (params) => dateStatusExpressionWithParams(params), 'table:shipment_date')
 
-query.registerBoth('alertId', alertIdExpression, undefined, 'table:alertJoin')
+query.registerBoth('alertId', alertIdExpression, 'table:alertJoin')
 
-query.registerBoth('alertTableName', alertTableNameExpression, undefined, 'table:alertJoin')
+query.registerBoth('alertTableName', alertTableNameExpression, 'table:alertJoin')
 
-query.registerBoth('alertPrimaryKey', alertPrimaryKeyExpression, undefined, 'table:alertJoin')
+query.registerBoth('alertPrimaryKey', alertPrimaryKeyExpression, 'table:alertJoin')
 
-query.registerBoth('alertSeverity', alertSeverityExpression, undefined, 'table:alertJoin')
+query.registerBoth('alertSeverity', alertSeverityExpression, 'table:alertJoin')
 
-query.registerBoth('alertType', alertTypeExpression, undefined, 'table:alertJoin')
+query.registerBoth('alertType', alertTypeExpression, 'table:alertJoin')
 
-query.registerBoth('alertTitle', alertTitleExpression, undefined, 'table:alertJoin')
+query.registerBoth('alertTitle', alertTitleExpression, 'table:alertJoin')
 
-query.registerBoth('alertMessage', alertMessageExpression, undefined, 'table:alertJoin')
+query.registerBoth('alertMessage', alertMessageExpression, 'table:alertJoin')
 
-query.registerBoth('alertCategory', alertCategoryExpression, undefined, 'table:alertJoin')
+query.registerBoth('alertCategory', alertCategoryExpression, 'table:alertJoin')
 
-query.registerBoth('alertContent', alertContentExpression, undefined, 'table:alertJoin')
+query.registerBoth('alertContent', alertContentExpression, 'table:alertJoin')
 
-query.registerBoth('alertStatus', alertStatusExpression, undefined, 'table:alertJoin')
+query.registerBoth('alertStatus', alertStatusExpression, 'table:alertJoin')
 
 // ===========================
 
@@ -1999,7 +1999,7 @@ const partyFieldList = [
         break
     }
 
-    query.registerBoth(fieldName, finalExpressionInfo.expression, undefined, ...finalExpressionInfo.companion)
+    query.registerBoth(fieldName, finalExpressionInfo.expression, ...finalExpressionInfo.companion)
 
   })
 
@@ -3067,7 +3067,7 @@ dateList.map(date => {
   const dateColumnExpression = typeof date === 'string' ? new ColumnExpression('shipment_date', date) : date.expression
   const companion = typeof date === 'string' ? ['table:shipment_date'] : date.companion
 
-  query.registerBoth(dateColumnName, dateColumnExpression, undefined, ...companion)
+  query.registerBoth(dateColumnName, dateColumnExpression, ...companion)
 
   query
     .register(
