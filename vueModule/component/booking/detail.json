@@ -311,12 +311,11 @@
         "components": [{
             "is": "DynamicComponent",
             "props": {
-
               "class": "xs-8 grid padding-2",
               "components": [{
                   "is": "AsyncComponent",
                   "props": {
-                    "class": "xs-12 margin-bottom-2 padding-top-4",
+                    "class": "xs-12 margin-bottom-2",
                     "layoutName": "booking/base/general"
                   }
                 },
@@ -352,14 +351,14 @@
                 {
                   "is": "AsyncComponent",
                   "props": {
-                    "class": "xs-12 margin-bottom-2 padding-top-4",
+                    "class": "xs-12 margin-bottom-2",
                     "layoutName": "booking/base/container"
                   }
                 },
                 {
                   "is": "AsyncComponent",
                   "props": {
-                    "class": "xs-12 margin-bottom-2 padding-top-4",
+                    "class": "xs-12 margin-bottom-2",
                     "layoutName": "booking/base/reference"
                   }
                 }
@@ -380,7 +379,7 @@
                   "is": "AsyncComponent",
                   "props": {
                     "class": "xs-12 margin-bottom-2",
-                    "layoutName": "booking/base/tracking"
+                    "layoutName": "booking/base/alert"
                   }
                 },
                 {
@@ -395,115 +394,6 @@
           }
         ]
       }
-    },
-    {
-      "is": "div",
-      "if": "return context.$vuetify.breakpoint.mdAndUp",
-      "props": {
-        "class": "xs-12 md-4 padding-8"
-      },
-      "slots": [{
-          "is": "AsyncComponent",
-          "props": {
-            "getDate": "bookingDate",
-            "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/tracking",
-            "loadWhenDataLoaded": true,
-            "axiosBaseParams": [
-              "const trackingNos = [];",
-              "const data = context.$store.state.widget.data;",
-              "if (data.bookingReference && data.bookingReference.length > 0) {",
-              "for (const reference of data.bookingReference || []) {",
-              "if ((reference.refName === 'MAWB' || reference.refName === 'MBL') && reference.refDescription){",
-              "trackingNos.push(reference.refDescription)",
-              "}",
-              "}",
-              "}",
-              "if (data.bookingContainers && data.bookingContainers.length > 0) {",
-              "for (const containers of data.bookingContainers) {",
-              "if (containers.soNo){",
-              "trackingNos.push(containers.soNo)",
-              "}",
-              "if (containers.containerNo){",
-              "trackingNos.push(containers.containerNo)",
-              "}",
-              "}",
-              "}",
-              "return {",
-              "url: 'api/swivel-tracking/get',",
-              "method: 'POST',",
-              "data: { trackingNos }",
-              "};"
-            ],
-            "createI18nKey": "bookingReceivedByForwarder"
-          }
-        },
-        {
-          "is": "AsyncComponent",
-          "props": {
-            "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/alert",
-            "axiosBaseParams": [
-              "const primaryKey = encodeURIComponent(context.$route.params.params);",
-              "return {",
-              "url: 'api/alert/list/history',",
-              "method: 'POST',",
-              "data: { tableName: 'booking', primaryKey }",
-              "};"
-            ],
-            "sendMessageAxiosParams": [
-              "const primaryKey = encodeURIComponent(context.$route.params.params);",
-              "return {",
-              "url: `api/alert/message/booking/${primaryKey}`,",
-              "method: 'POST',",
-              "data: { message: swig.message }",
-              "};"
-            ]
-          }
-        },
-        {
-          "is": "AsyncComponent",
-          "props": {
-            "class": "xs-12 margin-topbottom-4",
-            "layoutName": "plugins/document",
-            "axiosBaseParams": [
-              "const primaryKey = encodeURIComponent(context.$route.params.params);",
-              "return {",
-              "url: 'api/document/document/booking/{{primaryKey}}'.format({ primaryKey }),",
-              "};"
-            ],
-            "uploadAxiosParams": [
-              "const primaryKey = encodeURIComponent(context.$route.params.params);",
-              "return {",
-              "method: 'POST',",
-              "url: 'api/document/document/upload',",
-              "data: {",
-              "tableName: 'booking', primaryKey,",
-              "fileName: swig.fileName,",
-              "fileData: { base64String: swig.base64String, extension: swig.extension }",
-              "}",
-              "};"
-            ],
-            "downloadAxiosParams": [
-              "const primaryKey = encodeURIComponent(context.$route.params.params);",
-              "return {",
-              "responseType: 'blob',",
-              "method: 'POST',",
-              "url: 'api/document/document/download',",
-              "data: {tableName: 'booking', primaryKey, fileName: swig.fileName}",
-              "}"
-            ],
-            "deleteAxiosParams": [
-              "const primaryKey = encodeURIComponent(context.$route.params.params);",
-              "return {",
-              "method: 'POST',",
-              "url: 'api/document/document/delete',",
-              "data: {tableName: 'booking', primaryKey, fileName: swig.fileName}",
-              "}"
-            ]
-          }
-        }
-      ]
     }
   ]
 }
