@@ -17,20 +17,6 @@ const query = new QueryDef(new Query({
   $from : new FromTable('card')
 }))
 
-query.register('isActive',
-{
-  expression : new FunctionExpression(
-    'IF',
-    new AndExpressions([
-      new IsNullExpression(new ColumnExpression('card', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('card', 'deletedBy'), false),
-    ]),
-    1, 0
-  ),
-
-  $as: 'isActive'
-})
-
 query.register('canDelete',
 {
 
