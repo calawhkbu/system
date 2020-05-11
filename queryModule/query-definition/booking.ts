@@ -980,18 +980,6 @@ query.register('updatedAt', {
   $as: 'updatedAt',
 })
 
-query.register('totalBooking', {
-  expression: new FunctionExpression({
-    name: 'COUNT',
-    parameters: new ParameterExpression({
-      // cannot use distinct while using *
-      prefix: 'DISTINCT',
-      expression: new ColumnExpression('booking', 'id'),
-    }),
-  }),
-  $as: 'totalBooking',
-})
-
 const lastStatusCodeExpression = new ColumnExpression('booking_tracking', 'lastStatusCode')
 
 function lastStatusExpressionFunction() {
@@ -1112,15 +1100,6 @@ query.register('poNo', {
   $as: 'poNo',
 })
 
-query.register('weight', {
-  expression: new FunctionExpression(
-    'IFNULL',
-    new FunctionExpression('SUM', new ColumnExpression('weight')),
-    0
-  ),
-  $as: 'weight',
-})
-
 query.register('cbm', {
   expression: new FunctionExpression(
     'IFNULL',
@@ -1182,15 +1161,6 @@ query.register('freightTerms', {
     new ColumnExpression('booking', 'freightTermsCode')
   ),
   $as: 'freightTerms',
-})
-
-// used createdAt as jobMonth
-query.register('jobMonth', {
-  expression: new FunctionExpression({
-    name: 'DATE_FORMAT',
-    parameters: [new ColumnExpression('booking', 'createdAt'), '%y-%m'],
-  }),
-  $as: 'jobMonth',
 })
 
 //  register summary field
@@ -1559,15 +1529,6 @@ query
     'boundTypeCode',
     new Query({
       $where: new InExpression(new ColumnExpression('booking', 'boundTypeCode'), false),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'portOfLoadingCode',
-    new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'portOfLoadingCode'), false),
     })
   )
   .register('value', 0)
