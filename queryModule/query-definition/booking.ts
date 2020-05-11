@@ -1,4 +1,4 @@
-import { QueryDef, ResultColumnFn, GroupByFn } from 'classes/query/QueryDef'
+import { QueryDef } from 'classes/query/QueryDef'
 import {
   Query,
   FromTable,
@@ -1298,7 +1298,6 @@ const shipmentTableFilterFieldList = [
   'boundTypeCode',
   'nominatedTypeCode',
   'shipmentTypeCode',
-  'portOfLoadingCode',
   'divisionCode',
   'isDirect',
   'isCoload',
@@ -1406,6 +1405,7 @@ locationList.map(location => {
       })
     )
     .register('value', 0)
+
 })
 
 // regiter date filter
@@ -1515,33 +1515,6 @@ dateList.map(date => {
 
 })
 
-query
-  .register(
-    'moduleTypeCode',
-    new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'moduleTypeCode'), false),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'boundTypeCode',
-    new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'boundTypeCode'), false),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'portOfDischargeCode',
-    new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'portOfDischargeCode'), false),
-    })
-  )
-  .register('value', 0)
-
 // ----------------- filter in main filter menu
 
 query
@@ -1552,6 +1525,7 @@ query
     })
   )
   .register('value', 0)
+
 query
   .register(
     'bookingNo',
