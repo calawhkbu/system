@@ -3172,22 +3172,38 @@ query
           new RegexpExpression(new ColumnExpression('shipment', 'portOfLoadingName'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'finalDestinationCode'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'finalDestinationName'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'agentPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'agentPartyName'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'consigneePartyCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'consigneePartyName'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'notifyPartyPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'notifyPartyPartyName'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'controllingCustomerPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'controllingCustomerPartyName'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'linerAgentPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'linerAgentPartyName'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'officePartyCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'officePartyName'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'roAgentPartyName'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'roAgentPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'shipperPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('shipment_party', 'shipperPartyName'), false),
+
+          new InExpression(
+            new ColumnExpression('shipment', 'id'),
+            false,
+            new Query({
+              $select: [
+                new ResultColumn('shipmentId')
+              ],
+              $from: new FromTable('shipment_party'),
+              $where: new OrExpressions({
+                expressions: [
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'agentPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'agentPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'consigneePartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'consigneePartyName'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'notifyPartyPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'notifyPartyPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'controllingCustomerPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'controllingCustomerPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'linerAgentPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'linerAgentPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'officePartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'officePartyName'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'roAgentPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'roAgentPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'shipperPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'shipperPartyName'), false),
+                ]
+              })
+            })
+          ),
+
           new InExpression(
             new ColumnExpression('shipment', 'id'),
             false,
