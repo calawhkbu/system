@@ -48,6 +48,7 @@
             }
           },
           "pagination": {
+            "remote": true,
             "current": 0,
             "perPage": 20
           }
