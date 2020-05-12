@@ -158,7 +158,7 @@
           },
           "key": "lastStatusCodeOrDescription",
           "label": "lastStatus",
-          "i18nContext" : "TrackingPage"
+          "i18nContext" : "Reporting"
         },
 
         {
