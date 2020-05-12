@@ -157,7 +157,8 @@
             }
           },
           "key": "lastStatusCodeOrDescription",
-          "label": "lastStatusCodeOrDescription"
+          "label": "lastStatus",
+          "i18nContext" : "Reporting"
         },
 
         {
