@@ -266,6 +266,12 @@ filterFieldList.forEach(filterField => {
     })
   )
 
+  query.registerQuery(`${name}Like`,
+    new Query({
+      $where: new RegexpExpression(expression, false)
+    })
+  )
+
 })
 
 // ---------------------------------
