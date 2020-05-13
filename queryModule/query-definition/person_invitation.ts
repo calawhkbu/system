@@ -272,15 +272,6 @@ filterFieldList.forEach(filterField => {
 
 query
   .register(
-    'userName',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('person', 'userName'), false),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
     'nameLike',
     new Query({
       $where: new OrExpressions([
@@ -294,33 +285,6 @@ query
   .register('value', 0)
   .register('value', 1)
   .register('value', 2)
-
-query
-  .register(
-    'firstName',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('person', 'firstName'), false),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'lastName',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('person', 'lastName'), false),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'displayName',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('person', 'displayName'), false),
-    })
-  )
-  .register('value', 0)
 
 query
   .register(
