@@ -270,7 +270,7 @@ filterFieldList.forEach(filterField => {
     new Query({
       $where: new RegexpExpression(expression, false)
     })
-  )
+  ).register('value', 0)
 
 })
 

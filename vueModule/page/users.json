@@ -215,7 +215,7 @@
 
           "i18nContext": "InvitationPage",
           "display": "email",
-          "name": "userName",
+          "name": "userNameLike",
           "type": "text"
         },
         {
