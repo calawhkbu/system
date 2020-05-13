@@ -1,4 +1,5 @@
 {
+  "keepAlive": false,
   "components": [
     {
       "is": "SimpleGridTool",

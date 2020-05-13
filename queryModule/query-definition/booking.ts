@@ -1,4 +1,4 @@
-import { QueryDef, ResultColumnFn, GroupByFn } from 'classes/query/QueryDef'
+import { QueryDef } from 'classes/query/QueryDef'
 import {
   Query,
   FromTable,
@@ -980,18 +980,6 @@ query.register('updatedAt', {
   $as: 'updatedAt',
 })
 
-query.register('totalBooking', {
-  expression: new FunctionExpression({
-    name: 'COUNT',
-    parameters: new ParameterExpression({
-      // cannot use distinct while using *
-      prefix: 'DISTINCT',
-      expression: new ColumnExpression('booking', 'id'),
-    }),
-  }),
-  $as: 'totalBooking',
-})
-
 const lastStatusCodeExpression = new ColumnExpression('booking_tracking', 'lastStatusCode')
 
 function lastStatusExpressionFunction() {
@@ -1112,15 +1100,6 @@ query.register('poNo', {
   $as: 'poNo',
 })
 
-query.register('weight', {
-  expression: new FunctionExpression(
-    'IFNULL',
-    new FunctionExpression('SUM', new ColumnExpression('weight')),
-    0
-  ),
-  $as: 'weight',
-})
-
 query.register('cbm', {
   expression: new FunctionExpression(
     'IFNULL',
@@ -1182,15 +1161,6 @@ query.register('freightTerms', {
     new ColumnExpression('booking', 'freightTermsCode')
   ),
   $as: 'freightTerms',
-})
-
-// used createdAt as jobMonth
-query.register('jobMonth', {
-  expression: new FunctionExpression({
-    name: 'DATE_FORMAT',
-    parameters: [new ColumnExpression('booking', 'createdAt'), '%y-%m'],
-  }),
-  $as: 'jobMonth',
 })
 
 //  register summary field
@@ -1328,7 +1298,6 @@ const shipmentTableFilterFieldList = [
   'boundTypeCode',
   'nominatedTypeCode',
   'shipmentTypeCode',
-  'portOfLoadingCode',
   'divisionCode',
   'isDirect',
   'isCoload',
@@ -1436,6 +1405,7 @@ locationList.map(location => {
       })
     )
     .register('value', 0)
+
 })
 
 // regiter date filter
@@ -1545,42 +1515,6 @@ dateList.map(date => {
 
 })
 
-query
-  .register(
-    'moduleTypeCode',
-    new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'moduleTypeCode'), false),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'boundTypeCode',
-    new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'boundTypeCode'), false),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'portOfLoadingCode',
-    new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'portOfLoadingCode'), false),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'portOfDischargeCode',
-    new Query({
-      $where: new InExpression(new ColumnExpression('booking', 'portOfDischargeCode'), false),
-    })
-  )
-  .register('value', 0)
-
 // ----------------- filter in main filter menu
 
 query
@@ -1591,6 +1525,7 @@ query
     })
   )
   .register('value', 0)
+
 query
   .register(
     'bookingNo',

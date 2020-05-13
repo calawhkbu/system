@@ -14,7 +14,6 @@
       "nextPageComponent": "shipment",
       "clickFunction": {
         "changeRow": [
-          "console.log(row)",
           "return {",
           "...row,",
           "shipmentParty: {",
@@ -94,7 +93,8 @@
             "linerAgentPartyName",
             "roAgentPartyName",
             "agentPartyName",
-            "haveCurrentTrackingNo"
+            "haveCurrentTrackingNo",
+            "lastStatusCodeOrDescription"
           ]
         }
       },
@@ -137,10 +137,28 @@
           }
         },
 
-
         {
-          "key": "dateStatus",
-          "label": "dateStatus"
+
+          "api": {
+            "arrayMapper": {
+              "keyKey": "code",
+              "valueKey": "name"
+            },
+            "axiosParams": {
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "YD_STATUS"
+                  }
+                }
+              },
+              "method": "POST",
+              "url": "api/code/query/code_master"
+            }
+          },
+          "key": "lastStatusCodeOrDescription",
+          "label": "lastStatus",
+          "i18nContext" : "Reporting"
         },
 
         {

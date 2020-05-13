@@ -1,90 +1,17 @@
 {
-  "class": "grid full-width",
+  "class": "grid",
   "components": [{
       "is": "DynamicComponent",
       "if": "const setting = context.$store.state.widget.componentSetting || {};return !setting.next;",
       "props": {
-        "class": "grid full-width",
+        "class": "grid",
         "components": [{
             "is": "DynamicComponent",
             "props": {
-              "class": "flex align-item-center full-width",
-              "components2": [{
-                "is": "DynamicComponent",
-                "props": {
-                  "class": "grid full-width align-item-center",
-                  "components": [{
-                      "is": "v-btn",
-                      "props": {
-                        "flat": true,
-                        "icon": true
-                      },
-                      "events": {
-                        "click.stop": [{
-                          "type": "router",
-                          "otherParams": {
-                            "func": "push",
-                            "path": "/{{ p[0] }}/{{ p[1] }}"
-                          }
-                        }]
-                      },
-                      "slots": [{
-                        "is": "Icon",
-                        "props": {
-                          "icon": "arrow_back"
-                        }
-                      }]
-                    },
-                    {
-                      "is": "I18nText",
-                      "props": {
-                        "class": "xs-3 md-3 headline",
-                        "i18nContext": "BookingPage",
-                        "i18nKey": "quickCreate"
-                      }
-                    },
-                    {
-                      "is": "v-spacer"
-                    },
-                    {
-                      "is": "LoadEntityTemplateButton",
-                      "props": {
-                        "class": "xs-1 md-1 max-width-300",
-                        "axiosParams": {
-                          "method": "GET",
-                          "url": "/entityTemplate/booking/list"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }],
+              "class": "xs-12 grid min-height-28 align-item-center full-width padding-leftright-8",
               "components": [{
-                  "is": "v-btn",
-                  "props": {
-                    "flat": true,
-                    "icon": true
-                  },
-                  "events": {
-                    "click.stop": [{
-                      "type": "router",
-                      "otherParams": {
-                        "func": "push",
-                        "path": "/{{ p[0] }}/{{ p[1] }}"
-                      }
-                    }]
-                  },
-                  "slots": [{
-                    "is": "Icon",
-                    "props": {
-                      "icon": "arrow_back"
-                    }
-                  }]
-                },
-                {
                   "is": "I18nText",
                   "props": {
-                    "class": "headline",
                     "i18nContext": "BookingPage",
                     "i18nKey": "quickCreate"
                   }
@@ -98,7 +25,7 @@
                     "class": "max-width-300",
                     "axiosParams": {
                       "method": "GET",
-                      "url": "/entityTemplate/booking/list"
+                      "url": "/default/booking/list"
                     }
                   }
                 }
@@ -108,7 +35,7 @@
           {
             "is": "WidgetForm",
             "props": {
-              "class": "full-width padding-leftright-8",
+              "class": "full-width padding-leftright-4",
               "fields": [{
                   "containerComponent": "v-card",
                   "containerComponentProps": {
@@ -745,16 +672,18 @@
     },
     {
       "is": "DynamicComponent",
-      "if": "\n        const setting = context.$store.state.widget.componentSetting || {}\n        return setting.next\n      ",
+      "if": "const setting = context.$store.state.widget.componentSetting || {};return setting.next;",
       "props": {
         "class": "grid full-width",
         "components": [{
             "is": "DynamicComponent",
             "props": {
-              "class": "flex align-item-center full-width padding-top-4 padding-bottom-4",
+              "class": "xs-12 grid min-height-28 align-item-center full-width padding-leftright-8",
               "components": [{
                   "is": "v-btn",
                   "props": {
+                    "class": "margin-0",
+                    "small": true,
                     "flat": true,
                     "icon": true
                   },
@@ -780,7 +709,7 @@
                 {
                   "is": "I18nText",
                   "props": {
-                    "class": "headline",
+                    "class": "title",
                     "i18nContext": "BookingPage",
                     "i18nKey": "createTitle"
                   }
@@ -794,7 +723,7 @@
                     "class": "max-width-300",
                     "axiosParams": {
                       "method": "GET",
-                      "url": "/entityTemplate/booking/list"
+                      "url": "/default/booking/list"
                     }
                   }
                 }
@@ -814,7 +743,7 @@
                   "components": [{
                     "is": "AsyncComponent",
                     "props": {
-                      "layoutName": "booking/forms/generalForm"
+                      "layoutName": "booking/forms/general"
                     }
                   }]
                 },
@@ -825,7 +754,7 @@
                   "components": [{
                     "is": "AsyncComponent",
                     "props": {
-                      "layoutName": "booking/forms/partyForm"
+                      "layoutName": "booking/forms/party"
                     }
                   }]
                 },
@@ -836,7 +765,7 @@
                   "components": [{
                     "is": "AsyncComponent",
                     "props": {
-                      "layoutName": "booking/forms/dateForm"
+                      "layoutName": "booking/forms/date"
                     }
                   }]
                 },
@@ -847,7 +776,7 @@
                   "components": [{
                     "is": "AsyncComponent",
                     "props": {
-                      "layoutName": "booking/forms/containerForm"
+                      "layoutName": "booking/forms/container"
                     }
                   }]
                 },
@@ -858,7 +787,7 @@
                   "components": [{
                     "is": "AsyncComponent",
                     "props": {
-                      "layoutName": "booking/forms/referenceForm"
+                      "layoutName": "booking/forms/reference"
                     }
                   }]
                 },

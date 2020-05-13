@@ -29,14 +29,16 @@ function prepareParams() {
 
     const location = subqueries.location.value
     const locationCode = `${location}Code`
+    const locationLatitude = `${location}Latitude`
+    const locationLongitude = `${location}Longitude`
 
     // portOfLoadingLocationJoin / portODischargeLocationJoin
     subqueries[`${location}Join`] = true
 
     params.fields = [
       locationCode,
-      'latitude',
-      'longitude'
+      locationLatitude,
+      locationLongitude
     ]
 
     return params
@@ -51,18 +53,15 @@ function finalQuery() {
     const subqueries = params.subqueries || {}
     const location = subqueries.location.value
     const locationCode = `${location}Code`
+    const locationLatitude = `${location}Latitude`
+    const locationLongitude = `${location}Longitude`
 
     const columns = [
-      { name: 'latitude', type: 'number' },
-      { name: 'longitude', type: 'number' }
-    ] as any
 
-    columns.push(
-      {
-        name: locationCode,
-        type: 'string'
-      }
-    )
+      { name: locationCode, type: 'string'},
+      { name: locationLatitude, type: 'number', $as : 'latitude' },
+      { name: locationLongitude, type: 'number', $as : 'longitude' }
+    ] as any
 
     return new Query({
       $select : [
