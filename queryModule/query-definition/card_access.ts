@@ -17,6 +17,7 @@ import {
   CaseExpression
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
+import { ExpressionHelperInterface, registerAll } from 'utils/jql-subqueries'
 
 const query = new QueryDef(new Query({
   $select : [
@@ -66,9 +67,7 @@ const query = new QueryDef(new Query({
     new IsNullExpression(new ColumnExpression('card_access', 'deletedBy'), false)
   ])
 
-  query.registerBoth('isActive', isActiveConditionExpression)
-
-  const isActiveStatusExpression = new CaseExpression({
+  const activeStatusExpression = new CaseExpression({
     cases : [
       {
         $when : new BinaryExpression(isActiveConditionExpression, '=', false),
@@ -102,126 +101,11 @@ const query = new QueryDef(new Query({
     },
     {
       name : 'activeStatus',
-      expression : isActiveStatusExpression
+      expression : activeStatusExpression
     }
 
-  ] as {
-    name: string
-    expression: IExpression |  ((subqueryParam) => IExpression),
-    companion?: string[]
-  }[]
+  ] as ExpressionHelperInterface[]
 
-  function registerAll(query, fieldList)
-  {
-
-    fieldList.map(field => {
-
-      const name = (typeof field === 'string') ? field : field.name
-
-      const expressionFn = (subqueryParam: IQueryParams) => {
-        return (typeof field === 'string') ? new ColumnExpression(baseTableName, field) : typeof field.expression === 'function' ? field.expression(subqueryParam) : field.expression
-      }
-
-      const companion = (typeof field === 'string') ? [] : (field.companion && field.companion.length) ? field.companion : []
-
-      const eqFilterQueryFn = ((value: any, param?: IQueryParams) => {
-        const trueValue = value.value
-
-        if (Array.isArray(trueValue))
-        {
-          throw new Error(`receive list value, value : ${JSON.stringify(trueValue)}`)
-        }
-
-        return new Query({
-          $where: new BinaryExpression(expressionFn(param), '=', new Value(trueValue)),
-        })
-      }) as SubqueryArg
-
-      const notEqFilterQueryFn = ((value: any, param?: IQueryParams) => {
-
-        const trueValue = value.value
-
-        if (Array.isArray(trueValue))
-        {
-          throw new Error(`receive list value, value : ${JSON.stringify(trueValue)}`)
-        }
-
-        return new Query({
-          $where: new BinaryExpression(expressionFn(param), '!=', new Value(trueValue)),
-        })
-      }) as SubqueryArg
-
-      const inFilterQueryFn = ((value: any, param?: IQueryParams) => {
-
-        const valueList = value.value
-
-        if (!Array.isArray(valueList))
-        {
-          throw new Error(`receive  non list value, valueList : ${JSON.stringify(valueList)}`)
-        }
-
-        return new Query({
-          $where: new InExpression(expressionFn(param), false, valueList),
-        })
-      }) as SubqueryArg
-
-      const notInFilterQueryFn = ((value: any, param?: IQueryParams) => {
-
-        const valueList = value.value
-
-        if (!Array.isArray(valueList))
-        {
-          throw new Error(`receive  non list value, valueList : ${JSON.stringify(valueList)}`)
-        }
-
-        return new Query({
-          $where: new InExpression(expressionFn(param), true, valueList),
-        })
-      })
-
-      const IsNotNullQueryFn = ((value: any, param?: IQueryParams) => {
-        return new Query({
-          $where: new IsNullExpression(expressionFn(param), true),
-        })
-      })
-
-      const IsNullQueryFn = ((value: any, param?: IQueryParams) => {
-        return new Query({
-          $where: new IsNullExpression(expressionFn(param), false),
-        })
-      })
-
-      const likeQueryFn = ((value: any, param?: IQueryParams) => {
-        return new Query({
-          $where: new RegexpExpression(expressionFn(param), false),
-        })
-      })
-
-      const notLikeQueryFn = ((value: any, param?: IQueryParams) => {
-        return new Query({
-          $where: new RegexpExpression(expressionFn(param), false),
-        })
-      })
-
-      // register for field and groupBy
-      query.registerBoth(name, expressionFn, ...companion)
-
-      // register as filter
-      // warning : ${name} filter is default Eq !!
-      query.subquery(`${name}`, eqFilterQueryFn, ...companion)
-      query.subquery(`${name}Eq`, eqFilterQueryFn, ...companion)
-      query.subquery(`${name}NotEq`, notEqFilterQueryFn, ...companion)
-      query.subquery(`${name}In`, inFilterQueryFn, ...companion)
-      query.subquery(`${name}NotIn`, notInFilterQueryFn, ...companion)
-      query.subquery(`${name}IsNotNull`, IsNotNullQueryFn, ...companion)
-      query.subquery(`${name}IsNull`, IsNullQueryFn, ...companion)
-      query.subquery(`${name}Like`, likeQueryFn, ...companion)
-      query.subquery(`${name}NotLike`, notLikeQueryFn, ...companion)
-
-    })
-
-  }
-
-  registerAll(query, fieldList)
+  registerAll(query, baseTableName, fieldList)
 
 export default query

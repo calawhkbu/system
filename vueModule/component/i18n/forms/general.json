@@ -26,7 +26,7 @@
               "url": "api/i18n/category/list",
               "data": {
                 "subqueries": {
-                  "category": {
+                  "categoryLike": {
                     "value": "{{context.search}}"
                   }
                 }
