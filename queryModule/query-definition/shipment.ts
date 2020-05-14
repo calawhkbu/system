@@ -187,7 +187,7 @@ const partyList = [
 }[]
 const locationList = ['portOfLoading', 'portOfDischarge', 'placeOfDelivery', 'placeOfReceipt', 'finalDestination']
 
-const query = new QueryDef((params: IQueryParams) => {
+const query2 = new QueryDef((params: IQueryParams) => {
 
   const baseQuery =   new Query({
     // $distinct: true,
@@ -228,23 +228,10 @@ const query = new QueryDef((params: IQueryParams) => {
     console.log(`newSubqueries`)
     console.log(newSubqueries)
 
-    baseQuery.$from[0].joinClauses.push(
-      new JoinClause({
-        operator :  'LEFT',
-        table : new FromTable(query.apply(newParams), 'shipment_isMinCreatedAt'),
-        $on : new BinaryExpression(new ColumnExpression('shipment', 'id'), '=', new ColumnExpression('shipment_isMinCreatedAt', 'shipmentId'))
-      })
-    )
   }
 
   return baseQuery
 })
-
-query.registerQuery('isMinCreatedAt', new Query({
-
-  $where : new BinaryExpression(new ColumnExpression('shipment_isMinCreatedAt', 'isMinCreatedAt'), '=', true)
-
-}))
 
 const queryOld = new QueryDef(
   new Query({
@@ -289,6 +276,29 @@ const queryOld = new QueryDef(
     ),
   })
 )
+
+const query = new QueryDef(new Query({
+
+    // $distinct: true,
+    $select: [
+      new ResultColumn(new ColumnExpression('shipment', '*')),
+      new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
+      new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentPartyId'),
+    ],
+    $from: new FromTable(
+
+      {
+        table : 'shipment',
+      }
+
+    )
+}))
+
+query.registerQuery('isMinCreatedAt', new Query({
+
+  $where : new BinaryExpression(new ColumnExpression('shipment', 'isMinCreatedAt'), '=', true)
+
+}))
 
 // all shipment join
 query.table('shipment_date', new Query({
