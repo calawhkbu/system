@@ -7,6 +7,7 @@
       "urlFormat": "/admin/trackings",
       "title": "Tracking",
       "reportingKey": "tracking",
+      "reportingKeyKey": "reportIdParams",
       "jql": "tracking",
       "hasReports": false,
       "showFilterBar": true,

@@ -5,7 +5,7 @@
     "props": {
       "title": "Templates",
       "back": "/admin",
-      "urlFormat": "/admin/templates/{{ id }}",
+      "urlFormat": "/admin/templates",
       "reportingKey": "templates",
       "jql": "templates",
       "noPartyGroupFilters": true,

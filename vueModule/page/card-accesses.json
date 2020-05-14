@@ -7,6 +7,7 @@
       "back": "/admin",
       "urlFormat": "/admin/card-accesses",
       "reportingKey": "card-accesses",
+      "reportingKeyKey": "reportIdParams",
       "jql": "card-accesses",
       "hasReports": false,
       "showFilterBar": true,

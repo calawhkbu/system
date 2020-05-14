@@ -7,6 +7,7 @@
       "back": "/admin",
       "urlFormat": "/admin/apis",
       "reportingKey": "apis",
+      "reportingKeyKey": "reportIdParams",
       "jql": "apis",
       "hasReports": false,
       "showFilterBar": true,
