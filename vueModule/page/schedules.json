@@ -7,6 +7,7 @@
       "back": "/admin",
       "urlFormat": "/admin/schedules",
       "reportingKey": "schedules",
+      "reportingKeyKey": "reportIdParams",
       "jql": "schedules",
       "hasReports": false,
       "showFilterBar": true,

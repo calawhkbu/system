@@ -7,6 +7,7 @@
       "back": "/admin",
       "urlFormat": "/admin/tasks",
       "reportingKey": "tasks",
+      "reportingKeyKey": "reportIdParams",
       "jql": "tasks",
       "hasReports": false,
       "showFilterBar": true,

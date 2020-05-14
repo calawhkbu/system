@@ -7,6 +7,7 @@
       "back": "/admin",
       "reportingKey": "i18ns",
       "urlFormat": "/admin/i18ns",
+      "reportingKeyKey": "reportIdParams",
       "jql": "i18ns",
       "showFilterBar": true,
       "enableShare": false,
