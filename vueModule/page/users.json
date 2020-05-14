@@ -7,6 +7,7 @@
       "back": "/admin",
       "urlFormat": "/admin/users",
       "reportingKey": "users",
+      "reportingKeyKey": "reportIdParams",
       "jql": "users",
       "hasReports": false,
       "showFilterBar": true,
@@ -215,7 +216,7 @@
 
           "i18nContext": "InvitationPage",
           "display": "email",
-          "name": "userName",
+          "name": "userNameLike",
           "type": "text"
         },
         {
