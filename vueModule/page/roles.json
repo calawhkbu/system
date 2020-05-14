@@ -5,8 +5,9 @@
     "props": {
       "title": "Roles",
       "back": "/admin",
-      "urlFormat": "/admin/roles/{{ id }}",
+      "urlFormat": "/admin/roles",
       "reportingKey": "roles",
+      "reportingKeyKey": "reportIdParams",
       "jql": "roles",
       "noPartyGroupFilters": true,
       "hasReports": false,
