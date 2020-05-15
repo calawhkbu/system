@@ -196,7 +196,8 @@ function prepareTable(): CreateTableJQL {
 
             new InExpression(new ColumnExpression('reportingGroup'), false, convertToTeuReportinGroupList),
 
-            new ColumnExpression('teuInReport'),
+            // warning now still show cbm
+            new ColumnExpression('cbm'),
 
             new FunctionExpression(
               'IF',
