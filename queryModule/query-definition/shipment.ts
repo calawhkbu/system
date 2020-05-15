@@ -2606,11 +2606,6 @@ const shipmentTableFilterFieldList = [
     expression: lastStatusExpression,
     companion : ['table:lastStatus']
   },
-  {
-    name: 'lastStatusDate',
-    expression: lastStatusDateExpression,
-    companion : ['table:lastStatus']
-  },
   // tracking status
   {
     name: 'statusCode',
