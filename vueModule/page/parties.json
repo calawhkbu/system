@@ -16,12 +16,9 @@
       "nextPageKey": "reportIdParams",
       "newReport": {
         "filters": {
-          "isActive": {
+          "activeStatus": {
             "value": "active"
-          },
-          "parties": true,
-          "contacts": true,
-          "showInfo": true
+          }
         },
         "configurations": {
           "i18nContext": "PartyPage",
@@ -42,7 +39,9 @@
         }
       },
       "filters": [{
-        "name": "isActive",
+
+        "display" : "isActive",
+        "name": "activeStatus",
         "type": "list",
         "props": {
           "items": [{

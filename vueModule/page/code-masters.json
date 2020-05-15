@@ -16,7 +16,7 @@
       "nextPageComponent": "code-master",
       "newReport": {
         "filters": {
-          "isActive": {
+          "activeStatusEq": {
             "value": "active",
             "locked": true
           }
@@ -71,7 +71,8 @@
       ],
       "filters": [{
 
-          "name": "isActive",
+          "display" : "isActive",
+          "name": "activeStatusEq",
           "type": "list",
           "props": {
             "items": [{

@@ -1,4 +1,4 @@
-import { QueryDef } from 'classes/query/QueryDef'
+import { QueryDef, SubqueryArg } from 'classes/query/QueryDef'
 import {
   BinaryExpression,
   ColumnExpression,
@@ -8,35 +8,43 @@ import {
   FromTable,
   OrExpressions,
   Value,
-  Unknown
+  Unknown,
+  CaseExpression,
+  IExpression,
+  InExpression,
+  RegexpExpression
 } from 'node-jql'
+import { IQueryParams } from 'classes/query'
+import { ExpressionHelperInterface, registerAll } from 'utils/jql-subqueries'
 
 const query = new QueryDef(new Query({$from: new FromTable('api', 'api')}))
 
-// fields
-query.register('id', {
-  expression: new ColumnExpression('api', 'id'),
-  $as: 'id',
+const isActiveConditionExpression = new AndExpressions([
+  new IsNullExpression(new ColumnExpression('api', 'deletedAt'), false),
+  new IsNullExpression(new ColumnExpression('api', 'deletedBy'), false)
+])
+
+const activeStatusExpression = new CaseExpression({
+  cases : [
+    {
+      $when : new BinaryExpression(isActiveConditionExpression, '=', false),
+      $then : new Value('deleted')
+    }
+  ],
+  $else : new Value('active')
 })
 
-// query
-query.register('isActive', new Query({
-  $where : new OrExpressions([
-    new AndExpressions([
-      new BinaryExpression(new Value('active'), '=', new Unknown('string')),
-      // active case
-      new IsNullExpression(new ColumnExpression('api', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('api', 'deletedBy'), false)
-    ]),
-    new AndExpressions([
-      new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
-      // deleted case
-      new IsNullExpression(new ColumnExpression('api', 'deletedAt'), true),
-      new IsNullExpression(new ColumnExpression('api', 'deletedBy'), true)
-    ])
-  ])
-}))
-.register('value', 0)
-.register('value', 1)
+const baseTableName = 'api'
+
+const fieldList = [
+  'id',
+  {
+    name : 'activeStatus',
+    expression : activeStatusExpression
+  }
+
+] as ExpressionHelperInterface[]
+
+registerAll(query, baseTableName, fieldList)
 
 export default query

@@ -339,7 +339,7 @@
                   "q": {
                     "value": "{{context.search}}"
                   },
-                  "partyTypes": {
+                  "partyTypeIn": {
                     "value": ["{{key}}"]
                   }
                 },
@@ -618,7 +618,7 @@
                   "q": {
                     "value": "{{context.search}}"
                   },
-                  "partyTypes": {
+                  "partyTypeIn": {
                     "value": ["{{key}}"]
                   }
                 },

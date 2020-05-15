@@ -1,4 +1,4 @@
-import { QueryDef } from 'classes/query/QueryDef'
+import { QueryDef, SubqueryArg } from 'classes/query/QueryDef'
 import {
   BinaryExpression,
   ColumnExpression,
@@ -10,8 +10,14 @@ import {
   ResultColumn,
   OrExpressions,
   Value,
-  Unknown
+  Unknown,
+  IExpression,
+  InExpression,
+  RegexpExpression,
+  CaseExpression
 } from 'node-jql'
+import { IQueryParams } from 'classes/query'
+import { ExpressionHelperInterface, registerAll } from 'utils/jql-subqueries'
 
 const query = new QueryDef(new Query({
   $select : [
@@ -36,79 +42,70 @@ const query = new QueryDef(new Query({
   })
 }))
 
-query.register('id', {
-  expression: new ColumnExpression('card_access', 'id'),
-  $as: 'id',
-})
+  // all expression in here
 
-query.register('canDelete',
-{
-
-  expression : new FunctionExpression(
+  const canDeleteExpression = new FunctionExpression(
     'IF',
     new AndExpressions([
       new IsNullExpression(new ColumnExpression('card_access', 'deletedAt'), false),
       new IsNullExpression(new ColumnExpression('card_access', 'deletedBy'), false),
     ]),
     1, 0
-  ),
+  )
 
-  $as: 'canDelete'
-})
-
-query.register('canRestore',
-{
-
-  expression : new FunctionExpression(
+  const canRestoreExpression = new FunctionExpression(
     'IF',
     new AndExpressions([
       new IsNullExpression(new ColumnExpression('card_access', 'deletedAt'), true),
       new IsNullExpression(new ColumnExpression('card_access', 'deletedBy'), true),
     ]),
     1, 0
-  ),
+  )
 
-  $as: 'canRestore'
-})
-
-// -----------------------
-query
-  .register(
-    'partyGroupCode',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('partyGroupCode'), '='),
-    })
-  ).register('value', 0)
-
-  // isActive
   const isActiveConditionExpression = new AndExpressions([
     new IsNullExpression(new ColumnExpression('card_access', 'deletedAt'), false),
     new IsNullExpression(new ColumnExpression('card_access', 'deletedBy'), false)
   ])
 
-  query.registerBoth('isActive', isActiveConditionExpression)
+  const activeStatusExpression = new CaseExpression({
+    cases : [
+      {
+        $when : new BinaryExpression(isActiveConditionExpression, '=', false),
+        $then : new Value('deleted')
+      }
+    ],
+    $else : new Value('active')
+  })
 
-  query.registerQuery('isActive', new Query({
+  //  ============================
 
-    $where : new OrExpressions([
+  // finally register here
 
-      new AndExpressions([
+  const baseTableName = 'card_access'
 
-        new BinaryExpression(new Value('active'), '=', new Unknown('string')),
-        // active case
-        isActiveConditionExpression
-      ]),
+  const fieldList = [
+    'id',
+    'partyGroupCode',
+    {
+      name : 'reportingKey',
+      expression : new ColumnExpression('card', 'reportingKey')
+    },
 
-      new AndExpressions([
-        new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
-        // deleted case
-        new BinaryExpression(isActiveConditionExpression, '=', false)
-      ])
+    {
+      name : 'canDelete',
+      expression : canDeleteExpression
+    },
+    {
+      name : 'canRestore',
+      expression : canRestoreExpression
+    },
+    {
+      name : 'activeStatus',
+      expression : activeStatusExpression
+    }
 
-    ])
+  ] as ExpressionHelperInterface[]
 
-  }))
-  .register('value', 0)
-  .register('value', 1)
+  registerAll(query, baseTableName, fieldList)
 
 export default query

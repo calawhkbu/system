@@ -15,8 +15,10 @@ import {
   Value,
   Unknown,
   GroupBy,
-  AndExpressions
+  AndExpressions,
+  CaseExpression
 } from 'node-jql'
+import { registerAll } from 'utils/jql-subqueries'
 
 const query = new QueryDef(
   new Query({
@@ -54,171 +56,171 @@ const query = new QueryDef(
   })
 )
 
-query.registerQuery('relation_join', new Query({
-  $from: new FromTable('party', {
-    operator: 'LEFT',
-    table: new FromTable(new Query({
-      $select: [
-        new ResultColumn(new ColumnExpression('related_person', 'partyId'), 'partyId'),
-        new ResultColumn({
-          expression: new FunctionExpression({
-            name: 'COUNT',
-            parameters: new ParameterExpression({
-              prefix: 'DISTINCT',
-              expression: new ColumnExpression('related_person', 'email'),
-            }),
-          }),
-          $as: 'count'
-        })
-      ],
-      $from: 'related_person',
-      $group: new GroupBy({
-        expressions: new ColumnExpression('related_person', 'partyId')
-      })
-    }), 'related_person_count'),
-    $on: new BinaryExpression(
-      new ColumnExpression('party', 'id'),
-      '=',
-      new ColumnExpression('related_person_count', 'partyId')
-    ),
-  }, {
-    operator: 'LEFT',
-    table: new FromTable(new Query({
-      $select: [
-        new ResultColumn(new ColumnExpression('related_party', 'partyBId'), 'partyBId'),
-        new ResultColumn({
-          expression: new FunctionExpression({
-            name: 'COUNT',
-            parameters: new ParameterExpression({
-              prefix: 'DISTINCT',
-              expression: new ColumnExpression('related_party', 'partyBId'),
-            }),
-          }),
-          $as: 'count'
-        })
-      ],
-      $from: 'related_party',
-      $group: new GroupBy({
-        expressions: new ColumnExpression('related_party', 'partyBId')
-      })
-    }), 'related_party_count'),
-    $on: new BinaryExpression(
-      new ColumnExpression('party', 'id'),
-      '=',
-      new ColumnExpression('related_party_count', 'partyBId')
-    ),
+const partyTypesExpression = new ColumnExpression('party_type_concat', 'partyTypes')
+
+const contactsExpression = new QueryExpression(
+  new Query({
+    $select: [
+      new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('related_person', 'email'))))
+    ],
+    $from: 'related_person',
+    $where: [
+      new BinaryExpression(
+        new ColumnExpression('party', 'id'),
+        '=',
+        new ColumnExpression('related_person', 'partyId')
+      ),
+    ]
   })
-}))
+)
 
-query.register('erpCode', {
-  expression: new FunctionExpression(
-    'JSON_UNQUOTE',
-    new FunctionExpression('JSON_EXTRACT', new ColumnExpression('party', 'thirdPartyCode'), '$.erp')
-  ),
-  $as: 'erpCode',
+const partiesExpression = new QueryExpression(
+  new Query({
+    $select: [
+      new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('related_party', 'partyBId'))))
+    ],
+    $from: 'related_party',
+    $where: [
+      new BinaryExpression(
+        new ColumnExpression('party', 'id'),
+        '=',
+        new ColumnExpression('related_party', 'partyAId')
+      ),
+    ]
+  })
+)
+
+const showInfoExpression = new Value(1)
+
+const isActiveConditionExpression = new AndExpressions([
+  new IsNullExpression(new ColumnExpression('party', 'deletedAt'), false),
+  new IsNullExpression(new ColumnExpression('party', 'deletedBy'), false)
+])
+
+const activeStatusExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new BinaryExpression(isActiveConditionExpression, '=', false),
+      $then: new Value('deleted')
+    }
+  ],
+  $else: new Value('active')
 })
 
-query.register('patryTypes', {
-  expression: new ColumnExpression('party_type_concat', 'id'),
-  $as: 'patryTypes',
-})
+const baseTableName = 'party'
 
-query.register('showInfo', {
-  expression: new Value(1),
-  $as: 'showInfo'
-})
+const fieldList = [
+  'id',
+  'erpCode',
+  'name',
+  'shortName',
+  'groupName',
+  {
+    name : 'showInfo',
+    expression : showInfoExpression,
+  },
+  {
+    name : 'activeStatus',
+    expression : activeStatusExpression
+  },
+  {
+    name : 'partyTypes',
+    expression : partyTypesExpression
+  },
 
-query.register('parties', {
-  expression: new QueryExpression(
-    new Query({
-      $select: [
-        new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('related_party', 'partyBId'))))
-      ],
-      $from: 'related_party',
-      $where: [
-        new BinaryExpression(
-          new ColumnExpression('party', 'id'),
-          '=',
-          new ColumnExpression('related_party', 'partyAId')
-        ),
-      ]
-    })
-  ),
-  $as: 'parties',
-})
+  {
+    name : 'parties',
+    expression : partiesExpression
+  },
 
-query.register('contacts', {
-  expression: new QueryExpression(
-    new Query({
-      $select: [
-        new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('related_person', 'email'))))
-      ],
-      $from: 'related_person',
-      $where: [
-        new BinaryExpression(
-          new ColumnExpression('party', 'id'),
-          '=',
-          new ColumnExpression('related_person', 'partyId')
-        ),
-      ]
-    })
-  ),
-  $as: 'contacts',
-})
+  {
+    name : 'contacts',
+    expression : contactsExpression
+  },
+]
 
-query
-  .register(
-    'id',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('party', 'id'), '='),
-    })
-  )
-  .register('value', 0)
+registerAll(query, baseTableName, fieldList)
 
-query
-  .register(
-    'isBranch',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('party', 'isBranch'), '='),
-    })
-  )
-  .register('value', 0)
+// name => nameLike
 
-query
-  .register(
-    'name',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('party', 'name'), false),
-    })
-  )
-  .register('value', 0)
+// query.register('partyTypes', {
+//   expression: new ColumnExpression('party_type_concat', 'id'),
+//   $as: 'partyTypes',
+// })
 
-query
-  .register(
-    'customCode',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('party', 'erpCode'), false),
-    })
-  )
-  .register('value', 0)
+// query.register('parties', {
+//   expression: new QueryExpression(
+//     new Query({
+//       $select: [
+//         new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('related_party', 'partyBId'))))
+//       ],
+//       $from: 'related_party',
+//       $where: [
+//         new BinaryExpression(
+//           new ColumnExpression('party', 'id'),
+//           '=',
+//           new ColumnExpression('related_party', 'partyAId')
+//         ),
+//       ]
+//     })
+//   ),
+//   $as: 'parties',
+// })
 
-query
-  .register(
-    'shortName',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('party', 'shortName'), false),
-    })
-  )
-  .register('value', 0)
+// query.register('contacts', {
+//   expression: new QueryExpression(
+//     new Query({
+//       $select: [
+//         new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('related_person', 'email'))))
+//       ],
+//       $from: 'related_person',
+//       $where: [
+//         new BinaryExpression(
+//           new ColumnExpression('party', 'id'),
+//           '=',
+//           new ColumnExpression('related_person', 'partyId')
+//         ),
+//       ]
+//     })
+//   ),
+//   $as: 'contacts',
+// })
 
-query
-  .register(
-    'groupName',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('party', 'groupName'), false),
-    })
-  )
-  .register('value', 0)
+// query
+//   .register(
+//     'name',
+//     new Query({
+//       $where: new RegexpExpression(new ColumnExpression('party', 'name'), false),
+//     })
+//   )
+//   .register('value', 0)
+
+// query
+//   .register(
+//     'customCode',
+//     new Query({
+//       $where: new RegexpExpression(new ColumnExpression('party', 'erpCode'), false),
+//     })
+//   )
+//   .register('value', 0)
+
+// query
+//   .register(
+//     'shortName',
+//     new Query({
+//       $where: new RegexpExpression(new ColumnExpression('party', 'shortName'), false),
+//     })
+//   )
+//   .register('value', 0)
+
+// query
+//   .register(
+//     'groupName',
+//     new Query({
+//       $where: new RegexpExpression(new ColumnExpression('party', 'groupName'), false),
+//     })
+//   )
+//   .register('value', 0)
 
 query.register('relatedTo', new Query({
   $where: new ExistsExpression(new Query({
@@ -264,37 +266,5 @@ query.register('type', new Query({
   }), true)
 }))
   .register('value', 0)
-
-  // will have 2 options, active and deleted
-  // isActive
-  const isActiveConditionExpression = new AndExpressions([
-    new IsNullExpression(new ColumnExpression('party', 'deletedAt'), false),
-    new IsNullExpression(new ColumnExpression('party', 'deletedBy'), false)
-  ])
-
-  query.registerBoth('isActive', isActiveConditionExpression)
-
-  query.registerQuery('isActive', new Query({
-
-    $where : new OrExpressions([
-
-      new AndExpressions([
-
-        new BinaryExpression(new Value('active'), '=', new Unknown('string')),
-        // active case
-        isActiveConditionExpression
-      ]),
-
-      new AndExpressions([
-        new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
-        // deleted case
-        new BinaryExpression(isActiveConditionExpression, '=', false)
-      ])
-
-    ])
-
-  }))
-  .register('value', 0)
-  .register('value', 1)
 
 export default query

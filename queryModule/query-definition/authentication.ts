@@ -8,47 +8,40 @@ import {
   FromTable,
   OrExpressions,
   Value,
-  Unknown
+  Unknown,
+  CaseExpression,
+  IExpression
 } from 'node-jql'
+import { ExpressionHelperInterface, registerAll } from 'utils/jql-subqueries'
 
 const query = new QueryDef(new Query({$from: new FromTable('authentication', 'authentication')}))
-
-// fields
-query.register('id', {
-  expression: new ColumnExpression('authentication', 'id'),
-  $as: 'id',
-})
-
-// isActive stuff
 
 const isActiveConditionExpression = new AndExpressions([
   new IsNullExpression(new ColumnExpression('authentication', 'deletedAt'), false),
   new IsNullExpression(new ColumnExpression('authentication', 'deletedBy'), false)
 ])
 
-query.registerBoth('isActive', isActiveConditionExpression)
+const activeStatusExpression = new CaseExpression({
+  cases : [
+    {
+      $when : new BinaryExpression(isActiveConditionExpression, '=', false),
+      $then : new Value('deleted')
+    }
+  ],
+  $else : new Value('active')
+})
 
-query.registerQuery('isActive', new Query({
+const baseTableName = 'authentication'
 
-  $where : new OrExpressions([
+const fieldList = [
+  'id',
+  {
+    name : 'activeStatus',
+    expression : activeStatusExpression
+  }
 
-    new AndExpressions([
+] as ExpressionHelperInterface[]
 
-      new BinaryExpression(new Value('active'), '=', new Unknown('string')),
-      // active case
-      isActiveConditionExpression
-    ]),
-
-    new AndExpressions([
-      new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
-      // deleted case
-      new BinaryExpression(isActiveConditionExpression, '=', false)
-    ])
-
-  ])
-
-}))
-.register('value', 0)
-.register('value', 1)
+registerAll(query, baseTableName, fieldList)
 
 export default query
