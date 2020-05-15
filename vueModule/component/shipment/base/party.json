@@ -389,7 +389,7 @@
                               "q": {
                                 "value": "{{context.search}}"
                               },
-                              "partyTypes": {
+                              "partyTypeIn": {
                                 "value": ["{{key}}"]
                               }
                             },
