@@ -94,7 +94,8 @@
             "roAgentPartyName",
             "agentPartyName",
             "haveCurrentTrackingNo",
-            "lastStatusCodeOrDescription"
+            "lastStatusCodeOrDescription",
+            "lastStatusDate"
           ]
         }
       },
@@ -159,6 +160,11 @@
           "key": "lastStatusCodeOrDescription",
           "label": "lastStatus",
           "i18nContext" : "Reporting"
+        },
+
+        {
+          "key" : "lastStatusDate",
+          "format": "YYYY-MM-DD HH:mm:ss"
         },
 
         {
