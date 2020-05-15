@@ -1561,6 +1561,7 @@ const reportingGroupExpression = new CaseExpression({
 
 const lastStatusCodeExpression = new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusCode')
 const lastStatusCodeOrDescriptionExpression = new FunctionExpression('IFNULL', new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusCode'), new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusDescription'))
+const lastStatusDateExpression = new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusDate')
 
 const statusCodeExpression = new ColumnExpression('shipmentTrackingStatusCodeTable', 'statusCode')
 
@@ -2589,7 +2590,11 @@ const shipmentTableFilterFieldList = [
     expression: lastStatusExpression,
     companion : ['table:lastStatus']
   },
-
+  {
+    name: 'lastStatusDate',
+    expression: lastStatusDateExpression,
+    companion : ['table:lastStatus']
+  },
   // tracking status
   {
     name: 'statusCode',
