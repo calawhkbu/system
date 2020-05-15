@@ -18,6 +18,7 @@ import {
   AndExpressions,
   CaseExpression
 } from 'node-jql'
+import { registerAll } from 'utils/jql-subqueries'
 
 const query = new QueryDef(
   new Query({
@@ -55,7 +56,7 @@ const query = new QueryDef(
   })
 )
 
-const partyTypesExpression = new ColumnExpression('party_type_concat', 'id')
+const partyTypesExpression = new ColumnExpression('party_type_concat', 'partyTypes')
 
 const contactsExpression = new QueryExpression(
   new Query({
@@ -108,7 +109,7 @@ const activeStatusExpression = new CaseExpression({
 
 const baseTableName = 'party'
 
-const fields = [
+const fieldList = [
   'id',
   'erpCode',
   'name',
@@ -137,6 +138,8 @@ const fields = [
     expression : contactsExpression
   },
 ]
+
+registerAll(query, baseTableName, fieldList)
 
 // name => nameLike
 
