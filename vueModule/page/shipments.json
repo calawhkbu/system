@@ -163,11 +163,6 @@
         },
 
         {
-          "key" : "lastStatusDate",
-          "format": "YYYY-MM-DD HH:mm:ss"
-        },
-
-        {
           "key": "contractNos",
           "label": "contractNo"
         },
