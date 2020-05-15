@@ -159,7 +159,7 @@
           },
           "key": "lastStatusCodeOrDescription",
           "label": "lastStatus",
-          "i18nContext" : "Reporting"
+          "i18nContext": "Reporting"
         },
 
         {
@@ -170,6 +170,11 @@
         {
           "key": "contractNos",
           "label": "contractNo"
+        },
+        {
+          "key": "lastStatusDate",
+          "format": "YYYY-MM-DD HH:mm:ss",
+          "i18nContext": "Reporting"
         },
         {
           "key": "haveCurrentTrackingNo",
