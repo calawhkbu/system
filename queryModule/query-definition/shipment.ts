@@ -2985,8 +2985,8 @@ query.registerQuery('viaHKG',
 
   new Query({
     $where: viaHKGExpression(),
-  })
-
+  }),
+  'table:office'
 )
 
 // Location Filter=================
