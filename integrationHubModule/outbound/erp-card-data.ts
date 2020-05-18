@@ -39,11 +39,9 @@ export default {
   },
   responseHandler: async(
     response: { responseBody: any; responseOptions: any },
-    constants: any,
+    { card, getPostProcessFunc, partyGroup, user, zyh }: any,
     helper: { [key: string]: Function }
   ) => {
-    const { card, getPostProcessFunc, partyGroup, user, zyh } = constants
-
     let responseBody = helper.parseData(response.responseBody, card)
 
     const postProcessFunc = await getPostProcessFunc(partyGroup.code, `erp-card-data/${zyh}`)

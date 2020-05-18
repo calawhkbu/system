@@ -31,14 +31,12 @@ const app = {
   },
   responseHandler: async(
     response: { responseBody: any; responseOptions: any },
-    constants: { [key: string]: any },
+    { getPostProcessFunc, partyGroup, url, zyh, zyd }: any,
     helper: { [key: string]: Function }
   ) => {
     // parse results
     const responseBody = JSON.parse(JSON.parse(response.responseBody).d) as any[]
     if (!responseBody.length) throw new NotFoundException('REPORT_NOT_READY')
-
-    const { getPostProcessFunc, partyGroup, url, zyh, zyd } = constants
 
     let card = await helper.prepareCard(responseBody[0], 'erp', 'Swivel ERP', zyh, zyd, {
       method: 'POST',

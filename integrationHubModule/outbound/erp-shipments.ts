@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, NotImplementedException } from
 import moment = require('moment')
 
 const app = {
-  variable: {
+  constants: {
     fieldNameMap: {
       site: 'site',
       houseNo: 'houseNo',
@@ -68,8 +68,8 @@ const app = {
     constants: { [key: string]: any },
     helper: { [key: string]: Function }
   ) => {
-    app.variable.fieldNameMap = helper.create2WayMap(
-      app.variable.fieldNameMap,
+    constants.fieldNameMap = helper.create2WayMap(
+      constants.fieldNameMap,
       'external',
       'internal'
     )
@@ -223,7 +223,7 @@ const app = {
   },
   responseHandler: (
     response: { responseBody: any; responseOptions: any },
-    constants: { [key: string]: any },
+    { fieldNameMap }: { [key: string]: any },
     helper: { [key: string]: Function }
   ) => {
     // parse results
@@ -231,7 +231,7 @@ const app = {
 
     return {
       responseBody: helper
-        .convertToInternalObject(responseBody || [], app.variable.fieldNameMap)
+        .convertToInternalObject(responseBody || [], fieldNameMap)
         .slice(0, 20), // TODO
       responseOptions: response.responseOptions,
     }
