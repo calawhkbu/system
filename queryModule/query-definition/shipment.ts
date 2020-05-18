@@ -1573,8 +1573,6 @@ const lastStatusCodeExpression = new ColumnExpression('shipmentTrackingLastStatu
 const lastStatusDateExpression = new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusDate')
 
 const lastStatusCodeOrDescriptionExpression = new FunctionExpression('IFNULL', new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusCode'), new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusDescription'))
-const lastStatusDateExpression = new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusDate')
-
 const statusCodeExpression = new ColumnExpression('shipmentTrackingStatusCodeTable', 'statusCode')
 
 function statusExpressionMapFunction(originalExpression: IExpression) {
@@ -2608,11 +2606,7 @@ const shipmentTableFilterFieldList = [
     expression: lastStatusExpression,
     companion : ['table:lastStatus']
   },
-  {
-    name: 'lastStatusDate',
-    expression: lastStatusDateExpression,
-    companion : ['table:lastStatus']
-  },
+
   // tracking status
   {
     name: 'statusCode',
