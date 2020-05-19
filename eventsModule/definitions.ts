@@ -167,7 +167,7 @@ export default {
       condition: true,
       eventName: 'send_data_to_external',
       otherParameters: {
-        outboundName: 'fm3k-booking'
+        outboundName: 'erp-booking'
       }
     },
   ],
@@ -283,7 +283,7 @@ export default {
       condition: true,
       eventName: 'send_data_to_external',
       otherParameters: {
-        outboundName: 'fm3k-booking'
+        outboundName: 'erp-booking'
       }
     },
   ],

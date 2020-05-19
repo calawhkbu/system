@@ -438,13 +438,13 @@
                 "label": "BookingPage.poNo",
                 "name": "flexData.poNo",
                 "component": "v-text-field",
-                "checkDisplayWhen": "return form && form.flexData.poNo",
+                "checkDisplayWhen": "return form && form.flexData && form.flexData.poNo",
                 "class": "xs-3"
               }, {
                 "label": "BookingPage.quantity",
                 "name": "flexData.quantity",
                 "component": "v-text-field",
-                "checkDisplayWhen": "return form && form.flexData.quantity",
+                "checkDisplayWhen": "return form && form.flexData && form.flexData.quantity",
                 "class": "xs-3"
               },
               {

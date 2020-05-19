@@ -3,7 +3,7 @@ import moment = require('moment')
 
 const app = {
   consumeError: true,
-  variable: {
+  constants: {
     months: [] as string[],
     site: '' as string,
     boundTypes: [] as string[],
@@ -39,7 +39,7 @@ const app = {
     if (dateto.diff(datefr, 'years', true) > 1)
       throw new BadRequestException('DATE_RANGE_TOO_LARGE')
 
-    const months = (app.variable.months = [])
+    const months = (constants.months = [])
     const momentStart = moment(datefr).startOf('month')
     while (momentStart.isSameOrBefore(dateto)) {
       months.push(momentStart.format('YYYY-MM'))
@@ -75,18 +75,18 @@ const app = {
     } else {
       xbound = availableBoundTypes
     }
-    app.variable.boundTypes = xbound
+    constants.boundTypes = xbound
 
     // xsite
     const sites = helper.getOfficeParties('erp-site', party, subqueries.officePartyId)
     if (!sites.length) throw new BadRequestException('MISSING_SITE')
     if (!subqueries.viaHKG && sites.length > 1) throw new BadRequestException('TOO_MANY_SITES')
-    let xsite = (app.variable.site = sites[0])
+    let xsite = (constants.site = sites[0])
 
     // via HKG => xsite = 'HKG'
     if (subqueries.viaHKG) {
       if (helper.findParty('erp-site', party, 'HKG')) {
-        xsite = (app.variable.site = 'HKG')
+        xsite = (constants.site = 'HKG')
       }
       else {
         throw new BadRequestException('NO_ACCESS_RIGHT')
@@ -175,11 +175,9 @@ const app = {
       }),
     }
   },
-  responseHandler: (response: { responseBody: any; responseOptions: any }) => {
+  responseHandler: (response: { responseBody: any; responseOptions: any }, { boundTypes, months, site }: any) => {
     // parse results
     let responseBody = JSON.parse(JSON.parse(response.responseBody).d)
-
-    const { boundTypes, months, site } = app.variable
 
     // regroup results
     responseBody = responseBody.reduce((result, row) => {
