@@ -13,7 +13,7 @@
       "noPartyGroupFilters": false,
       "newReport": {
         "filters": {
-          "isActive": {
+          "activeStatus": {
             "value": "active"
           },
           "entityType": {

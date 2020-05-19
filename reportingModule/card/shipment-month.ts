@@ -111,7 +111,7 @@ function prepareParams(): Function {
       .endOf('year')
       .format('YYYY-MM-DD')
 
-    subqueries[`${groupByEntity}IsNotNull`]  = {// shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+    subqueries[`${codeColumnName}IsNotNull`]  = {// shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
       value : true
     }
 

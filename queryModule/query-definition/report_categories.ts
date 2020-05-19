@@ -13,6 +13,7 @@ import {
   Unknown,
   Value,
 } from 'node-jql'
+import { registerAll } from 'utils/jql-subqueries'
 
 const query = new QueryDef(
   new Query({
@@ -26,8 +27,17 @@ const query = new QueryDef(
   })
 )
 
+const baseTableName = 'report'
+const fieldList = [
+  'category',
+  'reportingKey'
+]
+
+registerAll(query, baseTableName, fieldList)
+
+// special logic of partyGroupCode
 query
-  .register(
+  .subquery(
     'partyGroupCode',
     new Query({
       $where: new InExpression(
@@ -44,14 +54,6 @@ query
           $where: new BinaryExpression(new ColumnExpression('personId'), '=', new ColumnExpression('person', 'id'))
         })
       )
-    })
-  )
-  .register('value', 0)
-
-query
-  .register('reportingKey',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('reportingKey'), '=', new Unknown('string'))
     })
   )
   .register('value', 0)

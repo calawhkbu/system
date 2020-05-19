@@ -52,7 +52,7 @@
       },
       "newReport": {
         "filters": {
-          "isActive": {
+          "activeStatus": {
             "value": "active"
           },
           "date": {
@@ -100,7 +100,7 @@
         }
       },
       "filters": [{
-        "name": "isActive",
+        "name": "activeStatus",
         "type": "list",
         "props": {
           "items": [{

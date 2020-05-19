@@ -81,8 +81,7 @@
         }
       ],
       "filters": [{
-        "display" : "isActive",
-        "name": "activeStatusEq",
+        "name": "activeStatus",
         "type": "list",
         "props": {
           "items": [{

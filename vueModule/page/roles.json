@@ -18,7 +18,7 @@
       "refreshWhenBack": true,
       "newReport": {
         "filters": {
-          "isActive": {
+          "activeStatus": {
             "value": "active"
           }
         },
@@ -53,7 +53,7 @@
         }]
       }],
       "filters": [{
-        "name": "isActive",
+        "name": "activeStatus",
         "type": "list",
         "props": {
           "items": [
@@ -71,7 +71,8 @@
 
         }
       }, {
-        "name": "roleName",
+        "display" : "roleName",
+        "name": "roleNameLike",
         "type": "text"
       }],
       "fieldOptions": [{

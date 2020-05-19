@@ -57,7 +57,9 @@
       },
       "newReport": {
         "filters": {
-          "isActive": true,
+          "activeStatus": {
+            "value" : "active"
+          },
           "date": {
             "func": {
               "args": {

@@ -9,10 +9,9 @@ import {
   Value,
   ResultColumn,
   FunctionExpression,
-  ParameterExpression,
-  RegexpExpression,
-  InExpression
+  ParameterExpression
 } from 'node-jql'
+import { registerAll } from 'utils/jql-subqueries'
 
 const query = new QueryDef(
   new Query({
@@ -66,79 +65,48 @@ const query = new QueryDef(
   })
 )
 
-query.register('showDelete', {
-  expression: new Value(1),
-  $as: 'showDelete'
-})
+const partyANameExpression = new ColumnExpression('party', 'name')
+const partyBNameExpression = new ColumnExpression('partyB', 'name')
 
-query.register('partyAId', {
-  expression: new ColumnExpression('related_party', 'partyAId'),
-  $as: 'partyAId'
-})
+const partyBShortNameExpression = new ColumnExpression('partyB', 'shortName')
+const partyBGroupNameExpression = new ColumnExpression('partyB', 'groupName')
 
-query.register('partyBId', {
-  expression: new ColumnExpression('related_party', 'partyBId'),
-  $as: 'partyBId'
-})
+const partyTypesExpression = new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('partyType'), 'SEPARATOR \', \''))
 
-query.register('partyAName', {
-  expression: new ColumnExpression('party', 'name'),
-  $as: 'partyAName'
-})
+const baseTableName = 'related_party'
+const fieldList = [
 
-query.register('partyBName', {
-  expression: new ColumnExpression('partyB', 'name'),
-  $as: 'partyBName'
-})
-
-query.register('partyBShortName', {
-  expression: new ColumnExpression('partyB', 'shortName'),
-  $as: 'partyBShortName'
-})
-
-query.register('partyBGroupName', {
-  expression: new ColumnExpression('partyB', 'groupName'),
-  $as: 'partyBGroupName'
-})
-
-query.register('partyType', {
-  expression: new ColumnExpression('related_party', 'partyType'),
-  $as: 'partyType'
-})
-
-query.register(
   'partyAId',
-  new Query({
-    $where: new BinaryExpression(new ColumnExpression('related_party', 'partyAId'), '='),
-  })
-).register('value', 0)
-
-query.register(
   'partyBId',
-  new Query({
-    $where: new BinaryExpression(new ColumnExpression('related_party', 'partyBId'), '='),
-  })
-).register('value', 0)
-
-query.register(
-  'shortName',
-  new Query({
-    $where: new RegexpExpression(new ColumnExpression('partyB', 'shortName'), false),
-  })
-).register('value', 0)
-
-query.register(
-  'groupName',
-  new Query({
-    $where: new RegexpExpression(new ColumnExpression('partyB', 'groupName'), false),
-  })
-).register('value', 0)
-
-query.register(
   'partyType',
-  new Query({
-    $where: new InExpression(new ColumnExpression('related_party', 'partyType'), false),
-  })
-).register('value', 0)
+  {
+    name : 'showDelete',
+    expression : new Value(1)
+  },
+  {
+    name : 'partyBShortName',
+    expression : partyBShortNameExpression
+  },
+  {
+    name : 'partyBGroupName',
+    expression : partyBGroupNameExpression
+
+  },
+  {
+    name : 'partyAName',
+    expression : partyANameExpression
+  },
+
+  {
+    name : 'partyBName',
+    expression : partyBNameExpression
+  }
+
+]
+
+registerAll(query, baseTableName, fieldList)
+
+// shortName => partyBShortNameLike
+// groupBName => partyBGroupNameLike
 
 export default query

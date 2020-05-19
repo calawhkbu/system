@@ -150,10 +150,10 @@ const app = {
       inblno: '',
       exblno: '',
     }
-    if (subqueries.likeHouseNo && subqueries.notLikeHouseNo)
+    if (subqueries.houseNoLike && subqueries.houseNoNotLike)
       throw new BadRequestException('LIKE_NOTLIKE_HOUSENO_EITHER_ONE')
-    if (subqueries.likeHouseNo) xHouseNo.inblno = subqueries.likeHouseNo.value
-    if (subqueries.notLikeHouseNo) xHouseNo.exblno = subqueries.notLikeHouseNo.value
+    if (subqueries.houseNoLike) xHouseNo.inblno = subqueries.houseNoLike.value
+    if (subqueries.houseNoNotLike) xHouseNo.exblno = subqueries.houseNoNotLike.value
 
     return {
       headers: {

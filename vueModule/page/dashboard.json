@@ -9,7 +9,7 @@
       "enableSetting": true,
       "newReport": {
         "filters": {
-          "isActive": {
+          "activeStatus": {
             "value": "active"
           },
           "date": {

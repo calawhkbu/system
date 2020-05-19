@@ -19,7 +19,7 @@
       "refreshWhenBack": true,
       "newReport": {
         "filters": {
-          "isActive": {
+          "activeStatus": {
             "value": "active"
           },
           "manual": {
@@ -51,11 +51,13 @@
         }
       },
       "filters": [{
+
+        "display" : "trackingNo",
         "i18nContext": "TrackingPage",
-        "name": "trackingNo",
+        "name": "trackingNoLike",
         "type": "text"
       }, {
-        "name": "isActive",
+        "name": "activeStatus",
         "type": "list",
         "props": {
           "items": [
@@ -96,7 +98,9 @@
         "key": "lastStatusDate",
         "width": 150,
         "format": "YYYY-MM-DD HH:mm:ss"
-      }]
+      }
+    
+    ]
     },
     "slots": [{
       "name": "middle-button",

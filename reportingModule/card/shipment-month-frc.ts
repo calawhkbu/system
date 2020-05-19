@@ -74,7 +74,7 @@ function prepareParams(): Function {
       .endOf('year')
       .format('YYYY-MM-DD')
 
-    subqueries[`${groupByEntity}IsNotNull`] = {
+    subqueries[`${codeColumnName}IsNotNull`] = {
       value: true
     }
 

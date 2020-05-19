@@ -72,7 +72,7 @@ function prepareParams(): Function {
 
     // select
 
-    subqueries[`${groupByEntity}IsNotNull`]  = {// shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+    subqueries[`${codeColumnName}IsNotNull`]  = {// shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
       value : true
     }
 
