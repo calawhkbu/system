@@ -7,50 +7,52 @@ import {
   RegexpExpression,
   IsNullExpression,
   FunctionExpression,
-  InExpression,
   AndExpressions,
   Value,
   OrExpressions,
   Unknown,
   CaseExpression,
 } from 'node-jql'
+import { registerAll } from 'utils/jql-subqueries'
 
 const query = new QueryDef(new Query('template'))
 
 // -------------- field stuff
 
-  const canDeleteExpression = new FunctionExpression(
-    'IF',
-    new AndExpressions([
-      new IsNullExpression(new ColumnExpression('template', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false),
-    ]),
-    1, 0
-  )
-
-  const canRestoreExpression = new FunctionExpression(
-    'IF',
-    new AndExpressions([
-      new IsNullExpression(new ColumnExpression('template', 'deletedAt'), true),
-      new IsNullExpression(new ColumnExpression('template', 'deletedBy'), true),
-    ]),
-    1, 0
-  )
-
-  const isActiveConditionExpression = new AndExpressions([
+const canDeleteExpression = new FunctionExpression(
+  'IF',
+  new AndExpressions([
     new IsNullExpression(new ColumnExpression('template', 'deletedAt'), false),
-    new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false)
-  ])
+    new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false),
+  ]),
+  1, 0
+)
 
-  const activeStatusExpression = new CaseExpression({
-    cases: [
-      {
-        $when: new BinaryExpression(isActiveConditionExpression, '=', false),
-        $then: new Value('deleted')
-      }
-    ],
-    $else: new Value('active')
-  })
+const canRestoreExpression = new FunctionExpression(
+  'IF',
+  new AndExpressions([
+    new IsNullExpression(new ColumnExpression('template', 'deletedAt'), true),
+    new IsNullExpression(new ColumnExpression('template', 'deletedBy'), true),
+  ]),
+  1, 0
+)
+
+const isActiveConditionExpression = new AndExpressions([
+  new IsNullExpression(new ColumnExpression('template', 'deletedAt'), false),
+  new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false)
+])
+
+const activeStatusExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new BinaryExpression(isActiveConditionExpression, '=', false),
+      $then: new Value('deleted')
+    }
+  ],
+  $else: new Value('active')
+})
+
+const baseTableName = 'template'
 
 const fieldList = [
   'id',
@@ -58,28 +60,30 @@ const fieldList = [
   'extension',
   'templateName',
   {
-    name : 'canDelete',
-    expression : canDeleteExpression
+    name: 'canDelete',
+    expression: canDeleteExpression
   },
   {
-    name : 'canRestore',
-    expression : canRestoreExpression
+    name: 'canRestore',
+    expression: canRestoreExpression
   },
   {
-    name : 'activeStatus',
-    expression : activeStatusExpression
+    name: 'activeStatus',
+    expression: activeStatusExpression
   }
 
 ]
 
+registerAll(query, baseTableName, fieldList)
+
 // ----------- filter stuff
-query
-  .register(
-    'templateName',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('template', 'templateName'), false),
-    })
-  )
-  .register('value', 0)
+// query
+//   .register(
+//     'templateName',
+//     new Query({
+//       $where: new RegexpExpression(new ColumnExpression('template', 'templateName'), false),
+//     })
+//   )
+//   .register('value', 0)
 
 export default query

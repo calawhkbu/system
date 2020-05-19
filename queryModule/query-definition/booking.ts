@@ -586,6 +586,71 @@ query.table('otherTerms', new Query({
   })
 }))
 
+// party join : table:office, table:shipper etc
+partyList.map(party => {
+
+  const partyTableName = party.name
+
+  const companion = (party.partyIdExpression && party.partyIdExpression.companion) ? party.partyIdExpression.companion : [`table:booking_party`]
+  const partyIdExpression = (party.partyIdExpression && party.partyIdExpression.expression) ? party.partyIdExpression.expression :  new ColumnExpression('booking_party', `${partyTableName}PartyId`)
+
+  query.table(partyTableName, new Query({
+
+    $from : new FromTable({
+
+      table : 'booking',
+      joinClauses : [
+        {
+          operator: 'LEFT',
+          table: new FromTable('party', partyTableName),
+          $on: [
+            new BinaryExpression(
+              partyIdExpression,
+              '=',
+              new ColumnExpression(partyTableName, 'id')
+            ),
+          ],
+        }
+      ]
+    })
+
+  }), ...companion)
+
+})
+
+// location table :  table:portOfLoading, table:portOfDischarge
+locationList.map(location => {
+
+  const joinTableName = `${location}`
+  const locationCode = `${location}Code`
+
+  // location join (e.g. portOfLoadingJoin)
+  query.table(joinTableName, new Query({
+
+      $from: new FromTable({
+
+        table : 'booking',
+
+        joinClauses : [{
+
+        operator: 'LEFT',
+        table:  new FromTable({
+          table : 'location',
+          $as : `${location}`
+        }),
+        $on: [
+          new BinaryExpression(new ColumnExpression(`${location}`, 'portCode'), '=', new ColumnExpression('shipment', locationCode)),
+        ]
+      }]
+    }),
+
+      $where: new IsNullExpression(new ColumnExpression('shipment', locationCode), true)
+
+    })
+  )
+
+})
+
 // used for statusJoin
 const bookingTrackingLastStatusCodeTableExpression = new Query({
 
@@ -1024,6 +1089,31 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
   return accumulator.concat(resultExpressionList)
  }, [])
 
+ const locationExpressionList = locationList.reduce((accumulator: ExpressionHelperInterface[], location) => {
+
+  const locationCodeExpressionInfo = {
+    name : `${location}Code`,
+    expression : new ColumnExpression('booking', `${location}Code`),
+  } as ExpressionHelperInterface
+
+  const locationLatitudeExpressionInfo = {
+    name : `${location}Latitude`,
+    expression : new ColumnExpression(`${location}`, `latitude`),
+  } as ExpressionHelperInterface
+
+  const locationLongitudeExpressionInfo = {
+    name : `${location}Longitude`,
+    expression : new ColumnExpression(`${location}`, `longitude`),
+  } as ExpressionHelperInterface
+
+  accumulator.push(locationCodeExpressionInfo)
+  accumulator.push(locationLatitudeExpressionInfo)
+  accumulator.push(locationLongitudeExpressionInfo)
+
+  return accumulator
+
+ }, [])
+
 const baseTableName = 'booking'
 
 const fieldList = [
@@ -1043,6 +1133,7 @@ const fieldList = [
   'updatedAt',
 
   ...partyExpressionList,
+  ...locationExpressionList,
   {
 
     name : 'houseNo',
@@ -1338,23 +1429,6 @@ summaryFieldList.map((summaryField: string | { name: string, expression: IExpres
 })
 
 // ------------- register filter
-
-// Location Filter=================
-
-// locationList.map(location => {
-
-//   const columnName = `${location}Code`
-//   // Port of Loading
-//   query
-//     .register(
-//       columnName,
-//       new Query({
-//         $where: new InExpression(new ColumnExpression('booking', columnName), false),
-//       })
-//     )
-//     .register('value', 0)
-
-// })
 
 // Date Filter=================
 

@@ -176,7 +176,7 @@ function prepareParams(): Function {
       currentTo
     }
 
-    subqueries[`${groupByEntity}IsNotNull`] = {// should be carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+    subqueries[`${codeColumnName}IsNotNull`] = {// should be carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
       value: true
     }
 

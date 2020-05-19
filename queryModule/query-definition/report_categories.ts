@@ -38,7 +38,7 @@ registerAll(query, baseTableName, fieldList)
 // special logic of partyGroupCode
 query
   .subquery(
-    'partyGroupCodeIn',
+    'partyGroupCode',
     new Query({
       $where: new InExpression(
         new Unknown('string'),

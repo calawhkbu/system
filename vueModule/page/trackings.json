@@ -51,8 +51,10 @@
         }
       },
       "filters": [{
+
+        "display" : "trackingNo",
         "i18nContext": "TrackingPage",
-        "name": "trackingNo",
+        "name": "trackingNoLike",
         "type": "text"
       }, {
         "name": "activeStatus",
@@ -96,7 +98,9 @@
         "key": "lastStatusDate",
         "width": 150,
         "format": "YYYY-MM-DD HH:mm:ss"
-      }]
+      }
+    
+    ]
     },
     "slots": [{
       "name": "middle-button",
