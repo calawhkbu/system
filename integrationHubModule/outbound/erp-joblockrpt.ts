@@ -2,7 +2,7 @@ import { BadRequestException, NotImplementedException } from '@nestjs/common'
 import moment = require('moment')
 
 const app = {
-  variable: {
+  constants: {
     sites: [] as string[],
     siteNames: [] as string[],
     departments: [] as string[],
@@ -38,14 +38,14 @@ const app = {
       throw new BadRequestException('DATE_RANGE_TOO_LARGE')
 
     // xsite
-    app.variable.siteNames = helper.getOfficeNames('erp-site', party, subqueries.officePartyId)
+    constants.siteNames = helper.getOfficeNames('erp-site', party, subqueries.officePartyId)
     const sites = helper.getOfficeParties('erp-site', party, subqueries.officePartyId)
     if (!sites.length) throw new BadRequestException('MISSING_SITE')
     if (sites.length > 1) throw new BadRequestException('TOO_MANY_SITES')
-    const xsite = (app.variable.sites = sites)
+    const xsite = (constants.sites = sites)
 
     // xdivision (for later use)
-    app.variable.departments = helper.getDivisions(roleFilters, ['AE', 'AI', 'SE', 'SI', 'LOG'])
+    constants.departments = helper.getDivisions(roleFilters, ['AE', 'AI', 'SE', 'SI', 'LOG'])
 
     return {
       headers: {
@@ -58,11 +58,9 @@ const app = {
       }),
     }
   },
-  responseHandler: (response: { responseBody: any; responseOptions: any }) => {
+  responseHandler: (response: { responseBody: any; responseOptions: any }, { sites, siteNames, departments }: any) => {
     // parse results
     const responseBody = JSON.parse(JSON.parse(response.responseBody).d)
-
-    const { sites, siteNames, departments } = app.variable
 
     // rename fields
     for (const row of responseBody) {
