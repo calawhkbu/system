@@ -8,8 +8,10 @@ import {
   FromTable,
   OrExpressions,
   Value,
-  Unknown
+  Unknown,
+  CaseExpression
 } from 'node-jql'
+import { registerAll } from 'utils/jql-subqueries'
 
 const query = new QueryDef(new Query({
   $from: new FromTable('schedule', 'schedule', {
@@ -50,11 +52,6 @@ const query = new QueryDef(new Query({
   })
 }))
 
-// fields
-query.register('id', {
-  expression: new ColumnExpression('schedule', 'id'),
-  $as: 'id',
-})
 query.register('carrier', {
   expression: new ColumnExpression('carrier', 'name'),
   $as: 'carrier',
@@ -68,24 +65,52 @@ query.register('portOfDischarge', {
   $as: 'portOfDischarge',
 })
 
-// query
-query.register('isActive', new Query({
-  $where : new OrExpressions([
-    new AndExpressions([
-      new BinaryExpression(new Value('active'), '=', new Unknown('string')),
-      // active case
-      new IsNullExpression(new ColumnExpression('schedule', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('schedule', 'deletedBy'), false)
-    ]),
-    new AndExpressions([
-      new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
-      // deleted case
-      new IsNullExpression(new ColumnExpression('schedule', 'deletedAt'), true),
-      new IsNullExpression(new ColumnExpression('schedule', 'deletedBy'), true)
-    ])
-  ])
-}))
-.register('value', 0)
-.register('value', 1)
+const carrierNameExpression = new ColumnExpression('carrier', 'name')
+const portOfLoadingNameExpression = new ColumnExpression('portOfLoading', 'name')
+const portOfDischargeNameExpression = new ColumnExpression('portOfDischarge', 'name')
+
+const isActiveConditionExpression = new AndExpressions([
+  new IsNullExpression(new ColumnExpression('schedule', 'deletedAt'), false),
+  new IsNullExpression(new ColumnExpression('schedule', 'deletedBy'), false)
+])
+
+const activeStatusExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new BinaryExpression(isActiveConditionExpression, '=', false),
+      $then: new Value('deleted')
+    }
+  ],
+  $else: new Value('active')
+})
+
+const baseTableName = ''
+
+const fieldList = [
+
+  'id',
+  'partyGroupCode',
+  'carrierCode',
+  'routeCode',
+  {
+    name : 'carrierName',
+    expression : carrierNameExpression
+  },
+  {
+    name : 'portOfLoadingName',
+    expression : portOfLoadingNameExpression
+  },
+  {
+    name : 'portOfDischargeName',
+    expression : portOfDischargeNameExpression
+  },
+  {
+    name : 'activeStatus',
+    expression : activeStatusExpression
+  },
+
+]
+
+registerAll(query, baseTableName, fieldList)
 
 export default query

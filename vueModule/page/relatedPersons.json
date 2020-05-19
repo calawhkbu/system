@@ -20,7 +20,9 @@
       },
       "newReport": {
         "filters": {
-          "isActive": true,
+          "activeStatus": {
+            "value" : "active"
+          },
           "id": 1
         },
         "configurations": {

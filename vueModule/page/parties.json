@@ -39,8 +39,6 @@
         }
       },
       "filters": [{
-
-        "display" : "isActive",
         "name": "activeStatus",
         "type": "list",
         "props": {
@@ -55,25 +53,23 @@
           ]
         }
       }, {
-        "name": "shortName",
+        "display" : "shortName",
+        "name": "shortNameLike",
         "type": "text",
         "i18nContext": "PartyPage"
       }, {
-        "name": "name",
+        "display" : "name",
+        "name": "nameLike",
         "type": "text",
         "i18nContext": "PartyPage"
       }, {
-        "name": "groupName",
+        "display": "groupName",
+        "name": "groupNameLike",
         "type": "text",
         "i18nContext": "PartyPage"
       }],
       "fieldOptions": [{
           "key": "id",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "party",
-            "name": "id"
-          },
           "hidden": true
         },
         {

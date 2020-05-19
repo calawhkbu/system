@@ -19,7 +19,7 @@
               }
             }
           },
-          "isActive": {
+          "activeStatus": {
             "value": "active"
           }
         },

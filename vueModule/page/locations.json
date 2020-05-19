@@ -26,7 +26,7 @@
       },
       "newReport": {
         "filters": {
-          "activeStatusEq": {
+          "activeStatus": {
             "value": "active"
           }
         },
@@ -138,8 +138,7 @@
           "type": "text"
         },
         {
-          "display" : "isActive",
-          "name": "activeStatusEq",
+          "name": "activeStatus",
           "type": "list",
           "props": {
             "items": [

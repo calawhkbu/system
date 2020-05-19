@@ -13,6 +13,7 @@ import {
   Value,
   GroupBy
 } from 'node-jql'
+import { registerAll } from 'utils/jql-subqueries'
 
 const query = new QueryDef(
   new Query({
@@ -70,28 +71,25 @@ const query = new QueryDef(
   })
 )
 
-query.register(
+const baseTableName = 'related_person'
+const fieldList = [
   'id',
-  new Query({
-    $where: new BinaryExpression(new ColumnExpression('related_person', 'id'), '='),
-  })
-).register('value', 0)
-
-query.register(
   'partyId',
-  new Query({
-    $where: new BinaryExpression(new ColumnExpression('related_person', 'partyId'), '='),
-  })
-).register('value', 0)
+  'personId',
+  'email',
+  'name',
+  'phone',
+  {
+    name : 'showDelete',
+    expression : new Value(1),
+  },
+  {
+    name : 'showResend',
+    expression : new Value(1),
+  }
 
-query.register('showDelete', {
-  expression: new Value(1),
-  $as: 'showDelete'
-})
+]
 
-query.register('showResend', {
-  expression: new Value(1),
-  $as: 'showResend'
-})
+registerAll(query, baseTableName, fieldList)
 
 export default query

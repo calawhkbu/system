@@ -19,7 +19,7 @@
       "refreshWhenBack": true,
       "newReport": {
         "filters": {
-          "isActive": {
+          "activeStatus": {
             "value": "active"
           },
           "manual": {
@@ -55,7 +55,7 @@
         "name": "trackingNo",
         "type": "text"
       }, {
-        "name": "isActive",
+        "name": "activeStatus",
         "type": "list",
         "props": {
           "items": [

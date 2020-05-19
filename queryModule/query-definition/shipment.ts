@@ -187,96 +187,6 @@ const partyList = [
 }[]
 const locationList = ['portOfLoading', 'portOfDischarge', 'placeOfDelivery', 'placeOfReceipt', 'finalDestination']
 
-const query2 = new QueryDef((params: IQueryParams) => {
-
-  const baseQuery =   new Query({
-    // $distinct: true,
-    $select: [
-      new ResultColumn(new ColumnExpression('shipment', '*')),
-      new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
-      new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentPartyId'),
-    ],
-    $from: new FromTable(
-
-      {
-        table : 'shipment',
-      }
-
-    ),
-  })
-
-  const specialName = 'isMinCreatedAt'
-
-  const { fields, conditions, subqueries } = params
-
-  if (subqueries[specialName]) {
-
-    const { [specialName] : dumb, ...newSubqueries } = params.subqueries
-
-    const newParams = {
-      fields: [
-        new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
-        new ResultColumn(new BinaryExpression(new ColumnExpression('shipment', 'createdAt'), '=', new FunctionExpression('MIN', new ColumnExpression('shipment', 'createdAt'))),
-        'isMinCreatedAt',
-        new ColumnExpression('shipment', 'houseNo'),
-        new ColumnExpression('shipment', 'partyGroupCode')),
-      ],
-      subqueries: newSubqueries,
-      conditions
-    } as IQueryParams
-
-    console.log(`newSubqueries`)
-    console.log(newSubqueries)
-
-  }
-
-  return baseQuery
-})
-
-const queryOld = new QueryDef(
-  new Query({
-    // $distinct: true,
-    $select: [
-      new ResultColumn(new ColumnExpression('shipment', '*')),
-      new ResultColumn(new ColumnExpression('shipment_isMinCreatedAt', 'isMinCreatedAt'), 'isMinCreatedAt'),
-      new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
-      new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentPartyId'),
-    ],
-    $from: new FromTable(
-
-      {
-        table : 'shipment',
-        // LEFT JOIN shipment_date
-
-         joinClauses : [{
-          operator: 'LEFT',
-          table: new FromTable({
-            table: new Query({
-              $select: [
-                new ResultColumn(new ColumnExpression('shipment_dumb', 'id'), 'shipmentId'),
-
-                new ResultColumn(
-                  new BinaryExpression(
-                    new ColumnExpression('shipment_dumb', 'createdAt'), '=', new FunctionExpression('MIN', new ColumnExpression('shipment_dumb', 'createdAt'))),
-                    'isMinCreatedAt', new ColumnExpression('shipment_dumb', 'houseNo'), new ColumnExpression('shipment_dumb', 'partyGroupCode')),
-
-              ],
-              $from: new FromTable('shipment', 'shipment_dumb'),
-
-              $where : shipmentIsActiveExpression('shipment_dumb')
-
-            }),
-            $as: 'shipment_isMinCreatedAt'
-          }),
-          $on: new BinaryExpression(new ColumnExpression('shipment', 'id'), '=', new ColumnExpression('shipment_isMinCreatedAt', 'shipmentId'))
-        }],
-
-      }
-
-    ),
-  })
-)
-
 const query = new QueryDef(new Query({
 
     // $distinct: true,
@@ -2997,8 +2907,8 @@ query.registerQuery('viaHKG',
 
   new Query({
     $where: viaHKGExpression(),
-  })
-
+  }),
+  'table:office'
 )
 
 // Location Filter=================
