@@ -852,6 +852,21 @@ const jobWeekExpression = new FunctionExpression('LPAD', new FunctionExpression(
 
 // ============
 
+const isActiveConditionExpression = new AndExpressions([
+  new IsNullExpression(new ColumnExpression('booking', 'deletedAt'), false),
+  new IsNullExpression(new ColumnExpression('booking', 'deletedBy'), false)
+])
+
+const activeStatusExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new BinaryExpression(isActiveConditionExpression, '=', false),
+      $then: new Value('deleted')
+    }
+  ],
+  $else: new Value('active')
+})
+
 const lastStatusCodeExpression = new ColumnExpression('booking_tracking', 'lastStatusCode')
 
 function lastStatusExpressionFunction() {
@@ -1277,6 +1292,10 @@ const fieldList = [
     name : 'alertStatus',
     expression : alertStatusExpression,
     companion : ['table:alert']
+  },
+  {
+    name : 'activeStatus',
+    expression : activeStatusExpression
   }
 
 ] as ExpressionHelperInterface[]
@@ -1633,35 +1652,5 @@ query
   .register('value', 31)
   .register('value', 32)
   // .register('value', 33)
-
-const isActiveConditionExpression = new AndExpressions([
-  new IsNullExpression(new ColumnExpression('booking', 'deletedAt'), false),
-  new IsNullExpression(new ColumnExpression('booking', 'deletedBy'), false)
-])
-
-query.registerBoth('isActive', isActiveConditionExpression)
-
-query.registerQuery('isActive', new Query({
-
-  $where : new OrExpressions([
-
-    new AndExpressions([
-
-      new BinaryExpression(new Value('active'), '=', new Unknown('string')),
-      // active case
-      isActiveConditionExpression
-    ]),
-
-    new AndExpressions([
-      new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
-      // deleted case
-      new BinaryExpression(isActiveConditionExpression, '=', false)
-    ])
-
-  ])
-
-}))
-.register('value', 0)
-.register('value', 1)
 
 export default query
