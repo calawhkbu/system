@@ -1875,11 +1875,13 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
   const locationLatitudeExpressionInfo = {
     name : `${location}Latitude`,
     expression : new ColumnExpression(`${location}`, `latitude`),
+    companion : [`table:${location}`]
   } as ExpressionHelperInterface
 
   const locationLongitudeExpressionInfo = {
     name : `${location}Longitude`,
     expression : new ColumnExpression(`${location}`, `longitude`),
+    companion : [`table:${location}`]
   } as ExpressionHelperInterface
 
   accumulator.push(locationCodeExpressionInfo)
