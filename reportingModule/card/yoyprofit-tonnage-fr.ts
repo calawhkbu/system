@@ -243,8 +243,6 @@ function insertMonthTable() {
     }
   })
 
-  console.log(dataList)
-
   return new InsertJQL('monthTable', ...dataList)
 }
 
@@ -290,7 +288,6 @@ function prepareTonnageParams2() {
 
       })
     ]
-    console.log(params, 'hihihihi')
     return params
   }
 }
@@ -328,9 +325,6 @@ function tonnageQuery() {
       throw new Error('MISSING_tonnageSummaryVariables')
     }
 
-    console.log(`tonnageSummaryVariables`)
-    console.log(tonnageSummaryVariables)
-
     const columns = [] as IColumn[]
 
     months.map(month => {
@@ -342,9 +336,6 @@ function tonnageQuery() {
           tonnageSummaryVariables.map(tonnageSummaryVariable => {
 
             const columnName = `${month}_${type}_${tonnageSummaryVariable}${lastOrCurrent}`
-
-            console.log(`columnName`)
-            console.log(columnName)
 
             columns.push({
 
@@ -453,7 +444,6 @@ function prepareTonnageParams(currentYear_: boolean, nominatedType_: 'F' | 'R'):
 
     params.fields = ['jobMonth', 'nominatedTypeCode', ...tonnageSummaryVariables]
     params.groupBy = ['jobMonth', 'nominatedTypeCode']
-    console.log(params, 'hihihihi')
     return params
   }
   let code = fn.toString()

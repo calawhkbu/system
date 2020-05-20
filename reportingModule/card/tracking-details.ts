@@ -22,9 +22,6 @@ function prepareParams(): Function {
     // script
     const subqueries = params.subqueries || {}
 
-    console.log('subqueries')
-    console.log(subqueries)
-
     if (!subqueries.date) throw new BadRequestException('MISSING_DATE')
     const datefr = moment(subqueries.date.from, 'YYYY-MM-DD')
     const dateto = moment(subqueries.date.to, 'YYYY-MM-DD')
