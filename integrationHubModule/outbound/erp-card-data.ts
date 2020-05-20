@@ -24,7 +24,7 @@ export default {
         zyd: params.subqueries.type.value,
       },
     })
-    console.log(card.dlink, 'erp-card-data:system')
+    console.debug(card.dlink, 'erp-card-data:system')
     return card.dlink
   },
   requestHandler: ({ getPostProcessFunc, partyGroup, user }: any, params: any, constants: any): any => {

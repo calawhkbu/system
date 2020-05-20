@@ -92,9 +92,6 @@ function prepareParams(): Function {
 
     params.limit = topX
 
-    console.log(`params`)
-    console.log(params)
-
     return params
   }
 }

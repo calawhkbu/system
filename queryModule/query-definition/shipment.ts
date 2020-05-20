@@ -2805,10 +2805,6 @@ query
 
 // used for exist/ not exist statusCode
 const withoutStatusCodeCondition = (withoutStatusCodeParam) => {
-
-  console.log(`debug_withoutStatusCodeParam`)
-  console.log(withoutStatusCodeParam)
-
   if (!(withoutStatusCodeParam && withoutStatusCodeParam.value)) {
     throw new Error('params.subqueries.withoutStatusCodeParam missing')
   }

@@ -152,9 +152,6 @@ function insertTop10Data() {
 
     const shipments = new Resultset(await session.query(new Query('raw'))).toArray() as any[]
 
-    console.log(`shipments`)
-    console.log(shipments.length)
-
     if (!(shipments && shipments.length)) {
       throw new Error('NO_DATA')
     }
