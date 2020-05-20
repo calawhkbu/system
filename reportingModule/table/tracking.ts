@@ -16,7 +16,7 @@ const query = new Query({
           type: 'string',
         },
         {
-          name: 'lastStatusList',
+          name: 'lastStatus',
           type: 'string',
         },
         {
