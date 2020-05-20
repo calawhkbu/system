@@ -1,17 +1,12 @@
 import { QueryDef } from 'classes/query/QueryDef'
 import {
   Query,
-  ResultColumn,
   FromTable,
-  OrExpressions,
-  RegexpExpression,
   ColumnExpression,
   BinaryExpression,
   IsNullExpression,
-  AndExpressions,
   InExpression,
   Unknown,
-  Value,
 } from 'node-jql'
 import { registerAll } from 'utils/jql-subqueries'
 
@@ -23,7 +18,8 @@ const query = new QueryDef(
       operator: 'LEFT',
       table: 'person',
       $on: new BinaryExpression(new ColumnExpression('username'), '=', new ColumnExpression('report', 'createdBy'))
-    })
+    }),
+    $where: new IsNullExpression(new ColumnExpression('category'), true)
   })
 )
 
