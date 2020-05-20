@@ -29,7 +29,7 @@ export default async function entityCreateInvitation(
   // }
   // const defaulConfiguration = partyGroup.configuration || {}
   // const roles = await that.roleService.find(
-  //   { where: { roleName: { $in: ['USER', tableName.toLocaleUpperCase()] } } },
+  //   { where: { roleName: { [Op.in]: ['USER', tableName.toLocaleUpperCase()] } } },
   //   user
   // )
   // const basePerson = {
