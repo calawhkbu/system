@@ -41,7 +41,7 @@ const lastStatusExpression = new FunctionExpression(
   ')'
 )
 
-const baseTableName = 'shipment'
+const baseTableName = 'tracking'
 const fieldList = [
 
   'id',
