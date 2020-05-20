@@ -7,120 +7,83 @@ import {
   RegexpExpression,
   IsNullExpression,
   FunctionExpression,
-  InExpression,
   AndExpressions,
   Value,
   OrExpressions,
   Unknown,
+  CaseExpression,
 } from 'node-jql'
+import { registerAll } from 'utils/jql-subqueries'
 
 const query = new QueryDef(new Query('template'))
 
 // -------------- field stuff
 
-query.register('isActive',
-  {
-    expression: new FunctionExpression(
-      'IF',
-      new AndExpressions([
-        new IsNullExpression(new ColumnExpression('template', 'deletedAt'), false),
-        new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false),
-      ]),
-      1, 0
-    ),
-
-    $as: 'isActive'
-  })
-
-query.register('canDelete',
-  {
-
-    expression: new FunctionExpression(
-      'IF',
-      new AndExpressions([
-        new IsNullExpression(new ColumnExpression('template', 'deletedAt'), false),
-        new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false),
-      ]),
-      1, 0
-    ),
-
-    $as: 'canDelete'
-  })
-
-query.register('canRestore',
-  {
-
-    expression: new FunctionExpression(
-      'IF',
-      new AndExpressions([
-        new IsNullExpression(new ColumnExpression('template', 'deletedAt'), true),
-        new IsNullExpression(new ColumnExpression('template', 'deletedBy'), true),
-      ]),
-      1, 0
-    ),
-
-    $as: 'canRestore'
-  })
-
-// ----------- filter stuff
-
-query
-  .register(
-    'partyGroupCode',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('template', 'partyGroupCode'), '='),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'extension',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('template', 'extension'), '='),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'templateName',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('template', 'templateName'), false),
-    })
-  )
-  .register('value', 0)
-
-  // will have 2 options, active and deleted
-  // isActive
-  const isActiveConditionExpression = new AndExpressions([
+const canDeleteExpression = new FunctionExpression(
+  'IF',
+  new AndExpressions([
     new IsNullExpression(new ColumnExpression('template', 'deletedAt'), false),
     new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false),
-  ])
+  ]),
+  1, 0
+)
 
-  query.registerBoth('isActive', isActiveConditionExpression)
+const canRestoreExpression = new FunctionExpression(
+  'IF',
+  new AndExpressions([
+    new IsNullExpression(new ColumnExpression('template', 'deletedAt'), true),
+    new IsNullExpression(new ColumnExpression('template', 'deletedBy'), true),
+  ]),
+  1, 0
+)
 
-  query.registerQuery('isActive', new Query({
+const isActiveConditionExpression = new AndExpressions([
+  new IsNullExpression(new ColumnExpression('template', 'deletedAt'), false),
+  new IsNullExpression(new ColumnExpression('template', 'deletedBy'), false)
+])
 
-    $where : new OrExpressions([
+const activeStatusExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new BinaryExpression(isActiveConditionExpression, '=', false),
+      $then: new Value('deleted')
+    }
+  ],
+  $else: new Value('active')
+})
 
-      new AndExpressions([
+const baseTableName = 'template'
 
-        new BinaryExpression(new Value('active'), '=', new Unknown('string')),
-        // active case
-        isActiveConditionExpression
-      ]),
+const fieldList = [
+  'id',
+  'partyGroupCode',
+  'extension',
+  'templateName',
+  {
+    name: 'canDelete',
+    expression: canDeleteExpression
+  },
+  {
+    name: 'canRestore',
+    expression: canRestoreExpression
+  },
+  {
+    name: 'activeStatus',
+    expression: activeStatusExpression
+  }
 
-      new AndExpressions([
-        new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
-        // deleted case
-        new BinaryExpression(isActiveConditionExpression, '=', false)
-      ])
+]
 
-    ])
+registerAll(query, baseTableName, fieldList)
 
-  }))
-  .register('value', 0)
-  .register('value', 1)
+// ----------- filter stuff
+// query
+//   .register(
+//     'templateName',
+//     new Query({
+//       $where: new RegexpExpression(new ColumnExpression('template', 'templateName'), false),
+//     })
+//   )
+//   .register('value', 0)
 
 export default query

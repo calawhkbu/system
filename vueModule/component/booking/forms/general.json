@@ -123,7 +123,7 @@
                   "moduleTypeCode": {
                     "value": "{{context.form.moduleTypeCode}}"
                   },
-                  "ports": {
+                  "portCodeLike": {
                     "value": "{{context.autoSuggestModel}}"
                   }
                 }
@@ -168,7 +168,7 @@
                   "moduleTypeCode": {
                     "value": "{{context.form.moduleTypeCode}}"
                   },
-                  "ports": {
+                  "portCodeLike": {
                     "value": "{{context.autoSuggestModel}}"
                   }
                 }
@@ -213,7 +213,7 @@
                   "moduleTypeCode": {
                     "value": "{{context.form.moduleTypeCode}}"
                   },
-                  "ports": {
+                  "portCodeLike": {
                     "value": "{{context.autoSuggestModel}}"
                   }
                 }
@@ -256,7 +256,7 @@
                   "moduleTypeCode": {
                     "value": "{{context.form.moduleTypeCode}}"
                   },
-                  "ports": {
+                  "portCodeLike": {
                     "value": "{{context.autoSuggestModel}}"
                   }
                 }

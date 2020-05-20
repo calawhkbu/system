@@ -38,7 +38,7 @@ const months = [
 
 // hardcode all reportingGroup and divided into SEA and AIR
 
-const convertToTeuModuleTypeCodeList = ['SA', 'SR']
+const convertToTeuReportinGroupList = ['SA', 'SR']
 
 function insertReportingGroupTable() {
 
@@ -54,7 +54,7 @@ function insertReportingGroupTable() {
 
       AIR: ['AC', 'AD', 'AM', 'AN', 'AW', 'AX', 'AZ'],
       SEA: ['SA', 'SB', 'SC', 'SR', 'SS', 'ST', 'SW', 'SZ'],
-      LOG: ['ZL'],
+      LOGISTICS : ['ZL']
 
     }
 
@@ -78,8 +78,6 @@ function insertReportingGroupTable() {
 
       SW : ['SEA', 'MISCELLANEOUS'],
       SZ : ['SEA', 'MISCELLANEOUS'],
-
-      LZ : ['LOGISTICS']
 
     }
 
@@ -164,7 +162,7 @@ function prepareParams(): Function {
       'moduleTypeCode',
       'reportingGroup',
       'jobMonth',
-      'teu',
+      'teuInReport',
       'cbm',
       'chargeableWeight',
     ]
@@ -196,9 +194,10 @@ function prepareTable(): CreateTableJQL {
           new FunctionExpression(
             'IF',
 
-            new InExpression(new ColumnExpression('reportingGroup'), false, ['SA', 'SR']),
+            new InExpression(new ColumnExpression('reportingGroup'), false, convertToTeuReportinGroupList),
 
-            new MathExpression(new ColumnExpression('teu'), '*', 25),
+            // warning now still show cbm
+            new ColumnExpression('cbm'),
 
             new FunctionExpression(
               'IF',
@@ -218,7 +217,7 @@ function prepareTable(): CreateTableJQL {
             { name: 'moduleTypeCode', type: 'string' },
             { name: 'jobMonth', type: 'string' },
             { name: 'reportingGroup', type: 'string' },
-            { name: 'teu', type: 'number' },
+            { name: 'teuInReport', type: 'number' },
             { name: 'cbm', type: 'number' },
             { name: 'chargeableWeight', type: 'number' },
           ],
@@ -323,7 +322,7 @@ function prepareResultTable(): CreateTableJQL {
     // convert unit column
     new ResultColumn(
       new FunctionExpression('IF',
-        new InExpression(new ColumnExpression('reportingGroupTable', 'reportingGroup'), false, convertToTeuModuleTypeCodeList), new Value('(Conversion Unit: TEU)'), new Value('')
+        new InExpression(new ColumnExpression('reportingGroupTable', 'reportingGroup'), false, convertToTeuReportinGroupList), new Value('(Conversion Unit: TEU)'), new Value('')
       ), 'conversionUnit'
     )
   ]

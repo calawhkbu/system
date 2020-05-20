@@ -17,7 +17,7 @@ import {
 
 import { parseCode } from 'utils/function'
 
-function prepareParams(likeHouseNo_: string): Function {
+function prepareParams(houseNoLike_: string): Function {
   const fn = function(require, session, params) {
     // import
     const { moment } = params.packages
@@ -55,7 +55,7 @@ function prepareParams(likeHouseNo_: string): Function {
     // warning : hardCode, very hardcode
     // TODO : need to hardcode partyId in new 360
     subqueries.viaHKG = true
-    subqueries.likeHouseNo = { value: likeHouseNo_ }
+    subqueries.houseNoLike = { value: houseNoLike_ }
 
     const codeColumnName = `officePartyCode`
     const nameColumnName = `officePartyName`
@@ -77,7 +77,7 @@ function prepareParams(likeHouseNo_: string): Function {
   }
 
   let code = fn.toString()
-  code = code.replace(new RegExp('likeHouseNo_', 'g'), `'${likeHouseNo_}'`)
+  code = code.replace(new RegExp('houseNoLike_', 'g'), `'${houseNoLike_}'`)
   return parseCode(code)
 }
 

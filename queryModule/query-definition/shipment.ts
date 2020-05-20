@@ -33,6 +33,7 @@ import {
   IQuery
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
+import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition } from 'utils/jql-subqueries'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -51,26 +52,15 @@ const months = [
   'December',
 ]
 
-const percentageChangeFunction = (oldExpression: IExpression, newExpression: IExpression) => {
+const jobDateExpression = new ColumnExpression('shipment', 'jobDate')
 
-  const conditionExpression = new CaseExpression({
-    cases: [
-      {
-        $when: new OrExpressions([
-          new BinaryExpression(oldExpression, '=', 0),
-          new BinaryExpression(newExpression, '=', 0)
-        ]),
-        $then: new MathExpression(newExpression, '-', oldExpression)
-      } as ICase
-    ],
+const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
 
-    $else: new MathExpression(new MathExpression(newExpression, '-', oldExpression), '/', oldExpression)
+const jobMonthExpression = new FunctionExpression('CONCAT', new FunctionExpression('YEAR', jobDateExpression),
+  '-',
+  new FunctionExpression('LPAD', new FunctionExpression('MONTH', jobDateExpression), 2, '0'))
 
-  })
-
-  return conditionExpression
-
-}
+const jobWeekExpression = new FunctionExpression('LPAD', new FunctionExpression('WEEK', jobDateExpression), 2, '0')
 
 const shipmentIsActiveExpression = (shipmentTableName) => {
 
@@ -187,9 +177,8 @@ const partyList = [
 }[]
 const locationList = ['portOfLoading', 'portOfDischarge', 'placeOfDelivery', 'placeOfReceipt', 'finalDestination']
 
-const query = new QueryDef((params: IQueryParams) => {
+const query = new QueryDef(new Query({
 
-  const baseQuery =   new Query({
     // $distinct: true,
     $select: [
       new ResultColumn(new ColumnExpression('shipment', '*')),
@@ -202,93 +191,14 @@ const query = new QueryDef((params: IQueryParams) => {
         table : 'shipment',
       }
 
-    ),
-  })
-
-  const specialName = 'isMinCreatedAt'
-
-  const { fields, conditions, subqueries } = params
-
-  if (subqueries[specialName]) {
-
-    const { [specialName] : dumb, ...newSubqueries } = params.subqueries
-
-    const newParams = {
-      fields: [
-        new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
-        new ResultColumn(new BinaryExpression(new ColumnExpression('shipment', 'createdAt'), '=', new FunctionExpression('MIN', new ColumnExpression('shipment', 'createdAt'))),
-        'isMinCreatedAt',
-        new ColumnExpression('shipment', 'houseNo'),
-        new ColumnExpression('shipment', 'partyGroupCode')),
-      ],
-      subqueries: newSubqueries,
-      conditions
-    } as IQueryParams
-
-    console.log(`newSubqueries`)
-    console.log(newSubqueries)
-
-    baseQuery.$from[0].joinClauses.push(
-      new JoinClause({
-        operator :  'LEFT',
-        table : new FromTable(query.apply(newParams), 'shipment_isMinCreatedAt'),
-        $on : new BinaryExpression(new ColumnExpression('shipment', 'id'), '=', new ColumnExpression('shipment_isMinCreatedAt', 'shipmentId'))
-      })
     )
-  }
-
-  return baseQuery
-})
+}))
 
 query.registerQuery('isMinCreatedAt', new Query({
 
-  $where : new BinaryExpression(new ColumnExpression('shipment_isMinCreatedAt', 'isMinCreatedAt'), '=', true)
+  $where : new BinaryExpression(new ColumnExpression('shipment', 'isMinCreatedAt'), '=', true)
 
 }))
-
-const queryOld = new QueryDef(
-  new Query({
-    // $distinct: true,
-    $select: [
-      new ResultColumn(new ColumnExpression('shipment', '*')),
-      new ResultColumn(new ColumnExpression('shipment_isMinCreatedAt', 'isMinCreatedAt'), 'isMinCreatedAt'),
-      new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
-      new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentPartyId'),
-    ],
-    $from: new FromTable(
-
-      {
-        table : 'shipment',
-        // LEFT JOIN shipment_date
-
-         joinClauses : [{
-          operator: 'LEFT',
-          table: new FromTable({
-            table: new Query({
-              $select: [
-                new ResultColumn(new ColumnExpression('shipment_dumb', 'id'), 'shipmentId'),
-
-                new ResultColumn(
-                  new BinaryExpression(
-                    new ColumnExpression('shipment_dumb', 'createdAt'), '=', new FunctionExpression('MIN', new ColumnExpression('shipment_dumb', 'createdAt'))),
-                    'isMinCreatedAt', new ColumnExpression('shipment_dumb', 'houseNo'), new ColumnExpression('shipment_dumb', 'partyGroupCode')),
-
-              ],
-              $from: new FromTable('shipment', 'shipment_dumb'),
-
-              $where : shipmentIsActiveExpression('shipment_dumb')
-
-            }),
-            $as: 'shipment_isMinCreatedAt'
-          }),
-          $on: new BinaryExpression(new ColumnExpression('shipment', 'id'), '=', new ColumnExpression('shipment_isMinCreatedAt', 'shipmentId'))
-        }],
-
-      }
-
-    ),
-  })
-)
 
 // all shipment join
 query.table('shipment_date', new Query({
@@ -380,6 +290,39 @@ partyList.map(party => {
     })
 
   }), ...companion)
+
+})
+
+// location table :  table:portOfLoading, table:portOfDischarge
+locationList.map(location => {
+
+  const joinTableName = `${location}`
+  const locationCode = `${location}Code`
+
+  // location join (e.g. portOfLoadingJoin)
+  query.table(joinTableName, new Query({
+
+      $from: new FromTable({
+
+        table : 'shipment',
+
+        joinClauses : [{
+
+        operator: 'LEFT',
+        table:  new FromTable({
+          table : 'location',
+          $as : `${location}`
+        }),
+        $on: [
+          new BinaryExpression(new ColumnExpression(`${location}`, 'portCode'), '=', new ColumnExpression('shipment', locationCode)),
+        ]
+      }]
+    }),
+
+      $where: new IsNullExpression(new ColumnExpression('shipment', locationCode), true)
+
+    })
+  )
 
 })
 
@@ -487,39 +430,6 @@ query.table('alert', new Query({
 
   })
 )
-
-// location table :  table:portOfLoading, table:portOfDischarge
-locationList.map(location => {
-
-  const joinTableName = `${location}`
-  const locationCode = `${location}Code`
-
-  // location join (e.g. portOfLoadingJoin)
-  query.table(joinTableName, new Query({
-
-      $from: new FromTable({
-
-        table : 'shipment',
-
-        joinClauses : [{
-
-        operator: 'LEFT',
-        table:  new FromTable({
-          table : 'location',
-          $as : `${location}`
-        }),
-        $on: [
-          new BinaryExpression(new ColumnExpression(`${location}`, 'portCode'), '=', new ColumnExpression('shipment', locationCode)),
-        ]
-      }]
-    }),
-
-      $where: new IsNullExpression(new ColumnExpression('shipment', locationCode), true)
-
-    })
-  )
-
-})
 
 // shipment_amount table :  table:shipment_amount
 query.table('shipment_amount', new Query({
@@ -1560,9 +1470,9 @@ const reportingGroupExpression = new CaseExpression({
 })
 
 const lastStatusCodeExpression = new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusCode')
-const lastStatusCodeOrDescriptionExpression = new FunctionExpression('IFNULL', new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusCode'), new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusDescription'))
 const lastStatusDateExpression = new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusDate')
 
+const lastStatusCodeOrDescriptionExpression = new FunctionExpression('IFNULL', new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusCode'), new ColumnExpression('shipmentTrackingLastStatusCodeTable', 'lastStatusDescription'))
 const statusCodeExpression = new ColumnExpression('shipmentTrackingStatusCodeTable', 'statusCode')
 
 function statusExpressionMapFunction(originalExpression: IExpression) {
@@ -1872,65 +1782,377 @@ const alertUpdatedAtExpression = new ColumnExpression('alert', 'updatedAt')
 
 const alertContentExpression = new ColumnExpression('alert', 'flexData')
 
-const expressionList = [
+const activeStatusExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new BinaryExpression(shipmentIsActiveExpression('shipment'), '=', false),
+      $then: new Value('deleted')
+    }
+  ],
+  $else: new Value('active')
+})
+
+// all field related to party
+const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInterface[], party) => {
+
+  const partyFieldList = [
+
+    //  very special case , get back the value from the party join
+    'PartyNameInReport',
+    'PartyShortNameInReport',
+
+    'PartyId',
+    'PartyName',
+    'PartyCode',
+    'PartyContactPersonId',
+    'PartyContactName',
+    'PartyContactEmail',
+    'PartyContactPhone',
+    'PartyContactIdentity',
+    'PartyContacts',
+    'PartyIdentity',
+    'PartyAddress'
+  ]
+
+  const partyTableName = party.name
+
+  const partyIdExpression = party.partyIdExpression  || { expression : new ColumnExpression('shipment_party', `${partyTableName}PartyId`), companion : ['table:shipment_party']}
+  const partyNameExpression = party.partyNameExpression ||  { expression :  new ColumnExpression('shipment_party', `${partyTableName}PartyName`), companion : ['table:shipment_party']}
+  const partyCodeExpression = party.partyCodeExpression || { expression :  new ColumnExpression('shipment_party', `${partyTableName}PartyCode`), companion : ['table:shipment_party']}
+  const partyNameInReportExpression = party.partyNameInReportExpression || { expression :  new ColumnExpression(party.name, `name`), companion : [`table:${party.name}`]}
+  const partyShortNameInReportExpression = party.partyShortNameInReportExpression ||  { expression : new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion : [`table:${party.name}`]}
+
+  const resultExpressionList = partyFieldList.map(partyField => {
+
+    const fieldName = `${partyTableName}${partyField}`
+
+    let finalExpressionInfo: { expression: IExpression, companion: string[]}
+
+    switch (partyField) {
+
+      case 'PartyCode':
+        finalExpressionInfo = partyCodeExpression
+        break
+
+      case 'PartyName':
+        finalExpressionInfo = partyNameExpression
+        break
+
+      case 'PartyId':
+        finalExpressionInfo = partyIdExpression
+        break
+
+      // PartyReportName will get from party join instead of shipment_party direct;
+      case 'PartyNameInReport':
+        finalExpressionInfo = partyNameInReportExpression
+        break
+
+      case 'PartyShortNameInReport':
+        finalExpressionInfo = partyShortNameInReportExpression
+        break
+
+      default:
+        finalExpressionInfo = { expression : new ColumnExpression('shipment_party', fieldName) as IExpression, companion : ['table:shipment_party'] }
+        break
+    }
+
+    return {
+      name : fieldName,
+      ...finalExpressionInfo
+    } as ExpressionHelperInterface
+  })
+
+  return accumulator.concat(resultExpressionList)
+ }, [])
+
+ const locationExpressionList = locationList.reduce((accumulator: ExpressionHelperInterface[], location) => {
+
+  const locationCodeExpressionInfo = {
+    name : `${location}Code`,
+    expression : new ColumnExpression('booking', `${location}Code`),
+  } as ExpressionHelperInterface
+
+  const locationLatitudeExpressionInfo = {
+    name : `${location}Latitude`,
+    expression : new ColumnExpression(`${location}`, `latitude`),
+  } as ExpressionHelperInterface
+
+  const locationLongitudeExpressionInfo = {
+    name : `${location}Longitude`,
+    expression : new ColumnExpression(`${location}`, `longitude`),
+  } as ExpressionHelperInterface
+
+  accumulator.push(locationCodeExpressionInfo)
+  accumulator.push(locationLatitudeExpressionInfo)
+  accumulator.push(locationLongitudeExpressionInfo)
+
+  return accumulator
+
+ }, [])
+
+const baseTableName = 'shipment'
+const fieldList = [
 
   {
     name : 'id',
-    expression : idExpression,
+    expression : idExpression
+  },
+  ...partyExpressionList,
+  ...locationExpressionList,
+
+  {
+    name : 'jobDate',
+    expression : jobDateExpression
+  },
+
+  {
+    name : 'jobMonth',
+    expression : jobMonthExpression
+  },
+
+  {
+    name : 'jobWeek',
+    expression : jobWeekExpression
+  },
+
+  {
+    name : 'jobYear',
+    expression : jobYearExpression
+  },
+
+  'moduleTypeCode',
+  'boundTypeCode',
+  'nominatedTypeCode',
+  'shipmentTypeCode',
+  'divisionCode',
+  'isDirect',
+  'isCoload',
+  'houseNo',
+  'jobNo',
+
+  {
+    name : 'primaryKeyListString',
+    expression : primaryKeyListStringExpression
+  },
+  {
+    name : 'partyGroupCode',
+    expression : partyGroupCodeExpression
+  },
+
+  {
+    name : 'currentTrackingNo',
+    expression : currentTrackingNoExpression
+  },
+
+  {
+    name : 'haveCurrentTrackingNo',
+    expression : haveCurrentTrackingNoExpression
+  },
+
+  {
+    name : 'agentGroup',
+    expression : agentGroupExpression,
+    companion : ['table:consignee', 'table:agent']
+  },
+  {
+    name : 'carrierCode',
+    expression : carrierCodeExpression,
+  },
+  {
+    name : 'carrierName',
+    expression : carrierNameExpression,
+  },
+  {
+    name : 'salesmanCode',
+    expression : salesmanCodeExpression
+  },
+
+  {
+    name: 'rSalesmanCode',
+    expression: rSalesmanCodeExpression,
+  },
+
+  {
+    name: 'sSalesmanCode',
+    expression: sSalesmanCodeExpression,
+  },
+
+  {
+    name: 'cSalesmanCode',
+    expression: cSalesmanCodeExpression,
+  },
+  {
+    name : 'batchNumber',
+    expression : batchNumberExpression
+  },
+
+  {
+    name : 'reportingGroup',
+    expression : reportingGroupExpression,
+    companion : ['table:office']
+  },
+  {
+    name : 'shipId',
+    expression : shipIdExpression
+  },
+
+  {
+    name : 'lastStatusCode',
+    expression : lastStatusCodeExpression,
+    companion : ['table:lastStatus']
+  },
+  {
+    name : 'lastStatus',
+    expression : lastStatusExpression,
+    companion : ['table:lastStatus']
+  },
+  {
+    name : 'lastStatusDate',
+    expression : lastStatusDateExpression,
+    companion : ['table:lastStatus']
+  },
+  {
+    name : 'lastStatusCodeOrDescription',
+    expression : lastStatusCodeOrDescriptionExpression,
+    companion : ['table:lastStatus']
+  },
+
+  {
+    name : 'statusCode',
+    expression : statusCodeExpression,
+    companion : ['table:status']
+  },
+
+  {
+    name : 'status',
+    expression : statusExpression,
+    companion : ['table:status']
+  },
+
+  {
+    name : 'dateStatus',
+    expression : dateStatusExpressionWithParams,
+    companion : ['table:shipment_date']
+  },
+
+  {
+    name : 'alertId',
+    expression : alertIdExpression,
+    companion : ['table:alert']
+  },
+
+  {
+    name : 'alertTableName',
+    expression : alertTableNameExpression,
+    companion : ['table:alert']
+  },
+
+  {
+    name : 'alertPrimaryKey',
+    expression : alertPrimaryKeyExpression,
+    companion : ['table:alert']
+  },
+
+  {
+    name : 'alertSeverity',
+    expression : alertSeverityExpression,
+    companion : ['table:alert']
+  },
+
+  {
+    name : 'alertType',
+    expression : alertTypeExpression,
+    companion : ['table:alert']
+  },
+
+  {
+    name : 'alertTitle',
+    expression : alertTitleExpression,
+    companion : ['table:alert']
+  },
+
+  {
+    name : 'alertMessage',
+    expression : alertMessageExpression,
+    companion : ['table:alert']
+  },
+
+  {
+    name : 'alertCategory',
+    expression : alertCategoryExpression,
+    companion : ['table:alert']
+  },
+
+  {
+    name : 'alertContent',
+    expression : alertContentExpression,
+    companion : ['table:alert']
+  },
+
+  {
+    name : 'alertStatus',
+    expression : alertStatusExpression,
+    companion : ['table:alert']
+  },
+  {
+    name : 'activeStatus',
+    expression : activeStatusExpression
   }
 
-]
+] as ExpressionHelperInterface[]
 
-query.registerBoth('id', idExpression)
-query.registerBoth('primaryKeyListString', primaryKeyListStringExpression)
-query.registerBoth('partyGroupCode', partyGroupCodeExpression)
-query.registerBoth('currentTrackingNo', currentTrackingNoExpression)
-query.registerBoth('haveCurrentTrackingNo', haveCurrentTrackingNoExpression)
+registerAll(query, baseTableName, fieldList)
 
-query.registerBoth('agentGroup', agentGroupExpression, 'table:consignee', 'table:agent')
+// query.registerBoth('id', idExpression)
+// query.registerBoth('primaryKeyListString', primaryKeyListStringExpression)
+// query.registerBoth('partyGroupCode', partyGroupCodeExpression)
+// query.registerBoth('currentTrackingNo', currentTrackingNoExpression)
+// query.registerBoth('haveCurrentTrackingNo', haveCurrentTrackingNoExpression)
 
-query.registerBoth('carrierCode', carrierCodeExpression)
+// query.registerBoth('agentGroup', agentGroupExpression, 'table:consignee', 'table:agent')
 
-query.registerBoth('carrierName', carrierNameExpression)
+// query.registerBoth('carrierCode', carrierCodeExpression)
 
-query.registerBoth('salesmanCode', salesmanCodeExpression)
+// query.registerBoth('carrierName', carrierNameExpression)
 
-query.registerBoth('reportingGroup', reportingGroupExpression, 'table:office')
+// query.registerBoth('salesmanCode', salesmanCodeExpression)
 
-query.registerBoth('shipId', shipIdExpression)
+// query.registerBoth('reportingGroup', reportingGroupExpression, 'table:office')
 
-// tracking lastStatus
-query.registerBoth('lastStatusCode', lastStatusCodeExpression, 'table:lastStatus')
-query.registerBoth('lastStatusCodeOrDescription', lastStatusCodeOrDescriptionExpression, 'table:lastStatus')
+// query.registerBoth('shipId', shipIdExpression)
 
-query.registerBoth('lastStatus', lastStatusExpression, 'table:lastStatus')
+// // tracking lastStatus
+// query.registerBoth('lastStatusCode', lastStatusCodeExpression, 'table:lastStatus')
+// query.registerBoth('lastStatusCodeOrDescription', lastStatusCodeOrDescriptionExpression, 'table:lastStatus')
 
-// tracking status
-query.registerBoth('statusCode', statusCodeExpression, 'table:lastStatus')
-query.registerBoth('status', statusExpression, 'table:lastStatus')
+// query.registerBoth('lastStatus', lastStatusExpression, 'table:lastStatus')
 
-// dateStatus
-query.registerBoth('dateStatus', ((params: IQueryParams) => dateStatusExpressionWithParams(params)) as ExpressionArg, 'table:shipment_date')
+// // tracking status
+// query.registerBoth('statusCode', statusCodeExpression, 'table:status')
+// query.registerBoth('status', statusExpression, 'table:status')
 
-query.registerBoth('alertId', alertIdExpression, 'table:alert')
+// // dateStatus
+// query.registerBoth('dateStatus', ((params: IQueryParams) => dateStatusExpressionWithParams(params)) as ExpressionArg, 'table:shipment_date')
 
-query.registerBoth('alertTableName', alertTableNameExpression, 'table:alert')
+// query.registerBoth('alertId', alertIdExpression, 'table:alert')
 
-query.registerBoth('alertPrimaryKey', alertPrimaryKeyExpression, 'table:alert')
+// query.registerBoth('alertTableName', alertTableNameExpression, 'table:alert')
 
-query.registerBoth('alertSeverity', alertSeverityExpression, 'table:alert')
+// query.registerBoth('alertPrimaryKey', alertPrimaryKeyExpression, 'table:alert')
 
-query.registerBoth('alertType', alertTypeExpression, 'table:alert')
+// query.registerBoth('alertSeverity', alertSeverityExpression, 'table:alert')
 
-query.registerBoth('alertTitle', alertTitleExpression, 'table:alert')
+// query.registerBoth('alertType', alertTypeExpression, 'table:alert')
 
-query.registerBoth('alertMessage', alertMessageExpression, 'table:alert')
+// query.registerBoth('alertTitle', alertTitleExpression, 'table:alert')
 
-query.registerBoth('alertCategory', alertCategoryExpression, 'table:alert')
+// query.registerBoth('alertMessage', alertMessageExpression, 'table:alert')
 
-query.registerBoth('alertContent', alertContentExpression, 'table:alert')
+// query.registerBoth('alertCategory', alertCategoryExpression, 'table:alert')
 
-query.registerBoth('alertStatus', alertStatusExpression, 'table:alert')
+// query.registerBoth('alertContent', alertContentExpression, 'table:alert')
+
+// query.registerBoth('alertStatus', alertStatusExpression, 'table:alert')
 
 // ===========================
 
@@ -1952,113 +2174,113 @@ query.registerBoth('alertStatus', alertStatusExpression, 'table:alert')
 // END
 
 // party field ======================
-const partyFieldList = [
+// const partyFieldList = [
 
-  //  very special case , get back the value from the party join
-  'PartyNameInReport',
-  'PartyShortNameInReport',
+//   //  very special case , get back the value from the party join
+//   'PartyNameInReport',
+//   'PartyShortNameInReport',
 
-  'PartyId',
-  'PartyName',
-  'PartyCode',
-  'PartyContactPersonId',
-  'PartyContactName',
-  'PartyContactEmail',
-  'PartyContactPhone',
-  'PartyContactIdentity',
-  'PartyContacts',
-  'PartyIdentity',
-  'PartyAddress'
-]
+//   'PartyId',
+//   'PartyName',
+//   'PartyCode',
+//   'PartyContactPersonId',
+//   'PartyContactName',
+//   'PartyContactEmail',
+//   'PartyContactPhone',
+//   'PartyContactIdentity',
+//   'PartyContacts',
+//   'PartyIdentity',
+//   'PartyAddress'
+// ]
 
-  partyList.map(party => {
+//   partyList.map(party => {
 
-  const partyTableName = party.name
+//   const partyTableName = party.name
 
-  const partyIdExpression = party.partyIdExpression  || { expression : new ColumnExpression('shipment_party', `${partyTableName}PartyId`), companion : ['table:shipment_party']}
-  const partyNameExpression = party.partyNameExpression ||  { expression :  new ColumnExpression('shipment_party', `${partyTableName}PartyName`), companion : ['table:shipment_party']}
-  const partyCodeExpression = party.partyCodeExpression || { expression :  new ColumnExpression('shipment_party', `${partyTableName}PartyCode`), companion : ['table:shipment_party']}
-  const partyNameInReportExpression = party.partyNameInReportExpression || { expression :  new ColumnExpression(party.name, `name`), companion : [`table:${party.name}`]}
-  const partyShortNameInReportExpression = party.partyShortNameInReportExpression ||  { expression : new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion : [`table:${party.name}`]}
+//   const partyIdExpression = party.partyIdExpression  || { expression : new ColumnExpression('shipment_party', `${partyTableName}PartyId`), companion : ['table:shipment_party']}
+//   const partyNameExpression = party.partyNameExpression ||  { expression :  new ColumnExpression('shipment_party', `${partyTableName}PartyName`), companion : ['table:shipment_party']}
+//   const partyCodeExpression = party.partyCodeExpression || { expression :  new ColumnExpression('shipment_party', `${partyTableName}PartyCode`), companion : ['table:shipment_party']}
+//   const partyNameInReportExpression = party.partyNameInReportExpression || { expression :  new ColumnExpression(party.name, `name`), companion : [`table:${party.name}`]}
+//   const partyShortNameInReportExpression = party.partyShortNameInReportExpression ||  { expression : new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion : [`table:${party.name}`]}
 
-  partyFieldList.map(partyField => {
+//   partyFieldList.map(partyField => {
 
-    const fieldName = `${partyTableName}${partyField}`
+//     const fieldName = `${partyTableName}${partyField}`
 
-    let finalExpressionInfo: { expression: IExpression, companion: string[] }
+//     let finalExpressionInfo: { expression: IExpression, companion: string[] }
 
-    switch (partyField) {
+//     switch (partyField) {
 
-      case 'PartyCode':
-        finalExpressionInfo = partyCodeExpression
-        break
+//       case 'PartyCode':
+//         finalExpressionInfo = partyCodeExpression
+//         break
 
-      case 'PartyName':
-        finalExpressionInfo = partyNameExpression
-        break
+//       case 'PartyName':
+//         finalExpressionInfo = partyNameExpression
+//         break
 
-      case 'PartyId':
-        finalExpressionInfo = partyIdExpression
-        break
+//       case 'PartyId':
+//         finalExpressionInfo = partyIdExpression
+//         break
 
-      // PartyReportName will get from party join instead of shipment_party direct;y
-      case 'PartyNameInReport':
-        finalExpressionInfo = partyNameInReportExpression
-        break
+//       // PartyReportName will get from party join instead of shipment_party direct;y
+//       case 'PartyNameInReport':
+//         finalExpressionInfo = partyNameInReportExpression
+//         break
 
-      case 'PartyShortNameInReport':
-        finalExpressionInfo = partyShortNameInReportExpression
-        break
+//       case 'PartyShortNameInReport':
+//         finalExpressionInfo = partyShortNameInReportExpression
+//         break
 
-      default:
-        finalExpressionInfo = { expression : new ColumnExpression('shipment_party', fieldName) as IExpression, companion : ['table:shipment_party'] }
-        break
-    }
+//       default:
+//         finalExpressionInfo = { expression : new ColumnExpression('shipment_party', fieldName) as IExpression, companion : ['table:shipment_party'] }
+//         break
+//     }
 
-    query.registerBoth(fieldName, finalExpressionInfo.expression, ...finalExpressionInfo.companion)
+//     query.registerBoth(fieldName, finalExpressionInfo.expression, ...finalExpressionInfo.companion)
 
-  })
+//   })
 
-  query
-  .register(
-    `${partyTableName}PartyId`,
-    new Query({
-      $where: new InExpression(partyIdExpression.expression, false),
-    }),
-    ...partyIdExpression.companion
-  )
-  .register('value', 0)
+//   query
+//   .register(
+//     `${partyTableName}PartyId`,
+//     new Query({
+//       $where: new InExpression(partyIdExpression.expression, false),
+//     }),
+//     ...partyIdExpression.companion
+//   )
+//   .register('value', 0)
 
-query
-  .register(
-    `${partyTableName}PartyCode`,
-    new Query({
-      $where: new InExpression(partyCodeExpression.expression, false),
-    }),
-    ...partyCodeExpression.companion
-  )
-  .register('value', 0)
+// query
+//   .register(
+//     `${partyTableName}PartyCode`,
+//     new Query({
+//       $where: new InExpression(partyCodeExpression.expression, false),
+//     }),
+//     ...partyCodeExpression.companion
+//   )
+//   .register('value', 0)
 
-query
-  .register(
-    `${partyTableName}PartyName`,
-    new Query({
-      $where: new RegexpExpression(partyNameExpression.expression, false),
-    }),
-    ...partyNameExpression.companion
-  )
-  .register('value', 0)
+// query
+//   .register(
+//     `${partyTableName}PartyName`,
+//     new Query({
+//       $where: new RegexpExpression(partyNameExpression.expression, false),
+//     }),
+//     ...partyNameExpression.companion
+//   )
+//   .register('value', 0)
 
-query
-  .register(
-    `${partyTableName}IsNotNull`,
-    new Query({
-      $where: new IsNullExpression(partyIdExpression.expression, true),
-    }),
-    ...partyIdExpression.companion
-  )
+// query
+//   .register(
+//     `${partyTableName}IsNotNull`,
+//     new Query({
+//       $where: new IsNullExpression(partyIdExpression.expression, true),
+//     }),
+//     ...partyIdExpression.companion
+//   )
 
-})
+// })
 
 // ===========================
 
@@ -2086,23 +2308,23 @@ query
     new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))), 'alertCount')
   )
 
-const jobDateExpression = new ColumnExpression('shipment', 'jobDate')
+// const jobDateExpression = new ColumnExpression('shipment', 'jobDate')
 
-const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
+// const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
 
-const jobMonthExpression = new FunctionExpression('CONCAT', new FunctionExpression('YEAR', jobDateExpression),
-  '-',
-  new FunctionExpression('LPAD', new FunctionExpression('MONTH', jobDateExpression), 2, '0'))
+// const jobMonthExpression = new FunctionExpression('CONCAT', new FunctionExpression('YEAR', jobDateExpression),
+//   '-',
+//   new FunctionExpression('LPAD', new FunctionExpression('MONTH', jobDateExpression), 2, '0'))
 
-const jobWeekExpression = new FunctionExpression('LPAD', new FunctionExpression('WEEK', jobDateExpression), 2, '0')
+// const jobWeekExpression = new FunctionExpression('LPAD', new FunctionExpression('WEEK', jobDateExpression), 2, '0')
 
-query.registerBoth('jobDate', jobDateExpression)
+// query.registerBoth('jobDate', jobDateExpression)
 
-query.registerBoth('jobMonth', jobMonthExpression)
+// query.registerBoth('jobMonth', jobMonthExpression)
 
-query.registerBoth('jobWeek', jobWeekExpression)
+// query.registerBoth('jobWeek', jobWeekExpression)
 
-query.registerBoth('jobYear', jobYearExpression)
+// query.registerBoth('jobYear', jobYearExpression)
 
 // summary fields  =================
 
@@ -2110,6 +2332,7 @@ const nestedSummaryList = [
 
   {
     name: 'frc',
+    companion : ['table:shipment_party'],
     cases: [
       {
         typeCode: 'F',
@@ -2162,6 +2385,7 @@ const nestedSummaryList = [
   {
 
     name: 'fr',
+    companion : [],
     cases: [
       {
         typeCode: 'F',
@@ -2174,23 +2398,7 @@ const nestedSummaryList = [
     ]
   }
 
-] as {
-  name: string,
-  cases: {
-    typeCode: string,
-    condition: IConditionalExpression
-  }[]
-}[]
-
-interface SummaryField {
-  name: string,
-  expression: IExpression,
-  inReportExpression?: IExpression
-
-  summaryType: 'count' | 'sum',
-  summaryExpression?: IExpression,
-  summaryIfExpression?: (conditon) => IExpression
-}
+] as NestedSummaryCondition[]
 
 const summaryFieldList: SummaryField[] = [
 
@@ -2234,466 +2442,307 @@ const summaryFieldList: SummaryField[] = [
   }
 ]
 
-function summaryFieldExpression(summaryField: SummaryField, isInReport: boolean, condition?: IConditionalExpression) {
+registerSummaryField(query, baseTableName, summaryFieldList, nestedSummaryList, jobDateExpression)
 
-  const expression = isInReport && summaryField.inReportExpression ? summaryField.inReportExpression : summaryField.expression
+// function summaryFieldExpression(summaryField: SummaryField, isInReport: boolean, condition?: IConditionalExpression) {
 
-  if (condition) {
+//   const expression = isInReport && summaryField.inReportExpression ? summaryField.inReportExpression : summaryField.expression
+//   const companion = isInReport && summaryField.inReportExpression ? summaryField.inReportExpression : summaryField.expression
 
-    const countIfExpression = new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new FunctionExpression('IF', condition, new ColumnExpression('shipment', 'id'), new Value(null))))
-    const sumIfExpression = new FunctionExpression('SUM', new FunctionExpression('IF', condition, new FunctionExpression('IFNULL', expression, 0), 0))
+//   if (condition) {
 
-    return summaryField.summaryIfExpression ? summaryField.summaryIfExpression(condition) : summaryField.summaryType === 'count' ? countIfExpression : sumIfExpression
-  }
+//     const countIfExpression = new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new FunctionExpression('IF', condition, new ColumnExpression('shipment', 'id'), new Value(null))))
+//     const sumIfExpression = new FunctionExpression('SUM', new FunctionExpression('IF', condition, new FunctionExpression('IFNULL', expression, 0), 0))
 
-  const sumExpression = new FunctionExpression('SUM', new FunctionExpression('IFNULL', expression, 0))
-  const countExpression = new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', expression))
+//     return summaryField.summaryIfExpression ? summaryField.summaryIfExpression(condition) : summaryField.summaryType === 'count' ? countIfExpression : sumIfExpression
+//   }
 
-  return summaryField.summaryType === 'count' ? countExpression : sumExpression
+//   const sumExpression = new FunctionExpression('SUM', new FunctionExpression('IFNULL', expression, 0))
+//   const countExpression = new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', expression))
 
-}
+//   return summaryField.summaryType === 'count' ? countExpression : sumExpression
 
-const lastTimeCondition = (params) => {
+// }
 
-  if (!params.subqueries.date.lastFrom) {
-    throw new Error('params.subqueries missing date.lastFrom')
-  }
+// const lastTimeCondition = (params) => {
 
-  return new BetweenExpression(jobDateExpression, false, new Value(params.subqueries.date.lastFrom), new Value(params.subqueries.date.lastTo))
-}
+//   if (!params.subqueries.date.lastFrom) {
+//     throw new Error('params.subqueries missing date.lastFrom')
+//   }
 
-const currentTimeCondition = (params) => {
+//   return new BetweenExpression(jobDateExpression, false, new Value(params.subqueries.date.lastFrom), new Value(params.subqueries.date.lastTo))
+// }
 
-  if (!params.subqueries.date.currentFrom) {
-    throw new Error('params.subqueries missing date.currentFrom')
-  }
+// const currentTimeCondition = (params) => {
 
-  return new BetweenExpression(jobDateExpression, false, new Value(params.subqueries.date.currentFrom), new Value(params.subqueries.date.currentTo))
-}
-const monthConditionExpression = (month) => {
-  const index = months.findIndex(x => x === month)
-  return new BinaryExpression(new FunctionExpression('Month', jobDateExpression), '=', index + 1)
-}
+//   if (!params.subqueries.date.currentFrom) {
+//     throw new Error('params.subqueries missing date.currentFrom')
+//   }
 
-const isInReportList = [true, false]
+//   return new BetweenExpression(jobDateExpression, false, new Value(params.subqueries.date.currentFrom), new Value(params.subqueries.date.currentTo))
+// }
+// const monthConditionExpression = (month) => {
+//   const index = months.findIndex(x => x === month)
+//   return new BinaryExpression(new FunctionExpression('Month', jobDateExpression), '=', index + 1)
+// }
 
-isInReportList.map(isInReport => {
+// const isInReportList = [true, false]
 
-  summaryFieldList.map((summaryField) => {
+// isInReportList.map(isInReport => {
 
-    const summaryFieldName = isInReport ? `${summaryField.name}InReport` : summaryField.name
+//   summaryFieldList.map((summaryField) => {
 
-    // cbm/chargeableWeight
-    const basicFn = (params) => {
-      const totalValueExpression = summaryFieldExpression(summaryField, isInReport)
-      return new ResultColumn(totalValueExpression, summaryFieldName)
-    }
+//     const summaryFieldName = isInReport ? `${summaryField.name}InReport` : summaryField.name
 
-    query.registerResultColumn(summaryFieldName, basicFn)
+//     // cbm/chargeableWeight
+//     const basicFn = (params) => {
+//       const totalValueExpression = summaryFieldExpression(summaryField, isInReport)
+//       return new ResultColumn(totalValueExpression, summaryFieldName)
+//     }
 
-    // cbmMonth case
-    const monthFn: ResultColumnArg = (params) => {
+//     query.registerResultColumn(summaryFieldName, basicFn)
 
-      const resultColumnList = [] as ResultColumn[]
+//     // cbmMonth case
+//     const monthFn: ResultColumnArg = (params) => {
 
-      months.forEach((month, index) => {
-        const monthSumExpression = summaryFieldExpression(summaryField, isInReport, monthConditionExpression(month))
-        resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_${summaryFieldName}`))
-      })
+//       const resultColumnList = [] as ResultColumn[]
 
-      const totalValueExpression = summaryFieldExpression(summaryField, isInReport)
-      resultColumnList.push(new ResultColumn(totalValueExpression, `total_${summaryFieldName}`))
+//       months.forEach((month, index) => {
+//         const monthSumExpression = summaryFieldExpression(summaryField, isInReport, monthConditionExpression(month))
+//         resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_${summaryFieldName}`))
+//       })
 
-      return resultColumnList
-    }
+//       const totalValueExpression = summaryFieldExpression(summaryField, isInReport)
+//       resultColumnList.push(new ResultColumn(totalValueExpression, `total_${summaryFieldName}`))
 
-    query.registerResultColumn(`${summaryFieldName}Month`, monthFn)
+//       return resultColumnList
+//     }
 
-    // ==================================
+//     query.registerResultColumn(`${summaryFieldName}Month`, monthFn)
 
-    // cbmLastCurrent
-    const lastCurrentFn = (params) => {
+//     // ==================================
 
-      console.log(`debug_params`)
-      console.log(params)
+//     // cbmLastCurrent
+//     const lastCurrentFn = (params) => {
 
-      const lastSummaryField = summaryFieldExpression(summaryField, isInReport, lastTimeCondition(params))
-      const currentSummaryField = summaryFieldExpression(summaryField, isInReport, currentTimeCondition(params))
+//       console.log(`debug_params`)
+//       console.log(params)
 
-      const PercentageChangeExpression = percentageChangeFunction(lastSummaryField, currentSummaryField)
+//       const lastSummaryField = summaryFieldExpression(summaryField, isInReport, lastTimeCondition(params))
+//       const currentSummaryField = summaryFieldExpression(summaryField, isInReport, currentTimeCondition(params))
 
-      return [
-        new ResultColumn(lastSummaryField, `${summaryFieldName}Last`),
-        new ResultColumn(currentSummaryField, `${summaryFieldName}Current`),
-        new ResultColumn(PercentageChangeExpression, `${summaryFieldName}PercentageChange`)
-      ]
+//       const PercentageChangeExpression = percentageChangeFunction(lastSummaryField, currentSummaryField)
 
-    }
+//       return [
+//         new ResultColumn(lastSummaryField, `${summaryFieldName}Last`),
+//         new ResultColumn(currentSummaryField, `${summaryFieldName}Current`),
+//         new ResultColumn(PercentageChangeExpression, `${summaryFieldName}PercentageChange`)
+//       ]
 
-    query.registerResultColumn(`${summaryFieldName}LastCurrent`, lastCurrentFn)
+//     }
 
-    // cbmMonthLastCurrent
-    const monthLastCurrentFn = (params) => {
-      const resultColumnList = [] as ResultColumn[]
+//     query.registerResultColumn(`${summaryFieldName}LastCurrent`, lastCurrentFn)
 
-      months.forEach((month, index) => {
+//     // cbmMonthLastCurrent
+//     const monthLastCurrentFn = (params) => {
+//       const resultColumnList = [] as ResultColumn[]
 
-        const monthLastCondition = new AndExpressions([
-          monthConditionExpression(month),
-          lastTimeCondition(params)
-        ])
+//       months.forEach((month, index) => {
 
-        const monthCurrentCondition = new AndExpressions([
-          monthConditionExpression(month),
-          currentTimeCondition(params)
-        ])
+//         const monthLastCondition = new AndExpressions([
+//           monthConditionExpression(month),
+//           lastTimeCondition(params)
+//         ])
 
-        const monthLastSumExpression = summaryFieldExpression(summaryField, isInReport, monthLastCondition)
-        const monthCurrentSumExpression = summaryFieldExpression(summaryField, isInReport, monthCurrentCondition)
+//         const monthCurrentCondition = new AndExpressions([
+//           monthConditionExpression(month),
+//           currentTimeCondition(params)
+//         ])
 
-        const monthPercentageChangeExpression = percentageChangeFunction(monthLastSumExpression, monthCurrentSumExpression)
+//         const monthLastSumExpression = summaryFieldExpression(summaryField, isInReport, monthLastCondition)
+//         const monthCurrentSumExpression = summaryFieldExpression(summaryField, isInReport, monthCurrentCondition)
 
-        resultColumnList.push(new ResultColumn(monthLastSumExpression, `${month}_${summaryFieldName}Last`))
-        resultColumnList.push(new ResultColumn(monthCurrentSumExpression, `${month}_${summaryFieldName}Current`))
-        resultColumnList.push(new ResultColumn(monthPercentageChangeExpression, `${month}_${summaryFieldName}PercentageChange`))
+//         const monthPercentageChangeExpression = percentageChangeFunction(monthLastSumExpression, monthCurrentSumExpression)
 
-      })
+//         resultColumnList.push(new ResultColumn(monthLastSumExpression, `${month}_${summaryFieldName}Last`))
+//         resultColumnList.push(new ResultColumn(monthCurrentSumExpression, `${month}_${summaryFieldName}Current`))
+//         resultColumnList.push(new ResultColumn(monthPercentageChangeExpression, `${month}_${summaryFieldName}PercentageChange`))
 
-      const totalLastSumExpression = summaryFieldExpression(summaryField, isInReport, lastTimeCondition(params))
-      const totalCurrentSumExpression = summaryFieldExpression(summaryField, isInReport, currentTimeCondition(params))
-      const totalPercentageChangeExpression = percentageChangeFunction(totalLastSumExpression, totalCurrentSumExpression)
+//       })
 
-      resultColumnList.push(new ResultColumn(totalLastSumExpression, `total_${summaryFieldName}Last`))
-      resultColumnList.push(new ResultColumn(totalCurrentSumExpression, `total_${summaryFieldName}Current`))
-      resultColumnList.push(new ResultColumn(totalPercentageChangeExpression, `total_${summaryFieldName}PercentageChange`))
+//       const totalLastSumExpression = summaryFieldExpression(summaryField, isInReport, lastTimeCondition(params))
+//       const totalCurrentSumExpression = summaryFieldExpression(summaryField, isInReport, currentTimeCondition(params))
+//       const totalPercentageChangeExpression = percentageChangeFunction(totalLastSumExpression, totalCurrentSumExpression)
 
-      return resultColumnList
-    }
+//       resultColumnList.push(new ResultColumn(totalLastSumExpression, `total_${summaryFieldName}Last`))
+//       resultColumnList.push(new ResultColumn(totalCurrentSumExpression, `total_${summaryFieldName}Current`))
+//       resultColumnList.push(new ResultColumn(totalPercentageChangeExpression, `total_${summaryFieldName}PercentageChange`))
 
-    query.registerResultColumn(`${summaryFieldName}MonthLastCurrent`, monthLastCurrentFn)
+//       return resultColumnList
+//     }
 
-    // ======================================
+//     query.registerResultColumn(`${summaryFieldName}MonthLastCurrent`, monthLastCurrentFn)
 
-    nestedSummaryList.map(x => {
+//     // ======================================
 
-      const nestedMonthFn = (params) => {
+//     nestedSummaryList.map(x => {
 
-        const resultColumnList = [] as ResultColumn[]
+//       const nestedMonthFn = (params) => {
 
-        months.forEach((month, index) => {
-          const monthCondition = monthConditionExpression(month)
-          const monthSumExpression = summaryFieldExpression(summaryField, isInReport, monthCondition)
+//         const resultColumnList = [] as ResultColumn[]
 
-          // January_T_cbm
-          resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_T_${summaryFieldName}`))
+//         months.forEach((month, index) => {
+//           const monthCondition = monthConditionExpression(month)
+//           const monthSumExpression = summaryFieldExpression(summaryField, isInReport, monthCondition)
 
-          x.cases.map(y => {
-            const condition = new AndExpressions([
-              monthCondition,
-              y.condition
-            ])
+//           // January_T_cbm
+//           resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_T_${summaryFieldName}`))
 
-            // January_F_cbm
-            const frcMonthSumExpression = summaryFieldExpression(summaryField, isInReport, condition)
-            resultColumnList.push(new ResultColumn(frcMonthSumExpression, `${month}_${y.typeCode}_${summaryFieldName}`))
+//           x.cases.map(y => {
+//             const condition = new AndExpressions([
+//               monthCondition,
+//               y.condition
+//             ])
 
-          })
+//             // January_F_cbm
+//             const frcMonthSumExpression = summaryFieldExpression(summaryField, isInReport, condition)
+//             resultColumnList.push(new ResultColumn(frcMonthSumExpression, `${month}_${y.typeCode}_${summaryFieldName}`))
 
-        })
+//           })
 
-        x.cases.map(y => {
-          // total_F_cbm
-          const typeTotalExpression = summaryFieldExpression(summaryField, isInReport, y.condition)
-          resultColumnList.push(new ResultColumn(typeTotalExpression, `total_${y.typeCode}_${summaryFieldName}`))
+//         })
 
-        })
+//         x.cases.map(y => {
+//           // total_F_cbm
+//           const typeTotalExpression = summaryFieldExpression(summaryField, isInReport, y.condition)
+//           resultColumnList.push(new ResultColumn(typeTotalExpression, `total_${y.typeCode}_${summaryFieldName}`))
 
-        // total_T_cbm
-        const totalValueExpression = summaryFieldExpression(summaryField, isInReport)
-        resultColumnList.push(new ResultColumn(totalValueExpression, `total_T_${summaryFieldName}`))
+//         })
 
-        return resultColumnList
-      }
-      // frc_cbmMonth
-      query.registerResultColumn(`${x.name}_${summaryFieldName}Month`, nestedMonthFn)
+//         // total_T_cbm
+//         const totalValueExpression = summaryFieldExpression(summaryField, isInReport)
+//         resultColumnList.push(new ResultColumn(totalValueExpression, `total_T_${summaryFieldName}`))
 
-      // frc_cbmLastCurrent
-      const nestedLastCurrentFn = (params) => {
+//         return resultColumnList
+//       }
+//       // frc_cbmMonth
+//       query.registerResultColumn(`${x.name}_${summaryFieldName}Month`, nestedMonthFn)
 
-        const resultColumnList = [] as ResultColumn[]
+//       // frc_cbmLastCurrent
+//       const nestedLastCurrentFn = (params) => {
 
-        // for easier looping
-        const lastCurrentList = [
-          {
-            name: 'Last',
-            condition: lastTimeCondition(params)
-          },
-          {
-            name: 'Current',
-            condition: currentTimeCondition(params)
-          }
+//         const resultColumnList = [] as ResultColumn[]
 
-        ]
-        lastCurrentList.forEach(lastOrCurrent => {
+//         // for easier looping
+//         const lastCurrentList = [
+//           {
+//             name: 'Last',
+//             condition: lastTimeCondition(params)
+//           },
+//           {
+//             name: 'Current',
+//             condition: currentTimeCondition(params)
+//           }
 
-          const lastCurrentCondition = lastOrCurrent.condition
-          // F_cbmLast
-          x.cases.map(y => {
-            resultColumnList.push(new ResultColumn(
-              summaryFieldExpression(summaryField, isInReport, new AndExpressions([lastCurrentCondition, y.condition])), `${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`
-            ))
+//         ]
+//         lastCurrentList.forEach(lastOrCurrent => {
 
-          })
+//           const lastCurrentCondition = lastOrCurrent.condition
+//           // F_cbmLast
+//           x.cases.map(y => {
+//             resultColumnList.push(new ResultColumn(
+//               summaryFieldExpression(summaryField, isInReport, new AndExpressions([lastCurrentCondition, y.condition])), `${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`
+//             ))
 
-          // T_cbmLast
-          const totalValueExpression = summaryFieldExpression(summaryField, isInReport, lastCurrentCondition)
-          resultColumnList.push(new ResultColumn(totalValueExpression, `T_${summaryFieldName}${lastOrCurrent.name}`))
+//           })
 
-        })
+//           // T_cbmLast
+//           const totalValueExpression = summaryFieldExpression(summaryField, isInReport, lastCurrentCondition)
+//           resultColumnList.push(new ResultColumn(totalValueExpression, `T_${summaryFieldName}${lastOrCurrent.name}`))
 
-        return resultColumnList
+//         })
 
-      }
+//         return resultColumnList
 
-      query.registerResultColumn(`${x.name}_${summaryFieldName}LastCurrent`, nestedLastCurrentFn)
+//       }
 
-      // frc_cbmMonthLastCurrent
-      const nestedMonthLastCurrentFn = (params) => {
+//       query.registerResultColumn(`${x.name}_${summaryFieldName}LastCurrent`, nestedLastCurrentFn)
 
-        // for easier looping
-        const lastCurrentList = [
-          {
-            name: 'Last',
-            condition: lastTimeCondition(params)
-          },
-          {
-            name: 'Current',
-            condition: currentTimeCondition(params)
-          }
+//       // frc_cbmMonthLastCurrent
+//       const nestedMonthLastCurrentFn = (params) => {
 
-        ]
+//         // for easier looping
+//         const lastCurrentList = [
+//           {
+//             name: 'Last',
+//             condition: lastTimeCondition(params)
+//           },
+//           {
+//             name: 'Current',
+//             condition: currentTimeCondition(params)
+//           }
 
-        const resultColumnList = [] as ResultColumn[]
+//         ]
 
-        lastCurrentList.forEach(lastOrCurrent => {
+//         const resultColumnList = [] as ResultColumn[]
 
-          const lastCurrentCondition = lastOrCurrent.condition
+//         lastCurrentList.forEach(lastOrCurrent => {
 
-          months.forEach((month, index) => {
+//           const lastCurrentCondition = lastOrCurrent.condition
 
-            // warning
-            const monthCondition = new AndExpressions([monthConditionExpression(month), lastCurrentCondition])
-            const monthSumExpression = summaryFieldExpression(summaryField, isInReport, monthCondition)
+//           months.forEach((month, index) => {
 
-            // January_T_cbmLast
-            resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_T_${summaryFieldName}${lastOrCurrent.name}`))
+//             // warning
+//             const monthCondition = new AndExpressions([monthConditionExpression(month), lastCurrentCondition])
+//             const monthSumExpression = summaryFieldExpression(summaryField, isInReport, monthCondition)
 
-            x.cases.map(y => {
-              const condition = new AndExpressions([
-                monthCondition,
-                y.condition
-              ])
+//             // January_T_cbmLast
+//             resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_T_${summaryFieldName}${lastOrCurrent.name}`))
 
-              // January_F_cbmLast
-              const frcMonthSumExpression = summaryFieldExpression(summaryField, isInReport, condition)
-              resultColumnList.push(new ResultColumn(frcMonthSumExpression, `${month}_${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`))
+//             x.cases.map(y => {
+//               const condition = new AndExpressions([
+//                 monthCondition,
+//                 y.condition
+//               ])
 
-            })
+//               // January_F_cbmLast
+//               const frcMonthSumExpression = summaryFieldExpression(summaryField, isInReport, condition)
+//               resultColumnList.push(new ResultColumn(frcMonthSumExpression, `${month}_${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`))
 
-          })
+//             })
 
-          x.cases.map(y => {
-
-            const condition = new AndExpressions([y.condition, lastCurrentCondition])
-            // total_F_cbm
-            const typeTotalExpression = summaryFieldExpression(summaryField, isInReport, condition)
-            resultColumnList.push(new ResultColumn(typeTotalExpression, `total_${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`))
-
-          })
-
-          // total_T_cbm
-          const totalValueExpression = summaryFieldExpression(summaryField, isInReport, lastCurrentCondition)
-          resultColumnList.push(new ResultColumn(totalValueExpression, `total_T_${summaryFieldName}${lastOrCurrent.name}`))
-
-        })
-
-        return resultColumnList
-      }
-      query.registerResultColumn(`${x.name}_${summaryFieldName}MonthLastCurrent`, nestedMonthLastCurrentFn)
-
-    })
-
-  })
-
-})
-
-// Shipment table filter ============================
-const shipmentTableFilterFieldList = [
-
-  // base field
-  'id',
-  'moduleTypeCode',
-  'boundTypeCode',
-  'nominatedTypeCode',
-  'shipmentTypeCode',
-  'divisionCode',
-  'isDirect',
-  'isCoload',
-  'houseNo',
-  'jobNo',
-
-  {
-    name : 'reportingGroup',
-    expression : reportingGroupExpression,
-    companion : ['table:office']
-  },
-
-  {
-    name : 'shipId',
-    expression : shipIdExpression
-  },
-
-  {
-    name : 'currentTrackingNo',
-    expression : currentTrackingNoExpression
-  },
-
-  {
-    name: 'agentGroup',
-    expression: agentGroupExpression,
-    companion : ['table:consignee', 'table:agent']
-  },
-  {
-    name: 'carrierCode',
-    expression: carrierCodeExpression
-  },
-  {
-    name: 'carrierName',
-    expression: carrierNameExpression
-  },
-
-  // tracking last status
-  {
-    name: 'lastStatusCode',
-    expression: lastStatusCodeExpression,
-    companion : ['table:lastStatus']
-  },
-
-  {
-    name: 'lastStatusCodeOrDescription',
-    expression: lastStatusCodeOrDescriptionExpression,
-    companion : ['table:lastStatus']
-  },
-
-  {
-    name: 'lastStatus',
-    expression: lastStatusExpression,
-    companion : ['table:lastStatus']
-  },
-  {
-    name: 'lastStatusDate',
-    expression: lastStatusDateExpression,
-    companion : ['table:lastStatus']
-  },
-  // tracking status
-  {
-    name: 'statusCode',
-    expression: statusCodeExpression,
-    companion : ['table:status']
-  },
-  {
-    name: 'status',
-    expression: statusExpression,
-    companion : ['table:status']
-  },
-  {
-
-    name: 'dateStatus',
-    expression: dateStatusExpression,
-    companion : ['table:shipment_date']
-  },
-
-  {
-    name: 'alertType',
-    expression: alertTypeExpression,
-    companion : ['table:alert']
-  },
-  {
-    name: 'alertSeverity',
-    expression: alertSeverityExpression,
-    companion : ['table:alert']
-  },
-  {
-    name: 'alertCategory',
-    expression: alertCategoryExpression,
-    companion : ['table:alert']
-  },
-  {
-    name: 'alertStatus',
-    expression: alertStatusExpression,
-    companion : ['table:alert']
-  },
-  {
-    name: 'alertContent',
-    expression: alertContentExpression,
-    companion : ['table:alert']
-  }
-] as {
-  name: string
-  expression: IExpression |  ((subqueryParam) => IExpression),
-  companion?: string[]
-}[]
-
-shipmentTableFilterFieldList.map(filterField => {
-
-  const name = (typeof filterField === 'string') ? filterField : filterField.name
-
-  const expressionFn = (subqueryParam) => {
-    return (typeof filterField === 'string') ? new ColumnExpression('shipment', filterField) : typeof filterField.expression === 'function' ? filterField.expression(subqueryParam) : filterField.expression
-  }
-
-  const companion = (typeof filterField === 'string') ? [] : (filterField.companion && filterField.companion.length) ? filterField.companion : []
-
-  const inFilterQueryFn = ((subqueryParam) => {
-
-    const valueList = subqueryParam['value']
-
-    return new Query({
-      $where: new InExpression(expressionFn(subqueryParam), false, valueList),
-    })
-  }) as SubqueryArg
-
-  const IsNotNullQueryFn = ((subqueryParam) => {
-    return new Query({
-      $where: new IsNullExpression(expressionFn(subqueryParam), true),
-    })
-  }) as SubqueryArg
-
-  const IsNullQueryFn = ((subqueryParam) => {
-    return new Query({
-      $where: new IsNullExpression(expressionFn(subqueryParam), false),
-    })
-  }) as SubqueryArg
-
-  query.subquery(`${name}`, inFilterQueryFn, ...companion)
-  query.subquery(`${name}In`, inFilterQueryFn, ...companion)
-  query.subquery(`${name}IsNotNull`, IsNotNullQueryFn, ...companion)
-  query.subquery(`${name}IsNull`, IsNullQueryFn, ...companion)
-
-})
+//           })
+
+//           x.cases.map(y => {
+
+//             const condition = new AndExpressions([y.condition, lastCurrentCondition])
+//             // total_F_cbm
+//             const typeTotalExpression = summaryFieldExpression(summaryField, isInReport, condition)
+//             resultColumnList.push(new ResultColumn(typeTotalExpression, `total_${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`))
+
+//           })
+
+//           // total_T_cbm
+//           const totalValueExpression = summaryFieldExpression(summaryField, isInReport, lastCurrentCondition)
+//           resultColumnList.push(new ResultColumn(totalValueExpression, `total_T_${summaryFieldName}${lastOrCurrent.name}`))
+
+//         })
+
+//         return resultColumnList
+//       }
+//       query.registerResultColumn(`${x.name}_${summaryFieldName}MonthLastCurrent`, nestedMonthLastCurrentFn)
+
+//     })
+
+//   })
+
+// })
 
 // warning!! previously only register carrierCodeIsNotNull and carrierNameIsNotNull, need to register carrierIsNotNull
-query
-  .registerQuery(
-    'carrierIsNotNull',
-    new Query({
-      $where: new IsNullExpression(carrierCodeExpression, true),
-    })
-  )
 
 // Bill Type
-query
-  .registerQuery(
+query.subquery(
+    true,
     'billTypeCode',
     new Query({
       $where: new CaseExpression({
@@ -2742,24 +2791,6 @@ query
   .register('value', 0)
   .register('value', 1)
   .register('value', 2)
-
-query
-  .registerQuery(
-    'likeHouseNo',
-    new Query({
-      $where: new LikeExpression(new ColumnExpression('shipment', 'houseNo'), false),
-    })
-  )
-  .register('value', 0)
-
-query
-  .registerQuery(
-    'notLikeHouseNo',
-    new Query({
-      $where: new LikeExpression(new ColumnExpression('shipment', 'houseNo'), true),
-    })
-  )
-  .register('value', 0)
 
 query
   .registerQuery(
@@ -2848,27 +2879,27 @@ const singleEqualFieldList = [
   },
 ]
 
-singleEqualFieldList.map(singleEqualField => {
+// singleEqualFieldList.map(singleEqualField => {
 
-  const expression = (typeof singleEqualField === 'string') ? new ColumnExpression('shipment', singleEqualField) : singleEqualField.expression
-  const name = (typeof singleEqualField === 'string') ? singleEqualField : singleEqualField.name
+//   const expression = (typeof singleEqualField === 'string') ? new ColumnExpression('shipment', singleEqualField) : singleEqualField.expression
+//   const name = (typeof singleEqualField === 'string') ? singleEqualField : singleEqualField.name
 
-  //  warning : a bit difference from normal filter
-  // normal value = value filter
-  query.registerQuery(name,
-    new Query({
-      $where: new BinaryExpression(expression, '=', new Unknown()),
-    })
-  ).register('value', 0)
+//   //  warning : a bit difference from normal filter
+//   // normal value = value filter
+//   query.registerQuery(name,
+//     new Query({
+//       $where: new BinaryExpression(expression, '=', new Unknown()),
+//     })
+//   ).register('value', 0)
 
-  // Is not Null filter
-  query.registerQuery(`${name}IsNotNull`,
-    new Query({
-      $where: new IsNullExpression(expression, true),
-    })
-  )
+//   // Is not Null filter
+//   query.registerQuery(`${name}IsNotNull`,
+//     new Query({
+//       $where: new IsNullExpression(expression, true),
+//     })
+//   )
 
-})
+// })
 
 // // shipment party Filter================================
 // partyList.map(party => {
@@ -2981,7 +3012,7 @@ function viaHKGExpression() {
   ), false, old360PartyIdList)
 }
 
-query.registerQuery('viaHKG',
+query.subquery('viaHKG',
 
   new Query({
     $where: viaHKGExpression(),
@@ -2991,40 +3022,40 @@ query.registerQuery('viaHKG',
 
 // Location Filter=================
 
-locationList.map(location => {
+// locationList.map(location => {
 
-  const locationCode = `${location}Code`
-  const locationLatitude = `${location}Latitude`
-  const locationLongitude = `${location}Longitude`
-  // Port of Loading
+//   const locationCode = `${location}Code`
+//   const locationLatitude = `${location}Latitude`
+//   const locationLongitude = `${location}Longitude`
+//   // Port of Loading
 
-  const locationTable = `table:${location}`
+//   const locationTable = `table:${location}`
 
-  // portOfLoadingCode
-  query
-    .register(
-      `${location}Code`,
-      new Query({
-        $where: new InExpression(new ColumnExpression('shipment', `${location}Code`), false),
-      })
-    )
-    .register('value', 0)
+//   // portOfLoadingCode
+//   query
+//     .register(
+//       `${location}Code`,
+//       new Query({
+//         $where: new InExpression(new ColumnExpression('shipment', `${location}Code`), false),
+//       })
+//     )
+//     .register('value', 0)
 
-    query
-    .registerBoth(
-      `${location}Latitude`,
-      new ColumnExpression(`${location}`, `latitude`),
-      locationTable // as companion
-    )
+//     query
+//     .registerBoth(
+//       `${location}Latitude`,
+//       new ColumnExpression(`${location}`, `latitude`),
+//       locationTable // as companion
+//     )
 
-    query
-    .registerBoth(
-      `${location}Longitude`,
-      new ColumnExpression(`${location}`, `longitude`),
-      locationTable // as companion
-    )
+//     query
+//     .registerBoth(
+//       `${location}Longitude`,
+//       new ColumnExpression(`${location}`, `longitude`),
+//       locationTable // as companion
+//     )
 
-})
+// })
 
 // Date Filter=================
 
@@ -3126,11 +3157,6 @@ dateList.map(date => {
   const dateColumnExpression = typeof date === 'string' ? new ColumnExpression('shipment_date', date) : date.expression
   const companion = typeof date === 'string' ? ['table:shipment_date'] : date.companion
 
-  if (dateColumnName === 'alertCreatedAt'){
-    console.log(`companion`)
-    console.log(companion)
-
-  }
   query.registerBoth(dateColumnName, dateColumnExpression, ...companion)
 
   query
@@ -3148,7 +3174,7 @@ dateList.map(date => {
 
 // Search
 query
-  .register(
+  .subquery(
     'q',
     new Query({
       $where: new OrExpressions({
@@ -3327,32 +3353,5 @@ query
   .register('value', 2)
   .register('value', 3)
   .register('value', 4)
-
-// isActive field
-query.registerBoth('isActive', shipmentIsActiveExpression('shipment'))
-
-// isActive filter
-query.register('isActive', new Query({
-
-  $where: new OrExpressions([
-
-    new AndExpressions([
-
-      new BinaryExpression(new Value('active'), '=', new Unknown('string')),
-      // active case
-      shipmentIsActiveExpression('shipment')
-    ]),
-
-    new AndExpressions([
-      new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
-      // deleted case
-      new BinaryExpression(shipmentIsActiveExpression('shipment'), '=', false)
-    ])
-
-  ])
-
-}))
-  .register('value', 0)
-  .register('value', 1)
 
 export default query

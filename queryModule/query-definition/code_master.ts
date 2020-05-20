@@ -1,4 +1,4 @@
-import { QueryDef } from 'classes/query/QueryDef'
+import { QueryDef, SubqueryArg } from 'classes/query/QueryDef'
 import {
   Query,
   FromTable,
@@ -12,7 +12,12 @@ import {
   Unknown,
   Value,
   ExistsExpression,
+  IExpression,
+  CaseExpression,
+  InExpression,
 } from 'node-jql'
+import { IQueryParams } from 'classes/query'
+import { registerAll, ExpressionHelperInterface } from 'utils/jql-subqueries'
 
 const query = new QueryDef(
   new Query({
@@ -37,45 +42,51 @@ const query = new QueryDef(
   })
 )
 
-query.register('canResetDefault',
-{
-  expression : new FunctionExpression(
-    'IF',
-    new IsNullExpression(new ColumnExpression('code_master', 'partyGroupCode'), true),
-    1, 0
-  ),
+const canResetDefaultExpression = new FunctionExpression(
+  'IF',
+  new IsNullExpression(new ColumnExpression('code_master', 'partyGroupCode'), true),
+  1, 0
+)
 
-  $as: 'canResetDefault'
+const isActiveConditionExpression = new AndExpressions([
+  new IsNullExpression(new ColumnExpression('code_master', 'deletedAt'), false),
+  new IsNullExpression(new ColumnExpression('code_master', 'deletedBy'), false)
+])
+
+const activeStatusExpression = new CaseExpression({
+  cases : [
+    {
+      $when : new BinaryExpression(isActiveConditionExpression, '=', false),
+      $then : new Value('deleted')
+    }
+  ],
+  $else : new Value('active')
 })
 
+const baseTableName = 'code_master'
+
+const fieldList = [
+
+  'codeType',
+  'code',
+  {
+    name : 'reportingKey',
+    expression : new ColumnExpression('card', 'reportingKey')
+  },
+  {
+    name : 'canResetDefault',
+    expression : canResetDefaultExpression
+  },
+  {
+    name : 'activeStatus',
+    expression : activeStatusExpression
+  }
+
+] as ExpressionHelperInterface[]
+
+registerAll(query, baseTableName, fieldList)
+
 // -------------- filter
-
-query
-  .register(
-    'codeType',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('code_master', 'codeType'), '='),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'codeTypeLike',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('code_master', 'codeType'), false),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'code',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('code_master', 'code'), '='),
-    })
-  )
-  .register('value', 0)
 
 query
   .register(
@@ -90,34 +101,4 @@ query
   .register('value', 0)
   .register('value', 1)
 
-  // isActive
-  const isActiveConditionExpression = new AndExpressions([
-    new IsNullExpression(new ColumnExpression('code_master', 'deletedAt'), false),
-    new IsNullExpression(new ColumnExpression('code_master', 'deletedBy'), false)
-  ])
-
-  query.registerBoth('isActive', isActiveConditionExpression)
-
-  query.registerQuery('isActive', new Query({
-
-    $where : new OrExpressions([
-
-      new AndExpressions([
-
-        new BinaryExpression(new Value('active'), '=', new Unknown('string')),
-        // active case
-        isActiveConditionExpression
-      ]),
-
-      new AndExpressions([
-        new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
-        // deleted case
-        new BinaryExpression(isActiveConditionExpression, '=', false)
-      ])
-
-    ])
-
-  }))
-  .register('value', 0)
-  .register('value', 1)
 export default query

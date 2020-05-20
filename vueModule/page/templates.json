@@ -5,7 +5,7 @@
     "props": {
       "title": "Templates",
       "back": "/admin",
-      "urlFormat": "/admin/templates/{{ id }}",
+      "urlFormat": "/admin/templates",
       "reportingKey": "templates",
       "jql": "templates",
       "noPartyGroupFilters": true,
@@ -26,7 +26,7 @@
       },
       "newReport": {
         "filters": {
-          "isActive": {
+          "activeStatus": {
             "value": "active",
             "locked": true
           },
@@ -47,10 +47,6 @@
       "fieldOptions": [{
           "key": "id",
           "hidden": true
-        },
-        {
-          "key": "isActive",
-          "boolean": true
         },
         {
           "label": "",
@@ -119,7 +115,7 @@
         }
       ],
       "filters": [{
-          "name": "isActive",
+          "name": "activeStatus",
           "type": "list",
           "props": {
             "items": [{
@@ -133,7 +129,9 @@
             ]
           }
         }, {
-          "name": "templateName",
+
+          "display": "templateName",
+          "name": "templateNameLike",
           "i18nContext": "TemplatePage",
           "type": "text"
         },

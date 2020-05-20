@@ -148,7 +148,7 @@
                       "moduleTypeCode": {
                         "value": "SEA"
                       },
-                      "ports": {
+                      "portCodeLike": {
                         "value": "{{context.autoSuggestModel}}"
                       }
                     }
@@ -191,7 +191,7 @@
                       "moduleTypeCode": {
                         "value": "SEA"
                       },
-                      "ports": {
+                      "portCodeLike": {
                         "value": "{{context.autoSuggestModel}}"
                       }
                     }

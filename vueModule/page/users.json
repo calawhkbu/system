@@ -30,7 +30,7 @@
           "invitationStatus": {
             "value": ["sent", "accepted", "pending"]
           },
-          "isActive": {
+          "activeStatus": {
             "value": "active",
             "locked": true
           }
@@ -173,7 +173,7 @@
       "filters": [
 
         {
-          "name": "isActive",
+          "name": "activeStatus",
           "type": "list",
           "props": {
             "items": [{

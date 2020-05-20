@@ -1,4 +1,4 @@
-import { QueryDef } from 'classes/query/QueryDef'
+import { QueryDef, SubqueryArg } from 'classes/query/QueryDef'
 import {
   Query,
   FromTable,
@@ -12,7 +12,12 @@ import {
   Unknown,
   Value,
   ExistsExpression,
+  CaseExpression,
+  InExpression,
 } from 'node-jql'
+import { IQueryParams } from 'classes/query'
+
+import { registerAll, ExpressionHelperInterface } from 'utils/jql-subqueries'
 
 const query = new QueryDef(
   new Query({
@@ -20,18 +25,46 @@ const query = new QueryDef(
   })
 )
 
-query.register('canResetDefault',
-{
-  expression : new FunctionExpression(
-    'IF',
-    new IsNullExpression(new ColumnExpression('i18n', 'partyGroupCode'), true),
-    1, 0
-  ),
+const canResetDefaultExpression = new FunctionExpression(
+  'IF',
+  new IsNullExpression(new ColumnExpression('i18n', 'partyGroupCode'), true),
+  1, 0
+)
 
-  $as: 'canResetDefault'
+const isActiveConditionExpression = new AndExpressions([
+  new IsNullExpression(new ColumnExpression('i18n', 'deletedAt'), false),
+  new IsNullExpression(new ColumnExpression('i18n', 'deletedBy'), false)
+])
+
+const activeStatusExpression = new CaseExpression({
+  cases : [
+    {
+      $when : new BinaryExpression(isActiveConditionExpression, '=', false),
+      $then : new Value('deleted')
+    }
+  ],
+  $else : new Value('active')
 })
-// ------------------- filter
 
+const baseTableName = 'i18n'
+const fieldList = [
+  'id',
+  'partyGroupCode',
+  'key',
+  'category',
+  {
+    name : 'canResetDefault',
+    expression : canResetDefaultExpression
+  },
+  {
+    name : 'activeStatus',
+    expression : activeStatusExpression
+  }
+] as ExpressionHelperInterface[]
+
+registerAll(query, baseTableName, fieldList)
+
+// ------------------- filter
 query
   .register(
     'groupParty',
@@ -55,72 +88,5 @@ query
       ])
     })
   )
-
-query
-  .register(
-    'id',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('i18n', 'id'), '='),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'partyGroupCode',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('i18n', 'partyGroupCode'), '='),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'category',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('i18n', 'category'), false, new Unknown('string')),
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'key',
-    new Query({
-      $where: new RegexpExpression(new ColumnExpression('i18n', 'key'), false, new Unknown('string')),
-    })
-  )
-  .register('value', 0)
-
-  // isActive
-  const isActiveConditionExpression = new AndExpressions([
-    new IsNullExpression(new ColumnExpression('i18n', 'deletedAt'), false),
-    new IsNullExpression(new ColumnExpression('i18n', 'deletedBy'), false)
-  ])
-
-  query.registerBoth('isActive', isActiveConditionExpression)
-
-  query.registerQuery('isActive', new Query({
-
-    $where : new OrExpressions([
-
-      new AndExpressions([
-
-        new BinaryExpression(new Value('active'), '=', new Unknown('string')),
-        // active case
-        isActiveConditionExpression
-      ]),
-
-      new AndExpressions([
-        new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
-        // deleted case
-        new BinaryExpression(isActiveConditionExpression, '=', false)
-      ])
-
-    ])
-
-  }))
-  .register('value', 0)
-  .register('value', 1)
 
 export default query

@@ -13,8 +13,10 @@ import {
   AndExpressions,
   OrExpressions,
   Unknown,
-  JoinClause
+  JoinClause,
+  CaseExpression
 } from 'node-jql'
+import { registerAll } from 'utils/jql-subqueries'
 
 const query = new QueryDef(
   new Query({
@@ -35,80 +37,80 @@ const query = new QueryDef(
   })
 )
 
-const partyTableExpression = new Query({
+// const partyTableExpression = new Query({
 
-  $select : [
+//   $select : [
 
-    new ResultColumn(new ColumnExpression('parties_person', 'personId'), 'personId'),
-    new ResultColumn(new ColumnExpression('party', 'isBranch'), 'isBranch'),
-    new ResultColumn(new ColumnExpression('party', 'thirdPartyCode'), 'thirdPartyCode'),
-    new ResultColumn(new ColumnExpression('party', 'name'), 'name'),
-    new ResultColumn(new ColumnExpression('party', 'shortName'), 'shortName'),
-    new ResultColumn(new ColumnExpression('party', 'groupName'), 'groupName')
-  ],
+//     new ResultColumn(new ColumnExpression('parties_person', 'personId'), 'personId'),
+//     new ResultColumn(new ColumnExpression('party', 'isBranch'), 'isBranch'),
+//     new ResultColumn(new ColumnExpression('party', 'thirdPartyCode'), 'thirdPartyCode'),
+//     new ResultColumn(new ColumnExpression('party', 'name'), 'name'),
+//     new ResultColumn(new ColumnExpression('party', 'shortName'), 'shortName'),
+//     new ResultColumn(new ColumnExpression('party', 'groupName'), 'groupName')
+//   ],
 
-  $from : new FromTable({
+//   $from : new FromTable({
 
-    table : 'parties_person',
-    $as : 'parties_person',
+//     table : 'parties_person',
+//     $as : 'parties_person',
 
-    joinClauses : [
-      {
-        operator : 'LEFT',
-        table : new FromTable('party'),
-        $on : new BinaryExpression(new ColumnExpression('parties_person', 'partyId'), '=', new ColumnExpression('party', 'id'))
-      },
-    ]
-  })
-})
+//     joinClauses : [
+//       {
+//         operator : 'LEFT',
+//         table : new FromTable('party'),
+//         $on : new BinaryExpression(new ColumnExpression('parties_person', 'partyId'), '=', new ColumnExpression('party', 'id'))
+//       },
+//     ]
+//   })
+// })
 
-const partyJoinExpression = new Query({
+// const partyJoinExpression = new Query({
 
-  $from : new FromTable('person', {
+//   $from : new FromTable('person', {
 
-    operator : 'LEFT',
-    table: new FromTable({
+//     operator : 'LEFT',
+//     table: new FromTable({
 
-      table: partyTableExpression,
-      $as: 'party',
+//       table: partyTableExpression,
+//       $as: 'party',
 
-    }),
+//     }),
 
-    $on: new BinaryExpression(new ColumnExpression('invitation', 'personId'), '=', new ColumnExpression('party', 'personId'))
+//     $on: new BinaryExpression(new ColumnExpression('invitation', 'personId'), '=', new ColumnExpression('party', 'personId'))
 
-  })
-})
+//   })
+// })
 
-const personContactTableExpression = new Query({
+// const personContactTableExpression = new Query({
 
-  $select : [
-    new ResultColumn(new ColumnExpression('person_contact', 'personId'), 'personId'),
-    new ResultColumn(new ColumnExpression('person_contact', 'contactType'), 'contactType'),
-    new ResultColumn(new ColumnExpression('person_contact', 'content'), 'content'),
-  ],
-  $from : new FromTable('person_contact')
+//   $select : [
+//     new ResultColumn(new ColumnExpression('person_contact', 'personId'), 'personId'),
+//     new ResultColumn(new ColumnExpression('person_contact', 'contactType'), 'contactType'),
+//     new ResultColumn(new ColumnExpression('person_contact', 'content'), 'content'),
+//   ],
+//   $from : new FromTable('person_contact')
 
-})
+// })
 
-const personContactJoinExpression = new Query({
+// const personContactJoinExpression = new Query({
 
-  $from : new FromTable('person', {
+//   $from : new FromTable('person', {
 
-    operator : 'LEFT',
-    table : new FromTable({
+//     operator : 'LEFT',
+//     table : new FromTable({
 
-      table: personContactTableExpression,
-      $as: 'personContact',
+//       table: personContactTableExpression,
+//       $as: 'personContact',
 
-    }),
+//     }),
 
-    $on : new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('personContact', 'personId'))
-  })
-})
+//     $on : new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('personContact', 'personId'))
+//   })
+// })
 
-query.registerQuery('partyJoin', partyJoinExpression)
+// query.registerQuery('partyJoin', partyJoinExpression)
 
-query.registerQuery('personContactJoin', personContactJoinExpression)
+// query.registerQuery('personContactJoin', personContactJoinExpression)
 
 const idExpression = new ColumnExpression('invitation', 'id')
 const updatedAtExpression = new ColumnExpression('person', 'updatedAt')
@@ -179,6 +181,21 @@ const canRestoreExpression = new FunctionExpression(
   0
 )
 
+const isActiveConditionExpression = new AndExpressions([
+  new IsNullExpression(new ColumnExpression('location', 'deletedAt'), false),
+  new IsNullExpression(new ColumnExpression('location', 'deletedBy'), false)
+])
+
+const activeStatusExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new BinaryExpression(isActiveConditionExpression, '=', false),
+      $then: new Value('deleted')
+    }
+  ],
+  $else: new Value('active')
+})
+
 const invitationStatusExpression = new FunctionExpression(
   new FunctionExpression(
     'IF',
@@ -192,7 +209,9 @@ const invitationStatusExpression = new FunctionExpression(
   )
 )
 
-const filterFieldList = [
+const baseTableName = 'invitation'
+
+const fieldList = [
 
   {
     name : 'id',
@@ -229,6 +248,10 @@ const filterFieldList = [
     expression: canDeleteExpression
   },
   {
+    name : 'activeStatus',
+    expression : activeStatusExpression
+  },
+  {
     name: 'invitationStatus',
     expression: invitationStatusExpression
   },
@@ -239,52 +262,18 @@ const filterFieldList = [
 
 ]
 
-filterFieldList.forEach(filterField => {
-
-  const expression = (typeof filterField === 'string') ? new ColumnExpression('person', filterField) : filterField.expression
-  const name = (typeof filterField === 'string') ? filterField : filterField.name
-
-  query.registerBoth(name, expression)
-
-  // normal value IN list filter
-  query.registerQuery(name,
-    new Query({
-      $where: new InExpression(expression, false),
-    })
-  ).register('value', 0)
-
-  // Is not Null filter
-  query.registerQuery(`${name}IsNotNull`,
-    new Query({
-      $where: new IsNullExpression(expression, true),
-    })
-  )
-
-  query.registerQuery(`${name}IsNull`,
-    new Query({
-      $where: new IsNullExpression(expression, false),
-    })
-  )
-
-  query.registerQuery(`${name}Like`,
-    new Query({
-      $where: new RegexpExpression(expression, false)
-    })
-  ).register('value', 0)
-
-})
+registerAll(query, baseTableName, fieldList)
 
 // ---------------------------------
 
 query
-  .register(
+  .subquery(
     'nameLike',
     new Query({
       $where: new OrExpressions([
         new RegexpExpression(new ColumnExpression('person', 'firstName'), false),
         new RegexpExpression(new ColumnExpression('person', 'lastName'), false),
         new RegexpExpression(new ColumnExpression('person', 'displayName'), false)
-
       ])
     })
   )
@@ -315,37 +304,5 @@ query
     })
   )
   .register('value', 0)
-
-// will have 2 options, active and deleted
-// isActive
-const isActiveConditionExpression = new AndExpressions([
-  new IsNullExpression(new ColumnExpression('person', 'deletedAt'), false),
-  new IsNullExpression(new ColumnExpression('person', 'deletedBy'), false),
-])
-
-query.registerBoth('isActive', isActiveConditionExpression)
-
-query.registerQuery('isActive', new Query({
-
-  $where: new OrExpressions([
-
-    new AndExpressions([
-
-      new BinaryExpression(new Value('active'), '=', new Unknown('string')),
-      // active case
-      isActiveConditionExpression
-    ]),
-
-    new AndExpressions([
-      new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
-      // deleted case
-      new BinaryExpression(isActiveConditionExpression, '=', false)
-    ])
-
-  ])
-
-}))
-  .register('value', 0)
-  .register('value', 1)
 
 export default query

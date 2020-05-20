@@ -11,70 +11,71 @@ import {
   OrExpressions,
   Value,
   Unknown,
+  CaseExpression,
 } from 'node-jql'
+import { registerAll, ExpressionHelperInterface } from 'utils/jql-subqueries'
 
 const query = new QueryDef(new Query({
   $from : new FromTable('card')
 }))
 
-query.register('canDelete',
-{
+const canDeleteExpression = new FunctionExpression(
+  'IF',
+  new AndExpressions([
+    new IsNullExpression(new ColumnExpression('card_access', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('card_access', 'deletedBy'), false),
+  ]),
+  1, 0
+)
 
-  expression : new FunctionExpression(
-    'IF',
-    new AndExpressions([
-      new IsNullExpression(new ColumnExpression('card', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('card', 'deletedBy'), false),
-    ]),
-    1, 0
-  ),
+const canRestoreExpression = new FunctionExpression(
+  'IF',
+  new AndExpressions([
+    new IsNullExpression(new ColumnExpression('card_access', 'deletedAt'), true),
+    new IsNullExpression(new ColumnExpression('card_access', 'deletedBy'), true),
+  ]),
+  1, 0
+)
 
-  $as: 'canDelete'
+const isActiveConditionExpression = new AndExpressions([
+  new IsNullExpression(new ColumnExpression('i18n', 'deletedAt'), false),
+  new IsNullExpression(new ColumnExpression('i18n', 'deletedBy'), false)
+])
+
+const activeStatusExpression = new CaseExpression({
+  cases : [
+    {
+      $when : new BinaryExpression(isActiveConditionExpression, '=', false),
+      $then : new Value('deleted')
+    }
+  ],
+  $else : new Value('active')
 })
 
-query.register('canRestore',
-{
+const baseTableName = 'card'
+const fieldList = [
+  'id',
+  'uuid',
+  'category',
+  'jql',
+  {
+    name : 'canDelete',
+    expression : canDeleteExpression
+  },
+  {
+    name : 'canRestore',
+    expression : canRestoreExpression
+  },
+  {
+    name : 'activeStatus',
+    expression : activeStatusExpression
+  }
 
-  expression : new FunctionExpression(
-    'IF',
-    new AndExpressions([
-      new IsNullExpression(new ColumnExpression('card', 'deletedAt'), true),
-      new IsNullExpression(new ColumnExpression('card', 'deletedBy'), true),
-    ]),
-    1, 0
-  ),
+] as ExpressionHelperInterface[]
 
-  $as: 'canRestore'
-})
+registerAll(query, baseTableName, fieldList)
 
 // ------------- filter stuff
-
-query
-  .register(
-    'uuid',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('card', 'uuid'), '=')
-    })
-  )
-  .register('value', 0)
-
-query
-  .register(
-    'category',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('card', 'category'), '=')
-    })
-  )
-  .register('value', 0)
-
-  query
-  .register(
-    'jql',
-    new Query({
-      $where: new BinaryExpression(new ColumnExpression('card', 'jql'), '=')
-    })
-  )
-  .register('value', 0)
 
 query
   .register(
@@ -92,36 +93,5 @@ query
   .register('value', 2)
 
 // -----------------------
-
-  // isActive
-  const isActiveConditionExpression = new AndExpressions([
-    new IsNullExpression(new ColumnExpression('card', 'deletedAt'), false),
-    new IsNullExpression(new ColumnExpression('card', 'deletedBy'), false)
-  ])
-
-  query.registerBoth('isActive', isActiveConditionExpression)
-
-  query.registerQuery('isActive', new Query({
-
-    $where : new OrExpressions([
-
-      new AndExpressions([
-
-        new BinaryExpression(new Value('active'), '=', new Unknown('string')),
-        // active case
-        isActiveConditionExpression
-      ]),
-
-      new AndExpressions([
-        new BinaryExpression(new Value('deleted'), '=', new Unknown('string')),
-        // deleted case
-        new BinaryExpression(isActiveConditionExpression, '=', false)
-      ])
-
-    ])
-
-  }))
-  .register('value', 0)
-  .register('value', 1)
 
 export default query

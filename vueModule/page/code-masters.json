@@ -7,6 +7,7 @@
       "back": "/admin",
       "reportingKey": "code-masters",
       "urlFormat": "/admin/code-masters",
+      "reportingKeyKey": "reportIdParams",
       "jql": "code-masters",
       "showFilterBar": true,
       "enableShare": false,
@@ -15,7 +16,7 @@
       "nextPageComponent": "code-master",
       "newReport": {
         "filters": {
-          "isActive": {
+          "activeStatus": {
             "value": "active",
             "locked": true
           }
@@ -69,8 +70,7 @@
         }
       ],
       "filters": [{
-
-          "name": "isActive",
+          "name": "activeStatus",
           "type": "list",
           "props": {
             "items": [{

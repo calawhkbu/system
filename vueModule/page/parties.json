@@ -16,12 +16,9 @@
       "nextPageKey": "reportIdParams",
       "newReport": {
         "filters": {
-          "isActive": {
+          "activeStatus": {
             "value": "active"
-          },
-          "parties": true,
-          "contacts": true,
-          "showInfo": true
+          }
         },
         "configurations": {
           "i18nContext": "PartyPage",
@@ -42,7 +39,7 @@
         }
       },
       "filters": [{
-        "name": "isActive",
+        "name": "activeStatus",
         "type": "list",
         "props": {
           "items": [{
@@ -56,25 +53,23 @@
           ]
         }
       }, {
-        "name": "shortName",
+        "display" : "shortName",
+        "name": "shortNameLike",
         "type": "text",
         "i18nContext": "PartyPage"
       }, {
-        "name": "name",
+        "display" : "name",
+        "name": "nameLike",
         "type": "text",
         "i18nContext": "PartyPage"
       }, {
-        "name": "groupName",
+        "display": "groupName",
+        "name": "groupNameLike",
         "type": "text",
         "i18nContext": "PartyPage"
       }],
       "fieldOptions": [{
           "key": "id",
-          "sql": {
-            "classname": "ColumnExpression",
-            "table": "party",
-            "name": "id"
-          },
           "hidden": true
         },
         {

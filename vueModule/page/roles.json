@@ -5,8 +5,9 @@
     "props": {
       "title": "Roles",
       "back": "/admin",
-      "urlFormat": "/admin/roles/{{ id }}",
+      "urlFormat": "/admin/roles",
       "reportingKey": "roles",
+      "reportingKeyKey": "reportIdParams",
       "jql": "roles",
       "noPartyGroupFilters": true,
       "hasReports": false,
@@ -17,7 +18,7 @@
       "refreshWhenBack": true,
       "newReport": {
         "filters": {
-          "isActive": {
+          "activeStatus": {
             "value": "active"
           }
         },
@@ -52,7 +53,7 @@
         }]
       }],
       "filters": [{
-        "name": "isActive",
+        "name": "activeStatus",
         "type": "list",
         "props": {
           "items": [
@@ -70,7 +71,8 @@
 
         }
       }, {
-        "name": "roleName",
+        "display" : "roleName",
+        "name": "roleNameLike",
         "type": "text"
       }],
       "fieldOptions": [{

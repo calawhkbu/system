@@ -12,7 +12,7 @@
       "nextPageKey": "relatedParty",
       "newReport": {
         "filters": {
-          "isActive": {
+          "activeStatus": {
             "value": "active"
           }
         },
@@ -34,11 +34,13 @@
         }
       },
       "filters": [{
-        "name": "shortName",
+        "display" : "shortName",
+        "name": "partyBShortNameLike",
         "type": "text",
         "i18nContext": "PartyPage"
       }, {
-        "name": "groupName",
+        "display": "groupName",
+        "name": "partyBGroupNameLike",
         "type": "text",
         "i18nContext": "PartyPage"
       }, {

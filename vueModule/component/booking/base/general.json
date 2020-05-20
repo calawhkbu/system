@@ -322,7 +322,7 @@
                 "name": "flexData.contractNo",
                 "component": "v-text-field",
                 "class": "xs-3",
-                "checkDisplayWhen": "return form && form.flexData.contractNo"
+                "checkDisplayWhen": "return form && form.flexData && form.flexData.contractNo"
               },
               {
                 "label": "BookingPage.vesselName",

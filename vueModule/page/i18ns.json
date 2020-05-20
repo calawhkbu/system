@@ -18,7 +18,7 @@
       "nextPageComponent": "i18n",
       "newReport": {
         "filters": {
-          "isActive": {
+          "activeStatusEq": {
             "value": "active",
             "locked": true
           }
@@ -81,7 +81,7 @@
         }
       ],
       "filters": [{
-        "name": "isActive",
+        "name": "activeStatus",
         "type": "list",
         "props": {
           "items": [{
