@@ -182,8 +182,8 @@ const canRestoreExpression = new FunctionExpression(
 )
 
 const isActiveConditionExpression = new AndExpressions([
-  new IsNullExpression(new ColumnExpression('location', 'deletedAt'), false),
-  new IsNullExpression(new ColumnExpression('location', 'deletedBy'), false)
+  new IsNullExpression(new ColumnExpression('person', 'deletedAt'), false),
+  new IsNullExpression(new ColumnExpression('person', 'deletedBy'), false)
 ])
 
 const activeStatusExpression = new CaseExpression({
