@@ -28,7 +28,6 @@ const app = {
     party = await helper.resolveParties(partyService, partyGroup, party)
 
     const subqueries = query.subqueries || {}
-    console.log(subqueries, 'erp-joblockrpt')
 
     // datefr && dateto
     if (!subqueries.date) throw new BadRequestException('MISSING_DATE_RANGE')
