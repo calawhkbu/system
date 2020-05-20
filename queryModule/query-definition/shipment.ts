@@ -1869,7 +1869,7 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
 
   const locationCodeExpressionInfo = {
     name : `${location}Code`,
-    expression : new ColumnExpression('booking', `${location}Code`),
+    expression : new ColumnExpression('shipment', `${location}Code`),
   } as ExpressionHelperInterface
 
   const locationLatitudeExpressionInfo = {
