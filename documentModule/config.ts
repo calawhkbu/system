@@ -19,6 +19,19 @@ export const documentStorageConfig = {
 
 export const entityConfigList = [
   {
+    tableName : 'template',
+    defaultDocumentConfig : {
+      isActive : true,
+      allowFileType: [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'url',
+        'application/octet-stream'
+      ],
+      allowFillTemplate: false
+    },
+    documentList : []
+  } as EntityConfig,
+  {
     tableName: 'booking',
 
     defaultDocumentConfig: {
@@ -169,4 +182,4 @@ export const entityConfigList = [
     ]
   } as EntityConfig
 
-]
+] as EntityConfig[]

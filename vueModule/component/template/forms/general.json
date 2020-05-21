@@ -46,7 +46,7 @@
         },
         "downloadParams": {
           "fileName": "{{context.$store.state.widget.data.templateName}}",
-          "extension": "{{context.$store.state.widget.data.extension}}",
+          "extension": "{{context.$store.state.widget.data.document.extension}}",
           "axiosParams": {
             "responseType": "blob",
             "method": "POST",
