@@ -126,8 +126,7 @@
                     },
                     {
                       "label": "BookingPage.portOfLoading",
-                      "name": "portOfLoading",
-                      "name": ["placeOfReceiptName", "placeOfReceipt.name", "placeOfReceiptCode"],
+                      "name": ["portOfLoadingName", "portOfLoading.name", "portOfLoadingCode"],
                       "component": "v-text-field",
                       "class": "xs-12",
                       "validator": ["required"]
@@ -291,7 +290,7 @@
               {
                 "label": "BookingPage.portOfLoading",
                 "name": "portOfLoading",
-                "name": ["placeOfReceiptName", "placeOfReceipt.name", "placeOfReceiptCode"],
+                "name": ["portOfLoadingName", "portOfLoading.name", "portOfLoadingCode"],
                 "component": "v-text-field",
                 "class": "xs-3",
                 "validator": ["required"]

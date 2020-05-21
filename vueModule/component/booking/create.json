@@ -457,12 +457,11 @@
                       "method": "POST",
                       "data": {
                         "subqueries": {
-                          "flex_data_join": true,
                           "codeType": {
                             "value": "INCOTERMS"
                           },
                           "q": {
-                            "value": "{{context.search}}"
+                            "value": "{% if context.search %}{{context.search}}{% else %}.*{% endif %}"
                           }
                         }
                       }
