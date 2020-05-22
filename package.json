@@ -15,7 +15,8 @@
     "typescript": "^3.7.5"
   },
   "scripts": {
-    "prepare": "mkdir node_modules;yarn prepare:nest;yarn prepare:types;yarn prepare:axios;yarn prepare:chalk;yarn prepare:lodash;yarn prepare:moment;yarn prepare:node-jql;yarn prepare:node-jql-core;yarn prepare:sequelize;yarn prepare:sequelize-typescript;yarn prepare:tslint;yarn prepare:typescript",
+    "prepare": "mkdir node_modules;yarn prepare:nodules;yarn prepare:nest;yarn prepare:types;yarn prepare:axios;yarn prepare:chalk;yarn prepare:lodash;yarn prepare:moment;yarn prepare:node-jql;yarn prepare:node-jql-core;yarn prepare:sequelize;yarn prepare:sequelize-typescript;yarn prepare:tslint;yarn prepare:typescript",
+    "prepare:modules": "ln -s ../../../swivel-backend-new/src/modules node_modules/modules",
     "prepare:nest": "ln -s ../../../swivel-backend-new/node_modules/@nestjs node_modules/@nestjs",
     "prepare:types": "ln -s ../../../swivel-backend-new/node_modules/@types node_modules/@types",
     "prepare:axios": "ln -s ../../../swivel-backend-new/node_modules/axios node_modules/axios",
