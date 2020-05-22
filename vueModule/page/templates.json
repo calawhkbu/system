@@ -139,13 +139,15 @@
           "name": "extension",
           "i18nContext": "TemplatePage",
           "type": "list",
-          "props": [{
-            "label": "Excel",
-            "value": "xlsx"
-          }, {
-            "label": "PDF",
-            "value": "pdf"
-          }]
+          "props": {
+            "items" : [{
+              "label": "Excel",
+              "value": "xlsx"
+            }, {
+              "label": "PDF",
+              "value": "pdf"
+            }]
+          }
         }
       ]
     },

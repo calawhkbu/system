@@ -10,6 +10,7 @@ import { Op } from 'sequelize'
 import _ = require('lodash')
 import axios from 'axios'
 import moment = require('moment')
+import { Op } from 'sequelize'
 
 const app = {
   /*******************************/

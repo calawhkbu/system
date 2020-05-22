@@ -34,9 +34,11 @@
     
           "axiosParams": {
             "method": "POST",
-            "url": "/api/template/upload",
+            "url": "/api/document/document/upload",
             "data": {
-              "templateName": "{{context.$store.state.widget.data.templateName}}",
+              "tableName": "template",
+              "fileName": "template",
+              "primaryKey": "{{context.$store.state.widget.data.id}}",
               "fileData" : {
                 "base64String": "{{base64String}}",
                 "extension": "{{extension}}"
@@ -46,7 +48,7 @@
         },
         "downloadParams": {
           "fileName": "{{context.$store.state.widget.data.templateName}}",
-          "extension": "{{context.$store.state.widget.data.extension}}",
+          "extension": "{{context.$store.state.widget.data.document.extension}}",
           "axiosParams": {
             "responseType": "blob",
             "method": "POST",

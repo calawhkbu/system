@@ -12,12 +12,32 @@ import {
   OrExpressions,
   Unknown,
   CaseExpression,
+  JoinClause,
 } from 'node-jql'
 import { registerAll } from 'utils/jql-subqueries'
 
-const query = new QueryDef(new Query('template'))
+const query = new QueryDef(new Query({
+
+  $from : new FromTable({
+
+    table : 'template',
+    joinClauses : [
+      new JoinClause({
+
+        operator : 'LEFT',
+        table : 'document',
+        $on : [
+          new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'template'),
+          new BinaryExpression(new ColumnExpression('template', 'id'), '=', new ColumnExpression('document', 'primaryKey'))
+        ]
+      })
+    ]
+  })
+}))
 
 // -------------- field stuff
+
+const extensionExpression = new ColumnExpression('document', 'extension')
 
 const canDeleteExpression = new FunctionExpression(
   'IF',
@@ -57,8 +77,12 @@ const baseTableName = 'template'
 const fieldList = [
   'id',
   'partyGroupCode',
-  'extension',
   'templateName',
+  'format',
+  {
+    name : 'extension',
+    expression : extensionExpression
+  },
   {
     name: 'canDelete',
     expression: canDeleteExpression
@@ -75,15 +99,5 @@ const fieldList = [
 ]
 
 registerAll(query, baseTableName, fieldList)
-
-// ----------- filter stuff
-// query
-//   .register(
-//     'templateName',
-//     new Query({
-//       $where: new RegexpExpression(new ColumnExpression('template', 'templateName'), false),
-//     })
-//   )
-//   .register('value', 0)
 
 export default query
