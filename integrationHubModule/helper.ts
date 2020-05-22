@@ -9,6 +9,7 @@ import {
 import _ = require('lodash')
 import axios from 'axios'
 import moment = require('moment')
+import { Op } from 'sequelize'
 
 const app = {
   /*******************************/
@@ -24,7 +25,7 @@ const app = {
     return await roleService.find({
       where: {
         id: {
-          $in: roles.reduce((ids: number[], r: JwtPayloadRole) => {
+          [Op.in]: roles.reduce((ids: number[], r: JwtPayloadRole) => {
             if (r.partyGroupCode === partyGroup.code || r.partyGroupCode === null) {
               ids.push(r.id)
             }
@@ -44,7 +45,7 @@ const app = {
     return await partyService.find({
       where: {
         id: {
-          $in: parties.reduce((ids: number[], p: JwtPayloadParty) => {
+          [Op.in]: parties.reduce((ids: number[], p: JwtPayloadParty) => {
             if (p.partyGroupCode === partyGroup.code || p.partyGroupCode === null) {
               ids.push(p.id)
             }
