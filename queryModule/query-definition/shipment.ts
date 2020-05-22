@@ -195,9 +195,10 @@ const query = new QueryDef(new Query({
 }))
 
 query.registerQuery('isMinCreatedAt', new Query({
-
-  $where : new BinaryExpression(new ColumnExpression('shipment', 'isMinCreatedAt'), '=', true)
-
+  $where : new OrExpressions([
+    new BinaryExpression(new ColumnExpression('shipment', 'isMinCreatedAt'), '=', true),
+    new IsNullExpression(new ColumnExpression('shipment', 'isMinCreatedAt'), false),
+  ])
 }))
 
 // all shipment join
