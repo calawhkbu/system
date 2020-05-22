@@ -1,7 +1,11 @@
 import { IConditionalExpression, OrExpressions, AndExpressions } from 'node-jql'
-import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
+import { JwtPayload, JwtPayloadRole } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
-import { Role } from 'models/main/role'
+
+interface Selected {
+  group: string
+  roles: any[]
+}
 
 export default async function getDefaultParams(
   conditions?: IConditionalExpression,
@@ -10,20 +14,10 @@ export default async function getDefaultParams(
   transaction?: Transaction
 ): Promise<IConditionalExpression> {
   if (user) {
-    const roleService = this.helper.roleService || this
-    const roles =
-      user.selectedRoles && user.selectedRoles.length
-        ? await (roleService as any).find({
-            where: {
-              id: { $in: user.selectedRoles.map(role => role.id) },
-            },
-            transaction,
-          })
-        : []
+    const roles = user.selectedRoles || []
     if (roles.length) {
-      const rolesExpressions = roles
-        .reduce((all: { group: string; roles: any[] }[], result: Role) => {
-          const sameGroupIndex = all.findIndex(t => t.group === result.roleGroup) // is same group
+      const rolesExpressions = roles.reduce((all: Selected[], result: JwtPayloadRole) => {
+        const sameGroupIndex = all.findIndex(t => t.group === result.roleGroup) // is same group
           if (result && result.filter && result.filter[this.repository.getTableName()]) {
             const { jql } = result.filter[this.repository.getTableName()]
             if (jql) {
@@ -44,10 +38,8 @@ export default async function getDefaultParams(
         .map((r: any) => new OrExpressions({ expressions: r.roles }))
       if (rolesExpressions && rolesExpressions.length) {
         conditions = conditions
-          ? new AndExpressions({
-              expressions: [conditions, ...rolesExpressions],
-            })
-          : rolesExpressions
+          ? new AndExpressions({ expressions: [conditions, ...rolesExpressions] })
+          : new AndExpressions({ expressions: rolesExpressions })
       }
     }
   }

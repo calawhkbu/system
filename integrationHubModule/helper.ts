@@ -1,14 +1,16 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common'
-import { RoleService } from 'modules/sequelize/role/service'
-import { PartyService } from 'modules/sequelize/party/service'
+import { RoleTableService } from 'modules/sequelize/services/table/role'
+import { PartyTableService } from 'modules/sequelize/services/table/party'
 import {
   JwtPayloadRole,
   JwtPayloadPartyGroup,
   JwtPayloadParty,
 } from 'modules/auth/interfaces/jwt-payload'
+import { Op } from 'sequelize'
 import _ = require('lodash')
 import axios from 'axios'
 import moment = require('moment')
+import { Op } from 'sequelize'
 
 const app = {
   /*******************************/
@@ -17,14 +19,14 @@ const app = {
 
   // resolve user roles
   async resolveRoles(
-    roleService: RoleService,
+    roleService: RoleTableService,
     partyGroup: JwtPayloadPartyGroup,
     roles: JwtPayloadRole[]
   ) {
     return await roleService.find({
       where: {
         id: {
-          $in: roles.reduce((ids: number[], r: JwtPayloadRole) => {
+          [Op.in]: roles.reduce((ids: number[], r: JwtPayloadRole) => {
             if (r.partyGroupCode === partyGroup.code || r.partyGroupCode === null) {
               ids.push(r.id)
             }
@@ -37,14 +39,14 @@ const app = {
 
   // resolve user parties
   async resolveParties(
-    partyService: PartyService,
+    partyService: PartyTableService,
     partyGroup: JwtPayloadPartyGroup,
     parties: JwtPayloadParty[]
   ) {
     return await partyService.find({
       where: {
         id: {
-          $in: parties.reduce((ids: number[], p: JwtPayloadParty) => {
+          [Op.in]: parties.reduce((ids: number[], p: JwtPayloadParty) => {
             if (p.partyGroupCode === partyGroup.code || p.partyGroupCode === null) {
               ids.push(p.id)
             }
