@@ -1,6 +1,6 @@
 import { IConditionalExpression, OrExpressions, AndExpressions } from 'node-jql'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
-import { Transaction } from 'sequelize'
+import { Transaction, Op } from 'sequelize'
 import { Role } from 'models/main/role'
 
 export default async function getDefaultParams(
@@ -15,7 +15,7 @@ export default async function getDefaultParams(
       user.selectedRoles && user.selectedRoles.length
         ? await (roleService as any).find({
             where: {
-              id: { $in: user.selectedRoles.map(role => role.id) },
+              id: { [Op.in]: user.selectedRoles.map(role => role.id) },
             },
             transaction,
           })
