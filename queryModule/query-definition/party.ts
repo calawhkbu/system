@@ -26,33 +26,36 @@ const query = new QueryDef(
       new ResultColumn(new ColumnExpression('party', '*')),
       new ResultColumn(new ColumnExpression('partyTypes')),
     ],
-    $from: new FromTable('party', {
-      operator: 'LEFT',
-      table: new FromTable(
-        new Query({
-          $select: [
-            new ResultColumn('partyId'),
-            new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('party_type', 'type'), 'SEPARATOR \', \'')), 'partyTypes'),
-          ],
-          $from: 'party_type',
-          $group: 'partyId',
-        }),
-        'party_type_concat'
-      ),
-      $on: new BinaryExpression(
-        new ColumnExpression('party', 'id'),
-        '=',
-        new ColumnExpression('party_type_concat', 'partyId')
-      ),
-    }, {
-      operator: 'LEFT',
-      table: 'party_type',
-      $on: new BinaryExpression(
-        new ColumnExpression('party', 'id'),
-        '=',
-        new ColumnExpression('party_type', 'partyId')
-      ),
-    })
+    $from: new FromTable(
+      'party',
+    //   {
+    //   operator: 'LEFT',
+    //   table: new FromTable(
+    //     new Query({
+    //       $select: [
+    //         new ResultColumn('partyId'),
+    //         new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('party_type', 'type'), 'SEPARATOR \', \'')), 'partyTypes'),
+    //       ],
+    //       $from: 'party_type',
+    //       $group: 'partyId',
+    //     }),
+    //     'party_type_concat'
+    //   ),
+    //   $on: new BinaryExpression(
+    //     new ColumnExpression('party', 'id'),
+    //     '=',
+    //     new ColumnExpression('party_type_concat', 'partyId')
+    //   ),
+    // }, {
+    //   operator: 'LEFT',
+    //   table: 'party_type',
+    //   $on: new BinaryExpression(
+    //     new ColumnExpression('party', 'id'),
+    //     '=',
+    //     new ColumnExpression('party_type', 'partyId')
+    //   ),
+    // }
+  )
   })
 )
 
