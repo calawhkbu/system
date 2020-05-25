@@ -119,7 +119,7 @@ const app = {
     if (subqueries.isColoader) {
       // filter isColoader cannot be used together with controllingCustomerIncludeRole OR controllingCustomerExcludeRole
       if (subqueries.controllingCustomerIncludeRole || subqueries.controllingCustomerExcludeRole)
-        throw new BadRequestException('ISCOLOADER_INCLUDE_EXCLUDE_CUSTOMER_CANNOT_EXIST_BOTH')
+        throw new BadRequestException('ISCOLOADER_INCLUDE_EXCLUDE_CUSTOMER_EITHER_ONE')
 
       if (subqueries.isColoader.value) {
         xCustomer.xicltype = 'F'
