@@ -8,7 +8,7 @@
           "url": "api/booking/{{context.$route.params.params}}"
         },
         "defaultAxiosParams": {
-          "url": "default/booking"
+          "url": "default/booking/{{state.template}}"
         },
         "validateAxiosParams": {
           "method": "post",
