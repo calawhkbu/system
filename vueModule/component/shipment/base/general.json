@@ -39,6 +39,7 @@
               "components": [{
                 "is": "WidgetForm",
                 "props": {
+                  "formId": "general",
                   "fields": [{
                       "label": "ShipmentPage.houseNo",
                       "name": "houseNo",
