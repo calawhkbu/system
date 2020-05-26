@@ -57,6 +57,7 @@ const query = new Query({
         { name: 'batchNumber', type: 'string' },
         { name: 'lastStatusCodeOrDescription', type: 'string' },
         { name: 'lastStatusDate', type: 'string' },
+        { name: 'lastStatusWidget', type: 'string' },
       ],
     },
     'shipment'
