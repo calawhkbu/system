@@ -1,42 +1,6 @@
 {
-  "start": "---",
-  "layout": "CardLayout",
+  "fillParent": true,
   "components": [{
-      "is": "I18nText",
-      "props": {
-        "style": {
-          "flex": 0.9,
-          "width": "100%",
-          "text-align": "center"
-        },
-        "i18nKey": "Coming soon!"
-      }
-    },
-    {
-      "is": "v-btn",
-      "props": {
-        "flat": true
-      },
-      "slots": [{
-        "is": "I18nText",
-        "props": {
-          "i18nKey": "ErrorLayout.Back"
-        }
-      }],
-      "events": {
-        "click.stop": [{
-          "type": "router",
-          "otherParams": {
-            "func": "go",
-            "go": -1
-          }
-        }]
-      }
-    }
-  ],
-  "remove": "---",
-  "_fillParent": true,
-  "_components": [{
     "is": "TableTool",
     "props": {
       "title": "Relationship",
@@ -50,6 +14,14 @@
       "noCache": true,
       "refreshWhenBack": true,
       "nextPageKey": "reportIdParams",
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/party/detail/{{id}}",
+          "base": true
+        }
+      },
       "newReport": {
         "filters": {
           "activeStatus": {
@@ -59,7 +31,7 @@
         "configurations": {
           "i18nContext": "PartyPage",
           "sorting": {
-            "direction": "DESC",
+            "direction": "ASC",
             "key": "updatedAt",
             "sql": {
               "classname": "ColumnExpression",
@@ -119,54 +91,6 @@
         {
           "key": "groupName",
           "width": 150
-        },
-        {
-          "key": "partyTypes",
-          "width": 200
-        },
-        {
-          "key": "parties",
-          "clickFunction": {
-            "type": "router",
-            "otherParams": {
-              "func": "push",
-              "path": "relatedParties/{{ row.id }}",
-              "base": true
-            }
-          },
-          "width": 80
-        },
-        {
-          "hidden": true,
-          "key": "contacts",
-          "clickFunction": {
-            "type": "router",
-            "otherParams": {
-              "func": "push",
-              "path": "relatedPersons/{{ row.id }}",
-              "base": true
-            }
-          },
-          "width": 80
-        },
-        {
-          "key": "showInfo",
-          "label": "",
-          "tdComponent": {
-            "is": "icon",
-            "props": {
-              "icon": "edit"
-            }
-          },
-          "clickFunction": {
-            "type": "router",
-            "otherParams": {
-              "func": "push",
-              "path": "party/detail/{{ row.id }}",
-              "base": true
-            }
-          },
-          "width": 60
         }
       ]
     },

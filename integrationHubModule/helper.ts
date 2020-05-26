@@ -10,7 +10,6 @@ import { Op } from 'sequelize'
 import _ = require('lodash')
 import axios from 'axios'
 import moment = require('moment')
-import { Op } from 'sequelize'
 
 const app = {
   /*******************************/
@@ -111,9 +110,9 @@ const app = {
   },
 
   // prepare card
-  async prepareCard(responseBody: any, api: string, category: string, zyh: number, zyd: number, options: any) {
+  async prepareCard(responseBody: any, api: string, category: string, zyh: number, zyd: number, options: any, parse = response => JSON.parse(response.data.d)) {
     const axiosResponse = await axios.request(options)
-    const cards = JSON.parse(axiosResponse.data.d) as any[]
+    const cards = parse(axiosResponse) as any[]
     const baseCard = cards.filter(c => c.zyh === +zyh)
     const currentCard = baseCard.filter(c => c.zyd === +zyd)
     if (!currentCard.length) throw new NotFoundException()
@@ -124,7 +123,7 @@ const app = {
 
     // reformat
     const row = responseBody
-    row.layout = JSON.parse(row.layout)
+    if (typeof row.layout === 'string') row.layout = JSON.parse(row.layout)
     return {
       id: zyh,
       reportingKey: 'dashboard',
@@ -160,20 +159,19 @@ const app = {
   },
 
   // get card
-  async getCard(options: any) {
+  async getCard(options: any, parse = response => JSON.parse(response.data.d)) {
     const axiosResponse = await axios.request(options)
-    const responseBody = JSON.parse(axiosResponse.data.d) as any[]
-    if (!responseBody.length) throw new NotFoundException('REPORT_NOT_READY')
-    return responseBody[0]
+    const responseBody = parse(axiosResponse) as any[]
+    return Array.isArray(responseBody) ? responseBody[0] : responseBody
   },
 
   // parse external data
   parseData(responseBody: any, card: any) {
     // reformat
-    responseBody = JSON.parse((responseBody.trim() || '[]').replace(/[\n\r]/g, ''))
+    if (typeof responseBody === 'string') responseBody = JSON.parse((responseBody.trim() || '[]').replace(/[\n\r]/g, ''))
 
     // grouping
-    const layout = JSON.parse(card.layout) as any[]
+    const layout = (typeof card.layout === 'string' ? JSON.parse(card.layout) : card.layout) as any[]
     const groupBy = layout.filter(header => header.grp).map(header => header.ffield as string)
     if (groupBy.length > 0) responseBody = app.groupRows(responseBody, groupBy)
 
