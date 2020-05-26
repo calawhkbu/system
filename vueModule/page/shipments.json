@@ -420,6 +420,19 @@
         {
           "key": "finalDestinationName",
           "label": "finalDestination"
+        }, {
+          "key": "lastStatusWidget",
+          "label": "lastStatusWidget",
+          "sql": "1",
+          "width": 500,
+          "tdComponent": {
+            "is": "BillTrackingWidget",
+            "props": {
+              "houseNo": "{{row.houseNo}}",
+              "masterNo": ["{{row.masterNo}}"],
+              "containerNos": "{{row.containerNos}}"
+            }
+          }
         }
       ]
     },

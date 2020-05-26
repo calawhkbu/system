@@ -24,7 +24,14 @@ const query = new QueryDef(
   new Query({
     $select: [
       new ResultColumn(new ColumnExpression('party', '*'))
-    ]
+    ],
+    $from: new FromTable(
+
+      {
+        table : 'party',
+      }
+
+    )
   })
 )
 
