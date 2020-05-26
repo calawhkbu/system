@@ -39,6 +39,7 @@
               "components": [{
                 "is": "WidgetForm",
                 "props": {
+                  "formId": "reference",
                   "fields": [{
                     "label": "ShipmentPage.poNo",
                     "name": "shipmentPo",
