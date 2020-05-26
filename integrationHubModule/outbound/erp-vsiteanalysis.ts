@@ -171,6 +171,8 @@ const app = {
         ...xCustomer,
         xgrpname,
         ...xHouseNo,
+        grpcarrier: 0,
+        grpfreehand: 0,
       }),
     }
   },
