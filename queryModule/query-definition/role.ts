@@ -23,28 +23,28 @@ const query = new QueryDef(
       table : 'role'
     }),
 
-    $where : new OrExpressions([
+    // $where : new OrExpressions([
 
-      new IsNullExpression(new ColumnExpression('role', 'partyGroupCode'), true),
+    //   new IsNullExpression(new ColumnExpression('role', 'partyGroupCode'), true),
 
-      new AndExpressions([
-        new IsNullExpression(new ColumnExpression('role', 'partyGroupCode'), false),
-        new ExistsExpression(new Query({
+    //   new AndExpressions([
+    //     new IsNullExpression(new ColumnExpression('role', 'partyGroupCode'), false),
+    //     new ExistsExpression(new Query({
 
-          $from : new FromTable({
-            table : 'role',
-            $as : 'b'
-          }),
-          $where : [
-            new BinaryExpression(new ColumnExpression('b', 'roleGroup'), '=', new ColumnExpression('role', 'roleGroup')),
-            new BinaryExpression(new ColumnExpression('b', 'roleName'), '=', new ColumnExpression('role', 'roleName')),
-            new IsNullExpression(new ColumnExpression('b', 'partyGroupCode'), true)
-          ]
+    //       $from : new FromTable({
+    //         table : 'role',
+    //         $as : 'b'
+    //       }),
+    //       $where : [
+    //         new BinaryExpression(new ColumnExpression('b', 'roleGroup'), '=', new ColumnExpression('role', 'roleGroup')),
+    //         new BinaryExpression(new ColumnExpression('b', 'roleName'), '=', new ColumnExpression('role', 'roleName')),
+    //         new IsNullExpression(new ColumnExpression('b', 'partyGroupCode'), true)
+    //       ]
 
-        }), true)
+    //     }), true)
 
-      ])
-    ])
+    //   ])
+    // ])
 
   })
 )
