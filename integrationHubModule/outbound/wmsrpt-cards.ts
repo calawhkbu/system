@@ -7,11 +7,7 @@ export default {
     return `${api.wmsrpt.url}/getschrptlist`
   },
   requestHandler: ({ api }: { api: any }) => {
-    const result = {
-      headers: {
-        'content-type': 'application/json',
-      },
-    } as any
+    const result = {} as any
     if (api.wmsrpt.body) result.body = JSON.stringify(api.wmsrpt.body)
     return result
   },
