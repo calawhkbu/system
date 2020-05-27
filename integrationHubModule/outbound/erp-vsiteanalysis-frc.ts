@@ -171,8 +171,8 @@ const app = {
         ...xCustomer,
         xgrpname,
         ...xHouseNo,
-        grpcarrier: 0,
-        grpfreehand: 0,
+        grpcarrier: 1,
+        grpfreehand: 1,
       }),
     }
   },
@@ -180,46 +180,91 @@ const app = {
     // parse results
     let responseBody = JSON.parse(JSON.parse(response.responseBody).d)
 
+    const carriers: string[] = []
+
     // regroup results
     responseBody = responseBody.reduce((result, row) => {
-      const jobMonth = moment(row.yymm, 'YYYYMM').format('YYYY-MM')
-      let resultRow = result.find(r => r.officePartyCode === row.xsite && r.jobMonth === jobMonth)
-      if (!resultRow)
-        result.push((resultRow = { officePartyCode: row.xsite, currency: row.currency, jobMonth }))
+      if (row.carrier) {
+        const jobMonth = moment(row.yymm, 'YYYYMM').format('YYYY-MM')
+        let resultRow = result.find(r => r.officePartyCode === row.xsite && r.carrierName === row.carrier && r.jobMonth === jobMonth)
+        let totalRow = result.find(r => r.officePartyCode === row.xsite && r.carrierName === row.carrier && r.jobMonth === 'total')
+        if (!resultRow)
+          result.push((resultRow = { officePartyCode: row.xsite, carrierName: row.carrier, currency: row.currency, jobMonth }))
+        if (!totalRow)
+          result.push((totalRow = { officePartyCode: row.xsite, carrierName: row.carrier, currency: row.currency, jobMonth: 'total' }))
 
-      resultRow.grossProfit =
-        (resultRow.grossProfit || 0) +
-        boundTypes.reduce(
-          (result, type) => result + (row[`${type.toLocaleLowerCase()}profit`] || 0),
-          0
-        )
-      resultRow.profitShareIncome =
-        (resultRow.profitShareIncome || 0) +
-        boundTypes.reduce(
-          (result, type) => result + (row[`${type.toLocaleLowerCase()}ps_income`] || 0),
-          0
-        )
-      resultRow.profitShareCost =
-        (resultRow.profitShareCost || 0) +
-        boundTypes.reduce(
-          (result, type) => result + (row[`${type.toLocaleLowerCase()}ps_cost`] || 0),
-          0
-        )
-      resultRow.profitShare =
-        (resultRow.profitShare || 0) +
-        boundTypes.reduce((result, type) => result + (row[`${type.toLocaleLowerCase()}ps`] || 0), 0)
-      resultRow.otherProfit =
-        (resultRow.otherProfit || 0) +
-        boundTypes.reduce(
-          (result, type) => result + (row[`${type.toLocaleLowerCase()}othprofit`] || 0),
-          0
-        )
-      resultRow.revenue =
-        (resultRow.revenue || 0) +
-        boundTypes.reduce(
-          (result, type) => result + (row[`${type.toLocaleLowerCase()}sales`] || 0),
-          0
-        )
+        if (carriers.indexOf(row.carrier) === -1) carriers.push(row.carrier)
+
+        const nominatedTypeCode = row.freehand
+
+        resultRow[`${nominatedTypeCode}_grossProfit`] =
+          (resultRow[`${nominatedTypeCode}_grossProfit`] || 0) +
+          boundTypes.reduce(
+            (result, type) => result + (row[`${type.toLocaleLowerCase()}profit`] || 0),
+            0
+          )
+        resultRow[`${nominatedTypeCode}_profitShareIncome`] =
+          (resultRow[`${nominatedTypeCode}_profitShareIncome`] || 0) +
+          boundTypes.reduce(
+            (result, type) => result + (row[`${type.toLocaleLowerCase()}ps_income`] || 0),
+            0
+          )
+        resultRow[`${nominatedTypeCode}_profitShareCost`] =
+          (resultRow[`${nominatedTypeCode}_profitShareCost`] || 0) +
+          boundTypes.reduce(
+            (result, type) => result + (row[`${type.toLocaleLowerCase()}ps_cost`] || 0),
+            0
+          )
+        resultRow[`${nominatedTypeCode}_profitShare`] =
+          (resultRow[`${nominatedTypeCode}_profitShare`] || 0) +
+          boundTypes.reduce((result, type) => result + (row[`${type.toLocaleLowerCase()}ps`] || 0), 0)
+        resultRow[`${nominatedTypeCode}_otherProfit`] =
+          (resultRow[`${nominatedTypeCode}_otherProfit`] || 0) +
+          boundTypes.reduce(
+            (result, type) => result + (row[`${type.toLocaleLowerCase()}othprofit`] || 0),
+            0
+          )
+        resultRow[`${nominatedTypeCode}_revenue`] =
+          (resultRow[`${nominatedTypeCode}_revenue`] || 0) +
+          boundTypes.reduce(
+            (result, type) => result + (row[`${type.toLocaleLowerCase()}sales`] || 0),
+            0
+          )
+
+        totalRow[`${nominatedTypeCode}_grossProfit`] =
+          (totalRow[`${nominatedTypeCode}_grossProfit`] || 0) +
+          boundTypes.reduce(
+            (result, type) => result + (row[`${type.toLocaleLowerCase()}profit`] || 0),
+            0
+          )
+        totalRow[`${nominatedTypeCode}_profitShareIncome`] =
+          (totalRow[`${nominatedTypeCode}_profitShareIncome`] || 0) +
+          boundTypes.reduce(
+            (result, type) => result + (row[`${type.toLocaleLowerCase()}ps_income`] || 0),
+            0
+          )
+        totalRow[`${nominatedTypeCode}_profitShareCost`] =
+          (totalRow[`${nominatedTypeCode}_profitShareCost`] || 0) +
+          boundTypes.reduce(
+            (result, type) => result + (row[`${type.toLocaleLowerCase()}ps_cost`] || 0),
+            0
+          )
+        totalRow[`${nominatedTypeCode}_profitShare`] =
+          (totalRow[`${nominatedTypeCode}_profitShare`] || 0) +
+          boundTypes.reduce((result, type) => result + (row[`${type.toLocaleLowerCase()}ps`] || 0), 0)
+        totalRow[`${nominatedTypeCode}_otherProfit`] =
+          (totalRow[`${nominatedTypeCode}_otherProfit`] || 0) +
+          boundTypes.reduce(
+            (result, type) => result + (row[`${type.toLocaleLowerCase()}othprofit`] || 0),
+            0
+          )
+        totalRow[`${nominatedTypeCode}_revenue`] =
+          (totalRow[`${nominatedTypeCode}_revenue`] || 0) +
+          boundTypes.reduce(
+            (result, type) => result + (row[`${type.toLocaleLowerCase()}sales`] || 0),
+            0
+          )
+      }
 
       return result
     }, [])
@@ -227,41 +272,49 @@ const app = {
     responseBody.sort((l, r) => {
       if (l.officePartyCode !== r.officePartyCode)
         return l.officePartyCode.localeCompare(r.officePartyCode)
+      if (l.carrierName !== r.carrierName)
+        return l.carrierName.localeCompare(r.carrierName)
       return l.jobMonth.localeCompare(r.jobMonth)
     })
 
-    const result = [] as any[]
+    let result = [] as any[]
     const anyRow = responseBody.find(r => r.officePartyCode === site)
     const currency = anyRow ? anyRow.currency : 'HKD'
-    for (const month of months) {
-      let row = responseBody.find(r => r.officePartyCode === site && r.jobMonth === month)
-      if (!row)
-        row = {
-          officePartyCode: site,
-          currency,
-          jobMonth: month,
-          grossProfit: 0,
-          profitShareIncome: 0,
-          profitShareCost: 0,
-          profitShare: 0,
-          otherProfit: 0,
-          revenue: 0,
+    for (const carrier of carriers) {
+      const row: any = { officePartyCode: site, carrierName: carrier, currency }
+      const rows = responseBody.filter(r => r.officePartyCode === site && r.carrierName === carrier)
+
+      for (const month of [...months, 'total']) {
+        const r = rows.find(r => r.jobMonth === month)
+        const monthName = month === 'total' ? month : moment(month, 'YYYY-MM').format('MMMM')
+        for (const nominatedTypeCode of ['F', 'R', 'C']) {
+          for (const field of ['grossProfit', 'profitShareIncome', 'profitShareCode', 'profitShare', 'otherProfit', 'revenue']) {
+            row[`${monthName}_${nominatedTypeCode}_${field}`] = r ? r[`${nominatedTypeCode}_${field}`] : 0
+          }
         }
-      row.gpPercent = row.revenue ? row.grossProfit / row.revenue : NaN
+      }
+
       result.push(row)
     }
 
+    result = result.sort((l, r) => {
+      const l_grossProfit = (l.total_F_grossProfit || 0) + (l.total_R_grossProfit || 0) + (l.total_C_grossProfit || 0)
+      const r_grossProfit = (r.total_F_grossProfit || 0) + (r.total_R_grossProfit || 0) + (r.total_C_grossProfit || 0)
+      return l_grossProfit < r_grossProfit ? 1 : l_grossProfit > r_grossProfit ? -1 : 0
+    })
+
     /* {
       officePartyCode: string,
+      carrierName: string,
       currency: string,
-      jobMonth: string,
+
+      // by month, by frc
       grossProfit: number,
       profitShareIncome: number,
       profitShareCost: number,
       profitShare: number,
       otherProfit: number,
       revenue: number,
-      gpPercent: number,
     } */
 
     return { ...response, responseBody: result }
