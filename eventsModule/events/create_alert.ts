@@ -1,12 +1,12 @@
 import BaseEventHandler from 'modules/events/baseEventHandler'
 import { EventService, EventConfig, EventData, EventHandlerConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
-import { Transaction } from 'sequelize'
-import { AlertDbService } from 'modules/sequelize/alert/service'
+import { Sequelize, Transaction } from 'sequelize'
+import { AlertTableService } from 'modules/sequelize/services/table/alert'
 
 export default class CreateAlertEvent extends BaseEventHandler {
   constructor(
-    protected  eventDataList: EventData<any>[],
+    protected eventDataList: EventData<any>[],
     protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
@@ -20,28 +20,20 @@ export default class CreateAlertEvent extends BaseEventHandler {
 
   public async mainFunction(eventDataList: EventData<any>[]) {
 
-    const alertDbService = this.allService['AlertDbService'] as AlertDbService
+    const alertDbService = this.allService['AlertDbService'] as AlertTableService
 
-    const promiseList = eventDataList.map(eventData => {
+    const alertDataList = eventDataList.map(eventData => {
 
-      const tableName = eventData.tableName
-      const primaryKey = eventData.primaryKey
-      const alertType = eventData.alertType
-      const extraParam = eventData.extraParam
+      const partyGroupCode = eventData.partyGroupCode as string
+      const tableName = eventData.tableName as string
+      const primaryKey = eventData.primaryKey as string
+      const alertType = eventData.alertType as string
+      const extraParam = eventData.extraParam as { [key: string]: any }
 
-      // todo : later change to bulk
-      return alertDbService.createAlert(
-        tableName,
-        primaryKey,
-        alertType,
-        extraParam,
-        this.user,
-        this.transaction
-      )
-
+      return { tableName, primaryKey, alertType, extraParam, partyGroupCode }
     })
 
-    return await Promise.all(promiseList)
+    return await alertDbService.createAlert(alertDataList, this.user, this.transaction)
 
   }
 }

@@ -1,10 +1,8 @@
 
-import { AlertConfig, AlertFlexDataConfig, Alert } from 'models/main/alert'
-import { AlertPreference, AlertPreferenceDetail } from 'models/main/alertPreference'
+import { AlertConfig, AlertFlexDataConfig } from 'modules/sequelize/interfaces/alert'
+import { AlertPreferenceDetail } from 'modules/sequelize/interfaces/alertPreference'
 import { IQueryParams } from 'classes/query'
 import { BinaryExpression, ColumnExpression, IConditionalExpression, AndExpressions, MathExpression, ParameterExpression, FunctionExpression, BetweenExpression, Value, IsNullExpression } from 'node-jql'
-import { ShipmentService } from 'modules/sequelize/shipment/services/shipment'
-import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 
 export const schedulerActive = false
 

@@ -65,7 +65,53 @@
       }]
     }
   }, {
-    "is": "Tab",
+    "is": "Widget",
+    "props": {
+      "settingProp": {
+        "overrideType": "party",
+        "initAxiosParams": {
+          "url": "api/party/{{context.$route.params.params}}"
+        },
+        "defaultAxiosParams": {
+          "url": "default/party"
+        },
+        "validateAxiosParams": {
+          "method": "post",
+          "url": "api/party/validate/{{id}}"
+        },
+        "saveAxiosParams": {
+          "method": "post",
+          "url": "api/party"
+        },
+        "primaryKey": "id",
+        "modeFunction": [
+          "const modes = ['create', 'detail','edit'];",
+          "const selectedMode = isNaN(Number(mode)) ? mode : 'detail'",
+          "if (!modes.includes(selectedMode)) {throw new Error('This mode (' + selectedMode + ') is not allowed');}",
+          "return selectedMode"
+        ],
+        "haveTermOnCreate": true,
+        "haveTermOnEdit": false,
+        "widgetComponentSetting": {
+          "create": {
+            "readonly": false,
+            "stepper": 0,
+            "next": false,
+            "saveIcon": "create"
+          },
+          "detail": {
+            "readonly": true
+          },
+          "edit": {
+            "readonly": false,
+            "stepper": 0,
+            "saveIcon": "save"
+          }
+        }
+      }
+    }
+  }, {
+    "is": "",
     "props": {
       "tabComponents": [{
         "index": "party",
