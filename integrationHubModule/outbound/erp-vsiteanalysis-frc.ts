@@ -186,12 +186,12 @@ const app = {
     responseBody = responseBody.reduce((result, row) => {
       if (row.carrier) {
         const jobMonth = moment(row.yymm, 'YYYYMM').format('YYYY-MM')
-        let resultRow = result.find(r => r.officePartyCode === row.xsite && r.carrierName === row.carrier && r.jobMonth === jobMonth)
-        let totalRow = result.find(r => r.officePartyCode === row.xsite && r.carrierName === row.carrier && r.jobMonth === 'total')
+        let resultRow = result.find(r => r.officePartyCode === row.xsite && r.carrier === row.carrier && r.jobMonth === jobMonth)
+        let totalRow = result.find(r => r.officePartyCode === row.xsite && r.carrier === row.carrier && r.jobMonth === 'total')
         if (!resultRow)
-          result.push((resultRow = { officePartyCode: row.xsite, carrierName: row.carrier, currency: row.currency, jobMonth }))
+          result.push((resultRow = { officePartyCode: row.xsite, carrier: row.carrier, currency: row.currency, jobMonth }))
         if (!totalRow)
-          result.push((totalRow = { officePartyCode: row.xsite, carrierName: row.carrier, currency: row.currency, jobMonth: 'total' }))
+          result.push((totalRow = { officePartyCode: row.xsite, carrier: row.carrier, currency: row.currency, jobMonth: 'total' }))
 
         if (carriers.indexOf(row.carrier) === -1) carriers.push(row.carrier)
 
@@ -272,8 +272,8 @@ const app = {
     responseBody.sort((l, r) => {
       if (l.officePartyCode !== r.officePartyCode)
         return l.officePartyCode.localeCompare(r.officePartyCode)
-      if (l.carrierName !== r.carrierName)
-        return l.carrierName.localeCompare(r.carrierName)
+      if (l.carrier !== r.carrier)
+        return l.carrier.localeCompare(r.carrier)
       return l.jobMonth.localeCompare(r.jobMonth)
     })
 
@@ -281,8 +281,8 @@ const app = {
     const anyRow = responseBody.find(r => r.officePartyCode === site)
     const currency = anyRow ? anyRow.currency : 'HKD'
     for (const carrier of carriers) {
-      const row: any = { officePartyCode: site, carrierName: carrier, currency }
-      const rows = responseBody.filter(r => r.officePartyCode === site && r.carrierName === carrier)
+      const row: any = { officePartyCode: site, carrier, currency }
+      const rows = responseBody.filter(r => r.officePartyCode === site && r.carrier === carrier)
 
       for (const month of [...months, 'total']) {
         const r = rows.find(r => r.jobMonth === month)
@@ -305,7 +305,7 @@ const app = {
 
     /* {
       officePartyCode: string,
-      carrierName: string,
+      carrier: string,
       currency: string,
 
       // by month, by frc
