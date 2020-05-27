@@ -307,6 +307,13 @@
                 }
               },
               {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "shipment/base/alert"
+                  }
+                },
+              {
                 "is": "AsyncComponent",
                 "props": {
                   "class": "xs-12 margin-bottom-2",
