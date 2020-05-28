@@ -993,6 +993,17 @@ const shipIdExpression = new QueryExpression(new Query({
 
 }))
 
+
+const officeOld360IdExpression = new FunctionExpression(
+  'JSON_UNQUOTE',
+  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
+)
+
+const officeErpSiteExpression = new FunctionExpression(
+  'JSON_UNQUOTE',
+  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.erpSite')
+)
+
 const primaryKeyListStringExpression = new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id')))
 
 const partyGroupCodeExpression = new ColumnExpression('shipment', 'partyGroupCode')
@@ -1321,10 +1332,7 @@ const gglreportingGroupExpression = new CaseExpression({
     {
       $when: new AndExpressions([
 
-        new BinaryExpression(new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
-        ), '=', gglTaiwanOfficeOld360Id),
+        new BinaryExpression(officeOld360IdExpression, '=', gglTaiwanOfficeOld360Id),
 
         new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TAE')
       ]),
@@ -1334,10 +1342,7 @@ const gglreportingGroupExpression = new CaseExpression({
     {
       $when: new AndExpressions([
 
-        new BinaryExpression(new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
-        ), '=', gglTaiwanOfficeOld360Id),
+        new BinaryExpression(officeOld360IdExpression, '=', gglTaiwanOfficeOld360Id),
 
         new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TAE')
       ]),
@@ -1409,10 +1414,7 @@ const gglreportingGroupExpression = new CaseExpression({
     {
       $when: new AndExpressions([
 
-        new BinaryExpression(new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
-        ), '=', gglTaiwanOfficeOld360Id),
+        new BinaryExpression(officeOld360IdExpression, '=', gglTaiwanOfficeOld360Id),
 
         new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TSE')
       ]),
@@ -1422,10 +1424,7 @@ const gglreportingGroupExpression = new CaseExpression({
     {
       $when: new AndExpressions([
 
-        new BinaryExpression(new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
-        ), '=', gglTaiwanOfficeOld360Id),
+        new BinaryExpression(officeOld360IdExpression, '=', gglTaiwanOfficeOld360Id),
 
         new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TSI')
       ]),
@@ -1795,6 +1794,9 @@ const activeStatusExpression = new CaseExpression({
   $else: new Value('active')
 })
 
+
+
+
 // all field related to party
 const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInterface[], party) => {
 
@@ -1906,6 +1908,12 @@ const fieldList = [
   ...locationExpressionList,
 
   {
+    name : 'erpSite',
+    expression : officeErpSiteExpression,
+    companion : ['table:office']
+  },
+
+  {
     name : 'jobDate',
     expression : jobDateExpression
   },
@@ -1925,6 +1933,8 @@ const fieldList = [
     expression : jobYearExpression
   },
 
+
+  'erpCode',
   'moduleTypeCode',
   'boundTypeCode',
   'nominatedTypeCode',
@@ -3007,10 +3017,7 @@ query.registerQuery('isColoader',
 function viaHKGExpression() {
 
   const old360PartyIdList = [7351490]
-  return new InExpression(new FunctionExpression(
-    'JSON_UNQUOTE',
-    new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
-  ), false, old360PartyIdList)
+  return new InExpression(officeOld360IdExpression, false, old360PartyIdList)
 }
 
 query.subquery('viaHKG',
