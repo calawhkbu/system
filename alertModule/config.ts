@@ -722,6 +722,13 @@ export const alertConfigList = [
 
     active: false,
 
+    canCloseBy : [
+      {
+        type : 'all'
+      }
+
+    ],
+
     queryName: 'shipment',
     query: {
       subqueries: {
