@@ -33,7 +33,7 @@ import {
   IQuery
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition, registerDateField } from 'utils/jql-subqueries'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -179,7 +179,6 @@ const locationList = ['portOfLoading', 'portOfDischarge', 'placeOfDelivery', 'pl
 
 const query = new QueryDef(new Query({
 
-    // $distinct: true,
     $select: [
       new ResultColumn(new ColumnExpression('shipment', '*')),
       new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
@@ -3153,32 +3152,10 @@ const dateList = [
 
   }
 
-] as (string | {
-  name: string,
-  expression: IExpression,
-  companion: string[]
-}) []
+] as ExpressionHelperInterface[]
 
-dateList.map(date => {
 
-  const dateColumnName = typeof date === 'string' ? date : date.name
-  const dateColumnExpression = typeof date === 'string' ? new ColumnExpression('shipment_date', date) : date.expression
-  const companion = typeof date === 'string' ? ['table:shipment_date'] : date.companion
-
-  query.registerBoth(dateColumnName, dateColumnExpression, ...companion)
-
-  query
-    .register(
-      dateColumnName,
-      new Query({
-        $where: new BetweenExpression(dateColumnExpression, false, new Unknown(), new Unknown()),
-      }),
-      ...companion
-    )
-    .register('from', 0)
-    .register('to', 1)
-
-})
+registerDateField(query,'shipment_date',dateList)
 
 // Search
 query
