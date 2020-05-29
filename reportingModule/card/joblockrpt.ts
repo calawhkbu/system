@@ -1,4 +1,31 @@
-import {
+import { JqlDefinition } from 'modules/report/interface'
+import _ = require('lodash')
+
+export default {
+  jqls: [
+    {
+      type: 'callAxios',
+      injectParams: true,
+      axiosConfig: {
+        method: 'POST',
+        url: 'api/shipment/query/job',
+      }
+    },
+    {
+      type: 'postProcess',
+      postProcess(params, result: any[]): any[] {
+        const intermediate = _.groupBy(result, row => row.officePartyCode)
+        return Object.keys(intermediate).map(officePartyCode => {
+          const row: any = { __id: officePartyCode, __value: officePartyCode }
+          row.__rows = intermediate[officePartyCode]
+          return row
+        })
+      }
+    }
+  ]
+} as JqlDefinition
+
+/* import {
   Query,
   FromTable,
   ResultColumn,
@@ -50,4 +77,4 @@ const query = new Query({
   $order: 'officePartyCode',
 })
 
-export default query.toJson()
+export default query.toJson() */
