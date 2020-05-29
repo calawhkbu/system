@@ -3,7 +3,7 @@ import { EventService, EventConfig, EventHandlerConfig, EventData } from 'module
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 
-import { DocumentDbService } from 'modules/sequelize/document/service'
+import { DocumentTableService } from 'modules/sequelize/services/table/document'
 import { Document } from 'models/main/document'
 import BaseEventHandler from 'modules/events/baseEventHandler'
 
@@ -26,7 +26,7 @@ export default class UpdateDocumentPreviewEvent extends BaseEventHandler {
   }
 
   public async mainFunction(eventDataList: EventData<Document>[]) {
-    const documentService = this.allService['DocumentDbService'] as DocumentDbService
+    const documentService = this.allService['DocumentDbService'] as DocumentTableService
 
     const promiseList = eventDataList.map(async eventData => {
 

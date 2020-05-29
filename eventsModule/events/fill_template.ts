@@ -3,7 +3,7 @@ import { EventService, EventConfig, EventHandlerConfig, EventData } from 'module
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 
-import { DocumentDbService } from 'modules/sequelize/document/service'
+import { DocumentTableService } from 'modules/sequelize/services/table/document'
 import BaseEventHandler from 'modules/events/baseEventHandler'
 
 // // debug
@@ -30,7 +30,11 @@ export default class FillTemplateEvent extends BaseEventHandler {
 
       const { latestEntity, tableName, primaryKey, fileName, outputFileType } = eventData as EventData<any>
 
-      const doucmentDbService = this.allService['DocumentDbService'] as DocumentDbService
+      const {
+        DocumentDbService: doucmentDbService
+      } = this.allService as {
+        DocumentDbService: DocumentTableService
+      }
       const newDocument = await doucmentDbService.fillTemplate(
         tableName,
         primaryKey,
