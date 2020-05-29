@@ -14,8 +14,8 @@
       "Exception": "notification_important",
       "Message": "message"
     },
-    "titleKey": "alertType",
-    "subTitleKeys": ["alertContent"],
+    "titleKey": "alertTitle",
+    "subTitleKeys": ["alertMessage"],
     "noIcon": "notifications_none"
   },
   "baseSummaryProps": {
@@ -29,7 +29,7 @@
     "avaliableAlertTab" : {
       "All": "return data",
       "Exception": "return data.filter(x => x.alertCategory === 'Exception')",
-      "Message": "return data.filter(x => x.alertCategory === 'Message' || x.alertCategory === 'Notification')"
+      "Other": "return data.filter(x => x.alertCategory !== 'Exception')"
     }
   }
 }

@@ -6,10 +6,10 @@ import moment = require('moment')
 
 import { Tracking } from 'models/main/tracking'
 import { TrackingReference } from 'models/main/trackingReference'
-import { BookingService } from 'modules/sequelize/booking/services/booking'
-import { TrackingService } from 'modules/sequelize/tracking/service'
-import { TrackingReferenceService } from 'modules/sequelize/trackingReference/service'
-import { AlertDbService } from 'modules/sequelize/alert/service'
+import { BookingTableService } from 'modules/sequelize/services/table/booking'
+import { TrackingTableService } from 'modules/sequelize/services/table/tracking'
+import { TrackingReferenceTableService } from 'modules/sequelize/services/table/trackingReference'
+import { AlertTableService } from 'modules/sequelize/services/table/alert'
 
 // config the timeRange that need to send alert
 
@@ -32,7 +32,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
   }
 
   private async getEntity({ partyGroupCode, masterNo = null, soNo = [], containerNo = [] }: TrackingReference) {
-    const { BookingService: bookingService }: { BookingService: BookingService } = this.allService
+    const { BookingService: bookingService }: { BookingService: BookingTableService } = this.allService
     return await bookingService.query(`
       SELECT
         base.tableName, base.primaryKey,
@@ -93,7 +93,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
     const {
       TrackingReferenceService: trackingReferenceService,
     }: {
-      TrackingReferenceService: TrackingReferenceService
+      TrackingReferenceService: TrackingReferenceTableService
     } = this.allService
     return await trackingReferenceService.getTrackingReference(trackingNo)
   }
@@ -101,13 +101,9 @@ class TrackingUpdateDataEvent extends BaseEvent {
   public async mainFunction(parameters: any) {
     console.debug(`Event Started [Create Tracking Alert]`, this.constructor.name)
     const {
-      AlertDbService: alertDbService,
-      TrackingReferenceService: trackingReferenceService,
+      AlertDbService: alertDbService
     }: {
-      TrackingService: TrackingService,
-      AlertDbService: AlertDbService,
-      BookingService: BookingService,
-      TrackingReferenceService: TrackingReferenceService
+      AlertDbService: AlertTableService,
     } = this.allService
     const {
       trackingNo,
