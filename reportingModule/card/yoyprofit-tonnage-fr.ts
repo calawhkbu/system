@@ -266,7 +266,34 @@ export default {
         return result
       }
     }
-  ]
+  ],
+  filters: [{
+    display: 'tonnageSummaryVariables',
+    name: 'tonnageSummaryVariables',
+    props: {
+      items: [
+        {
+          label: 'chargeableWeight',
+          value: 'chargeableWeight',
+        },
+        {
+          label: 'grossWeight',
+          value: 'grossWeight',
+        },
+        {
+          label: 'cbm',
+          value: 'cbm',
+        },
+        {
+          label: 'totalShipment',
+          value: 'totalShipment',
+        },
+      ],
+      multi: false,
+      required: true,
+    },
+    type: 'list',
+  }]
 } as JqlDefinition
 
 /* import {

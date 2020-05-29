@@ -86,7 +86,7 @@ export default {
     {
       type: 'postProcess',
       postProcess(params, prevResult): any[] {
-        return prevResult.last.concat(prevResult.current)
+        return prevResult.current.concat(prevResult.last)
       }
     }
   ]

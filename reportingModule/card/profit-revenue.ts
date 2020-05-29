@@ -60,7 +60,14 @@ export default {
         }, [])
       }
     }
-  ]
+  ],
+  filters: [{
+    name: 'division',
+    type: 'list',
+    props: {
+      multi: false,
+    },
+  }]
 } as JqlDefinition
 
 /* import {

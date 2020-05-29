@@ -98,7 +98,7 @@ export default {
     {
       type: 'postProcess',
       postProcess(params, prevResult): any[] {
-        const result: any[] = prevResult.last.concat(prevResult.current)
+        const result: any[] = prevResult.current.concat(prevResult.last)
 
         return result.reduce<any[]>((a, row) => {
           let row_ = a.find(r => r.month === row.month)
@@ -112,6 +112,29 @@ export default {
         }, [])
       }
     }
+  ],
+  filters: [
+    {
+      name: 'showMonth',
+      type: 'boolean',
+    },
+    {
+      name: 'showYear',
+      props: {
+        items: [
+          {
+            label: 'current',
+            value: 'current',
+          },
+          {
+            label: 'last',
+            value: 'last',
+          },
+        ],
+        required: true,
+      },
+      type: 'list',
+    },
   ]
 } as JqlDefinition
 

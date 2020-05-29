@@ -26,7 +26,7 @@ export default {
           }
         }
         else {
-          const date = subqueries.data as { from: any, to: any }
+          const date = subqueries.date as { from: any, to: any }
           const selectedDate = (subqueries.date ? moment(date.from, 'YYYY-MM-DD') : moment())
           const currentMonth = selectedDate.month()
           alertCreatedAtJson = {
