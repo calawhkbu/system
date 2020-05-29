@@ -289,7 +289,7 @@ const app = {
         const monthName = month === 'total' ? month : moment(month, 'YYYY-MM').format('MMMM')
         for (const nominatedTypeCode of ['F', 'R', 'C']) {
           for (const field of ['grossProfit', 'profitShareIncome', 'profitShareCode', 'profitShare', 'otherProfit', 'revenue']) {
-            row[`${monthName}_${nominatedTypeCode}_${field}`] = r ? r[`${nominatedTypeCode}_${field}`] : 0
+            row[`${monthName}_${nominatedTypeCode}_${field}`] = (r && r[`${nominatedTypeCode}_${field}`]) || 0
           }
         }
       }
