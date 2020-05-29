@@ -1,4 +1,66 @@
-import { Query, FromTable, ResultColumn, ColumnExpression } from 'node-jql'
+import { JqlDefinition } from 'modules/report/interface'
+
+export default {
+  jqls: [
+    {
+      type: 'callAxios',
+      injectParams: true,
+      axiosConfig: {
+        method: 'POST',
+        url: 'api/shipment/query/shipment',
+      },
+    }
+  ],
+  columns: [
+    { key: 'houseNo' },
+    { key: 'jobNo' },
+    { key: 'masterNo' },
+    { key: 'bookingNo' },
+    { key: 'poNos' },
+    { key: 'containerNos' },
+    { key: 'contractNos' },
+    { key: 'commodity' },
+    { key: 'vessel' },
+    { key: 'voyageFlightNumber' },
+    { key: 'divisionCode' },
+    { key: 'serviceCode' },
+    { key: 'incoTermsCode' },
+    { key: 'freightTermsCode' },
+    { key: 'otherTermsCode' },
+    { key: 'moduleTypeCode' },
+    { key: 'boundTypeCode' },
+    { key: 'carrierName' },
+    { key: 'nominatedTypeCode' },
+    { key: 'isDirect' },
+    { key: 'isCoload' },
+    { key: 'jobDate' },
+    { key: 'departureDateEstimated' },
+    { key: 'departureDateActual' },
+    { key: 'arrivalDateEstimated' },
+    { key: 'arrivalDateActual' },
+    { key: 'placeOfReceiptName' },
+    { key: 'portOfLoadingName' },
+    { key: 'portOfDischargeName' },
+    { key: 'placeOfDeliveryName' },
+    { key: 'finalDestinationName' },
+    { key: 'officePartyName' },
+    { key: 'shipperPartyName' },
+    { key: 'consigneePartyName' },
+    { key: 'linerAgentPartyName' },
+    { key: 'roAgentPartyName' },
+    { key: 'agentPartyName' },
+    { key: 'controllingCustomerPartyName' },
+    { key: 'id' },
+    { key: 'shipId' },
+    { key: 'haveCurrentTrackingNo' },
+    { key: 'batchNumber' },
+    { key: 'lastStatusCodeOrDescription' },
+    { key: 'lastStatusDate' },
+    { key: 'lastStatusWidget' },
+  ]
+} as JqlDefinition
+
+/* import { Query, FromTable, ResultColumn, ColumnExpression } from 'node-jql'
 
 const query = new Query({
   $from: new FromTable(
@@ -64,4 +126,4 @@ const query = new Query({
   ),
 })
 
-export default query.toJson()
+export default query.toJson() */

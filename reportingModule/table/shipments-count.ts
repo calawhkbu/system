@@ -1,4 +1,43 @@
-import { Query, FromTable } from 'node-jql'
+import { JqlDefinition } from 'modules/report/interface'
+import { IQueryParams } from 'classes/query'
+
+export default {
+  jqls: [
+    {
+      type: 'prepareParams',
+      prepareParams(params): IQueryParams {
+        const subqueries = (params.subqueries = params.subqueries || {})
+
+        // lastStatusList case
+        if (subqueries.lastStatus) {
+          if (!(subqueries.lastStatus !== true && 'value' in subqueries.lastStatus && Array.isArray(subqueries.lastStatus.value))) throw new Error('MISSING_lastStatus')
+          subqueries.lastStatusJoin = true
+        }
+
+        // lastStatusList case
+        if (subqueries.alertType) {
+          if (!(subqueries.alertType !== true && 'value' in subqueries.alertType && Array.isArray(subqueries.alertType.value))) throw new Error('MISSING_alertType')
+          subqueries.alertJoin = true
+        }
+
+        return params
+      }
+    },
+    {
+      type: 'callAxios',
+      injectParams: true,
+      axiosConfig: {
+        method: 'POST',
+        url: 'api/shipment/query/shipment/count',
+      },
+    }
+  ],
+  columns: [
+    { key: 'count' }
+  ]
+} as JqlDefinition
+
+/* import { Query, FromTable } from 'node-jql'
 import { parseCode } from 'utils/function'
 
 function prepareShipmentParams(): Function {
@@ -47,4 +86,4 @@ export default [
   [
     prepareShipmentParams(), query
   ]
-]
+] */

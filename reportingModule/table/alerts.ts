@@ -1,4 +1,69 @@
-import { Query, FromTable } from 'node-jql'
+import { JqlDefinition } from 'modules/report/interface'
+import { IQueryParams } from 'classes/query'
+import { AxiosRequestConfig } from 'axios'
+
+export default {
+  jqls: [
+    {
+      type: 'prepareParams',
+      prepareParams(params) {
+        const subqueries = (params.subqueries = params.subqueries || {})
+        subqueries.alertJoin = true
+        params.fields = [
+          'alertTableName',
+          'alertPrimaryKey',
+          'alertCategory',
+          'alertType',
+          'alertTitle',
+          'alertMessage',
+          'alertContent',
+          'alertSeverity',
+          'alertStatus',
+          'alertCreatedAt',
+          'alertUpdatedAt'
+        ]
+        return params
+      }
+    },
+    {
+      type: 'callAxios',
+      injectParams: true,
+      getAxiosConfig(req, params): AxiosRequestConfig {
+        let url = `api/shipment/query/shipment`
+        const subqueries = (params.subqueries = params.subqueries || {})
+        if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
+          const entityType = subqueries.entityType.value
+          url = `api/shipment/query/${entityType}`
+        }
+        return {
+          method: 'POST',
+          url,
+        }
+      },
+      responseMapping: [
+        { from: 'alertTableName', to: 'tableName' },
+        { from: 'alertPrimaryKey', to: 'primaryKey' },
+        { from: 'alertSeverity', to: 'severity'},
+        { from: 'alertStatus', to: 'status'},
+      ]
+    }
+  ],
+  columns: [
+    { key: 'tableName' },
+    { key: 'primaryKey' },
+    { key: 'alertCategory' },
+    { key: 'alertType' },
+    { key: 'alertTitle' },
+    { key: 'alertMessage' },
+    { key: 'alertContent' },
+    { key: 'severity'},
+    { key: 'status'},
+    { key: 'alertUpdatedAt' },
+    { key: 'alertCreatedAt' },
+  ]
+} as JqlDefinition
+
+/* import { Query, FromTable } from 'node-jql'
 import { parseCode } from 'utils/function'
 
 function prepareParams(): Function {
@@ -88,4 +153,4 @@ function finalQuery(){
 export default [
 
   [prepareParams(), finalQuery()]
-]
+] */

@@ -1,4 +1,26 @@
-import { Query, FromTable } from 'node-jql'
+import { JqlDefinition } from 'modules/report/interface'
+
+export default {
+  jqls: [
+    {
+      type: 'callAxios',
+      injectParams: true,
+      axiosConfig: {
+        method: 'POST',
+        url: 'api/swivel-tracking/query/tracking',
+      },
+    }
+  ],
+  columns: [
+    { key: 'id' },
+    { key: 'trackingNo' },
+    { key: 'lastStatus' },
+    { key: 'lastStatusDate' },
+    { key: 'updatedAt' },
+  ]
+} as JqlDefinition
+
+/* import { Query, FromTable } from 'node-jql'
 
 const query = new Query({
   $distinct: true,
@@ -33,4 +55,4 @@ const query = new Query({
   ),
 })
 
-export default query.toJson()
+export default query.toJson() */

@@ -1,4 +1,45 @@
-import { Query, FromTable } from 'node-jql'
+import { IQueryParams } from 'classes/query'
+import { Request } from 'classes/request'
+import { AxiosRequestConfig } from 'axios'
+import { JqlDefinition } from 'modules/report/interface'
+
+export default {
+  jqls: [
+    {
+      type: 'prepareParams',
+      prepareParams(params): IQueryParams {
+        const subqueries = (params.subqueries = params.subqueries || {})
+        subqueries.alertJoin = true
+        params.fields = ['alertCount']
+        return params
+      }
+    },
+    {
+      type: 'callAxios',
+      injectParams: true,
+      getAxiosConfig(req, params): AxiosRequestConfig {
+        let url = `api/shipment/query/shipment`
+        const subqueries = (params.subqueries = params.subqueries || {})
+        if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
+          const entityType = subqueries.entityType.value
+          url = `api/shipment/query/${entityType}`
+        }
+        return {
+          method: 'POST',
+          url,
+        }
+      },
+      responseMapping: [
+        { from: 'alertCount', to: 'count' },
+      ]
+    },
+  ],
+  columns: [
+    { key: 'count' },
+  ],
+} as JqlDefinition
+
+/* import { Query, FromTable } from 'node-jql'
 import { parseCode } from 'utils/function'
 
 function prepareParams(): Function {
@@ -68,4 +109,4 @@ function finalQuery(){
 export default [
 
   [prepareParams(), finalQuery()]
-]
+] */

@@ -1,4 +1,82 @@
-import { Query, FromTable } from 'node-jql'
+import { JqlDefinition } from 'modules/report/interface'
+
+export default {
+  jqls: [
+    {
+      type: 'callAxios',
+      injectParams: true,
+      axiosConfig: {
+        method: 'POST',
+        url: 'api/purchase-order/query/purchase-order',
+      },
+    }
+  ],
+  columns: [
+    { key: 'updatedAt' },
+    { key: 'id' },
+    { key: 'poNo' },
+    { key: 'referenceNumber' },
+    { key: 'moduleTypeCode' },
+    { key: 'incoTermsCode' },
+    { key: 'freightTermsCode' },
+    { key: 'portOfLoadingCode' },
+    { key: 'portOfDischargeCode' },
+    { key: 'departureDateEstimated' },
+    { key: 'departureDateActual' },
+    { key: 'departureDateRemark' },
+    { key: 'arrivalDateEstimated' },
+    { key: 'arrivalDateActual' },
+    { key: 'arrivalDateRemark' },
+    { key: 'shippingDateEstimated' },
+    { key: 'shippingDateActual' },
+    { key: 'shippingDateRemark' },
+    { key: 'deliveryDateEstimated' },
+    { key: 'deliveryDateActual' },
+    { key: 'deliveryDateRemark' },
+    { key: 'exitFactoryDateEstimated' },
+    { key: 'exitFactoryDateActual' },
+    { key: 'exitFactoryDateRemark' },
+    { key: 'poDate' },
+    { key: 'poDateRemark' },
+    { key: 'dontShipBeforeDate' },
+    { key: 'dontShipBeforeDateRemark' },
+    { key: 'dontShipAfterDate' },
+    { key: 'dontShipAfterDateRemark' },
+    { key: 'shipperPartyCode' },
+    { key: 'shipperPartyName' },
+    { key: 'shipperPartyContactEmail' },
+    { key: 'shipperPartyContactName' },
+    { key: 'buyerPartyCode' },
+    { key: 'buyerPartyName' },
+    { key: 'buyerPartyContactEmail' },
+    { key: 'buyerPartyContactName' },
+    { key: 'factoryPartyCode' },
+    { key: 'factoryPartyName' },
+    { key: 'factoryPartyContactEmail' },
+    { key: 'factoryPartyContactName' },
+    { key: 'shipToPartyCode' },
+    { key: 'shipToPartyName' },
+    { key: 'shipToPartyContactEmail' },
+    { key: 'shipToPartyContactName' },
+    { key: 'productCode' },
+    { key: 'productName' },
+    { key: 'productSkuCode' },
+    { key: 'productDesctiption' },
+    { key: 'productCategoryName' },
+    { key: 'productCategoryDesctiption' },
+    { key: 'htsCode' },
+    { key: 'lwh' },
+    { key: 'ctn' },
+    { key: 'totalCtns' },
+    { key: 'weight' },
+    { key: 'totalGrossWeight' },
+    { key: 'totalVolume' },
+    { key: 'quantity' },
+    { key: 'totalQuantity' },
+  ]
+} as JqlDefinition
+
+/* import { Query, FromTable } from 'node-jql'
 
 const query = new Query({
   $from: new FromTable(
@@ -256,4 +334,4 @@ const query = new Query({
   ),
 })
 
-export default query.toJson()
+export default query.toJson() */

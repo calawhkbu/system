@@ -1,4 +1,33 @@
-import { Query, FromTable } from 'node-jql'
+import { JqlDefinition } from 'modules/report/interface'
+
+export default {
+  jqls: [
+    {
+      type: 'callAxios',
+      injectParams: true,
+      axiosConfig: {
+        method: 'POST',
+        url: 'api/task/query/task',
+      },
+    }
+  ],
+  columns: [
+    { key: 'id' },
+    { key: 'taskId' },
+    { key: 'taskName' },
+    { key: 'data' },
+    { key: 'result' },
+    { key: 'error' },
+    { key: 'workerId' },
+    { key: 'status' },
+    { key: 'registerAt' },
+    { key: 'runAt' },
+    { key: 'closeAt' },
+    { key: 'updatedAt' },
+  ]
+} as JqlDefinition
+
+/* import { Query, FromTable } from 'node-jql'
 
 const query = new Query({
   $distinct: true,
@@ -64,4 +93,4 @@ const query = new Query({
   ),
 })
 
-export default query.toJson()
+export default query.toJson() */
