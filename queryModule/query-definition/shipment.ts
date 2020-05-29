@@ -33,7 +33,7 @@ import {
   IQuery
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition, registerDateField } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition, registerDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate } from 'utils/jql-subqueries'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -1548,17 +1548,17 @@ const dateStatusExpression = (subqueryParam) => {
   const rawATDExpression = new ColumnExpression('shipment_date', 'departureDateActual')
   const rawETDExpression = new ColumnExpression('shipment_date', 'departureDateEstimated')
 
-  const addDateExpression = (expression: IExpression, mode: 'add' | 'sub', value, unit: 'DAY' | 'HOUR' | 'MINUTE') => {
+  // const addDateExpression = (expression: IExpression, mode: 'add' | 'sub', value, unit: 'DAY' | 'HOUR' | 'MINUTE') => {
 
-    const extraDateExpression = new ParameterExpression({
-      prefix: 'INTERVAL',
-      expression: value,
-      suffix: unit
-    })
+  //   const extraDateExpression = new ParameterExpression({
+  //     prefix: 'INTERVAL',
+  //     expression: value,
+  //     suffix: unit
+  //   })
 
-    return new FunctionExpression(mode === 'add' ? 'DATE_ADD' : 'DATE_SUB', expression, extraDateExpression)
+  //   return new FunctionExpression(mode === 'add' ? 'DATE_ADD' : 'DATE_SUB', expression, extraDateExpression)
 
-  }
+  // }
 
   const moduleTypeCodeCondition = (moduleTypeCode) => {
     return  new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', moduleTypeCode)
@@ -1567,11 +1567,13 @@ const dateStatusExpression = (subqueryParam) => {
   const AIRDateStatusExpression = (subqueryParam) =>
   {
 
-    // convert a date to 23:59 of that day
-    const convertToEndOfDate = (dateExpression) => addDateExpression(addDateExpression(new FunctionExpression('DATE', dateExpression), 'add', 1, 'DAY'), 'sub', 1, 'MINUTE')
+    // // convert a date to 23:59 of that day
+    // const convertToEndOfDate = (dateExpression) => addDateExpression(addDateExpression(new FunctionExpression('DATE', dateExpression), 'add', 1, 'DAY'), 'sub', 1, 'MINUTE')
 
-    // convert a date to 00:01 of that day
-    const convertToStartOfDate = (dateExpression) => addDateExpression(new FunctionExpression('DATE', dateExpression), 'sub', 1, 'MINUTE')
+    // // convert a date to 00:01 of that day
+    // const convertToStartOfDate = (dateExpression) => addDateExpression(new FunctionExpression('DATE', dateExpression), 'sub', 1, 'MINUTE')
+
+
 
     // const todayExpression = new FunctionExpression('NOW')
     const todayExpression = new Value(subqueryParam.today)
@@ -3118,26 +3120,47 @@ query
   .register('currentFrom', 10)
   .register('currentTo', 11)
 
+
+
+const dateNameList = [
+  'departure',
+  'arrival',
+  'oceanBill',
+  'cargoReady',
+  'scheduleAssigned',
+  'scheduleApproaved',
+  'spaceConfirmation',
+  'bookingSubmit',
+  'cyCutOff',
+  'documentCutOff',
+  'pickup',
+  'shipperLoad',
+  'returnLoad',
+  'cargoReceipt',
+  'shipperDocumentSubmit',
+  'shipperInstructionSubmit',
+  'houseBillDraftSubmit',
+  'houseBillConfirmation',
+  'masterBillReleased',
+  'preAlertSend',
+  'ediSend',
+  'cargoRolloverStatus',
+  'inboundTransfer',
+  'onRail',
+  'arrivalAtDepot',
+  'availableForPickup',
+  'pickupCargoBeforeDemurrage',
+  'finalCargo',
+  'cargoPickupWithDemurrage',
+  'finalDoorDelivery',
+  'returnEmptyContainer',
+]
+
 const dateList = [
-  'departureDateEstimated',
-  'departureDateAcutal',
-  'arrivalDateEstimated',
-  'arrivalDateActual',
 
-  'oceanBillDateEstimated',
-  'oceanBillDateAcutal',
-  'cargoReadyDateEstimated',
-  'cargoReadyDateActual',
-
-  'cyCutOffDateEstimated',
-  'cyCutOffDateAcutal',
-  'pickupDateEstimated',
-  'pickupDateActual',
-
-  'cargoReceiptDateEstimated',
-  'cargoReceiptDateAcutal',
-  'finalDoorDeliveryDateEstimated',
-  'finalDoorDeliveryDateActual',
+  ...dateNameList.reduce((accumulator,currentValue) => {
+    return accumulator.concat([`${currentValue}DateEstimated`,`${currentValue}DateActual`])
+  },[]),
 
   {
     name: 'alertCreatedAt',
