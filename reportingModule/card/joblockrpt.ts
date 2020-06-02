@@ -4,12 +4,8 @@ import _ = require('lodash')
 export default {
   jqls: [
     {
-      type: 'callAxios',
-      injectParams: true,
-      axiosConfig: {
-        method: 'POST',
-        url: 'api/shipment/query/job',
-      }
+      type: 'callDataService',
+      dataServiceQuery: ['shipment', 'job']
     },
     {
       type: 'postProcess',

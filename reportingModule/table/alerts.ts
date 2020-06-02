@@ -1,6 +1,4 @@
 import { JqlDefinition } from 'modules/report/interface'
-import { IQueryParams } from 'classes/query'
-import { AxiosRequestConfig } from 'axios'
 
 export default {
   jqls: [

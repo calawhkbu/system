@@ -1,6 +1,4 @@
 import { IQueryParams } from 'classes/query'
-import { Request } from 'classes/request'
-import { AxiosRequestConfig } from 'axios'
 import { JqlDefinition } from 'modules/report/interface'
 
 export default {
