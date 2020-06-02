@@ -44,18 +44,9 @@
           {
             "type": "dispatch",
             "otherParams": {
-              "name": "auth/login",
+              "name": "auth/widgetLogin",
               "type": "local"
-            },
-            "afterActions": [
-              {
-                "type": "router",
-                "otherParams": {
-                  "func": "redirect",
-                  "path": "{{ $store.external.domain }}"
-                }
-              }
-            ]
+            }
           }
         ]
       },
