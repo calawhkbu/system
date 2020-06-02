@@ -1938,7 +1938,8 @@ const fieldList = [
   'isCoload',
   'houseNo',
   'jobNo',
-
+  'masterNo',
+  'containerNos',
   {
     name: 'primaryKeyListString',
     expression: primaryKeyListStringExpression
@@ -3057,6 +3058,10 @@ const dateNameList = [
   'cargoPickupWithDemurrage',
   'finalDoorDelivery',
   'returnEmptyContainer',
+  'sentToShipper',
+  'gateIn',
+  'sentToConsignee',
+  'loadOnboard'
 ]
 
 const dateList = [
@@ -3086,6 +3091,21 @@ const dateList = [
 
 
 registerDateField(query, 'shipment_date', dateList)
+
+
+query.registerResultColumn(
+  'lastStatusWidget',
+  new ResultColumn(new Value(1)),
+  'table:shipment_date',
+  'field:houseNo',
+  'field:masterNo',
+  'field:containerNos',
+  ...(dateNameList.reduce((companion: string[], dateString: string) => {
+    companion.push(`field:${dateString}DateEstimated`)
+    companion.push(`field:${dateString}DateActual`)
+    return companion
+  }, []))
+)
 
 // Search
 query
