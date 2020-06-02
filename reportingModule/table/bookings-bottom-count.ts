@@ -86,13 +86,9 @@ export default {
       }
     },
     {
-      type: 'callAxios',
-      injectParams: true,
-      axiosConfig: {
-        method: 'POST',
-        url: 'api/booking/query/booking-count',
-      },
-    }
+      type: 'callDataService',
+      dataServiceQuery: ['booking', 'booking-count']
+    },
   ],
   columns: [
     { key: 'count' },

@@ -15,21 +15,16 @@ export default {
       }
     },
     {
-      type: 'callAxios',
-      injectParams: true,
-      getAxiosConfig(req, params): AxiosRequestConfig {
-        let url = `api/shipment/query/shipment`
+      type: 'callDataService',
+      getDataServiceQuery(params): [string, string] {
+        let entityType = 'shipment'
         const subqueries = (params.subqueries = params.subqueries || {})
         if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
-          const entityType = subqueries.entityType.value
-          url = `api/shipment/query/${entityType}`
+          entityType = subqueries.entityType.value
         }
-        return {
-          method: 'POST',
-          url,
-        }
+        return [entityType, entityType]
       },
-      responseMapping: [
+      resultMapping: [
         { from: 'alertCount', to: 'count' },
       ]
     },

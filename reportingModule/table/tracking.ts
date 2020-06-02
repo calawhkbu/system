@@ -3,12 +3,8 @@ import { JqlDefinition } from 'modules/report/interface'
 export default {
   jqls: [
     {
-      type: 'callAxios',
-      injectParams: true,
-      axiosConfig: {
-        method: 'POST',
-        url: 'api/swivel-tracking/query/tracking',
-      },
+      type: 'callDataService',
+      dataServiceQuery: ['tracking', 'tracking']
     }
   ],
   columns: [

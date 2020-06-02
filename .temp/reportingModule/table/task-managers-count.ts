@@ -3,12 +3,9 @@ import { JqlDefinition } from 'modules/report/interface'
 export default {
   jqls: [
     {
-      type: 'callAxios',
-      injectParams: true,
-      axiosConfig: {
-        method: 'POST',
-        url: 'api/taskManager/query/task_manager/count',
-      },
+      type: 'callDataService',
+      dataServiceType: 'count',
+      dataServiceQuery: ['taskManager', 'task_manager']
     }
   ],
   columns: [

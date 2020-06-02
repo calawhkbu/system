@@ -3,12 +3,9 @@ import { JqlDefinition } from 'modules/report/interface'
 export default {
   jqls: [
     {
-      type: 'callAxios',
-      injectParams: true,
-      axiosConfig: {
-        method: 'POST',
-        url: 'api/party/query/party/count',
-      },
+      type: 'callDataService',
+      dataServiceType: 'count',
+      dataServiceQuery: ['party', 'party']
     }
   ],
   columns: [

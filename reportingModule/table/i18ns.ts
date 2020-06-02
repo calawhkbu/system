@@ -3,12 +3,8 @@ import { JqlDefinition } from 'modules/report/interface'
 export default {
   jqls: [
     {
-      type: 'callAxios',
-      injectParams: true,
-      axiosConfig: {
-        method: 'POST',
-        url: 'api/i18n/query/i18n',
-      },
+      type: 'callDataService',
+      dataServiceQuery: ['i18n', 'i18n']
     }
   ],
   columns: [

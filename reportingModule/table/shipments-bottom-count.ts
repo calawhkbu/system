@@ -89,12 +89,9 @@ export default {
       }
     },
     {
-      type: 'callAxios',
-      injectParams: true,
-      axiosConfig: {
-        method: 'POST',
-        url: 'api/shipment/query/shipment/count',
-      },
+      type: 'callDataService',
+      dataServiceType: 'count',
+      dataServiceQuery: ['shipment', 'shipment']
     }
   ],
   columns: [
