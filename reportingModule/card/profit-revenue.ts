@@ -29,15 +29,11 @@ export default {
       }
     },
     {
-      type: 'callAxios',
-      injectParams: true,
-      axiosConfig: {
-        method: 'POST',
-        url: 'api/shipment/query/profit',
-      },
-      onAxiosResponse(res, params, prevResult): any[] {
+      type: 'callDataService',
+      dataServiceQuery: ['shipment', 'profit'],
+      onResult(res, params, prevResult): any[] {
         const moment: typeof Moment = prevResult.moment
-        return res.data.reduce<any[]>((a, row) => {
+        return res.reduce<any[]>((a, row) => {
           const mi = moment(row.jobMonth, 'YYYY-MM')
           const year = mi.format('YYYY')
           const month = mi.format('MMMM')

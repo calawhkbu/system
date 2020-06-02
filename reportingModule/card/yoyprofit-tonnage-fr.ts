@@ -121,14 +121,10 @@ export default {
             }
           },
           {
-            type: 'callAxios',
-            injectParams: true,
-            axiosConfig: {
-              method: 'POST',
-              url: 'api/shipment/query/profit'
-            },
-            onAxiosResponse(res, params, prevResult): any {
-              prevResult.currentF = processProfitResult(res.data, params, prevResult.moment, true, true)
+            type: 'callDataService',
+            dataServiceQuery: ['shipment', 'profit'],
+            onResult(res, params, prevResult): any {
+              prevResult.currentF = processProfitResult(res, params, prevResult.moment, true, true)
               return prevResult
             }
           }
@@ -143,14 +139,10 @@ export default {
             }
           },
           {
-            type: 'callAxios',
-            injectParams: true,
-            axiosConfig: {
-              method: 'POST',
-              url: 'api/shipment/query/profit'
-            },
-            onAxiosResponse(res, params, prevResult): any {
-              prevResult.currentR = processProfitResult(res.data, params, prevResult.moment, true, false)
+            type: 'callDataService',
+            dataServiceQuery: ['shipment', 'profit'],
+            onResult(res, params, prevResult): any {
+              prevResult.currentR = processProfitResult(res, params, prevResult.moment, true, false)
               return prevResult
             }
           }
@@ -165,14 +157,10 @@ export default {
             }
           },
           {
-            type: 'callAxios',
-            injectParams: true,
-            axiosConfig: {
-              method: 'POST',
-              url: 'api/shipment/query/profit'
-            },
-            onAxiosResponse(res, params, prevResult): any {
-              prevResult.lastF = processProfitResult(res.data, params, prevResult.moment, false, true)
+            type: 'callDataService',
+            dataServiceQuery: ['shipment', 'profit'],
+            onResult(res, params, prevResult): any {
+              prevResult.lastF = processProfitResult(res, params, prevResult.moment, false, true)
               return prevResult
             }
           }
@@ -187,14 +175,10 @@ export default {
             }
           },
           {
-            type: 'callAxios',
-            injectParams: true,
-            axiosConfig: {
-              method: 'POST',
-              url: 'api/shipment/query/profit'
-            },
-            onAxiosResponse(res, params, prevResult): any {
-              prevResult.lastR = processProfitResult(res.data, params, prevResult.moment, false, false)
+            type: 'callDataService',
+            dataServiceQuery: ['shipment', 'profit'],
+            onResult(res, params, prevResult): any {
+              prevResult.lastR = processProfitResult(res, params, prevResult.moment, false, false)
               return prevResult
             }
           }
@@ -209,14 +193,10 @@ export default {
             }
           },
           {
-            type: 'callAxios',
-            injectParams: true,
-            axiosConfig: {
-              method: 'POST',
-              url: 'api/shipment/query/shipment'
-            },
-            onAxiosResponse(res, params, prevResult): any {
-              prevResult.tonnage = processTonnageResult(res.data, params, prevResult.moment)
+            type: 'callDataService',
+            dataServiceQuery: ['shipment', 'shipment'],
+            onResult(res, params, prevResult): any {
+              prevResult.tonnage = processTonnageResult(res, params, prevResult.moment)
               return prevResult
             }
           }

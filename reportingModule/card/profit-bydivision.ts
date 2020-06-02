@@ -14,8 +14,8 @@ function prepareParams(params: IQueryParams, type: string): IQueryParams {
   return params
 }
 
-function processResult(res: AxiosResponse<any[]>, moment: typeof Moment, type: string): any[] {
-  return res.data.reduce<any[]>((a, row) => {
+function processResult(result: any[], moment: typeof Moment, type: string): any[] {
+  return result.reduce<any[]>((a, row) => {
     const mi = moment(row.jobMonth, 'YYYY-MM')
     const year = mi.format('YYYY')
     const month = mi.format('MMMM')
@@ -52,13 +52,9 @@ export default {
             }
           },
           {
-            type: 'callAxios',
-            injectParams: true,
-            axiosConfig: {
-              method: 'POST',
-              url: 'api/shipment/query/profit'
-            },
-            async onAxiosResponse(res, params, prevResult, user): Promise<any> {
+            type: 'callDataService',
+            dataServiceQuery: ['shipment', 'profit'],
+            async onResult(res, params, prevResult, user): Promise<any> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
               prevResult.FCL = processResult(res, prevResult.moment, 'FCL')
               return prevResult
@@ -74,13 +70,9 @@ export default {
             }
           },
           {
-            type: 'callAxios',
-            injectParams: true,
-            axiosConfig: {
-              method: 'POST',
-              url: 'api/shipment/query/profit'
-            },
-            async onAxiosResponse(res, params, prevResult, user): Promise<any> {
+            type: 'callDataService',
+            dataServiceQuery: ['shipment', 'profit'],
+            async onResult(res, params, prevResult, user): Promise<any> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
               prevResult.LCL = processResult(res, prevResult.moment, 'LCL')
               return prevResult
@@ -96,13 +88,9 @@ export default {
             }
           },
           {
-            type: 'callAxios',
-            injectParams: true,
-            axiosConfig: {
-              method: 'POST',
-              url: 'api/shipment/query/profit'
-            },
-            async onAxiosResponse(res, params, prevResult, user): Promise<any> {
+            type: 'callDataService',
+            dataServiceQuery: ['shipment', 'profit'],
+            async onResult(res, params, prevResult, user): Promise<any> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
               prevResult.Consol = processResult(res, prevResult.moment, 'Consol')
               return prevResult
@@ -114,7 +102,11 @@ export default {
     {
       type: 'postProcess',
       postProcess(params, prevResult): any[] {
-        return prevResult.FCL.concat(prevResult.LCL).concat(prevResult.Consol)
+        return prevResult.FCL.concat(prevResult.LCL).concat(prevResult.Consol).sort((l, r) => {
+          l = l.type.split('-')[1]
+          r = r.type.split('-')[1]
+          return l.localeCompare(r)
+        })
       }
     }
   ]

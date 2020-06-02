@@ -26,15 +26,11 @@ export default {
       }
     },
     {
-      type: 'callAxios',
-      injectParams: true,
-      axiosConfig: {
-        method: 'POST',
-        url: 'api/shipment/query/profit-frc'
-      },
-      onAxiosResponse(res, params, prevResult): any[] {
+      type: 'callDataService',
+      dataServiceQuery: ['shipment', 'profit-frc'],
+      onResult(res, params, prevResult): any[] {
         const moment: typeof Moment = prevResult.moment
-        return res.data.map(row => {
+        return res.map(row => {
           const row_: any = { carrierName: row.carrierName }
           for (const m of [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
             const month = m === -1 ? 'total' : moment().month(m).format('MMMM')
