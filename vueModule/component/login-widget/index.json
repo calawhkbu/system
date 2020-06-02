@@ -1,5 +1,4 @@
 {
-  "layout": "CardLayout",
   "components": [
     {
       "is": "Form",
@@ -45,44 +44,13 @@
           {
             "type": "dispatch",
             "otherParams": {
-              "name": "auth/login",
+              "name": "auth/widgetLogin",
               "type": "local"
-            },
-            "afterActions": [
-              {
-                "type": "router",
-                "otherParams": {
-                  "func": "redirect",
-                  "path": "{{ $store.external.domain }}"
-                }
-              }
-            ]
+            }
           }
         ]
       },
       "slots": [
-        {
-          "is": "DynamicComponent",
-          "name": "pre-form",
-          "props": {
-            "style": {
-              "margin": "auto",
-              "min-height": "150px"
-            },
-            "components": [
-              {
-                "is": "v-img",
-                "props": {
-                  "src": "https://360uat.swivelsoftware.asia/img/logo/swivel-logo-light.svg",
-                  "style": {
-                    "width": "484px",
-                    "max-width": "100%"
-                  }
-                }
-              }
-            ]
-          }
-        },
         {
           "is": "DynamicComponent",
           "name": "post-form",
@@ -133,30 +101,16 @@
                 "is": "DynamicComponent",
                 "props": {
                   "style": {
+                    "align-items": "center",
                     "display": "flex"
                   },
                   "components": [
                     {
-                      "is": "WechatLoginButton",
+                      "is": "i18nText",
+                      "name": "default",
                       "props": {
-                        "successActions": [
-                          {
-                            "type": "dispatch",
-                            "otherParams": {
-                              "name": "auth/login",
-                              "type": "wechat"
-                            },
-                            "afterActions": [
-                              {
-                                "type": "router",
-                                "otherParams": {
-                                  "func": "redirect",
-                                  "path": "{{ $store.external.domain }}"
-                                }
-                              }
-                            ]
-                          }
-                        ]
+                        "isComponent": "small",
+                        "i18nKey": "Powered by Swivel Software Ltd."
                       }
                     },
                     {

@@ -1003,6 +1003,13 @@ const officeErpSiteExpression = new FunctionExpression(
   new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.erpSite')
 )
 
+const controllingCustomerErpCodeExpression = new FunctionExpression(
+  'JSON_UNQUOTE',
+  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('controllingCustomer', 'thirdPartyCode'), '$.erpCode')
+)
+
+
+
 const primaryKeyListStringExpression = new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id')))
 
 const partyGroupCodeExpression = new ColumnExpression('shipment', 'partyGroupCode')
@@ -1907,9 +1914,15 @@ const fieldList = [
   ...locationExpressionList,
 
   {
-    name: 'erpSite',
+    name : 'officeErpSite',
     expression: officeErpSiteExpression,
     companion: ['table:office']
+  },
+
+  {
+    name : 'controllingCustomerErpCode',
+    expression: controllingCustomerErpCodeExpression,
+    companion: ['table:controllingCustomer']
   },
 
   {
