@@ -1,6 +1,5 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
-import { AxiosRequestConfig } from 'axios'
 
 const shipmentBottomSheetId = 'cb22011b-728d-489b-a64b-b881914be600'
 const bookingBottomSheetId = 'bde2d806-d2bb-490c-b3e3-9e4792f353dd'
@@ -34,20 +33,16 @@ export default {
       }
     },
     {
-      type: 'callAxios',
-      injectParams: true,
-      getAxiosConfig(req, params): AxiosRequestConfig {
+      type: 'callDataService',
+      getDataServiceQuery(params): [string, string] {
         let entityType = 'shipment'
         const subqueries = (params.subqueries = params.subqueries || {})
         if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
           entityType = subqueries.entityType.value
         }
-        return {
-          method: 'POST',
-          url: `api/${entityType}/query/${entityType}`,
-        }
+        return [entityType, entityType]
       },
-      onAxiosResponse(res, params): any[] {
+      onResult(res, params): any[] {
         let bottomSheetId = shipmentBottomSheetId
         const subqueries = (params.subqueries = params.subqueries || {})
         if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
@@ -58,9 +53,9 @@ export default {
           dateStatus = subqueries.dateStatus.value
         }
         return [dateStatus.reduce<any>((r, status) => {
-          const found = res.data.find(row => row.dateStatus === status)
+          const found = res.find(row => row.dateStatus === status)
           if (found) r[`${status}_primaryKeyListString`] = found.primaryKeyListString
-          r[`${status}_count`] = res.data.reduce((r, row) => r + (row.dateStatus === status ? row.count : 0), 0)
+          r[`${status}_count`] = res.reduce((r, row) => r + (row.dateStatus === status ? row.count : 0), 0)
           return r
         }, { bottomSheetId })]
       }
