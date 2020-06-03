@@ -1003,6 +1003,13 @@ const officeErpSiteExpression = new FunctionExpression(
   new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.erpSite')
 )
 
+const controllingCustomerErpCodeExpression = new FunctionExpression(
+  'JSON_UNQUOTE',
+  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('controllingCustomer', 'thirdPartyCode'), '$.erpCode')
+)
+
+
+
 const primaryKeyListStringExpression = new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id')))
 
 const partyGroupCodeExpression = new ColumnExpression('shipment', 'partyGroupCode')
@@ -1907,9 +1914,15 @@ const fieldList = [
   ...locationExpressionList,
 
   {
-    name: 'erpSite',
+    name : 'officeErpSite',
     expression: officeErpSiteExpression,
     companion: ['table:office']
+  },
+
+  {
+    name : 'controllingCustomerErpCode',
+    expression: controllingCustomerErpCodeExpression,
+    companion: ['table:controllingCustomer']
   },
 
   {
@@ -1938,7 +1951,8 @@ const fieldList = [
   'isCoload',
   'houseNo',
   'jobNo',
-
+  'masterNo',
+  'containerNos',
   {
     name: 'primaryKeyListString',
     expression: primaryKeyListStringExpression
@@ -3057,6 +3071,10 @@ const dateNameList = [
   'cargoPickupWithDemurrage',
   'finalDoorDelivery',
   'returnEmptyContainer',
+  'sentToShipper',
+  'gateIn',
+  'sentToConsignee',
+  'loadOnboard'
 ]
 
 const dateList = [
@@ -3086,6 +3104,21 @@ const dateList = [
 
 
 registerDateField(query, 'shipment_date', dateList)
+
+
+query.registerResultColumn(
+  'lastStatusWidget',
+  new ResultColumn(new Value(1)),
+  'table:shipment_date',
+  'field:houseNo',
+  'field:masterNo',
+  'field:containerNos',
+  ...(dateNameList.reduce((companion: string[], dateString: string) => {
+    companion.push(`field:${dateString}DateEstimated`)
+    companion.push(`field:${dateString}DateActual`)
+    return companion
+  }, []))
+)
 
 // Search
 query

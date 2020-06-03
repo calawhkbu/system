@@ -58,6 +58,42 @@ export default {
 
 /* import { Query, FromTable, ResultColumn, ColumnExpression } from 'node-jql'
 
+const dateNameList = [
+  'oceanBill',
+  'cargoReady',
+  'scheduleAssigned',
+  'scheduleApproaved',
+  'spaceConfirmation',
+  'bookingSubmit',
+  'cyCutOff',
+  'documentCutOff',
+  'pickup',
+  'shipperLoad',
+  'returnLoad',
+  'cargoReceipt',
+  'shipperDocumentSubmit',
+  'shipperInstructionSubmit',
+  'houseBillDraftSubmit',
+  'houseBillConfirmation',
+  'masterBillReleased',
+  'preAlertSend',
+  'ediSend',
+  'cargoRolloverStatus',
+  'inboundTransfer',
+  'onRail',
+  'arrivalAtDepot',
+  'availableForPickup',
+  'pickupCargoBeforeDemurrage',
+  'finalCargo',
+  'cargoPickupWithDemurrage',
+  'finalDoorDelivery',
+  'returnEmptyContainer',
+  'sentToShipper',
+  'gateIn',
+  'sentToConsignee',
+  'loadOnboard'
+]
+
 const query = new Query({
   $from: new FromTable(
     {
@@ -71,7 +107,7 @@ const query = new Query({
 
         { name: 'bookingNo', type: 'string' },
         { name: 'poNos', type: 'string' },
-        { name : 'containerNos', type : 'string' },
+        { name: 'containerNos', type : 'string' },
         { name: 'contractNos', type: 'string' },
 
         { name: 'commodity', type: 'string' },
@@ -116,6 +152,11 @@ const query = new Query({
         { name: 'lastStatusCodeOrDescription', type: 'string' },
         { name: 'lastStatusDate', type: 'string' },
         { name: 'lastStatusWidget', type: 'string' },
+        ...(dateNameList.reduce((total: any[], name: string) => {
+          total.push({ name: `${name}DateEstimated`, type: 'Date' })
+          total.push({ name: `${name}DateActual`, type: 'Date' })
+          return total
+        }, []))
       ],
     },
     'shipment'
