@@ -1,35 +1,16 @@
 {
+  "name": "TableTracking",
   "layout": "Plugin",
-  "name": "Tracking",
   "lazy": true,
+  "hide-overlay": true,
   "remote": true,
-  "loadWhenDataLoaded": true,
-  "axiosBaseParams": [
-    "const data = context.$store.state.widget.data;",
-    "return {",
-    "url: `api/swivel-tracking/getold`,",
-    "method: 'post',",
-    "data: {",
-    "masterNo: data.masterNo,",
-    "carrierBookingNo: data.billContainers.map(c => c.carrierBookingNo),",
-    "containerNo: data.billContainers.map(c => c.containerNo)",
-    "}",
-    "}"
-  ],
   "shareProps": {
     "icon": "statusCode",
-    "titleKey": {
-      "key": "key",
-      "track": true
-    },
+    "titleKey": "statusCode",
     "subTitleKeys": [
       "statusDescription",
       "statusPlace",
-      {
-        "key": "statusDate",
-        "is": "Datetime",
-        "format": "YYYY-MM-DD HH:mm:ss"
-      }
+      "details"
     ],
     "iconMap": {
       "BKCF": "tracking/bkcf",
@@ -76,10 +57,7 @@
     }
   },
   "baseSummaryProps": {
-    "getModule": "moduleType",
     "size": -1
   },
-  "baseDetailProps": {
-    "getModule": "moduleType"
-  }
+  "baseDetailProps": {}
 }

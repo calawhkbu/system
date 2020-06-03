@@ -277,7 +277,7 @@ const app = {
       return l.jobMonth.localeCompare(r.jobMonth)
     })
 
-    const result = [] as any[]
+    let result = [] as any[]
     const anyRow = responseBody.find(r => r.officePartyCode === site)
     const currency = anyRow ? anyRow.currency : 'HKD'
     for (const carrier of carriers) {
@@ -289,13 +289,19 @@ const app = {
         const monthName = month === 'total' ? month : moment(month, 'YYYY-MM').format('MMMM')
         for (const nominatedTypeCode of ['F', 'R', 'C']) {
           for (const field of ['grossProfit', 'profitShareIncome', 'profitShareCode', 'profitShare', 'otherProfit', 'revenue']) {
-            row[`${monthName}_${nominatedTypeCode}_${field}`] = r ? r[`${nominatedTypeCode}_${field}`] : 0
+            row[`${monthName}_${nominatedTypeCode}_${field}`] = (r && r[`${nominatedTypeCode}_${field}`]) || 0
           }
         }
       }
 
       result.push(row)
     }
+
+    result = result.sort((l, r) => {
+      const l_grossProfit = (l.total_F_grossProfit || 0) + (l.total_R_grossProfit || 0) + (l.total_C_grossProfit || 0)
+      const r_grossProfit = (r.total_F_grossProfit || 0) + (r.total_R_grossProfit || 0) + (r.total_C_grossProfit || 0)
+      return l_grossProfit < r_grossProfit ? 1 : l_grossProfit > r_grossProfit ? -1 : 0
+    })
 
     /* {
       officePartyCode: string,

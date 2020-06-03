@@ -3,7 +3,7 @@ import { EventService, EventConfig, EventHandlerConfig, EventData } from 'module
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import _ = require('lodash')
-import { RelatedPersonDatabaseService } from 'modules/sequelize/relatedPerson/service'
+import { RelatedPersonTableService } from 'modules/sequelize/services/table/relatedPerson'
 import { RelatedPerson } from 'models/main/relatedPerson'
 import BaseEventHandler from 'modules/events/baseEventHandler'
 import { Shipment } from 'models/main/shipment'
@@ -26,7 +26,7 @@ export default class CreateRelatedPersonEvent extends BaseEventHandler {
     const {
       RelatedPersonDatabaseService: service
     } = this.allService as {
-      RelatedPersonDatabaseService: RelatedPersonDatabaseService
+      RelatedPersonDatabaseService: RelatedPersonTableService
     }
 
     for (const relatedPerson of relatedPeople) {

@@ -14,8 +14,8 @@
       "Exception": "notification_important",
       "Message": "message"
     },
-    "titleKey": "alertTitle",
-    "subTitleKeys": ["alertMessage"],
+    "titleKey": "alertType",
+    "subTitleKeys": ["alertContent"],
     "noIcon": "notifications_none"
   },
   "baseSummaryProps": {
@@ -26,10 +26,10 @@
       "method": "POST",
       "url": "api/alert/updateStatus/{{id}}"
     },
-    "avaliableAlertTab" : {
+    "selects": {
       "All": "return data",
-      "Exception": "return data.filter(x => x.alertCategory === 'Exception')",
-      "Other": "return data.filter(x => x.alertCategory !== 'Exception')"
+      "Exception": "return data.filter(m => m.alertCategory === 'Exception')",
+      "Message": "return data.filter(m => m.alertCategory === 'Message' || m.alertCategory === 'Notification')"
     }
   }
 }

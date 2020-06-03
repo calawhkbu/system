@@ -436,28 +436,19 @@ export default {
     }
   ],
   afterCreate_tracking: [
-    // {
-    //   eventName: 'create_tracking_alerts',
-    // },
-    // {
-    //   eventName: 'update_tracking_back_to_entity'
-    // },
     {
-      eventName: 'update_shipment_date_from_tracking',
+      eventName: 'update_data_from_tracking',
     },
+    // {
+    //   eventName: 'create_tracking_alert'
+    // },
   ],
   afterUpdate_tracking: [
-    // {
-    //   eventName: 'create_tracking_alerts',
-    // },
-    // {
-    //   eventName: 'update_tracking_back_to_entity'
-    // },
     {
-      eventName: 'update_shipment_date_from_tracking',
+      eventName: 'update_data_from_tracking',
     },
     // {
-    //   eventName: 'send_edi',
+    //   eventName: 'create_tracking_alert'
     // },
   ],
 
