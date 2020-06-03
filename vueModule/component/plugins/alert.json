@@ -2,7 +2,6 @@
   "layout": "Plugin",
   "name": "Alert",
   "transition": "slide-y-reverse-transition",
-  "loadWhenDataLoaded": true,
   "lazy": true,
   "hide-overlay": true,
   "remote": true,
@@ -26,7 +25,7 @@
       "method": "POST",
       "url": "api/alert/updateStatus/{{id}}"
     },
-    "avaliableAlertTab" : {
+    "avaliableAlertTab": {
       "All": "return data",
       "Exception": "return data.filter(x => x.alertCategory === 'Exception')",
       "Other": "return data.filter(x => x.alertCategory !== 'Exception')"

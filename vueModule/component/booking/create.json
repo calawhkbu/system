@@ -770,19 +770,6 @@
                     "i18nContext": "BookingPage",
                     "i18nKey": "createTitle"
                   }
-                },
-                {
-                  "is": "v-spacer"
-                },
-                {
-                  "is": "LoadEntityTemplateButton",
-                  "props": {
-                    "class": "max-width-300",
-                    "axiosParams": {
-                      "method": "GET",
-                      "url": "/default/booking/list"
-                    }
-                  }
                 }
               ]
             }
