@@ -2935,10 +2935,9 @@ query.registerQuery('isColoader',
 ).register('value', 0)
 
 
-
 function viaHKGExpression() {
   const erpCode = 'G0001'
-  return new BinaryExpression(officeErpCodeExpression, false, erpCode)
+  return new BinaryExpression(officeErpCodeExpression, '=' , erpCode)
 }
 
 query.subquery('viaHKG',
