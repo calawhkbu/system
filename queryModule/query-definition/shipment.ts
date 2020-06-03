@@ -993,19 +993,19 @@ const shipIdExpression = new QueryExpression(new Query({
 }))
 
 
-const officeOld360IdExpression = new FunctionExpression(
-  'JSON_UNQUOTE',
-  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
-)
-
 const officeErpSiteExpression = new FunctionExpression(
   'JSON_UNQUOTE',
   new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.erpSite')
 )
 
+const officeErpCodeExpression = new FunctionExpression(
+  'JSON_UNQUOTE',
+  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.erp')
+)
+
 const controllingCustomerErpCodeExpression = new FunctionExpression(
   'JSON_UNQUOTE',
-  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('controllingCustomer', 'thirdPartyCode'), '$.erpCode')
+  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('controllingCustomer', 'thirdPartyCode'), '$.erp')
 )
 
 
@@ -1275,8 +1275,8 @@ const defaultReportingGroupExpression = new CaseExpression({
 // WHEN b.division = 'AI' AND b.isDirect = 0 THEN 'AM'
 // WHEN b.division = 'AI' AND b.isDirect = 1 THEN 'AN'
 // WHEN b.division = 'TA' THEN 'AW'
-// WHEN office.thirdPartyCode.old360  = 7351496 AND b.division = 'TAE' THEN 'AU'
-// WHEN office.thirdPartyCode.old360 = 7351496 AND b.division = 'TAI' THEN 'AV'
+// WHEN office.thirdPartyCode.erp  = G0017 AND b.division = 'TAE' THEN 'AU'
+// WHEN office.thirdPartyCode.erp = G0017 AND b.division = 'TAI' THEN 'AV'
 // WHEN b.division = 'MM' THEN 'AX'
 // WHEN b.division = 'AM' THEN 'AZ'
 // WHEN b.division = 'SE' AND b.shipmentType = 'FCL' THEN 'SA'
@@ -1285,15 +1285,16 @@ const defaultReportingGroupExpression = new CaseExpression({
 // WHEN b.division = 'SI' AND b.shipmentType = 'FCL' THEN 'SR'
 // WHEN b.division = 'SI' AND b.shipmentType = 'LCL' THEN 'SS'
 // WHEN b.division = 'SI' AND b.shipmentType = 'Consol' THEN 'ST'
-// WHEN office.thirdPartyCode.old360 = 7351496 AND b.division = 'TSE' THEN 'SU'
-// WHEN office.thirdPartyCode.old360 = 7351496 AND b.division = 'TSI' THEN 'SV'
+// WHEN office.thirdPartyCode.erp = G0017 AND b.division = 'TSE' THEN 'SU'
+// WHEN office.thirdPartyCode.erp = G0017 AND b.division = 'TSI' THEN 'SV'
 // WHEN b.division = 'TS' THEN 'SW'
 // WHEN b.division = 'SM' THEN 'SZ'
 // WHEN b.division = 'LOG' THEN 'ZL'
 // ELSE LEFT(b.division, 2)
 // END
 
-const gglTaiwanOfficeOld360Id = 7351496
+const gglTaiwanOfficeErpCode = 'G0017'
+
 const gglreportingGroupExpression = new CaseExpression({
 
   cases: [
@@ -1338,7 +1339,7 @@ const gglreportingGroupExpression = new CaseExpression({
     {
       $when: new AndExpressions([
 
-        new BinaryExpression(officeOld360IdExpression, '=', gglTaiwanOfficeOld360Id),
+        new BinaryExpression(officeErpCodeExpression, '=', gglTaiwanOfficeErpCode),
 
         new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TAE')
       ]),
@@ -1348,7 +1349,7 @@ const gglreportingGroupExpression = new CaseExpression({
     {
       $when: new AndExpressions([
 
-        new BinaryExpression(officeOld360IdExpression, '=', gglTaiwanOfficeOld360Id),
+        new BinaryExpression(officeErpCodeExpression, '=', gglTaiwanOfficeErpCode),
 
         new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TAE')
       ]),
@@ -1420,7 +1421,7 @@ const gglreportingGroupExpression = new CaseExpression({
     {
       $when: new AndExpressions([
 
-        new BinaryExpression(officeOld360IdExpression, '=', gglTaiwanOfficeOld360Id),
+        new BinaryExpression(officeErpCodeExpression, '=', gglTaiwanOfficeErpCode),
 
         new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TSE')
       ]),
@@ -1430,7 +1431,7 @@ const gglreportingGroupExpression = new CaseExpression({
     {
       $when: new AndExpressions([
 
-        new BinaryExpression(officeOld360IdExpression, '=', gglTaiwanOfficeOld360Id),
+        new BinaryExpression(officeErpCodeExpression, '=', gglTaiwanOfficeErpCode),
 
         new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TSI')
       ]),
@@ -1923,6 +1924,12 @@ const fieldList = [
     name : 'controllingCustomerErpCode',
     expression: controllingCustomerErpCodeExpression,
     companion: ['table:controllingCustomer']
+  },
+
+  {
+    name : 'officeErpCode',
+    expression: officeErpCodeExpression,
+    companion: ['table:office']
   },
 
   {
@@ -2926,10 +2933,11 @@ query.registerQuery('isColoader',
 
 ).register('value', 0)
 
-function viaHKGExpression() {
 
-  const old360PartyIdList = [7351490]
-  return new InExpression(officeOld360IdExpression, false, old360PartyIdList)
+
+function viaHKGExpression() {
+  const erpCode = 'G0001'
+  return new BinaryExpression(officeErpCodeExpression, false, erpCode)
 }
 
 query.subquery('viaHKG',

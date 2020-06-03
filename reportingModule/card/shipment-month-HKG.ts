@@ -17,7 +17,7 @@ import {
 
 import { parseCode } from 'utils/function'
 
-function prepareParams(houseNoLike_: string): Function {
+function prepareParams(houseNoStartWith_: string): Function {
   const fn = function(require, session, params) {
     // import
     const { moment } = params.packages
@@ -55,7 +55,7 @@ function prepareParams(houseNoLike_: string): Function {
     // warning : hardCode, very hardcode
     // TODO : need to hardcode partyId in new 360
     subqueries.viaHKG = true
-    subqueries.houseNoLike = { value: houseNoLike_ }
+    subqueries.houseNoStartWith = { value: houseNoStartWith_ }
 
     const codeColumnName = `officePartyCode`
     const nameColumnName = `officePartyName`
@@ -73,11 +73,15 @@ function prepareParams(houseNoLike_: string): Function {
       ...groupByVariables
     ]
 
+
+    console.log(`testtest`)
+    console.log(params)
+
     return params
   }
 
   let code = fn.toString()
-  code = code.replace(new RegExp('houseNoLike_', 'g'), `'${houseNoLike_}'`)
+  code = code.replace(new RegExp('houseNoStartWith_', 'g'), `'${houseNoStartWith_}'`)
   return parseCode(code)
 }
 
@@ -285,8 +289,8 @@ export default [
   // prepare data
 
   // // insert one by one
-  [prepareParams('GZH%'), prepareData('GGL GZH')],
-  [prepareParams('XMN%'), prepareData('GGL XMN')],
+  [prepareParams('GZH'), prepareData('GGL GZH')],
+  [prepareParams('XMN'), prepareData('GGL XMN')],
 
   finalQuery(),
 
