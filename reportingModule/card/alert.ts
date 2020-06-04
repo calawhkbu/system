@@ -48,25 +48,22 @@ export default {
       },
     },
     {
-      injectParams: true,
-      getAxiosConfig(req, params): AxiosRequestConfig {
+      type: 'callDataService',
+      getDataServiceQuery(req, params): [string, string] {
         let entityType = 'shipment'
         const subqueries = (params.subqueries = params.subqueries || {})
         if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
           entityType = subqueries.entityType.value
         }
-        return {
-          method: 'POST',
-          url: `api/${entityType}/query/${entityType}`,
-        }
+        return [entityType, entityType]
       },
-      onAxiosResponse(res, params): any[] {
+      onResult(res, params): any[] {
         let bottomSheetId = shipmentBottomSheetId
         const subqueries = (params.subqueries = params.subqueries || {})
         if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
           if (subqueries.entityType.value === 'booking') bottomSheetId = bookingBottomSheetId
         }
-        return res.data.map(r => ({ ...r, bottomSheetId }))
+        return res.map(r => ({ ...r, bottomSheetId }))
       }
     }
   ],

@@ -1,7 +1,6 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import { BadRequestException } from '@nestjs/common'
-import { AxiosResponse } from 'axios'
 import Moment = require('moment')
 
 interface Result {
