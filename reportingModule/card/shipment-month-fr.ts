@@ -15,6 +15,7 @@ import {
   MathExpression,
   IsNullExpression,
   OrExpressions,
+  IColumn,
 } from 'node-jql'
 
 import { parseCode } from 'utils/function'
@@ -34,9 +35,8 @@ function prepareParams(): Function {
     // -----------------------------groupBy variable
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
     const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`
+    const nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
 
-    const groupByVariables = [codeColumnName, nameColumnName]
 
     const topX = subqueries.topX.value
 
@@ -82,12 +82,13 @@ function prepareParams(): Function {
     params.fields = [
       // select Month statistics
       ...summaryVariables.map(variable => `${specialMonth.name}_${variable}Month`),
-      ...groupByVariables,
+      codeColumnName,
+      nameColumnName
     ]
 
     // group by
     params.groupBy = [
-      ...groupByVariables,
+      codeColumnName,
     ]
 
     // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
@@ -129,9 +130,7 @@ function finalQuery(): Function {
     // -----------------------------groupBy variable
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
     const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`
-
-    const groupByVariables = [codeColumnName, nameColumnName]
+    const nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
 
     const topX = subqueries.topX.value
 
@@ -157,6 +156,7 @@ function finalQuery(): Function {
     if (!(summaryVariables && summaryVariables.length)){
       throw new Error('MISSING_summaryVariables')
     }
+
     // -------------------------------------
 
     const $select = [
@@ -166,8 +166,9 @@ function finalQuery(): Function {
     ]
 
     const columns = [
-      ...groupByVariables.map(variable => new Column(variable, 'string', true)),
-    ] as any[]
+      { name: codeColumnName, type: 'string' },
+      { name: nameColumnName, type: 'string' },
+    ] as IColumn[]
 
     summaryVariables.map(variable => {
 
