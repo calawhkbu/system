@@ -9,7 +9,9 @@ export default {
   // should not be called directly, should be called after an event
   create_alert: [{ handlerName: 'create_alert' }], // create alert from entity
   create_tracking: [{ handlerName: 'create_tracking' }], // create tracking from entity
-  fill_template: [{ handlerName: 'fill_template' }],
+
+  // fill_template: [{ handlerName: 'fill_template' }],
+
   send_data_to_external: [{ handlerName: 'send_data_to_external' }],
   send_edi: [{ handlerName: 'send_edi' }],
   create_related_party: [{handlerName: 'create_related_party'}],
@@ -131,19 +133,22 @@ export default {
         }
       }
     },
-    // fill shipping order
-    {
-      condition: true,
-      eventName: 'fill_template',
-      otherParameters: {
-        tableName: 'booking',
-        fileName: 'Shipping Order',
-        // use booking .id as primaryKey
-        primaryKey: result => {
-          return result.data.id
-        },
-      },
-    },
+
+    // // fill shipping order
+    // {
+    //   condition: true,
+    //   eventName: 'fill_template',
+    //   otherParameters: {
+    //     tableName: 'booking',
+    //     fileName: 'Shipping Order',
+    //     // use booking .id as primaryKey
+    //     primaryKey: result => {
+    //       return result.data.id
+    //     },
+    //   },
+    // },
+
+
     // create related party
     {
       condition: true,
@@ -165,6 +170,12 @@ export default {
     // send fm3k
     {
       condition: true,
+      // condition: ({ originalEntity }: EventData<any>) => {
+      //   if (process.env.NODE_ENV === 'production') {
+      //     return originalEntity.from !== 'erp'
+      //   }
+      //   return false
+      // },
       eventName: 'send_data_to_external',
       otherParameters: {
         outboundName: 'erp-booking'
@@ -242,45 +253,51 @@ export default {
       }
     },
     // fill shipping order
-    {
-      condition: true,
-      handlerName: 'checker',
-      otherParameters: {
-        checker: [
-          {
-            resultName: 'haveDiff',
-            checkerFunction: (parameters: any) => {
-              const difference = diff(
-                parameters.oldData,
-                parameters.data,
-                undefined,
-                ['documents'],
-                ['createdAt', 'createdBy', 'updatedAt', 'updatedBy']
-              )
-              return difference ? true : false
-            },
-          },
-        ],
-      },
-      afterEvent: [
-        {
-          eventName: 'fill_template',
-          previousParameters: {
-            tableName: 'booking',
-            fileName: 'Shipping Order',
-            primaryKey: parameters => {
-              return parameters.data.id
-            },
-          },
-          condition(parameters: any) {
-            return parameters.checkerResult['haveDiff']
-          },
-        },
-      ],
-    },
+    // {
+    //   condition: true,
+    //   handlerName: 'checker',
+    //   otherParameters: {
+    //     checker: [
+    //       {
+    //         resultName: 'haveDiff',
+    //         checkerFunction: (parameters: any) => {
+    //           const difference = diff(
+    //             parameters.oldData,
+    //             parameters.data,
+    //             undefined,
+    //             ['documents'],
+    //             ['createdAt', 'createdBy', 'updatedAt', 'updatedBy']
+    //           )
+    //           return difference ? true : false
+    //         },
+    //       },
+    //     ],
+    //   },
+    //   afterEvent: [
+    //     // {
+    //     //   eventName: 'fill_template',
+    //     //   previousParameters: {
+    //     //     tableName: 'booking',
+    //     //     fileName: 'Shipping Order',
+    //     //     primaryKey: parameters => {
+    //     //       return parameters.data.id
+    //     //     },
+    //     //   },
+    //     //   condition(parameters: any) {
+    //     //     return parameters.checkerResult['haveDiff']
+    //     //   },
+    //     // },
+    //   ],
+    // },
     // send fm3k
     {
       condition: true,
+      // condition: ({ originalEntity }: EventData<any>) => {
+      //   if (process.env.NODE_ENV === 'production') {
+      //     return originalEntity.from !== 'erp'
+      //   }
+      //   return false
+      // },
       eventName: 'send_data_to_external',
       otherParameters: {
         outboundName: 'erp-booking'
@@ -411,12 +428,16 @@ export default {
       }
     },
   ],
-  // tracking
-  create_tracking_alerts: [
-    {// update entity(booking) with a tracking
-      handlerName: 'create_tracking_alerts'
-    }
-  ],
+
+
+  // // tracking
+  // create_tracking_alerts: [
+  //   {// update entity(booking) with a tracking
+  //     handlerName: 'create_tracking_alerts'
+  //   }
+  // ],
+
+
   tracking_error_update_reference_again: [
     { // update error ro change
       handlerName: 'tracking_error_update_reference_again',

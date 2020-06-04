@@ -554,9 +554,7 @@ function prepareParams(): Function {
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
 
     const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`
-
-    const groupByVariables = [codeColumnName, nameColumnName]
+    const nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
 
     const topX = subqueries.topX.value
 
@@ -598,12 +596,13 @@ function prepareParams(): Function {
     params.fields = [
       // select Month statistics
       ...summaryVariables.map(variable => `${variable}MonthLastCurrent`),
-      ...groupByVariables,
+      codeColumnName,
+      nameColumnName
     ]
 
     // group by
     params.groupBy = [
-      ...groupByVariables,
+      codeColumnName,
     ]
 
     params.limit = topX
@@ -665,9 +664,7 @@ function finalQuery()
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
 
     const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`
-
-    const groupByVariables = [codeColumnName, nameColumnName]
+    const nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
 
     let summaryVariables: string[] = []
     if (subqueries.summaryVariables && subqueries.summaryVariables.value)
@@ -686,7 +683,8 @@ function finalQuery()
     }
 
     const columns = [
-      ...groupByVariables.map(variable => ({ name: variable, type: 'string' })),
+      { name: codeColumnName, type: 'string' },
+      { name: nameColumnName, type: 'string' },
     ]
 
     const $select = [
