@@ -114,15 +114,14 @@ export default {
         // -----------------------------groupBy variable
         const groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
         const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-        const nameColumnName = prevResult.nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`
-        const groupByVariables = [codeColumnName, nameColumnName]
+        const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
         const topX = subqueries.topX.value
 
         // ---------------------summaryVariables
         let summaryVariables: string[] = []
         if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
           // sumamary variable
-          summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
+          summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value]
         }
         if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
           summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
@@ -151,13 +150,12 @@ export default {
         params.fields = [
           // select Month statistics
           ...summaryVariables.map(variable => `${variable}MonthLastCurrent`),
-          ...groupByVariables,
+          codeColumnName,
+          nameColumnName,
         ]
 
         // group by
-        params.groupBy = [
-          ...groupByVariables,
-        ]
+        params.groupBy = [codeColumnName]
 
         params.limit = topX
 

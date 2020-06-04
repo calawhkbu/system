@@ -31,7 +31,7 @@ export default {
             ? `agentGroup`
             : `${xAxis}PartyCode`
         const nameColumnName =
-          xAxis === 'carrier'
+          (xAxis === 'carrier'
             ? `carrierName`
             : xAxis === 'portOfLoadingCode'
             ? `portOfLoadingCode`
@@ -39,7 +39,7 @@ export default {
             ? `portOfDischargeCode`
             : xAxis === 'agentGroup'
             ? `agentGroup`
-            : `${xAxis}PartyShortNameInReport`
+            : `${xAxis}PartyShortNameInReport`) + 'Any'
         // ------------------------------
 
         prevResult.xAxis = xAxis
@@ -49,7 +49,7 @@ export default {
 
         params.sorting = new OrderBy(summaryColumnName, 'DESC')
         params.fields = [...new Set([codeColumnName, summaryColumnName, nameColumnName])]
-        params.groupBy = [codeColumnName, nameColumnName]
+        params.groupBy = [codeColumnName]
 
         return params
       }
