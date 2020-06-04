@@ -1,12 +1,13 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
-import moment = require('moment')
 
 export default {
   jqls: [
     {
       type: 'prepareParams',
-      prepareParams(params): IQueryParams {
+      async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+        const { moment } = await this.preparePackages(user)
+
         params.fields = [
           'id',
           'houseNo',
