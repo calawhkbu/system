@@ -80,20 +80,6 @@ const partyList = [
 
 const locationList = ['portOfLoading', 'portOfDischarge', 'placeOfDelivery', 'placeOfReceipt', 'finalDestination']
 
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-]
 
 const query = new QueryDef(
   new Query({
@@ -639,12 +625,12 @@ locationList.map(location => {
           $as : `${location}`
         }),
         $on: [
-          new BinaryExpression(new ColumnExpression(`${location}`, 'portCode'), '=', new ColumnExpression('shipment', locationCode)),
+          new BinaryExpression(new ColumnExpression(`${location}`, 'portCode'), '=', new ColumnExpression('booking', locationCode)),
         ]
       }]
     }),
 
-      $where: new IsNullExpression(new ColumnExpression('shipment', locationCode), true)
+      $where: new IsNullExpression(new ColumnExpression('booking', locationCode), true)
 
     })
   )
@@ -1329,7 +1315,7 @@ const summaryFieldList : SummaryField[]  = [
   {
     name: 'totalBooking',
     summaryType: 'count',
-    expression: new ColumnExpression('shipment', 'id')
+    expression: new ColumnExpression('booking', 'id')
   },
   {
     name: 'quantity',
@@ -1345,113 +1331,6 @@ const summaryFieldList : SummaryField[]  = [
 
 registerSummaryField(query, baseTableName, summaryFieldList, nestedSummaryList, jobDateExpression)
 
-// function summaryFieldExpression(summaryField: string | { name: string, expression: IExpression }, condition?: IConditionalExpression) {
-
-//   const expression = typeof summaryField === 'string' ? new ColumnExpression('booking', summaryField) : summaryField.expression
-
-//   if (condition) {
-//     const countIfExpression = new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new FunctionExpression('IF', condition, new ColumnExpression('booking', 'id'), new Value(null))))
-//     const sumIfExpression = new FunctionExpression('SUM', new FunctionExpression('IF', condition, new FunctionExpression('IFNULL', expression, 0), 0))
-//     return summaryField === 'totalBooking' ? countIfExpression : sumIfExpression
-//   }
-
-//   return (summaryField === 'totalBooking') ?
-//     new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('booking', 'id'))) :
-//     new FunctionExpression('SUM', new FunctionExpression('IFNULL', expression, 0))
-
-// }
-
-// summaryFieldList.map((summaryField: string | { name: string, expression: IExpression }) => {
-
-//   const summaryFieldName = typeof summaryField === 'string' ? summaryField : summaryField.name
-
-//   //  cmbMonth case
-//   const resultColumnList = [] as ResultColumn[]
-
-//   const nestedSummaryResultColumnList = {} as { [name: string]: ResultColumn[] }
-
-//   nestedSummaryList.map(x => {
-//     nestedSummaryResultColumnList[x.name] = [] as ResultColumn[]
-//   })
-
-//   months.forEach((month, index) => {
-
-//     const monthCondition = new BinaryExpression(new FunctionExpression('Month', jobDateExpression), '=', index + 1)
-
-//     const monthSumExpression = summaryFieldExpression(summaryField, monthCondition)
-//     resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_${summaryFieldName}`))
-
-//     // ====frc===================
-
-//     nestedSummaryList.map(x => {
-
-//       // January_T_cbm
-//       nestedSummaryResultColumnList[x.name].push(new ResultColumn(monthSumExpression, `${month}_T_${summaryFieldName}`))
-
-//       x.cases.map(y => {
-//         const condition = new AndExpressions([
-//           monthCondition,
-//           y.condition
-//         ])
-
-//         // January_F_cbm
-//         const frcMonthSumExpression = summaryFieldExpression(summaryField, condition)
-//         nestedSummaryResultColumnList[x.name].push(new ResultColumn(frcMonthSumExpression, `${month}_${y.typeCode}_${summaryFieldName}`))
-
-//       })
-
-//     })
-
-//   })
-
-//   const totalValueExpression = summaryFieldExpression(summaryField)
-
-//   resultColumnList.push(new ResultColumn(totalValueExpression, `total_${summaryFieldName}`))
-
-//   nestedSummaryList.map(x => {
-
-//     x.cases.map(y => {
-
-//       // total_F_cbm
-//       const typeTotalExpression = summaryFieldExpression(summaryField, y.condition)
-//       nestedSummaryResultColumnList[x.name].push(new ResultColumn(typeTotalExpression, `total_${y.typeCode}_${summaryFieldName}`))
-
-//     })
-
-//     nestedSummaryResultColumnList[x.name].push(new ResultColumn(totalValueExpression, `total_T_${summaryFieldName}`))
-
-//     query.registerResultColumn(`${x.name}_${summaryFieldName}Month`, (params) => nestedSummaryResultColumnList[x.name])
-
-//   })
-
-//   // cbmMonth
-//   query.registerResultColumn(`${summaryFieldName}Month`, (params) => resultColumnList)
-
-//   // cbm/chargeableWeight
-//   query.register(summaryFieldName, new ResultColumn(totalValueExpression, summaryFieldName))
-
-//   // cbmLastCurrent
-
-//   const lastCurrentFn = (param) => {
-
-//     const lastCondition = new BetweenExpression(jobDateExpression, false, new Value(param.subqueries.date.lastFrom), new Value(param.subqueries.date.lastTo))
-//     const lastSummaryField = summaryFieldExpression(summaryField, lastCondition)
-
-//     const currentCondition = new BetweenExpression(jobDateExpression, false, new Value(param.subqueries.date.currentFrom), new Value(param.subqueries.date.currentTo))
-//     const currentSummaryField = summaryFieldExpression(summaryField, currentCondition)
-
-//     return [
-//       new ResultColumn(lastSummaryField, `${summaryFieldName}Last`),
-//       new ResultColumn(currentSummaryField, `${summaryFieldName}Current`)
-//     ]
-
-//   }
-
-//   query.registerResultColumn(`${summaryFieldName}LastCurrent`, lastCurrentFn)
-
-// })
-
-// ------------- register filter
 
 // Date Filter=================
 
