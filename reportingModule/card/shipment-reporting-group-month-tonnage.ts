@@ -4,6 +4,12 @@ import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import _ = require('lodash')
 import Moment = require('moment')
 
+interface Result {
+  moment: typeof Moment
+  allowed: string[]
+  result: any[]
+}
+
 export default {
   constants: {
     moduleTypeCodeList: {
@@ -46,7 +52,7 @@ export default {
     {
       type: 'prepareParams',
       defaultResult: {},
-      prepareParams(params, prevResult, user): IQueryParams {
+      prepareParams(params, prevResult: Result, user): IQueryParams {
         const reportingGroupList: { [key: string]: string[] } = params.constants.reportingGroupList
         const searchUserRoleList: string[] = params.constants.searchUserRoleList
 
@@ -73,7 +79,7 @@ export default {
     {
       type: 'prepareParams',
       defaultResult: {},
-      async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+      async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
         const moment = prevResult.moment = (await this.preparePackages(user)).moment as typeof Moment
         const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -112,7 +118,7 @@ export default {
     {
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'shipment'],
-      onResult(res, params, prevResult): any {
+      onResult(res, params, prevResult: Result): Result {
         const { moment } = prevResult
         prevResult.result = res.map(row => {
           const row_: any = {}
@@ -132,7 +138,7 @@ export default {
     },
     {
       type: 'postProcess',
-      postProcess(params, { allowed, result, moment }): any[] {
+      postProcess(params, { allowed, result, moment }: Result): any[] {
         const moduleTypeCodeList: { [key: string]: string[] } = params.constants.moduleTypeCodeList
 
         // filter by allowed reporting groups

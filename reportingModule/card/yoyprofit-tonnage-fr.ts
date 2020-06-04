@@ -2,6 +2,15 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import Moment from 'moment'
 
+interface Result {
+  moment: typeof Moment
+  currentF: any[]
+  currentR: any[]
+  lastF: any[]
+  lastR: any[]
+  tonnage: any[]
+}
+
 function prepareProfitParams(params: IQueryParams, moment: typeof Moment, current: boolean, freehand: boolean): IQueryParams {
   const subqueries = (params.subqueries = params.subqueries || {})
   if (subqueries.date && subqueries.date !== true && 'from' in subqueries.date) {
@@ -115,7 +124,7 @@ export default {
         [
           {
             type: 'prepareParams',
-            async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+            async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
               return prepareProfitParams(params, prevResult.moment, true, true)
             }
@@ -123,7 +132,7 @@ export default {
           {
             type: 'callDataService',
             dataServiceQuery: ['shipment', 'profit'],
-            onResult(res, params, prevResult): any {
+            onResult(res, params, prevResult: Result): Result {
               prevResult.currentF = processProfitResult(res, params, prevResult.moment, true, true)
               return prevResult
             }
@@ -133,7 +142,7 @@ export default {
         [
           {
             type: 'prepareParams',
-            async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+            async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
               return prepareProfitParams(params, prevResult.moment, true, false)
             }
@@ -141,7 +150,7 @@ export default {
           {
             type: 'callDataService',
             dataServiceQuery: ['shipment', 'profit'],
-            onResult(res, params, prevResult): any {
+            onResult(res, params, prevResult: Result): Result {
               prevResult.currentR = processProfitResult(res, params, prevResult.moment, true, false)
               return prevResult
             }
@@ -151,7 +160,7 @@ export default {
         [
           {
             type: 'prepareParams',
-            async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+            async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
               return prepareProfitParams(params, prevResult.moment, false, true)
             }
@@ -159,7 +168,7 @@ export default {
           {
             type: 'callDataService',
             dataServiceQuery: ['shipment', 'profit'],
-            onResult(res, params, prevResult): any {
+            onResult(res, params, prevResult: Result): Result {
               prevResult.lastF = processProfitResult(res, params, prevResult.moment, false, true)
               return prevResult
             }
@@ -169,7 +178,7 @@ export default {
         [
           {
             type: 'prepareParams',
-            async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+            async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
               return prepareProfitParams(params, prevResult.moment, false, false)
             }
@@ -177,7 +186,7 @@ export default {
           {
             type: 'callDataService',
             dataServiceQuery: ['shipment', 'profit'],
-            onResult(res, params, prevResult): any {
+            onResult(res, params, prevResult: Result): Result {
               prevResult.lastR = processProfitResult(res, params, prevResult.moment, false, false)
               return prevResult
             }
@@ -187,7 +196,7 @@ export default {
         [
           {
             type: 'prepareParams',
-            async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+            async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
               return prepareTonnageParams(params, prevResult.moment)
             }
@@ -195,7 +204,7 @@ export default {
           {
             type: 'callDataService',
             dataServiceQuery: ['shipment', 'shipment'],
-            onResult(res, params, prevResult): any {
+            onResult(res, params, prevResult: Result): Result {
               prevResult.tonnage = processTonnageResult(res, params, prevResult.moment)
               return prevResult
             }
@@ -205,9 +214,7 @@ export default {
     },
     {
       type: 'postProcess',
-      postProcess(params, { lastF, lastR, currentF, currentR, tonnage, ...prevResult }): any[] {
-        const moment: typeof Moment = prevResult.moment
-
+      postProcess(params, { lastF, lastR, currentF, currentR, tonnage, moment }: Result): any[] {
         const subqueries = (params.subqueries = params.subqueries || {})
         let tonnageSummaryVariables: string[] = []
         if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables !== true && 'value' in subqueries.tonnageSummaryVariables) {

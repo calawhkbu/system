@@ -2,12 +2,20 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import { OrderBy } from 'node-jql'
 
+interface Result {
+  result: any[]
+  xAxis: string
+  summaryColumnName: string
+  codeColumnName: string
+  nameColumnName: string
+}
+
 export default {
   jqls: [
     {
       type: 'prepareParams',
       defaultResult: {},
-      prepareParams(params, prevResult): IQueryParams {
+      prepareParams(params, prevResult: Result): IQueryParams {
         const subqueries = (params.subqueries = params.subqueries || {})
 
         // warning cannot display from frontend
@@ -57,7 +65,7 @@ export default {
     {
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'shipment'],
-      onResult(res, params, prevResult): any {
+      onResult(res, params, prevResult: Result): Result {
         const { summaryColumnName, codeColumnName, nameColumnName } = prevResult
         prevResult.result = res.map(row => {
           const result = {
@@ -74,7 +82,7 @@ export default {
     },
     {
       type: 'postProcess',
-      postProcess(params, { xAxis, summaryColumnName, codeColumnName, nameColumnName, result }): any[] {
+      postProcess(params, { xAxis, summaryColumnName, codeColumnName, nameColumnName, result }: Result): any[] {
         const subqueries = (params.subqueries = params.subqueries || {})
         const showOther = subqueries.showOther || false
         const topX = (subqueries.topX as any).value

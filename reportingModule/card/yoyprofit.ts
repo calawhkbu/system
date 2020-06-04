@@ -2,6 +2,12 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import Moment = require('moment')
 
+interface Result {
+  moment: typeof Moment
+  current: any[]
+  last: any[]
+}
+
 function prepareParams(params: IQueryParams, moment: typeof Moment, current: boolean): IQueryParams {
   const subqueries = (params.subqueries = params.subqueries || {})
   if (subqueries.date && subqueries.date !== true && 'from' in subqueries.date) {
@@ -53,7 +59,7 @@ export default {
         [
           {
             type: 'prepareParams',
-            async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+            async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
               return prepareParams(params, prevResult.moment, true)
             }
@@ -61,7 +67,7 @@ export default {
           {
             type: 'callDataService',
             dataServiceQuery: ['shipment', 'profit'],
-            onResult(data, params, prevResult): any {
+            onResult(data, params, prevResult: Result): Result {
               prevResult.current = processResult(data, params, prevResult.moment, true)
               return prevResult
             }
@@ -71,7 +77,7 @@ export default {
         [
           {
             type: 'prepareParams',
-            async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+            async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
               return prepareParams(params, prevResult.moment, false)
             }
@@ -79,7 +85,7 @@ export default {
           {
             type: 'callDataService',
             dataServiceQuery: ['shipment', 'profit'],
-            onResult(data, params, prevResult): any {
+            onResult(data, params, prevResult: Result): Result {
               prevResult.last = processResult(data, params, prevResult.moment, false)
               return prevResult
             }
@@ -89,7 +95,7 @@ export default {
     },
     {
       type: 'postProcess',
-      postProcess(params, { current, last }): any[] {
+      postProcess(params, { current, last }: Result): any[] {
         const result: any[] = current.concat(last)
 
         return result.reduce<any[]>((a, row) => {

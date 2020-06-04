@@ -4,6 +4,17 @@ import Moment = require('moment')
 import { OrderBy } from 'node-jql'
 import { BadRequestException } from '@nestjs/common'
 
+interface Result {
+  moment: typeof Moment
+  groupByEntity: string
+  codeColumnName: string
+  nameColumnName: string
+  summaryVariables: string[]
+  lastCurrentUnit: string
+  firstTableLastOrCurrent: string
+  result: any[]
+}
+
 function calculateLastCurrent(subqueries: any, moment: typeof Moment, lastCurrentUnit: string, lastOrCurrent_: 'last' | 'current') {
   if (!subqueries.date || !(subqueries.date !== true && 'from' in subqueries.date)) {
     throw new BadRequestException('MISSING_DATE')
@@ -98,7 +109,7 @@ export default {
     {
       type: 'prepareParams',
       defaultResult: {},
-      async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+      async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
         const moment = prevResult.moment = (await this.preparePackages(user)).moment
         const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -204,7 +215,7 @@ export default {
     {
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'shipment'],
-      onResult(res, params, prevResult): any {
+      onResult(res, params, prevResult: Result): Result {
         const { moment, codeColumnName, nameColumnName, summaryVariables } = prevResult
         const groupByVariables = [codeColumnName, nameColumnName]
         prevResult.result = res.map(row => {
@@ -226,11 +237,11 @@ export default {
     },
     {
       type: 'prepareParams',
-      prepareParams(params, prevResult): IQueryParams {
+      prepareParams(params, prevResult: Result): IQueryParams {
         const { moment, lastCurrentUnit, codeColumnName, firstTableLastOrCurrent, result } = prevResult
         const subqueries = (params.subqueries = params.subqueries || {})
 
-        const secondTableLastOrCurrent = prevResult.secondTableLastOrCurrent = firstTableLastOrCurrent === 'last' ? 'current' : 'last'
+        const secondTableLastOrCurrent = firstTableLastOrCurrent === 'last' ? 'current' : 'last'
         const { from, to } = calculateLastCurrent(subqueries, moment, lastCurrentUnit, secondTableLastOrCurrent)
         subqueries.date = { from, to }
 
@@ -242,7 +253,7 @@ export default {
     {
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'shipment'],
-      onResult(res, params, { moment, codeColumnName, nameColumnName, firstTableLastOrCurrent, secondTableLastOrCurrent, summaryVariables, result }): any {
+      onResult(res, params, { moment, codeColumnName, nameColumnName, firstTableLastOrCurrent, summaryVariables, result }: Result): any[] {
         let last: any[], current: any[]
         if (firstTableLastOrCurrent === 'last') {
           last = result

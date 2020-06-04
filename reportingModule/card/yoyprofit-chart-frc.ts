@@ -2,12 +2,16 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import Moment = require('moment')
 
+interface Result {
+  moment: typeof Moment
+}
+
 export default {
   jqls: [
     {
       type: 'prepareParams',
       defaultResult: {},
-      async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+      async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
         const { moment } = await this.preparePackages(user)
         prevResult.moment = moment
         const subqueries = (params.subqueries = params.subqueries || {})
@@ -28,8 +32,7 @@ export default {
     {
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'profit-frc'],
-      onResult(res, params, prevResult): any[] {
-        const moment: typeof Moment = prevResult.moment
+      onResult(res, params, { moment }: Result): any[] {
         return res.map(row => {
           const row_: any = { carrierName: row.carrierName }
           for (const m of [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {

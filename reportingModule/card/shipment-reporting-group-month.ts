@@ -2,6 +2,14 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import _ = require('lodash')
+import Moment = require('moment')
+
+interface Result {
+  moment: typeof Moment
+  allowed: string[]
+  summaryVariables: string[]
+  result: any[]
+}
 
 export default {
   constants: {
@@ -40,7 +48,7 @@ export default {
     {
       type: 'prepareParams',
       defaultResult: {},
-      prepareParams(params, prevResult, user): IQueryParams {
+      prepareParams(params, prevResult: Result, user): IQueryParams {
         const reportingGroupList: { [key: string]: string[] } = params.constants.reportingGroupList
         const searchUserRoleList: string[] = params.constants.searchUserRoleList
 
@@ -66,7 +74,7 @@ export default {
     },
     {
       type: 'prepareParams',
-      async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+      async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
         const { moment } = await this.preparePackages(user)
         const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -108,7 +116,7 @@ export default {
     {
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'shipment'],
-      onResult(res, params, prevResult): any {
+      onResult(res, params, prevResult: Result): Result {
         const { moment, summaryVariables } = prevResult
         prevResult.result = res.map(row => {
           const row_: any = {}
@@ -125,7 +133,7 @@ export default {
     },
     {
       type: 'postProcess',
-      postProcess(params, { allowed, result, moment, summaryVariables }): any[] {
+      postProcess(params, { allowed, result, moment, summaryVariables }: Result): any[] {
         const moduleTypeCodeList: { [key: string]: string[] } = params.constants.moduleTypeCodeList
         const summaryVariable = summaryVariables[0]
 

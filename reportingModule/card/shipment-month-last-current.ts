@@ -4,13 +4,21 @@ import { BadRequestException } from '@nestjs/common'
 import Moment = require('moment')
 import { OrderBy } from 'node-jql'
 
+interface Result {
+  moment: typeof Moment
+  groupByEntity: string
+  codeColumnName: string
+  nameColumnName: string
+  summaryVariables: string[]
+}
+
 export default {
   jqls: [
     {
       type: 'prepareParams',
       defaultResult: {},
-      async prepareParams(params, prevResult, user): Promise<IQueryParams> {
-        const moment: typeof Moment = prevResult.moment = (await this.preparePackages(user)).moment
+      async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
+        const moment = prevResult.moment = (await this.preparePackages(user)).moment
 
         function calculateLastCurrent(lastCurrentUnit: string) {
           if (!subqueries.date || !(subqueries.date !== true && 'from' in subqueries.date)) {
@@ -175,7 +183,7 @@ export default {
     {
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'shipment'],
-      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }): any[] {
+      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
         return res.map(row => {
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
 

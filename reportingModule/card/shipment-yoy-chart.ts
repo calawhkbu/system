@@ -4,6 +4,12 @@ import Moment = require('moment')
 import { BadRequestException } from '@nestjs/common'
 import { OrderBy } from 'node-jql'
 
+interface Result {
+  moment: typeof Moment
+  current: any[]
+  last: any[]
+}
+
 function prepareParams(params: IQueryParams, moment: typeof Moment, current: boolean): IQueryParams {
   const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -58,7 +64,7 @@ export default {
         [
           {
             type: 'prepareParams',
-            async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+            async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
               return prepareParams(params, prevResult.moment, true)
             }
@@ -66,7 +72,7 @@ export default {
           {
             type: 'callDataService',
             dataServiceQuery: ['shipment', 'shipment'],
-            onResult(res, params, prevResult): any {
+            onResult(res, params, prevResult: Result): Result {
               prevResult.current = processResult(res, params, prevResult.moment, true)
               return prevResult
             }
@@ -76,7 +82,7 @@ export default {
         [
           {
             type: 'prepareParams',
-            async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+            async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
               return prepareParams(params, prevResult.moment, false)
             }
@@ -84,7 +90,7 @@ export default {
           {
             type: 'callDataService',
             dataServiceQuery: ['shipment', 'shipment'],
-            onResult(res, params, prevResult): any {
+            onResult(res, params, prevResult: Result): Result {
               prevResult.last = processResult(res, params, prevResult.moment, false)
               return prevResult
             }
@@ -94,7 +100,7 @@ export default {
     },
     {
       type: 'postProcess',
-      postProcess(params, { current, last }): any[] {
+      postProcess(params, { current, last }: Result): any[] {
         return current.concat(last)
       }
     },

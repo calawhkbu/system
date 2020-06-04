@@ -3,12 +3,20 @@ import { IQueryParams } from 'classes/query'
 import { OrderBy } from 'node-jql'
 import Moment = require('moment')
 
+interface Result {
+  moment: typeof Moment
+  groupByEntity: string
+  codeColumnName: string
+  nameColumnName: string
+  summaryVariables: string[]
+}
+
 export default {
   jqls: [
     {
       type: 'prepareParams',
       defaultResult: {},
-      async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+      async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
         function guessSortingExpression(sortingValue: string, subqueries) {
           const variablePart = sortingValue.substr(0, sortingValue.lastIndexOf('_'))
           const sortingDirection = sortingValue.substr(sortingValue.lastIndexOf('_') + 1)
@@ -116,7 +124,7 @@ export default {
     {
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'shipment'],
-      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }): any[] {
+      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
         return res.map(row => {
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
 

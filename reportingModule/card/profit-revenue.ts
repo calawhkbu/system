@@ -2,14 +2,17 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import Moment = require('moment')
 
+interface Result {
+  moment: typeof Moment
+}
+
 export default {
   jqls: [
     {
       type: 'prepareParams',
       defaultResult: {},
-      async prepareParams(params, prevResult, user): Promise<IQueryParams> {
-        const { moment } = await this.preparePackages(user)
-        prevResult.moment = moment
+      async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
+        const moment = prevResult.moment = (await this.preparePackages(user)).moment
         const subqueries = (params.subqueries = params.subqueries || {})
         if (subqueries.date && subqueries.date !== true && 'from' in subqueries.date) {
           const year = moment(subqueries.date.from, 'YYYY-MM-DD').year()
@@ -31,8 +34,7 @@ export default {
     {
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'profit'],
-      onResult(res, params, prevResult): any[] {
-        const moment: typeof Moment = prevResult.moment
+      onResult(res, params, { moment }: Result): any[] {
         return res.reduce<any[]>((a, row) => {
           const mi = moment(row.jobMonth, 'YYYY-MM')
           const year = mi.format('YYYY')

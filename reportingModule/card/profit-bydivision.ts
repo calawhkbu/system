@@ -4,6 +4,13 @@ import { BadRequestException } from '@nestjs/common'
 import { AxiosResponse } from 'axios'
 import Moment = require('moment')
 
+interface Result {
+  moment: typeof Moment
+  FCL: any[]
+  LCL: any[]
+  Consol: any[]
+}
+
 function prepareParams(params: IQueryParams, type: string): IQueryParams {
   const subqueries = (params.subqueries = params.subqueries || {})
   if (!subqueries.division) throw new BadRequestException('MISSING_DIVISION')
@@ -54,7 +61,7 @@ export default {
           {
             type: 'callDataService',
             dataServiceQuery: ['shipment', 'profit'],
-            async onResult(res, params, prevResult, user): Promise<any> {
+            async onResult(res, params, prevResult: Result, user): Promise<Result> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
               prevResult.FCL = processResult(res, prevResult.moment, 'FCL')
               return prevResult
@@ -72,7 +79,7 @@ export default {
           {
             type: 'callDataService',
             dataServiceQuery: ['shipment', 'profit'],
-            async onResult(res, params, prevResult, user): Promise<any> {
+            async onResult(res, params, prevResult: Result, user): Promise<Result> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
               prevResult.LCL = processResult(res, prevResult.moment, 'LCL')
               return prevResult
@@ -90,7 +97,7 @@ export default {
           {
             type: 'callDataService',
             dataServiceQuery: ['shipment', 'profit'],
-            async onResult(res, params, prevResult, user): Promise<any> {
+            async onResult(res, params, prevResult: Result, user): Promise<Result> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
               prevResult.Consol = processResult(res, prevResult.moment, 'Consol')
               return prevResult
@@ -101,8 +108,8 @@ export default {
     },
     {
       type: 'postProcess',
-      postProcess(params, prevResult): any[] {
-        return prevResult.FCL.concat(prevResult.LCL).concat(prevResult.Consol).sort((l, r) => {
+      postProcess(params, { FCL, LCL, Consol }: Result): any[] {
+        return FCL.concat(LCL).concat(Consol).sort((l, r) => {
           l = l.type.split('-')[1]
           r = r.type.split('-')[1]
           return l.localeCompare(r)
