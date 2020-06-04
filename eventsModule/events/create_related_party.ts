@@ -1,5 +1,5 @@
 
-import { EventService, EventConfig, EventHandlerConfig, EventData } from 'modules/events/service'
+import { EventService, EventConfig, EventHandlerConfig, EventData, EventAllService } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import _ = require('lodash')
@@ -15,7 +15,7 @@ export default class CreateRelatedPartyEvent extends BaseEventHandler {
     protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
-    protected readonly allService: any,
+    protected readonly allService: EventAllService,
 
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
@@ -25,13 +25,12 @@ export default class CreateRelatedPartyEvent extends BaseEventHandler {
 
   private async createRelatedParty(relatedParties: RelatedParty[]) {
     const {
-      RelatedPartyDatabaseService: service
-    } = this.allService as {
-      RelatedPartyDatabaseService: RelatedPartyTableService
-    }
+      relatedPartyTableService
+    } = this.allService
+
     for (const relatedParty of relatedParties) {
       try {
-        const found = await service.findOne(
+        const found = await relatedPartyTableService.findOne(
           {
             where: {
               partyAId: relatedParty.partyAId,
@@ -43,7 +42,7 @@ export default class CreateRelatedPartyEvent extends BaseEventHandler {
           this.transaction
         )
         if (!found) {
-          await service.save(relatedParty, this.user)
+          await relatedPartyTableService.save(relatedParty, this.user)
         }
       } catch (e) {
         console.error(e, e.stack, this.constructor.name)

@@ -9,7 +9,9 @@ export default {
   // should not be called directly, should be called after an event
   create_alert: [{ handlerName: 'create_alert' }], // create alert from entity
   create_tracking: [{ handlerName: 'create_tracking' }], // create tracking from entity
-  fill_template: [{ handlerName: 'fill_template' }],
+
+  // fill_template: [{ handlerName: 'fill_template' }],
+
   send_data_to_external: [{ handlerName: 'send_data_to_external' }],
   send_edi: [{ handlerName: 'send_edi' }],
   create_related_party: [{handlerName: 'create_related_party'}],
@@ -131,19 +133,22 @@ export default {
         }
       }
     },
-    // fill shipping order
-    {
-      condition: true,
-      eventName: 'fill_template',
-      otherParameters: {
-        tableName: 'booking',
-        fileName: 'Shipping Order',
-        // use booking .id as primaryKey
-        primaryKey: result => {
-          return result.data.id
-        },
-      },
-    },
+
+    // // fill shipping order
+    // {
+    //   condition: true,
+    //   eventName: 'fill_template',
+    //   otherParameters: {
+    //     tableName: 'booking',
+    //     fileName: 'Shipping Order',
+    //     // use booking .id as primaryKey
+    //     primaryKey: result => {
+    //       return result.data.id
+    //     },
+    //   },
+    // },
+
+
     // create related party
     {
       condition: true,
@@ -263,19 +268,19 @@ export default {
         ],
       },
       afterEvent: [
-        {
-          eventName: 'fill_template',
-          previousParameters: {
-            tableName: 'booking',
-            fileName: 'Shipping Order',
-            primaryKey: parameters => {
-              return parameters.data.id
-            },
-          },
-          condition(parameters: any) {
-            return parameters.checkerResult['haveDiff']
-          },
-        },
+        // {
+        //   eventName: 'fill_template',
+        //   previousParameters: {
+        //     tableName: 'booking',
+        //     fileName: 'Shipping Order',
+        //     primaryKey: parameters => {
+        //       return parameters.data.id
+        //     },
+        //   },
+        //   condition(parameters: any) {
+        //     return parameters.checkerResult['haveDiff']
+        //   },
+        // },
       ],
     },
     // send fm3k
@@ -411,12 +416,16 @@ export default {
       }
     },
   ],
-  // tracking
-  create_tracking_alerts: [
-    {// update entity(booking) with a tracking
-      handlerName: 'create_tracking_alerts'
-    }
-  ],
+
+
+  // // tracking
+  // create_tracking_alerts: [
+  //   {// update entity(booking) with a tracking
+  //     handlerName: 'create_tracking_alerts'
+  //   }
+  // ],
+
+
   tracking_error_update_reference_again: [
     { // update error ro change
       handlerName: 'tracking_error_update_reference_again',

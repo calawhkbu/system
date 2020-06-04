@@ -1,5 +1,5 @@
 import BaseEventHandler from 'modules/events/baseEventHandler'
-import { EventService, EventConfig, EventData, EventHandlerConfig } from 'modules/events/service'
+import { EventService, EventConfig, EventData, EventHandlerConfig, EventAllService } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import { stringify } from 'querystring'
@@ -20,7 +20,7 @@ export default class CheckerEventHandler extends BaseEventHandler {
     protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
-    protected readonly allService: any,
+    protected readonly allService: EventAllService,
 
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction

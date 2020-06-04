@@ -1,4 +1,4 @@
-import { EventService, EventConfig, EventData, EventHandlerConfig } from 'modules/events/service'
+import { EventService, EventConfig, EventData, EventHandlerConfig, EventAllService } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import { OutboundService } from 'modules/integration-hub/services/outbound'
@@ -12,7 +12,7 @@ export default class SendDataToExternalEvent extends BaseEventHandler {
     protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
-    protected readonly allService: any,
+    protected readonly allService: EventAllService,
 
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
@@ -28,9 +28,8 @@ export default class SendDataToExternalEvent extends BaseEventHandler {
       const {
         latestEntity, outboundName, header = {}, body = {}
       } = eventData
-      const {
-        OutboundService: outboundService
-      } = this.allService as { OutboundService: OutboundService }
+
+      const { outboundService } = this.allService
 
       const selectedPartyGroupCode = this.user.selectedPartyGroup.code
 
