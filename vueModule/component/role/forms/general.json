@@ -14,17 +14,6 @@
           "class": "xs-12",
           "component": "AsyncAutoSuggest",
           "props": {
-            "searchValueParams": {
-              "method": "POST",
-              "url": "api/role/roleGroupOption/list",
-              "data": {
-                "subqueries": {
-                  "roleGroupLike": {
-                    "value": "{{context.autoSuggestModel}}"
-                  }
-                }
-              }
-            },
             "searchTextParams": {
               "method": "POST",
               "url": "api/role/roleGroupOption/list",
@@ -38,43 +27,19 @@
             },
             "canCreate": true,
             "canCreateValue": "{{autoSuggestModel}}"
-
           }
-
         },
-
-        {
-          "label": "RolePage.canMultiSelect",
-          "name": "canMultiSelect",
-          "component": "BooleanField",
-          "class": "xs-12 md-6"
-        },
-
         {
           "label": "RolePage.shareable",
           "name": "shareable",
           "component": "BooleanField",
           "class": "xs-12 md-6"
         },
-
-        {
-          "label": "RolePage.defaultSelect",
-          "name": "defaultSelect",
-          "component": "BooleanField",
-          "class": "xs-12 md-6"
-        },
-
-        {
-          "label": "RolePage.hidden",
-          "name": "hidden",
-          "component": "BooleanField",
-          "class": "xs-12 md-6"
-        },
-
         {
           "label": "RolePage.filter",
           "name": "filter",
           "component": "JsonField",
+
           "class": "xs-12"
         }
       ]

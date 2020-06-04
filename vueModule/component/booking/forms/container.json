@@ -56,7 +56,7 @@
         },
         {
           "label": "BookingPage.BookingPacking",
-          "name": "bookingPopacking",
+          "name": "bookingPoPackings",
           "component": "TableField",
           "props": {
             "topLabel": true,

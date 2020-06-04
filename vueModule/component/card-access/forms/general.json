@@ -36,27 +36,12 @@
             "item-value": "uuid"
           }
         },
-
         {
           "label": "CardAccessPage.disabled",
           "name": "disabled",
           "component": "BooleanField",
-          "class": "xs-3"
-        },
-
-        {
-          "label": "CardAccessPage.partyGroupSpecific",
-          "name": "partyGroupSpecific",
-          "component": "BooleanField",
-          "class": "xs-3"
-        },
-        {
-          "label": "CardAccessPage.partyGroupCode",
-          "name": "partyGroupCode",
-          "component": "v-text-field",
           "class": "xs-6"
         }
-
       ]
     }
   }]
