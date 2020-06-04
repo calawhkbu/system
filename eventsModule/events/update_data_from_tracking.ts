@@ -2,7 +2,7 @@ import moment = require('moment')
 import BluebirdPromise = require('bluebird')
 import { Transaction, Sequelize } from 'sequelize'
 
-import { EventService, EventHandlerConfig, EventData } from 'modules/events/service'
+import { EventService, EventHandlerConfig, EventData, EventAllService } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 
 import { Tracking } from 'models/main/tracking'
@@ -22,7 +22,7 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
     protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
-    protected readonly allService: any,
+    protected readonly allService: EventAllService,
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
   ) {
@@ -42,18 +42,13 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
     const start = Date.now()
     const partyGroupCode = ['DEV', 'GGL', 'DT', 'STD', 'ECX', 'ASW', 'FHUB']
 
-    const {
-      BookingService: bookingService,
-      ShipmentService : shipmentService,
-    }: {
-      BookingService: BookingTableService,
-      ShipmentService: ShipmentTableService
-    } = this.allService
+    const { bookingTableService,shipmentTableService } = this.allService
+
 
     const trackingDataList = this.getAllTrackingData(eventDataList)
     if (trackingDataList && trackingDataList.length) {
       const trackingNos = trackingDataList.map(trackingData => trackingData.trackingNo)
-      const shipmentIds = await shipmentService.query(
+      const shipmentIds = await shipmentTableService.query(
         `
           SELECT shipment.id, shipment.masterNo, shipment_container.carrierBookingNo, shipment_container.containerNo
           FROM shipment
@@ -121,11 +116,11 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
             }
             return querys
           }, []),
-          async(query: string) => await shipmentService.query(query, this.transaction),
+          async(query: string) => await shipmentTableService.query(query, this.transaction),
           { concurrency: 30 }
         )
       }
-      const bookingIds = await shipmentService.query(
+      const bookingIds = await shipmentTableService.query(
         `
           SELECT booking.id, booking_reference.refDescription as masterNo, booking_container.containerNo, booking_container.soNo as carrierBookingNo
           FROM booking
@@ -194,7 +189,7 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
             }
             return querys
           }, []),
-          async(query: string) => await shipmentService.query(query, this.transaction),
+          async(query: string) => await shipmentTableService.query(query, this.transaction),
           { concurrency: 30 }
         )
       }
