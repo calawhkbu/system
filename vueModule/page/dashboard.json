@@ -23,7 +23,14 @@
         },
         "configurations": {
           "i18nContext": "Reporting",
-          "colors": ["#4bc0c0", "#ff6384", "#ffcd56", "#c9cbcf", "#36a2eb", "#b19cd9"]
+          "colors": [
+            "#005EB8",
+            "#008675",
+            "#E35205",
+            "#AF272F",
+            "#F1B434",
+            "#c9cbcf"
+          ]
         }
       }
     }
