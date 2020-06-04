@@ -74,11 +74,10 @@ export default {
     },
     {
       type: 'postProcess',
-      postProcess(params, prevResult): any[] {
+      postProcess(params, { xAxis, summaryColumnName, codeColumnName, nameColumnName, result }): any[] {
         const subqueries = (params.subqueries = params.subqueries || {})
         const showOther = subqueries.showOther || false
         const topX = (subqueries.topX as any).value
-        const { xAxis, summaryColumnName, codeColumnName, nameColumnName, result } = prevResult
 
         const topXShipmentList: any[] = (result as any[]).filter(x => x[codeColumnName]).slice(0, topX)
         if (showOther) {

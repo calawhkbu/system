@@ -126,8 +126,8 @@ export default {
     },
     {
       type: 'postProcess',
-      postProcess(params, prevResult): any[] {
-        let result: any[] = prevResult.lastF.concat(prevResult.lastR).concat(prevResult.currentF).concat(prevResult.currentR)
+      postProcess(params, { lastF, lastR, currentF, currentR }): any[] {
+        let result: any[] = lastF.concat(lastR).concat(currentF).concat(currentR)
 
         // profit
         result = result.reduce<any[]>((a, row) => {

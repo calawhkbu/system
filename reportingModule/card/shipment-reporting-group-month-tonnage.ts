@@ -29,7 +29,6 @@ export default {
       ZL: ['LOGISTICS']
     },
     teuReportingGroupList: [
-      'SA', 'SR'
     ],
     searchUserRoleList: [
       'AIR',

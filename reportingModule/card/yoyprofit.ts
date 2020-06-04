@@ -89,8 +89,8 @@ export default {
     },
     {
       type: 'postProcess',
-      postProcess(params, prevResult): any[] {
-        const result: any[] = prevResult.current.concat(prevResult.last)
+      postProcess(params, { current, last }): any[] {
+        const result: any[] = current.concat(last)
 
         return result.reduce<any[]>((a, row) => {
           let row_ = a.find(r => r.month === row.month)

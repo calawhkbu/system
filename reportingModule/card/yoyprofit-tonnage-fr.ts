@@ -205,7 +205,7 @@ export default {
     },
     {
       type: 'postProcess',
-      postProcess(params, prevResult): any[] {
+      postProcess(params, { lastF, lastR, currentF, currentR, tonnage, ...prevResult }): any[] {
         const moment: typeof Moment = prevResult.moment
 
         const subqueries = (params.subqueries = params.subqueries || {})
@@ -215,7 +215,7 @@ export default {
         }
         const tonnageSummaryVariable = tonnageSummaryVariables[0]
 
-        let result: any[] = prevResult.lastF.concat(prevResult.lastR).concat(prevResult.currentF).concat(prevResult.currentR)
+        let result: any[] = lastF.concat(lastR).concat(currentF).concat(currentR)
 
         // profit
         result = result.reduce<any[]>((a, row) => {
@@ -230,7 +230,7 @@ export default {
         }, [])
 
         // tonnage
-        const tonnageRow = prevResult.tonnage[0] || {}
+        const tonnageRow = tonnage[0] || {}
         for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
           const month = moment().month(m).format('MMMM')
           const row = result.find(r => r.month === month) || { month, tonnageSummaryVariable0: tonnageSummaryVariable }
