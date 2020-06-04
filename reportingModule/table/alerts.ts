@@ -1,4 +1,62 @@
-import { Query, FromTable } from 'node-jql'
+import { JqlDefinition } from 'modules/report/interface'
+
+export default {
+  jqls: [
+    {
+      type: 'prepareParams',
+      prepareParams(params) {
+        const subqueries = (params.subqueries = params.subqueries || {})
+        subqueries.alertJoin = true
+        params.fields = [
+          'alertTableName',
+          'alertPrimaryKey',
+          'alertCategory',
+          'alertType',
+          'alertTitle',
+          'alertMessage',
+          'alertContent',
+          'alertSeverity',
+          'alertStatus',
+          'alertCreatedAt',
+          'alertUpdatedAt'
+        ]
+        return params
+      }
+    },
+    {
+      type: 'callDataService',
+      getDataServiceQuery(params): [string, string] {
+        let entityType = 'shipment'
+        const subqueries = (params.subqueries = params.subqueries || {})
+        if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
+          entityType = subqueries.entityType.value
+        }
+        return [entityType, entityType]
+      },
+      resultMapping: [
+        { from: 'alertTableName', to: 'tableName' },
+        { from: 'alertPrimaryKey', to: 'primaryKey' },
+        { from: 'alertSeverity', to: 'severity'},
+        { from: 'alertStatus', to: 'status'},
+      ]
+    },
+  ],
+  columns: [
+    { key: 'tableName' },
+    { key: 'primaryKey' },
+    { key: 'alertCategory' },
+    { key: 'alertType' },
+    { key: 'alertTitle' },
+    { key: 'alertMessage' },
+    { key: 'alertContent' },
+    { key: 'severity'},
+    { key: 'status'},
+    { key: 'alertUpdatedAt' },
+    { key: 'alertCreatedAt' },
+  ]
+} as JqlDefinition
+
+/* import { Query, FromTable } from 'node-jql'
 import { parseCode } from 'utils/function'
 
 function prepareParams(): Function {
@@ -88,4 +146,4 @@ function finalQuery(){
 export default [
 
   [prepareParams(), finalQuery()]
-]
+] */
