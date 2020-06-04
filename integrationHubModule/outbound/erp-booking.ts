@@ -13,7 +13,7 @@ export default {
         ...headers,
         'content-type': 'application/json',
       },
-      body: JSON.stringify({ bokjson: body['latestEntity'] })
+      body: JSON.stringify({ bokjson: JSON.stringify(body['latestEntity']) })
     }
   },
   responseHandler: (response: { responseBody: any; responseOptions: any }) => {
