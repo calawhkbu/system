@@ -52,7 +52,7 @@
       },
       "filters": [{
 
-        "display" : "trackingNo",
+        "display": "trackingNo",
         "i18nContext": "TrackingPage",
         "name": "trackingNoLike",
         "type": "text"
@@ -60,9 +60,7 @@
         "name": "activeStatus",
         "type": "list",
         "props": {
-          "items": [
-
-            {
+          "items": [{
               "label": "active",
               "value": "active"
             },
@@ -71,8 +69,6 @@
               "value": "deleted"
             }
           ]
-
-
         }
       }, {
         "name": "manual",
@@ -98,9 +94,7 @@
         "key": "lastStatusDate",
         "width": 150,
         "format": "YYYY-MM-DD HH:mm:ss"
-      }
-    
-    ]
+      }]
     },
     "slots": [{
       "name": "middle-button",
