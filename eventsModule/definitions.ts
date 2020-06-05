@@ -169,13 +169,12 @@ export default {
     },
     // send fm3k
     {
-      condition: true,
-      // condition: ({ originalEntity }: EventData<any>) => {
-      //   if (process.env.NODE_ENV === 'production') {
-      //     return originalEntity.from !== 'erp'
-      //   }
-      //   return false
-      // },
+      condition: ({ originalEntity }: EventData<any>) => {
+        if (process.env.NODE_ENV === 'production') {
+          return originalEntity.from !== 'erp'
+        }
+        return false
+      },
       eventName: 'send_data_to_external',
       otherParameters: {
         outboundName: 'erp-booking'
@@ -291,13 +290,12 @@ export default {
     // },
     // send fm3k
     {
-      condition: true,
-      // condition: ({ originalEntity }: EventData<any>) => {
-      //   if (process.env.NODE_ENV === 'production') {
-      //     return originalEntity.from !== 'erp'
-      //   }
-      //   return false
-      // },
+      condition: ({ originalEntity }: EventData<any>) => {
+        if (process.env.NODE_ENV === 'production') {
+          return originalEntity.from !== 'erp'
+        }
+        return false
+      },
       eventName: 'send_data_to_external',
       otherParameters: {
         outboundName: 'erp-booking'
