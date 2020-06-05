@@ -1,0 +1,102 @@
+import { IConditionalExpression, OrExpressions, AndExpressions, BinaryExpression, ColumnExpression, FunctionExpression, InExpression, Query, ResultColumn, FromTable } from 'node-jql'
+import { JwtPayload, JwtPayloadParty } from 'modules/auth/interfaces/jwt-payload'
+import { Transaction } from 'sequelize'
+import moment = require('moment')
+
+export const setDataFunction = {
+  partyGroupCode: async({ partyGroupCode }, user: JwtPayload) => {
+    if (user) {
+      return user.selectedPartyGroup.code || partyGroupCode
+    }
+    return partyGroupCode
+  },
+  bookingNo: async({ bookingNo }) => {
+    const date = moment.utc().format('YYMMDD')
+    let random = Math.floor(Math.random() * 9999).toString()
+    if (random.length === 3) {
+      random = `0${random}`
+    } else if (random.length === 2) {
+      random = `00${random}`
+    } else if (random.length === 1) {
+      random = `000${random}`
+    } else if (random.length === 0) {
+      random = `0000`
+    }
+    return `01-${date}${random}`
+  },
+}
+
+export default async function getDefaultParams(
+  conditions?: IConditionalExpression,
+  queryName?: string,
+  user?: JwtPayload,
+  transaction?: Transaction
+): Promise<IConditionalExpression> {
+  if (user) {
+    if (user.selectedPartyGroup) {
+      const partyGroupExpression = new BinaryExpression(
+        new ColumnExpression('booking', 'partyGroupCode'),
+        '=',
+        user.selectedPartyGroup.code
+      )
+      conditions = conditions
+        ? new AndExpressions([conditions, partyGroupExpression])
+        : partyGroupExpression
+    }
+    if (user.parties && user.parties.length) {
+      const selectedPartyGroupCode = user.selectedPartyGroup ? user.selectedPartyGroup.code : null
+      const partyTypesExpressions = user.parties.reduce(
+        (selectedPartyType: BinaryExpression[], party: JwtPayloadParty) => {
+          if (
+            party.partyGroupCode === selectedPartyGroupCode &&
+            party.types &&
+            party.types.length
+          ) {
+            selectedPartyType = selectedPartyType.concat(
+              party.types.map((type: string) => {
+                const con = [
+                  'shipper',
+                  'consignee',
+                  'office',
+                  'forwarder',
+                  'roAgent',
+                  'linerAgent',
+                  'agent',
+                  'controllingCustomer',
+                ].includes(type)
+                  ? new ColumnExpression(
+                      'booking_party',
+                      `${type === 'office' ? 'forwarder' : type}PartyId`
+                    )
+                  : new FunctionExpression(
+                      'JSON_UNQUOTE',
+                      new FunctionExpression(
+                        'JSON_EXTRACT',
+                        new ColumnExpression('booking_party', 'flexData'),
+                        `$.${type}PartyId`
+                      )
+                    )
+                return new BinaryExpression(con, '=', party.id)
+              })
+            )
+          }
+          return selectedPartyType
+        },
+        []
+      )
+      if (partyTypesExpressions && partyTypesExpressions.length) {
+        const or = new InExpression(
+          new ColumnExpression('booking', 'id'),
+          false,
+          new Query({
+            $select: [new ResultColumn(new ColumnExpression('booking_party', 'bookingId'))],
+            $from: new FromTable('booking_party'),
+            $where: new OrExpressions({ expressions: partyTypesExpressions }),
+          })
+        )
+        conditions = conditions ? new AndExpressions([conditions, or]) : or
+      }
+    }
+  }
+  return conditions
+}

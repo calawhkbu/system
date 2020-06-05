@@ -26,7 +26,7 @@ export default async function getDefaultParams(
   if (user) {
     if (user.selectedPartyGroup) {
       const partyGroupExpression = new BinaryExpression(
-        new ColumnExpression('shipment', 'partyGroupCode'),
+        new ColumnExpression('api', 'partyGroupCode'),
         '=',
         user.selectedPartyGroup.code
       )
