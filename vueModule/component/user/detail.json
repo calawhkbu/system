@@ -84,6 +84,7 @@
           },
           {
             "is": "v-btn",
+            "if": "return context.$store.state.widget.data && (context.$store.state.widget.data.status === 'pending' || context.$store.state.widget.data.status === 'sent')",
             "props": {
               "small": true,
               "icon": true,
@@ -104,8 +105,7 @@
                     "method": "GET"
                   }
                 },
-                "afterActions": [
-                  {
+                "afterActions": [{
                     "type": "dispatch",
                     "otherParams": {
                       "name": "widget/refreshData"
@@ -117,7 +117,7 @@
                       "notification": "Notify.resendSuccess"
                     }
                   }
-              ]
+                ]
               }]
             }
           },

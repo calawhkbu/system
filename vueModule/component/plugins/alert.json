@@ -2,7 +2,6 @@
   "layout": "Plugin",
   "name": "Alert",
   "transition": "slide-y-reverse-transition",
-  "loadWhenDataLoaded": true,
   "lazy": true,
   "hide-overlay": true,
   "remote": true,
@@ -14,8 +13,8 @@
       "Exception": "notification_important",
       "Message": "message"
     },
-    "titleKey": "alertType",
-    "subTitleKeys": ["alertContent"],
+    "titleKey": "alertTitle",
+    "subTitleKeys": ["alertMessage"],
     "noIcon": "notifications_none"
   },
   "baseSummaryProps": {
@@ -26,10 +25,10 @@
       "method": "POST",
       "url": "api/alert/updateStatus/{{id}}"
     },
-    "selects": {
+    "avaliableAlertTab": {
       "All": "return data",
-      "Exception": "return data.filter(m => m.alertCategory === 'Exception')",
-      "Message": "return data.filter(m => m.alertCategory === 'Message' || m.alertCategory === 'Notification')"
+      "Exception": "return data.filter(x => x.alertCategory === 'Exception')",
+      "Other": "return data.filter(x => x.alertCategory !== 'Exception')"
     }
   }
 }

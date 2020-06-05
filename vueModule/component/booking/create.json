@@ -18,16 +18,6 @@
                 },
                 {
                   "is": "v-spacer"
-                },
-                {
-                  "is": "LoadEntityTemplateButton",
-                  "props": {
-                    "class": "max-width-300",
-                    "axiosParams": {
-                      "method": "GET",
-                      "url": "/default/booking/list"
-                    }
-                  }
                 }
               ]
             }
@@ -211,29 +201,97 @@
                   "class": "xs-12 md-3 padding-topbottom-4",
                   "validator": ["required"],
                   "more": [{
-                    "name": "portOfLoadingCode",
-                    "selector": "portCode"
-                  }],
+                      "name": "portOfLoadingCode",
+                      "selector": "portCode"
+                    }, {
+                      "name": "bookingParty.forwarderPartyId",
+                      "selector": "partyId"
+                    }, {
+                      "name": "bookingParty.forwarderPartyName",
+                      "selector": "partyName"
+                    }, {
+                      "name": "bookingParty.forwarderPartyCode",
+                      "selector": "partyErpCode"
+                    }, {
+                      "name": "bookingParty.forwarderParty.id",
+                      "selector": "partyId"
+                    }, {
+                      "name": "bookingParty.forwarderParty.name",
+                      "selector": "partyName"
+                    }, {
+                      "name": "bookingParty.forwarderParty.erpCode",
+                      "selector": "partyErpCode"
+                    },
+                    {
+                      "name": "bookingParty.forwarderPartyPhone",
+                      "selector": "partyPhone"
+                    },
+                    {
+                      "name": "bookingParty.forwarderPartyFax",
+                      "selector": "partyFax"
+                    },
+                    {
+                      "name": "bookingParty.forwarderPartyEmail",
+                      "selector": "partyEmail"
+                    },
+                    {
+                      "name": "bookingParty.forwarderPartyAddress",
+                      "selector": "partyAddress"
+                    },
+                    {
+                      "name": "bookingParty.forwarderPartyCityCode",
+                      "selector": "partyCityCode"
+                    },
+                    {
+                      "name": "bookingParty.forwarderPartyStateCode",
+                      "selector": "partyStateCode"
+                    },
+                    {
+                      "name": "bookingParty.forwarderPartyCountryCode",
+                      "selector": "partyCountryCode"
+                    },
+                    {
+                      "name": "bookingParty.forwarderPartyZip",
+                      "selector": "partyZip"
+                    },
+                    {
+                      "name": "bookingParty.forwarderPartyContactPersonId",
+                      "selector": "contactPersonId"
+                    },
+                    {
+                      "name": "bookingParty.forwarderPartyContactPersonEmail",
+                      "selector": "contactPersonEmail"
+                    },
+                    {
+                      "name": "bookingParty.forwarderPartyContactPersonName",
+                      "selector": "contactPersonName"
+                    },
+                    {
+                      "name": "bookingParty.forwarderPartyContactPersonPhone",
+                      "selector": "contactPersonPhone"
+                    }
+                  ],
                   "props": {
                     "required": true,
-                    "searchValueParams": {
-                      "method": "POST",
-                      "url": "api/location/query/location",
-                      "data": {
-                        "subqueries": {
-                          "moduleTypeCode": {
-                            "value": "{{context.form.moduleTypeCode}}"
-                          },
-                          "portCodeLike": {
-                            "value": "{{context.autoSuggestModel}}"
-                          }
-                        }
-                      }
-                    },
                     "searchTextParams": {
                       "method": "POST",
                       "url": "api/location/query/location",
                       "data": {
+                        "fields": [
+                          "portCode",
+                          "name",
+                          "partyId",
+                          "partyName",
+                          "partyErpCode",
+                          "partyPhone",
+                          "partyFax",
+                          "partyEmail",
+                          "partyAddress",
+                          "partyCityCode",
+                          "partyStateCode",
+                          "partyCountryCode",
+                          "partyZip"
+                        ],
                         "subqueries": {
                           "moduleTypeCode": {
                             "value": "{{context.form.moduleTypeCode}}"
@@ -457,12 +515,11 @@
                       "method": "POST",
                       "data": {
                         "subqueries": {
-                          "flex_data_join": true,
                           "codeType": {
                             "value": "INCOTERMS"
                           },
                           "q": {
-                            "value": "{{context.search}}"
+                            "value": "{% if context.search %}{{context.search}}{% else %}.*{% endif %}"
                           }
                         }
                       }
@@ -712,19 +769,6 @@
                     "class": "title",
                     "i18nContext": "BookingPage",
                     "i18nKey": "createTitle"
-                  }
-                },
-                {
-                  "is": "v-spacer"
-                },
-                {
-                  "is": "LoadEntityTemplateButton",
-                  "props": {
-                    "class": "max-width-300",
-                    "axiosParams": {
-                      "method": "GET",
-                      "url": "/default/booking/list"
-                    }
                   }
                 }
               ]

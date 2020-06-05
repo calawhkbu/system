@@ -352,30 +352,6 @@ export default [
 
 export const filters = [
   {
-    display: 'controllingCustomerExcludeRole',
-    name: 'controllingCustomerExcludeRole',
-    type: 'list',
-    default: ['agent', 'forwarder', 'coloader'],
-    disabled: true,
-    props: {
-      multi: true,
-      items: [
-        {
-          label: 'agent',
-          value: 'agent',
-        },
-        {
-          label: 'forwarder',
-          value: 'forwarder',
-        },
-        {
-          label: 'coloader',
-          value: 'coloader',
-        },
-      ],
-    },
-  },
-  {
     display: 'yAxis',
     name: 'yAxis',
     props: {

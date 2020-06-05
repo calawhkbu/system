@@ -1,5 +1,70 @@
 {
+  "layout": "div",
   "components": [{
+    "is": "DynamicComponent",
+    "props": {
+      "class": "xs-12 grid min-height-28 align-item-center full-width padding-2",
+      "components": [{
+        "is": "v-btn",
+        "props": {
+          "class": "margin-0",
+          "small": true,
+          "flat": true,
+          "icon": true
+        },
+        "slots": [{
+          "is": "Icon",
+          "props": {
+            "icon": "arrow_back"
+          }
+        }],
+        "events": {
+          "click.stop": [{
+            "type": "router",
+            "otherParams": {
+              "func": "push",
+              "path": "/parties"
+            }
+          }]
+        }
+      }, {
+        "is": "I18nText",
+        "props": {
+          "i18nContext": "PartyPage",
+          "i18nKey": "title",
+          "i18nOptions": {
+            "id": "{{context.$store.state.widget.data.name}}"
+          }
+        }
+      }, {
+        "is": "v-spacer"
+      }, {
+        "is": "v-btn",
+        "props": {
+          "small": true,
+          "icon": true,
+          "flat": true,
+          "class": "primary white-text"
+        },
+        "slots": [{
+          "is": "Icon",
+          "props": {
+            "small": true,
+            "icon": "edit"
+          }
+        }],
+        "events": {
+          "click.stop": [{
+            "type": "dispatch",
+            "otherParams": {
+              "name": "widget/changeMode",
+              "mode": "edit"
+            }
+          }]
+        }
+      }]
+    }
+  }, {
     "is": "Widget",
     "props": {
       "settingProp": {
@@ -44,6 +109,415 @@
           }
         }
       }
+    }
+  }, {
+    "is": "",
+    "props": {
+      "tabComponents": [{
+        "index": "party",
+        "tabComponents": [{
+          "is": "I18nText",
+          "props": {
+            "i18nContext": "PartyPage",
+            "i18nKey": "Party"
+          }
+        }],
+        "tabItemComponents": [{
+          "is": "Widget",
+          "props": {
+            "settingProp": {
+              "overrideType": "party",
+              "initAxiosParams": {
+                "url": "api/party/{{context.$route.params.params}}"
+              },
+              "defaultAxiosParams": {
+                "url": "default/party"
+              },
+              "validateAxiosParams": {
+                "method": "post",
+                "url": "api/party/validate/{{id}}"
+              },
+              "saveAxiosParams": {
+                "method": "post",
+                "url": "api/party"
+              },
+              "primaryKey": "id",
+              "modeFunction": [
+                "const modes = ['create', 'detail','edit'];",
+                "const selectedMode = isNaN(Number(mode)) ? mode : 'detail'",
+                "if (!modes.includes(selectedMode)) {throw new Error('This mode (' + selectedMode + ') is not allowed');}",
+                "return selectedMode"
+              ],
+              "haveTermOnCreate": true,
+              "haveTermOnEdit": false,
+              "widgetComponentSetting": {
+                "create": {
+                  "readonly": false,
+                  "stepper": 0,
+                  "next": false,
+                  "saveIcon": "create"
+                },
+                "detail": {
+                  "readonly": true
+                },
+                "edit": {
+                  "readonly": false,
+                  "stepper": 0,
+                  "saveIcon": "save"
+                }
+              }
+            }
+          }
+        }]
+      }, {
+        "index": "relatedParty",
+        "tabComponents": [{
+          "is": "I18nText",
+          "props": {
+            "i18nContext": "PartyPage",
+            "i18nKey": "RelatedParty"
+          }
+        }],
+        "tabItemComponents": [{
+          "is": "DynamicComponent",
+          "props": {
+            "style": {
+              "height": "calc(100vh - 133px)"
+            },
+            "components": [{
+              "is": "SimpleTableTool",
+              "props": {
+                "reportingKey": "related-parties",
+                "jql": "related-parties",
+                "reportUrl": "relationship/report/parties/{{ context.routeParams }}",
+                "noPartyGroupFilters": true,
+                "showFilterBar": true,
+                "nextPageKey": "relatedParty",
+                "newReport": {
+                  "filters": {
+                    "activeStatus": {
+                      "value": "active"
+                    }
+                  },
+                  "configurations": {
+                    "i18nContext": "PartyPage",
+                    "sorting": {
+                      "direction": "DESC",
+                      "key": "updatedAt",
+                      "sql": {
+                        "classname": "ColumnExpression",
+                        "table": "party",
+                        "name": "partyBName"
+                      }
+                    },
+                    "pagination": {
+                      "current": 0,
+                      "perPage": 20
+                    }
+                  }
+                },
+                "filters": [{
+                  "display": "shortName",
+                  "name": "partyBShortNameLike",
+                  "type": "text",
+                  "i18nContext": "PartyPage"
+                }, {
+                  "display": "groupName",
+                  "name": "partyBGroupNameLike",
+                  "type": "text",
+                  "i18nContext": "PartyPage"
+                }, {
+                  "name": "partyTypes",
+                  "type": "text",
+                  "i18nContext": "PartyPage"
+                }],
+                "fieldOptions": [{
+                    "key": "partyAId",
+                    "hidden": true
+                  },
+                  {
+                    "key": "partyBId",
+                    "hidden": true
+                  },
+                  {
+                    "key": "partyAName",
+                    "hidden": true
+                  },
+                  {
+                    "i18nContext": "PartyPage",
+                    "key": "partyBName",
+                    "width": 200
+                  },
+                  {
+                    "i18nContext": "PartyPage",
+                    "key": "partyBShortName",
+                    "width": 150
+                  },
+                  {
+                    "i18nContext": "PartyPage",
+                    "key": "partyBGroupName",
+                    "width": 150
+                  },
+                  {
+                    "i18nContext": "PartyPage",
+                    "key": "partyTypes",
+                    "width": 300,
+                    "tdComponent": {
+                      "is": "AsyncSelect",
+                      "props": {
+                        "class": "padding-0 margin-0",
+                        "multiple": true,
+                        "name": "partyType",
+                        "item-text": "name",
+                        "item-value": "code",
+                        "showValue": false,
+                        "noDelete": true,
+                        "updateValue": "return value.split(', ')",
+                        "axiosParams": {
+                          "url": "api/code/query/code_master",
+                          "method": "POST",
+                          "data": {
+                            "subqueries": {
+                              "codeType": {
+                                "value": "PARTY_TYPE"
+                              }
+                            }
+                          }
+                        },
+                        "onFixValueChangeFunc": [
+                          "this.$Swivel.api.createPromise({",
+                          "method: 'POST',",
+                          "url: 'relationship/party',",
+                          "data: { ...context.$attrs['row'], partyTypes: value }",
+                          "})"
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "key": "showDelete",
+                    "label": "",
+                    "align": "center",
+                    "clickFunction": {
+                      "type": "axios",
+                      "otherParams": {
+                        "axiosParams": {
+                          "url": "/relationship/party/{{row.partyAId}}/{{row.partyBId}}",
+                          "method": "DELETE"
+                        }
+                      },
+                      "afterActions": [{
+                        "type": "emit",
+                        "otherParams": {
+                          "name": "refresh",
+                          "params": [true]
+                        }
+                      }]
+                    },
+                    "tdComponent": {
+                      "is": "icon",
+                      "props": {
+                        "icon": "block"
+                      }
+                    },
+                    "width": 60
+                  }
+                ]
+              },
+              "slots": [{
+                "name": "middle-button",
+                "is": "DynamicComponent",
+                "props": {
+                  "class": "button",
+                  "components": [{
+                    "is": "Dialog",
+                    "props": {
+                      "width": "50%",
+                      "persistent": true,
+                      "button": {
+                        "layout": "v-btn",
+                        "small": true,
+                        "flat": true,
+                        "icon": true,
+                        "components": [{
+                          "is": "Icon",
+                          "props": {
+                            "icon": "add"
+                          }
+                        }]
+                      },
+                      "closeButton": {
+                        "class": "margin-4 zindex-1 right",
+                        "flat": true,
+                        "icon": true,
+                        "small": true
+                      }
+                    },
+                    "slots": [{
+                      "is": "DynamicComponent",
+                      "props": {
+                        "components": [{
+                          "is": "Form",
+                          "props": {
+                            "submitActions": [{
+                              "type": "function",
+                              "otherParams": {
+                                "func": [
+                                  "const form = { ...otherParams.form, partyAId: context.detailPageParams }",
+                                  "console.log(form)",
+                                  "return Promise.resolve(context.$Swivel.api.createPromise({",
+                                  "method: 'POST',",
+                                  "url: 'relationship/party',",
+                                  "data: { ...otherParams.form, partyAId: context.detailPageParams }",
+                                  "}))"
+                                ]
+                              },
+                              "afterActions": [{
+                                  "type": "dispatch",
+                                  "otherParams": {
+                                    "name": "dialog/updateDialog"
+                                  }
+                                },
+                                {
+                                  "type": "notify",
+                                  "otherParams": {
+                                    "notification": "PartyPage.partyConnected"
+                                  }
+                                },
+                                {
+                                  "type": "emit",
+                                  "otherParams": {
+                                    "name": "refresh",
+                                    "params": [true]
+                                  }
+                                }
+                              ]
+                            }],
+                            "formContainerProps": {
+                              "class": "padding-4"
+                            },
+                            "onSubmitResetForm": true,
+                            "showErrorOnNotification": true,
+                            "form": {
+                              "partyAId": null,
+                              "partyA": null,
+                              "partyBId": null,
+                              "partyB": null,
+                              "partyTypes": []
+                            },
+                            "fields": [{
+                              "label": "PartyPage.partyBName",
+                              "component": "AsyncAutoSuggest",
+                              "class": "xs-12",
+                              "validator": ["required"],
+                              "name": "partyB",
+                              "relation": "partyB",
+                              "relationMore": [{
+                                "name": "partyBId",
+                                "selector": "id"
+                              }],
+                              "props": {
+                                "required": true,
+                                "searchTextParams": {
+                                  "url": "api/party/query/party_auto_suggest",
+                                  "method": "POST",
+                                  "data": {
+                                    "subqueries": {
+                                      "q": {
+                                        "value": "{{context.search}}"
+                                      }
+                                    },
+                                    "limit": 5
+                                  }
+                                },
+                                "ellipsis": false,
+                                "item-text": "name",
+                                "item-value": "erpCode"
+                              }
+                            }, {
+                              "label": "PartyPage.partyTypes",
+                              "component": "AsyncSelect",
+                              "name": "partyTypes",
+                              "class": "xs-12",
+                              "validator": ["required"],
+                              "props": {
+                                "required": true,
+                                "multiple": true,
+                                "item-text": "name",
+                                "item-value": "code",
+                                "showValue": false,
+                                "noDelete": true,
+                                "axiosParams": {
+                                  "url": "api/code/query/code_master",
+                                  "method": "POST",
+                                  "data": {
+                                    "subqueries": {
+                                      "codeType": {
+                                        "value": "PARTY_TYPE"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }]
+                          },
+                          "slots": [{
+                            "name": "pre-form",
+                            "is": "DynamicComponent",
+                            "props": {
+                              "layout": "v-card-title",
+                              "class": "flex min-height-28 padding-4",
+                              "components": [{
+                                "is": "I18nText",
+                                "props": {
+                                  "i18nContext": "PartyPage",
+                                  "i18nKey": "createParty"
+                                }
+                              }, {
+                                "is": "v-spacer"
+                              }]
+                            }
+                          }, {
+                            "name": "post-form",
+                            "is": "DynamicComponent",
+                            "props": {
+                              "layout": "v-card-actions",
+                              "class": "flex min-height-28 padding-4",
+                              "components": [{
+                                "is": "v-btn",
+                                "props": {
+                                  "flat": true,
+                                  "type": "submit"
+                                },
+                                "slots": [{
+                                  "is": "I18nText",
+                                  "props": {
+                                    "i18nKey": "submit"
+                                  }
+                                }]
+                              }]
+                            }
+                          }]
+                        }]
+                      }
+                    }]
+                  }]
+                }
+              }]
+            }]
+          }
+        }]
+      }, {
+        "index": "relatedPerson",
+        "tabComponents": [{
+          "is": "I18nText",
+          "props": {
+            "i18nContext": "PartyPage",
+            "i18nKey": "relatedPerson"
+          }
+        }],
+        "tabItemComponents": []
+      }]
     }
   }]
 }

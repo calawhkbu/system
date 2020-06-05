@@ -1,4 +1,4 @@
-import { EventService, EventConfig, EventHandlerConfig, EventData } from 'modules/events/service'
+import { EventService, EventConfig, EventHandlerConfig, EventData, EventAllService } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import _ = require('lodash')
@@ -25,7 +25,7 @@ export default class CreateTrackingEvent extends BaseEventHandler {
     protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
-    protected readonly allService: any,
+    protected readonly allService: EventAllService,
 
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
@@ -73,11 +73,8 @@ export default class CreateTrackingEvent extends BaseEventHandler {
   public async mainFunction(eventDataList: EventData<any>[]) {
     console.debug('Start Create Tracking Event ....', this.constructor.name)
 
-    const {
-      TrackService: trackService
-    } = this.allService as {
-      TrackService: TrackService
-    }
+    const { trackService } = this.allService
+
     await BluebirdPromise.map(
       eventDataList,
       async({ latestEntity, loadashMapping, tableName }) => {

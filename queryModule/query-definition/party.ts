@@ -18,43 +18,67 @@ import {
   AndExpressions,
   CaseExpression
 } from 'node-jql'
-import { registerAll } from 'utils/jql-subqueries'
+import { registerAll, ExpressionHelperInterface } from 'utils/jql-subqueries'
 
 const query = new QueryDef(
   new Query({
     $select: [
-      new ResultColumn(new ColumnExpression('party', '*')),
-      new ResultColumn(new ColumnExpression('partyTypes')),
+      new ResultColumn(new ColumnExpression('party', '*'))
     ],
-    $from: new FromTable('party', {
-      operator: 'LEFT',
-      table: new FromTable(
-        new Query({
-          $select: [
-            new ResultColumn('partyId'),
-            new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('party_type', 'type'), 'SEPARATOR \', \'')), 'partyTypes'),
-          ],
-          $from: 'party_type',
-          $group: 'partyId',
-        }),
-        'party_type_concat'
-      ),
-      $on: new BinaryExpression(
-        new ColumnExpression('party', 'id'),
-        '=',
-        new ColumnExpression('party_type_concat', 'partyId')
-      ),
-    }, {
-      operator: 'LEFT',
-      table: 'party_type',
-      $on: new BinaryExpression(
+    $from: new FromTable(
+
+      {
+        table : 'party',
+      }
+
+    )
+  })
+)
+
+query.table('partyType', new Query({
+
+  $from: new FromTable('party', {
+
+    operator: 'LEFT',
+    table: 'party_type',
+
+    $on: [
+      new BinaryExpression(
         new ColumnExpression('party', 'id'),
         '=',
         new ColumnExpression('party_type', 'partyId')
       ),
-    })
-  })
-)
+    ]
+
+  }),
+
+  $where: new IsNullExpression(new ColumnExpression('alert', 'id'), true)
+
+}))
+
+query.table('partyTypeConcat', new Query({
+
+  $from: new FromTable('party', {
+    operator: 'LEFT',
+    table: new FromTable(
+      new Query({
+        $select: [
+          new ResultColumn('partyId'),
+          new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('party_type', 'type'), 'SEPARATOR \', \'')), 'partyTypes'),
+        ],
+        $from: 'party_type',
+        $group: 'partyId',
+      }),
+      'party_type_concat'
+    ),
+    $on: new BinaryExpression(
+      new ColumnExpression('party', 'id'),
+      '=',
+      new ColumnExpression('party_type_concat', 'partyId')
+    ),
+  }),
+
+}))
 
 const partyTypesExpression = new ColumnExpression('party_type_concat', 'partyTypes')
 
@@ -116,28 +140,29 @@ const fieldList = [
   'shortName',
   'groupName',
   {
-    name : 'showInfo',
-    expression : showInfoExpression,
+    name: 'showInfo',
+    expression: showInfoExpression,
   },
   {
-    name : 'activeStatus',
-    expression : activeStatusExpression
+    name: 'activeStatus',
+    expression: activeStatusExpression
   },
   {
-    name : 'partyTypes',
-    expression : partyTypesExpression
+    name: 'partyTypes',
+    expression: partyTypesExpression,
+    companion : ['table:partyTypeConcat']
   },
 
   {
-    name : 'parties',
-    expression : partiesExpression
+    name: 'parties',
+    expression: partiesExpression
   },
 
   {
-    name : 'contacts',
-    expression : contactsExpression
+    name: 'contacts',
+    expression: contactsExpression
   },
-]
+] as ExpressionHelperInterface[]
 
 registerAll(query, baseTableName, fieldList)
 

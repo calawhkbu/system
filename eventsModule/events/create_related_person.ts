@@ -1,9 +1,9 @@
 
-import { EventService, EventConfig, EventHandlerConfig, EventData } from 'modules/events/service'
+import { EventService, EventConfig, EventHandlerConfig, EventData, EventAllService } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import _ = require('lodash')
-import { RelatedPersonDatabaseService } from 'modules/sequelize/relatedPerson/service'
+import { RelatedPersonTableService } from 'modules/sequelize/services/table/relatedPerson'
 import { RelatedPerson } from 'models/main/relatedPerson'
 import BaseEventHandler from 'modules/events/baseEventHandler'
 import { Shipment } from 'models/main/shipment'
@@ -14,7 +14,7 @@ export default class CreateRelatedPersonEvent extends BaseEventHandler {
     protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
-    protected readonly allService: any,
+    protected readonly allService: EventAllService,
 
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
@@ -24,14 +24,12 @@ export default class CreateRelatedPersonEvent extends BaseEventHandler {
 
   private async createRelatedPeople(relatedPeople: RelatedPerson[]) {
     const {
-      RelatedPersonDatabaseService: service
-    } = this.allService as {
-      RelatedPersonDatabaseService: RelatedPersonDatabaseService
-    }
+      relatedPersonTableService
+    } = this.allService
 
     for (const relatedPerson of relatedPeople) {
       try {
-        await service.save(relatedPerson, this.user)
+        await relatedPersonTableService.save(relatedPerson, this.user)
       } catch (e) {
         console.error(e, e.stack, this.constructor.name)
       }

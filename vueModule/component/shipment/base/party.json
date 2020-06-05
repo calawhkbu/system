@@ -24,13 +24,57 @@
               "icon": true,
               "small": true,
               "class": "zindex-3"
-            }
+            },
+            "closeFunction": [{
+              "type": "dispatch",
+              "otherParams": {
+                "name": "widget/changeEdit",
+                "data": {
+                  "id": "shipmentParty",
+                  "isEdit": false
+                }
+              }
+            }]
           },
           "slots": [{
             "name": "button",
             "is": "Icon",
             "props": {
               "icon": "open_in_new"
+            }
+          }, {
+            "name": "top",
+            "is": "DynamicComponent",
+            "props": {
+              "components": [{
+                "is": "ToolTip",
+                "props": {
+                  "bottom": true,
+                  "activatorComponents": {
+                    "layout": "span",
+                    "components": [{
+                      "is": "WidgetEditButton",
+                      "props": {
+                        "forId": ["shipmentParty"],
+                        "small": true,
+                        "flat": true,
+                        "icon": true,
+                        "class": "primary white-text"
+                      }
+                    }]
+                  }
+                },
+                "mainComponents": {
+                  "layout": "span",
+                  "components": [{
+                    "is": "I18nText",
+                    "props": {
+                      "i18nContext": "ShipmentPage",
+                      "i18nKey": "edit"
+                    }
+                  }]
+                }
+              }]
             }
           }, {
             "name": "default",
@@ -40,6 +84,7 @@
               "components": [{
                 "is": "WidgetMoreForm",
                 "props": {
+                  "formId": "shipmentParty",
                   "name": "shipmentParty",
                   "mainKey": "Party",
                   "formProps": {
@@ -114,6 +159,9 @@
                       "relationMore": [{
                           "name": "shipmentParty.{{flex}}{{key}}PartyId",
                           "selector": "id"
+                        }, {
+                          "name": "shipmentParty.{{flex}}{{key}}PartyCode",
+                          "selector": "erpCode"
                         },
                         {
                           "name": "shipmentParty.{{flex}}{{key}}PartyName",
@@ -406,9 +454,7 @@
                       "name": "shipmentParty.{{flex}}{{key}}Party.shortName",
                       "component": "v-text-field",
                       "class": "xs-12 md-4",
-                      "props": {
-                        "readonly": "readonly"
-                      }
+                      "canEdit": "return false"
                     },
                     {
                       "label": "Widget.contactName",
@@ -424,49 +470,6 @@
                       "component": "v-text-field",
                       "class": "xs-12 md-12",
                       "readonlyClass": "xs-10 md-10"
-                    },
-                    {
-                      "label": "Widget.inviteEmail",
-                      "name": "shipmentParty.{{flex}}{{key}}PartyContactEmail",
-                      "component": "button-field",
-                      "readonlyClass": "xs-2",
-                      "checkDisplayWhen": "return form && form.shipmentParty && form.shipmentParty.{{flex}}{{key}}PartyContactEmail",
-                      "slots": [{
-                        "is": "Icon",
-                        "props": {
-                          "icon": "email"
-                        }
-                      }],
-                      "props": {
-                        "flat": true,
-                        "icon": true,
-                        "events": {
-                          "click.stop": [{
-                            "type": "axios",
-                            "otherParams": {
-                              "axiosParams": {
-                                "url": "/api/invitation/invite/invite",
-                                "method": "POST",
-                                "data": {
-                                  "entityId": "{{context.$store.state.widget.id}}",
-                                  "tableName": "shipment",
-                                  "partyId": ["{{ '`${args[0]}${args[1]}PartyId`'  | calculate(flex,key) | getFrom(context.$store.state.widget.data)}}"],
-                                  "partyType": ["{{key}}"],
-                                  "person": {
-                                    "userName": "{{ context.fixValue }}"
-                                  }
-                                }
-                              }
-                            },
-                            "afterActions": [{
-                              "type": "notify",
-                              "otherParams": {
-                                "notification": "invite success"
-                              }
-                            }]
-                          }]
-                        }
-                      }
                     },
                     {
                       "label": "Widget.contactPhone",

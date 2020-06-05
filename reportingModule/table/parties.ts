@@ -22,22 +22,22 @@ const query = new Query({
           name: 'groupName',
           type: 'string',
         },
-        {
-          name: 'partyTypes',
-          type: 'string',
-        },
-        {
-          name: 'parties',
-          type: 'number',
-        },
-        {
-          name: 'contacts',
-          type: 'number',
-        },
-        {
-          name: 'showInfo',
-          type: 'number',
-        },
+        // {
+        //   name: 'partyTypes',
+        //   type: 'string',
+        // },
+        // {
+        //   name: 'parties',
+        //   type: 'number',
+        // },
+        // {
+        //   name: 'contacts',
+        //   type: 'number',
+        // },
+        // {
+        //   name: 'showInfo',
+        //   type: 'number',
+        // },
       ],
     },
     'party'

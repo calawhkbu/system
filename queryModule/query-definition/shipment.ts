@@ -33,7 +33,7 @@ import {
   IQuery
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition, registerDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate } from 'utils/jql-subqueries'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -138,16 +138,16 @@ const partyList = [
   {
     name: 'agent',
     partyNameExpression: {
-      expression : agentPartyNameExpression,
-      companion : ['table:shipment_party']
+      expression: agentPartyNameExpression,
+      companion: ['table:shipment_party']
     },
     partyIdExpression: {
-      expression : agentPartyIdExpression,
-      companion : ['table:shipment_party']
+      expression: agentPartyIdExpression,
+      companion: ['table:shipment_party']
     },
     partyCodeExpression: {
-      expression : agentPartyCodeExpression,
-      companion : ['table:shipment_party']
+      expression: agentPartyCodeExpression,
+      companion: ['table:shipment_party']
     }
   }
 ] as {
@@ -179,35 +179,36 @@ const locationList = ['portOfLoading', 'portOfDischarge', 'placeOfDelivery', 'pl
 
 const query = new QueryDef(new Query({
 
-    // $distinct: true,
-    $select: [
-      new ResultColumn(new ColumnExpression('shipment', '*')),
-      new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
-      new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentPartyId'),
-    ],
-    $from: new FromTable(
+  $select: [
+    new ResultColumn(new ColumnExpression('shipment', '*')),
+    new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
+    new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentPartyId'),
+  ],
+  $from: new FromTable(
 
-      {
-        table : 'shipment',
-      }
+    {
+      table: 'shipment',
+    }
 
-    )
+  )
 }))
 
 query.registerQuery('isMinCreatedAt', new Query({
-  $where : new OrExpressions([
+
+  $where: new OrExpressions([
     new BinaryExpression(new ColumnExpression('shipment', 'isMinCreatedAt'), '=', true),
     new IsNullExpression(new ColumnExpression('shipment', 'isMinCreatedAt'), false),
   ])
+
 }))
 
 // all shipment join
 query.table('shipment_date', new Query({
 
-  $from : new FromTable({
+  $from: new FromTable({
 
-    table : 'shipment',
-    joinClauses : [
+    table: 'shipment',
+    joinClauses: [
       {
         operator: 'LEFT',
         table: new FromTable({
@@ -234,10 +235,10 @@ query.table('shipment_date', new Query({
 
 query.table('shipment_party', new Query({
 
-  $from : new FromTable({
+  $from: new FromTable({
 
-    table : 'shipment',
-    joinClauses : [
+    table: 'shipment',
+    joinClauses: [
       {
         operator: 'LEFT',
         table: new FromTable({
@@ -268,14 +269,14 @@ partyList.map(party => {
   const partyTableName = party.name
 
   const companion = (party.partyIdExpression && party.partyIdExpression.companion) ? party.partyIdExpression.companion : [`table:shipment_party`]
-  const partyIdExpression = (party.partyIdExpression && party.partyIdExpression.expression) ? party.partyIdExpression.expression :  new ColumnExpression('shipment_party', `${partyTableName}PartyId`)
+  const partyIdExpression = (party.partyIdExpression && party.partyIdExpression.expression) ? party.partyIdExpression.expression : new ColumnExpression('shipment_party', `${partyTableName}PartyId`)
 
   query.table(partyTableName, new Query({
 
-    $from : new FromTable({
+    $from: new FromTable({
 
-      table : 'shipment',
-      joinClauses : [
+      table: 'shipment',
+      joinClauses: [
         {
           operator: 'LEFT',
           table: new FromTable('party', partyTableName),
@@ -303,16 +304,16 @@ locationList.map(location => {
   // location join (e.g. portOfLoadingJoin)
   query.table(joinTableName, new Query({
 
-      $from: new FromTable({
+    $from: new FromTable({
 
-        table : 'shipment',
+      table: 'shipment',
 
-        joinClauses : [{
+      joinClauses: [{
 
         operator: 'LEFT',
-        table:  new FromTable({
-          table : 'location',
-          $as : `${location}`
+        table: new FromTable({
+          table: 'location',
+          $as: `${location}`
         }),
         $on: [
           new BinaryExpression(new ColumnExpression(`${location}`, 'portCode'), '=', new ColumnExpression('shipment', locationCode)),
@@ -320,9 +321,9 @@ locationList.map(location => {
       }]
     }),
 
-      $where: new IsNullExpression(new ColumnExpression('shipment', locationCode), true)
+    $where: new IsNullExpression(new ColumnExpression('shipment', locationCode), true)
 
-    })
+  })
   )
 
 })
@@ -339,7 +340,7 @@ const shipmentTrackingLastStatusCodeTableExpression = new Query({
     new ResultColumn(new ColumnExpression('tracking', 'lastActualUpdateDate'))
   ],
 
-  $from : 'tracking'
+  $from: 'tracking'
 
 })
 
@@ -357,14 +358,14 @@ const shipmentTrackingStatusCodeTableExpression = new Query({
     new ResultColumn(new ColumnExpression('tracking_status', 'statusDate')),
   ],
 
-  $from : new FromTable({
-    table : 'tracking',
-    joinClauses : [
+  $from: new FromTable({
+    table: 'tracking',
+    joinClauses: [
 
       {
-        operator : 'LEFT',
-        $on : new BinaryExpression(new ColumnExpression('tracking_status', 'trackingId'), '=', new ColumnExpression('tracking', 'id')),
-        table : new FromTable('tracking_status')
+        operator: 'LEFT',
+        $on: new BinaryExpression(new ColumnExpression('tracking_status', 'trackingId'), '=', new ColumnExpression('tracking', 'id')),
+        table: new FromTable('tracking_status')
       }
     ]
   })
@@ -415,30 +416,30 @@ query.table('lastStatus', new Query({
 // alertJoin : table:alert
 query.table('alert', new Query({
 
-    $from: new FromTable('shipment', {
+  $from: new FromTable('shipment', {
 
-      operator: 'LEFT',
-      table: 'alert',
+    operator: 'LEFT',
+    table: 'alert',
 
-      $on: [
-        new BinaryExpression(new ColumnExpression('alert', 'tableName'), '=', 'shipment'),
-        new BinaryExpression(new ColumnExpression('alert', 'primaryKey'), '=', new ColumnExpression('shipment', 'id'))
-      ]
+    $on: [
+      new BinaryExpression(new ColumnExpression('alert', 'tableName'), '=', 'shipment'),
+      new BinaryExpression(new ColumnExpression('alert', 'primaryKey'), '=', new ColumnExpression('shipment', 'id'))
+    ]
 
-    }),
+  }),
 
-    $where: new IsNullExpression(new ColumnExpression('alert', 'id'), true)
+  $where: new IsNullExpression(new ColumnExpression('alert', 'id'), true)
 
-  })
+})
 )
 
 // shipment_amount table :  table:shipment_amount
 query.table('shipment_amount', new Query({
 
-  $from : new FromTable({
+  $from: new FromTable({
 
-    table : 'shipment',
-    joinClauses : [
+    table: 'shipment',
+    joinClauses: [
 
       {
         operator: 'LEFT',
@@ -480,10 +481,10 @@ query.table('shipment_amount', new Query({
 // shipment_cargo table :  table:shipment_cargo
 query.table('shipment_cargo', new Query({
 
-  $from : new FromTable({
+  $from: new FromTable({
 
-    table : 'shipment',
-    joinClauses : [
+    table: 'shipment',
+    joinClauses: [
 
       {
         operator: 'LEFT',
@@ -590,9 +591,9 @@ query.table('shipment_cargo', new Query({
 // shipment_container table :  table:shipment_container
 query.table('shipment_container', new Query({
 
-  $from : new FromTable({
-    table : 'shipment',
-    joinClauses : [
+  $from: new FromTable({
+    table: 'shipment',
+    joinClauses: [
       {
         operator: 'LEFT',
         table: new FromTable({
@@ -798,9 +799,9 @@ query.table('shipment_container', new Query({
 // shipment_po table :  table:shipment_po
 query.table('shipment_po', new Query({
 
-  $from : new FromTable({
-    table : 'shipment',
-    joinClauses : [
+  $from: new FromTable({
+    table: 'shipment',
+    joinClauses: [
       {
         operator: 'LEFT',
         table: new FromTable({
@@ -849,9 +850,9 @@ query.table('shipment_po', new Query({
 // shipment_reference table :  table:shipment_reference
 query.table('shipment_reference', new Query({
 
-  $from : new FromTable({
-    table : 'shipment',
-    joinClauses : [
+  $from: new FromTable({
+    table: 'shipment',
+    joinClauses: [
       {
         operator: 'LEFT',
         table: new FromTable({
@@ -890,9 +891,9 @@ query.table('shipment_reference', new Query({
 // shipment_transport table :  table:shipment_transport
 query.table('shipment_transport', new Query({
 
-  $from : new FromTable({
-    table : 'shipment',
-    joinClauses : [
+  $from: new FromTable({
+    table: 'shipment',
+    joinClauses: [
 
       {
         operator: 'LEFT',
@@ -977,19 +978,37 @@ query.table('shipment_transport', new Query({
 
 const idExpression = new ColumnExpression('shipment', 'id')
 const shipIdExpression = new QueryExpression(new Query({
-  $select : [
+  $select: [
     new ResultColumn(new ColumnExpression('shipment_reference', 'refDescription'))
   ],
 
-  $from : 'shipment_reference',
+  $from: 'shipment_reference',
 
-  $where : [
+  $where: [
     new BinaryExpression(new ColumnExpression('shipment_reference', 'refName'), '=', 'Shipment Reference ID'),
     new BinaryExpression(new ColumnExpression('shipment_reference', 'shipmentId'), '=', idExpression)
   ],
-  $limit : 1
+  $limit: 1
 
 }))
+
+
+const officeErpSiteExpression = new FunctionExpression(
+  'JSON_UNQUOTE',
+  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.erpSite')
+)
+
+const officeErpCodeExpression = new FunctionExpression(
+  'JSON_UNQUOTE',
+  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.erp')
+)
+
+const controllingCustomerErpCodeExpression = new FunctionExpression(
+  'JSON_UNQUOTE',
+  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('controllingCustomer', 'thirdPartyCode'), '$.erp')
+)
+
+
 
 const primaryKeyListStringExpression = new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id')))
 
@@ -1092,6 +1111,8 @@ const carrierNameExpression = new FunctionExpression('IFNULL',
   ),
   carrierCodeExpression
 )
+
+
 
 const rSalesmanCodeExpression = new ColumnExpression('shipment', 'rSalesmanPersonCode')
 const cSalesmanCodeExpression = new ColumnExpression('shipment', 'cSalesmanPersonCode')
@@ -1256,8 +1277,8 @@ const defaultReportingGroupExpression = new CaseExpression({
 // WHEN b.division = 'AI' AND b.isDirect = 0 THEN 'AM'
 // WHEN b.division = 'AI' AND b.isDirect = 1 THEN 'AN'
 // WHEN b.division = 'TA' THEN 'AW'
-// WHEN office.thirdPartyCode.old360  = 7351496 AND b.division = 'TAE' THEN 'AU'
-// WHEN office.thirdPartyCode.old360 = 7351496 AND b.division = 'TAI' THEN 'AV'
+// WHEN office.thirdPartyCode.erp  = G0017 AND b.division = 'TAE' THEN 'AU'
+// WHEN office.thirdPartyCode.erp = G0017 AND b.division = 'TAI' THEN 'AV'
 // WHEN b.division = 'MM' THEN 'AX'
 // WHEN b.division = 'AM' THEN 'AZ'
 // WHEN b.division = 'SE' AND b.shipmentType = 'FCL' THEN 'SA'
@@ -1266,15 +1287,16 @@ const defaultReportingGroupExpression = new CaseExpression({
 // WHEN b.division = 'SI' AND b.shipmentType = 'FCL' THEN 'SR'
 // WHEN b.division = 'SI' AND b.shipmentType = 'LCL' THEN 'SS'
 // WHEN b.division = 'SI' AND b.shipmentType = 'Consol' THEN 'ST'
-// WHEN office.thirdPartyCode.old360 = 7351496 AND b.division = 'TSE' THEN 'SU'
-// WHEN office.thirdPartyCode.old360 = 7351496 AND b.division = 'TSI' THEN 'SV'
+// WHEN office.thirdPartyCode.erp = G0017 AND b.division = 'TSE' THEN 'SU'
+// WHEN office.thirdPartyCode.erp = G0017 AND b.division = 'TSI' THEN 'SV'
 // WHEN b.division = 'TS' THEN 'SW'
 // WHEN b.division = 'SM' THEN 'SZ'
 // WHEN b.division = 'LOG' THEN 'ZL'
 // ELSE LEFT(b.division, 2)
 // END
 
-const gglTaiwanOfficeOld360Id = 7351496
+const gglTaiwanOfficeErpCode = 'G0017'
+
 const gglreportingGroupExpression = new CaseExpression({
 
   cases: [
@@ -1319,10 +1341,7 @@ const gglreportingGroupExpression = new CaseExpression({
     {
       $when: new AndExpressions([
 
-        new BinaryExpression(new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
-        ), '=', gglTaiwanOfficeOld360Id),
+        new BinaryExpression(officeErpCodeExpression, '=', gglTaiwanOfficeErpCode),
 
         new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TAE')
       ]),
@@ -1332,10 +1351,7 @@ const gglreportingGroupExpression = new CaseExpression({
     {
       $when: new AndExpressions([
 
-        new BinaryExpression(new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
-        ), '=', gglTaiwanOfficeOld360Id),
+        new BinaryExpression(officeErpCodeExpression, '=', gglTaiwanOfficeErpCode),
 
         new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TAE')
       ]),
@@ -1407,10 +1423,7 @@ const gglreportingGroupExpression = new CaseExpression({
     {
       $when: new AndExpressions([
 
-        new BinaryExpression(new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
-        ), '=', gglTaiwanOfficeOld360Id),
+        new BinaryExpression(officeErpCodeExpression, '=', gglTaiwanOfficeErpCode),
 
         new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TSE')
       ]),
@@ -1420,10 +1433,7 @@ const gglreportingGroupExpression = new CaseExpression({
     {
       $when: new AndExpressions([
 
-        new BinaryExpression(new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
-        ), '=', gglTaiwanOfficeOld360Id),
+        new BinaryExpression(officeErpCodeExpression, '=', gglTaiwanOfficeErpCode),
 
         new BinaryExpression(new ColumnExpression('shipment', 'divisionCode'), '=', 'TSI')
       ]),
@@ -1532,8 +1542,7 @@ const dateStatusExpressionWithParams = (params: IQueryParams) => {
 
   const subqueryParam = params.subqueries.dateStatus
 
-  if (!subqueryParam)
-  {
+  if (!subqueryParam) {
     throw new Error(`missing dateStatus in subqueries`)
   }
 
@@ -1548,49 +1557,50 @@ const dateStatusExpression = (subqueryParam) => {
   const rawATDExpression = new ColumnExpression('shipment_date', 'departureDateActual')
   const rawETDExpression = new ColumnExpression('shipment_date', 'departureDateEstimated')
 
-  const addDateExpression = (expression: IExpression, mode: 'add' | 'sub', value, unit: 'DAY' | 'HOUR' | 'MINUTE') => {
+  // const addDateExpression = (expression: IExpression, mode: 'add' | 'sub', value, unit: 'DAY' | 'HOUR' | 'MINUTE') => {
 
-    const extraDateExpression = new ParameterExpression({
-      prefix: 'INTERVAL',
-      expression: value,
-      suffix: unit
-    })
+  //   const extraDateExpression = new ParameterExpression({
+  //     prefix: 'INTERVAL',
+  //     expression: value,
+  //     suffix: unit
+  //   })
 
-    return new FunctionExpression(mode === 'add' ? 'DATE_ADD' : 'DATE_SUB', expression, extraDateExpression)
+  //   return new FunctionExpression(mode === 'add' ? 'DATE_ADD' : 'DATE_SUB', expression, extraDateExpression)
 
-  }
+  // }
 
   const moduleTypeCodeCondition = (moduleTypeCode) => {
-    return  new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', moduleTypeCode)
+    return new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', moduleTypeCode)
   }
 
-  const AIRDateStatusExpression = (subqueryParam) =>
-  {
+  const AIRDateStatusExpression = (subqueryParam) => {
 
-    // convert a date to 23:59 of that day
-    const convertToEndOfDate = (dateExpression) => addDateExpression(addDateExpression(new FunctionExpression('DATE', dateExpression), 'add', 1, 'DAY'), 'sub', 1, 'MINUTE')
+    // // convert a date to 23:59 of that day
+    // const convertToEndOfDate = (dateExpression) => addDateExpression(addDateExpression(new FunctionExpression('DATE', dateExpression), 'add', 1, 'DAY'), 'sub', 1, 'MINUTE')
 
-    // convert a date to 00:01 of that day
-    const convertToStartOfDate = (dateExpression) => addDateExpression(new FunctionExpression('DATE', dateExpression), 'sub', 1, 'MINUTE')
+    // // convert a date to 00:01 of that day
+    // const convertToStartOfDate = (dateExpression) => addDateExpression(new FunctionExpression('DATE', dateExpression), 'sub', 1, 'MINUTE')
+
+
 
     // const todayExpression = new FunctionExpression('NOW')
     const todayExpression = new Value(subqueryParam.today)
     const currentTimeExpression = new Value(subqueryParam.currentTime)
 
     const calculatedATAExpression = new CaseExpression({
-      cases : [
+      cases: [
         {
-          $when : new IsNullExpression(rawETAExpression, true),
-          $then : convertToEndOfDate(rawETAExpression)
+          $when: new IsNullExpression(rawETAExpression, true),
+          $then: convertToEndOfDate(rawETAExpression)
         },
         {
-          $when : new IsNullExpression(rawETDExpression, true),
-          $then : convertToEndOfDate(addDateExpression(rawETDExpression, 'add', 2, 'DAY'))
+          $when: new IsNullExpression(rawETDExpression, true),
+          $then: convertToEndOfDate(addDateExpression(rawETDExpression, 'add', 2, 'DAY'))
         }
 
       ],
 
-      $else : new Value(null)
+      $else: new Value(null)
 
     })
 
@@ -1603,50 +1613,50 @@ const dateStatusExpression = (subqueryParam) => {
 
     return new CaseExpression({
 
-      cases : [
+      cases: [
 
         {
-          $when : finalATAInPast,
-          $then : new CaseExpression({
+          $when: finalATAInPast,
+          $then: new CaseExpression({
 
-            cases : [
+            cases: [
               {
-                $when : new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 'add', 1, 'DAY')), '<=', currentTimeExpression),
-                $then : new Value('inDelivery')
+                $when: new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 'add', 1, 'DAY')), '<=', currentTimeExpression),
+                $then: new Value('inDelivery')
               },
             ],
 
-            $else : new Value('arrival')
+            $else: new Value('arrival')
           })
         },
 
         {
 
-          $when : finalATDInPast,
-          $then : new CaseExpression({
+          $when: finalATDInPast,
+          $then: new CaseExpression({
 
-            cases : [
+            cases: [
               {
-                $when : new BinaryExpression(new FunctionExpression('DATE', finalATDExpression), '=', todayExpression),
-                $then : new Value('departure')
+                $when: new BinaryExpression(new FunctionExpression('DATE', finalATDExpression), '=', todayExpression),
+                $then: new Value('departure')
               },
 
             ],
 
-            $else : new Value('inTransit')
+            $else: new Value('inTransit')
           })
         }
 
       ],
-      $else : new Value('upcoming')
+      $else: new Value('upcoming')
     })
 
   }
 
   const SEADateStatusExpression = (subqueryParam) => {
 
-  const todayExpression = new Value(subqueryParam.today)
-  const currentTimeExpression = new Value(subqueryParam.currentTime)
+    const todayExpression = new Value(subqueryParam.today)
+    const currentTimeExpression = new Value(subqueryParam.currentTime)
 
     const calculatedATAExpression = addDateExpression(rawETAExpression, 'add', 2, 'DAY')
     const calculatedATDExpression = addDateExpression(rawETDExpression, 'add', 1, 'DAY')
@@ -1658,36 +1668,36 @@ const dateStatusExpression = (subqueryParam) => {
 
     return new CaseExpression({
 
-      cases : [
+      cases: [
 
         {
-          $when : finalATAInPast,
-          $then : new CaseExpression({
-            cases : [
+          $when: finalATAInPast,
+          $then: new CaseExpression({
+            cases: [
               {
-                $when : new BinaryExpression(addDateExpression(finalATAExpression, 'add', 3, 'DAY'), '<=', todayExpression),
-                $then : new Value('inDelivery')
+                $when: new BinaryExpression(addDateExpression(finalATAExpression, 'add', 3, 'DAY'), '<=', todayExpression),
+                $then: new Value('inDelivery')
               } as ICase,
             ],
 
-            $else : new Value('arrival')
+            $else: new Value('arrival')
           }
           )
         },
 
         {
-          $when : finalATDInPast,
-          $then : new CaseExpression({
-            cases : [
+          $when: finalATDInPast,
+          $then: new CaseExpression({
+            cases: [
               {
-                $when : new AndExpressions([
+                $when: new AndExpressions([
                   new BinaryExpression(addDateExpression(finalATDExpression, 'add', 3, 'DAY'), '<=', todayExpression)
                 ]),
-                $then : new Value('inTransit')
+                $then: new Value('inTransit')
               } as ICase,
             ],
 
-            $else : new Value('departure')
+            $else: new Value('departure')
           }
           )
         },
@@ -1719,24 +1729,24 @@ const dateStatusExpression = (subqueryParam) => {
 
       ],
 
-      $else : new Value('upcoming')
+      $else: new Value('upcoming')
     })
   }
 
   const result = new CaseExpression({
 
-    cases : [
+    cases: [
       {
-        $when : new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
-        $then : AIRDateStatusExpression(subqueryParam)
+        $when: new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+        $then: AIRDateStatusExpression(subqueryParam)
       },
       {
-        $when : new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
-        $then : SEADateStatusExpression(subqueryParam)
+        $when: new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'SEA'),
+        $then: SEADateStatusExpression(subqueryParam)
       }
 
     ],
-    $else : new Value(null)
+    $else: new Value(null)
   })
 
   return result
@@ -1793,6 +1803,9 @@ const activeStatusExpression = new CaseExpression({
   $else: new Value('active')
 })
 
+
+
+
 // all field related to party
 const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInterface[], party) => {
 
@@ -1817,17 +1830,17 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
 
   const partyTableName = party.name
 
-  const partyIdExpression = party.partyIdExpression  || { expression : new ColumnExpression('shipment_party', `${partyTableName}PartyId`), companion : ['table:shipment_party']}
-  const partyNameExpression = party.partyNameExpression ||  { expression :  new ColumnExpression('shipment_party', `${partyTableName}PartyName`), companion : ['table:shipment_party']}
-  const partyCodeExpression = party.partyCodeExpression || { expression :  new ColumnExpression('shipment_party', `${partyTableName}PartyCode`), companion : ['table:shipment_party']}
-  const partyNameInReportExpression = party.partyNameInReportExpression || { expression :  new ColumnExpression(party.name, `name`), companion : [`table:${party.name}`]}
-  const partyShortNameInReportExpression = party.partyShortNameInReportExpression ||  { expression : new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion : [`table:${party.name}`]}
+  const partyIdExpression = party.partyIdExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyId`), companion: ['table:shipment_party'] }
+  const partyNameExpression = party.partyNameExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyName`), companion: ['table:shipment_party'] }
+  const partyCodeExpression = party.partyCodeExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyCode`), companion: ['table:shipment_party'] }
+  const partyNameInReportExpression = party.partyNameInReportExpression || { expression: new ColumnExpression(party.name, `name`), companion: [`table:${party.name}`] }
+  const partyShortNameInReportExpression = party.partyShortNameInReportExpression || { expression: new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion: [`table:${party.name}`] }
 
   const resultExpressionList = partyFieldList.map(partyField => {
 
     const fieldName = `${partyTableName}${partyField}`
 
-    let finalExpressionInfo: { expression: IExpression, companion: string[]}
+    let finalExpressionInfo: { expression: IExpression, companion: string[] }
 
     switch (partyField) {
 
@@ -1853,36 +1866,36 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
         break
 
       default:
-        finalExpressionInfo = { expression : new ColumnExpression('shipment_party', fieldName) as IExpression, companion : ['table:shipment_party'] }
+        finalExpressionInfo = { expression: new ColumnExpression('shipment_party', fieldName) as IExpression, companion: ['table:shipment_party'] }
         break
     }
 
     return {
-      name : fieldName,
+      name: fieldName,
       ...finalExpressionInfo
     } as ExpressionHelperInterface
   })
 
   return accumulator.concat(resultExpressionList)
- }, [])
+}, [])
 
- const locationExpressionList = locationList.reduce((accumulator: ExpressionHelperInterface[], location) => {
+const locationExpressionList = locationList.reduce((accumulator: ExpressionHelperInterface[], location) => {
 
   const locationCodeExpressionInfo = {
-    name : `${location}Code`,
-    expression : new ColumnExpression('shipment', `${location}Code`),
+    name: `${location}Code`,
+    expression: new ColumnExpression('shipment', `${location}Code`),
   } as ExpressionHelperInterface
 
   const locationLatitudeExpressionInfo = {
-    name : `${location}Latitude`,
-    expression : new ColumnExpression(`${location}`, `latitude`),
-    companion : [`table:${location}`]
+    name: `${location}Latitude`,
+    expression: new ColumnExpression(`${location}`, `latitude`),
+    companion: [`table:${location}`]
   } as ExpressionHelperInterface
 
   const locationLongitudeExpressionInfo = {
-    name : `${location}Longitude`,
-    expression : new ColumnExpression(`${location}`, `longitude`),
-    companion : [`table:${location}`]
+    name: `${location}Longitude`,
+    expression: new ColumnExpression(`${location}`, `longitude`),
+    companion: [`table:${location}`]
   } as ExpressionHelperInterface
 
   accumulator.push(locationCodeExpressionInfo)
@@ -1891,38 +1904,53 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
 
   return accumulator
 
- }, [])
+}, [])
 
 const baseTableName = 'shipment'
 const fieldList = [
 
   {
-    name : 'id',
-    expression : idExpression
+    name: 'id',
+    expression: idExpression
   },
   ...partyExpressionList,
   ...locationExpressionList,
 
   {
-    name : 'jobDate',
-    expression : jobDateExpression
+    name : 'officeErpSite',
+    expression: officeErpSiteExpression,
+    companion: ['table:office']
   },
 
   {
-    name : 'jobMonth',
-    expression : jobMonthExpression
+    name : 'controllingCustomerErpCode',
+    expression: controllingCustomerErpCodeExpression,
+    companion: ['table:controllingCustomer']
   },
 
   {
-    name : 'jobWeek',
-    expression : jobWeekExpression
+    name : 'officeErpCode',
+    expression: officeErpCodeExpression,
+    companion: ['table:office']
   },
 
   {
-    name : 'jobYear',
-    expression : jobYearExpression
+    name: 'jobMonth',
+    expression: jobMonthExpression
   },
 
+  {
+    name: 'jobWeek',
+    expression: jobWeekExpression
+  },
+
+  {
+    name: 'jobYear',
+    expression: jobYearExpression
+  },
+
+
+  'erpCode',
   'moduleTypeCode',
   'boundTypeCode',
   'nominatedTypeCode',
@@ -1932,42 +1960,43 @@ const fieldList = [
   'isCoload',
   'houseNo',
   'jobNo',
-
+  'masterNo',
+  'containerNos',
   {
-    name : 'primaryKeyListString',
-    expression : primaryKeyListStringExpression
+    name: 'primaryKeyListString',
+    expression: primaryKeyListStringExpression
   },
   {
-    name : 'partyGroupCode',
-    expression : partyGroupCodeExpression
-  },
-
-  {
-    name : 'currentTrackingNo',
-    expression : currentTrackingNoExpression
+    name: 'partyGroupCode',
+    expression: partyGroupCodeExpression
   },
 
   {
-    name : 'haveCurrentTrackingNo',
-    expression : haveCurrentTrackingNoExpression
+    name: 'currentTrackingNo',
+    expression: currentTrackingNoExpression
   },
 
   {
-    name : 'agentGroup',
-    expression : agentGroupExpression,
-    companion : ['table:consignee', 'table:agent']
+    name: 'haveCurrentTrackingNo',
+    expression: haveCurrentTrackingNoExpression
+  },
+
+  {
+    name: 'agentGroup',
+    expression: agentGroupExpression,
+    companion: ['table:consignee', 'table:agent']
   },
   {
-    name : 'carrierCode',
-    expression : carrierCodeExpression,
+    name: 'carrierCode',
+    expression: carrierCodeExpression,
   },
   {
-    name : 'carrierName',
-    expression : carrierNameExpression,
+    name: 'carrierName',
+    expression: carrierNameExpression,
   },
   {
-    name : 'salesmanCode',
-    expression : salesmanCodeExpression
+    name: 'salesmanCode',
+    expression: salesmanCodeExpression
   },
 
   {
@@ -1985,317 +2014,128 @@ const fieldList = [
     expression: cSalesmanCodeExpression,
   },
   {
-    name : 'batchNumber',
-    expression : batchNumberExpression
+    name: 'batchNumber',
+    expression: batchNumberExpression
   },
 
   {
-    name : 'reportingGroup',
-    expression : reportingGroupExpression,
-    companion : ['table:office']
+    name: 'reportingGroup',
+    expression: reportingGroupExpression,
+    companion: ['table:office']
   },
   {
-    name : 'shipId',
-    expression : shipIdExpression
-  },
-
-  {
-    name : 'lastStatusCode',
-    expression : lastStatusCodeExpression,
-    companion : ['table:lastStatus']
-  },
-  {
-    name : 'lastStatus',
-    expression : lastStatusExpression,
-    companion : ['table:lastStatus']
-  },
-  {
-    name : 'lastStatusDate',
-    expression : lastStatusDateExpression,
-    companion : ['table:lastStatus']
-  },
-  {
-    name : 'lastStatusCodeOrDescription',
-    expression : lastStatusCodeOrDescriptionExpression,
-    companion : ['table:lastStatus']
+    name: 'shipId',
+    expression: shipIdExpression
   },
 
   {
-    name : 'statusCode',
-    expression : statusCodeExpression,
-    companion : ['table:status']
+    name: 'lastStatusCode',
+    expression: lastStatusCodeExpression,
+    companion: ['table:lastStatus']
+  },
+  {
+    name: 'lastStatus',
+    expression: lastStatusExpression,
+    companion: ['table:lastStatus']
+  },
+  {
+    name: 'lastStatusDate',
+    expression: lastStatusDateExpression,
+    companion: ['table:lastStatus']
+  },
+  {
+    name: 'lastStatusCodeOrDescription',
+    expression: lastStatusCodeOrDescriptionExpression,
+    companion: ['table:lastStatus']
   },
 
   {
-    name : 'status',
-    expression : statusExpression,
-    companion : ['table:status']
+    name: 'statusCode',
+    expression: statusCodeExpression,
+    companion: ['table:status']
   },
 
   {
-    name : 'dateStatus',
-    expression : dateStatusExpressionWithParams,
-    companion : ['table:shipment_date']
+    name: 'status',
+    expression: statusExpression,
+    companion: ['table:status']
   },
 
   {
-    name : 'alertId',
-    expression : alertIdExpression,
-    companion : ['table:alert']
+    name: 'dateStatus',
+    expression: dateStatusExpressionWithParams,
+    companion: ['table:shipment_date']
   },
 
   {
-    name : 'alertTableName',
-    expression : alertTableNameExpression,
-    companion : ['table:alert']
+    name: 'alertId',
+    expression: alertIdExpression,
+    companion: ['table:alert']
   },
 
   {
-    name : 'alertPrimaryKey',
-    expression : alertPrimaryKeyExpression,
-    companion : ['table:alert']
+    name: 'alertTableName',
+    expression: alertTableNameExpression,
+    companion: ['table:alert']
   },
 
   {
-    name : 'alertSeverity',
-    expression : alertSeverityExpression,
-    companion : ['table:alert']
+    name: 'alertPrimaryKey',
+    expression: alertPrimaryKeyExpression,
+    companion: ['table:alert']
   },
 
   {
-    name : 'alertType',
-    expression : alertTypeExpression,
-    companion : ['table:alert']
+    name: 'alertSeverity',
+    expression: alertSeverityExpression,
+    companion: ['table:alert']
   },
 
   {
-    name : 'alertTitle',
-    expression : alertTitleExpression,
-    companion : ['table:alert']
+    name: 'alertType',
+    expression: alertTypeExpression,
+    companion: ['table:alert']
   },
 
   {
-    name : 'alertMessage',
-    expression : alertMessageExpression,
-    companion : ['table:alert']
+    name: 'alertTitle',
+    expression: alertTitleExpression,
+    companion: ['table:alert']
   },
 
   {
-    name : 'alertCategory',
-    expression : alertCategoryExpression,
-    companion : ['table:alert']
+    name: 'alertMessage',
+    expression: alertMessageExpression,
+    companion: ['table:alert']
   },
 
   {
-    name : 'alertContent',
-    expression : alertContentExpression,
-    companion : ['table:alert']
+    name: 'alertCategory',
+    expression: alertCategoryExpression,
+    companion: ['table:alert']
   },
 
   {
-    name : 'alertStatus',
-    expression : alertStatusExpression,
-    companion : ['table:alert']
+    name: 'alertContent',
+    expression: alertContentExpression,
+    companion: ['table:alert']
+  },
+
+  {
+    name: 'alertStatus',
+    expression: alertStatusExpression,
+    companion: ['table:alert']
   },
   {
-    name : 'activeStatus',
-    expression : activeStatusExpression
+    name: 'activeStatus',
+    expression: activeStatusExpression
   }
 
 ] as ExpressionHelperInterface[]
 
 registerAll(query, baseTableName, fieldList)
 
-// query.registerBoth('id', idExpression)
-// query.registerBoth('primaryKeyListString', primaryKeyListStringExpression)
-// query.registerBoth('partyGroupCode', partyGroupCodeExpression)
-// query.registerBoth('currentTrackingNo', currentTrackingNoExpression)
-// query.registerBoth('haveCurrentTrackingNo', haveCurrentTrackingNoExpression)
 
-// query.registerBoth('agentGroup', agentGroupExpression, 'table:consignee', 'table:agent')
-
-// query.registerBoth('carrierCode', carrierCodeExpression)
-
-// query.registerBoth('carrierName', carrierNameExpression)
-
-// query.registerBoth('salesmanCode', salesmanCodeExpression)
-
-// query.registerBoth('reportingGroup', reportingGroupExpression, 'table:office')
-
-// query.registerBoth('shipId', shipIdExpression)
-
-// // tracking lastStatus
-// query.registerBoth('lastStatusCode', lastStatusCodeExpression, 'table:lastStatus')
-// query.registerBoth('lastStatusCodeOrDescription', lastStatusCodeOrDescriptionExpression, 'table:lastStatus')
-
-// query.registerBoth('lastStatus', lastStatusExpression, 'table:lastStatus')
-
-// // tracking status
-// query.registerBoth('statusCode', statusCodeExpression, 'table:status')
-// query.registerBoth('status', statusExpression, 'table:status')
-
-// // dateStatus
-// query.registerBoth('dateStatus', ((params: IQueryParams) => dateStatusExpressionWithParams(params)) as ExpressionArg, 'table:shipment_date')
-
-// query.registerBoth('alertId', alertIdExpression, 'table:alert')
-
-// query.registerBoth('alertTableName', alertTableNameExpression, 'table:alert')
-
-// query.registerBoth('alertPrimaryKey', alertPrimaryKeyExpression, 'table:alert')
-
-// query.registerBoth('alertSeverity', alertSeverityExpression, 'table:alert')
-
-// query.registerBoth('alertType', alertTypeExpression, 'table:alert')
-
-// query.registerBoth('alertTitle', alertTitleExpression, 'table:alert')
-
-// query.registerBoth('alertMessage', alertMessageExpression, 'table:alert')
-
-// query.registerBoth('alertCategory', alertCategoryExpression, 'table:alert')
-
-// query.registerBoth('alertContent', alertContentExpression, 'table:alert')
-
-// query.registerBoth('alertStatus', alertStatusExpression, 'table:alert')
-
-// ===========================
-
-// shipment_party table
-// { shipper, consignee, office, linerAgent, roAgent, agent, controllingCustomer }
-// {x}PartyContactPersonId
-// {x}PartyContactName
-// {x}PartyContactEmail
-// {x}PartyContactPhone
-// {x}PartyContactIdentity
-// {x}PartyContacts
-// {x}PartyIdentity
-// {x}PartyAddress
-
-// Agent special case :
-// CASE WHEN shipment.billType = 'M' AND shipment.moduleTypeCode = 'AIR'
-// THEN consignee.name
-// ELSE agent.name
-// END
-
-// party field ======================
-// const partyFieldList = [
-
-//   //  very special case , get back the value from the party join
-//   'PartyNameInReport',
-//   'PartyShortNameInReport',
-
-//   'PartyId',
-//   'PartyName',
-//   'PartyCode',
-//   'PartyContactPersonId',
-//   'PartyContactName',
-//   'PartyContactEmail',
-//   'PartyContactPhone',
-//   'PartyContactIdentity',
-//   'PartyContacts',
-//   'PartyIdentity',
-//   'PartyAddress'
-// ]
-
-//   partyList.map(party => {
-
-//   const partyTableName = party.name
-
-//   const partyIdExpression = party.partyIdExpression  || { expression : new ColumnExpression('shipment_party', `${partyTableName}PartyId`), companion : ['table:shipment_party']}
-//   const partyNameExpression = party.partyNameExpression ||  { expression :  new ColumnExpression('shipment_party', `${partyTableName}PartyName`), companion : ['table:shipment_party']}
-//   const partyCodeExpression = party.partyCodeExpression || { expression :  new ColumnExpression('shipment_party', `${partyTableName}PartyCode`), companion : ['table:shipment_party']}
-//   const partyNameInReportExpression = party.partyNameInReportExpression || { expression :  new ColumnExpression(party.name, `name`), companion : [`table:${party.name}`]}
-//   const partyShortNameInReportExpression = party.partyShortNameInReportExpression ||  { expression : new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion : [`table:${party.name}`]}
-
-//   partyFieldList.map(partyField => {
-
-//     const fieldName = `${partyTableName}${partyField}`
-
-//     let finalExpressionInfo: { expression: IExpression, companion: string[] }
-
-//     switch (partyField) {
-
-//       case 'PartyCode':
-//         finalExpressionInfo = partyCodeExpression
-//         break
-
-//       case 'PartyName':
-//         finalExpressionInfo = partyNameExpression
-//         break
-
-//       case 'PartyId':
-//         finalExpressionInfo = partyIdExpression
-//         break
-
-//       // PartyReportName will get from party join instead of shipment_party direct;y
-//       case 'PartyNameInReport':
-//         finalExpressionInfo = partyNameInReportExpression
-//         break
-
-//       case 'PartyShortNameInReport':
-//         finalExpressionInfo = partyShortNameInReportExpression
-//         break
-
-//       default:
-//         finalExpressionInfo = { expression : new ColumnExpression('shipment_party', fieldName) as IExpression, companion : ['table:shipment_party'] }
-//         break
-//     }
-
-//     query.registerBoth(fieldName, finalExpressionInfo.expression, ...finalExpressionInfo.companion)
-
-//   })
-
-//   query
-//   .register(
-//     `${partyTableName}PartyId`,
-//     new Query({
-//       $where: new InExpression(partyIdExpression.expression, false),
-//     }),
-//     ...partyIdExpression.companion
-//   )
-//   .register('value', 0)
-
-// query
-//   .register(
-//     `${partyTableName}PartyCode`,
-//     new Query({
-//       $where: new InExpression(partyCodeExpression.expression, false),
-//     }),
-//     ...partyCodeExpression.companion
-//   )
-//   .register('value', 0)
-
-// query
-//   .register(
-//     `${partyTableName}PartyName`,
-//     new Query({
-//       $where: new RegexpExpression(partyNameExpression.expression, false),
-//     }),
-//     ...partyNameExpression.companion
-//   )
-//   .register('value', 0)
-
-// query
-//   .register(
-//     `${partyTableName}IsNotNull`,
-//     new Query({
-//       $where: new IsNullExpression(partyIdExpression.expression, true),
-//     }),
-//     ...partyIdExpression.companion
-//   )
-
-// })
-
-// ===========================
-
-// shipment_date table
-// { oceanBill, cargoReady, cYCutOff, pickup, cargoReceipt, depature, arrival,finalDoorDelivery }
-// {x}DateEstimated
-// {x}DateActual
-// {x}DateRemark
-
-// ====================================
-
-// calculation field
 
 // calculation ==============================
 
@@ -2311,31 +2151,13 @@ query
     new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))), 'alertCount')
   )
 
-// const jobDateExpression = new ColumnExpression('shipment', 'jobDate')
-
-// const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
-
-// const jobMonthExpression = new FunctionExpression('CONCAT', new FunctionExpression('YEAR', jobDateExpression),
-//   '-',
-//   new FunctionExpression('LPAD', new FunctionExpression('MONTH', jobDateExpression), 2, '0'))
-
-// const jobWeekExpression = new FunctionExpression('LPAD', new FunctionExpression('WEEK', jobDateExpression), 2, '0')
-
-// query.registerBoth('jobDate', jobDateExpression)
-
-// query.registerBoth('jobMonth', jobMonthExpression)
-
-// query.registerBoth('jobWeek', jobWeekExpression)
-
-// query.registerBoth('jobYear', jobYearExpression)
-
 // summary fields  =================
 
 const nestedSummaryList = [
 
   {
     name: 'frc',
-    companion : ['table:shipment_party'],
+    companion: ['table:shipment_party'],
     cases: [
       {
         typeCode: 'F',
@@ -2388,7 +2210,7 @@ const nestedSummaryList = [
   {
 
     name: 'fr',
-    companion : [],
+    companion: [],
     cases: [
       {
         typeCode: 'F',
@@ -2447,350 +2269,55 @@ const summaryFieldList: SummaryField[] = [
 
 registerSummaryField(query, baseTableName, summaryFieldList, nestedSummaryList, jobDateExpression)
 
-// function summaryFieldExpression(summaryField: SummaryField, isInReport: boolean, condition?: IConditionalExpression) {
-
-//   const expression = isInReport && summaryField.inReportExpression ? summaryField.inReportExpression : summaryField.expression
-//   const companion = isInReport && summaryField.inReportExpression ? summaryField.inReportExpression : summaryField.expression
-
-//   if (condition) {
-
-//     const countIfExpression = new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new FunctionExpression('IF', condition, new ColumnExpression('shipment', 'id'), new Value(null))))
-//     const sumIfExpression = new FunctionExpression('SUM', new FunctionExpression('IF', condition, new FunctionExpression('IFNULL', expression, 0), 0))
-
-//     return summaryField.summaryIfExpression ? summaryField.summaryIfExpression(condition) : summaryField.summaryType === 'count' ? countIfExpression : sumIfExpression
-//   }
-
-//   const sumExpression = new FunctionExpression('SUM', new FunctionExpression('IFNULL', expression, 0))
-//   const countExpression = new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', expression))
-
-//   return summaryField.summaryType === 'count' ? countExpression : sumExpression
-
-// }
-
-// const lastTimeCondition = (params) => {
-
-//   if (!params.subqueries.date.lastFrom) {
-//     throw new Error('params.subqueries missing date.lastFrom')
-//   }
-
-//   return new BetweenExpression(jobDateExpression, false, new Value(params.subqueries.date.lastFrom), new Value(params.subqueries.date.lastTo))
-// }
-
-// const currentTimeCondition = (params) => {
-
-//   if (!params.subqueries.date.currentFrom) {
-//     throw new Error('params.subqueries missing date.currentFrom')
-//   }
-
-//   return new BetweenExpression(jobDateExpression, false, new Value(params.subqueries.date.currentFrom), new Value(params.subqueries.date.currentTo))
-// }
-// const monthConditionExpression = (month) => {
-//   const index = months.findIndex(x => x === month)
-//   return new BinaryExpression(new FunctionExpression('Month', jobDateExpression), '=', index + 1)
-// }
-
-// const isInReportList = [true, false]
-
-// isInReportList.map(isInReport => {
-
-//   summaryFieldList.map((summaryField) => {
-
-//     const summaryFieldName = isInReport ? `${summaryField.name}InReport` : summaryField.name
-
-//     // cbm/chargeableWeight
-//     const basicFn = (params) => {
-//       const totalValueExpression = summaryFieldExpression(summaryField, isInReport)
-//       return new ResultColumn(totalValueExpression, summaryFieldName)
-//     }
-
-//     query.registerResultColumn(summaryFieldName, basicFn)
-
-//     // cbmMonth case
-//     const monthFn: ResultColumnArg = (params) => {
-
-//       const resultColumnList = [] as ResultColumn[]
-
-//       months.forEach((month, index) => {
-//         const monthSumExpression = summaryFieldExpression(summaryField, isInReport, monthConditionExpression(month))
-//         resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_${summaryFieldName}`))
-//       })
-
-//       const totalValueExpression = summaryFieldExpression(summaryField, isInReport)
-//       resultColumnList.push(new ResultColumn(totalValueExpression, `total_${summaryFieldName}`))
-
-//       return resultColumnList
-//     }
-
-//     query.registerResultColumn(`${summaryFieldName}Month`, monthFn)
-
-//     // ==================================
-
-//     // cbmLastCurrent
-//     const lastCurrentFn = (params) => {
-
-//       console.log(`debug_params`)
-//       console.log(params)
-
-//       const lastSummaryField = summaryFieldExpression(summaryField, isInReport, lastTimeCondition(params))
-//       const currentSummaryField = summaryFieldExpression(summaryField, isInReport, currentTimeCondition(params))
-
-//       const PercentageChangeExpression = percentageChangeFunction(lastSummaryField, currentSummaryField)
-
-//       return [
-//         new ResultColumn(lastSummaryField, `${summaryFieldName}Last`),
-//         new ResultColumn(currentSummaryField, `${summaryFieldName}Current`),
-//         new ResultColumn(PercentageChangeExpression, `${summaryFieldName}PercentageChange`)
-//       ]
-
-//     }
-
-//     query.registerResultColumn(`${summaryFieldName}LastCurrent`, lastCurrentFn)
-
-//     // cbmMonthLastCurrent
-//     const monthLastCurrentFn = (params) => {
-//       const resultColumnList = [] as ResultColumn[]
-
-//       months.forEach((month, index) => {
-
-//         const monthLastCondition = new AndExpressions([
-//           monthConditionExpression(month),
-//           lastTimeCondition(params)
-//         ])
-
-//         const monthCurrentCondition = new AndExpressions([
-//           monthConditionExpression(month),
-//           currentTimeCondition(params)
-//         ])
-
-//         const monthLastSumExpression = summaryFieldExpression(summaryField, isInReport, monthLastCondition)
-//         const monthCurrentSumExpression = summaryFieldExpression(summaryField, isInReport, monthCurrentCondition)
-
-//         const monthPercentageChangeExpression = percentageChangeFunction(monthLastSumExpression, monthCurrentSumExpression)
-
-//         resultColumnList.push(new ResultColumn(monthLastSumExpression, `${month}_${summaryFieldName}Last`))
-//         resultColumnList.push(new ResultColumn(monthCurrentSumExpression, `${month}_${summaryFieldName}Current`))
-//         resultColumnList.push(new ResultColumn(monthPercentageChangeExpression, `${month}_${summaryFieldName}PercentageChange`))
-
-//       })
-
-//       const totalLastSumExpression = summaryFieldExpression(summaryField, isInReport, lastTimeCondition(params))
-//       const totalCurrentSumExpression = summaryFieldExpression(summaryField, isInReport, currentTimeCondition(params))
-//       const totalPercentageChangeExpression = percentageChangeFunction(totalLastSumExpression, totalCurrentSumExpression)
-
-//       resultColumnList.push(new ResultColumn(totalLastSumExpression, `total_${summaryFieldName}Last`))
-//       resultColumnList.push(new ResultColumn(totalCurrentSumExpression, `total_${summaryFieldName}Current`))
-//       resultColumnList.push(new ResultColumn(totalPercentageChangeExpression, `total_${summaryFieldName}PercentageChange`))
-
-//       return resultColumnList
-//     }
-
-//     query.registerResultColumn(`${summaryFieldName}MonthLastCurrent`, monthLastCurrentFn)
-
-//     // ======================================
-
-//     nestedSummaryList.map(x => {
-
-//       const nestedMonthFn = (params) => {
-
-//         const resultColumnList = [] as ResultColumn[]
-
-//         months.forEach((month, index) => {
-//           const monthCondition = monthConditionExpression(month)
-//           const monthSumExpression = summaryFieldExpression(summaryField, isInReport, monthCondition)
-
-//           // January_T_cbm
-//           resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_T_${summaryFieldName}`))
-
-//           x.cases.map(y => {
-//             const condition = new AndExpressions([
-//               monthCondition,
-//               y.condition
-//             ])
-
-//             // January_F_cbm
-//             const frcMonthSumExpression = summaryFieldExpression(summaryField, isInReport, condition)
-//             resultColumnList.push(new ResultColumn(frcMonthSumExpression, `${month}_${y.typeCode}_${summaryFieldName}`))
-
-//           })
-
-//         })
-
-//         x.cases.map(y => {
-//           // total_F_cbm
-//           const typeTotalExpression = summaryFieldExpression(summaryField, isInReport, y.condition)
-//           resultColumnList.push(new ResultColumn(typeTotalExpression, `total_${y.typeCode}_${summaryFieldName}`))
-
-//         })
-
-//         // total_T_cbm
-//         const totalValueExpression = summaryFieldExpression(summaryField, isInReport)
-//         resultColumnList.push(new ResultColumn(totalValueExpression, `total_T_${summaryFieldName}`))
-
-//         return resultColumnList
-//       }
-//       // frc_cbmMonth
-//       query.registerResultColumn(`${x.name}_${summaryFieldName}Month`, nestedMonthFn)
-
-//       // frc_cbmLastCurrent
-//       const nestedLastCurrentFn = (params) => {
-
-//         const resultColumnList = [] as ResultColumn[]
-
-//         // for easier looping
-//         const lastCurrentList = [
-//           {
-//             name: 'Last',
-//             condition: lastTimeCondition(params)
-//           },
-//           {
-//             name: 'Current',
-//             condition: currentTimeCondition(params)
-//           }
-
-//         ]
-//         lastCurrentList.forEach(lastOrCurrent => {
-
-//           const lastCurrentCondition = lastOrCurrent.condition
-//           // F_cbmLast
-//           x.cases.map(y => {
-//             resultColumnList.push(new ResultColumn(
-//               summaryFieldExpression(summaryField, isInReport, new AndExpressions([lastCurrentCondition, y.condition])), `${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`
-//             ))
-
-//           })
-
-//           // T_cbmLast
-//           const totalValueExpression = summaryFieldExpression(summaryField, isInReport, lastCurrentCondition)
-//           resultColumnList.push(new ResultColumn(totalValueExpression, `T_${summaryFieldName}${lastOrCurrent.name}`))
-
-//         })
-
-//         return resultColumnList
-
-//       }
-
-//       query.registerResultColumn(`${x.name}_${summaryFieldName}LastCurrent`, nestedLastCurrentFn)
-
-//       // frc_cbmMonthLastCurrent
-//       const nestedMonthLastCurrentFn = (params) => {
-
-//         // for easier looping
-//         const lastCurrentList = [
-//           {
-//             name: 'Last',
-//             condition: lastTimeCondition(params)
-//           },
-//           {
-//             name: 'Current',
-//             condition: currentTimeCondition(params)
-//           }
-
-//         ]
-
-//         const resultColumnList = [] as ResultColumn[]
-
-//         lastCurrentList.forEach(lastOrCurrent => {
-
-//           const lastCurrentCondition = lastOrCurrent.condition
-
-//           months.forEach((month, index) => {
-
-//             // warning
-//             const monthCondition = new AndExpressions([monthConditionExpression(month), lastCurrentCondition])
-//             const monthSumExpression = summaryFieldExpression(summaryField, isInReport, monthCondition)
-
-//             // January_T_cbmLast
-//             resultColumnList.push(new ResultColumn(monthSumExpression, `${month}_T_${summaryFieldName}${lastOrCurrent.name}`))
-
-//             x.cases.map(y => {
-//               const condition = new AndExpressions([
-//                 monthCondition,
-//                 y.condition
-//               ])
-
-//               // January_F_cbmLast
-//               const frcMonthSumExpression = summaryFieldExpression(summaryField, isInReport, condition)
-//               resultColumnList.push(new ResultColumn(frcMonthSumExpression, `${month}_${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`))
-
-//             })
-
-//           })
-
-//           x.cases.map(y => {
-
-//             const condition = new AndExpressions([y.condition, lastCurrentCondition])
-//             // total_F_cbm
-//             const typeTotalExpression = summaryFieldExpression(summaryField, isInReport, condition)
-//             resultColumnList.push(new ResultColumn(typeTotalExpression, `total_${y.typeCode}_${summaryFieldName}${lastOrCurrent.name}`))
-
-//           })
-
-//           // total_T_cbm
-//           const totalValueExpression = summaryFieldExpression(summaryField, isInReport, lastCurrentCondition)
-//           resultColumnList.push(new ResultColumn(totalValueExpression, `total_T_${summaryFieldName}${lastOrCurrent.name}`))
-
-//         })
-
-//         return resultColumnList
-//       }
-//       query.registerResultColumn(`${x.name}_${summaryFieldName}MonthLastCurrent`, nestedMonthLastCurrentFn)
-
-//     })
-
-//   })
-
-// })
-
-// warning!! previously only register carrierCodeIsNotNull and carrierNameIsNotNull, need to register carrierIsNotNull
 
 // Bill Type
 query.subquery(
-    true,
-    'billTypeCode',
-    new Query({
-      $where: new CaseExpression({
+  true,
+  'billTypeCode',
+  new Query({
+    $where: new CaseExpression({
 
-        cases: [
-          {
-            $when: new BinaryExpression(new Value(''), '=', new Unknown()),
-            $then: new OrExpressions([
+      cases: [
+        {
+          $when: new BinaryExpression(new Value(''), '=', new Unknown()),
+          $then: new OrExpressions([
 
-              new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'H'),
-              new AndExpressions([
-                new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
-                new ExistsExpression(new Query({
+            new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'H'),
+            new AndExpressions([
+              new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
+              new ExistsExpression(new Query({
 
-                  $from: new FromTable('shipment', 'b2'),
-                  $where: [
-                    new BinaryExpression(new ColumnExpression('shipment', 'partyGroupCode'), '=', new ColumnExpression('b2', 'partyGroupCode')),
-                    new BinaryExpression(new ColumnExpression('shipment', 'jobNo'), '=', new ColumnExpression('b2', 'jobNo')),
-                    new BinaryExpression(new ColumnExpression('b2', 'billTypeCode'), '=', 'H'),
+                $from: new FromTable('shipment', 'b2'),
+                $where: [
+                  new BinaryExpression(new ColumnExpression('shipment', 'partyGroupCode'), '=', new ColumnExpression('b2', 'partyGroupCode')),
+                  new BinaryExpression(new ColumnExpression('shipment', 'jobNo'), '=', new ColumnExpression('b2', 'jobNo')),
+                  new BinaryExpression(new ColumnExpression('b2', 'billTypeCode'), '=', 'H'),
 
-                    shipmentIsActiveExpression('b2')
-                  ]
+                  shipmentIsActiveExpression('b2')
+                ]
 
-                }), true)
-              ])
-
+              }), true)
             ])
-          },
-          {
-            $when: new BinaryExpression('Direct', '=', new Unknown()),
-            $then: new OrExpressions([
-              new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'H'),
-              new AndExpressions([
-                new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
-                new BinaryExpression(new ColumnExpression('shipment', 'isDirect'), '=', 1)
-              ])
 
+          ])
+        },
+        {
+          $when: new BinaryExpression('Direct', '=', new Unknown()),
+          $then: new OrExpressions([
+            new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'H'),
+            new AndExpressions([
+              new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
+              new BinaryExpression(new ColumnExpression('shipment', 'isDirect'), '=', 1)
             ])
-          }
-        ],
-        $else: new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', new Unknown())
 
-      }),
-    })
-  )
+          ])
+        }
+      ],
+      $else: new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', new Unknown())
+
+    }),
+  })
+)
   .register('value', 0)
   .register('value', 1)
   .register('value', 2)
@@ -2849,101 +2376,6 @@ const withoutStatusCodeFn = (params) => {
 
 query.registerQuery('withoutStatusCode', withoutStatusCodeFn)
 
-// salesman filter =============================
-const singleEqualFieldList = [
-
-  {
-    name: 'salesmanCode',
-    expression: salesmanCodeExpression,
-  },
-
-  {
-    name: 'rSalesmanCode',
-    expression: rSalesmanCodeExpression,
-  },
-
-  {
-    name: 'sSalesmanCode',
-    expression: sSalesmanCodeExpression,
-  },
-
-  {
-    name: 'cSalesmanCode',
-    expression: cSalesmanCodeExpression,
-  },
-
-  {
-    name : 'batchNumber',
-    expression : batchNumberExpression
-  },
-]
-
-// singleEqualFieldList.map(singleEqualField => {
-
-//   const expression = (typeof singleEqualField === 'string') ? new ColumnExpression('shipment', singleEqualField) : singleEqualField.expression
-//   const name = (typeof singleEqualField === 'string') ? singleEqualField : singleEqualField.name
-
-//   //  warning : a bit difference from normal filter
-//   // normal value = value filter
-//   query.registerQuery(name,
-//     new Query({
-//       $where: new BinaryExpression(expression, '=', new Unknown()),
-//     })
-//   ).register('value', 0)
-
-//   // Is not Null filter
-//   query.registerQuery(`${name}IsNotNull`,
-//     new Query({
-//       $where: new IsNullExpression(expression, true),
-//     })
-//   )
-
-// })
-
-// // shipment party Filter================================
-// partyList.map(party => {
-
-//   const partyTableName = party.name
-//   const partyIdExpression = party.partyIdExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyId`)
-//   const partyNameExpression = party.partyNameExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyName`)
-//   const partyCodeExpression = party.partyCodeExpression || new ColumnExpression('shipment_party', `${partyTableName}PartyCode`)
-
-//   query
-//     .register(
-//       `${partyTableName}PartyId`,
-//       new Query({
-//         $where: new InExpression(partyIdExpression, false),
-//       })
-//     )
-//     .register('value', 0)
-
-//   query
-//     .register(
-//       `${partyTableName}PartyCode`,
-//       new Query({
-//         $where: new InExpression(partyCodeExpression, false),
-//       })
-//     )
-//     .register('value', 0)
-
-//   query
-//     .register(
-//       `${partyTableName}PartyName`,
-//       new Query({
-//         $where: new RegexpExpression(partyNameExpression, false),
-//       })
-//     )
-//     .register('value', 0)
-
-//   query
-//     .register(
-//       `${partyTableName}IsNotNull`,
-//       new Query({
-//         $where: new IsNullExpression(partyIdExpression, true),
-//       })
-//     )
-
-// })
 
 function controllingCustomerIncludeRoleExpression($not: boolean, partyTypeList?: string[]) {
 
@@ -3002,13 +2434,10 @@ query.registerQuery('isColoader',
 
 ).register('value', 0)
 
-function viaHKGExpression() {
 
-  const old360PartyIdList = [7351490]
-  return new InExpression(new FunctionExpression(
-    'JSON_UNQUOTE',
-    new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.old360')
-  ), false, old360PartyIdList)
+function viaHKGExpression() {
+  const erpCode = 'G0001'
+  return new BinaryExpression(officeErpCodeExpression, '=' , erpCode)
 }
 
 query.subquery('viaHKG',
@@ -3019,42 +2448,47 @@ query.subquery('viaHKG',
   'table:office'
 )
 
-// Location Filter=================
 
-// locationList.map(location => {
+query.subquery('missingVGM', new Query({
+  $where: new InExpression(idExpression, false,
+    new QueryExpression(
+      new Query({
 
-//   const locationCode = `${location}Code`
-//   const locationLatitude = `${location}Latitude`
-//   const locationLongitude = `${location}Longitude`
-//   // Port of Loading
+        $select : [
+          new ResultColumn(new ColumnExpression('shipment_container','shipmentId'))
+        ],
+        $from : 'shipment_conatiner',
+        $where : new BinaryExpression(new ColumnExpression('shipment_container','vgmWeight'),'>',0)
 
-//   const locationTable = `table:${location}`
+      })
+    )
+  )
+}))
 
-//   // portOfLoadingCode
-//   query
-//     .register(
-//       `${location}Code`,
-//       new Query({
-//         $where: new InExpression(new ColumnExpression('shipment', `${location}Code`), false),
-//       })
-//     )
-//     .register('value', 0)
 
-//     query
-//     .registerBoth(
-//       `${location}Latitude`,
-//       new ColumnExpression(`${location}`, `latitude`),
-//       locationTable // as companion
-//     )
+query.subquery('missingDocument',(subQueryValue,param) => {
 
-//     query
-//     .registerBoth(
-//       `${location}Longitude`,
-//       new ColumnExpression(`${location}`, `longitude`),
-//       locationTable // as companion
-//     )
+  const fileName = subQueryValue.value
 
-// })
+  return new Query({
+    $where: new InExpression(idExpression, false,
+      new QueryExpression(
+        new Query({
+
+          $select : [
+            new ResultColumn(new ColumnExpression('document','primaryKey'))
+          ],
+          $from : 'document',
+          $where : [
+            new BinaryExpression(new ColumnExpression('document','fileName'),'=',fileName),
+            new BinaryExpression(new ColumnExpression('document','tableName'),'=','shipment')
+          ]
+
+        })
+      )
+    )
+  })
+})
 
 // Date Filter=================
 
@@ -3110,66 +2544,88 @@ query
   .register('currentFrom', 10)
   .register('currentTo', 11)
 
+
+
+const dateNameList = [
+  'departure',
+  'arrival',
+  'oceanBill',
+  'cargoReady',
+  'scheduleAssigned',
+  'scheduleApproaved',
+  'spaceConfirmation',
+  'bookingSubmit',
+  'cyCutOff',
+  'documentCutOff',
+  'pickup',
+  'shipperLoad',
+  'returnLoad',
+  'cargoReceipt',
+  'shipperDocumentSubmit',
+  'shipperInstructionSubmit',
+  'houseBillDraftSubmit',
+  'houseBillConfirmation',
+  'masterBillReleased',
+  'preAlertSend',
+  'ediSend',
+  'cargoRolloverStatus',
+  'inboundTransfer',
+  'onRail',
+  'arrivalAtDepot',
+  'availableForPickup',
+  'pickupCargoBeforeDemurrage',
+  'finalCargo',
+  'cargoPickupWithDemurrage',
+  'finalDoorDelivery',
+  'returnEmptyContainer',
+  'sentToShipper',
+  'gateIn',
+  'sentToConsignee',
+  'loadOnboard'
+]
+
 const dateList = [
-  'departureDateEstimated',
-  'departureDateAcutal',
-  'arrivalDateEstimated',
-  'arrivalDateActual',
 
-  'oceanBillDateEstimated',
-  'oceanBillDateAcutal',
-  'cargoReadyDateEstimated',
-  'cargoReadyDateActual',
+  ...dateNameList.reduce((accumulator, currentValue) => {
+    return accumulator.concat([`${currentValue}DateEstimated`, `${currentValue}DateActual`])
+  }, []),
 
-  'cyCutOffDateEstimated',
-  'cyCutOffDateAcutal',
-  'pickupDateEstimated',
-  'pickupDateActual',
 
-  'cargoReceiptDateEstimated',
-  'cargoReceiptDateAcutal',
-  'finalDoorDeliveryDateEstimated',
-  'finalDoorDeliveryDateActual',
-
+  {
+    name: 'jobDate',
+    expression: jobDateExpression
+  },
   {
     name: 'alertCreatedAt',
     expression: alertCreatedAtExpression,
-    companion : ['table:alert']
+    companion: ['table:alert']
   },
 
   {
     name: 'alertUpdatedAt',
     expression: alertUpdatedAtExpression,
-    companion : ['table:alert']
-
+    companion: ['table:alert']
   }
 
-] as (string | {
-  name: string,
-  expression: IExpression,
-  companion: string[]
-}) []
+] as ExpressionHelperInterface[]
 
-dateList.map(date => {
 
-  const dateColumnName = typeof date === 'string' ? date : date.name
-  const dateColumnExpression = typeof date === 'string' ? new ColumnExpression('shipment_date', date) : date.expression
-  const companion = typeof date === 'string' ? ['table:shipment_date'] : date.companion
+registerDateField(query, 'shipment_date', dateList)
 
-  query.registerBoth(dateColumnName, dateColumnExpression, ...companion)
 
-  query
-    .register(
-      dateColumnName,
-      new Query({
-        $where: new BetweenExpression(dateColumnExpression, false, new Unknown(), new Unknown()),
-      }),
-      ...companion
-    )
-    .register('from', 0)
-    .register('to', 1)
-
-})
+query.registerResultColumn(
+  'lastStatusWidget',
+  new ResultColumn(new Value(1)),
+  'table:shipment_date',
+  'field:houseNo',
+  'field:masterNo',
+  'field:containerNos',
+  ...(dateNameList.reduce((companion: string[], dateString: string) => {
+    companion.push(`field:${dateString}DateEstimated`)
+    companion.push(`field:${dateString}DateActual`)
+    return companion
+  }, []))
+)
 
 // Search
 query

@@ -420,6 +420,37 @@
         {
           "key": "finalDestinationName",
           "label": "finalDestination"
+        }, {
+          "key": "lastStatusWidget",
+          "label": "lastStatusWidget",
+          "width": 500,
+          "tdComponent": {
+            "is": "AsyncComponent",
+            "props": {
+              "noDialog": true,
+              "getDate": "shipmentDate",
+              "class": "xs-12 margin-topbottom-2",
+              "layoutName": "plugins/tracking-table",
+              "getExternalDateFunc": [
+                "const data = context.$attrs.row;",
+                "return { houseNo: data.houseNo, shipmentDate: data }"
+              ],
+              "axiosBaseParams": [
+                "const data = context.$attrs.row;",
+                "let trackingNos = [];",
+                "if (data.masterNo) { trackingNos.push(data.masterNo) }",
+                "const containerNos = data.containerNos ? data.containerNos.split(',') : []",
+                "trackingNos = trackingNos.concat(containerNos)",
+                "return {",
+                "url: 'api/swivel-tracking/get',",
+                "method: 'POST',",
+                "data: { trackingNos }",
+                "};"
+              ],
+              "createdAtKey": "issueDate",
+              "createI18nKey": "shipmentReceivedByForwarder"
+            }
+          }
         }
       ]
     },
