@@ -682,7 +682,10 @@
             },
             "canAdd": false,
             "fields": [{
-              "name": "shipmentParty.{{flex}}{{key}}PartyName",
+              "name": [
+                "shipmentParty.{{flex}}{{key}}PartyName",
+                "shipmentParty.{{flex}}{{key}}Party.name"
+              ],
               "component": "v-text-field",
               "class": "xs-12 md-12"
             }]
