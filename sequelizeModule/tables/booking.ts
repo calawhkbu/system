@@ -1,7 +1,7 @@
 import { IConditionalExpression, OrExpressions, AndExpressions, BinaryExpression, ColumnExpression, FunctionExpression, InExpression, Query, ResultColumn, FromTable } from 'node-jql'
 import { JwtPayload, JwtPayloadParty } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
-import { joinData } from 'utils/helper'
+import moment = require('moment')
 
 export const setDataFunction = {
   partyGroupCode: async({ partyGroupCode }, user: JwtPayload) => {
@@ -10,14 +10,20 @@ export const setDataFunction = {
     }
     return partyGroupCode
   },
-  bookingNo: async({ shipmentBooking = [] }) => joinData(shipmentBooking, 'bookingNo'),
-  contractNos: async({ shipmentContainers = [] }: any) => joinData(shipmentContainers, 'contractNo'),
-  carrierBookingNos: async({ shipmentContainers = [] }: any) => joinData(shipmentContainers, 'carrierBookingNo'),
-  containerNos: async({ shipmentContainers = [] }: any) => joinData(shipmentContainers, 'containerNo'),
-  poNos: async({ shipmentPo = [] }: any) => joinData(shipmentPo, 'poNo'),
-  class: async({ isDirect, isCoload }: any) => {
-    return `${isDirect ? 'D' : ''}${isCoload ? 'C' : ''}`
-  }
+  bookingNo: async({ bookingNo }) => {
+    const date = moment.utc().format('YYMMDD')
+    let random = Math.floor(Math.random() * 9999).toString()
+    if (random.length === 3) {
+      random = `0${random}`
+    } else if (random.length === 2) {
+      random = `00${random}`
+    } else if (random.length === 1) {
+      random = `000${random}`
+    } else if (random.length === 0) {
+      random = `0000`
+    }
+    return `01-${date}${random}`
+  },
 }
 
 export default async function getDefaultParams(
@@ -29,7 +35,7 @@ export default async function getDefaultParams(
   if (user) {
     if (user.selectedPartyGroup) {
       const partyGroupExpression = new BinaryExpression(
-        new ColumnExpression('shipment', 'partyGroupCode'),
+        new ColumnExpression('booking', 'partyGroupCode'),
         '=',
         user.selectedPartyGroup.code
       )
@@ -37,26 +43,15 @@ export default async function getDefaultParams(
         ? new AndExpressions([conditions, partyGroupExpression])
         : partyGroupExpression
     }
-    if (user.authTypeCode === 'person' && user.parties && user.parties.length) {
+    if (user.parties && user.parties.length) {
       const selectedPartyGroupCode = user.selectedPartyGroup ? user.selectedPartyGroup.code : null
       const partyTypesExpressions = user.parties.reduce(
         (selectedPartyType: BinaryExpression[], party: JwtPayloadParty) => {
-
-
-          // if (
-          //   party.partyGroupCode === selectedPartyGroupCode &&
-          //   party.types &&
-          //   party.types.length
-          // ) {
-
-          if (party.partyGroupCode === selectedPartyGroupCode)
-          {
-
-            if (!(party.types && party.types.length))
-            {
-              throw new Error(`party id : ${party.id} missing types in shipment getDefaultParams`)
-            }
-
+          if (
+            party.partyGroupCode === selectedPartyGroupCode &&
+            party.types &&
+            party.types.length
+          ) {
             selectedPartyType = selectedPartyType.concat(
               party.types.map((type: string) => {
                 const con = [
@@ -70,14 +65,14 @@ export default async function getDefaultParams(
                   'controllingCustomer',
                 ].includes(type)
                   ? new ColumnExpression(
-                      'shipment_party',
-                      `${type === 'forwarder' ? 'office' : type}PartyId`
+                      'booking_party',
+                      `${type === 'office' ? 'forwarder' : type}PartyId`
                     )
                   : new FunctionExpression(
                       'JSON_UNQUOTE',
                       new FunctionExpression(
                         'JSON_EXTRACT',
-                        new ColumnExpression('shipment_party', 'flexData'),
+                        new ColumnExpression('booking_party', 'flexData'),
                         `$.${type}PartyId`
                       )
                     )
@@ -91,42 +86,17 @@ export default async function getDefaultParams(
       )
       if (partyTypesExpressions && partyTypesExpressions.length) {
         const or = new InExpression(
-          new ColumnExpression('shipment', 'id'),
+          new ColumnExpression('booking', 'id'),
           false,
           new Query({
-            $select: [new ResultColumn(new ColumnExpression('shipment_party', 'shipmentId'))],
-            $from: new FromTable('shipment_party'),
+            $select: [new ResultColumn(new ColumnExpression('booking_party', 'bookingId'))],
+            $from: new FromTable('booking_party'),
             $where: new OrExpressions({ expressions: partyTypesExpressions }),
           })
         )
         conditions = conditions ? new AndExpressions([conditions, or]) : or
       }
     }
-    if (user.authTypeCode === 'person' && user.thirdPartyCode && user.thirdPartyCode.erp) {
-      const salesmanExpression = new OrExpressions({
-        expressions: [
-          new BinaryExpression(
-            new ColumnExpression('shipment', 'rSalesmanPersonCode'),
-            '=',
-            user.thirdPartyCode.erp
-          ),
-          new BinaryExpression(
-            new ColumnExpression('shipment', 'cSalesmanPersonCode'),
-            '=',
-            user.thirdPartyCode.erp
-          ),
-          new BinaryExpression(
-            new ColumnExpression('shipment', 'sSalesmanPersonCode'),
-            '=',
-            user.thirdPartyCode.erp
-          ),
-        ],
-      })
-      conditions = conditions
-        ? new AndExpressions([conditions, salesmanExpression])
-        : salesmanExpression
-    }
   }
-
   return conditions
 }
