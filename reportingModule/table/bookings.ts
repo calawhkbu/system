@@ -1,4 +1,73 @@
-import { Query, FromTable } from 'node-jql'
+import { JqlDefinition } from 'modules/report/interface'
+
+export default {
+  jqls: [
+    {
+      type: 'callDataService',
+      dataServiceQuery: ['booking', 'booking']
+    }
+  ],
+  columns: [
+    { key: 'updatedAt' },
+    { key: 'id' },
+    { key: 'houseNo' },
+    { key: 'masterNo' },
+    { key: 'poNo' },
+    { key: 'bookingNo' },
+    { key: 'moduleType' },
+    { key: 'boundType' },
+    { key: 'service' },
+    { key: 'incoTerms' },
+    { key: 'freightTerms' },
+    { key: 'otherTerms' },
+    { key: 'vesselName' },
+    { key: 'voyageFlightNumber' },
+    { key: 'commodity' },
+    { key: 'polHScode' },
+    { key: 'placeOfReceiptName' },
+    { key: 'portOfLoadingName' },
+    { key: 'portOfDischargeName' },
+    { key: 'placeOfDeliveryName' },
+    { key: 'finalDestinationName' },
+    { key: 'carrierName' },
+    { key: 'cargoReadyDateEstimated' },
+    { key: 'cargoReadyDateActual' },
+    { key: 'cargoReadyDateRemark' },
+    { key: 'cYCutOffDateEstimated' },
+    { key: 'cYCutOffDateActual' },
+    { key: 'cYCutOffDateRemark' },
+    { key: 'departureDateEstimated' },
+    { key: 'departureDateActual' },
+    { key: 'departureDateRemark' },
+    { key: 'arrivalDateEstimated' },
+    { key: 'arrivalDateActual' },
+    { key: 'arrivalDateRemark' },
+    { key: 'createdUserEmail' },
+    { key: 'updatedUserEmail' },
+    { key: 'shipperPartyCode' },
+    { key: 'shipperPartyName' },
+    { key: 'shipperPartyContactEmail' },
+    { key: 'shipperPartyContactName' },
+    { key: 'consigneePartyCode' },
+    { key: 'consigneePartyName' },
+    { key: 'consigneePartyContactEmail' },
+    { key: 'consigneePartyContactName' },
+    { key: 'forwarderPartyName' },
+    { key: 'forwarderPartyCode' },
+    { key: 'forwarderPartyContactEmail' },
+    { key: 'forwarderPartyContactName' },
+    { key: 'notifyPartyPartyCode' },
+    { key: 'notifyPartyPartyName' },
+    { key: 'notifyPartyPartyContactEmail' },
+    { key: 'notifyPartyPartyContactName' },
+    { key: 'agentPartyCode' },
+    { key: 'agentPartyName' },
+    { key: 'agentPartyContactEmail' },
+    { key: 'agentPartyContactName' },
+  ],
+} as JqlDefinition
+
+/* import { Query, FromTable } from 'node-jql'
 
 const query = new Query({
   $from: new FromTable(
@@ -243,4 +312,4 @@ const query = new Query({
   ),
 })
 
-export default query.toJson()
+export default query.toJson() */

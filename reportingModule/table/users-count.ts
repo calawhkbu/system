@@ -1,4 +1,19 @@
-import { Query, FromTable } from 'node-jql'
+import { JqlDefinition } from 'modules/report/interface'
+
+export default {
+  jqls: [
+    {
+      type: 'callDataService',
+      dataServiceType: 'count',
+      dataServiceQuery: ['person', 'person_invitation']
+    }
+  ],
+  columns: [
+    { key: 'count' }
+  ]
+} as JqlDefinition
+
+/* import { Query, FromTable } from 'node-jql'
 
 const query = new Query({
   $distinct: true,
@@ -12,4 +27,4 @@ const query = new Query({
   ),
 })
 
-export default query.toJson()
+export default query.toJson() */

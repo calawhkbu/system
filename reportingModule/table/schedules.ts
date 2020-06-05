@@ -1,4 +1,27 @@
-import { Query, FromTable } from 'node-jql'
+import { JqlDefinition } from 'modules/report/interface'
+
+export default {
+  jqls: [
+    {
+      type: 'callDataService',
+      dataServiceQuery: ['schedule', 'schedule']
+    }
+  ],
+  columns: [
+    { key: 'id' },
+    { key: 'carrierName' },
+    { key: 'routeCode' },
+    { key: 'vessel' },
+    { key: 'voyage' },
+    { key: 'portOfLoadingName' },
+    { key: 'portOfDischargeName' },
+    { key: 'cyCutoffDate' },
+    { key: 'estimatedDepartureDate' },
+    { key: 'estimatedArrivalDate' },
+  ]
+} as JqlDefinition
+
+/* import { Query, FromTable } from 'node-jql'
 
 const query = new Query({
   $from: new FromTable(
@@ -22,4 +45,4 @@ const query = new Query({
   ),
 })
 
-export default query.toJson()
+export default query.toJson() */

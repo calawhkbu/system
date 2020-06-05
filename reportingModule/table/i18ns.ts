@@ -1,4 +1,24 @@
-import { Query, FromTable, FunctionExpression, ColumnExpression, ResultColumn } from 'node-jql'
+import { JqlDefinition } from 'modules/report/interface'
+
+export default {
+  jqls: [
+    {
+      type: 'callDataService',
+      dataServiceQuery: ['i18n', 'i18n']
+    }
+  ],
+  columns: [
+    { key: 'id' },
+    { key: 'partyGroupCode' },
+    { key: 'version' },
+    { key: 'category' },
+    { key: 'key' },
+    { key: 'value' },
+    { key: 'canResetDefault' }
+  ]
+} as JqlDefinition
+
+/* import { Query, FromTable, FunctionExpression, ColumnExpression, ResultColumn } from 'node-jql'
 
 const query = new Query({
   $from: new FromTable(
@@ -19,4 +39,4 @@ const query = new Query({
   ),
 })
 
-export default query.toJson()
+export default query.toJson() */
