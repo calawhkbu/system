@@ -1,6 +1,24 @@
 import { IConditionalExpression, OrExpressions, AndExpressions, BinaryExpression, ColumnExpression, FunctionExpression, InExpression, Query, ResultColumn, FromTable } from 'node-jql'
 import { JwtPayload, JwtPayloadParty } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
+import { joinData } from 'utils/helper'
+
+export const setDataFunction = {
+  partyGroupCode: async({ partyGroupCode }, user: JwtPayload) => {
+    if (user) {
+      return user.selectedPartyGroup.code || partyGroupCode
+    }
+    return partyGroupCode
+  },
+  bookingNo: async({ shipmentBooking = [] }) => joinData(shipmentBooking, 'bookingNo'),
+  contractNos: async({ shipmentContainers = [] }: any) => joinData(shipmentContainers, 'contractNo'),
+  carrierBookingNos: async({ shipmentContainers = [] }: any) => joinData(shipmentContainers, 'carrierBookingNo'),
+  containerNos: async({ shipmentContainers = [] }: any) => joinData(shipmentContainers, 'containerNo'),
+  poNos: async({ shipmentPo = [] }: any) => joinData(shipmentPo, 'poNo'),
+  class: async({ isDirect, isCoload }: any) => {
+    return `${isDirect ? 'D' : ''}${isCoload ? 'C' : ''}`
+  }
+}
 
 export default async function getDefaultParams(
   conditions?: IConditionalExpression,
