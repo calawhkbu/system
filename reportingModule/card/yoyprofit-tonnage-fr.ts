@@ -9,6 +9,7 @@ interface Result {
   lastF: any[]
   lastR: any[]
   tonnage: any[]
+  summaryVariables: string[]
 }
 
 function prepareProfitParams(params: IQueryParams, moment: typeof Moment, current: boolean, freehand: boolean): IQueryParams {
@@ -53,7 +54,7 @@ function processProfitResult(result: any[], params: IQueryParams, moment: typeof
   })
 }
 
-function prepareTonnageParams(params: IQueryParams, moment: typeof Moment): IQueryParams {
+function prepareTonnageParams(params: IQueryParams, moment: typeof Moment, prevResult: Result): IQueryParams {
   const subqueries = (params.subqueries = params.subqueries || {})
 
   if (subqueries.date && subqueries.date !== true && 'from' in subqueries.date) {
@@ -78,12 +79,14 @@ function prepareTonnageParams(params: IQueryParams, moment: typeof Moment): IQue
   if (!(tonnageSummaryVariables && tonnageSummaryVariables.length)) {
     throw new Error('MISSING_tonnageSummaryVariables')
   }
+  prevResult.summaryVariables = tonnageSummaryVariables
 
   params.fields = [
     ...tonnageSummaryVariables.map(tonnageSummaryVariable => {
       return `fr_${tonnageSummaryVariable}MonthLastCurrent`
     })
   ]
+
   return params
 }
 
@@ -198,7 +201,7 @@ export default {
             type: 'prepareParams',
             async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
               if (!prevResult.moment) prevResult.moment = (await this.preparePackages(user)).moment
-              return prepareTonnageParams(params, prevResult.moment)
+              return prepareTonnageParams(params, prevResult.moment, prevResult)
             }
           },
           {
@@ -214,15 +217,10 @@ export default {
     },
     {
       type: 'postProcess',
-      postProcess(params, { lastF, lastR, currentF, currentR, tonnage, moment }: Result): any[] {
-        const subqueries = (params.subqueries = params.subqueries || {})
-        let tonnageSummaryVariables: string[] = []
-        if (subqueries.tonnageSummaryVariables && subqueries.tonnageSummaryVariables !== true && 'value' in subqueries.tonnageSummaryVariables) {
-          tonnageSummaryVariables = Array.isArray(subqueries.tonnageSummaryVariables.value) ? subqueries.tonnageSummaryVariables.value : [subqueries.tonnageSummaryVariables.value]
-        }
-        const tonnageSummaryVariable = tonnageSummaryVariables[0]
-
+      postProcess(params, { lastF, lastR, currentF, currentR, tonnage, moment, summaryVariables }: Result): any[] {
         let result: any[] = lastF.concat(lastR).concat(currentF).concat(currentR)
+
+        const tonnageSummaryVariable = summaryVariables[0]
 
         // profit
         result = result.reduce<any[]>((a, row) => {
