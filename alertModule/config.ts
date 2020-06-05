@@ -22,6 +22,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+    queryName : 'shipment',
     query: {
 
       subqueries: {
@@ -61,6 +62,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+    queryName : 'shipment',
     query: {
 
       subqueries: {
@@ -100,6 +102,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+    queryName : 'shipment',
     query: {
 
       subqueries: {
@@ -139,6 +142,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+    queryName : 'shipment',
     query: {
 
       subqueries: {
@@ -179,6 +183,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+    queryName : 'shipment',
     query: {
 
       subqueries: {
@@ -227,6 +232,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+    queryName : 'shipment',
     query: {
 
       subqueries: {
@@ -272,6 +278,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+    queryName : 'shipment',
     query: {
 
       subqueries: {
@@ -320,6 +327,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+    queryName : 'shipment',
     query: {
 
       subqueries: {
@@ -367,6 +375,8 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+
+    queryName : 'shipment',
     query: {
 
       subqueries: {
@@ -415,6 +425,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+    queryName : 'shipment',
     query: {
 
       subqueries: {
@@ -462,6 +473,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+    queryName : 'shipment',
     query: {
 
       subqueries: {
@@ -500,6 +512,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+    queryName : 'shipment',
     query: {
 
       subqueries: {
@@ -538,6 +551,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+    queryName : 'shipment',
     query: {
 
       subqueries: {
@@ -590,6 +604,8 @@ const shipmentAirAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+
+    queryName : 'shipment',
     query: {
 
       subqueries: {
@@ -629,6 +645,7 @@ const shipmentAirAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+    queryName : 'shipment',
     query: {
 
       subqueries: {
@@ -668,6 +685,7 @@ const shipmentAirAlert = [
     schedule: '0 * * * * *',
     active: false,
 
+    queryName : 'shipment',
     query: {
 
       subqueries: {
