@@ -95,7 +95,8 @@ export default {
               for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]) {
                 const month = m === 12 ? 'total' : moment().month(m).format('MMMM')
                 const key = `${month}_${typeCode}_${variable}`
-                row_[key] = row[key]
+                const value = +row[key]
+                row_[key] = isNaN(value) ? 0 : value
               }
             }
           }
