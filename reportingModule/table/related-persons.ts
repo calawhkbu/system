@@ -1,4 +1,24 @@
-import { Query, FromTable } from 'node-jql'
+import { JqlDefinition } from 'modules/report/interface'
+
+export default {
+  jqls: [
+    {
+      type: 'callDataService',
+      dataServiceQuery: ['party', 'related-person']
+    }
+  ],
+  columns: [
+    { key: 'id' },
+    { key: 'personId' },
+    { key: 'name' },
+    { key: 'email' },
+    { key: 'phone' },
+    { key: 'showResend' },
+    { key: 'showDelete' },
+  ]
+} as JqlDefinition
+
+/* import { Query, FromTable } from 'node-jql'
 
 const query = new Query({
   $from: new FromTable(
@@ -40,4 +60,4 @@ const query = new Query({
   ),
 })
 
-export default query.toJson()
+export default query.toJson() */
