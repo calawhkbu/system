@@ -1017,7 +1017,7 @@ const partyGroupCodeExpression = new ColumnExpression('shipment', 'partyGroupCod
 const currentTrackingNoExpression = new ColumnExpression('shipment', 'currentTrackingNo')
 const batchNumberExpression = new ColumnExpression('shipment', 'batchNumber')
 
-const haveCurrentTrackingNoExpression = new FunctionExpression('IF', new IsNullExpression(currentTrackingNoExpression, false), '', '.')
+const haveCurrentTrackingNoExpression = new FunctionExpression('IF', new IsNullExpression(currentTrackingNoExpression, false), '', '_')
 
 const agentGroupExpression = new CaseExpression({
 
