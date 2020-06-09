@@ -1549,6 +1549,33 @@ const dateStatusExpressionWithParams = (params: IQueryParams) => {
   return dateStatusExpression(subqueryParam)
 }
 
+
+/**
+ *
+ * AIR case :
+ * ATA = ATA || ETA || ETD + 2 day
+ * ATD = ATD || ETD + 1 day
+ *
+ *  today > ATA + 1 day => inDelivery
+ *   ATA + 1 day > today > ATA => arrival
+ *
+ *  ATA > today and ATD = today => departure
+ *  today > ATD  => inTransit
+ *  else upcoming
+ *
+ *
+ * sea case
+ * ATA = ATA || ETA + 2 day
+ * ATD = ATD || ETD + 1 day
+ *
+ * today > ATA + 3 day then inDelivery
+ * ATA + 3 > today > ATA then arrival
+ *
+ * ATA > today > ATD + 3 day then inTransit
+ * ATD + 3 day > today > ATD then departure
+ * else upcoming
+ */
+
 const dateStatusExpression = (subqueryParam) => {
 
   const rawATAExpression = new ColumnExpression('shipment_date', 'arrivalDateActual')
