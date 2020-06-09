@@ -23,7 +23,7 @@ import {
   ICase,
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, RegisterInterface, registerDateField, registerSummaryField, NestedSummaryCondition, SummaryField } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, RegisterInterface, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField } from 'utils/jql-subqueries'
 
 const partyList = [
 
@@ -1421,7 +1421,7 @@ const dateList = [
 ] as ExpressionHelperInterface[]
 
 
-registerDateField(query,'booking_date',dateList)
+registerAllDateField(query,'booking_date',dateList)
 
 // ----------------- filter in main filter menu
 

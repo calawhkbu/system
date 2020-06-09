@@ -20,6 +20,7 @@ export default {
           'portOfDischargeCode',
           'departureDateEstimated',
           'arrivalDateEstimated',
+          'haveCurrentTrackingNo'
         ]
 
         const subqueries = (params.subqueries = params.subqueries || {})
