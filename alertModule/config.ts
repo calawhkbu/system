@@ -20,9 +20,15 @@ const shipmentSeaAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
+
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
     active: false,
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -35,18 +41,16 @@ const shipmentSeaAlert = [
         cargoReceiptDateActualIsNull: true,
 
         // after after_cargoReadyDateActual / cargoReadyDateEstimated + 2 day
-        after_cargoReadyDateActual_Or_cargoReadyDateEstimated: {
+        after_cargoReadyDateActualInUtc_Or_cargoReadyDateEstimatedInUtc: {
           value: {
-            mode: 'add',
             value: 2,
             unit: 'DAY'
           }
-        },
-
+        }
       },
       limit: 1
     }
-  },
+  } as AlertConfig,
 
   // cargoDelayAlert(SEA)
   {
@@ -62,7 +66,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -75,9 +79,8 @@ const shipmentSeaAlert = [
         gateInDateActualIsNull: true,
 
         // after cYCutOffDateActual / cYCutOffDateEstimated + 2 day
-        after_cYCutOffDateActual_Or_cYCutOffDateEstimated: {
+        after_cYCutOffDateActualInUtc_Or_cYCutOffDateEstimatedInUtc: {
           value: {
-            mode: 'add',
             value: 1,
             unit: 'DAY'
           }
@@ -102,7 +105,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -115,7 +118,7 @@ const shipmentSeaAlert = [
         sentToShipperDateActualIsNull: true,
 
         // after cYCutOffDateActual / cYCutOffDateEstimated - 2 day
-        after_cYCutOffDateActual_Or_cYCutOffDateEstimated: {
+        after_cYCutOffDateActualInUtc_Or_cYCutOffDateEstimatedInUtc: {
           value: {
             mode: 'before',
             value: 2,
@@ -142,7 +145,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -156,7 +159,7 @@ const shipmentSeaAlert = [
         missingVGM: true,
 
         // after cYCutOffDateActual / cYCutOffDateEstimated - 1 day
-        after_cYCutOffDateActual_Or_cYCutOffDateEstimated: {
+        after_cYCutOffDateActualInUtc_Or_cYCutOffDateEstimatedInUtc: {
           value: {
             mode: 'before',
             value: 1,
@@ -183,7 +186,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -197,16 +200,15 @@ const shipmentSeaAlert = [
 
 
         // after ATD / ETD -1 day
-        after_departureDateActual_Or_departureDateEstimated: {
+        after_departureDateActualInUtc_Or_departureDateEstimatedInUtc: {
           value: {
-            mode: 'sub',
-            value: 1,
+            value: -1,
             unit: 'DAY'
           }
         },
 
         // until ATA
-        before_arrivalDateActual: {
+        before_arrivalDateActualInUtc: {
           value: {
             value: 0,
             includeNull: true
@@ -232,7 +234,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -245,19 +247,18 @@ const shipmentSeaAlert = [
         preAlertSendDateActualIsNull: true,
 
         // after ATD / ETD + 2 day
-        after_departureDateActual_Or_departureDateEstimated: {
+        after_departureDateActualInUtc_Or_departureDateEstimatedInUtc: {
           value: {
-            mode: 'add',
             value: 2,
             unit: 'DAY'
           }
         },
 
         // before ATA
-        before_arrivalDateActual: {
+        before_arrivalDateActualInUtc: {
           value: {
             value: 0,
-            includeNull : true
+            includeNull: true
           }
         }
       },
@@ -278,7 +279,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -292,19 +293,18 @@ const shipmentSeaAlert = [
         masterBillReleasedDateActualIsNull: true,
 
         // after ATD / ETD + 1 day
-        after_departureDateActual_Or_departureDateEstimated: {
+        after_departureDateActualInUtc_Or_departureDateEstimatedInUtc: {
           value: {
-            mode: 'add',
             value: 1,
             unit: 'DAY'
           }
         },
 
         // until ATA
-        before_arrivalDateActual: {
+        before_arrivalDateActualInUtc: {
           value: {
             value: 0,
-            includeNull : true
+            includeNull: true
           }
         }
 
@@ -327,7 +327,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -340,19 +340,18 @@ const shipmentSeaAlert = [
         houseBillConfirmationDateActualIsNull: true,
 
         // after ATD / ETD + 2 day
-        after_departureDateActual_Or_departureDateEstimated: {
+        after_departureDateActualInUtc_Or_departureDateEstimatedInUtc: {
           value: {
-            mode: 'add',
             value: 2,
             unit: 'DAY'
           }
         },
 
         // until ATA
-        before_arrivalDateActual: {
+        before_arrivalDateActualInUtc: {
           value: {
             value: 0,
-            includeNull : true
+            includeNull: true
           }
         }
 
@@ -376,7 +375,7 @@ const shipmentSeaAlert = [
     active: false,
 
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -390,19 +389,18 @@ const shipmentSeaAlert = [
         arrivalAtDepotActualIsNull: true,
 
         // after ATA / ETA + 2 DAY
-        after_arrivalDateActual_Or_arrivalDateEstimated: {
+        after_arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: {
           value: {
-            mode: 'add',
             value: 2,
             unit: 'DAY'
           }
         },
 
         // until before_finalDoorDeliveryActual
-        before_finalDoorDeliveryActual: {
+        before_finalDoorDeliveryActualInUtc: {
           value: {
             value: 0,
-            includeNull : true
+            includeNull: true
           }
         }
 
@@ -425,7 +423,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -438,19 +436,18 @@ const shipmentSeaAlert = [
         pickupCargoBeforeDemurrageDateActual_Or_cargoPickupWithDemurrageDateActualIsNull: true,
 
         // after ATA / ETA + 5 days
-        after_arrivalDateActual_Or_arrivalDateEstimated: {
+        after_arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: {
           value: {
-            mode: 'add',
             value: 5,
             unit: 'DAY'
           }
         },
 
         // before finalDoorDeliveryActual
-        before_finalDoorDeliveryActual: {
+        before_finalDoorDeliveryActualInUtc: {
           value: {
             value: 0,
-            includeNull : true
+            includeNull: true
           }
         }
 
@@ -473,7 +470,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -486,9 +483,8 @@ const shipmentSeaAlert = [
         returnEmptyContainerDateActualIsNull: true,
 
         // after sendToConsigneeDateActual / sendToConsigneeDateEstimated + 3 days
-        after_sendToConsigneeDateActual_Or_sendToConsigneeDateEstimated: {
+        after_sendToConsigneeDateActualInUtc_Or_sendToConsigneeDateEstimatedInUtc: {
           value: {
-            mode: 'add',
             value: 3,
             unit: 'DAY'
           }
@@ -512,7 +508,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -525,9 +521,8 @@ const shipmentSeaAlert = [
         returnEmptyContainerDateActualIsNull: true,
 
         // after sendToConsigneeDateActual / sendToConsigneeDateEstimated + 6 days
-        after_sendToConsigneeDateActual_Or_sendToConsigneeDateEstimated: {
+        after_sendToConsigneeDateActualInUtc_Or_sendToConsigneeDateEstimatedInUtc: {
           value: {
-            mode: 'add',
             value: 6,
             unit: 'DAY'
           }
@@ -551,7 +546,7 @@ const shipmentSeaAlert = [
     schedule: '0 * * * * *',
     active: false,
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -564,19 +559,18 @@ const shipmentSeaAlert = [
         finalDoorDeliveryDateActualIsNull: true,
 
         // ATA / ETA + 14 DAY
-        after_arrivalDateActual_Or_arrivalDateEstimated: {
+        after_arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: {
           value: {
-            mode: 'add',
             value: 14,
             unit: 'DAY'
           }
         },
 
         // until finalDoorDeliveryActual
-        before_finalDoorDeliveryActual: {
+        before_finalDoorDeliveryActualInUtc: {
           value: {
             value: 0,
-            includeNull : true
+            includeNull: true
           }
         }
 
@@ -605,7 +599,7 @@ const shipmentAirAlert = [
     active: false,
 
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -618,9 +612,8 @@ const shipmentAirAlert = [
         preAlertSendDateActualIsNull: true,
 
         // after masterBillReleasedDateActual / masterBillReleasedDateEstimated + 3 hour
-        masterBillReleasedDateActual_Or_masterBillReleasedDateEstimated: {
+        masterBillReleasedDateActualInUtc_Or_masterBillReleasedDateEstimatedInUtc: {
           value: {
-            mode: 'add',
             value: 3,
             unit: 'HOUR'
           }
@@ -645,7 +638,7 @@ const shipmentAirAlert = [
     schedule: '0 * * * * *',
     active: false,
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -658,10 +651,9 @@ const shipmentAirAlert = [
         preAlertSendDateActualIsNull: true,
 
         // after cargoReceiptDateActual / cargoReceiptDateEstimated - 1 day
-        cargoReceiptDateActual_Or_cargoReceiptDateEstimated: {
+        cargoReceiptDateActualInUtc_Or_cargoReceiptDateEstimatedInUtc: {
           value: {
-            mode: 'sub',
-            value: 1,
+            value: -1,
             unit: 'DAY'
           }
         },
@@ -685,7 +677,7 @@ const shipmentAirAlert = [
     schedule: '0 * * * * *',
     active: false,
 
-    queryName : 'shipment',
+    queryName: 'shipment',
     query: {
 
       subqueries: {
@@ -698,18 +690,16 @@ const shipmentAirAlert = [
         portOfLoadingCodeIsNull: true,
 
         // after arrivalDateActual / arrivalDateEstimated + 1 day
-        arrivalDateActual_Or_arrivalDateEstimated: {
+        arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: {
           value: {
-            mode: 'add',
             value: 1,
             unit: 'DAY'
           }
         },
 
         // until 30 days after ATA
-        before_arrivalDateActual : {
+        before_arrivalDateActualInUtc: {
           value: {
-            mode: 'add',
             value: 30,
             unit: 'DAY',
             includeNull: true
@@ -734,15 +724,15 @@ export const alertConfigList = [
     alertType: 'sayHello',
 
     templatePath: 'message/shipment-message',
-    formPath : 'alert.sayHello',
+    formPath: 'alert.sayHello',
 
     schedule: '0 * * * * *',
 
     active: false,
 
-    canCloseBy : [
+    canCloseBy: [
       {
-        type : 'all'
+        type: 'all'
       }
 
     ],

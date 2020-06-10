@@ -33,7 +33,7 @@ import {
   IQuery
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition, registerDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, DateFieldTimezoneMap } from 'utils/jql-subqueries'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -1549,6 +1549,33 @@ const dateStatusExpressionWithParams = (params: IQueryParams) => {
   return dateStatusExpression(subqueryParam)
 }
 
+
+/**
+ *
+ * AIR case :
+ * ATA = ATA || ETA || ETD + 2 day
+ * ATD = ATD || ETD + 1 day
+ *
+ *  today > ATA + 1 day => inDelivery
+ *   ATA + 1 day > today > ATA => arrival
+ *
+ *  ATA > today and ATD = today => departure
+ *  today > ATD  => inTransit
+ *  else upcoming
+ *
+ *
+ * sea case
+ * ATA = ATA || ETA + 2 day
+ * ATD = ATD || ETD + 1 day
+ *
+ * today > ATA + 3 day then inDelivery
+ * ATA + 3 > today > ATA then arrival
+ *
+ * ATA > today > ATD + 3 day then inTransit
+ * ATD + 3 day > today > ATD then departure
+ * else upcoming
+ */
+
 const dateStatusExpression = (subqueryParam) => {
 
   const rawATAExpression = new ColumnExpression('shipment_date', 'arrivalDateActual')
@@ -1595,7 +1622,7 @@ const dateStatusExpression = (subqueryParam) => {
         },
         {
           $when: new IsNullExpression(rawETDExpression, true),
-          $then: convertToEndOfDate(addDateExpression(rawETDExpression, 'add', 2, 'DAY'))
+          $then: convertToEndOfDate(addDateExpression(rawETDExpression,2, 'DAY'))
         }
 
       ],
@@ -1604,7 +1631,7 @@ const dateStatusExpression = (subqueryParam) => {
 
     })
 
-    const calculatedATDExpression = convertToStartOfDate(addDateExpression(rawETDExpression, 'add', 1, 'DAY'))
+    const calculatedATDExpression = convertToStartOfDate(addDateExpression(rawETDExpression, 1, 'DAY'))
     const finalATAExpression = new FunctionExpression('IFNULL', rawATAExpression, calculatedATAExpression)
     const finalATDExpression = new FunctionExpression('IFNULL', rawATDExpression, calculatedATDExpression)
 
@@ -1621,7 +1648,7 @@ const dateStatusExpression = (subqueryParam) => {
 
             cases: [
               {
-                $when: new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 'add', 1, 'DAY')), '<=', currentTimeExpression),
+                $when: new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 1, 'DAY')), '<=', currentTimeExpression),
                 $then: new Value('inDelivery')
               },
             ],
@@ -1658,8 +1685,8 @@ const dateStatusExpression = (subqueryParam) => {
     const todayExpression = new Value(subqueryParam.today)
     const currentTimeExpression = new Value(subqueryParam.currentTime)
 
-    const calculatedATAExpression = addDateExpression(rawETAExpression, 'add', 2, 'DAY')
-    const calculatedATDExpression = addDateExpression(rawETDExpression, 'add', 1, 'DAY')
+    const calculatedATAExpression = addDateExpression(rawETAExpression, 2, 'DAY')
+    const calculatedATDExpression = addDateExpression(rawETDExpression,1, 'DAY')
     const finalATAExpression = new FunctionExpression('IFNULL', rawATAExpression, calculatedATAExpression)
     const finalATDExpression = new FunctionExpression('IFNULL', rawATDExpression, calculatedATDExpression)
 
@@ -1675,7 +1702,7 @@ const dateStatusExpression = (subqueryParam) => {
           $then: new CaseExpression({
             cases: [
               {
-                $when: new BinaryExpression(addDateExpression(finalATAExpression, 'add', 3, 'DAY'), '<=', todayExpression),
+                $when: new BinaryExpression(addDateExpression(finalATAExpression,3, 'DAY'), '<=', todayExpression),
                 $then: new Value('inDelivery')
               } as ICase,
             ],
@@ -1691,7 +1718,7 @@ const dateStatusExpression = (subqueryParam) => {
             cases: [
               {
                 $when: new AndExpressions([
-                  new BinaryExpression(addDateExpression(finalATDExpression, 'add', 3, 'DAY'), '<=', todayExpression)
+                  new BinaryExpression(addDateExpression(finalATDExpression, 3, 'DAY'), '<=', todayExpression)
                 ]),
                 $then: new Value('inTransit')
               } as ICase,
@@ -2586,6 +2613,7 @@ const dateNameList = [
 
 const dateList = [
 
+  // seperate estimated and actual
   ...dateNameList.reduce((accumulator, currentValue) => {
     return accumulator.concat([`${currentValue}DateEstimated`, `${currentValue}DateActual`])
   }, []),
@@ -2610,7 +2638,75 @@ const dateList = [
 ] as ExpressionHelperInterface[]
 
 
-registerDateField(query, 'shipment_date', dateList)
+
+
+const portOfLoadingTimezoneList  = [
+  'departure',
+  'oceanBill',
+  'cargoReady',
+  'scheduleAssigned',
+  'scheduleApproaved',
+  'spaceConfirmation',
+  'bookingSubmit',
+  'cyCutOff',
+  'documentCutOff',
+  'pickup',
+  'shipperLoad',
+  'returnLoad',
+  'cargoReceipt',
+  'shipperDocumentSubmit',
+  'shipperInstructionSubmit',
+  'houseBillDraftSubmit',
+  'houseBillConfirmation',
+  'masterBillReleased',
+  'preAlertSend',
+  'ediSend',
+  'cargoRolloverStatus',
+  'sentToShipper',
+  'gateIn',
+  'loadOnboard'
+]
+
+const portOfDischargeTimezoneList = [
+  'arrival',
+  'inboundTransfer',
+  'onRail',
+  'arrivalAtDepot',
+  'availableForPickup',
+  'pickupCargoBeforeDemurrage',
+  'finalCargo',
+  'cargoPickupWithDemurrage',
+  'finalDoorDelivery',
+  'returnEmptyContainer',
+  'sentToConsignee',
+]
+
+const dateFieldTimezoneMap = [
+
+  {
+    dateNameList : [
+      // seperate estimated and actual
+      ...portOfLoadingTimezoneList.reduce((accumulator, currentValue) => {
+        return accumulator.concat([`${currentValue}DateEstimated`, `${currentValue}DateActual`])
+      }, []),
+    ],
+    timezoneOffsetExpression : new ColumnExpression('portOfLoading','timezoneOffset'),
+    companion : ['table:portOfLoading']
+  },
+  {
+    dateNameList : [
+      // seperate estimated and actual
+      ...portOfDischargeTimezoneList.reduce((accumulator, currentValue) => {
+        return accumulator.concat([`${currentValue}DateEstimated`, `${currentValue}DateActual`])
+      }, []),
+    ],
+    timezoneOffsetExpression : new ColumnExpression('portOfDischarge','timezoneOffset'),
+    companion : ['table:portOfDischarge']
+  }
+] as DateFieldTimezoneMap[]
+
+
+registerAllDateField(query, 'shipment_date', dateList,dateFieldTimezoneMap)
 
 
 query.registerResultColumn(
