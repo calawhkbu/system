@@ -1538,17 +1538,6 @@ function statusExpressionMapFunction(originalExpression: IExpression) {
 
 const extraDateExpression = new FunctionExpression('IF', new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'), new Value(0.5), new Value(2))
 
-const dateStatusExpressionWithParams = (params: IQueryParams) => {
-
-  const subqueryParam = params.subqueries.dateStatus
-
-  if (!subqueryParam) {
-    throw new Error(`missing dateStatus in subqueries`)
-  }
-
-  return dateStatusExpression(subqueryParam)
-}
-
 
 /**
  *
@@ -1576,7 +1565,13 @@ const dateStatusExpressionWithParams = (params: IQueryParams) => {
  * else upcoming
  */
 
-const dateStatusExpression = (subqueryParam) => {
+const dateStatusExpression = (queryParam :IQueryParams) => {
+
+  const subqueryParam = queryParam.subqueries.dateStatus as any as { today : any, currentTime: any }
+
+  if (!subqueryParam) {
+    throw new Error(`missing dateStatus in subqueries`)
+  }
 
   const rawATAExpression = new ColumnExpression('shipment_date', 'arrivalDateActual')
   const rawETAExpression = new ColumnExpression('shipment_date', 'arrivalDateEstimated')
@@ -1584,31 +1579,7 @@ const dateStatusExpression = (subqueryParam) => {
   const rawATDExpression = new ColumnExpression('shipment_date', 'departureDateActual')
   const rawETDExpression = new ColumnExpression('shipment_date', 'departureDateEstimated')
 
-  // const addDateExpression = (expression: IExpression, mode: 'add' | 'sub', value, unit: 'DAY' | 'HOUR' | 'MINUTE') => {
-
-  //   const extraDateExpression = new ParameterExpression({
-  //     prefix: 'INTERVAL',
-  //     expression: value,
-  //     suffix: unit
-  //   })
-
-  //   return new FunctionExpression(mode === 'add' ? 'DATE_ADD' : 'DATE_SUB', expression, extraDateExpression)
-
-  // }
-
-  const moduleTypeCodeCondition = (moduleTypeCode) => {
-    return new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', moduleTypeCode)
-  }
-
   const AIRDateStatusExpression = (subqueryParam) => {
-
-    // // convert a date to 23:59 of that day
-    // const convertToEndOfDate = (dateExpression) => addDateExpression(addDateExpression(new FunctionExpression('DATE', dateExpression), 'add', 1, 'DAY'), 'sub', 1, 'MINUTE')
-
-    // // convert a date to 00:01 of that day
-    // const convertToStartOfDate = (dateExpression) => addDateExpression(new FunctionExpression('DATE', dateExpression), 'sub', 1, 'MINUTE')
-
-
 
     // const todayExpression = new FunctionExpression('NOW')
     const todayExpression = new Value(subqueryParam.today)
@@ -2090,7 +2061,7 @@ const fieldList = [
 
   {
     name: 'dateStatus',
-    expression: dateStatusExpressionWithParams,
+    expression: dateStatusExpression,
     companion: ['table:shipment_date']
   },
 
