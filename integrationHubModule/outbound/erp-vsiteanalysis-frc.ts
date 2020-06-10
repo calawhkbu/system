@@ -184,7 +184,7 @@ const app = {
 
     // regroup results
     responseBody = responseBody.reduce((result, row) => {
-      if (row.carrier) {
+      if (row.carrier.trim()) {
         const jobMonth = moment(row.yymm, 'YYYYMM').format('YYYY-MM')
         let resultRow = result.find(r => r.officePartyCode === row.xsite && r.carrierName === row.carrier && r.jobMonth === jobMonth)
         let totalRow = result.find(r => r.officePartyCode === row.xsite && r.carrierName === row.carrier && r.jobMonth === 'total')
