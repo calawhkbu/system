@@ -16,7 +16,7 @@
           "class": "xs-6 md-3"
         },
         {
-          "label": "BookingPage.carrier",
+          "label": "ShipmentPage.carrier",
           "name": "carrier",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-3",
@@ -63,7 +63,7 @@
           }
         },
         {
-          "label": "BookingPage.vesselName",
+          "label": "ShipmentPage.vesselName",
           "name": "vesselName",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-3",
@@ -99,20 +99,23 @@
           }
         },
         {
-          "label": "BookingPage.voyageFlightNumber",
+          "label": "ShipmentPage.voyageFlightNumber",
           "name": "voyageFlightNumber",
           "component": "v-text-field",
           "class": "xs-12 md-3",
           "checkDisplayWhen": "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA')"
         },
         {
-          "label": "BookingPage.placeOfReceipt",
+          "label": "ShipmentPage.placeOfReceipt",
           "name": "placeOfReceipt",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-3",
           "more": [{
             "name": "placeOfReceiptCode",
             "selector": "portCode"
+          }, {
+            "name": "placeOfReceiptCode",
+            "selector": "name"
           }],
           "props": {
             "searchValueParams": {
@@ -149,7 +152,7 @@
           }
         },
         {
-          "label": "BookingPage.portOfLoading",
+          "label": "ShipmentPage.portOfLoading",
           "name": "portOfLoading",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-3",
@@ -157,6 +160,9 @@
           "more": [{
             "name": "portOfLoadingCode",
             "selector": "portCode"
+          }, {
+            "name": "portOfLoadingName",
+            "selector": "name"
           }],
           "props": {
             "required": true,
@@ -194,7 +200,7 @@
           }
         },
         {
-          "label": "BookingPage.portOfDischarge",
+          "label": "ShipmentPage.portOfDischarge",
           "name": "portOfDischarge",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-3",
@@ -202,6 +208,9 @@
           "more": [{
             "name": "portOfDischargeCode",
             "selector": "portCode"
+          }, {
+            "name": "portOfDischargeName",
+            "selector": "name"
           }],
           "props": {
             "required": true,
@@ -239,7 +248,7 @@
           }
         },
         {
-          "label": "BookingPage.placeOfDelivery",
+          "label": "ShipmentPage.placeOfDelivery",
           "name": "placeOfDelivery",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-3",
@@ -286,7 +295,7 @@
         },
 
         {
-          "label": "BookingPage.moduleType",
+          "label": "ShipmentPage.moduleType",
           "name": "moduleTypeCode",
           "component": "AsyncSelect",
           "class": "xs-12 md-2",
@@ -311,7 +320,7 @@
           }
         },
         {
-          "label": "BookingPage.boundType",
+          "label": "ShipmentPage.boundType",
           "name": "boundTypeCode",
           "component": "AsyncSelect",
           "class": "xs-12 md-2",
@@ -335,7 +344,7 @@
           }
         },
         {
-          "label": "BookingPage.serviceCode",
+          "label": "ShipmentPage.serviceCode",
           "name": "serviceCode",
           "component": "AsyncSelect",
           "class": "xs-12 md-2",
@@ -359,38 +368,10 @@
             "showValue": false
           }
         },
-        {
-          "label": "BookingPage.vas",
-          "name": "vas",
-          "component": "AsyncSelect",
-          "class": "xs-12 md-6",
-          "props": {
-            "multiple": true,
-            "axiosParams": {
-              "url": "api/code/query/code_master",
-              "method": "POST",
-              "data": {
-                "subqueries": {
-                  "codeType": {
-                    "value": "VAS"
-                  }
-                }
-              }
-            },
-            "color": "red",
-            "item-text": "name",
-            "item-value": "code",
-            "showValue": false,
-            "showSpacer": false,
-            "selectedProps": {
-              "class": "multiple"
-            }
-          }
-        },
 
 
         {
-          "label": "BookingPage.contractNo",
+          "label": "ShipmentPage.contractNo",
           "name": "flexData.contractNo",
           "component": "v-text-field",
           "class": "xs-12 md-3"
@@ -406,7 +387,7 @@
           "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'AIR'"
         },
         {
-          "label": "BookingPage.incoTermsCode",
+          "label": "ShipmentPage.incoTermsCode",
           "name": "incoTerms",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-6",
@@ -444,7 +425,7 @@
           }
         },
         {
-          "label": "BookingPage.freightTermsCode",
+          "label": "ShipmentPage.freightTermsCode",
           "name": "freightTermsCode",
           "component": "AsyncSelect",
           "class": "xs-12 md-3",
@@ -466,7 +447,7 @@
           }
         },
         {
-          "label": "BookingPage.otherTerms",
+          "label": "ShipmentPage.otherTerms",
           "name": "otherTermsCode",
           "component": "AsyncSelect",
           "class": "xs-12 md-3",
@@ -488,7 +469,7 @@
           }
         },
         {
-          "label": "BookingPage.commodity",
+          "label": "ShipmentPage.commodity",
           "name": "commodity",
           "component": "v-text-field",
           "class": "xs-12 md-6",
@@ -498,7 +479,7 @@
           }
         },
         {
-          "label": "BookingPage.polHScode",
+          "label": "ShipmentPage.polHScode",
           "name": "polHScode",
           "component": "v-text-field",
           "class": "xs-12 md-6",
