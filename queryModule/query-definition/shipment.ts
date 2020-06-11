@@ -1538,17 +1538,6 @@ function statusExpressionMapFunction(originalExpression: IExpression) {
 
 const extraDateExpression = new FunctionExpression('IF', new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'), new Value(0.5), new Value(2))
 
-const dateStatusExpressionWithParams = (params: IQueryParams) => {
-
-  const subqueryParam = params.subqueries.dateStatus
-
-  if (!subqueryParam) {
-    throw new Error(`missing dateStatus in subqueries`)
-  }
-
-  return dateStatusExpression(subqueryParam)
-}
-
 
 /**
  *
@@ -1576,7 +1565,13 @@ const dateStatusExpressionWithParams = (params: IQueryParams) => {
  * else upcoming
  */
 
-const dateStatusExpression = (subqueryParam) => {
+const dateStatusExpression = (queryParam: IQueryParams) => {
+
+  const subqueryParam = queryParam.subqueries.dateStatus as any as { today: any, currentTime: any }
+
+  if (!subqueryParam) {
+    throw new Error(`missing dateStatus in subqueries`)
+  }
 
   const rawATAExpression = new ColumnExpression('shipment_date', 'arrivalDateActual')
   const rawETAExpression = new ColumnExpression('shipment_date', 'arrivalDateEstimated')
@@ -1584,31 +1579,7 @@ const dateStatusExpression = (subqueryParam) => {
   const rawATDExpression = new ColumnExpression('shipment_date', 'departureDateActual')
   const rawETDExpression = new ColumnExpression('shipment_date', 'departureDateEstimated')
 
-  // const addDateExpression = (expression: IExpression, mode: 'add' | 'sub', value, unit: 'DAY' | 'HOUR' | 'MINUTE') => {
-
-  //   const extraDateExpression = new ParameterExpression({
-  //     prefix: 'INTERVAL',
-  //     expression: value,
-  //     suffix: unit
-  //   })
-
-  //   return new FunctionExpression(mode === 'add' ? 'DATE_ADD' : 'DATE_SUB', expression, extraDateExpression)
-
-  // }
-
-  const moduleTypeCodeCondition = (moduleTypeCode) => {
-    return new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', moduleTypeCode)
-  }
-
   const AIRDateStatusExpression = (subqueryParam) => {
-
-    // // convert a date to 23:59 of that day
-    // const convertToEndOfDate = (dateExpression) => addDateExpression(addDateExpression(new FunctionExpression('DATE', dateExpression), 'add', 1, 'DAY'), 'sub', 1, 'MINUTE')
-
-    // // convert a date to 00:01 of that day
-    // const convertToStartOfDate = (dateExpression) => addDateExpression(new FunctionExpression('DATE', dateExpression), 'sub', 1, 'MINUTE')
-
-
 
     // const todayExpression = new FunctionExpression('NOW')
     const todayExpression = new Value(subqueryParam.today)
@@ -1622,7 +1593,7 @@ const dateStatusExpression = (subqueryParam) => {
         },
         {
           $when: new IsNullExpression(rawETDExpression, true),
-          $then: convertToEndOfDate(addDateExpression(rawETDExpression,2, 'DAY'))
+          $then: convertToEndOfDate(addDateExpression(rawETDExpression, 2, 'DAY'))
         }
 
       ],
@@ -1686,7 +1657,7 @@ const dateStatusExpression = (subqueryParam) => {
     const currentTimeExpression = new Value(subqueryParam.currentTime)
 
     const calculatedATAExpression = addDateExpression(rawETAExpression, 2, 'DAY')
-    const calculatedATDExpression = addDateExpression(rawETDExpression,1, 'DAY')
+    const calculatedATDExpression = addDateExpression(rawETDExpression, 1, 'DAY')
     const finalATAExpression = new FunctionExpression('IFNULL', rawATAExpression, calculatedATAExpression)
     const finalATDExpression = new FunctionExpression('IFNULL', rawATDExpression, calculatedATDExpression)
 
@@ -1702,7 +1673,7 @@ const dateStatusExpression = (subqueryParam) => {
           $then: new CaseExpression({
             cases: [
               {
-                $when: new BinaryExpression(addDateExpression(finalATAExpression,3, 'DAY'), '<=', todayExpression),
+                $when: new BinaryExpression(addDateExpression(finalATAExpression, 3, 'DAY'), '<=', todayExpression),
                 $then: new Value('inDelivery')
               } as ICase,
             ],
@@ -1944,19 +1915,19 @@ const fieldList = [
   ...locationExpressionList,
 
   {
-    name : 'officeErpSite',
+    name: 'officeErpSite',
     expression: officeErpSiteExpression,
     companion: ['table:office']
   },
 
   {
-    name : 'controllingCustomerErpCode',
+    name: 'controllingCustomerErpCode',
     expression: controllingCustomerErpCodeExpression,
     companion: ['table:controllingCustomer']
   },
 
   {
-    name : 'officeErpCode',
+    name: 'officeErpCode',
     expression: officeErpCodeExpression,
     companion: ['table:office']
   },
@@ -2090,7 +2061,7 @@ const fieldList = [
 
   {
     name: 'dateStatus',
-    expression: dateStatusExpressionWithParams,
+    expression: dateStatusExpression,
     companion: ['table:shipment_date']
   },
 
@@ -2421,21 +2392,28 @@ function controllingCustomerIncludeRoleExpression($not: boolean, partyTypeList?:
 
 }
 
-function isColoaderExpression() {
+
+const isColoaderExpression = (queryParams: IQueryParams) => {
 
   const partyTypeList = ['forwarder']
+  const subqueryParam = queryParams.subqueries.isColoader as { value: boolean }
 
-  return new FunctionExpression(
-    'IF',
-    new Unknown(),
-    controllingCustomerIncludeRoleExpression(true, partyTypeList),
-    controllingCustomerIncludeRoleExpression(false, partyTypeList)
-  )
+  if (!subqueryParam) {
+    throw new Error('missing subqueryParam for isColoader')
+  }
+
+  const { value } = subqueryParam
+
+  if (value) {
+    return controllingCustomerIncludeRoleExpression(false, partyTypeList)
+  }
+  else {
+    controllingCustomerIncludeRoleExpression(true, partyTypeList)
+  }
 
 }
 
-query
-  .registerQuery(
+query.subquery(
     'controllingCustomerIncludeRole',
     new Query({
       $where: controllingCustomerIncludeRoleExpression(false),
@@ -2443,8 +2421,7 @@ query
   )
   .register('value', 0)
 
-query
-  .registerQuery(
+query.subquery(
     'controllingCustomerExcludeRole',
     new Query({
 
@@ -2453,18 +2430,20 @@ query
   )
   .register('value', 0)
 
-query.registerQuery('isColoader',
+query.subquery('isColoader', ((value:any,param?: IQueryParams) => {
 
-  new Query({
-    $where: isColoaderExpression(),
+  return new Query({
+    $where: isColoaderExpression(param),
   })
+
+}) as SubqueryArg
 
 ).register('value', 0)
 
 
 function viaHKGExpression() {
   const erpCode = 'G0001'
-  return new BinaryExpression(officeErpCodeExpression, '=' , erpCode)
+  return new BinaryExpression(officeErpCodeExpression, '=', erpCode)
 }
 
 query.subquery('viaHKG',
@@ -2481,11 +2460,11 @@ query.subquery('missingVGM', new Query({
     new QueryExpression(
       new Query({
 
-        $select : [
-          new ResultColumn(new ColumnExpression('shipment_container','shipmentId'))
+        $select: [
+          new ResultColumn(new ColumnExpression('shipment_container', 'shipmentId'))
         ],
-        $from : 'shipment_conatiner',
-        $where : new BinaryExpression(new ColumnExpression('shipment_container','vgmWeight'),'>',0)
+        $from: 'shipment_conatiner',
+        $where: new BinaryExpression(new ColumnExpression('shipment_container', 'vgmWeight'), '>', 0)
 
       })
     )
@@ -2493,7 +2472,7 @@ query.subquery('missingVGM', new Query({
 }))
 
 
-query.subquery('missingDocument',(subQueryValue,param) => {
+query.subquery('missingDocument', (subQueryValue, param) => {
 
   const fileName = subQueryValue.value
 
@@ -2502,13 +2481,13 @@ query.subquery('missingDocument',(subQueryValue,param) => {
       new QueryExpression(
         new Query({
 
-          $select : [
-            new ResultColumn(new ColumnExpression('document','primaryKey'))
+          $select: [
+            new ResultColumn(new ColumnExpression('document', 'primaryKey'))
           ],
-          $from : 'document',
-          $where : [
-            new BinaryExpression(new ColumnExpression('document','fileName'),'=',fileName),
-            new BinaryExpression(new ColumnExpression('document','tableName'),'=','shipment')
+          $from: 'document',
+          $where: [
+            new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', fileName),
+            new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment')
           ]
 
         })
@@ -2640,7 +2619,7 @@ const dateList = [
 
 
 
-const portOfLoadingTimezoneList  = [
+const portOfLoadingTimezoneList = [
   'departure',
   'oceanBill',
   'cargoReady',
@@ -2684,29 +2663,29 @@ const portOfDischargeTimezoneList = [
 const dateFieldTimezoneMap = [
 
   {
-    dateNameList : [
+    dateNameList: [
       // seperate estimated and actual
       ...portOfLoadingTimezoneList.reduce((accumulator, currentValue) => {
         return accumulator.concat([`${currentValue}DateEstimated`, `${currentValue}DateActual`])
       }, []),
     ],
-    timezoneOffsetExpression : new ColumnExpression('portOfLoading','timezoneOffset'),
-    companion : ['table:portOfLoading']
+    timezoneOffsetExpression: new ColumnExpression('portOfLoading', 'timezoneOffset'),
+    companion: ['table:portOfLoading']
   },
   {
-    dateNameList : [
+    dateNameList: [
       // seperate estimated and actual
       ...portOfDischargeTimezoneList.reduce((accumulator, currentValue) => {
         return accumulator.concat([`${currentValue}DateEstimated`, `${currentValue}DateActual`])
       }, []),
     ],
-    timezoneOffsetExpression : new ColumnExpression('portOfDischarge','timezoneOffset'),
-    companion : ['table:portOfDischarge']
+    timezoneOffsetExpression: new ColumnExpression('portOfDischarge', 'timezoneOffset'),
+    companion: ['table:portOfDischarge']
   }
 ] as DateFieldTimezoneMap[]
 
 
-registerAllDateField(query, 'shipment_date', dateList,dateFieldTimezoneMap)
+registerAllDateField(query, 'shipment_date', dateList, dateFieldTimezoneMap)
 
 
 query.registerResultColumn(
