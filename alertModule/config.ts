@@ -64,6 +64,12 @@ const shipmentSeaAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -103,6 +109,12 @@ const shipmentSeaAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -143,6 +155,12 @@ const shipmentSeaAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -184,6 +202,12 @@ const shipmentSeaAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -232,6 +256,12 @@ const shipmentSeaAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -277,6 +307,12 @@ const shipmentSeaAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
+    
     active: false,
 
     queryName: 'shipment',
@@ -325,6 +361,12 @@ const shipmentSeaAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -372,6 +414,12 @@ const shipmentSeaAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
 
@@ -421,6 +469,12 @@ const shipmentSeaAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -468,6 +522,12 @@ const shipmentSeaAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -506,6 +566,12 @@ const shipmentSeaAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -544,6 +610,12 @@ const shipmentSeaAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -596,7 +668,12 @@ const shipmentAirAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
-    active: false,
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
+ active: false,
 
 
     queryName: 'shipment',
@@ -636,6 +713,12 @@ const shipmentAirAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -675,6 +758,12 @@ const shipmentAirAlert = [
     formPath: 'alert/shipment-alert',
 
     schedule: '0 * * * * *',
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -727,6 +816,11 @@ export const alertConfigList = [
     formPath: 'alert.sayHello',
 
     schedule: '0 * * * * *',
+
+    interval: {
+      value: 1,
+      unit: 'MINUTE'
+    },
 
     active: false,
 
