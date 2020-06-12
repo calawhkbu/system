@@ -141,10 +141,9 @@ const app = {
     }
 
     // xgrpname
-    // warning : getting the first one only
     let xgrpname = ''
-    if (subqueries.agentGroup) xgrpname = subqueries.agentGroup.value[0]
-    // TODO if (subqueries.agentGroup && subqueries.agentGroup.length) xgrpname = JSON.stringify(subqueries.agentGroup.value)
+    // if (subqueries.agentGroup) xgrpname = subqueries.agentGroup.value[0]
+    if (subqueries.agentGroup && subqueries.agentGroup.value.length) xgrpname = JSON.stringify(subqueries.agentGroup.value)
 
     // inblno && exblno
     const xHouseNo = {
