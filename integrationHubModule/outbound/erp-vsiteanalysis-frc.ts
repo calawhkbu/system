@@ -104,6 +104,7 @@ const app = {
     let xsalesman = ''
     if (user.thirdPartyCode && user.thirdPartyCode.erp) xsalesman = user.thirdPartyCode.erp
     else if (subqueries.salesmanCode) xsalesman = subqueries.salesmanCode.value
+    else if (subqueries.rSalesmanCode) xsalesman = subqueries.rSalesmanCode.value
 
     // xfreehand
     // warning : getting the first one only
@@ -140,9 +141,9 @@ const app = {
     }
 
     // xgrpname
-    // warning : getting the first one only
     let xgrpname = ''
-    if (subqueries.agentGroup) xgrpname = subqueries.agentGroup.value[0]
+    // if (subqueries.agentGroup) xgrpname = subqueries.agentGroup.value[0]
+    if (subqueries.agentGroup && subqueries.agentGroup.value.length) xgrpname = JSON.stringify(subqueries.agentGroup.value)
 
     // inblno && exblno
     const xHouseNo = {

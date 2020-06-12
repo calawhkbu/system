@@ -151,7 +151,8 @@ export default {
           for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
             const month = moment().month(m).format('MMMM')
             const row = intermediate[reportingGroup].find(r => r.month === month)
-            const value = row_[`${month}_value`] = (row && row.value) || 0
+            let value = row_[`${month}_value`] = (row && +row.value) || 0
+            if (isNaN(value)) value = 0
             row_.total = (row_.total || 0) + value
           }
           return row_
