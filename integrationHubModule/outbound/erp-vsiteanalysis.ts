@@ -104,6 +104,7 @@ const app = {
     let xsalesman = ''
     if (user.thirdPartyCode && user.thirdPartyCode.erp) xsalesman = user.thirdPartyCode.erp
     else if (subqueries.salesmanCode) xsalesman = subqueries.salesmanCode.value
+    else if (subqueries.rSalesmanCode) xsalesman = subqueries.rSalesmanCode.value
 
     // xfreehand
     // warning : getting the first one only
