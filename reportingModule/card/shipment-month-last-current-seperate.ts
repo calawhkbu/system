@@ -218,6 +218,7 @@ export default {
       onResult(res, params, prevResult: Result): Result {
         const { moment, codeColumnName, nameColumnName, summaryVariables } = prevResult
         const groupByVariables = [codeColumnName, nameColumnName]
+
         prevResult.result = res.map(row => {
           const row_: any = groupByVariables.reduce((r, v) => {
             r[v] = row[v]
@@ -232,6 +233,8 @@ export default {
           }
           return row_
         })
+
+
         return prevResult
       }
     },
@@ -245,8 +248,57 @@ export default {
         const { from, to } = calculateLastCurrent(subqueries, moment, lastCurrentUnit, secondTableLastOrCurrent)
         subqueries.date = { from, to }
 
-        const codeList = result.map(r => r[codeColumnName])
-        subqueries[codeColumnName] = { value: codeList }
+
+        // if have result, just use code to filter
+        if (result && result.length)
+        {
+          const codeList = result.map(r => r[codeColumnName])
+          subqueries[codeColumnName] = { value: codeList }
+        }
+
+        // first round, don't have result, need to perform full search again, compose subqueries again
+        else {
+
+          if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw new Error('MISSING_groupByVariable')
+          if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
+          // -----------------------------groupBy variable
+          const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+          const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+          const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
+          const topX = subqueries.topX.value
+
+          // ---------------------summaryVariables
+          let summaryVariables: string[] = []
+          if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
+            // sumamary variable
+            summaryVariables = Array.isArray(subqueries.summaryVariables.value) ? subqueries.summaryVariables.value : [subqueries.summaryVariables.value]
+          }
+          if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
+            summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
+          }
+          if (!(summaryVariables && summaryVariables.length)) {
+            throw new Error('MISSING_summaryVariables')
+          }
+
+
+                    // ----------------------- filter
+          subqueries[`${codeColumnName}IsNotNull`] = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+            value: true
+          }
+
+          params.fields = [
+            // select Month statistics
+            ...summaryVariables.map(variable => `${variable}Month`),
+            codeColumnName,
+            nameColumnName,
+          ]
+
+          // group by
+          params.groupBy = [codeColumnName]
+          params.limit = topX
+
+        }
+
         return params
       }
     },
@@ -254,6 +306,15 @@ export default {
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'shipment'],
       onResult(res, params, { moment, codeColumnName, nameColumnName, firstTableLastOrCurrent, summaryVariables, result }: Result): any[] {
+
+        // result should be the firstTable
+        // res is the second table
+
+        if (!result.length && !res.length)
+        {
+          throw new Error('NO DATA FOR BOTH YEAR')
+        }
+
         let last: any[], current: any[]
         if (firstTableLastOrCurrent === 'last') {
           last = result
@@ -264,7 +325,9 @@ export default {
           current = result
         }
 
-        return result.map(row => {
+        const mainResult = result.length >= res.length ? result : res
+
+        return mainResult.map(row => {
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName] }
           const lastRow = last.find(r => r[codeColumnName] === row[codeColumnName]) || {}
           const currentRow = current.find(r => r[codeColumnName] === row[codeColumnName]) || {}
