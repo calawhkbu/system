@@ -14,7 +14,7 @@
               "type": "dispatch",
               "otherParams": {
                 "name": "widget/changeMode",
-                "mode": "detail-edit"
+                "mode": "detail"
               }
             }]
           },
