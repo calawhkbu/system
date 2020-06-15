@@ -62,7 +62,7 @@
               "is": "AsyncComponent",
               "props": {
                 "addAttrsToComponent": true,
-                "canFullEdit": false,
+                "canFullEdit": true,
                 "layoutName": "shipment/forms/party"
               }
             }]
@@ -75,6 +75,38 @@
               "is": "AsyncComponent",
               "props": {
                 "layoutName": "shipment/forms/date"
+              }
+            }]
+          }, {
+            "id": "ShipmentPage.GeneralForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "shipment/forms/general"
+              }
+            }]
+          },
+          {
+            "id": "ShipmentPage.ContainerForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "shipment/forms/container"
+              }
+            }]
+          },
+          {
+            "id": "ShipmentPage.ReferenceForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "shipment/forms/reference"
               }
             }]
           }
