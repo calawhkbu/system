@@ -1,0 +1,115 @@
+{
+  "class": "grid",
+  "components": [{
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-2",
+        "components": [{
+            "is": "v-btn",
+            "props": {
+              "class": "margin-0",
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/resetData"
+                },
+                "afterActions": [{
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "detail-edit"
+                  }
+                }]
+              }]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "i18nContext": "ShipmentPage",
+              "i18nKey": "updateTitle",
+              "html": true,
+              "i18nOptions": {
+                "title": "{{context.$store.state.widget.data.houseNo}}"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "WidgetStepper",
+      "props": {
+        "topClick": true,
+        "validateBeforeStepChange": false,
+        "preview": false,
+        "steps": [{
+            "id": "ShipmentPage.PartyForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "shipment/forms/party"
+              }
+            }]
+          },
+          {
+            "id": "ShipmentPage.DateForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "shipment/forms/date"
+              }
+            }]
+          }, {
+            "id": "ShipmentPage.GeneralForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "shipment/forms/general"
+              }
+            }]
+          },
+          {
+            "id": "ShipmentPage.ContainerForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "shipment/forms/container"
+              }
+            }]
+          },
+          {
+            "id": "ShipmentPage.ReferenceForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "shipment/forms/reference"
+              }
+            }]
+          }
+        ]
+      }
+    }
+  ]
+}
