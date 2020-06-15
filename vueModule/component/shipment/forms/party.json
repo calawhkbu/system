@@ -73,6 +73,12 @@
           "component": "AsyncAutoSuggest",
           "class": "xs-12",
           "relation": "shipmentParty.{{flex}}{{key}}Party",
+          "canEdit": [
+            "if (extra.canFullEdit) {",
+            "return true",
+            "}",
+            "return '{{flex}}'.length > 0"
+          ],
           "relationMore": [{
               "name": "shipmentParty.{{flex}}{{key}}PartyId",
               "selector": "id"
@@ -393,6 +399,12 @@
           "label": "Widget.address",
           "name": "shipmentParty.{{flex}}{{key}}PartyAddress",
           "component": "v-textarea",
+          "canEdit": [
+            "if (extra.canFullEdit) {",
+            "return true",
+            "}",
+            "return '{{flex}}'.length > 0"
+          ],
           "props": {
             "auto-grow": true,
             "rows": 5
@@ -403,8 +415,13 @@
           "label": "Widget.city",
           "name": "shipmentParty.{{flex}}{{key}}PartyCityCode",
           "component": "AsyncAutoSuggest",
+          "canEdit": [
+            "if (extra.canFullEdit) {",
+            "return true",
+            "}",
+            "return '{{flex}}'.length > 0"
+          ],
           "class": "xs-12 md-4",
-          "readonlyClass": "xs-12 md-6",
           "relation": "shipmentParty.{{flex}}{{key}}PartyCityCode",
           "relationMore": [{
             "name": "shipmentParty.{{flex}}{{key}}PartyCityCode",
@@ -437,7 +454,12 @@
           "name": "shipmentParty.{{flex}}{{key}}PartyStateCode",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-4",
-          "readonlyClass": "xs-12 md-3",
+          "canEdit": [
+            "if (extra.canFullEdit) {",
+            "return true",
+            "}",
+            "return '{{flex}}'.length > 0"
+          ],
           "checkDisplayWhen": "return !readonly",
           "relation": "shipmentParty.{{flex}}{{key}}PartyStateCode",
           "relationMore": [{
@@ -474,8 +496,12 @@
           "name": "shipmentParty.{{flex}}{{key}}PartyCountryCode",
           "component": "AsyncAutoSuggest",
           "class": "xs-12 md-4",
-          "readonlyClass": "xs-12 md-3",
-          "checkDisplayWhen": "return !readonly",
+          "canEdit": [
+            "if (extra.canFullEdit) {",
+            "return true",
+            "}",
+            "return '{{flex}}'.length > 0"
+          ],
           "relation": "shipmentParty.{{flex}}{{key}}PartyCountryCode",
           "relationMore": [{
             "name": "shipmentParty.{{flex}}{{key}}PartyCountryCode",
@@ -511,7 +537,12 @@
           "name": "shipmentParty.{{flex}}{{key}}PartyZip",
           "component": "v-text-field",
           "class": "xs-12 md-6",
-          "checkDisplayWhen": "return !readonly"
+          "canEdit": [
+            "if (extra.canFullEdit) {",
+            "return true",
+            "}",
+            "return '{{flex}}'.length > 0"
+          ]
         }
       ]
     }

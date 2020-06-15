@@ -43,40 +43,6 @@
               "icon": "open_in_new"
             }
           }, {
-            "name": "top",
-            "is": "DynamicComponent",
-            "props": {
-              "components": [{
-                "is": "ToolTip",
-                "props": {
-                  "bottom": true,
-                  "activatorComponents": {
-                    "layout": "span",
-                    "components": [{
-                      "is": "WidgetEditButton",
-                      "props": {
-                        "forId": ["shipmentParty"],
-                        "small": true,
-                        "flat": true,
-                        "icon": true,
-                        "class": "primary white-text"
-                      }
-                    }]
-                  }
-                },
-                "mainComponents": {
-                  "layout": "span",
-                  "components": [{
-                    "is": "I18nText",
-                    "props": {
-                      "i18nContext": "ShipmentPage",
-                      "i18nKey": "edit"
-                    }
-                  }]
-                }
-              }]
-            }
-          }, {
             "name": "default",
             "is": "DynamicComponent",
             "props": {
