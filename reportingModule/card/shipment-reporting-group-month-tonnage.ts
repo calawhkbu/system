@@ -46,6 +46,19 @@ export default {
     ],
     teuToCbm(teu: number, cbm: number) {
       return teu * 25
+    },
+    moduleTypeCodeToId(moduleTypeCode:string)
+    {
+      switch (moduleTypeCode) {
+        case 'SEA':
+          return 'SEA (CBM)'
+
+        case 'AIR':
+          return 'AIR (KG)'
+
+        default:
+          return moduleTypeCode
+      }
     }
   },
   jqls: [
@@ -160,9 +173,14 @@ export default {
 
         const final: any[] = []
 
-        for (const __id of Object.keys(moduleTypeCodeList)) {
+        for (const moduleTypeCode of Object.keys(moduleTypeCodeList)) {
+
+          // const __id = moduleTypeCode === 'SEA' ? 'SEA (CBM)' : 'AIR (KG)'
+
+          const __id = params.constants.moduleTypeCodeToId(moduleTypeCode)
+
           const __rows: any[] = []
-          for (const reportingGroup of moduleTypeCodeList[__id]) {
+          for (const reportingGroup of moduleTypeCodeList[moduleTypeCode]) {
             let row = rows.find(r => r.reportingGroup === reportingGroup)
             if (!row) {
               row = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].reduce((r, m) => {
@@ -171,7 +189,6 @@ export default {
                 return r
               }, { reportingGroup, total: 0 })
             }
-            const moduleTypeCode = __id === 'SEA' ? 'SEA (CBM)' : 'AIR (KG)'
             const conversionUnit = params.constants.teuReportingGroupList.indexOf(reportingGroup) > -1 ? '(Conversion Unit: TEU)' : ''
             __rows.push({ ...row, conversionUnit, moduleTypeCode })
           }

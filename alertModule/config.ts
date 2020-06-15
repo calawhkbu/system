@@ -6,7 +6,7 @@ import { IQueryParams } from 'classes/query'
 export const schedulerActive = false
 
 
-const shipmentSeaAlert = [
+const shipmentSeaAlertList = [
 
   // cancelBookingAlert(SEA)
   {
@@ -19,11 +19,10 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
-
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
     active: false,
@@ -49,7 +48,12 @@ const shipmentSeaAlert = [
         }
       },
       limit: 1
-    }
+    },
+
+
+    contactRoleList: [],
+
+
   } as AlertConfig,
 
   // cargoDelayAlert(SEA)
@@ -63,10 +67,10 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
 
@@ -94,7 +98,9 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    contactRoleList: []
   },
 
   // cargoFailureToArrangeHualage(SEA)
@@ -108,10 +114,10 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
 
@@ -140,7 +146,9 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    contactRoleList: []
   },
 
   // missingVGM(SEA)
@@ -154,10 +162,10 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
 
@@ -187,7 +195,9 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    contactRoleList: []
   },
 
   // missingEdi(SEA)
@@ -201,10 +211,10 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
 
@@ -241,7 +251,9 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    contactRoleList: []
   },
 
   // missingPreAlert(SEA)
@@ -255,10 +267,10 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
 
@@ -293,7 +305,9 @@ const shipmentSeaAlert = [
         }
       },
       limit: 1
-    }
+    },
+
+    contactRoleList: []
   },
 
   // missingMBL(SEA)
@@ -306,13 +320,13 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
-    
+
     active: false,
 
     queryName: 'shipment',
@@ -346,7 +360,9 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    contactRoleList: []
 
   },
 
@@ -360,10 +376,10 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
 
@@ -399,7 +415,10 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+
+    contactRoleList: []
 
   },
 
@@ -413,10 +432,10 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
 
@@ -454,7 +473,10 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+
+    contactRoleList: []
 
   },
 
@@ -468,10 +490,10 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
 
@@ -507,7 +529,10 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+
+    contactRoleList: []
 
   },
 
@@ -521,10 +546,10 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
 
@@ -551,7 +576,10 @@ const shipmentSeaAlert = [
         }
       },
       limit: 1
-    }
+    },
+
+
+    contactRoleList: []
 
   },
 
@@ -565,10 +593,10 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
 
@@ -595,7 +623,9 @@ const shipmentSeaAlert = [
         }
       },
       limit: 1
-    }
+    },
+
+    contactRoleList: []
 
   },
 
@@ -609,10 +639,10 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
 
@@ -648,13 +678,15 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    contactRoleList: []
 
   }
 
-]
+] as AlertConfig[]
 
-const shipmentAirAlert = [
+const shipmentAirAlertList = [
 
   // missingPreAlert(AIR)
   {
@@ -667,13 +699,13 @@ const shipmentAirAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
- active: false,
+    active: false,
 
 
     queryName: 'shipment',
@@ -698,7 +730,9 @@ const shipmentAirAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    contactRoleList: []
   },
 
   // cargoDelayAlert(AIR)
@@ -712,10 +746,10 @@ const shipmentAirAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
 
@@ -743,7 +777,8 @@ const shipmentAirAlert = [
 
       },
       limit: 1
-    }
+    },
+    contactRoleList: []
   },
 
   // missingDeliveryArrangement(AIR)
@@ -757,10 +792,10 @@ const shipmentAirAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
 
@@ -798,13 +833,130 @@ const shipmentAirAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    contactRoleList: []
   },
 
 ]
 
+const oldAlertList = [
 
-export const alertConfigList = [
+  // shipmentArrivalDelayed(AIR)
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentArrivalDelayed(AIR)',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+  // shipmentArrivalDelayed(SEA)
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentArrivalDelayed(SEA)',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+  // shipmentDepartureDelayed(AIR)
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentDepartureDelayed(AIR)',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+  // shipmentDepartureDelayed(SEA)
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentDepartureDelayed(SEA)',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+  // shipmentEtaChanged
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentEtaChanged',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+  // shipmentEtdChanged
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentEtdChanged',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+
+  // shipmentAtaChanged
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentAtaChanged',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+  // shipmentAtdChanged
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentAtdChanged',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+  // shipmentMessage
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentMessage',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  }
+
+
+
+]
+
+const testAlertList = [
+
   // sayHello
   {
     tableName: 'shipment',
@@ -815,10 +967,10 @@ export const alertConfigList = [
     templatePath: 'message/shipment-message',
     formPath: 'alert.sayHello',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
 
@@ -860,10 +1012,17 @@ export const alertConfigList = [
 
   } as AlertConfig,
 
+]
 
+
+export const alertConfigList = [
   // just seperate into different list
-  ...shipmentSeaAlert,
-  ...shipmentAirAlert
+  ...shipmentSeaAlertList,
+  ...shipmentAirAlertList,
+
+
+  ...oldAlertList,
+  ...testAlertList
 
 ] as AlertConfig[]
 
