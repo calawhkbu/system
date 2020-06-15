@@ -113,6 +113,12 @@
                 }]
               }
             }
+          },
+          {
+            "is": "AsyncComponent",
+            "props": {
+              "layoutName": "shipment/topBtn"
+            }
           }
         ]
       }

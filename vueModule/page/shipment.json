@@ -19,7 +19,7 @@
           "url": "api/shipment"
         },
         "modeFunction": [
-          "const modes = ['detail-edit', 'import'];",
+          "const modes = ['detail-edit', 'import', 'edit'];",
           "const selectedMode = isNaN(Number(mode)) ? mode : 'detail-edit';",
           "if (!modes.includes(selectedMode)) {",
           "throw new Error(`This mode (${selectedMode}) is not allowed`)",
@@ -35,6 +35,11 @@
           },
           "detail-edit": {
             "readonly": true
+          },
+          "edit": {
+            "readonly": false,
+            "stepper": 3,
+            "saveIcon": "save"
           }
         }
       }
