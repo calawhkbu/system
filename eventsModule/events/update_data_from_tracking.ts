@@ -56,7 +56,7 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
           WHERE partyGroupCode in (:partyGroupCode)
           AND (
             masterNo in (:trackingNos)
-            OR id in (SELECT shipmentId FROM shipment_container WHERE carrierBookingNo in (:trackingNos) OR containerNo in (:trackingNos))
+            OR shipment.id in (SELECT shipmentId FROM shipment_container WHERE carrierBookingNo in (:trackingNos) OR containerNo in (:trackingNos))
           )
         `,
         {
