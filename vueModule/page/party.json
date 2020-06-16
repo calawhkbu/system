@@ -272,7 +272,7 @@
                         "item-value": "code",
                         "showValue": false,
                         "noDelete": true,
-                        "updateValue": "return value.split(', ')",
+                        "onGetFixValueOverrideFunc": "return value.split(', ')",
                         "axiosParams": {
                           "url": "api/code/query/code_master",
                           "method": "POST",
@@ -284,7 +284,7 @@
                             }
                           }
                         },
-                        "onFixValueChangeFunc": [
+                        "onSetFixValueEventFunc": [
                           "this.$Swivel.api.createPromise({",
                           "method: 'POST',",
                           "url: 'relationship/party',",

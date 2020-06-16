@@ -248,7 +248,7 @@
         "components": [{
           "is": "DynamicComponent",
           "props": {
-            "class": "xs-8 grid padding-2",
+            "class": "xs-8 padding-2",
             "components": [{
                 "is": "DynamicComponent",
                 "props": {
