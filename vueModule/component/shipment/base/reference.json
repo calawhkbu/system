@@ -41,21 +41,6 @@
                 "props": {
                   "formId": "reference",
                   "fields": [{
-                    "label": "ShipmentPage.poNo",
-                    "name": "shipmentPo",
-                    "component": "MultiField",
-                    "checkDisplayWhen": "return form.shipmentPo && form.shipmentPo.length > 0",
-                    "class": "xs-12",
-                    "props": {
-                      "itemContainerClass": "xs-12",
-                      "updateValue": [
-                        "return Array.isArray(value) ? value.map(v => v.poNo) : [value]"
-                      ],
-                      "onCheckFixValueFunc": [
-                        "return value.map(v => ({ poNo: v }))"
-                      ]
-                    }
-                  }, {
                     "label": "ShipmentPage.references",
                     "name": "shipmentReference",
                     "component": "TableField",
@@ -121,23 +106,10 @@
           "is": "WidgetForm",
           "props": {
             "fields": [{
-              "label": "ShipmentPage.poNo",
-              "name": "shipmentPo",
-              "component": "MultiField",
-              "checkDisplayWhen": "return form.shipmentPo && form.shipmentPo.length > 0",
-              "class": "xs-12",
-              "props": {
-                "updateValue": [
-                  "return Array.isArray(value) ? value.map(v => v.poNo) : [value]"
-                ],
-                "onCheckFixValueFunc": [
-                  "return value.map(v => ({ poNo: v }))"
-                ]
-              }
-            }, {
               "label": "ShipmentPage.references",
               "name": "shipmentReference",
               "component": "TableField",
+              "checkDisplayWhen": "return form && form.shipmentReference && form.shipmentReference.length",
               "class": "xs-12",
               "props": {
                 "labelProps": {

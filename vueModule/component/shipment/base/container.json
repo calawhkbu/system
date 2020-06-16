@@ -42,10 +42,23 @@
                 "props": {
                   "formId": "container",
                   "fields": [{
+                      "label": "ShipmentPage.poNo",
+                      "name": "shipmentPo",
+                      "component": "MultiField",
+                      "class": "xs-12",
+                      "props": {
+                        "itemContainerClass": "xs-12",
+                        "onGetFixValueOverrideFunc": [
+                          "return Array.isArray(value) ? value.map(v => v.poNo) : [value]"
+                        ],
+                        "onSetFixValueOverrideFunc": [
+                          "return value.map(v => ({ poNo: v }))"
+                        ]
+                      }
+                    }, {
                       "label": "ShipmentPage.cargos",
                       "name": "shipmentCargos",
                       "component": "TableField",
-                      "checkDisplayWhen": "return form && form.shipmentCargos && form.shipmentCargos.length",
                       "props": {
                         "topLabel": true,
                         "fields": [{
@@ -67,7 +80,7 @@
                             "component": "v-text-field",
                             "colGroupProps": {
                               "style": {
-                                "width": "15%"
+                                "width": "18%"
                               }
                             }
                           },
@@ -77,7 +90,7 @@
                             "component": "NumberField",
                             "colGroupProps": {
                               "style": {
-                                "width": "12%"
+                                "width": "7%"
                               }
                             },
                             "props": {
@@ -91,12 +104,51 @@
                           {
                             "label": "ShipmentPage.quantityUnit",
                             "name": "quantityUnit",
-                            "component": "v-text-field",
                             "colGroupProps": {
                               "style": {
                                 "width": "3%",
                                 "min-width": "50px"
                               }
+                            },
+                            "component": "v-select",
+                            "props": {
+                              "items": [{
+                                  "text": "W/C",
+                                  "value": "W/C"
+                                },
+                                {
+                                  "text": "PCS",
+                                  "value": "PCS"
+                                },
+                                {
+                                  "text": "M/C",
+                                  "value": "M/C"
+                                },
+                                {
+                                  "text": "BAG",
+                                  "value": "BAG"
+                                },
+                                {
+                                  "text": "CASE",
+                                  "value": "CASE"
+                                },
+                                {
+                                  "text": "PLT",
+                                  "value": "PLT"
+                                },
+                                {
+                                  "text": "ROLL",
+                                  "value": "ROLL"
+                                },
+                                {
+                                  "text": "PAIR",
+                                  "value": "PAIR"
+                                },
+                                {
+                                  "text": "CTN",
+                                  "value": "CTN"
+                                }
+                              ]
                             }
                           },
                           {
@@ -105,7 +157,37 @@
                             "component": "NumberField",
                             "colGroupProps": {
                               "style": {
-                                "width": "12%"
+                                "width": "7%"
+                              }
+                            },
+                            "props": {
+                              "right": true,
+                              "type": "number",
+                              "min": 0
+                            }
+                          },
+                          {
+                            "label": "ShipmentPage.volumeWeight",
+                            "name": "volumeWeight",
+                            "component": "NumberField",
+                            "colGroupProps": {
+                              "style": {
+                                "width": "7%"
+                              }
+                            },
+                            "props": {
+                              "right": true,
+                              "type": "number",
+                              "min": 0
+                            }
+                          },
+                          {
+                            "label": "ShipmentPage.chargeableWeight",
+                            "name": "chargeableWeight",
+                            "component": "NumberField",
+                            "colGroupProps": {
+                              "style": {
+                                "width": "7%"
                               }
                             },
                             "props": {
@@ -123,7 +205,18 @@
                                 "min-width": "50px"
                               }
                             },
-                            "component": "v-text-field"
+                            "component": "v-select",
+                            "props": {
+                              "items": [{
+                                  "text": "KGs",
+                                  "value": "KGs"
+                                },
+                                {
+                                  "text": "LBs",
+                                  "value": "LBs"
+                                }
+                              ]
+                            }
                           },
                           {
                             "label": "ShipmentPage.cbm",
@@ -146,7 +239,7 @@
                             "component": "v-text-field",
                             "colGroupProps": {
                               "style": {
-                                "width": "15%"
+                                "width": "10%"
                               }
                             }
                           }
@@ -156,9 +249,11 @@
                     {
                       "label": "ShipmentPage.containers",
                       "name": "shipmentContainers",
-                      "checkDisplayWhen": "return form && form.shipmentContainers && form.shipmentContainers.length",
                       "component": "TableField",
                       "props": {
+                        "labelProps": {
+                          "class": "font-90"
+                        },
                         "topLabel": true,
                         "fields": [{
                             "label": "ShipmentPage.containerNo",
@@ -210,6 +305,11 @@
                                 "width": "10%"
                               }
                             },
+                            "thProps": {
+                              "style": {
+                                "text-align": "right"
+                              }
+                            },
                             "props": {
                               "right": true,
                               "type": "number",
@@ -231,6 +331,11 @@
                             "label": "ShipmentPage.grossWeight",
                             "name": "grossWeight",
                             "component": "NumberField",
+                            "thProps": {
+                              "style": {
+                                "text-align": "right"
+                              }
+                            },
                             "colGroupProps": {
                               "style": {
                                 "width": "10%"
@@ -257,6 +362,11 @@
                             "label": "ShipmentPage.cbm",
                             "name": "cbm",
                             "component": "NumberField",
+                            "thProps": {
+                              "style": {
+                                "text-align": "right"
+                              }
+                            },
                             "colGroupProps": {
                               "style": {
                                 "width": "15%"
@@ -270,6 +380,54 @@
                           }
                         ]
                       }
+                    },
+                    {
+                      "label": "ShipmentPage.totalQuantity",
+                      "name": "quantity",
+                      "component": "NumberField",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.totalQuantityUnit",
+                      "name": "quantityUnit",
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.totalTeu",
+                      "name": "teu",
+                      "component": "NumberField",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.totalCbm",
+                      "name": "cbm",
+                      "component": "NumberField",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.totalGrossWeight",
+                      "name": "grossWeight",
+                      "component": "NumberField",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.totalVolumeWeight",
+                      "name": "volumeWeight",
+                      "component": "NumberField",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.totalChargeableWeight",
+                      "name": "chargeableWeight",
+                      "component": "NumberField",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.totalWeightUnit",
+                      "name": "weightUnit",
+                      "class": "xs-12",
+                      "component": "v-text-field"
                     }
                   ]
                 }
@@ -286,6 +444,20 @@
           "class": "xs-12",
           "props": {
             "fields": [{
+                "label": "ShipmentPage.poNo",
+                "name": "shipmentPo",
+                "component": "MultiField",
+                "checkDisplayWhen": "return form.shipmentPo && form.shipmentPo.length > 0",
+                "class": "xs-12",
+                "props": {
+                  "onGetFixValueOverrideFunc": [
+                    "return Array.isArray(value) ? value.map(v => v.poNo) : [value]"
+                  ],
+                  "onSetFixValueOverrideFunc": [
+                    "return value.map(v => ({ poNo: v }))"
+                  ]
+                }
+              }, {
                 "label": "ShipmentPage.cargos",
                 "name": "shipmentCargos",
                 "component": "TableField",
@@ -305,7 +477,7 @@
                         }
                       },
                       "props": {
-                        "rows": 2
+                        "rows": 5
                       }
                     },
                     {
@@ -314,7 +486,7 @@
                       "component": "v-text-field",
                       "colGroupProps": {
                         "style": {
-                          "width": "15%"
+                          "width": "18%"
                         }
                       }
                     },
@@ -324,12 +496,7 @@
                       "component": "NumberField",
                       "colGroupProps": {
                         "style": {
-                          "width": "12%"
-                        }
-                      },
-                      "thProps": {
-                        "style": {
-                          "text-align": "right"
+                          "width": "7%"
                         }
                       },
                       "props": {
@@ -343,26 +510,90 @@
                     {
                       "label": "ShipmentPage.quantityUnit",
                       "name": "quantityUnit",
-                      "component": "v-text-field",
                       "colGroupProps": {
                         "style": {
                           "width": "3%",
                           "min-width": "50px"
                         }
+                      },
+                      "component": "v-select",
+                      "props": {
+                        "items": [{
+                            "text": "W/C",
+                            "value": "W/C"
+                          },
+                          {
+                            "text": "PCS",
+                            "value": "PCS"
+                          },
+                          {
+                            "text": "M/C",
+                            "value": "M/C"
+                          },
+                          {
+                            "text": "BAG",
+                            "value": "BAG"
+                          },
+                          {
+                            "text": "CASE",
+                            "value": "CASE"
+                          },
+                          {
+                            "text": "PLT",
+                            "value": "PLT"
+                          },
+                          {
+                            "text": "ROLL",
+                            "value": "ROLL"
+                          },
+                          {
+                            "text": "PAIR",
+                            "value": "PAIR"
+                          },
+                          {
+                            "text": "CTN",
+                            "value": "CTN"
+                          }
+                        ]
                       }
                     },
                     {
                       "label": "ShipmentPage.grossWeight",
                       "name": "grossWeight",
                       "component": "NumberField",
-                      "thProps": {
-                        "style": {
-                          "text-align": "right"
-                        }
-                      },
                       "colGroupProps": {
                         "style": {
-                          "width": "12%"
+                          "width": "7%"
+                        }
+                      },
+                      "props": {
+                        "right": true,
+                        "type": "number",
+                        "min": 0
+                      }
+                    },
+                    {
+                      "label": "ShipmentPage.volumeWeight",
+                      "name": "volumeWeight",
+                      "component": "NumberField",
+                      "colGroupProps": {
+                        "style": {
+                          "width": "7%"
+                        }
+                      },
+                      "props": {
+                        "right": true,
+                        "type": "number",
+                        "min": 0
+                      }
+                    },
+                    {
+                      "label": "ShipmentPage.chargeableWeight",
+                      "name": "chargeableWeight",
+                      "component": "NumberField",
+                      "colGroupProps": {
+                        "style": {
+                          "width": "7%"
                         }
                       },
                       "props": {
@@ -380,18 +611,24 @@
                           "min-width": "50px"
                         }
                       },
-                      "component": "v-text-field"
+                      "component": "v-select",
+                      "props": {
+                        "items": [{
+                            "text": "KGs",
+                            "value": "KGs"
+                          },
+                          {
+                            "text": "LBs",
+                            "value": "LBs"
+                          }
+                        ]
+                      }
                     },
                     {
                       "label": "ShipmentPage.cbm",
                       "colGroupProps": {
                         "style": {
                           "width": "10%"
-                        }
-                      },
-                      "thProps": {
-                        "style": {
-                          "text-align": "right"
                         }
                       },
                       "name": "cbm",
@@ -408,7 +645,7 @@
                       "component": "v-text-field",
                       "colGroupProps": {
                         "style": {
-                          "width": "15%"
+                          "width": "10%"
                         }
                       }
                     }
@@ -550,6 +787,82 @@
                     }
                   ]
                 }
+              },
+              {
+                "label": "ShipmentPage.totalQuantity",
+                "name": "quantity",
+                "component": "NumberField",
+                "checkDisplayWhen": "return form && form.quantity && form.quantity !== 0",
+                "class": "xs-3"
+              },
+              {
+                "label": "ShipmentPage.totalQuantityUnit",
+                "name": "quantityUnit",
+                "checkDisplayWhen": "return form && form.quantityUnit",
+                "component": "v-text-field",
+                "class": "xs-3"
+              },
+              {
+                "label": "ShipmentPage.totalTeu",
+                "name": "teu",
+                "component": "NumberField",
+                "checkDisplayWhen": "return form && form.teu && form.teu !== 0",
+                "class": "xs-3"
+              },
+              {
+                "label": "ShipmentPage.totalCbm",
+                "name": "cbm",
+                "component": "NumberField",
+                "checkDisplayWhen": "return form && form.cbm && form.cbm !== 0",
+                "class": "xs-3"
+              },
+              {
+                "class": "xs-3",
+                "checkDisplayWhen": "return !form || !form.teu || form.teu === 0"
+              },
+              {
+                "class": "xs-3",
+                "checkDisplayWhen": "return !form || !form.cbm || form.cbm === 0"
+              },
+              {
+                "label": "ShipmentPage.totalGrossWeight",
+                "name": "grossWeight",
+                "component": "NumberField",
+                "checkDisplayWhen": "return form && form.grossWeight && form.grossWeight !== 0",
+                "class": "xs-3"
+              },
+              {
+                "label": "ShipmentPage.totalVolumeWeight",
+                "name": "volumeWeight",
+                "component": "NumberField",
+                "checkDisplayWhen": "return form && form.volumeWeight && form.volumeWeight !== 0",
+                "class": "xs-3"
+              },
+              {
+                "label": "ShipmentPage.totalChargeableWeight",
+                "name": "chargeableWeight",
+                "component": "NumberField",
+                "checkDisplayWhen": "return form && form.chargeableWeight && form.chargeableWeight !== 0",
+                "class": "xs-3"
+              },
+              {
+                "class": "xs-3",
+                "checkDisplayWhen": "return !form || !form.grossWeight || form.grossWeight === 0"
+              },
+              {
+                "class": "xs-3",
+                "checkDisplayWhen": "return !form || !form.volumeWeight || form.volumeWeight === 0"
+              },
+              {
+                "class": "xs-3",
+                "checkDisplayWhen": "return !form || !form.chargeableWeight || form.chargeableWeight === 0"
+              },
+              {
+                "label": "ShipmentPage.totalWeightUnit",
+                "name": "weightUnit",
+                "checkDisplayWhen": "return form && form.totalWeightUnit",
+                "class": "xs-3",
+                "component": "v-text-field"
               }
             ]
           }
