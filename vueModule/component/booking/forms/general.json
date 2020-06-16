@@ -113,6 +113,9 @@
           "more": [{
             "name": "placeOfReceiptCode",
             "selector": "portCode"
+          }, {
+            "name": "placeOfReceiptName",
+            "selector": "name"
           }],
           "props": {
             "searchValueParams": {
@@ -157,6 +160,9 @@
           "more": [{
             "name": "portOfLoadingCode",
             "selector": "portCode"
+          }, {
+            "name": "portOfLoadingName",
+            "selector": "name"
           }],
           "props": {
             "required": true,
@@ -202,6 +208,9 @@
           "more": [{
             "name": "portOfDischargeCode",
             "selector": "portCode"
+          }, {
+            "name": "portOfDischargeName",
+            "selector": "name"
           }],
           "props": {
             "required": true,
@@ -246,6 +255,9 @@
           "more": [{
             "name": "placeOfDeliveryCode",
             "selector": "portCode"
+          }, {
+            "name": "placeOfDeliveryName",
+            "selector": "name"
           }],
           "props": {
             "searchValueParams": {
