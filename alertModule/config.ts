@@ -50,6 +50,12 @@ const shipmentSeaAlertList = [
       limit: 1
     },
 
+    closeQuery: {
+      subqueries : {
+        cargoReceiptDateActualIsNotNull: true 
+      }
+    },
+
 
     contactRoleList: [],
 
@@ -100,6 +106,13 @@ const shipmentSeaAlertList = [
       limit: 1
     },
 
+    closeQuery: {
+      subqueries : {
+        // have gateInDateActual
+        gateInDateActualIsNotNull: true 
+      }
+    },
+
     contactRoleList: []
   },
 
@@ -148,6 +161,13 @@ const shipmentSeaAlertList = [
       limit: 1
     },
 
+    closeQuery: {
+      subqueries : {
+        // have sentToShipperDateActual
+        sentToShipperDateActualIsNotNull: true 
+      }
+    },
+
     contactRoleList: []
   },
 
@@ -182,7 +202,7 @@ const shipmentSeaAlertList = [
 
         // missing VGM in any one of the shipment container
         // warning : current now just check shipment that with at least one container
-        missingVGM: true,
+        vgmNonZeroQueryIdNotIn: true,
 
         // after cYCutOffDateActual / cYCutOffDateEstimated - 1 day
         after_cYCutOffDateActualInUtc_Or_cYCutOffDateEstimatedInUtc: {
@@ -196,6 +216,14 @@ const shipmentSeaAlertList = [
       },
       limit: 1
     },
+
+    closeQuery: {
+      subqueries : {
+        // have vgm non-zero
+        vgmNonZeroQueryIdIn: true 
+      }
+    },
+
 
     contactRoleList: []
   },
@@ -253,6 +281,13 @@ const shipmentSeaAlertList = [
       limit: 1
     },
 
+    closeQuery: {
+      subqueries : {
+        // have ediSendDateActual
+        ediSendDateActualIsNotNull: true 
+      }
+    },
+
     contactRoleList: []
   },
 
@@ -306,6 +341,14 @@ const shipmentSeaAlertList = [
       },
       limit: 1
     },
+
+    closeQuery: {
+      subqueries : {
+        // have preAlertSendDateActual
+        preAlertSendDateActualIsNotNull: true 
+      }
+    },
+
 
     contactRoleList: []
   },
@@ -362,6 +405,13 @@ const shipmentSeaAlertList = [
       limit: 1
     },
 
+    closeQuery: {
+      subqueries : {
+        // have masterBillReleasedDateActual
+        masterBillReleasedDateActualIsNotNull: true 
+      }
+    },
+
     contactRoleList: []
 
   },
@@ -415,6 +465,13 @@ const shipmentSeaAlertList = [
 
       },
       limit: 1
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have houseBillConfirmationDateActual
+        houseBillConfirmationDateActualIsNotNull: true 
+      }
     },
 
 
@@ -475,6 +532,13 @@ const shipmentSeaAlertList = [
       limit: 1
     },
 
+    closeQuery: {
+      subqueries : {
+        // have arrivalAtDepotActual
+        arrivalAtDepotActualIsNotNull: true 
+      }
+    },
+
 
     contactRoleList: []
 
@@ -531,6 +595,13 @@ const shipmentSeaAlertList = [
       limit: 1
     },
 
+    closeQuery: {
+      subqueries : {
+        // have pickupCargoBeforeDemurrageDateActual_Or_cargoPickupWithDemurrageDateActual
+        pickupCargoBeforeDemurrageDateActual_Or_cargoPickupWithDemurrageDateActualIsNotNull: true 
+      }
+    },
+
 
     contactRoleList: []
 
@@ -579,6 +650,13 @@ const shipmentSeaAlertList = [
     },
 
 
+    closeQuery: {
+      subqueries : {
+        // have returnEmptyContainerDateActual
+        returnEmptyContainerDateActualIsNotNull: true 
+      }
+    },
+
     contactRoleList: []
 
   },
@@ -623,6 +701,13 @@ const shipmentSeaAlertList = [
         }
       },
       limit: 1
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have returnEmptyContainerDateActual
+        returnEmptyContainerDateActualIsNotNull: true 
+      }
     },
 
     contactRoleList: []
@@ -680,6 +765,14 @@ const shipmentSeaAlertList = [
       limit: 1
     },
 
+    closeQuery: {
+      subqueries : {
+        // have finalDoorDeliveryDateActual
+        finalDoorDeliveryDateActualIsNotNull: true 
+      }
+    },
+
+
     contactRoleList: []
 
   }
@@ -732,6 +825,15 @@ const shipmentAirAlertList = [
       limit: 1
     },
 
+
+    closeQuery: {
+      subqueries : {
+        // have preAlertSendDateActual
+        preAlertSendDateActualIsNotNull: true 
+      }
+    },
+
+
     contactRoleList: []
   },
 
@@ -778,6 +880,14 @@ const shipmentAirAlertList = [
       },
       limit: 1
     },
+
+    closeQuery: {
+      subqueries : {
+        // have preAlertSendDateActual
+        preAlertSendDateActualIsNotNull: true 
+      }
+    },
+
     contactRoleList: []
   },
 
@@ -833,6 +943,13 @@ const shipmentAirAlertList = [
 
       },
       limit: 1
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have portOfLoadingCode
+        portOfLoadingCodeIsNotNull: true 
+      }
     },
 
     contactRoleList: []
@@ -995,6 +1112,14 @@ const testAlertList = [
       limit: 4
     } as IQueryParams,
 
+    closeQuery: {
+      subqueries : {
+        moduleTypeCode: { value: ['AIR'] },
+        boundTypeCode: { value: ['O'] },
+      }
+    } as IQueryParams,
+    
+
     // select only 1 person
     extraPersonIdQuery: {
       subqueries: {
@@ -1017,11 +1142,11 @@ const testAlertList = [
 
 export const alertConfigList = [
   // just seperate into different list
-  ...shipmentSeaAlertList,
-  ...shipmentAirAlertList,
+  // ...shipmentSeaAlertList,
+  // ...shipmentAirAlertList,
 
 
-  ...oldAlertList,
+  // ...oldAlertList,
   ...testAlertList
 
 ] as AlertConfig[]
