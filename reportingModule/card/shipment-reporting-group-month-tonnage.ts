@@ -49,16 +49,7 @@ export default {
     },
     moduleTypeCodeToId(moduleTypeCode:string)
     {
-      switch (moduleTypeCode) {
-        case 'SEA':
-          return 'SEA (CBM)'
-
-        case 'AIR':
-          return 'AIR (KG)'
-
-        default:
-          return moduleTypeCode
-      }
+      return `${moduleTypeCode}withUnit`
     }
   },
   jqls: [
