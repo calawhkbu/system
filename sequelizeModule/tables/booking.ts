@@ -10,19 +10,32 @@ export const setDataFunction = {
     }
     return partyGroupCode
   },
-  bookingNo: async({ bookingNo }) => {
-    const date = moment.utc().format('YYMMDD')
-    let random = Math.floor(Math.random() * 9999).toString()
-    if (random.length === 3) {
-      random = `0${random}`
-    } else if (random.length === 2) {
-      random = `00${random}`
-    } else if (random.length === 1) {
-      random = `000${random}`
-    } else if (random.length === 0) {
-      random = `0000`
+  bookingNo: async({ bookingNo }, user: JwtPayload) => {
+    if (!bookingNo) {
+      let userPartyGroupId: string = (user ? user.selectedPartyGroup.id : '').toString()
+      if (userPartyGroupId.length === 0) {
+        userPartyGroupId = `00`
+      } else if (userPartyGroupId.length === 1) {
+        userPartyGroupId = `0${userPartyGroupId}`
+      } else if (userPartyGroupId.length === 2) {
+        userPartyGroupId = `0${userPartyGroupId}`
+      } else if (userPartyGroupId.length === 3) {
+        userPartyGroupId = `${userPartyGroupId}`
+      }
+      const date = moment.utc().format('YYMMDD')
+      let random = Math.floor(Math.random() * 9999).toString()
+      if (random.length === 3) {
+        random = `0${random}`
+      } else if (random.length === 2) {
+        random = `00${random}`
+      } else if (random.length === 1) {
+        random = `000${random}`
+      } else if (random.length === 0) {
+        random = `0000`
+      }
+      return `${userPartyGroupId}-${date}${random}`
     }
-    return `01-${date}${random}`
+    return bookingNo
   },
 }
 

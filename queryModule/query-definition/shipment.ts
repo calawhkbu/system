@@ -2463,7 +2463,7 @@ query.subquery('missingVGM', new Query({
         $select: [
           new ResultColumn(new ColumnExpression('shipment_container', 'shipmentId'))
         ],
-        $from: 'shipment_conatiner',
+        $from: 'shipment_container',
         $where: new BinaryExpression(new ColumnExpression('shipment_container', 'vgmWeight'), '>', 0)
 
       })
