@@ -109,6 +109,7 @@
               "label": "ShipmentPage.references",
               "name": "shipmentReference",
               "component": "TableField",
+              "checkDisplayWhen": "return form && form.shipmentReference && form.shipmentReference.length",
               "class": "xs-12",
               "props": {
                 "labelProps": {
