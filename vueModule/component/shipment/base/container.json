@@ -42,6 +42,21 @@
                 "props": {
                   "formId": "container",
                   "fields": [{
+                      "label": "ShipmentPage.poNo",
+                      "name": "shipmentPo",
+                      "component": "MultiField",
+                      "checkDisplayWhen": "return form.shipmentPo && form.shipmentPo.length > 0",
+                      "class": "xs-12",
+                      "props": {
+                        "itemContainerClass": "xs-12",
+                        "onGetFixValueOverrideFunc": [
+                          "return Array.isArray(value) ? value.map(v => v.poNo) : [value]"
+                        ],
+                        "onSetFixValueOverrideFunc": [
+                          "return value.map(v => ({ poNo: v }))"
+                        ]
+                      }
+                    }, {
                       "label": "ShipmentPage.cargos",
                       "name": "shipmentCargos",
                       "component": "TableField",
@@ -286,6 +301,20 @@
           "class": "xs-12",
           "props": {
             "fields": [{
+                "label": "ShipmentPage.poNo",
+                "name": "shipmentPo",
+                "component": "MultiField",
+                "checkDisplayWhen": "return form.shipmentPo && form.shipmentPo.length > 0",
+                "class": "xs-12",
+                "props": {
+                  "onGetFixValueOverrideFunc": [
+                    "return Array.isArray(value) ? value.map(v => v.poNo) : [value]"
+                  ],
+                  "onSetFixValueOverrideFunc": [
+                    "return value.map(v => ({ poNo: v }))"
+                  ]
+                }
+              }, {
                 "label": "ShipmentPage.cargos",
                 "name": "shipmentCargos",
                 "component": "TableField",
