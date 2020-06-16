@@ -74,21 +74,30 @@
                       "name": ["moduleType.name", "moduleTypeCode"],
                       "component": "v-text-field",
                       "class": "xs-12",
-                      "validator": ["required"]
+                      "validator": ["required"],
+                      "props": {
+                        "required": true
+                      }
                     },
                     {
                       "label": "BookingPage.boundType",
                       "name": ["boundType.name", "boundTypeCode"],
                       "component": "v-text-field",
                       "class": "xs-12",
-                      "validator": ["required"]
+                      "validator": ["required"],
+                      "props": {
+                        "required": true
+                      }
                     },
                     {
                       "label": "BookingPage.serviceCode",
                       "name": ["service.name", "serviceCode"],
                       "component": "v-text-field",
                       "class": "xs-12",
-                      "validator": ["required"]
+                      "validator": ["required"],
+                      "props": {
+                        "required": true
+                      }
                     },
                     {
                       "label": "BookingPage.vas",
@@ -129,14 +138,20 @@
                       "name": ["portOfLoadingName", "portOfLoading.name", "portOfLoadingCode"],
                       "component": "v-text-field",
                       "class": "xs-12",
-                      "validator": ["required"]
+                      "validator": ["required"],
+                      "props": {
+                        "required": true
+                      }
                     },
                     {
                       "label": "BookingPage.portOfDischarge",
                       "name": ["portOfDischargeName", "portOfDischarge.name", "portOfDischargeCode"],
                       "component": "v-text-field",
                       "class": "xs-12",
-                      "validator": ["required"]
+                      "validator": ["required"],
+                      "props": {
+                        "required": true
+                      }
                     },
                     {
                       "label": "BookingPage.placeOfDelivery",
@@ -193,7 +208,10 @@
                       "name": "commodity",
                       "component": "v-text-field",
                       "class": "xs-12",
-                      "validator": ["required"]
+                      "validator": ["required"],
+                      "props": {
+                        "required": true
+                      }
                     },
                     {
                       "label": "BookingPage.polHScode",
@@ -235,21 +253,30 @@
                 "name": ["moduleType.name", "moduleTypeCode"],
                 "component": "v-text-field",
                 "class": "xs-3",
-                "validator": ["required"]
+                "validator": ["required"],
+                "props": {
+                  "required": true
+                }
               },
               {
                 "label": "BookingPage.boundType",
                 "name": ["boundType.name", "boundTypeCode"],
                 "component": "v-text-field",
                 "class": "xs-3",
-                "validator": ["required"]
+                "validator": ["required"],
+                "props": {
+                  "required": true
+                }
               },
               {
                 "label": "BookingPage.serviceCode",
                 "name": ["service.name", "serviceCode"],
                 "component": "v-text-field",
                 "class": "xs-3",
-                "validator": ["required"]
+                "validator": ["required"],
+                "props": {
+                  "required": true
+                }
               },
               {
                 "label": "BookingPage.vas",
@@ -293,14 +320,20 @@
                 "name": ["portOfLoadingName", "portOfLoading.name", "portOfLoadingCode"],
                 "component": "v-text-field",
                 "class": "xs-3",
-                "validator": ["required"]
+                "validator": ["required"],
+                "props": {
+                  "required": true
+                }
               },
               {
                 "label": "BookingPage.portOfDischarge",
                 "name": ["portOfDischargeName", "portOfDischarge.name", "portOfDischargeCode"],
                 "component": "v-text-field",
                 "class": "xs-3",
-                "validator": ["required"]
+                "validator": ["required"],
+                "props": {
+                  "required": true
+                }
               },
               {
                 "label": "BookingPage.placeOfDelivery",
