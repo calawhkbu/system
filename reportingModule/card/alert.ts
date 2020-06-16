@@ -12,7 +12,7 @@ export default {
       async prepareParams(params, prevResult, user): Promise<IQueryParams> {
         const { moment } = await this.preparePackages(user)
 
-        const subqueries = (params.subqueries = params.subqueries || {})
+        const subqueries = params.subqueries || {}
         if (!subqueries.entityType || !(subqueries.entityType !== true && 'value' in subqueries.entityType)) throw new Error('MISSING_ENTITY_TYPE')
         if (['shipment', 'booking', 'purchase-order'].indexOf(subqueries.entityType.value) === -1) {
           throw new Error(`INVALID_ENTITY_TYPE_${String(subqueries.entityType.value).toLocaleUpperCase()}`)
@@ -49,7 +49,7 @@ export default {
     },
     {
       type: 'callDataService',
-      getDataServiceQuery(req, params): [string, string] {
+      getDataServiceQuery(params): [string, string] {
         let entityType = 'shipment'
         const subqueries = (params.subqueries = params.subqueries || {})
         if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
