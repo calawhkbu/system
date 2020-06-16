@@ -458,19 +458,19 @@
         },
         {
           "label": "ShipmentPage.totalGrossWeight",
-          "name": "cbm",
+          "name": "grossWeight",
           "component": "NumberField",
           "class": "xs-3"
         },
         {
           "label": "ShipmentPage.totalVolumeWeight",
-          "name": "cbm",
+          "name": "volumeWeight",
           "component": "NumberField",
           "class": "xs-3"
         },
         {
           "label": "ShipmentPage.totalChargeableWeight",
-          "name": "cbm",
+          "name": "chargeableWeight",
           "component": "NumberField",
           "class": "xs-3"
         },
