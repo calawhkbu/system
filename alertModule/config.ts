@@ -1142,12 +1142,11 @@ const testAlertList = [
 
 export const alertConfigList = [
   // just seperate into different list
-  // ...shipmentSeaAlertList,
-  // ...shipmentAirAlertList,
+  ...shipmentSeaAlertList,
+  ...shipmentAirAlertList,
+  ...oldAlertList,
 
-
-  // ...oldAlertList,
-  ...testAlertList
+  // ...testAlertList
 
 ] as AlertConfig[]
 
