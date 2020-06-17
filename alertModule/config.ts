@@ -6,7 +6,7 @@ import { IQueryParams } from 'classes/query'
 export const schedulerActive = false
 
 
-const shipmentSeaAlert = [
+const shipmentSeaAlertList = [
 
   // cancelBookingAlert(SEA)
   {
@@ -19,11 +19,10 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
-
+    // schedule: '0 * * * * *',
 
     interval: {
-      value: 1,
+      value: 15,
       unit: 'MINUTE'
     },
     active: false,
@@ -49,7 +48,18 @@ const shipmentSeaAlert = [
         }
       },
       limit: 1
-    }
+    },
+
+    closeQuery: {
+      subqueries : {
+        cargoReceiptDateActualIsNotNull: true 
+      }
+    },
+
+
+    contactRoleList: [],
+
+
   } as AlertConfig,
 
   // cargoDelayAlert(SEA)
@@ -63,7 +73,13 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -88,7 +104,16 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have gateInDateActual
+        gateInDateActualIsNotNull: true 
+      }
+    },
+
+    contactRoleList: []
   },
 
   // cargoFailureToArrangeHualage(SEA)
@@ -102,7 +127,13 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -128,7 +159,16 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have sentToShipperDateActual
+        sentToShipperDateActualIsNotNull: true 
+      }
+    },
+
+    contactRoleList: []
   },
 
   // missingVGM(SEA)
@@ -142,7 +182,13 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -156,7 +202,7 @@ const shipmentSeaAlert = [
 
         // missing VGM in any one of the shipment container
         // warning : current now just check shipment that with at least one container
-        missingVGM: true,
+        vgmNonZeroQueryIdNotIn: true,
 
         // after cYCutOffDateActual / cYCutOffDateEstimated - 1 day
         after_cYCutOffDateActualInUtc_Or_cYCutOffDateEstimatedInUtc: {
@@ -169,7 +215,17 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have vgm non-zero
+        vgmNonZeroQueryIdIn: true 
+      }
+    },
+
+
+    contactRoleList: []
   },
 
   // missingEdi(SEA)
@@ -183,7 +239,13 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -217,7 +279,16 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have ediSendDateActual
+        ediSendDateActualIsNotNull: true 
+      }
+    },
+
+    contactRoleList: []
   },
 
   // missingPreAlert(SEA)
@@ -231,7 +302,13 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -263,7 +340,17 @@ const shipmentSeaAlert = [
         }
       },
       limit: 1
-    }
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have preAlertSendDateActual
+        preAlertSendDateActualIsNotNull: true 
+      }
+    },
+
+
+    contactRoleList: []
   },
 
   // missingMBL(SEA)
@@ -276,7 +363,13 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -310,7 +403,16 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have masterBillReleasedDateActual
+        masterBillReleasedDateActualIsNotNull: true 
+      }
+    },
+
+    contactRoleList: []
 
   },
 
@@ -324,7 +426,13 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -357,7 +465,17 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have houseBillConfirmationDateActual
+        houseBillConfirmationDateActualIsNotNull: true 
+      }
+    },
+
+
+    contactRoleList: []
 
   },
 
@@ -371,7 +489,13 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
 
@@ -406,7 +530,17 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have arrivalAtDepotActual
+        arrivalAtDepotActualIsNotNull: true 
+      }
+    },
+
+
+    contactRoleList: []
 
   },
 
@@ -420,7 +554,13 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -453,7 +593,17 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have pickupCargoBeforeDemurrageDateActual_Or_cargoPickupWithDemurrageDateActual
+        pickupCargoBeforeDemurrageDateActual_Or_cargoPickupWithDemurrageDateActualIsNotNull: true 
+      }
+    },
+
+
+    contactRoleList: []
 
   },
 
@@ -467,7 +617,13 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -491,7 +647,17 @@ const shipmentSeaAlert = [
         }
       },
       limit: 1
-    }
+    },
+
+
+    closeQuery: {
+      subqueries : {
+        // have returnEmptyContainerDateActual
+        returnEmptyContainerDateActualIsNotNull: true 
+      }
+    },
+
+    contactRoleList: []
 
   },
 
@@ -505,7 +671,13 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -529,7 +701,16 @@ const shipmentSeaAlert = [
         }
       },
       limit: 1
-    }
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have returnEmptyContainerDateActual
+        returnEmptyContainerDateActualIsNotNull: true 
+      }
+    },
+
+    contactRoleList: []
 
   },
 
@@ -543,7 +724,13 @@ const shipmentSeaAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -576,13 +763,23 @@ const shipmentSeaAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have finalDoorDeliveryDateActual
+        finalDoorDeliveryDateActualIsNotNull: true 
+      }
+    },
+
+
+    contactRoleList: []
 
   }
 
-]
+] as AlertConfig[]
 
-const shipmentAirAlert = [
+const shipmentAirAlertList = [
 
   // missingPreAlert(AIR)
   {
@@ -595,7 +792,12 @@ const shipmentAirAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
     active: false,
 
 
@@ -621,7 +823,18 @@ const shipmentAirAlert = [
 
       },
       limit: 1
-    }
+    },
+
+
+    closeQuery: {
+      subqueries : {
+        // have preAlertSendDateActual
+        preAlertSendDateActualIsNotNull: true 
+      }
+    },
+
+
+    contactRoleList: []
   },
 
   // cargoDelayAlert(AIR)
@@ -635,7 +848,13 @@ const shipmentAirAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -660,7 +879,16 @@ const shipmentAirAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have preAlertSendDateActual
+        preAlertSendDateActualIsNotNull: true 
+      }
+    },
+
+    contactRoleList: []
   },
 
   // missingDeliveryArrangement(AIR)
@@ -674,7 +902,13 @@ const shipmentAirAlert = [
     templatePath: 'alert/shipment-alert',
     formPath: 'alert/shipment-alert',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
     active: false,
 
     queryName: 'shipment',
@@ -709,13 +943,137 @@ const shipmentAirAlert = [
 
       },
       limit: 1
-    }
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have portOfLoadingCode
+        portOfLoadingCodeIsNotNull: true 
+      }
+    },
+
+    contactRoleList: []
   },
 
 ]
 
+const oldAlertList = [
 
-export const alertConfigList = [
+  // shipmentArrivalDelayed(AIR)
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentArrivalDelayed(AIR)',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+  // shipmentArrivalDelayed(SEA)
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentArrivalDelayed(SEA)',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+  // shipmentDepartureDelayed(AIR)
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentDepartureDelayed(AIR)',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+  // shipmentDepartureDelayed(SEA)
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentDepartureDelayed(SEA)',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+  // shipmentEtaChanged
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentEtaChanged',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+  // shipmentEtdChanged
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentEtdChanged',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+
+  // shipmentAtaChanged
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentAtaChanged',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+  // shipmentAtdChanged
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentAtdChanged',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  },
+
+  // shipmentMessage
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'shipmentMessage',
+
+    templatePath: 'alert/shipment-alert',
+    formPath: 'alert/shipment-alert',
+  }
+
+
+
+]
+
+const testAlertList = [
+
   // sayHello
   {
     tableName: 'shipment',
@@ -726,7 +1084,12 @@ export const alertConfigList = [
     templatePath: 'message/shipment-message',
     formPath: 'alert.sayHello',
 
-    schedule: '0 * * * * *',
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
 
     active: false,
 
@@ -749,6 +1112,14 @@ export const alertConfigList = [
       limit: 4
     } as IQueryParams,
 
+    closeQuery: {
+      subqueries : {
+        moduleTypeCode: { value: ['AIR'] },
+        boundTypeCode: { value: ['O'] },
+      }
+    } as IQueryParams,
+    
+
     // select only 1 person
     extraPersonIdQuery: {
       subqueries: {
@@ -766,10 +1137,16 @@ export const alertConfigList = [
 
   } as AlertConfig,
 
+]
 
+
+export const alertConfigList = [
   // just seperate into different list
-  ...shipmentSeaAlert,
-  ...shipmentAirAlert
+  ...shipmentSeaAlertList,
+  ...shipmentAirAlertList,
+  ...oldAlertList,
+
+  // ...testAlertList
 
 ] as AlertConfig[]
 

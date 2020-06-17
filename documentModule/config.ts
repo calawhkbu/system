@@ -1,4 +1,4 @@
-import { DocumentStorageConfig, EntityConfig } from 'models/main/document'
+import { DocumentStorageConfig, EntityConfig } from 'modules/sequelize/interfaces/document'
 import { Shipment } from 'models/main/shipment'
 import { Booking } from 'models/main/booking'
 

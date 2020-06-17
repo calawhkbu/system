@@ -155,6 +155,9 @@
                   "more": [{
                     "name": "placeOfReceiptCode",
                     "selector": "portCode"
+                  }, {
+                    "name": "placeOfReceiptName",
+                    "selector": "name"
                   }],
                   "props": {
                     "searchValueParams": {
@@ -197,80 +200,16 @@
                   },
                   "label": "BookingPage.portOfLoading",
                   "name": "portOfLoading",
+                  "more": [{
+                    "name": "portOfLoadingCode",
+                    "selector": "portCode"
+                  }, {
+                    "name": "portOfLoadingName",
+                    "selector": "name"
+                  }],
                   "component": "AsyncAutoSuggest",
                   "class": "xs-12 md-3 padding-topbottom-4",
                   "validator": ["required"],
-                  "more": [{
-                      "name": "portOfLoadingCode",
-                      "selector": "portCode"
-                    }, {
-                      "name": "bookingParty.forwarderPartyId",
-                      "selector": "partyId"
-                    }, {
-                      "name": "bookingParty.forwarderPartyName",
-                      "selector": "partyName"
-                    }, {
-                      "name": "bookingParty.forwarderPartyCode",
-                      "selector": "partyErpCode"
-                    }, {
-                      "name": "bookingParty.forwarderParty.id",
-                      "selector": "partyId"
-                    }, {
-                      "name": "bookingParty.forwarderParty.name",
-                      "selector": "partyName"
-                    }, {
-                      "name": "bookingParty.forwarderParty.erpCode",
-                      "selector": "partyErpCode"
-                    },
-                    {
-                      "name": "bookingParty.forwarderPartyPhone",
-                      "selector": "partyPhone"
-                    },
-                    {
-                      "name": "bookingParty.forwarderPartyFax",
-                      "selector": "partyFax"
-                    },
-                    {
-                      "name": "bookingParty.forwarderPartyEmail",
-                      "selector": "partyEmail"
-                    },
-                    {
-                      "name": "bookingParty.forwarderPartyAddress",
-                      "selector": "partyAddress"
-                    },
-                    {
-                      "name": "bookingParty.forwarderPartyCityCode",
-                      "selector": "partyCityCode"
-                    },
-                    {
-                      "name": "bookingParty.forwarderPartyStateCode",
-                      "selector": "partyStateCode"
-                    },
-                    {
-                      "name": "bookingParty.forwarderPartyCountryCode",
-                      "selector": "partyCountryCode"
-                    },
-                    {
-                      "name": "bookingParty.forwarderPartyZip",
-                      "selector": "partyZip"
-                    },
-                    {
-                      "name": "bookingParty.forwarderPartyContactPersonId",
-                      "selector": "contactPersonId"
-                    },
-                    {
-                      "name": "bookingParty.forwarderPartyContactPersonEmail",
-                      "selector": "contactPersonEmail"
-                    },
-                    {
-                      "name": "bookingParty.forwarderPartyContactPersonName",
-                      "selector": "contactPersonName"
-                    },
-                    {
-                      "name": "bookingParty.forwarderPartyContactPersonPhone",
-                      "selector": "contactPersonPhone"
-                    }
-                  ],
                   "props": {
                     "required": true,
                     "searchTextParams": {
@@ -320,6 +259,9 @@
                   "more": [{
                     "name": "portOfDischargeCode",
                     "selector": "portCode"
+                  }, {
+                    "name": "portOfDischargeName",
+                    "selector": "name"
                   }],
                   "props": {
                     "required": true,
@@ -368,6 +310,9 @@
                   "more": [{
                     "name": "placeOfDeliveryCode",
                     "selector": "portCode"
+                  }, {
+                    "name": "placeOfDeliveryName",
+                    "selector": "name"
                   }],
                   "props": {
                     "searchValueParams": {

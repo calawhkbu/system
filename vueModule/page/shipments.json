@@ -46,7 +46,7 @@
           "otherParams": {
             "base": true,
             "func": "push",
-            "path": "detail-edit/{{id}}"
+            "path": "shipment/{{id}}"
           }
         }]
       },
