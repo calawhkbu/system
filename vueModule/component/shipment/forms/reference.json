@@ -63,7 +63,7 @@
         },
         {
           "label": "ShipmentPage.specialInstruction",
-          "name": "flexData.specialInstruction",
+          "name": "specialInstruction",
           "component": "v-textarea",
           "class": "xs-12 md-6"
         }
