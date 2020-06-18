@@ -1,0 +1,13 @@
+{
+  "components": [{
+    "is": "AlertFormTemplate",
+    "props": {
+
+    }
+  }, {
+    "is": "AlertFormTemplate",
+    "props": {
+
+    }
+  }]
+}
