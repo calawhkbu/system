@@ -33,7 +33,7 @@ import {
   IQuery
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, DateFieldTimezoneMap } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, DateFieldTimezoneMap, registerQueryCondition } from 'utils/jql-subqueries'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -2455,7 +2455,8 @@ query.subquery('viaHKG',
 )
 
 
-query.subquery('missingVGM', new Query({
+
+const vgmQuery = new Query({
   $where: new InExpression(idExpression, false,
     new QueryExpression(
       new Query({
@@ -2469,10 +2470,27 @@ query.subquery('missingVGM', new Query({
       })
     )
   )
-}))
+})
 
+registerQueryCondition(query,'vgmNonZero',idExpression,vgmQuery)
 
-query.subquery('missingDocument', (subQueryValue, param) => {
+// query.subquery('missingVGM', new Query({
+//   $where: new InExpression(idExpression, false,
+//     new QueryExpression(
+//       new Query({
+
+//         $select: [
+//           new ResultColumn(new ColumnExpression('shipment_container', 'shipmentId'))
+//         ],
+//         $from: 'shipment_container',
+//         $where: new BinaryExpression(new ColumnExpression('shipment_container', 'vgmWeight'), '>', 0)
+
+//       })
+//     )
+//   )
+// }))
+
+const documentQuery = (subQueryValue,param: IQueryParams) => {
 
   const fileName = subQueryValue.value
 
@@ -2480,7 +2498,7 @@ query.subquery('missingDocument', (subQueryValue, param) => {
     $where: new InExpression(idExpression, false,
       new QueryExpression(
         new Query({
-
+  
           $select: [
             new ResultColumn(new ColumnExpression('document', 'primaryKey'))
           ],
@@ -2489,12 +2507,40 @@ query.subquery('missingDocument', (subQueryValue, param) => {
             new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', fileName),
             new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment')
           ]
-
+  
         })
       )
     )
   })
-})
+
+}
+
+registerQueryCondition(query,'haveDocument',idExpression,documentQuery)
+
+
+// query.subquery('missingDocument', (subQueryValue, param) => {
+
+//   const fileName = subQueryValue.value
+
+//   return new Query({
+//     $where: new InExpression(idExpression, false,
+//       new QueryExpression(
+//         new Query({
+
+//           $select: [
+//             new ResultColumn(new ColumnExpression('document', 'primaryKey'))
+//           ],
+//           $from: 'document',
+//           $where: [
+//             new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', fileName),
+//             new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment')
+//           ]
+
+//         })
+//       )
+//     )
+//   })
+// })
 
 // Date Filter=================
 
