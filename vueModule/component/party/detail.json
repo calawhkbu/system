@@ -39,7 +39,37 @@
       }, {
         "is": "v-spacer"
       }, {
-
+        "is": "BottomSheet",
+        "props": {
+          "hide-overlay": true,
+          "button": {
+            "layout": "v-btn",
+            "class": "margin-0",
+            "small": true,
+            "flat": true,
+            "icon": true,
+            "components": [{
+              "is": "Icon",
+              "props": {
+                "icon": "settings_ethernet"
+              }
+            }]
+          }
+        },
+        "slots": [
+          {
+            "is": "DynamicComponent",
+            "props": {
+              "layout": "v-card",
+              "components": [{
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "party/extra/relatedParty"
+                }
+              }]
+            }
+          }
+        ]
       }, {
         "is": "ToolTip",
         "props": {
