@@ -1765,22 +1765,7 @@ const alertPrimaryKeyExpression = new ColumnExpression('alert', 'primaryKey')
 const alertSeverityExpression = new ColumnExpression('alert', 'severity')
 const alertTitleExpression = new FunctionExpression('CONCAT', new ColumnExpression('alert', 'alertType'), new Value('Title'))
 
-const alertMessageExpression = new CaseExpression({
-  cases: [
-    {
-      // retrieve custom message from flexData
-      $when: new BinaryExpression(new ColumnExpression('alert', 'alertCategory'), '=', 'Message'),
-      $then: new FunctionExpression(
-        'JSON_UNQUOTE',
-        new FunctionExpression('JSON_EXTRACT', new ColumnExpression('alert', 'flexData'), '$.customMessage')
-      )
-    }
-
-  ],
-
-  // shipmentEtaChanged => shipmentEtaChangedTitle, later will put in i18n
-  $else: new FunctionExpression('CONCAT', new ColumnExpression('alert', 'alertType'), new Value('Message'))
-})
+const alertMessageExpression = new FunctionExpression('CONCAT', new ColumnExpression('alert', 'alertType'), new Value('Message'))
 
 const alertCategoryExpression = new ColumnExpression('alert', 'alertCategory')
 
@@ -1789,7 +1774,18 @@ const alertStatusExpression = new ColumnExpression('alert', 'status')
 const alertCreatedAtExpression = new ColumnExpression('alert', 'createdAt')
 const alertUpdatedAtExpression = new ColumnExpression('alert', 'updatedAt')
 
-const alertContentExpression = new ColumnExpression('alert', 'flexData')
+const alertContentExpression = new QueryExpression(new Query({
+
+  $select : [
+    new ResultColumn(new ColumnExpression('alert2','flexData'),'flexData')
+  ],
+  $from : new FromTable({
+    table : 'alert',
+    $as : 'alert2'
+  }),
+  $where : new BinaryExpression(alertIdExpression,'=',new ColumnExpression('alert2','id')),
+  $limit: 1
+}))
 
 const activeStatusExpression = new CaseExpression({
   cases: [
@@ -2127,6 +2123,15 @@ const fieldList = [
   {
     name: 'activeStatus',
     expression: activeStatusExpression
+  },
+  {
+    name : 'count',
+    expression : new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id')))
+  },
+  {
+    name : 'alertCount',
+    expression: new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))),
+    companion: ['table:alert']
   }
 
 ] as ExpressionHelperInterface[]
@@ -2137,17 +2142,17 @@ registerAll(query, baseTableName, fieldList)
 
 // calculation ==============================
 
-query
-  .register(
-    'count',
-    new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))), 'count')
-  )
+// query
+//   .register(
+//     'count',
+//     new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))), 'count')
+//   )
 
-query
-  .register(
-    'alertCount',
-    new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))), 'alertCount')
-  )
+// query
+//   .register(
+//     'alertCount',
+//     new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))), 'alertCount')
+//   )
 
 // summary fields  =================
 
