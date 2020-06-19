@@ -449,9 +449,9 @@ export default {
       handlerName: 'update_tracking_back_to_entity'
     }
   ],
-  update_shipment_date_from_tracking: [
+  update_data_from_tracking: [
     {// update tracking id to entity
-      handlerName: 'update_shipment_date_from_tracking'
+      handlerName: 'update_data_from_tracking'
     }
   ],
   afterCreate_tracking: [

@@ -16,7 +16,7 @@ interface UseTrackingData {
   tracking: Tracking
 }
 
-export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandler {
+export default class UpdateDataFromTrackingEvent extends BaseEventHandler {
   constructor(
     protected eventDataList: EventData<any>[],
     protected readonly eventHandlerConfig: EventHandlerConfig,
@@ -42,7 +42,7 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
     const start = Date.now()
     const partyGroupCode = ['DEV', 'GGL', 'DT', 'STD', 'ECX', 'ASW', 'FHUB']
 
-    const { bookingTableService,shipmentTableService } = this.allService
+    const { bookingTableService, shipmentTableService } = this.allService
 
 
     const trackingDataList = this.getAllTrackingData(eventDataList)
@@ -124,12 +124,12 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
         `
           SELECT booking.id, booking_reference.refDescription as masterNo, booking_container.containerNo, booking_container.soNo as carrierBookingNo
           FROM booking
-          LEFT OUTER JOIN booking_container ON shipment_container.shipmentId = shipment.id
+          LEFT OUTER JOIN booking_container ON booking_container.bookingId = booking.id
           LEFT OUTER JOIN booking_reference ON booking_reference.bookingId = booking.id AND (booking_reference.refName = 'MBL' OR booking_reference.refName = 'MAWB')
           WHERE partyGroupCode in (:partyGroupCode)
           AND (
-            id in (SELECT bookingId FROM booking_reference WHERE (refName = 'MBL' OR refName = 'MAWB') AND refDescriptionn (:trackingNos))
-            OR id in (SELECT bookingId FROM booking_container WHERE soNo in (:trackingNos) OR containerNo in (:trackingNos))
+            booking.id in (SELECT bookingId FROM booking_reference WHERE (booking_reference.refName = 'MBL' OR booking_reference.refName = 'MAWB') AND booking_reference.refDescription in (:trackingNos))
+            OR booking.id in (SELECT bookingId FROM booking_container WHERE soNo in (:trackingNos) OR containerNo in (:trackingNos))
           )
         `,
         {
