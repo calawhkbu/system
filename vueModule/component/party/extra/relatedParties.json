@@ -2,8 +2,9 @@
   "components": [{
     "is": "DynamicComponent",
     "props": {
+      "class": "RelationshipTableTool",
       "style": {
-        "height": "calc(100vh - 80px)"
+        "min-height": "calc(100vh - 80px)"
       },
       "components": [{
         "is": "SimpleTableTool",
@@ -14,46 +15,17 @@
           "hasReports": false,
           "showFilterBar": true,
           "enableShare": false,
-          "enableSetting": false,
+          "enableSetting": true,
           "noPartyGroupFilters": true,
-          "noPartyGroupFilters": true,
-          "showFilterBar": true,
           "nextPageKey": "relatedParty",
-          "newReport": {
-            "filters": {
-              "activeStatus": {
-                "value": "active"
-              }
-            },
-            "configurations": {
-              "i18nContext": "PartyPage",
-              "sorting": {
-                "direction": "DESC",
-                "key": "updatedAt",
-                "sql": {
-                  "classname": "ColumnExpression",
-                  "table": "party",
-                  "name": "partyBName"
-                }
-              },
-              "pagination": {
-                "current": 0,
-                "perPage": 20
-              }
-            }
-          },
           "filters": [{
-            "display": "shortName",
             "name": "partyBShortNameLike",
-            "type": "text",
             "i18nContext": "PartyPage"
           }, {
-            "display": "groupName",
             "name": "partyBGroupNameLike",
-            "type": "text",
             "i18nContext": "PartyPage"
           }, {
-            "name": "partyTypes",
+            "name": "partyType",
             "type": "text",
             "i18nContext": "PartyPage"
           }],
@@ -66,59 +38,14 @@
               "hidden": true
             },
             {
-              "key": "partyAName",
-              "hidden": true
-            },
-            {
               "i18nContext": "PartyPage",
               "key": "partyBName",
               "width": 200
             },
             {
               "i18nContext": "PartyPage",
-              "key": "partyBShortName",
-              "width": 150
-            },
-            {
-              "i18nContext": "PartyPage",
-              "key": "partyBGroupName",
-              "width": 150
-            },
-            {
-              "i18nContext": "PartyPage",
-              "key": "partyTypes",
-              "width": 300,
-              "tdComponent": {
-                "is": "AsyncSelect",
-                "props": {
-                  "class": "padding-0 margin-0",
-                  "multiple": true,
-                  "name": "partyType",
-                  "item-text": "name",
-                  "item-value": "code",
-                  "showValue": false,
-                  "noDelete": true,
-                  "onGetFixValueOverrideFunc": "return value.split(', ')",
-                  "axiosParams": {
-                    "url": "api/code/query/code_master",
-                    "method": "POST",
-                    "data": {
-                      "subqueries": {
-                        "codeType": {
-                          "value": "PARTY_TYPE"
-                        }
-                      }
-                    }
-                  },
-                  "onSetFixValueEventFunc": [
-                    "this.$Swivel.api.createPromise({",
-                    "method: 'POST',",
-                    "url: 'relationship/party',",
-                    "data: { ...context.$attrs['row'], partyTypes: value }",
-                    "})"
-                  ]
-                }
-              }
+              "key": "partyType",
+              "width": 300
             },
             {
               "key": "showDelete",
@@ -189,12 +116,12 @@
                         "type": "function",
                         "otherParams": {
                           "func": [
-                            "const form = { ...otherParams.form, partyAId: context.detailPageParams }",
+                            "const form = { ...otherParams.form, partyAId: context.routeParams }",
                             "console.log(form)",
                             "return Promise.resolve(context.$Swivel.api.createPromise({",
                             "method: 'POST',",
                             "url: 'relationship/party',",
-                            "data: { ...otherParams.form, partyAId: context.detailPageParams }",
+                            "data: { ...otherParams.form, partyAId: context.routeParams }",
                             "}))"
                           ]
                         },
