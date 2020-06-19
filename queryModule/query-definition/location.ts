@@ -1,8 +1,8 @@
 import { QueryDef } from 'classes/query/QueryDef'
+import { IQueryParams } from 'classes/query'
 import {
   BinaryExpression,
   ColumnExpression,
-  InExpression,
   Query,
   OrExpressions,
   RegexpExpression,
@@ -10,7 +10,6 @@ import {
   AndExpressions,
   IsNullExpression,
   Value,
-  Unknown,
   FromTable,
   CaseExpression,
 } from 'node-jql'
@@ -100,35 +99,58 @@ query
   .register('value', 0)
   .register('value', 1)
 
-query.table('party', new Query({
-  $from: new FromTable({
-    table: 'location',
-    joinClauses: [
-      {
-        operator: 'LEFT',
-        table: new FromTable({
-          table: 'location_party'
-        }),
-        $on: new BinaryExpression(
-          new ColumnExpression('location', 'id'),
-          '=',
-          new ColumnExpression('location_party', 'locationId')
-        )
-      },
-      {
-        operator: 'LEFT',
-        table: new FromTable({
-          table: 'party'
-        }),
-        $on: new BinaryExpression(
-          new ColumnExpression('party', 'id'),
-          '=',
-          new ColumnExpression('location_party', 'partyId')
-        )
-      }
+
+query.table('party', (params: IQueryParams) => {
+  const user = params.constants ? params.constants.user : null
+  const partyGroupCode = user.selectedPartyGroup ? user.selectedPartyGroup.code : null
+
+  const partyGroupAndExpression = partyGroupCode
+    ? [
+      new BinaryExpression(
+        new ColumnExpression('location_party', 'partyGroupCode'),
+        '=',
+        partyGroupCode
+      ),
+      new BinaryExpression(
+        new ColumnExpression('location', 'id'),
+        '=',
+        new ColumnExpression('location_party', 'locationId')
+      )
     ]
+    : [
+      new BinaryExpression(
+        new ColumnExpression('location', 'id'),
+        '=',
+        new ColumnExpression('location_party', 'locationId')
+      )
+    ]
+
+  return new Query({
+    $from: new FromTable({
+      table: 'location',
+      joinClauses: [
+        {
+          operator: 'LEFT',
+          table: new FromTable({
+            table: 'location_party'
+          }),
+          $on: new AndExpressions(partyGroupAndExpression)
+        },
+        {
+          operator: 'LEFT',
+          table: new FromTable({
+            table: 'party'
+          }),
+          $on: new BinaryExpression(
+            new ColumnExpression('party', 'id'),
+            '=',
+            new ColumnExpression('location_party', 'partyId')
+          )
+        }
+      ]
+    })
   })
-}))
+})
 
 query.registerBoth('partyId', new ColumnExpression('party', 'id'), 'table:party')
 query.registerBoth('partyName', new ColumnExpression('party', 'name'), 'table:party')
