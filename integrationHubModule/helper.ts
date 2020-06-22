@@ -124,7 +124,8 @@ const app = {
     // reformat
     const row = responseBody
     if (typeof row.layout === 'string') row.layout = JSON.parse(row.layout)
-    return {
+
+    const base = {
       id: zyh,
       reportingKey: 'dashboard',
       api,
@@ -132,30 +133,54 @@ const app = {
       name: baseCard[0].title,
       description: `Generated at ${moment(row.rptdate).format('DD/MM/YYYY hh:mm:ssa')}`,
       component: {
-        is: 'TableCard',
         props: {
           url: `card/external/data/${api}/${zyh}`,
           filters: items ? [{ name: 'type', props: { items }, type: 'list' }] : undefined,
-          headers: row.layout
-            .filter(({ dtype, grp }) => dtype !== 'H' && !grp)
-            .map(({ ffield, label, width, dtype, dplace, stotal }) => {
-              const result = { key: ffield, label } as any
-              if (width > 0) result.width = width * 8
-              if (dtype === 'N') {
-                result.align = 'right'
-                result.format = app.getNumberFormat(dplace)
-                result.subTotal = stotal
-              }
-              return result
-            }),
-          footer: row.layout.reduce((result, { grp }) => result || grp, false)
-            ? 'SubTotalFooter'
-            : undefined,
           isExternalCard: true,
           skipReportFilters: true,
-        },
-      } as any,
+        }
+      } as any
     }
+
+    // chart
+    if (row.chart) {
+      const summaryColumn = row.layout.find(({ yaxis }) => yaxis)
+      const labelColumn = row.layout.find(({ xaxis }) => xaxis)
+
+      if (summaryColumn && labelColumn) {
+        base.component.is = 'ChartCard'
+        base.component.props.type = row.chart
+        base.component.props.dynamicHeader = {
+          key: summaryColumn.ffield,
+          test: [
+            'index',
+            '{{ i }}'
+          ],
+          label: `{{ row['${labelColumn.name}'] | raw | customEscape  }}`
+        }
+        return base
+      }
+    }
+
+    // table
+    base.component.is = 'TableCard'
+    base.component.props.headers = row.layout
+      .filter(({ dtype, grp }) => dtype !== 'H' && !grp)
+      .map(({ ffield, label, width, dtype, dplace, stotal }) => {
+        const result = { key: ffield, label } as any
+        if (width > 0) result.width = width * 8
+        if (dtype === 'N') {
+          result.align = 'right'
+          result.format = app.getNumberFormat(dplace)
+          result.subTotal = stotal
+        }
+        return result
+      })
+    base.component.props.footer = row.layout.reduce((result, { grp }) => result || grp, false)
+      ? 'SubTotalFooter'
+      : undefined
+
+    return base
   },
 
   // get card
