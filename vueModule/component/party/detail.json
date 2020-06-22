@@ -43,33 +43,97 @@
         "props": {
           "hide-overlay": true,
           "button": {
-            "layout": "v-btn",
-            "class": "margin-0",
-            "small": true,
-            "flat": true,
-            "icon": true,
-            "components": [{
-              "is": "Icon",
-              "props": {
-                "icon": "settings_ethernet"
-              }
-            }]
-          }
-        },
-        "slots": [
-          {
-            "is": "DynamicComponent",
-            "props": {
-              "layout": "v-card",
+            "layout": "ToolTip",
+            "bottom": true,
+            "activatorComponents": {
+              "layout": "span",
               "components": [{
-                "is": "AsyncComponent",
+                "is": "v-btn",
                 "props": {
-                  "layoutName": "party/extra/relatedParty"
+                  "small": true,
+                  "flat": true,
+                  "icon": true,
+                  "class": "margin-0"
+                },
+                "slots": [{
+                  "is": "Icon",
+                  "props": {
+                    "icon": "settings_ethernet"
+                  }
+                }]
+              }]
+            },
+            "mainComponents": {
+              "layout": "span",
+              "components": [{
+                "is": "I18nText",
+                "props": {
+                  "i18nKey": "RelatedParty"
                 }
               }]
             }
           }
-        ]
+        },
+        "slots": [{
+          "is": "DynamicComponent",
+          "props": {
+            "layout": "v-card",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "party/extra/relatedParties"
+              }
+            }]
+          }
+        }]
+      }, {
+        "_is": "BottomSheet",
+        "props": {
+          "hide-overlay": true,
+          "button": {
+            "layout": "ToolTip",
+            "bottom": true,
+            "activatorComponents": {
+              "layout": "span",
+              "components": [{
+                "is": "v-btn",
+                "props": {
+                  "class": "margin-0",
+                  "small": true,
+                  "flat": true,
+                  "icon": true
+                },
+                "slots": [{
+                  "is": "Icon",
+                  "props": {
+                    "icon": "group"
+                  }
+                }]
+              }]
+            },
+            "mainComponents": {
+              "layout": "span",
+              "components": [{
+                "is": "I18nText",
+                "props": {
+                  "i18nKey": "RelatedPerson"
+                }
+              }]
+            }
+          }
+        },
+        "slots": [{
+          "is": "DynamicComponent",
+          "props": {
+            "layout": "v-card",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "party/extra/relatedPeople"
+              }
+            }]
+          }
+        }]
       }, {
         "is": "ToolTip",
         "props": {
@@ -89,27 +153,18 @@
                 "props": {
                   "icon": "edit"
                 }
-              }],
-              "events": {
-                "click.stop": [{
-                  "type": "dispatch",
-                  "otherParams": {
-                    "name": "widget/changeMode",
-                    "mode": "edit"
-                  }
-                }]
+              }]
+            }]
+          },
+          "mainComponents": {
+            "layout": "span",
+            "components": [{
+              "is": "I18nText",
+              "props": {
+                "i18nKey": "edit"
               }
             }]
           }
-        },
-        "mainComponents": {
-          "layout": "span",
-          "components": [{
-            "is": "I18nText",
-            "props": {
-              "i18nKey": "edit"
-            }
-          }]
         }
       }]
     }
