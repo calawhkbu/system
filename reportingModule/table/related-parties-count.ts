@@ -4,16 +4,12 @@ export default {
   jqls: [
     {
       type: 'callDataService',
+      dataServiceType: 'count',
       dataServiceQuery: ['party', 'related-party']
     }
   ],
   columns: [
-    { key: 'partyAId' },
-    { key: 'partyBId' },
-    { key: 'partyAName' },
-    { key: 'partyBName' },
-    { key: 'partyType' },
-    { key: 'showDelete' },
+    { key: 'count' },
   ]
 } as JqlDefinition
 
