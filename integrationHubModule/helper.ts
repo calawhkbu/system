@@ -191,9 +191,21 @@ const app = {
   },
 
   // parse external data
-  parseData(responseBody: any, card: any) {
+  parseData(responseBody: any, card: any, subqueries: any) {
     // reformat
     if (typeof responseBody === 'string') responseBody = JSON.parse((responseBody.trim() || '[]').replace(/[\n\r]/g, ''))
+
+    // filtering
+    if (subqueries) {
+      responseBody = responseBody.filter(row => {
+        for (const key of Object.keys(subqueries)) {
+          let value = subqueries[key].value
+          if (!Array.isArray(value)) value = [value]
+          if (value.indexOf(row[key]) === -1) return false
+        }
+        return true
+      })
+    }
 
     // grouping
     const layout = (typeof card.layout === 'string' ? JSON.parse(card.layout) : card.layout) as any[]
