@@ -12,9 +12,7 @@ export default {
     { key: 'partyBId' },
     { key: 'partyAName' },
     { key: 'partyBName' },
-    { key: 'partyBShortName' },
-    { key: 'partyBGroupName' },
-    { key: 'partyTypes' },
+    { key: 'partyType' },
     { key: 'showDelete' },
   ]
 } as JqlDefinition
