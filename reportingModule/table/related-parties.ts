@@ -12,8 +12,6 @@ export default {
     { key: 'partyBId' },
     { key: 'partyAName' },
     { key: 'partyBName' },
-    { key: 'partyBShortName' },
-    { key: 'partyBGroupName' },
     { key: 'partyType' },
     { key: 'showDelete' },
   ]
