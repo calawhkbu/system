@@ -4,6 +4,7 @@ const app = {
   constants: {
     getPostProcessFunc: null as Function,
     partyGroup: null as any,
+    subqueries: null as any,
     card: null as any,
     user: null as any,
     zyh: 0,
@@ -12,6 +13,8 @@ const app = {
   getUrl: async({ id, partyGroup: { api } }: any, params: any, constants: { [key: string]: any }, helper: { [key: string]: Function }): Promise<string> => {
     if (!api.wms || !api.wms.url) throw new NotImplementedException('wms_NOT_LINKED')
     if (!params.subqueries || !params.subqueries.type) throw new BadRequestException('MISSING_TYPE')
+    const { type, enableFiltering, ...subqueries } = params.subqueries
+    if (enableFiltering) constants.subqueries = subqueries
     const card = constants.card = await helper.getCard({
       method: 'POST',
       headers: {
@@ -40,10 +43,10 @@ const app = {
   },
   responseHandler: async(
     response: { responseBody: any; responseOptions: any },
-    { card, getPostProcessFunc, partyGroup, user, zyh }: { [key: string]: any },
+    { card, getPostProcessFunc, partyGroup, subqueries, user, zyh }: { [key: string]: any },
     helper: { [key: string]: Function }
   ) => {
-    let responseBody = helper.parseData(response.responseBody, card)
+    let responseBody = helper.parseData(response.responseBody, card, subqueries)
 
     const postProcessFunc = await getPostProcessFunc(partyGroup.code, `wms-card-data/${zyh}`)
     responseBody = postProcessFunc(responseBody, card, user)
