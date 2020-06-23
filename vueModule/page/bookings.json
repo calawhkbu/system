@@ -16,7 +16,7 @@
         "type": "router",
         "otherParams": {
           "func": "push",
-          "path": "detail/{{id}}",
+          "path": "booking/{{id}}",
           "base": true
         }
       },

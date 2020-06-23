@@ -4,10 +4,7 @@
     "props": {
       "class": "xs-12 margin-topbottom-2",
       "layoutName": "plugins/chat",
-      "axiosBaseParams": [
-        "const primaryKey = encodeURIComponent(context.$route.params.params);",
-        "return null"
-      ]
+      "axiosBaseParams": false
     }
   }]
 }
