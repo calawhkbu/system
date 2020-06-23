@@ -20,15 +20,6 @@
         "components": [{
           "is": "WidgetImport",
           "props": {
-            "tableName": "shipment",
-            "importKey": "houseNo",
-            "importFileTypes": ["xlsx"],
-            "importAxiosParams": {
-              "z": {
-                "method": "POST",
-                "url": "api/shipment/import"
-              }
-            },
             "importFormLayout": {
               "components": [{
                   "is": "DynamicComponent",
