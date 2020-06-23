@@ -1773,6 +1773,11 @@ const alertStatusExpression = new ColumnExpression('alert', 'status')
 
 const alertCreatedAtExpression = new ColumnExpression('alert', 'createdAt')
 const alertUpdatedAtExpression = new ColumnExpression('alert', 'updatedAt')
+const alertClosedAtExpression = new ColumnExpression('alert', 'closedAt')
+
+
+const alertDeadlineExpression = new ColumnExpression('alert', 'deadline')
+
 
 const alertContentExpression = new QueryExpression(new Query({
 
@@ -2658,12 +2663,21 @@ const dateList = [
     expression: alertCreatedAtExpression,
     companion: ['table:alert']
   },
-
   {
     name: 'alertUpdatedAt',
     expression: alertUpdatedAtExpression,
     companion: ['table:alert']
-  }
+  },
+  {
+    name: 'alertClosedAt',
+    expression: alertClosedAtExpression,
+    companion: ['table:alert']
+  },
+  {
+    name: 'alertDeadline',
+    expression: alertDeadlineExpression,
+    companion: ['table:alert']
+  },
 
 ] as ExpressionHelperInterface[]
 

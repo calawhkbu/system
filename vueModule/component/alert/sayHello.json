@@ -1,0 +1,19 @@
+{
+    "components": [
+        {
+            "is": "SubFormComponent",
+            "name" : "date",
+            "propParam" : {
+                "dateName" : "departure",
+                "isEstimated" : true
+            }
+        },
+        {
+            "is": "SubFormComponent"
+        },
+
+        {
+            "is": "SubFormComponent"
+        }
+    ]
+}
