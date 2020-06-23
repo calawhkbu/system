@@ -2268,6 +2268,27 @@ const summaryFieldList: SummaryField[] = [
 registerSummaryField(query, baseTableName, summaryFieldList, nestedSummaryList, jobDateExpression)
 
 
+query.subquery(false,'anyPartyId',((value: any, params?: IQueryParams) => {
+
+  const partyIdList = value.value
+
+  const inExpressionList = partyList.reduce((acc, party)=> {
+
+    const defaultPartyIdExpression = new ColumnExpression('shipment_party', `${party.name}PartyId`)
+    const partyIdExpression = party.partyIdExpression ? party.partyIdExpression.expression : defaultPartyIdExpression
+
+    const inPartyInExpression = new InExpression(partyIdExpression,false,partyIdList)
+
+    acc.push(inPartyInExpression)
+    return acc
+    
+  },[])
+
+  return new Query({
+    $where : new OrExpressions(inExpressionList)
+  })
+}),'table:shipment_party')
+
 // Bill Type
 query.subquery(
   true,
