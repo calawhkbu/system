@@ -2311,7 +2311,7 @@ query.subquery(
 
       cases: [
         {
-          $when: new BinaryExpression(new Value(''), '=', new Unknown()),
+          $when: new BinaryExpression(new Value('default'), '=', new Unknown()),
           $then: new OrExpressions([
 
             new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'H'),
@@ -2332,6 +2332,10 @@ query.subquery(
             ])
 
           ])
+        },
+        {
+          $when: new BinaryExpression(new Value('skip'), '=', new Unknown()),
+          $then : new Value(true)
         },
         {
           $when: new BinaryExpression('Direct', '=', new Unknown()),
