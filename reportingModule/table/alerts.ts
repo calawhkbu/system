@@ -5,8 +5,6 @@ export default {
     {
       type: 'prepareParams',
       prepareParams(params) {
-        const subqueries = (params.subqueries = params.subqueries || {})
-        subqueries.alertJoin = true
         params.fields = [
           'alertTableName',
           'alertPrimaryKey',
@@ -20,18 +18,23 @@ export default {
           'alertCreatedAt',
           'alertUpdatedAt'
         ]
+
+        params.subqueries.alertIdIsNotNull = true
         return params
       }
     },
     {
       type: 'callDataService',
       getDataServiceQuery(params): [string, string] {
+
         let entityType = 'shipment'
         const subqueries = (params.subqueries = params.subqueries || {})
         if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
           entityType = subqueries.entityType.value
         }
+
         return [entityType, entityType]
+
       },
       resultMapping: [
         { from: 'alertTableName', to: 'tableName' },

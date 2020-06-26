@@ -1,13 +1,19 @@
 {
-  "components": [{
-    "is": "AlertFormTemplate",
-    "props": {
+    "components": [
+        {
+            "is": "SubFormComponent",
+            "name" : "date",
+            "propParam" : {
+                "dateName" : "departure",
+                "isEstimated" : true
+            }
+        },
+        {
+            "is": "SubFormComponent"
+        },
 
-    }
-  }, {
-    "is": "AlertFormTemplate",
-    "props": {
-
-    }
-  }]
+        {
+            "is": "SubFormComponent"
+        }
+    ]
 }
