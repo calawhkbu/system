@@ -1083,7 +1083,7 @@ const testAlertList = [
 
     templatePath: 'message/shipment-message',
     
-    // form: 'alert.sayHello',
+    form: 'alert.sayHello',
 
     // schedule: '0 * * * * *',
 

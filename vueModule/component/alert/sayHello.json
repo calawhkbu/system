@@ -1,19 +1,33 @@
 {
+
+    "addAttrsToComponent": true,
     "components": [
         {
             "is": "SubFormComponent",
-            "name" : "date",
-            "propParam" : {
-                "dateName" : "departure",
-                "isEstimated" : true
+            "props": {
+                "subFormName" : "date",
+                "propParam" : {
+                    "dateName" : "departure",
+                    "includeEstimated" : true,
+                    "includeActual" : true,   
+                    "includeRemark" : true
+                }
             }
-        },
-        {
-            "is": "SubFormComponent"
+
         },
 
         {
-            "is": "SubFormComponent"
+            "is": "SubFormComponent",
+            "props": {
+                "subFormName" : "date",
+                "propParam" : {
+                    "dateName" : "arrival",
+                    "includeEstimated" : true,
+                    "includeActual" : true,   
+                    "includeRemark" : true
+                }
+            }
+
         }
     ]
 }

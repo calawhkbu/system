@@ -1,30 +1,36 @@
 {
   "class": "grid",
-  "components": [{
+  "components": [
+    {
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
-        "components": [{
+        "components": [
+          {
             "is": "v-btn",
             "props": {
               "small": true,
               "flat": true,
               "icon": true
             },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "arrow_back"
-              }
-            }],
-            "events": {
-              "click.stop": [{
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "/admin/users"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
                 }
-              }]
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "router",
+                  "otherParams": {
+                    "func": "push",
+                    "path": "/admin/users"
+                  }
+                }
+              ]
             }
           },
           {
@@ -41,6 +47,140 @@
             }
           },
           {
+            "is": "Dialog",
+            "if": "return ((context.$store.state.widget.data && context.$store.state.widget.data.status !== 'accepted') && context.isSwivelAdmin )",
+            "props": {
+              "width": "50%",
+              "persistent": true,
+              "button": {
+                "layout": "v-btn",
+                "small": true,
+                "flat": true,
+                "icon": true,
+                "components": [
+                  {
+                    "is": "Icon",
+                    "props": {
+                      "icon": "add"
+                    }
+                  }
+                ]
+              },
+              "closeButton": {
+                "class": "margin-4 zindex-1 right",
+                "flat": true,
+                "icon": true,
+                "small": true
+              }
+            },
+            "slots": [
+              {
+                "is": "DynamicComponent",
+                "props": {
+                  "components": [
+                    {
+                      "is": "Form",
+                      "props": {
+                        "showPreFormOnSubmit": true,
+                        "showFormOnSubmit": false,
+                        "showPostFormOnLoading": false,
+                        "showLoadingOnSubmit": false,
+                        "form": {
+                          "password": "",
+                          "username": ""
+                        },
+                        "fields": [
+                          {
+                            "name": "password",
+                            "label": "Auth.password",
+                            "props": {
+                              "required": true
+                            },
+                            "component": "DisplayPasswordField",
+                            "validator": [
+                              "required"
+                            ]
+                          },
+                          {
+                            "name": "confirmPassword",
+                            "label": "Auth.confirmPassword",
+                            "props": {
+                              "required": true
+                            },
+                            "component": "DisplayPasswordField",
+                            "validator": [
+                              "required"
+                            ]
+                          }
+                        ],
+                        "submitActions": [
+                          {
+                            "type": "dispatch",
+                            "otherParams": {
+                              "name": "auth/fakeRegister",
+                              "type": "local"
+                            }
+                          }
+                        ]
+                      },
+                      "slots": [
+                        {
+                          "is": "DynamicComponent",
+                          "name": "post-form",
+                          "props": {
+                            "style": {
+                              "min-height": "100px"
+                            },
+                            "components": [
+                              {
+                                "is": "DynamicComponent",
+                                "props": {
+                                  "style": {
+                                    "align-items": "center",
+                                    "display": "flex"
+                                  },
+                                  "components": [
+                                    {
+                                      "is": "i18nText",
+                                      "name": "default",
+                                      "props": {
+                                        "isComponent": "small",
+                                        "i18nKey": "Powered by Swivel Software Ltd."
+                                      }
+                                    },
+                                    {
+                                      "is": "v-spacer"
+                                    },
+                                    {
+                                      "is": "v-btn",
+                                      "props": {
+                                        "flat": true,
+                                        "type": "submit"
+                                      },
+                                      "slots": [
+                                        {
+                                          "is": "i18nText",
+                                          "name": "default",
+                                          "props": {
+                                            "i18nKey": "Auth.Login"
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
             "is": "v-spacer"
           },
           {
@@ -50,36 +190,41 @@
               "icon": true,
               "flat": true
             },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "delete"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "delete"
+                }
               }
-            }],
+            ],
             "events": {
-              "click.stop": [{
-                "type": "axios",
-                "otherParams": {
-                  "axiosParams": {
-                    "url": "/api/invitation/delete/{{context.$store.state.widget.data.id}}",
-                    "method": "DELETE"
-                  }
-                },
-                "afterActions": [{
-                    "type": "router",
-                    "otherParams": {
-                      "func": "replace",
-                      "path": "/users"
+              "click.stop": [
+                {
+                  "type": "axios",
+                  "otherParams": {
+                    "axiosParams": {
+                      "url": "/api/invitation/delete/{{context.$store.state.widget.data.id}}",
+                      "method": "DELETE"
                     }
                   },
-                  {
-                    "type": "notify",
-                    "otherParams": {
-                      "notification": "Notify.deleteSuccess"
+                  "afterActions": [
+                    {
+                      "type": "router",
+                      "otherParams": {
+                        "func": "replace",
+                        "path": "/users"
+                      }
+                    },
+                    {
+                      "type": "notify",
+                      "otherParams": {
+                        "notification": "Notify.deleteSuccess"
+                      }
                     }
-                  }
-                ]
-              }]
+                  ]
+                }
+              ]
             }
           },
           {
@@ -90,35 +235,40 @@
               "icon": true,
               "flat": true
             },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "send"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "send"
+                }
               }
-            }],
+            ],
             "events": {
-              "click.stop": [{
-                "type": "axios",
-                "otherParams": {
-                  "axiosParams": {
-                    "url": "/api/invitation/resend/{{context.$store.state.widget.data.id}}",
-                    "method": "GET"
-                  }
-                },
-                "afterActions": [{
-                    "type": "dispatch",
-                    "otherParams": {
-                      "name": "widget/refreshData"
+              "click.stop": [
+                {
+                  "type": "axios",
+                  "otherParams": {
+                    "axiosParams": {
+                      "url": "/api/invitation/resend/{{context.$store.state.widget.data.id}}",
+                      "method": "GET"
                     }
                   },
-                  {
-                    "type": "notify",
-                    "otherParams": {
-                      "notification": "Notify.resendSuccess"
+                  "afterActions": [
+                    {
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "widget/refreshData"
+                      }
+                    },
+                    {
+                      "type": "notify",
+                      "otherParams": {
+                        "notification": "Notify.resendSuccess"
+                      }
                     }
-                  }
-                ]
-              }]
+                  ]
+                }
+              ]
             }
           },
           {
@@ -129,20 +279,24 @@
               "flat": true,
               "class": "primary white-text"
             },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "edit"
-              }
-            }],
-            "events": {
-              "click.stop": [{
-                "type": "dispatch",
-                "otherParams": {
-                  "name": "widget/changeMode",
-                  "mode": "edit"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "edit"
                 }
-              }]
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "edit"
+                  }
+                }
+              ]
             }
           }
         ]
@@ -152,7 +306,8 @@
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 padding-left-8 padding-right-8 width-100 grid",
-        "components": [{
+        "components": [
+          {
             "is": "AsyncComponent",
             "props": {
               "class": "margin-topbottom-4 xs-12",
