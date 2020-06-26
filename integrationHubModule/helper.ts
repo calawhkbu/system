@@ -156,7 +156,7 @@ const app = {
             'index',
             '{{ i }}'
           ],
-          label: `{{ row['${labelColumn.name}'] | raw | customEscape  }}`
+          label: `{{ row['${labelColumn.ffield}'] | raw | customEscape  }}`
         }
         return base
       }
