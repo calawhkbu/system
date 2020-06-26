@@ -5,11 +5,10 @@
     "props": {
       "reportingKey": "alerts",
       "jql": "alerts",
-      "showDefault": true,
-      "hasReports": false,
+      "hasReports": true,
       "showFilterBar": true,
       "enableShare": true,
-      "enableSetting": false,
+      "enableSetting": true,
       "noPartyGroupFilters": false,
       "newReport": {
         "filters": {
@@ -18,7 +17,16 @@
           },
           "entityType": {
             "value": "shipment"
+          },
+          "alertCreatedAt": {
+            "func": {
+              "args": {
+                "unit": "week"
+              },
+              "key": "current"
+            }
           }
+          
         },
         "configurations": {
           "i18nContext": "AlertPage",
@@ -104,7 +112,11 @@
         },
         {
           "name": "alertCreatedAt",
-          "type": "date"
+          "type": "date",
+          "props": {
+            "required": true
+      
+          }
         },
         {
           "display": "date",
@@ -120,8 +132,9 @@
       "clickFunction": {
         "type": "router",
         "otherParams": {
+          "base": true,
           "func": "push",
-          "path": "alerts/default/{{tableName}}/{{primaryKey}}"
+          "path": "{{tableName}}/{{primaryKey}}"
         }
       },
       "icons": []
