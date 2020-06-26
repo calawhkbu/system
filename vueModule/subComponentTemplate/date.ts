@@ -7,7 +7,7 @@ interface PropParam {
 }
 
 // the form that will show in the handle alert
-export const component = (propParam: PropParam) => {
+const component =  (propParam: PropParam) => {
 
     const { dateName,includeEstimated,includeActual,includeRemark } = propParam
     const fieldList = []
@@ -45,8 +45,9 @@ export const component = (propParam: PropParam) => {
     }
 }
 
+
 //  the one show on the admin page for composing the form
-export const adminComponment = ({ }) => {
+const adminComponent = ({ }) => {
     return {
         "is": "Form",
         "props": {
@@ -56,18 +57,31 @@ export const adminComponment = ({ }) => {
 
 
 // running validation of this form, used in backend validation
-export const validatation = () => {
+const validatation = () => {
     // vaild
     return true
 }
 
 
-export const changeToEntityFunction = (tableName: string, oldEntity: any, formData: any, propParam: PropParam) => {
+const changeToEntityFunction = (tableName: string, oldEntity: any, formData: any, propParam: PropParam) => {
     // entity
 
     const { dateName } = propParam
 
     return formData
 }
+
+const extra = {
+    validatation,
+    changeToEntityFunction
+}
+
+export {
+    component,
+    adminComponent,
+    extra,
+}
+
+export default component
 
 
