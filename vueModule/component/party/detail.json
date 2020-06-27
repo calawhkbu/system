@@ -87,7 +87,7 @@
           }
         }]
       }, {
-        "is": "BottomSheet",
+        "_is": "BottomSheet",
         "props": {
           "hide-overlay": true,
           "button": {

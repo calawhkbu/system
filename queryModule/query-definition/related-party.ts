@@ -7,11 +7,36 @@ import {
   IsNullExpression,
   AndExpressions,
   Value,
-  ResultColumn,
-  FunctionExpression,
-  ParameterExpression
+  OrExpressions,
+  RegexpExpression,
+  CaseExpression
 } from 'node-jql'
 import { registerAll } from 'utils/jql-subqueries'
+
+const func = (tableName: string, overrideTableName: string = undefined) => ((fieldName: string) => ({
+  name: `${overrideTableName || tableName}${fieldName[0].toUpperCase()}${fieldName.substring(1)}`,
+  expression: new ColumnExpression(tableName, fieldName)
+}))
+
+const CONSTANTS = {
+  tableName: 'related_party',
+  baseFields: [
+    'partyAId',
+    'partyBId',
+    'partyType',
+  ],
+  extraFields: () => {
+    const fieldNames = ['name', 'shortName', 'groupName', 'erpCode']
+    return [
+      {
+        name : 'showDelete',
+        expression : new Value(1)
+      },
+      ...fieldNames.map(func('party', 'partyA')),
+      ...fieldNames.map(func('partyB')),
+    ]
+  }
+}
 
 const query = new QueryDef(new Query({
   $from: new FromTable(
@@ -45,46 +70,50 @@ const query = new QueryDef(new Query({
   )
 }))
 
-const partyANameExpression = new ColumnExpression('party', 'name')
-const partyBNameExpression = new ColumnExpression('partyB', 'name')
+const isActiveConditionExpression = new AndExpressions([
+  new IsNullExpression(new ColumnExpression('related_party', 'deletedAt'), false),
+  new IsNullExpression(new ColumnExpression('related_party', 'deletedBy'), false)
+])
 
-const partyBShortNameExpression = new ColumnExpression('partyB', 'shortName')
-const partyBGroupNameExpression = new ColumnExpression('partyB', 'groupName')
+const activeStatusExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new BinaryExpression(isActiveConditionExpression, '=', false),
+      $then: new Value('deleted')
+    }
+  ],
+  $else: new Value('active')
+})
 
-const baseTableName = 'related_party'
-const fieldList = [
+registerAll(
+  query,
+  CONSTANTS.tableName,
+  [
+    ...CONSTANTS.baseFields,
+    ...CONSTANTS.extraFields(),
+    {
+      name : 'activeStatus',
+      expression : activeStatusExpression
+    }
+  ]
+)
 
-  'partyAId',
-  'partyBId',
-  'partyType',
-  {
-    name : 'showDelete',
-    expression : new Value(1)
-  },
-  {
-    name : 'partyBShortName',
-    expression : partyBShortNameExpression
-  },
-  {
-    name : 'partyBGroupName',
-    expression : partyBGroupNameExpression
+query
+  .register(
+    'q',
+    new Query({
+      $where: new OrExpressions({
+        expressions: [
 
-  },
-  {
-    name : 'partyAName',
-    expression : partyANameExpression
-  },
-
-  {
-    name : 'partyBName',
-    expression : partyBNameExpression
-  }
-
-]
-
-registerAll(query, baseTableName, fieldList)
-
-// shortName => partyBShortNameLike
-// groupBName => partyBGroupNameLike
+          new RegexpExpression(new ColumnExpression('partyB', 'name'), false),
+          new RegexpExpression(new ColumnExpression('partyB', 'shortName'), false),
+          new RegexpExpression(new ColumnExpression('partyB', 'groupName'), false),
+        ],
+      }),
+    })
+  )
+  .register('value', 0)
+  .register('value', 1)
+  .register('value', 2)
 
 export default query
