@@ -24,66 +24,7 @@
           }
         },
         "configurations": {
-          "cards": [{
-              "uuid": "d3ab5a2b-a19f-4de0-bc8b-46d813ba0e70",
-              "cardId": "078b8472-8d7e-45d7-963d-9c90d1642471",
-              "params": {
-                "name": "AIR SHIPMENT",
-                "filters": {
-                  "dateStatus": {
-                    "value": [
-                      "upcoming",
-                      "departure",
-                      "inTransit",
-                      "arrival",
-                      "inDelivery"
-                    ]
-                  },
-                  "entityType": {
-                    "value": "shipment"
-                  },
-                  "moduleTypeCode": {
-                    "value": [
-                      "AIR"
-                    ]
-                  }
-                }
-              },
-              "layouts": {
-                "lg": {
-                  "h": 6,
-                  "w": 12,
-                  "x": 0,
-                  "y": 6,
-                  "minH": 6,
-                  "minW": 2
-                },
-                "md": {
-                  "h": 10,
-                  "w": 12,
-                  "x": 0,
-                  "y": 20,
-                  "minH": 6,
-                  "minW": 2
-                },
-                "sm": {
-                  "h": 10,
-                  "w": 4,
-                  "x": 0,
-                  "y": 20,
-                  "minH": 6,
-                  "minW": 2
-                },
-                "xs": {
-                  "h": 10,
-                  "w": 4,
-                  "x": 0,
-                  "y": 20,
-                  "minH": 6,
-                  "minW": 2
-                }
-              }
-            },
+          "cards": [
             {
               "uuid": "c9eb531b-011c-44b9-982d-cd7c982810ed",
               "cardId": "078b8472-8d7e-45d7-963d-9c90d1642471",
@@ -143,7 +84,67 @@
                   "minW": 2
                 }
               }
-            }
+            },
+            {
+                "uuid": "d3ab5a2b-a19f-4de0-bc8b-46d813ba0e70",
+                "cardId": "078b8472-8d7e-45d7-963d-9c90d1642471",
+                "params": {
+                  "name": "AIR SHIPMENT",
+                  "filters": {
+                    "dateStatus": {
+                      "value": [
+                        "upcoming",
+                        "departure",
+                        "inTransit",
+                        "arrival",
+                        "inDelivery"
+                      ]
+                    },
+                    "entityType": {
+                      "value": "shipment"
+                    },
+                    "moduleTypeCode": {
+                      "value": [
+                        "AIR"
+                      ]
+                    }
+                  }
+                },
+                "layouts": {
+                  "lg": {
+                    "h": 6,
+                    "w": 12,
+                    "x": 0,
+                    "y": 6,
+                    "minH": 6,
+                    "minW": 2
+                  },
+                  "md": {
+                    "h": 10,
+                    "w": 12,
+                    "x": 0,
+                    "y": 20,
+                    "minH": 6,
+                    "minW": 2
+                  },
+                  "sm": {
+                    "h": 10,
+                    "w": 4,
+                    "x": 0,
+                    "y": 20,
+                    "minH": 6,
+                    "minW": 2
+                  },
+                  "xs": {
+                    "h": 10,
+                    "w": 4,
+                    "x": 0,
+                    "y": 20,
+                    "minH": 6,
+                    "minW": 2
+                  }
+                }
+              }
           ],
           "colors": [
             "#005EB8",
