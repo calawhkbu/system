@@ -18,6 +18,29 @@
           "method": "post",
           "url": "api/shipment"
         },
+        "availableFileTypes": ["xlsx"],
+        "importAxiosParams": {
+          "z": {
+            "method": "post",
+            "url": "api/shipment/import"
+          }
+        },
+        "afterSaveAction": [{
+          "type": "contextFunction",
+          "otherParams": {
+            "func": "invite"
+          }
+        }],
+        "afterImportAction": {
+          "shipmentInvite": [{
+            "type": "contextFunction",
+            "otherParams": {
+              "func": "invite"
+            }
+          }],
+          "z": []
+        },
+        "importPrimaryKey": "houseNo",
         "modeFunction": [
           "const modes = ['detail', 'import', 'edit'];",
           "const selectedMode = isNaN(Number(mode)) ? mode : 'detail';",
