@@ -48,8 +48,8 @@ export const setDataFunction = {
         user,
         transaction
       )
-      if (party && party.flexData) {
-        return party.flexData.salesmanCode
+      if (party) {
+        return party.salesmanCode
       }
     }
     return null
@@ -64,8 +64,8 @@ export const setDataFunction = {
         user,
         transaction
       )
-      if (party && party.flexData) {
-        return party.flexData.salesmanCode
+      if (party) {
+        return party.salesmanCode
       }
     }
     return null
@@ -80,8 +80,8 @@ export const setDataFunction = {
         user,
         transaction
       )
-      if (party && party.flexData) {
-        return party.flexData.salesmanCode
+      if (party) {
+        return party.salesmanCode
       }
     }
     return null
