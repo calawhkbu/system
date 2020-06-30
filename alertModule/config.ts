@@ -1083,7 +1083,7 @@ const testAlertList = [
 
     templatePath: 'message/shipment-message',
     
-    handleAlertSubComponentLayoutName: 'alertForm.sayHello',
+    // handleAlertSubComponentLayoutName: 'alertForm.sayHello',
 
     // schedule: '0 * * * * *',
 
@@ -1134,7 +1134,11 @@ const testAlertList = [
 
     // saveAsNewAlertTimeDiff : 0,
 
-    resend: true, // resend to everyone or just send to those not yet receive
+    
+    resendInterval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
 
 
     flexDataConfig : {

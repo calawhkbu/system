@@ -27,8 +27,8 @@
     },
     "avaliableAlertTab": {
       "All": "return data",
-      "Exception": "return data.filter(x => x.alertCategory === 'Exception')",
-      "Other": "return data.filter(x => x.alertCategory !== 'Exception')"
+      "Open": "return data.filter(x => x.status === 'open')",
+      "Closed": "return data.filter(x => x.status === 'closed')"
     }
   }
 }
