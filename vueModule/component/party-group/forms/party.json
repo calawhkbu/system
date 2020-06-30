@@ -164,6 +164,39 @@
               "name": "zip",
               "component": "v-text-field",
               "class": "xs-3"
+            },
+            {
+              "label": "CustomerPage.location",
+              "name": "locations",
+              "component": "AsyncAutoSuggest",
+              "props": {
+                "multiple": true,
+                "searchValueParams": {
+                  "method": "POST",
+                  "url": "api/location/query/location",
+                  "data": {
+                    "subqueries": {
+                      "portCodeLike": {
+                        "value": "{{context.autoSuggestModel}}"
+                      }
+                    }
+                  }
+                },
+                "searchTextParams": {
+                  "method": "POST",
+                  "url": "api/location/query/location",
+                  "data": {
+                    "subqueries": {
+                      "q": {
+                        "value": "{{context.search}}"
+                      }
+                    },
+                    "limit": 5
+                  }
+                },
+                "item-text": "name",
+                "item-value": "portCode"
+              }
             }
           ]
         }
