@@ -1,16 +1,17 @@
 import { IConditionalExpression, OrExpressions, AndExpressions, BinaryExpression, ColumnExpression, FunctionExpression, InExpression, Query, ResultColumn, FromTable } from 'node-jql'
 import { JwtPayload, JwtPayloadParty } from 'modules/auth/interfaces/jwt-payload'
-import { Transaction } from 'sequelize'
+import { Transaction, Op } from 'sequelize'
 import moment = require('moment')
+import { Booking } from 'models/main/booking'
 
 export const setDataFunction = {
-  partyGroupCode: async({ partyGroupCode }, user: JwtPayload) => {
+  partyGroupCode: async({ partyGroupCode }: Booking, user: JwtPayload) => {
     if (user) {
       return user.selectedPartyGroup.code || partyGroupCode
     }
     return partyGroupCode
   },
-  bookingNo: async({ bookingNo }, user: JwtPayload) => {
+  bookingNo: async({ bookingNo }: Booking, user: JwtPayload) => {
     if (!bookingNo) {
       let userPartyGroupId: string = (user ? user.selectedPartyGroup.id : '').toString()
       if (userPartyGroupId.length === 0) {
@@ -37,6 +38,54 @@ export const setDataFunction = {
     }
     return bookingNo
   },
+  rSalesmanPersonCode: async ({ bookingParty }: Booking, user: JwtPayload, transaction: Transaction, context: any) => {
+    if (bookingParty.controllingCustomerPartyCode) {
+      const party = await context.partyTableService.findOneWithScope(
+        'onlyItself',
+        {
+          where: { thirdPartyCode: { erp: bookingParty.controllingCustomerPartyCode } }
+        } as any,
+        user,
+        transaction
+      )
+      if (party) {
+        return party.salesmanCode
+      }
+    }
+    return null
+  },
+  sSalesmanPersonCode: async ({ bookingParty }: Booking, user: JwtPayload, transaction: Transaction, context: any) => {
+    if (bookingParty.shipperPartyCode) {
+      const party = await context.partyTableService.findOneWithScope(
+        'onlyItself',
+        {
+          where: { thirdPartyCode: { erp: bookingParty.shipperPartyCode } }
+        } as any,
+        user,
+        transaction
+      )
+      if (party) {
+        return party.salesmanCode
+      }
+    }
+    return null
+  },
+  cSalesmanPersonCode: async ({ bookingParty }: Booking, user: JwtPayload, transaction: Transaction, context: any) => {
+    if (bookingParty.consigneePartyCode) {
+      const party = await context.partyTableService.findOneWithScope(
+        'onlyItself',
+        {
+          where: { thirdPartyCode: { erp: bookingParty.consigneePartyCode } }
+        } as any,
+        user,
+        transaction
+      )
+      if (party) {
+        return party.salesmanCode
+      }
+    }
+    return null
+  }
 }
 
 export default async function getDefaultParams(

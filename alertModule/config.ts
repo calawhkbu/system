@@ -17,7 +17,7 @@ const shipmentSeaAlertList = [
     alertType: 'cancelBookingAlert(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -71,7 +71,7 @@ const shipmentSeaAlertList = [
     alertType: 'cargoDelayAlert(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -125,7 +125,7 @@ const shipmentSeaAlertList = [
     alertType: 'cargoFailureToArrangeHualage(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -180,7 +180,7 @@ const shipmentSeaAlertList = [
     alertType: 'missingVGM(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -237,7 +237,7 @@ const shipmentSeaAlertList = [
     alertType: 'missingEdi(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -300,7 +300,7 @@ const shipmentSeaAlertList = [
     alertType: 'missingPreAlert(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -361,7 +361,7 @@ const shipmentSeaAlertList = [
     alertType: 'missingMBL(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -424,7 +424,7 @@ const shipmentSeaAlertList = [
     alertType: 'missingHBL(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -487,7 +487,7 @@ const shipmentSeaAlertList = [
     alertType: 'missingHBL(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -552,7 +552,7 @@ const shipmentSeaAlertList = [
     alertType: 'demurrageAlert(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -615,7 +615,7 @@ const shipmentSeaAlertList = [
     alertType: 'detentionWarning(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -669,7 +669,7 @@ const shipmentSeaAlertList = [
     alertType: 'detentionAlert(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -722,7 +722,7 @@ const shipmentSeaAlertList = [
     alertType: 'missingDeliveryArrangement(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -790,7 +790,7 @@ const shipmentAirAlertList = [
     alertType: 'missingPreAlert(AIR)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -846,7 +846,7 @@ const shipmentAirAlertList = [
     alertType: 'cargoDelayAlert(AIR)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -900,7 +900,7 @@ const shipmentAirAlertList = [
     alertType: 'missingDeliveryArrangement(AIR)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -968,7 +968,7 @@ const oldAlertList = [
     alertType: 'shipmentArrivalDelayed(AIR)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
   },
 
   // shipmentArrivalDelayed(SEA)
@@ -980,7 +980,7 @@ const oldAlertList = [
     alertType: 'shipmentArrivalDelayed(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
   },
 
   // shipmentDepartureDelayed(AIR)
@@ -992,7 +992,7 @@ const oldAlertList = [
     alertType: 'shipmentDepartureDelayed(AIR)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
   },
 
   // shipmentDepartureDelayed(SEA)
@@ -1004,7 +1004,7 @@ const oldAlertList = [
     alertType: 'shipmentDepartureDelayed(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
   },
 
   // shipmentEtaChanged
@@ -1016,7 +1016,7 @@ const oldAlertList = [
     alertType: 'shipmentEtaChanged',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
   },
 
   // shipmentEtdChanged
@@ -1028,7 +1028,7 @@ const oldAlertList = [
     alertType: 'shipmentEtdChanged',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
   },
 
 
@@ -1041,7 +1041,7 @@ const oldAlertList = [
     alertType: 'shipmentAtaChanged',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
   },
 
   // shipmentAtdChanged
@@ -1053,7 +1053,7 @@ const oldAlertList = [
     alertType: 'shipmentAtdChanged',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
   },
 
   // shipmentMessage
@@ -1065,7 +1065,7 @@ const oldAlertList = [
     alertType: 'shipmentMessage',
 
     templatePath: 'alert/shipment-alert',
-    form: 'alert/shipment-alert',
+    
   }
 
 
@@ -1083,7 +1083,7 @@ const testAlertList = [
 
     templatePath: 'message/shipment-message',
     
-    // form: 'alert.sayHello',
+    // handleAlertSubComponentLayoutName: 'alertForm.sayHello',
 
     // schedule: '0 * * * * *',
 
@@ -1134,7 +1134,11 @@ const testAlertList = [
 
     // saveAsNewAlertTimeDiff : 0,
 
-    resend: true, // resend to everyone or just send to those not yet receive
+    
+    resendInterval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
 
 
     flexDataConfig : {

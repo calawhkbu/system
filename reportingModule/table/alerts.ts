@@ -1,11 +1,44 @@
 import { JqlDefinition } from 'modules/report/interface'
+import { IQueryParams } from 'classes/query'
+
+
+export const shipmentField = [
+  'houseNo',
+  'jobNo',
+  'masterNo'
+]
+
+export const bookingField = [
+  'bookingNo'
+]
 
 export default {
   jqls: [
     {
       type: 'prepareParams',
-      prepareParams(params) {
+      prepareParams(params: IQueryParams) {
+        
+        // console.log(`hellot`)
+        // console.log(params.fields)
+
+        function getDynamicFieldList() {
+          const entityType = ( params.subqueries.entityType as any).value
+          switch (entityType) {
+            case 'shipment':
+              return shipmentField
+  
+            case 'booking':
+              return bookingField
+          
+            default:
+              return []
+
+          }
+
+        }
+
         params.fields = [
+          ...getDynamicFieldList(),
           'alertTableName',
           'alertPrimaryKey',
           'alertCategory',
@@ -56,6 +89,8 @@ export default {
     { key: 'status'},
     { key: 'alertUpdatedAt' },
     { key: 'alertCreatedAt' },
+    ...([ ...new Set([ ...shipmentField,...bookingField]) ]).map(x => ({ key : x }))
+
   ]
 } as JqlDefinition
 
