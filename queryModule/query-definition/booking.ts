@@ -23,7 +23,7 @@ import {
   ICase,
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, RegisterInterface, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, RegisterInterface, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField } from 'utils/jql-subqueries'
 
 const partyList = [
 
@@ -1330,6 +1330,9 @@ const summaryFieldList : SummaryField[]  = [
 ]
 
 registerSummaryField(query, baseTableName, summaryFieldList, nestedSummaryList, jobDateExpression)
+
+registerCheckboxField(query)
+
 
 
 // Date Filter=================

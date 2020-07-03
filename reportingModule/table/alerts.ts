@@ -39,6 +39,8 @@ export default {
 
         params.fields = [
           ...getDynamicFieldList(),
+          'checkbox',
+          'alertId',
           'alertTableName',
           'alertPrimaryKey',
           'alertCategory',
@@ -69,24 +71,27 @@ export default {
         return [entityType, entityType]
 
       },
-      resultMapping: [
-        { from: 'alertTableName', to: 'tableName' },
-        { from: 'alertPrimaryKey', to: 'primaryKey' },
-        { from: 'alertSeverity', to: 'severity'},
-        { from: 'alertStatus', to: 'status'},
-      ]
+      // resultMapping: [
+      //   { from: 'alertId', to: 'id' },
+      //   { from: 'alertTableName', to: 'tableName' },
+      //   { from: 'alertPrimaryKey', to: 'primaryKey' },
+      //   { from: 'alertSeverity', to: 'severity'},
+      //   { from: 'alertStatus', to: 'status'},
+      // ]
     },
   ],
   columns: [
-    { key: 'tableName' },
-    { key: 'primaryKey' },
+    { key: 'checkbox' },
+    { key: 'alertId' },
+    { key: 'alertTableName' },
+    { key: 'alertPrimaryKey' },
     { key: 'alertCategory' },
     { key: 'alertType' },
     { key: 'alertTitle' },
     { key: 'alertMessage' },
     { key: 'alertContent' },
-    { key: 'severity'},
-    { key: 'status'},
+    { key: 'alertSeverity'},
+    { key: 'alertStatus'},
     { key: 'alertUpdatedAt' },
     { key: 'alertCreatedAt' },
     ...([ ...new Set([ ...shipmentField,...bookingField]) ]).map(x => ({ key : x }))
