@@ -112,7 +112,8 @@
                   },
                   "method": "POST",
                   "labelKey": "alertTitle",
-                  "valueKey": "alertType"
+                  "valueKey": "alertType",
+                  "subLabelKey": "alertType"
                 },
                 "resolve": {
                   "url": "api/alert/alertType/get",
@@ -125,7 +126,8 @@
                   },
                   "method": "POST",
                   "labelKey": "alertTitle",
-                  "valueKey": "alertType"
+                  "valueKey": "alertType",
+                  "subLabelKey": "alertType"
                 }
               },
               "threshold": 0,
