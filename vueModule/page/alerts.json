@@ -95,20 +95,46 @@
           }
         ],
         "filters": [
-
           {
-
-            "display": "alertType",
             "name": "alertType",
+            "type": "autocomplete",
             "props": {
-              "items": [
-                {
-                  "label": "firstType",
-                  "value": "firsttype"
+              "api": {
+                "query": {
+                  "url": "api/alert/alertType/get",
+                  "data": {
+                    "limit": 5,
+                    "subqueries": {
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    }
+                  },
+                  "method": "POST",
+                  "labelKey": "alertTitle",
+                  "valueKey": "alertType",
+                  "subLabelKey": "alertType"
+                },
+                "resolve": {
+                  "url": "api/alert/alertType/get",
+                  "data": {
+                    "subqueries": {
+                      "alertType": {
+                        "value": "{{value}}"
+                      }
+                    }
+                  },
+                  "method": "POST",
+                  "labelKey": "alertTitle",
+                  "valueKey": "alertType",
+                  "subLabelKey": "alertType"
                 }
-              ]
-
-            }
+              },
+              "threshold": 0,
+              "showAllIfEmpty" : true,
+              "multi": true
+            },
+            "display": "alertType"
           },
           {
             "display": "alertStatus",

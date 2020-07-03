@@ -21,14 +21,10 @@
     "size": -3
   },
   "baseDetailProps": {
-    "changeMessageStatusAxiosParams": {
-      "method": "POST",
-      "url": "api/alert/updateStatus/{{id}}"
-    },
     "avaliableAlertTab": {
-      "All": "return data",
       "Open": "return data.filter(x => x.status === 'open')",
-      "Closed": "return data.filter(x => x.status === 'closed')"
+      "Closed": "return data.filter(x => x.status === 'closed')",
+      "All": "return data"
     }
   }
 }
