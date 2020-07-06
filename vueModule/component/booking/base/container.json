@@ -95,7 +95,7 @@
                 },
                 {
                   "label": "BookingPage.BookingPacking",
-                  "name": "bookingPoPackings",
+                  "name": "bookingPopackings",
                   "component": "TableField",
                   "props": {
                     "topLabel": true,
@@ -479,9 +479,9 @@
               },
               {
                 "label": "BookingPage.BookingPacking",
-                "name": "bookingPoPackings",
+                "name": "bookingPopackings",
                 "component": "TableField",
-                "checkDisplayWhen": "return form && (form.bookingPoPackings && form.bookingPoPackings.length)",
+                "checkDisplayWhen": "return form && (form.bookingPopackings && form.bookingPopackings.length)",
                 "props": {
                   "topLabel": true,
                   "fields": [{

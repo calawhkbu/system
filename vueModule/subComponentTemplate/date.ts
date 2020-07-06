@@ -1,3 +1,5 @@
+import { SubComponentField } from "modules/vue/interface"
+
 // just for easier coding
 interface PropParam {
     dateName: string
@@ -6,42 +8,47 @@ interface PropParam {
     includeRemark?: boolean
 }
 
-// the form that will show in the handle alert
-const component =  (propParam: PropParam) => {
 
-    const { dateName,includeEstimated,includeActual,includeRemark } = propParam
+const fieldList = (propParam: PropParam) => {
+
+    const { dateName, includeEstimated, includeActual, includeRemark } = propParam
+
     const fieldList = []
 
-    const fieldObject = (dateName:string,suffix:string) => {
+    const fieldObject = (dateName: string, suffix: string) => {
 
         const fieldName = `${dateName}${suffix}`
 
         return {
-            "label" : fieldName,
-            "name" : fieldName,
+            "label": fieldName,
+            "name": fieldName,
             "component": "v-text-field",
             "validator": ["required"]
-        }
+        } as SubComponentField
+    }
+
+    if (includeEstimated) {
+        fieldList.push(fieldObject(dateName, 'Estimated'))
+    }
+    if (includeActual) {
+        fieldList.push(fieldObject(dateName, 'Acutal'))
+    }
+    if (includeRemark) {
+        fieldList.push(fieldObject(dateName, 'Remark'))
+    }
+
+    return fieldList
+}
+
+// the form that will show in the handle alert
+const component = (propParam: PropParam) => {
 
 
-    }
-    if (includeEstimated)
-    {
-        fieldList.push(fieldObject(dateName,'Estimated'))
-    }
-    if (includeActual)
-    {
-        fieldList.push(fieldObject(dateName,'Acutal'))
-    }
-    if (includeRemark)
-    {
-        fieldList.push(fieldObject(dateName,'Remark'))
-    }
+    const fields = fieldList(propParam)
 
     return {
-        "is": "Form",
-        "fields" : fieldList
-        
+        is: "Form",
+        fields
     }
 }
 
@@ -56,27 +63,25 @@ const adminComponent = ({ }) => {
 }
 
 
-// running validation of this form, used in backend validation
-const validatation = () => {
-    // vaild
-    return true
+
+const changeToEntityFunction = (propParam: PropParam) => {
+
+    return (tableName: string, oldEntity: any, formData: any) => {
+        // entity
+
+        return formData
+    }
+
+
 }
 
-
-const changeToEntityFunction = (tableName: string, oldEntity: any, formData: any, propParam: PropParam) => {
-    // entity
-
-    const { dateName } = propParam
-
-    return formData
-}
 
 const extra = {
-    validatation,
     changeToEntityFunction
 }
 
 export {
+    fieldList,
     component,
     adminComponent,
     extra,
