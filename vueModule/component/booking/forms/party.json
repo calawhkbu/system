@@ -67,6 +67,10 @@
               "selector": "id"
             },
             {
+              "name": "bookingParty.{{flex}}{{key}}PartyCode",
+              "selector": "erpCode"
+            },
+            {
               "name": "bookingParty.{{flex}}{{key}}PartyName",
               "selector": "name"
             },

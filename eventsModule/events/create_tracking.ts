@@ -5,19 +5,8 @@ import _ = require('lodash')
 import moment = require('moment')
 import BluebirdPromise = require('bluebird')
 
-import { TrackService } from 'modules/tracking/services'
-
-import { BookingReference } from 'models/main/bookingReference'
-import { BookingContainer } from 'models/main/bookingContainer'
 import { RegisterTrackingForm } from 'modules/tracking/interface'
 import BaseEventHandler from 'modules/events/baseEventHandler'
-
-// // debug
-// import { TrackService } from '../../../../swivel-backend-new/src/modules/tracking/service';
-
-// import { Booking } from '../../../../swivel-backend-new/src/models/main/booking';
-// import { BookingReference } from '../../../../swivel-backend-new/src/models/main/bookingReference';
-// import { BookingContainer } from '../../../../swivel-backend-new/src/models/main/bookingContainer';
 
 export default class CreateTrackingEvent extends BaseEventHandler {
   constructor(
@@ -26,7 +15,6 @@ export default class CreateTrackingEvent extends BaseEventHandler {
     protected readonly repo: string,
     protected readonly eventService: EventService,
     protected readonly allService: EventAllService,
-
     protected readonly user?: JwtPayload,
     protected readonly transaction?: Transaction
   ) {
@@ -70,7 +58,9 @@ export default class CreateTrackingEvent extends BaseEventHandler {
     return null
   }
 
-  public async mainFunction(eventDataList: EventData<any>[]) {
+  public async mainFunction(
+    eventDataList: EventData<any>[]
+  ) {
     console.debug('Start Create Tracking Event ....', this.constructor.name)
 
     const { trackService } = this.allService
@@ -102,40 +92,4 @@ export default class CreateTrackingEvent extends BaseEventHandler {
     return[]
 
   }
-
-  // // parameters should be booking
-  // public async mainFunction(
-  //   {
-  //     data, tableName, loadashMapping
-  //   }: {
-  //     data: any
-  //     tableName: string
-  //     loadashMapping: { [name: string]: string|((data: any) => any) }
-  //   }
-  // ) {
-  //   console.debug('Start Create Tracking Event ....', this.constructor.name)
-  //   const {
-  //     TrackService: trackService
-  //   } = this.allService as {
-  //     TrackService: TrackService
-  //   }
-  //   if (data.billStatus === null) {
-  //     try {
-  //       const registerForm = await this.getTrackingNo(data, loadashMapping)
-  //       if (registerForm) {
-  //         await trackService.register(registerForm, this.user)
-  //       }
-  //     } catch (e) {
-  //       console.error(`
-  //         We cannot create tracking on below ${tableName}:\n
-  //         ID: ${data['id']}\n
-  //         Register Form:\n
-  //         ${JSON.stringify(data)}\n
-  //       `, null, this.constructor.name)
-  //       console.error(e, e.stack, this.constructor.name)
-  //     }
-  //   }
-  //   console.debug('End Create Tracking Event ....', this.constructor.name)
-  // }
-
 }
