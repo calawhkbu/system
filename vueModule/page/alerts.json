@@ -136,8 +136,7 @@
           "func": "push",
           "path": "{{tableName}}/{{primaryKey}}"
         }
-      },
-      "icons": []
+      }
     }
   }]
 }

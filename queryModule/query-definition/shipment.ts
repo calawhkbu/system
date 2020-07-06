@@ -433,6 +433,19 @@ query.table('alert', new Query({
 })
 )
 
+// sop task join
+query.table('sop-task', new Query({
+  $from: new FromTable('shipment', {
+    operator: 'LEFT',
+    table: 'sop-task',
+    $on: [
+      new BinaryExpression(new ColumnExpression('sop-task', 'tableName'), '=', 'shipment'),
+      new BinaryExpression(new ColumnExpression('sop-task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id')),
+    ]
+  }),
+  $where: new IsNullExpression(new ColumnExpression('sop-task', 'id'), true)
+}))
+
 // shipment_amount table :  table:shipment_amount
 query.table('shipment_amount', new Query({
 
@@ -1792,6 +1805,14 @@ const alertContentExpression = new QueryExpression(new Query({
   $limit: 1
 }))
 
+// sopTask-related fields
+const sopTaskIdExpression = new ColumnExpression('sopTask', 'id')
+const sopTaskTableNameExpression = new ColumnExpression('sopTask', 'tableName')
+const sopTaskPrimaryKeyExpression = new ColumnExpression('sopTask', 'primaryKey')
+const sopTaskCategoryExpression = new ColumnExpression('sopTask', 'category')
+const sopTaskNameExpression = new ColumnExpression('sopTask', 'name')
+const sopTaskRemarkExpression = new ColumnExpression('sopTask', 'remark')
+
 const activeStatusExpression = new CaseExpression({
   cases: [
     {
@@ -2137,7 +2158,43 @@ const fieldList = [
     name : 'alertCount',
     expression: new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))),
     companion: ['table:alert']
-  }
+  },
+
+  {
+    name: 'sopTaskId',
+    expression: sopTaskIdExpression,
+    companion: ['table:sop-task']
+  },
+  {
+    name: 'sopTaskTableName',
+    expression: sopTaskTableNameExpression,
+    companion: ['table:sop-task']
+  },
+  {
+    name: 'sopTaskPrimaryKey',
+    expression: sopTaskPrimaryKeyExpression,
+    companion: ['table:sop-task']
+  },
+  {
+    name: 'sopTaskCategory',
+    expression: sopTaskCategoryExpression,
+    companion: ['table:sop-task']
+  },
+  {
+    name: 'sopTaskName',
+    expression: sopTaskNameExpression,
+    companion: ['table:sop-task']
+  },
+  {
+    name: 'sopTaskRemark',
+    expression: sopTaskRemarkExpression,
+    companion: ['table:sop-task']
+  },
+  {
+    name : 'sopTaskCount',
+    expression: new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', sopTaskIdExpression)),
+    companion: ['table:sop-task']
+  },
 
 ] as ExpressionHelperInterface[]
 
