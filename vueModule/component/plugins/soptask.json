@@ -1,0 +1,37 @@
+{
+  "layout": "Plugin",
+  "name": "SopTask",
+  "transition": "slide-y-reverse-transition",
+  "lazy": true,
+  "hide-overlay": true,
+  "remote": true,
+  "shareProps": {
+    "i18nContext": "SopTask",
+    "iconType": "",
+    "icon": "status",
+    "iconMap": {
+      "Open": "assignment",
+      "Done": "assignment_turned_in",
+      "Due": "assignment_late",
+      "Dead": "warning"
+    },
+    "titleKey": "name",
+    "subTitleKeys": ["category"]
+  },
+  "baseSummaryProps": {
+    "size": -3
+  },
+  "baseDetailProps": {
+    "headers": [
+      {
+        "key": "name"
+      },
+      {
+        "key": "system"
+      },
+      {
+        "key": "category"
+      }
+    ]
+  }
+}
