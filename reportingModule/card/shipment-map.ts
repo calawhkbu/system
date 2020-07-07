@@ -23,14 +23,14 @@ export default {
         const locationLatitude = `${location}Latitude`
         const locationLongitude = `${location}Longitude`
 
-        // portOfLoadingLocationJoin / portODischargeLocationJoin
-        subqueries[`${location}Join`] = true
-
         params.fields = [
           locationCode,
           locationLatitude,
           locationLongitude
         ]
+
+        subqueries[`${locationLatitude}IsNotNull`] = true
+        subqueries[`${locationLongitude}IsNotNull`] = true
 
         return params
       }
