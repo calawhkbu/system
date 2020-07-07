@@ -201,14 +201,16 @@
                   "name": "name",
                   "component": "v-text-field",
                   "class": "xs-12 md-8",
-                  "readonlyClass": "hidden"
+                  "validator": ["required"],
+                  "props": {
+                    "required": true
+                  }
                 },
                 {
                   "label": "Widget.erpCode",
                   "name": "thirdPartyCode.erp",
                   "component": "v-text-field",
-                  "class": "xs-12 md-4",
-                  "readonlyClass": "hidden"
+                  "class": "xs-12 md-4"
                 },
                 {
                   "label": "Widget.address",
