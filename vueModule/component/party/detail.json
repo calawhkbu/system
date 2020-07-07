@@ -87,7 +87,7 @@
           }
         }]
       }, {
-        "_is": "BottomSheet",
+        "is": "BottomSheet",
         "props": {
           "hide-overlay": true,
           "button": {
@@ -153,7 +153,16 @@
                 "props": {
                   "icon": "edit"
                 }
-              }]
+              }],
+              "events": {
+                "click.stop": [{
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "edit"
+                  }
+                }]
+              }
             }]
           },
           "mainComponents": {
@@ -181,6 +190,11 @@
         "is": "AsyncComponent",
         "props": {
           "layoutName": "party/base/contact"
+        }
+      }, {
+        "is": "AsyncComponent",
+        "props": {
+          "layoutName": "party/base/salesman"
         }
       }, {
         "is": "AsyncComponent",
