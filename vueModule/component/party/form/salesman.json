@@ -1,0 +1,15 @@
+{
+  "layout": "v-card",
+  "class": "xs-12 padding-topbottom-4 margin-bottom-4",
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [{
+        "label": "PartyPage.salesmanCode",
+        "name": "salesmanCode",
+        "component": "v-text-field",
+        "class": "xs-12"
+      }]
+    }
+  }]
+}

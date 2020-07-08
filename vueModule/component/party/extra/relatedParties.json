@@ -89,8 +89,42 @@
             }
           }, {
             "name": "partyType",
-            "type": "text",
-            "i18nContext": "PartyPage"
+            "type": "autocomplete",
+            "i18nContext": "PartyPage",
+            "props": {
+              "api": {
+                "query": {
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "codeType": {
+                        "value": "PARTY_TYPE"
+                      }
+                    }
+                  },
+                  "method": "POST",
+                  "labelKey": "name",
+                  "valueKey": "code"
+                },
+                "resolve": {
+                  "url": "api/code/query/code_master",
+                  "data": {
+                    "subqueries": {
+                      "code": {
+                        "value": "{{ value }}"
+                      },
+                      "codeType": {
+                        "value": "PARTY_TYPE"
+                      }
+                    }
+                  },
+                  "method": "POST",
+                  "labelKey": "name",
+                  "valueKey": "code"
+                }
+              },
+              "multi": true
+            }
           }],
           "fieldOptions": [{
             "key": "partyAId",

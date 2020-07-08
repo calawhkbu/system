@@ -1,13 +1,10 @@
-
-import { EventService, EventConfig, EventHandlerConfig, EventData, EventAllService } from 'modules/events/service'
+import { EventService, EventHandlerConfig, EventData, EventAllService } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import _ = require('lodash')
-import { RelatedPartyTableService } from 'modules/sequelize/services/table/relatedParty'
 import { RelatedParty } from 'models/main/relatedParty'
 import BaseEventHandler from 'modules/events/baseEventHandler'
 import { Shipment } from 'models/main/shipment'
-import { Booking } from 'models/main/booking'
 
 export default class CreateRelatedPartyEvent extends BaseEventHandler {
   constructor(

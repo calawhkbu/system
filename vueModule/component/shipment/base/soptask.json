@@ -1,0 +1,21 @@
+{
+  "components": [
+    {
+      "is": "AsyncComponent",
+      "props": {
+        "class": "xs-12 margin-topbottom-2",
+        "layoutName": "plugins/soptask",
+        "axiosBaseParams": [
+          "return {",
+          "url: 'sopTask/list',",
+          "method: 'POST',",
+          "data: {",
+          "tableName: 'shipment',",
+          "primaryKey: context.$route.params.params,",
+          "}",
+          "};"
+        ]
+      }
+    }
+  ]
+}

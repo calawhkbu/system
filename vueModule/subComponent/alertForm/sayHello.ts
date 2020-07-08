@@ -1,49 +1,12 @@
 
+import { SubComponentTemplate,SubComponentInfo } from 'modules/vue/interface'
+import { ValidatorMetadata } from 'modules/validation/service'
 
-
-export default () => {
-
-    return {
-
-        "addAttrsToComponent": true,
-        "components": [
-            {
-                "is": "SubFormComponent",
-                "props": {
-                    "subComponentTemplateName": "date",
-                    "propParam": {
-                        "dateName": "departure",
-                        "includeEstimated": true,
-                        "includeActual": true,
-                        "includeRemark": true
-                    }
-                }
-
-            },
-
-            {
-                "is": "SubFormComponent",
-                "props": {
-                    "subComponentTemplateName": "date",
-                    "propParam": {
-                        "dateName": "arrival",
-                        "includeEstimated": true,
-                        "includeActual": true,
-                        "includeRemark": true
-                    }
-                }
-
-            }
-        ]
-    }
-
-
-}
-
-export const subComponentList = [
+// the main json that need to be edit through the admin page
+const subComponentTemplateList = [
     {
-        subComponentName  : 'date',
-        propParam : {
+        subComponentTemplateName: 'date',
+        propParam: {
             "dateName": "departure",
             "includeEstimated": true,
             "includeActual": true,
@@ -51,8 +14,8 @@ export const subComponentList = [
         }
     },
     {
-        subComponentName  : 'date',
-        propParam : {
+        subComponentTemplateName: 'date',
+        propParam: {
             "dateName": "arrival",
             "includeEstimated": true,
             "includeActual": true,
@@ -60,4 +23,50 @@ export const subComponentList = [
         }
     }
 
-]
+] as SubComponentTemplate[]
+
+
+const validators = [
+
+    {
+       field : 'myfieldName',
+       validator : 'required'
+    },
+
+    {
+        field : 'myfieldName2',
+        validator : 'required'
+    }
+
+] as ValidatorMetadata[]
+
+
+// Function that return the mainComponent
+
+const component = () => {
+
+    const components = subComponentTemplateList.map(subComponent => {
+
+        return {
+
+            is: "SubFormComponent",
+            props : subComponent
+        }
+    })
+
+    return {
+
+        "addAttrsToComponent": true,
+        "components" : components
+    }
+
+}
+
+
+export default component
+
+export {
+    validators,
+    component,
+    subComponentTemplateList
+}
