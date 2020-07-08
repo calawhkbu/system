@@ -1,6 +1,7 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import { OrderBy } from 'node-jql'
+import { expandGroupEntity } from 'utils/card'
 
 interface Result {
   result: any[]
@@ -28,26 +29,28 @@ export default {
         const xAxis = (subqueries.xAxis as any).value // should be shipper/consignee/agent/controllingCustomer/carrier
         const summaryColumnName = (subqueries.yAxis as any).value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-        const codeColumnName =
-          xAxis === 'carrier'
-            ? `carrierCode`
-            : xAxis === 'portOfLoadingCode'
-            ? `portOfLoadingCode`
-            : xAxis === 'portOfDischargeCode'
-            ? `portOfDischargeCode`
-            : xAxis === 'agentGroup'
-            ? `agentGroup`
-            : `${xAxis}PartyCode`
-        const nameColumnName =
-          (xAxis === 'carrier'
-            ? `carrierName`
-            : xAxis === 'portOfLoadingCode'
-            ? `portOfLoadingCode`
-            : xAxis === 'portOfDischargeCode'
-            ? `portOfDischargeCode`
-            : xAxis === 'agentGroup'
-            ? `agentGroup`
-            : `${xAxis}PartyShortNameInReport`) + 'Any'
+        const { codeColumnName, nameColumnName } = expandGroupEntity(subqueries,'xAxis')
+
+        // const codeColumnName =
+        //   xAxis === 'carrier'
+        //     ? `carrierCode`
+        //     : xAxis === 'portOfLoadingCode'
+        //     ? `portOfLoadingCode`
+        //     : xAxis === 'portOfDischargeCode'
+        //     ? `portOfDischargeCode`
+        //     : xAxis === 'agentGroup'
+        //     ? `agentGroup`
+        //     : `${xAxis}PartyCode`
+        // const nameColumnName =
+        //   (xAxis === 'carrier'
+        //     ? `carrierName`
+        //     : xAxis === 'portOfLoadingCode'
+        //     ? `portOfLoadingCode`
+        //     : xAxis === 'portOfDischargeCode'
+        //     ? `portOfDischargeCode`
+        //     : xAxis === 'agentGroup'
+        //     ? `agentGroup`
+        //     : `${xAxis}PartyShortNameInReport`) + 'Any'
         // ------------------------------
 
         prevResult.xAxis = xAxis

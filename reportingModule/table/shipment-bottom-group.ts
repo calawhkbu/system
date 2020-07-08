@@ -8,6 +8,11 @@ export default {
       async prepareParams(params, prevResult, user): Promise<IQueryParams> {
         const { moment } = await this.preparePackages(user)
 
+        const subqueries = (params.subqueries = params.subqueries || {})
+
+        const { bottomSheetGroupByEntity, bottomSheetSummaryVariable, groupByEntity, groupByEntityValue } = subqueries
+
+
 
         const defaultFields = [
           'id',
@@ -26,7 +31,6 @@ export default {
 
         params.fields = defaultFields
         
-        const subqueries = (params.subqueries = params.subqueries || {})
 
         // used in mapCard to bottom sheet
         if (subqueries.location && subqueries.locationCode) {
@@ -103,18 +107,9 @@ export default {
 
   // if want to show specific fields, please defined using FE_fields in bottom sheet filters
   columns: [
-    { key: 'id' },
-    { key: 'houseNo' },
-    { key: 'masterNo' },
-    { key: 'jobDate' },
-    { key: 'carrierCode' },
-    { key: 'shipperPartyName' },
-    { key: 'consigneePartyName' },
-    { key: 'portOfLoadingCode' },
-    { key: 'portOfDischargeCode' },
-    { key: 'departureDateEstimated' },
-    { key: 'arrivalDateEstimated' },
-    { key: 'haveCurrentTrackingNo' },
+    { key: 'code' },
+    { key: 'name' },
+    { key: 'summary' }
   ]
 } as JqlDefinition
 

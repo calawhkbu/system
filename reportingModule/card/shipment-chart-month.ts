@@ -1,6 +1,7 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import Moment = require('moment')
+import { expandSummaryVariable, extendDate } from 'utils/card'
 
 interface Result {
   moment: typeof Moment
@@ -16,31 +17,36 @@ export default {
         const moment = prevResult.moment = (await this.preparePackages(user)).moment
         const subqueries = (params.subqueries = params.subqueries || {})
 
-        let summaryVariables: string[] = []
-        if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
-          // sumamary variable
-          summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
-        }
-        if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
-          summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
-        }
-        if (!(summaryVariables && summaryVariables.length)) {
-          throw new Error('MISSING_summaryVariables')
-        }
+        // let summaryVariables: string[] = []
+        // if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
+        //   // sumamary variable
+        //   summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
+        // }
+        // if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
+        //   summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
+        // }
+        // if (!(summaryVariables && summaryVariables.length)) {
+        //   throw new Error('MISSING_summaryVariables')
+        // }
+        // prevResult.summaryVariables = summaryVariables
+
+        const summaryVariables = expandSummaryVariable(subqueries)
         prevResult.summaryVariables = summaryVariables
 
-        // limit/extend to 1 year
-        const year = subqueries.date && subqueries.date !== true && 'from' in subqueries.date ?  moment(subqueries.date.from, 'YYYY-MM-DD').year() : moment().year()
-        subqueries.date = {
-          from: moment()
-            .year(year)
-            .startOf('year')
-            .format('YYYY-MM-DD'),
-          to: moment()
-            .year(year)
-            .endOf('year')
-            .format('YYYY-MM-DD')
-        }
+        extendDate(subqueries,moment,'year')
+
+        // // limit/extend to 1 year
+        // const year = subqueries.date && subqueries.date !== true && 'from' in subqueries.date ?  moment(subqueries.date.from, 'YYYY-MM-DD').year() : moment().year()
+        // subqueries.date = {
+        //   from: moment()
+        //     .year(year)
+        //     .startOf('year')
+        //     .format('YYYY-MM-DD'),
+        //   to: moment()
+        //     .year(year)
+        //     .endOf('year')
+        //     .format('YYYY-MM-DD')
+        // }
 
         // group by
         params.groupBy = ['jobMonth']
