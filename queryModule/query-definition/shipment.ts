@@ -573,6 +573,24 @@ query.table('shipment_cargo', new Query({
                 ),
                 'cargo_cbm'
               ),
+              // decvalue in flexData
+              new ResultColumn(
+                new FunctionExpression(
+                  'SUM',
+                  new FunctionExpression(
+                    'CAST',
+                    new ParameterExpression(
+                      null,
+                      new FunctionExpression(
+                        'JSON_UNQUOTE',
+                        new FunctionExpression('JSON_EXTRACT', new ColumnExpression('shipment_cargo', 'flexData'), '$.decvalue')
+                      ),
+                      'AS DECIMAL'
+                    )
+                  )
+                ),
+                'cargo_value'
+              ),
             ],
             $from: new FromTable('shipment_cargo'),
             $where: new AndExpressions({
@@ -2329,6 +2347,12 @@ const summaryFieldList: SummaryField[] = [
     name: 'quantity',
     summaryType: 'sum',
     expression: new ColumnExpression('shipment', 'quantity'),
+  },
+  {
+    name: 'cargoValue',
+    summaryType: 'sum',
+    expression: new ColumnExpression('shipment_cargo', 'cargo_value'),
+    companion: ['table:shipment_cargo']
   }
 ]
 

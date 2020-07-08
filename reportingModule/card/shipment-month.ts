@@ -230,6 +230,10 @@ export default {
             label: 'quantity',
             value: 'quantity',
           },
+          {
+            label: 'cargoValue',
+            value: 'cargoValue'
+          }
         ],
         multi: false,
         required: true,
