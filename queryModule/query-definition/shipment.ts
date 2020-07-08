@@ -801,6 +801,13 @@ query.table('shipment_container', new Query({
                 ),
                 'container_loadCount'
               ),
+              new ResultColumn(
+                new FunctionExpression(
+                  'COUNT',
+                  new ColumnExpression('shipment_container', 'id')
+                ),
+                'container_count'
+              ),
             ],
             $from: new FromTable('shipment_container'),
             $where: new AndExpressions({
@@ -2308,6 +2315,13 @@ const nestedSummaryList = [
 
 ] as NestedSummaryCondition[]
 
+
+
+// field that store in report json
+const reportingSummaryFieldNameList = [
+  'containerCount'
+]
+
 const summaryFieldList: SummaryField[] = [
 
   {
@@ -2353,7 +2367,17 @@ const summaryFieldList: SummaryField[] = [
     summaryType: 'sum',
     expression: new ColumnExpression('shipment_cargo', 'cargo_value'),
     companion: ['table:shipment_cargo']
-  }
+  },
+
+  ...reportingSummaryFieldNameList.map(reportingSummaryFieldName => 
+    {
+      return {
+        name: reportingSummaryFieldName,
+        summaryType: 'sum',
+        expression: new FunctionExpression('JSON_UNQUOTE',new FunctionExpression('JSON_EXTRACT',new ColumnExpression('shipment','report'),`$.${reportingSummaryFieldName}`))
+      } as SummaryField
+    })
+
 ]
 
 registerSummaryField(query, baseTableName, summaryFieldList, nestedSummaryList, jobDateExpression)

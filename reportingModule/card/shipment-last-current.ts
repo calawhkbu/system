@@ -295,6 +295,14 @@ export default {
             label: 'quantity',
             value: 'quantity',
           },
+          {
+            label: 'cargoValue',
+            value: 'cargoValue'
+          },
+          {
+            label: 'containerCount',
+            value: 'containerCount'
+          }
         ],
         required: true,
       },
@@ -333,6 +341,14 @@ export default {
             label: 'quantity',
             value: 'quantity',
           },
+          {
+            label: 'cargoValue',
+            value: 'cargoValue'
+          },
+          {
+            label: 'containerCount',
+            value: 'containerCount'
+          }
         ],
         required: true,
       },

@@ -157,6 +157,10 @@ export default {
           {
             label: 'cargoValue',
             value: 'cargoValue'
+          },
+          {
+            label: 'containerCount',
+            value: 'containerCount'
           }
         ],
         required: true,
