@@ -2,6 +2,7 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import Moment = require('moment')
 import { OrderBy } from 'node-jql'
+import { expandGroupEntity, expandSummaryVariable, extendDate } from 'utils/card'
 
 interface Result {
   moment: typeof Moment
@@ -29,37 +30,53 @@ export default {
         if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
 
         // -----------------------------groupBy variable
-        const groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-        const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-        const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
+        // const groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+        // const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+        // const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
+        
+        const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries)
+
+        prevResult.groupByEntity = groupByEntity
+        prevResult.codeColumnName = codeColumnName
+        prevResult.nameColumnName = nameColumnName
+
         const topX = subqueries.topX.value
 
         // ---------------------summaryVariables
-        let summaryVariables: string[] = []
-        if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
-          // sumamary variable
-          summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
-        }
-        if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
-          summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
-        }
-        if (!(summaryVariables && summaryVariables.length)){
-          throw new Error('MISSING_summaryVariables')
-        }
+        // let summaryVariables: string[] = []
+        // if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
+        //   // sumamary variable
+        //   summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
+        // }
+        // if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
+        //   summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
+        // }
+        // if (!(summaryVariables && summaryVariables.length)){
+        //   throw new Error('MISSING_summaryVariables')
+        // }
+        // prevResult.summaryVariables = summaryVariables
+
+        const summaryVariables = expandSummaryVariable(subqueries)
         prevResult.summaryVariables = summaryVariables
 
-        // limit/extend to 1 year
-        const year = (subqueries.date && subqueries.date !== true && 'from' in subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
-        subqueries.date = {
-          from: moment()
-            .year(year)
-            .startOf('year')
-            .format('YYYY-MM-DD'),
-          to: moment()
-            .year(year)
-            .endOf('year')
-            .format('YYYY-MM-DD')
-        }
+
+        // // limit/extend to 1 year
+        // const year = (subqueries.date && subqueries.date !== true && 'from' in subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
+        // subqueries.date = {
+        //   from: moment()
+        //     .year(year)
+        //     .startOf('year')
+        //     .format('YYYY-MM-DD'),
+        //   to: moment()
+        //     .year(year)
+        //     .endOf('year')
+        //     .format('YYYY-MM-DD')
+        // }
+
+        // extend date into whole year
+        extendDate(subqueries,moment,'year')
+
+
 
         subqueries[`${codeColumnName}IsNotNull`] = {
           value: true
@@ -172,6 +189,14 @@ export default {
             label: 'quantity',
             value: 'quantity',
           },
+          {
+            label: 'cargoValue',
+            value: 'cargoValue'
+          },
+          {
+            label: 'containerCount',
+            value: 'containerCount'
+          }
         ],
         multi: false,
         required: true,

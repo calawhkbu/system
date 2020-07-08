@@ -3,6 +3,7 @@ import { IQueryParams } from 'classes/query'
 import Moment = require('moment')
 import { OrderBy } from 'node-jql'
 import { BadRequestException } from '@nestjs/common'
+import { expandGroupEntity, expandSummaryVariable } from 'utils/card'
 
 interface Result {
   moment: typeof Moment
@@ -15,7 +16,7 @@ interface Result {
   result: any[]
 }
 
-function calculateLastCurrent(subqueries: any, moment: typeof Moment, lastCurrentUnit: string, lastOrCurrent_: 'last' | 'current') {
+function specialCalculateLastCurrent(subqueries: any, moment: typeof Moment, lastCurrentUnit: string, lastOrCurrent_: 'last' | 'current') {
   if (!subqueries.date || !(subqueries.date !== true && 'from' in subqueries.date)) {
     throw new BadRequestException('MISSING_DATE')
   }
@@ -160,29 +161,40 @@ export default {
         if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
 
         // -----------------------------groupBy variable
-        const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-        const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-        const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
+        // const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+        // const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+        // const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
+        
+        const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries)
+
+        prevResult.groupByEntity = groupByEntity
+        prevResult.codeColumnName = codeColumnName
+        prevResult.nameColumnName = nameColumnName
+        
         const topX = subqueries.topX.value
 
-        // ---------------------summaryVariables
-        let summaryVariables: string[] = []
-        if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
-          // sumamary variable
-          summaryVariables = Array.isArray(subqueries.summaryVariables.value) ? subqueries.summaryVariables.value : [subqueries.summaryVariables.value]
-        }
-        if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
-          summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
-        }
-        if (!(summaryVariables && summaryVariables.length)) {
-          throw new Error('MISSING_summaryVariables')
-        }
+        // // ---------------------summaryVariables
+        // let summaryVariables: string[] = []
+        // if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
+        //   // sumamary variable
+        //   summaryVariables = Array.isArray(subqueries.summaryVariables.value) ? subqueries.summaryVariables.value : [subqueries.summaryVariables.value]
+        // }
+        // if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
+        //   summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
+        // }
+        // if (!(summaryVariables && summaryVariables.length)) {
+        //   throw new Error('MISSING_summaryVariables')
+        // }
+        // prevResult.summaryVariables = summaryVariables
+
+        const summaryVariables = expandSummaryVariable(subqueries)
         prevResult.summaryVariables = summaryVariables
+
 
         const lastCurrentUnit = prevResult.lastCurrentUnit = subqueries.lastCurrentUnit && subqueries.lastCurrentUnit !== true && 'value' in subqueries.lastCurrentUnit ? subqueries.lastCurrentUnit.value : '' // should be chargeableWeight/cbm/grossWeight/totalShipment
         // ------------------------------
         const firstTableLastOrCurrent = prevResult.firstTableLastOrCurrent = guessfirstTableLastOrCurrent()
-        const { from, to } = calculateLastCurrent(subqueries, moment, lastCurrentUnit, firstTableLastOrCurrent)
+        const { from, to } = specialCalculateLastCurrent(subqueries, moment, lastCurrentUnit, firstTableLastOrCurrent)
 
         subqueries.date = { from, to }
 
@@ -245,7 +257,7 @@ export default {
         const subqueries = (params.subqueries = params.subqueries || {})
 
         const secondTableLastOrCurrent = firstTableLastOrCurrent === 'last' ? 'current' : 'last'
-        const { from, to } = calculateLastCurrent(subqueries, moment, lastCurrentUnit, secondTableLastOrCurrent)
+        const { from, to } = specialCalculateLastCurrent(subqueries, moment, lastCurrentUnit, secondTableLastOrCurrent)
         subqueries.date = { from, to }
 
 
@@ -262,23 +274,33 @@ export default {
           if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw new Error('MISSING_groupByVariable')
           if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
           // -----------------------------groupBy variable
-          const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-          const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-          const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
+          // const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+          // const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+          // const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
+          
+          const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries)
+
+          prevResult.groupByEntity = groupByEntity
+          prevResult.codeColumnName = codeColumnName
+          prevResult.nameColumnName = nameColumnName
+          
           const topX = subqueries.topX.value
 
-          // ---------------------summaryVariables
-          let summaryVariables: string[] = []
-          if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
-            // sumamary variable
-            summaryVariables = Array.isArray(subqueries.summaryVariables.value) ? subqueries.summaryVariables.value : [subqueries.summaryVariables.value]
-          }
-          if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
-            summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
-          }
-          if (!(summaryVariables && summaryVariables.length)) {
-            throw new Error('MISSING_summaryVariables')
-          }
+          // // ---------------------summaryVariables
+          // let summaryVariables: string[] = []
+          // if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
+          //   // sumamary variable
+          //   summaryVariables = Array.isArray(subqueries.summaryVariables.value) ? subqueries.summaryVariables.value : [subqueries.summaryVariables.value]
+          // }
+          // if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
+          //   summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
+          // }
+          // if (!(summaryVariables && summaryVariables.length)) {
+          //   throw new Error('MISSING_summaryVariables')
+          // }
+
+          const summaryVariables = expandSummaryVariable(subqueries)
+          prevResult.summaryVariables = summaryVariables
 
 
                     // ----------------------- filter
@@ -418,6 +440,14 @@ export default {
             label: 'quantity',
             value: 'quantity',
           },
+          {
+            label: 'cargoValue',
+            value: 'cargoValue'
+          },
+          {
+            label: 'containerCount',
+            value: 'containerCount'
+          }
         ],
         multi: false,
         required: true,

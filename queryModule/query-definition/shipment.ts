@@ -573,6 +573,24 @@ query.table('shipment_cargo', new Query({
                 ),
                 'cargo_cbm'
               ),
+              // decvalue in flexData
+              new ResultColumn(
+                new FunctionExpression(
+                  'SUM',
+                  new FunctionExpression(
+                    'CAST',
+                    new ParameterExpression(
+                      null,
+                      new FunctionExpression(
+                        'JSON_UNQUOTE',
+                        new FunctionExpression('JSON_EXTRACT', new ColumnExpression('shipment_cargo', 'flexData'), '$.decvalue')
+                      ),
+                      'AS DECIMAL'
+                    )
+                  )
+                ),
+                'cargo_value'
+              ),
             ],
             $from: new FromTable('shipment_cargo'),
             $where: new AndExpressions({
@@ -782,6 +800,13 @@ query.table('shipment_container', new Query({
                   new ColumnExpression('shipment_container', 'loadCount')
                 ),
                 'container_loadCount'
+              ),
+              new ResultColumn(
+                new FunctionExpression(
+                  'COUNT',
+                  new ColumnExpression('shipment_container', 'id')
+                ),
+                'container_count'
               ),
             ],
             $from: new FromTable('shipment_container'),
@@ -2290,6 +2315,13 @@ const nestedSummaryList = [
 
 ] as NestedSummaryCondition[]
 
+
+
+// field that store in report json
+const reportingSummaryFieldNameList = [
+  'containerCount'
+]
+
 const summaryFieldList: SummaryField[] = [
 
   {
@@ -2329,7 +2361,23 @@ const summaryFieldList: SummaryField[] = [
     name: 'quantity',
     summaryType: 'sum',
     expression: new ColumnExpression('shipment', 'quantity'),
-  }
+  },
+  {
+    name: 'cargoValue',
+    summaryType: 'sum',
+    expression: new ColumnExpression('shipment_cargo', 'cargo_value'),
+    companion: ['table:shipment_cargo']
+  },
+
+  ...reportingSummaryFieldNameList.map(reportingSummaryFieldName => 
+    {
+      return {
+        name: reportingSummaryFieldName,
+        summaryType: 'sum',
+        expression: new FunctionExpression('JSON_UNQUOTE',new FunctionExpression('JSON_EXTRACT',new ColumnExpression('shipment','report'),`$.${reportingSummaryFieldName}`))
+      } as SummaryField
+    })
+
 ]
 
 registerSummaryField(query, baseTableName, summaryFieldList, nestedSummaryList, jobDateExpression)
