@@ -206,61 +206,78 @@
                   }, {
                     "name": "portOfLoadingName",
                     "selector": "name"
-                  }],
-                  "relationMore": [{
+                  }, {
                     "name": "bookingParty.forwarderParty.id",
-                    "selector": "partyId"
+                    "selector": "partyId",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderParty.name",
-                    "selector": "partyName"
+                    "selector": "partyName",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderParty.erpCode",
-                    "selector": "partyErpCode"
+                    "selector": "partyErpCode",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderPartyId",
-                    "selector": "partyId"
+                    "selector": "partyId",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderPartyName",
-                    "selector": "partyName"
+                    "selector": "partyName",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderPartyCode",
-                    "selector": "partyErpCode"
+                    "selector": "partyErpCode",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderPartyPhone",
-                    "selector": "partyPhone"
+                    "selector": "partyPhone",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderPartyFax",
-                    "selector": "partyFax"
+                    "selector": "partyFax",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderPartyEmail",
-                    "selector": "partyEmail"
+                    "selector": "partyEmail",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderPartyAddress",
-                    "selector": "partyAddress"
+                    "selector": "partyAddress",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderPartyCityCode",
-                    "selector": "partyCityCode"
+                    "selector": "partyCityCode",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderPartyStateCode",
-                    "selector": "partyStateCode"
+                    "selector": "partyStateCode",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderPartyCountryCode",
-                    "selector": "partyCountryCode"
+                    "selector": "partyCountryCode",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderPartyZip",
-                    "selector": "partyZip"
+                    "selector": "partyZip",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderPartyContactPersonId",
-                    "selector": "contactPersonId"
+                    "selector": "contactPersonId",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderPartyContactPersonEmail",
-                    "selector": "contactPersonEmail"
+                    "selector": "contactPersonEmail",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderPartyContactPersonName",
-                    "selector": "contactPersonName"
+                    "selector": "contactPersonName",
+                    "nullNotApply": true
                   }, {
                     "name": "bookingParty.forwarderPartyContactPersonPhone",
-                    "selector": "contactPersonPhone"
+                    "selector": "contactPersonPhone",
+                    "nullNotApply": true
                   }],
                   "component": "AsyncAutoSuggest",
                   "class": "xs-12 md-3 padding-topbottom-4",
