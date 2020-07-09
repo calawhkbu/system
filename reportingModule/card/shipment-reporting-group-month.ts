@@ -3,6 +3,7 @@ import { IQueryParams } from 'classes/query'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import _ = require('lodash')
 import Moment = require('moment')
+import { extendDate, expandSummaryVariable } from 'utils/card'
 
 interface Result {
   moment: typeof Moment
@@ -78,31 +79,37 @@ export default {
         const { moment } = await this.preparePackages(user)
         const subqueries = (params.subqueries = params.subqueries || {})
 
-        let summaryVariables: string[] = []
-        if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
-          // sumamary variable
-          summaryVariables = Array.isArray(subqueries.summaryVariables.value) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value]
-        }
-        if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
-          summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value])]
-        }
-        if (!(summaryVariables && summaryVariables.length)) throw new Error('MISSING_summaryVariables')
+        // let summaryVariables: string[] = []
+        // if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
+        //   // sumamary variable
+        //   summaryVariables = Array.isArray(subqueries.summaryVariables.value) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value]
+        // }
+        // if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
+        //   summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value])]
+        // }
+        // if (!(summaryVariables && summaryVariables.length)) throw new Error('MISSING_summaryVariables')
 
-        prevResult.moment = moment
+        const summaryVariables = expandSummaryVariable(subqueries)
         prevResult.summaryVariables = summaryVariables
 
-        // limit/extend to 1 year
-        const year = (subqueries.date && subqueries.date !== true && 'from' in subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
-        subqueries.date = {
-          from: moment()
-            .year(year)
-            .startOf('year')
-            .format('YYYY-MM-DD'),
-          to: moment()
-            .year(year)
-            .endOf('year')
-            .format('YYYY-MM-DD')
-        }
+        prevResult.moment = moment
+        // prevResult.summaryVariables = summaryVariables
+
+        // // limit/extend to 1 year
+        // const year = (subqueries.date && subqueries.date !== true && 'from' in subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
+        // subqueries.date = {
+        //   from: moment()
+        //     .year(year)
+        //     .startOf('year')
+        //     .format('YYYY-MM-DD'),
+        //   to: moment()
+        //     .year(year)
+        //     .endOf('year')
+        //     .format('YYYY-MM-DD')
+        // }
+
+                // extend date into whole year
+        extendDate(subqueries,moment,'year')
 
         // select
         params.fields = ['moduleTypeCode', 'reportingGroup', 'jobMonth', ...summaryVariables]

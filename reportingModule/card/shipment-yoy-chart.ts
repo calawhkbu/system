@@ -140,8 +140,8 @@ export default {
         },
         {
           label: 'cargoValue',
-          value: 'cargoValue',
-        },
+          value: 'cargoValue'
+        }
       ],
       required: true,
     },
