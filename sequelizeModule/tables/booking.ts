@@ -1,4 +1,4 @@
-import { IConditionalExpression, OrExpressions, AndExpressions, BinaryExpression, ColumnExpression, FunctionExpression, InExpression, Query, ResultColumn, FromTable } from 'node-jql'
+import { IConditionalExpression, OrExpressions, AndExpressions, BinaryExpression, ColumnExpression, FunctionExpression, InExpression, Query, ResultColumn, FromTable, MathExpression } from 'node-jql'
 import { JwtPayload, JwtPayloadParty } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction, Op } from 'sequelize'
 import moment = require('moment')
@@ -130,13 +130,10 @@ export default async function getDefaultParams(
                       'booking_party',
                       `${type === 'office' ? 'forwarder' : type}PartyId`
                     )
-                  : new FunctionExpression(
-                      'JSON_UNQUOTE',
-                      new FunctionExpression(
-                        'JSON_EXTRACT',
-                        new ColumnExpression('booking_party', 'flexData'),
-                        `$.${type}PartyId`
-                      )
+                  : new MathExpression(
+                      new ColumnExpression('booking_party', 'flexData'),
+                      '->>',
+                      `$.${type}PartyId`
                     )
                 return new BinaryExpression(con, '=', party.id)
               })

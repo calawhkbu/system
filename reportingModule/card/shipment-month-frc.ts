@@ -189,6 +189,14 @@ export default {
             label: 'quantity',
             value: 'quantity',
           },
+          {
+            label: 'cargoValue',
+            value: 'cargoValue'
+          },
+          {
+            label: 'containerCount',
+            value: 'containerCount'
+          }
         ],
         multi: false,
         required: true,

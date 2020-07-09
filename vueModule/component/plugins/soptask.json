@@ -24,13 +24,54 @@
   "baseDetailProps": {
     "headers": [
       {
-        "key": "name"
+        "key": "checkbox",
+        "checkbox": true,
+        "showCheckAll": true
       },
       {
-        "key": "system"
+        "key": "isDone",
+        "boolean": true,
+        "i18nContext": "SopTask",
+        "tooltip": "isDoneMsg",
+        "showTooltipWhen": "true",
+        "label": "",
+        "width": 24
       },
       {
-        "key": "category"
+        "key": "hasRemark",
+        "boolean": true,
+        "i18nContext": "SopTask",
+        "tooltip": "hasRemarkMsg",
+        "showTooltipWhen": "true",
+        "trueIcon": "comment",
+        "trueColor": "#e7e79d",
+        "falseIcon": "",
+        "badgeKey": "noOfRemarks",
+        "label": "",
+        "width": 24
+      },
+      {
+        "key": "system",
+        "width": 60,
+        "align": "center"
+      },
+      {
+        "key": "category",
+        "width": 120
+      },
+      {
+        "key": "name",
+        "width": 200
+      },
+      {
+        "key": "startAt",
+        "format": "YYYY/MM/DD",
+        "width": 90
+      },
+      {
+        "key": "dueAt",
+        "format": "YYYY/MM/DD",
+        "width": 90
       }
     ]
   }
