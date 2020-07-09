@@ -581,9 +581,10 @@ query.table('shipment_cargo', new Query({
                     'CAST',
                     new ParameterExpression(
                       null,
-                      new FunctionExpression(
-                        'JSON_UNQUOTE',
-                        new FunctionExpression('JSON_EXTRACT', new ColumnExpression('shipment_cargo', 'flexData'), '$.decvalue')
+                      new MathExpression(
+                        new ColumnExpression('shipment_cargo', 'flexData'),
+                        '->>',
+                        '$.decvalue'
                       ),
                       'AS DECIMAL'
                     )
@@ -1031,19 +1032,22 @@ const shipIdExpression = new QueryExpression(new Query({
 }))
 
 
-const officeErpSiteExpression = new FunctionExpression(
-  'JSON_UNQUOTE',
-  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.erpSite')
+const officeErpSiteExpression = new MathExpression(
+  new ColumnExpression('office', 'thirdPartyCode'),
+  '->>',
+  '$.erpSite'
 )
 
-const officeErpCodeExpression = new FunctionExpression(
-  'JSON_UNQUOTE',
-  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.erp')
+const officeErpCodeExpression = new MathExpression(
+  new ColumnExpression('office', 'thirdPartyCode'),
+  '->>',
+  '$.erp'
 )
 
-const controllingCustomerErpCodeExpression = new FunctionExpression(
-  'JSON_UNQUOTE',
-  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('controllingCustomer', 'thirdPartyCode'), '$.erp')
+const controllingCustomerErpCodeExpression = new MathExpression(
+  new ColumnExpression('controllingCustomer', 'thirdPartyCode'),
+  '->>',
+  '$.erp'
 )
 
 
@@ -2374,7 +2378,11 @@ const summaryFieldList: SummaryField[] = [
       return {
         name: reportingSummaryFieldName,
         summaryType: 'sum',
-        expression: new FunctionExpression('JSON_UNQUOTE',new FunctionExpression('JSON_EXTRACT',new ColumnExpression('shipment','report'),`$.${reportingSummaryFieldName}`))
+        expression: new MathExpression(
+          new ColumnExpression('shipment','report'),
+          '->>',
+          `$.${reportingSummaryFieldName}`
+        )
       } as SummaryField
     })
 

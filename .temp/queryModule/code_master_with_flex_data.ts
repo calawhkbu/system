@@ -13,6 +13,7 @@ import {
   GroupBy,
   AndExpressions,
   JoinClause,
+  MathExpression,
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -208,13 +209,10 @@ query
     'flexDataData',
     new Query({
       $where: new BinaryExpression(
-        new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression(
-            'JSON_EXTRACT',
-            new ColumnExpression('flex_data', 'data'),
-            new Unknown('string')
-          )
+        new MathExpression(
+          new ColumnExpression('flex_data', 'data'),
+          '->>',
+          new Unknown('string')
         ),
         '='
       ),
