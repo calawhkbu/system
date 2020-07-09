@@ -17,6 +17,41 @@ export const setDataFunction = {
   poNos: async({ shipmentPo = [] }: any) => joinData(shipmentPo, 'poNo'),
   class: async({ isDirect, isCoload }: any) => {
     return `${isDirect ? 'D' : ''}${isCoload ? 'C' : ''}`
+  },
+  report: async({ shipmentContainers = [], shipmentCargos = [] }: any) => {
+    return {
+      containerCount: shipmentContainers.length,
+      shipmentCargoValueInHKD: shipmentCargos.reduce((accumulator: number, { flexData }) => {
+        if (flexData && flexData['']) {
+          accumulator = accumulator + parseFloat(flexData[''])
+        }
+        return accumulator
+      }, 0),
+      shipmentCargoValueInUSD: shipmentCargos.reduce((accumulator: number, { flexData }) => {
+        if (flexData && flexData['']) {
+          accumulator = accumulator + parseFloat(flexData[''])
+        }
+        return accumulator
+      }, 0),
+      // shipmentCargoValueInHKD: shipmentCargos.reduce((accumulator: number, { flexData }) => {
+      //   if (flexData && flexData['']) {
+      //     accumulator = accumulator + parseFloat(flexData[''])
+      //   }
+      //   return accumulator
+      // }, 0),
+      // shipmentCargoValueInHKD: shipmentCargos.reduce((accumulator: number, { flexData }) => {
+      //   if (flexData && flexData['']) {
+      //     accumulator = accumulator + parseFloat(flexData[''])
+      //   }
+      //   return accumulator
+      // }, 0),
+      // shipmentCargoValueInHKD: shipmentCargos.reduce((accumulator: number, { flexData }) => {
+      //   if (flexData && flexData['']) {
+      //     accumulator = accumulator + parseFloat(flexData[''])
+      //   }
+      //   return accumulator
+      // }, 0)
+    }
   }
 }
 
