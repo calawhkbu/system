@@ -1,5 +1,6 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
+import { expandSummaryVariable, expandGroupEntity } from 'utils/card'
 
 export default {
   jqls: [
@@ -90,6 +91,30 @@ export default {
               id: { value: idList }
             }
           }
+        }
+
+
+        if (subqueries.groupByEntityValue) {
+
+          const { value: groupByEntityValue  } = subqueries.groupByEntityValue as { value: string }
+          const { codeColumnName } = expandGroupEntity(subqueries)
+
+          subqueries[codeColumnName] = {
+            value : groupByEntityValue
+          }
+        }
+
+        // case when clicked from an intermediate bottom sheet
+        if (subqueries.bottomSheetGroupByEntityValue)
+        {
+
+          const { value: bottomSheetGroupByEntityValue  } = subqueries.bottomSheetGroupByEntityValue as { value: string }
+          const { codeColumnName: bottomSheetCodeColumnName } = expandGroupEntity(subqueries,'bottomSheetGroupByEntity')
+
+          subqueries[bottomSheetCodeColumnName] = {
+            value : bottomSheetGroupByEntityValue
+          }
+
         }
 
         return params

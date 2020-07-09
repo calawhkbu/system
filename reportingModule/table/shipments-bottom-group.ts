@@ -1,7 +1,8 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
-import { expandGroupEntity, expandSummaryVariable } from 'utils/card'
+import { expandGroupEntity } from 'utils/card'
 import Moment = require('moment')
+import { OrderBy } from 'node-jql'
 
 interface Result {
   moment: typeof Moment
@@ -13,7 +14,8 @@ interface Result {
   bottomSheetCodeColumnName: string
   bottomSheetNameColumnName: string
 
-  summaryVariables: string[]
+  bottomSheetMetric1: string
+  bottomSheetMetric2: string
 }
 
 
@@ -22,15 +24,15 @@ export default {
   jqls: [
     {
       type: 'prepareParams',
+      defaultResult: {},
       async prepareParams(params, prevResult, user): Promise<IQueryParams> {
-
         const { moment } = await this.preparePackages(user)
 
         prevResult.moment = moment
 
         const subqueries = (params.subqueries = params.subqueries || {})
 
-        const { groupByEntityValue } = subqueries
+        const groupByEntityValue = (subqueries.groupByEntityValue as { value: any }).value
 
         const { 
           groupByEntity: bottomSheetGroupByEntity,
@@ -38,7 +40,30 @@ export default {
           nameColumnName: bottomSheetNameColumnName
         } = expandGroupEntity(subqueries,'bottomSheetGroupByEntity')
 
-        const bottomSheetSummaryVariables = expandSummaryVariable(subqueries,'bottomSheetSummaryVariables','bottomSheetSummaryVariable')
+
+        let bottomSheetMetric1: string,bottomSheetMetric2 : string
+
+        if (subqueries.bottomSheetMetric1) {
+          bottomSheetMetric1 = (subqueries.bottomSheetMetric1 as any).value
+          prevResult.bottomSheetMetric1 = bottomSheetMetric1
+        }
+
+        if (subqueries.bottomSheetMetric2)
+        {
+          bottomSheetMetric2 = (subqueries.bottomSheetMetric2 as any).value
+          prevResult.bottomSheetMetric2 = bottomSheetMetric2
+        }
+
+        const bottomSheetMetricList = [bottomSheetMetric1,bottomSheetMetric2].filter(x => !!x)
+
+        console.log(`bottomSheetMetricList`)
+        console.log(bottomSheetMetricList)
+
+        if (!bottomSheetMetricList.length)
+        {
+          throw new Error('bottomSheetMetricList empty')
+        }
+
 
         const { 
           groupByEntity,
@@ -50,13 +75,15 @@ export default {
         prevResult.bottomSheetCodeColumnName = bottomSheetCodeColumnName
         prevResult.bottomSheetNameColumnName = bottomSheetNameColumnName
 
+        prevResult.bottomSheetMetricList = bottomSheetMetricList
+
         // filter by the selected value
         subqueries[codeColumnName] = {
           value: groupByEntityValue
         }
 
         params.fields = [
-          ...bottomSheetSummaryVariables,
+          ...bottomSheetMetricList,
           bottomSheetNameColumnName,
           bottomSheetCodeColumnName,
         ]
@@ -64,6 +91,8 @@ export default {
         params.groupBy = [
           bottomSheetCodeColumnName
         ]
+
+        params.sorting = new OrderBy(`${bottomSheetMetricList[0]}`, 'DESC')
       
         return params
       }
@@ -79,7 +108,8 @@ export default {
             groupByEntity,
             codeColumnName,
             nameColumnName,
-            summaryVariables,
+            bottomSheetMetric1,
+            bottomSheetMetric2,
             bottomSheetCodeColumnName,
             bottomSheetGroupByEntity,
             bottomSheetNameColumnName
@@ -97,9 +127,21 @@ export default {
 
           }
 
-          for (const variable of summaryVariables) {
-            row_[`${variable}`] = row[variable]
+          if (bottomSheetMetric1)
+          {
+            row_[`bottomSheetMetric1`] = bottomSheetMetric1
+            row_[`bottomSheetMetric1Value`] = row[bottomSheetMetric1]
           }
+
+          if (bottomSheetMetric2)
+          {
+            row_[`bottomSheetMetric2`] = bottomSheetMetric2
+            row_[`bottomSheetMetric2Value`] = row[bottomSheetMetric2]
+
+          }
+
+
+
 
           return row_
         })
@@ -111,8 +153,10 @@ export default {
   columns: [
     { key: 'code' },
     { key: 'name' },
-    { key: 'metric1' },
-    { key: 'metric2' },
-    { key: 'metric3' }
+    { key: 'bottomSheetMetric1' },
+    { key: 'bottomSheetMetric2' },
+    { key: 'bottomSheetMetric1Value' },
+    { key: 'bottomSheetMetric2Value' }
+
   ]
 } as JqlDefinition
