@@ -1,5 +1,5 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, OrExpressions, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions } from "node-jql";
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression } from "node-jql";
 
 const mainTable = 'sop_task'
 const joinTable = 'sop_template_task'
@@ -52,26 +52,35 @@ query.field('uniqueId', {
   $select: new ResultColumn(uniqueIdExpression, 'uniqueId')
 })
 
-const statusAtExpression = new FunctionExpression('JSON_EXTRACT',
+const statusAtExpression = new MathExpression(
   columnExpressions['statusList'],
-  '$[0].statusAt'
+  '->>',
+  new Value('$[0].statusAt')
 )
 query.field('statusAt', {
   $select: new ResultColumn(statusAtExpression, 'statusAt')
 })
 
-const statusByExpression = new FunctionExpression('JSON_EXTRACT',
+const statusByExpression = new MathExpression(
   columnExpressions['statusList'],
-  '$[0].statusBy'
+  '->>',
+  new Value('$[0].statusBy')
 )
-query.field('statusBy', {
-  $select: new ResultColumn(statusByExpression, 'statusBy')
+query.field('statusBy', params => {
+  const me = typeof params.subqueries.user === 'object' && 'value' in params.subqueries.user ? params.subqueries.user.value : ''
+  const byMeExpression = new BinaryExpression(statusByExpression, '=', me)
+  return { $select: new ResultColumn(new FunctionExpression('IF',
+    byMeExpression,
+    new Value('me'),
+    statusByExpression,
+  ), 'statusBy') }
 })
 
 const isDoneExpression = new BinaryExpression(
-  new FunctionExpression('JSON_EXTRACT',
+  new MathExpression(
     columnExpressions['statusList'],
-    '$[0].status'
+    '->>',
+    new Value('$[0].status')
   ),
   '=',
   new Value('Done')
@@ -160,28 +169,37 @@ query.field('noOfRemarks', {
   $select: new ResultColumn(numberRemarksExpression, 'noOfRemarks')
 })
 
-const latestRemarkExpression = new FunctionExpression('JSON_EXTRACT',
+const latestRemarkExpression = new MathExpression(
   columnExpressions['remark'],
+  '->>',
   new Value('$[0].message')
 )
 query.field('latestRemark', {
   $select: new ResultColumn(latestRemarkExpression, 'latestRemark')
 })
 
-const latestRemarkAtExpression = new FunctionExpression('JSON_EXTRACT',
+const latestRemarkAtExpression = new MathExpression(
   columnExpressions['remark'],
+  '->>',
   new Value('$[0].messageAt')
 )
 query.field('latestRemarkAt', {
   $select: new ResultColumn(latestRemarkAtExpression, 'latestRemarkAt')
 })
 
-const latestRemarkByExpression = new FunctionExpression('JSON_EXTRACT',
+const latestRemarkByExpression = new MathExpression(
   columnExpressions['remark'],
+  '->>',
   new Value('$[0].messageBy')
 )
-query.field('latestRemarkBy', {
-  $select: new ResultColumn(latestRemarkByExpression, 'latestRemarkBy')
+query.field('latestRemarkBy', params => {
+  const me = typeof params.subqueries.user === 'object' && 'value' in params.subqueries.user ? params.subqueries.user.value : ''
+  const byMeExpression = new BinaryExpression(latestRemarkByExpression, '=', me)
+  return { $select: new ResultColumn(new FunctionExpression('IF',
+    byMeExpression,
+    new Value('me'),
+    latestRemarkByExpression,
+  ), 'latestRemarkBy') }
 })
 
 query.subquery('tableName', {

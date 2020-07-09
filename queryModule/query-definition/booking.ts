@@ -21,6 +21,7 @@ import {
   IConditionalExpression,
   OrderBy,
   ICase,
+  MathExpression,
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
 import { ExpressionHelperInterface, registerAll, RegisterInterface, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField } from 'utils/jql-subqueries'
@@ -931,9 +932,10 @@ const alertMessageExpression = new CaseExpression({
     {
       // retrieve custom message from flexData
       $when: new BinaryExpression(new ColumnExpression('alert', 'alertCategory'), '=', 'Message'),
-      $then: new FunctionExpression(
-        'JSON_UNQUOTE',
-        new FunctionExpression('JSON_EXTRACT', new ColumnExpression('alert', 'flexData'), '$.customMessage')
+      $then: new MathExpression(
+        new ColumnExpression('alert', 'flexData'),
+        '->>',
+        '$.customMessage'
       )
     }
 
@@ -970,9 +972,10 @@ const masterNoExpression = new FunctionExpression(
   new Value(null)
 )
 
-const poNoExpression = new FunctionExpression(
-  'JSON_UNQUOTE',
-  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('booking', 'flexData'), '$.poNo')
+const poNoExpression = new MathExpression(
+  new ColumnExpression('booking', 'flexData'),
+  '->>',
+  '$.poNo'
 )
 
 const cbmExpression = new FunctionExpression(
