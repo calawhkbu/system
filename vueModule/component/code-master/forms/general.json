@@ -1,5 +1,6 @@
 {
   "layout": "v-card",
+  "class": "padding-top-8 padding-bottom-8",
   "components": [{
     "is": "WidgetForm",
     "props": {
@@ -9,17 +10,6 @@
           "class": "xs-12",
           "component": "AsyncAutoSuggest",
           "props": {
-            "searchValueParams": {
-              "method": "POST",
-              "url": "api/code/codeType/list",
-              "data": {
-                "subqueries": {
-                  "codeTypeLike": {
-                    "value": "{{context.autoSuggestModel}}"
-                  }
-                }
-              }
-            },
             "searchTextParams": {
               "method": "POST",
               "url": "api/code/codeType/list",
@@ -28,21 +18,20 @@
                   "codeTypeLike": {
                     "value": "{{context.search}}"
                   }
-                }
+                },
+                "limit": 5
               }
             },
             "canCreate": true,
             "canCreateValue": "{{autoSuggestModel}}"
           }
         },
-
         {
           "label": "CodeMasterPage.code",
           "name": "code",
           "component": "v-text-field",
           "class": "xs-6"
         },
-
         {
           "label": "CodeMasterPage.name",
           "name": "name",

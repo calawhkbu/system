@@ -20,37 +20,7 @@ export const setDataFunction = {
   },
   report: async({ shipmentContainers = [], shipmentCargos = [] }: any) => {
     return {
-      containerCount: shipmentContainers.length,
-      shipmentCargoValueInHKD: shipmentCargos.reduce((accumulator: number, { flexData }) => {
-        if (flexData && flexData['']) {
-          accumulator = accumulator + parseFloat(flexData[''])
-        }
-        return accumulator
-      }, 0),
-      shipmentCargoValueInUSD: shipmentCargos.reduce((accumulator: number, { flexData }) => {
-        if (flexData && flexData['']) {
-          accumulator = accumulator + parseFloat(flexData[''])
-        }
-        return accumulator
-      }, 0),
-      // shipmentCargoValueInHKD: shipmentCargos.reduce((accumulator: number, { flexData }) => {
-      //   if (flexData && flexData['']) {
-      //     accumulator = accumulator + parseFloat(flexData[''])
-      //   }
-      //   return accumulator
-      // }, 0),
-      // shipmentCargoValueInHKD: shipmentCargos.reduce((accumulator: number, { flexData }) => {
-      //   if (flexData && flexData['']) {
-      //     accumulator = accumulator + parseFloat(flexData[''])
-      //   }
-      //   return accumulator
-      // }, 0),
-      // shipmentCargoValueInHKD: shipmentCargos.reduce((accumulator: number, { flexData }) => {
-      //   if (flexData && flexData['']) {
-      //     accumulator = accumulator + parseFloat(flexData[''])
-      //   }
-      //   return accumulator
-      // }, 0)
+      containerCount: shipmentContainers.length
     }
   }
 }
