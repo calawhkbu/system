@@ -14,7 +14,8 @@
           "primaryKey: context.$route.params.params,",
           "}",
           "};"
-        ]
+        ],
+        "customDetailLoading": true
       }
     }
   ]
