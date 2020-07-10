@@ -16,6 +16,7 @@ import {
   CaseExpression,
   ExistsExpression,
   QueryExpression,
+  MathExpression,
 } from 'node-jql'
 import { ExpressionHelperInterface, registerAll } from 'utils/jql-subqueries'
 
@@ -43,13 +44,10 @@ const query = new QueryDef(
       // ),
 
       new ResultColumn(
-        new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression(
-            'JSON_EXTRACT',
-            new ColumnExpression('party', 'thirdPartyCode'),
-            '$.old360'
-          )
+        new MathExpression(
+          new ColumnExpression('party', 'thirdPartyCode'),
+          '->>',
+          '$.old360'
         ),
         'old360Id'
       ),
@@ -89,13 +87,10 @@ const query = new QueryDef(
   })
 )
 
-const old360IdExpression = new FunctionExpression(
-  'JSON_UNQUOTE',
-  new FunctionExpression(
-    'JSON_EXTRACT',
-    new ColumnExpression('party', 'thirdPartyCode'),
-    '$.old360'
-  )
+const old360IdExpression = new MathExpression(
+  new ColumnExpression('party', 'thirdPartyCode'),
+  '->>',
+  '$.old360'
 )
 
 const isActiveConditionExpression = new AndExpressions([

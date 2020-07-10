@@ -1,4 +1,4 @@
-import { IConditionalExpression, OrExpressions, AndExpressions, BinaryExpression, ColumnExpression, FunctionExpression, InExpression, Query, ResultColumn, FromTable } from 'node-jql'
+import { IConditionalExpression, OrExpressions, AndExpressions, BinaryExpression, ColumnExpression, FunctionExpression, InExpression, Query, ResultColumn, FromTable, MathExpression } from 'node-jql'
 import { JwtPayload, JwtPayloadParty } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import { joinData } from 'utils/helper'
@@ -20,37 +20,7 @@ export const setDataFunction = {
   },
   report: async({ shipmentContainers = [], shipmentCargos = [] }: any) => {
     return {
-      containerCount: shipmentContainers.length,
-      shipmentCargoValueInHKD: shipmentCargos.reduce((accumulator: number, { flexData }) => {
-        if (flexData && flexData['']) {
-          accumulator = accumulator + parseFloat(flexData[''])
-        }
-        return accumulator
-      }, 0),
-      shipmentCargoValueInUSD: shipmentCargos.reduce((accumulator: number, { flexData }) => {
-        if (flexData && flexData['']) {
-          accumulator = accumulator + parseFloat(flexData[''])
-        }
-        return accumulator
-      }, 0),
-      // shipmentCargoValueInHKD: shipmentCargos.reduce((accumulator: number, { flexData }) => {
-      //   if (flexData && flexData['']) {
-      //     accumulator = accumulator + parseFloat(flexData[''])
-      //   }
-      //   return accumulator
-      // }, 0),
-      // shipmentCargoValueInHKD: shipmentCargos.reduce((accumulator: number, { flexData }) => {
-      //   if (flexData && flexData['']) {
-      //     accumulator = accumulator + parseFloat(flexData[''])
-      //   }
-      //   return accumulator
-      // }, 0),
-      // shipmentCargoValueInHKD: shipmentCargos.reduce((accumulator: number, { flexData }) => {
-      //   if (flexData && flexData['']) {
-      //     accumulator = accumulator + parseFloat(flexData[''])
-      //   }
-      //   return accumulator
-      // }, 0)
+      containerCount: shipmentContainers.length
     }
   }
 }
@@ -108,13 +78,10 @@ export default async function getDefaultParams(
                       'shipment_party',
                       `${type === 'forwarder' ? 'office' : type}PartyId`
                     )
-                  : new FunctionExpression(
-                      'JSON_UNQUOTE',
-                      new FunctionExpression(
-                        'JSON_EXTRACT',
-                        new ColumnExpression('shipment_party', 'flexData'),
-                        `$.${type}PartyId`
-                      )
+                  : new MathExpression(
+                      new ColumnExpression('shipment_party', 'flexData'),
+                      '->>',
+                      `$.${type}PartyId`
                     )
                 return new BinaryExpression(con, '=', party.id)
               })

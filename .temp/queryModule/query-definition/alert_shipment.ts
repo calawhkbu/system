@@ -10,6 +10,7 @@ import {
   Unknown,
   IsNullExpression,
   ResultColumn,
+  MathExpression,
 } from 'node-jql'
 const query = new QueryDef(
   new Query({
@@ -85,13 +86,10 @@ query
     'moduleType',
     new Query({
       $where: new BinaryExpression(
-        new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression(
-            'JSON_EXTRACT',
-            new ColumnExpression('flex_data', 'data'),
-            '$.entity.moduleType.code'
-          )
+        new MathExpression(
+          new ColumnExpression('flex_data', 'data'),
+          '->>',
+          '$.entity.moduleType.code'
         ),
         '='
       ),
