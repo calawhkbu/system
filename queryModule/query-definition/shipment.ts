@@ -33,7 +33,7 @@ import {
   IQuery
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, DateFieldTimezoneMap, registerQueryCondition, registerCheckboxField } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, DateFieldTimezoneMap, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter } from 'utils/jql-subqueries'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -2226,21 +2226,6 @@ const fieldList = [
 registerAll(query, baseTableName, fieldList)
 
 
-
-// calculation ==============================
-
-// query
-//   .register(
-//     'count',
-//     new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))), 'count')
-//   )
-
-// query
-//   .register(
-//     'alertCount',
-//     new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))), 'alertCount')
-//   )
-
 // summary fields  =================
 
 const nestedSummaryList = [
@@ -2316,6 +2301,7 @@ const nestedSummaryList = [
 ] as NestedSummaryCondition[]
 
 
+registerNestedSummaryFilter(query,nestedSummaryList)
 
 // field that store in report json
 const reportingSummaryFieldNameList = [
@@ -2387,7 +2373,7 @@ registerCheckboxField(query)
 
 
 
-
+// search all party in partyList
 query.subquery(false,'anyPartyId',((value: any, params?: IQueryParams) => {
 
   const partyIdList = value.value

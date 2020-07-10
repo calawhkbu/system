@@ -1,7 +1,9 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
-import { expandGroupEntity } from 'utils/card'
+import { expandGroupEntity, extendDate, LastCurrentUnit, calculateLastCurrent } from 'utils/card'
 import Moment = require('moment')
+
+import * as  rawMoment from 'moment'
 import { OrderBy } from 'node-jql'
 
 interface Result {
@@ -13,6 +15,8 @@ interface Result {
   bottomSheetGroupByEntity: string
   bottomSheetCodeColumnName: string
   bottomSheetNameColumnName: string
+
+  bottomSheetDynamicHeaderKey: string
 
   bottomSheetMetric1: string
   bottomSheetMetric2: string
@@ -54,10 +58,8 @@ export default {
           prevResult.bottomSheetMetric2 = bottomSheetMetric2
         }
 
-        const bottomSheetMetricList = [bottomSheetMetric1,bottomSheetMetric2].filter(x => !!x)
 
-        console.log(`bottomSheetMetricList`)
-        console.log(bottomSheetMetricList)
+        const bottomSheetMetricList = [bottomSheetMetric1,bottomSheetMetric2].filter(x => !!x)
 
         if (!bottomSheetMetricList.length)
         {
@@ -65,7 +67,7 @@ export default {
         }
 
 
-        const { 
+        const {
           groupByEntity,
           codeColumnName,
           nameColumnName
@@ -92,6 +94,109 @@ export default {
           bottomSheetCodeColumnName
         ]
 
+
+        // guess time range base of month, lastCurrentUnit, lastOrCurrent
+
+        // need to use these 3 value to re-calculate the date
+        const month = (subqueries.month || {} as any).value // warning this could be total
+
+        const lastCurrentUnit = (subqueries.lastCurrentUnit || {} as any).value  as LastCurrentUnit
+        const lastOrCurrent = (subqueries.lastOrCurrent || {} as any).value as 'last' | 'current'
+
+
+        // used for showing last Or Current
+        if (lastCurrentUnit || lastOrCurrent)
+        {
+
+          let finalFrom: string, finalTo: string
+
+          if (!lastCurrentUnit)
+          {
+            throw new Error(`missing lastCurrentUnit`)
+          }
+
+          if (!lastOrCurrent)
+          {
+            throw new Error(`missing lastOrCurrent`)
+          }
+
+          const { lastFrom, lastTo, currentFrom, currentTo } = calculateLastCurrent(subqueries,moment)
+
+          if (lastOrCurrent === 'last')
+          {
+            finalFrom = lastFrom
+            finalTo = lastTo
+          }
+          else 
+          {
+            finalFrom = currentFrom
+            finalTo = currentTo
+
+          }
+
+          subqueries.date = {
+            from : finalFrom,
+            to: finalTo
+          }
+
+        }
+
+        // used for showing specific month
+        if (month) {
+
+          const { from, to } = subqueries.date as { from, to }
+
+          // only handle single month case, cases like "total" will not handle
+          if (rawMoment.months().includes(month)){
+
+            const newFrom = moment(from).month(month).startOf('month').format('YYYY-MM-DD')
+            const newTo = moment(from).month(month).endOf('month').format('YYYY-MM-DD')
+
+            subqueries.date = {
+              from : newFrom,
+              to: newTo
+            }
+
+          }
+
+        }
+
+        // if (subqueries)
+        // {
+        //   const bottomSheetDynamicHeaderKey = (subqueries.bottomSheetDynamicHeaderKey as any).value
+        //   prevResult.bottomSheetDynamicHeaderKey = bottomSheetDynamicHeaderKey
+
+
+        //   if (['last','metric1_last'].includes(bottomSheetDynamicHeaderKey))
+
+        //   extendDate(subqueries,moment,'year')
+        //   const { from,to } = subqueries.date as any
+
+        //   console.log(`bottomSheetDynamicHeaderKey`)
+        //   console.log(bottomSheetDynamicHeaderKey)
+
+
+
+        //   if (rawMoment.months().includes(bottomSheetDynamicHeaderKey)){
+        //     const newFrom = moment(from).month(bottomSheetDynamicHeaderKey).startOf('month').format('YYYY-MM-DD')
+        //     const newTo = moment(from).month(bottomSheetDynamicHeaderKey).endOf('month').format('YYYY-MM-DD')
+
+        //     subqueries.date = {
+        //       from : newFrom,
+        //       to: newTo
+        //     } 
+
+        //   }
+
+        //   console.log(`subqueries.date`)
+        //   console.log(subqueries.date)
+        // }
+
+        
+
+
+
+
         params.sorting = new OrderBy(`${bottomSheetMetricList[0]}`, 'DESC')
       
         return params
@@ -112,7 +217,8 @@ export default {
             bottomSheetMetric2,
             bottomSheetCodeColumnName,
             bottomSheetGroupByEntity,
-            bottomSheetNameColumnName
+            bottomSheetNameColumnName,
+            bottomSheetDynamicHeaderKey
           }: Result
         ): any[] {
 
