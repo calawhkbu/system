@@ -372,6 +372,13 @@
           "name": "shipmentParty.{{flex}}{{key}}PartyContacts",
           "component": "TableField",
           "class": "xs-12",
+          "canEdit": [
+            "const value = extraFunction._.get(form, 'shipmentParty.{{flex}}{{key}}PartyId');",
+            "if (value) {",
+            "return true",
+            "}",
+            "return false"
+          ],
           "props": {
             "overrideRowIndex": 1,
             "fields": [{
@@ -460,7 +467,6 @@
             "}",
             "return '{{flex}}'.length > 0"
           ],
-          "checkDisplayWhen": "return !readonly",
           "relation": "shipmentParty.{{flex}}{{key}}PartyStateCode",
           "relationMore": [{
             "name": "shipmentParty.{{flex}}{{key}}PartyStateCode",
