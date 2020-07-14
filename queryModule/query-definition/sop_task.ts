@@ -15,7 +15,7 @@ const columns = [
   [mainTable, 'dueAt'],
   [mainTable, 'deadline'],
   [mainTable, 'statusList'],
-  [mainTable, 'closed'],
+  [mainTable, 'closed', 'isClosed'],
   [mainTable, 'deletedBy'],
   [mainTable, 'deletedAt'],
   [joinTable, 'id', 'templateTaskId'],
@@ -111,7 +111,7 @@ const isDoneExpression = new BinaryExpression(
 )
 query.field('isDone', {
   $select: new ResultColumn(new FunctionExpression('IF',
-    new OrExpressions([isDoneExpression, columnExpressions['closed']]),
+    new OrExpressions([isDoneExpression, columnExpressions['isClosed']]),
     new Value(1),
     new Value(0)
   ), 'isDone')
@@ -183,7 +183,7 @@ query.field('status', params => {
       $then: new Value('Deleted')
     },
     {
-      $when: columnExpressions['closed'],
+      $when: columnExpressions['isClosed'],
       $then: new Value('Closed')
     },
     {
