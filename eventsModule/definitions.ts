@@ -8,13 +8,14 @@ export default {
   create_related_party: [{ handlerName: 'create_related_party' }], // create related party record
   // create related person
   create_tracking: [{ handlerName: 'create_tracking' }], // create tracking from entity
+  create_location: [{ handlerName: 'create_location' }], // create tracking from entity
   send_data_to_external: [{ handlerName: 'send_data_to_external' }], // send data to external system
   // send edi
   update_document_preview: [{ handlerName: 'update_document_preview' }],
   update_data_from_tracking: [{ handlerName: 'update_data_from_tracking' }], // update tracking id to entity
   // start here
   // test
-  testAll : [
+  testAll: [
     // {
     //   condition : true,
     //   eventName : 'test',
@@ -30,9 +31,9 @@ export default {
 
     {
 
-      condition : true,
-      handlerName : 'checker',
-      otherParameters : {
+      condition: true,
+      handlerName: 'checker',
+      otherParameters: {
 
         checker: [
           {
@@ -50,11 +51,11 @@ export default {
           },
         ],
       },
-      afterEvent : [
+      afterEvent: [
 
         {
-          eventName : 'test',
-          condition : (eventData: EventData<any>) => {
+          eventName: 'test',
+          condition: (eventData: EventData<any>) => {
             return eventData.checkerResult.haveDiff as boolean
           }
         }
@@ -63,8 +64,8 @@ export default {
     } as EventHandlerConfig,
 
     {
-      eventName : 'test',
-      condition : true
+      eventName: 'test',
+      condition: true
 
     } as EventConfig
 
@@ -91,7 +92,7 @@ export default {
               return masterNo
             }, null)
           },
-          soNo: ({ bookingContainers = []}: any) => {
+          soNo: ({ bookingContainers = [] }: any) => {
             return bookingContainers.reduce((nos: string[], { soNo }: any) => {
               if (soNo) {
                 nos.push(soNo)
@@ -99,7 +100,7 @@ export default {
               return soNo
             }, [])
           },
-          containerNo: ({ bookingContainers = []}: any) => {
+          containerNo: ({ bookingContainers = [] }: any) => {
             return bookingContainers.reduce((nos: string[], { containerNo }: any) => {
               if (containerNo) {
                 nos.push(containerNo)
@@ -134,6 +135,11 @@ export default {
       }
     },
     // create related person
+    // create location
+    {
+      condition: true,
+      eventName: 'create_location'
+    },
   ],
   afterUpdate_booking: [
     // send notify
@@ -156,7 +162,7 @@ export default {
               return masterNo
             }, null)
           },
-          soNo: ({ bookingContainers = []}: any) => {
+          soNo: ({ bookingContainers = [] }: any) => {
             return bookingContainers.reduce((nos: string[], { soNo }: any) => {
               if (soNo) {
                 nos.push(soNo)
@@ -164,7 +170,7 @@ export default {
               return soNo
             }, [])
           },
-          containerNo: ({ bookingContainers = []}: any) => {
+          containerNo: ({ bookingContainers = [] }: any) => {
             return bookingContainers.reduce((nos: string[], { containerNo }: any) => {
               if (containerNo) {
                 nos.push(containerNo)
@@ -199,6 +205,11 @@ export default {
       }
     },
     // create related person
+    // create location
+    {
+      condition: true,
+      eventName: 'create_location'
+    },
   ],
   // documents
   afterCreate_document: [
@@ -209,7 +220,24 @@ export default {
     // update perview
     { eventName: 'update_document_preview' },
   ],
+  // location
+  afterCreate_location: [{
+    condition: true,
+    eventName: 'send_data_to_external',
+    otherParameters: {
+      outboundName: 'crm-location'
+    }
+  }],
+  afterUpdate_location: [{
+    condition: true,
+    eventName: 'send_data_to_external',
+    otherParameters: {
+      outboundName: 'crm-location'
+    }
+  }],
   // purchase-order
+  'afterCreate_purchase-order': [],
+  'afterUpdate_purchase-order': [],
   // shipment
   afterCreate_shipment: [
     // create tracking
@@ -257,57 +285,69 @@ export default {
       }
     },
     // create related person
+    // create location
+    {
+      condition: true,
+      eventName: 'create_location'
+    },
   ],
   afterUpdate_shipment: [
     // create tracking
-    {
-      condition: true,
-      eventName: 'create_tracking',
-      otherParameters: {
-        tableName: 'shipment',
-        loadashMapping: {
-          isTracking: 'tracking',
-          moduleTypeCode: 'moduleTypeCode',
-          carrierCode: 'carrierCode',
-          departureDateEstimated: 'shipmentDate.departureDateEstimated',
-          masterNo: ({ masterNo }: any) => {
-            return masterNo
-          },
-          soNo: ({ shipmentContainers = [] }: any) => {
-            console.log(shipmentContainers, 'here')
-            return shipmentContainers.reduce((nos: string[], { carrierBookingNo }: any) => {
-              if (carrierBookingNo) {
-                nos.push(carrierBookingNo)
-              }
-              return nos
-            }, [])
-          },
-          containerNo: ({ shipmentContainers = [] }: any) => {
-            console.log(shipmentContainers, 'here')
-            return shipmentContainers.reduce((nos: string[], { containerNo }: any) => {
-              if (containerNo) {
-                nos.push(containerNo)
-              }
-              return nos
-            }, [])
-          }
-        }
-      }
-    },
-    // create related party
-    {
-      condition: true,
-      eventName: 'create_related_party',
-      otherParameters: {
-        partyLodash: 'shipmentParty',
-        fixedParty: ['shipper', 'consignee', 'office', 'agent', 'roAgent', 'linerAgent', 'controllingCustomer']
-      }
-    },
+    // {
+    //   condition: true,
+    //   eventName: 'create_tracking',
+    //   otherParameters: {
+    //     tableName: 'shipment',
+    //     loadashMapping: {
+    //       isTracking: 'tracking',
+    //       moduleTypeCode: 'moduleTypeCode',
+    //       carrierCode: 'carrierCode',
+    //       departureDateEstimated: 'shipmentDate.departureDateEstimated',
+    //       masterNo: ({ masterNo }: any) => {
+    //         return masterNo
+    //       },
+    //       soNo: ({ shipmentContainers = [] }: any) => {
+    //         console.log(shipmentContainers, 'here')
+    //         return shipmentContainers.reduce((nos: string[], { carrierBookingNo }: any) => {
+    //           if (carrierBookingNo) {
+    //             nos.push(carrierBookingNo)
+    //           }
+    //           return nos
+    //         }, [])
+    //       },
+    //       containerNo: ({ shipmentContainers = [] }: any) => {
+    //         console.log(shipmentContainers, 'here')
+    //         return shipmentContainers.reduce((nos: string[], { containerNo }: any) => {
+    //           if (containerNo) {
+    //             nos.push(containerNo)
+    //           }
+    //           return nos
+    //         }, [])
+    //       }
+    //     }
+    //   }
+    // },
+    // // create related party
+    // {
+    //   condition: true,
+    //   eventName: 'create_related_party',
+    //   otherParameters: {
+    //     partyLodash: 'shipmentParty',
+    //     fixedParty: ['shipper', 'consignee', 'office', 'agent', 'roAgent', 'linerAgent', 'controllingCustomer']
+    //   }
+    // },
     // create related person
+    // create location
+    {
+      condition: true,
+      eventName: 'create_location'
+    },
   ],
+  // shipment
   afterCreate_tracking: [
     // update data to entity
     {
+      condition: true,
       eventName: 'update_data_from_tracking',
     },
     // create alert
@@ -315,10 +355,11 @@ export default {
   afterUpdate_tracking: [
     // update data to entity
     {
+      condition: true,
       eventName: 'update_data_from_tracking',
     },
     // create alert
   ]
 } as {
-  [eventName: string]: (EventConfig | EventHandlerConfig)[]
-}
+    [eventName: string]: (EventConfig | EventHandlerConfig)[]
+  }
