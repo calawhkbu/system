@@ -22,21 +22,8 @@
     "size": -3
   },
   "baseDetailProps": {
+    "checkToAction": true,
     "headers": [
-      {
-        "key": "checkbox",
-        "checkbox": true,
-        "showCheckAll": true
-      },
-      {
-        "key": "isDone",
-        "boolean": true,
-        "i18nContext": "SopTask",
-        "tooltip": "isDoneMsg",
-        "showTooltipWhen": "true",
-        "label": "",
-        "width": 24
-      },
       {
         "key": "hasRemark",
         "boolean": true,
