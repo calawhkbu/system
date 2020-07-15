@@ -38,12 +38,16 @@ export default class SendDataToExternalEvent extends BaseEventHandler {
         getUserPartyGroupCode: (o: any, s: any, l: any) => string
       }) => {
         const partyGroupCode = this.user.selectedPartyGroup.code
-        return await outboundService.send(
-          `customer-${partyGroupCode}`,
-          outboundName,
-          header,
-          { latestEntity, ...body }
-        )
+        try {
+          return await outboundService.send(
+            `customer-${partyGroupCode}`,
+            outboundName,
+            header,
+            { latestEntity, ...body }
+          )
+        } catch (e) {
+          console.error(e, e.stack, this.constructor.name)
+        }
       },
       { concurrency: 10 }
     )
