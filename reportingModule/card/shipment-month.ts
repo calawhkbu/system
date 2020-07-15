@@ -59,11 +59,6 @@ export default {
 
         // warning
         handleGroupByEntityValue(subqueries)
-
-        const dumb = expandGroupEntity(subqueries)
-        console.log(`dumb`)
-        console.log(dumb)
-
         const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries)
           
 
@@ -113,10 +108,6 @@ export default {
         }
 
         params.limit = topX
-
-        console.log('myParams')
-        console.log(params)
-        // throw new Error(`adsf`)
         return params
       }
     },
@@ -175,6 +166,54 @@ export default {
           }
         ],
         multi: false,
+        required: true,
+      },
+      type: 'list',
+    },
+
+    {
+      display: 'summaryVariables',
+      name: 'summaryVariables',
+      props: {
+        items: [
+          {
+            label: 'chargeableWeight',
+            value: 'chargeableWeight',
+          },
+          {
+            label: 'grossWeight',
+            value: 'grossWeight',
+          },
+          {
+            label: 'cbm',
+            value: 'cbm',
+          },
+          {
+            label: 'totalShipment',
+            value: 'totalShipment',
+          },
+          {
+            label: 'teu',
+            value: 'teu',
+          },
+          {
+            label: 'teuInReport',
+            value: 'teuInReport',
+          },
+          {
+            label: 'quantity',
+            value: 'quantity',
+          },
+          {
+            label: 'cargoValue',
+            value: 'cargoValue'
+          },
+          {
+            label: 'containerCount',
+            value: 'containerCount'
+          }
+        ],
+        multi: true,
         required: true,
       },
       type: 'list',
