@@ -1,6 +1,7 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
-import { expandGroupEntity } from 'utils/card'
+import { expandGroupEntity, LastCurrentUnit, calculateLastCurrent, extendDate, handleGroupByEntityValue, handleGroupByEntityValueDatePart } from 'utils/card'
+import * as  rawMoment from 'moment'
 
 export default {
   jqls: [
@@ -87,28 +88,9 @@ export default {
           }
         }
 
-        if (subqueries.groupByEntityValue) {
+        handleGroupByEntityValue(subqueries)
+        handleGroupByEntityValueDatePart(subqueries,moment)
 
-          const { value: groupByEntityValue  } = subqueries.groupByEntityValue as { value: string }
-          const { codeColumnName } = expandGroupEntity(subqueries)
-
-          subqueries[codeColumnName] = {
-            value : groupByEntityValue
-          }
-        }
-
-        // case when clicked from an intermediate bottom sheet
-        if (subqueries.bottomSheetGroupByEntityValue)
-        {
-
-          const { value: bottomSheetGroupByEntityValue  } = subqueries.bottomSheetGroupByEntityValue as { value: string }
-          const { codeColumnName: bottomSheetCodeColumnName } = expandGroupEntity(subqueries,'bottomSheetGroupByEntity')
-
-          subqueries[bottomSheetCodeColumnName] = {
-            value : bottomSheetGroupByEntityValue
-          }
-
-        }
 
         return params
       }

@@ -13,7 +13,7 @@
     "eslint-plugin-prefer-arrow": "^1.2.1",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "node-jql": "^2.0.0-rc.86",
+    "node-jql": "^2.0.0-rc.87",
     "prettier": "^1.18.2",
     "sequelize": "^5.21.12",
     "typescript": "^3.7.5"

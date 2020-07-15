@@ -1,90 +1,109 @@
-import { SubComponentField } from "modules/vue/interface"
+import { SubComponentField } from 'modules/vue/interface'
+import _ = require('lodash')
 
 // just for easier coding
 interface PropParam {
-    dateName: string
-    includeEstimated?: boolean
-    includeActual?: boolean
-    includeRemark?: boolean
+  dateName: string
+  includeEstimated?: boolean
+  includeActual?: boolean
+  includeRemark?: boolean
 }
 
 
 const fieldList = (propParam: PropParam) => {
 
-    const { dateName, includeEstimated, includeActual, includeRemark } = propParam
+  const { dateName, includeEstimated, includeActual, includeRemark } = propParam
 
-    const fieldList = []
+  const fieldList = []
 
-    const fieldObject = (dateName: string, suffix: string) => {
+  const fieldObject = (dateName: string, suffix: string) => {
 
-        const fieldName = `${dateName}${suffix}`
+    const fieldName = `${dateName}${suffix}`
 
-        return {
-            "label": fieldName,
-            "name": fieldName,
-            "component": "v-text-field",
-            "validator": ["required"]
-        } as SubComponentField
-    }
+    return {
+      'label': fieldName,
+      'name': fieldName,
+      'component': 'v-text-field',
+      'validator': ['required']
+    } as SubComponentField
+  }
 
-    if (includeEstimated) {
-        fieldList.push(fieldObject(dateName, 'Estimated'))
-    }
-    if (includeActual) {
-        fieldList.push(fieldObject(dateName, 'Acutal'))
-    }
-    if (includeRemark) {
-        fieldList.push(fieldObject(dateName, 'Remark'))
-    }
+  if (includeEstimated) {
+    fieldList.push(fieldObject(dateName, 'Estimated'))
+  }
+  if (includeActual) {
+    fieldList.push(fieldObject(dateName, 'Acutal'))
+  }
+  if (includeRemark) {
+    fieldList.push(fieldObject(dateName, 'Remark'))
+  }
 
-    return fieldList
+  return fieldList
 }
 
 // the form that will show in the handle alert
 const component = (propParam: PropParam) => {
 
 
-    const fields = fieldList(propParam)
+  const fields = fieldList(propParam)
 
-    return {
-        is: "Form",
-        fields
-    }
+  return {
+    is: "Form",
+    fields
+  }
 }
 
 
 //  the one show on the admin page for composing the form
 const adminComponent = ({ }) => {
-    return {
-        "is": "Form",
-        "props": {
-        }
+  return {
+    "is": "Form",
+    "props": {
     }
+  }
+}
+
+// 
+const entityToFormDataFunction = (propParam: PropParam) => {
+  return (tableName: string, oldEntity: any, formData: any) => {
+    // entity
+
+    return formData
+  }
+
 }
 
 
+// changeForm to entityData
+const formDataToEntityFunction = (propParam: PropParam) => {
 
-const changeToEntityFunction = (propParam: PropParam) => {
+  return (tableName: string, oldEntity: any, formData: any) => {
 
-    return (tableName: string, oldEntity: any, formData: any) => {
-        // entity
+    const { dateName } = propParam
 
-        return formData
-    }
+    const datePropName = `${tableName}Date.${dateName}Estimated`
+
+    const value = ''
+
+    _.set(formData, datePropName, )
+    // entity
+    return formData
+  }
 
 
 }
 
 
 const extra = {
-    changeToEntityFunction
+  formDataToEntityFunction,
+  entityToFormDataFunction
 }
 
 export {
-    fieldList,
-    component,
-    adminComponent,
-    extra,
+  fieldList,
+  component,
+  adminComponent,
+  extra,
 }
 
 export default component

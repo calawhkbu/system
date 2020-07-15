@@ -114,6 +114,11 @@ const agentPartyCodeExpression = new CaseExpression({
   $else: new ColumnExpression('shipment_party', `agentPartyCode`)
 })
 
+
+const flexDataPartyList = [
+  'notifyParty2'
+]
+
 const partyList = [
 
   {
@@ -149,7 +154,39 @@ const partyList = [
       expression: agentPartyCodeExpression,
       companion: ['table:shipment_party']
     }
-  }
+  },
+  ...flexDataPartyList.map(flexDataParty => {
+
+    const defaultCompanion = ['table:shipment_party']
+
+    const flexDataExpression = new ColumnExpression('shipment_party','flexData')
+
+    const partyNameExpression =  new MathExpression(flexDataExpression,'->>',`$.${flexDataParty}PartyName`)
+    const partyCodeExpression =  new MathExpression(flexDataExpression,'->>',`$.${flexDataParty}PartyCode`)
+    const partyIdExpression =  new MathExpression(flexDataExpression,'->>',`$.${flexDataParty}PartyId`)
+
+    return {
+      name : flexDataParty,
+
+      partyNameExpression : {
+        expression : partyNameExpression,
+        companion: defaultCompanion
+      },
+
+      partyIdExpression : {
+        expression : partyIdExpression,
+        companion: defaultCompanion
+      },
+
+      partyCodeExpression : {
+        expression : partyCodeExpression,
+        companion: defaultCompanion
+      }
+
+    }
+
+  })
+
 ] as {
 
   name: string,

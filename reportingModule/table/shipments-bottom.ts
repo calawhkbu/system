@@ -1,6 +1,6 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
-import { expandSummaryVariable, expandGroupEntity, extendDate, LastCurrentUnit, calculateLastCurrent } from 'utils/card'
+import { expandSummaryVariable, expandGroupEntity, extendDate, LastCurrentUnit, calculateLastCurrent,handleGroupByEntityValue, handleGroupByEntityValueDatePart } from 'utils/card'
 import * as  rawMoment from 'moment'
 
 export default {
@@ -94,95 +94,10 @@ export default {
           }
         }
 
+        handleGroupByEntityValue(subqueries)
 
-        if (subqueries.groupByEntityValue) {
+        handleGroupByEntityValueDatePart(subqueries,moment)
 
-          const { value: groupByEntityValue  } = subqueries.groupByEntityValue as { value: string }
-          const { codeColumnName } = expandGroupEntity(subqueries)
-
-          subqueries[codeColumnName] = {
-            value : groupByEntityValue
-          }
-        }
-
-        // case when clicked from an intermediate bottom sheet
-        if (subqueries.bottomSheetGroupByEntityValue)
-        {
-
-          const { value: bottomSheetGroupByEntityValue  } = subqueries.bottomSheetGroupByEntityValue as { value: string }
-          const { codeColumnName: bottomSheetCodeColumnName } = expandGroupEntity(subqueries,'bottomSheetGroupByEntity')
-
-          subqueries[bottomSheetCodeColumnName] = {
-            value : bottomSheetGroupByEntityValue
-          }
-
-        }
-
-        // guess time range base of month, lastCurrentUnit, lastOrCurrent
-
-        // need to use these 3 value to re-calculate the date
-        const month = (subqueries.month || {} as any).value // warning this could be total
-
-        const lastCurrentUnit = (subqueries.lastCurrentUnit || {} as any).value  as LastCurrentUnit
-        const lastOrCurrent = (subqueries.lastOrCurrent || {} as any).value as 'last' | 'current'
-
-
-        // used for showing last Or Current
-        if (lastCurrentUnit || lastOrCurrent)
-        {
-
-          let finalFrom: string, finalTo: string
-
-          if (!lastCurrentUnit)
-          {
-            throw new Error(`missing lastCurrentUnit`)
-          }
-
-          if (!lastOrCurrent)
-          {
-            throw new Error(`missing lastOrCurrent`)
-          }
-
-          const { lastFrom, lastTo, currentFrom, currentTo } = calculateLastCurrent(subqueries,moment)
-
-          if (lastOrCurrent === 'last')
-          {
-            finalFrom = lastFrom
-            finalTo = lastTo
-          }
-          else 
-          {
-            finalFrom = currentFrom
-            finalTo = currentTo
-
-          }
-
-          subqueries.date = {
-            from : finalFrom,
-            to: finalTo
-          }
-
-        }
-
-        // used for showing specific month
-        if (month) {
-
-          const { from, to } = subqueries.date as { from, to }
-
-          // only handle single month case, cases like "total" will not handle
-          if (rawMoment.months().includes(month)){
-
-            const newFrom = moment(from).month(month).startOf('month').format('YYYY-MM-DD')
-            const newTo = moment(from).month(month).endOf('month').format('YYYY-MM-DD')
-
-            subqueries.date = {
-              from : newFrom,
-              to: newTo
-            }
-
-          }
-
-        }
 
 
         // console.log(`finalParams`)
