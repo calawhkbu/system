@@ -1,31 +1,31 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase } from "node-jql";
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression } from "node-jql";
 
-const mainTable = 'sop_task'
-const joinTable = 'sop_template_task'
+const taskTable = 'sop_task'
+const templateTaskTable = 'sop_template_task'
 
 const columns = [
-  [mainTable, 'id'],
-  [mainTable, 'tableName'],
-  [mainTable, 'primaryKey'],
-  [mainTable, 'seqNo'],
-  [mainTable, 'taskId'],
-  [mainTable, 'remark'],
-  [mainTable, 'startAt'],
-  [mainTable, 'dueAt'],
-  [mainTable, 'deadline'],
-  [mainTable, 'statusList'],
-  [mainTable, 'closed', 'isClosed'],
-  [mainTable, 'deletedBy'],
-  [mainTable, 'deletedAt'],
-  [joinTable, 'id', 'templateTaskId'],
-  [joinTable, 'partyGroupCode'],
-  [joinTable, 'uniqueId', 'partyGroupTaskId'],
-  [joinTable, 'system'],
-  [joinTable, 'category'],
-  [joinTable, 'group'],
-  [joinTable, 'name'],
-  [joinTable, 'description']
+  [taskTable, 'id'],
+  [taskTable, 'tableName'],
+  [taskTable, 'primaryKey'],
+  [taskTable, 'seqNo'],
+  [taskTable, 'taskId'],
+  [taskTable, 'parentId'],
+  [taskTable, 'remark'],
+  [taskTable, 'startAt'],
+  [taskTable, 'dueAt'],
+  [taskTable, 'deadline'],
+  [taskTable, 'statusList'],
+  [taskTable, 'closed', 'isClosed'],
+  [taskTable, 'deletedBy'],
+  [taskTable, 'deletedAt'],
+  [templateTaskTable, 'id', 'templateTaskId'],
+  [templateTaskTable, 'partyGroupCode'],
+  [templateTaskTable, 'uniqueId', 'partyGroupTaskId'],
+  [templateTaskTable, 'system'],
+  [templateTaskTable, 'category'],
+  [templateTaskTable, 'name'],
+  [templateTaskTable, 'description']
 ]
 
 const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r, [table, name, as = name]) => {
@@ -39,8 +39,8 @@ const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r
 
 const query = new QueryDef({
   $from: new FromTable({
-    table: mainTable,
-    joinClauses: new JoinClause('LEFT', joinTable,
+    table: taskTable,
+    joinClauses: new JoinClause('LEFT', templateTaskTable,
       new BinaryExpression(columnExpressions['taskId'], '=', columnExpressions['templateTaskId'])
     )
   })
@@ -61,6 +61,25 @@ const uniqueIdExpression = new FunctionExpression(
 )
 query.field('uniqueId', {
   $select: new ResultColumn(uniqueIdExpression, 'uniqueId')
+})
+
+
+
+
+
+const hasSubTasksExpression = new ExistsExpression(
+  new QueryExpression(new Query({
+    $from: new FromTable(taskTable, 'temp'),
+    $where: new AndExpressions([
+      new BinaryExpression(columnExpressions['tableName'], '=', new ColumnExpression('temp', 'tableName')),
+      new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression('temp', 'primaryKey')),
+      new BinaryExpression(columnExpressions['id'], '=', new ColumnExpression('temp', 'parentId'))
+    ])
+  })),
+  false
+)
+query.field('hasSubTasks', {
+  $select: new ResultColumn(hasSubTasksExpression, 'hasSubTasks')
 })
 
 
