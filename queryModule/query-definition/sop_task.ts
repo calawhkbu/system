@@ -26,12 +26,12 @@ const columns = [
   [templateTaskTable, 'partyGroupCode'],
   [templateTaskTable, 'uniqueId', 'partyGroupTaskId'],
   [templateTaskTable, 'system'],
+  [templateTaskTable, 'category'],
   [templateTaskTable, 'name'],
   [templateTaskTable, 'description'],
   [selectedTemplateTable, 'id', 'originalSelectedTemplateId'],
   [selectedTemplateTable, 'templateId', 'selectedTemplateId'],
   [templateTable, 'id', 'originalTemplateId'],
-  [templateTable, 'category'],
   [templateTable, 'group']
 ]
 
@@ -71,7 +71,8 @@ for (const [table, name, as = name] of columns) {
 
 const uniqueIdExpression = new FunctionExpression(
   'CONCAT',
-  new Value('T-'),
+  columnExpressions['partyGroupCode'],
+  new Value('-'),
   columnExpressions['partyGroupTaskId']
 )
 query.field('uniqueId', {
