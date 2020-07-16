@@ -2359,7 +2359,7 @@ const summaryFieldList: SummaryField[] = [
     companion: ['table:shipment_cargo']
   },
 
-  ...reportingSummaryFieldNameList.map(reportingSummaryFieldName => 
+  ...reportingSummaryFieldNameList.map(reportingSummaryFieldName =>
     {
       return {
         name: reportingSummaryFieldName,
@@ -2395,7 +2395,7 @@ query.subquery(false,'anyPartyId',((value: any, params?: IQueryParams) => {
 
     acc.push(inPartyInExpression)
     return acc
-    
+
   },[])
 
   return new Query({
@@ -2638,7 +2638,7 @@ const documentQuery = (subQueryValue,param: IQueryParams) => {
     $where: new InExpression(idExpression, false,
       new QueryExpression(
         new Query({
-  
+
           $select: [
             new ResultColumn(new ColumnExpression('document', 'primaryKey'))
           ],
@@ -2647,7 +2647,7 @@ const documentQuery = (subQueryValue,param: IQueryParams) => {
             new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', fileName),
             new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment')
           ]
-  
+
         })
       )
     )
