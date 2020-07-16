@@ -39,7 +39,7 @@ export const setDataFunction = {
     return bookingNo
   },
   rSalesmanPersonCode: async ({ bookingParty }: Booking, user: JwtPayload, transaction: Transaction, context: any) => {
-    if (bookingParty.controllingCustomerPartyCode) {
+    if (bookingParty && bookingParty.controllingCustomerPartyCode) {
       const party = await context.partyTableService.findOneWithScope(
         'onlyItself',
         {
@@ -55,7 +55,7 @@ export const setDataFunction = {
     return null
   },
   sSalesmanPersonCode: async ({ bookingParty }: Booking, user: JwtPayload, transaction: Transaction, context: any) => {
-    if (bookingParty.shipperPartyCode) {
+    if (bookingParty && bookingParty.shipperPartyCode) {
       const party = await context.partyTableService.findOneWithScope(
         'onlyItself',
         {
@@ -71,7 +71,7 @@ export const setDataFunction = {
     return null
   },
   cSalesmanPersonCode: async ({ bookingParty }: Booking, user: JwtPayload, transaction: Transaction, context: any) => {
-    if (bookingParty.consigneePartyCode) {
+    if (bookingParty && bookingParty.consigneePartyCode) {
       const party = await context.partyTableService.findOneWithScope(
         'onlyItself',
         {

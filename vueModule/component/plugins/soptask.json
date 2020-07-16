@@ -11,7 +11,7 @@
     "icon": "status",
     "iconMap": {
       "Open": "assignment",
-      "Done": "assignment_turned_in",
+      "Due Today": "assignment_late",
       "Due": "assignment_late",
       "Dead": "warning"
     },
@@ -38,6 +38,10 @@
         "width": 24
       },
       {
+        "key": "name",
+        "width": 200
+      },
+      {
         "key": "system",
         "width": 60,
         "align": "center"
@@ -45,10 +49,6 @@
       {
         "key": "category",
         "width": 120
-      },
-      {
-        "key": "name",
-        "width": 200
       },
       {
         "key": "startAt",
@@ -60,6 +60,28 @@
         "format": "YYYY/MM/DD",
         "width": 90
       }
-    ]
+    ],
+    "rowStyle": {
+      "Closed": {
+        "backgroundColor": "gray",
+        "opacity": 0.6
+      },
+      "Done": {
+        "backgroundColor": "darkgray",
+        "opacity": 0.8
+      },
+      "Not Ready": {
+        "opacity": 0.6
+      },
+      "Due Today": {
+        "backgroundColor": "#fdc57f"
+      },
+      "Due": {
+        "backgroundColor": "#ffcccb"
+      },
+      "Dead": {
+        "backgroundColor": "#ffcccb"
+      }
+    }
   }
 }
