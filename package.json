@@ -42,5 +42,9 @@
     "prepare:eslint-plugin-jsdoc": "ln -s ../../../swivel-backend-new/node_modules/typescript node_modules/eslint-plugin-jsdoc",
     "prepare:eslint-plugin-prefer-arrow": "ln -s ../../../swivel-backend-new/node_modules/typescript node_modules/eslint-plugin-prefer-arrow",
     "export": "node export"
+  },
+  "dependencies": {
+    "randomstring": "^1.1.5",
+    "sha256": "^0.2.0"
   }
 }

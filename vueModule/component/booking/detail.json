@@ -43,6 +43,10 @@
           },
           {
             "is": "ToolTip",
+            "if": [
+              "const userProfile = context.$store.state.auth.userProfile;",
+              "return userProfile && !userProfile.isApi"
+            ],
             "props": {
               "bottom": true,
               "activatorComponents": {
@@ -72,6 +76,10 @@
           },
           {
             "is": "ToolTip",
+            "if": [
+              "const userProfile = context.$store.state.auth.userProfile;",
+              "return userProfile && !userProfile.isApi"
+            ],
             "props": {
               "bottom": true,
               "activatorComponents": {
