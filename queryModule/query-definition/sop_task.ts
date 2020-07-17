@@ -1,31 +1,38 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase } from "node-jql";
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression } from "node-jql";
 
-const mainTable = 'sop_task'
-const joinTable = 'sop_template_task'
+const taskTable = 'sop_task'
+const templateTaskTable = 'sop_template_task'
+const selectedTemplateTable = 'sop_selected_template'
+const templateTable = 'sop_template'
 
 const columns = [
-  [mainTable, 'id'],
-  [mainTable, 'tableName'],
-  [mainTable, 'primaryKey'],
-  [mainTable, 'seqNo'],
-  [mainTable, 'taskId'],
-  [mainTable, 'remark'],
-  [mainTable, 'startAt'],
-  [mainTable, 'dueAt'],
-  [mainTable, 'deadline'],
-  [mainTable, 'statusList'],
-  [mainTable, 'closed'],
-  [mainTable, 'deletedBy'],
-  [mainTable, 'deletedAt'],
-  [joinTable, 'id', 'templateTaskId'],
-  [joinTable, 'partyGroupCode'],
-  [joinTable, 'uniqueId', 'partyGroupTaskId'],
-  [joinTable, 'system'],
-  [joinTable, 'category'],
-  [joinTable, 'group'],
-  [joinTable, 'name'],
-  [joinTable, 'description']
+  [taskTable, 'id'],
+  [taskTable, 'tableName'],
+  [taskTable, 'primaryKey'],
+  [taskTable, 'seqNo'],
+  [taskTable, 'templateId'],
+  [taskTable, 'taskId'],
+  [taskTable, 'parentId'],
+  [taskTable, 'remark'],
+  [taskTable, 'startAt'],
+  [taskTable, 'dueAt'],
+  [taskTable, 'deadline'],
+  [taskTable, 'statusList'],
+  [taskTable, 'closed', 'isClosed'],
+  [taskTable, 'deletedBy'],
+  [taskTable, 'deletedAt'],
+  [templateTaskTable, 'id', 'originalTaskId'],
+  [templateTaskTable, 'partyGroupCode'],
+  [templateTaskTable, 'uniqueId', 'partyGroupTaskId'],
+  [templateTaskTable, 'system'],
+  [templateTaskTable, 'category'],
+  [templateTaskTable, 'name'],
+  [templateTaskTable, 'description'],
+  [selectedTemplateTable, 'id', 'originalSelectedTemplateId'],
+  [selectedTemplateTable, 'templateId', 'selectedTemplateId'],
+  [templateTable, 'id', 'originalTemplateId'],
+  [templateTable, 'group']
 ]
 
 const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r, [table, name, as = name]) => {
@@ -39,10 +46,18 @@ const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r
 
 const query = new QueryDef({
   $from: new FromTable({
-    table: mainTable,
-    joinClauses: new JoinClause('LEFT', joinTable,
-      new BinaryExpression(columnExpressions['taskId'], '=', columnExpressions['templateTaskId'])
-    )
+    table: taskTable,
+    joinClauses: [
+      new JoinClause('LEFT', templateTaskTable,
+        new BinaryExpression(columnExpressions['taskId'], '=', columnExpressions['originalTaskId'])
+      ),
+      new JoinClause('LEFT', selectedTemplateTable,
+        new BinaryExpression(columnExpressions['templateId'], '=', columnExpressions['originalSelectedTemplateId'])
+      ),
+      new JoinClause('LEFT', templateTable,
+        new BinaryExpression(columnExpressions['selectedTemplateId'], '=', columnExpressions['originalTemplateId'])
+      ),
+    ]
   })
 })
 
@@ -56,11 +71,31 @@ for (const [table, name, as = name] of columns) {
 
 const uniqueIdExpression = new FunctionExpression(
   'CONCAT',
-  new Value('T-'),
+  columnExpressions['partyGroupCode'],
+  new Value('-'),
   columnExpressions['partyGroupTaskId']
 )
 query.field('uniqueId', {
   $select: new ResultColumn(uniqueIdExpression, 'uniqueId')
+})
+
+
+
+
+
+const hasSubTasksExpression = new ExistsExpression(
+  new QueryExpression(new Query({
+    $from: new FromTable(taskTable, 'temp'),
+    $where: new AndExpressions([
+      new BinaryExpression(columnExpressions['tableName'], '=', new ColumnExpression('temp', 'tableName')),
+      new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression('temp', 'primaryKey')),
+      new BinaryExpression(columnExpressions['id'], '=', new ColumnExpression('temp', 'parentId'))
+    ])
+  })),
+  false
+)
+query.field('hasSubTasks', {
+  $select: new ResultColumn(hasSubTasksExpression, 'hasSubTasks')
 })
 
 
@@ -111,7 +146,7 @@ const isDoneExpression = new BinaryExpression(
 )
 query.field('isDone', {
   $select: new ResultColumn(new FunctionExpression('IF',
-    new OrExpressions([isDoneExpression, columnExpressions['closed']]),
+    new OrExpressions([isDoneExpression, columnExpressions['isClosed']]),
     new Value(1),
     new Value(0)
   ), 'isDone')
@@ -167,15 +202,18 @@ query.field('isDeleted', {
 
 
 
-const isStartedExpression = new FunctionExpression('IF',
-  new BinaryExpression(
-    columnExpressions['startAt'],
-    '<',
-    new FunctionExpression('UTC_TIMESTAMP')
-  ),
-  new Value(1),
-  new Value(0)
-)
+const isStartedExpression = new OrExpressions([
+  new IsNullExpression(columnExpressions['startAt'], false),
+  new FunctionExpression('IF',
+    new BinaryExpression(
+      columnExpressions['startAt'],
+      '<',
+      new FunctionExpression('UTC_TIMESTAMP')
+    ),
+    new Value(1),
+    new Value(0)
+  )
+])
 query.field('status', params => {
   const cases: ICase[] = [
     {
@@ -183,7 +221,7 @@ query.field('status', params => {
       $then: new Value('Deleted')
     },
     {
-      $when: columnExpressions['closed'],
+      $when: columnExpressions['isClosed'],
       $then: new Value('Closed')
     },
     {
@@ -223,22 +261,22 @@ query.field('status', params => {
 
 
 
-const hasRemarkExpression = new FunctionExpression('IF',
-  new IsNullExpression(columnExpressions['remark'], true),
-  new Value(1),
-  new Value(0)
-)
-query.field('hasRemark', {
-  $select: new ResultColumn(hasRemarkExpression, 'hasRemark')
+const numberRemarksExpression = new FunctionExpression('JSON_LENGTH', columnExpressions['remark'])
+query.field('noOfRemarks', {
+  $select: new ResultColumn(numberRemarksExpression, 'noOfRemarks')
 })
 
 
 
 
 
-const numberRemarksExpression = new FunctionExpression('JSON_LENGTH', columnExpressions['remark'])
-query.field('noOfRemarks', {
-  $select: new ResultColumn(numberRemarksExpression, 'noOfRemarks')
+const hasRemarkExpression = new FunctionExpression('IF',
+  new BinaryExpression(numberRemarksExpression, '>', new Value(0)),
+  new Value(1),
+  new Value(0)
+)
+query.field('hasRemark', {
+  $select: new ResultColumn(hasRemarkExpression, 'hasRemark')
 })
 
 
