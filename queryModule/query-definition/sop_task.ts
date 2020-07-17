@@ -202,15 +202,18 @@ query.field('isDeleted', {
 
 
 
-const isStartedExpression = new FunctionExpression('IF',
-  new BinaryExpression(
-    columnExpressions['startAt'],
-    '<',
-    new FunctionExpression('UTC_TIMESTAMP')
-  ),
-  new Value(1),
-  new Value(0)
-)
+const isStartedExpression = new OrExpressions([
+  new IsNullExpression(columnExpressions['startAt'], false),
+  new FunctionExpression('IF',
+    new BinaryExpression(
+      columnExpressions['startAt'],
+      '<',
+      new FunctionExpression('UTC_TIMESTAMP')
+    ),
+    new Value(1),
+    new Value(0)
+  )
+])
 query.field('status', params => {
   const cases: ICase[] = [
     {
@@ -258,22 +261,22 @@ query.field('status', params => {
 
 
 
-const hasRemarkExpression = new FunctionExpression('IF',
-  new IsNullExpression(columnExpressions['remark'], true),
-  new Value(1),
-  new Value(0)
-)
-query.field('hasRemark', {
-  $select: new ResultColumn(hasRemarkExpression, 'hasRemark')
+const numberRemarksExpression = new FunctionExpression('JSON_LENGTH', columnExpressions['remark'])
+query.field('noOfRemarks', {
+  $select: new ResultColumn(numberRemarksExpression, 'noOfRemarks')
 })
 
 
 
 
 
-const numberRemarksExpression = new FunctionExpression('JSON_LENGTH', columnExpressions['remark'])
-query.field('noOfRemarks', {
-  $select: new ResultColumn(numberRemarksExpression, 'noOfRemarks')
+const hasRemarkExpression = new FunctionExpression('IF',
+  new BinaryExpression(numberRemarksExpression, '>', new Value(0)),
+  new Value(1),
+  new Value(0)
+)
+query.field('hasRemark', {
+  $select: new ResultColumn(hasRemarkExpression, 'hasRemark')
 })
 
 
