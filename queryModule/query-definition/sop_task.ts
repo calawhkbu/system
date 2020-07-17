@@ -3,12 +3,15 @@ import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, Fun
 
 const taskTable = 'sop_task'
 const templateTaskTable = 'sop_template_task'
+const selectedTemplateTable = 'sop_selected_template'
+const templateTable = 'sop_template'
 
 const columns = [
   [taskTable, 'id'],
   [taskTable, 'tableName'],
   [taskTable, 'primaryKey'],
   [taskTable, 'seqNo'],
+  [taskTable, 'templateId'],
   [taskTable, 'taskId'],
   [taskTable, 'parentId'],
   [taskTable, 'remark'],
@@ -19,13 +22,17 @@ const columns = [
   [taskTable, 'closed', 'isClosed'],
   [taskTable, 'deletedBy'],
   [taskTable, 'deletedAt'],
-  [templateTaskTable, 'id', 'templateTaskId'],
+  [templateTaskTable, 'id', 'originalTaskId'],
   [templateTaskTable, 'partyGroupCode'],
   [templateTaskTable, 'uniqueId', 'partyGroupTaskId'],
   [templateTaskTable, 'system'],
   [templateTaskTable, 'category'],
   [templateTaskTable, 'name'],
-  [templateTaskTable, 'description']
+  [templateTaskTable, 'description'],
+  [selectedTemplateTable, 'id', 'originalSelectedTemplateId'],
+  [selectedTemplateTable, 'templateId', 'selectedTemplateId'],
+  [templateTable, 'id', 'originalTemplateId'],
+  [templateTable, 'group']
 ]
 
 const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r, [table, name, as = name]) => {
@@ -40,9 +47,17 @@ const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r
 const query = new QueryDef({
   $from: new FromTable({
     table: taskTable,
-    joinClauses: new JoinClause('LEFT', templateTaskTable,
-      new BinaryExpression(columnExpressions['taskId'], '=', columnExpressions['templateTaskId'])
-    )
+    joinClauses: [
+      new JoinClause('LEFT', templateTaskTable,
+        new BinaryExpression(columnExpressions['taskId'], '=', columnExpressions['originalTaskId'])
+      ),
+      new JoinClause('LEFT', selectedTemplateTable,
+        new BinaryExpression(columnExpressions['templateId'], '=', columnExpressions['originalSelectedTemplateId'])
+      ),
+      new JoinClause('LEFT', templateTable,
+        new BinaryExpression(columnExpressions['selectedTemplateId'], '=', columnExpressions['originalTemplateId'])
+      ),
+    ]
   })
 })
 
@@ -56,7 +71,8 @@ for (const [table, name, as = name] of columns) {
 
 const uniqueIdExpression = new FunctionExpression(
   'CONCAT',
-  new Value('T-'),
+  columnExpressions['partyGroupCode'],
+  new Value('-'),
   columnExpressions['partyGroupTaskId']
 )
 query.field('uniqueId', {
