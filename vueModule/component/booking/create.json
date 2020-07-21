@@ -10,6 +10,32 @@
             "props": {
               "class": "xs-12 grid min-height-28 align-item-center full-width padding-leftright-8",
               "components": [{
+                  "is": "v-btn",
+                  "if": [
+                    "const userProfile = context.$store.state.auth.userProfile;",
+                    "return userProfile && userProfile.isApi"
+                  ],
+                  "props": {
+                    "class": "margin-0",
+                    "small": true,
+                    "flat": true,
+                    "icon": true
+                  },
+                  "slots": [{
+                    "is": "Icon",
+                    "props": {
+                      "icon": "arrow_back"
+                    }
+                  }],
+                  "events": {
+                    "click.stop": [{
+                      "type": "emit-global",
+                      "otherParams": {
+                        "name": "back-list"
+                      }
+                    }]
+                  }
+                }, {
                   "is": "I18nText",
                   "props": {
                     "i18nContext": "BookingPage",
