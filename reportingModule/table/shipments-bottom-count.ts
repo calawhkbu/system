@@ -69,14 +69,15 @@ export default {
           subqueries.alertCreatedAt = alertCreatedAtJson
         }
 
+        // split primaryKeyListString and search by id
         if (subqueries.primaryKeyListString) {
           const countLimit = 10000
-          const primaryKeyListString = subqueries.primaryKeyListString as any
+          const primaryKeyListString = subqueries.primaryKeyListString as { value: string, countString: string }
           const count = Number.parseInt(primaryKeyListString.countString, 10)
 
           // if too many, just query again
           if (count > countLimit) {
-            subqueries.primaryKeyListString = undefined
+            delete subqueries.primaryKeyListString
           }
           else {
             const idList = primaryKeyListString.value.split(',')
@@ -90,7 +91,6 @@ export default {
 
         handleGroupByEntityValue(subqueries)
         handleGroupByEntityValueDatePart(subqueries,moment)
-
 
         return params
       }

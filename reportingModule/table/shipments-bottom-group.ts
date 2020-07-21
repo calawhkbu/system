@@ -139,10 +139,33 @@ export default {
             to: finalTo
           }
 
+
+                  // used for showing specific month
+          if (month) {
+
+            const { from, to } = subqueries.date as { from, to }
+
+            // only handle single month case, cases like "total" will not handle
+            if (rawMoment.months().includes(month)){
+
+              const newFrom = moment(from).month(month).startOf('month').format('YYYY-MM-DD')
+              const newTo = moment(from).month(month).endOf('month').format('YYYY-MM-DD')
+
+              subqueries.date = {
+                from : newFrom,
+                to: newTo
+              }
+
+            }
+
+          }
+
         }
 
         // used for showing specific month
-        if (month) {
+        else if (month) {
+
+          extendDate(subqueries,moment,'year')
 
           const { from, to } = subqueries.date as { from, to }
 

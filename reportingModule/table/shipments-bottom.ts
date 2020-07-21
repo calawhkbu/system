@@ -76,7 +76,7 @@ export default {
 
         // split primaryKeyListString and search by id
         if (subqueries.primaryKeyListString) {
-          const countLimit = 100
+          const countLimit = 10000
           const primaryKeyListString = subqueries.primaryKeyListString as { value: string, countString: string }
           const count = Number.parseInt(primaryKeyListString.countString, 10)
 
