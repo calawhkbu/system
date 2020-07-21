@@ -155,6 +155,11 @@ const partyList = [
       companion: ['table:shipment_party']
     }
   },
+  {
+    name : 'coloader',
+    partyCodeExpression: new Value(null),
+    partyNameExpression: new Value(null)
+  },
   ...flexDataPartyList.map(flexDataParty => {
 
     const defaultCompanion = ['table:shipment_party']
@@ -164,6 +169,9 @@ const partyList = [
     const partyNameExpression =  new MathExpression(flexDataExpression,'->>',`$.${flexDataParty}PartyName`)
     const partyCodeExpression =  new MathExpression(flexDataExpression,'->>',`$.${flexDataParty}PartyCode`)
     const partyIdExpression =  new MathExpression(flexDataExpression,'->>',`$.${flexDataParty}PartyId`)
+
+    const partyNameInReportExpression = partyNameExpression
+    const partyCodeInReportExpression = partyCodeExpression
 
     return {
       name : flexDataParty,
@@ -180,6 +188,14 @@ const partyList = [
 
       partyCodeExpression : {
         expression : partyCodeExpression,
+        companion: defaultCompanion
+      },
+      partyNameInReportExpression : {
+        expression : partyNameInReportExpression,
+        companion: defaultCompanion
+      },
+      partyCodeInReportExpression : {
+        expression : partyCodeInReportExpression,
         companion: defaultCompanion
       }
 
