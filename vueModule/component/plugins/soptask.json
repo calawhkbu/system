@@ -22,7 +22,6 @@
     "size": -3
   },
   "baseDetailProps": {
-    "checkToAction": true,
     "headers": [
       {
         "key": "hasRemark",
@@ -39,7 +38,7 @@
       },
       {
         "key": "name",
-        "width": 200
+        "width": 160
       },
       {
         "key": "system",
@@ -48,7 +47,7 @@
       },
       {
         "key": "category",
-        "width": 120
+        "width": 70
       },
       {
         "key": "startAt",
