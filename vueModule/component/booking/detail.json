@@ -1,10 +1,12 @@
 {
   "class": "grid",
-  "components": [{
+  "components": [
+    {
       "is": "DynamicComponent",
       "props": {
         "class": "xs-12 grid min-height-28 align-item-center full-width padding-2",
-        "components": [{
+        "components": [
+          {
             "is": "v-btn",
             "if": [
               "const userProfile = context.$store.state.auth.userProfile;",
@@ -16,21 +18,26 @@
               "flat": true,
               "icon": true
             },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "arrow_back"
-              }
-            }],
-            "events": {
-              "click.stop": [{
-                "type": "emit-global",
-                "otherParams": {
-                  "name": "back-list"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
                 }
-              }]
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "emit-global",
+                  "otherParams": {
+                    "name": "back-list"
+                  }
+                }
+              ]
             }
-          }, {
+          },
+          {
             "is": "v-btn",
             "if": [
               "const userProfile = context.$store.state.auth.userProfile;",
@@ -42,20 +49,24 @@
               "flat": true,
               "icon": true
             },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "arrow_back"
-              }
-            }],
-            "events": {
-              "click.stop": [{
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "/{{ p[0] }}/{{ p[1] }}"
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
                 }
-              }]
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "router",
+                  "otherParams": {
+                    "func": "push",
+                    "path": "/{{ p[0] }}/{{ p[1] }}"
+                  }
+                }
+              ]
             }
           },
           {
@@ -81,27 +92,69 @@
               "bottom": true,
               "activatorComponents": {
                 "layout": "span",
-                "components": [{
-                  "is": "SaveEntityTemplateButton",
-                  "props": {
-                    "small": true,
-                    "flat": true,
-                    "icon": true,
-                    "blackList": ["id"],
-                    "axiosParams": "{ \"method\" : \"POST\",\"url\" : \"/default\",\"data\" : { \"tableName\" : \"booking\" , \"name\" : {{name | safe}},\"value\" : {{value | safe }}   }   }"
+                "components": [
+                  {
+                    "is": "SaveEntityTemplateButton",
+                    "props": {
+                      "small": true,
+                      "flat": true,
+                      "icon": true,
+                      "blackList": [
+                        "id"
+                      ],
+                      "axiosParams": "{ \"method\" : \"POST\",\"url\" : \"/default\",\"data\" : { \"tableName\" : \"booking\" , \"name\" : {{name | safe}},\"value\" : {{value | safe }}   }   }"
+                    }
                   }
-                }]
+                ]
               },
               "mainComponents": {
                 "layout": "span",
-                "components": [{
+                "components": [
+                  {
+                    "is": "I18nText",
+                    "props": {
+                      "i18nContext": "BookingPage",
+                      "i18nKey": "Template"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "is": "ToolTip",
+            "if": [
+              "const userProfile = context.$store.state.auth.userProfile;",
+              "return userProfile && !userProfile.isApi"
+            ],
+            "props": {
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [
+                  {
+                    "is": "BookmarkButton",
+                    "props": {
+                      "entity": "booking",
+                      "small": true,
+                      "flat": true,
+                      "icon": true
+                    }
+                  }
+                ]
+              }
+            },
+            "mainComponents": {
+              "layout": "span",
+              "components": [
+                {
                   "is": "I18nText",
                   "props": {
                     "i18nContext": "BookingPage",
-                    "i18nKey": "Template"
+                    "i18nKey": "bookmark"
                   }
-                }]
-              }
+                }
+              ]
             }
           },
           {
@@ -114,72 +167,48 @@
               "bottom": true,
               "activatorComponents": {
                 "layout": "span",
-                "components": [{
-                  "is": "BookmarkButton",
-                  "props": {
-                    "entity": "booking",
-                    "small": true,
-                    "flat": true,
-                    "icon": true
-                  }
-                }]
-              }
-            },
-            "mainComponents": {
-              "layout": "span",
-              "components": [{
-                "is": "I18nText",
-                "props": {
-                  "i18nContext": "BookingPage",
-                  "i18nKey": "bookmark"
-                }
-              }]
-            }
-          },
-          {
-            "is": "ToolTip",
-            "if": [
-              "const userProfile = context.$store.state.auth.userProfile;",
-              "return userProfile && !userProfile.isApi"
-            ],
-            "props": {
-              "bottom": true,
-              "activatorComponents": {
-                "layout": "span",
-                "components": [{
-                  "is": "v-btn",
-                  "props": {
-                    "small": true,
-                    "flat": true,
-                    "icon": true
-                  },
-                  "slots": [{
-                    "is": "Icon",
+                "components": [
+                  {
+                    "is": "v-btn",
                     "props": {
-                      "icon": "map"
-                    }
-                  }],
-                  "events": {
-                    "click.stop": [{
-                      "type": "dispatch",
-                      "otherParams": {
-                        "name": "widget/changeMode",
-                        "mode": "map"
+                      "small": true,
+                      "flat": true,
+                      "icon": true
+                    },
+                    "slots": [
+                      {
+                        "is": "Icon",
+                        "props": {
+                          "icon": "map"
+                        }
                       }
-                    }]
+                    ],
+                    "events": {
+                      "click.stop": [
+                        {
+                          "type": "dispatch",
+                          "otherParams": {
+                            "name": "widget/changeMode",
+                            "mode": "map"
+                          }
+                        }
+                      ]
+                    }
                   }
-                }]
+                ]
               }
             },
             "mainComponents": {
               "layout": "span",
-              "components": [{
-                "is": "I18nText",
-                "props": {
-                  "i18nContext": "BookingPage",
-                  "i18nKey": "map"
+              "components": [
+                {
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "BookingPage",
+                    "i18nKey": "map"
+                  }
                 }
-              }]
+              ]
             }
           },
           {
@@ -188,41 +217,49 @@
               "bottom": true,
               "activatorComponents": {
                 "layout": "span",
-                "components": [{
-                  "is": "v-btn",
-                  "props": {
-                    "small": true,
-                    "flat": true,
-                    "icon": true,
-                    "class": "primary white-text"
-                  },
-                  "slots": [{
-                    "is": "Icon",
+                "components": [
+                  {
+                    "is": "v-btn",
                     "props": {
-                      "icon": "edit"
-                    }
-                  }],
-                  "events": {
-                    "click.stop": [{
-                      "type": "dispatch",
-                      "otherParams": {
-                        "name": "widget/changeMode",
-                        "mode": "edit"
+                      "small": true,
+                      "flat": true,
+                      "icon": true,
+                      "class": "primary white-text"
+                    },
+                    "slots": [
+                      {
+                        "is": "Icon",
+                        "props": {
+                          "icon": "edit"
+                        }
                       }
-                    }]
+                    ],
+                    "events": {
+                      "click.stop": [
+                        {
+                          "type": "dispatch",
+                          "otherParams": {
+                            "name": "widget/changeMode",
+                            "mode": "edit"
+                          }
+                        }
+                      ]
+                    }
                   }
-                }]
+                ]
               }
             },
             "mainComponents": {
               "layout": "span",
-              "components": [{
-                "is": "I18nText",
-                "props": {
-                  "i18nContext": "BookingPage",
-                  "i18nKey": "edit"
+              "components": [
+                {
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "BookingPage",
+                    "i18nKey": "edit"
+                  }
                 }
-              }]
+              ]
             }
           }
         ]
@@ -233,16 +270,20 @@
       "if": "return !context.$vuetify.breakpoint.mdAndUp",
       "props": {
         "show-arrows": true,
-        "tabComponents": [{
+        "tabComponents": [
+          {
             "index": "gereral",
-            "tabComponents": [{
-              "is": "I18nText",
-              "props": {
-                "i18nContext": "BookingPage",
-                "i18nKey": "GeneralForm"
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "BookingPage",
+                  "i18nKey": "GeneralForm"
+                }
               }
-            }],
-            "tabItemComponents": [{
+            ],
+            "tabItemComponents": [
+              {
                 "is": "AsyncComponent",
                 "props": {
                   "layoutName": "booking/base/tracking"
@@ -253,94 +294,113 @@
                 "props": {
                   "class": "margin-bottom-2"
                 },
-                "slots": [{
-                  "is": "AsyncComponent",
-                  "props": {
-                    "layoutName": "booking/base/general"
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "booking/base/general"
+                    }
                   }
-                }]
+                ]
               },
               {
                 "is": "v-card",
                 "props": {
                   "class": "margin-bottom-2"
                 },
-                "slots": [{
-                  "is": "AsyncComponent",
-                  "props": {
-                    "layoutName": "booking/base/container"
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "booking/base/container"
+                    }
                   }
-                }]
+                ]
               }
             ]
           },
           {
             "index": "partyDateAndReference",
-            "tabComponents": [{
-              "is": "I18nText",
-              "props": {
-                "i18nContext": "BookingPage",
-                "i18nKey": "PartyAndDate"
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "BookingPage",
+                  "i18nKey": "PartyAndDate"
+                }
               }
-            }],
-            "tabItemComponents": [{
+            ],
+            "tabItemComponents": [
+              {
                 "is": "v-card",
                 "props": {
                   "class": "margin-bottom-2"
                 },
-                "slots": [{
-                  "is": "AsyncComponent",
-                  "props": {
-                    "layoutName": "booking/base/party"
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "booking/base/party"
+                    }
                   }
-                }]
+                ]
               },
               {
                 "is": "v-card",
                 "props": {
                   "class": "margin-bottom-2"
                 },
-                "slots": [{
-                  "is": "AsyncComponent",
-                  "props": {
-                    "layoutName": "booking/base/date"
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "booking/base/date"
+                    }
                   }
-                }]
+                ]
               }
             ]
           },
           {
             "index": "alertWorkflowAndDocument",
-            "tabComponents": [{
-              "is": "I18nText",
-              "props": {
-                "i18nContext": "BookingPage",
-                "i18nKey": "alertAndDocument"
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "BookingPage",
+                  "i18nKey": "alertAndDocument"
+                }
               }
-            }],
-            "tabItemComponents": [{
-              "is": "AsyncComponent",
-              "props": {
-                "layoutName": "booking/base/document"
+            ],
+            "tabItemComponents": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "booking/base/document"
+                }
               }
-            }]
+            ]
           },
           {
             "index": "reference",
-            "tabComponents": [{
-              "is": "I18nText",
-              "props": {
-                "i18nContext": "BookingPage",
-                "i18nKey": "reference"
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "BookingPage",
+                  "i18nKey": "reference"
+                }
               }
-            }],
-            "tabItemComponents": [{
-              "is": "AsyncComponent",
-              "props": {
-                "class": "padding-top-4",
-                "layoutName": "booking/base/reference"
+            ],
+            "tabItemComponents": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "padding-top-4",
+                  "layoutName": "booking/base/reference"
+                }
               }
-            }]
+            ]
           }
         ]
       }
@@ -350,11 +410,13 @@
       "if": "return context.$vuetify.breakpoint.mdAndUp",
       "props": {
         "class": "xs-12 grid full-width padding-2",
-        "components": [{
+        "components": [
+          {
             "is": "DynamicComponent",
             "props": {
               "class": "xs-8 padding-2",
-              "components": [{
+              "components": [
+                {
                   "is": "AsyncComponent",
                   "props": {
                     "class": "xs-12 margin-bottom-2",
@@ -365,29 +427,36 @@
                   "is": "DynamicComponent",
                   "props": {
                     "class": "xs-12 grid padding-bottom-2",
-                    "components": [{
-                      "is": "DynamicComponent",
-                      "props": {
-                        "class": "xs-6 padding-right-2",
-                        "components": [{
-                          "is": "AsyncComponent",
-                          "props": {
-                            "layoutName": "booking/base/party"
-                          }
-                        }]
+                    "components": [
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-6 padding-right-2",
+                          "components": [
+                            {
+                              "is": "AsyncComponent",
+                              "props": {
+                                "layoutName": "booking/base/party"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-6 padding-left-2",
+                          "components": [
+                            {
+                              "is": "AsyncComponent",
+                              "props": {
+                                "layoutName": "booking/base/date"
+                              }
+                            }
+                          ]
+                        }
                       }
-                    }, {
-                      "is": "DynamicComponent",
-                      "props": {
-                        "class": "xs-6 padding-left-2",
-                        "components": [{
-                          "is": "AsyncComponent",
-                          "props": {
-                            "layoutName": "booking/base/date"
-                          }
-                        }]
-                      }
-                    }]
+                    ]
                   }
                 },
                 {
@@ -411,19 +480,29 @@
             "is": "DynamicComponent",
             "props": {
               "class": "xs-4 padding-2",
-              "components": [{
+              "components": [
+                {
                   "is": "AsyncComponent",
                   "props": {
                     "class": "xs-12 margin-bottom-2",
                     "layoutName": "booking/base/tracking"
                   }
-                }, {
+                },
+                {
                   "is": "AsyncComponent",
                   "props": {
                     "class": "xs-12 margin-bottom-2",
                     "layoutName": "booking/base/alert"
                   }
-                }, {
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/soptask"
+                  }
+                },
+                {
                   "is": "AsyncComponent",
                   "props": {
                     "class": "xs-12 margin-bottom-2",
