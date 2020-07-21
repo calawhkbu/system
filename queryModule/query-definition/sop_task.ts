@@ -1,5 +1,5 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression } from "node-jql";
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression } from "node-jql";
 
 const taskTable = 'sop_task'
 const templateTaskTable = 'sop_template_task'
@@ -19,7 +19,6 @@ const columns = [
   [taskTable, 'dueAt'],
   [taskTable, 'deadline'],
   [taskTable, 'statusList'],
-  [taskTable, 'closed', 'isClosed'],
   [taskTable, 'deletedBy'],
   [taskTable, 'deletedAt'],
   [templateTaskTable, 'id', 'originalTaskId'],
@@ -83,15 +82,19 @@ query.field('uniqueId', {
 
 
 
-const hasSubTasksExpression = new ExistsExpression(
-  new QueryExpression(new Query({
+function getSubTaskQuery(...expressions: IExpression[]): Query {
+  return new Query({
     $from: new FromTable(taskTable, 'temp'),
     $where: new AndExpressions([
       new BinaryExpression(columnExpressions['tableName'], '=', new ColumnExpression('temp', 'tableName')),
       new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression('temp', 'primaryKey')),
-      new BinaryExpression(columnExpressions['id'], '=', new ColumnExpression('temp', 'parentId'))
+      new BinaryExpression(columnExpressions['id'], '=', new ColumnExpression('temp', 'parentId')),
+      ...expressions
     ])
-  })),
+  })
+}
+const hasSubTasksExpression = new ExistsExpression(
+  getSubTaskQuery(),
   false
 )
 query.field('hasSubTasks', {
@@ -134,19 +137,57 @@ query.field('statusBy', params => {
 
 
 
+// is closed
+const isClosedExpression = new FunctionExpression('IF',
+  hasSubTasksExpression,
+  new ExistsExpression(getSubTaskQuery(
+    new BinaryExpression(
+      new MathExpression(new ColumnExpression('temp', 'statusList'), '->>', new Value('$[0].status')),
+      '<>', new Value('Closed')
+    )
+  ), true),
+  new BinaryExpression(
+    new MathExpression(columnExpressions['statusList'], '->>', new Value('$[0].status')),
+    '=', new Value('Closed')
+  )
+)
+query.field('isClosed', {
+  $select: new ResultColumn(isClosedExpression, 'isClosed')
+})
+
+
+
+
+
 // is done or is closed, given that closed must come after done
-const isDoneExpression = new BinaryExpression(
-  new MathExpression(
-    columnExpressions['statusList'],
-    '->>',
-    new Value('$[0].status')
-  ),
-  '=',
-  new Value('Done')
+const isDoneExpression = new FunctionExpression('IF',
+  hasSubTasksExpression,
+  new ExistsExpression(getSubTaskQuery(
+    new AndExpressions([
+      new BinaryExpression(
+        new MathExpression(new ColumnExpression('temp', 'statusList'), '->>', new Value('$[0].status')),
+        '<>', new Value('Closed')
+      ),
+      new BinaryExpression(
+        new MathExpression(new ColumnExpression('temp', 'statusList'), '->>', new Value('$[0].status')),
+        '<>', new Value('Done')
+      )
+    ])
+  ), true),
+  new OrExpressions([
+    new BinaryExpression(
+      new MathExpression(columnExpressions['statusList'], '->>', new Value('$[0].status')),
+      '=', new Value('Closed')
+    ),
+    new BinaryExpression(
+      new MathExpression(columnExpressions['statusList'], '->>', new Value('$[0].status')),
+      '=', new Value('Done')
+    )
+  ])
 )
 query.field('isDone', {
   $select: new ResultColumn(new FunctionExpression('IF',
-    new OrExpressions([isDoneExpression, columnExpressions['isClosed']]),
+    isDoneExpression,
     new Value(1),
     new Value(0)
   ), 'isDone')
@@ -221,7 +262,7 @@ query.field('status', params => {
       $then: new Value('Deleted')
     },
     {
-      $when: columnExpressions['isClosed'],
+      $when: isClosedExpression,
       $then: new Value('Closed')
     },
     {
