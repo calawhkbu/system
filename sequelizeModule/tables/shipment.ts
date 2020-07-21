@@ -2,6 +2,7 @@ import { IConditionalExpression, OrExpressions, AndExpressions, BinaryExpression
 import { JwtPayload, JwtPayloadParty } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import { joinData } from 'utils/helper'
+import { Shipment } from 'models/main/shipment'
 
 export const setDataFunction = {
   partyGroupCode: async({ partyGroupCode }, user: JwtPayload) => {
@@ -18,8 +19,30 @@ export const setDataFunction = {
   class: async({ isDirect, isCoload }: any) => {
     return `${isDirect ? 'D' : ''}${isCoload ? 'C' : ''}`
   },
-  report: async({ shipmentContainers = [], shipmentCargos = [] }: any) => {
+  report: async({ shipmentContainers = [], shipmentCargos = [] }: Shipment) => {
+
+    const containerCountMap = {}
+
+    shipmentContainers.map(shipmentContainer => {
+
+      const containerType = shipmentContainer.containerType
+
+      if (containerType)
+      {
+        containerCountMap[containerType] = containerCountMap[containerType] ? containerCountMap[containerType]++ : 1
+      }
+
+    })
+
+    console.log(`containerCountMap`)
+    console.log(containerCountMap)
+
+    throw new Error(`something wrong`)
+
+
+
     return {
+      containerTypeCount : containerCountMap,
       containerCount: shipmentContainers.length
     }
   }
