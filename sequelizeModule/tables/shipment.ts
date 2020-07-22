@@ -29,17 +29,10 @@ export const setDataFunction = {
 
       if (containerType)
       {
-        containerCountMap[containerType] = containerCountMap[containerType] ? containerCountMap[containerType]++ : 1
+        containerCountMap[containerType] = containerCountMap[containerType] ? (containerCountMap[containerType] + 1) : 1
       }
 
     })
-
-    console.log(`containerCountMap`)
-    console.log(containerCountMap)
-
-    throw new Error(`something wrong`)
-
-
 
     return {
       containerTypeCount : containerCountMap,
