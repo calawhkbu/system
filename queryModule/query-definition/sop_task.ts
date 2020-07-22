@@ -1,10 +1,16 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression } from "node-jql";
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression } from "node-jql";
 
 const taskTable = 'sop_task'
 const templateTaskTable = 'sop_template_task'
 const selectedTemplateTable = 'sop_selected_template'
 const templateTable = 'sop_template'
+const bookingTable = 'booking'
+const shipmentTable = 'shipment'
+
+function table(name: string): string {
+  return `table:${name}`
+}
 
 const columns = [
   [taskTable, 'id'],
@@ -21,17 +27,19 @@ const columns = [
   [taskTable, 'statusList'],
   [taskTable, 'deletedBy'],
   [taskTable, 'deletedAt'],
-  [templateTaskTable, 'id', 'originalTaskId'],
-  [templateTaskTable, 'partyGroupCode'],
-  [templateTaskTable, 'uniqueId', 'partyGroupTaskId'],
-  [templateTaskTable, 'system'],
-  [templateTaskTable, 'category'],
-  [templateTaskTable, 'name'],
-  [templateTaskTable, 'description'],
-  [selectedTemplateTable, 'id', 'originalSelectedTemplateId'],
-  [selectedTemplateTable, 'templateId', 'selectedTemplateId'],
-  [templateTable, 'id', 'originalTemplateId'],
-  [templateTable, 'group']
+  [templateTaskTable, 'id', 'originalTaskId', table(templateTaskTable)],
+  [templateTaskTable, 'partyGroupCode', 'partyGroupCode', table(templateTaskTable)],
+  [templateTaskTable, 'uniqueId', 'partyGroupTaskId', table(templateTaskTable)],
+  [templateTaskTable, 'system', 'system', table(templateTaskTable)],
+  [templateTaskTable, 'category', 'category', table(templateTaskTable)],
+  [templateTaskTable, 'name', 'name', table(templateTaskTable)],
+  [templateTaskTable, 'description', 'description', table(templateTaskTable)],
+  [selectedTemplateTable, 'id', 'originalSelectedTemplateId', table(selectedTemplateTable)],
+  [selectedTemplateTable, 'templateId', 'selectedTemplateId', table(selectedTemplateTable)],
+  [templateTable, 'id', 'originalTemplateId', table(templateTable)],
+  [templateTable, 'group', 'group', table(templateTable)],
+  [bookingTable, 'bookingTeam', 'bookingTeam', table(bookingTable)],
+  [shipmentTable, 'shipmentTeam', 'shipmentTeam', table(shipmentTable)]
 ]
 
 const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r, [table, name, as = name]) => {
@@ -44,24 +52,47 @@ const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r
 
 
 const query = new QueryDef({
-  $from: new FromTable({
-    table: taskTable,
-    joinClauses: [
-      new JoinClause('LEFT', templateTaskTable,
-        new BinaryExpression(columnExpressions['taskId'], '=', columnExpressions['originalTaskId'])
-      ),
-      new JoinClause('LEFT', selectedTemplateTable,
-        new BinaryExpression(columnExpressions['templateId'], '=', columnExpressions['originalSelectedTemplateId'])
-      ),
-      new JoinClause('LEFT', templateTable,
-        new BinaryExpression(columnExpressions['selectedTemplateId'], '=', columnExpressions['originalTemplateId'])
-      ),
-    ]
-  })
+  $from: taskTable
 })
 
-for (const [table, name, as = name] of columns) {
-  query.field(as, { $select: new ResultColumn(columnExpressions[as], as) })
+query.table(bookingTable, {
+  $from: new FromTable(taskTable, new JoinClause('LEFT', bookingTable,
+    new AndExpressions([
+      new BinaryExpression(columnExpressions['tableName'], '=', bookingTable),
+      new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression(bookingTable, 'id'))
+    ])
+  ))
+})
+
+query.table(shipmentTable, {
+  $from: new FromTable(taskTable, new JoinClause('LEFT', shipmentTable,
+    new AndExpressions([
+      new BinaryExpression(columnExpressions['tableName'], '=', shipmentTable),
+      new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression(shipmentTable, 'id'))
+    ])
+  ))
+})
+
+query.table(templateTaskTable, {
+  $from: new FromTable(taskTable, new JoinClause('LEFT', templateTaskTable,
+    new BinaryExpression(columnExpressions['taskId'], '=', columnExpressions['originalTaskId'])
+  ))
+})
+
+query.table(selectedTemplateTable, {
+  $from: new FromTable(taskTable, new JoinClause('LEFT', selectedTemplateTable,
+    new BinaryExpression(columnExpressions['templateId'], '=', columnExpressions['originalSelectedTemplateId'])
+  ))
+})
+
+query.table(templateTable, {
+  $from: new FromTable(taskTable, new JoinClause('LEFT', templateTable,
+    new BinaryExpression(columnExpressions['selectedTemplateId'], '=', columnExpressions['originalTemplateId'])
+  ))
+}, table(selectedTemplateTable))
+
+for (const [table, name, as = name, ...companions] of columns) {
+  query.field(as, { $select: new ResultColumn(columnExpressions[as], as) }, ...companions)
 }
 
 
@@ -76,7 +107,7 @@ const uniqueIdExpression = new FunctionExpression(
 )
 query.field('uniqueId', {
   $select: new ResultColumn(uniqueIdExpression, 'uniqueId')
-})
+}, table(templateTaskTable))
 
 
 
