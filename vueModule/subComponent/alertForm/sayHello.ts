@@ -6,16 +6,23 @@ import { ValidatorMetadata } from 'modules/validation/service'
 const subComponentTemplateList = [
     {
         subComponentTemplateName: 'date',
+
+
         propParam: {
+
+            // how to add the param??
+            "tableName" : "shipment",
+
             "dateName": "departure",
             "includeEstimated": true,
             "includeActual": true,
             "includeRemark": true
-        }
+        },
     },
     {
         subComponentTemplateName: 'date',
         propParam: {
+            "tableName" : "shipment",
             "dateName": "arrival",
             "includeEstimated": true,
             "includeActual": true,
