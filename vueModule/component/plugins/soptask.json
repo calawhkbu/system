@@ -11,7 +11,6 @@
     "icon": "status",
     "iconMap": {
       "Open": "assignment",
-      "Due Today": "assignment_late",
       "Due": "assignment_late",
       "Dead": "warning"
     },
@@ -24,7 +23,7 @@
   "baseDetailProps": {
     "headers": [
       {
-        "key": "hasRemark",
+        "key": "noOfRemarks",
         "boolean": true,
         "i18nContext": "SopTask",
         "tooltip": "hasRemarkMsg",
@@ -71,9 +70,6 @@
       },
       "Not Ready": {
         "opacity": 0.6
-      },
-      "Due Today": {
-        "backgroundColor": "#fdc57f"
       },
       "Due": {
         "backgroundColor": "#ffcccb"

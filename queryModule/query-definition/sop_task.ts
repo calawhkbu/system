@@ -1,5 +1,6 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression } from "node-jql";
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator } from "node-jql";
+import { IfExpression } from 'utils/jql-subqueries'
 
 const taskTable = 'sop_task'
 const templateTaskTable = 'sop_template_task'
@@ -25,8 +26,10 @@ const columns = [
   [taskTable, 'dueAt'],
   [taskTable, 'deadline'],
   [taskTable, 'statusList'],
-  [taskTable, 'deletedBy'],
+  [taskTable, 'closedAt'],
+  [taskTable, 'closedBy'],
   [taskTable, 'deletedAt'],
+  [taskTable, 'deletedBy'],
   [templateTaskTable, 'id', 'originalTaskId', table(templateTaskTable)],
   [templateTaskTable, 'partyGroupCode', 'partyGroupCode', table(templateTaskTable)],
   [templateTaskTable, 'uniqueId', 'partyGroupTaskId', table(templateTaskTable)],
@@ -55,6 +58,7 @@ const query = new QueryDef({
   $from: taskTable
 })
 
+// table:booking
 query.table(bookingTable, {
   $from: new FromTable(taskTable, new JoinClause('LEFT', bookingTable,
     new AndExpressions([
@@ -64,6 +68,7 @@ query.table(bookingTable, {
   ))
 })
 
+// table:shipment
 query.table(shipmentTable, {
   $from: new FromTable(taskTable, new JoinClause('LEFT', shipmentTable,
     new AndExpressions([
@@ -73,24 +78,28 @@ query.table(shipmentTable, {
   ))
 })
 
+// table:sop_template_task
 query.table(templateTaskTable, {
   $from: new FromTable(taskTable, new JoinClause('LEFT', templateTaskTable,
     new BinaryExpression(columnExpressions['taskId'], '=', columnExpressions['originalTaskId'])
   ))
 })
 
+// table:sop_selected_template
 query.table(selectedTemplateTable, {
   $from: new FromTable(taskTable, new JoinClause('LEFT', selectedTemplateTable,
     new BinaryExpression(columnExpressions['templateId'], '=', columnExpressions['originalSelectedTemplateId'])
   ))
 })
 
+// table:sop_template
 query.table(templateTable, {
   $from: new FromTable(taskTable, new JoinClause('LEFT', templateTable,
     new BinaryExpression(columnExpressions['selectedTemplateId'], '=', columnExpressions['originalTemplateId'])
   ))
 }, table(selectedTemplateTable))
 
+// declared fields
 for (const [table, name, as = name, ...companions] of columns) {
   query.field(as, { $select: new ResultColumn(columnExpressions[as], as) }, ...companions)
 }
@@ -99,6 +108,7 @@ for (const [table, name, as = name, ...companions] of columns) {
 
 
 
+// party group unique task ID
 const uniqueIdExpression = new FunctionExpression(
   'CONCAT',
   columnExpressions['partyGroupCode'],
@@ -113,19 +123,41 @@ query.field('uniqueId', {
 
 
 
-function getSubTaskQuery(...expressions: IExpression[]): Query {
+// is deleted
+function generalIsDeletedExpression(table = taskTable, not = false) {
+  return not
+    ? new AndExpressions([
+        new IsNullExpression(new ColumnExpression(table, 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression(table, 'deletedBy'), false)
+      ])
+    : new OrExpressions([
+        new IsNullExpression(new ColumnExpression(table, 'deletedAt'), true),
+        new IsNullExpression(new ColumnExpression(table, 'deletedBy'), true)
+      ])
+}
+query.field('isDeleted', {
+  $select: new ResultColumn(generalIsDeletedExpression(), 'isDeleted')
+})
+
+
+
+
+
+// has sub-tasks
+function hasSubTaskQuery(table: string, ...expressions: IExpression[]) {
   return new Query({
-    $from: new FromTable(taskTable, 'temp'),
+    $from: new FromTable(taskTable, table),
     $where: new AndExpressions([
-      new BinaryExpression(columnExpressions['tableName'], '=', new ColumnExpression('temp', 'tableName')),
-      new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression('temp', 'primaryKey')),
-      new BinaryExpression(columnExpressions['id'], '=', new ColumnExpression('temp', 'parentId')),
+      new BinaryExpression(columnExpressions['tableName'], '=', new ColumnExpression(table, 'tableName')),
+      new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression(table, 'primaryKey')),
+      new BinaryExpression(columnExpressions['id'], '=', new ColumnExpression(table, 'parentId')),
+      generalIsDeletedExpression(table, true),
       ...expressions
     ])
   })
 }
 const hasSubTasksExpression = new ExistsExpression(
-  getSubTaskQuery(),
+  hasSubTaskQuery('temp'),
   false
 )
 query.field('hasSubTasks', {
@@ -136,51 +168,22 @@ query.field('hasSubTasks', {
 
 
 
-const statusAtExpression = new MathExpression(
-  columnExpressions['statusList'],
-  '->>',
-  new Value('$[0].statusAt')
-)
-query.field('statusAt', {
-  $select: new ResultColumn(statusAtExpression, 'statusAt')
-})
-
-
-
-
-
-const statusByExpression = new MathExpression(
-  columnExpressions['statusList'],
-  '->>',
-  new Value('$[0].statusBy')
-)
-query.field('statusBy', params => {
-  const me = params.subqueries && typeof params.subqueries.user === 'object' && 'value' in params.subqueries.user ? params.subqueries.user.value : ''
-  const byMeExpression = new BinaryExpression(statusByExpression, '=', me)
-  return { $select: new ResultColumn(new FunctionExpression('IF',
-    byMeExpression,
-    new Value('me'),
-    statusByExpression,
-  ), 'statusBy') }
-})
-
-
-
-
-
 // is closed
-const isClosedExpression = new FunctionExpression('IF',
+function generalIsClosedExpression(table = taskTable, not = false) {
+  return not
+    ? new AndExpressions([
+      new IsNullExpression(new ColumnExpression(table, 'closedAt'), false),
+      new IsNullExpression(new ColumnExpression(table, 'closedBy'), false)
+    ])
+    : new OrExpressions([
+      new IsNullExpression(new ColumnExpression(table, 'closedAt'), true),
+      new IsNullExpression(new ColumnExpression(table, 'closedBy'), true)
+    ])
+}
+const isClosedExpression = IfExpression(
   hasSubTasksExpression,
-  new ExistsExpression(getSubTaskQuery(
-    new BinaryExpression(
-      new MathExpression(new ColumnExpression('temp', 'statusList'), '->>', new Value('$[0].status')),
-      '<>', new Value('Closed')
-    )
-  ), true),
-  new BinaryExpression(
-    new MathExpression(columnExpressions['statusList'], '->>', new Value('$[0].status')),
-    '=', new Value('Closed')
-  )
+  new ExistsExpression(hasSubTaskQuery('temp', generalIsClosedExpression('temp', true)), true),
+  generalIsClosedExpression()
 )
 query.field('isClosed', {
   $select: new ResultColumn(isClosedExpression, 'isClosed')
@@ -191,51 +194,41 @@ query.field('isClosed', {
 
 
 // is done or is closed, given that closed must come after done
-const isDoneExpression = new FunctionExpression('IF',
+function getLastStatusExpression(status: string, table = taskTable, operator: BinaryOperator = '=') {
+  return new BinaryExpression(
+    new MathExpression(new ColumnExpression(table, 'statusList'), '->>', new Value('$[0].status')),
+    operator, new Value(status)
+  )
+}
+function generalIsDoneExpression(table = taskTable, not = false) {
+  return not
+    ? new AndExpressions([
+        getLastStatusExpression('Closed', table, '<>'),
+        getLastStatusExpression('Done', table, '<>')
+      ])
+    : new OrExpressions([
+        getLastStatusExpression('Closed', table),
+        getLastStatusExpression('Done', table)
+      ])
+}
+const isDoneExpression = IfExpression(
   hasSubTasksExpression,
-  new ExistsExpression(getSubTaskQuery(
-    new AndExpressions([
-      new BinaryExpression(
-        new MathExpression(new ColumnExpression('temp', 'statusList'), '->>', new Value('$[0].status')),
-        '<>', new Value('Closed')
-      ),
-      new BinaryExpression(
-        new MathExpression(new ColumnExpression('temp', 'statusList'), '->>', new Value('$[0].status')),
-        '<>', new Value('Done')
-      )
-    ])
-  ), true),
-  new OrExpressions([
-    new BinaryExpression(
-      new MathExpression(columnExpressions['statusList'], '->>', new Value('$[0].status')),
-      '=', new Value('Closed')
-    ),
-    new BinaryExpression(
-      new MathExpression(columnExpressions['statusList'], '->>', new Value('$[0].status')),
-      '=', new Value('Done')
-    )
-  ])
+  new ExistsExpression(hasSubTaskQuery('temp', generalIsDoneExpression('temp', true)), true),
+  generalIsDoneExpression()
 )
 query.field('isDone', {
-  $select: new ResultColumn(new FunctionExpression('IF',
-    isDoneExpression,
-    new Value(1),
-    new Value(0)
-  ), 'isDone')
+  $select: new ResultColumn(isDoneExpression, 'isDone')
 })
 
 
 
 
 
-const isDueExpression = new FunctionExpression('IF',
-  new BinaryExpression(
-    columnExpressions['dueAt'],
-    '<',
-    new FunctionExpression('UTC_TIMESTAMP')
-  ),
-  new Value(1),
-  new Value(0)
+// is due
+const isDueExpression = new BinaryExpression(
+  columnExpressions['dueAt'],
+  '<',
+  new FunctionExpression('UTC_TIMESTAMP')
 )
 query.field('isDue', {
   $select: new ResultColumn(isDueExpression, 'isDue')
@@ -245,14 +238,31 @@ query.field('isDue', {
 
 
 
-const isDeadExpression = new FunctionExpression('IF',
-  new BinaryExpression(
-    columnExpressions['deadline'],
-    '<',
-    new FunctionExpression('UTC_TIMESTAMP')
-  ),
-  new Value(1),
-  new Value(0)
+// is due today
+query.field('isDueToday', params => {
+  let expression: Expression
+  if (params.subqueries && typeof params.subqueries.today === 'object' && 'from' in params.subqueries.today) {
+    expression = new AndExpressions([
+      isStartedExpression,
+      new BinaryExpression(new Value(params.subqueries.today.from), '<=', columnExpressions['dueAt']),
+      new BinaryExpression(columnExpressions['dueAt'], '<=', new Value(params.subqueries.today.to))
+    ])
+  }
+  else {
+    expression = new Value(0)
+  }
+  return { $select: new ResultColumn(expression, 'isDueToday') }
+})
+
+
+
+
+
+// is dead
+const isDeadExpression = new BinaryExpression(
+  columnExpressions['deadline'],
+  '<',
+  new FunctionExpression('UTC_TIMESTAMP')
 )
 query.field('isDead', {
   $select: new ResultColumn(isDeadExpression, 'isDead')
@@ -262,77 +272,108 @@ query.field('isDead', {
 
 
 
-const isDeletedExpression = new OrExpressions([
-  new IsNullExpression(columnExpressions['deletedBy'], true),
-  new IsNullExpression(columnExpressions['deletedAt'], true)
+// last status
+const isStartedExpression = new OrExpressions([
+  new IsNullExpression(columnExpressions['startAt'], false),
+  new BinaryExpression(
+    columnExpressions['startAt'],
+    '<',
+    new FunctionExpression('UTC_TIMESTAMP')
+  )
 ])
-query.field('isDeleted', {
-  $select: new ResultColumn(isDeletedExpression, 'isDeleted')
+query.field('status', {
+  $select: new ResultColumn(
+    new CaseExpression(
+      [
+        {
+          $when: generalIsDeletedExpression(),
+          $then: new Value('Deleted')
+        },
+        {
+          $when: isClosedExpression,
+          $then: new Value('Closed')
+        },
+        {
+          $when: isDoneExpression,
+          $then: new Value('Done')
+        },
+        {
+          $when: isDeadExpression,
+          $then: new Value('Dead')
+        },
+        {
+          $when: isDueExpression,
+          $then: new Value('Due')
+        },
+        {
+          $when: isStartedExpression,
+          $then: new Value('Open')
+        }
+      ],
+      new Value('Not Ready')
+    ),
+  'status')
 })
 
 
 
 
 
-const isStartedExpression = new OrExpressions([
-  new IsNullExpression(columnExpressions['startAt'], false),
-  new FunctionExpression('IF',
-    new BinaryExpression(
-      columnExpressions['startAt'],
-      '<',
-      new FunctionExpression('UTC_TIMESTAMP')
-    ),
-    new Value(1),
-    new Value(0)
-  )
-])
-query.field('status', params => {
-  const cases: ICase[] = [
+// last status at
+const statusAtExpression = new CaseExpression(
+  [
     {
-      $when: isDeletedExpression,
-      $then: new Value('Deleted')
+      $when: generalIsDeletedExpression(),
+      $then: new Value(null)
     },
     {
       $when: isClosedExpression,
-      $then: new Value('Closed')
-    },
-    {
-      $when: isDoneExpression,
-      $then: new Value('Done')
-    },
-    {
-      $when: isDeadExpression,
-      $then: new Value('Dead')
-    },
-    {
-      $when: isDueExpression,
-      $then: new Value('Due')
-    },
-    {
-      $when: isStartedExpression,
-      $then: new Value('Open')
+      $then: columnExpressions['closedAt']
     }
-  ]
-  if (params.subqueries && typeof params.subqueries.today === 'object' && 'from' in params.subqueries.today) {
-    cases.splice(5, 0, {
-      $when: new AndExpressions([
-        isStartedExpression,
-        new BinaryExpression(new Value(params.subqueries.today.from), '<=', columnExpressions['dueAt']),
-        new BinaryExpression(columnExpressions['dueAt'], '<=', new Value(params.subqueries.today.to))
-      ]),
-      $then: new Value('Due Today')
-    })
-  }
-  const statusExpression = new CaseExpression(cases, new Value('Not Ready'))
-  return {
-    $select: new ResultColumn(statusExpression, 'status')
-  }
+  ],
+  new MathExpression(
+    columnExpressions['statusList'],
+    '->>',
+    new Value('$[0].statusAt')
+  )
+)
+query.field('statusAt', {
+  $select: new ResultColumn(statusAtExpression, 'statusAt')
 })
 
 
 
 
 
+// last status by
+const statusByExpression = new CaseExpression(
+  [
+    {
+      $when: generalIsDeletedExpression(),
+      $then: new Value(null)
+    },
+    {
+      $when: isClosedExpression,
+      $then: columnExpressions['closedBy']
+    }
+  ],
+  new MathExpression(
+    columnExpressions['statusList'],
+    '->>',
+    new Value('$[0].statusBy')
+  )
+)
+query.field('statusBy', params => {
+  const me = params.subqueries && typeof params.subqueries.user === 'object' && 'value' in params.subqueries.user ? params.subqueries.user.value : ''
+  const byMeExpression = new BinaryExpression(statusByExpression, '=', me)
+  return { $select: new ResultColumn(IfExpression(byMeExpression, new Value('me'), statusByExpression), 'statusBy') }
+})
+
+
+
+
+
+// number of remarks
 const numberRemarksExpression = new FunctionExpression('JSON_LENGTH', columnExpressions['remark'])
 query.field('noOfRemarks', {
   $select: new ResultColumn(numberRemarksExpression, 'noOfRemarks')
@@ -342,19 +383,16 @@ query.field('noOfRemarks', {
 
 
 
-const hasRemarkExpression = new FunctionExpression('IF',
-  new BinaryExpression(numberRemarksExpression, '>', new Value(0)),
-  new Value(1),
-  new Value(0)
-)
+// has remarks
 query.field('hasRemark', {
-  $select: new ResultColumn(hasRemarkExpression, 'hasRemark')
+  $select: new ResultColumn(new BinaryExpression(numberRemarksExpression, '>', new Value(0)), 'hasRemark')
 })
 
 
 
 
 
+// last remark
 const latestRemarkExpression = new MathExpression(
   columnExpressions['remark'],
   '->>',
@@ -368,6 +406,7 @@ query.field('latestRemark', {
 
 
 
+// last remark at
 const latestRemarkAtExpression = new MathExpression(
   columnExpressions['remark'],
   '->>',
@@ -381,6 +420,7 @@ query.field('latestRemarkAt', {
 
 
 
+// last remark by
 const latestRemarkByExpression = new MathExpression(
   columnExpressions['remark'],
   '->>',
@@ -389,17 +429,14 @@ const latestRemarkByExpression = new MathExpression(
 query.field('latestRemarkBy', params => {
   const me = typeof params.subqueries.user === 'object' && 'value' in params.subqueries.user ? params.subqueries.user.value : ''
   const byMeExpression = new BinaryExpression(latestRemarkByExpression, '=', me)
-  return { $select: new ResultColumn(new FunctionExpression('IF',
-    byMeExpression,
-    new Value('me'),
-    latestRemarkByExpression,
-  ), 'latestRemarkBy') }
+  return { $select: new ResultColumn(IfExpression(byMeExpression, new Value('me'), latestRemarkByExpression), 'latestRemarkBy') }
 })
 
 
 
 
 
+// tableName = ?
 query.subquery('tableName', {
   $where: new BinaryExpression(columnExpressions['tableName'], '=', new Unknown())
 }).register('value', 0)
@@ -408,6 +445,7 @@ query.subquery('tableName', {
 
 
 
+// primaryKey = ?
 query.subquery('primaryKey', {
   $where: new BinaryExpression(columnExpressions['primaryKey'], '=', new Unknown())
 }).register('value', 0)
