@@ -59,7 +59,7 @@ export default {
 
         // warning
         handleGroupByEntityValue(subqueries)
-        const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries)
+        const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
           
 
 
