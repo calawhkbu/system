@@ -1168,9 +1168,9 @@ const testAlertList = [
 
 const alertConfigList = [
   // just seperate into different list
-  // ...shipmentSeaAlertList,
-  // ...shipmentAirAlertList,
-  // ...oldAlertList,
+  ...shipmentSeaAlertList,
+  ...shipmentAirAlertList,
+  ...oldAlertList,
   ...testAlertList
 
 ] as AlertConfig[]
