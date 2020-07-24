@@ -2,7 +2,7 @@ import { AlertConfig, AlertFlexDataConfig } from 'modules/sequelize/interfaces/a
 import { AlertPreferenceDetail } from 'modules/sequelize/interfaces/alertPreference'
 import { IQueryParams } from 'classes/query'
 
-const schedulerActive = true
+const schedulerActive = false
 
 
 // if testMode = true, will only send alert to those testAlertEmailList
@@ -32,7 +32,7 @@ const shipmentSeaAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -87,7 +87,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -141,7 +141,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -196,7 +196,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -253,7 +253,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -316,7 +316,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -377,7 +377,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -440,7 +440,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -503,7 +503,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
 
     queryName: 'shipment',
@@ -568,7 +568,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -631,7 +631,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -685,7 +685,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -738,7 +738,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -805,7 +805,7 @@ const shipmentAirAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: false,
+    active: true,
 
 
     queryName: 'shipment',
@@ -862,7 +862,7 @@ const shipmentAirAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -916,7 +916,7 @@ const shipmentAirAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -1168,9 +1168,9 @@ const testAlertList = [
 
 const alertConfigList = [
   // just seperate into different list
-  // ...shipmentSeaAlertList,
-  // ...shipmentAirAlertList,
-  // ...oldAlertList,
+  ...shipmentSeaAlertList,
+  ...shipmentAirAlertList,
+  ...oldAlertList,
   ...testAlertList
 
 ] as AlertConfig[]
@@ -1179,25 +1179,25 @@ const alertPreferenceDetailList = [
   {
     alertType: 'bookingMessage',
     notifyBy: 'email',
-    active: false
+    active: true
   },
 
   {
     alertType: 'shipmentMessage',
     notifyBy: 'email',
-    active: false
+    active: true
   },
 
   {
     alertType: 'shipmentEtaChanged',
     notifyBy: 'email',
-    active: false
+    active: true
   },
 
   {
     alertType: 'shipmentEtdChanged',
     notifyBy: 'email',
-    active: false
+    active: true
   }
 
 ] as AlertPreferenceDetail[]
