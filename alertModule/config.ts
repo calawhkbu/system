@@ -2,7 +2,7 @@ import { AlertConfig, AlertFlexDataConfig } from 'modules/sequelize/interfaces/a
 import { AlertPreferenceDetail } from 'modules/sequelize/interfaces/alertPreference'
 import { IQueryParams } from 'classes/query'
 
-const schedulerActive = true
+const schedulerActive = false
 
 
 // if testMode = true, will only send alert to those testAlertEmailList
