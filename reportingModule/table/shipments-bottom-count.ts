@@ -1,6 +1,6 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
-import { expandGroupEntity, LastCurrentUnit, calculateLastCurrent, extendDate, handleGroupByEntityValue, handleGroupByEntityValueDatePart } from 'utils/card'
+import { expandGroupEntity, LastCurrentUnit, calculateLastCurrent, extendDate, handleGroupByEntityValueDatePart, handleBottomSheetGroupByEntityValue } from 'utils/card'
 import * as  rawMoment from 'moment'
 
 export default {
@@ -89,7 +89,7 @@ export default {
           }
         }
 
-        handleGroupByEntityValue(subqueries)
+        handleBottomSheetGroupByEntityValue(subqueries)
         handleGroupByEntityValueDatePart(subqueries,moment)
 
         return params

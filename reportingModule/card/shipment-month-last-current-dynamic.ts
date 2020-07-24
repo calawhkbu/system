@@ -3,7 +3,7 @@ import { IQueryParams } from 'classes/query'
 import { BadRequestException } from '@nestjs/common'
 import Moment = require('moment')
 import { OrderBy } from 'node-jql'
-import { expandGroupEntity, expandSummaryVariable, calculateLastCurrent, handleGroupByEntityValue } from 'utils/card'
+import { expandBottomSheetGroupByEntity, expandSummaryVariable, calculateLastCurrent, handleBottomSheetGroupByEntityValue } from 'utils/card'
 
 interface Result {
   moment: typeof Moment
@@ -54,8 +54,8 @@ export default {
 
 
         
-        handleGroupByEntityValue(subqueries)
-        const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries)
+        handleBottomSheetGroupByEntityValue(subqueries)
+        const { groupByEntity, codeColumnName,nameColumnName } = expandBottomSheetGroupByEntity(subqueries)
 
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
