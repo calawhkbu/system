@@ -115,6 +115,75 @@ const agentPartyCodeExpression = new CaseExpression({
 })
 
 
+
+const coloaderPartyIdExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+      ]),
+      $then: new ColumnExpression('shipment_party', `linerAgentPartyId`)
+    }
+  ],
+  $else: new Value(null)
+})
+
+
+const coloaderPartyCodeExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+      ]),
+      $then: new ColumnExpression('shipment_party', `linerAgentPartyCode`)
+    }
+  ],
+  $else: new Value(null)
+})
+
+
+const coloaderPartyNameExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+      ]),
+      $then: new ColumnExpression('shipment_party', `linerAgentPartyName`)
+    }
+  ],
+  $else: new Value(null)
+})
+
+const coloaderPartyShortNameInReportExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+      ]),
+      $then: new ColumnExpression('linerAgent', `shortName`)
+    }
+  ],
+  $else: new Value(null)
+})
+
+const coloaderPartyNameInReportExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+      ]),
+      $then: new ColumnExpression('linerAgent', `name`)
+    }
+  ],
+  $else: new Value(null)
+})
+
+
 const flexDataPartyList = [
   'notifyParty2'
 ]
@@ -142,10 +211,6 @@ const partyList = [
   },
   {
     name: 'agent',
-    partyNameExpression: {
-      expression: agentPartyNameExpression,
-      companion: ['table:shipment_party']
-    },
     partyIdExpression: {
       expression: agentPartyIdExpression,
       companion: ['table:shipment_party']
@@ -153,12 +218,35 @@ const partyList = [
     partyCodeExpression: {
       expression: agentPartyCodeExpression,
       companion: ['table:shipment_party']
+    },
+    partyNameExpression: {
+      expression: agentPartyNameExpression,
+      companion: ['table:shipment_party']
     }
   },
   {
     name : 'coloader',
-    partyCodeExpression: new Value(null),
-    partyNameExpression: new Value(null)
+    partyIdExpression: {
+      expression: coloaderPartyIdExpression,
+      companion: ['table:shipment_party']
+    },
+    partyCodeExpression: {
+      expression: coloaderPartyCodeExpression,
+      companion: ['table:shipment_party']
+    },
+    partyNameExpression: {
+      expression: coloaderPartyNameExpression,
+      companion: ['table:shipment_party']
+    },
+    partyNameInReportExpression: {
+      expression: coloaderPartyNameInReportExpression,
+      companion: ['table:linerAgent']
+    },
+    partyShortNameInReportExpression: {
+      expression: coloaderPartyShortNameInReportExpression,
+      companion: ['table:linerAgent']
+
+    }
   },
   ...flexDataPartyList.map(flexDataParty => {
 
@@ -171,7 +259,7 @@ const partyList = [
     const partyIdExpression =  new MathExpression(flexDataExpression,'->>',`$.${flexDataParty}PartyId`)
 
     const partyNameInReportExpression = partyNameExpression
-    const partyCodeInReportExpression = partyCodeExpression
+    const partyCodeInReportExpression = partyNameExpression
 
     return {
       name : flexDataParty,
@@ -1932,9 +2020,12 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
 
   const partyTableName = party.name
 
+  // these 3 will get from shipment_party table
   const partyIdExpression = party.partyIdExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyId`), companion: ['table:shipment_party'] }
   const partyNameExpression = party.partyNameExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyName`), companion: ['table:shipment_party'] }
   const partyCodeExpression = party.partyCodeExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyCode`), companion: ['table:shipment_party'] }
+
+  // this 2, will try to get from the party table directly
   const partyNameInReportExpression = party.partyNameInReportExpression || { expression: new ColumnExpression(party.name, `name`), companion: [`table:${party.name}`] }
   const partyShortNameInReportExpression = party.partyShortNameInReportExpression || { expression: new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion: [`table:${party.name}`] }
 
@@ -2360,8 +2451,18 @@ const nestedSummaryList = [
 
 registerNestedSummaryFilter(query,nestedSummaryList)
 
+
+
+const containerTypeList = [
+  'aaa',
+  'bbb'
+]
+
+
 // field that store in report json
 const reportingSummaryFieldNameList = [
+
+  ...containerTypeList.map(containerType => `${containerType}_ContainerTypeCount`),
   'containerCount'
 ]
 
@@ -2650,9 +2751,6 @@ query.subquery('viaHKG',
 
 
 const vgmQuery = new Query({
-  $where: new InExpression(idExpression, false,
-    new QueryExpression(
-      new Query({
 
         $select: [
           new ResultColumn(new ColumnExpression('shipment_container', 'shipmentId'))
@@ -2661,9 +2759,6 @@ const vgmQuery = new Query({
         $where: new BinaryExpression(new ColumnExpression('shipment_container', 'vgmWeight'), '>', 0)
 
       })
-    )
-  )
-})
 
 registerQueryCondition(query,'vgmNonZero',idExpression,vgmQuery)
 
@@ -2831,12 +2926,25 @@ const dateNameList = [
 
 const dateList = [
 
-  // seperate estimated and actual
+  // date in shipment_date table
   ...dateNameList.reduce((accumulator, currentValue) => {
     return accumulator.concat([`${currentValue}DateEstimated`, `${currentValue}DateActual`])
   }, []),
 
 
+  // date in shipment_date_utc table
+  ...dateNameList.reduce((accumulator, currentValue) => {
+    return accumulator.concat([
+      {
+        name: `${currentValue}DateActualInUtc`,
+        expression: new ColumnExpression('shipment_date_utc',`${currentValue}DateActual`)
+      },
+      {
+        name: `${currentValue}DateEstimatedInUtc`,
+        expression: new ColumnExpression('shipment_date_utc',`${currentValue}DateEstimated`)
+      },
+    ])
+  }, []),
   {
     name: 'jobDate',
     expression: jobDateExpression
@@ -2865,75 +2973,7 @@ const dateList = [
 ] as ExpressionHelperInterface[]
 
 
-
-
-const portOfLoadingTimezoneList = [
-  'departure',
-  'oceanBill',
-  'cargoReady',
-  'scheduleAssigned',
-  'scheduleApproaved',
-  'spaceConfirmation',
-  'bookingSubmit',
-  'cyCutOff',
-  'documentCutOff',
-  'pickup',
-  'shipperLoad',
-  'returnLoad',
-  'cargoReceipt',
-  'shipperDocumentSubmit',
-  'shipperInstructionSubmit',
-  'houseBillDraftSubmit',
-  'houseBillConfirmation',
-  'masterBillReleased',
-  'preAlertSend',
-  'ediSend',
-  'cargoRolloverStatus',
-  'sentToShipper',
-  'gateIn',
-  'loadOnboard'
-]
-
-const portOfDischargeTimezoneList = [
-  'arrival',
-  'inboundTransfer',
-  'onRail',
-  'arrivalAtDepot',
-  'availableForPickup',
-  'pickupCargoBeforeDemurrage',
-  'finalCargo',
-  'cargoPickupWithDemurrage',
-  'finalDoorDelivery',
-  'returnEmptyContainer',
-  'sentToConsignee',
-]
-
-const dateFieldTimezoneMap = [
-
-  {
-    dateNameList: [
-      // seperate estimated and actual
-      ...portOfLoadingTimezoneList.reduce((accumulator, currentValue) => {
-        return accumulator.concat([`${currentValue}DateEstimated`, `${currentValue}DateActual`])
-      }, []),
-    ],
-    timezoneOffsetExpression: new ColumnExpression('portOfLoading', 'timezoneOffset'),
-    companion: ['table:portOfLoading']
-  },
-  {
-    dateNameList: [
-      // seperate estimated and actual
-      ...portOfDischargeTimezoneList.reduce((accumulator, currentValue) => {
-        return accumulator.concat([`${currentValue}DateEstimated`, `${currentValue}DateActual`])
-      }, []),
-    ],
-    timezoneOffsetExpression: new ColumnExpression('portOfDischarge', 'timezoneOffset'),
-    companion: ['table:portOfDischarge']
-  }
-] as DateFieldTimezoneMap[]
-
-
-registerAllDateField(query, 'shipment_date', dateList, dateFieldTimezoneMap)
+registerAllDateField(query, 'shipment_date', dateList)
 
 
 query.registerResultColumn(

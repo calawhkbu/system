@@ -29,7 +29,7 @@ export default {
         const xAxis = (subqueries.xAxis as any).value // should be shipper/consignee/agent/controllingCustomer/carrier
         const summaryColumnName = (subqueries.yAxis as any).value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-        const { codeColumnName, nameColumnName } = expandGroupEntity(subqueries,'xAxis')
+        const { codeColumnName, nameColumnName } = expandGroupEntity(subqueries,'xAxis',true)
 
 
         // const codeColumnName =

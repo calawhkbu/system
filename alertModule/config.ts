@@ -1,9 +1,16 @@
-
 import { AlertConfig, AlertFlexDataConfig } from 'modules/sequelize/interfaces/alert'
 import { AlertPreferenceDetail } from 'modules/sequelize/interfaces/alertPreference'
 import { IQueryParams } from 'classes/query'
 
-export const schedulerActive = false
+const schedulerActive = true
+
+
+// if testMode = true, will only send alert to those testAlertEmailList
+// make sure those email already have an acc
+const testMode = true
+const testAlertEmailList = [
+  'marco.lor+0843@swivelsoftware.com'
+]
 
 
 const shipmentSeaAlertList = [
@@ -25,7 +32,7 @@ const shipmentSeaAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -80,7 +87,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -134,7 +141,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -189,7 +196,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -246,7 +253,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -309,7 +316,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -370,7 +377,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -433,7 +440,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -496,7 +503,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
 
     queryName: 'shipment',
@@ -561,7 +568,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -624,7 +631,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -678,7 +685,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -731,7 +738,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -798,7 +805,7 @@ const shipmentAirAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: true,
+    active: false,
 
 
     queryName: 'shipment',
@@ -855,7 +862,7 @@ const shipmentAirAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -909,7 +916,7 @@ const shipmentAirAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -1110,7 +1117,7 @@ const testAlertList = [
         activeStatus: { value: 'active' }
       },
 
-      limit: 4
+      limit: 10
     } as IQueryParams,
 
     closeQuery: {
@@ -1122,12 +1129,12 @@ const testAlertList = [
     
 
     // select only 1 person
-    extraPersonIdQuery: {
-      subqueries: {
-        userName: { value: 'marco.lor@swivelsoftware.com' }
-      },
-      limit: 1
-    } as IQueryParams,
+    // extraPersonIdQuery: {
+    //   subqueries: {
+    //     userName: { value: 'marco.lor@swivelsoftware.com' }
+    //   },
+    //   limit: 1
+    // } as IQueryParams,
 
     // contactRoleList: ['shipper', 'consignee'],
     contactRoleList: [],
@@ -1159,17 +1166,16 @@ const testAlertList = [
 ]
 
 
-export const alertConfigList = [
+const alertConfigList = [
   // just seperate into different list
   // ...shipmentSeaAlertList,
   // ...shipmentAirAlertList,
   // ...oldAlertList,
-
   ...testAlertList
 
 ] as AlertConfig[]
 
-export const alertPreferenceDetailList = [
+const alertPreferenceDetailList = [
   {
     alertType: 'bookingMessage',
     notifyBy: 'email',
@@ -1196,7 +1202,8 @@ export const alertPreferenceDetailList = [
 
 ] as AlertPreferenceDetail[]
 
-export const alertFlexDataConfigList = [
+
+const alertFlexDataConfigList = [
   {
     tableName: 'booking',
     variableList: 'all',
@@ -1210,3 +1217,14 @@ export const alertFlexDataConfigList = [
   } as AlertFlexDataConfig
 
 ] as AlertFlexDataConfig[]
+
+
+
+export {
+  schedulerActive,
+  testMode,
+  testAlertEmailList,
+  alertConfigList,
+  alertPreferenceDetailList,
+  alertFlexDataConfigList
+}
