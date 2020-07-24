@@ -22,7 +22,7 @@
         "importAxiosParams": {
           "z": {
             "method": "post",
-            "url": "api/shipment/import"
+            "url": "api/shipment/import/import"
           }
         },
         "afterSaveAction": [{
