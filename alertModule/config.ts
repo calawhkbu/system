@@ -1,9 +1,16 @@
-
 import { AlertConfig, AlertFlexDataConfig } from 'modules/sequelize/interfaces/alert'
 import { AlertPreferenceDetail } from 'modules/sequelize/interfaces/alertPreference'
 import { IQueryParams } from 'classes/query'
 
-export const schedulerActive = false
+const schedulerActive = false
+
+
+// if testMode = true, will only send alert to those testAlertEmailList
+// make sure those email already have an acc
+const testMode = true
+const testAlertEmailList = [
+  'marco.lor+0843@swivelsoftware.com'
+]
 
 
 const shipmentSeaAlertList = [
@@ -1110,7 +1117,7 @@ const testAlertList = [
         activeStatus: { value: 'active' }
       },
 
-      limit: 4
+      limit: 10
     } as IQueryParams,
 
     closeQuery: {
@@ -1122,12 +1129,12 @@ const testAlertList = [
     
 
     // select only 1 person
-    extraPersonIdQuery: {
-      subqueries: {
-        userName: { value: 'marco.lor@swivelsoftware.com' }
-      },
-      limit: 1
-    } as IQueryParams,
+    // extraPersonIdQuery: {
+    //   subqueries: {
+    //     userName: { value: 'marco.lor@swivelsoftware.com' }
+    //   },
+    //   limit: 1
+    // } as IQueryParams,
 
     // contactRoleList: ['shipper', 'consignee'],
     contactRoleList: [],
@@ -1159,44 +1166,44 @@ const testAlertList = [
 ]
 
 
-export const alertConfigList = [
+const alertConfigList = [
   // just seperate into different list
-  // ...shipmentSeaAlertList,
-  // ...shipmentAirAlertList,
-  // ...oldAlertList,
-
+  ...shipmentSeaAlertList,
+  ...shipmentAirAlertList,
+  ...oldAlertList,
   ...testAlertList
 
 ] as AlertConfig[]
 
-export const alertPreferenceDetailList = [
+const alertPreferenceDetailList = [
   {
     alertType: 'bookingMessage',
     notifyBy: 'email',
-    active: false
+    active: true
   },
 
   {
     alertType: 'shipmentMessage',
     notifyBy: 'email',
-    active: false
+    active: true
   },
 
   {
     alertType: 'shipmentEtaChanged',
     notifyBy: 'email',
-    active: false
+    active: true
   },
 
   {
     alertType: 'shipmentEtdChanged',
     notifyBy: 'email',
-    active: false
+    active: true
   }
 
 ] as AlertPreferenceDetail[]
 
-export const alertFlexDataConfigList = [
+
+const alertFlexDataConfigList = [
   {
     tableName: 'booking',
     variableList: 'all',
@@ -1210,3 +1217,14 @@ export const alertFlexDataConfigList = [
   } as AlertFlexDataConfig
 
 ] as AlertFlexDataConfig[]
+
+
+
+export {
+  schedulerActive,
+  testMode,
+  testAlertEmailList,
+  alertConfigList,
+  alertPreferenceDetailList,
+  alertFlexDataConfigList
+}
