@@ -21,23 +21,23 @@ export const setDataFunction = {
   },
   report: async({ shipmentContainers = [], shipmentCargos = [] }: Shipment) => {
 
-    const containerCountMap = {}
+
+    const result = {
+      containerCount : shipmentContainers.length
+    }
 
     shipmentContainers.map(shipmentContainer => {
 
       const containerType = shipmentContainer.containerType
-
       if (containerType)
       {
-        containerCountMap[containerType] = containerCountMap[containerType] ? (containerCountMap[containerType] + 1) : 1
+        const propName = `${containerType}_ContainerTypeCount`
+        result[propName] = result[propName] ? (result[propName] + 1) : 1
       }
 
     })
 
-    return {
-      containerTypeCount : containerCountMap,
-      containerCount: shipmentContainers.length
-    }
+    return result
   }
 }
 

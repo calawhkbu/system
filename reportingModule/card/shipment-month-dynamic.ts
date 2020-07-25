@@ -3,7 +3,7 @@ import { IQueryParams } from 'classes/query'
 import { OrderBy } from 'node-jql'
 import Moment = require('moment')
 
-import { expandGroupEntity,expandSummaryVariable, extendDate, handleGroupByEntityValue } from 'utils/card'
+import { expandBottomSheetGroupByEntity,expandSummaryVariable, extendDate, handleBottomSheetGroupByEntityValue } from 'utils/card'
 
 
 interface Result {
@@ -54,8 +54,8 @@ export default {
         if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
 
         // warning
-        handleGroupByEntityValue(subqueries)
-        const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries)
+        handleBottomSheetGroupByEntityValue(subqueries)
+        const { groupByEntity, codeColumnName,nameColumnName } = expandBottomSheetGroupByEntity(subqueries)
           
 
 

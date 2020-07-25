@@ -60,7 +60,7 @@ export default {
         // const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo': groupByEntity === 'carrier' ? `carrierName`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyShortNameInReport`) + 'Any'
         
 
-        const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries)
+        const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
 
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
