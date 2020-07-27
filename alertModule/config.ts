@@ -1088,7 +1088,7 @@ const testAlertList = [
     severity: 'medium',
     alertType: 'sayHello',
 
-    templatePath: 'message/shipment-message',
+    templatePath: 'alert/shipment-alert',
     
     handleAlertSubComponentLayoutName: 'alertForm.sayHello',
 
