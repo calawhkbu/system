@@ -6,8 +6,6 @@ import { ValidatorMetadata } from 'modules/validation/service'
 const subComponentTemplateList = [
     {
         subComponentTemplateName: 'date',
-
-
         propParam: {
 
             // how to add the param??
@@ -17,33 +15,23 @@ const subComponentTemplateList = [
             "includeEstimated": true,
             "includeActual": true,
             "includeRemark": true
-        },
-    },
-    {
-        subComponentTemplateName: 'date',
-        propParam: {
-            "tableName" : "shipment",
-            "dateName": "arrival",
-            "includeEstimated": true,
-            "includeActual": true,
-            "includeRemark": true
         }
-    }
+    },
 
 ] as SubComponentTemplate[]
 
 
 const validators = [
 
-    {
-       field : 'myfieldName',
-       validator : 'required'
-    },
+    // {
+    //    field : 'myfieldName',
+    //    validator : 'required'
+    // },
 
-    {
-        field : 'myfieldName2',
-        validator : 'required'
-    }
+    // {
+    //     field : 'myfieldName2',
+    //     validator : 'required'
+    // }
 
 ] as ValidatorMetadata[]
 
@@ -53,16 +41,13 @@ const validators = [
 const component = () => {
 
     const components = subComponentTemplateList.map(subComponent => {
-
         return {
-
             is: "SubFormComponent",
             props : subComponent
         }
     })
 
     return {
-
         "addAttrsToComponent": true,
         "components" : components
     }
