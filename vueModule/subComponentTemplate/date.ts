@@ -16,16 +16,18 @@ const fieldList = (propParam: PropParam) => {
 
   const fieldList = []
 
-  const fieldObject = (dateName: string, suffix: string) => {
+  const fieldObject = (dateName: string, suffix: string,component = 'DateTimePicker') => {
 
     const fieldName = `${dateName}${suffix}`
 
     return {
       'label': fieldName,
       'name': fieldName,
-      'component': 'v-text-field',
+      'component': component,
       'validator': ['required']
     } as SubComponentField
+
+
   }
 
   if (includeEstimated) {
@@ -35,7 +37,7 @@ const fieldList = (propParam: PropParam) => {
     fieldList.push(fieldObject(dateName, 'Acutal'))
   }
   if (includeRemark) {
-    fieldList.push(fieldObject(dateName, 'Remark'))
+    fieldList.push(fieldObject(dateName, 'Remark','v-text-field'))
   }
 
   return fieldList
