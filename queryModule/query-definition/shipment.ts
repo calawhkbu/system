@@ -374,6 +374,36 @@ query.table('shipment_date', new Query({
 
 }))
 
+query.table('shipment_date_utc', new Query({
+
+  $from: new FromTable({
+
+    table: 'shipment',
+    joinClauses: [
+      {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('shipment_date_utc', '*')),
+            ],
+            $from: new FromTable('shipment_date_utc', 'shipment_date_utc'),
+            $where: new AndExpressions({
+              expressions: [
+                new IsNullExpression(new ColumnExpression('shipment_date_utc', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('shipment_date_utc', 'deletedBy'), false),
+              ]
+            }),
+          }),
+          $as: 'shipment_date_utc'
+        }),
+        $on: new BinaryExpression(new ColumnExpression('shipment', 'id'), '=', new ColumnExpression('shipment_date_utc', 'shipmentId'))
+      }
+    ]
+  })
+
+}))
+
 query.table('shipment_party', new Query({
 
   $from: new FromTable({
@@ -2022,12 +2052,14 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
 
   // these 3 will get from shipment_party table
   const partyIdExpression = party.partyIdExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyId`), companion: ['table:shipment_party'] }
-  const partyNameExpression = party.partyNameExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyName`), companion: ['table:shipment_party'] }
+
   const partyCodeExpression = party.partyCodeExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyCode`), companion: ['table:shipment_party'] }
+  const partyNameExpression = party.partyNameExpression || { expression: new FunctionExpression('IFNULL', new ColumnExpression('shipment_party', `${partyTableName}PartyName`),partyCodeExpression.expression), companion: ['table:shipment_party'] }
+
 
   // this 2, will try to get from the party table directly
-  const partyNameInReportExpression = party.partyNameInReportExpression || { expression: new ColumnExpression(party.name, `name`), companion: [`table:${party.name}`] }
-  const partyShortNameInReportExpression = party.partyShortNameInReportExpression || { expression: new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion: [`table:${party.name}`] }
+  const partyNameInReportExpression = party.partyNameInReportExpression || { expression: new FunctionExpression('IFNULL',new ColumnExpression(party.name, `name`), partyNameExpression.expression), companion: [`table:${party.name}`,`table:shipment_party`] }
+  const partyShortNameInReportExpression = party.partyShortNameInReportExpression || { expression: new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion: [`table:${party.name}`,`table:shipment_party`] }
 
   const resultExpressionList = partyFieldList.map(partyField => {
 
@@ -2937,11 +2969,13 @@ const dateList = [
     return accumulator.concat([
       {
         name: `${currentValue}DateActualInUtc`,
-        expression: new ColumnExpression('shipment_date_utc',`${currentValue}DateActual`)
+        expression: new ColumnExpression('shipment_date_utc',`${currentValue}DateActual`),
+        companion: ['table:shipment_date_utc']
       },
       {
         name: `${currentValue}DateEstimatedInUtc`,
-        expression: new ColumnExpression('shipment_date_utc',`${currentValue}DateEstimated`)
+        expression: new ColumnExpression('shipment_date_utc',`${currentValue}DateEstimated`),
+        companion: ['table:shipment_date_utc']
       },
     ])
   }, []),

@@ -1,0 +1,28 @@
+{
+  "components": [{
+    "is": "GridTool",
+    "props": {
+      "reportingKey": "soptask",
+      "hasReports": true,
+      "showFilterBar": true,
+      "enableShare": true,
+      "enableSetting": true,
+      "noExternal": true,
+      "newReport": {
+        "filters": {
+        },
+        "configurations": {
+          "i18nContext": "SopTask",
+          "colors": [
+            "#005EB8",
+            "#008675",
+            "#E35205",
+            "#AF272F",
+            "#F1B434",
+            "#c9cbcf"
+          ]
+        }
+      }
+    }
+  }]
+}

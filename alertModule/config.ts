@@ -821,7 +821,7 @@ const shipmentAirAlertList = [
         preAlertSendDateActualIsNull: true,
 
         // after masterBillReleasedDateActual / masterBillReleasedDateEstimated + 3 hour
-        masterBillReleasedDateActualInUtc_Or_masterBillReleasedDateEstimatedInUtc: {
+        after_masterBillReleasedDateActualInUtc_Or_masterBillReleasedDateEstimatedInUtc: {
           value: {
             value: 3,
             unit: 'HOUR'
@@ -877,7 +877,7 @@ const shipmentAirAlertList = [
         preAlertSendDateActualIsNull: true,
 
         // after cargoReceiptDateActual / cargoReceiptDateEstimated - 1 day
-        cargoReceiptDateActualInUtc_Or_cargoReceiptDateEstimatedInUtc: {
+        after_cargoReceiptDateActualInUtc_Or_cargoReceiptDateEstimatedInUtc: {
           value: {
             value: -1,
             unit: 'DAY'
@@ -931,7 +931,7 @@ const shipmentAirAlertList = [
         portOfLoadingCodeIsNull: true,
 
         // after arrivalDateActual / arrivalDateEstimated + 1 day
-        arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: {
+        after_arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: {
           value: {
             value: 1,
             unit: 'DAY'
@@ -1088,9 +1088,9 @@ const testAlertList = [
     severity: 'medium',
     alertType: 'sayHello',
 
-    templatePath: 'message/shipment-message',
+    templatePath: 'alert/shipment-alert',
     
-    // handleAlertSubComponentLayoutName: 'alertForm.sayHello',
+    handleAlertSubComponentLayoutName: 'alertForm.sayHello',
 
     // schedule: '0 * * * * *',
 

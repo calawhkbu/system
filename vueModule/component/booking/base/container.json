@@ -328,28 +328,13 @@
                     "topLabel": true,
                     "fields": [{
                         "label": "BookingPage.containerTypeCode",
-                        "name": "containerTypeCode",
+                        "name": ["containerType.name", "containerTypeCode"],
                         "colGroupProps": {
                           "style": {
                             "width": "20%"
                           }
                         },
-                        "component": "AsyncSelect",
-                        "props": {
-                          "item-text": "name",
-                          "item-value": "code",
-                          "axiosParams": {
-                            "url": "api/code/query/code_master",
-                            "method": "POST",
-                            "data": {
-                              "subqueries": {
-                                "codeType": {
-                                  "value": "CONTTYPE"
-                                }
-                              }
-                            }
-                          }
-                        }
+                        "component": "v-text-field"
                       },
                       {
                         "label": "BookingPage.containerNo",
@@ -714,28 +699,13 @@
                   "topLabel": true,
                   "fields": [{
                       "label": "BookingPage.containerTypeCode",
-                      "name": "containerTypeCode",
+                      "name": ["containerType.name", "containerTypeCode"],
                       "colGroupProps": {
                         "style": {
                           "width": "20%"
                         }
                       },
-                      "component": "AsyncSelect",
-                      "props": {
-                        "item-text": "name",
-                        "item-value": "code",
-                        "axiosParams": {
-                          "url": "api/code/query/code_master",
-                          "method": "POST",
-                          "data": {
-                            "subqueries": {
-                              "codeType": {
-                                "value": "CONTTYPE"
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "component": "v-text-field"
                     },
                     {
                       "label": "BookingPage.containerNo",
