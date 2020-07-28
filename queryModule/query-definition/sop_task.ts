@@ -454,4 +454,39 @@ query.subquery('primaryKey', {
 
 
 
+// hide done
+query.subquery('notDone', {
+  $where: new BinaryExpression(isDoneExpression, '=', new Value(0))
+})
+
+
+
+
+
+// hide deleted
+query.subquery('notDeleted', {
+  $where: new BinaryExpression(generalIsDeletedExpression(), '=', new Value(0))
+})
+
+
+
+
+
+query.subquery('date', {
+  $where: [
+    new OrExpressions([
+      new IsNullExpression(columnExpressions['startAt'], false),
+      new BinaryExpression(columnExpressions['startAt'], '<', new Unknown())
+    ]),
+    new OrExpressions([
+      new IsNullExpression(columnExpressions['deadline'], false),
+      new BinaryExpression(new Unknown(), '<', columnExpressions['deadline'])
+    ])
+  ]
+}).register('from', 0).register('to', 1)
+
+
+
+
+
 export default query

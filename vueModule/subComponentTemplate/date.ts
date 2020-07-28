@@ -3,6 +3,8 @@ import _ = require('lodash')
 
 // just for easier coding
 interface PropParam {
+  
+  tableName?:string
   dateName: string
   includeEstimated?: boolean
   includeActual?: boolean
@@ -10,32 +12,37 @@ interface PropParam {
 }
 
 
+
 const fieldList = (propParam: PropParam) => {
 
-  const { dateName, includeEstimated, includeActual, includeRemark } = propParam
+  const { tableName, dateName, includeEstimated, includeActual, includeRemark } = propParam
 
   const fieldList = []
 
-  const fieldObject = (dateName: string, suffix: string) => {
+  const fieldObject = (dateName: string,component = 'DateTimePicker') => {
 
-    const fieldName = `${dateName}${suffix}`
+    const prefix = tableName ? `${tableName}Date.` : ''
+
+    const fieldName = `${prefix}${dateName}`
 
     return {
-      'label': fieldName,
+      'label': dateName,
       'name': fieldName,
-      'component': 'v-text-field',
+      'component': component,
       'validator': ['required']
     } as SubComponentField
+
+
   }
 
   if (includeEstimated) {
-    fieldList.push(fieldObject(dateName, 'Estimated'))
+    fieldList.push(fieldObject(`${dateName}DateEstimated`))
   }
   if (includeActual) {
-    fieldList.push(fieldObject(dateName, 'Acutal'))
+    fieldList.push(fieldObject(`${dateName}DateActual`))
   }
   if (includeRemark) {
-    fieldList.push(fieldObject(dateName, 'Remark'))
+    fieldList.push(fieldObject(`${dateName}DateRemark`,'v-text-field'))
   }
 
   return fieldList
@@ -65,9 +72,39 @@ const adminComponent = ({ }) => {
 
 // 
 const entityToFormDataFunction = (propParam: PropParam) => {
-  return (tableName: string, oldEntity: any, formData: any) => {
-    // entity
 
+
+  const { tableName,dateName,includeActual,includeEstimated,includeRemark } = propParam
+  const prefix = tableName ? `${tableName}Date.` : ''
+
+  return (entityData: any, formData: any) => {
+
+    const fieldList = []
+
+    if (includeActual)
+    {
+      const fieldName = `${prefix}${dateName}DateActual`
+      fieldList.push(fieldName)
+    }
+
+    if (includeEstimated)
+    {
+      const fieldName = `${prefix}${dateName}DateEstimated`
+      fieldList.push(fieldName)
+    }
+
+    if (includeRemark)
+    {
+      const fieldName = `${prefix}${dateName}DateEstimated`
+      fieldList.push(fieldName)
+    }
+
+
+    fieldList.map(field => {
+      const value = _.get(entityData,field)
+      _.set(formData, field,value)
+    })
+    
     return formData
   }
 
@@ -77,17 +114,43 @@ const entityToFormDataFunction = (propParam: PropParam) => {
 // changeForm to entityData
 const formDataToEntityFunction = (propParam: PropParam) => {
 
-  return (tableName: string, oldEntity: any, formData: any) => {
+  
 
-    const { dateName } = propParam
+  const { tableName,dateName,includeActual,includeEstimated,includeRemark } = propParam
+  const prefix = tableName ? `${tableName}Date.` : ''
 
-    const datePropName = `${tableName}Date.${dateName}Estimated`
+  // formData : the one sent from POST request
+  // finalFormData, the one need to get all the data
+  return (formData: any, entityData: any) => {
 
-    const value = ''
+    const fieldList = []
 
-    _.set(formData, datePropName, )
+    if (includeActual)
+    {
+      const fieldName = `${prefix}${dateName}DateActual`
+      fieldList.push(fieldName)
+    }
+
+    if (includeEstimated)
+    {
+      const fieldName = `${prefix}${dateName}DateEstimated`
+      fieldList.push(fieldName)
+    }
+
+    if (includeRemark)
+    {
+      const fieldName = `${prefix}${dateName}DateEstimated`
+      fieldList.push(fieldName)
+    }
+
+
+    fieldList.map(field => {
+      const value = _.get(formData,field)
+      _.set(entityData, field,value)
+    })
+  
     // entity
-    return formData
+    return entityData
   }
 
 
