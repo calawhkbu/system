@@ -24,6 +24,8 @@ const shipmentSeaAlertList = [
     alertType: 'cancelBookingAlert(SEA)',
 
     templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.cancelBookingAlert',
     
 
     // schedule: '0 * * * * *',
@@ -63,8 +65,12 @@ const shipmentSeaAlertList = [
       }
     },
 
-
     contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
 
   } as AlertConfig,
@@ -78,7 +84,10 @@ const shipmentSeaAlertList = [
     alertType: 'cargoDelayAlert(SEA)',
 
     templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.cargoDelayAlert',
     
+
 
     // schedule: '0 * * * * *',
 
@@ -120,7 +129,12 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: []
+    contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
   },
 
   // cargoFailureToArrangeHualage(SEA)
@@ -132,6 +146,10 @@ const shipmentSeaAlertList = [
     alertType: 'cargoFailureToArrangeHualage(SEA)',
 
     templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.cargoFailureToArrangeHualage',
+
+    
     
 
     // schedule: '0 * * * * *',
@@ -175,7 +193,12 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: []
+    contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
   },
 
   // missingVGM(SEA)
@@ -187,6 +210,8 @@ const shipmentSeaAlertList = [
     alertType: 'missingVGM(SEA)',
 
     templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingVGM',
     
 
     // schedule: '0 * * * * *',
@@ -232,7 +257,12 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: []
+    contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
   },
 
   // missingEdi(SEA)
@@ -244,6 +274,8 @@ const shipmentSeaAlertList = [
     alertType: 'missingEdi(SEA)',
 
     templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingEdi',
     
 
     // schedule: '0 * * * * *',
@@ -295,7 +327,12 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: []
+    contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
   },
 
   // missingPreAlert(SEA)
@@ -307,6 +344,8 @@ const shipmentSeaAlertList = [
     alertType: 'missingPreAlert(SEA)',
 
     templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingPreAlert',
     
 
     // schedule: '0 * * * * *',
@@ -357,7 +396,12 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: []
+    contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
   },
 
   // missingMBL(SEA)
@@ -368,6 +412,8 @@ const shipmentSeaAlertList = [
     alertType: 'missingMBL(SEA)',
 
     templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingMBL',
     
 
     // schedule: '0 * * * * *',
@@ -419,7 +465,12 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: []
+    contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
   },
 
@@ -431,6 +482,8 @@ const shipmentSeaAlertList = [
     alertType: 'missingHBL(SEA)',
 
     templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingHBL',
     
 
     // schedule: '0 * * * * *',
@@ -482,7 +535,12 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: []
+    contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
   },
 
@@ -494,6 +552,9 @@ const shipmentSeaAlertList = [
     alertType: 'missingHBL(SEA)',
 
     templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.demurrageAlert',
+
     
 
     // schedule: '0 * * * * *',
@@ -547,7 +608,12 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: []
+    contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
   },
 
@@ -559,6 +625,8 @@ const shipmentSeaAlertList = [
     alertType: 'demurrageAlert(SEA)',
 
     templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.demurrageAlert',
     
 
     // schedule: '0 * * * * *',
@@ -610,7 +678,12 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: []
+    contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
   },
 
@@ -622,8 +695,9 @@ const shipmentSeaAlertList = [
     alertType: 'detentionWarning(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    
 
+    handleAlertSubComponentLayoutName: 'alertForm.detentionAlert',
+    
     // schedule: '0 * * * * *',
 
     interval: {
@@ -664,7 +738,12 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: []
+    contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
   },
 
@@ -676,6 +755,8 @@ const shipmentSeaAlertList = [
     alertType: 'detentionAlert(SEA)',
 
     templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.detentionAlert',
     
 
     // schedule: '0 * * * * *',
@@ -717,7 +798,12 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: []
+    contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
   },
 
@@ -729,6 +815,8 @@ const shipmentSeaAlertList = [
     alertType: 'missingDeliveryArrangement(SEA)',
 
     templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingDeliveryArrangement',
     
 
     // schedule: '0 * * * * *',
@@ -780,7 +868,12 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: []
+    contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
   }
 
@@ -797,6 +890,8 @@ const shipmentAirAlertList = [
     alertType: 'missingPreAlert(AIR)',
 
     templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.cargoDelayAlert',
     
 
     // schedule: '0 * * * * *',
@@ -806,7 +901,6 @@ const shipmentAirAlertList = [
       unit: 'MINUTE'
     },
     active: true,
-
 
     queryName: 'shipment',
     query: {
@@ -839,9 +933,12 @@ const shipmentAirAlertList = [
         preAlertSendDateActualIsNotNull: true 
       }
     },
-
-
-    contactRoleList: []
+    contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
   },
 
   // cargoDelayAlert(AIR)
@@ -853,6 +950,8 @@ const shipmentAirAlertList = [
     alertType: 'cargoDelayAlert(AIR)',
 
     templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.cargoDelayAlert',
     
 
     // schedule: '0 * * * * *',
@@ -895,8 +994,13 @@ const shipmentAirAlertList = [
       }
     },
 
-    contactRoleList: []
-  },
+    contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
+  } as AlertConfig,
 
   // missingDeliveryArrangement(AIR)
   {
@@ -907,8 +1011,9 @@ const shipmentAirAlertList = [
     alertType: 'missingDeliveryArrangement(AIR)',
 
     templatePath: 'alert/shipment-alert',
-    
-
+  
+    handleAlertSubComponentLayoutName: 'alertForm.missingDeliveryArrangement',
+  
     // schedule: '0 * * * * *',
 
     interval: {
@@ -959,8 +1064,13 @@ const shipmentAirAlertList = [
       }
     },
 
-    contactRoleList: []
-  },
+    contactRoleList: [],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
+  } as AlertConfig,
 
 ]
 
@@ -1101,13 +1211,6 @@ const testAlertList = [
 
     active: true,
 
-    canCloseBy: [
-      {
-        type: 'all'
-      }
-
-    ],
-
     queryName: 'shipment',
     query: {
       subqueries: {
@@ -1136,16 +1239,14 @@ const testAlertList = [
     //   limit: 1
     // } as IQueryParams,
 
+
     // contactRoleList: ['shipper', 'consignee'],
     contactRoleList: [],
-
-    // saveAsNewAlertTimeDiff : 0,
-
-    
-    resendInterval: {
-      value: 15,
-      unit: 'MINUTE'
-    },
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ],
 
 
     flexDataConfig : {
