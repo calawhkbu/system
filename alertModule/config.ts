@@ -7,7 +7,7 @@ const schedulerActive = false
 
 // if testMode = true, will only send alert to those testAlertEmailList
 // make sure those email already have an acc
-const testMode = true
+const testMode = false
 const testAlertEmailList = [
   'marco.lor+0843@swivelsoftware.com'
 ]
@@ -56,7 +56,7 @@ const shipmentSeaAlertList = [
           }
         }
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -119,7 +119,7 @@ const shipmentSeaAlertList = [
         },
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -183,7 +183,7 @@ const shipmentSeaAlertList = [
         },
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -246,7 +246,7 @@ const shipmentSeaAlertList = [
         },
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -317,7 +317,7 @@ const shipmentSeaAlertList = [
         }
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -385,7 +385,7 @@ const shipmentSeaAlertList = [
           }
         }
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -455,7 +455,7 @@ const shipmentSeaAlertList = [
         }
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -524,7 +524,7 @@ const shipmentSeaAlertList = [
         }
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -597,7 +597,7 @@ const shipmentSeaAlertList = [
         }
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -667,7 +667,7 @@ const shipmentSeaAlertList = [
         }
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -727,7 +727,7 @@ const shipmentSeaAlertList = [
           }
         }
       },
-      limit: 1
+      
     },
 
 
@@ -788,7 +788,7 @@ const shipmentSeaAlertList = [
           }
         }
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -857,7 +857,7 @@ const shipmentSeaAlertList = [
         }
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -923,7 +923,7 @@ const shipmentAirAlertList = [
         },
 
       },
-      limit: 1
+      
     },
 
 
@@ -984,7 +984,7 @@ const shipmentAirAlertList = [
         },
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -1054,7 +1054,7 @@ const shipmentAirAlertList = [
         }
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -1209,7 +1209,7 @@ const testAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -1236,7 +1236,7 @@ const testAlertList = [
     //   subqueries: {
     //     userName: { value: 'marco.lor@swivelsoftware.com' }
     //   },
-    //   limit: 1
+    //   
     // } as IQueryParams,
 
 
@@ -1249,15 +1249,15 @@ const testAlertList = [
     ],
 
 
-    flexDataConfig : {
-      tableName : 'shipment',
-      primaryKeyName : 'id',
-      variableList : [
-        {
-          name : 'portOfLoadingCode'
-        }
-      ]
-    }
+    // flexDataConfig : {
+    //   tableName : 'shipment',
+    //   primaryKeyName : 'id',
+    //   variableList : [
+    //     {
+    //       name : 'portOfLoadingCode'
+    //     }
+    //   ]
+    // } as AlertFlexDataConfig
 
 
 
