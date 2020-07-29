@@ -22,9 +22,10 @@ import {
   OrderBy,
   ICase,
   MathExpression,
+  QueryExpression,
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, RegisterInterface, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, RegisterInterface, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField, IfExpression } from 'utils/jql-subqueries'
 
 const partyList = [
 
@@ -1509,5 +1510,43 @@ query
   .register('value', 31)
   .register('value', 32)
   // .register('value', 33)
+
+// sop score field
+const isDueExpression = new BinaryExpression(
+  new ColumnExpression('sop_task', 'dueAt'),
+  '<',
+  new FunctionExpression('UTC_TIMESTAMP')
+)
+const isDeadExpression = new BinaryExpression(
+  new ColumnExpression('sop_task', 'deadline'),
+  '<',
+  new FunctionExpression('UTC_TIMESTAMP')
+)
+query.field('sopScore', {
+  $select: new ResultColumn(IfExpression(
+    new IsNullExpression(new ColumnExpression('booking', 'sopScore'), true), // TODO booking status is closed
+    new ColumnExpression('booking', 'sopScore'),
+    new MathExpression(new Value(100), '-', new QueryExpression(new Query({
+      $select: new ResultColumn(
+        new FunctionExpression('SUM', new CaseExpression([
+          {
+            $when: isDeadExpression,
+            $then: new ColumnExpression('sop_task', 'deadlineScore')
+          },
+          {
+            $when: isDueExpression,
+            $then: new ColumnExpression('sop_task', 'dueScore')
+          }
+        ], new Value(0)))
+      , 'deduct'),
+      $from: 'sop_task',
+      $where: [
+        new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
+        new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
+        new OrExpressions([isDueExpression, isDeadExpression])
+      ]
+    })))
+  ), 'sopScore')
+})
 
 export default query
