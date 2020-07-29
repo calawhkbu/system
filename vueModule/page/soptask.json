@@ -39,7 +39,8 @@
             }
           },
           {
-            "name": "entityType",
+            "name": "tableName",
+            "display": "entityType",
             "type": "list",
             "props": {
               "items": [
