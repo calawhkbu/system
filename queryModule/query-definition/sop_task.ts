@@ -1,6 +1,6 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator } from "node-jql";
-import { IfExpression } from 'utils/jql-subqueries'
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery } from "node-jql";
+import { IfExpression, alwaysTrueExpression, alwaysFalseExpression } from 'utils/jql-subqueries'
 
 const taskTable = 'sop_task'
 const templateTaskTable = 'sop_template_task'
@@ -40,9 +40,7 @@ const columns = [
   [selectedTemplateTable, 'id', 'originalSelectedTemplateId', table(selectedTemplateTable)],
   [selectedTemplateTable, 'templateId', 'selectedTemplateId', table(selectedTemplateTable)],
   [templateTable, 'id', 'originalTemplateId', table(templateTable)],
-  [templateTable, 'group', 'group', table(templateTable)],
-  [bookingTable, 'bookingTeam', 'bookingTeam', table(bookingTable)],
-  [shipmentTable, 'shipmentTeam', 'shipmentTeam', table(shipmentTable)]
+  [templateTable, 'group', 'group', table(templateTable)]
 ]
 
 const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r, [table, name, as = name]) => {
@@ -59,23 +57,25 @@ const query = new QueryDef({
 })
 
 // table:booking
+const joinBooking = new JoinClause('LEFT', bookingTable,
+  new AndExpressions([
+    new BinaryExpression(columnExpressions['tableName'], '=', bookingTable),
+    new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression(bookingTable, 'id'))
+  ])
+)
 query.table(bookingTable, {
-  $from: new FromTable(taskTable, new JoinClause('LEFT', bookingTable,
-    new AndExpressions([
-      new BinaryExpression(columnExpressions['tableName'], '=', bookingTable),
-      new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression(bookingTable, 'id'))
-    ])
-  ))
+  $from: new FromTable(taskTable, joinBooking)
 })
 
 // table:shipment
+const joinShipment = new JoinClause('LEFT', shipmentTable,
+  new AndExpressions([
+    new BinaryExpression(columnExpressions['tableName'], '=', shipmentTable),
+    new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression(shipmentTable, 'id'))
+  ])
+)
 query.table(shipmentTable, {
-  $from: new FromTable(taskTable, new JoinClause('LEFT', shipmentTable,
-    new AndExpressions([
-      new BinaryExpression(columnExpressions['tableName'], '=', shipmentTable),
-      new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression(shipmentTable, 'id'))
-    ])
-  ))
+  $from: new FromTable(taskTable, joinShipment)
 })
 
 // table:sop_template_task
@@ -436,8 +436,20 @@ query.field('latestRemarkBy', params => {
 
 
 
-// tableName = ?
+// partyGroupCode = ?
+query.subquery('partyGroupCode', {
+  $where: new BinaryExpression(columnExpressions['partyGroupCode'], '=', new Unknown())
+}, table(templateTaskTable)).register('value', 0)
+
+
+
+
+
+// entityType = tableName = ?
 query.subquery('tableName', {
+  $where: new BinaryExpression(columnExpressions['tableName'], '=', new Unknown())
+}).register('value', 0)
+query.subquery('entityType', {
   $where: new BinaryExpression(columnExpressions['tableName'], '=', new Unknown())
 }).register('value', 0)
 
@@ -472,6 +484,7 @@ query.subquery('notDeleted', {
 
 
 
+// date
 query.subquery('date', {
   $where: [
     new OrExpressions([
@@ -484,6 +497,58 @@ query.subquery('date', {
     ])
   ]
 }).register('from', 0).register('to', 1)
+
+
+
+
+
+// my tasks only
+function inChargeExpression(table: string, user: string, teams: Array<{ name: string, categories: string[] }>): Expression {
+  return new OrExpressions([
+    new BinaryExpression(new ColumnExpression(table, 'picEmail'), '=', new Value(user)),
+    ...teams.map(({ name, categories }) => {
+      const expressions: Expression[] = [
+        new BinaryExpression(new ColumnExpression(table, 'team'), '=', new Value(name))
+      ]
+      if (categories && categories.length) {
+        expressions.push(new OrExpressions(categories.map(c => new BinaryExpression(columnExpressions['category'], '=', new Value(c)))))
+      }
+      return new AndExpressions(expressions)
+    })
+  ])
+}
+query.subquery('teams', ({ value }, params) => {
+  const me = typeof params.subqueries.user === 'object' && 'value' in params.subqueries.user ? params.subqueries.user.value : ''
+  const result: Partial<IQuery> = {}
+  if (params.subqueries.tableName) {
+    switch (params.subqueries.tableName.value) {
+      case 'booking':
+        result.$from = new FromTable(taskTable, joinBooking)
+        result.$where = inChargeExpression(bookingTable, me, value)
+        break
+      case 'shipment':
+        result.$from = new FromTable(taskTable, joinShipment)
+        result.$where = inChargeExpression(shipmentTable, me, value)
+        break
+      default:
+        return result
+    }
+  }
+  else {
+    result.$from = new FromTable(taskTable, joinBooking, joinShipment)
+    result.$where = new CaseExpression([
+      {
+        $when: new BinaryExpression(columnExpressions['tableName'], '=', new Value(bookingTable)),
+        $then: inChargeExpression(bookingTable, me, value)
+      },
+      {
+        $when: new BinaryExpression(columnExpressions['tableName'], '=', new Value(shipmentTable)),
+        $then: inChargeExpression(shipmentTable, me, value)
+      }
+    ], alwaysTrueExpression)
+  }
+  return result
+}, table(templateTaskTable))
 
 
 
