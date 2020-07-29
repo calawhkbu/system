@@ -25,6 +25,11 @@
             "url": "api/shipment/import/import"
           }
         },
+        "deleteKeyBeforeSave": [
+          "quantity", "quantityUnit", "grossWeight", "volumeWeight",
+          "chargeableWeight", "weightUnit", "teu", "cbm", "container20",
+          "container40", "containerHQ", "containerOthers"
+        ],
         "afterSaveAction": [{
           "type": "contextFunction",
           "otherParams": {
