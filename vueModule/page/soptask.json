@@ -59,12 +59,6 @@
             }
           },
           {
-            "name": "myTasksOnly",
-            "type": "boolean",
-            "display": "My Tasks Only",
-            "i18nContext": "SopTask"
-          },
-          {
             "name": "notDone",
             "type": "boolean",
             "display": "Hide Done",
