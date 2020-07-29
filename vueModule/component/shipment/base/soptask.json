@@ -14,6 +14,7 @@
           "'id','tableName','primaryKey','parentId','hasSubTasks','status','statusAt','statusBy','isDone','noOfRemarks','latestRemark','latestRemarkAt','latestRemarkBy','system','category','group','name','startAt','dueAt','deadline','isDue','isDueToday','isDead','isClosed','isDeleted','uniqueId','description','statusList','remark'",
           "],",
           "subqueries: {",
+          "showAllTasks: true,",
           "tableName: { value: 'shipment' },",
           "primaryKey: { value: context.$route.params.params },",
           "},",
