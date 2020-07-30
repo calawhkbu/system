@@ -85,7 +85,128 @@ export const setDataFunction = {
       }
     }
     return null
-  }
+  },
+  quantity: async({ quantity = null, bookingPopackings = [] }: Booking) => {
+    if (!quantity) {
+      let totalQuantity = 0
+      for (const { quantity } of bookingPopackings) {
+        totalQuantity += quantity
+      }
+      return totalQuantity
+    }
+    return quantity
+  },
+  quantityUnit: async ({ quantityUnit, bookingPopackings = [] }: Booking) => {
+    if (!quantityUnit) {
+      const units = []
+      for (const { quantity, quantityUnit } of bookingPopackings) {
+        if (!units.find(u => u === quantityUnit)) {
+          units.push(quantityUnit)
+        }
+      }
+      return units.join(',')
+    }
+    return quantityUnit
+  },
+  grossWeight: async({ grossWeight = null, bookingPopackings = [] }: Booking) => {
+    if (!grossWeight) {
+      let totalGrossWeight = 0
+      for (const { weight, weightUnit = 'KGs' } of bookingPopackings) {
+        totalGrossWeight += weight / (weightUnit === 'LBs' ? 2.205 : 1)
+      }
+      return totalGrossWeight.toFixed(6)
+    }
+    return grossWeight
+  },
+  chargeableWeight: async({ chargeableWeight = null, bookingPopackings = [] }: Booking) => {
+    if (!chargeableWeight) {
+      let totalChargeableWeight = 0
+      for (const { weight, weightUnit = 'KGs' } of bookingPopackings) {
+        totalChargeableWeight += weight / (weightUnit === 'LBs' ? 2.205 : 1)
+      }
+      return totalChargeableWeight.toFixed(6)
+    }
+    return chargeableWeight
+  },
+  volumeWeight: async ({ volumeWeight = null, bookingPopackings = [] }: Booking) => {
+    if (!volumeWeight) {
+      return 0
+    }
+    return volumeWeight
+  },
+  weightUnit: async ({ weightUnit = null, bookingPopackings = [] }: Booking) => {
+    if (!weightUnit) {
+      return 'KGs'
+    }
+    return weightUnit
+  },
+  cbm: async({ cbm = null, bookingPopackings = [] }: Booking) => {
+    if (!cbm) {
+      let totalCbm = 0
+      for (const { length, width, height, lwhUnit } of bookingPopackings) {
+        const l = length / (lwhUnit === 'IN' ? 39.37 : 0.01)
+        const w = width / (lwhUnit === 'IN' ? 39.37 : 0.01)
+        const h = height / (lwhUnit === 'IN' ? 39.37 : 0.01)
+        totalCbm += (l * w * h)
+      }
+      return totalCbm.toFixed(6)
+    }
+    return cbm
+  },
+  teu: async ({ teu = null, bookingPopackings = [] }: Booking) => {
+    if (!teu) {
+      return 0
+    }
+    return teu
+  },
+  container20: async({ container20 = null, bookingContainers = [] }: Booking) => {
+    if (!container20) {
+      let total = 0
+      for (const { is20Container } of bookingContainers) {
+        if (is20Container) {
+          total++
+        }
+      }
+      return total
+    }
+    return container20
+  },
+  container40: async({ container40 = null, bookingContainers = [] }: Booking) => {
+    if (!container40) {
+      let total = 0
+      for (const { is40Container } of bookingContainers) {
+        if (is40Container) {
+          total++
+        }
+      }
+      return total
+    }
+    return container40
+  },
+  containerHQ: async({ containerHQ = null, bookingContainers = [] }: Booking) => {
+    if (!containerHQ) {
+      let total = 0
+      for (const { isHQContainer } of bookingContainers) {
+        if (isHQContainer) {
+          total++
+        }
+      }
+      return total
+    }
+    return containerHQ
+  },
+  containerOthers: async({ containerOthers = null, bookingContainers = [] }: Booking) => {
+    if (!containerOthers) {
+      let total = 0
+      for (const { isOtherContainer } of bookingContainers) {
+        if (isOtherContainer) {
+          total++
+        }
+      }
+      return total
+    }
+    return containerOthers
+  },
 }
 
 export default async function getDefaultParams(

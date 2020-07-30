@@ -51,12 +51,12 @@
       {
         "key": "startAt",
         "format": "YYYY/MM/DD",
-        "width": 90
+        "width": 92
       },
       {
         "key": "dueAt",
         "format": "YYYY/MM/DD",
-        "width": 90
+        "width": 92
       }
     ],
     "rowStyle": {

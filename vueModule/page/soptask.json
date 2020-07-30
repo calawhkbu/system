@@ -1,84 +1,154 @@
 {
-  "components": [{
-    "is": "GridTool",
-    "props": {
-      "reportingKey": "soptask",
-      "hasReports": true,
-      "showFilterBar": true,
-      "enableShare": true,
-      "enableSetting": true,
-      "noExternal": true,
-      "newReport": {
-        "filters": {},
-        "configurations": {
-          "i18nContext": "SopTask",
-          "colors": [
-            "#005EB8",
-            "#008675",
-            "#E35205",
-            "#AF272F",
-            "#F1B434",
-            "#c9cbcf"
-          ],
-          "cards": [
-            {
-              "uuid": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
-              "cardId": "3e2e2337-17ec-4740-8568-2f3c9d7f3430",
-              "layouts": {
-                "lg": {
-                  "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
-                  "x": 0,
-                  "y": 0,
-                  "w": 12,
-                  "h": 24,
-                  "minW": 2,
-                  "minH": 6
+  "components": [
+    {
+      "is": "GridTool",
+      "props": {
+        "reportingKey": "soptask",
+        "hasReports": true,
+        "showFilterBar": true,
+        "enableShare": true,
+        "enableSetting": true,
+        "noExternal": true,
+        "filters": [
+          {
+            "name": "day",
+            "type": "list",
+            "props": {
+              "items": [
+                {
+                  "label": "Day after Tomorrow",
+                  "value": "day after tomorrow"
                 },
-                "md": {
-                  "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
-                  "x": 0,
-                  "y": 0,
-                  "w": 12,
-                  "h": 10,
-                  "minW": 2,
-                  "minH": 6
+                {
+                  "label": "Tomorrow",
+                  "value": "tomorrow"
                 },
-                "sm": {
-                  "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
-                  "x": 0,
-                  "y": 0,
-                  "w": 4,
-                  "h": 10,
-                  "minW": 2,
-                  "minH": 6
+                {
+                  "label": "Today",
+                  "value": "today"
                 },
-                "xs": {
-                  "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
-                  "x": 0,
-                  "y": 0,
-                  "w": 4,
-                  "h": 10,
-                  "minW": 2,
-                  "minH": 6
+                {
+                  "label": "Yesterday",
+                  "value": "yeaterday"
+                },
+                {
+                  "label": "Day before Yesterday",
+                  "value": "day before yesterday"
                 }
-              },
-              "params": {
-                "filters": {
-                  "pagination": {
-                    "remote": true,
-                    "current": 0,
-                    "perPage": 20
+              ]
+            }
+          },
+          {
+            "name": "tableName",
+            "display": "entityType",
+            "type": "list",
+            "props": {
+              "items": [
+                {
+                  "label": "Booking",
+                  "value": "booking"
+                },
+                {
+                  "label": "Shipment",
+                  "value": "shipment"
+                },
+                {
+                  "label": "Purchase Order",
+                  "value": "purchase_order"
+                }
+              ]
+            }
+          },
+          {
+            "name": "notDone",
+            "type": "boolean",
+            "display": "Hide Done",
+            "i18nContext": "SopTask"
+          },
+          {
+            "name": "notDeleted",
+            "type": "boolean",
+            "display": "Hide Deleted",
+            "i18nContext": "SopTask"
+          }
+        ],
+        "newReport": {
+          "filters": {
+            "day": {
+              "value": "today"
+            },
+            "notDeleted": true
+          },
+          "configurations": {
+            "i18nContext": "SopTask",
+            "colors": [
+              "#005EB8",
+              "#008675",
+              "#E35205",
+              "#AF272F",
+              "#F1B434",
+              "#c9cbcf"
+            ],
+            "cards": [
+              {
+                "uuid": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
+                "cardId": "3e2e2337-17ec-4740-8568-2f3c9d7f3430",
+                "layouts": {
+                  "lg": {
+                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
+                    "x": 0,
+                    "y": 0,
+                    "w": 12,
+                    "h": 24,
+                    "minW": 2,
+                    "minH": 6
+                  },
+                  "md": {
+                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
+                    "x": 0,
+                    "y": 0,
+                    "w": 12,
+                    "h": 10,
+                    "minW": 2,
+                    "minH": 6
+                  },
+                  "sm": {
+                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
+                    "x": 0,
+                    "y": 0,
+                    "w": 4,
+                    "h": 10,
+                    "minW": 2,
+                    "minH": 6
+                  },
+                  "xs": {
+                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
+                    "x": 0,
+                    "y": 0,
+                    "w": 4,
+                    "h": 10,
+                    "minW": 2,
+                    "minH": 6
+                  }
+                },
+                "params": {
+                  "filters": {
+                    "pagination": {
+                      "remote": true,
+                      "current": 0,
+                      "perPage": 20
+                    }
                   }
                 }
               }
-            }
-          ]
-        },
-        "id": -1,
-        "reportingKey": "soptask",
-        "params": {},
-        "updatedAt": "2020-07-27T08:43:46.696Z"
+            ]
+          },
+          "id": -1,
+          "reportingKey": "soptask",
+          "params": {},
+          "updatedAt": "2020-07-27T08:43:46.696Z"
+        }
       }
     }
-  }]
+  ]
 }
