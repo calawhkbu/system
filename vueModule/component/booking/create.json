@@ -624,10 +624,23 @@
                   "containerComponentProps": {
                     "class": "padding-topbottom-8 padding-leftright-4"
                   },
+                  "label": "BookingPage.sopTask",
+                  "name": "taskTemplateIdList",
+                  "component": "SopTaskGroups",
+                  "class": "xs-6 padding-topbottom-4",
+                  "props": {
+                    "tableName": "booking"
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
                   "label": "BookingPage.forwarder",
                   "name": "bookingParty.forwarderParty",
                   "component": "AsyncSelect",
-                  "class": "xs-12 padding-topbottom-4",
+                  "class": "xs-6 padding-topbottom-4",
                   "relation": "bookingParty.forwarderParty",
                   "relationMore": [{
                     "name": "bookingParty.forwarderParty.id",
