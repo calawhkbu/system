@@ -112,7 +112,7 @@ export const setDataFunction = {
     if (!grossWeight) {
       let totalGrossWeight = 0
       for (const { weight, weightUnit = 'KGs' } of bookingPopackings) {
-        totalGrossWeight += weight / (weightUnit === 'LBs' ? 2.205 : 1)
+        totalGrossWeight += (weight || 0) / (weightUnit === 'LBs' ? 2.205 : 1)
       }
       return totalGrossWeight.toFixed(6)
     }
@@ -122,7 +122,7 @@ export const setDataFunction = {
     if (!chargeableWeight) {
       let totalChargeableWeight = 0
       for (const { weight, weightUnit = 'KGs' } of bookingPopackings) {
-        totalChargeableWeight += weight / (weightUnit === 'LBs' ? 2.205 : 1)
+        totalChargeableWeight += (weight || 0) / (weightUnit === 'LBs' ? 2.205 : 1)
       }
       return totalChargeableWeight.toFixed(6)
     }
@@ -144,9 +144,9 @@ export const setDataFunction = {
     if (!cbm) {
       let totalCbm = 0
       for (const { length, width, height, lwhUnit } of bookingPopackings) {
-        const l = length / (lwhUnit === 'IN' ? 39.37 : 0.01)
-        const w = width / (lwhUnit === 'IN' ? 39.37 : 0.01)
-        const h = height / (lwhUnit === 'IN' ? 39.37 : 0.01)
+        const l = (length || 0) / (lwhUnit === 'IN' ? 39.37 : 0.01)
+        const w = (width || 0) / (lwhUnit === 'IN' ? 39.37 : 0.01)
+        const h = (height || 0) / (lwhUnit === 'IN' ? 39.37 : 0.01)
         totalCbm += (l * w * h)
       }
       return totalCbm.toFixed(6)
