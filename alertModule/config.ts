@@ -549,7 +549,7 @@ const shipmentSeaAlertList = [
     tableName: 'shipment',
     alertCategory: 'Exception',
     severity: 'medium',
-    alertType: 'missingHBL(SEA)',
+    alertType: 'demurrageWarning(SEA)',
 
     templatePath: 'alert/shipment-alert',
 
@@ -816,7 +816,7 @@ const shipmentSeaAlertList = [
 
     templatePath: 'alert/shipment-alert',
 
-    handleAlertSubComponentLayoutName: 'alertForm.missingDeliveryArrangement',
+    handleAlertSubComponentLayoutName: 'alertForm.missingDeliveryArrangement(SEA)',
     
 
     // schedule: '0 * * * * *',
@@ -1012,7 +1012,7 @@ const shipmentAirAlertList = [
 
     templatePath: 'alert/shipment-alert',
   
-    handleAlertSubComponentLayoutName: 'alertForm.missingDeliveryArrangement',
+    handleAlertSubComponentLayoutName: 'alertForm.missingDeliveryArrangement(AIR)',
   
     // schedule: '0 * * * * *',
 

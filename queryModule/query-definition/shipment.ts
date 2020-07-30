@@ -33,7 +33,7 @@ import {
   IQuery
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, DateFieldTimezoneMap, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, DateFieldTimezoneMap, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter, IfExpression } from 'utils/jql-subqueries'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -3205,5 +3205,43 @@ query
   .register('value', 2)
   .register('value', 3)
   .register('value', 4)
+
+// sop score field
+const isDueExpression = new BinaryExpression(
+  new ColumnExpression('sop_task', 'dueAt'),
+  '<',
+  new FunctionExpression('UTC_TIMESTAMP')
+)
+const isDeadExpression = new BinaryExpression(
+  new ColumnExpression('sop_task', 'deadline'),
+  '<',
+  new FunctionExpression('UTC_TIMESTAMP')
+)
+query.field('sopScore', {
+  $select: new ResultColumn(IfExpression(
+    new IsNullExpression(new ColumnExpression('shipment', 'sopScore'), true), // TODO shipment status is closed
+    new ColumnExpression('shipment', 'sopScore'),
+    new MathExpression(new Value(100), '-', new QueryExpression(new Query({
+      $select: new ResultColumn(
+        new FunctionExpression('SUM', new CaseExpression([
+          {
+            $when: isDeadExpression,
+            $then: new ColumnExpression('sop_task', 'deadlineScore')
+          },
+          {
+            $when: isDueExpression,
+            $then: new ColumnExpression('sop_task', 'dueScore')
+          }
+        ], new Value(0)))
+      , 'deduct'),
+      $from: 'sop_task',
+      $where: [
+        new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
+        new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id')),
+        new OrExpressions([isDueExpression, isDeadExpression])
+      ]
+    })))
+  ), 'sopScore')
+})
 
 export default query

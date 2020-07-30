@@ -24,7 +24,9 @@ const columns = [
   [taskTable, 'remark'],
   [taskTable, 'startAt'],
   [taskTable, 'dueAt'],
+  [taskTable, 'dueScore'],
   [taskTable, 'deadline'],
+  [taskTable, 'deadlineScore'],
   [taskTable, 'statusList'],
   [taskTable, 'closedAt'],
   [taskTable, 'closedBy'],
@@ -40,7 +42,8 @@ const columns = [
   [selectedTemplateTable, 'id', 'originalSelectedTemplateId', table(selectedTemplateTable)],
   [selectedTemplateTable, 'templateId', 'selectedTemplateId', table(selectedTemplateTable)],
   [templateTable, 'id', 'originalTemplateId', table(templateTable)],
-  [templateTable, 'group', 'group', table(templateTable)]
+  [templateTable, 'group', 'group', table(templateTable)],
+  [bookingTable, 'bookingNo', 'bookingNo', table(bookingTable)]
 ]
 
 const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r, [table, name, as = name]) => {
@@ -445,11 +448,8 @@ query.subquery('partyGroupCode', {
 
 
 
-// entityType = tableName = ?
+// tableName = ?
 query.subquery('tableName', {
-  $where: new BinaryExpression(columnExpressions['tableName'], '=', new Unknown())
-}).register('value', 0)
-query.subquery('entityType', {
   $where: new BinaryExpression(columnExpressions['tableName'], '=', new Unknown())
 }).register('value', 0)
 
@@ -461,6 +461,15 @@ query.subquery('entityType', {
 query.subquery('primaryKey', {
   $where: new BinaryExpression(columnExpressions['primaryKey'], '=', new Unknown())
 }).register('value', 0)
+
+
+
+
+
+// bookingNo = ?
+query.subquery('bookingNo', {
+  $where: new BinaryExpression(columnExpressions['bookingNo'], '=', new Unknown())
+}, table(bookingTable)).register('value', 0)
 
 
 
@@ -523,11 +532,9 @@ query.subquery('teams', ({ value }, params) => {
   if (params.subqueries.tableName) {
     switch (params.subqueries.tableName.value) {
       case 'booking':
-        result.$from = new FromTable(taskTable, joinBooking)
         result.$where = inChargeExpression(bookingTable, me, value)
         break
       case 'shipment':
-        result.$from = new FromTable(taskTable, joinShipment)
         result.$where = inChargeExpression(shipmentTable, me, value)
         break
       default:
@@ -535,7 +542,6 @@ query.subquery('teams', ({ value }, params) => {
     }
   }
   else {
-    result.$from = new FromTable(taskTable, joinBooking, joinShipment)
     result.$where = new CaseExpression([
       {
         $when: new BinaryExpression(columnExpressions['tableName'], '=', new Value(bookingTable)),
@@ -548,7 +554,23 @@ query.subquery('teams', ({ value }, params) => {
     ], alwaysTrueExpression)
   }
   return result
-}, table(templateTaskTable))
+}, params => {
+  const result: string[] = [table(templateTaskTable)]
+  if (params.subqueries.tableName) {
+    switch (params.subqueries.tableName.value) {
+      case 'booking':
+        result.push(table(bookingTable))
+        break
+      case 'shipment':
+        result.push(table(shipmentTable))
+        break
+    }
+  }
+  else {
+    result.push(table(bookingTable), table(shipmentTable))
+  }
+  return result
+})
 
 
 

@@ -10,7 +10,7 @@ const subComponentTemplateList = [
 
             // how to add the param??
             "tableName" : "shipment",
-            "dateName": "departure",
+            "dateName": "ediSend",
             "includeEstimated": true,
             "includeActual": true,
             "includeRemark": true
@@ -23,12 +23,12 @@ const subComponentTemplateList = [
 const validators = [
 
     {
-       field : 'shipmentDate.departureDateEstimated',
+       field : 'shipmentDate.ediSendDateEstimated',
        validator : 'required'
     },
 
     {
-        field : 'shipmentDate.departureActualEstimated',
+        field : 'shipmentDate.ediSendActualEstimated',
         validator : 'required'
     }
 
