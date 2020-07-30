@@ -1,6 +1,7 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import moment = require('moment')
+import { BadRequestException } from '@nestjs/common'
 
 export default {
   jqls: [
@@ -21,45 +22,46 @@ export default {
         }
 
         // subqueries
-        if (!params.subqueries.day) params.subqueries.day = { value: 'today' }
         const { timezone } = user.configuration
-        const myMoment = moment().tz(timezone)
-        params.subqueries.today = {
-          from: moment().tz(timezone).startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-          to: moment().tz(timezone).endOf('day').format('YYYY-MM-DD HH:mm:ss')
+        if (params.subqueries.day) {
+          switch (params.subqueries.day.value) {
+            case 'day before yesterday':
+              params.subqueries.date = {
+                from: moment.tz(timezone).subtract(2, 'd').startOf('d').utc().format('YYYY-MM-DD HH:mm:ss'),
+                to: moment.tz(timezone).subtract(2, 'd').endOf('d').utc().format('YYYY-MM-DD HH:mm:ss')
+              }
+              break
+            case 'yesterday':
+              params.subqueries.date = {
+                from: moment.tz(timezone).subtract(1, 'd').startOf('d').utc().format('YYYY-MM-DD HH:mm:ss'),
+                to: moment.tz(timezone).subtract(1, 'd').endOf('d').utc().format('YYYY-MM-DD HH:mm:ss')
+              }
+              break
+            case 'day after tomorrow':
+              params.subqueries.date = {
+                from: moment.tz(timezone).add(2, 'd').startOf('d').utc().format('YYYY-MM-DD HH:mm:ss'),
+                to: moment.tz(timezone).add(2, 'd').endOf('d').utc().format('YYYY-MM-DD HH:mm:ss')
+              }
+              break
+            case 'tomorrow':
+              params.subqueries.date = {
+                from: moment.tz(timezone).add(1, 'd').startOf('d').utc().format('YYYY-MM-DD HH:mm:ss'),
+                to: moment.tz(timezone).add(1, 'd').endOf('d').utc().format('YYYY-MM-DD HH:mm:ss')
+              }
+              break
+            case 'today':
+            default:
+              params.subqueries.date = {
+                from: moment.tz(timezone).startOf('d').utc().format('YYYY-MM-DD HH:mm:ss'),
+                to: moment.tz(timezone).endOf('d').utc().format('YYYY-MM-DD HH:mm:ss')
+              }
+              break
+          }
+          delete params.subqueries.day
         }
-        switch (params.subqueries.day.value) {
-          case 'day before yesterday':
-            params.subqueries.date = {
-              from: myMoment.subtract(2, 'd').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-              to: myMoment.subtract(2, 'd').endOf('day').format('YYYY-MM-DD HH:mm:ss')
-            }
-            break
-          case 'yesterday':
-            params.subqueries.date = {
-              from: myMoment.subtract(1, 'd').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-              to: myMoment.subtract(1, 'd').endOf('day').format('YYYY-MM-DD HH:mm:ss')
-            }
-            break
-          case 'day after tomorrow':
-            params.subqueries.date = {
-              from: myMoment.add(2, 'd').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-              to: myMoment.add(2, 'd').endOf('day').format('YYYY-MM-DD HH:mm:ss')
-            }
-            break
-          case 'tomorrow':
-            params.subqueries.date = {
-              from: myMoment.add(1, 'd').startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-              to: myMoment.add(1, 'd').endOf('day').format('YYYY-MM-DD HH:mm:ss')
-            }
-            break
-          case 'today':
-          default:
-            params.subqueries.date = {
-              from: myMoment.startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-              to: myMoment.endOf('day').format('YYYY-MM-DD HH:mm:ss')
-            }
-            break
+
+        if (!params.subqueries.date || rangeTooLarge(params.subqueries.date)) {
+          throw new BadRequestException('DATE_RANGE_TOO_LARGE')
         }
 
         return params
@@ -71,3 +73,9 @@ export default {
     }
   ]
 } as JqlDefinition
+
+function rangeTooLarge(date: { from: string, to: string }): boolean {
+  const datefr = moment.utc(date.from, 'YYYY-MM-DD')
+  const dateto = moment.utc(date.to, 'YYYY-MM-DD')
+  return dateto.diff(datefr, 'years', true) > 1
+}
