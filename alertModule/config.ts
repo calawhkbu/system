@@ -65,7 +65,7 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -129,7 +129,7 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -193,7 +193,7 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -257,7 +257,7 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -327,7 +327,7 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -396,7 +396,7 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -465,7 +465,7 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -535,7 +535,7 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -608,7 +608,7 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -678,7 +678,7 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -738,7 +738,7 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -798,7 +798,7 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -868,7 +868,7 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -933,7 +933,7 @@ const shipmentAirAlertList = [
         preAlertSendDateActualIsNotNull: true 
       }
     },
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -994,7 +994,7 @@ const shipmentAirAlertList = [
       }
     },
 
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -1064,7 +1064,7 @@ const shipmentAirAlertList = [
       }
     },
 
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -1240,8 +1240,7 @@ const testAlertList = [
     // } as IQueryParams,
 
 
-    // contactRoleList: ['shipper', 'consignee'],
-    contactRoleList: [],
+    contactRoleList: ['shipper'],
     canCloseBy: [
       {
         type: 'all'
