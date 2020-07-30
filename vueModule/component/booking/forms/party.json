@@ -161,6 +161,7 @@
                   "type": "{{key}}"
                 }]
               },
+              "keepParsedKey": ["name", {"from": "name", "to": "partyName"}],
               "parseReturnValue": {
                 "contactPersonEmail": null,
                 "contactPersonId": null,
