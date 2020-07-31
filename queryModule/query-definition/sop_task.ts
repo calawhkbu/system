@@ -166,6 +166,57 @@ query.field('houseNo', {
 
 
 
+// @field primaryNo
+// booking number or house number
+query.field('primaryNo', params => {
+  const result: Partial<IQuery> = {}
+  if (params.subqueries.tableName) {
+    switch (params.subqueries.tableName.value) {
+      case 'booking':
+        result.$select = new ResultColumn(new ColumnExpression(bookingTable, 'bookingNo'), 'primaryNo')
+        break
+      case 'shipment':
+        result.$select = new ResultColumn(new ColumnExpression(shipmentTable, 'houseNo'), 'primaryNo')
+        break
+      default:
+        return result
+    }
+  }
+  else {
+    result.$select = new ResultColumn(new CaseExpression([
+      {
+        $when: new BinaryExpression(columnExpressions['tableName'], '=', new Value(bookingTable)),
+        $then: new ColumnExpression(bookingTable, 'bookingNo')
+      },
+      {
+        $when: new BinaryExpression(columnExpressions['tableName'], '=', new Value(shipmentTable)),
+        $then: new ColumnExpression(shipmentTable, 'houseNo')
+      }
+    ], alwaysTrueExpression), 'primaryNo')
+  }
+  return result
+}, params => {
+  const result: string[] = [table(templateTaskTable)]
+  if (params.subqueries.tableName) {
+    switch (params.subqueries.tableName.value) {
+      case 'booking':
+        result.push(table(bookingTable))
+        break
+      case 'shipment':
+        result.push(table(shipmentTable))
+        break
+    }
+  }
+  else {
+    result.push(table(bookingTable), table(shipmentTable))
+  }
+  return result
+})
+
+
+
+
+
 // @field isDeleted
 // is deleted
 function generalIsDeletedExpression(table = taskTable, not = false) {
@@ -538,6 +589,16 @@ query.subquery('bookingNo', {
 // hide done
 query.subquery('notDone', {
   $where: new BinaryExpression(isDoneExpression, '=', new Value(0))
+})
+
+
+
+
+
+// @subquery notClosed
+// hide closed
+query.subquery('notClosed', {
+  $where: new BinaryExpression(isClosedExpression, '=', new Value(0))
 })
 
 
