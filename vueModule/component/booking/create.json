@@ -628,7 +628,7 @@
                   "label": "BookingPage.sopTask",
                   "name": "taskTemplateIdList",
                   "component": "SopTaskGroups",
-                  "class": "xs-6 padding-topbottom-4",
+                  "class": "xs-12 padding-topbottom-4",
                   "props": {
                     "tableName": "booking"
                   }
@@ -641,7 +641,7 @@
                   "label": "BookingPage.forwarder",
                   "name": "bookingParty.forwarderParty",
                   "component": "AsyncSelect",
-                  "class": "xs-6 padding-topbottom-4",
+                  "class": "xs-12 padding-topbottom-4",
                   "relation": "bookingParty.forwarderParty",
                   "relationMore": [{
                     "name": "bookingParty.forwarderParty.id",
