@@ -14,36 +14,35 @@ function table(name: string): string {
 }
 
 const columns = [
-  [taskTable, 'id'],
-  [taskTable, 'tableName'],
-  [taskTable, 'primaryKey'],
-  [taskTable, 'seqNo'],
-  [taskTable, 'templateId'],
-  [taskTable, 'taskId'],
-  [taskTable, 'parentId'],
-  [taskTable, 'remark'],
-  [taskTable, 'startAt'],
-  [taskTable, 'dueAt'],
-  [taskTable, 'dueScore'],
-  [taskTable, 'deadline'],
-  [taskTable, 'deadlineScore'],
-  [taskTable, 'statusList'],
-  [taskTable, 'closedAt'],
-  [taskTable, 'closedBy'],
-  [taskTable, 'deletedAt'],
-  [taskTable, 'deletedBy'],
-  [templateTaskTable, 'id', 'originalTaskId', table(templateTaskTable)],
-  [templateTaskTable, 'partyGroupCode', 'partyGroupCode', table(templateTaskTable)],
-  [templateTaskTable, 'uniqueId', 'partyGroupTaskId', table(templateTaskTable)],
-  [templateTaskTable, 'system', 'system', table(templateTaskTable)],
-  [templateTaskTable, 'category', 'category', table(templateTaskTable)],
-  [templateTaskTable, 'name', 'name', table(templateTaskTable)],
-  [templateTaskTable, 'description', 'description', table(templateTaskTable)],
-  [selectedTemplateTable, 'id', 'originalSelectedTemplateId', table(selectedTemplateTable)],
-  [selectedTemplateTable, 'templateId', 'selectedTemplateId', table(selectedTemplateTable)],
-  [templateTable, 'id', 'originalTemplateId', table(templateTable)],
-  [templateTable, 'group', 'group', table(templateTable)],
-  [bookingTable, 'bookingNo', 'bookingNo', table(bookingTable)]
+  [taskTable, 'id'],  // @field id
+  [taskTable, 'tableName'], // @field tableName
+  [taskTable, 'primaryKey'],  // @field primaryKey
+  [taskTable, 'seqNo'], // @field seqNo
+  [taskTable, 'templateId'],  // @field templateId
+  [taskTable, 'taskId'],  // @field taskId
+  [taskTable, 'parentId'],  // @field parentId
+  [taskTable, 'remark'],  // @field remark
+  [taskTable, 'startAt'], // @field startAt
+  [taskTable, 'dueAt'], // @field dueAt
+  [taskTable, 'dueScore'],  // @field dueScore
+  [taskTable, 'deadline'],  // @field deadline
+  [taskTable, 'deadlineScore'], // @field deadlineScore
+  [taskTable, 'statusList'],  // @statusList
+  [taskTable, 'closedAt'],  // @field closedAt
+  [taskTable, 'closedBy'],  // @field closedBy
+  [taskTable, 'deletedAt'], // @field deletedAt
+  [taskTable, 'deletedBy'], // @field deletedBy
+  [templateTaskTable, 'id', 'originalTaskId', table(templateTaskTable)],  // @field originalTaskId
+  [templateTaskTable, 'partyGroupCode', 'partyGroupCode', table(templateTaskTable)],  // @field partyGroupCode
+  [templateTaskTable, 'uniqueId', 'partyGroupTaskId', table(templateTaskTable)],  // @field partyGroupTaskId
+  [templateTaskTable, 'system', 'system', table(templateTaskTable)],  // @field system
+  [templateTaskTable, 'category', 'category', table(templateTaskTable)],  // @field category
+  [templateTaskTable, 'name', 'name', table(templateTaskTable)],  // @field name
+  [templateTaskTable, 'description', 'description', table(templateTaskTable)],  // @field description
+  [selectedTemplateTable, 'id', 'originalSelectedTemplateId', table(selectedTemplateTable)],  // @field originalSelectedTemplateId
+  [selectedTemplateTable, 'templateId', 'selectedTemplateId', table(selectedTemplateTable)],  // @field selectedTemplateId
+  [templateTable, 'id', 'originalTemplateId', table(templateTable)],  // @field originalTemplateId
+  [templateTable, 'group', 'group', table(templateTable)],  // @field group
 ]
 
 const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r, [table, name, as = name]) => {
@@ -59,7 +58,7 @@ const query = new QueryDef({
   $from: taskTable
 })
 
-// table:booking
+// @table booking
 const joinBooking = new JoinClause('LEFT', bookingTable,
   new AndExpressions([
     new BinaryExpression(columnExpressions['tableName'], '=', bookingTable),
@@ -70,7 +69,7 @@ query.table(bookingTable, {
   $from: new FromTable(taskTable, joinBooking)
 })
 
-// table:shipment
+// @table shipment
 const joinShipment = new JoinClause('LEFT', shipmentTable,
   new AndExpressions([
     new BinaryExpression(columnExpressions['tableName'], '=', shipmentTable),
@@ -81,21 +80,21 @@ query.table(shipmentTable, {
   $from: new FromTable(taskTable, joinShipment)
 })
 
-// table:sop_template_task
+// @table sop_template_task
 query.table(templateTaskTable, {
   $from: new FromTable(taskTable, new JoinClause('LEFT', templateTaskTable,
     new BinaryExpression(columnExpressions['taskId'], '=', columnExpressions['originalTaskId'])
   ))
 })
 
-// table:sop_selected_template
+// @table sop_selected_template
 query.table(selectedTemplateTable, {
   $from: new FromTable(taskTable, new JoinClause('LEFT', selectedTemplateTable,
     new BinaryExpression(columnExpressions['templateId'], '=', columnExpressions['originalSelectedTemplateId'])
   ))
 })
 
-// table:sop_template
+// @table sop_template
 query.table(templateTable, {
   $from: new FromTable(taskTable, new JoinClause('LEFT', templateTable,
     new BinaryExpression(columnExpressions['selectedTemplateId'], '=', columnExpressions['originalTemplateId'])
@@ -111,6 +110,7 @@ for (const [table, name, as = name, ...companions] of columns) {
 
 
 
+// @field uniqueId
 // party group unique task ID
 const uniqueIdExpression = new FunctionExpression(
   'CONCAT',
@@ -126,6 +126,47 @@ query.field('uniqueId', {
 
 
 
+// @field bookingNo
+// booking number
+const bookingNoExpression = new CaseExpression([
+  {
+    $when: new BinaryExpression(columnExpressions['tableName'], '=', new Value(bookingTable)),
+    $then: new ColumnExpression(bookingTable, 'bookingNo')
+  },
+  {
+    $when: new BinaryExpression(columnExpressions['tableName'], '=', new Value(shipmentTable)),
+    $then: new ColumnExpression(shipmentTable, 'bookingNo')
+  }
+])
+query.field('bookingNo', {
+  $select: new ResultColumn(bookingNoExpression, 'bookingNo')
+}, table(bookingTable), table(shipmentTable))
+
+
+
+
+
+// @field masterNo
+// master number
+query.field('masterNo', {
+  $select: new ResultColumn(new ColumnExpression(shipmentTable, 'masterNo'), 'masterNo')
+}, table(shipmentTable))
+
+
+
+
+
+// @field houseNo
+// house number
+query.field('houseNo', {
+  $select: new ResultColumn(new ColumnExpression(shipmentTable, 'houseNo'), 'houseNo')
+}, table(shipmentTable))
+
+
+
+
+
+// @field isDeleted
 // is deleted
 function generalIsDeletedExpression(table = taskTable, not = false) {
   return not
@@ -146,6 +187,7 @@ query.field('isDeleted', {
 
 
 
+// @field hasSubTasks
 // has sub-tasks
 function hasSubTaskQuery(table: string, ...expressions: IExpression[]) {
   return new Query({
@@ -171,6 +213,7 @@ query.field('hasSubTasks', {
 
 
 
+// @field isClosed
 // is closed
 function generalIsClosedExpression(table = taskTable, not = false) {
   return not
@@ -196,6 +239,7 @@ query.field('isClosed', {
 
 
 
+// @field isDone
 // is done or is closed, given that closed must come after done
 function getLastStatusExpression(status: string, table = taskTable, operator: BinaryOperator = '=') {
   return new BinaryExpression(
@@ -227,6 +271,7 @@ query.field('isDone', {
 
 
 
+// @field isDue
 // is due
 const isDueExpression = new BinaryExpression(
   columnExpressions['dueAt'],
@@ -241,7 +286,8 @@ query.field('isDue', {
 
 
 
-// is due today
+// @field isDueToday -> require @subquery today
+// is due today (depends on user's timezone)
 query.field('isDueToday', params => {
   let expression: Expression
   if (params.subqueries && typeof params.subqueries.today === 'object' && 'from' in params.subqueries.today) {
@@ -261,6 +307,7 @@ query.field('isDueToday', params => {
 
 
 
+// @field isDead
 // is dead
 const isDeadExpression = new BinaryExpression(
   columnExpressions['deadline'],
@@ -275,6 +322,7 @@ query.field('isDead', {
 
 
 
+// @field status
 // last status
 const isStartedExpression = new OrExpressions([
   new IsNullExpression(columnExpressions['startAt'], false),
@@ -322,6 +370,7 @@ query.field('status', {
 
 
 
+// @field statusAt
 // last status at
 const statusAtExpression = new CaseExpression(
   [
@@ -348,6 +397,7 @@ query.field('statusAt', {
 
 
 
+// @field statusBy -> require @subquery user
 // last status by
 const statusByExpression = new CaseExpression(
   [
@@ -376,6 +426,7 @@ query.field('statusBy', params => {
 
 
 
+// @field noOfRemarks
 // number of remarks
 const numberRemarksExpression = new FunctionExpression('JSON_LENGTH', columnExpressions['remark'])
 query.field('noOfRemarks', {
@@ -386,6 +437,7 @@ query.field('noOfRemarks', {
 
 
 
+// @field hasRemark
 // has remarks
 query.field('hasRemark', {
   $select: new ResultColumn(new BinaryExpression(numberRemarksExpression, '>', new Value(0)), 'hasRemark')
@@ -395,6 +447,7 @@ query.field('hasRemark', {
 
 
 
+// @field latestRemark
 // last remark
 const latestRemarkExpression = new MathExpression(
   columnExpressions['remark'],
@@ -409,6 +462,7 @@ query.field('latestRemark', {
 
 
 
+// @field latestRemarkAt
 // last remark at
 const latestRemarkAtExpression = new MathExpression(
   columnExpressions['remark'],
@@ -423,6 +477,7 @@ query.field('latestRemarkAt', {
 
 
 
+// @field latestRemarkBy -> require @subquery user
 // last remark by
 const latestRemarkByExpression = new MathExpression(
   columnExpressions['remark'],
@@ -439,6 +494,7 @@ query.field('latestRemarkBy', params => {
 
 
 
+// @subquery partyGroupCode
 // partyGroupCode = ?
 query.subquery('partyGroupCode', {
   $where: new BinaryExpression(columnExpressions['partyGroupCode'], '=', new Unknown())
@@ -448,6 +504,7 @@ query.subquery('partyGroupCode', {
 
 
 
+// @subquery tableName
 // tableName = ?
 query.subquery('tableName', {
   $where: new BinaryExpression(columnExpressions['tableName'], '=', new Unknown())
@@ -457,6 +514,7 @@ query.subquery('tableName', {
 
 
 
+// @subquery primaryKey
 // primaryKey = ?
 query.subquery('primaryKey', {
   $where: new BinaryExpression(columnExpressions['primaryKey'], '=', new Unknown())
@@ -466,15 +524,17 @@ query.subquery('primaryKey', {
 
 
 
+// @subquery bookingNo
 // bookingNo = ?
 query.subquery('bookingNo', {
-  $where: new BinaryExpression(columnExpressions['bookingNo'], '=', new Unknown())
+  $where: new BinaryExpression(bookingNoExpression, '=', new Unknown())
 }, table(bookingTable)).register('value', 0)
 
 
 
 
 
+// @subquery notDone
 // hide done
 query.subquery('notDone', {
   $where: new BinaryExpression(isDoneExpression, '=', new Value(0))
@@ -484,6 +544,7 @@ query.subquery('notDone', {
 
 
 
+// @subquery notDeleted
 // hide deleted
 query.subquery('notDeleted', {
   $where: new BinaryExpression(generalIsDeletedExpression(), '=', new Value(0))
@@ -493,6 +554,7 @@ query.subquery('notDeleted', {
 
 
 
+// @subquery date
 // date
 query.subquery('date', {
   $where: [
@@ -511,6 +573,7 @@ query.subquery('date', {
 
 
 
+// @subquery teams -> require @subquery user -> enabled without @subquery showAllTasks
 // my tasks only
 function inChargeExpression(table: string, user: string, teams: Array<{ name: string, categories: string[] }>): Expression {
   return new OrExpressions([
