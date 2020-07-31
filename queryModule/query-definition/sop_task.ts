@@ -615,6 +615,26 @@ query.subquery('notDeleted', {
 
 
 
+// @subquery isDue
+// task is due
+query.subquery('isDue', {
+  $where: new BinaryExpression(isDueExpression, '=', new Value(1))
+})
+
+
+
+
+
+// @subquery isDead
+// task is dead
+query.subquery('isDead', {
+  $where: new BinaryExpression(isDeadExpression, '=', new Value(1))
+})
+
+
+
+
+
 // @subquery date
 // date
 query.subquery('date', {
