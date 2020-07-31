@@ -10,7 +10,7 @@ export default {
       async prepareParams(params, result, user): Promise<IQueryParams> {
         // fields
         if (!params.fields) {
-          params.fields = ['id','tableName','primaryKey','parentId','hasSubTasks','status','statusAt','statusBy','isDone','noOfRemarks','latestRemark','latestRemarkAt','latestRemarkBy','system','category','group','name','startAt','dueAt','deadline','isDue','isDueToday','isDead','isClosed','isDeleted','uniqueId','description','statusList','remark']
+          params.fields = ['id','tableName','primaryKey','parentId','hasSubTasks','status','statusAt','statusBy','isDone','noOfRemarks','latestRemark','latestRemarkAt','latestRemarkBy','system','category','group','name','startAt','dueAt','deadline','isDue','isDueToday','isDead','isClosed','isDeleted','uniqueId','description','statusList','remark','primaryNo']
         }
 
         // sorting
