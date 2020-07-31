@@ -27,7 +27,7 @@ import {
   ExistsExpression,
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, RegisterInterface, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField, IfExpression } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, RegisterInterface, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
 
 const partyList = [
 
@@ -1592,16 +1592,16 @@ query.field('sopScore', {
   $select: new ResultColumn(IfExpression(
     new IsNullExpression(new ColumnExpression('booking', 'sopScore'), true), // TODO booking status is closed
     new ColumnExpression('booking', 'sopScore'),
-    new MathExpression(new Value(100), '-', new QueryExpression(new Query({
+    new MathExpression(new Value(100), '-', IfNullExpression(new QueryExpression(new Query({
       $select: new ResultColumn(
         new FunctionExpression('SUM', new CaseExpression([
           {
             $when: isDeadExpression,
-            $then: new ColumnExpression('sop_task', 'deadlineScore')
+            $then: IfNullExpression(new ColumnExpression('sop_task', 'deadlineScore'), new Value(0))
           },
           {
             $when: isDueExpression,
-            $then: new ColumnExpression('sop_task', 'dueScore')
+            $then: IfNullExpression(new ColumnExpression('sop_task', 'dueScore'), new Value(0))
           }
         ], new Value(0)))
       , 'deduct'),
@@ -1611,7 +1611,7 @@ query.field('sopScore', {
         new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
         new OrExpressions([isDueExpression, isDeadExpression])
       ]
-    })))
+    })), new Value(0)))
   ), 'sopScore')
 })
 
