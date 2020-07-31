@@ -82,6 +82,9 @@
           "relationMore": [{
               "name": "shipmentParty.{{flex}}{{key}}PartyId",
               "selector": "id"
+            }, {
+              "name": "shipmentParty.{{flex}}{{key}}PartyCode",
+              "selector": "erpCode"
             },
             {
               "name": "shipmentParty.{{flex}}{{key}}PartyName",
@@ -189,6 +192,7 @@
                   "type": "{{key}}"
                 }]
               },
+              "keepParsedKey": ["name", {"from": "name", "to": "partyName"}],
               "parseReturnValue": {
                 "contactPersonEmail": null,
                 "contactPersonId": null,
