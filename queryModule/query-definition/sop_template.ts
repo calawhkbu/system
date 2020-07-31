@@ -6,7 +6,8 @@ const templateTable = 'sop_template'
 const columns = [
   [templateTable, 'partyGroupCode'],  // @field partyGroupCode
   [templateTable, 'category'],  // @field category
-  [templateTable, 'tableName']  // @field tableName
+  [templateTable, 'tableName']  ,// @field tableName
+  [templateTable, 'group']  // @field group
 ]
 
 const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r, [table, name, as = name]) => {
