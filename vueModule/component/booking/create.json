@@ -9,7 +9,6 @@
             "is": "DynamicComponent",
             "props": {
               "class": "xs-12 grid min-height-28 align-item-center full-width padding-leftright-8",
-              "style": "font-size:25px",
               "components": [{
                   "is": "v-btn",
                   "if": [
