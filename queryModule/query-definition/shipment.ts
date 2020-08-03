@@ -30,10 +30,11 @@ import {
   IConditionalExpression,
   MathExpression,
   ColumnsExpression,
-  IQuery
+  IQuery,
+  BinaryOperator
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, DateFieldTimezoneMap, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter, IfExpression } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, DateFieldTimezoneMap, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -3206,6 +3207,70 @@ query
   .register('value', 3)
   .register('value', 4)
 
+// @field noOfTasks
+// number of outstanding tasks
+function isDoneExpression() {
+  function generalIsDeletedExpression(table = 'sop_task', not = false) {
+    return not
+      ? new AndExpressions([
+          new IsNullExpression(new ColumnExpression(table, 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression(table, 'deletedBy'), false)
+        ])
+      : new OrExpressions([
+          new IsNullExpression(new ColumnExpression(table, 'deletedAt'), true),
+          new IsNullExpression(new ColumnExpression(table, 'deletedBy'), true)
+        ])
+  }
+  function hasSubTaskQuery(table: string, ...expressions: IExpression[]) {
+    return new Query({
+      $from: new FromTable('sop_task', table),
+      $where: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new ColumnExpression(table, 'tableName')),
+        new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression(table, 'primaryKey')),
+        new BinaryExpression(new ColumnExpression('sop_task', 'id'), '=', new ColumnExpression(table, 'parentId')),
+        generalIsDeletedExpression(table, true),
+        ...expressions
+      ])
+    })
+  }
+  function getLastStatusExpression(status: string, table = 'sop_task', operator: BinaryOperator = '=') {
+    return new BinaryExpression(
+      new MathExpression(new ColumnExpression(table, 'statusList'), '->>', new Value('$[0].status')),
+      operator, new Value(status)
+    )
+  }
+  function generalIsDoneExpression(table = 'sop_task', not = false) {
+    return not
+      ? new AndExpressions([
+          getLastStatusExpression('Closed', table, '<>'),
+          getLastStatusExpression('Done', table, '<>')
+        ])
+      : new OrExpressions([
+          getLastStatusExpression('Closed', table),
+          getLastStatusExpression('Done', table)
+        ])
+  }
+  return IfExpression(
+    new ExistsExpression(hasSubTaskQuery('temp'), false),
+    new ExistsExpression(hasSubTaskQuery('temp', generalIsDoneExpression('temp', true)), true),
+    generalIsDoneExpression()
+  )
+}
+const noOfTasksQuery = new Query({
+  $select: new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('sop_task', 'id'))), 'noOfTasks'),
+  $from: 'sop_task',
+  $where: [
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id')),
+    new IsNullExpression(new ColumnExpression('sop_task', 'parentId'), false),
+    isDoneExpression(),
+  ]
+})
+query.field('noOfTasks', {
+  $select: new ResultColumn(new QueryExpression(noOfTasksQuery), 'noOfTasks')
+})
+
+// @field sopScore
 // sop score field
 const isDueExpression = new BinaryExpression(
   new ColumnExpression('sop_task', 'dueAt'),
@@ -3221,16 +3286,16 @@ query.field('sopScore', {
   $select: new ResultColumn(IfExpression(
     new IsNullExpression(new ColumnExpression('shipment', 'sopScore'), true), // TODO shipment status is closed
     new ColumnExpression('shipment', 'sopScore'),
-    new MathExpression(new Value(100), '-', new QueryExpression(new Query({
+    new MathExpression(new Value(100), '-', IfNullExpression(new QueryExpression(new Query({
       $select: new ResultColumn(
         new FunctionExpression('SUM', new CaseExpression([
           {
             $when: isDeadExpression,
-            $then: new ColumnExpression('sop_task', 'deadlineScore')
+            $then: IfNullExpression(new ColumnExpression('sop_task', 'deadlineScore'), new Value(0))
           },
           {
             $when: isDueExpression,
-            $then: new ColumnExpression('sop_task', 'dueScore')
+            $then: IfNullExpression(new ColumnExpression('sop_task', 'dueScore'), new Value(0))
           }
         ], new Value(0)))
       , 'deduct'),
@@ -3240,7 +3305,7 @@ query.field('sopScore', {
         new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id')),
         new OrExpressions([isDueExpression, isDeadExpression])
       ]
-    })))
+    })), new Value(0)))
   ), 'sopScore')
 })
 

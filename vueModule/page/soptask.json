@@ -66,6 +66,12 @@
             "i18nContext": "SopTask"
           },
           {
+            "name": "notClosed",
+            "type": "boolean",
+            "display": "Hide Closed",
+            "i18nContext": "SopTask"
+          },
+          {
             "name": "notDeleted",
             "type": "boolean",
             "display": "Hide Deleted",

@@ -45,7 +45,7 @@ export const setDataFunction = {
     if (!grossWeight) {
       let totalGrossWeight = 0
       for (const { grossWeight, weightUnit = 'KGs' } of shipmentContainers) {
-        totalGrossWeight += grossWeight / (weightUnit === 'LBs' ? 2.205 : 1)
+        totalGrossWeight += (grossWeight || 0) / (weightUnit === 'LBs' ? 2.205 : 1)
       }
       return totalGrossWeight.toFixed(6)
     }
@@ -55,7 +55,7 @@ export const setDataFunction = {
     if (!chargeableWeight) {
       let totalChargeableWeight = 0
       for (const { grossWeight, weightUnit = 'KGs' } of shipmentContainers) {
-        totalChargeableWeight += grossWeight / (weightUnit === 'LBs' ? 2.205 : 1)
+        totalChargeableWeight += (grossWeight || 0) / (weightUnit === 'LBs' ? 2.205 : 1)
       }
       return totalChargeableWeight.toFixed(6)
     }

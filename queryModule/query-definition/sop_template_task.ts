@@ -5,13 +5,13 @@ const taskTable = 'sop_task'
 const templateTaskTable = 'sop_template_task'
 
 const columns = [
-  [templateTaskTable, 'id'],
-  [templateTaskTable, 'partyGroupCode'],
-  [templateTaskTable, 'uniqueId'],
-  [templateTaskTable, 'system'],
-  [templateTaskTable, 'category'],
-  [templateTaskTable, 'name'],
-  [templateTaskTable, 'description']
+  [templateTaskTable, 'id'],  // @field id
+  [templateTaskTable, 'partyGroupCode'],  // @field partyGroupCode
+  [templateTaskTable, 'uniqueId'],  // @field uniqueId
+  [templateTaskTable, 'system'],  // @field system
+  [templateTaskTable, 'category'],  // @field category
+  [templateTaskTable, 'name'],  // @field name
+  [templateTaskTable, 'description']  // @field description
 ]
 
 const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r, [table, name, as = name]) => {
@@ -37,6 +37,7 @@ for (const [table, name, as = name] of columns) {
 
 
 
+// @subquery notExistsIn
 query.subquery('notExistsIn', {
   $where: new ExistsExpression(new Query({
     $from: taskTable,
@@ -52,6 +53,7 @@ query.subquery('notExistsIn', {
 
 
 
+// @subquery q
 query.subquery('q', {
   $where: new OrExpressions([
     new BinaryExpression(new FunctionExpression('CONCAT', columnExpressions['partyGroupCode'], new Value('-'), columnExpressions['uniqueId']), '=', new Unknown()),
