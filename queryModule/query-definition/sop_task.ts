@@ -1,6 +1,7 @@
 import { QueryDef } from "classes/query/QueryDef";
 import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery } from "node-jql";
-import { IfExpression, alwaysTrueExpression, alwaysFalseExpression } from 'utils/jql-subqueries'
+import { IfExpression, alwaysTrueExpression, table } from 'utils/jql-subqueries'
+import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression } from "utils/sop-task";
 
 const taskTable = 'sop_task'
 const templateTaskTable = 'sop_template_task'
@@ -8,10 +9,6 @@ const selectedTemplateTable = 'sop_selected_template'
 const templateTable = 'sop_template'
 const bookingTable = 'booking'
 const shipmentTable = 'shipment'
-
-function table(name: string): string {
-  return `table:${name}`
-}
 
 const columns = [
   [taskTable, 'id'],  // @field id
@@ -219,17 +216,6 @@ query.field('primaryNo', params => {
 
 // @field isDeleted
 // is deleted
-function generalIsDeletedExpression(table = taskTable, not = false) {
-  return not
-    ? new AndExpressions([
-        new IsNullExpression(new ColumnExpression(table, 'deletedAt'), false),
-        new IsNullExpression(new ColumnExpression(table, 'deletedBy'), false)
-      ])
-    : new OrExpressions([
-        new IsNullExpression(new ColumnExpression(table, 'deletedAt'), true),
-        new IsNullExpression(new ColumnExpression(table, 'deletedBy'), true)
-      ])
-}
 query.field('isDeleted', {
   $select: new ResultColumn(generalIsDeletedExpression(), 'isDeleted')
 })
@@ -240,18 +226,6 @@ query.field('isDeleted', {
 
 // @field hasSubTasks
 // has sub-tasks
-function hasSubTaskQuery(table: string, ...expressions: IExpression[]) {
-  return new Query({
-    $from: new FromTable(taskTable, table),
-    $where: new AndExpressions([
-      new BinaryExpression(columnExpressions['tableName'], '=', new ColumnExpression(table, 'tableName')),
-      new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression(table, 'primaryKey')),
-      new BinaryExpression(columnExpressions['id'], '=', new ColumnExpression(table, 'parentId')),
-      generalIsDeletedExpression(table, true),
-      ...expressions
-    ])
-  })
-}
 const hasSubTasksExpression = new ExistsExpression(
   hasSubTaskQuery('temp'),
   false
@@ -266,17 +240,7 @@ query.field('hasSubTasks', {
 
 // @field isClosed
 // is closed
-function generalIsClosedExpression(table = taskTable, not = false) {
-  return not
-    ? new AndExpressions([
-      new IsNullExpression(new ColumnExpression(table, 'closedAt'), false),
-      new IsNullExpression(new ColumnExpression(table, 'closedBy'), false)
-    ])
-    : new OrExpressions([
-      new IsNullExpression(new ColumnExpression(table, 'closedAt'), true),
-      new IsNullExpression(new ColumnExpression(table, 'closedBy'), true)
-    ])
-}
+
 const isClosedExpression = IfExpression(
   hasSubTasksExpression,
   new ExistsExpression(hasSubTaskQuery('temp', generalIsClosedExpression('temp', true)), true),
@@ -292,23 +256,6 @@ query.field('isClosed', {
 
 // @field isDone
 // is done or is closed, given that closed must come after done
-function getLastStatusExpression(status: string, table = taskTable, operator: BinaryOperator = '=') {
-  return new BinaryExpression(
-    new MathExpression(new ColumnExpression(table, 'statusList'), '->>', new Value('$[0].status')),
-    operator, new Value(status)
-  )
-}
-function generalIsDoneExpression(table = taskTable, not = false) {
-  return not
-    ? new AndExpressions([
-        getLastStatusExpression('Closed', table, '<>'),
-        getLastStatusExpression('Done', table, '<>')
-      ])
-    : new OrExpressions([
-        getLastStatusExpression('Closed', table),
-        getLastStatusExpression('Done', table)
-      ])
-}
 const isDoneExpression = IfExpression(
   hasSubTasksExpression,
   new ExistsExpression(hasSubTaskQuery('temp', generalIsDoneExpression('temp', true)), true),
@@ -656,20 +603,6 @@ query.subquery('date', {
 
 // @subquery teams -> require @subquery user -> enabled without @subquery showAllTasks
 // my tasks only
-function inChargeExpression(table: string, user: string, teams: Array<{ name: string, categories: string[] }>): Expression {
-  return new OrExpressions([
-    new BinaryExpression(new ColumnExpression(table, 'picEmail'), '=', new Value(user)),
-    ...teams.map(({ name, categories }) => {
-      const expressions: Expression[] = [
-        new BinaryExpression(new ColumnExpression(table, 'team'), '=', new Value(name))
-      ]
-      if (categories && categories.length) {
-        expressions.push(new OrExpressions(categories.map(c => new BinaryExpression(columnExpressions['category'], '=', new Value(c)))))
-      }
-      return new AndExpressions(expressions)
-    })
-  ])
-}
 query.subquery('teams', ({ value }, params) => {
   const me = typeof params.subqueries.user === 'object' && 'value' in params.subqueries.user ? params.subqueries.user.value : ''
   const result: Partial<IQuery> = {}
