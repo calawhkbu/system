@@ -173,14 +173,14 @@
                     },
                     {
                       "label": "BookingPage.vesselName",
-                      "name": "proposedVesselName",
+                      "name": ["vesselName", "proposedVesselName"],
                       "component": "v-text-field",
                       "class": "xs-12",
                       "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA'"
                     },
                     {
                       "label": "BookingPage.voyageFlightNumber",
-                      "name": "proposedVoyageFlightNumber",
+                      "name": ["voyageFlightNumber", "proposedVoyageFlightNumber"],
                       "component": "v-text-field",
                       "class": "xs-12",
                       "checkDisplayWhen": "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA')"
@@ -358,17 +358,17 @@
               },
               {
                 "label": "BookingPage.vesselName",
-                "name": "proposedVesselName",
+                "name": ["vesselName", "proposedVesselName"],
                 "component": "v-text-field",
                 "class": "xs-3",
-                "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA' && form.proposedVesselName"
+                "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA' && (form.proposedVesselName || form.vesselName)"
               },
               {
                 "label": "BookingPage.voyageFlightNumber",
-                "name": "proposedVoyageFlightNumber",
+                "name": ["voyageFlightNumber", "proposedVoyageFlightNumber"],
                 "component": "v-text-field",
                 "class": "xs-3",
-                "checkDisplayWhen": "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA') && form.proposedVoyageFlightNumber"
+                "checkDisplayWhen": "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA') && (form.voyageFlightNumber || form.proposedVoyageFlightNumber)"
               },
               {
                 "label": "BookingPage.incoTermsCode",
