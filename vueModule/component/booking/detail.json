@@ -382,6 +382,26 @@
             ]
           },
           {
+            "index": "sopTasks",
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "BookingPage",
+                  "i18nKey": "sopTasks"
+                }
+              }
+            ],
+            "tabItemComponents": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "booking/base/soptask"
+                }
+              }
+            ]
+          },
+          {
             "index": "reference",
             "tabComponents": [
               {

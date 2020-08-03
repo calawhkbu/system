@@ -258,6 +258,26 @@
             ]
           },
           {
+            "index": "sopTasks",
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "ShipmentPage",
+                  "i18nKey": "sopTasks"
+                }
+              }
+            ],
+            "tabItemComponents": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "shipment/base/soptask"
+                }
+              }
+            ]
+          },
+          {
             "index": "reference",
             "tabComponents": [
               {
