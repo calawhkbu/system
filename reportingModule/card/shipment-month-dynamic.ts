@@ -3,7 +3,7 @@ import { IQueryParams } from 'classes/query'
 import { OrderBy } from 'node-jql'
 import Moment = require('moment')
 
-import { expandBottomSheetGroupByEntity,expandSummaryVariable, extendDate, handleBottomSheetGroupByEntityValue } from 'utils/card'
+import { expandBottomSheetGroupByEntity,expandSummaryVariable, extendDate, handleBottomSheetGroupByEntityValue,summaryVariableList,groupByEntityList  } from 'utils/card'
 
 
 interface Result {
@@ -14,30 +14,6 @@ interface Result {
   summaryVariables: string[]
 }
 
-const summaryVariableList = [
-  'chargeableWeight',
-  'grossWeight',
-  'totalShipment',
-  'teu',
-  'teuInReport',
-  'quantity',
-  'cargoValue',
-  'containerCount'
-]
-
-const groupByEntityList = [
-  'carrier',
-  'shipper',
-  'consignee',
-  'agent',
-  'agentGroup',
-  'controllingCustomer',
-  'linerAgent',
-  'roAgent',
-  'office',
-  'moduleType',
-  'houseNo'
-]
 
 export default {
   jqls: [
