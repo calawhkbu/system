@@ -1074,6 +1074,91 @@ const shipmentAirAlertList = [
 
 ]
 
+const sopTaskAlertList = [
+
+  // hasDueTasksAlert
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'hasDueTasksAlert',
+
+    templatePath: 'alert/shipment-alert',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+
+      subqueries: {
+        // missing preAlertSendDateActual
+        hasDueTasks: true,
+
+      },
+      
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have preAlertSendDateActual
+        noDueTasks: true 
+      }
+    },
+    contactRoleList: ['shipper'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
+  },
+
+  // hasDeadTasksAlert
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'hasDeadTasksAlert',
+
+    templatePath: 'alert/shipment-alert',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+
+      subqueries: {
+        hasDeadTasks: true,
+      },
+      
+    },
+
+
+    closeQuery: {
+      subqueries : {
+        // have preAlertSendDateActual
+        noDeadTasks: false 
+      }
+    },
+    contactRoleList: ['shipper'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
+  },
+
+]
+
 const oldAlertList = [
 
   // shipmentArrivalDelayed(AIR)
@@ -1271,6 +1356,7 @@ const alertConfigList = [
   ...shipmentSeaAlertList,
   ...shipmentAirAlertList,
   ...oldAlertList,
+  ...sopTaskAlertList,
   ...testAlertList
 
 ] as AlertConfig[]
@@ -1315,6 +1401,18 @@ const alertFlexDataConfigList = [
     primaryKeyName: 'id',
     variableList: 'all'
   } as AlertFlexDataConfig
+
+
+  //  {
+  //   tableName : 'shipment',
+  //   primaryKeyName : 'id',
+  //   variableList : [
+  //     {
+  //       name : 'portOfLoadingCode'
+  //     }
+  //   ]
+  // } as AlertFlexDataConfig
+
 
 ] as AlertFlexDataConfig[]
 

@@ -2480,20 +2480,41 @@ registerNestedSummaryFilter(query,nestedSummaryList)
 
 
 
+
 const containerTypeList = [
-  'aaa',
-  'bbb'
+  '20',
+  '40',
+  'HQ'
 ]
 
+
+const reportContainerTypeList = [
+  '20',
+  '40',
+  'HQ'
+]
 
 // field that store in report json
 const reportingSummaryFieldNameList = [
-
-  ...containerTypeList.map(containerType => `${containerType}_ContainerTypeCount`),
+  ...reportContainerTypeList.map(containerType => `${containerType}_ContainerTypeCount`),
   'containerCount'
 ]
 
+
 const summaryFieldList: SummaryField[] = [
+
+
+  ...containerTypeList.map(containerType => {
+
+    const name = `container${containerType}`
+
+    return {
+      name,
+      summaryType: 'sum',
+      expression: new ColumnExpression('shipment', name) 
+    } as SummaryField
+
+  }),
 
   {
     name: 'totalShipment',
