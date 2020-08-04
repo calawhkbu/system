@@ -3,7 +3,7 @@ import { IQueryParams } from 'classes/query'
 import { BadRequestException } from '@nestjs/common'
 import Moment = require('moment')
 import { OrderBy } from 'node-jql'
-import { expandBottomSheetGroupByEntity, expandSummaryVariable, calculateLastCurrent, handleBottomSheetGroupByEntityValue } from 'utils/card'
+import { expandBottomSheetGroupByEntity, expandSummaryVariable, calculateLastCurrent, handleBottomSheetGroupByEntityValue,summaryVariableList,groupByEntityList } from 'utils/card'
 
 interface Result {
   moment: typeof Moment
@@ -12,36 +12,6 @@ interface Result {
   nameColumnName: string
   summaryVariables: string[]
 }
-
-
-const summaryVariableList = [
-  'cbm',
-  'chargeableWeight',
-  'grossWeight',
-  'totalShipment',
-  'teu',
-  'teuInReport',
-  'quantity',
-  'cargoValue',
-  'containerCount',
-  'container20',
-  'container40',
-  'containerHQ'
-]
-
-const groupByEntityList = [
-    'carrier',
-    'shipper',
-    'consignee',
-    'agent',
-    'agentGroup',
-    'controllingCustomer',
-    'linerAgent',
-    'roAgent',
-    'office',
-    'moduleType',
-    'houseNo'
-]
 
 export default {
   jqls: [
