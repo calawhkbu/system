@@ -330,9 +330,6 @@
                 "subqueries": {
                   "q": {
                     "value": "{{context.search}}"
-                  },
-                  "partyTypeIn": {
-                    "value": ["{{key}}"]
                   }
                 },
                 "limit": 5
