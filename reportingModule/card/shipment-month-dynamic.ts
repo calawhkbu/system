@@ -15,6 +15,7 @@ interface Result {
 }
 
 const summaryVariableList = [
+  'cbm',
   'chargeableWeight',
   'grossWeight',
   'totalShipment',
@@ -22,7 +23,10 @@ const summaryVariableList = [
   'teuInReport',
   'quantity',
   'cargoValue',
-  'containerCount'
+  'containerCount',
+  'container20',
+  'container40',
+  'containerHQ'
 ]
 
 const groupByEntityList = [

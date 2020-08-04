@@ -15,14 +15,18 @@ interface Result {
 
 
 const summaryVariableList = [
-    'chargeableWeight',
-    'grossWeight',
-    'totalShipment',
-    'teu',
-    'teuInReport',
-    'quantity',
-    'cargoValue',
-    'containerCount'
+  'cbm',
+  'chargeableWeight',
+  'grossWeight',
+  'totalShipment',
+  'teu',
+  'teuInReport',
+  'quantity',
+  'cargoValue',
+  'containerCount',
+  'container20',
+  'container40',
+  'containerHQ'
 ]
 
 const groupByEntityList = [

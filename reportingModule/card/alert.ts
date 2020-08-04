@@ -1,9 +1,8 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
-import { AxiosRequestConfig } from 'axios'
 
-const shipmentBottomSheetId = 'cb22011b-728d-489b-a64b-b881914be600'
-const bookingBottomSheetId = 'bde2d806-d2bb-490c-b3e3-9e4792f353dd'
+// const shipmentBottomSheetId = 'cb22011b-728d-489b-a64b-b881914be600'
+// const bookingBottomSheetId = 'bde2d806-d2bb-490c-b3e3-9e4792f353dd'
 
 export default {
   jqls: [
@@ -13,33 +12,22 @@ export default {
         const { moment } = await this.preparePackages(user)
 
         const subqueries = params.subqueries || {}
+
         if (!subqueries.entityType || !(subqueries.entityType !== true && 'value' in subqueries.entityType)) throw new Error('MISSING_ENTITY_TYPE')
         if (['shipment', 'booking', 'purchase-order'].indexOf(subqueries.entityType.value) === -1) {
           throw new Error(`INVALID_ENTITY_TYPE_${String(subqueries.entityType.value).toLocaleUpperCase()}`)
         }
 
-        let alertCreatedAtJson: { from: any, to: any }
-        if (subqueries.withinHours && subqueries.withinHours !== true && 'value' in subqueries.withinHours) {
-          alertCreatedAtJson = {
-            from: moment().subtract(subqueries.withinHours.value, 'hours'),
-            to: moment()
-          }
-        }
-        else {
-          const date = subqueries.date as { from: any, to: any }
-          const selectedDate = (subqueries.date ? moment(date.from, 'YYYY-MM-DD') : moment())
-          const currentMonth = selectedDate.month()
-          alertCreatedAtJson = {
-            from: selectedDate.month(currentMonth).startOf('month').format('YYYY-MM-DD'),
-            to: selectedDate.month(currentMonth).endOf('month').format('YYYY-MM-DD'),
-          }
+        if (!subqueries.alertCreatedAt || !subqueries.alertCreatedAt.from)
+        {
+          throw new Error(`MISSING_alertCreatedAt`)
         }
 
+
         delete subqueries.date
-        subqueries.alertCreatedAt = alertCreatedAtJson
+
         subqueries.alertStatus = { value: ['open'] }
         subqueries.alertCategory = { value: ['Exception', 'Notification'] }
-        subqueries.alertJoin = true
 
         params.fields = ['alertType', 'alertCategory', 'tableName', 'primaryKeyListString', 'count']
         params.groupBy = ['alertType', 'alertCategory', 'tableName']
@@ -57,14 +45,18 @@ export default {
         }
         return [entityType, entityType]
       },
-      onResult(res, params): any[] {
-        let bottomSheetId = shipmentBottomSheetId
-        const subqueries = (params.subqueries = params.subqueries || {})
-        if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
-          if (subqueries.entityType.value === 'booking') bottomSheetId = bookingBottomSheetId
-        }
-        return res.map(r => ({ ...r, bottomSheetId }))
-      }
+
+      
+      // onResult(res, params): any[] {
+
+      //   let bottomSheetId = shipmentBottomSheetId
+      //   const subqueries = (params.subqueries = params.subqueries || {})
+      //   if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
+      //     if (subqueries.entityType.value === 'booking') bottomSheetId = bookingBottomSheetId
+      //   }
+
+      //   return res.map(r => ({ ...r, bottomSheetId }))
+      // }
     }
   ],
   filters: [
@@ -90,25 +82,12 @@ export default {
       type: 'list',
     },
     {
-      name: 'withinHours',
+      name: 'alertCreatedAt',
+      type: 'date',
       props: {
-        items: [
-          {
-            label: '12hrs',
-            value: 12
-          },
-          {
-            label: '24hrs',
-            value: 24
-          },
-          {
-            label: '36hrs',
-            value: 36
-          }
-        ]
-      },
-      type: 'list'
-    }
+        required: true
+      }
+    },
   ]
 } as JqlDefinition
 

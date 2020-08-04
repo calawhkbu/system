@@ -12,6 +12,10 @@
       "noPartyGroupFilters": false,
       "newReport": {
         "filters": {
+
+          "alertStatus" : {
+            "value": "open"
+          },
           "activeStatus": {
             "value": "active"
           },
