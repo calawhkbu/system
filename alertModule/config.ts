@@ -1074,6 +1074,8 @@ const shipmentAirAlertList = [
 
 ]
 
+
+// alert related to sopTask
 const sopTaskAlertList = [
 
   // hasDueTasksAlert
@@ -1274,6 +1276,8 @@ const oldAlertList = [
 
 ]
 
+
+const testAlertActive = false
 const testAlertList = [
 
   // sayHello
@@ -1294,7 +1298,7 @@ const testAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: testAlertActive,
 
     queryName: 'shipment',
     query: {
