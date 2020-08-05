@@ -209,7 +209,7 @@ query.field('primaryNo',
 
 // @field vesselName
 query.field('vesselName',
-  getEntityField('vesselName', [bookingTable], [shipmentTable]),
+  getEntityField('vesselName', [bookingTable], [shipmentTable, 'vessel']),
   getEntityTable([], [bookingTable], [shipmentTable])
 )
 
@@ -287,7 +287,7 @@ query.field('shipper',
     [bookingTable, bookingPartyTable, 'shipperPartyName'],
     [shipmentTable, shipmentPartyTable, 'shipperPartyName']
   ),
-  getEntityTable([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentDateTable])
+  getEntityTable([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
 )
 
 
@@ -300,7 +300,7 @@ query.field('consignee',
     [bookingTable, bookingPartyTable, 'consigneePartyName'],
     [shipmentTable, shipmentPartyTable, 'consigneePartyName']
   ),
-  getEntityTable([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentDateTable])
+  getEntityTable([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
 )
 
 
@@ -313,7 +313,7 @@ query.field('agent',
     [bookingTable, bookingPartyTable, 'agentPartyName'],
     [shipmentTable, shipmentPartyTable, 'agentPartyName']
   ),
-  getEntityTable([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentDateTable])
+  getEntityTable([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
 )
 
 
