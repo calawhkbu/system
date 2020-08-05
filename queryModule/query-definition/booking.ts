@@ -1580,7 +1580,7 @@ query.field('sopScore', {
 const dueTasksQuery = new Query({
   $from: 'sop_task',
   $where: [
-    generalIsClosedExpression('temp', true),
+    generalIsClosedExpression('sop_task', true),
     notDoneExpression,
     isDueExpression
   ]
@@ -1600,7 +1600,7 @@ query.subquery('noDueTasks', {
 const deadTasksQuery = new Query({
   $from: 'sop_task',
   $where: [
-    generalIsClosedExpression('temp', true),
+    generalIsClosedExpression('sop_task', true),
     notDoneExpression,
     isDeadExpression
   ]
