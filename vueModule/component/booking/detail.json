@@ -362,7 +362,7 @@
             ]
           },
           {
-            "index": "alertWorkflowAndDocument",
+            "index": "alertAndDocument",
             "tabComponents": [
               {
                 "is": "I18nText",
@@ -377,6 +377,12 @@
                 "is": "AsyncComponent",
                 "props": {
                   "layoutName": "booking/base/document"
+                }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "shipment/base/alert"
                 }
               }
             ]
