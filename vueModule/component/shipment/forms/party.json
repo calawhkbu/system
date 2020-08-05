@@ -182,7 +182,7 @@
               },
               "nameKey": "name",
               "api": {
-                "url": "api/party",
+                "url": "api/party/create",
                 "method": "POST",
                 "item-text": "name",
                 "item-value": "thirdPartyCode.erp"
@@ -359,9 +359,6 @@
                 "subqueries": {
                   "q": {
                     "value": "{{context.search}}"
-                  },
-                  "partyTypeIn": {
-                    "value": ["{{key}}"]
                   }
                 },
                 "limit": 5
