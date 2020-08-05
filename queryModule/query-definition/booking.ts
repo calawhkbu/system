@@ -1580,6 +1580,8 @@ query.field('sopScore', {
 const dueTasksQuery = new Query({
   $from: 'sop_task',
   $where: [
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
     generalIsClosedExpression('sop_task', true),
     notDoneExpression,
     isDueExpression
@@ -1600,6 +1602,8 @@ query.subquery('noDueTasks', {
 const deadTasksQuery = new Query({
   $from: 'sop_task',
   $where: [
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
     generalIsClosedExpression('sop_task', true),
     notDoneExpression,
     isDeadExpression
