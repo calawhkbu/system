@@ -1074,6 +1074,8 @@ const shipmentAirAlertList = [
 
 ]
 
+
+// alert related to sopTask
 const sopTaskAlertList = [
 
   // hasDueTasksAlert

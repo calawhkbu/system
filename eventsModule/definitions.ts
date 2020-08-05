@@ -1,6 +1,7 @@
 import { EventConfig, EventData, EventHandlerConfig } from 'modules/events/service'
 import { diff } from 'modules/events/checkerFunction'
 import { Booking } from 'models/main/booking'
+import { Shipment } from 'models/main/shipment'
 
 export default {
   // BASE EVENT
@@ -13,6 +14,8 @@ export default {
   // send edi
   update_document_preview: [{ handlerName: 'update_document_preview' }],
   update_data_from_tracking: [{ handlerName: 'update_data_from_tracking' }], // update tracking id to entity
+
+  resend_alert: [{ handlerName: 'resend_alert' }],
   // start here
   // test
   testAll: [
@@ -210,6 +213,23 @@ export default {
       condition: true,
       eventName: 'create_location'
     },
+
+    {
+      condition: true,
+      eventName: 'resend_alert',
+      otherParameters : {
+
+        partyGroupCode : (eventData: EventData<Booking>) => {
+          return eventData.latestEntity.partyGroupCode
+        },
+
+        tableName: 'booking',
+
+        primaryKey : (eventData: EventData<Booking>) => {
+          return eventData.latestEntity.id
+        }
+      }
+    }
   ],
   // documents
   afterCreate_document: [
@@ -342,6 +362,22 @@ export default {
       condition: true,
       eventName: 'create_location'
     },
+    {
+      condition: true,
+      eventName: 'resend_alert',
+      otherParameters : {
+
+        partyGroupCode : (eventData: EventData<Shipment>) => {
+          return eventData.latestEntity.partyGroupCode
+        },
+
+        tableName: 'shipment',
+
+        primaryKey : (eventData: EventData<Shipment>) => {
+          return eventData.latestEntity.id
+        }
+      }
+    }
   ],
   // shipment
   afterCreate_tracking: [
