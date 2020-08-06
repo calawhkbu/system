@@ -151,7 +151,7 @@
               },
               "nameKey": "name",
               "api": {
-                "url": "api/party",
+                "url": "api/party/create",
                 "method": "POST",
                 "item-text": "name",
                 "item-value": "thirdPartyCode.erp"

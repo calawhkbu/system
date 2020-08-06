@@ -1074,6 +1074,8 @@ const shipmentAirAlertList = [
 
 ]
 
+
+// alert related to sopTask
 const sopTaskAlertList = [
 
   // hasDueTasksAlert
@@ -1274,6 +1276,8 @@ const oldAlertList = [
 
 ]
 
+
+const testAlertActive = false
 const testAlertList = [
 
   // sayHello
@@ -1294,7 +1298,7 @@ const testAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: testAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -1400,16 +1404,51 @@ const alertFlexDataConfigList = [
     tableName: 'shipment',
     primaryKeyName: 'id',
     variableList: 'all'
-  } as AlertFlexDataConfig
-
+  } as AlertFlexDataConfig,
 
   //  {
   //   tableName : 'shipment',
   //   primaryKeyName : 'id',
   //   variableList : [
+
   //     {
   //       name : 'portOfLoadingCode'
+  //     },
+  //     {
+  //       name : 'portOfDischargeCode'
+  //     },
+
+  //     {
+  //       name: 'jobNo'
+  //     },
+
+  //     {
+  //       name: 'masterNo'
+  //     },
+
+  //     {
+  //       name: 'houseNo'
+  //     },
+
+  //     {
+  //       name: 'jobDate'
+  //     },
+
+  //     {
+  //       name: 'date',
+  //       path: 'shipmentDate'
+  //     },
+
+  //     {
+  //       name: 'dateInUtc',
+  //       path: 'shipmentDateUtc'
+  //     },
+
+  //     {
+  //       name: 'party',
+  //       path: 'shipmentParty'
   //     }
+
   //   ]
   // } as AlertFlexDataConfig
 

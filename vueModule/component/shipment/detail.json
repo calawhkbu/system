@@ -254,6 +254,12 @@
                 "props": {
                   "layoutName": "shipment/base/document"
                 }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "shipment/base/alert"
+                }
               }
             ]
           },

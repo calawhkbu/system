@@ -1,14 +1,18 @@
 import { QueryDef } from "classes/query/QueryDef";
 import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery } from "node-jql";
-import { IfExpression, alwaysTrueExpression, table } from 'utils/jql-subqueries'
-import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression } from "utils/sop-task";
+import { IfExpression, alwaysTrueExpression, table, IfNullExpression } from 'utils/jql-subqueries'
+import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityField, getEntityTable } from "utils/sop-task";
 
 const taskTable = 'sop_task'
 const templateTaskTable = 'sop_template_task'
 const selectedTemplateTable = 'sop_selected_template'
 const templateTable = 'sop_template'
 const bookingTable = 'booking'
+const bookingDateTable = 'booking_date'
+const bookingPartyTable = 'booking_party'
 const shipmentTable = 'shipment'
+const shipmentDateTable = 'shipment_date'
+const shipmentPartyTable = 'shipment_party'
 
 const columns = [
   [taskTable, 'id'],  // @field id
@@ -29,16 +33,13 @@ const columns = [
   [taskTable, 'closedBy'],  // @field closedBy
   [taskTable, 'deletedAt'], // @field deletedAt
   [taskTable, 'deletedBy'], // @field deletedBy
-  [templateTaskTable, 'id', 'originalTaskId', table(templateTaskTable)],  // @field originalTaskId
   [templateTaskTable, 'partyGroupCode', 'partyGroupCode', table(templateTaskTable)],  // @field partyGroupCode
   [templateTaskTable, 'uniqueId', 'partyGroupTaskId', table(templateTaskTable)],  // @field partyGroupTaskId
   [templateTaskTable, 'system', 'system', table(templateTaskTable)],  // @field system
   [templateTaskTable, 'category', 'category', table(templateTaskTable)],  // @field category
   [templateTaskTable, 'name', 'name', table(templateTaskTable)],  // @field name
   [templateTaskTable, 'description', 'description', table(templateTaskTable)],  // @field description
-  [selectedTemplateTable, 'id', 'originalSelectedTemplateId', table(selectedTemplateTable)],  // @field originalSelectedTemplateId
   [selectedTemplateTable, 'templateId', 'selectedTemplateId', table(selectedTemplateTable)],  // @field selectedTemplateId
-  [templateTable, 'id', 'originalTemplateId', table(templateTable)],  // @field originalTemplateId
   [templateTable, 'group', 'group', table(templateTable)],  // @field group
 ]
 
@@ -66,6 +67,22 @@ query.table(bookingTable, {
   $from: new FromTable(taskTable, joinBooking)
 })
 
+// @table bookingDate
+const joinBookingDate = new JoinClause('LEFT', bookingDateTable,
+  new BinaryExpression(new ColumnExpression(bookingTable, 'id'), '=', new ColumnExpression(bookingDateTable, 'bookingId'))
+)
+query.table(bookingDateTable, {
+  $from: new FromTable(taskTable, joinBookingDate)
+})
+
+// @table bookingParty
+const joinBookingParty = new JoinClause('LEFT', bookingPartyTable,
+  new BinaryExpression(new ColumnExpression(bookingTable, 'id'), '=', new ColumnExpression(bookingPartyTable, 'bookingId'))
+)
+query.table(bookingPartyTable, {
+  $from: new FromTable(taskTable, joinBookingParty)
+})
+
 // @table shipment
 const joinShipment = new JoinClause('LEFT', shipmentTable,
   new AndExpressions([
@@ -77,24 +94,40 @@ query.table(shipmentTable, {
   $from: new FromTable(taskTable, joinShipment)
 })
 
+// @table shipmentDate
+const joinShipmentDate = new JoinClause('LEFT', shipmentDateTable,
+  new BinaryExpression(new ColumnExpression(shipmentTable, 'id'), '=', new ColumnExpression(shipmentDateTable, 'shipmentId'))
+)
+query.table(shipmentDateTable, {
+  $from: new FromTable(taskTable, joinShipmentDate)
+})
+
+// @table shipmentParty
+const joinShipmentParty = new JoinClause('LEFT', shipmentPartyTable,
+  new BinaryExpression(new ColumnExpression(shipmentTable, 'id'), '=', new ColumnExpression(shipmentPartyTable, 'shipmentId'))
+)
+query.table(shipmentPartyTable, {
+  $from: new FromTable(taskTable, joinShipmentParty)
+})
+
 // @table sop_template_task
 query.table(templateTaskTable, {
   $from: new FromTable(taskTable, new JoinClause('LEFT', templateTaskTable,
-    new BinaryExpression(columnExpressions['taskId'], '=', columnExpressions['originalTaskId'])
+    new BinaryExpression(columnExpressions['taskId'], '=', new ColumnExpression(templateTaskTable, 'id'))
   ))
 })
 
 // @table sop_selected_template
 query.table(selectedTemplateTable, {
   $from: new FromTable(taskTable, new JoinClause('LEFT', selectedTemplateTable,
-    new BinaryExpression(columnExpressions['templateId'], '=', columnExpressions['originalSelectedTemplateId'])
+    new BinaryExpression(columnExpressions['templateId'], '=', new ColumnExpression(selectedTemplateTable, 'id'))
   ))
 })
 
 // @table sop_template
 query.table(templateTable, {
   $from: new FromTable(taskTable, new JoinClause('LEFT', templateTable,
-    new BinaryExpression(columnExpressions['selectedTemplateId'], '=', columnExpressions['originalTemplateId'])
+    new BinaryExpression(columnExpressions['selectedTemplateId'], '=', new ColumnExpression(templateTable, 'id'))
   ))
 }, table(selectedTemplateTable))
 
@@ -165,50 +198,143 @@ query.field('houseNo', {
 
 // @field primaryNo
 // booking number or house number
-query.field('primaryNo', params => {
-  const result: Partial<IQuery> = {}
-  if (params.subqueries.tableName) {
-    switch (params.subqueries.tableName.value) {
-      case 'booking':
-        result.$select = new ResultColumn(new ColumnExpression(bookingTable, 'bookingNo'), 'primaryNo')
-        break
-      case 'shipment':
-        result.$select = new ResultColumn(new ColumnExpression(shipmentTable, 'houseNo'), 'primaryNo')
-        break
-      default:
-        return result
-    }
-  }
-  else {
-    result.$select = new ResultColumn(new CaseExpression([
-      {
-        $when: new BinaryExpression(columnExpressions['tableName'], '=', new Value(bookingTable)),
-        $then: new ColumnExpression(bookingTable, 'bookingNo')
-      },
-      {
-        $when: new BinaryExpression(columnExpressions['tableName'], '=', new Value(shipmentTable)),
-        $then: new ColumnExpression(shipmentTable, 'houseNo')
-      }
-    ], alwaysTrueExpression), 'primaryNo')
-  }
-  return result
-}, params => {
-  const result: string[] = [table(templateTaskTable)]
-  if (params.subqueries.tableName) {
-    switch (params.subqueries.tableName.value) {
-      case 'booking':
-        result.push(table(bookingTable))
-        break
-      case 'shipment':
-        result.push(table(shipmentTable))
-        break
-    }
-  }
-  else {
-    result.push(table(bookingTable), table(shipmentTable))
-  }
-  return result
-})
+query.field('primaryNo',
+  getEntityField('primaryNo', [bookingTable, 'bookingNo'], [shipmentTable, 'houseNo']),
+  getEntityTable([], [bookingTable], [shipmentTable])
+)
+
+
+
+
+
+// @field vesselName
+query.field('vesselName',
+  getEntityField('vesselName', [bookingTable], [shipmentTable, 'vessel']),
+  getEntityTable([], [bookingTable], [shipmentTable])
+)
+
+
+
+
+
+// @field portOfLoadingCode
+query.field('portOfLoadingCode',
+  getEntityField('portOfLoadingCode', [bookingTable], [shipmentTable]),
+  getEntityTable([], [bookingTable], [shipmentTable])
+)
+
+
+
+
+
+// @field portOfDischargeCode
+query.field('portOfDischargeCode',
+  getEntityField('portOfDischargeCode', [bookingTable], [shipmentTable]),
+  getEntityTable([], [bookingTable], [shipmentTable])
+)
+
+
+
+
+
+// @field voyageFlightNumber
+query.field('voyageFlightNumber',
+  getEntityField('voyageFlightNumber', [bookingTable], [shipmentTable]),
+  getEntityTable([], [bookingTable], [shipmentTable])
+)
+
+
+
+
+
+// @field departureDate
+query.field('departureDate',
+  getEntityField(
+    'departureDate',
+    ([tableName, dateTable, field]) => {
+      return IfNullExpression(new ColumnExpression(dateTable, `${field}Actual`), new ColumnExpression(dateTable, `${field}Estimated`))
+    },
+    [bookingTable, bookingDateTable, 'departureDate'],
+    [shipmentTable, shipmentDateTable, 'departureDate']
+  ),
+  getEntityTable([], [bookingTable, bookingDateTable], [shipmentTable, shipmentDateTable])
+)
+
+
+
+
+
+// @field arrivalDate
+query.field('arrivalDate',
+  getEntityField(
+    'arrivalDate',
+    ([tableName, dateTable, field]) => {
+      return IfNullExpression(new ColumnExpression(dateTable, `${field}Actual`), new ColumnExpression(dateTable, `${field}Estimated`))
+    },
+    [bookingTable, bookingDateTable, 'arrivalDate'],
+    [shipmentTable, shipmentDateTable, 'arrivalDate']
+  ),
+  getEntityTable([], [bookingTable, bookingDateTable], [shipmentTable, shipmentDateTable])
+)
+
+
+
+
+
+// @field shipper
+query.field('shipper',
+  getEntityField('shipper',
+    [bookingTable, bookingPartyTable, 'shipperPartyName'],
+    [shipmentTable, shipmentPartyTable, 'shipperPartyName']
+  ),
+  getEntityTable([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
+)
+
+
+
+
+
+// @field consignee
+query.field('consignee',
+  getEntityField('consignee',
+    [bookingTable, bookingPartyTable, 'consigneePartyName'],
+    [shipmentTable, shipmentPartyTable, 'consigneePartyName']
+  ),
+  getEntityTable([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
+)
+
+
+
+
+
+// @field agent
+query.field('agent',
+  getEntityField('agent',
+    [bookingTable, bookingPartyTable, 'agentPartyName'],
+    [shipmentTable, shipmentPartyTable, 'agentPartyName']
+  ),
+  getEntityTable([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
+)
+
+
+
+
+
+// @field pic
+query.field('picEmail',
+  getEntityField('picEmail', [bookingTable], [shipmentTable]),
+  getEntityTable([], [bookingTable], [shipmentTable])
+)
+
+
+
+
+
+// @field team
+query.field('team',
+  getEntityField('team', [bookingTable], [shipmentTable]),
+  getEntityTable([], [bookingTable], [shipmentTable])
+)
 
 
 
@@ -608,10 +734,10 @@ query.subquery('teams', ({ value }, params) => {
   const result: Partial<IQuery> = {}
   if (params.subqueries.tableName) {
     switch (params.subqueries.tableName.value) {
-      case 'booking':
+      case bookingTable:
         result.$where = inChargeExpression(bookingTable, me, value)
         break
-      case 'shipment':
+      case shipmentTable:
         result.$where = inChargeExpression(shipmentTable, me, value)
         break
       default:
@@ -631,23 +757,7 @@ query.subquery('teams', ({ value }, params) => {
     ], alwaysTrueExpression)
   }
   return result
-}, params => {
-  const result: string[] = [table(templateTaskTable)]
-  if (params.subqueries.tableName) {
-    switch (params.subqueries.tableName.value) {
-      case 'booking':
-        result.push(table(bookingTable))
-        break
-      case 'shipment':
-        result.push(table(shipmentTable))
-        break
-    }
-  }
-  else {
-    result.push(table(bookingTable), table(shipmentTable))
-  }
-  return result
-})
+}, getEntityTable([table(templateTaskTable)], [bookingTable], [shipmentTable]))
 
 
 
