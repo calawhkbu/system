@@ -1,3 +1,4 @@
+
 import { SubComponentTemplate,SubComponentInfo } from 'modules/vue/interface'
 import { ValidatorMetadata } from 'modules/validation/service'
 
@@ -9,11 +10,10 @@ const subComponentTemplateList = [
 
             // how to add the param??
             "tableName" : "shipment",
-            "dateName": "sendAMS",
+            "dateName": "returnEmptyContainer",
             "includeEstimated": true,
             "includeActual": true,
-            "includeRemark": true,
-            "isInFlexData" : true
+            "includeRemark": true
         }
     },
 
@@ -23,12 +23,12 @@ const subComponentTemplateList = [
 const validators = [
 
     {
-       field : 'shipmentDate.flexData.sendAMSDateEstimated',
+       field : 'shipmentDate.returnEmptyContainerDateEstimated',
        validator : 'required'
     },
 
     {
-        field : 'shipmentDate.flexData.sendAMSActualEstimated',
+        field : 'shipmentDate.returnEmptyContainerActualEstimated',
         validator : 'required'
     }
 
