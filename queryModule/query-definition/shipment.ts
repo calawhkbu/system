@@ -2972,17 +2972,18 @@ const dateNameList = [
   'loadOnboard'
 ]
 
+const flexDataDateNameList = [
+  'sendAMS'
+]
+
 const dateList = [
 
-  // date in shipment_date table
-  ...dateNameList.reduce((accumulator, currentValue) => {
-    return accumulator.concat([`${currentValue}DateEstimated`, `${currentValue}DateActual`])
-  }, []),
-
-
-  // date in shipment_date_utc table
+  // date in shipment_date / shipment_date_utc table
   ...dateNameList.reduce((accumulator, currentValue) => {
     return accumulator.concat([
+
+      `${currentValue}DateEstimated`,
+      `${currentValue}DateActual`,
       {
         name: `${currentValue}DateActualInUtc`,
         expression: new ColumnExpression('shipment_date_utc',`${currentValue}DateActual`),
@@ -2995,6 +2996,47 @@ const dateList = [
       },
     ])
   }, []),
+
+
+
+  // date in shipment_date_utc table
+  ...flexDataDateNameList.reduce((accumulator, currentValue) => {
+
+    const shipmentDateFlexDataExpression = new ColumnExpression('shipment_date','flexData')
+    const shipmentDateUtcFlexDataExpression = new ColumnExpression('shipment_date_utc','flexData')
+  
+    const dateActualExpression =  new MathExpression(shipmentDateFlexDataExpression,'->>',`$.${currentValue}DateActual`)
+    const dateEstimatedExpression =  new MathExpression(shipmentDateFlexDataExpression,'->>',`$.${currentValue}DateEstimated`)
+
+    const dateActualInUtcExpression =  new MathExpression(shipmentDateUtcFlexDataExpression,'->>',`$.${currentValue}DateActual`)
+    const dateEstimatedInUtcExpression =  new MathExpression(shipmentDateUtcFlexDataExpression,'->>',`$.${currentValue}DateEstimated`)
+
+    return accumulator.concat([
+      {
+        name: `${currentValue}DateActual`,
+        expression: dateActualExpression,
+        companion: ['table:shipment_date']
+      },
+      {
+        name: `${currentValue}DateEstimated`,
+        expression: dateEstimatedExpression,
+        companion: ['table:shipment_date']
+      },
+      {
+        name: `${currentValue}DateActualInUtc`,
+        expression: dateActualInUtcExpression,
+        companion: ['table:shipment_date_utc']
+      },
+      {
+        name: `${currentValue}DateEstimatedInUtc`,
+        expression: dateEstimatedInUtcExpression,
+        companion: ['table:shipment_date_utc']
+      },
+    ])
+  }, []),
+
+
+
   {
     name: 'jobDate',
     expression: jobDateExpression
