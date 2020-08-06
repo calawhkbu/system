@@ -43,6 +43,19 @@
         "url: 'api/document/document/delete',",
         "data: {tableName: 'booking', primaryKey, fileName: swig.fileName}",
         "}"
+      ],
+      "imageLoadAxiosParams": [
+        "const data = context.$store.state.widget.data;",
+        "const primaryKey = data.id;",
+        "return {",
+        "method: 'POST',",
+        "url: 'pi/document/document/preview',",
+        "data: {",
+        "tableName: 'booking'",
+        "primaryKey,",
+        "fileName: swig.fileName",
+        "}",
+        "}"
       ]
     }
   }]
