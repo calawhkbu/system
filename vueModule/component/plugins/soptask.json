@@ -37,16 +37,16 @@
       },
       {
         "key": "name",
-        "width": 160
+        "width": 130
       },
       {
         "key": "system",
-        "width": 60,
+        "width": 90,
         "align": "center"
       },
       {
         "key": "category",
-        "width": 70
+        "width": 80
       },
       {
         "key": "startAt",
