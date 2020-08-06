@@ -1074,6 +1074,93 @@ const shipmentAirAlertList = [
 
 ]
 
+
+// alert related to sopTask
+const sopTaskAlertList = [
+
+  // hasDueTasksAlert
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'hasDueTasksAlert',
+
+    templatePath: 'alert/shipment-alert',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+
+      subqueries: {
+        // missing preAlertSendDateActual
+        hasDueTasks: true,
+
+      },
+      
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have preAlertSendDateActual
+        noDueTasks: true 
+      }
+    },
+    contactRoleList: ['shipper'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
+  },
+
+  // hasDeadTasksAlert
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'hasDeadTasksAlert',
+
+    templatePath: 'alert/shipment-alert',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+
+      subqueries: {
+        hasDeadTasks: true,
+      },
+      
+    },
+
+
+    closeQuery: {
+      subqueries : {
+        // have preAlertSendDateActual
+        noDeadTasks: false 
+      }
+    },
+    contactRoleList: ['shipper'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
+  },
+
+]
+
 const oldAlertList = [
 
   // shipmentArrivalDelayed(AIR)
@@ -1189,6 +1276,8 @@ const oldAlertList = [
 
 ]
 
+
+const testAlertActive = false
 const testAlertList = [
 
   // sayHello
@@ -1209,7 +1298,7 @@ const testAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: testAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -1271,6 +1360,7 @@ const alertConfigList = [
   ...shipmentSeaAlertList,
   ...shipmentAirAlertList,
   ...oldAlertList,
+  ...sopTaskAlertList,
   ...testAlertList
 
 ] as AlertConfig[]
@@ -1314,7 +1404,54 @@ const alertFlexDataConfigList = [
     tableName: 'shipment',
     primaryKeyName: 'id',
     variableList: 'all'
-  } as AlertFlexDataConfig
+  } as AlertFlexDataConfig,
+
+  //  {
+  //   tableName : 'shipment',
+  //   primaryKeyName : 'id',
+  //   variableList : [
+
+  //     {
+  //       name : 'portOfLoadingCode'
+  //     },
+  //     {
+  //       name : 'portOfDischargeCode'
+  //     },
+
+  //     {
+  //       name: 'jobNo'
+  //     },
+
+  //     {
+  //       name: 'masterNo'
+  //     },
+
+  //     {
+  //       name: 'houseNo'
+  //     },
+
+  //     {
+  //       name: 'jobDate'
+  //     },
+
+  //     {
+  //       name: 'date',
+  //       path: 'shipmentDate'
+  //     },
+
+  //     {
+  //       name: 'dateInUtc',
+  //       path: 'shipmentDateUtc'
+  //     },
+
+  //     {
+  //       name: 'party',
+  //       path: 'shipmentParty'
+  //     }
+
+  //   ]
+  // } as AlertFlexDataConfig
+
 
 ] as AlertFlexDataConfig[]
 

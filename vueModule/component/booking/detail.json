@@ -301,20 +301,29 @@
             ]
           },
           {
-            "index": "alertWorkflowAndDocument",
-            "tabComponents": [{
-              "is": "I18nText",
-              "props": {
-                "i18nContext": "BookingPage",
-                "i18nKey": "alertAndDocument"
+            "index": "alertAndDocument",
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "BookingPage",
+                  "i18nKey": "alertAndDocument"
+                }
               }
-            }],
-            "tabItemComponents": [{
-              "is": "AsyncComponent",
-              "props": {
-                "layoutName": "booking/base/document"
-              }
-            }]
+            ],
+            "tabItemComponents": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "booking/base/document"
+                }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "shipment/base/alert"
+                }
+              }]
           },
           {
             "index": "sopTasks",

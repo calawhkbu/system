@@ -2480,20 +2480,41 @@ registerNestedSummaryFilter(query,nestedSummaryList)
 
 
 
+
 const containerTypeList = [
-  'aaa',
-  'bbb'
+  '20',
+  '40',
+  'HQ'
 ]
 
+
+const reportContainerTypeList = [
+  '20',
+  '40',
+  'HQ'
+]
 
 // field that store in report json
 const reportingSummaryFieldNameList = [
-
-  ...containerTypeList.map(containerType => `${containerType}_ContainerTypeCount`),
+  ...reportContainerTypeList.map(containerType => `${containerType}_ContainerTypeCount`),
   'containerCount'
 ]
 
+
 const summaryFieldList: SummaryField[] = [
+
+
+  ...containerTypeList.map(containerType => {
+
+    const name = `container${containerType}`
+
+    return {
+      name,
+      summaryType: 'sum',
+      expression: new ColumnExpression('shipment', name) 
+    } as SummaryField
+
+  }),
 
   {
     name: 'totalShipment',
@@ -3270,7 +3291,9 @@ query.field('sopScore', {
 const dueTasksQuery = new Query({
   $from: 'sop_task',
   $where: [
-    generalIsClosedExpression('temp', true),
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id')),
+    generalIsClosedExpression('sop_task', true),
     notDoneExpression,
     isDueExpression
   ]
@@ -3290,7 +3313,9 @@ query.subquery('noDueTasks', {
 const deadTasksQuery = new Query({
   $from: 'sop_task',
   $where: [
-    generalIsClosedExpression('temp', true),
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id')),
+    generalIsClosedExpression('sop_task', true),
     notDoneExpression,
     isDeadExpression
   ]
