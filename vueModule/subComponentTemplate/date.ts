@@ -9,25 +9,32 @@ interface PropParam {
   includeEstimated?: boolean
   includeActual?: boolean
   includeRemark?: boolean
+  isInFlexData?: boolean
 }
 
 
 
 const fieldList = (propParam: PropParam) => {
 
-  const { tableName, dateName, includeEstimated, includeActual, includeRemark } = propParam
+  const { tableName, dateName, includeEstimated, includeActual, includeRemark,isInFlexData } = propParam
 
   const fieldList = []
 
-  const fieldObject = (dateName: string,component = 'DateTimePicker') => {
+  const fieldObject = (dateName: string, component = 'DateTimePicker') => {
 
-    const prefix = tableName ? `${tableName}Date.` : ''
 
-    const fieldName = `${prefix}${dateName}`
+    const dateTableName = tableName ? `${tableName}Date` : undefined
+    const flexData = isInFlexData ? 'flexData' : undefined
+    const prefix = [ dateTableName, flexData].filter(x => !!x).join('.')
+    
+    // const prefixPath = (isInFlexData ? `${tableName}Date.flexData.` : `${tableName}Date.`)
+    // const prefix = tableName ? prefixPath : ''
+
+    const finalDatePath = prefix ? `${prefix}.${dateName}` : dateName
 
     return {
       'label': dateName,
-      'name': fieldName,
+      'name': finalDatePath,
       'component': component,
       'validator': ['required']
     } as SubComponentField
@@ -70,54 +77,30 @@ const adminComponent = ({ }) => {
   }
 }
 
-// 
-const entityToFormDataFunction = (propParam: PropParam) => {
-
-
-  const { tableName,dateName,includeActual,includeEstimated,includeRemark } = propParam
-  const prefix = tableName ? `${tableName}Date.` : ''
-
-  return (entityData: any, formData: any) => {
-
-    const fieldList = []
-
-    if (includeActual)
-    {
-      const fieldName = `${prefix}${dateName}DateActual`
-      fieldList.push(fieldName)
-    }
-
-    if (includeEstimated)
-    {
-      const fieldName = `${prefix}${dateName}DateEstimated`
-      fieldList.push(fieldName)
-    }
-
-    if (includeRemark)
-    {
-      const fieldName = `${prefix}${dateName}DateEstimated`
-      fieldList.push(fieldName)
-    }
-
-
-    fieldList.map(field => {
-      const value = _.get(entityData,field)
-      _.set(formData, field,value)
-    })
-    
-    return formData
-  }
-
-}
+ 
 
 
 // changeForm to entityData
 const formDataToEntityFunction = (propParam: PropParam) => {
 
-  
+  const {
+    tableName,
+    dateName,
+    includeActual,
+    includeEstimated,
+    includeRemark,
+    isInFlexData
+  } = propParam
 
-  const { tableName,dateName,includeActual,includeEstimated,includeRemark } = propParam
-  const prefix = tableName ? `${tableName}Date.` : ''
+
+  const dateTableName = tableName ? `${tableName}Date` : undefined
+  const flexData = isInFlexData ? 'flexData' : undefined
+  const prefix = [ dateTableName, flexData].filter(x => !!x).join('.')
+
+  const finalDatePath = prefix ? `${prefix}.${dateName}` : dateName
+
+  // const prefixPath = (isInFlexData ? `${tableName}Date.flexData.` : `${tableName}Date.`)
+  // const prefix = tableName ? prefixPath : ''
 
   // formData : the one sent from POST request
   // finalFormData, the one need to get all the data
@@ -125,22 +108,40 @@ const formDataToEntityFunction = (propParam: PropParam) => {
 
     const fieldList = []
 
+    if (isInFlexData)
+    {
+      if (!entityData.flexData)
+      {
+        entityData.flexData = {}
+        // _.set(entityData,'flexData',{}) 
+      }
+
+      if (!entityData.flexData.moreDate)
+      {
+        entityData.flexData.moreDate = []
+        // _.set(entityData,'flexData.moreDate',[]) 
+      }
+  
+      if (!entityData.flexData.moreDate.includes(dateName))
+      {
+        entityData.flexData.moreDate = entityData.flexData.moreDate.concat([dateName])
+      }
+    }
+
+
     if (includeActual)
     {
-      const fieldName = `${prefix}${dateName}DateActual`
-      fieldList.push(fieldName)
+      fieldList.push(`${finalDatePath}DateActual`)
     }
 
     if (includeEstimated)
     {
-      const fieldName = `${prefix}${dateName}DateEstimated`
-      fieldList.push(fieldName)
+      fieldList.push(`${finalDatePath}DateEstimated`)
     }
 
     if (includeRemark)
     {
-      const fieldName = `${prefix}${dateName}DateEstimated`
-      fieldList.push(fieldName)
+      fieldList.push(`${finalDatePath}DateRemark`)
     }
 
 
@@ -158,8 +159,7 @@ const formDataToEntityFunction = (propParam: PropParam) => {
 
 
 const extra = {
-  formDataToEntityFunction,
-  entityToFormDataFunction
+  formDataToEntityFunction
 }
 
 export {
