@@ -23,10 +23,13 @@ const columns = [
   [taskTable, 'taskId'],  // @field taskId
   [taskTable, 'parentId'],  // @field parentId
   [taskTable, 'remark'],  // @field remark
-  [taskTable, 'startAt'], // @field startAt
-  [taskTable, 'dueAt'], // @field dueAt
+  [taskTable, 'startAt', 'calculatedStartAt'],  // @field calculatedStartAt
+  [taskTable, 'inputStartAt'],  // @field inputStartAt
+  [taskTable, 'dueAt', 'calculatedDueAt'],  // @field calculatedDueAt
+  [taskTable, 'inputDueAt'],  // @field inputDueAt
   [taskTable, 'dueScore'],  // @field dueScore
-  [taskTable, 'deadline'],  // @field deadline
+  [taskTable, 'deadline', 'calculatedDeadline'],  // @field calculatedDeadline
+  [taskTable, 'inputDeadline'],  // @field inputDeadline
   [taskTable, 'deadlineScore'], // @field deadlineScore
   [taskTable, 'statusList'],  // @statusList
   [taskTable, 'closedAt'],  // @field closedAt
@@ -53,7 +56,11 @@ const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r
 
 
 const query = new QueryDef({
-  $from: taskTable
+  $from: new FromTable(taskTable,
+    new JoinClause('LEFT', new FromTable(taskTable, 'parent'),
+      new BinaryExpression(columnExpressions['parentId'], '=', new ColumnExpression('parent', 'id'))
+    )
+  )
 })
 
 // @table booking
@@ -340,6 +347,63 @@ query.field('team',
 
 
 
+// @field startAt
+const startAtExpression = IfNullExpression(
+  IfNullExpression(
+    columnExpressions['inputStartAt'],
+    columnExpressions['calculatedStartAt']
+  ),
+  IfNullExpression(
+    new ColumnExpression('parent', 'inputStartAt'),
+    new ColumnExpression('parent', 'startAt')
+  )
+)
+query.field('startAt', {
+  $select: new ResultColumn(startAtExpression, 'startAt')
+})
+
+
+
+
+
+// @field dueAt
+const dueAtExpression = IfNullExpression(
+  IfNullExpression(
+    columnExpressions['inputDueAt'],
+    columnExpressions['calculatedDueAt']
+  ),
+  IfNullExpression(
+    new ColumnExpression('parent', 'inputDueAt'),
+    new ColumnExpression('parent', 'dueAt')
+  )
+)
+query.field('dueAt', {
+  $select: new ResultColumn(dueAtExpression, 'dueAt')
+})
+
+
+
+
+
+// @field deadline
+const deadlineExpression = IfNullExpression(
+  IfNullExpression(
+    columnExpressions['inputDeadline'],
+    columnExpressions['calculatedDeadline']
+  ),
+  IfNullExpression(
+    new ColumnExpression('parent', 'inputDeadline'),
+    new ColumnExpression('parent', 'deadline')
+  )
+)
+query.field('deadline', {
+  $select: new ResultColumn(deadlineExpression, 'deadline')
+})
+
+
+
+
+
 // @field isDeleted
 // is deleted
 query.field('isDeleted', {
@@ -398,7 +462,7 @@ query.field('isDone', {
 // @field isDue
 // is due
 const isDueExpression = new BinaryExpression(
-  columnExpressions['dueAt'],
+  dueAtExpression,
   '<',
   new FunctionExpression('UTC_TIMESTAMP')
 )
@@ -417,8 +481,8 @@ query.field('isDueToday', params => {
   if (params.subqueries && typeof params.subqueries.today === 'object' && 'from' in params.subqueries.today) {
     expression = new AndExpressions([
       isStartedExpression,
-      new BinaryExpression(new Value(params.subqueries.today.from), '<=', columnExpressions['dueAt']),
-      new BinaryExpression(columnExpressions['dueAt'], '<=', new Value(params.subqueries.today.to))
+      new BinaryExpression(new Value(params.subqueries.today.from), '<=', dueAtExpression),
+      new BinaryExpression(dueAtExpression, '<=', new Value(params.subqueries.today.to))
     ])
   }
   else {
@@ -434,7 +498,7 @@ query.field('isDueToday', params => {
 // @field isDead
 // is dead
 const isDeadExpression = new BinaryExpression(
-  columnExpressions['deadline'],
+  deadlineExpression,
   '<',
   new FunctionExpression('UTC_TIMESTAMP')
 )
@@ -449,9 +513,9 @@ query.field('isDead', {
 // @field status
 // last status
 const isStartedExpression = new OrExpressions([
-  new IsNullExpression(columnExpressions['startAt'], false),
+  new IsNullExpression(startAtExpression, false),
   new BinaryExpression(
-    columnExpressions['startAt'],
+    startAtExpression,
     '<',
     new FunctionExpression('UTC_TIMESTAMP')
   )
@@ -713,12 +777,12 @@ query.subquery('isDead', {
 query.subquery('date', {
   $where: [
     new OrExpressions([
-      new IsNullExpression(columnExpressions['startAt'], false),
-      new BinaryExpression(columnExpressions['startAt'], '<', new Unknown())
+      new IsNullExpression(startAtExpression, false),
+      new BinaryExpression(startAtExpression, '<', new Unknown())
     ]),
     new OrExpressions([
-      new IsNullExpression(columnExpressions['deadline'], false),
-      new BinaryExpression(new Unknown(), '<', columnExpressions['deadline'])
+      new IsNullExpression(deadlineExpression, false),
+      new BinaryExpression(new Unknown(), '<', deadlineExpression)
     ])
   ]
 }).register('from', 0).register('to', 1)
