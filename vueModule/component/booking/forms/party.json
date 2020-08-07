@@ -161,12 +161,12 @@
                   "type": "{{key}}"
                 }]
               },
-              "keepParsedKey": ["name", {"from": "name", "to": "partyName"}],
+              "keepParsedKey": ["name", {"from": "name", "to": "partyName"}, "erpCode"],
               "parseReturnValue": {
                 "contactPersonEmail": null,
                 "contactPersonId": null,
                 "contactPersonName": null,
-                "erpCode": "{{thirdPartyCode.erp}}",
+                "erpCode": "{{erpCode}}",
                 "id": "{{id}}",
                 "name": "{{name}}",
                 "old360Id": null,

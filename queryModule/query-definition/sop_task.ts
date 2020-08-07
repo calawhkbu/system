@@ -1,5 +1,5 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery } from "node-jql";
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery, ParameterExpression } from "node-jql";
 import { IfExpression, alwaysTrueExpression, table, IfNullExpression } from 'utils/jql-subqueries'
 import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityField, getEntityTable } from "utils/sop-task";
 
@@ -142,6 +142,15 @@ query.table(templateTable, {
 for (const [table, name, as = name, ...companions] of columns) {
   query.field(as, { $select: new ResultColumn(columnExpressions[as], as) }, ...companions)
 }
+
+
+
+
+
+// @field count
+query.field('count', {
+  $select: new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('sop_task', 'id'))), 'count')
+})
 
 
 
