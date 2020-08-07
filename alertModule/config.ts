@@ -12,6 +12,296 @@ const testAlertEmailList = [
   'marco.lor+0843@swivelsoftware.com'
 ]
 
+const ASWAlertConfigList = [
+  // lateArrival(SEA)
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'high',
+    alertType: 'lateArrival(SEA)',
+
+    templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.lateArrival',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+      subqueries: {
+
+        moduleTypeCode: {
+          value: "SEA"
+        },
+
+        // missing arrivalDateActual
+        arrivalDateActualIsNull: true,
+
+        // after arrivalDateActual + 1 day
+        after_arrivalDateActualInUtc: {
+          value: {
+            value: 1,
+            unit: 'DAY'
+          }
+        },
+
+
+      },
+
+    } as IQueryParams,
+
+    closeQuery: {
+      subqueries: {
+        arrivalDateActualIsNotNull: true,
+      }
+    } as IQueryParams,
+
+    contactRoleList: ['shipper', 'consignee'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ],
+  } as AlertConfig,
+
+
+
+  // lateArrival(AIR)
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'high',
+    alertType: 'lateArrival(AIR)',
+
+    templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.lateArrival',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+      subqueries: {
+
+        moduleTypeCode: {
+          value: "AIR"
+        },
+
+        // missing arrivalDateActual
+        arrivalDateActualIsNull: true,
+
+        // after arrivalDateActual + 1 day
+        after_arrivalDateActualInUtc: {
+          value: {
+            value: 1,
+            unit: 'HOUR'
+          }
+        },
+
+
+      },
+
+    } as IQueryParams,
+
+    closeQuery: {
+      subqueries: {
+        arrivalDateActualIsNotNull: true,
+      }
+    } as IQueryParams,
+
+    contactRoleList: ['shipper', 'consignee'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ],
+  } as AlertConfig,
+
+
+  // missingAMS(AIR)
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'missingAMS(AIR)',
+
+    templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingAMS',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+      subqueries: {
+
+        moduleTypeCode: {
+          value: "AIR"
+        },
+
+        // missing sendAMSDateActual
+        sendAMSDateActualIsNull: true,
+
+        // after arrivalDateActual + 1 day
+        after_arrivalDateActualInUtc: {
+          value: {
+            value: 1,
+            unit: 'HOUR'
+          }
+        },
+
+
+      },
+
+    } as IQueryParams,
+
+    closeQuery: {
+      subqueries: {
+        sendAMSDateActualIsNotNull: true,
+      }
+    } as IQueryParams,
+
+    contactRoleList: ['shipper', 'consignee'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ],
+  } as AlertConfig,
+
+
+  // missingAMS(SEA)
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'missingAMS(SEA)',
+
+    templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingAMS',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+      subqueries: {
+
+        moduleTypeCode: {
+          value: "SEA"
+        },
+
+        // missing sendAMSDateActual
+        sendAMSDateActualIsNull: true,
+
+        // after arrivalDateActual + 1 day
+        after_arrivalDateActualInUtc: {
+          value: {
+            value: 1,
+            unit: 'DAY'
+          }
+        },
+
+
+      },
+
+    } as IQueryParams,
+
+    closeQuery: {
+      subqueries: {
+        sendAMSDateActualIsNotNull: true,
+      }
+    } as IQueryParams,
+
+    contactRoleList: ['shipper', 'consignee'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ],
+  } as AlertConfig,
+
+
+
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'containerReturn',
+
+    templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.containerReturn',
+    
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+
+      subqueries: {
+
+        // missing returnEmptyContainerDateActual
+        returnEmptyContainerDateActualIsNull: true,
+
+        // after arrivalDateActual + 1 day
+        after_arrivalDateActualInUtc: {
+          value: {
+            value: 1,
+            unit: 'DAY'
+          }
+        },
+
+      },
+      
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have returnEmptyContainerDateActual
+        returnEmptyContainerDateActualIsNotNull: true 
+      }
+    },
+
+    contactRoleList: ['shipper'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
+
+  },
+
+
+
+] as AlertConfig[]
+
 
 const shipmentSeaAlertList = [
 
@@ -1361,7 +1651,8 @@ const alertConfigList = [
   ...shipmentAirAlertList,
   ...oldAlertList,
   ...sopTaskAlertList,
-  ...testAlertList
+  ...testAlertList,
+  ...ASWAlertConfigList
 
 ] as AlertConfig[]
 
