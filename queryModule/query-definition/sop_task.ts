@@ -827,4 +827,57 @@ query.subquery('teams', ({ value }, params) => {
 
 
 
+// @subquery notReferencedIn
+query.subquery('notReferencedIn', value => {
+  if (Array.isArray(value.value) && value.value.length > 0) {
+    return {
+      $where: [
+        new IsNullExpression(columnExpressions['templateId'], true),
+        new InExpression(columnExpressions['taskId'], true, new Query({
+          $distinct: true,
+          $select: new ResultColumn(new ColumnExpression('sop_template_task', 'id')),
+          $from: new FromTable('sop_template',
+            new JoinClause('LEFT', 'sop_template_template_task', new BinaryExpression(new ColumnExpression('sop_template_template_task', 'templateId'), '=', new ColumnExpression('sop_template', 'id'))),
+            new JoinClause('LEFT', 'sop_template_task', new BinaryExpression(new ColumnExpression('sop_template_template_task', 'taskId'), '=', new ColumnExpression('sop_template_task', 'id')))
+          ),
+          $where: new InExpression(new ColumnExpression('sop_template', 'id'), false, new Value(value.value))
+        }))
+      ]
+    }
+  }
+  else {
+    return {
+      $where: new IsNullExpression(columnExpressions['templateId'], true)
+    }
+  }
+})
+
+
+
+
+
+// @subquery notReferenced
+query.subquery('notReferenced', {
+  $where: [
+    new IsNullExpression(columnExpressions['templateId'], true),
+    new InExpression(columnExpressions['taskId'], true, new Query({
+      $distinct: true,
+      $select: new ResultColumn(new ColumnExpression('sop_template_task', 'id')),
+      $from: new FromTable('sop_selected_template',
+        new JoinClause('LEFT', 'sop_template', new BinaryExpression(new ColumnExpression('sop_selected_template', 'templateId'), '=', new ColumnExpression('sop_template', 'id'))),
+        new JoinClause('LEFT', 'sop_template_template_task', new BinaryExpression(new ColumnExpression('sop_template_template_task', 'templateId'), '=', new ColumnExpression('sop_template', 'id'))),
+        new JoinClause('LEFT', 'sop_template_task', new BinaryExpression(new ColumnExpression('sop_template_template_task', 'taskId'), '=', new ColumnExpression('sop_template_task', 'id')))
+      ),
+      $where: [
+        new BinaryExpression(new ColumnExpression('sop_selected_template', 'tableName'), '=', columnExpressions['tableName']),
+        new BinaryExpression(new ColumnExpression('sop_selected_template', 'primaryKey'), '=', columnExpressions['primaryKey']),
+      ]
+    }))
+  ]
+})
+
+
+
+
+
 export default query
