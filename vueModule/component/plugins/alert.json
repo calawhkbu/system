@@ -14,7 +14,10 @@
       "Message": "message"
     },
     "titleKey": "alertTitle",
+    "titleI18nOptionsKeys": ["flexData"],
+    
     "subTitleKeys": ["alertMessage"],
+    "subTitleI18nOptionsKeys": ["flexData"],
     "noIcon": "notifications_none"
   },
   "baseSummaryProps": {
