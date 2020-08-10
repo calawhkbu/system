@@ -23,9 +23,11 @@ import {
   MathExpression,
   QueryExpression,
   ExistsExpression,
+  IQuery,
 } from 'node-jql'
 import { ExpressionHelperInterface, registerAll, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
 import { hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression } from 'utils/sop-task'
+import sopQuery from './sop_task'
 
 const partyList = [
 
@@ -1617,6 +1619,59 @@ query.subquery('hasDeadTasks', {
 // return bookings without dead tasks
 query.subquery('noDeadTasks', {
   $where: new ExistsExpression(deadTasksQuery, true)
+})
+
+// @field noOfOutstandingTasks
+query.field('noOfOutstandingTasks', params => {
+  let subqueries: any = { tableName: { value: 'booking' } }
+  if (params.subqueries.sop_user) subqueries.user = params.subqueries.sop_user
+  if (params.subqueries.sop_partyGroupCode) subqueries.partyGroupCode = params.subqueries.sop_partyGroupCode
+  if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
+  if (params.subqueries.sop_today) subqueries.today = params.subqueries.sop_today
+  if (params.subqueries.sop_date) subqueries.date = params.subqueries.sop_date
+  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
+  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
+  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
+  const query = sopQuery.apply({
+    fields: ['count'],
+    subqueries
+  })
+  const $where = query.$where as AndExpressions
+  $where.expressions.push(
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
+  )
+  return {
+    $select: new ResultColumn(new QueryExpression(query), 'noOfOutstandingTasks')
+  }
+})
+
+// @subquery myTasksOnly
+query.subquery('myTasksOnly', (value, params) => {
+  let subqueries: any = {
+    tableName: { value: 'booking' },
+    user: params.subqueries.sop_user,
+    partyGroupCode: params.subqueries.sop_partyGroupCode,
+    today: params.subqueries.sop_today,
+    date: params.subqueries.sop_date
+  }
+  if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
+  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
+  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
+  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
+  const query = sopQuery.apply({
+    distinct: true,
+    fields: ['id'],
+    subqueries
+  })
+  const $where = query.$where as AndExpressions
+  $where.expressions.push(
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
+  )
+  return {
+    $where: new ExistsExpression(query, false)
+  }
 })
 
 export default query
