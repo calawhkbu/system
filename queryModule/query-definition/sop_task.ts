@@ -1,12 +1,11 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery, ParameterExpression } from "node-jql";
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery } from "node-jql";
 import { IfExpression, alwaysTrueExpression, table, IfNullExpression } from 'utils/jql-subqueries'
 import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityField, getEntityTable } from "utils/sop-task";
 import { IShortcut } from 'classes/query/Shortcut'
 
 const taskTable = 'sop_task'
 const templateTaskTable = 'sop_template_task'
-const templateTemplateTaskTable = 'sop_template_template_task'
 const selectedTemplateTable = 'sop_selected_template'
 const templateTable = 'sop_template'
 const bookingTable = 'booking'
@@ -1001,4 +1000,5 @@ const shortcuts: IShortcut[] = [
   }
 ]
 
+export default query
 export default query.useShortcuts(shortcuts)

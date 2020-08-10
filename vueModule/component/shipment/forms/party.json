@@ -192,7 +192,7 @@
                   "type": "{{key}}"
                 }]
               },
-              "keepParsedKey": ["name", {"from": "name", "to": "partyName"}, "erpCode"],
+              "keepParsedKey": ["name", {"from": "name", "to": "partyName"}],
               "parseReturnValue": {
                 "contactPersonEmail": null,
                 "contactPersonId": null,
@@ -230,7 +230,7 @@
                 {
                   "label": "Widget.address",
                   "name": "address",
-                  "component": "AddressField",
+                  "component": "v-textarea",
                   "props": {
                     "auto-grow": true,
                     "rows": 5
@@ -406,7 +406,7 @@
         {
           "label": "Widget.address",
           "name": "shipmentParty.{{flex}}{{key}}PartyAddress",
-          "component": "AddressField",
+          "component": "v-textarea",
           "canEdit": [
             "if (extra.canFullEdit) {",
             "return true",
