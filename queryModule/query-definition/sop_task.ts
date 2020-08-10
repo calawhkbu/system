@@ -5,6 +5,7 @@ import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, g
 
 const taskTable = 'sop_task'
 const templateTaskTable = 'sop_template_task'
+const templateTemplateTaskTable = 'sop_template_template_task'
 const selectedTemplateTable = 'sop_selected_template'
 const templateTable = 'sop_template'
 const bookingTable = 'booking'
@@ -58,7 +59,11 @@ const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r
 const query = new QueryDef({
   $from: new FromTable(taskTable,
     new JoinClause('LEFT', new FromTable(taskTable, 'parent'),
-      new BinaryExpression(columnExpressions['parentId'], '=', new ColumnExpression('parent', 'id'))
+      new AndExpressions([
+        new BinaryExpression(columnExpressions['parentId'], '=', new ColumnExpression('parent', 'id')),
+        new IsNullExpression(new ColumnExpression('parent', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('parent', 'deletedBy'), false)
+      ])
     )
   )
 })
@@ -67,7 +72,9 @@ const query = new QueryDef({
 const joinBooking = new JoinClause('LEFT', bookingTable,
   new AndExpressions([
     new BinaryExpression(columnExpressions['tableName'], '=', bookingTable),
-    new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression(bookingTable, 'id'))
+    new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression(bookingTable, 'id')),
+    new IsNullExpression(new ColumnExpression(bookingTable, 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression(bookingTable, 'deletedBy'), false)
   ])
 )
 query.table(bookingTable, {
@@ -76,7 +83,11 @@ query.table(bookingTable, {
 
 // @table bookingDate
 const joinBookingDate = new JoinClause('LEFT', bookingDateTable,
-  new BinaryExpression(new ColumnExpression(bookingTable, 'id'), '=', new ColumnExpression(bookingDateTable, 'bookingId'))
+  new AndExpressions([
+    new BinaryExpression(new ColumnExpression(bookingTable, 'id'), '=', new ColumnExpression(bookingDateTable, 'bookingId')),
+    new IsNullExpression(new ColumnExpression(bookingDateTable, 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression(bookingDateTable, 'deletedBy'), false)
+  ])
 )
 query.table(bookingDateTable, {
   $from: new FromTable(taskTable, joinBookingDate)
@@ -84,7 +95,11 @@ query.table(bookingDateTable, {
 
 // @table bookingParty
 const joinBookingParty = new JoinClause('LEFT', bookingPartyTable,
-  new BinaryExpression(new ColumnExpression(bookingTable, 'id'), '=', new ColumnExpression(bookingPartyTable, 'bookingId'))
+  new AndExpressions([
+    new BinaryExpression(new ColumnExpression(bookingTable, 'id'), '=', new ColumnExpression(bookingPartyTable, 'bookingId')),
+    new IsNullExpression(new ColumnExpression(bookingPartyTable, 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression(bookingPartyTable, 'deletedBy'), false)
+  ])
 )
 query.table(bookingPartyTable, {
   $from: new FromTable(taskTable, joinBookingParty)
@@ -94,7 +109,9 @@ query.table(bookingPartyTable, {
 const joinShipment = new JoinClause('LEFT', shipmentTable,
   new AndExpressions([
     new BinaryExpression(columnExpressions['tableName'], '=', shipmentTable),
-    new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression(shipmentTable, 'id'))
+    new BinaryExpression(columnExpressions['primaryKey'], '=', new ColumnExpression(shipmentTable, 'id')),
+    new IsNullExpression(new ColumnExpression(shipmentTable, 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression(shipmentTable, 'deletedBy'), false)
   ])
 )
 query.table(shipmentTable, {
@@ -103,7 +120,11 @@ query.table(shipmentTable, {
 
 // @table shipmentDate
 const joinShipmentDate = new JoinClause('LEFT', shipmentDateTable,
-  new BinaryExpression(new ColumnExpression(shipmentTable, 'id'), '=', new ColumnExpression(shipmentDateTable, 'shipmentId'))
+  new AndExpressions([
+    new BinaryExpression(new ColumnExpression(shipmentTable, 'id'), '=', new ColumnExpression(shipmentDateTable, 'shipmentId')),
+    new IsNullExpression(new ColumnExpression(shipmentDateTable, 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression(shipmentDateTable, 'deletedBy'), false)
+  ])
 )
 query.table(shipmentDateTable, {
   $from: new FromTable(taskTable, joinShipmentDate)
@@ -111,7 +132,11 @@ query.table(shipmentDateTable, {
 
 // @table shipmentParty
 const joinShipmentParty = new JoinClause('LEFT', shipmentPartyTable,
-  new BinaryExpression(new ColumnExpression(shipmentTable, 'id'), '=', new ColumnExpression(shipmentPartyTable, 'shipmentId'))
+  new AndExpressions([
+    new BinaryExpression(new ColumnExpression(shipmentTable, 'id'), '=', new ColumnExpression(shipmentPartyTable, 'shipmentId')),
+    new IsNullExpression(new ColumnExpression(shipmentPartyTable, 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression(shipmentPartyTable, 'deletedBy'), false)
+  ])
 )
 query.table(shipmentPartyTable, {
   $from: new FromTable(taskTable, joinShipmentParty)
@@ -120,21 +145,33 @@ query.table(shipmentPartyTable, {
 // @table sop_template_task
 query.table(templateTaskTable, {
   $from: new FromTable(taskTable, new JoinClause('LEFT', templateTaskTable,
-    new BinaryExpression(columnExpressions['taskId'], '=', new ColumnExpression(templateTaskTable, 'id'))
+    new AndExpressions([
+      new BinaryExpression(columnExpressions['taskId'], '=', new ColumnExpression(templateTaskTable, 'id')),
+      new IsNullExpression(new ColumnExpression(templateTaskTable, 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression(templateTaskTable, 'deletedBy'), false)
+    ])
   ))
 })
 
 // @table sop_selected_template
 query.table(selectedTemplateTable, {
   $from: new FromTable(taskTable, new JoinClause('LEFT', selectedTemplateTable,
-    new BinaryExpression(columnExpressions['templateId'], '=', new ColumnExpression(selectedTemplateTable, 'id'))
+    new AndExpressions([
+      new BinaryExpression(columnExpressions['templateId'], '=', new ColumnExpression(selectedTemplateTable, 'id')),
+      new IsNullExpression(new ColumnExpression(selectedTemplateTable, 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression(selectedTemplateTable, 'deletedBy'), false)
+    ])
   ))
 })
 
 // @table sop_template
 query.table(templateTable, {
   $from: new FromTable(taskTable, new JoinClause('LEFT', templateTable,
-    new BinaryExpression(columnExpressions['selectedTemplateId'], '=', new ColumnExpression(templateTable, 'id'))
+    new AndExpressions([
+      new BinaryExpression(columnExpressions['selectedTemplateId'], '=', new ColumnExpression(templateTable, 'id')),
+      new IsNullExpression(new ColumnExpression(templateTable, 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression(templateTable, 'deletedBy'), false)
+    ])
   ))
 }, table(selectedTemplateTable))
 
@@ -844,12 +881,28 @@ query.subquery('notReferencedIn', value => {
         new IsNullExpression(columnExpressions['templateId'], true),
         new InExpression(columnExpressions['taskId'], true, new Query({
           $distinct: true,
-          $select: new ResultColumn(new ColumnExpression('sop_template_task', 'id')),
-          $from: new FromTable('sop_template',
-            new JoinClause('LEFT', 'sop_template_template_task', new BinaryExpression(new ColumnExpression('sop_template_template_task', 'templateId'), '=', new ColumnExpression('sop_template', 'id'))),
-            new JoinClause('LEFT', 'sop_template_task', new BinaryExpression(new ColumnExpression('sop_template_template_task', 'taskId'), '=', new ColumnExpression('sop_template_task', 'id')))
+          $select: new ResultColumn(new ColumnExpression(templateTaskTable, 'id')),
+          $from: new FromTable(templateTable,
+            new JoinClause('LEFT', templateTemplateTaskTable,
+              new AndExpressions([
+                new BinaryExpression(new ColumnExpression(templateTemplateTaskTable, 'templateId'), '=', new ColumnExpression(templateTable, 'id')),
+                new IsNullExpression(new ColumnExpression(templateTemplateTaskTable, 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression(templateTemplateTaskTable, 'deletedBy'), false)
+              ])
+            ),
+            new JoinClause('LEFT', templateTaskTable,
+              new AndExpressions([
+                new BinaryExpression(new ColumnExpression(templateTemplateTaskTable, 'taskId'), '=', new ColumnExpression(templateTaskTable, 'id')),
+                new IsNullExpression(new ColumnExpression(templateTaskTable, 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression(templateTaskTable, 'deletedBy'), false)
+              ])
+            )
           ),
-          $where: new InExpression(new ColumnExpression('sop_template', 'id'), false, new Value(value.value))
+          $where: [
+            new InExpression(new ColumnExpression(templateTable, 'id'), false, new Value(value.value)),
+            new IsNullExpression(new ColumnExpression(templateTable, 'deletedAt'), false),
+            new IsNullExpression(new ColumnExpression(templateTable, 'deletedBy'), false)
+          ]
         }))
       ]
     }
@@ -871,15 +924,29 @@ query.subquery('notReferenced', {
     new IsNullExpression(columnExpressions['templateId'], true),
     new InExpression(columnExpressions['taskId'], true, new Query({
       $distinct: true,
-      $select: new ResultColumn(new ColumnExpression('sop_template_task', 'id')),
-      $from: new FromTable('sop_selected_template',
-        new JoinClause('LEFT', 'sop_template', new BinaryExpression(new ColumnExpression('sop_selected_template', 'templateId'), '=', new ColumnExpression('sop_template', 'id'))),
-        new JoinClause('LEFT', 'sop_template_template_task', new BinaryExpression(new ColumnExpression('sop_template_template_task', 'templateId'), '=', new ColumnExpression('sop_template', 'id'))),
-        new JoinClause('LEFT', 'sop_template_task', new BinaryExpression(new ColumnExpression('sop_template_template_task', 'taskId'), '=', new ColumnExpression('sop_template_task', 'id')))
+      $select: new ResultColumn(new ColumnExpression(templateTaskTable, 'id')),
+      $from: new FromTable(selectedTemplateTable,
+        new JoinClause('LEFT', templateTable, new AndExpressions([
+          new BinaryExpression(new ColumnExpression(selectedTemplateTable, 'templateId'), '=', new ColumnExpression(templateTable, 'id')),
+          new IsNullExpression(new ColumnExpression(templateTable, 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression(templateTable, 'deletedBy'), false)
+        ])),
+        new JoinClause('LEFT', templateTemplateTaskTable, new AndExpressions([
+          new BinaryExpression(new ColumnExpression(templateTemplateTaskTable, 'templateId'), '=', new ColumnExpression(templateTable, 'id')),
+          new IsNullExpression(new ColumnExpression(templateTemplateTaskTable, 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression(templateTemplateTaskTable, 'deletedBy'), false)
+        ])),
+        new JoinClause('LEFT', templateTaskTable, new AndExpressions([
+          new BinaryExpression(new ColumnExpression(templateTemplateTaskTable, 'taskId'), '=', new ColumnExpression(templateTaskTable, 'id')),
+          new IsNullExpression(new ColumnExpression(templateTaskTable, 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression(templateTaskTable, 'deletedBy'), false)
+        ]))
       ),
       $where: [
-        new BinaryExpression(new ColumnExpression('sop_selected_template', 'tableName'), '=', columnExpressions['tableName']),
-        new BinaryExpression(new ColumnExpression('sop_selected_template', 'primaryKey'), '=', columnExpressions['primaryKey']),
+        new BinaryExpression(new ColumnExpression(selectedTemplateTable, 'tableName'), '=', columnExpressions['tableName']),
+        new BinaryExpression(new ColumnExpression(selectedTemplateTable, 'primaryKey'), '=', columnExpressions['primaryKey']),
+        new IsNullExpression(new ColumnExpression(selectedTemplateTable, 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression(selectedTemplateTable, 'deletedBy'), false)
       ]
     }))
   ]
