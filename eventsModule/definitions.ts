@@ -7,6 +7,7 @@ export default {
   // BASE EVENT
   test: [{ handlerName: 'test' }], // create alert from entity
   create_related_party: [{ handlerName: 'create_related_party' }], // create related party record
+  create_related_person: [{ handlerName: 'create_related_person' }], // create related party record
   // create related person
   create_tracking: [{ handlerName: 'create_tracking' }], // create tracking from entity
   create_location: [{ handlerName: 'create_location' }], // create tracking from entity
@@ -131,18 +132,20 @@ export default {
       condition: true,
       eventName: 'create_related_party',
       otherParameters: {
-        partyLodash: 'bookingParty',
-        fixedParty: ['shipper', 'consignee', 'forwarder', 'agent', 'notifyParty']
+        primaryKey : (eventData: EventData<Booking>) => {
+          return eventData.latestEntity.id
+        },
+        tableName: 'booking'
       }
     },
     // create related person
     {
       eventName: 'create_related_person',
       otherParameters: {
-        partyGroupCode : (eventData: EventData<Shipment>) => {
+        partyGroupCode : (eventData: EventData<Booking>) => {
           return eventData.latestEntity.partyGroupCode
         },
-        primaryKey : (eventData: EventData<Shipment>) => {
+        primaryKey : (eventData: EventData<Booking>) => {
           return eventData.latestEntity.id
         },
         tableName: 'booking',
@@ -226,8 +229,10 @@ export default {
       condition: true,
       eventName: 'create_related_party',
       otherParameters: {
-        partyLodash: 'bookingParty',
-        fixedParty: ['shipper', 'consignee', 'forwarder', 'agent', 'notifyParty']
+        primaryKey : (eventData: EventData<Booking>) => {
+          return eventData.latestEntity.id
+        },
+        tableName: 'booking'
       }
     },
     // create related person
@@ -315,8 +320,10 @@ export default {
       condition: true,
       eventName: 'create_related_party',
       otherParameters: {
-        partyLodash: 'shipmentParty',
-        fixedParty: ['shipper', 'consignee', 'office', 'agent', 'roAgent', 'linerAgent', 'controllingCustomer']
+        primaryKey : (eventData: EventData<Booking>) => {
+          return eventData.latestEntity.id
+        },
+        tableName: 'shipment'
       }
     },
     // create related person
@@ -390,8 +397,10 @@ export default {
       condition: true,
       eventName: 'create_related_party',
       otherParameters: {
-        partyLodash: 'shipmentParty',
-        fixedParty: ['shipper', 'consignee', 'office', 'agent', 'roAgent', 'linerAgent', 'controllingCustomer']
+        primaryKey : (eventData: EventData<Booking>) => {
+          return eventData.latestEntity.id
+        },
+        tableName: 'shipment'
       }
     },
     // create related person

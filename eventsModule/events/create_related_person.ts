@@ -1,6 +1,6 @@
 import { EventService, EventHandlerConfig, EventData, EventAllService } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
-import { Transaction } from 'sequelize'
+import { Transaction, Op } from 'sequelize'
 import _ = require('lodash')
 import { RelatedParty } from 'models/main/relatedParty'
 import BaseEventHandler from 'modules/events/baseEventHandler'
@@ -19,7 +19,7 @@ interface InviteForm {
   partyId: (string|number)[]
 }
 
-export default class CreateRelatedPartyEvent extends BaseEventHandler {
+export default class CreateRelatedPersonEvent extends BaseEventHandler {
   constructor(
     protected  eventDataList: EventData<any>[],
     protected readonly eventHandlerConfig: EventHandlerConfig,
@@ -83,16 +83,22 @@ export default class CreateRelatedPartyEvent extends BaseEventHandler {
     ) => {
       if (selectedPartyGroup.find(code => code === partyGroupCode)) {
         const partyTable = _.get(latestEntity, `${tableName}Party`, {})
-        const partyId = _.get(partyTable, `${tableName}PartyId`, null)
         const partyTableFlexData = _.get(partyTable, `flexData`, {})
         for (const key of this.getFixedKeyByTableName(tableName)) {
-          const mainContactName = _.get(partyTable, `${key}PartyContactName`, null)
-          const mainContactEmail = _.get(partyTable, `${key}PartyContactEmail`, null)
-          invitation = this.updateInviteForm(invitation, mainContactEmail, mainContactName, partyId, tableName, primaryKey)
-          const otherContacts = _.get(partyTable, `${key}PartyContacts`, [])
-          if (otherContacts && otherContacts.length) {
-            for (const { Name, Email } of otherContacts) {
-              invitation = this.updateInviteForm(invitation, Email, Name, partyId, tableName, primaryKey)
+          const partyId = _.get(partyTable, `${key}PartyId`, null)
+          if (partyId) {
+            const mainContactName = _.get(partyTable, `${key}PartyContactName`, null)
+            const mainContactEmail = _.get(partyTable, `${key}PartyContactEmail`, null)
+            if (mainContactEmail) {
+              invitation = this.updateInviteForm(invitation, mainContactEmail, mainContactName, partyId, tableName, primaryKey)
+            }
+            const otherContacts = _.get(partyTable, `${key}PartyContacts`, [])
+            if (otherContacts && otherContacts.length) {
+              for (const { Name, Email } of otherContacts) {
+                if (Email) {
+                  invitation = this.updateInviteForm(invitation, Email, Name, partyId, tableName, primaryKey)
+                }
+              }
             }
           }
         }
@@ -100,13 +106,20 @@ export default class CreateRelatedPartyEvent extends BaseEventHandler {
           const morePartyKeys = _.get(partyTableFlexData, 'moreParty', [])
           if (morePartyKeys && morePartyKeys.length) {
             for (const morePartyKey of morePartyKeys) {
-              const mainContactName = _.get(partyTableFlexData, `${morePartyKey}PartyContactName`, null)
-              const mainContactEmail = _.get(partyTableFlexData, `${morePartyKey}PartyContactEmail`, null)
-              invitation = this.updateInviteForm(invitation, mainContactEmail, mainContactName, partyId, tableName, primaryKey)
-              const otherContacts = _.get(partyTableFlexData, `${morePartyKey}PartyContacts`, [])
-              if (otherContacts && otherContacts.length) {
-                for (const { Name, Email } of otherContacts) {
-                  invitation = this.updateInviteForm(invitation, Email, Name, partyId, tableName, primaryKey)
+              const partyId = _.get(partyTable, `${morePartyKey}PartyId`, null)
+              if (partyId) {
+                const mainContactName = _.get(partyTableFlexData, `${morePartyKey}PartyContactName`, null)
+                const mainContactEmail = _.get(partyTableFlexData, `${morePartyKey}PartyContactEmail`, null)
+                if (mainContactEmail) {
+                  invitation = this.updateInviteForm(invitation, mainContactEmail, mainContactName, partyId, tableName, primaryKey)
+                }
+                const otherContacts = _.get(partyTableFlexData, `${morePartyKey}PartyContacts`, [])
+                if (otherContacts && otherContacts.length) {
+                  for (const { Name, Email } of otherContacts) {
+                    if (Email) {
+                      invitation = this.updateInviteForm(invitation, Email, Name, partyId, tableName, primaryKey)
+                    }
+                  }
                 }
               }
             }
@@ -121,15 +134,27 @@ export default class CreateRelatedPartyEvent extends BaseEventHandler {
     console.debug('Start Excecute [Create Related Person]...', this.constructor.name)
     try {
       const invitations: InviteForm[] = this.getInvitationDataFromEntity(eventDataList)
+
       if (invitations && invitations.length) {
-        this.allService.invitationTableService.bulkEntityCreateInvitation(
-          invitations.map(i => ({
-            tableName: i.tableName,
-            entityId: i.entityId,
-            person: i.person as Person,
-            partyId: i.partyId,
-            partyType: []
-          })),
+        const userNameList = invitations.map(i => i.person.userName)
+        const people = await this.allService.personTableService.find({
+          where: { userName: { [Op.in]: userNameList } }
+        })
+        const doit = invitations.reduce((selected: any[], invitation: InviteForm) => {
+          if (!people.find(person => person.userName === invitation.person.userName)) {
+            selected.push({
+              tableName: invitation.tableName,
+              entityId: invitation.entityId,
+              person: invitation.person,
+              partyId: invitation.partyId,
+              partyType: []
+            })
+          }
+          return selected
+        }, [])
+        await this.allService.invitationTableService.bulkEntityCreateInvitation(
+          doit,
+          'sent',
           this.user,
           this.transaction
         )

@@ -34,21 +34,6 @@
           "chargeableWeight", "weightUnit", "teu", "cbm", "container20",
           "container40", "containerHQ", "containerOthers"
         ],
-        "afterSaveAction": [{
-          "type": "contextFunction",
-          "otherParams": {
-            "func": "invite"
-          }
-        }],
-        "afterImportAction": {
-          "shipmentInvite": [{
-            "type": "contextFunction",
-            "otherParams": {
-              "func": "invite"
-            }
-          }],
-          "z": []
-        },
         "importPrimaryKey": "houseNo",
         "modeFunction": [
           "const modes = ['detail', 'import', 'edit'];",
