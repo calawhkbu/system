@@ -43,7 +43,7 @@ const ASWAlertConfigList = [
         arrivalDateActualIsNull: true,
 
         // after arrivalDateActual + 1 day
-        after_arrivalDateActualInUtc: {
+        after_arrivalDateEstimatedInUtc: {
           value: {
             value: 1,
             unit: 'DAY'
@@ -101,7 +101,7 @@ const ASWAlertConfigList = [
         arrivalDateActualIsNull: true,
 
         // after arrivalDateActual + 1 day
-        after_arrivalDateActualInUtc: {
+        after_arrivalDateEstimatedInUtc: {
           value: {
             value: 1,
             unit: 'HOUR'
@@ -157,7 +157,7 @@ const ASWAlertConfigList = [
         // missing sendAMSDateActual
         sendAMSDateActualIsNull: true,
 
-        // after arrivalDateActual + 1 day
+        // after_arrivalDateEstimatedInUtc + 1 day
         after_arrivalDateActualInUtc: {
           value: {
             value: 1,
@@ -214,8 +214,8 @@ const ASWAlertConfigList = [
         // missing sendAMSDateActual
         sendAMSDateActualIsNull: true,
 
-        // after arrivalDateActual + 1 day
-        after_arrivalDateActualInUtc: {
+        // after_arrivalDateEstimatedInUtc + 1 day
+        after_arrivalDateEstimatedInUtc: {
           value: {
             value: 1,
             unit: 'DAY'
