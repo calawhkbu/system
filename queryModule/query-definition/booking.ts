@@ -1629,9 +1629,9 @@ query.field('noOfOutstandingTasks', params => {
   if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
   if (params.subqueries.sop_today) subqueries.today = params.subqueries.sop_today
   if (params.subqueries.sop_date) subqueries.date = params.subqueries.sop_date
-  if (params.subqueries.hideDone) subqueries.hideDone = params.subqueries.hideDone
-  if (params.subqueries.hideClosed) subqueries.hideClosed = params.subqueries.hideClosed
-  if (params.subqueries.hideDeleted) subqueries.hideDeleted = params.subqueries.hideDeleted
+  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
+  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
+  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
   const query = sopQuery.apply({
     fields: ['count'],
     subqueries
@@ -1656,9 +1656,9 @@ query.subquery('myTasksOnly', (value, params) => {
     date: params.subqueries.sop_date
   }
   if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
-  if (params.subqueries.hideDone) subqueries.hideDone = params.subqueries.hideDone
-  if (params.subqueries.hideClosed) subqueries.hideClosed = params.subqueries.hideClosed
-  if (params.subqueries.hideDeleted) subqueries.hideDeleted = params.subqueries.hideDeleted
+  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
+  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
+  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
   const query = sopQuery.apply({
     distinct: true,
     fields: ['id'],
