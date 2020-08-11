@@ -6,8 +6,10 @@ const templateTable = 'sop_template'
 const columns = [
   [templateTable, 'partyGroupCode'],  // @field partyGroupCode
   [templateTable, 'category'],  // @field category
-  [templateTable, 'tableName']  ,// @field tableName
-  [templateTable, 'group']  // @field group
+  [templateTable, 'tableName'], // @field tableName
+  [templateTable, 'group'], // @field group
+  [templateTable, 'deletedAt'], // @field deletedAt
+  [templateTable, 'deletedBy']  // @field deletedBy
 ]
 
 const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r, [table, name, as = name]) => {
@@ -77,6 +79,19 @@ query.subquery('category', {
 query.subquery('q', {
   $where: new RegexpExpression(columnExpressions['group'], false, new Unknown())
 }).register('value', 0)
+
+
+
+
+
+// @subquery notDeleted
+// hide deleted
+query.subquery('notDeleted', {
+  $where: [
+    new IsNullExpression(columnExpressions['deletedAt'], false),
+    new IsNullExpression(columnExpressions['deletedBy'], false)
+  ]
+})
 
 
 

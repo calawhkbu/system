@@ -11,7 +11,9 @@ const columns = [
   [templateTaskTable, 'system'],  // @field system
   [templateTaskTable, 'category'],  // @field category
   [templateTaskTable, 'name'],  // @field name
-  [templateTaskTable, 'description']  // @field description
+  [templateTaskTable, 'description'], // @field description
+  [templateTaskTable, 'deletedAt'], // @field deletedAt
+  [templateTaskTable, 'deletedBy']  // @field deletedBy
 ]
 
 const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r, [table, name, as = name]) => {
@@ -44,7 +46,9 @@ query.subquery('notExistsIn', {
     $where: new AndExpressions([
       new BinaryExpression(new ColumnExpression(taskTable, 'taskId'), '=', columnExpressions['id']),
       new BinaryExpression(new ColumnExpression(taskTable, 'tableName'), '=', new Unknown()),
-      new BinaryExpression(new ColumnExpression(taskTable, 'primaryKey'), '=', new Unknown())
+      new BinaryExpression(new ColumnExpression(taskTable, 'primaryKey'), '=', new Unknown()),
+      new IsNullExpression(new ColumnExpression(taskTable, 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression(taskTable, 'deletedBy'), false)
     ])
   }), true)
 }).register('tableName', 0).register('primaryKey', 0)
@@ -63,6 +67,19 @@ query.subquery('q', {
     new RegexpExpression(columnExpressions['description'], false, new Unknown()),
   ])
 }).register('value', 0).register('value', 1).register('value', 2).register('value', 3).register('value', 4)
+
+
+
+
+
+// @subquery notDeleted
+// hide deleted
+query.subquery('notDeleted', {
+  $where: [
+    new IsNullExpression(columnExpressions['deletedAt'], false),
+    new IsNullExpression(columnExpressions['deletedBy'], false)
+  ]
+})
 
 
 

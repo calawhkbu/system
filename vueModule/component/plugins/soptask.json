@@ -76,6 +76,9 @@
       },
       "Dead": {
         "backgroundColor": "#ffcccb"
+      },
+      "Deleted": {
+        "opacity": 0.2
       }
     }
   }

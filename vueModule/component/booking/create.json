@@ -451,54 +451,6 @@
                   "containerComponentProps": {
                     "class": "padding-topbottom-8 padding-leftright-4"
                   },
-                  "label": "BookingPage.preferredCarrier",
-                  "name": "carrier",
-                  "component": "AsyncAutoSuggest",
-                  "class": "xs-12 md-3 padding-topbottom-4",
-                  "relation": "carrier",
-                  "more": [{
-                    "name": "carrierCode",
-                    "selector": "code"
-                  }],
-                  "props": {
-                    "searchValueParams": {
-                      "method": "POST",
-                      "url": "api/code/query/code_master",
-                      "data": {
-                        "subqueries": {
-                          "codeType": {
-                            "value": "CARRIER"
-                          },
-                          "code": {
-                            "value": "{{context.autoSuggestModel}}"
-                          }
-                        }
-                      }
-                    },
-                    "searchTextParams": {
-                      "method": "POST",
-                      "url": "api/code/query/code_master",
-                      "data": {
-                        "subqueries": {
-                          "codeType": {
-                            "value": "CARRIER"
-                          },
-                          "q": {
-                            "value": "{{context.search}}"
-                          }
-                        },
-                        "limit": 5
-                      }
-                    },
-                    "item-text": "name",
-                    "item-value": "code"
-                  }
-                },
-                {
-                  "containerComponent": "v-card",
-                  "containerComponentProps": {
-                    "class": "padding-topbottom-8 padding-leftright-4"
-                  },
                   "label": "BookingPage.poNo",
                   "name": "flexData.poNo",
                   "component": "v-text-field",
@@ -598,6 +550,64 @@
                     "item-value": "code",
                     "showValue": false
                   }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.preferredCarrier",
+                  "name": "carrier",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-6 padding-topbottom-4",
+                  "relation": "carrier",
+                  "more": [{
+                    "name": "carrierCode",
+                    "selector": "code"
+                  }],
+                  "props": {
+                    "searchValueParams": {
+                      "method": "POST",
+                      "url": "api/code/query/code_master",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "CARRIER"
+                          },
+                          "code": {
+                            "value": "{{context.autoSuggestModel}}"
+                          }
+                        }
+                      }
+                    },
+                    "searchTextParams": {
+                      "method": "POST",
+                      "url": "api/code/query/code_master",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "CARRIER"
+                          },
+                          "q": {
+                            "value": "{{context.search}}"
+                          }
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "code"
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.contractNo",
+                  "name": "flexData.contractNo",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-6"
                 },
                 {
                   "containerComponent": "v-card",

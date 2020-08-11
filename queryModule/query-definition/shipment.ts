@@ -29,6 +29,7 @@ import {
 import { IQueryParams } from 'classes/query'
 import { ExpressionHelperInterface, registerAll, SummaryField, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
 import { hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression } from 'utils/sop-task'
+import sopQuery from './sop_task'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -3370,6 +3371,59 @@ query.subquery('hasDeadTasks', {
 // return shipments without dead tasks
 query.subquery('noDeadTasks', {
   $where: new ExistsExpression(deadTasksQuery, true)
+})
+
+// @field noOfOutstandingTasks
+query.field('noOfOutstandingTasks', params => {
+  let subqueries: any = { tableName: { value: 'shipment' } }
+  if (params.subqueries.sop_user) subqueries.user = params.subqueries.sop_user
+  if (params.subqueries.sop_partyGroupCode) subqueries.partyGroupCode = params.subqueries.sop_partyGroupCode
+  if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
+  if (params.subqueries.sop_today) subqueries.today = params.subqueries.sop_today
+  if (params.subqueries.sop_date) subqueries.date = params.subqueries.sop_date
+  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
+  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
+  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
+  const query = sopQuery.apply({
+    fields: ['count'],
+    subqueries
+  })
+  const $where = query.$where as AndExpressions
+  $where.expressions.push(
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id'))
+  )
+  return {
+    $select: new ResultColumn(new QueryExpression(query), 'noOfOutstandingTasks')
+  }
+})
+
+// @subquery myTasksOnly
+query.subquery('myTasksOnly', (value, params) => {
+  let subqueries: any = {
+    tableName: { value: 'shipment' },
+    user: params.subqueries.sop_user,
+    partyGroupCode: params.subqueries.sop_partyGroupCode,
+    today: params.subqueries.sop_today,
+    date: params.subqueries.sop_date
+  }
+  if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
+  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
+  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
+  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
+  const query = sopQuery.apply({
+    distinct: true,
+    fields: ['id'],
+    subqueries
+  })
+  const $where = query.$where as AndExpressions
+  $where.expressions.push(
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id'))
+  )
+  return {
+    $where: new ExistsExpression(query, false)
+  }
 })
 
 export default query
