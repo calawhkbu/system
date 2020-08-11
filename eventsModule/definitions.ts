@@ -7,6 +7,7 @@ export default {
   // BASE EVENT
   test: [{ handlerName: 'test' }], // create alert from entity
   create_related_party: [{ handlerName: 'create_related_party' }], // create related party record
+  create_related_person: [{ handlerName: 'create_related_person' }], // create related party record
   // create related person
   create_tracking: [{ handlerName: 'create_tracking' }], // create tracking from entity
   create_location: [{ handlerName: 'create_location' }], // create tracking from entity
@@ -75,7 +76,6 @@ export default {
   ],
   // booking
   afterCreate_booking: [
-    // send notify
     // create tracking
     {
       condition: true,
@@ -127,25 +127,52 @@ export default {
         outboundName: 'erp-booking'
       }
     },
-    // fill shipping order
     // create related party
     {
       condition: true,
       eventName: 'create_related_party',
       otherParameters: {
-        partyLodash: 'bookingParty',
-        fixedParty: ['shipper', 'consignee', 'forwarder', 'agent', 'notifyParty']
+        primaryKey : (eventData: EventData<Booking>) => {
+          return eventData.latestEntity.id
+        },
+        tableName: 'booking'
       }
     },
     // create related person
-    // create location
     {
-      condition: true,
-      eventName: 'create_location'
+      eventName: 'create_related_person',
+      otherParameters: {
+        partyGroupCode : (eventData: EventData<Booking>) => {
+          return eventData.latestEntity.partyGroupCode
+        },
+        primaryKey : (eventData: EventData<Booking>) => {
+          return eventData.latestEntity.id
+        },
+        tableName: 'booking',
+        selectedPartyGroup: ['DEV', 'STD']
+      },
+      afterEvent: [
+        {// resend alert
+          condition: true,
+          eventName: 'resend_alert',
+          otherParameters : {
+
+            partyGroupCode : (eventData: EventData<Shipment>) => {
+              return eventData.latestEntity.partyGroupCode
+            },
+
+            tableName: 'booking',
+
+            primaryKey : (eventData: EventData<Shipment>) => {
+              return eventData.latestEntity.id
+            }
+          }
+        }
+      ]
     },
+    // fill shipping order
   ],
   afterUpdate_booking: [
-    // send notify
     // create booking tracking
     {
       condition: true,
@@ -197,39 +224,47 @@ export default {
         outboundName: 'erp-booking'
       }
     },
-    // fill shipping order
     // create related party
     {
       condition: true,
       eventName: 'create_related_party',
       otherParameters: {
-        partyLodash: 'bookingParty',
-        fixedParty: ['shipper', 'consignee', 'forwarder', 'agent', 'notifyParty']
+        primaryKey : (eventData: EventData<Booking>) => {
+          return eventData.latestEntity.id
+        },
+        tableName: 'booking'
       }
     },
     // create related person
-    // create location
     {
-      condition: true,
-      eventName: 'create_location'
-    },
-
-    {
-      condition: true,
-      eventName: 'resend_alert',
-      otherParameters : {
-
-        partyGroupCode : (eventData: EventData<Booking>) => {
+      eventName: 'create_related_person',
+      otherParameters: {
+        partyGroupCode : (eventData: EventData<Shipment>) => {
           return eventData.latestEntity.partyGroupCode
         },
-
-        tableName: 'booking',
-
-        primaryKey : (eventData: EventData<Booking>) => {
+        primaryKey : (eventData: EventData<Shipment>) => {
           return eventData.latestEntity.id
+        },
+        tableName: 'booking',
+        selectedPartyGroup: ['DEV', 'STD']
+      },
+      afterEvent: [
+        {// resend alert
+          condition: true,
+          eventName: 'resend_alert',
+          otherParameters : {
+            partyGroupCode : (eventData: EventData<Shipment>) => {
+              return eventData.latestEntity.partyGroupCode
+            },
+            primaryKey : (eventData: EventData<Shipment>) => {
+              return eventData.latestEntity.id
+            },
+            tableName: 'shipment',
+          }
         }
-      }
-    }
+      ]
+    },
+    // fill shipping order
   ],
   // documents
   afterCreate_document: [
@@ -240,21 +275,6 @@ export default {
     // update perview
     { eventName: 'update_document_preview' },
   ],
-  // location
-  afterCreate_location: [{
-    condition: true,
-    eventName: 'send_data_to_external',
-    otherParameters: {
-      outboundName: 'crm-location'
-    }
-  }],
-  afterUpdate_location: [{
-    condition: true,
-    eventName: 'send_data_to_external',
-    otherParameters: {
-      outboundName: 'crm-location'
-    }
-  }],
   // purchase-order
   'afterCreate_purchase-order': [],
   'afterUpdate_purchase-order': [],
@@ -300,83 +320,117 @@ export default {
       condition: true,
       eventName: 'create_related_party',
       otherParameters: {
-        partyLodash: 'shipmentParty',
-        fixedParty: ['shipper', 'consignee', 'office', 'agent', 'roAgent', 'linerAgent', 'controllingCustomer']
+        primaryKey : (eventData: EventData<Booking>) => {
+          return eventData.latestEntity.id
+        },
+        tableName: 'shipment'
       }
     },
     // create related person
-    // create location
     {
-      condition: true,
-      eventName: 'create_location'
-    },
-  ],
-  afterUpdate_shipment: [
-    // create tracking
-    // {
-    //   condition: true,
-    //   eventName: 'create_tracking',
-    //   otherParameters: {
-    //     tableName: 'shipment',
-    //     loadashMapping: {
-    //       isTracking: 'tracking',
-    //       moduleTypeCode: 'moduleTypeCode',
-    //       carrierCode: 'carrierCode',
-    //       departureDateEstimated: 'shipmentDate.departureDateEstimated',
-    //       masterNo: ({ masterNo }: any) => {
-    //         return masterNo
-    //       },
-    //       soNo: ({ shipmentContainers = [] }: any) => {
-    //         console.log(shipmentContainers, 'here')
-    //         return shipmentContainers.reduce((nos: string[], { carrierBookingNo }: any) => {
-    //           if (carrierBookingNo) {
-    //             nos.push(carrierBookingNo)
-    //           }
-    //           return nos
-    //         }, [])
-    //       },
-    //       containerNo: ({ shipmentContainers = [] }: any) => {
-    //         console.log(shipmentContainers, 'here')
-    //         return shipmentContainers.reduce((nos: string[], { containerNo }: any) => {
-    //           if (containerNo) {
-    //             nos.push(containerNo)
-    //           }
-    //           return nos
-    //         }, [])
-    //       }
-    //     }
-    //   }
-    // },
-    // // create related party
-    // {
-    //   condition: true,
-    //   eventName: 'create_related_party',
-    //   otherParameters: {
-    //     partyLodash: 'shipmentParty',
-    //     fixedParty: ['shipper', 'consignee', 'office', 'agent', 'roAgent', 'linerAgent', 'controllingCustomer']
-    //   }
-    // },
-    // create related person
-    // create location
-    {
-      condition: true,
-      eventName: 'create_location'
-    },
-    {
-      condition: true,
-      eventName: 'resend_alert',
-      otherParameters : {
-
+      eventName: 'create_related_person',
+      otherParameters: {
         partyGroupCode : (eventData: EventData<Shipment>) => {
           return eventData.latestEntity.partyGroupCode
         },
-
-        tableName: 'shipment',
-
         primaryKey : (eventData: EventData<Shipment>) => {
           return eventData.latestEntity.id
+        },
+        tableName: 'shipment',
+        selectedPartyGroup: ['DEV', 'STD']
+      },
+      afterEvent: [
+        {// resend alert
+          condition: true,
+          eventName: 'resend_alert',
+          otherParameters : {
+            partyGroupCode : (eventData: EventData<Shipment>) => {
+              return eventData.latestEntity.partyGroupCode
+            },
+            primaryKey : (eventData: EventData<Shipment>) => {
+              return eventData.latestEntity.id
+            },
+            tableName: 'shipment',
+          }
+        }
+      ]
+    }
+  ],
+  afterUpdate_shipment: [
+    // create tracking
+    {
+      condition: true,
+      eventName: 'create_tracking',
+      otherParameters: {
+        tableName: 'shipment',
+        loadashMapping: {
+          isTracking: 'tracking',
+          moduleTypeCode: 'moduleTypeCode',
+          carrierCode: 'carrierCode',
+          departureDateEstimated: 'shipmentDate.departureDateEstimated',
+          masterNo: ({ masterNo }: any) => {
+            return masterNo
+          },
+          soNo: ({ shipmentContainers = [] }: any) => {
+            console.log(shipmentContainers, 'here')
+            return shipmentContainers.reduce((nos: string[], { carrierBookingNo }: any) => {
+              if (carrierBookingNo) {
+                nos.push(carrierBookingNo)
+              }
+              return nos
+            }, [])
+          },
+          containerNo: ({ shipmentContainers = [] }: any) => {
+            console.log(shipmentContainers, 'here')
+            return shipmentContainers.reduce((nos: string[], { containerNo }: any) => {
+              if (containerNo) {
+                nos.push(containerNo)
+              }
+              return nos
+            }, [])
+          }
         }
       }
+    },
+    // create related party
+    {
+      condition: true,
+      eventName: 'create_related_party',
+      otherParameters: {
+        primaryKey : (eventData: EventData<Booking>) => {
+          return eventData.latestEntity.id
+        },
+        tableName: 'shipment'
+      }
+    },
+    // create related person
+    {
+      eventName: 'create_related_person',
+      otherParameters: {
+        partyGroupCode : (eventData: EventData<Shipment>) => {
+          return eventData.latestEntity.partyGroupCode
+        },
+        primaryKey : (eventData: EventData<Shipment>) => {
+          return eventData.latestEntity.id
+        },
+        tableName: 'shipment',
+        selectedPartyGroup: ['DEV', 'STD']
+      },
+      afterEvent: [
+        {// resend alert
+          condition: true,
+          eventName: 'resend_alert',
+          otherParameters : {
+            partyGroupCode : (eventData: EventData<Shipment>) => {
+              return eventData.latestEntity.partyGroupCode
+            },
+            tableName: 'shipment',
+            primaryKey : (eventData: EventData<Shipment>) => {
+              return eventData.latestEntity.id
+            }
+          }
+        }
+      ]
     }
   ],
   // shipment
