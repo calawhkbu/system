@@ -18,5 +18,23 @@ export default {
     `,
     limit: 10,
     charLimit: 50
+  },
+  booking: {
+    title: ['bookingNo'],
+    fields: [
+      new ResultColumn(new ColumnExpression('booking', '*')),
+      'shipperPartyName',
+      'consigneePartyName',
+      'roAgentPartyName',
+      'linerAgentPartyName',
+      'forwarderPartyName',
+      'controllingCustomerPartyName',
+      'agentPartyName',
+    ],
+    subTitle: `
+    <div>{{entity.portOfLoadingName}} => {{entity.portOfDischargeName}} / {{entity.shipperPartyName}} / {{entity.consigneePartyName}} / {{entity.agentPartyName}} </div>
+    `,
+    limit: 10,
+    charLimit: 50
   }
 }
