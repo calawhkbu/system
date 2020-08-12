@@ -3,6 +3,7 @@ import { IQueryParams } from 'classes/query'
 import Moment = require('moment')
 import { OrderBy } from 'node-jql'
 import { BadRequestException } from '@nestjs/common'
+import { expandGroupEntity, calculateLastCurrent } from 'utils/card'
 
 interface Result {
   moment: typeof Moment
@@ -21,68 +22,68 @@ export default {
         const moment = prevResult.moment = (await this.preparePackages(user)).moment
         const subqueries = params.subqueries = params.subqueries || {}
 
-        function calculateLastCurrent(lastCurrentUnit: string) {
-          if (!subqueries.date || !(subqueries.date !== true && 'from' in subqueries.date)) {
-            throw new BadRequestException('MISSING_DATE')
-          }
+        // function calculateLastCurrent(lastCurrentUnit: string) {
+        //   if (!subqueries.date || !(subqueries.date !== true && 'from' in subqueries.date)) {
+        //     throw new BadRequestException('MISSING_DATE')
+        //   }
 
-          const from = subqueries.date.from
-          const currentYear = moment(from).year()
-          const currentQuarter = moment(from).quarter()
-          const currentMonth = moment(from).month()
-          const currentWeek = moment(from).week()
+        //   const from = subqueries.date.from
+        //   const currentYear = moment(from).year()
+        //   const currentQuarter = moment(from).quarter()
+        //   const currentMonth = moment(from).month()
+        //   const currentWeek = moment(from).week()
 
-          let lastFrom, lastTo, currentFrom, currentTo
-          if (lastCurrentUnit === 'year') {
-            lastFrom = moment(from).year(currentYear - 1).startOf('year').format('YYYY-MM-DD')
-            lastTo = moment(from).year(currentYear - 1).endOf('year').format('YYYY-MM-DD')
-            currentFrom = moment(from).year(currentYear).startOf('year').format('YYYY-MM-DD')
-            currentTo = moment(from).year(currentYear).endOf('year').format('YYYY-MM-DD')
-          }
-          else if (lastCurrentUnit === 'quarter') {
-            // special case !!!
-            lastFrom = moment(from).quarter(currentQuarter).subtract(1, 'years').startOf('quarter').format('YYYY-MM-DD')
-            lastTo = moment(from).quarter(currentQuarter).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
-            currentFrom = moment(from).quarter(currentQuarter).startOf('quarter').format('YYYY-MM-DD')
-            currentTo = moment(from).quarter(currentQuarter).endOf('quarter').format('YYYY-MM-DD')
-          }
-          else if (lastCurrentUnit === 'month') {
-            // special case !!!
-            lastFrom = moment(from).month(currentMonth).subtract(1, 'years').startOf('month').format('YYYY-MM-DD')
-            lastTo = moment(from).month(currentMonth).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
-            currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
-            currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
-          }
-          else if (lastCurrentUnit === 'previousQuarter') {
-            lastFrom = moment(from).subtract(1, 'quarters').startOf('quarter').format('YYYY-MM-DD')
-            lastTo = moment(from).subtract(1, 'quarters').endOf('quarter').format('YYYY-MM-DD')
-            currentFrom = moment(from).quarter(currentQuarter).startOf('quarter').format('YYYY-MM-DD')
-            currentTo = moment(from).quarter(currentQuarter).endOf('quarter').format('YYYY-MM-DD')
-          }
-          else if (lastCurrentUnit === 'previousMonth') {
-            lastFrom = moment(from).subtract(1, 'months').startOf('month').format('YYYY-MM-DD')
-            lastTo = moment(from).subtract(1, 'months').endOf('month').format('YYYY-MM-DD')
-            currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
-            currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
-          }
-          else if (lastCurrentUnit === 'previousWeek') {
-            lastFrom = moment(from).subtract(1, 'weeks').startOf('week').format('YYYY-MM-DD')
-            lastTo = moment(from).subtract(1, 'weeks').endOf('week').format('YYYY-MM-DD')
-            currentFrom = moment(from).week(currentWeek).startOf('week').format('YYYY-MM-DD')
-            currentTo = moment(from).week(currentWeek).endOf('week').format('YYYY-MM-DD')
-          }
-          else if (lastCurrentUnit === 'previousDay') {
-            lastFrom = moment(from).subtract(1, 'days').startOf('day').format('YYYY-MM-DD')
-            lastTo = moment(from).subtract(1, 'days').endOf('day').format('YYYY-MM-DD')
-            currentFrom = moment(from).startOf('day').format('YYYY-MM-DD')
-            currentTo = moment(from).endOf('day').format('YYYY-MM-DD')
-          }
-          else {
-            throw new Error('INVALID_lastCurrentUnit')
-          }
+        //   let lastFrom, lastTo, currentFrom, currentTo
+        //   if (lastCurrentUnit === 'year') {
+        //     lastFrom = moment(from).year(currentYear - 1).startOf('year').format('YYYY-MM-DD')
+        //     lastTo = moment(from).year(currentYear - 1).endOf('year').format('YYYY-MM-DD')
+        //     currentFrom = moment(from).year(currentYear).startOf('year').format('YYYY-MM-DD')
+        //     currentTo = moment(from).year(currentYear).endOf('year').format('YYYY-MM-DD')
+        //   }
+        //   else if (lastCurrentUnit === 'quarter') {
+        //     // special case !!!
+        //     lastFrom = moment(from).quarter(currentQuarter).subtract(1, 'years').startOf('quarter').format('YYYY-MM-DD')
+        //     lastTo = moment(from).quarter(currentQuarter).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
+        //     currentFrom = moment(from).quarter(currentQuarter).startOf('quarter').format('YYYY-MM-DD')
+        //     currentTo = moment(from).quarter(currentQuarter).endOf('quarter').format('YYYY-MM-DD')
+        //   }
+        //   else if (lastCurrentUnit === 'month') {
+        //     // special case !!!
+        //     lastFrom = moment(from).month(currentMonth).subtract(1, 'years').startOf('month').format('YYYY-MM-DD')
+        //     lastTo = moment(from).month(currentMonth).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
+        //     currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
+        //     currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
+        //   }
+        //   else if (lastCurrentUnit === 'previousQuarter') {
+        //     lastFrom = moment(from).subtract(1, 'quarters').startOf('quarter').format('YYYY-MM-DD')
+        //     lastTo = moment(from).subtract(1, 'quarters').endOf('quarter').format('YYYY-MM-DD')
+        //     currentFrom = moment(from).quarter(currentQuarter).startOf('quarter').format('YYYY-MM-DD')
+        //     currentTo = moment(from).quarter(currentQuarter).endOf('quarter').format('YYYY-MM-DD')
+        //   }
+        //   else if (lastCurrentUnit === 'previousMonth') {
+        //     lastFrom = moment(from).subtract(1, 'months').startOf('month').format('YYYY-MM-DD')
+        //     lastTo = moment(from).subtract(1, 'months').endOf('month').format('YYYY-MM-DD')
+        //     currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
+        //     currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
+        //   }
+        //   else if (lastCurrentUnit === 'previousWeek') {
+        //     lastFrom = moment(from).subtract(1, 'weeks').startOf('week').format('YYYY-MM-DD')
+        //     lastTo = moment(from).subtract(1, 'weeks').endOf('week').format('YYYY-MM-DD')
+        //     currentFrom = moment(from).week(currentWeek).startOf('week').format('YYYY-MM-DD')
+        //     currentTo = moment(from).week(currentWeek).endOf('week').format('YYYY-MM-DD')
+        //   }
+        //   else if (lastCurrentUnit === 'previousDay') {
+        //     lastFrom = moment(from).subtract(1, 'days').startOf('day').format('YYYY-MM-DD')
+        //     lastTo = moment(from).subtract(1, 'days').endOf('day').format('YYYY-MM-DD')
+        //     currentFrom = moment(from).startOf('day').format('YYYY-MM-DD')
+        //     currentTo = moment(from).endOf('day').format('YYYY-MM-DD')
+        //   }
+        //   else {
+        //     throw new Error('INVALID_lastCurrentUnit')
+        //   }
 
-          return { lastFrom, lastTo, currentFrom, currentTo }
-        }
+        //   return { lastFrom, lastTo, currentFrom, currentTo }
+        // }
 
         function guessSortingExpression(sortingValue: string, subqueries) {
           const variablePart = sortingValue.substr(0, sortingValue.lastIndexOf('_'))
@@ -121,18 +122,26 @@ export default {
         // most important part of this card
         // dynamically choose the fields and summary value
 
-        const groupByEntity = prevResult.groupByEntity = (subqueries.groupByEntity as any).value // should be shipper/consignee/agent/controllingCustomer/carrier
-        const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-        const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
+        // const groupByEntity = prevResult.groupByEntity = (subqueries.groupByEntity as any).value // should be shipper/consignee/agent/controllingCustomer/carrier
+        // const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+        // const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
+        const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
+
+        prevResult.groupByEntity = groupByEntity
+        prevResult.codeColumnName = codeColumnName
+        prevResult.nameColumnName = nameColumnName
+
         const metric1 = (subqueries.metric1 as any).value // should be chargeableWeight/cbm/grossWeight/totalShipment
         const metric2 = (subqueries.metric2 as any).value // should be chargeableWeight/cbm/grossWeight/totalShipment
         const metricList = prevResult.metricList = [metric1, metric2]
         const metricFieldList = metricList.map(metric => `${metric}LastCurrent`)
 
         const topX = (subqueries.topX as any).value
-        const lastCurrentUnit = subqueries.lastCurrentUnit && subqueries.lastCurrentUnit !== true && 'value' in subqueries.lastCurrentUnit ? subqueries.lastCurrentUnit.value : '' // should be chargeableWeight/cbm/grossWeight/totalShipment
+        
+        // const lastCurrentUnit = subqueries.lastCurrentUnit && subqueries.lastCurrentUnit !== true && 'value' in subqueries.lastCurrentUnit ? subqueries.lastCurrentUnit.value : '' // should be chargeableWeight/cbm/grossWeight/totalShipment
+        
         // ------------------------------
-        const { lastFrom, lastTo, currentFrom, currentTo } = calculateLastCurrent(lastCurrentUnit)
+        const { lastFrom, lastTo, currentFrom, currentTo } = calculateLastCurrent(subqueries,moment)
 
         subqueries.date = {
           lastFrom,

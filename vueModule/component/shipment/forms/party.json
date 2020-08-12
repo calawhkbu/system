@@ -82,6 +82,9 @@
           "relationMore": [{
               "name": "shipmentParty.{{flex}}{{key}}PartyId",
               "selector": "id"
+            }, {
+              "name": "shipmentParty.{{flex}}{{key}}PartyCode",
+              "selector": "erpCode"
             },
             {
               "name": "shipmentParty.{{flex}}{{key}}PartyName",
@@ -179,7 +182,7 @@
               },
               "nameKey": "name",
               "api": {
-                "url": "api/party",
+                "url": "api/party/create",
                 "method": "POST",
                 "item-text": "name",
                 "item-value": "thirdPartyCode.erp"
@@ -189,6 +192,7 @@
                   "type": "{{key}}"
                 }]
               },
+              "keepParsedKey": ["name", {"from": "name", "to": "partyName"}, "erpCode"],
               "parseReturnValue": {
                 "contactPersonEmail": null,
                 "contactPersonId": null,
@@ -226,7 +230,7 @@
                 {
                   "label": "Widget.address",
                   "name": "address",
-                  "component": "v-textarea",
+                  "component": "AddressField",
                   "props": {
                     "auto-grow": true,
                     "rows": 5
@@ -355,9 +359,6 @@
                 "subqueries": {
                   "q": {
                     "value": "{{context.search}}"
-                  },
-                  "partyTypeIn": {
-                    "value": ["{{key}}"]
                   }
                 },
                 "limit": 5
@@ -372,6 +373,13 @@
           "name": "shipmentParty.{{flex}}{{key}}PartyContacts",
           "component": "TableField",
           "class": "xs-12",
+          "canEdit": [
+            "const value = extraFunction._.get(form, 'shipmentParty.{{flex}}{{key}}PartyId');",
+            "if (value) {",
+            "return true",
+            "}",
+            "return false"
+          ],
           "props": {
             "overrideRowIndex": 1,
             "fields": [{
@@ -398,7 +406,7 @@
         {
           "label": "Widget.address",
           "name": "shipmentParty.{{flex}}{{key}}PartyAddress",
-          "component": "v-textarea",
+          "component": "AddressField",
           "canEdit": [
             "if (extra.canFullEdit) {",
             "return true",
@@ -460,7 +468,6 @@
             "}",
             "return '{{flex}}'.length > 0"
           ],
-          "checkDisplayWhen": "return !readonly",
           "relation": "shipmentParty.{{flex}}{{key}}PartyStateCode",
           "relationMore": [{
             "name": "shipmentParty.{{flex}}{{key}}PartyStateCode",

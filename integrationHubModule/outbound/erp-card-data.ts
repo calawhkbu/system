@@ -1,10 +1,10 @@
-import { NotImplementedException, NotFoundException, BadRequestException } from '@nestjs/common'
-import axios from 'axios'
+import { NotImplementedException, BadRequestException } from '@nestjs/common'
 
 export default {
   constants: {
     getPostProcessFunc: null as Function,
     partyGroup: null as any,
+    subqueries: null as any,
     card: null as any,
     user: null as any,
     zyh: 0,
@@ -13,6 +13,8 @@ export default {
   getUrl: async({ id, partyGroup: { api } }: any, params: any, constants: any, helper: { [key: string]: Function }): Promise<string> => {
     if (!api.erp || !api.erp.url) throw new NotImplementedException('ERP_NOT_LINKED')
     if (!params.subqueries || !params.subqueries.type) throw new BadRequestException('MISSING_TYPE')
+    const { type, enableFiltering, ...subqueries } = params.subqueries
+    if (enableFiltering) constants.subqueries = subqueries
     const card = constants.card = await helper.getCard({
       method: 'POST',
       headers: {
@@ -39,10 +41,10 @@ export default {
   },
   responseHandler: async(
     response: { responseBody: any; responseOptions: any },
-    { card, getPostProcessFunc, partyGroup, user, zyh }: any,
+    { card, getPostProcessFunc, partyGroup, subqueries, user, zyh }: any,
     helper: { [key: string]: Function }
   ) => {
-    let responseBody = helper.parseData(response.responseBody, card)
+    let responseBody = helper.parseData(response.responseBody, card, subqueries)
 
     const postProcessFunc = await getPostProcessFunc(partyGroup.code, `erp-card-data/${zyh}`)
     responseBody = postProcessFunc(responseBody, card, user)

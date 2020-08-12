@@ -4,14 +4,17 @@
     "props": {
       "class": "xs-12 margin-topbottom-2",
       "layoutName": "plugins/document",
+      "loadWhenDataLoaded": true,
       "axiosBaseParams": [
-        "const primaryKey = context.$route.params.params;",
+        "const data = context.$store.state.widget.data;",
+        "const primaryKey = data.id;",
         "return {",
         "url: 'api/document/document/booking/{{primaryKey}}'.format({ primaryKey }),",
         "};"
       ],
       "uploadAxiosParams": [
-        "const primaryKey = encodeURIComponent(context.$route.params.params);",
+        "const data = context.$store.state.widget.data;",
+        "const primaryKey = data.id;",
         "return {",
         "method: 'POST',",
         "url: 'api/document/document/upload',",
@@ -23,7 +26,8 @@
         "};"
       ],
       "downloadAxiosParams": [
-        "const primaryKey = encodeURIComponent(context.$route.params.params);",
+        "const data = context.$store.state.widget.data;",
+        "const primaryKey = data.id;",
         "return {",
         "responseType: 'blob',",
         "method: 'POST',",
@@ -32,11 +36,25 @@
         "}"
       ],
       "deleteAxiosParams": [
-        "const primaryKey = encodeURIComponent(context.$route.params.params);",
+        "const data = context.$store.state.widget.data;",
+        "const primaryKey = data.id;",
         "return {",
         "method: 'POST',",
         "url: 'api/document/document/delete',",
         "data: {tableName: 'booking', primaryKey, fileName: swig.fileName}",
+        "}"
+      ],
+      "imageLoadAxiosParams": [
+        "const data = context.$store.state.widget.data;",
+        "const primaryKey = data.id;",
+        "return {",
+        "method: 'POST',",
+        "url: 'api/document/document/preview',",
+        "data: {",
+        "tableName: 'booking',",
+        "primaryKey,",
+        "fileName: swig.fileName",
+        "}",
         "}"
       ]
     }

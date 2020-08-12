@@ -1,6 +1,6 @@
 import moment = require('moment')
 import BluebirdPromise = require('bluebird')
-import { Transaction, Sequelize } from 'sequelize'
+import { Transaction, Sequelize, QueryTypes } from 'sequelize'
 
 import { EventService, EventHandlerConfig, EventData, EventAllService } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
@@ -11,12 +11,7 @@ import { ShipmentTableService } from 'modules/sequelize/services/table/shipment'
 
 import BaseEventHandler from 'modules/events/baseEventHandler'
 
-interface UseTrackingData {
-  trackingNo: string
-  tracking: Tracking
-}
-
-export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandler {
+export default class UpdateDataFromTrackingEvent extends BaseEventHandler {
   constructor(
     protected eventDataList: EventData<any>[],
     protected readonly eventHandlerConfig: EventHandlerConfig,
@@ -29,172 +24,222 @@ export default class UpdateShipmentDateFromTrackingEvent extends BaseEventHandle
     super(eventDataList, eventHandlerConfig, repo, eventService, allService, user, transaction)
   }
 
-  protected getAllTrackingData(eventDataList: EventData<Tracking>[]): UseTrackingData[] {
-    return (eventDataList || []).reduce((data: UseTrackingData[], { latestEntity }: EventData<Tracking>) => {
+  protected getOldTrackingData(eventDataList: EventData<Tracking>[]): Tracking[] {
+    return (eventDataList || []).reduce((data: Tracking[], { originalEntity }: EventData<Tracking>) => {
+      if (originalEntity) {
+        data.push(originalEntity)
+      }
+      return data
+    }, [])
+  }
+
+  protected getNewTrackingData(eventDataList: EventData<Tracking>[]): Tracking[] {
+    return (eventDataList || []).reduce((data: Tracking[], { latestEntity }: EventData<Tracking>) => {
       if (latestEntity) {
-        data.push({ trackingNo: latestEntity.trackingNo, tracking: latestEntity })
+        data.push(latestEntity)
       }
       return data
     }, [])
   }
 
   public async mainFunction(eventDataList: EventData<Tracking>[]) {
-    const start = Date.now()
-    const partyGroupCode = ['DEV', 'GGL', 'DT', 'STD', 'ECX', 'ASW', 'FHUB']
-
-    const { bookingTableService,shipmentTableService } = this.allService
-
-
-    const trackingDataList = this.getAllTrackingData(eventDataList)
-    if (trackingDataList && trackingDataList.length) {
-      const trackingNos = trackingDataList.map(trackingData => trackingData.trackingNo)
-      const shipmentIds = await shipmentTableService.query(
-        `
-          SELECT shipment.id, shipment.masterNo, shipment_container.carrierBookingNo, shipment_container.containerNo
-          FROM shipment
-          LEFT OUTER JOIN shipment_container on shipment_container.shipmentId = shipment.id
-          WHERE partyGroupCode in (:partyGroupCode)
-          AND (
-            masterNo in (:trackingNos)
-            OR shipment.id in (SELECT shipmentId FROM shipment_container WHERE carrierBookingNo in (:trackingNos) OR containerNo in (:trackingNos))
-          )
-        `,
-        {
-          type: Sequelize.QueryTypes.SELECT,
-          raw: true,
-          transaction: this.transaction,
-          replacements: { partyGroupCode, trackingNos }
-        }
-      )
-      if (shipmentIds && shipmentIds.length) {
-        await BluebirdPromise.map(
-          shipmentIds.reduce((querys: string[], { id, masterNo, carrierBookingNo, containerNo }) => {
-            const found = trackingDataList.find(t => t.trackingNo === masterNo || t.trackingNo === carrierBookingNo || t.trackingNo === containerNo)
-            if (found) {
-              const { trackingNo, tracking } = found
-              if (tracking.trackingStatus && tracking.trackingStatus.length  && !['ERR', 'CANF'].includes(tracking.lastStatusCode)) {
-                querys.push(`UPDATE shipment SET currentTrackingNo = "${trackingNo}" WHERE id = ${id} AND currentTrackingNo is null`)
-              }
-              if (tracking.estimatedDepartureDate) {
-                const date = moment.utc(tracking.estimatedDepartureDate).format('YYYY-MM-DD HH:mm:ss')
-                querys.push(`UPDATE shipment_date SET departureDateEstimated = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-              }
-              if (tracking.actualDepartureDate) {
-                const date = moment.utc(tracking.actualDepartureDate).format('YYYY-MM-DD HH:mm:ss')
-                querys.push(`UPDATE shipment_date SET departureDateActual = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-              }
-              if (tracking.estimatedArrivalDate) {
-                const date = moment.utc(tracking.estimatedArrivalDate).format('YYYY-MM-DD HH:mm:ss')
-                querys.push(`UPDATE shipment_date SET arrivalDateEstimated = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-              }
-              if (tracking.actualArrivalDate) {
-                const date = moment.utc(tracking.actualArrivalDate).format('YYYY-MM-DD HH:mm:ss')
-                querys.push(`UPDATE shipment_date SET arrivalDateActual = "${date}" WHERE shipmentId = ${id} and (arrivalDateActual is null or arrivalDateActual >= DATE_SUB("${date}", INTERVAL 45 day))`)
-              }
-              for (const { isEstimated, statusDate, statusCode } of tracking.trackingStatus || []) {
-                if (statusDate) {
-                  const date = moment.utc(statusDate).format('YYYY-MM-DD HH:mm:ss')
-                  if (statusCode === 'BKCF' || statusCode === 'BKD') {
-                    querys.push(`UPDATE shipment_date SET carrierConfirmationDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-                  } else if (statusCode === 'STSP') {
-                    querys.push(`UPDATE shipment_date SET sentToShipperDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-                  } else if (statusCode === 'GITM') {
-                    querys.push(`UPDATE shipment_date SET gateInDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-                  } else if (statusCode === 'LOBD' || statusCode === 'MNF') {
-                    querys.push(`UPDATE shipment_date SET loadOnboardDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-                  } else if (statusCode === 'RCS') {
-                    querys.push(`UPDATE shipment_date SET cargoReceiptDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-                  } else if (statusCode === 'STCS') {
-                    querys.push(`UPDATE shipment_date SET sentToConsigneeDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and emptyContainerReturnDateActual is null`)
-                  } else if (statusCode === 'DLV') {
-                    querys.push(`UPDATE shipment_date SET finalDoorDeliveryDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and emptyContainerReturnDateActual is null`)
-                  } else if (statusCode === 'RCVE') {
-                    querys.push(`UPDATE shipment_date SET emptyContainerReturnDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and emptyContainerReturnDateActual is null`)
+    const { trackService, alertTableService } = this.allService
+    const oldTrackings = this.getOldTrackingData(eventDataList) || []
+    const newTrackings = this.getNewTrackingData(eventDataList) || []
+    if (newTrackings && newTrackings.length) {
+      const shipments = await trackService.getShipmentMapping(newTrackings || [], this.transaction) || []
+      const bookings = await trackService.getBookingMapping(newTrackings || [], this.transaction) || []
+      await trackService.updateBackEntity(newTrackings, shipments, bookings, this.transaction)
+      for (const { trackingNo, estimatedDepartureDate, estimatedArrivalDate, actualDepartureDate, actualArrivalDate } of newTrackings) {
+        const selectedShipments = shipments.filter(s => s.masterNo === trackingNo || s.containerNo === trackingNo || s.carrierBookingNo === trackingNo)
+        const selectedBookings = bookings.filter(s => s.masterNo === trackingNo || s.containerNo === trackingNo || s.carrierBookingNo === trackingNo)
+        const oldTracking = oldTrackings.find(o => o.trackingNo === trackingNo)
+        if (oldTracking) {
+          const {
+            estimatedDepartureDate: oldEstimatedDepartureDate,
+            estimatedArrivalDate: oldEstimatedArrivalDate,
+            actualDepartureDate: oldActualDepartureDate,
+            actualArrivalDate: oldActualArrivalDate,
+          } = oldTracking
+          for (const shipment of selectedShipments || []) {
+            if (shipment.moduleTypeCode === 'SEA') {
+              if (!moment.utc(estimatedDepartureDate).isBetween(moment.utc(oldEstimatedDepartureDate).subtract(1, 'd'), moment.utc(oldEstimatedDepartureDate).add(1, 'd'))) {
+                alertTableService.createAlert(
+                  {
+                    partyGroupCode: shipment.partyGroupCode,
+                    tableName: 'shipment',
+                    primaryKey: shipment.id,
+                    alertConfig: {
+                      tableName: 'shipment',
+                      alertCategory: 'Notification',
+                      severity: 'medium',
+                      templatePath: 'alert/tracking-alert',
+                      alertType: `trackingEstimatedDepartureDateChanged`,
+                    },
+                    extraParam: {
+                      trackingNo,
+                      oldEstimatedDepartureDate, oldEstimatedArrivalDate, oldActualDepartureDate, oldActualArrivalDate,
+                      estimatedDepartureDate, estimatedArrivalDate, actualDepartureDate, actualArrivalDate
+                    }
                   }
-                }
+                )
+              } else if (!moment.utc(estimatedArrivalDate).isBetween(moment.utc(oldEstimatedArrivalDate).subtract(1, 'd'), moment.utc(oldEstimatedArrivalDate).add(1, 'd'))) {
+                alertTableService.createAlert(
+                  {
+                    partyGroupCode: shipment.partyGroupCode,
+                    tableName: 'shipment',
+                    primaryKey: shipment.id,
+                    alertConfig: {
+                      tableName: 'shipment',
+                      alertCategory: 'Notification',
+                      severity: 'medium',
+                      templatePath: 'alert/tracking-alert',
+                      alertType: `trackingEstimatedArrivalDateChanged`,
+                    },
+                    extraParam: {
+                      trackingNo,
+                      oldEstimatedDepartureDate, oldEstimatedArrivalDate, oldActualDepartureDate, oldActualArrivalDate,
+                      estimatedDepartureDate, estimatedArrivalDate, actualDepartureDate, actualArrivalDate
+                    }
+                  }
+                )
+              }
+            } else if (shipment.moduleTypeCode === 'AIR') {
+              if (!moment.utc(estimatedDepartureDate).isBetween(moment.utc(oldEstimatedDepartureDate).subtract(3, 'h'), moment.utc(oldEstimatedDepartureDate).add(3, 'h'))) {
+                alertTableService.createAlert(
+                  {
+                    partyGroupCode: shipment.partyGroupCode,
+                    tableName: 'shipment',
+                    primaryKey: shipment.id,
+                    alertConfig: {
+                      tableName: 'shipment',
+                      alertCategory: 'Notification',
+                      severity: 'medium',
+                      templatePath: 'alert/tracking-alert',
+                      alertType: `trackingEstimatedDepartureDateChanged`,
+                    },
+                    extraParam: {
+                      trackingNo,
+                      oldEstimatedDepartureDate, oldEstimatedArrivalDate, oldActualDepartureDate, oldActualArrivalDate,
+                      estimatedDepartureDate, estimatedArrivalDate, actualDepartureDate, actualArrivalDate
+                    }
+                  }
+                )
+              } else if (!moment.utc(estimatedArrivalDate).isBetween(moment.utc(oldEstimatedArrivalDate).subtract(3, 'h'), moment.utc(oldEstimatedArrivalDate).add(3, 'h'))) {
+                alertTableService.createAlert(
+                  {
+                    partyGroupCode: shipment.partyGroupCode,
+                    tableName: 'shipment',
+                    primaryKey: shipment.id,
+                    alertConfig: {
+                      tableName: 'shipment',
+                      alertCategory: 'Notification',
+                      severity: 'medium',
+                      templatePath: 'alert/tracking-alert',
+                      alertType: `trackingEstimatedArrivalDateChanged`,
+                    },
+                    extraParam: {
+                      trackingNo,
+                      oldEstimatedDepartureDate, oldEstimatedArrivalDate, oldActualDepartureDate, oldActualArrivalDate,
+                      estimatedDepartureDate, estimatedArrivalDate, actualDepartureDate, actualArrivalDate
+                    }
+                  }
+                )
               }
             }
-            return querys
-          }, []),
-          async(query: string) => await shipmentTableService.query(query, this.transaction),
-          { concurrency: 30 }
-        )
-      }
-      const bookingIds = await shipmentTableService.query(
-        `
-          SELECT booking.id, booking_reference.refDescription as masterNo, booking_container.containerNo, booking_container.soNo as carrierBookingNo
-          FROM booking
-          LEFT OUTER JOIN booking_container ON shipment_container.shipmentId = shipment.id
-          LEFT OUTER JOIN booking_reference ON booking_reference.bookingId = booking.id AND (booking_reference.refName = 'MBL' OR booking_reference.refName = 'MAWB')
-          WHERE partyGroupCode in (:partyGroupCode)
-          AND (
-            id in (SELECT bookingId FROM booking_reference WHERE (refName = 'MBL' OR refName = 'MAWB') AND refDescriptionn (:trackingNos))
-            OR id in (SELECT bookingId FROM booking_container WHERE soNo in (:trackingNos) OR containerNo in (:trackingNos))
-          )
-        `,
-        {
-          type: Sequelize.QueryTypes.SELECT,
-          raw: true,
-          transaction: this.transaction,
-          replacements: { partyGroupCode, trackingNos }
-        }
-      )
-      if (bookingIds && bookingIds.length) {
-        await BluebirdPromise.map(
-          bookingIds.reduce((querys: string[], { id, masterNo, carrierBookingNo, containerNo }) => {
-            const found = trackingDataList.find(t => t.trackingNo === masterNo || t.trackingNo === carrierBookingNo || t.trackingNo === containerNo)
-            if (found) {
-              const { trackingNo, tracking } = found
-              if (tracking.trackingStatus && tracking.trackingStatus.length  && !['ERR', 'CANF'].includes(tracking.lastStatusCode)) {
-                querys.push(`UPDATE booking SET currentTrackingNo = "${trackingNo}" WHERE id = ${id} AND currentTrackingNo is null`)
-              }
-              if (tracking.estimatedDepartureDate) {
-                const date = moment.utc(tracking.estimatedDepartureDate).format('YYYY-MM-DD HH:mm:ss')
-                querys.push(`UPDATE booking_date SET departureDateEstimated = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-              }
-              if (tracking.actualDepartureDate) {
-                const date = moment.utc(tracking.actualDepartureDate).format('YYYY-MM-DD HH:mm:ss')
-                querys.push(`UPDATE booking_date SET departureDateActual = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-              }
-              if (tracking.estimatedArrivalDate) {
-                const date = moment.utc(tracking.estimatedArrivalDate).format('YYYY-MM-DD HH:mm:ss')
-                querys.push(`UPDATE booking_date SET arrivalDateEstimated = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-              }
-              if (tracking.actualArrivalDate) {
-                const date = moment.utc(tracking.actualArrivalDate).format('YYYY-MM-DD HH:mm:ss')
-                querys.push(`UPDATE booking_date SET arrivalDateActual = "${date}" WHERE shipmentId = ${id} and (arrivalDateActual is null or arrivalDateActual >= DATE_SUB("${date}", INTERVAL 45 day))`)
-              }
-              for (const { isEstimated, statusDate, statusCode } of tracking.trackingStatus || []) {
-                if (statusDate) {
-                  const date = moment.utc(statusDate).format('YYYY-MM-DD HH:mm:ss')
-                  if (statusCode === 'BKCF' || statusCode === 'BKD') {
-                    querys.push(`UPDATE booking_date SET carrierConfirmationDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-                  } else if (statusCode === 'STSP') {
-                    querys.push(`UPDATE booking_date SET sentToShipperDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-                  } else if (statusCode === 'GITM') {
-                    querys.push(`UPDATE booking_date SET gateInDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-                  } else if (statusCode === 'LOBD' || statusCode === 'MNF') {
-                    querys.push(`UPDATE booking_date SET loadOnboardDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-                  } else if (statusCode === 'RCS') {
-                    querys.push(`UPDATE booking_date SET cargoReceiptDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and arrivalDateActual is null`)
-                  } else if (statusCode === 'STCS') {
-                    querys.push(`UPDATE booking_date SET sentToConsigneeDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and emptyContainerReturnDateActual is null`)
-                  } else if (statusCode === 'DLV') {
-                    querys.push(`UPDATE booking_date SET finalDoorDeliveryDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and emptyContainerReturnDateActual is null`)
-                  } else if (statusCode === 'RCVE') {
-                    querys.push(`UPDATE booking_date SET emptyContainerReturnDate${isEstimated ? 'Estimated' : 'Actual'} = "${date}" WHERE shipmentId = ${id} and emptyContainerReturnDateActual is null`)
+          }
+          for (const booking of selectedBookings || []) {
+            if (booking.moduleTypeCode === 'SEA') {
+              if (!moment.utc(estimatedDepartureDate).isBetween(moment.utc(oldEstimatedDepartureDate).subtract(1, 'd'), moment.utc(oldEstimatedDepartureDate).add(1, 'd'))) {
+                alertTableService.createAlert(
+                  {
+                    partyGroupCode: booking.partyGroupCode,
+                    tableName: 'booking',
+                    primaryKey: booking.id,
+                    alertConfig: {
+                      tableName: 'booking',
+                      alertCategory: 'Notification',
+                      severity: 'medium',
+                      templatePath: 'alert/tracking-alert',
+                      alertType: `trackingEstimatedDepartureDateChanged`,
+                    },
+                    extraParam: {
+                      trackingNo,
+                      oldEstimatedDepartureDate, oldEstimatedArrivalDate, oldActualDepartureDate, oldActualArrivalDate,
+                      estimatedDepartureDate, estimatedArrivalDate, actualDepartureDate, actualArrivalDate
+                    }
                   }
-                }
+                )
+              } else if (!moment.utc(estimatedArrivalDate).isBetween(moment.utc(oldEstimatedArrivalDate).subtract(1, 'd'), moment.utc(oldEstimatedArrivalDate).add(1, 'd'))) {
+                alertTableService.createAlert(
+                  {
+                    partyGroupCode: booking.partyGroupCode,
+                    tableName: 'booking',
+                    primaryKey: booking.id,
+                    alertConfig: {
+                      tableName: 'shipment',
+                      alertCategory: 'Notification',
+                      severity: 'medium',
+                      templatePath: 'alert/tracking-alert',
+                      alertType: `trackingEstimatedArrivalDateChanged`,
+                    },
+                    extraParam: {
+                      trackingNo,
+                      oldEstimatedDepartureDate, oldEstimatedArrivalDate, oldActualDepartureDate, oldActualArrivalDate,
+                      estimatedDepartureDate, estimatedArrivalDate, actualDepartureDate, actualArrivalDate
+                    }
+                  }
+                )
+              }
+            } else if (booking.moduleTypeCode === 'AIR') {
+              if (!moment.utc(estimatedDepartureDate).isBetween(moment.utc(oldEstimatedDepartureDate).subtract(3, 'h'), moment.utc(oldEstimatedDepartureDate).add(3, 'h'))) {
+                alertTableService.createAlert(
+                  {
+                    partyGroupCode: booking.partyGroupCode,
+                    tableName: 'booking',
+                    primaryKey: booking.id,
+                    alertConfig: {
+                      tableName: 'booking',
+                      alertCategory: 'Notification',
+                      severity: 'medium',
+                      templatePath: 'alert/tracking-alert',
+                      alertType: `trackingEstimatedDepartureDateChanged`,
+                    },
+                    extraParam: {
+                      trackingNo,
+                      oldEstimatedDepartureDate, oldEstimatedArrivalDate, oldActualDepartureDate, oldActualArrivalDate,
+                      estimatedDepartureDate, estimatedArrivalDate, actualDepartureDate, actualArrivalDate
+                    }
+                  }
+                )
+              } else if (!moment.utc(estimatedArrivalDate).isBetween(moment.utc(oldEstimatedArrivalDate).subtract(3, 'h'), moment.utc(oldEstimatedArrivalDate).add(3, 'h'))) {
+                alertTableService.createAlert(
+                  {
+                    partyGroupCode: booking.partyGroupCode,
+                    tableName: 'booking',
+                    primaryKey: booking.id,
+                    alertConfig: {
+                      tableName: 'booking',
+                      alertCategory: 'Notification',
+                      severity: 'medium',
+                      templatePath: 'alert/tracking-alert',
+                      alertType: `trackingEstimatedArrivalDateChanged`,
+                    },
+                    extraParam: {
+                      trackingNo,
+                      oldEstimatedDepartureDate, oldEstimatedArrivalDate, oldActualDepartureDate, oldActualArrivalDate,
+                      estimatedDepartureDate, estimatedArrivalDate, actualDepartureDate, actualArrivalDate
+                    }
+                  }
+                )
               }
             }
-            return querys
-          }, []),
-          async(query: string) => await shipmentTableService.query(query, this.transaction),
-          { concurrency: 30 }
-        )
+          }
+        }
+
       }
     }
-    console.log(Date.now() - start, 'YUNDANG-TIME')
+
     return undefined
   }
 }

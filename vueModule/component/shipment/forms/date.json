@@ -75,6 +75,7 @@
           "component": "DateTimePicker",
           "class": "xs-12 md-6",
           "props": {
+            "right": true,
             "type": "datetime",
             "utc": true,
             "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
@@ -87,6 +88,7 @@
           "component": "DateTimePicker",
           "class": "xs-12 md-6",
           "props": {
+            "right": true,
             "type": "datetime",
             "utc": true,
             "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",

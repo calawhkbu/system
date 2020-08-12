@@ -1,4 +1,4 @@
-import { QueryDef, ResultColumnArg, SubqueryArg, ExpressionArg } from 'classes/query/QueryDef'
+import { QueryDef, SubqueryArg } from 'classes/query/QueryDef'
 import {
   Query,
   FromTable,
@@ -22,18 +22,14 @@ import {
   LikeExpression,
   JoinClause,
   QueryExpression,
-  IJoinClause,
-  IColumnExpression,
   IExpression,
-  IResultColumn,
-  OrderBy,
   IConditionalExpression,
-  MathExpression,
-  ColumnsExpression,
-  IQuery
+  MathExpression
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, SummaryField, percentageChangeFunction, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, DateFieldTimezoneMap } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, SummaryField, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
+import { hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression } from 'utils/sop-task'
+import sopQuery from './sop_task'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -114,6 +110,80 @@ const agentPartyCodeExpression = new CaseExpression({
   $else: new ColumnExpression('shipment_party', `agentPartyCode`)
 })
 
+
+
+const coloaderPartyIdExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+      ]),
+      $then: new ColumnExpression('shipment_party', `linerAgentPartyId`)
+    }
+  ],
+  $else: new Value(null)
+})
+
+
+const coloaderPartyCodeExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+      ]),
+      $then: new ColumnExpression('shipment_party', `linerAgentPartyCode`)
+    }
+  ],
+  $else: new Value(null)
+})
+
+
+const coloaderPartyNameExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+      ]),
+      $then: new ColumnExpression('shipment_party', `linerAgentPartyName`)
+    }
+  ],
+  $else: new Value(null)
+})
+
+const coloaderPartyShortNameInReportExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+      ]),
+      $then: new ColumnExpression('linerAgent', `shortName`)
+    }
+  ],
+  $else: new Value(null)
+})
+
+const coloaderPartyNameInReportExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new AndExpressions([
+        new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
+        new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
+      ]),
+      $then: new ColumnExpression('linerAgent', `name`)
+    }
+  ],
+  $else: new Value(null)
+})
+
+
+const flexDataPartyList = [
+  'notifyParty2'
+]
+
 const partyList = [
 
   {
@@ -137,10 +207,6 @@ const partyList = [
   },
   {
     name: 'agent',
-    partyNameExpression: {
-      expression: agentPartyNameExpression,
-      companion: ['table:shipment_party']
-    },
     partyIdExpression: {
       expression: agentPartyIdExpression,
       companion: ['table:shipment_party']
@@ -148,8 +214,79 @@ const partyList = [
     partyCodeExpression: {
       expression: agentPartyCodeExpression,
       companion: ['table:shipment_party']
+    },
+    partyNameExpression: {
+      expression: agentPartyNameExpression,
+      companion: ['table:shipment_party']
     }
-  }
+  },
+  {
+    name : 'coloader',
+    partyIdExpression: {
+      expression: coloaderPartyIdExpression,
+      companion: ['table:shipment_party']
+    },
+    partyCodeExpression: {
+      expression: coloaderPartyCodeExpression,
+      companion: ['table:shipment_party']
+    },
+    partyNameExpression: {
+      expression: coloaderPartyNameExpression,
+      companion: ['table:shipment_party']
+    },
+    partyNameInReportExpression: {
+      expression: coloaderPartyNameInReportExpression,
+      companion: ['table:linerAgent']
+    },
+    partyShortNameInReportExpression: {
+      expression: coloaderPartyShortNameInReportExpression,
+      companion: ['table:linerAgent']
+
+    }
+  },
+  ...flexDataPartyList.map(flexDataParty => {
+
+    const defaultCompanion = ['table:shipment_party']
+
+    const flexDataExpression = new ColumnExpression('shipment_party','flexData')
+
+    const partyNameExpression =  new MathExpression(flexDataExpression,'->>',`$.${flexDataParty}PartyName`)
+    const partyCodeExpression =  new MathExpression(flexDataExpression,'->>',`$.${flexDataParty}PartyCode`)
+    const partyIdExpression =  new MathExpression(flexDataExpression,'->>',`$.${flexDataParty}PartyId`)
+
+    const partyNameInReportExpression = partyNameExpression
+    const partyCodeInReportExpression = partyNameExpression
+
+    return {
+      name : flexDataParty,
+
+      partyNameExpression : {
+        expression : partyNameExpression,
+        companion: defaultCompanion
+      },
+
+      partyIdExpression : {
+        expression : partyIdExpression,
+        companion: defaultCompanion
+      },
+
+      partyCodeExpression : {
+        expression : partyCodeExpression,
+        companion: defaultCompanion
+      },
+      partyNameInReportExpression : {
+        expression : partyNameInReportExpression,
+        companion: defaultCompanion
+      },
+      partyCodeInReportExpression : {
+        expression : partyCodeInReportExpression,
+        companion: defaultCompanion
+      }
+
+    }
+
+  })
+
 ] as {
 
   name: string,
@@ -227,6 +364,36 @@ query.table('shipment_date', new Query({
           $as: 'shipment_date'
         }),
         $on: new BinaryExpression(new ColumnExpression('shipment', 'id'), '=', new ColumnExpression('shipment_date', 'shipmentId'))
+      }
+    ]
+  })
+
+}))
+
+query.table('shipment_date_utc', new Query({
+
+  $from: new FromTable({
+
+    table: 'shipment',
+    joinClauses: [
+      {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('shipment_date_utc', '*')),
+            ],
+            $from: new FromTable('shipment_date_utc', 'shipment_date_utc'),
+            $where: new AndExpressions({
+              expressions: [
+                new IsNullExpression(new ColumnExpression('shipment_date_utc', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('shipment_date_utc', 'deletedBy'), false),
+              ]
+            }),
+          }),
+          $as: 'shipment_date_utc'
+        }),
+        $on: new BinaryExpression(new ColumnExpression('shipment', 'id'), '=', new ColumnExpression('shipment_date_utc', 'shipmentId'))
       }
     ]
   })
@@ -433,6 +600,19 @@ query.table('alert', new Query({
 })
 )
 
+// sop task join
+query.table('sop-task', new Query({
+  $from: new FromTable('shipment', {
+    operator: 'LEFT',
+    table: 'sop-task',
+    $on: [
+      new BinaryExpression(new ColumnExpression('sop-task', 'tableName'), '=', 'shipment'),
+      new BinaryExpression(new ColumnExpression('sop-task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id')),
+    ]
+  }),
+  $where: new IsNullExpression(new ColumnExpression('sop-task', 'id'), true)
+}))
+
 // shipment_amount table :  table:shipment_amount
 query.table('shipment_amount', new Query({
 
@@ -559,6 +739,25 @@ query.table('shipment_cargo', new Query({
                   new ColumnExpression('shipment_cargo', 'cbm')
                 ),
                 'cargo_cbm'
+              ),
+              // decvalue in flexData
+              new ResultColumn(
+                new FunctionExpression(
+                  'SUM',
+                  new FunctionExpression(
+                    'CAST',
+                    new ParameterExpression(
+                      null,
+                      new MathExpression(
+                        new ColumnExpression('shipment_cargo', 'flexData'),
+                        '->>',
+                        '$.decvalue'
+                      ),
+                      'AS DECIMAL'
+                    )
+                  )
+                ),
+                'cargo_value'
               ),
             ],
             $from: new FromTable('shipment_cargo'),
@@ -769,6 +968,13 @@ query.table('shipment_container', new Query({
                   new ColumnExpression('shipment_container', 'loadCount')
                 ),
                 'container_loadCount'
+              ),
+              new ResultColumn(
+                new FunctionExpression(
+                  'COUNT',
+                  new ColumnExpression('shipment_container', 'id')
+                ),
+                'container_count'
               ),
             ],
             $from: new FromTable('shipment_container'),
@@ -993,19 +1199,22 @@ const shipIdExpression = new QueryExpression(new Query({
 }))
 
 
-const officeErpSiteExpression = new FunctionExpression(
-  'JSON_UNQUOTE',
-  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.erpSite')
+const officeErpSiteExpression = new MathExpression(
+  new ColumnExpression('office', 'thirdPartyCode'),
+  '->>',
+  '$.erpSite'
 )
 
-const officeErpCodeExpression = new FunctionExpression(
-  'JSON_UNQUOTE',
-  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('office', 'thirdPartyCode'), '$.erp')
+const officeErpCodeExpression = new MathExpression(
+  new ColumnExpression('office', 'thirdPartyCode'),
+  '->>',
+  '$.erp'
 )
 
-const controllingCustomerErpCodeExpression = new FunctionExpression(
-  'JSON_UNQUOTE',
-  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('controllingCustomer', 'thirdPartyCode'), '$.erp')
+const controllingCustomerErpCodeExpression = new MathExpression(
+  new ColumnExpression('controllingCustomer', 'thirdPartyCode'),
+  '->>',
+  '$.erp'
 )
 
 
@@ -1765,22 +1974,7 @@ const alertPrimaryKeyExpression = new ColumnExpression('alert', 'primaryKey')
 const alertSeverityExpression = new ColumnExpression('alert', 'severity')
 const alertTitleExpression = new FunctionExpression('CONCAT', new ColumnExpression('alert', 'alertType'), new Value('Title'))
 
-const alertMessageExpression = new CaseExpression({
-  cases: [
-    {
-      // retrieve custom message from flexData
-      $when: new BinaryExpression(new ColumnExpression('alert', 'alertCategory'), '=', 'Message'),
-      $then: new FunctionExpression(
-        'JSON_UNQUOTE',
-        new FunctionExpression('JSON_EXTRACT', new ColumnExpression('alert', 'flexData'), '$.customMessage')
-      )
-    }
-
-  ],
-
-  // shipmentEtaChanged => shipmentEtaChangedTitle, later will put in i18n
-  $else: new FunctionExpression('CONCAT', new ColumnExpression('alert', 'alertType'), new Value('Message'))
-})
+const alertMessageExpression = new FunctionExpression('CONCAT', new ColumnExpression('alert', 'alertType'), new Value('Message'))
 
 const alertCategoryExpression = new ColumnExpression('alert', 'alertCategory')
 
@@ -1788,8 +1982,32 @@ const alertStatusExpression = new ColumnExpression('alert', 'status')
 
 const alertCreatedAtExpression = new ColumnExpression('alert', 'createdAt')
 const alertUpdatedAtExpression = new ColumnExpression('alert', 'updatedAt')
+const alertClosedAtExpression = new ColumnExpression('alert', 'closedAt')
 
-const alertContentExpression = new ColumnExpression('alert', 'flexData')
+
+const alertDeadlineExpression = new ColumnExpression('alert', 'deadline')
+
+
+const alertContentExpression = new QueryExpression(new Query({
+
+  $select : [
+    new ResultColumn(new ColumnExpression('alert2','flexData'),'flexData')
+  ],
+  $from : new FromTable({
+    table : 'alert',
+    $as : 'alert2'
+  }),
+  $where : new BinaryExpression(alertIdExpression,'=',new ColumnExpression('alert2','id')),
+  $limit: 1
+}))
+
+// sopTask-related fields
+const sopTaskIdExpression = new ColumnExpression('sopTask', 'id')
+const sopTaskTableNameExpression = new ColumnExpression('sopTask', 'tableName')
+const sopTaskPrimaryKeyExpression = new ColumnExpression('sopTask', 'primaryKey')
+const sopTaskCategoryExpression = new ColumnExpression('sopTask', 'category')
+const sopTaskNameExpression = new ColumnExpression('sopTask', 'name')
+const sopTaskRemarkExpression = new ColumnExpression('sopTask', 'remark')
 
 const activeStatusExpression = new CaseExpression({
   cases: [
@@ -1828,11 +2046,16 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
 
   const partyTableName = party.name
 
+  // these 3 will get from shipment_party table
   const partyIdExpression = party.partyIdExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyId`), companion: ['table:shipment_party'] }
-  const partyNameExpression = party.partyNameExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyName`), companion: ['table:shipment_party'] }
+
   const partyCodeExpression = party.partyCodeExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyCode`), companion: ['table:shipment_party'] }
-  const partyNameInReportExpression = party.partyNameInReportExpression || { expression: new ColumnExpression(party.name, `name`), companion: [`table:${party.name}`] }
-  const partyShortNameInReportExpression = party.partyShortNameInReportExpression || { expression: new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion: [`table:${party.name}`] }
+  const partyNameExpression = party.partyNameExpression || { expression: new FunctionExpression('IFNULL', new ColumnExpression('shipment_party', `${partyTableName}PartyName`),partyCodeExpression.expression), companion: ['table:shipment_party'] }
+
+
+  // this 2, will try to get from the party table directly
+  const partyNameInReportExpression = party.partyNameInReportExpression || { expression: new FunctionExpression('IFNULL',new ColumnExpression(party.name, `name`), partyNameExpression.expression), companion: [`table:${party.name}`,`table:shipment_party`] }
+  const partyShortNameInReportExpression = party.partyShortNameInReportExpression || { expression: new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion: [`table:${party.name}`,`table:shipment_party`] }
 
   const resultExpressionList = partyFieldList.map(partyField => {
 
@@ -2127,27 +2350,57 @@ const fieldList = [
   {
     name: 'activeStatus',
     expression: activeStatusExpression
-  }
+  },
+  {
+    name : 'count',
+    expression : new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id')))
+  },
+  {
+    name : 'alertCount',
+    expression: new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))),
+    companion: ['table:alert']
+  },
+
+  {
+    name: 'sopTaskId',
+    expression: sopTaskIdExpression,
+    companion: ['table:sop-task']
+  },
+  {
+    name: 'sopTaskTableName',
+    expression: sopTaskTableNameExpression,
+    companion: ['table:sop-task']
+  },
+  {
+    name: 'sopTaskPrimaryKey',
+    expression: sopTaskPrimaryKeyExpression,
+    companion: ['table:sop-task']
+  },
+  {
+    name: 'sopTaskCategory',
+    expression: sopTaskCategoryExpression,
+    companion: ['table:sop-task']
+  },
+  {
+    name: 'sopTaskName',
+    expression: sopTaskNameExpression,
+    companion: ['table:sop-task']
+  },
+  {
+    name: 'sopTaskRemark',
+    expression: sopTaskRemarkExpression,
+    companion: ['table:sop-task']
+  },
+  {
+    name : 'sopTaskCount',
+    expression: new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', sopTaskIdExpression)),
+    companion: ['table:sop-task']
+  },
 
 ] as ExpressionHelperInterface[]
 
 registerAll(query, baseTableName, fieldList)
 
-
-
-// calculation ==============================
-
-query
-  .register(
-    'count',
-    new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id'))), 'count')
-  )
-
-query
-  .register(
-    'alertCount',
-    new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))), 'alertCount')
-  )
 
 // summary fields  =================
 
@@ -2223,7 +2476,46 @@ const nestedSummaryList = [
 
 ] as NestedSummaryCondition[]
 
+
+registerNestedSummaryFilter(query,nestedSummaryList)
+
+
+
+
+const containerTypeList = [
+  '20',
+  '40',
+  'HQ'
+]
+
+
+const reportContainerTypeList = [
+  '20',
+  '40',
+  'HQ'
+]
+
+// field that store in report json
+const reportingSummaryFieldNameList = [
+  ...reportContainerTypeList.map(containerType => `${containerType}_ContainerTypeCount`),
+  'containerCount'
+]
+
+
 const summaryFieldList: SummaryField[] = [
+
+
+  ...containerTypeList.map(containerType => {
+
+    const name = `container${containerType}`
+
+    return {
+      name,
+      summaryType: 'sum',
+      expression: new ColumnExpression('shipment', name)
+    } as SummaryField
+
+  }),
 
   {
     name: 'totalShipment',
@@ -2262,12 +2554,37 @@ const summaryFieldList: SummaryField[] = [
     name: 'quantity',
     summaryType: 'sum',
     expression: new ColumnExpression('shipment', 'quantity'),
-  }
+  },
+  {
+    name: 'cargoValue',
+    summaryType: 'sum',
+    expression: new ColumnExpression('shipment_cargo', 'cargo_value'),
+    companion: ['table:shipment_cargo']
+  },
+
+  ...reportingSummaryFieldNameList.map(reportingSummaryFieldName =>
+    {
+      return {
+        name: reportingSummaryFieldName,
+        summaryType: 'sum',
+        expression: new MathExpression(
+          new ColumnExpression('shipment','report'),
+          '->>',
+          `$.${reportingSummaryFieldName}`
+        )
+      } as SummaryField
+    })
+
 ]
 
 registerSummaryField(query, baseTableName, summaryFieldList, nestedSummaryList, jobDateExpression)
 
 
+registerCheckboxField(query)
+
+
+
+// search all party in partyList
 query.subquery(false,'anyPartyId',((value: any, params?: IQueryParams) => {
 
   const partyIdList = value.value
@@ -2281,13 +2598,14 @@ query.subquery(false,'anyPartyId',((value: any, params?: IQueryParams) => {
 
     acc.push(inPartyInExpression)
     return acc
-    
+
   },[])
 
   return new Query({
     $where : new OrExpressions(inExpressionList)
   })
 }),'table:shipment_party')
+
 
 // Bill Type
 query.subquery(
@@ -2298,7 +2616,7 @@ query.subquery(
 
       cases: [
         {
-          $when: new BinaryExpression(new Value(''), '=', new Unknown()),
+          $when: new BinaryExpression(new Value('default'), '=', new Unknown()),
           $then: new OrExpressions([
 
             new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'H'),
@@ -2319,6 +2637,10 @@ query.subquery(
             ])
 
           ])
+        },
+        {
+          $when: new BinaryExpression(new Value('skip'), '=', new Unknown()),
+          $then : new Value(true)
         },
         {
           $when: new BinaryExpression('Direct', '=', new Unknown()),
@@ -2476,10 +2798,8 @@ query.subquery('viaHKG',
 )
 
 
-query.subquery('missingVGM', new Query({
-  $where: new InExpression(idExpression, false,
-    new QueryExpression(
-      new Query({
+
+const vgmQuery = new Query({
 
         $select: [
           new ResultColumn(new ColumnExpression('shipment_container', 'shipmentId'))
@@ -2488,12 +2808,26 @@ query.subquery('missingVGM', new Query({
         $where: new BinaryExpression(new ColumnExpression('shipment_container', 'vgmWeight'), '>', 0)
 
       })
-    )
-  )
-}))
 
+registerQueryCondition(query,'vgmNonZero',idExpression,vgmQuery)
 
-query.subquery('missingDocument', (subQueryValue, param) => {
+// query.subquery('missingVGM', new Query({
+//   $where: new InExpression(idExpression, false,
+//     new QueryExpression(
+//       new Query({
+
+//         $select: [
+//           new ResultColumn(new ColumnExpression('shipment_container', 'shipmentId'))
+//         ],
+//         $from: 'shipment_container',
+//         $where: new BinaryExpression(new ColumnExpression('shipment_container', 'vgmWeight'), '>', 0)
+
+//       })
+//     )
+//   )
+// }))
+
+const documentQuery = (subQueryValue,param: IQueryParams) => {
 
   const fileName = subQueryValue.value
 
@@ -2515,7 +2849,35 @@ query.subquery('missingDocument', (subQueryValue, param) => {
       )
     )
   })
-})
+
+}
+
+registerQueryCondition(query,'haveDocument',idExpression,documentQuery)
+
+
+// query.subquery('missingDocument', (subQueryValue, param) => {
+
+//   const fileName = subQueryValue.value
+
+//   return new Query({
+//     $where: new InExpression(idExpression, false,
+//       new QueryExpression(
+//         new Query({
+
+//           $select: [
+//             new ResultColumn(new ColumnExpression('document', 'primaryKey'))
+//           ],
+//           $from: 'document',
+//           $where: [
+//             new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', fileName),
+//             new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment')
+//           ]
+
+//         })
+//       )
+//     )
+//   })
+// })
 
 // Date Filter=================
 
@@ -2611,12 +2973,69 @@ const dateNameList = [
   'loadOnboard'
 ]
 
+const flexDataDateNameList = [
+  'sendAMS'
+]
+
 const dateList = [
 
-  // seperate estimated and actual
+  // date in shipment_date / shipment_date_utc table
   ...dateNameList.reduce((accumulator, currentValue) => {
-    return accumulator.concat([`${currentValue}DateEstimated`, `${currentValue}DateActual`])
+    return accumulator.concat([
+
+      `${currentValue}DateEstimated`,
+      `${currentValue}DateActual`,
+      {
+        name: `${currentValue}DateActualInUtc`,
+        expression: new ColumnExpression('shipment_date_utc',`${currentValue}DateActual`),
+        companion: ['table:shipment_date_utc']
+      },
+      {
+        name: `${currentValue}DateEstimatedInUtc`,
+        expression: new ColumnExpression('shipment_date_utc',`${currentValue}DateEstimated`),
+        companion: ['table:shipment_date_utc']
+      },
+    ])
   }, []),
+
+
+
+  // date in shipment_date_utc table
+  ...flexDataDateNameList.reduce((accumulator, currentValue) => {
+
+    const shipmentDateFlexDataExpression = new ColumnExpression('shipment_date','flexData')
+    const shipmentDateUtcFlexDataExpression = new ColumnExpression('shipment_date_utc','flexData')
+
+    const dateActualExpression =  new MathExpression(shipmentDateFlexDataExpression,'->>',`$.${currentValue}DateActual`)
+    const dateEstimatedExpression =  new MathExpression(shipmentDateFlexDataExpression,'->>',`$.${currentValue}DateEstimated`)
+
+    const dateActualInUtcExpression =  new MathExpression(shipmentDateUtcFlexDataExpression,'->>',`$.${currentValue}DateActual`)
+    const dateEstimatedInUtcExpression =  new MathExpression(shipmentDateUtcFlexDataExpression,'->>',`$.${currentValue}DateEstimated`)
+
+    return accumulator.concat([
+      {
+        name: `${currentValue}DateActual`,
+        expression: dateActualExpression,
+        companion: ['table:shipment_date']
+      },
+      {
+        name: `${currentValue}DateEstimated`,
+        expression: dateEstimatedExpression,
+        companion: ['table:shipment_date']
+      },
+      {
+        name: `${currentValue}DateActualInUtc`,
+        expression: dateActualInUtcExpression,
+        companion: ['table:shipment_date_utc']
+      },
+      {
+        name: `${currentValue}DateEstimatedInUtc`,
+        expression: dateEstimatedInUtcExpression,
+        companion: ['table:shipment_date_utc']
+      },
+    ])
+  }, []),
+
 
 
   {
@@ -2628,85 +3047,26 @@ const dateList = [
     expression: alertCreatedAtExpression,
     companion: ['table:alert']
   },
-
   {
     name: 'alertUpdatedAt',
     expression: alertUpdatedAtExpression,
     companion: ['table:alert']
-  }
+  },
+  {
+    name: 'alertClosedAt',
+    expression: alertClosedAtExpression,
+    companion: ['table:alert']
+  },
+  {
+    name: 'alertDeadline',
+    expression: alertDeadlineExpression,
+    companion: ['table:alert']
+  },
 
 ] as ExpressionHelperInterface[]
 
 
-
-
-const portOfLoadingTimezoneList = [
-  'departure',
-  'oceanBill',
-  'cargoReady',
-  'scheduleAssigned',
-  'scheduleApproaved',
-  'spaceConfirmation',
-  'bookingSubmit',
-  'cyCutOff',
-  'documentCutOff',
-  'pickup',
-  'shipperLoad',
-  'returnLoad',
-  'cargoReceipt',
-  'shipperDocumentSubmit',
-  'shipperInstructionSubmit',
-  'houseBillDraftSubmit',
-  'houseBillConfirmation',
-  'masterBillReleased',
-  'preAlertSend',
-  'ediSend',
-  'cargoRolloverStatus',
-  'sentToShipper',
-  'gateIn',
-  'loadOnboard'
-]
-
-const portOfDischargeTimezoneList = [
-  'arrival',
-  'inboundTransfer',
-  'onRail',
-  'arrivalAtDepot',
-  'availableForPickup',
-  'pickupCargoBeforeDemurrage',
-  'finalCargo',
-  'cargoPickupWithDemurrage',
-  'finalDoorDelivery',
-  'returnEmptyContainer',
-  'sentToConsignee',
-]
-
-const dateFieldTimezoneMap = [
-
-  {
-    dateNameList: [
-      // seperate estimated and actual
-      ...portOfLoadingTimezoneList.reduce((accumulator, currentValue) => {
-        return accumulator.concat([`${currentValue}DateEstimated`, `${currentValue}DateActual`])
-      }, []),
-    ],
-    timezoneOffsetExpression: new ColumnExpression('portOfLoading', 'timezoneOffset'),
-    companion: ['table:portOfLoading']
-  },
-  {
-    dateNameList: [
-      // seperate estimated and actual
-      ...portOfDischargeTimezoneList.reduce((accumulator, currentValue) => {
-        return accumulator.concat([`${currentValue}DateEstimated`, `${currentValue}DateActual`])
-      }, []),
-    ],
-    timezoneOffsetExpression: new ColumnExpression('portOfDischarge', 'timezoneOffset'),
-    companion: ['table:portOfDischarge']
-  }
-] as DateFieldTimezoneMap[]
-
-
-registerAllDateField(query, 'shipment_date', dateList, dateFieldTimezoneMap)
+registerAllDateField(query, 'shipment_date', dateList)
 
 
 query.registerResultColumn(
@@ -2904,5 +3264,166 @@ query
   .register('value', 2)
   .register('value', 3)
   .register('value', 4)
+
+// @field noOfTasks
+// number of outstanding tasks
+const hasSubTasksExpression = new ExistsExpression(
+  hasSubTaskQuery('temp'),
+  false
+)
+const notDoneExpression = IfExpression(
+  hasSubTasksExpression,
+  new ExistsExpression(hasSubTaskQuery('temp', generalIsDoneExpression('temp', true)), false),
+  generalIsDoneExpression('sop_task', true)
+)
+const noOfTasksQuery = new Query({
+  $select: new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('sop_task', 'id'))), 'noOfTasks'),
+  $from: 'sop_task',
+  $where: [
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id')),
+    new IsNullExpression(new ColumnExpression('sop_task', 'parentId'), false),
+    notDoneExpression
+  ]
+})
+query.field('noOfTasks', {
+  $select: new ResultColumn(new QueryExpression(noOfTasksQuery), 'noOfTasks')
+})
+
+// @field sopScore
+// sop score field
+const isDueExpression = new BinaryExpression(
+  new ColumnExpression('sop_task', 'dueAt'),
+  '<',
+  new FunctionExpression('UTC_TIMESTAMP')
+)
+const isDeadExpression = new BinaryExpression(
+  new ColumnExpression('sop_task', 'deadline'),
+  '<',
+  new FunctionExpression('UTC_TIMESTAMP')
+)
+query.field('sopScore', {
+  $select: new ResultColumn(IfExpression(
+    new IsNullExpression(new ColumnExpression('shipment', 'sopScore'), true), // TODO shipment status is closed
+    new ColumnExpression('shipment', 'sopScore'),
+    new MathExpression(new Value(100), '-', IfNullExpression(new QueryExpression(new Query({
+      $select: new ResultColumn(
+        new FunctionExpression('SUM', new CaseExpression([
+          {
+            $when: isDeadExpression,
+            $then: IfNullExpression(new ColumnExpression('sop_task', 'deadlineScore'), new Value(0))
+          },
+          {
+            $when: isDueExpression,
+            $then: IfNullExpression(new ColumnExpression('sop_task', 'dueScore'), new Value(0))
+          }
+        ], new Value(0)))
+      , 'deduct'),
+      $from: 'sop_task',
+      $where: [
+        new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
+        new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id')),
+        new OrExpressions([isDueExpression, isDeadExpression])
+      ]
+    })), new Value(0)))
+  ), 'sopScore')
+})
+
+// @subquery hasDueTasks
+// return shipments with due tasks
+const dueTasksQuery = new Query({
+  $from: 'sop_task',
+  $where: [
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id')),
+    generalIsClosedExpression('sop_task', true),
+    notDoneExpression,
+    isDueExpression
+  ]
+})
+query.subquery('hasDueTasks', {
+  $where: new ExistsExpression(dueTasksQuery, false)
+})
+
+// @subquery noDueTasks
+// return shipments without due tasks
+query.subquery('noDueTasks', {
+  $where: new ExistsExpression(dueTasksQuery, true)
+})
+
+// @subquery hasDeadTasks
+// return shipments with dead tasks
+const deadTasksQuery = new Query({
+  $from: 'sop_task',
+  $where: [
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id')),
+    generalIsClosedExpression('sop_task', true),
+    notDoneExpression,
+    isDeadExpression
+  ]
+})
+query.subquery('hasDeadTasks', {
+  $where: new ExistsExpression(deadTasksQuery, false)
+})
+
+// @subquery noDeadTasks
+// return shipments without dead tasks
+query.subquery('noDeadTasks', {
+  $where: new ExistsExpression(deadTasksQuery, true)
+})
+
+// @field noOfOutstandingTasks
+query.field('noOfOutstandingTasks', params => {
+  let subqueries: any = { tableName: { value: 'shipment' } }
+  if (params.subqueries.sop_user) subqueries.user = params.subqueries.sop_user
+  if (params.subqueries.sop_partyGroupCode) subqueries.partyGroupCode = params.subqueries.sop_partyGroupCode
+  if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
+  if (params.subqueries.sop_today) subqueries.today = params.subqueries.sop_today
+  if (params.subqueries.sop_date) subqueries.date = params.subqueries.sop_date
+  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
+  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
+  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
+  const query = sopQuery.apply({
+    fields: ['count'],
+    subqueries
+  })
+  const $where = query.$where as AndExpressions
+  $where.expressions.push(
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id'))
+  )
+  return {
+    $select: new ResultColumn(new QueryExpression(query), 'noOfOutstandingTasks')
+  }
+})
+
+// @subquery myTasksOnly
+query.subquery('myTasksOnly', (value, params) => {
+  let subqueries: any = {
+    tableName: { value: 'shipment' },
+    user: params.subqueries.sop_user,
+    partyGroupCode: params.subqueries.sop_partyGroupCode,
+    today: params.subqueries.sop_today,
+    date: params.subqueries.sop_date
+  }
+  if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
+  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
+  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
+  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
+  const query = sopQuery.apply({
+    distinct: true,
+    fields: ['id'],
+    subqueries
+  })
+  const $where = query.$where as AndExpressions
+  $where.expressions.push(
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id'))
+  )
+  return {
+    $where: new ExistsExpression(query, false)
+  }
+})
 
 export default query

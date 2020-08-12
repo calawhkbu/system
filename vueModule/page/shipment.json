@@ -18,6 +18,23 @@
           "method": "post",
           "url": "api/shipment"
         },
+        "availableFileTypes": ["xlsx"],
+        "importAxiosParams": {
+          "z": {
+            "method": "post",
+            "url": "api/shipment/import/import"
+          }
+        },
+        "deleteIfReturnTrue": [
+          "if (context.diff(oldData.shipmentContainers, data.shipmentContainers)) return true",
+          "return false"
+        ],
+        "deleteKeyBeforeSave": [
+          "quantity", "quantityUnit", "grossWeight", "volumeWeight",
+          "chargeableWeight", "weightUnit", "teu", "cbm", "container20",
+          "container40", "containerHQ", "containerOthers"
+        ],
+        "importPrimaryKey": "houseNo",
         "modeFunction": [
           "const modes = ['detail', 'import', 'edit'];",
           "const selectedMode = isNaN(Number(mode)) ? mode : 'detail';",

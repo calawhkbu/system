@@ -1,5 +1,7 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
+import { expandSummaryVariable, expandGroupEntity, extendDate, LastCurrentUnit, calculateLastCurrent, handleGroupByEntityValueDatePart, handleBottomSheetGroupByEntityValue } from 'utils/card'
+import * as  rawMoment from 'moment'
 
 export default {
   jqls: [
@@ -8,7 +10,8 @@ export default {
       async prepareParams(params, prevResult, user): Promise<IQueryParams> {
         const { moment } = await this.preparePackages(user)
 
-        params.fields = [
+
+        const defaultFields = [
           'id',
           'houseNo',
           'masterNo',
@@ -23,24 +26,26 @@ export default {
           'haveCurrentTrackingNo',
         ]
 
+        params.fields = defaultFields
+        
         const subqueries = (params.subqueries = params.subqueries || {})
 
         // used in mapCard to bottom sheet
         if (subqueries.location && subqueries.locationCode) {
           if (!(subqueries.location !== true && 'value' in subqueries.location)) throw new Error('MISSING_location')
           if (!(subqueries.locationCode !== true && 'value' in subqueries.locationCode)) throw new Error('MISSING_locationCode')
+
           const location = subqueries.location.value
           const locationCode = `${location}Code`
-          const subqueriesName = `${location}Join`
+
           const locationCodeValue = subqueries.locationCode.value
           subqueries[locationCode] = { value: locationCodeValue }
-          subqueries[subqueriesName] = true
         }
 
         // lastStatus case
         if (subqueries.lastStatus) {
           if (!(subqueries.lastStatus !== true && 'value' in subqueries.lastStatus && Array.isArray(subqueries.lastStatus.value))) throw new Error('MISSING_lastStatus')
-          subqueries.lastStatusJoin = true
+          // subqueries.lastStatusJoin = true
         }
 
         // alertType case
@@ -56,6 +61,7 @@ export default {
             }
           }
           else {
+            // default use currentMonth
             const date = subqueries.date as { from: any, to: any }
             const selectedDate = date ? moment(date.from, 'YYYY-MM-DD') : moment()
             const currentMonth = selectedDate.month()
@@ -68,14 +74,15 @@ export default {
           subqueries.alertCreatedAt = alertCreatedAtJson
         }
 
+        // split primaryKeyListString and search by id
         if (subqueries.primaryKeyListString) {
           const countLimit = 10000
-          const primaryKeyListString = subqueries.primaryKeyListString as any
+          const primaryKeyListString = subqueries.primaryKeyListString as { value: string, countString: string }
           const count = Number.parseInt(primaryKeyListString.countString, 10)
 
           // if too many, just query again
           if (count > countLimit) {
-            subqueries.primaryKeyListString = undefined
+            delete subqueries.primaryKeyListString
           }
           else {
             const idList = primaryKeyListString.value.split(',')
@@ -87,6 +94,16 @@ export default {
           }
         }
 
+        handleBottomSheetGroupByEntityValue(subqueries)
+
+        handleGroupByEntityValueDatePart(subqueries,moment)
+
+
+
+        // console.log(`finalParams`)
+        // console.log(params)
+        // throw new Error(JSON.stringify(params))
+
         return params
       }
     },
@@ -95,6 +112,8 @@ export default {
       dataServiceQuery: ['shipment', 'shipment']
     }
   ],
+
+  // if want to show specific fields, please defined using FE_fields in bottom sheet filters
   columns: [
     { key: 'id' },
     { key: 'houseNo' },

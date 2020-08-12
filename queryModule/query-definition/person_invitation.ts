@@ -113,6 +113,8 @@ const query = new QueryDef(
 // query.registerQuery('personContactJoin', personContactJoinExpression)
 
 const idExpression = new ColumnExpression('invitation', 'id')
+
+const personIdExpression = new ColumnExpression('person', 'id')
 const updatedAtExpression = new ColumnExpression('person', 'updatedAt')
 const firstNameExpression = new ColumnExpression('person', 'firstName')
 const userNameExpression = new ColumnExpression('person', 'userName')
@@ -217,7 +219,10 @@ const fieldList = [
     name : 'id',
     expression : idExpression
   },
-
+  {
+    name: 'personId',
+    expression: personIdExpression
+  },
   {
     name : 'userName',
     expression : userNameExpression

@@ -5,38 +5,12 @@
       "props": {
         "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
         "components": [{
-            "is": "v-btn",
-            "props": {
-              "small": true,
-              "flat": true,
-              "icon": true
-            },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "arrow_back"
-              }
-            }],
-            "events": {
-              "click.stop": [{
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "/{{ p[0] }}/{{ p[1] }}"
-                }
-              }]
-            }
-          },
-          {
-            "is": "I18nText",
-            "props": {
-              "i18nContext": "ShipmentPage",
-              "i18nKey": "importTitle"
-            }
-          }, {
-            "is": "v-spacer"
+          "is": "I18nText",
+          "props": {
+            "i18nContext": "ShipmentPage",
+            "i18nKey": "importTitle"
           }
-        ]
+        }]
       }
     },
     {
@@ -46,15 +20,6 @@
         "components": [{
           "is": "WidgetImport",
           "props": {
-            "tableName": "shipment",
-            "importKey": "houseNo",
-            "importFileTypes": ["xlsx"],
-            "importAxiosParams": {
-              "z": {
-                "method": "POST",
-                "url": "api/shipment/import"
-              }
-            },
             "importFormLayout": {
               "components": [{
                   "is": "DynamicComponent",

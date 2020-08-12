@@ -1,9 +1,306 @@
-
 import { AlertConfig, AlertFlexDataConfig } from 'modules/sequelize/interfaces/alert'
 import { AlertPreferenceDetail } from 'modules/sequelize/interfaces/alertPreference'
 import { IQueryParams } from 'classes/query'
 
-export const schedulerActive = false
+const schedulerActive = false
+
+
+// if testMode = true, will only send alert to those testAlertEmailList
+// make sure those email already have an acc
+const testMode = false
+const testAlertEmailList = [
+  'marco.lor+0843@swivelsoftware.com'
+]
+
+const ASWAlertConfigList = [
+  // lateArrival(SEA)
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'high',
+    alertType: 'lateArrival(SEA)',
+
+    templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.lateArrival',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+      subqueries: {
+
+        moduleTypeCode: {
+          value: "SEA"
+        },
+
+        // missing arrivalDateActual
+        arrivalDateActualIsNull: true,
+
+        // after arrivalDateActual + 1 day
+        after_arrivalDateEstimatedInUtc: {
+          value: {
+            value: 1,
+            unit: 'DAY'
+          }
+        },
+
+
+      },
+
+    } as IQueryParams,
+
+    closeQuery: {
+      subqueries: {
+        arrivalDateActualIsNotNull: true,
+      }
+    } as IQueryParams,
+
+    contactRoleList: ['forwarder','personInCharge','shipper', 'consignee'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ],
+  } as AlertConfig,
+
+
+
+  // lateArrival(AIR)
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'high',
+    alertType: 'lateArrival(AIR)',
+
+    templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.lateArrival',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+      subqueries: {
+
+        moduleTypeCode: {
+          value: "AIR"
+        },
+
+        // missing arrivalDateActual
+        arrivalDateActualIsNull: true,
+
+        // after arrivalDateActual + 1 day
+        after_arrivalDateEstimatedInUtc: {
+          value: {
+            value: 1,
+            unit: 'HOUR'
+          }
+        },
+
+
+      },
+
+    } as IQueryParams,
+
+    closeQuery: {
+      subqueries: {
+        arrivalDateActualIsNotNull: true,
+      }
+    } as IQueryParams,
+
+    contactRoleList: ['forwarder','personInCharge','shipper', 'consignee'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ],
+  } as AlertConfig,
+
+
+  // missingAMS(AIR)
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'missingAMS(AIR)',
+
+    templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingAMS',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+      subqueries: {
+
+        moduleTypeCode: {
+          value: "AIR"
+        },
+
+        // missing sendAMSDateActual
+        sendAMSDateActualIsNull: true,
+
+        // after_arrivalDateEstimatedInUtc + 1 day
+        after_arrivalDateActualInUtc: {
+          value: {
+            value: 1,
+            unit: 'HOUR'
+          }
+        },
+
+
+      },
+
+    } as IQueryParams,
+
+    closeQuery: {
+      subqueries: {
+        sendAMSDateActualIsNotNull: true,
+      }
+    } as IQueryParams,
+
+    contactRoleList: ['forwarder','personInCharge','shipper'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ],
+  } as AlertConfig,
+
+
+  // missingAMS(SEA)
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'missingAMS(SEA)',
+
+    templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingAMS',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+      subqueries: {
+
+        moduleTypeCode: {
+          value: "SEA"
+        },
+
+        // missing sendAMSDateActual
+        sendAMSDateActualIsNull: true,
+
+        // after_arrivalDateEstimatedInUtc + 1 day
+        after_arrivalDateEstimatedInUtc: {
+          value: {
+            value: 1,
+            unit: 'DAY'
+          }
+        },
+
+
+      },
+
+    } as IQueryParams,
+
+    closeQuery: {
+      subqueries: {
+        sendAMSDateActualIsNotNull: true,
+      }
+    } as IQueryParams,
+
+    contactRoleList: ['forwarder','personInCharge','shipper'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ],
+  } as AlertConfig,
+
+
+
+  {
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'containerReturn',
+
+    templatePath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.containerReturn',
+    
+    // schedule: '0 * * * * *',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+
+      subqueries: {
+
+        // missing returnEmptyContainerDateActual
+        returnEmptyContainerDateActualIsNull: true,
+
+        // after arrivalDateActual + 1 day
+        after_arrivalDateActualInUtc: {
+          value: {
+            value: 1,
+            unit: 'DAY'
+          }
+        },
+
+      },
+      
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have returnEmptyContainerDateActual
+        returnEmptyContainerDateActualIsNotNull: true 
+      }
+    },
+
+    contactRoleList: ['forwarder','personInCharge','shipper'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
+
+  },
+
+
+
+] as AlertConfig[]
 
 
 const shipmentSeaAlertList = [
@@ -17,7 +314,9 @@ const shipmentSeaAlertList = [
     alertType: 'cancelBookingAlert(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.cancelBookingAlert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -25,7 +324,7 @@ const shipmentSeaAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -47,7 +346,7 @@ const shipmentSeaAlertList = [
           }
         }
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -56,8 +355,12 @@ const shipmentSeaAlertList = [
       }
     },
 
-
-    contactRoleList: [],
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
 
   } as AlertConfig,
@@ -71,7 +374,10 @@ const shipmentSeaAlertList = [
     alertType: 'cargoDelayAlert(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.cargoDelayAlert',
+    
+
 
     // schedule: '0 * * * * *',
 
@@ -80,7 +386,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -103,7 +409,7 @@ const shipmentSeaAlertList = [
         },
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -113,7 +419,12 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: []
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
   },
 
   // cargoFailureToArrangeHualage(SEA)
@@ -125,7 +436,11 @@ const shipmentSeaAlertList = [
     alertType: 'cargoFailureToArrangeHualage(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.cargoFailureToArrangeHualage',
+
+    
+    
 
     // schedule: '0 * * * * *',
 
@@ -134,7 +449,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -158,7 +473,7 @@ const shipmentSeaAlertList = [
         },
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -168,7 +483,12 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: []
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
   },
 
   // missingVGM(SEA)
@@ -180,7 +500,9 @@ const shipmentSeaAlertList = [
     alertType: 'missingVGM(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingVGM',
+    
 
     // schedule: '0 * * * * *',
 
@@ -189,7 +511,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -214,7 +536,7 @@ const shipmentSeaAlertList = [
         },
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -225,7 +547,12 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: []
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
   },
 
   // missingEdi(SEA)
@@ -237,7 +564,9 @@ const shipmentSeaAlertList = [
     alertType: 'missingEdi(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingEdi',
+    
 
     // schedule: '0 * * * * *',
 
@@ -246,7 +575,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -278,7 +607,7 @@ const shipmentSeaAlertList = [
         }
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -288,7 +617,12 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: []
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
   },
 
   // missingPreAlert(SEA)
@@ -300,7 +634,9 @@ const shipmentSeaAlertList = [
     alertType: 'missingPreAlert(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingPreAlert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -309,7 +645,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -339,7 +675,7 @@ const shipmentSeaAlertList = [
           }
         }
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -350,7 +686,12 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: []
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
   },
 
   // missingMBL(SEA)
@@ -361,7 +702,9 @@ const shipmentSeaAlertList = [
     alertType: 'missingMBL(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingMBL',
+    
 
     // schedule: '0 * * * * *',
 
@@ -370,7 +713,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -402,7 +745,7 @@ const shipmentSeaAlertList = [
         }
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -412,7 +755,12 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: []
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
   },
 
@@ -424,7 +772,9 @@ const shipmentSeaAlertList = [
     alertType: 'missingHBL(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingHBL',
+    
 
     // schedule: '0 * * * * *',
 
@@ -433,7 +783,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -464,7 +814,7 @@ const shipmentSeaAlertList = [
         }
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -475,7 +825,12 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: []
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
   },
 
@@ -484,10 +839,13 @@ const shipmentSeaAlertList = [
     tableName: 'shipment',
     alertCategory: 'Exception',
     severity: 'medium',
-    alertType: 'missingHBL(SEA)',
+    alertType: 'demurrageWarning(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.demurrageAlert',
+
+    
 
     // schedule: '0 * * * * *',
 
@@ -496,7 +854,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
 
     queryName: 'shipment',
@@ -529,7 +887,7 @@ const shipmentSeaAlertList = [
         }
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -540,7 +898,12 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: []
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
   },
 
@@ -552,7 +915,9 @@ const shipmentSeaAlertList = [
     alertType: 'demurrageAlert(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.demurrageAlert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -561,7 +926,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -592,7 +957,7 @@ const shipmentSeaAlertList = [
         }
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -603,7 +968,12 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: []
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
   },
 
@@ -615,8 +985,9 @@ const shipmentSeaAlertList = [
     alertType: 'detentionWarning(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
 
+    handleAlertSubComponentLayoutName: 'alertForm.detentionAlert',
+    
     // schedule: '0 * * * * *',
 
     interval: {
@@ -624,7 +995,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -646,7 +1017,7 @@ const shipmentSeaAlertList = [
           }
         }
       },
-      limit: 1
+      
     },
 
 
@@ -657,7 +1028,12 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: []
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
   },
 
@@ -669,7 +1045,9 @@ const shipmentSeaAlertList = [
     alertType: 'detentionAlert(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.detentionAlert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -678,7 +1056,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -700,7 +1078,7 @@ const shipmentSeaAlertList = [
           }
         }
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -710,7 +1088,12 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: []
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
   },
 
@@ -722,7 +1105,9 @@ const shipmentSeaAlertList = [
     alertType: 'missingDeliveryArrangement(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.missingDeliveryArrangement(SEA)',
+    
 
     // schedule: '0 * * * * *',
 
@@ -731,7 +1116,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -762,7 +1147,7 @@ const shipmentSeaAlertList = [
         }
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -773,7 +1158,12 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: []
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
 
   }
 
@@ -790,7 +1180,9 @@ const shipmentAirAlertList = [
     alertType: 'missingPreAlert(AIR)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.cargoDelayAlert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -798,8 +1190,7 @@ const shipmentAirAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: false,
-
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -814,7 +1205,7 @@ const shipmentAirAlertList = [
         preAlertSendDateActualIsNull: true,
 
         // after masterBillReleasedDateActual / masterBillReleasedDateEstimated + 3 hour
-        masterBillReleasedDateActualInUtc_Or_masterBillReleasedDateEstimatedInUtc: {
+        after_masterBillReleasedDateActualInUtc_Or_masterBillReleasedDateEstimatedInUtc: {
           value: {
             value: 3,
             unit: 'HOUR'
@@ -822,7 +1213,7 @@ const shipmentAirAlertList = [
         },
 
       },
-      limit: 1
+      
     },
 
 
@@ -832,9 +1223,12 @@ const shipmentAirAlertList = [
         preAlertSendDateActualIsNotNull: true 
       }
     },
-
-
-    contactRoleList: []
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
   },
 
   // cargoDelayAlert(AIR)
@@ -846,7 +1240,9 @@ const shipmentAirAlertList = [
     alertType: 'cargoDelayAlert(AIR)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+
+    handleAlertSubComponentLayoutName: 'alertForm.cargoDelayAlert',
+    
 
     // schedule: '0 * * * * *',
 
@@ -855,7 +1251,7 @@ const shipmentAirAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -870,7 +1266,7 @@ const shipmentAirAlertList = [
         preAlertSendDateActualIsNull: true,
 
         // after cargoReceiptDateActual / cargoReceiptDateEstimated - 1 day
-        cargoReceiptDateActualInUtc_Or_cargoReceiptDateEstimatedInUtc: {
+        after_cargoReceiptDateActualInUtc_Or_cargoReceiptDateEstimatedInUtc: {
           value: {
             value: -1,
             unit: 'DAY'
@@ -878,7 +1274,7 @@ const shipmentAirAlertList = [
         },
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -888,8 +1284,13 @@ const shipmentAirAlertList = [
       }
     },
 
-    contactRoleList: []
-  },
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
+  } as AlertConfig,
 
   // missingDeliveryArrangement(AIR)
   {
@@ -900,8 +1301,9 @@ const shipmentAirAlertList = [
     alertType: 'missingDeliveryArrangement(AIR)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
-
+  
+    handleAlertSubComponentLayoutName: 'alertForm.missingDeliveryArrangement(AIR)',
+  
     // schedule: '0 * * * * *',
 
     interval: {
@@ -909,7 +1311,7 @@ const shipmentAirAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -924,7 +1326,7 @@ const shipmentAirAlertList = [
         portOfLoadingCodeIsNull: true,
 
         // after arrivalDateActual / arrivalDateEstimated + 1 day
-        arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: {
+        after_arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: {
           value: {
             value: 1,
             unit: 'DAY'
@@ -942,7 +1344,7 @@ const shipmentAirAlertList = [
         }
 
       },
-      limit: 1
+      
     },
 
     closeQuery: {
@@ -952,7 +1354,99 @@ const shipmentAirAlertList = [
       }
     },
 
-    contactRoleList: []
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
+  } as AlertConfig,
+
+]
+
+
+// alert related to sopTask
+const sopTaskAlertList = [
+
+  // hasDueTasksAlert
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'hasDueTasksAlert',
+
+    templatePath: 'alert/shipment-alert',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+
+      subqueries: {
+        // missing preAlertSendDateActual
+        hasDueTasks: true,
+
+      },
+      
+    },
+
+    closeQuery: {
+      subqueries : {
+        // have preAlertSendDateActual
+        noDueTasks: true 
+      }
+    },
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
+  },
+
+  // hasDeadTasksAlert
+  {
+
+    tableName: 'shipment',
+    alertCategory: 'Exception',
+    severity: 'medium',
+    alertType: 'hasDeadTasksAlert',
+
+    templatePath: 'alert/shipment-alert',
+
+    interval: {
+      value: 15,
+      unit: 'MINUTE'
+    },
+    active: true,
+
+    queryName: 'shipment',
+    query: {
+
+      subqueries: {
+        hasDeadTasks: true,
+      },
+      
+    },
+
+
+    closeQuery: {
+      subqueries : {
+        // have preAlertSendDateActual
+        noDeadTasks: false 
+      }
+    },
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ]
   },
 
 ]
@@ -968,7 +1462,7 @@ const oldAlertList = [
     alertType: 'shipmentArrivalDelayed(AIR)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+    
   },
 
   // shipmentArrivalDelayed(SEA)
@@ -980,7 +1474,7 @@ const oldAlertList = [
     alertType: 'shipmentArrivalDelayed(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+    
   },
 
   // shipmentDepartureDelayed(AIR)
@@ -992,7 +1486,7 @@ const oldAlertList = [
     alertType: 'shipmentDepartureDelayed(AIR)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+    
   },
 
   // shipmentDepartureDelayed(SEA)
@@ -1004,7 +1498,7 @@ const oldAlertList = [
     alertType: 'shipmentDepartureDelayed(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+    
   },
 
   // shipmentEtaChanged
@@ -1016,7 +1510,7 @@ const oldAlertList = [
     alertType: 'shipmentEtaChanged',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+    
   },
 
   // shipmentEtdChanged
@@ -1028,7 +1522,7 @@ const oldAlertList = [
     alertType: 'shipmentEtdChanged',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+    
   },
 
 
@@ -1041,7 +1535,7 @@ const oldAlertList = [
     alertType: 'shipmentAtaChanged',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+    
   },
 
   // shipmentAtdChanged
@@ -1053,7 +1547,7 @@ const oldAlertList = [
     alertType: 'shipmentAtdChanged',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+    
   },
 
   // shipmentMessage
@@ -1065,13 +1559,15 @@ const oldAlertList = [
     alertType: 'shipmentMessage',
 
     templatePath: 'alert/shipment-alert',
-    formPath: 'alert/shipment-alert',
+    
   }
 
 
 
 ]
 
+
+const testAlertActive = false
 const testAlertList = [
 
   // sayHello
@@ -1081,8 +1577,9 @@ const testAlertList = [
     severity: 'medium',
     alertType: 'sayHello',
 
-    templatePath: 'message/shipment-message',
-    formPath: 'alert.sayHello',
+    templatePath: 'alert/shipment-alert',
+    
+    handleAlertSubComponentLayoutName: 'alertForm.sayHello',
 
     // schedule: '0 * * * * *',
 
@@ -1091,14 +1588,7 @@ const testAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
-
-    canCloseBy: [
-      {
-        type: 'all'
-      }
-
-    ],
+    active: testAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -1109,7 +1599,7 @@ const testAlertList = [
         activeStatus: { value: 'active' }
       },
 
-      limit: 4
+      limit: 10
     } as IQueryParams,
 
     closeQuery: {
@@ -1121,63 +1611,80 @@ const testAlertList = [
     
 
     // select only 1 person
-    extraPersonIdQuery: {
-      subqueries: {
-        userName: { value: 'marco.lor@swivelsoftware.com' }
-      },
-      limit: 1
-    } as IQueryParams,
+    // extraPersonIdQuery: {
+    //   subqueries: {
+    //     userName: { value: 'marco.lor@swivelsoftware.com' }
+    //   },
+    //   
+    // } as IQueryParams,
 
-    // contactRoleList: ['shipper', 'consignee'],
-    contactRoleList: [],
 
-    // saveAsNewAlertTimeDiff : 0,
+    contactRoleList: ['forwarder','personInCharge'],
+    canCloseBy: [
+      {
+        type: 'all'
+      }
+    ],
 
-    resend: true, // resend to everyone or just send to those not yet receive
+
+    // flexDataConfig : {
+    //   tableName : 'shipment',
+    //   primaryKeyName : 'id',
+    //   variableList : [
+    //     {
+    //       name : 'portOfLoadingCode'
+    //     }
+    //   ]
+    // } as AlertFlexDataConfig
+
+
+
 
   } as AlertConfig,
 
 ]
 
 
-export const alertConfigList = [
+const alertConfigList = [
   // just seperate into different list
   ...shipmentSeaAlertList,
   ...shipmentAirAlertList,
   ...oldAlertList,
-
-  // ...testAlertList
+  ...sopTaskAlertList,
+  ...testAlertList,
+  ...ASWAlertConfigList
 
 ] as AlertConfig[]
 
-export const alertPreferenceDetailList = [
+const alertPreferenceDetailList = [
   {
     alertType: 'bookingMessage',
     notifyBy: 'email',
-    active: false
+    active: true
   },
 
   {
     alertType: 'shipmentMessage',
     notifyBy: 'email',
-    active: false
+    active: true
   },
 
   {
     alertType: 'shipmentEtaChanged',
     notifyBy: 'email',
-    active: false
+    active: true
   },
 
   {
     alertType: 'shipmentEtdChanged',
     notifyBy: 'email',
-    active: false
+    active: true
   }
 
 ] as AlertPreferenceDetail[]
 
-export const alertFlexDataConfigList = [
+
+const alertFlexDataConfigList = [
   {
     tableName: 'booking',
     variableList: 'all',
@@ -1188,6 +1695,64 @@ export const alertFlexDataConfigList = [
     tableName: 'shipment',
     primaryKeyName: 'id',
     variableList: 'all'
-  } as AlertFlexDataConfig
+  } as AlertFlexDataConfig,
+
+  //  {
+  //   tableName : 'shipment',
+  //   primaryKeyName : 'id',
+  //   variableList : [
+
+  //     {
+  //       name : 'portOfLoadingCode'
+  //     },
+  //     {
+  //       name : 'portOfDischargeCode'
+  //     },
+
+  //     {
+  //       name: 'jobNo'
+  //     },
+
+  //     {
+  //       name: 'masterNo'
+  //     },
+
+  //     {
+  //       name: 'houseNo'
+  //     },
+
+  //     {
+  //       name: 'jobDate'
+  //     },
+
+  //     {
+  //       name: 'date',
+  //       path: 'shipmentDate'
+  //     },
+
+  //     {
+  //       name: 'dateInUtc',
+  //       path: 'shipmentDateUtc'
+  //     },
+
+  //     {
+  //       name: 'party',
+  //       path: 'shipmentParty'
+  //     }
+
+  //   ]
+  // } as AlertFlexDataConfig
+
 
 ] as AlertFlexDataConfig[]
+
+
+
+export {
+  schedulerActive,
+  testMode,
+  testAlertEmailList,
+  alertConfigList,
+  alertPreferenceDetailList,
+  alertFlexDataConfigList
+}

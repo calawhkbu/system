@@ -6,6 +6,31 @@
         "class": "xs-12 grid min-height-28 align-item-center full-width padding-2",
         "components": [{
             "is": "v-btn",
+            "if": "return context.$store.state.main.widget",
+            "props": {
+              "class": "margin-0",
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "emit-global",
+                "otherParams": {
+                  "name": "back-list"
+                }
+              }]
+            }
+          },
+          {
+            "is": "v-btn",
+            "if": "return !context.$store.state.main.widget",
             "props": {
               "class": "margin-0",
               "small": true,
@@ -43,6 +68,7 @@
           },
           {
             "is": "ToolTip",
+            "if": "return !context.$store.state.main.widget",
             "props": {
               "bottom": true,
               "activatorComponents": {
@@ -53,7 +79,9 @@
                     "small": true,
                     "flat": true,
                     "icon": true,
-                    "blackList": ["id"],
+                    "blackList": [
+                      "id"
+                    ],
                     "axiosParams": "{ \"method\" : \"POST\",\"url\" : \"/default\",\"data\" : { \"tableName\" : \"booking\" , \"name\" : {{name | safe}},\"value\" : {{value | safe }}   }   }"
                   }
                 }]
@@ -72,6 +100,7 @@
           },
           {
             "is": "ToolTip",
+            "if": "return !context.$store.state.main.widget",
             "props": {
               "bottom": true,
               "activatorComponents": {
@@ -100,6 +129,7 @@
           },
           {
             "is": "ToolTip",
+            "if": "return !context.$store.state.main.widget",
             "props": {
               "bottom": true,
               "activatorComponents": {
@@ -268,18 +298,43 @@
             ]
           },
           {
-            "index": "alertWorkflowAndDocument",
+            "index": "alertAndDocument",
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "BookingPage",
+                  "i18nKey": "alertAndDocument"
+                }
+              }
+            ],
+            "tabItemComponents": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "booking/base/document"
+                }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "shipment/base/alert"
+                }
+              }]
+          },
+          {
+            "index": "sopTasks",
             "tabComponents": [{
               "is": "I18nText",
               "props": {
                 "i18nContext": "BookingPage",
-                "i18nKey": "alertAndDocument"
+                "i18nKey": "sopTasks"
               }
             }],
             "tabItemComponents": [{
               "is": "AsyncComponent",
               "props": {
-                "layoutName": "booking/base/document"
+                "layoutName": "booking/base/soptask"
               }
             }]
           },
@@ -324,28 +379,30 @@
                   "props": {
                     "class": "xs-12 grid padding-bottom-2",
                     "components": [{
-                      "is": "DynamicComponent",
-                      "props": {
-                        "class": "xs-6 padding-right-2",
-                        "components": [{
-                          "is": "AsyncComponent",
-                          "props": {
-                            "layoutName": "booking/base/party"
-                          }
-                        }]
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-6 padding-right-2",
+                          "components": [{
+                            "is": "AsyncComponent",
+                            "props": {
+                              "layoutName": "booking/base/party"
+                            }
+                          }]
+                        }
+                      },
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-6 padding-left-2",
+                          "components": [{
+                            "is": "AsyncComponent",
+                            "props": {
+                              "layoutName": "booking/base/date"
+                            }
+                          }]
+                        }
                       }
-                    }, {
-                      "is": "DynamicComponent",
-                      "props": {
-                        "class": "xs-6 padding-left-2",
-                        "components": [{
-                          "is": "AsyncComponent",
-                          "props": {
-                            "layoutName": "booking/base/date"
-                          }
-                        }]
-                      }
-                    }]
+                    ]
                   }
                 },
                 {
@@ -375,13 +432,22 @@
                     "class": "xs-12 margin-bottom-2",
                     "layoutName": "booking/base/tracking"
                   }
-                }, {
+                },
+                {
                   "is": "AsyncComponent",
                   "props": {
                     "class": "xs-12 margin-bottom-2",
                     "layoutName": "booking/base/alert"
                   }
-                }, {
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/soptask"
+                  }
+                },
+                {
                   "is": "AsyncComponent",
                   "props": {
                     "class": "xs-12 margin-bottom-2",

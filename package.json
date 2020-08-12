@@ -13,7 +13,7 @@
     "eslint-plugin-prefer-arrow": "^1.2.1",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "node-jql": "^2.0.0-rc.86",
+    "node-jql": "^2.0.0-rc.87",
     "prettier": "^1.18.2",
     "sequelize": "^5.21.12",
     "typescript": "^3.7.5"
@@ -25,8 +25,8 @@
     "prepare:own": "yarn prepare:classes;yarn prepare:modules;yarn prepare:models;yarn prepare:utils",
     "prepare:classes": "ln -s ../../../swivel-backend-new/src/classes node_modules/classes",
     "prepare:modules": "ln -s ../../../swivel-backend-new/src/modules node_modules/modules",
-    "prepare:models": "ln -s ../../../swivel-backend-new/src/classes node_modules/models",
-    "prepare:utils": "ln -s ../../../swivel-backend-new/src/classes node_modules/utils",
+    "prepare:models": "ln -s ../../../swivel-backend-new/src/models node_modules/models",
+    "prepare:utils": "ln -s ../../../swivel-backend-new/src/utils node_modules/utils",
     "prepare:thirdParty": "yarn prepare:nest;yarn prepare:types;yarn prepare:axios;yarn prepare:chalk;yarn prepare:lodash;yarn prepare:moment;yarn prepare:node-jql;yarn prepare:sequelize;yarn prepare:typescript;yarn prepare:eslint;yarn prepare:eslint-plugin-import;yarn prepare:eslint-plugin-jsdoc;yarn prepare:eslint-plugin-prefer-arrow;",
     "prepare:nest": "ln -s ../../../swivel-backend-new/node_modules/@nestjs node_modules/@nestjs",
     "prepare:types": "ln -s ../../../swivel-backend-new/node_modules/@types node_modules/@types",
@@ -42,5 +42,9 @@
     "prepare:eslint-plugin-jsdoc": "ln -s ../../../swivel-backend-new/node_modules/typescript node_modules/eslint-plugin-jsdoc",
     "prepare:eslint-plugin-prefer-arrow": "ln -s ../../../swivel-backend-new/node_modules/typescript node_modules/eslint-plugin-prefer-arrow",
     "export": "node export"
+  },
+  "dependencies": {
+    "randomstring": "^1.1.5",
+    "sha256": "^0.2.0"
   }
 }

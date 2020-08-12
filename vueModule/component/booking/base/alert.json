@@ -4,8 +4,10 @@
     "props": {
       "class": "xs-12 margin-topbottom-2",
       "layoutName": "plugins/alert",
+      "loadWhenDataLoaded": true,
       "axiosBaseParams": [
-        "const primaryKey = encodeURIComponent(context.$route.params.params);",
+        "const data = context.$store.state.widget.data;",
+        "const primaryKey = data.id;",
         "return {",
         "url: 'api/alert/list/history',",
         "method: 'POST',",

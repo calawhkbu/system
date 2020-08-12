@@ -5,22 +5,34 @@
     "props": {
       "reportingKey": "alerts",
       "jql": "alerts",
-      "showDefault": true,
-      "hasReports": false,
+      "hasReports": true,
       "showFilterBar": true,
       "enableShare": true,
-      "enableSetting": false,
+      "enableSetting": true,
       "noPartyGroupFilters": false,
       "newReport": {
         "filters": {
+
+          "alertStatus" : {
+            "value": "open"
+          },
           "activeStatus": {
             "value": "active"
           },
           "entityType": {
             "value": "shipment"
+          },
+          "alertCreatedAt": {
+            "func": {
+              "args": {
+                "unit": "week"
+              },
+              "key": "current"
+            }
           }
         },
         "configurations": {
+          "checkbox": {},
           "i18nContext": "AlertPage",
           "clickable": true,
           "draggable": true,
@@ -40,25 +52,32 @@
           }
         }
       },
-      "fieldOptions": [{
-          "key": "tableName",
+      "fieldOptions": [
+        {
+          "key": "alertId",
           "hidden": true
         },
         {
-          "key": "primaryKey",
+          "key": "checkbox",
+          "checkbox": true,
+          "showCheckAll": true
+        },
+        {
+          "key": "alertTableName",
           "hidden": true
         },
-
+        {
+          "key": "alertPrimaryKey",
+          "hidden": true
+        },
         {
           "key": "alertTitle",
           "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
         },
-
         {
           "key": "alertMessage",
           "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
         },
-
         {
           "key": "alertCategory"
         },
@@ -69,7 +88,6 @@
           "key": "alertContent",
           "hidden": true
         },
-
         {
           "key": "alertUpdatedAt",
           "hidden": true
@@ -80,6 +98,63 @@
         }
       ],
       "filters": [{
+          "name": "alertType",
+          "type": "autocomplete",
+          "props": {
+            "api": {
+              "query": {
+                "url": "api/alert/alertType/get",
+                "data": {
+                  "limit": 5,
+                  "subqueries": {
+                    "q": {
+                      "value": "{{ q }}"
+                    }
+                  }
+                },
+                "method": "POST",
+                "labelKey": "alertTitle",
+                "valueKey": "alertType",
+                "subLabelKey": "alertType"
+              },
+              "resolve": {
+                "url": "api/alert/alertType/get",
+                "data": {
+                  "subqueries": {
+                    "alertType": {
+                      "value": "{{value}}"
+                    }
+                  }
+                },
+                "method": "POST",
+                "labelKey": "alertTitle",
+                "valueKey": "alertType",
+                "subLabelKey": "alertType"
+              }
+            },
+            "threshold": 0,
+            "showAllIfEmpty": true,
+            "multi": true
+          },
+          "display": "alertType"
+        },
+        {
+          "display": "alertStatus",
+          "name": "alertStatus",
+          "props": {
+            "items": [{
+                "label": "open",
+                "value": "open"
+              },
+              {
+                "label": "closed",
+                "value": "closed"
+              }
+            ]
+          },
+          "type": "list"
+        },
+        {
           "display": "entityType",
           "name": "entityType",
           "props": {
@@ -96,15 +171,16 @@
           },
           "type": "list"
         },
-
-
         {
           "name": "alertUpdatedAt",
           "type": "date"
         },
         {
           "name": "alertCreatedAt",
-          "type": "date"
+          "type": "date",
+          "props": {
+            "required": true
+          }
         },
         {
           "display": "date",
@@ -113,18 +189,23 @@
           "props": {
             "required": false
           }
-
         }
-
       ],
       "clickFunction": {
         "type": "router",
         "otherParams": {
+          "base": true,
           "func": "push",
-          "path": "alerts/default/{{tableName}}/{{primaryKey}}"
+          "path": "{{alertTableName}}/{{alertPrimaryKey}}"
         }
       },
       "icons": []
-    }
+    },
+    "scopedSlots": [{
+      "name": "middle-button",
+      "is": "ReportHandleAlertDialogButton",
+      "props": {
+      }
+    }]
   }]
 }

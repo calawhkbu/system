@@ -28,6 +28,9 @@
         "filters": {
           "activeStatus": {
             "value": "active"
+          },
+          "moduleTypeCode": {
+            "value": ["SEA", "AIR"]
           }
         },
         "configurations": {
@@ -116,6 +119,7 @@
           "name": "moduleTypeCode",
           "i18nContext": "LocationPage",
           "props": {
+            "multiple": true,
             "items": [{
                 "label": "AIR",
                 "value": "AIR"

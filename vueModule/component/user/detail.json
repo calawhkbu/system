@@ -41,6 +41,124 @@
             }
           },
           {
+            "is": "Dialog",
+            "if": "return ((context.$store.state.widget.data && context.$store.state.widget.data.status !== 'accepted') && context.isSwivelAdmin )",
+            "props": {
+              "width": "50%",
+              "persistent": true,
+              "button": {
+                "layout": "v-btn",
+                "small": true,
+                "flat": true,
+                "icon": true,
+                "components": [{
+                  "is": "Icon",
+                  "props": {
+                    "icon": "add"
+                  }
+                }]
+              },
+              "closeButton": {
+                "class": "margin-4 zindex-1 right",
+                "flat": true,
+                "icon": true,
+                "small": true
+              }
+            },
+            "slots": [{
+              "is": "DynamicComponent",
+              "props": {
+                "components": [{
+                  "is": "Form",
+                  "props": {
+                    "showPreFormOnSubmit": true,
+                    "showFormOnSubmit": false,
+                    "showPostFormOnSubmit": false,
+                    "showLoadingOnSubmit": false,
+                    "form": {
+                      "password": "",
+                      "username": ""
+                    },
+                    "fields": [{
+                        "name": "password",
+                        "label": "Auth.password",
+                        "props": {
+                          "required": true
+                        },
+                        "component": "DisplayPasswordField",
+                        "validator": [
+                          "required"
+                        ]
+                      },
+                      {
+                        "name": "confirmPassword",
+                        "label": "Auth.confirmPassword",
+                        "props": {
+                          "required": true
+                        },
+                        "component": "DisplayPasswordField",
+                        "validator": [
+                          "required"
+                        ]
+                      }
+                    ],
+                    "submitActions": [{
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "auth/fakeRegister",
+                        "type": "local"
+                      }
+                    }]
+                  },
+                  "slots": [{
+                    "is": "DynamicComponent",
+                    "name": "post-form",
+                    "props": {
+                      "style": {
+                        "min-height": "100px"
+                      },
+                      "components": [{
+                        "is": "DynamicComponent",
+                        "props": {
+                          "style": {
+                            "align-items": "center",
+                            "display": "flex"
+                          },
+                          "components": [{
+                              "is": "i18nText",
+                              "name": "default",
+                              "props": {
+                                "isComponent": "small",
+                                "i18nKey": "Powered by Swivel Software Ltd."
+                              }
+                            },
+                            {
+                              "is": "v-spacer"
+                            },
+                            {
+                              "is": "v-btn",
+                              "props": {
+                                "flat": true,
+                                "type": "submit"
+                              },
+                              "slots": [{
+                                "is": "i18nText",
+                                "name": "default",
+                                "props": {
+                                  "i18nKey": "Auth.Login"
+                                }
+                              }]
+                            }
+                          ]
+                        }
+                      }]
+                    }
+                  }]
+                }]
+              }
+            }]
+          },
+          {
             "is": "v-spacer"
           },
           {

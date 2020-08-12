@@ -1,9 +1,10 @@
-import { NotImplementedException, BadRequestException } from '@nestjs/common'
+import { NotImplementedException } from '@nestjs/common'
 
 const app = {
   constants: {
     getPostProcessFunc: null as Function,
     partyGroup: null as any,
+    subqueries: null as any,
     card: null as any,
     user: null as any,
     zyh: 0,
@@ -11,6 +12,8 @@ const app = {
   method: 'POST',
   getUrl: async({ id, partyGroup: { api } }: any, params: any, constants: { [key: string]: any }, helper: { [key: string]: Function }): Promise<string> => {
     if (!api.wmsrpt || !api.wmsrpt.url) throw new NotImplementedException()
+    const { type, enableFiltering, ...subqueries } = params.subqueries
+    if (enableFiltering) constants.subqueries = subqueries
     const card = constants.card = await helper.getCard({
       method: 'POST',
       url: `${api.wmsrpt.url}/getschrptdata?id=` + id,
@@ -30,10 +33,10 @@ const app = {
   },
   responseHandler: async(
     response: { responseBody: any; responseOptions: any },
-    { card, getPostProcessFunc, partyGroup, user, zyh }: { [key: string]: any },
+    { card, getPostProcessFunc, partyGroup, subqueries, user, zyh }: { [key: string]: any },
     helper: { [key: string]: Function }
   ) => {
-    let responseBody = helper.parseData(response.responseBody, card)
+    let responseBody = helper.parseData(response.responseBody, card, subqueries)
 
     const postProcessFunc = await getPostProcessFunc(partyGroup.code, `wmsrpt-card-data/${zyh}`)
     responseBody = postProcessFunc(responseBody, card, user)

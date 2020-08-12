@@ -6,20 +6,18 @@
       "title": "Relationship",
       "reportingKey": "parties",
       "jql": "parties",
-      "hasReports": false,
+      "hasReports": true,
       "showFilterBar": true,
-      "enableShare": false,
-      "enableSetting": false,
+      "enableShare": true,
+      "enableSetting": true,
       "noPartyGroupFilters": true,
-      "noCache": true,
-      "refreshWhenBack": true,
-      "nextPageKey": "reportIdParams",
+      "nextPageComponent": "party",
       "clickFunction": {
         "type": "router",
         "otherParams": {
+          "base": true,
           "func": "push",
-          "path": "/party/detail/{{id}}",
-          "base": true
+          "path": "/party/{{id}}"
         }
       },
       "newReport": {

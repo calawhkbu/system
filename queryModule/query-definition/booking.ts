@@ -19,11 +19,15 @@ import {
   CaseExpression,
   Unknown,
   IConditionalExpression,
-  OrderBy,
   ICase,
+  MathExpression,
+  QueryExpression,
+  ExistsExpression,
+  IQuery,
 } from 'node-jql'
-import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, RegisterInterface, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
+import { hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression } from 'utils/sop-task'
+import sopQuery from './sop_task'
 
 const partyList = [
 
@@ -931,9 +935,10 @@ const alertMessageExpression = new CaseExpression({
     {
       // retrieve custom message from flexData
       $when: new BinaryExpression(new ColumnExpression('alert', 'alertCategory'), '=', 'Message'),
-      $then: new FunctionExpression(
-        'JSON_UNQUOTE',
-        new FunctionExpression('JSON_EXTRACT', new ColumnExpression('alert', 'flexData'), '$.customMessage')
+      $then: new MathExpression(
+        new ColumnExpression('alert', 'flexData'),
+        '->>',
+        '$.customMessage'
       )
     }
 
@@ -970,9 +975,10 @@ const masterNoExpression = new FunctionExpression(
   new Value(null)
 )
 
-const poNoExpression = new FunctionExpression(
-  'JSON_UNQUOTE',
-  new FunctionExpression('JSON_EXTRACT', new ColumnExpression('booking', 'flexData'), '$.poNo')
+const poNoExpression = new MathExpression(
+  new ColumnExpression('booking', 'flexData'),
+  '->>',
+  '$.poNo'
 )
 
 const cbmExpression = new FunctionExpression(
@@ -1331,6 +1337,9 @@ const summaryFieldList : SummaryField[]  = [
 
 registerSummaryField(query, baseTableName, summaryFieldList, nestedSummaryList, jobDateExpression)
 
+registerCheckboxField(query)
+
+
 
 // Date Filter=================
 
@@ -1443,28 +1452,62 @@ query
           new RegexpExpression(new ColumnExpression('booking', 'portOfDischargeCode'), false),
           new RegexpExpression(new ColumnExpression('booking', 'placeOfDeliveryCode'), false),
           new RegexpExpression(new ColumnExpression('booking', 'finalDestinationCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'controllingCustomerPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'controllingCustomerPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'linerAgentPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'linerAgentPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'roAgentPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'roAgentPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyName'), false),
-          // new RegexpExpression(new ColumnExpression('booking_amount', 'amountName'), false),
-          new RegexpExpression(new ColumnExpression('booking_container', 'containerNo'), false),
-          new RegexpExpression(new ColumnExpression('booking_container', 'sealNo'), false),
-          new RegexpExpression(new ColumnExpression('booking_reference', 'refName'), false),
-          new RegexpExpression(new ColumnExpression('booking_reference', 'refDescription'), false),
+          new InExpression(
+            new ColumnExpression('booking', 'id'),
+            false,
+            new Query({
+              $select: [new ResultColumn('bookingId')],
+              $from: new FromTable('booking_party'),
+              $where: new OrExpressions({
+                expressions: [
+                  new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyName'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'controllingCustomerPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'controllingCustomerPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'linerAgentPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'linerAgentPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'roAgentPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'roAgentPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyName'), false),
+                ]
+              })
+            })
+          ),
+          new InExpression(
+            new ColumnExpression('booking', 'id'),
+            false,
+            new Query({
+              $select: [new ResultColumn('bookingId')],
+              $from: new FromTable('booking_container'),
+              $where: new OrExpressions({
+                expressions: [
+                  new RegexpExpression(new ColumnExpression('booking_container', 'containerNo'), false),
+                  new RegexpExpression(new ColumnExpression('booking_container', 'sealNo'), false),
+                ]
+              })
+            })
+          ),
+          new InExpression(
+            new ColumnExpression('booking', 'id'),
+            false,
+            new Query({
+              $select: [new ResultColumn('bookingId')],
+              $from: new FromTable('booking_reference'),
+              $where: new OrExpressions({
+                expressions: [
+                  new RegexpExpression(new ColumnExpression('booking_reference', 'refDescription'), false),
+                ]
+              })
+            })
+          ),
+
         ],
       }),
     })
@@ -1500,8 +1543,166 @@ query
   .register('value', 28)
   .register('value', 29)
   .register('value', 30)
-  .register('value', 31)
-  .register('value', 32)
-  // .register('value', 33)
+
+// @field noOfTasks
+// number of outstanding tasks
+const hasSubTasksExpression = new ExistsExpression(
+  hasSubTaskQuery('temp'),
+  false
+)
+const notDoneExpression = IfExpression(
+  hasSubTasksExpression,
+  new ExistsExpression(hasSubTaskQuery('temp', generalIsDoneExpression('temp', true)), false),
+  generalIsDoneExpression('sop_task', true)
+)
+const noOfTasksQuery = new Query({
+  $select: new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('sop_task', 'id'))), 'noOfTasks'),
+  $from: 'sop_task',
+  $where: [
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
+    new IsNullExpression(new ColumnExpression('sop_task', 'parentId'), false),
+    notDoneExpression
+  ]
+})
+query.field('noOfTasks', {
+  $select: new ResultColumn(new QueryExpression(noOfTasksQuery), 'noOfTasks')
+})
+
+// @field sopScore
+// sop score field
+const isDueExpression = new BinaryExpression(
+  new ColumnExpression('sop_task', 'dueAt'),
+  '<',
+  new FunctionExpression('UTC_TIMESTAMP')
+)
+const isDeadExpression = new BinaryExpression(
+  new ColumnExpression('sop_task', 'deadline'),
+  '<',
+  new FunctionExpression('UTC_TIMESTAMP')
+)
+query.field('sopScore', {
+  $select: new ResultColumn(IfExpression(
+    new IsNullExpression(new ColumnExpression('booking', 'sopScore'), true), // TODO booking status is closed
+    new ColumnExpression('booking', 'sopScore'),
+    new MathExpression(new Value(100), '-', IfNullExpression(new QueryExpression(new Query({
+      $select: new ResultColumn(
+        new FunctionExpression('SUM', new CaseExpression([
+          {
+            $when: isDeadExpression,
+            $then: IfNullExpression(new ColumnExpression('sop_task', 'deadlineScore'), new Value(0))
+          },
+          {
+            $when: isDueExpression,
+            $then: IfNullExpression(new ColumnExpression('sop_task', 'dueScore'), new Value(0))
+          }
+        ], new Value(0)))
+      , 'deduct'),
+      $from: 'sop_task',
+      $where: [
+        new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
+        new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
+        new OrExpressions([isDueExpression, isDeadExpression])
+      ]
+    })), new Value(0)))
+  ), 'sopScore')
+})
+
+// @subquery hasDueTasks
+// return bookings with due tasks
+const dueTasksQuery = new Query({
+  $from: 'sop_task',
+  $where: [
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
+    generalIsClosedExpression('sop_task', true),
+    notDoneExpression,
+    isDueExpression
+  ]
+})
+query.subquery('hasDueTasks', {
+  $where: new ExistsExpression(dueTasksQuery, false)
+})
+
+// @subquery noDueTasks
+// return bookings without due tasks
+query.subquery('noDueTasks', {
+  $where: new ExistsExpression(dueTasksQuery, true)
+})
+
+// @subquery hasDeadTasks
+// return bookings with dead tasks
+const deadTasksQuery = new Query({
+  $from: 'sop_task',
+  $where: [
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
+    generalIsClosedExpression('sop_task', true),
+    notDoneExpression,
+    isDeadExpression
+  ]
+})
+query.subquery('hasDeadTasks', {
+  $where: new ExistsExpression(deadTasksQuery, false)
+})
+
+// @subquery noDeadTasks
+// return bookings without dead tasks
+query.subquery('noDeadTasks', {
+  $where: new ExistsExpression(deadTasksQuery, true)
+})
+
+// @field noOfOutstandingTasks
+query.field('noOfOutstandingTasks', params => {
+  let subqueries: any = { tableName: { value: 'booking' } }
+  if (params.subqueries.sop_user) subqueries.user = params.subqueries.sop_user
+  if (params.subqueries.sop_partyGroupCode) subqueries.partyGroupCode = params.subqueries.sop_partyGroupCode
+  if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
+  if (params.subqueries.sop_today) subqueries.today = params.subqueries.sop_today
+  if (params.subqueries.sop_date) subqueries.date = params.subqueries.sop_date
+  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
+  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
+  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
+  const query = sopQuery.apply({
+    fields: ['count'],
+    subqueries
+  })
+  const $where = query.$where as AndExpressions
+  $where.expressions.push(
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
+  )
+  return {
+    $select: new ResultColumn(new QueryExpression(query), 'noOfOutstandingTasks')
+  }
+})
+
+// @subquery myTasksOnly
+query.subquery('myTasksOnly', (value, params) => {
+  let subqueries: any = {
+    tableName: { value: 'booking' },
+    user: params.subqueries.sop_user,
+    partyGroupCode: params.subqueries.sop_partyGroupCode,
+    today: params.subqueries.sop_today,
+    date: params.subqueries.sop_date
+  }
+  if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
+  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
+  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
+  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
+  const query = sopQuery.apply({
+    distinct: true,
+    fields: ['id'],
+    subqueries
+  })
+  const $where = query.$where as AndExpressions
+  $where.expressions.push(
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
+  )
+  return {
+    $where: new ExistsExpression(query, false)
+  }
+})
 
 export default query

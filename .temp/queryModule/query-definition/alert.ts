@@ -11,6 +11,7 @@ import {
   IsNullExpression,
   ResultColumn,
   ParameterExpression,
+  MathExpression,
 } from 'node-jql'
 const query = new QueryDef(
   new Query({
@@ -90,13 +91,10 @@ query
     'moduleTypeCode',
     new Query({
       $where: new BinaryExpression(
-        new FunctionExpression(
-          'JSON_UNQUOTE',
-          new FunctionExpression(
-            'JSON_EXTRACT',
-            new ColumnExpression('alert', 'flexData'),
-            '$.entity.moduleTypeCode'
-          )
+        new MathExpression(
+          new ColumnExpression('alert', 'flexData'),
+          '->>',
+          '$.entity.moduleTypeCode'
         ),
         '='
       ),
