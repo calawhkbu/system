@@ -1452,28 +1452,62 @@ query
           new RegexpExpression(new ColumnExpression('booking', 'portOfDischargeCode'), false),
           new RegexpExpression(new ColumnExpression('booking', 'placeOfDeliveryCode'), false),
           new RegexpExpression(new ColumnExpression('booking', 'finalDestinationCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'controllingCustomerPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'controllingCustomerPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'linerAgentPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'linerAgentPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'roAgentPartyName'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'roAgentPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyCode'), false),
-          new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyName'), false),
-          // new RegexpExpression(new ColumnExpression('booking_amount', 'amountName'), false),
-          new RegexpExpression(new ColumnExpression('booking_container', 'containerNo'), false),
-          new RegexpExpression(new ColumnExpression('booking_container', 'sealNo'), false),
-          new RegexpExpression(new ColumnExpression('booking_reference', 'refName'), false),
-          new RegexpExpression(new ColumnExpression('booking_reference', 'refDescription'), false),
+          new InExpression(
+            new ColumnExpression('booking', 'id'),
+            false,
+            new Query({
+              $select: [new ResultColumn('bookingId')],
+              $from: new FromTable('booking_party'),
+              $where: new OrExpressions({
+                expressions: [
+                  new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'agentPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'consigneePartyName'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'notifyPartyPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'controllingCustomerPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'controllingCustomerPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'linerAgentPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'linerAgentPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'forwarderPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'roAgentPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'roAgentPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyName'), false),
+                ]
+              })
+            })
+          ),
+          new InExpression(
+            new ColumnExpression('booking', 'id'),
+            false,
+            new Query({
+              $select: [new ResultColumn('bookingId')],
+              $from: new FromTable('booking_container'),
+              $where: new OrExpressions({
+                expressions: [
+                  new RegexpExpression(new ColumnExpression('booking_container', 'containerNo'), false),
+                  new RegexpExpression(new ColumnExpression('booking_container', 'sealNo'), false),
+                ]
+              })
+            })
+          ),
+          new InExpression(
+            new ColumnExpression('booking', 'id'),
+            false,
+            new Query({
+              $select: [new ResultColumn('bookingId')],
+              $from: new FromTable('booking_reference'),
+              $where: new OrExpressions({
+                expressions: [
+                  new RegexpExpression(new ColumnExpression('booking_reference', 'refDescription'), false),
+                ]
+              })
+            })
+          ),
+
         ],
       }),
     })
@@ -1509,9 +1543,6 @@ query
   .register('value', 28)
   .register('value', 29)
   .register('value', 30)
-  .register('value', 31)
-  .register('value', 32)
-  // .register('value', 33)
 
 // @field noOfTasks
 // number of outstanding tasks

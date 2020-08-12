@@ -71,13 +71,6 @@ export default {
         return [entityType, entityType]
 
       },
-      // resultMapping: [
-      //   { from: 'alertId', to: 'id' },
-      //   { from: 'alertTableName', to: 'tableName' },
-      //   { from: 'alertPrimaryKey', to: 'primaryKey' },
-      //   { from: 'alertSeverity', to: 'severity'},
-      //   { from: 'alertStatus', to: 'status'},
-      // ]
     },
   ],
   columns: [

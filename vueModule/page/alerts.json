@@ -52,7 +52,8 @@
           }
         }
       },
-      "fieldOptions": [{
+      "fieldOptions": [
+        {
           "key": "alertId",
           "hidden": true
         },
@@ -203,7 +204,8 @@
     "scopedSlots": [{
       "name": "middle-button",
       "is": "ReportHandleAlertDialogButton",
-      "props": {}
+      "props": {
+      }
     }]
   }]
 }
