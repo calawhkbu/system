@@ -1,9 +1,11 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, BinaryExpression, FromTable, Unknown, OrExpressions, IsNullExpression, RegexpExpression } from "node-jql";
+import { ColumnExpression, ResultColumn, BinaryExpression, FromTable, Unknown, OrExpressions, IsNullExpression, RegexpExpression, QueryExpression, Query, FunctionExpression } from "node-jql";
 
 const templateTable = 'sop_template'
+const templateTemplateTaskTable = 'sop_template_template_task'
 
 const columns = [
+  [templateTable, 'id'],  // @field id
   [templateTable, 'partyGroupCode'],  // @field partyGroupCode
   [templateTable, 'category'],  // @field category
   [templateTable, 'tableName'], // @field tableName
@@ -39,6 +41,24 @@ for (const [table, name, as = name] of columns) {
 query.field('distinct-categories', {
   $distinct: true,
   $select: new ResultColumn(columnExpressions['category'], 'category')
+})
+
+
+
+
+
+// @field noOfTasks
+const noOfTasksQuery = new Query({
+  $select: new ResultColumn(new FunctionExpression('COUNT', 'taskId'), 'count'),
+  $from: templateTemplateTaskTable,
+  $where: [
+    new BinaryExpression(new ColumnExpression(templateTemplateTaskTable, 'templateId'), '=', columnExpressions['id']),
+    new IsNullExpression(new ColumnExpression(templateTemplateTaskTable, 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression(templateTemplateTaskTable, 'deletedBy'), false)
+  ]
+})
+query.field('noOfTasks', {
+  $select: new ResultColumn(new QueryExpression(noOfTasksQuery), 'noOfTasks')
 })
 
 
