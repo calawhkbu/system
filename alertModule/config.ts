@@ -12,6 +12,8 @@ const testAlertEmailList = [
   'marco.lor+0843@swivelsoftware.com'
 ]
 
+
+const ASWAlertActive = true
 const ASWAlertConfigList = [
   // lateArrival(SEA)
   {
@@ -29,7 +31,7 @@ const ASWAlertConfigList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: ASWAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -42,7 +44,7 @@ const ASWAlertConfigList = [
         // missing arrivalDateActual
         arrivalDateActualIsNull: true,
 
-        // after arrivalDateActual + 1 day
+        // after arrivalDateEstimated + 1 day
         after_arrivalDateEstimatedInUtc: {
           value: {
             value: 1,
@@ -87,7 +89,7 @@ const ASWAlertConfigList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: ASWAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -144,7 +146,7 @@ const ASWAlertConfigList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: ASWAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -158,7 +160,7 @@ const ASWAlertConfigList = [
         sendAMSDateActualIsNull: true,
 
         // after_arrivalDateEstimatedInUtc + 1 day
-        after_arrivalDateActualInUtc: {
+        after_arrivalDateEstimatedInUtc: {
           value: {
             value: 1,
             unit: 'HOUR'
@@ -201,7 +203,7 @@ const ASWAlertConfigList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: ASWAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -260,7 +262,7 @@ const ASWAlertConfigList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -270,8 +272,8 @@ const ASWAlertConfigList = [
         // missing returnEmptyContainerDateActual
         returnEmptyContainerDateActualIsNull: true,
 
-        // after arrivalDateActual + 1 day
-        after_arrivalDateActualInUtc: {
+        // after arrivalDateEstimated + 1 day
+        after_arrivalDateEstimatedInUtc: {
           value: {
             value: 1,
             unit: 'DAY'
@@ -303,6 +305,8 @@ const ASWAlertConfigList = [
 ] as AlertConfig[]
 
 
+const standardAlertActive = true
+
 const shipmentSeaAlertList = [
 
   // cancelBookingAlert(SEA)
@@ -324,7 +328,7 @@ const shipmentSeaAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -386,7 +390,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -449,7 +453,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -511,7 +515,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -575,7 +579,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -645,7 +649,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -713,7 +717,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -783,7 +787,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -854,7 +858,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: standardAlertActive,
 
 
     queryName: 'shipment',
@@ -926,7 +930,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -995,7 +999,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -1056,7 +1060,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -1116,7 +1120,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -1190,7 +1194,7 @@ const shipmentAirAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -1251,7 +1255,7 @@ const shipmentAirAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -1311,7 +1315,7 @@ const shipmentAirAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -1382,7 +1386,7 @@ const sopTaskAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -1423,7 +1427,7 @@ const sopTaskAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: true,
+    active: standardAlertActive,
 
     queryName: 'shipment',
     query: {
@@ -1657,29 +1661,29 @@ const alertConfigList = [
 ] as AlertConfig[]
 
 const alertPreferenceDetailList = [
-  {
-    alertType: 'bookingMessage',
-    notifyBy: 'email',
-    active: true
-  },
+  // {
+  //   alertType: 'bookingMessage',
+  //   notifyBy: 'email',
+  //   active: true
+  // },
 
-  {
-    alertType: 'shipmentMessage',
-    notifyBy: 'email',
-    active: true
-  },
+  // {
+  //   alertType: 'shipmentMessage',
+  //   notifyBy: 'email',
+  //   active: true
+  // },
 
-  {
-    alertType: 'shipmentEtaChanged',
-    notifyBy: 'email',
-    active: true
-  },
+  // {
+  //   alertType: 'shipmentEtaChanged',
+  //   notifyBy: 'email',
+  //   active: true
+  // },
 
-  {
-    alertType: 'shipmentEtdChanged',
-    notifyBy: 'email',
-    active: true
-  }
+  // {
+  //   alertType: 'shipmentEtdChanged',
+  //   notifyBy: 'email',
+  //   active: true
+  // }
 
 ] as AlertPreferenceDetail[]
 
