@@ -13,7 +13,6 @@ const testAlertEmailList = [
 ]
 
 
-const ASWAlertActive = true
 const ASWAlertConfigList = [
   // lateArrival(SEA)
   {
@@ -31,7 +30,7 @@ const ASWAlertConfigList = [
       unit: 'MINUTE'
     },
 
-    active: ASWAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -89,7 +88,7 @@ const ASWAlertConfigList = [
       unit: 'MINUTE'
     },
 
-    active: ASWAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -146,7 +145,7 @@ const ASWAlertConfigList = [
       unit: 'MINUTE'
     },
 
-    active: ASWAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -203,7 +202,7 @@ const ASWAlertConfigList = [
       unit: 'MINUTE'
     },
 
-    active: ASWAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -262,7 +261,7 @@ const ASWAlertConfigList = [
       unit: 'MINUTE'
     },
 
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -305,8 +304,6 @@ const ASWAlertConfigList = [
 ] as AlertConfig[]
 
 
-const standardAlertActive = true
-
 const shipmentSeaAlertList = [
 
   // cancelBookingAlert(SEA)
@@ -328,7 +325,7 @@ const shipmentSeaAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -390,7 +387,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -453,7 +450,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -515,7 +512,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -579,7 +576,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -649,7 +646,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -717,7 +714,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -787,7 +784,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -858,7 +855,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: standardAlertActive,
+    active: true,
 
 
     queryName: 'shipment',
@@ -930,7 +927,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -999,7 +996,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -1060,7 +1057,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -1120,7 +1117,7 @@ const shipmentSeaAlertList = [
       unit: 'MINUTE'
     },
 
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -1194,7 +1191,7 @@ const shipmentAirAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -1255,7 +1252,7 @@ const shipmentAirAlertList = [
       unit: 'MINUTE'
     },
 
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -1315,7 +1312,7 @@ const shipmentAirAlertList = [
       unit: 'MINUTE'
     },
 
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -1386,7 +1383,7 @@ const sopTaskAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -1427,7 +1424,7 @@ const sopTaskAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: standardAlertActive,
+    active: true,
 
     queryName: 'shipment',
     query: {
@@ -1571,7 +1568,6 @@ const oldAlertList = [
 ]
 
 
-const testAlertActive = false
 const testAlertList = [
 
   // sayHello
@@ -1592,7 +1588,7 @@ const testAlertList = [
       unit: 'MINUTE'
     },
 
-    active: testAlertActive,
+    active: false,
 
     queryName: 'shipment',
     query: {
