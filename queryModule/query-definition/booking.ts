@@ -1023,6 +1023,16 @@ const freightTermsExpression = new FunctionExpression(
   new ColumnExpression('booking', 'freightTermsCode')
 )
 
+const shipmentIdExpression = new QueryExpression(new Query({
+  $select : [
+    new ResultColumn(new ColumnExpression('shipment_booking','shipmentId'))
+  ],
+  $from: new FromTable('shipment_booking'),
+  $where: [
+    new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
+  ]
+}))
+
 // all field related to party
 const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInterface[], party) => {
 
@@ -1143,6 +1153,11 @@ const fieldList = [
 
   ...partyExpressionList,
   ...locationExpressionList,
+
+  {
+    name: 'shipmentId',
+    expression: shipmentIdExpression
+  },
   {
 
     name : 'houseNo',
