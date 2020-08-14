@@ -96,4 +96,13 @@ query.subquery('noSubTasks', {
 
 
 
+// @subquery subTasksOf
+query.subquery('subTasksOf', {
+  $where: new BinaryExpression(columnExpressions['parentId'], '=', new Unknown())
+}).register('value', 0)
+
+
+
+
+
 export default query
