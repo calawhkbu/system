@@ -49,6 +49,22 @@
             "is": "v-spacer"
           },
           {
+            "is": "WidgetExtraSelect",
+            "props": {
+              "i18nContext": "ShipmentPage",
+              "mainButtonKey": "Shipment",
+              "buttonIcon": "view_list",
+              "buttonProps": {
+                "icon": true,
+                "small": true,
+                "flat": true
+              },
+              "lodashToData": "shipmentBooking",
+              "lodashToKey": "houseNo",
+              "mainKey": "bookingNo"
+            }
+          },
+          {
             "is": "ToolTip",
             "props": {
               "bottom": true,
@@ -315,6 +331,7 @@
         "components": [
           {
             "is": "DynamicComponent",
+            "if": "return !context.$store.state.widget.selectedExtra",
             "props": {
               "class": "xs-8 padding-2",
               "components": [
@@ -373,6 +390,66 @@
                   "props": {
                     "class": "xs-12 margin-bottom-2 padding-top-4",
                     "layoutName": "shipment/base/reference"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "DynamicComponent",
+            "if": "return context.$store.state.widget.selectedExtra",
+            "props": {
+              "class": "xs-8 padding-2",
+              "components": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/general"
+                  }
+                },
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "xs-12 grid padding-bottom-2",
+                    "components": [{
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-6 padding-right-2",
+                          "components": [{
+                            "is": "AsyncComponent",
+                            "props": {
+                              "layoutName": "booking/base/party"
+                            }
+                          }]
+                        }
+                      },
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-6 padding-left-2",
+                          "components": [{
+                            "is": "AsyncComponent",
+                            "props": {
+                              "layoutName": "booking/base/date"
+                            }
+                          }]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/container"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/reference"
                   }
                 }
               ]

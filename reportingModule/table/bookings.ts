@@ -10,6 +10,7 @@ export default {
   columns: [
     { key: 'updatedAt' },
     { key: 'id' },
+    { key: 'shipmentId' },
     { key: 'houseNo' },
     { key: 'masterNo' },
     { key: 'poNo' },
