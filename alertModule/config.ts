@@ -268,6 +268,10 @@ const ASWAlertConfigList = [
 
       subqueries: {
 
+        moduleTypeCode: {
+          value: "SEA"
+        },
+
         // missing returnEmptyContainerDateActual
         returnEmptyContainerDateActualIsNull: true,
 
