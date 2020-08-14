@@ -29,6 +29,10 @@
           "if (context.diff(oldData.shipmentContainers, data.shipmentContainers)) return true",
           "return false"
         ],
+        "extraAxiosParams": {
+          "method": "get",
+          "url": "api/booking/bookingNo/{{data.bookingNo}}"
+        },
         "deleteKeyBeforeSave": [
           "quantity", "quantityUnit", "grossWeight", "volumeWeight",
           "chargeableWeight", "weightUnit", "teu", "cbm", "container20",
