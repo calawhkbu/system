@@ -8,6 +8,7 @@ const columns = [
   [templateTaskTable, 'id'],  // @field id
   [templateTaskTable, 'partyGroupCode'],  // @field partyGroupCode
   [templateTaskTable, 'uniqueId'],  // @field uniqueId
+  [templateTaskTable, 'parentId'],  // @field parentId
   [templateTaskTable, 'system'],  // @field system
   [templateTaskTable, 'category'],  // @field category
   [templateTaskTable, 'name'],  // @field name
@@ -80,6 +81,25 @@ query.subquery('notDeleted', {
     new IsNullExpression(columnExpressions['deletedBy'], false)
   ]
 })
+
+
+
+
+
+// @subquery noSubTasks
+// hide sub tasks
+query.subquery('noSubTasks', {
+  $where: new IsNullExpression(columnExpressions['parentId'], false)
+})
+
+
+
+
+
+// @subquery subTasksOf
+query.subquery('subTasksOf', {
+  $where: new BinaryExpression(columnExpressions['parentId'], '=', new Unknown())
+}).register('value', 0)
 
 
 

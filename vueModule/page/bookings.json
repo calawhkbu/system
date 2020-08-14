@@ -11,12 +11,11 @@
       "enableShare": true,
       "enableSetting": true,
       "noPartyGroupFilters": false,
-      "nextPageComponent": "booking",
       "clickFunction": {
         "type": "router",
         "otherParams": {
           "func": "push",
-          "path": "booking/{{id}}",
+          "path": "{% if shipmentId === null %}booking{% else %}shipment{% endif %}/{% if shipmentId === null %}{{id}}{% else %}{{shipmentId}}{% endif %}",
           "base": true
         }
       },
@@ -71,6 +70,10 @@
       }],
       "fieldOptions": [{
           "key": "id",
+          "hidden": true
+        },
+        {
+          "key": "shipmentId",
           "hidden": true
         },
         {
