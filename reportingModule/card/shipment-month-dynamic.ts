@@ -49,7 +49,7 @@ export default {
         // extend date into whole year
         extendDate(subqueries,moment,'year')
 
-        subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+        subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierCodeIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
           value: true
         }
 
@@ -168,6 +168,31 @@ export default {
     {
       display: 'groupByEntity',
       name: 'groupByEntity',
+      props: {
+        items: [
+            ...groupByEntityList.reduce((acc,groupByEntity) => {
+
+                acc = acc.concat(
+                    [
+                        {
+                            label: `${groupByEntity}`,
+                            value: `${groupByEntity}`,
+                        }
+                    ]
+                )
+
+                return acc
+
+            },[])
+        ],
+        required: true,
+      },
+      type: 'list',
+    },
+
+    {
+      display: 'bottomSheetGroupByEntity',
+      name: 'bottomSheetGroupByEntity',
       props: {
         items: [
             ...groupByEntityList.reduce((acc,groupByEntity) => {
