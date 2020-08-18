@@ -206,6 +206,32 @@ export default {
       },
       type: 'list',
     },
+
+    {
+      display: 'bottomSheetGroupByEntity',
+      name: 'bottomSheetGroupByEntity',
+      props: {
+        items: [
+            ...groupByEntityList.reduce((acc,groupByEntity) => {
+
+                acc = acc.concat(
+                    [
+                        {
+                            label: `${groupByEntity}`,
+                            value: `${groupByEntity}`,
+                        }
+                    ]
+                )
+
+                return acc
+
+            },[])
+        ],
+        required: true,
+      },
+      type: 'list',
+    },
+    
     {
       display: 'sorting',
       name: 'sorting',
