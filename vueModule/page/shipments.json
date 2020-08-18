@@ -137,9 +137,7 @@
             }
           }
         },
-
         {
-
           "api": {
             "arrayMapper": {
               "keyKey": "code",
@@ -158,8 +156,7 @@
             }
           },
           "key": "lastStatusCodeOrDescription",
-          "label": "lastStatus",
-          "i18nContext": "Reporting"
+          "label": "lastStatus"
         },
 
         {
@@ -168,8 +165,7 @@
         },
         {
           "key": "lastStatusDate",
-          "format": "YYYY-MM-DD HH:mm:ss",
-          "i18nContext": "Reporting"
+          "format": "YYYY-MM-DD HH:mm:ss"
         },
         {
           "key": "haveCurrentTrackingNo",
