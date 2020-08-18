@@ -108,26 +108,33 @@ const formDataToEntityFunction = (propParam: PropParam) => {
 
     const fieldList = []
 
+
+    // assuming have dateTableName
     if (isInFlexData)
     {
-      if (!entityData.flexData)
+
+      if (!dateTableName)
       {
-        entityData.flexData = {}
+        throw new Error('missing dateTableName')
+      }
+
+      if (!entityData[dateTableName].flexData)
+      {
+        entityData[dateTableName].flexData = {}
         // _.set(entityData,'flexData',{}) 
       }
 
-      if (!entityData.flexData.moreDate)
+      if (!entityData[dateTableName].flexData.moreDate)
       {
-        entityData.flexData.moreDate = []
+        entityData[dateTableName].flexData.moreDate = []
         // _.set(entityData,'flexData.moreDate',[]) 
       }
   
-      if (!entityData.flexData.moreDate.includes(dateName))
+      if (!entityData[dateTableName].flexData.moreDate.includes(dateName))
       {
-        entityData.flexData.moreDate = entityData.flexData.moreDate.concat([dateName])
+        entityData[dateTableName].flexData.moreDate = entityData[dateTableName].flexData.moreDate.concat([dateName])
       }
     }
-
 
     if (includeActual)
     {
