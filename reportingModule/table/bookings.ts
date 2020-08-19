@@ -65,8 +65,6 @@ export default {
     { key: 'agentPartyName' },
     { key: 'agentPartyContactEmail' },
     { key: 'agentPartyContactName' },
-    { key: 'shipmentHouseNo' },
-    { key: 'shipmentMasterNo' },
   ],
 } as JqlDefinition
 
