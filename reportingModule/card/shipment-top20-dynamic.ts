@@ -201,9 +201,6 @@ export default {
           const topX = subqueries.topX.value
           const topY = subqueries.topY.value
 
-          const mapping = {}
-
-
           res.map(dynamicRow => {
 
             const { dynamicCode } = { dynamicCode: dynamicRow[dynamicColumnCodeColumnName] }
@@ -214,14 +211,11 @@ export default {
 
             const { code } = row
 
-
             // calculate topX dynamicCodeList
 
             // just get the first topX
             const dynamicCodeList = [ ...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0,topX)
             const dynamicNameList = [ ...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnNameColumnName]))].splice(0,topX)
-
-            
 
             const row_ = {
                 ...row,
@@ -276,39 +270,6 @@ export default {
   filters: [
     // for this filter, user can only select single,
     // but when config in card definition, use summaryVariables. Then we can set as multi
-    {
-      display: 'topX',
-      name: 'topX',
-      props: {
-        items: [
-          {
-            label: '10',
-            value: 10,
-          },
-          {
-            label: '20',
-            value: 20,
-          },
-          {
-            label: '50',
-            value: 50,
-          },
-          {
-            label: '100',
-            value: 100,
-          },
-          {
-            label: '1000',
-            value: 1000,
-          }
-        ],
-        multi: false,
-        required: true,
-      },
-      type: 'list',
-    },
-
-
     {
         display: 'topY',
         name: 'topY',
@@ -369,6 +330,31 @@ export default {
     {
       display: 'groupByEntity',
       name: 'groupByEntity',
+      props: {
+        items: [
+            ...groupByEntityList.reduce((acc,groupByEntity) => {
+
+                acc = acc.concat(
+                    [
+                        {
+                            label: `${groupByEntity}`,
+                            value: `${groupByEntity}`,
+                        }
+                    ]
+                )
+
+                return acc
+
+            },[])
+        ],
+        required: true,
+      },
+      type: 'list',
+    },
+
+    {
+      display: 'bottomSheetGroupByEntity',
+      name: 'bottomSheetGroupByEntity',
       props: {
         items: [
             ...groupByEntityList.reduce((acc,groupByEntity) => {

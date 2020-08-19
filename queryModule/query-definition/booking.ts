@@ -101,9 +101,7 @@ const query = new QueryDef(
 )
 
 query.table('booking_date', new Query({
-
   $from : new FromTable({
-
     table : 'booking',
     joinClauses : [
       {
@@ -957,24 +955,6 @@ const alertUpdatedAtExpression = new ColumnExpression('alert', 'updatedAt')
 
 const alertContentExpression = new ColumnExpression('alert', 'flexData')
 
-const houseNoExpression = new FunctionExpression(
-  'IF',
-  new BinaryExpression(
-    new ColumnExpression('booking_reference', 'refName'),
-    '=',
-    new Value('HBL')
-  ),
-  new ColumnExpression('booking_reference', 'refDescription'),
-  new Value(null)
-)
-
-const masterNoExpression = new FunctionExpression(
-  'IF',
-  new BinaryExpression(new ColumnExpression('booking_reference', 'refName'), '=', 'MBL'),
-  new ColumnExpression('booking_reference', 'refDescription'),
-  new Value(null)
-)
-
 const poNoExpression = new MathExpression(
   new ColumnExpression('booking', 'flexData'),
   '->>',
@@ -1032,6 +1012,73 @@ const shipmentIdExpression = new QueryExpression(new Query({
     new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
   ]
 }))
+
+const bookingHouseNoExpression = new FunctionExpression(
+  'IF',
+  new BinaryExpression(
+    new ColumnExpression('booking_reference', 'refName'),
+    '=',
+    new Value('HBL')
+  ),
+  new ColumnExpression('booking_reference', 'refDescription'),
+  new Value(null)
+)
+
+const bookingMasterNoExpression = new FunctionExpression(
+  'IF',
+  new BinaryExpression(new ColumnExpression('booking_reference', 'refName'), '=', 'MBL'),
+  new ColumnExpression('booking_reference', 'refDescription'),
+  new Value(null)
+)
+
+
+const shipmentMasterNoExpression = new QueryExpression(new Query({
+  $select : [
+    new ResultColumn(new ColumnExpression('shipment','masterNo'))
+  ],
+  $from: new FromTable({
+    table: 'shipment_booking',
+    joinClauses : [{
+      operator: 'LEFT',
+      table: 'shipment',
+      $on: [new BinaryExpression(new ColumnExpression('shipment_booking', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))]
+    }]
+  }),
+  $where: [
+    new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
+  ]
+}))
+
+const shipmentHouseNoExpression = new QueryExpression(new Query({
+  $select : [
+    new ResultColumn(new ColumnExpression('shipment','houseNo'))
+  ],
+  $from: new FromTable({
+    table: 'shipment_booking',
+    joinClauses : [{
+      operator: 'LEFT',
+      table: 'shipment',
+      $on: [new BinaryExpression(new ColumnExpression('shipment_booking', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))]
+    }]
+  }),
+  $where: [
+    new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
+  ]
+}))
+
+const houseNoExpression = new FunctionExpression(
+  'IF',
+  new IsNullExpression(shipmentIdExpression, true),
+  shipmentHouseNoExpression,
+  bookingHouseNoExpression,
+)
+
+const masterNoExpression = new FunctionExpression(
+  'IF',
+  new IsNullExpression(shipmentIdExpression, true),
+  shipmentMasterNoExpression,
+  bookingMasterNoExpression,
+)
 
 // all field related to party
 const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInterface[], party) => {
