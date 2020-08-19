@@ -1034,12 +1034,15 @@ const bookingMasterNoExpression = new FunctionExpression(
 
 const shipmentMasterNoExpression = new QueryExpression(new Query({
   $select : [
-    new ResultColumn(new ColumnExpression('shipment_booking','masterNo'))
+    new ResultColumn(new ColumnExpression('shipment','masterNo'))
   ],
-  $from: new FromTable('shipment_booking', {
-    operator: 'LEFT',
-    table: 'shipment',
-    on: [new BinaryExpression(new ColumnExpression('shipment_booking', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))]
+  $from: new FromTable({
+    table: 'shipment_booking',
+    joinClauses : [{
+      operator: 'LEFT',
+      table: 'shipment',
+      $on: [new BinaryExpression(new ColumnExpression('shipment_booking', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))]
+    }]
   }),
   $where: [
     new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
@@ -1050,10 +1053,13 @@ const shipmentHouseNoExpression = new QueryExpression(new Query({
   $select : [
     new ResultColumn(new ColumnExpression('shipment','houseNo'))
   ],
-  $from: new FromTable('shipment_booking', {
-    operator: 'LEFT',
-    table: 'shipment',
-    on: [new BinaryExpression(new ColumnExpression('shipment_booking', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))]
+  $from: new FromTable({
+    table: 'shipment_booking',
+    joinClauses : [{
+      operator: 'LEFT',
+      table: 'shipment',
+      $on: [new BinaryExpression(new ColumnExpression('shipment_booking', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))]
+    }]
   }),
   $where: [
     new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
@@ -1062,16 +1068,16 @@ const shipmentHouseNoExpression = new QueryExpression(new Query({
 
 const houseNoExpression = new FunctionExpression(
   'IF',
-  new IsNullExpression(shipmentIdExpression),
+  new IsNullExpression(shipmentIdExpression, true),
+  shipmentHouseNoExpression,
   bookingHouseNoExpression,
-  shipmentHouseNoExpression
 )
 
 const masterNoExpression = new FunctionExpression(
   'IF',
-  new IsNullExpression(shipmentIdExpression),
+  new IsNullExpression(shipmentIdExpression, true),
+  shipmentMasterNoExpression,
   bookingMasterNoExpression,
-  shipmentMasterNoExpression
 )
 
 // all field related to party
