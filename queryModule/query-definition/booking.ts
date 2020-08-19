@@ -101,9 +101,7 @@ const query = new QueryDef(
 )
 
 query.table('booking_date', new Query({
-
   $from : new FromTable({
-
     table : 'booking',
     joinClauses : [
       {
@@ -1033,6 +1031,34 @@ const shipmentIdExpression = new QueryExpression(new Query({
   ]
 }))
 
+const shipmentMasterNoExpression = new QueryExpression(new Query({
+  $select : [
+    new ResultColumn(new ColumnExpression('shipment_booking','masterNo'))
+  ],
+  $from: new FromTable('shipment_booking', {
+    operator: 'LEFT',
+    table: 'shipment',
+    on: [new BinaryExpression(new ColumnExpression('shipment_booking', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))]
+  }),
+  $where: [
+    new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
+  ]
+}))
+
+const shipmentHouseNoExpression = new QueryExpression(new Query({
+  $select : [
+    new ResultColumn(new ColumnExpression('shipment','houseNo'))
+  ],
+  $from: new FromTable('shipment_booking', {
+    operator: 'LEFT',
+    table: 'shipment',
+    on: [new BinaryExpression(new ColumnExpression('shipment_booking', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))]
+  }),
+  $where: [
+    new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
+  ]
+}))
+
 // all field related to party
 const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInterface[], party) => {
 
@@ -1157,6 +1183,14 @@ const fieldList = [
   {
     name: 'shipmentId',
     expression: shipmentIdExpression
+  },
+  {
+    name: 'shipmentHouseNo',
+    expression: shipmentHouseNoExpression
+  },
+  {
+    name: 'shipmentMasterNo',
+    expression: shipmentMasterNoExpression
   },
   {
 
