@@ -1716,7 +1716,7 @@ query.subquery('noDeadTasks', {
 
 // @field noOfOutstandingTasks
 query.field('noOfOutstandingTasks', params => {
-  let subqueries: any = { tableName: { value: 'booking' } }
+  let subqueries: any = { tableName: { value: 'booking' }, notSubTask: true }
   if (params.subqueries.sop_user) subqueries.user = params.subqueries.sop_user
   if (params.subqueries.sop_partyGroupCode) subqueries.partyGroupCode = params.subqueries.sop_partyGroupCode
   if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
@@ -1744,6 +1744,7 @@ query.field('noOfOutstandingTasks', params => {
 query.subquery('myTasksOnly', (value, params) => {
   let subqueries: any = {
     tableName: { value: 'booking' },
+    notSubTask: true,
     user: params.subqueries.sop_user,
     partyGroupCode: params.subqueries.sop_partyGroupCode,
     today: params.subqueries.sop_today,
