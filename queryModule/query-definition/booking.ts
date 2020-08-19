@@ -1682,7 +1682,8 @@ query.field('noOfOutstandingTasks', params => {
     fields: ['count'],
     subqueries
   })
-  const $where = query.$where as AndExpressions
+  let $where = query.$where as AndExpressions
+  if (!$where) $where = query.$where = new AndExpressions([])
   $where.expressions.push(
     new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
     new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
@@ -1710,7 +1711,8 @@ query.subquery('myTasksOnly', (value, params) => {
     fields: ['id'],
     subqueries
   })
-  const $where = query.$where as AndExpressions
+  let $where = query.$where as AndExpressions
+  if (!$where) $where = query.$where = new AndExpressions([])
   $where.expressions.push(
     new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
     new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
