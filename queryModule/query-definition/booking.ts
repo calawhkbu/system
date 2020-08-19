@@ -1716,7 +1716,7 @@ query.subquery('noDeadTasks', {
 
 // @field noOfOutstandingTasks
 query.field('noOfOutstandingTasks', params => {
-  let subqueries: any = { tableName: { value: 'booking' } }
+  let subqueries: any = { tableName: { value: 'booking' }, notSubTask: true }
   if (params.subqueries.sop_user) subqueries.user = params.subqueries.sop_user
   if (params.subqueries.sop_partyGroupCode) subqueries.partyGroupCode = params.subqueries.sop_partyGroupCode
   if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
@@ -1729,7 +1729,8 @@ query.field('noOfOutstandingTasks', params => {
     fields: ['count'],
     subqueries
   })
-  const $where = query.$where as AndExpressions
+  let $where = query.$where as AndExpressions
+  if (!$where) $where = query.$where = new AndExpressions([])
   $where.expressions.push(
     new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
     new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
@@ -1743,6 +1744,7 @@ query.field('noOfOutstandingTasks', params => {
 query.subquery('myTasksOnly', (value, params) => {
   let subqueries: any = {
     tableName: { value: 'booking' },
+    notSubTask: true,
     user: params.subqueries.sop_user,
     partyGroupCode: params.subqueries.sop_partyGroupCode,
     today: params.subqueries.sop_today,
@@ -1757,7 +1759,8 @@ query.subquery('myTasksOnly', (value, params) => {
     fields: ['id'],
     subqueries
   })
-  const $where = query.$where as AndExpressions
+  let $where = query.$where as AndExpressions
+  if (!$where) $where = query.$where = new AndExpressions([])
   $where.expressions.push(
     new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
     new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
