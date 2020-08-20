@@ -92,6 +92,22 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
+  // subquery:partyGroupCode
+  {
+    type: 'subquery',
+    name: 'partyGroupCode',
+    expression: re => new BinaryExpression(re['partyGroupCode'], '=', new Unknown()),
+    unknowns: [['value', 0]]
+  },
+
+  // subquery:category
+  {
+    type: 'subquery',
+    name: 'category',
+    expression: re => new BinaryExpression(re['category'], '=', new Unknown()),
+    unknowns: [['value', 0]]
+  },
+
   // subquery:notExistsIn
   {
     type: 'subquery',
