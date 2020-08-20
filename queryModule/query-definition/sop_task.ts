@@ -117,13 +117,14 @@ const shortcuts: IShortcut[] = [
   {
     type: 'table',
     name: 'sop_template_task',
-    fromTable: new FromTable(taskTable, new JoinClause('LEFT', templateTaskTable,
-      new AndExpressions([
-        new BinaryExpression(new ColumnExpression(taskTable, 'taskId'), '=', new ColumnExpression(templateTaskTable, 'id')),
-        new IsNullExpression(new ColumnExpression(templateTaskTable, 'deletedAt'), false),
-        new IsNullExpression(new ColumnExpression(templateTaskTable, 'deletedBy'), false)
-      ])
-    ))
+    queryArg: re => params => ({
+      $from: new FromTable(taskTable, new JoinClause('LEFT', templateTaskTable,
+        new AndExpressions([
+          new BinaryExpression(new ColumnExpression(taskTable, 'taskId'), '=', new ColumnExpression(templateTaskTable, 'id')),
+          new BinaryExpression(new ColumnExpression(templateTaskTable, 'partyGroupCode'), '=', params.subqueries.partyGroupCode.value)
+        ])
+      ))
+    })
   },
 
   // table:sop_selected_template
