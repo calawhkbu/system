@@ -117,13 +117,14 @@ const shortcuts: IShortcut[] = [
   {
     type: 'table',
     name: 'sop_template_task',
-    fromTable: new FromTable(taskTable, new JoinClause('LEFT', templateTaskTable,
-      new AndExpressions([
-        new BinaryExpression(new ColumnExpression(taskTable, 'taskId'), '=', new ColumnExpression(templateTaskTable, 'id')),
-        new IsNullExpression(new ColumnExpression(templateTaskTable, 'deletedAt'), false),
-        new IsNullExpression(new ColumnExpression(templateTaskTable, 'deletedBy'), false)
-      ])
-    ))
+    queryArg: re => params => ({
+      $from: new FromTable(taskTable, new JoinClause('LEFT', templateTaskTable,
+        new AndExpressions([
+          new BinaryExpression(new ColumnExpression(taskTable, 'taskId'), '=', new ColumnExpression(templateTaskTable, 'id')),
+          new BinaryExpression(new ColumnExpression(templateTaskTable, 'partyGroupCode'), '=', params.subqueries.partyGroupCode.value)
+        ])
+      ))
+    })
   },
 
   // table:sop_selected_template
@@ -532,10 +533,10 @@ const shortcuts: IShortcut[] = [
     companions: getEntityTable([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
-  // field:pic
+  // field:picEmail
   {
     type: 'field',
-    name: 'pic',
+    name: 'picEmail',
     queryArg: () => getEntityField('picEmail', [bookingTable], [shipmentTable]),
     companions: getEntityTable([], [bookingTable], [shipmentTable])
   },
@@ -747,6 +748,22 @@ const shortcuts: IShortcut[] = [
       const byMeExpression = new BinaryExpression(statusByExpression, '=', me)
       return { $select: new ResultColumn(IfExpression(byMeExpression, new Value('me'), statusByExpression), 'statusBy') }
     }
+  },
+
+  // field:deduct
+  {
+    type: 'field',
+    name: 'deduct',
+    expression: re => new FunctionExpression('SUM', new CaseExpression([
+      {
+        $when: re['isDead'],
+        $then: IfNullExpression(new ColumnExpression('sop_task', 'deadlineScore'), new Value(0))
+      },
+      {
+        $when: re['isDue'],
+        $then: IfNullExpression(new ColumnExpression('sop_task', 'dueScore'), new Value(0))
+      }
+    ], new Value(0)))
   },
 
   // subquery:partyGroupCode
