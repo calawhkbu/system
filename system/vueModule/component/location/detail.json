@@ -1,0 +1,96 @@
+{
+  "class": "grid",
+  "components": [{
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid min-height-28 align-item-center full-width",
+        "components": [{
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/admin/locations"
+                }
+              }]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "i18nContext": "LocationPage",
+              "i18nKey": "title"
+            }
+          },
+          {
+            "is": "v-spacer"
+          },
+          {
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "icon": true,
+              "flat": true,
+              "class": "primary white-text"
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "small": true,
+                "icon": "edit"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "edit"
+                }
+              }]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 padding-leftright-2",
+        "components": [{
+          "is": "AsyncComponent",
+          "props": {
+            "layoutName": "location/forms/module"
+          }
+        }, {
+          "is": "AsyncComponent",
+          "props": {
+            "layoutName": "location/forms/code"
+          }
+        }, {
+          "is": "AsyncComponent",
+          "props": {
+            "layoutName": "location/forms/general"
+          }
+        }, {
+          "is": "AsyncComponent",
+          "props": {
+            "layoutName": "location/forms/extra"
+          }
+        }]
+      }
+    }
+  ]
+}

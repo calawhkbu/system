@@ -1,0 +1,38 @@
+{
+  "components": [{
+    "is": "GridTool",
+    "props": {
+      "reportingKey": "dashboard",
+      "hasReports": true,
+      "showFilterBar": true,
+      "enableShare": true,
+      "enableSetting": true,
+      "newReport": {
+        "filters": {
+          "activeStatus": {
+            "value": "active"
+          },
+          "date": {
+            "func": {
+              "args": {
+                "unit": "month"
+              },
+              "key": "current"
+            }
+          }
+        },
+        "configurations": {
+          "i18nContext": "Reporting",
+          "colors": [
+            "#005EB8",
+            "#008675",
+            "#E35205",
+            "#AF272F",
+            "#F1B434",
+            "#c9cbcf"
+          ]
+        }
+      }
+    }
+  }]
+}

@@ -1,0 +1,91 @@
+{
+  "components": [
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "style": {
+          "width": "100%",
+          "padding": "12px 8px 4px",
+          "z-index": 99,
+          "overflow": "hidden",
+          "flex-wrap": "unset",
+          "font-size": "0.85rem",
+          "min-height": "50px",
+          "align-items": "center",
+          "background-color": "transparent"
+        },
+        "components": [
+          {
+            "is": "i18nText",
+            "props": {
+              "class": "headline",
+              "i18nKey": "MenuItem.UserProfile"
+            }
+          },
+          {
+            "is": "v-spacer"
+          }
+        ]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "class": "grid",
+        "components": [
+          {
+            "is": "DynamicComponent",
+            "props": {
+              "class": "xs-12 md-5",
+              "style": {
+                "padding": "4px"
+              },
+              "components": [
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "user-profile/basic-information"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "DynamicComponent",
+            "props": {
+              "class": "xs-12 md-7",
+              "style": {
+                "padding": "4px"
+              },
+              "components": [
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "user-profile/user-preferences",
+                    "style": {
+                      "margin-bottom": "8px"
+                    }
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "user-profile/notification-preferences"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "createdFunctions": [
+    {
+      "type": "dispatch",
+      "otherParams": {
+        "name": "auth/getUserProfile"
+      }
+    }
+  ]
+}
