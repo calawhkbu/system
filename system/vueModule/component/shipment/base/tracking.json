@@ -1,0 +1,29 @@
+{
+  "components": [{
+    "is": "AsyncComponent",
+    "props": {
+      "getDate": "shipmentDate",
+      "class": "xs-12 margin-topbottom-2",
+      "layoutName": "plugins/tracking",
+      "loadWhenDataLoaded": true,
+      "axiosBaseParams": [
+        "const trackingNos = [];",
+        "const data = context.$store.state.widget.data;",
+        "if (data.masterNo) { trackingNos.push(data.masterNo) }",
+        "if (data.shipmentContainers && data.shipmentContainers.length > 0) {",
+        "for (const container of data.shipmentContainers) {",
+        "if (container.carrierBookingNo) { trackingNos.push(container.carrierBookingNo) }",
+        "if (container.containerNo) { trackingNos.push(container.containerNo) }",
+        "}",
+        "}",
+        "return {",
+        "url: 'api/swivel-tracking/get',",
+        "method: 'POST',",
+        "data: { trackingNos }",
+        "};"
+      ],
+      "createdAtKey": "issueDate",
+      "createI18nKey": "shipmentReceivedByForwarder"
+    }
+  }]
+}

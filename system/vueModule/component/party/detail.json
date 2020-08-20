@@ -1,0 +1,217 @@
+{
+  "class": "grid",
+  "components": [{
+    "is": "DynamicComponent",
+    "props": {
+      "class": "xs-12 grid min-height-28 align-item-center full-width padding-2",
+      "components": [{
+        "is": "v-btn",
+        "props": {
+          "class": "margin-0",
+          "small": true,
+          "flat": true,
+          "icon": true
+        },
+        "slots": [{
+          "is": "Icon",
+          "props": {
+            "icon": "arrow_back"
+          }
+        }],
+        "events": {
+          "click.stop": [{
+            "type": "router",
+            "otherParams": {
+              "func": "push",
+              "path": "/{{ p[0] }}/{{ p[1] }}"
+            }
+          }]
+        }
+      }, {
+        "is": "I18nText",
+        "props": {
+          "i18nContext": "PartyPage",
+          "i18nKey": "title",
+          "i18nOptions": {
+            "id": "{{context.$store.state.widget.data.name}}"
+          }
+        }
+      }, {
+        "is": "v-spacer"
+      }, {
+        "is": "BottomSheet",
+        "props": {
+          "hide-overlay": true,
+          "button": {
+            "layout": "ToolTip",
+            "bottom": true,
+            "activatorComponents": {
+              "layout": "span",
+              "components": [{
+                "is": "v-btn",
+                "props": {
+                  "small": true,
+                  "flat": true,
+                  "icon": true,
+                  "class": "margin-0"
+                },
+                "slots": [{
+                  "is": "Icon",
+                  "props": {
+                    "icon": "settings_ethernet"
+                  }
+                }]
+              }]
+            },
+            "mainComponents": {
+              "layout": "span",
+              "components": [{
+                "is": "I18nText",
+                "props": {
+                  "i18nKey": "RelatedParty"
+                }
+              }]
+            }
+          }
+        },
+        "slots": [{
+          "is": "DynamicComponent",
+          "props": {
+            "layout": "v-card",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "party/extra/relatedParties"
+              }
+            }]
+          }
+        }]
+      }, {
+        "is": "BottomSheet",
+        "props": {
+          "hide-overlay": true,
+          "button": {
+            "layout": "ToolTip",
+            "bottom": true,
+            "activatorComponents": {
+              "layout": "span",
+              "components": [{
+                "is": "v-btn",
+                "props": {
+                  "class": "margin-0",
+                  "small": true,
+                  "flat": true,
+                  "icon": true
+                },
+                "slots": [{
+                  "is": "Icon",
+                  "props": {
+                    "icon": "group"
+                  }
+                }]
+              }]
+            },
+            "mainComponents": {
+              "layout": "span",
+              "components": [{
+                "is": "I18nText",
+                "props": {
+                  "i18nKey": "RelatedPerson"
+                }
+              }]
+            }
+          }
+        },
+        "slots": [{
+          "is": "DynamicComponent",
+          "props": {
+            "layout": "v-card",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "party/extra/relatedPeople"
+              }
+            }]
+          }
+        }]
+      }, {
+        "is": "ToolTip",
+        "props": {
+          "bottom": true,
+          "activatorComponents": {
+            "layout": "span",
+            "components": [{
+              "is": "v-btn",
+              "props": {
+                "small": true,
+                "flat": true,
+                "icon": true,
+                "class": "primary white-text"
+              },
+              "slots": [{
+                "is": "Icon",
+                "props": {
+                  "icon": "edit"
+                }
+              }],
+              "events": {
+                "click.stop": [{
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "edit"
+                  }
+                }]
+              }
+            }]
+          },
+          "mainComponents": {
+            "layout": "span",
+            "components": [{
+              "is": "I18nText",
+              "props": {
+                "i18nKey": "edit"
+              }
+            }]
+          }
+        }
+      }]
+    }
+  }, {
+    "is": "DynamicComponent",
+    "props": {
+      "class": "xs-12 grid full-width",
+      "components": [{
+        "is": "AsyncComponent",
+        "props": {
+          "layoutName": "party/base/general"
+        }
+      }, {
+        "is": "AsyncComponent",
+        "props": {
+          "layoutName": "party/base/contact"
+        }
+      }, {
+        "is": "AsyncComponent",
+        "props": {
+          "layoutName": "party/base/salesman"
+        }
+      }, {
+        "is": "AsyncComponent",
+        "props": {
+          "layoutName": "party/base/address"
+        }
+      }, {
+        "is": "AsyncComponent",
+        "props": {
+          "layoutName": "party/base/external"
+        }
+      }, {
+        "is": "AsyncComponent",
+        "props": {
+          "layoutName": "party/base/roles"
+        }
+      }]
+    }
+  }]
+}
