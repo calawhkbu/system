@@ -750,6 +750,22 @@ const shortcuts: IShortcut[] = [
     }
   },
 
+  // field:deduct
+  {
+    type: 'field',
+    name: 'deduct',
+    expression: re => new FunctionExpression('SUM', new CaseExpression([
+      {
+        $when: re['isDead'],
+        $then: IfNullExpression(new ColumnExpression('sop_task', 'deadlineScore'), new Value(0))
+      },
+      {
+        $when: re['isDue'],
+        $then: IfNullExpression(new ColumnExpression('sop_task', 'dueScore'), new Value(0))
+      }
+    ], new Value(0)))
+  },
+
   // subquery:partyGroupCode
   {
     type: 'subquery',

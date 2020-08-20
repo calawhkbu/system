@@ -1633,55 +1633,41 @@ query.field('noOfTasks', {
 
 // @field sopScore
 // sop score field
-const isDueExpression = new BinaryExpression(
-  new ColumnExpression('sop_task', 'dueAt'),
-  '<',
-  new FunctionExpression('UTC_TIMESTAMP')
-)
-const isDeadExpression = new BinaryExpression(
-  new ColumnExpression('sop_task', 'deadline'),
-  '<',
-  new FunctionExpression('UTC_TIMESTAMP')
-)
-query.field('sopScore', {
-  $select: new ResultColumn(IfExpression(
-    new IsNullExpression(new ColumnExpression('booking', 'sopScore'), true), // TODO booking status is closed
-    new ColumnExpression('booking', 'sopScore'),
-    new MathExpression(new Value(100), '-', IfNullExpression(new QueryExpression(new Query({
-      $select: new ResultColumn(
-        new FunctionExpression('SUM', new CaseExpression([
-          {
-            $when: isDeadExpression,
-            $then: IfNullExpression(new ColumnExpression('sop_task', 'deadlineScore'), new Value(0))
-          },
-          {
-            $when: isDueExpression,
-            $then: IfNullExpression(new ColumnExpression('sop_task', 'dueScore'), new Value(0))
-          }
-        ], new Value(0)))
-      , 'deduct'),
-      $from: 'sop_task',
-      $where: [
-        new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
-        new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
-        new OrExpressions([isDueExpression, isDeadExpression])
-      ]
-    })), new Value(0)))
-  ), 'sopScore')
+query.field('sopScore', params => {
+  const query = sopQuery.apply({
+    fields: ['deduct']
+  })
+  let $where = query.$where as AndExpressions
+  if (!$where) $where = query.$where = new AndExpressions([])
+  $where.expressions.push(
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
+  )
+  return {
+    $select: new ResultColumn(IfExpression(
+      new IsNullExpression(new ColumnExpression('booking', 'sopScore'), true), // TODO booking status is closed
+      new ColumnExpression('booking', 'sopScore'),
+      new MathExpression(new Value(100), '-', IfNullExpression(new QueryExpression(query), new Value(0)))
+    ), 'sopScore')
+  }
 })
 
 // @subquery hasDueTasks
 // return bookings with due tasks
-const dueTasksQuery = new Query({
-  $from: 'sop_task',
-  $where: [
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
-    generalIsClosedExpression('sop_task', true),
-    notDoneExpression,
-    isDueExpression
-  ]
+const dueTasksQuery = sopQuery.apply({
+  fields: ['deduct'],
+  subqueries: {
+    notClosed: true,
+    notDone: true,
+    isDue: true
+  }
 })
+let $where = dueTasksQuery.$where as AndExpressions
+if (!$where) $where = dueTasksQuery.$where = new AndExpressions([])
+$where.expressions.push(
+  new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
+  new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
+)
 query.subquery('hasDueTasks', {
   $where: new ExistsExpression(dueTasksQuery, false)
 })
@@ -1694,16 +1680,16 @@ query.subquery('noDueTasks', {
 
 // @subquery hasDeadTasks
 // return bookings with dead tasks
-const deadTasksQuery = new Query({
-  $from: 'sop_task',
-  $where: [
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
-    generalIsClosedExpression('sop_task', true),
-    notDoneExpression,
-    isDeadExpression
-  ]
+const deadTasksQuery = sopQuery.apply({
+  fields: ['deduct'],
+  subqueries: {
+    notClosed: true,
+    notDone: true,
+    isDead: true
+  }
 })
+$where = deadTasksQuery.$where as AndExpressions
+if (!$where) $where = deadTasksQuery.$where = new AndExpressions([])
 query.subquery('hasDeadTasks', {
   $where: new ExistsExpression(deadTasksQuery, false)
 })
