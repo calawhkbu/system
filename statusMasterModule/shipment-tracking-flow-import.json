@@ -1,0 +1,10 @@
+[
+  {
+    "group": "Not Yet Arrived",
+    "status": ["Not Yet Arrived"]
+  },
+  {
+    "group": "Late Arrivals",
+    "status": ["Late Arrivals"]
+  }
+]

@@ -1,0 +1,100 @@
+{
+  "layout": "v-card",
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [{
+          "label": "InvitationPage.userName",
+          "name": "person.userName",
+          "component": "v-text-field",
+          "class": "xs-6",
+          "canEdit": "return mode === 'create' || form.status === 'pending' "
+        },
+
+        {
+          "label": "InvitationPage.erpCode",
+          "name": "person.thirdPartyCode.erp",
+          "class": "xs-6",
+          "component": "v-text-field"
+        },
+        {
+          "label": "InvitationPage.firstName",
+          "name": "person.firstName",
+          "component": "v-text-field",
+          "class": "xs-3"
+        },
+        {
+          "label": "InvitationPage.lastName",
+          "name": "person.lastName",
+          "component": "v-text-field",
+          "class": "xs-3"
+        },
+        {
+          "label": "InvitationPage.displayName",
+          "name": "person.displayName",
+          "component": "v-text-field",
+          "class": "xs-6"
+        },
+        {
+          "label": "InvitationPage.parties",
+          "name": "person.parties",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12 md-6",
+          "props": {
+            "multiple": true,
+            "showValue": true,
+            "searchTextParams": {
+              "url": "api/party/query/party_auto_suggest",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "shortName",
+            "item-value": "erpCode"
+          }
+        },
+        {
+          "label": "InvitationPage.roles",
+          "name": "person.roles",
+          "component": "AsyncAutoSuggest",
+          "props": {
+            "multiple": true,
+            "showValue": false,
+            "searchTextParams": {
+              "url": "api/role/query/role",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "q": {
+                    "value": "{{context.search}}"
+                  },
+                  "isBranch": {
+                    "value": 1
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "roleName",
+            "item-value": "id"
+          }
+        },
+
+        {
+          "checkDisplayWhen" : "return mode === 'create'",
+          "canEdit": "return mode === 'create'",
+          "label": "InvitationPage.sendInvitation",
+          "name": "sendInvitation",
+          "component": "BooleanField",
+          "class": "xs-6"
+        }
+      ]
+    }
+  }]
+}

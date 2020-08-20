@@ -1,0 +1,51 @@
+{
+  "layout": "CardLayout",
+  "components": [{
+      "is": "I18nText",
+      "props": {
+        "style": {
+          "flex": 0.9,
+          "width": "100%",
+          "text-align": "center"
+        },
+        "class": "title",
+        "i18nKey": "promotion"
+      }
+    },
+    {
+      "is": "v-btn",
+      "props": {
+        "flat": true,
+        "href": "https://www.swivelsoftware.com/",
+        "target": "_blank"
+      },
+      "slots": [{
+        "is": "I18nText",
+        "props": {
+          "i18nKey": "contactStaff"
+        }
+      }]
+    },
+    {
+      "is": "v-btn",
+      "props": {
+        "flat": true
+      },
+      "slots": [{
+        "is": "I18nText",
+        "props": {
+          "i18nKey": "ErrorLayout.Back"
+        }
+      }],
+      "events": {
+        "click.stop": [{
+          "type": "router",
+          "otherParams": {
+            "func": "go",
+            "go": -1
+          }
+        }]
+      }
+    }
+  ]
+}
