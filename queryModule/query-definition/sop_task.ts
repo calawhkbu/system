@@ -532,10 +532,10 @@ const shortcuts: IShortcut[] = [
     companions: getEntityTable([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
-  // field:pic
+  // field:picEmail
   {
     type: 'field',
-    name: 'pic',
+    name: 'picEmail',
     queryArg: () => getEntityField('picEmail', [bookingTable], [shipmentTable]),
     companions: getEntityTable([], [bookingTable], [shipmentTable])
   },
