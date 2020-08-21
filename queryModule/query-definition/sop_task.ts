@@ -981,36 +981,38 @@ const shortcuts: IShortcut[] = [
   {
     type: 'subquery',
     name: 'notReferenced',
-    subqueryArg: re => new AndExpressions([
-      new IsNullExpression(re['templateId'], true),
-      new InExpression(re['taskId'], true, new Query({
-        $distinct: true,
-        $select: new ResultColumn(new ColumnExpression(templateTaskTable, 'id')),
-        $from: new FromTable(selectedTemplateTable,
-          new JoinClause('LEFT', templateTable, new AndExpressions([
-            new BinaryExpression(new ColumnExpression(selectedTemplateTable, 'templateId'), '=', new ColumnExpression(templateTable, 'id')),
-            new IsNullExpression(new ColumnExpression(templateTable, 'deletedAt'), false),
-            new IsNullExpression(new ColumnExpression(templateTable, 'deletedBy'), false)
-          ])),
-          new JoinClause('LEFT', templateTemplateTaskTable, new AndExpressions([
-            new BinaryExpression(new ColumnExpression(templateTemplateTaskTable, 'templateId'), '=', new ColumnExpression(templateTable, 'id')),
-            new IsNullExpression(new ColumnExpression(templateTemplateTaskTable, 'deletedAt'), false),
-            new IsNullExpression(new ColumnExpression(templateTemplateTaskTable, 'deletedBy'), false)
-          ])),
-          new JoinClause('LEFT', templateTaskTable, new AndExpressions([
-            new BinaryExpression(new ColumnExpression(templateTemplateTaskTable, 'taskId'), '=', new ColumnExpression(templateTaskTable, 'id')),
-            new IsNullExpression(new ColumnExpression(templateTaskTable, 'deletedAt'), false),
-            new IsNullExpression(new ColumnExpression(templateTaskTable, 'deletedBy'), false)
-          ]))
-        ),
-        $where: [
-          new BinaryExpression(new ColumnExpression(selectedTemplateTable, 'tableName'), '=', re['tableName']),
-          new BinaryExpression(new ColumnExpression(selectedTemplateTable, 'primaryKey'), '=', re['primaryKey']),
-          new IsNullExpression(new ColumnExpression(selectedTemplateTable, 'deletedAt'), false),
-          new IsNullExpression(new ColumnExpression(selectedTemplateTable, 'deletedBy'), false)
-        ]
-      }))
-    ])
+    subqueryArg: re => () => ({
+      $where: new AndExpressions([
+        new IsNullExpression(re['templateId'], true),
+        new InExpression(re['taskId'], true, new Query({
+          $distinct: true,
+          $select: new ResultColumn(new ColumnExpression(templateTaskTable, 'id')),
+          $from: new FromTable(selectedTemplateTable,
+            new JoinClause('LEFT', templateTable, new AndExpressions([
+              new BinaryExpression(new ColumnExpression(selectedTemplateTable, 'templateId'), '=', new ColumnExpression(templateTable, 'id')),
+              new IsNullExpression(new ColumnExpression(templateTable, 'deletedAt'), false),
+              new IsNullExpression(new ColumnExpression(templateTable, 'deletedBy'), false)
+            ])),
+            new JoinClause('LEFT', templateTemplateTaskTable, new AndExpressions([
+              new BinaryExpression(new ColumnExpression(templateTemplateTaskTable, 'templateId'), '=', new ColumnExpression(templateTable, 'id')),
+              new IsNullExpression(new ColumnExpression(templateTemplateTaskTable, 'deletedAt'), false),
+              new IsNullExpression(new ColumnExpression(templateTemplateTaskTable, 'deletedBy'), false)
+            ])),
+            new JoinClause('LEFT', templateTaskTable, new AndExpressions([
+              new BinaryExpression(new ColumnExpression(templateTemplateTaskTable, 'taskId'), '=', new ColumnExpression(templateTaskTable, 'id')),
+              new IsNullExpression(new ColumnExpression(templateTaskTable, 'deletedAt'), false),
+              new IsNullExpression(new ColumnExpression(templateTaskTable, 'deletedBy'), false)
+            ]))
+          ),
+          $where: [
+            new BinaryExpression(new ColumnExpression(selectedTemplateTable, 'tableName'), '=', re['tableName']),
+            new BinaryExpression(new ColumnExpression(selectedTemplateTable, 'primaryKey'), '=', re['primaryKey']),
+            new IsNullExpression(new ColumnExpression(selectedTemplateTable, 'deletedAt'), false),
+            new IsNullExpression(new ColumnExpression(selectedTemplateTable, 'deletedBy'), false)
+          ]
+        }))
+      ])
+    })
   },
 
   // subquery:activeStatus
