@@ -162,6 +162,13 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
+  // field:id
+  {
+    type: 'field',
+    name: 'noOfTasks',
+    expression: re => new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', re['id']))
+  },
+
   // field:tableName
   {
     type: 'field',
