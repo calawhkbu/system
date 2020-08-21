@@ -23,18 +23,16 @@ export default {
       async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
 
         const subqueries = params.subqueries || {}
+        // console.log("THE SUBQURIES");
+        // console.log(subqueries)
         params.fields = [
           'id',
           'masterNo',
           'houseNo',
-          'jobNo',
-          'voyageFlightNumber',
+          'jobNo'
         ],
-
           params.limit = 10;
-          params.sorting = new OrderBy(`ID`, 'ASC')
-
-        return params
+        return params;
 
       }
     },
@@ -48,11 +46,7 @@ export default {
         console.log(params);
         console.log(codeValue);
         const finalResult = res.map(row => {
-
           const newRow = { ...row, code: row[codeValue] }
-          console.log("NEWROW");
-          console.log(newRow);
-
           return newRow
 
         })

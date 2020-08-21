@@ -108,12 +108,23 @@ export default {
           value: true
         }
 
+        // params.fields = [
+        //   // select Month statistics
+        //   ...summaryVariables.map(variable => `${variable}Month`),
+        //   codeColumnName,
+        //   nameColumnName,
+        // ]
         params.fields = [
           // select Month statistics
-          ...summaryVariables.map(variable => `${variable}Month`),
+          ...summaryVariables.map(variable => `${variable}`),
           codeColumnName,
           nameColumnName,
         ]
+
+
+
+        console.log('SELECT MONTH STAT PARAMS FIELDS')
+        console.log(params.fields);
 
         // group by
         params.groupBy = [codeColumnName]
@@ -135,6 +146,8 @@ export default {
         }
 
         params.limit = topX
+        console.log("THE PARAMAS from frontend")
+        console.log(params);
         return params
       }
     },
@@ -145,6 +158,8 @@ export default {
         return res.map(row => {
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
 
+          console.log("summaryVariables")
+          console.log(summaryVariables)
           for (const variable of summaryVariables) {
             let total = 0
             for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
@@ -157,6 +172,7 @@ export default {
             }
             row_[`total_${variable}`] = total
           }
+          console.log(row_);
 
           return row_
         })
@@ -207,8 +223,8 @@ export default {
             value: 'quantity',
           },
           {
-            label: 'weight',
-            value: 'weight',
+            label: 'chargeableWeight',
+            value: 'chargeableWeight',
           },
           {
             label: 'totalBooking',
