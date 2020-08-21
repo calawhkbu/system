@@ -1,0 +1,23 @@
+{
+  "trackingNo": "123456",
+
+  "details": [
+    {
+      "status": "mystatus",
+      "statusDescription": "myStatusDescription",
+      "statusPlace": "mystatusPlace",
+      "vessel": "vessel",
+      "voyage": "voyage",
+      "statusDate": "2019-06-05T09:00:12.000Z"
+    },
+
+    {
+      "status": "mystatus2",
+      "statusDescription": "myStatusDescription2",
+      "statusPlace": "mystatusPlace2",
+      "vessel": "vessel2",
+      "voyage": "voyage2",
+      "statusDate": "2019-06-05T09:00:12.000Z"
+    }
+  ]
+}

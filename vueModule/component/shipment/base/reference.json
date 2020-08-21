@@ -1,0 +1,198 @@
+{
+  "layout": "v-card",
+  "components": [{
+    "is": "MouseHidden",
+    "props": {
+      "hiddenProps": {
+        "style": {
+          "position": "absolute",
+          "right": "0px",
+          "top": "0px"
+        }
+      }
+    },
+    "slots": [{
+      "name": "hidden",
+      "is": "DynamicComponent",
+      "props": {
+        "components": [{
+          "is": "RightDrawer",
+          "props": {
+            "hide-overlay": true,
+            "buttonComponentProps": {
+              "icon": true,
+              "small": true,
+              "class": "zindex-3"
+            }
+          },
+          "slots": [{
+            "name": "button",
+            "is": "Icon",
+            "props": {
+              "icon": "open_in_new"
+            }
+          }, {
+            "name": "default",
+            "is": "DynamicComponent",
+            "props": {
+              "class": "full-width full-height",
+              "components": [{
+                "is": "WidgetForm",
+                "props": {
+                  "formId": "reference",
+                  "fields": [{
+                      "label": "ShipmentPage.references",
+                      "name": "shipmentReference",
+                      "component": "TableField",
+                      "class": "xs-12",
+                      "props": {
+                        "topLabel": true,
+                        "fields": [{
+                            "label": "ShipmentPage.refName",
+                            "name": "refName",
+                            "class": "xs-12 md-5",
+                            "component": "LocalAutoSuggest",
+                            "colGroupProps": {
+                              "style": {
+                                "width": "25%"
+                              }
+                            },
+                            "props": {
+                              "canCreate": true,
+                              "funcItems": ["MBL", "MAWB", "HBL", "HAWB"]
+                            }
+                          },
+                          {
+                            "label": "ShipmentPage.refDescription",
+                            "name": "refDescription",
+                            "class": "xs-12 md-5",
+                            "component": "v-text-field",
+                            "colGroupProps": {
+                              "style": {
+                                "width": "50%"
+                              }
+                            }
+                          },
+                          {
+                            "label": "ShipmentPage.docDate",
+                            "name": "docDate",
+                            "component": "DateTimePicker",
+                            "class": "xs-12 md-2",
+                            "colGroupProps": {
+                              "style": {
+                                "width": "20%"
+                              }
+                            },
+                            "props": {
+                              "type": "date",
+                              "utc": true,
+                              "defaultFormat": "ddd MMM DD YYYY",
+                              "useOwnFormat": true
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "label": "ShipmentPage.remark",
+                      "name": "remark",
+                      "component": "v-textarea",
+                      "class": "xs-12 md-6"
+                    },
+                    {
+                      "label": "ShipmentPage.specialInstruction",
+                      "name": "specialInstruction",
+                      "component": "v-textarea",
+                      "class": "xs-12 md-6"
+                    }
+                  ]
+                }
+              }]
+            }
+          }]
+        }]
+      }
+    }, {
+      "is": "DynamicComponent",
+      "props": {
+        "components": [{
+          "is": "WidgetForm",
+          "props": {
+            "fields": [{
+                "label": "ShipmentPage.references",
+                "name": "shipmentReference",
+                "component": "TableField",
+                "checkDisplayWhen": "return form && form.shipmentReference && form.shipmentReference.length",
+                "class": "xs-12",
+                "props": {
+                  "labelProps": {
+                    "class": "font-90"
+                  },
+                  "topLabel": true,
+                  "fields": [{
+                      "label": "ShipmentPage.refName",
+                      "name": "refName",
+                      "class": "xs-12 md-5",
+                      "component": "LocalAutoSuggest",
+                      "colGroupProps": {
+                        "style": {
+                          "width": "25%"
+                        }
+                      },
+                      "props": {
+                        "canCreate": true,
+                        "funcItems": ["MBL", "MAWB", "HBL", "HAWB"]
+                      }
+                    },
+                    {
+                      "label": "ShipmentPage.refDescription",
+                      "name": "refDescription",
+                      "class": "xs-12 md-5",
+                      "component": "v-text-field",
+                      "colGroupProps": {
+                        "style": {
+                          "width": "50%"
+                        }
+                      }
+                    },
+                    {
+                      "label": "ShipmentPage.docDate",
+                      "name": "docDate",
+                      "component": "DateTimePicker",
+                      "class": "xs-12 md-2",
+                      "colGroupProps": {
+                        "style": {
+                          "width": "20%"
+                        }
+                      },
+                      "props": {
+                        "type": "date",
+                        "utc": true,
+                        "defaultFormat": "ddd MMM DD YYYY",
+                        "useOwnFormat": true
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "label": "ShipmentPage.remark",
+                "name": "remark",
+                "checkDisplayWhen": "return form && form.remark",
+                "component": "v-textarea",
+                "class": "xs-12 md-6"
+              },
+              {
+                "label": "ShipmentPage.specialInstruction",
+                "name": "specialInstruction",
+                "checkDisplayWhen": "return form && form.specialInstruction",
+                "component": "v-textarea",
+                "class": "xs-12 md-6"
+              }
+            ]
+          }
+        }]
+      }
+    }]
+  }]
+}

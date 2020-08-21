@@ -1,0 +1,14 @@
+{
+  "layout": "v-card",
+  "class": "margin-topbottom-8",
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [{
+        "label": "LocationPage.name",
+        "name": "name",
+        "component": "v-text-field"
+      }]
+    }
+  }]
+}

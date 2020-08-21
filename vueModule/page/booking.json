@@ -1,0 +1,57 @@
+{
+  "components": [{
+    "is": "Widget",
+    "props": {
+      "settingProp": {
+        "overrideType": "booking",
+        "initAxiosParams": {
+          "url": "api/booking/{{context.$route.params.params}}"
+        },
+        "defaultAxiosParams": {
+          "url": "default/booking/{{state.template}}"
+        },
+        "validateAxiosParams": {
+          "method": "post",
+          "url": "api/booking/validate/{{id}}"
+        },
+        "saveAxiosParams": {
+          "method": "post",
+          "url": "api/booking"
+        },
+        "deleteKeyBeforeSave": [
+          "quantity", "quantityUnit", "grossWeight", "volumeWeight",
+          "chargeableWeight", "weightUnit", "teu", "cbm", "container20",
+          "container40", "containerHQ", "containerOthers"
+        ],
+        "deleteIfReturnTrue": [
+          "if (context.diff(oldData.bookingPopackings, data.bookingPopackings)) return true",
+          "if (context.diff(oldData.bookingContainers, data.bookingContainers)) return true",
+          "return false"
+        ],
+        "primaryKey": "id",
+        "modeFunction": "const modes = ['create', 'detail','edit', 'map', // 'import', 'copy'\n]\nconst selectedMode = isNaN(Number(mode)) ? mode : 'detail'\n          if (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
+        "haveTermOnCreate": true,
+        "haveTermOnEdit": false,
+        "widgetComponentSetting": {
+          "quick-create": {
+            "readonly": false
+          },
+          "create": {
+            "readonly": false,
+            "stepper": 0,
+            "next": false,
+            "saveIcon": "create"
+          },
+          "detail": {
+            "readonly": true
+          },
+          "edit": {
+            "readonly": false,
+            "stepper": 0,
+            "saveIcon": "save"
+          }
+        }
+      }
+    }
+  }]
+}
