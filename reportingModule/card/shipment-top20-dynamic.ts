@@ -116,12 +116,13 @@ export default {
       onResult(res, params, prevResult: Result): Result {
 
         const { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables } = prevResult
-
         prevResult.groupByResult = res.map(row => {
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
 
           for (const variable of summaryVariables) {
-            row_[`${variable}`] = row[variable]
+
+            // change into number
+            row_[`${variable}`] = +row[variable]
           }
 
           return row_
@@ -167,9 +168,6 @@ export default {
               params.sorting = new OrderBy(`${summaryVariables[0]}`, 'DESC')
             }
 
-            console.log(`second param`)
-            console.log(params)
-
             return params
         }
       },
@@ -189,12 +187,6 @@ export default {
               summaryVariables,
               groupByResult
             } = prevResult
-
-          console.log(`res2`)
-          console.log(res)
-
-          console.log(`groupByResult`)
-          console.log(groupByResult)
 
           const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -233,9 +225,9 @@ export default {
                     summaryVariables.map(summaryVariable => {
 
                         const fieldName = `${dynamicCode}_${summaryVariable}`
-                        console.log(`fieldName`)
-                        console.log(fieldName)
-                        const dynamicValue = dynamicRow[summaryVariable]
+    
+                        // forcefully make it into number
+                        const dynamicValue = +dynamicRow[summaryVariable]
     
                         // add G0001_cbm into the row
                         row_[fieldName] = dynamicValue
@@ -247,23 +239,8 @@ export default {
 
           })
 
-          console.log(`finalResult`)
-          console.log(finalResult)
 
           return finalResult
-  
-        //   const finalResult = res.map(row => {
-
-        //     const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
-  
-        //     for (const variable of summaryVariables) {
-        //       row_[`${variable}`] = row[variable]
-        //     }
-  
-        //     return row_
-        //   })
-  
-        //   return finalResult
         }
       },
   ],
