@@ -2662,6 +2662,7 @@ query.subquery(
   .register('value', 0)
   .register('value', 1)
   .register('value', 2)
+  .register('value', 3)
 
 query
   .registerQuery(
