@@ -162,6 +162,13 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
+  // field:id
+  {
+    type: 'field',
+    name: 'noOfTasks',
+    expression: re => new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', re['id']))
+  },
+
   // field:tableName
   {
     type: 'field',
@@ -560,6 +567,16 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
+  // field:defaultStartAt,
+  {
+    type: 'field',
+    name: 'defaultStartAt',
+    expression: re => IfNullExpression(
+      re['calculatedStartAt'],
+      IfNullExpression(new ColumnExpression('parent', 'inputStartAt'), new ColumnExpression('parent', 'startAt'))
+    )
+  },
+
   // field:dueAt,
   {
     type: 'field',
@@ -571,6 +588,16 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
+  // field:defaultDueAt,
+  {
+    type: 'field',
+    name: 'defaultDueAt',
+    expression: re => IfNullExpression(
+      re['calculatedDueAt'],
+      IfNullExpression(new ColumnExpression('parent', 'inputDueAt'), new ColumnExpression('parent', 'dueAt'))
+    )
+  },
+
   // field:deadline,
   {
     type: 'field',
@@ -580,6 +607,16 @@ const shortcuts: IShortcut[] = [
       IfNullExpression(new ColumnExpression('parent', 'inputDeadline'), new ColumnExpression('parent', 'deadline'))
     ),
     registered: true
+  },
+
+  // field:defaultDeadline,
+  {
+    type: 'field',
+    name: 'defaultDeadline',
+    expression: re => IfNullExpression(
+      re['calculatedDeadline'],
+      IfNullExpression(new ColumnExpression('parent', 'inputDeadline'), new ColumnExpression('parent', 'deadline'))
+    )
   },
 
   // field:hasSubTasks
@@ -867,14 +904,14 @@ const shortcuts: IShortcut[] = [
     expression: re => new BinaryExpression(re['isDue'], '=', new Value(1))
   },
 
-  // subquery:notDone
+  // subquery:isDead
   {
     type: 'subquery',
     name: 'isDead',
     expression: re => new BinaryExpression(re['isDead'], '=', new Value(1))
   },
 
-  // subquery:notDone
+  // subquery:notClosed
   {
     type: 'subquery',
     name: 'notClosed',
