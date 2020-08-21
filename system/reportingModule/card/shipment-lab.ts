@@ -3,7 +3,7 @@ import { IQueryParams } from 'classes/query'
 import { OrderBy } from 'node-jql'
 import Moment = require('moment')
 
-import { expandGroupEntity,expandSummaryVariable, extendDate, handleBottomSheetGroupByEntityValue, expandBottomSheetGroupByEntity, handleGroupByEntityValue } from 'utils/card'
+import { expandGroupEntity, expandSummaryVariable, extendDate, handleBottomSheetGroupByEntityValue, expandBottomSheetGroupByEntity, handleGroupByEntityValue } from 'utils/card'
 
 
 
@@ -22,20 +22,20 @@ export default {
       defaultResult: {},
       async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
 
-
         const subqueries = params.subqueries || {}
-
         params.fields = [
-            'id',
-            'masterNo',
-            'houseNo',
-            'jobNo'
+          'id',
+          'masterNo',
+          'houseNo',
+          'jobNo',
+          'voyageFlightNumber',
         ],
 
-        params.limit = 10
+          params.limit = 10;
+          params.sorting = new OrderBy(`ID`, 'ASC')
 
         return params
-        
+
       }
     },
     {
@@ -44,41 +44,64 @@ export default {
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
 
         const codeValue = params.subqueries.code.value as string
+        console.log("THE PARAMS callDATA");
+        console.log(params);
+        console.log(codeValue);
         const finalResult = res.map(row => {
 
-            const newRow = { ...row, code : row[codeValue] }
+          const newRow = { ...row, code: row[codeValue] }
+          console.log("NEWROW");
+          console.log(newRow);
 
-            return newRow
+          return newRow
 
         })
 
         return finalResult
       }
-    }
+    },
+    // {
+    //   type: 'postProcess',
+    //   async postProcess(params, prevResult: Result, user) {
+    //     const subqueries = (params.subqueries = params.subqueries || {})
+    //     var result: any = [];
+    //     result = prevResult;
+    //     console.log("THE RESULT IS");
+    //     console.log(result);
+    //     result = result.filter(o => o.carrierCode == "CX");
+    //return result;
+        
+
+    //   }
+    // }
+   
   ],
+
   filters: [
     {
-        display: 'code',
-        name: 'code',
-        props: {
-          items: [
-            {
-              label: 'houseNo',
-              value: 'houseNo',
-            },
-            {
-              label: 'masterNo',
-              value: 'masterNo',
-            },
-            {
-              label: 'jobNo',
-              value: 'jobNo',
-            },
-          ],
-          required: true,
-        },
-        type: 'list',
+      display: 'code',
+      name: 'code',
+      props: {
+        items: [
+          {
+            label: 'houseNo',
+            value: 'houseNo',
+          },
+          {
+            label: 'masterNo',
+            value: 'masterNo',
+          },
+          {
+            label: 'jobNo',
+            value: 'jobNo',
+          },
+        ],
+        required: true,
       },
-  ]
+      type: 'list',
+    },
+  ],
+
+
 } as JqlDefinition
 
