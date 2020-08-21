@@ -560,6 +560,16 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
+  // field:defaultStartAt,
+  {
+    type: 'field',
+    name: 'defaultStartAt',
+    expression: re => IfNullExpression(
+      re['calculatedStartAt'],
+      IfNullExpression(new ColumnExpression('parent', 'inputStartAt'), new ColumnExpression('parent', 'startAt'))
+    )
+  },
+
   // field:dueAt,
   {
     type: 'field',
@@ -571,6 +581,16 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
+  // field:defaultDueAt,
+  {
+    type: 'field',
+    name: 'defaultDueAt',
+    expression: re => IfNullExpression(
+      re['calculatedDueAt'],
+      IfNullExpression(new ColumnExpression('parent', 'inputDueAt'), new ColumnExpression('parent', 'dueAt'))
+    )
+  },
+
   // field:deadline,
   {
     type: 'field',
@@ -580,6 +600,16 @@ const shortcuts: IShortcut[] = [
       IfNullExpression(new ColumnExpression('parent', 'inputDeadline'), new ColumnExpression('parent', 'deadline'))
     ),
     registered: true
+  },
+
+  // field:defaultDeadline,
+  {
+    type: 'field',
+    name: 'defaultDeadline',
+    expression: re => IfNullExpression(
+      re['calculatedDeadline'],
+      IfNullExpression(new ColumnExpression('parent', 'inputDeadline'), new ColumnExpression('parent', 'deadline'))
+    )
   },
 
   // field:hasSubTasks
