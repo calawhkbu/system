@@ -897,14 +897,14 @@ const shortcuts: IShortcut[] = [
     expression: re => new BinaryExpression(re['isDue'], '=', new Value(1))
   },
 
-  // subquery:notDone
+  // subquery:isDead
   {
     type: 'subquery',
     name: 'isDead',
     expression: re => new BinaryExpression(re['isDead'], '=', new Value(1))
   },
 
-  // subquery:notDone
+  // subquery:notClosed
   {
     type: 'subquery',
     name: 'notClosed',
