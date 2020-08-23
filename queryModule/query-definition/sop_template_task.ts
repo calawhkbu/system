@@ -1,29 +1,9 @@
 import { QueryDef } from "classes/query/QueryDef";
 import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, RegexpExpression } from "node-jql";
+import { IShortcut } from "classes/query/Shortcut";
 
 const taskTable = 'sop_task'
 const templateTaskTable = 'sop_template_task'
-
-const columns = [
-  [templateTaskTable, 'id'],  // @field id
-  [templateTaskTable, 'partyGroupCode'],  // @field partyGroupCode
-  [templateTaskTable, 'uniqueId'],  // @field uniqueId
-  [templateTaskTable, 'system'],  // @field system
-  [templateTaskTable, 'category'],  // @field category
-  [templateTaskTable, 'name'],  // @field name
-  [templateTaskTable, 'description'], // @field description
-  [templateTaskTable, 'deletedAt'], // @field deletedAt
-  [templateTaskTable, 'deletedBy']  // @field deletedBy
-]
-
-const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r, [table, name, as = name]) => {
-  r[as] = new ColumnExpression(table, name)
-  return r
-}, {})
-
-
-
-
 
 const query = new QueryDef({
   $from: new FromTable({
@@ -31,58 +11,157 @@ const query = new QueryDef({
   })
 })
 
-for (const [table, name, as = name] of columns) {
-  query.field(as, { $select: new ResultColumn(columnExpressions[as], as) })
-}
+const shortcuts: IShortcut[] = [
+  // field:id
+  {
+    type: 'field',
+    name: 'id',
+    expression: new ColumnExpression(templateTaskTable, 'id'),
+    registered: true
+  },
 
+  // field:partyGroupCode
+  {
+    type: 'field',
+    name: 'partyGroupCode',
+    expression: new ColumnExpression(templateTaskTable, 'partyGroupCode'),
+    registered: true
+  },
 
+  // field:uniqueId
+  {
+    type: 'field',
+    name: 'uniqueId',
+    expression: new ColumnExpression(templateTaskTable, 'uniqueId'),
+    registered: true
+  },
 
+  // field:parentId
+  {
+    type: 'field',
+    name: 'parentId',
+    expression: new ColumnExpression(templateTaskTable, 'parentId'),
+    registered: true
+  },
 
+  // field:system
+  {
+    type: 'field',
+    name: 'system',
+    expression: new ColumnExpression(templateTaskTable, 'system'),
+    registered: true
+  },
 
-// @subquery notExistsIn
-query.subquery('notExistsIn', {
-  $where: new ExistsExpression(new Query({
-    $from: taskTable,
-    $where: new AndExpressions([
-      new BinaryExpression(new ColumnExpression(taskTable, 'taskId'), '=', columnExpressions['id']),
-      new BinaryExpression(new ColumnExpression(taskTable, 'tableName'), '=', new Unknown()),
-      new BinaryExpression(new ColumnExpression(taskTable, 'primaryKey'), '=', new Unknown()),
-      new IsNullExpression(new ColumnExpression(taskTable, 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression(taskTable, 'deletedBy'), false)
+  // field:category
+  {
+    type: 'field',
+    name: 'category',
+    expression: new ColumnExpression(templateTaskTable, 'category'),
+    registered: true
+  },
+
+  // field:name
+  {
+    type: 'field',
+    name: 'name',
+    expression: new ColumnExpression(templateTaskTable, 'name'),
+    registered: true
+  },
+
+  // field:description
+  {
+    type: 'field',
+    name: 'description',
+    expression: new ColumnExpression(templateTaskTable, 'description'),
+    registered: true
+  },
+
+  // field:deletedAt
+  {
+    type: 'field',
+    name: 'deletedAt',
+    expression: new ColumnExpression(templateTaskTable, 'deletedAt'),
+    registered: true
+  },
+
+  // field:deletedBy
+  {
+    type: 'field',
+    name: 'deletedBy',
+    expression: new ColumnExpression(templateTaskTable, 'deletedBy'),
+    registered: true
+  },
+
+  // subquery:partyGroupCode
+  {
+    type: 'subquery',
+    name: 'partyGroupCode',
+    expression: re => new BinaryExpression(re['partyGroupCode'], '=', new Unknown()),
+    unknowns: [['value', 0]]
+  },
+
+  // subquery:category
+  {
+    type: 'subquery',
+    name: 'category',
+    expression: re => new BinaryExpression(re['category'], '=', new Unknown()),
+    unknowns: [['value', 0]]
+  },
+
+  // subquery:notExistsIn
+  {
+    type: 'subquery',
+    name: 'notExistsIn',
+    expression: re => new ExistsExpression(new Query({
+      $from: taskTable,
+      $where: new AndExpressions([
+        new BinaryExpression(new ColumnExpression(taskTable, 'taskId'), '=', re['id']),
+        new BinaryExpression(new ColumnExpression(taskTable, 'tableName'), '=', new Unknown()),
+        new BinaryExpression(new ColumnExpression(taskTable, 'primaryKey'), '=', new Unknown()),
+        new IsNullExpression(new ColumnExpression(taskTable, 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression(taskTable, 'deletedBy'), false)
+      ])
+    }), true),
+    unknowns: [['tableName', 0], ['primaryKey', 1]]
+  },
+
+  // subquery:noSubTasks
+  {
+    type: 'subquery',
+    name: 'noSubTasks',
+    expression: re => new IsNullExpression(re['parentId'], false)
+  },
+  
+  // subquery:subTasksOf
+  {
+    type: 'subquery',
+    name: 'subTasksOf',
+    expression: re => new BinaryExpression(re['parentId'], '=', new Unknown()),
+    unknowns: [['value', 0]]
+  },
+
+  // subquery:q
+  {
+    type: 'subquery',
+    name: 'q',
+    expression: re => new OrExpressions([
+      new BinaryExpression(new FunctionExpression('CONCAT', re['partyGroupCode'], new Value('-'), re['uniqueId']), '=', new Unknown()),
+      new RegexpExpression(re['system'], false, new Unknown()),
+      new RegexpExpression(re['category'], false, new Unknown()),
+      new RegexpExpression(re['name'], false, new Unknown()),
+      new RegexpExpression(re['description'], false, new Unknown()),
+    ]),
+    unknowns: [['value', 0], ['value', 1], ['value', 2], ['value', 3], ['value', 4]]
+  },
+
+  // subquery:notDeleted
+  {
+    type: 'subquery',
+    name: 'notDeleted',
+    expression: re => new AndExpressions([
+      new IsNullExpression(re['deletedAt'], false),
+      new IsNullExpression(re['deletedBy'], false)
     ])
-  }), true)
-}).register('tableName', 0).register('primaryKey', 0)
-
-
-
-
-
-// @subquery q
-query.subquery('q', {
-  $where: new OrExpressions([
-    new BinaryExpression(new FunctionExpression('CONCAT', columnExpressions['partyGroupCode'], new Value('-'), columnExpressions['uniqueId']), '=', new Unknown()),
-    new RegexpExpression(columnExpressions['system'], false, new Unknown()),
-    new RegexpExpression(columnExpressions['category'], false, new Unknown()),
-    new RegexpExpression(columnExpressions['name'], false, new Unknown()),
-    new RegexpExpression(columnExpressions['description'], false, new Unknown()),
-  ])
-}).register('value', 0).register('value', 1).register('value', 2).register('value', 3).register('value', 4)
-
-
-
-
-
-// @subquery notDeleted
-// hide deleted
-query.subquery('notDeleted', {
-  $where: [
-    new IsNullExpression(columnExpressions['deletedAt'], false),
-    new IsNullExpression(columnExpressions['deletedBy'], false)
-  ]
-})
-
-
-
-
-
-export default query
+  }
+]
+export default query.useShortcuts(shortcuts)

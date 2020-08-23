@@ -122,7 +122,7 @@
                       "label": "Widget.estimatedDate",
                       "name": "shipmentDate.{{flex}}{{key}}DateEstimated",
                       "component": "DateTimePicker",
-                      "class": "xs-6",
+                      "class": "xs-{% if flex === '' %}6{% else %}4{% endif %}",
                       "props": {
                         "right": true,
                         "type": "datetime",
@@ -135,13 +135,35 @@
                       "label": "Widget.actualDate",
                       "name": "shipmentDate.{{flex}}{{key}}DateActual",
                       "component": "DateTimePicker",
-                      "class": "xs-6",
+                      "class": "xs-{% if flex === '' %}6{% else %}4{% endif %}",
                       "props": {
                         "right": true,
                         "type": "datetime",
                         "utc": true,
                         "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
                         "useOwnFormat": true
+                      }
+                    },
+                    {
+                      "label": "Widget.port",
+                      "name": "shipmentDate.{{flex}}{{key}}DatePort",
+                      "checkDisplayWhen": "return '{{flex}}' !== ''",
+                      "component": "v-select",
+                      "class": "xs-4",
+                      "props": {
+                        "right": true,
+                        "class": "input-text-right",
+                        "items": [
+                          {
+                            "key": "portOfLoading",
+                            "value": "Port of Loading"
+                          }, {
+                            "key": "portOfDischarge",
+                            "value": "Port of Discharge"
+                          }
+                        ],
+                        "item-text": "value",
+                        "item-value": "key"
                       }
                     },
                     {

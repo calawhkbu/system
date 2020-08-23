@@ -116,12 +116,13 @@ export default {
       onResult(res, params, prevResult: Result): Result {
 
         const { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables } = prevResult
-
         prevResult.groupByResult = res.map(row => {
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
 
           for (const variable of summaryVariables) {
-            row_[`${variable}`] = row[variable]
+
+            // change into number
+            row_[`${variable}`] = +row[variable]
           }
 
           return row_
@@ -167,9 +168,6 @@ export default {
               params.sorting = new OrderBy(`${summaryVariables[0]}`, 'DESC')
             }
 
-            console.log(`second param`)
-            console.log(params)
-
             return params
         }
       },
@@ -190,19 +188,10 @@ export default {
               groupByResult
             } = prevResult
 
-          console.log(`res2`)
-          console.log(res)
-
-          console.log(`groupByResult`)
-          console.log(groupByResult)
-
           const subqueries = (params.subqueries = params.subqueries || {})
 
           const topX = subqueries.topX.value
           const topY = subqueries.topY.value
-
-          const mapping = {}
-
 
           res.map(dynamicRow => {
 
@@ -214,14 +203,11 @@ export default {
 
             const { code } = row
 
-
             // calculate topX dynamicCodeList
 
             // just get the first topX
             const dynamicCodeList = [ ...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0,topX)
             const dynamicNameList = [ ...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnNameColumnName]))].splice(0,topX)
-
-            
 
             const row_ = {
                 ...row,
@@ -239,9 +225,9 @@ export default {
                     summaryVariables.map(summaryVariable => {
 
                         const fieldName = `${dynamicCode}_${summaryVariable}`
-                        console.log(`fieldName`)
-                        console.log(fieldName)
-                        const dynamicValue = dynamicRow[summaryVariable]
+    
+                        // forcefully make it into number
+                        const dynamicValue = +dynamicRow[summaryVariable]
     
                         // add G0001_cbm into the row
                         row_[fieldName] = dynamicValue
@@ -253,62 +239,14 @@ export default {
 
           })
 
-          console.log(`finalResult`)
-          console.log(finalResult)
 
           return finalResult
-  
-        //   const finalResult = res.map(row => {
-
-        //     const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
-  
-        //     for (const variable of summaryVariables) {
-        //       row_[`${variable}`] = row[variable]
-        //     }
-  
-        //     return row_
-        //   })
-  
-        //   return finalResult
         }
       },
   ],
   filters: [
     // for this filter, user can only select single,
     // but when config in card definition, use summaryVariables. Then we can set as multi
-    {
-      display: 'topX',
-      name: 'topX',
-      props: {
-        items: [
-          {
-            label: '10',
-            value: 10,
-          },
-          {
-            label: '20',
-            value: 20,
-          },
-          {
-            label: '50',
-            value: 50,
-          },
-          {
-            label: '100',
-            value: 100,
-          },
-          {
-            label: '1000',
-            value: 1000,
-          }
-        ],
-        multi: false,
-        required: true,
-      },
-      type: 'list',
-    },
-
-
     {
         display: 'topY',
         name: 'topY',
@@ -369,6 +307,31 @@ export default {
     {
       display: 'groupByEntity',
       name: 'groupByEntity',
+      props: {
+        items: [
+            ...groupByEntityList.reduce((acc,groupByEntity) => {
+
+                acc = acc.concat(
+                    [
+                        {
+                            label: `${groupByEntity}`,
+                            value: `${groupByEntity}`,
+                        }
+                    ]
+                )
+
+                return acc
+
+            },[])
+        ],
+        required: true,
+      },
+      type: 'list',
+    },
+
+    {
+      display: 'bottomSheetGroupByEntity',
+      name: 'bottomSheetGroupByEntity',
       props: {
         items: [
             ...groupByEntityList.reduce((acc,groupByEntity) => {

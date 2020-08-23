@@ -101,9 +101,7 @@ const query = new QueryDef(
 )
 
 query.table('booking_date', new Query({
-
   $from : new FromTable({
-
     table : 'booking',
     joinClauses : [
       {
@@ -957,24 +955,6 @@ const alertUpdatedAtExpression = new ColumnExpression('alert', 'updatedAt')
 
 const alertContentExpression = new ColumnExpression('alert', 'flexData')
 
-const houseNoExpression = new FunctionExpression(
-  'IF',
-  new BinaryExpression(
-    new ColumnExpression('booking_reference', 'refName'),
-    '=',
-    new Value('HBL')
-  ),
-  new ColumnExpression('booking_reference', 'refDescription'),
-  new Value(null)
-)
-
-const masterNoExpression = new FunctionExpression(
-  'IF',
-  new BinaryExpression(new ColumnExpression('booking_reference', 'refName'), '=', 'MBL'),
-  new ColumnExpression('booking_reference', 'refDescription'),
-  new Value(null)
-)
-
 const poNoExpression = new MathExpression(
   new ColumnExpression('booking', 'flexData'),
   '->>',
@@ -1021,6 +1001,83 @@ const freightTermsExpression = new FunctionExpression(
   'IFNULL',
   new ColumnExpression('freightTerms', 'name'),
   new ColumnExpression('booking', 'freightTermsCode')
+)
+
+const shipmentIdExpression = new QueryExpression(new Query({
+  $select : [
+    new ResultColumn(new ColumnExpression('shipment_booking','shipmentId'))
+  ],
+  $from: new FromTable('shipment_booking'),
+  $where: [
+    new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
+  ]
+}))
+
+const bookingHouseNoExpression = new FunctionExpression(
+  'IF',
+  new BinaryExpression(
+    new ColumnExpression('booking_reference', 'refName'),
+    '=',
+    new Value('HBL')
+  ),
+  new ColumnExpression('booking_reference', 'refDescription'),
+  new Value(null)
+)
+
+const bookingMasterNoExpression = new FunctionExpression(
+  'IF',
+  new BinaryExpression(new ColumnExpression('booking_reference', 'refName'), '=', 'MBL'),
+  new ColumnExpression('booking_reference', 'refDescription'),
+  new Value(null)
+)
+
+
+const shipmentMasterNoExpression = new QueryExpression(new Query({
+  $select : [
+    new ResultColumn(new ColumnExpression('shipment','masterNo'))
+  ],
+  $from: new FromTable({
+    table: 'shipment_booking',
+    joinClauses : [{
+      operator: 'LEFT',
+      table: 'shipment',
+      $on: [new BinaryExpression(new ColumnExpression('shipment_booking', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))]
+    }]
+  }),
+  $where: [
+    new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
+  ]
+}))
+
+const shipmentHouseNoExpression = new QueryExpression(new Query({
+  $select : [
+    new ResultColumn(new ColumnExpression('shipment','houseNo'))
+  ],
+  $from: new FromTable({
+    table: 'shipment_booking',
+    joinClauses : [{
+      operator: 'LEFT',
+      table: 'shipment',
+      $on: [new BinaryExpression(new ColumnExpression('shipment_booking', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))]
+    }]
+  }),
+  $where: [
+    new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
+  ]
+}))
+
+const houseNoExpression = new FunctionExpression(
+  'IF',
+  new IsNullExpression(shipmentIdExpression, true),
+  shipmentHouseNoExpression,
+  bookingHouseNoExpression,
+)
+
+const masterNoExpression = new FunctionExpression(
+  'IF',
+  new IsNullExpression(shipmentIdExpression, true),
+  shipmentMasterNoExpression,
+  bookingMasterNoExpression,
 )
 
 // all field related to party
@@ -1143,6 +1200,11 @@ const fieldList = [
 
   ...partyExpressionList,
   ...locationExpressionList,
+
+  {
+    name: 'shipmentId',
+    expression: shipmentIdExpression
+  },
   {
 
     name : 'houseNo',
@@ -1544,82 +1606,59 @@ query
   .register('value', 29)
   .register('value', 30)
 
+function addBookingCheck(query: Query) {
+  if (!query.$where) {
+    query.$where = new AndExpressions([])
+  }
+  const expr = query.$where as AndExpressions
+  expr.expressions.push(
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
+  )
+}
+
 // @field noOfTasks
 // number of outstanding tasks
-const hasSubTasksExpression = new ExistsExpression(
-  hasSubTaskQuery('temp'),
-  false
-)
-const notDoneExpression = IfExpression(
-  hasSubTasksExpression,
-  new ExistsExpression(hasSubTaskQuery('temp', generalIsDoneExpression('temp', true)), false),
-  generalIsDoneExpression('sop_task', true)
-)
-const noOfTasksQuery = new Query({
-  $select: new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('sop_task', 'id'))), 'noOfTasks'),
-  $from: 'sop_task',
-  $where: [
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
-    new IsNullExpression(new ColumnExpression('sop_task', 'parentId'), false),
-    notDoneExpression
-  ]
-})
-query.field('noOfTasks', {
-  $select: new ResultColumn(new QueryExpression(noOfTasksQuery), 'noOfTasks')
+query.field('noOfTasks', params => {
+  const noOfTasksQuery = sopQuery.apply({
+    fields: ['noOfTasks'],
+    subqueries: { notDeleted: true, notDone: true, notSubTask: true }
+  })
+  addBookingCheck(noOfTasksQuery)
+  return {
+    $select: new ResultColumn(new QueryExpression(noOfTasksQuery), 'noOfTasks')
+  }
 })
 
 // @field sopScore
 // sop score field
-const isDueExpression = new BinaryExpression(
-  new ColumnExpression('sop_task', 'dueAt'),
-  '<',
-  new FunctionExpression('UTC_TIMESTAMP')
-)
-const isDeadExpression = new BinaryExpression(
-  new ColumnExpression('sop_task', 'deadline'),
-  '<',
-  new FunctionExpression('UTC_TIMESTAMP')
-)
-query.field('sopScore', {
-  $select: new ResultColumn(IfExpression(
-    new IsNullExpression(new ColumnExpression('booking', 'sopScore'), true), // TODO booking status is closed
-    new ColumnExpression('booking', 'sopScore'),
-    new MathExpression(new Value(100), '-', IfNullExpression(new QueryExpression(new Query({
-      $select: new ResultColumn(
-        new FunctionExpression('SUM', new CaseExpression([
-          {
-            $when: isDeadExpression,
-            $then: IfNullExpression(new ColumnExpression('sop_task', 'deadlineScore'), new Value(0))
-          },
-          {
-            $when: isDueExpression,
-            $then: IfNullExpression(new ColumnExpression('sop_task', 'dueScore'), new Value(0))
-          }
-        ], new Value(0)))
-      , 'deduct'),
-      $from: 'sop_task',
-      $where: [
-        new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
-        new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
-        new OrExpressions([isDueExpression, isDeadExpression])
-      ]
-    })), new Value(0)))
-  ), 'sopScore')
+query.field('sopScore', params => {
+  const query = sopQuery.apply({
+    fields: ['deduct'],
+    subqueries: { notDeleted: true }
+  })
+  addBookingCheck(query)
+  return {
+    $select: new ResultColumn(IfExpression(
+      new IsNullExpression(new ColumnExpression('booking', 'sopScore'), true), // TODO booking status is closed
+      new ColumnExpression('booking', 'sopScore'),
+      new MathExpression(new Value(100), '-', IfNullExpression(new QueryExpression(query), new Value(0)))
+    ), 'sopScore')
+  }
 })
 
 // @subquery hasDueTasks
 // return bookings with due tasks
-const dueTasksQuery = new Query({
-  $from: 'sop_task',
-  $where: [
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
-    generalIsClosedExpression('sop_task', true),
-    notDoneExpression,
-    isDueExpression
-  ]
+const dueTasksQuery = sopQuery.apply({
+  fields: ['deduct'],
+  subqueries: {
+    notDeleted: true,
+    notClosed: true,
+    notDone: true,
+    isDue: true
+  }
 })
+addBookingCheck(dueTasksQuery)
 query.subquery('hasDueTasks', {
   $where: new ExistsExpression(dueTasksQuery, false)
 })
@@ -1632,16 +1671,16 @@ query.subquery('noDueTasks', {
 
 // @subquery hasDeadTasks
 // return bookings with dead tasks
-const deadTasksQuery = new Query({
-  $from: 'sop_task',
-  $where: [
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
-    generalIsClosedExpression('sop_task', true),
-    notDoneExpression,
-    isDeadExpression
-  ]
+const deadTasksQuery = sopQuery.apply({
+  fields: ['deduct'],
+  subqueries: {
+    notDeleted: true,
+    notClosed: true,
+    notDone: true,
+    isDead: true
+  }
 })
+addBookingCheck(deadTasksQuery)
 query.subquery('hasDeadTasks', {
   $where: new ExistsExpression(deadTasksQuery, false)
 })
@@ -1654,7 +1693,7 @@ query.subquery('noDeadTasks', {
 
 // @field noOfOutstandingTasks
 query.field('noOfOutstandingTasks', params => {
-  let subqueries: any = { tableName: { value: 'booking' } }
+  let subqueries: any = { tableName: { value: 'booking' }, notSubTask: true }
   if (params.subqueries.sop_user) subqueries.user = params.subqueries.sop_user
   if (params.subqueries.sop_partyGroupCode) subqueries.partyGroupCode = params.subqueries.sop_partyGroupCode
   if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
@@ -1667,11 +1706,7 @@ query.field('noOfOutstandingTasks', params => {
     fields: ['count'],
     subqueries
   })
-  const $where = query.$where as AndExpressions
-  $where.expressions.push(
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
-  )
+  addBookingCheck(query)
   return {
     $select: new ResultColumn(new QueryExpression(query), 'noOfOutstandingTasks')
   }
@@ -1681,6 +1716,7 @@ query.field('noOfOutstandingTasks', params => {
 query.subquery('myTasksOnly', (value, params) => {
   let subqueries: any = {
     tableName: { value: 'booking' },
+    notSubTask: true,
     user: params.subqueries.sop_user,
     partyGroupCode: params.subqueries.sop_partyGroupCode,
     today: params.subqueries.sop_today,
@@ -1695,11 +1731,7 @@ query.subquery('myTasksOnly', (value, params) => {
     fields: ['id'],
     subqueries
   })
-  const $where = query.$where as AndExpressions
-  $where.expressions.push(
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
-  )
+  addBookingCheck(query)
   return {
     $where: new ExistsExpression(query, false)
   }
