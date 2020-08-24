@@ -1347,7 +1347,18 @@ const summaryFieldList : SummaryField[]  = [
     name: 'weight',
     summaryType : 'sum',
     expression: new ColumnExpression('booking_popacking', 'weight')
-  }
+  },
+  {
+    name: 'chargeableWeight',
+    summaryType: 'sum',
+    expression: new ColumnExpression('booking', 'chargeableWeight'),
+  },
+  {
+    name: 'grossWeight',
+    summaryType: 'sum',
+    expression: new ColumnExpression('booking', 'grossWeight'),
+  },
+  
 ]
 
 registerSummaryField(query, baseTableName, summaryFieldList, nestedSummaryList, jobDateExpression)

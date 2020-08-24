@@ -1,0 +1,49 @@
+{
+  "components": [
+    {
+      "is": "Widget",
+      "props": {
+        "settingProp": {
+          "overrideType": "i18n",
+          "initAxiosParams": {
+            "url": "api/i18n/{{context.$route.params.params}}"
+          },
+          "defaultAxiosParams": {
+            "url": "default/i18n"
+          },
+          "validateAxiosParams": {
+            "method": "post",
+            "url": "api/i18n/validate/{{id}}"
+          },
+          "saveAxiosParams": {
+            "method": "post",
+            "url": "api/i18n"
+          },
+          "primaryKey": "id",
+          "modeFunction": "const modes = ['create', 'detail','edit'];\nconst selectedMode = isNaN(Number(mode)) ? mode : 'detail'\nif (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
+          "haveTermOnCreate": false,
+          "haveTermOnEdit": false,
+          "widgetComponentSetting": {
+            "quick-create": {
+              "readonly": false
+            },
+            "create": {
+              "readonly": false,
+              "stepper": 0,
+              "next": false,
+              "saveIcon": "create"
+            },
+            "detail": {
+              "readonly": true
+            },
+            "edit": {
+              "readonly": false,
+              "stepper": 0,
+              "saveIcon": "save"
+            }
+          }
+        }
+      }
+    }
+  ]
+}

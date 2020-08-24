@@ -4,6 +4,7 @@ import { OrderBy } from 'node-jql'
 import Moment = require('moment')
 import { expandGroupEntity, expandSummaryVariable, extendDate } from 'utils/card'
 
+
 interface Result {
   moment: typeof Moment
   groupByEntity: string
@@ -21,6 +22,7 @@ export default {
         function guessSortingExpression(sortingValue: string, subqueries) {
           const variablePart = sortingValue.substr(0, sortingValue.lastIndexOf('_'))
           const sortingDirection = sortingValue.substr(sortingValue.lastIndexOf('_') + 1)
+     
 
           if (!['ASC', 'DESC'].includes(sortingDirection)) {
             throw new Error(`cannot guess sortingDirection`)
@@ -35,11 +37,13 @@ export default {
           // summaryVariable case
           if (summaryVariableRegex.test(variablePart)) {
             finalColumnName = variablePart.replace('summaryVariable', subqueries.summaryVariable.value)
+         
           }
           else if (metricRegex.test(variablePart)) {
             const metricPart = variablePart.match(metricRegex)[0]
             const metricValue = subqueries[metricPart].value
             finalColumnName = variablePart.replace(metricPart, metricValue)
+       
           }
           else {
             finalColumnName = variablePart
@@ -61,12 +65,15 @@ export default {
         
 
         const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
-
+        console.log('preparParams')
+        console.log(params)
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
         prevResult.nameColumnName = nameColumnName
 
         const topX = subqueries.topX.value
+        console.log("SUBQURIES");
+        console.log(subqueries)
 
         // ---------------------summaryVariables
         
@@ -84,6 +91,9 @@ export default {
         // prevResult.summaryVariables = summaryVariables
 
         const summaryVariables = expandSummaryVariable(subqueries)
+        console.log("summaryVariables")
+        console.log(summaryVariables);
+
         prevResult.summaryVariables = summaryVariables
 
 
@@ -107,24 +117,16 @@ export default {
         subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
           value: true
         }
-
-        // params.fields = [
-        //   // select Month statistics
-        //   ...summaryVariables.map(variable => `${variable}Month`),
-        //   codeColumnName,
-        //   nameColumnName,
-        // ]
+        subqueries[`chargeableWeightIsNotNull`]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+          value: true
+        }
+ 
         params.fields = [
           // select Month statistics
-          ...summaryVariables.map(variable => `${variable}`),
+          ...summaryVariables.map(variable => `${variable}Month`),
           codeColumnName,
           nameColumnName,
         ]
-
-
-
-        console.log('SELECT MONTH STAT PARAMS FIELDS')
-        console.log(params.fields);
 
         // group by
         params.groupBy = [codeColumnName]
@@ -142,12 +144,12 @@ export default {
           })
         }
         else {
-          params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
+          params.sorting = new OrderBy(`${summaryVariables[0]}`, 'DESC')
         }
 
         params.limit = topX
-        console.log("THE PARAMAS from frontend")
-        console.log(params);
+        console.log("params JQL expressions")
+        console.log(params)
         return params
       }
     },
@@ -155,11 +157,13 @@ export default {
       type: 'callDataService',
       dataServiceQuery: ['booking', 'booking'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
+        //remove zero totalchargeable Weight
+        res=res.filter(o=>o.total_chargeableWeight!=0 && o.total_grossWeight!=0);
+        
         return res.map(row => {
-          const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
+          var row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
+          var empty=true;
 
-          console.log("summaryVariables")
-          console.log(summaryVariables)
           for (const variable of summaryVariables) {
             let total = 0
             for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
@@ -172,9 +176,9 @@ export default {
             }
             row_[`total_${variable}`] = total
           }
-          console.log(row_);
-
-          return row_
+         
+    return row_;
+        
         })
       }
     }
@@ -214,24 +218,21 @@ export default {
       type: 'list',
     },
     {
-      display: 'summaryVariable',
-      name: 'summaryVariable',
+      display: 'summaryVariables',
+      name: 'summaryVariables',
       props: {
         items: [
           {
-            label: 'quantity',
-            value: 'quantity',
+            label: 'grossWeight',
+            value: 'grossWeight',
           },
           {
             label: 'chargeableWeight',
             value: 'chargeableWeight',
           },
-          {
-            label: 'totalBooking',
-            value: 'totalBooking',
-          },
+        
         ],
-        multi : false,
+        multi : true,
         required: true,
       },
       type: 'list',

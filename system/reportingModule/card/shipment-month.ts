@@ -71,6 +71,8 @@ export default {
 
 
         const summaryVariables = expandSummaryVariable(subqueries)
+        console.log("summaryVariables")
+        console.log(summaryVariables);
         prevResult.summaryVariables = summaryVariables
 
         // extend date into whole year

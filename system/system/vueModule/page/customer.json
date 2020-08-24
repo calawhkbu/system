@@ -1,0 +1,61 @@
+{
+  "components": [{
+    "is": "Widget",
+    "props": {
+      "settingProp": {
+        "overrideType": "party-group",
+        "initAxiosParams": {
+          "url": "api/partyGroup/{{context.$route.params.params}}"
+        },
+        "defaultAxiosParams": {
+          "url": "default/partyGroup"
+        },
+        "validateAxiosParams": {
+          "method": "post",
+          "url": "api/partyGroup/validate/{{id}}"
+        },
+        "saveAxiosParams": {
+          "method": "post",
+          "url": "api/partyGroup/default"
+        },
+        "afterSaveAction": [{
+          "type": "commit",
+          "otherParams": {
+            "name": "auth/resetlastGetProfileTime",
+            "type": "local"
+          },
+          "afterActions": [{
+            "type": "dispatch",
+            "otherParams": {
+              "name": "auth/getUserProfile",
+              "type": "local"
+            }
+          }]
+        }],
+        "primaryKey": "id",
+        "modeFunction": "return 'detail'",
+        "haveTermOnCreate": false,
+        "haveTermOnEdit": false,
+        "widgetComponentSetting": {
+          "quick-create": {
+            "readonly": false
+          },
+          "create": {
+            "readonly": false,
+            "stepper": 0,
+            "next": false,
+            "saveIcon": "create"
+          },
+          "detail": {
+            "readonly": true
+          },
+          "edit": {
+            "readonly": false,
+            "stepper": 0,
+            "saveIcon": "save"
+          }
+        }
+      }
+    }
+  }]
+}
