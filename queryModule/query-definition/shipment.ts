@@ -3287,165 +3287,136 @@ query
   .register('value', 3)
   .register('value', 4)
 
-// @field noOfTasks
-// number of outstanding tasks
-const hasSubTasksExpression = new ExistsExpression(
-  hasSubTaskQuery('temp'),
-  false
-)
-const notDoneExpression = IfExpression(
-  hasSubTasksExpression,
-  new ExistsExpression(hasSubTaskQuery('temp', generalIsDoneExpression('temp', true)), false),
-  generalIsDoneExpression('sop_task', true)
-)
-const noOfTasksQuery = new Query({
-  $select: new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('sop_task', 'id'))), 'noOfTasks'),
-  $from: 'sop_task',
-  $where: [
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id')),
-    new IsNullExpression(new ColumnExpression('sop_task', 'parentId'), false),
-    notDoneExpression
-  ]
-})
-query.field('noOfTasks', {
-  $select: new ResultColumn(new QueryExpression(noOfTasksQuery), 'noOfTasks')
-})
-
-// @field sopScore
-// sop score field
-const isDueExpression = new BinaryExpression(
-  new ColumnExpression('sop_task', 'dueAt'),
-  '<',
-  new FunctionExpression('UTC_TIMESTAMP')
-)
-const isDeadExpression = new BinaryExpression(
-  new ColumnExpression('sop_task', 'deadline'),
-  '<',
-  new FunctionExpression('UTC_TIMESTAMP')
-)
-query.field('sopScore', {
-  $select: new ResultColumn(IfExpression(
-    new IsNullExpression(new ColumnExpression('shipment', 'sopScore'), true), // TODO shipment status is closed
-    new ColumnExpression('shipment', 'sopScore'),
-    new MathExpression(new Value(100), '-', IfNullExpression(new QueryExpression(new Query({
-      $select: new ResultColumn(
-        new FunctionExpression('SUM', new CaseExpression([
-          {
-            $when: isDeadExpression,
-            $then: IfNullExpression(new ColumnExpression('sop_task', 'deadlineScore'), new Value(0))
-          },
-          {
-            $when: isDueExpression,
-            $then: IfNullExpression(new ColumnExpression('sop_task', 'dueScore'), new Value(0))
-          }
-        ], new Value(0)))
-      , 'deduct'),
-      $from: 'sop_task',
-      $where: [
-        new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
-        new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id')),
-        new OrExpressions([isDueExpression, isDeadExpression])
-      ]
-    })), new Value(0)))
-  ), 'sopScore')
-})
-
-// @subquery hasDueTasks
-// return shipments with due tasks
-const dueTasksQuery = new Query({
-  $from: 'sop_task',
-  $where: [
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id')),
-    generalIsClosedExpression('sop_task', true),
-    notDoneExpression,
-    isDueExpression
-  ]
-})
-query.subquery('hasDueTasks', {
-  $where: new ExistsExpression(dueTasksQuery, false)
-})
-
-// @subquery noDueTasks
-// return shipments without due tasks
-query.subquery('noDueTasks', {
-  $where: new ExistsExpression(dueTasksQuery, true)
-})
-
-// @subquery hasDeadTasks
-// return shipments with dead tasks
-const deadTasksQuery = new Query({
-  $from: 'sop_task',
-  $where: [
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id')),
-    generalIsClosedExpression('sop_task', true),
-    notDoneExpression,
-    isDeadExpression
-  ]
-})
-query.subquery('hasDeadTasks', {
-  $where: new ExistsExpression(deadTasksQuery, false)
-})
-
-// @subquery noDeadTasks
-// return shipments without dead tasks
-query.subquery('noDeadTasks', {
-  $where: new ExistsExpression(deadTasksQuery, true)
-})
-
-// @field noOfOutstandingTasks
-query.field('noOfOutstandingTasks', params => {
-  let subqueries: any = { tableName: { value: 'shipment' } }
-  if (params.subqueries.sop_user) subqueries.user = params.subqueries.sop_user
-  if (params.subqueries.sop_partyGroupCode) subqueries.partyGroupCode = params.subqueries.sop_partyGroupCode
-  if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
-  if (params.subqueries.sop_today) subqueries.today = params.subqueries.sop_today
-  if (params.subqueries.sop_date) subqueries.date = params.subqueries.sop_date
-  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
-  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
-  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
-  const query = sopQuery.apply({
-    fields: ['count'],
-    subqueries
+  function addShipmentCheck(query: Query) {
+    if (!query.$where) {
+      query.$where = new AndExpressions([])
+    }
+    const expr = query.$where as AndExpressions
+    expr.expressions.push(
+      new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
+      new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id'))
+    )
+  }
+  
+  // @field noOfTasks
+  // number of outstanding tasks
+  query.field('noOfTasks', params => {
+    const noOfTasksQuery = sopQuery.apply({
+      fields: ['noOfTasks'],
+      subqueries: { notDeleted: true, notDone: true, notSubTask: true }
+    })
+    addShipmentCheck(noOfTasksQuery)
+    return {
+      $select: new ResultColumn(new QueryExpression(noOfTasksQuery), 'noOfTasks')
+    }
   })
-  const $where = query.$where as AndExpressions
-  $where.expressions.push(
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id'))
-  )
-  return {
-    $select: new ResultColumn(new QueryExpression(query), 'noOfOutstandingTasks')
-  }
-})
-
-// @subquery myTasksOnly
-query.subquery('myTasksOnly', (value, params) => {
-  let subqueries: any = {
-    tableName: { value: 'shipment' },
-    user: params.subqueries.sop_user,
-    partyGroupCode: params.subqueries.sop_partyGroupCode,
-    today: params.subqueries.sop_today,
-    date: params.subqueries.sop_date
-  }
-  if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
-  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
-  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
-  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
-  const query = sopQuery.apply({
-    distinct: true,
-    fields: ['id'],
-    subqueries
+  
+  // @field sopScore
+  // sop score field
+  query.field('sopScore', params => {
+    const query = sopQuery.apply({
+      fields: ['deduct'],
+      subqueries: { notDeleted: true }
+    })
+    addShipmentCheck(query)
+    return {
+      $select: new ResultColumn(IfExpression(
+        new IsNullExpression(new ColumnExpression('shipment', 'sopScore'), true), // TODO shipment status is closed
+        new ColumnExpression('shipment', 'sopScore'),
+        new MathExpression(new Value(100), '-', IfNullExpression(new QueryExpression(query), new Value(0)))
+      ), 'sopScore')
+    }
   })
-  const $where = query.$where as AndExpressions
-  $where.expressions.push(
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id'))
-  )
-  return {
-    $where: new ExistsExpression(query, false)
-  }
-})
-
-export default query
+  
+  // @subquery hasDueTasks
+  // return shipments with due tasks
+  const dueTasksQuery = sopQuery.apply({
+    fields: ['deduct'],
+    subqueries: {
+      notDeleted: true,
+      notClosed: true,
+      notDone: true,
+      isDue: true
+    }
+  })
+  addShipmentCheck(dueTasksQuery)
+  query.subquery('hasDueTasks', {
+    $where: new ExistsExpression(dueTasksQuery, false)
+  })
+  
+  // @subquery noDueTasks
+  // return shipments without due tasks
+  query.subquery('noDueTasks', {
+    $where: new ExistsExpression(dueTasksQuery, true)
+  })
+  
+  // @subquery hasDeadTasks
+  // return shipments with dead tasks
+  const deadTasksQuery = sopQuery.apply({
+    fields: ['deduct'],
+    subqueries: {
+      notDeleted: true,
+      notClosed: true,
+      notDone: true,
+      isDead: true
+    }
+  })
+  addShipmentCheck(deadTasksQuery)
+  query.subquery('hasDeadTasks', {
+    $where: new ExistsExpression(deadTasksQuery, false)
+  })
+  
+  // @subquery noDeadTasks
+  // return shipments without dead tasks
+  query.subquery('noDeadTasks', {
+    $where: new ExistsExpression(deadTasksQuery, true)
+  })
+  
+  // @field noOfOutstandingTasks
+  query.field('noOfOutstandingTasks', params => {
+    let subqueries: any = { tableName: { value: 'shipment' }, notSubTask: true }
+    if (params.subqueries.sop_user) subqueries.user = params.subqueries.sop_user
+    if (params.subqueries.sop_partyGroupCode) subqueries.partyGroupCode = params.subqueries.sop_partyGroupCode
+    if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
+    if (params.subqueries.sop_today) subqueries.today = params.subqueries.sop_today
+    if (params.subqueries.sop_date) subqueries.date = params.subqueries.sop_date
+    if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
+    if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
+    if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
+    const query = sopQuery.apply({
+      fields: ['count'],
+      subqueries
+    })
+    addShipmentCheck(query)
+    return {
+      $select: new ResultColumn(new QueryExpression(query), 'noOfOutstandingTasks')
+    }
+  })
+  
+  // @subquery myTasksOnly
+  query.subquery('myTasksOnly', (value, params) => {
+    let subqueries: any = {
+      tableName: { value: 'shipment' },
+      notSubTask: true,
+      user: params.subqueries.sop_user,
+      partyGroupCode: params.subqueries.sop_partyGroupCode,
+      today: params.subqueries.sop_today,
+      date: params.subqueries.sop_date
+    }
+    if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
+    if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
+    if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
+    if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
+    const query = sopQuery.apply({
+      distinct: true,
+      fields: ['id'],
+      subqueries
+    })
+    addShipmentCheck(query)
+    return {
+      $where: new ExistsExpression(query, false)
+    }
+  })
+  
+  export default query
+  

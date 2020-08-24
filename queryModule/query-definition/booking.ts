@@ -1606,43 +1606,38 @@ query
   .register('value', 29)
   .register('value', 30)
 
+function addBookingCheck(query: Query) {
+  if (!query.$where) {
+    query.$where = new AndExpressions([])
+  }
+  const expr = query.$where as AndExpressions
+  expr.expressions.push(
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
+  )
+}
+
 // @field noOfTasks
 // number of outstanding tasks
-const hasSubTasksExpression = new ExistsExpression(
-  hasSubTaskQuery('temp'),
-  false
-)
-const notDoneExpression = IfExpression(
-  hasSubTasksExpression,
-  new ExistsExpression(hasSubTaskQuery('temp', generalIsDoneExpression('temp', true)), false),
-  generalIsDoneExpression('sop_task', true)
-)
-const noOfTasksQuery = new Query({
-  $select: new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('sop_task', 'id'))), 'noOfTasks'),
-  $from: 'sop_task',
-  $where: [
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id')),
-    new IsNullExpression(new ColumnExpression('sop_task', 'parentId'), false),
-    notDoneExpression
-  ]
-})
-query.field('noOfTasks', {
-  $select: new ResultColumn(new QueryExpression(noOfTasksQuery), 'noOfTasks')
+query.field('noOfTasks', params => {
+  const noOfTasksQuery = sopQuery.apply({
+    fields: ['noOfTasks'],
+    subqueries: { notDeleted: true, notDone: true, notSubTask: true }
+  })
+  addBookingCheck(noOfTasksQuery)
+  return {
+    $select: new ResultColumn(new QueryExpression(noOfTasksQuery), 'noOfTasks')
+  }
 })
 
 // @field sopScore
 // sop score field
 query.field('sopScore', params => {
   const query = sopQuery.apply({
-    fields: ['deduct']
+    fields: ['deduct'],
+    subqueries: { notDeleted: true }
   })
-  let $where = query.$where as AndExpressions
-  if (!$where) $where = query.$where = new AndExpressions([])
-  $where.expressions.push(
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
-  )
+  addBookingCheck(query)
   return {
     $select: new ResultColumn(IfExpression(
       new IsNullExpression(new ColumnExpression('booking', 'sopScore'), true), // TODO booking status is closed
@@ -1657,17 +1652,13 @@ query.field('sopScore', params => {
 const dueTasksQuery = sopQuery.apply({
   fields: ['deduct'],
   subqueries: {
+    notDeleted: true,
     notClosed: true,
     notDone: true,
     isDue: true
   }
 })
-let $where = dueTasksQuery.$where as AndExpressions
-if (!$where) $where = dueTasksQuery.$where = new AndExpressions([])
-$where.expressions.push(
-  new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
-  new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
-)
+addBookingCheck(dueTasksQuery)
 query.subquery('hasDueTasks', {
   $where: new ExistsExpression(dueTasksQuery, false)
 })
@@ -1683,13 +1674,13 @@ query.subquery('noDueTasks', {
 const deadTasksQuery = sopQuery.apply({
   fields: ['deduct'],
   subqueries: {
+    notDeleted: true,
     notClosed: true,
     notDone: true,
     isDead: true
   }
 })
-$where = deadTasksQuery.$where as AndExpressions
-if (!$where) $where = deadTasksQuery.$where = new AndExpressions([])
+addBookingCheck(deadTasksQuery)
 query.subquery('hasDeadTasks', {
   $where: new ExistsExpression(deadTasksQuery, false)
 })
@@ -1715,12 +1706,7 @@ query.field('noOfOutstandingTasks', params => {
     fields: ['count'],
     subqueries
   })
-  let $where = query.$where as AndExpressions
-  if (!$where) $where = query.$where = new AndExpressions([])
-  $where.expressions.push(
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
-  )
+  addBookingCheck(query)
   return {
     $select: new ResultColumn(new QueryExpression(query), 'noOfOutstandingTasks')
   }
@@ -1745,12 +1731,7 @@ query.subquery('myTasksOnly', (value, params) => {
     fields: ['id'],
     subqueries
   })
-  let $where = query.$where as AndExpressions
-  if (!$where) $where = query.$where = new AndExpressions([])
-  $where.expressions.push(
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
-  )
+  addBookingCheck(query)
   return {
     $where: new ExistsExpression(query, false)
   }
