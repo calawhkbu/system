@@ -60,11 +60,7 @@ export default {
         if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw new Error('MISSING_groupByVariable')
         if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
 
-        // -----------------------------groupBy variable
-        // const groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-        // const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo': groupByEntity === 'carrier' ? `carrierCode`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyCode`
-        // const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo': groupByEntity === 'carrier' ? `carrierName`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyShortNameInReport`) + 'Any'
-        
+ 
 
         const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
         console.log('preparParams')
@@ -77,20 +73,7 @@ export default {
         console.log("SUBQURIES");
         console.log(subqueries)
 
-        // ---------------------summaryVariables
-        
-        // let summaryVariables: string[] = []
-        // if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
-        //   // sumamary variable
-        //   summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value : [subqueries.summaryVariables.value]
-        // }
-        // if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
-        //   summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
-        // }
-        // if (!(summaryVariables && summaryVariables.length)){
-        //   throw new Error('MISSING_summaryVariables')
-        // }
-        // prevResult.summaryVariables = summaryVariables
+
 
         const summaryVariables = expandSummaryVariable(subqueries)
         console.log("summaryVariables")
@@ -146,9 +129,17 @@ export default {
       type: 'callDataService',
       dataServiceQuery: ['booking', 'booking'],
 
-      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
+      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables,name }: Result): any[] {
+          const selectedsummaryVariable=summaryVariables[0];
+          
         console.log("callDataService")
         console.log(res)
+        console.log("the selected summary var")
+        console.log(selectedsummaryVariable);
+        res=res.filter(o=>o[`total_${selectedsummaryVariable}`]!=0);
+        console.log("filtered res ")
+        console.log(res);
+        
 
         console.log("Result");
         console.log(name)
@@ -168,8 +159,8 @@ export default {
             }
             row_[`total_${variable}`] = total
           }
-         
-    return row_;
+              return row_;
+      
         
         })
       }
@@ -210,25 +201,46 @@ export default {
       type: 'list',
     },
     {
-      display: 'summaryVariables',
-      name: 'summaryVariables',
-      props: {
-        items: [
-          {
-            label: 'grossWeight',
-            value: 'grossWeight',
-          },
-          {
-            label: 'chargeableWeight',
-            value: 'chargeableWeight',
-          },
-        
-        ],
-        multi : true,
-        required: true,
+        display: 'summaryVariables',
+        name: 'summaryVariables',
+        props: {
+          items: [
+            {
+                label: 'Total Booking',
+                value: 'totalBooking',
+              },
+            {
+              label: 'Chargeable Weight',
+              value: 'chargeableWeight',
+            },
+            {
+              label: 'Gross Weight',
+              value: 'grossWeight',
+            },
+            {
+              label: 'cbm',
+              value: 'cbm',
+            },
+            {
+              label: 'Total Booking',
+              value: 'totalShipment',
+            },
+            {
+              label: 'teu',
+              value: 'teu',
+            },
+         
+            {
+              label: 'quantity',
+              value: 'quantity',
+            },
+         
+          ],
+          multi: false,
+          required: true,
+        },
+        type: 'list',
       },
-      type: 'list',
-    },
     {
       display: 'groupByEntity',
       name: 'groupByEntity',
@@ -285,4 +297,3 @@ export default {
     },
   ]
 } as JqlDefinition
-

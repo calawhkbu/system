@@ -77,20 +77,7 @@ export default {
         console.log("SUBQURIES");
         console.log(subqueries)
 
-        // ---------------------summaryVariables
-        
-        // let summaryVariables: string[] = []
-        // if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
-        //   // sumamary variable
-        //   summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value : [subqueries.summaryVariables.value]
-        // }
-        // if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
-        //   summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
-        // }
-        // if (!(summaryVariables && summaryVariables.length)){
-        //   throw new Error('MISSING_summaryVariables')
-        // }
-        // prevResult.summaryVariables = summaryVariables
+     
 
         const summaryVariables = expandSummaryVariable(subqueries)
         console.log("summaryVariables")
@@ -99,6 +86,7 @@ export default {
         prevResult.summaryVariables = summaryVariables
 
 
+  
 
         // extend date into whole year
         extendDate(subqueries,moment,'year')
@@ -106,7 +94,7 @@ export default {
         subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
           value: true
         }
-    
+      
  
         params.fields = [
           // select Month statistics
@@ -131,7 +119,6 @@ export default {
           })
         }
         else {
-    
           params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
         }
 
@@ -147,11 +134,12 @@ export default {
       dataServiceQuery: ['booking', 'booking'],
 
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
+        //remove zero totalchargeable Weight
         console.log("callDataService")
         console.log(res)
-
-        console.log("Result");
-        console.log(name)
+        // res=res.filter(o=>o.total_chargeableWeight&&o.total_chargeableWeight!=0 ||
+        //   o.total_grossWeight&& o.total_grossWeight!=0);
+   
         return res.map(row => {
           var row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
           var empty=true;
@@ -212,16 +200,14 @@ export default {
     {
       display: 'summaryVariables',
       name: 'summaryVariables',
+      hidden:true,
       props: {
         items: [
           {
-            label: 'grossWeight',
-            value: 'grossWeight',
+            label: 'Total Booking',
+            value: 'totalBooking',
           },
-          {
-            label: 'chargeableWeight',
-            value: 'chargeableWeight',
-          },
+        
         
         ],
         multi : true,
@@ -285,4 +271,5 @@ export default {
     },
   ]
 } as JqlDefinition
+
 
