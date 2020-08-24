@@ -447,6 +447,34 @@
               "createI18nKey": "shipmentReceivedByForwarder"
             }
           }
+        },
+        {
+          "key" : "haveDocument_Invoice",
+          "boolean" : true
+        },
+        {
+          "key" : "haveDocument_FCL Document",
+          "boolean" : true
+        },
+        {
+          "key" : "haveDocument_LCL Document",
+          "boolean" : true
+        },
+        {
+          "key" : "haveDocument_MBL",
+          "boolean" : true
+        },
+        {
+          "key" : "haveDocument_MBL Original",
+          "boolean" : true
+        },
+        {
+          "key" : "haveDocument_Commercial Invoice",
+          "boolean" : true
+        },
+        {
+          "key" : "haveDocument_Packing List",
+          "boolean" : true
         }
       ]
     },
