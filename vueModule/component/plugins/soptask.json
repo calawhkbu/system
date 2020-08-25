@@ -29,7 +29,7 @@
         "tooltip": "hasRemarkMsg",
         "showTooltipWhen": "true",
         "trueIcon": "comment",
-        "trueColor": "#f7f766",
+        "trueColor": "#ffdbb5",
         "falseIcon": "",
         "badgeKey": "noOfRemarks",
         "label": "",
