@@ -11,7 +11,7 @@
           "method: 'POST',",
           "data: {",
           "fields: [",
-          "'id','tableName','primaryKey','parentId','hasSubTasks','status','statusAt','statusBy','isDone','noOfRemarks','latestRemark','latestRemarkAt','latestRemarkBy','system','category','group','name','startAt','dueAt','deadline','isDue','isDueToday','isDead','isClosed','isDeleted','uniqueId','description','statusList','remark','dueScore','deadlineScore','score','deletedAt'",
+          "'id','tableName','primaryKey','parentId','hasSubTasks','status','statusAt','statusBy','isDone','noOfRemarks','latestRemark','latestRemarkAt','latestRemarkBy','system','category','group','name','startAt','defaultStartAt','dueAt','defaultDueAt','deadline','defaultDeadline','isDue','isDueToday','isDead','isClosed','isDeleted','uniqueId','description','statusList','remark','dueScore','deadlineScore','score','deletedAt'",
           "],",
           "subqueries: {",
           "showAllTasks: true,",

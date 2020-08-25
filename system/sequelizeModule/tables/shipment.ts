@@ -23,7 +23,8 @@ export const setDataFunction = {
     if (!quantity) {
       let totalQuantity = 0
       for (const { quantity } of shipmentContainers) {
-        totalQuantity += quantity
+        const selectedQuantity = (typeof quantity === 'number' ? quantity : 0)
+        totalQuantity += selectedQuantity
       }
       return totalQuantity
     }

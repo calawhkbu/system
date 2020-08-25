@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import { OrderBy } from 'node-jql'
@@ -60,3 +59,4 @@ export default {
   filters: [
   ]
 } as JqlDefinition
+
