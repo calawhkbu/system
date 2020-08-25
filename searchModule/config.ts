@@ -2,7 +2,6 @@ import { ColumnExpression, ResultColumn } from 'node-jql'
 
 export default {
   shipment: {
-    title: ['houseNo'],
     fields: [
       new ResultColumn(new ColumnExpression('shipment', '*')),
       'shipperPartyName',
@@ -13,16 +12,16 @@ export default {
       'controllingCustomerPartyName',
       'agentPartyName',
     ],
-    subTitle: `
-    <div>{{entity.portOfLoadingName}} => {{entity.portOfDischargeName}} / {{entity.shipperPartyName}} / {{entity.consigneePartyName}} / {{entity.agentPartyName}} </div>
-    `,
-    limit: 10,
-    charLimit: 50
+    type: `shipment`,
+    primaryKey: `{{entity.id}}`,
+    title: `{{entity.houseNo}}`,
+    subTitle: `<div>{{entity.portOfLoadingName}} => {{entity.portOfDischargeName}} / {{entity.shipperPartyName}} / {{entity.consigneePartyName}} / {{entity.agentPartyName}} </div>`
   },
   booking: {
-    title: ['bookingNo'],
     fields: [
       new ResultColumn(new ColumnExpression('booking', '*')),
+      'shipmentId',
+      'houseNo',
       'shipperPartyName',
       'consigneePartyName',
       'roAgentPartyName',
@@ -31,9 +30,10 @@ export default {
       'controllingCustomerPartyName',
       'agentPartyName',
     ],
-    subTitle: `
-    <div>{{entity.portOfLoadingName}} => {{entity.portOfDischargeName}} / {{entity.shipperPartyName}} / {{entity.consigneePartyName}} / {{entity.agentPartyName}} </div>
-    `,
+    type: `{% if entity.shipmentId !== null %}shipment{% else %}booking{% endif %}`,
+    primaryKey: `{% if entity.shipmentId !== null %}{{entity.shipmentId}}{% else %}{{entity.id}}{% endif %}`,
+    title: `{% if entity.shipmentId !== null %}{{entity.houseNo || entity.bookingNo}}{% else %}{{entity.bookingNo}}{% endif %}`,
+    subTitle: `<div>{{entity.portOfLoadingName}} => {{entity.portOfDischargeName}} / {{entity.shipperPartyName}} / {{entity.consigneePartyName}} / {{entity.agentPartyName}} </div>`,
     limit: 10,
     charLimit: 50
   }

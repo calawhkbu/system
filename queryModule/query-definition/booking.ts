@@ -744,89 +744,6 @@ query.table('alert', new Query({
   })
 )
 
-query.table(
-  'workflowJoin', new Query({
-
-    $from: new FromTable('booking', {
-      operator: 'LEFT',
-      table: new FromTable({
-        table: new Query({
-          $select: [
-            new ResultColumn(new ColumnExpression('workflow', 'tableName')),
-            new ResultColumn(new ColumnExpression('workflow', 'primaryKey')),
-            new ResultColumn(
-              new FunctionExpression('ANY_VALUE', new ColumnExpression('workflow', 'statusName')),
-              'lastStatus'
-            ),
-            new ResultColumn(
-              new FunctionExpression('ANY_VALUE', new ColumnExpression('workflow', 'statusDate')),
-              'lastStatusDate'
-            ),
-          ],
-
-          $from: new FromTable(
-            new Query({
-              $select: [
-                new ResultColumn(new ColumnExpression('workflow', 'tableName')),
-                new ResultColumn(new ColumnExpression('workflow', 'primaryKey')),
-                new ResultColumn(
-                  new FunctionExpression('MAX', new ColumnExpression('workflow', 'statusDate')),
-                  'lastStatusDate'
-                ),
-              ],
-              $from: new FromTable('workflow'),
-              $group: new GroupBy([
-                new ColumnExpression('workflow', 'tableName'),
-                new ColumnExpression('workflow', 'primaryKey'),
-                // new ColumnExpression('workflow', 'statusName'),
-              ]),
-            }),
-            't1',
-
-            {
-              operator: 'LEFT',
-              table: new FromTable('workflow', 'workflow'),
-
-              $on: [
-                new BinaryExpression(
-                  new ColumnExpression('t1', 'tableName'),
-                  '=',
-                  new ColumnExpression('workflow', 'tableName')
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('t1', 'lastStatusDate'),
-                  '=',
-                  new ColumnExpression('workflow', 'statusDate')
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('t1', 'primaryKey'),
-                  '=',
-                  new ColumnExpression('workflow', 'primaryKey')
-                ),
-              ],
-            },
-          ),
-
-          $group: new GroupBy([
-            new ColumnExpression('workflow', 'tableName'),
-            new ColumnExpression('workflow', 'primaryKey'),
-          ]),
-        }),
-        $as: 'finalWorkflow',
-      }),
-      $on: [
-        new BinaryExpression(new ColumnExpression('finalWorkflow', 'tableName'), '=', 'booking'),
-        new BinaryExpression(
-          new ColumnExpression('finalWorkflow', 'primaryKey'),
-          '=',
-          new ColumnExpression('booking', 'id')
-        ),
-      ],
-    })
-
-  })
-)
-
 //  register date field
 const jobDateExpression = new ColumnExpression('booking', 'createdAt')
 
@@ -1202,7 +1119,8 @@ const fieldList = [
   {
 
     name : 'houseNo',
-    expression : houseNoExpression
+    expression : houseNoExpression,
+    companion : ['table:booking_reference']
   },
   {
 
@@ -1498,7 +1416,39 @@ const dateList = [
 registerAllDateField(query,'booking_date',dateList)
 
 // ----------------- filter in main filter menu
-
+query.register('containerNoLike', new Query({
+  $where: new InExpression(
+    new ColumnExpression('booking', 'id'),
+    false,
+    new Query({
+      $select: [new ResultColumn('bookingId')],
+      $from: new FromTable('booking_container'),
+      $where: new RegexpExpression(new ColumnExpression('booking_container', 'containerNo'), false)
+    })
+  )
+})).register('value', 0)
+query.register('soNoLike', new Query({
+  $where: new InExpression(
+    new ColumnExpression('booking', 'id'),
+    false,
+    new Query({
+      $select: [new ResultColumn('bookingId')],
+      $from: new FromTable('booking_container'),
+      $where: new RegexpExpression(new ColumnExpression('booking_container', 'soNo'), false)
+    })
+  )
+})).register('value', 0)
+query.register('sealNoLike', new Query({
+  $where: new InExpression(
+    new ColumnExpression('booking', 'id'),
+    false,
+    new Query({
+      $select: [new ResultColumn('bookingId')],
+      $from: new FromTable('booking_container'),
+      $where: new RegexpExpression(new ColumnExpression('booking_container', 'sealNo'), false)
+    })
+  )
+})).register('value', 0)
 query
   .register(
     'q',
@@ -1554,6 +1504,7 @@ query
               $where: new OrExpressions({
                 expressions: [
                   new RegexpExpression(new ColumnExpression('booking_container', 'containerNo'), false),
+                  // new RegexpExpression(new ColumnExpression('booking_container', 'soNo'), false),
                   new RegexpExpression(new ColumnExpression('booking_container', 'sealNo'), false),
                 ]
               })
