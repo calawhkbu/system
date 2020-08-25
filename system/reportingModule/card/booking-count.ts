@@ -129,20 +129,18 @@ export default {
       type: 'callDataService',
       dataServiceQuery: ['booking', 'booking'],
 
-      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables,name }: Result): any[] {
-          const selectedsummaryVariable=summaryVariables[0];
+      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
           
         console.log("callDataService")
         console.log(res)
-        console.log("the selected summary var")
-        console.log(selectedsummaryVariable);
+
+        const selectedsummaryVariable=summaryVariables[0];
         res=res.filter(o=>o[`total_${selectedsummaryVariable}`]!=0);
         console.log("filtered res ")
         console.log(res);
         
 
-        console.log("Result");
-        console.log(name)
+
         return res.map(row => {
           var row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
           var empty=true;
@@ -218,16 +216,18 @@ export default {
               value: 'grossWeight',
             },
             {
-              label: 'cbm',
-              value: 'cbm',
+              label: 'Volume Weight',
+              value: 'volumeWeight',
             },
-            {
-              label: 'Total Booking',
-              value: 'totalShipment',
-            },
+            
+
             {
               label: 'teu',
               value: 'teu',
+            },
+            {
+              label: 'cbm',
+              value: 'cbm',
             },
          
             {

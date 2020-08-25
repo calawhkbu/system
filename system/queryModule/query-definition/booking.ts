@@ -1333,6 +1333,7 @@ query
 const nestedSummaryList = [] as NestedSummaryCondition[]
 
 const summaryFieldList : SummaryField[]  = [
+ 
   {
     name: 'totalBooking',
     summaryType: 'count',
@@ -1353,9 +1354,25 @@ const summaryFieldList : SummaryField[]  = [
     summaryType: 'sum',
     expression: new ColumnExpression('booking', 'grossWeight'),
   },
- 
+ {
+    name: 'teu',
+    summaryType: 'sum',
+    expression: new ColumnExpression('booking', 'teu'),
+  },
+  // {
+  //   name: 'cbm',
+  //   summaryType: 'sum',
+  //   expression: new ColumnExpression('booking', 'cbm'),
+  // },
   
-]
+ 
+ 
+
+ 
+
+];
+console.log("BOOKINGTS")
+console.log(summaryFieldList)
 
 registerSummaryField(query, baseTableName, summaryFieldList, nestedSummaryList, jobDateExpression)
 

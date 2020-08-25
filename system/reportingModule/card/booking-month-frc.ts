@@ -1,9 +1,8 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
-import { OrderBy } from 'node-jql'
 import Moment = require('moment')
+import { OrderBy } from 'node-jql'
 import { expandGroupEntity, expandSummaryVariable, extendDate } from 'utils/card'
-
 
 interface Result {
   moment: typeof Moment
@@ -14,75 +13,40 @@ interface Result {
 }
 
 export default {
+  constants: {
+    name : 'frc',
+    typeCodeList : ['F', 'R', 'C', 'T']
+  },
   jqls: [
     {
       type: 'prepareParams',
       defaultResult: {},
       async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
-        function guessSortingExpression(sortingValue: string, subqueries) {
-          const variablePart = sortingValue.substr(0, sortingValue.lastIndexOf('_'))
-          const sortingDirection = sortingValue.substr(sortingValue.lastIndexOf('_') + 1)
-     
+        const moment = prevResult.moment = (await this.preparePackages(user)).moment
+        const subqueries = params.subqueries = params.subqueries || {}
 
-          if (!['ASC', 'DESC'].includes(sortingDirection)) {
-            throw new Error(`cannot guess sortingDirection`)
-          }
-
-          // here will handle 2 special cases : metric , summaryVariable
-          const metricRegex = new RegExp('metric[0-9]+')
-          const summaryVariableRegex = new RegExp('summaryVariable')
-
-          let finalColumnName: string
-
-          // summaryVariable case
-          if (summaryVariableRegex.test(variablePart)) {
-            finalColumnName = variablePart.replace('summaryVariable', subqueries.summaryVariable.value)
-         
-          }
-          else if (metricRegex.test(variablePart)) {
-            const metricPart = variablePart.match(metricRegex)[0]
-            const metricValue = subqueries[metricPart].value
-            finalColumnName = variablePart.replace(metricPart, metricValue)
-       
-          }
-          else {
-            finalColumnName = variablePart
-          }
-    
-
-          return new OrderBy(finalColumnName, sortingDirection as 'ASC'|'DESC')
-        }
-
-        const moment = prevResult.moment = (await this.preparePackages(user)).moment as typeof Moment
-        const subqueries = (params.subqueries = params.subqueries || {})
-
-        // idea: userGroupByVariable and userSummaryVariable is selected within filter by user
+        // idea : userGroupByVariable and userSummaryVariable is selected within filter by user
         if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw new Error('MISSING_groupByVariable')
         if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
 
         // -----------------------------groupBy variable
         // const groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-        // const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo': groupByEntity === 'carrier' ? `carrierCode`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyCode`
-        // const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo': groupByEntity === 'carrier' ? `carrierName`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyShortNameInReport`) + 'Any'
+        // const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
+        // const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
         
-
         const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
-        console.log('preparParams')
-        console.log(params)
+
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
         prevResult.nameColumnName = nameColumnName
 
         const topX = subqueries.topX.value
-        console.log("SUBQURIES");
-        console.log(subqueries)
 
         // ---------------------summaryVariables
-        
         // let summaryVariables: string[] = []
         // if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
         //   // sumamary variable
-        //   summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value : [subqueries.summaryVariables.value]
+        //   summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value  : [subqueries.summaryVariables.value ]
         // }
         // if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
         //   summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
@@ -93,24 +57,35 @@ export default {
         // prevResult.summaryVariables = summaryVariables
 
         const summaryVariables = expandSummaryVariable(subqueries)
-        console.log("summaryVariables")
-        console.log(summaryVariables);
-
         prevResult.summaryVariables = summaryVariables
 
 
+        // // limit/extend to 1 year
+        // const year = (subqueries.date && subqueries.date !== true && 'from' in subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD') : moment()).year()
+        // subqueries.date = {
+        //   from: moment()
+        //     .year(year)
+        //     .startOf('year')
+        //     .format('YYYY-MM-DD'),
+        //   to: moment()
+        //     .year(year)
+        //     .endOf('year')
+        //     .format('YYYY-MM-DD')
+        // }
 
         // extend date into whole year
         extendDate(subqueries,moment,'year')
 
-        subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+
+
+        subqueries[`${codeColumnName}IsNotNull`] = {
           value: true
         }
-    
- 
+
+        // select
         params.fields = [
           // select Month statistics
-          ...summaryVariables.map(variable => `${variable}Month`),
+          ...summaryVariables.map(variable => `${params.constants.name}_${variable}Month`),
           codeColumnName,
           nameColumnName,
         ]
@@ -118,59 +93,31 @@ export default {
         // group by
         params.groupBy = [codeColumnName]
 
-        // // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
-        // params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
-
-        const sorting = params.sorting = []
-        if (subqueries.sorting && subqueries.sorting !== true && 'value' in subqueries.sorting) {
-          const sortingValueList = subqueries.sorting.value as string[]
-          sortingValueList.forEach(sortingValue => {
-            // will try to find in sortingExpressionMap first, if not found , just use the normal value
-            const orderByExpression = guessSortingExpression(sortingValue, subqueries)
-            sorting.push(orderByExpression)
-          })
-        }
-        else {
-    
-          params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
-        }
+        // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
+        params.sorting = new OrderBy(`total_T_${summaryVariables[0]}`, 'DESC')
 
         params.limit = topX
-        console.log("params JQL expressions")
-        console.log(params)
-        console.log(prevResult)
+
         return params
       }
     },
     {
       type: 'callDataService',
-      dataServiceQuery: ['booking', 'booking'],
-
+      dataServiceQuery: ['shipment', 'shipment'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
-        console.log("callDataService")
-        console.log(res)
-        const selectedsummaryVariable=summaryVariables[0];
-        res=res.filter(o=>o[`total_${selectedsummaryVariable}`]!=0);
-
         return res.map(row => {
-          var row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
-          var empty=true;
-
+          const row_: any = { groupByEntity, code: row[codeColumnName], name: row[nameColumnName] }
           for (const variable of summaryVariables) {
-            let total = 0
-            for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
-              const month = moment().month(m).format('MMMM')
-              const key = `${month}_${variable}`
-              let value = +row[key]
-              if (isNaN(value)) value = 0
-              row_[key] = value
-              total += value
+            for (const typeCode of params.constants.typeCodeList) {
+              for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]) {
+                const month = m === 12 ? 'total' : moment().month(m).format('MMMM')
+                const key = `${month}_${typeCode}_${variable}`
+                const value = +row[key]
+                row_[key] = isNaN(value) ? 0 : value
+              }
             }
-            row_[`total_${variable}`] = total
           }
-         
-    return row_;
-        
+          return row_
         })
       }
     }
@@ -210,21 +157,37 @@ export default {
       type: 'list',
     },
     {
-      display: 'summaryVariables',
-      name: 'summaryVariables',
+      display: 'summaryVariable',
+      name: 'summaryVariable',
       props: {
         items: [
+          {
+            label: 'chargeableWeight',
+            value: 'chargeableWeight',
+          },
           {
             label: 'grossWeight',
             value: 'grossWeight',
           },
           {
-            label: 'chargeableWeight',
-            value: 'chargeableWeight',
+            label: 'cbm',
+            value: 'cbm',
           },
-        
+          {
+            label: 'totalBooking',
+            value: 'totalBooking',
+          },
+          {
+            label: 'teu',
+            value: 'teu',
+          },
+          {
+            label: 'quantity',
+            value: 'quantity',
+          }
+      
         ],
-        multi : true,
+        multi: false,
         required: true,
       },
       type: 'list',
