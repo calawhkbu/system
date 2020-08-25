@@ -24,10 +24,11 @@ import {
   QueryExpression,
   IExpression,
   IConditionalExpression,
-  MathExpression
+  MathExpression,
+  Expression
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, SummaryField, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, SummaryField, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter, IfExpression, IfNullExpression, RegisterInterface } from 'utils/jql-subqueries'
 import { hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression } from 'utils/sop-task'
 import sopQuery from './sop_task'
 
@@ -2127,6 +2128,50 @@ const locationExpressionList = locationList.reduce((accumulator: ExpressionHelpe
 
 }, [])
 
+
+
+
+// this list must match document config fileName
+const documentFileNameList = [
+  'Invoice',
+  'FCL Document',
+  'LCL Document',
+  'MBL',
+  'MBL Original',
+  'Commercial Invoice',
+  'Packing List',
+  'Shipping Order',
+  'Shipping Advice'
+]
+
+const haveDocumentExpressionList = documentFileNameList.map(documentFileName => {
+
+  const haveDocumentExpression = new InExpression(idExpression, false,
+    new QueryExpression(
+      new Query({
+
+        $select: [
+          new ResultColumn(new ColumnExpression('document', 'primaryKey'))
+        ],
+        $from: 'document',
+        $where: [
+          new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', documentFileName),
+          new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment')
+        ]
+
+      })
+    )
+  )
+
+  return {
+    name : `haveDocument_${documentFileName}`,
+    expression : haveDocumentExpression
+
+  } as RegisterInterface
+
+
+})
+
 const baseTableName = 'shipment'
 const fieldList = [
 
@@ -2136,6 +2181,7 @@ const fieldList = [
   },
   ...partyExpressionList,
   ...locationExpressionList,
+  ...haveDocumentExpressionList,
 
   {
     name: 'officeErpSite',
@@ -2828,32 +2874,7 @@ registerQueryCondition(query,'vgmNonZero',idExpression,vgmQuery)
 //   )
 // }))
 
-const documentQuery = (subQueryValue,param: IQueryParams) => {
 
-  const fileName = subQueryValue.value
-
-  return new Query({
-    $where: new InExpression(idExpression, false,
-      new QueryExpression(
-        new Query({
-
-          $select: [
-            new ResultColumn(new ColumnExpression('document', 'primaryKey'))
-          ],
-          $from: 'document',
-          $where: [
-            new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', fileName),
-            new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment')
-          ]
-
-        })
-      )
-    )
-  })
-
-}
-
-registerQueryCondition(query,'haveDocument',idExpression,documentQuery)
 
 
 // query.subquery('missingDocument', (subQueryValue, param) => {

@@ -73,6 +73,13 @@
               "class": "margin-topbottom-4 xs-12",
               "layoutName": "user/forms/contacts"
             }
+          },
+          {
+            "is": "AsyncComponent",
+            "props": {
+              "class": "margin-topbottom-4 xs-12",
+              "layoutName": "user/forms/teams"
+            }
           }
         ]
       }
