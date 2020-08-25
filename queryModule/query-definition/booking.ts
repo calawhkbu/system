@@ -961,12 +961,6 @@ const poNoExpression = new MathExpression(
   '$.poNo'
 )
 
-const cbmExpression = new FunctionExpression(
-  'IFNULL',
-  new FunctionExpression('SUM', new ColumnExpression('booking_popacking', 'volume')),
-  0
-)
-
 const serviceExpression = new FunctionExpression(
   'IFNULL',
   new ColumnExpression('service', 'name'),
@@ -1223,11 +1217,6 @@ const fieldList = [
     expression : poNoExpression
   },
 
-  {
-    name : 'cbm',
-    expression : cbmExpression,
-    companion : ['table:booking_popacking']
-  },
 
   {
     name : 'service',
@@ -1388,12 +1377,26 @@ const summaryFieldList : SummaryField[]  = [
   {
     name: 'quantity',
     summaryType: 'sum',
-    expression: new ColumnExpression('booking_popacking', 'quantity')
+    expression: new ColumnExpression('booking_popacking', 'quantity'),
+    companion: ['table:booking_popacking']
   },
+
   {
-    name: 'weight',
+    name: 'cbm',
     summaryType : 'sum',
-    expression: new ColumnExpression('booking_popacking', 'weight')
+    expression: new ColumnExpression('booking', 'cbm')
+  },
+
+  {
+    name: 'grossWeight',
+    summaryType : 'sum',
+    expression: new ColumnExpression('booking', 'grossWeight')
+  },
+
+  {
+    name: 'chargeableWeight',
+    summaryType : 'sum',
+    expression: new ColumnExpression('booking', 'chargeableWeight')
   }
 ]
 
