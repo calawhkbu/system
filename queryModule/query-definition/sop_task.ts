@@ -127,31 +127,17 @@ const shortcuts: IShortcut[] = [
     })
   },
 
-  // table:sop_selected_template
-  {
-    type: 'table',
-    name: 'sop_selected_template',
-    fromTable: new FromTable(taskTable, new JoinClause('LEFT', selectedTemplateTable,
-      new AndExpressions([
-        new BinaryExpression(new ColumnExpression(taskTable, 'templateId'), '=', new ColumnExpression(selectedTemplateTable, 'id')),
-        new IsNullExpression(new ColumnExpression(selectedTemplateTable, 'deletedAt'), false),
-        new IsNullExpression(new ColumnExpression(selectedTemplateTable, 'deletedBy'), false)
-      ])
-    ))
-  },
-
   // table:sop_template
   {
     type: 'table',
     name: 'sop_template',
     fromTable: new FromTable(taskTable, new JoinClause('LEFT', templateTable,
       new AndExpressions([
-        new BinaryExpression(new ColumnExpression(selectedTemplateTable, 'templateId'), '=', new ColumnExpression(templateTable, 'id')),
+        new BinaryExpression(new ColumnExpression(taskTable, 'templateId'), '=', new ColumnExpression(templateTable, 'id')),
         new IsNullExpression(new ColumnExpression(templateTable, 'deletedAt'), false),
         new IsNullExpression(new ColumnExpression(templateTable, 'deletedBy'), false)
       ])
-    )),
-    companions: ['table:sop_selected_template']
+    ))
   },
 
   // field:id
@@ -379,15 +365,6 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'description',
     expression: new ColumnExpression(templateTaskTable, 'description'),
-    registered: true,
-    companions: ['table:sop_template_task']
-  },
-
-  // field:selectedTemplateId
-  {
-    type: 'field',
-    name: 'selectedTemplateId',
-    expression: new ColumnExpression(selectedTemplateTable, 'templateId'),
     registered: true,
     companions: ['table:sop_template_task']
   },
