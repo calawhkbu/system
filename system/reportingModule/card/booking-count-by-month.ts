@@ -261,8 +261,8 @@ export default {
             value : 'moduleType'
           },
           {
-            label : 'houseNo',
-            value : 'houseNo'
+            label : 'bookingNo',
+            value : 'bookingNo'
           }
         ],
         required: true,

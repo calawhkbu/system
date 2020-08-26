@@ -1074,6 +1074,7 @@ const masterNoExpression = new FunctionExpression(
   bookingMasterNoExpression,
 )
 
+
 // all field related to party
 const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInterface[], party) => {
 

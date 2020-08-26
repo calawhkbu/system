@@ -90,6 +90,8 @@ export default {
         const subqueries = (params.subqueries = params.subqueries || {})
         const showOther = subqueries.showOther || false
         const topX = (subqueries.topX as any).value
+        console.log("POSTPROCESS-PARAMS")
+        console.log(params)
 
         const topXShipmentList: any[] = (result as any[]).filter(x => x[codeColumnName]).slice(0, topX)
         if (showOther) {
@@ -193,11 +195,11 @@ export default {
           },
           {
             label: 'portOfLoading',
-            value: 'portOfLoadingCode',
+            value: 'portOfLoading',
           },
           {
             label: 'portOfDischarge',
-            value: 'portOfDischargeCode',
+            value: 'portOfDischarge',
           }
         ],
         required: true,

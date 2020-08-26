@@ -3,9 +3,10 @@ import { IQueryParams } from 'classes/query'
 import { OrderBy } from 'node-jql'
 import Moment = require('moment')
 
-import { expandBottomSheetGroupByEntity,expandSummaryVariable, extendDate, handleBottomSheetGroupByEntityValue,summaryVariableListBooking,groupByEntityList  } from 'utils/card'
+import { expandBottomSheetGroupByEntity,expandSummaryVariable, extendDate, handleBottomSheetGroupByEntityValue,summaryVariableListBooking,groupByEntityListBooking  } from 'utils/card'
 
 const summaryVariableList=summaryVariableListBooking;
+const groupByEntityList=groupByEntityListBooking;
 interface Result {
   moment: typeof Moment
   groupByEntity: string

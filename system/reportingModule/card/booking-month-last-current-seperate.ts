@@ -433,7 +433,6 @@ console.log(params)
             label: 'teu',
             value: 'teu',
           },
-          
           {
             label: 'Quantity',
             value: 'quantity',
@@ -466,14 +465,8 @@ console.log(params)
             label: 'agent',
             value: 'agent',
           },
-          {
-            label: 'agentGroup',
-            value: 'agentGroup',
-          },
-          {
-            label: 'controllingCustomer',
-            value: 'controllingCustomer',
-          },
+         
+      
           {
             label: 'linerAgent',
             value: 'linerAgent',
@@ -482,18 +475,12 @@ console.log(params)
             label: 'roAgent',
             value: 'roAgent',
           },
-          {
-            label: 'office',
-            value: 'office',
-          },
+        
           {
             label: 'moduleType',
             value: 'moduleType'
           },
-          {
-            label: 'houseNo',
-            value: 'houseNo'
-          }
+         
         ],
         required: true,
       },
