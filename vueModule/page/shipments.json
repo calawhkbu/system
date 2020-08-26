@@ -449,18 +449,8 @@
           }
         },
         {
-          "key" : "haveDocument_Invoice",
-          "label": "haveDocument_Invoice",
-          "boolean" : true
-        },
-        {
-          "key" : "haveDocument_FCL Document",
-          "label": "haveDocument_FCL Document",
-          "boolean" : true
-        },
-        {
-          "key" : "haveDocument_LCL Document",
-          "label": "haveDocument_LCL Document",
+          "key" : "haveDocument_Freight Invoice",
+          "label": "haveDocument_Freight Invoice",
           "boolean" : true
         },
         {
@@ -469,8 +459,8 @@
           "boolean" : true
         },
         {
-          "key" : "haveDocument_MBL Original",
-          "label": "haveDocument_MBL Original",
+          "key" : "haveDocument_HBL Original",
+          "label": "haveDocument_HBL Original",
           "boolean" : true
         },
         {

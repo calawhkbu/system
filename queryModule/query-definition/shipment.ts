@@ -2133,15 +2133,12 @@ const locationExpressionList = locationList.reduce((accumulator: ExpressionHelpe
 
 // this list must match document config fileName
 const documentFileNameList = [
-  'Invoice',
-  'FCL Document',
-  'LCL Document',
+  'Freight Invoice',
   'MBL',
-  'MBL Original',
+  'HBL Original',
+  'HBL Telex released',
   'Commercial Invoice',
   'Packing List',
-  'Shipping Order',
-  'Shipping Advice'
 ]
 
 const haveDocumentExpressionList = documentFileNameList.map(documentFileName => {

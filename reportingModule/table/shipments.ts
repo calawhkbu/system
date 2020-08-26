@@ -2,13 +2,12 @@ import { JqlDefinition } from 'modules/report/interface'
 
 
 const documentFileNameList = [
-  'Invoice',
-  'FCL Document',
-  'LCL Document',
+  'Freight Invoice',
   'MBL',
-  'MBL Original',
+  'HBL Original',
+  'HBL Telex released',
   'Commercial Invoice',
-  'Packing List'
+  'Packing List',
 ]
 
 export default {
