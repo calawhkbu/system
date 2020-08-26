@@ -122,7 +122,7 @@ export const entityConfigList = [
 
     documentList: [
       {
-        fileName: 'Invoice',
+        fileName: 'Freight Invoice',
         allowFileType: [
           'image/png',
           'image/gif',
@@ -132,10 +132,84 @@ export const entityConfigList = [
         ],
 
         isActive : (entity: Shipment) => {
-          return entity.moduleTypeCode === 'SEA'
+          return true
+          // return entity.moduleTypeCode === 'SEA'
         },
         allowFillTemplate: false
       },
+
+      {
+        fileName: 'MBL',
+        allowFileType: [
+          'image/png',
+          'image/gif',
+          'image/jpeg',
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'application/pdf'
+        ],
+
+        isActive : true,
+        allowFillTemplate: false
+      },
+
+      {
+        fileName: 'HBL Original',
+        allowFileType: [
+          'image/png',
+          'image/gif',
+          'image/jpeg',
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'application/pdf'
+        ],
+    
+        isActive : true,
+        allowFillTemplate: false
+      },
+    
+      {
+        fileName: 'HBL Telex released',
+        allowFileType: [
+          'image/png',
+          'image/gif',
+          'image/jpeg',
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'application/pdf'
+        ],
+    
+        isActive : true,
+        allowFillTemplate: false
+      },
+    
+    
+      {
+        fileName: 'Commercial Invoice',
+        allowFileType: [
+          'image/png',
+          'image/gif',
+          'image/jpeg',
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'application/pdf'
+        ],
+    
+        isActive : true,
+        allowFillTemplate: false
+      },
+    
+    
+      {
+        fileName: 'Packing List',
+        allowFileType: [
+          'image/png',
+          'image/gif',
+          'image/jpeg',
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          'application/pdf'
+        ],
+    
+        isActive : true,
+        allowFillTemplate: false
+      },
+
       {
         fileName: 'FCL Document',
         allowFileType: [
@@ -147,7 +221,8 @@ export const entityConfigList = [
         ],
 
         isActive : (entity: Shipment) => {
-          return entity.serviceCode && entity.serviceCode === 'FCL/FCL'
+          return false
+          // return entity.serviceCode && entity.serviceCode === 'FCL/FCL'
         },
         allowFillTemplate: false
       },
@@ -162,23 +237,12 @@ export const entityConfigList = [
         ],
 
         isActive : (entity: Shipment) => {
-          return entity.serviceCode && entity.serviceCode.startsWith('LCL/LC')
+          return false
+          //return entity.serviceCode && entity.serviceCode.startsWith('LCL/LC')
         },
         allowFillTemplate: false
       },
-      {
-        fileName: 'MBL',
-        allowFileType: [
-          'image/png',
-          'image/gif',
-          'image/jpeg',
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          'application/pdf'
-        ],
 
-        isActive : true,
-        allowFillTemplate: false
-      }
     ]
   } as EntityConfig
 
