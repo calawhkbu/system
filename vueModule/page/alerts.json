@@ -33,7 +33,7 @@
         },
         "configurations": {
           "checkbox": {},
-          "i18nContext": "AlertPage",
+          "i18nContext": "Alert",
           "clickable": true,
           "draggable": true,
           "sorting": {
@@ -52,7 +52,8 @@
           }
         }
       },
-      "fieldOptions": [{
+      "fieldOptions": [
+        {
           "key": "alertId",
           "hidden": true
         },
@@ -71,17 +72,22 @@
         },
         {
           "key": "alertTitle",
+          "label" : "alertMessage",
+          "i18nContext": "Alert",
           "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
         },
         {
           "key": "alertMessage",
+          "label" : "alertMessage",
+          "i18nContext": "Alert",
           "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
         },
         {
           "key": "alertCategory"
         },
         {
-          "key": "alertType"
+          "key": "alertType",
+          "hiddne": true
         },
         {
           "key": "alertContent",
@@ -203,7 +209,8 @@
     "scopedSlots": [{
       "name": "middle-button",
       "is": "ReportHandleAlertDialogButton",
-      "props": {}
+      "props": {
+      }
     }]
   }]
 }

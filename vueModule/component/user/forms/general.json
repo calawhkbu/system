@@ -56,7 +56,7 @@
               }
             },
             "item-text": "shortName",
-            "item-value": "id"
+            "item-value": "erpCode"
           }
         },
         {

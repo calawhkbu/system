@@ -26,6 +26,7 @@
   "baseDetailProps": {
     "avaliableAlertTab": {
       "Open": "return data.filter(x => x.status === 'open')",
+      "StayAlert": "return data.filter(x => x.status === 'open' && !!x.stayAlert)",
       "Closed": "return data.filter(x => x.status === 'closed')",
       "All": "return data"
     }

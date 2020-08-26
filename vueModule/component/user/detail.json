@@ -54,7 +54,7 @@
                 "components": [{
                   "is": "Icon",
                   "props": {
-                    "icon": "add"
+                    "icon": "how_to_reg"
                   }
                 }]
               },
@@ -124,17 +124,7 @@
                             "align-items": "center",
                             "display": "flex"
                           },
-                          "components": [{
-                              "is": "i18nText",
-                              "name": "default",
-                              "props": {
-                                "isComponent": "small",
-                                "i18nKey": "Powered by Swivel Software Ltd."
-                              }
-                            },
-                            {
-                              "is": "v-spacer"
-                            },
+                          "components": [
                             {
                               "is": "v-btn",
                               "props": {
@@ -145,7 +135,7 @@
                                 "is": "i18nText",
                                 "name": "default",
                                 "props": {
-                                  "i18nKey": "Auth.Login"
+                                  "i18nKey": "Auth.RegisterCreateAccount"
                                 }
                               }]
                             }
@@ -289,6 +279,13 @@
             "props": {
               "class": "margin-topbottom-4 xs-12",
               "layoutName": "user/forms/contacts"
+            }
+          },
+          {
+            "is": "AsyncComponent",
+            "props": {
+              "class": "margin-topbottom-4 xs-12",
+              "layoutName": "user/forms/teams"
             }
           }
         ]

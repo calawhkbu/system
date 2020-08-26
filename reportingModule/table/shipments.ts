@@ -1,5 +1,15 @@
 import { JqlDefinition } from 'modules/report/interface'
 
+
+const documentFileNameList = [
+  'Freight Invoice',
+  'MBL',
+  'HBL Original',
+  'HBL Telex released',
+  'Commercial Invoice',
+  'Packing List',
+]
+
 export default {
   jqls: [
     {
@@ -53,6 +63,14 @@ export default {
     { key: 'lastStatusCodeOrDescription' },
     { key: 'lastStatusDate' },
     { key: 'lastStatusWidget' },
+
+    ...documentFileNameList.map(documentFileName => {
+
+      return { key: `haveDocument_${documentFileName}` }
+
+    })
+    
+
   ]
 } as JqlDefinition
 

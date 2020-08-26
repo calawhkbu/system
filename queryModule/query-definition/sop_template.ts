@@ -1,25 +1,9 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, BinaryExpression, FromTable, Unknown, OrExpressions, IsNullExpression, RegexpExpression } from "node-jql";
+import { ColumnExpression, ResultColumn, BinaryExpression, FromTable, Unknown, OrExpressions, IsNullExpression, RegexpExpression, QueryExpression, Query, FunctionExpression, AndExpressions } from "node-jql";
+import { IShortcut } from "classes/query/Shortcut";
 
 const templateTable = 'sop_template'
-
-const columns = [
-  [templateTable, 'partyGroupCode'],  // @field partyGroupCode
-  [templateTable, 'category'],  // @field category
-  [templateTable, 'tableName'], // @field tableName
-  [templateTable, 'group'], // @field group
-  [templateTable, 'deletedAt'], // @field deletedAt
-  [templateTable, 'deletedBy']  // @field deletedBy
-]
-
-const columnExpressions: { [key: string]: ColumnExpression } = columns.reduce((r, [table, name, as = name]) => {
-  r[as] = new ColumnExpression(table, name)
-  return r
-}, {})
-
-
-
-
+const templateTemplateTaskTable = 'sop_template_template_task'
 
 const query = new QueryDef({
   $from: new FromTable({
@@ -27,74 +11,134 @@ const query = new QueryDef({
   })
 })
 
-for (const [table, name, as = name] of columns) {
-  query.field(as, { $select: new ResultColumn(columnExpressions[as], as) })
-}
+const shortcuts: IShortcut[] = [
+  // field:id
+  {
+    type: 'field',
+    name: 'id',
+    expression: new ColumnExpression(templateTable, 'id'),
+    registered: true
+  },
 
+  // field:partyGroupCode
+  {
+    type: 'field',
+    name: 'partyGroupCode',
+    expression: new ColumnExpression(templateTable, 'partyGroupCode'),
+    registered: true
+  },
 
+  // field:category
+  {
+    type: 'field',
+    name: 'category',
+    expression: new ColumnExpression(templateTable, 'category'),
+    registered: true
+  },
 
+  // field:tableName
+  {
+    type: 'field',
+    name: 'tableName',
+    expression: new ColumnExpression(templateTable, 'tableName'),
+    registered: true
+  },
 
+  // field:group
+  {
+    type: 'field',
+    name: 'group',
+    expression: new ColumnExpression(templateTable, 'group'),
+    registered: true
+  },
 
-// @field distinct-categories
-query.field('distinct-categories', {
-  $distinct: true,
-  $select: new ResultColumn(columnExpressions['category'], 'category')
-})
+  // field:deletedAt
+  {
+    type: 'field',
+    name: 'deletedAt',
+    expression: new ColumnExpression(templateTable, 'deletedAt'),
+    registered: true
+  },
 
+  // field:deletedBy
+  {
+    type: 'field',
+    name: 'deletedBy',
+    expression: new ColumnExpression(templateTable, 'deletedBy'),
+    registered: true
+  },
 
+  // field:distinct-categories
+  {
+    type: 'field',
+    name: 'distinct-categories',
+    queryArg: re => () => ({
+      $distinct: true,
+      $select: new ResultColumn(re['category'], 'category')
+    })
+  },
 
+  // field:noOfTasks
+  {
+    type: 'field',
+    name: 'noOfTasks',
+    expression: re => new QueryExpression(
+      new Query({
+        $select: new ResultColumn(new FunctionExpression('COUNT', 'taskId'), 'count'),
+        $from: templateTemplateTaskTable,
+        $where: [
+          new BinaryExpression(new ColumnExpression(templateTemplateTaskTable, 'templateId'), '=', re['id']),
+          new IsNullExpression(new ColumnExpression(templateTemplateTaskTable, 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression(templateTemplateTaskTable, 'deletedBy'), false)
+        ]
+      })
+    )
+  },
 
+  // subquery:partyGroupCode
+  {
+    type: 'subquery',
+    name: 'partyGroupCode',
+    expression: re => new BinaryExpression(re['partyGroupCode'], '=', new Unknown()),
+    unknowns: [['value', 0]]
+  },
 
-// @subquery partyGroupCode
-query.subquery('partyGroupCode', {
-  $where: new BinaryExpression(columnExpressions['partyGroupCode'], '=', new Unknown())
-}).register('value', 0)
+  // subquery:tableName
+  {
+    type: 'subquery',
+    name: 'tableName',
+    expression: re => new OrExpressions([
+      new IsNullExpression(re['tableName'], false),
+      new BinaryExpression(re['tableName'], '=', new Unknown())
+    ]),
+    unknowns: [['value', 0]]
+  },
 
+  // subquery:category
+  {
+    type: 'subquery',
+    name: 'category',
+    expression: re => new BinaryExpression(re['category'], '=', new Unknown()),
+    unknowns: [['value', 0]]
+  },
 
+  // subquery:q
+  {
+    type: 'subquery',
+    name: 'q',
+    expression: re => new RegexpExpression(re['group'], false, new Unknown()),
+    unknowns: [['value', 0]]
+  },
 
+  // subquery:notDeleted
+  {
+    type: 'subquery',
+    name: 'notDeleted',
+    expression: re => new AndExpressions([
+      new IsNullExpression(re['deletedAt'], false),
+      new IsNullExpression(re['deletedBy'], false)
+    ])
+  }
+]
 
-
-// @subquery tableName
-query.subquery('tableName', {
-  $where: new OrExpressions([
-    new IsNullExpression(columnExpressions['tableName'], false),
-    new BinaryExpression(columnExpressions['tableName'], '=', new Unknown())
-  ])
-}).register('value', 0)
-
-
-
-
-
-// @subquery category
-query.subquery('category', {
-  $where: new BinaryExpression(columnExpressions['category'], '=', new Unknown())
-}).register('value', 0)
-
-
-
-
-
-// @subquery q
-query.subquery('q', {
-  $where: new RegexpExpression(columnExpressions['group'], false, new Unknown())
-}).register('value', 0)
-
-
-
-
-
-// @subquery notDeleted
-// hide deleted
-query.subquery('notDeleted', {
-  $where: [
-    new IsNullExpression(columnExpressions['deletedAt'], false),
-    new IsNullExpression(columnExpressions['deletedBy'], false)
-  ]
-})
-
-
-
-
-
-export default query
+export default query.useShortcuts(shortcuts)

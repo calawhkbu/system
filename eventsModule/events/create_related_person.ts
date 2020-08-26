@@ -83,6 +83,12 @@ export default class CreateRelatedPersonEvent extends BaseEventHandler {
     ) => {
       if (selectedPartyGroup.find(code => code === partyGroupCode)) {
         const partyTable = _.get(latestEntity, `${tableName}Party`, {})
+        const picId = _.get(latestEntity, 'picId', null)
+        const picEmail = _.get(latestEntity, 'picEmail', null)
+        const forwarderPartyId = _.get(partyTable, 'forwarderPartyId', null)
+        if (picEmail && forwarderPartyId) {
+          invitation = this.updateInviteForm(invitation, picEmail, picId, forwarderPartyId, tableName, primaryKey)
+        }
         const partyTableFlexData = _.get(partyTable, `flexData`, {})
         for (const key of this.getFixedKeyByTableName(tableName)) {
           const partyId = _.get(partyTable, `${key}PartyId`, null)
