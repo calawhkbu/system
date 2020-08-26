@@ -342,32 +342,55 @@
         },
         {
           "label": "Widget.contactName",
+          "canEdit": [
+            "const value = extraFunction._.get(form, 'bookingParty.{{flex}}{{key}}PartyId');",
+            "if (value) {",
+            "return true",
+            "}",
+            "return false"
+          ],
           "name": "bookingParty.{{flex}}{{key}}PartyContactName",
           "component": "v-text-field",
-          "class": "xs-12 md-4",
-          "checkDisplayWhen": "return !readonly"
+          "class": "xs-12 md-4"
         },
         {
           "label": "Widget.contactEmail",
+          "canEdit": [
+            "const value = extraFunction._.get(form, 'bookingParty.{{flex}}{{key}}PartyId');",
+            "if (value) {",
+            "return true",
+            "}",
+            "return false"
+          ],
           "name": "bookingParty.{{flex}}{{key}}PartyContactEmail",
           "component": "v-text-field",
-          "class": "xs-12 md-4",
-          "checkDisplayWhen": "return !readonly"
+          "class": "xs-12 md-4"
         },
         {
           "label": "Widget.contactPhone",
+          "canEdit": [
+            "const value = extraFunction._.get(form, 'bookingParty.{{flex}}{{key}}PartyId');",
+            "if (value) {",
+            "return true",
+            "}",
+            "return false"
+          ],
           "name": "bookingParty.{{flex}}{{key}}PartyContactPhone",
           "component": "v-text-field",
-          "class": "xs-12 md-4",
-          "checkDisplayWhen": "return !readonly"
+          "class": "xs-12 md-4"
         },
         {
           "name": "bookingParty.{{flex}}{{key}}PartyContacts",
           "component": "TableField",
           "class": "xs-12",
-          "checkDisplayWhen": "return !readonly",
+          "canEdit": [
+            "const value = extraFunction._.get(form, 'bookingParty.{{flex}}{{key}}PartyId');",
+            "if (value) {",
+            "return true",
+            "}",
+            "return false"
+          ],
           "props": {
-            "overrideRowIndex": 1,
             "fields": [{
                 "label": "Widget.contactXName",
                 "name": "Name",
