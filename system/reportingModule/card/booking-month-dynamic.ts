@@ -91,6 +91,8 @@ export default {
        
        console.log("ON RESULT")
         console.log(summaryVariables)
+        console.log("ON-Results-Params")
+        console.log(params)
         return res.map(row => {
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
 
