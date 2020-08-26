@@ -450,7 +450,6 @@
                       "class": "xs-12",
                       "readonlyClass": "xs-12",
                       "props": {
-                        "overrideRowIndex": 1,
                         "fields": [{
                             "label": "Widget.contactXName",
                             "name": "Name",
