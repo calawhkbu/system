@@ -21,9 +21,13 @@ const app = {
     console.log(`requestHandler start`)
     console.log(query)
 
+
+    // todo : get the correct token
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoicGVyc29uIiwiZCI6MSwidSI6IjM2MEBzd2l2ZWxzb2Z0d2FyZS5jb20iLCJwIjpbeyJpIjoxLCJjIjoiREVWIiwiZiI6IlN3aXZlbCBTb2Z0d2FyZSAoMzYwIEFkbWluKSIsInQiOm51bGwsInAiOlsxNzYwMTMsMTc2MDE0LDE3NjAxNSwxNzYwMTYsMTc2MDE3LDE3NjAxOCwxNzYwMTksMTc2MDIwLDE3NjAyMSwxNzYwMjNdLCJyIjpbMSw1LDYsNywxNCwxNSwxOSwyMSwyMiwyMywyNF19XSwiaWF0IjoxNTk0MzUwNTcwLCJleHAiOjE2MjU5MDgxNzAsImlzcyI6IlN3aXZlbCBTb2Z0d2FyZSBMaW1pdGVkIiwic3ViIjoiU3dpdmVsIDM2MCBKV1QifQ.EtbBg7-wFlLDeRKguSDMbGVktxqjmqCULGLsShzQL00'
+
     return {
       headers: {
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoicGVyc29uIiwiZCI6MSwidSI6IjM2MEBzd2l2ZWxzb2Z0d2FyZS5jb20iLCJwIjpbeyJpIjoxLCJjIjoiREVWIiwiZiI6IlN3aXZlbCBTb2Z0d2FyZSAoMzYwIEFkbWluKSIsInQiOm51bGwsInAiOlsxNzYwMTMsMTc2MDE0LDE3NjAxNSwxNzYwMTYsMTc2MDE3LDE3NjAxOCwxNzYwMTksMTc2MDIwLDE3NjAyMSwxNzYwMjNdLCJyIjpbMSw1LDYsNywxNCwxNSwxOSwyMSwyMiwyMywyNF19XSwiaWF0IjoxNTk0MzUwNTcwLCJleHAiOjE2MjU5MDgxNzAsImlzcyI6IlN3aXZlbCBTb2Z0d2FyZSBMaW1pdGVkIiwic3ViIjoiU3dpdmVsIDM2MCBKV1QifQ.EtbBg7-wFlLDeRKguSDMbGVktxqjmqCULGLsShzQL00',
+        'Authorization': `Bearer ${token}`,
         'content-type': 'application/json'
       },
       body: JSON.stringify(query),
