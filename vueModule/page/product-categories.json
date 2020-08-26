@@ -1,38 +1,133 @@
 {
-  "start": "---",
-  "layout": "CardLayout",
+  "fillParent": true,
   "components": [{
-      "is": "I18nText",
-      "props": {
-        "style": {
-          "flex": 0.9,
-          "width": "100%",
-          "text-align": "center"
-        },
-        "i18nKey": "Coming soon!"
-      }
-    },
-    {
-      "is": "v-btn",
-      "props": {
-        "flat": true
-      },
-      "slots": [{
-        "is": "I18nText",
-        "props": {
-          "i18nKey": "ErrorLayout.Back"
+    "is": "TableTool",
+    "props": {
+      "title": "Product Categories",
+      "back": "/admin",
+      "urlFormat": "/admin/product-categories",
+      "reportingKey": "product-categories",
+      "reportingKeyKey": "reportIdParams",
+      "jql": "users",
+      "hasReports": false,
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": false,
+      "noPartyGroupFilters": true,
+      "nextPageComponent": "user",
+      "noCache": true,
+      "refreshWhenBack": true,
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/detail/{{id}}",
+          "base": true
         }
-      }],
-      "events": {
-        "click.stop": [{
-          "type": "router",
-          "otherParams": {
-            "func": "go",
-            "go": -1
+      },
+      "newReport": {
+        "filters": {
+          "activeStatus": {
+            "value": "active",
+            "locked": true
+          }
+        },
+        "configurations": {
+          "i18nContext": "ProductCategoryPage",
+          "clickable": true,
+          "sorting": {
+            "direction": "DESC",
+            "key": "updatedAt",
+            "sql": {
+              "classname": "ColumnExpression",
+              "name": "updatedAt"
+            }
+          },
+          "pagination": {
+            "current": 0,
+            "perPage": 20,
+            "remote": true
+          }
+        }
+      },
+      "fieldOptions": [{
+          "key": "id",
+          "hidden": true
+        },
+        {
+          "key": "updatedAt",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "productCategoryCode"
+        },
+        {
+          "key": "name"
+        },
+        {
+          "key": "description"
+        }
+      ],
+      "filters": [{
+          "name": "activeStatus",
+          "type": "list",
+          "props": {
+            "items": [{
+                "label": "active",
+                "value": "active"
+              },
+              {
+                "label": "deleted",
+                "value": "deleted"
+              }
+            ]
+          }
+        },
+        {
+          "name": "productCategoryCode",
+          "type": "text"
+        },
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "description",
+          "type": "text"
+        }
+      ]
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "product-category/create",
+                "base": true
+              }
+            }]
           }
         }]
       }
-    }
-  ],
-  "remove": "---"
+    }]
+  }]
 }

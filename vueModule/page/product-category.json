@@ -1,38 +1,51 @@
 {
-  "start": "---",
-  "layout": "CardLayout",
   "components": [{
-      "is": "I18nText",
-      "props": {
-        "style": {
-          "flex": 0.9,
-          "width": "100%",
-          "text-align": "center"
+    "is": "Widget",
+    "props": {
+      "settingProp": {
+        "overrideType": "product-category",
+        "initAxiosParams": {
+          "url": "api/product-category/{{context.$route.params.params}}"
         },
-        "i18nKey": "Coming soon!"
-      }
-    },
-    {
-      "is": "v-btn",
-      "props": {
-        "flat": true
-      },
-      "slots": [{
-        "is": "I18nText",
-        "props": {
-          "i18nKey": "ErrorLayout.Back"
-        }
-      }],
-      "events": {
-        "click.stop": [{
-          "type": "router",
-          "otherParams": {
-            "func": "go",
-            "go": -1
+        "defaultAxiosParams": {
+          "url": "default/product-category"
+        },
+        "validateAxiosParams": {
+          "method": "post",
+          "url": "api/product-category/validate/{{id}}"
+        },
+        "saveAxiosParams": {
+          "method": "post",
+          "url": "api/product-category"
+        },
+        "primaryKey": "id",
+        "modeFunction": [
+          "const modes = ['create', 'detail', 'edit'];",
+          "const selectedMode = isNaN(Number(mode)) ? mode : 'detail';",
+          "if (!modes.includes(selectedMode)) {",
+          "throw new Error(`This mode (${selectedMode}) is not allowed!`)",
+          "}",
+          "return selectedMode"
+        ],
+        "haveTermOnCreate": false,
+        "haveTermOnEdit": false,
+        "widgetComponentSetting": {
+          "create": {
+            "readonly": false,
+            "stepper": 0,
+            "next": false,
+            "saveIcon": "create"
+          },
+          "detail": {
+            "readonly": true
+          },
+          "edit": {
+            "readonly": false,
+            "stepper": 0,
+            "saveIcon": "save"
           }
-        }]
+        }
       }
     }
-  ],
-  "remove": "---"
+  }]
 }
