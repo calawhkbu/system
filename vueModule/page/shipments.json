@@ -464,6 +464,11 @@
           "boolean" : true
         },
         {
+          "key" : "haveDocument_HBL Telex released",
+          "label": "haveDocument_HBL Telex released",
+          "boolean" : true
+        },
+        {
           "key" : "haveDocument_Commercial Invoice",
           "label": "haveDocument_Commercial Invoice",
           "boolean" : true
@@ -472,7 +477,7 @@
           "key" : "haveDocument_Packing List",
           "label": "haveDocument_Packing List",
           "boolean" : true
-        }
+        }  
       ]
     },
     "slots": []
