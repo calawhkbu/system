@@ -2559,7 +2559,7 @@ const summaryFieldList: SummaryField[] = [
     return {
       name,
       summaryType: 'sum',
-      expression: new ColumnExpression('shipment', name) 
+      expression: new ColumnExpression('shipment', name)
     } as SummaryField
 
   }),
@@ -3100,7 +3100,7 @@ const dateList = [
 
     const shipmentDateFlexDataExpression = new ColumnExpression('shipment_date','flexData')
     const shipmentDateUtcFlexDataExpression = new ColumnExpression('shipment_date_utc','flexData')
-  
+
     const dateActualExpression =  new MathExpression(shipmentDateFlexDataExpression,'->>',`$.${currentValue}DateActual`)
     const dateEstimatedExpression =  new MathExpression(shipmentDateFlexDataExpression,'->>',`$.${currentValue}DateEstimated`)
 
