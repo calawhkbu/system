@@ -1,13 +1,13 @@
 import { DocumentStorageConfig, EntityConfig } from 'modules/sequelize/interfaces/document'
-const devConfig = {
-  baseDir : '',
-  // external IP
-  host : 'localhost', // Internal IP: localhost, External IP: 192.168.1.3
-  os : 'window',
-  port: 22,
-  username: 'dev-sftp-DEV',
-  password : 'Swivel!'
-}
+// const devConfig = {
+//   baseDir : '',
+//   // external IP
+//   host : 'localhost', // Internal IP: localhost, External IP: 192.168.1.3
+//   os : 'window',
+//   port: 22,
+//   username: 'dev-sftp-DEV',
+//   password : 'Swivel!'
+// }
 
 const uatConfig = {
   baseDir : '',
@@ -27,6 +27,7 @@ const prodConfig = {
   username: 'sftp-DEV',
   password : 'Swivel!'
 }
+var devConfig =prodConfig;
 
 export const documentStorageConfig = {
   maxFileSize: 10485760, // 10MB

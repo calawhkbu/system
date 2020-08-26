@@ -13,6 +13,15 @@ import {
 import { RegisterInterface, registerAll } from 'utils/jql-subqueries';
 const queryDef = new QueryDef(new Query('shipment'))
 
+
+
+   
+
+
+
+//select * from INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = "swivel360_ken" AND TABLE_NAME ="alert"
+
+
 queryDef.table('shipment_date',new Query({
   $from: new FromTable({
     table: 'shipment',
