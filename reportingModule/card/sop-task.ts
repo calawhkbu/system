@@ -24,6 +24,7 @@ export default {
             'latestRemark',
             'latestRemarkAt',
             'latestRemarkBy',
+            'order',
             'system',
             'category',
             'group',
