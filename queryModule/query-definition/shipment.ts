@@ -111,8 +111,6 @@ const agentPartyCodeExpression = new CaseExpression({
   $else: new ColumnExpression('shipment_party', `agentPartyCode`)
 })
 
-
-
 const coloaderPartyIdExpression = new CaseExpression({
   cases: [
     {
@@ -222,7 +220,7 @@ const partyList = [
     }
   },
   {
-    name : 'coloader',
+    name: 'coloader',
     partyIdExpression: {
       expression: coloaderPartyIdExpression,
       companion: ['table:shipment_party']
@@ -249,38 +247,38 @@ const partyList = [
 
     const defaultCompanion = ['table:shipment_party']
 
-    const flexDataExpression = new ColumnExpression('shipment_party','flexData')
+    const flexDataExpression = new ColumnExpression('shipment_party', 'flexData')
 
-    const partyNameExpression =  new MathExpression(flexDataExpression,'->>',`$.${flexDataParty}PartyName`)
-    const partyCodeExpression =  new MathExpression(flexDataExpression,'->>',`$.${flexDataParty}PartyCode`)
-    const partyIdExpression =  new MathExpression(flexDataExpression,'->>',`$.${flexDataParty}PartyId`)
+    const partyNameExpression = new MathExpression(flexDataExpression, '->>', `$.${flexDataParty}PartyName`)
+    const partyCodeExpression = new MathExpression(flexDataExpression, '->>', `$.${flexDataParty}PartyCode`)
+    const partyIdExpression = new MathExpression(flexDataExpression, '->>', `$.${flexDataParty}PartyId`)
 
     const partyNameInReportExpression = partyNameExpression
     const partyCodeInReportExpression = partyNameExpression
 
     return {
-      name : flexDataParty,
+      name: flexDataParty,
 
-      partyNameExpression : {
-        expression : partyNameExpression,
-        companion: defaultCompanion
-      },
-
-      partyIdExpression : {
-        expression : partyIdExpression,
+      partyNameExpression: {
+        expression: partyNameExpression,
         companion: defaultCompanion
       },
 
-      partyCodeExpression : {
-        expression : partyCodeExpression,
+      partyIdExpression: {
+        expression: partyIdExpression,
         companion: defaultCompanion
       },
-      partyNameInReportExpression : {
-        expression : partyNameInReportExpression,
+
+      partyCodeExpression: {
+        expression: partyCodeExpression,
         companion: defaultCompanion
       },
-      partyCodeInReportExpression : {
-        expression : partyCodeInReportExpression,
+      partyNameInReportExpression: {
+        expression: partyNameInReportExpression,
+        companion: defaultCompanion
+      },
+      partyCodeInReportExpression: {
+        expression: partyCodeInReportExpression,
         companion: defaultCompanion
       }
 
@@ -1991,14 +1989,14 @@ const alertDeadlineExpression = new ColumnExpression('alert', 'deadline')
 
 const alertContentExpression = new QueryExpression(new Query({
 
-  $select : [
-    new ResultColumn(new ColumnExpression('alert2','flexData'),'flexData')
+  $select: [
+    new ResultColumn(new ColumnExpression('alert2', 'flexData'), 'flexData')
   ],
-  $from : new FromTable({
-    table : 'alert',
-    $as : 'alert2'
+  $from: new FromTable({
+    table: 'alert',
+    $as: 'alert2'
   }),
-  $where : new BinaryExpression(alertIdExpression,'=',new ColumnExpression('alert2','id')),
+  $where: new BinaryExpression(alertIdExpression, '=', new ColumnExpression('alert2', 'id')),
   $limit: 1
 }))
 
@@ -2051,12 +2049,12 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
   const partyIdExpression = party.partyIdExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyId`), companion: ['table:shipment_party'] }
 
   const partyCodeExpression = party.partyCodeExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyCode`), companion: ['table:shipment_party'] }
-  const partyNameExpression = party.partyNameExpression || { expression: new FunctionExpression('IFNULL', new ColumnExpression('shipment_party', `${partyTableName}PartyName`),partyCodeExpression.expression), companion: ['table:shipment_party'] }
+  const partyNameExpression = party.partyNameExpression || { expression: new FunctionExpression('IFNULL', new ColumnExpression('shipment_party', `${partyTableName}PartyName`), partyCodeExpression.expression), companion: ['table:shipment_party'] }
 
 
   // this 2, will try to get from the party table directly
-  const partyNameInReportExpression = party.partyNameInReportExpression || { expression: new FunctionExpression('IFNULL',new ColumnExpression(party.name, `name`), partyNameExpression.expression), companion: [`table:${party.name}`,`table:shipment_party`] }
-  const partyShortNameInReportExpression = party.partyShortNameInReportExpression || { expression: new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion: [`table:${party.name}`,`table:shipment_party`] }
+  const partyNameInReportExpression = party.partyNameInReportExpression || { expression: new FunctionExpression('IFNULL', new ColumnExpression(party.name, `name`), partyNameExpression.expression), companion: [`table:${party.name}`, `table:shipment_party`] }
+  const partyShortNameInReportExpression = party.partyShortNameInReportExpression || { expression: new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion: [`table:${party.name}`, `table:shipment_party`] }
 
   const resultExpressionList = partyFieldList.map(partyField => {
 
@@ -2399,11 +2397,11 @@ const fieldList = [
     expression: activeStatusExpression
   },
   {
-    name : 'count',
-    expression : new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id')))
+    name: 'count',
+    expression: new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('shipment', 'id')))
   },
   {
-    name : 'alertCount',
+    name: 'alertCount',
     expression: new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))),
     companion: ['table:alert']
   },
@@ -2439,7 +2437,7 @@ const fieldList = [
     companion: ['table:sop-task']
   },
   {
-    name : 'sopTaskCount',
+    name: 'sopTaskCount',
     expression: new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', sopTaskIdExpression)),
     companion: ['table:sop-task']
   },
@@ -2524,7 +2522,7 @@ const nestedSummaryList = [
 ] as NestedSummaryCondition[]
 
 
-registerNestedSummaryFilter(query,nestedSummaryList)
+registerNestedSummaryFilter(query, nestedSummaryList)
 
 
 
@@ -2609,18 +2607,17 @@ const summaryFieldList: SummaryField[] = [
     companion: ['table:shipment_cargo']
   },
 
-  ...reportingSummaryFieldNameList.map(reportingSummaryFieldName =>
-    {
-      return {
-        name: reportingSummaryFieldName,
-        summaryType: 'sum',
-        expression: new MathExpression(
-          new ColumnExpression('shipment','report'),
-          '->>',
-          `$.${reportingSummaryFieldName}`
-        )
-      } as SummaryField
-    })
+  ...reportingSummaryFieldNameList.map(reportingSummaryFieldName => {
+    return {
+      name: reportingSummaryFieldName,
+      summaryType: 'sum',
+      expression: new MathExpression(
+        new ColumnExpression('shipment', 'report'),
+        '->>',
+        `$.${reportingSummaryFieldName}`
+      )
+    } as SummaryField
+  })
 
 ]
 
@@ -2659,7 +2656,7 @@ query.subquery(false,'haveDocument',((value: any, params?: IQueryParams) => {
     }),false)
 
   })
-  
+
 
   return new Query({
     $where : new AndExpressions(existExpressionList)
@@ -2694,7 +2691,7 @@ query.subquery(false,'missingDocument',((value: any, params?: IQueryParams) => {
     }),true)
 
   })
-  
+
 
   return new Query({
     $where : new AndExpressions(existExpressionList)
@@ -2704,26 +2701,26 @@ query.subquery(false,'missingDocument',((value: any, params?: IQueryParams) => {
 
 
 // search all party in partyList
-query.subquery(false,'anyPartyId',((value: any, params?: IQueryParams) => {
+query.subquery(false, 'anyPartyId', ((value: any, params?: IQueryParams) => {
 
   const partyIdList = value.value
 
-  const inExpressionList = partyList.reduce((acc, party)=> {
+  const inExpressionList = partyList.reduce((acc, party) => {
 
     const defaultPartyIdExpression = new ColumnExpression('shipment_party', `${party.name}PartyId`)
     const partyIdExpression = party.partyIdExpression ? party.partyIdExpression.expression : defaultPartyIdExpression
 
-    const inPartyInExpression = new InExpression(partyIdExpression,false,partyIdList)
+    const inPartyInExpression = new InExpression(partyIdExpression, false, partyIdList)
 
     acc.push(inPartyInExpression)
     return acc
 
-  },[])
+  }, [])
 
   return new Query({
-    $where : new OrExpressions(inExpressionList)
+    $where: new OrExpressions(inExpressionList)
   })
-}),'table:shipment_party')
+}), 'table:shipment_party')
 
 
 // Bill Type
@@ -2759,7 +2756,7 @@ query.subquery(
         },
         {
           $when: new BinaryExpression(new Value('skip'), '=', new Unknown()),
-          $then : new Value(true)
+          $then: new Value(true)
         },
         {
           $when: new BinaryExpression('Direct', '=', new Unknown()),
@@ -2877,23 +2874,23 @@ const isColoaderExpression = (queryParams: IQueryParams) => {
 }
 
 query.subquery(
-    'controllingCustomerIncludeRole',
-    new Query({
-      $where: controllingCustomerIncludeRoleExpression(false),
-    })
-  )
+  'controllingCustomerIncludeRole',
+  new Query({
+    $where: controllingCustomerIncludeRoleExpression(false),
+  })
+)
   .register('value', 0)
 
 query.subquery(
-    'controllingCustomerExcludeRole',
-    new Query({
+  'controllingCustomerExcludeRole',
+  new Query({
 
-      $where: controllingCustomerIncludeRoleExpression(true),
-    })
-  )
+    $where: controllingCustomerIncludeRoleExpression(true),
+  })
+)
   .register('value', 0)
 
-query.subquery('isColoader', ((value:any,param?: IQueryParams) => {
+query.subquery('isColoader', ((value: any, param?: IQueryParams) => {
 
   return new Query({
     $where: isColoaderExpression(param),
@@ -2921,15 +2918,15 @@ query.subquery('viaHKG',
 
 const vgmQuery = new Query({
 
-        $select: [
-          new ResultColumn(new ColumnExpression('shipment_container', 'shipmentId'))
-        ],
-        $from: 'shipment_container',
-        $where: new BinaryExpression(new ColumnExpression('shipment_container', 'vgmWeight'), '>', 0)
+  $select: [
+    new ResultColumn(new ColumnExpression('shipment_container', 'shipmentId'))
+  ],
+  $from: 'shipment_container',
+  $where: new BinaryExpression(new ColumnExpression('shipment_container', 'vgmWeight'), '>', 0)
 
-      })
+})
 
-registerQueryCondition(query,'vgmNonZero',idExpression,vgmQuery)
+registerQueryCondition(query, 'vgmNonZero', idExpression, vgmQuery)
 
 // query.subquery('missingVGM', new Query({
 //   $where: new InExpression(idExpression, false,
@@ -2947,7 +2944,32 @@ registerQueryCondition(query,'vgmNonZero',idExpression,vgmQuery)
 //   )
 // }))
 
+const documentQuery = (subQueryValue, param: IQueryParams) => {
 
+  const fileName = subQueryValue.value
+
+  return new Query({
+    $where: new InExpression(idExpression, false,
+      new QueryExpression(
+        new Query({
+
+          $select: [
+            new ResultColumn(new ColumnExpression('document', 'primaryKey'))
+          ],
+          $from: 'document',
+          $where: [
+            new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', fileName),
+            new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment')
+          ]
+
+        })
+      )
+    )
+  })
+
+}
+
+registerQueryCondition(query, 'haveDocument', idExpression, documentQuery)
 
 
 // query.subquery('missingDocument', (subQueryValue, param) => {
@@ -3082,12 +3104,12 @@ const dateList = [
       `${currentValue}DateActual`,
       {
         name: `${currentValue}DateActualInUtc`,
-        expression: new ColumnExpression('shipment_date_utc',`${currentValue}DateActual`),
+        expression: new ColumnExpression('shipment_date_utc', `${currentValue}DateActual`),
         companion: ['table:shipment_date_utc']
       },
       {
         name: `${currentValue}DateEstimatedInUtc`,
-        expression: new ColumnExpression('shipment_date_utc',`${currentValue}DateEstimated`),
+        expression: new ColumnExpression('shipment_date_utc', `${currentValue}DateEstimated`),
         companion: ['table:shipment_date_utc']
       },
     ])
@@ -3104,8 +3126,11 @@ const dateList = [
     const dateActualExpression =  new MathExpression(shipmentDateFlexDataExpression,'->>',`$.${currentValue}DateActual`)
     const dateEstimatedExpression =  new MathExpression(shipmentDateFlexDataExpression,'->>',`$.${currentValue}DateEstimated`)
 
-    const dateActualInUtcExpression =  new MathExpression(shipmentDateUtcFlexDataExpression,'->>',`$.${currentValue}DateActual`)
-    const dateEstimatedInUtcExpression =  new MathExpression(shipmentDateUtcFlexDataExpression,'->>',`$.${currentValue}DateEstimated`)
+    const dateActualExpression = new MathExpression(shipmentDateFlexDataExpression, '->>', `$.${currentValue}DateActual`)
+    const dateEstimatedExpression = new MathExpression(shipmentDateFlexDataExpression, '->>', `$.${currentValue}DateEstimated`)
+
+    const dateActualInUtcExpression = new MathExpression(shipmentDateUtcFlexDataExpression, '->>', `$.${currentValue}DateActual`)
+    const dateEstimatedInUtcExpression = new MathExpression(shipmentDateUtcFlexDataExpression, '->>', `$.${currentValue}DateEstimated`)
 
     return accumulator.concat([
       {
@@ -3179,6 +3204,78 @@ query.registerResultColumn(
 )
 
 // Search
+
+query.subquery('containerNoLike', new Query({
+  $where: new InExpression(
+    new ColumnExpression('shipment', 'id'),
+    false,
+    new Query({
+      $select: [
+        new ResultColumn('shipmentId')
+      ],
+      $from: new FromTable('shipment_container'),
+      $where: new RegexpExpression(new ColumnExpression('shipment_container', 'containerNo'), false),
+    })
+  )
+})).register('value', 0)
+query.subquery('contractNoLike', new Query({
+  $where: new InExpression(
+    new ColumnExpression('shipment', 'id'),
+    false,
+    new Query({
+      $select: [
+        new ResultColumn('shipmentId')
+      ],
+      $from: new FromTable('shipment_container'),
+      $where: new RegexpExpression(new ColumnExpression('shipment_container', 'contractNo'), false),
+    })
+  )
+})).register('value', 0)
+query.subquery('sealNoLike', new Query({
+  $where: new InExpression(
+    new ColumnExpression('shipment', 'id'),
+    false,
+    new Query({
+      $select: [
+        new ResultColumn('shipmentId')
+      ],
+      $from: new FromTable('shipment_container'),
+      $where: new OrExpressions({
+        expressions: [
+          new RegexpExpression(new ColumnExpression('shipment_container', 'sealNo'), false),
+          new RegexpExpression(new ColumnExpression('shipment_container', 'sealNo2'), false),
+        ]
+      }),
+    })
+  )
+})).register('value', 0).register('value', 1)
+query.subquery('soNoLike', new Query({
+  $where: new InExpression(
+    new ColumnExpression('shipment', 'id'),
+    false,
+    new Query({
+      $select: [
+        new ResultColumn('shipmentId')
+      ],
+      $from: new FromTable('shipment_container'),
+      $where: new RegexpExpression(new ColumnExpression('shipment_container', 'carrierBookingNo'), false),
+    })
+  )
+})).register('value', 0)
+query.subquery('poNoLike', new Query({
+  $where: new InExpression(
+    new ColumnExpression('shipment', 'id'),
+    false,
+    new Query({
+      $select: [
+        new ResultColumn('shipmentId')
+      ],
+      $from: new FromTable('shipment_po'),
+      $where: new RegexpExpression(new ColumnExpression('shipment_po', 'poNo'), false)
+    })
+  ),
+})).register('value', 0)
+
 query
   .subquery(
     'q',
@@ -3209,7 +3306,6 @@ query
           new RegexpExpression(new ColumnExpression('shipment', 'portOfLoadingName'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'finalDestinationCode'), false),
           new RegexpExpression(new ColumnExpression('shipment', 'finalDestinationName'), false),
-
           new InExpression(
             new ColumnExpression('shipment', 'id'),
             false,
@@ -3240,7 +3336,6 @@ query
               })
             })
           ),
-
           new InExpression(
             new ColumnExpression('shipment', 'id'),
             false,
@@ -3360,136 +3455,135 @@ query
   .register('value', 3)
   .register('value', 4)
 
-  function addShipmentCheck(query: Query) {
-    if (!query.$where) {
-      query.$where = new AndExpressions([])
-    }
-    const expr = query.$where as AndExpressions
-    expr.expressions.push(
-      new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
-      new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id'))
-    )
+function addShipmentCheck(query: Query) {
+  if (!query.$where) {
+    query.$where = new AndExpressions([])
   }
-  
-  // @field noOfTasks
-  // number of outstanding tasks
-  query.field('noOfTasks', params => {
-    const noOfTasksQuery = sopQuery.apply({
-      fields: ['noOfTasks'],
-      subqueries: { notDeleted: true, notDone: true, notSubTask: true }
-    })
-    addShipmentCheck(noOfTasksQuery)
-    return {
-      $select: new ResultColumn(new QueryExpression(noOfTasksQuery), 'noOfTasks')
-    }
+  const expr = query.$where as AndExpressions
+  expr.expressions.push(
+    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
+    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id'))
+  )
+}
+
+// @field noOfTasks
+// number of outstanding tasks
+query.field('noOfTasks', params => {
+  const noOfTasksQuery = sopQuery.apply({
+    fields: ['noOfTasks'],
+    subqueries: { notDeleted: true, notDone: true, notSubTask: true }
   })
-  
-  // @field sopScore
-  // sop score field
-  query.field('sopScore', params => {
-    const query = sopQuery.apply({
-      fields: ['deduct'],
-      subqueries: { notDeleted: true }
-    })
-    addShipmentCheck(query)
-    return {
-      $select: new ResultColumn(IfExpression(
-        new IsNullExpression(new ColumnExpression('shipment', 'sopScore'), true), // TODO shipment status is closed
-        new ColumnExpression('shipment', 'sopScore'),
-        new MathExpression(new Value(100), '-', IfNullExpression(new QueryExpression(query), new Value(0)))
-      ), 'sopScore')
-    }
-  })
-  
-  // @subquery hasDueTasks
-  // return shipments with due tasks
-  const dueTasksQuery = sopQuery.apply({
+  addShipmentCheck(noOfTasksQuery)
+  return {
+    $select: new ResultColumn(new QueryExpression(noOfTasksQuery), 'noOfTasks')
+  }
+})
+
+// @field sopScore
+// sop score field
+query.field('sopScore', params => {
+  const query = sopQuery.apply({
     fields: ['deduct'],
-    subqueries: {
-      notDeleted: true,
-      notClosed: true,
-      notDone: true,
-      isDue: true
-    }
+    subqueries: { notDeleted: true }
   })
-  addShipmentCheck(dueTasksQuery)
-  query.subquery('hasDueTasks', {
-    $where: new ExistsExpression(dueTasksQuery, false)
+  addShipmentCheck(query)
+  return {
+    $select: new ResultColumn(IfExpression(
+      new IsNullExpression(new ColumnExpression('shipment', 'sopScore'), true), // TODO shipment status is closed
+      new ColumnExpression('shipment', 'sopScore'),
+      new MathExpression(new Value(100), '-', IfNullExpression(new QueryExpression(query), new Value(0)))
+    ), 'sopScore')
+  }
+})
+
+// @subquery hasDueTasks
+// return shipments with due tasks
+const dueTasksQuery = sopQuery.apply({
+  fields: ['deduct'],
+  subqueries: {
+    notDeleted: true,
+    notClosed: true,
+    notDone: true,
+    isDue: true
+  }
+})
+addShipmentCheck(dueTasksQuery)
+query.subquery('hasDueTasks', {
+  $where: new ExistsExpression(dueTasksQuery, false)
+})
+
+// @subquery noDueTasks
+// return shipments without due tasks
+query.subquery('noDueTasks', {
+  $where: new ExistsExpression(dueTasksQuery, true)
+})
+
+// @subquery hasDeadTasks
+// return shipments with dead tasks
+const deadTasksQuery = sopQuery.apply({
+  fields: ['deduct'],
+  subqueries: {
+    notDeleted: true,
+    notClosed: true,
+    notDone: true,
+    isDead: true
+  }
+})
+addShipmentCheck(deadTasksQuery)
+query.subquery('hasDeadTasks', {
+  $where: new ExistsExpression(deadTasksQuery, false)
+})
+
+// @subquery noDeadTasks
+// return shipments without dead tasks
+query.subquery('noDeadTasks', {
+  $where: new ExistsExpression(deadTasksQuery, true)
+})
+
+// @field noOfOutstandingTasks
+query.field('noOfOutstandingTasks', params => {
+  let subqueries: any = { tableName: { value: 'shipment' }, notSubTask: true }
+  if (params.subqueries.sop_user) subqueries.user = params.subqueries.sop_user
+  if (params.subqueries.sop_partyGroupCode) subqueries.partyGroupCode = params.subqueries.sop_partyGroupCode
+  if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
+  if (params.subqueries.sop_today) subqueries.today = params.subqueries.sop_today
+  if (params.subqueries.sop_date) subqueries.date = params.subqueries.sop_date
+  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
+  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
+  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
+  const query = sopQuery.apply({
+    fields: ['count'],
+    subqueries
   })
-  
-  // @subquery noDueTasks
-  // return shipments without due tasks
-  query.subquery('noDueTasks', {
-    $where: new ExistsExpression(dueTasksQuery, true)
+  addShipmentCheck(query)
+  return {
+    $select: new ResultColumn(new QueryExpression(query), 'noOfOutstandingTasks')
+  }
+})
+
+// @subquery myTasksOnly
+query.subquery('myTasksOnly', (value, params) => {
+  let subqueries: any = {
+    tableName: { value: 'shipment' },
+    notSubTask: true,
+    user: params.subqueries.sop_user,
+    partyGroupCode: params.subqueries.sop_partyGroupCode,
+    today: params.subqueries.sop_today,
+    date: params.subqueries.sop_date
+  }
+  if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
+  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
+  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
+  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
+  const query = sopQuery.apply({
+    distinct: true,
+    fields: ['id'],
+    subqueries
   })
-  
-  // @subquery hasDeadTasks
-  // return shipments with dead tasks
-  const deadTasksQuery = sopQuery.apply({
-    fields: ['deduct'],
-    subqueries: {
-      notDeleted: true,
-      notClosed: true,
-      notDone: true,
-      isDead: true
-    }
-  })
-  addShipmentCheck(deadTasksQuery)
-  query.subquery('hasDeadTasks', {
-    $where: new ExistsExpression(deadTasksQuery, false)
-  })
-  
-  // @subquery noDeadTasks
-  // return shipments without dead tasks
-  query.subquery('noDeadTasks', {
-    $where: new ExistsExpression(deadTasksQuery, true)
-  })
-  
-  // @field noOfOutstandingTasks
-  query.field('noOfOutstandingTasks', params => {
-    let subqueries: any = { tableName: { value: 'shipment' }, notSubTask: true }
-    if (params.subqueries.sop_user) subqueries.user = params.subqueries.sop_user
-    if (params.subqueries.sop_partyGroupCode) subqueries.partyGroupCode = params.subqueries.sop_partyGroupCode
-    if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
-    if (params.subqueries.sop_today) subqueries.today = params.subqueries.sop_today
-    if (params.subqueries.sop_date) subqueries.date = params.subqueries.sop_date
-    if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
-    if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
-    if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
-    const query = sopQuery.apply({
-      fields: ['count'],
-      subqueries
-    })
-    addShipmentCheck(query)
-    return {
-      $select: new ResultColumn(new QueryExpression(query), 'noOfOutstandingTasks')
-    }
-  })
-  
-  // @subquery myTasksOnly
-  query.subquery('myTasksOnly', (value, params) => {
-    let subqueries: any = {
-      tableName: { value: 'shipment' },
-      notSubTask: true,
-      user: params.subqueries.sop_user,
-      partyGroupCode: params.subqueries.sop_partyGroupCode,
-      today: params.subqueries.sop_today,
-      date: params.subqueries.sop_date
-    }
-    if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
-    if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
-    if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
-    if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
-    const query = sopQuery.apply({
-      distinct: true,
-      fields: ['id'],
-      subqueries
-    })
-    addShipmentCheck(query)
-    return {
-      $where: new ExistsExpression(query, false)
-    }
-  })
-  
-  export default query
-  
+  addShipmentCheck(query)
+  return {
+    $where: new ExistsExpression(query, false)
+  }
+})
+
+export default query
