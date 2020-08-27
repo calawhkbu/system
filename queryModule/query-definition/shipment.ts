@@ -3126,9 +3126,6 @@ const dateList = [
     const dateActualExpression =  new MathExpression(shipmentDateFlexDataExpression,'->>',`$.${currentValue}DateActual`)
     const dateEstimatedExpression =  new MathExpression(shipmentDateFlexDataExpression,'->>',`$.${currentValue}DateEstimated`)
 
-    const dateActualExpression = new MathExpression(shipmentDateFlexDataExpression, '->>', `$.${currentValue}DateActual`)
-    const dateEstimatedExpression = new MathExpression(shipmentDateFlexDataExpression, '->>', `$.${currentValue}DateEstimated`)
-
     const dateActualInUtcExpression = new MathExpression(shipmentDateUtcFlexDataExpression, '->>', `$.${currentValue}DateActual`)
     const dateEstimatedInUtcExpression = new MathExpression(shipmentDateUtcFlexDataExpression, '->>', `$.${currentValue}DateEstimated`)
 
