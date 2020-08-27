@@ -7,7 +7,6 @@
         "components": [{
             "is": "v-btn",
             "props": {
-              "small": true,
               "flat": true,
               "icon": true
             },
@@ -19,19 +18,25 @@
             }],
             "events": {
               "click.stop": [{
-                "type": "router",
+                "type": "dispatch",
                 "otherParams": {
-                  "func": "push",
-                  "path": "/admin/users"
-                }
+                  "name": "widget/resetData"
+                },
+                "afterActions": [{
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "detail"
+                  }
+                }]
               }]
             }
           },
           {
             "is": "I18nText",
             "props": {
-              "i18nContext": "InvitationPage",
-              "i18nKey": "title"
+              "class": "headline",
+              "i18nKey": "ProductCategoryPage.title"
             }
           },
           {
@@ -52,36 +57,13 @@
     {
       "is": "DynamicComponent",
       "props": {
-        "class": "xs-12 padding-left-8 padding-right-8 width-100 grid",
         "components": [{
-            "is": "AsyncComponent",
-            "props": {
-              "class": "margin-topbottom-4 xs-12",
-              "layoutName": "user/forms/general"
-            }
-          },
-          {
-            "is": "AsyncComponent",
-            "props": {
-              "class": "margin-topbottom-4 xs-12",
-              "layoutName": "user/forms/preference"
-            }
-          },
-          {
-            "is": "AsyncComponent",
-            "props": {
-              "class": "margin-topbottom-4 xs-12",
-              "layoutName": "user/forms/contacts"
-            }
-          },
-          {
-            "is": "AsyncComponent",
-            "props": {
-              "class": "margin-topbottom-4 xs-12",
-              "layoutName": "user/forms/teams"
-            }
+          "is": "AsyncComponent",
+          "props": {
+            "class": "margin-topbottom-4 xs-12",
+            "layoutName": "product-category/form/general"
           }
-        ]
+        }]
       }
     }
   ]

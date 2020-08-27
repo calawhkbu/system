@@ -11,7 +11,8 @@ import {
   Unknown,
   Value,
   OrExpressions,
-  AndExpressions
+  AndExpressions,
+  JoinClause
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -208,5 +209,14 @@ query
   }))
   .register('value', 0)
   .register('value', 1)
+
+query.table('person_team', {
+  $from: new FromTable('person', new JoinClause('LEFT', 'person_team', new BinaryExpression(new ColumnExpression('person', 'id'), '=', new ColumnExpression('person_team', 'personId'))))
+})
+
+query.field('distinct-team', {
+  $distinct: true,
+  $select: new ResultColumn(new ColumnExpression('person_team', 'team'), 'team')
+}, 'table:person_team')
 
 export default query

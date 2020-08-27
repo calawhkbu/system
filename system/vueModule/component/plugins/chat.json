@@ -1,5 +1,6 @@
 {
   "layout": "Plugin",
+  "noDialog": true,
   "name": "Chat",
   "transition": "slide-y-reverse-transition",
   "lazy": true,

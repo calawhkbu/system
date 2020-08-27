@@ -27,9 +27,10 @@
         "boolean": true,
         "i18nContext": "SopTask",
         "tooltip": "hasRemarkMsg",
+        "shadow": true,
         "showTooltipWhen": "true",
         "trueIcon": "comment",
-        "trueColor": "#f7f766",
+        "trueColor": "#ffdbb5",
         "falseIcon": "",
         "badgeKey": "noOfRemarks",
         "label": "",
@@ -46,17 +47,17 @@
       },
       {
         "key": "category",
-        "width": 80
+        "width": 90
       },
       {
         "key": "startAt",
         "format": "YYYY/MM/DD",
-        "width": 92
+        "width": 100
       },
       {
         "key": "dueAt",
         "format": "YYYY/MM/DD",
-        "width": 92
+        "width": 100
       }
     ],
     "rowStyle": {
@@ -79,6 +80,10 @@
       },
       "Deleted": {
         "opacity": 0.2
+      },
+      "Task Group": {
+        "backgroundColor": "#f3f9ff",
+        "height": "36px"
       }
     }
   }

@@ -127,17 +127,19 @@ const shortcuts: IShortcut[] = [
     })
   },
 
-  // table:sop_selected_template
+  // table:sop_template_template_task
   {
     type: 'table',
-    name: 'sop_selected_template',
-    fromTable: new FromTable(taskTable, new JoinClause('LEFT', selectedTemplateTable,
-      new AndExpressions([
-        new BinaryExpression(new ColumnExpression(taskTable, 'templateId'), '=', new ColumnExpression(selectedTemplateTable, 'id')),
-        new IsNullExpression(new ColumnExpression(selectedTemplateTable, 'deletedAt'), false),
-        new IsNullExpression(new ColumnExpression(selectedTemplateTable, 'deletedBy'), false)
-      ])
-    ))
+    name: 'sop_template_template_task',
+    queryArg: re => params => ({
+      $from: new FromTable(taskTable, new JoinClause('LEFT', templateTemplateTaskTable,
+        new AndExpressions([
+          new BinaryExpression(new ColumnExpression(templateTaskTable, 'id'), '=', new ColumnExpression(templateTemplateTaskTable, 'taskId')),
+          new BinaryExpression(new ColumnExpression(templateTable, 'id'), '=', new ColumnExpression(templateTemplateTaskTable, 'templateId'))
+        ])
+      ))
+    }),
+    companions: ['table:sop_template_task', 'table:sop_template']
   },
 
   // table:sop_template
@@ -146,12 +148,11 @@ const shortcuts: IShortcut[] = [
     name: 'sop_template',
     fromTable: new FromTable(taskTable, new JoinClause('LEFT', templateTable,
       new AndExpressions([
-        new BinaryExpression(new ColumnExpression(selectedTemplateTable, 'templateId'), '=', new ColumnExpression(templateTable, 'id')),
+        new BinaryExpression(new ColumnExpression(taskTable, 'templateId'), '=', new ColumnExpression(templateTable, 'id')),
         new IsNullExpression(new ColumnExpression(templateTable, 'deletedAt'), false),
         new IsNullExpression(new ColumnExpression(templateTable, 'deletedBy'), false)
       ])
-    )),
-    companions: ['table:sop_selected_template']
+    ))
   },
 
   // field:id
@@ -182,14 +183,6 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'primaryKey',
     expression: new ColumnExpression(taskTable, 'primaryKey'),
-    registered: true
-  },
-
-  // field:seqNo
-  {
-    type: 'field',
-    name: 'seqNo',
-    expression: new ColumnExpression(taskTable, 'seqNo'),
     registered: true
   },
 
@@ -383,15 +376,6 @@ const shortcuts: IShortcut[] = [
     companions: ['table:sop_template_task']
   },
 
-  // field:selectedTemplateId
-  {
-    type: 'field',
-    name: 'selectedTemplateId',
-    expression: new ColumnExpression(selectedTemplateTable, 'templateId'),
-    registered: true,
-    companions: ['table:sop_template_task']
-  },
-
   // field:group
   {
     type: 'field',
@@ -399,6 +383,22 @@ const shortcuts: IShortcut[] = [
     expression: new ColumnExpression(templateTable, 'group'),
     registered: true,
     companions: ['table:sop_template']
+  },
+
+  // field:order
+  {
+    type: 'field',
+    name: 'order',
+    expression: new ColumnExpression(templateTemplateTaskTable, 'order'),
+    companions: ['table:sop_template_template_task']
+  },
+
+  // field:seqNo
+  {
+    type: 'field',
+    name: 'seqNo',
+    expression: new ColumnExpression(templateTemplateTaskTable, 'seqNo'),
+    companions: ['table:sop_template_template_task']
   },
 
   // field:count

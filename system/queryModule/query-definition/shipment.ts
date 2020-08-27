@@ -2133,15 +2133,12 @@ const locationExpressionList = locationList.reduce((accumulator: ExpressionHelpe
 
 // this list must match document config fileName
 const documentFileNameList = [
-  'Invoice',
-  'FCL Document',
-  'LCL Document',
+  'Freight Invoice',
   'MBL',
-  'MBL Original',
+  'HBL Original',
+  'HBL Telex released',
   'Commercial Invoice',
   'Packing List',
-  'Shipping Order',
-  'Shipping Advice'
 ]
 
 const haveDocumentExpressionList = documentFileNameList.map(documentFileName => {
@@ -2151,12 +2148,16 @@ const haveDocumentExpressionList = documentFileNameList.map(documentFileName => 
       new Query({
 
         $select: [
-          new ResultColumn(new ColumnExpression('document', 'primaryKey'))
+          new ResultColumn(new ColumnExpression('document', 'id'))
         ],
         $from: 'document',
         $where: [
           new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', documentFileName),
-          new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment')
+          new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment'),
+
+          new IsNullExpression(new ColumnExpression('document', 'deletedAt'),true),
+          new IsNullExpression(new ColumnExpression('document', 'deletedBy'),true)
+
         ]
 
       })
@@ -2558,7 +2559,7 @@ const summaryFieldList: SummaryField[] = [
     return {
       name,
       summaryType: 'sum',
-      expression: new ColumnExpression('shipment', name) 
+      expression: new ColumnExpression('shipment', name)
     } as SummaryField
 
   }),
@@ -2627,6 +2628,78 @@ registerSummaryField(query, baseTableName, summaryFieldList, nestedSummaryList, 
 
 
 registerCheckboxField(query)
+
+
+
+query.subquery(false,'haveDocument',((value: any, params?: IQueryParams) => {
+
+
+  const fileNameList = (value && value.value) ?  (Array.isArray(value.value) ? value.value : [value.value]) : []
+
+  if (!fileNameList.length)
+  {
+    throw new Error('fileNameList empty')
+  }
+
+  const existExpressionList = fileNameList.map(fileName => {
+
+    return new ExistsExpression(new Query({
+      $select : [
+        new ResultColumn(new ColumnExpression('document','tableName'))
+      ],
+      $from: 'document',
+      $where : [
+        new BinaryExpression(new ColumnExpression('document','tableName'),'=','shipment'),
+        new BinaryExpression(new ColumnExpression('document','primaryKey'),'=',idExpression),
+        new BinaryExpression(new ColumnExpression('document','fileName'),'=',fileName),
+
+        new IsNullExpression(new ColumnExpression('document', 'deletedAt'),true),
+        new IsNullExpression(new ColumnExpression('document', 'deletedBy'),true)
+      ]
+    }),false)
+
+  })
+  
+
+  return new Query({
+    $where : new AndExpressions(existExpressionList)
+  })
+}))
+
+query.subquery(false,'missingDocument',((value: any, params?: IQueryParams) => {
+
+
+  const fileNameList = (value && value.value) ?  (Array.isArray(value.value) ? value.value : [value.value]) : []
+
+  if (!fileNameList.length)
+  {
+    throw new Error('fileNameList empty')
+  }
+
+  const existExpressionList = fileNameList.map(fileName => {
+
+    return new ExistsExpression(new Query({
+      $select : [
+        new ResultColumn(new ColumnExpression('document','tableName'))
+      ],
+      $from: 'document',
+      $where : [
+        new BinaryExpression(new ColumnExpression('document','tableName'),'=','shipment'),
+        new BinaryExpression(new ColumnExpression('document','primaryKey'),'=',idExpression),
+        new BinaryExpression(new ColumnExpression('document','fileName'),'=',fileName),
+
+        new IsNullExpression(new ColumnExpression('document', 'deletedAt'),true),
+        new IsNullExpression(new ColumnExpression('document', 'deletedBy'),true)
+      ]
+    }),true)
+
+  })
+  
+
+  return new Query({
+    $where : new AndExpressions(existExpressionList)
+  })
+}))
 
 
 
@@ -3027,7 +3100,7 @@ const dateList = [
 
     const shipmentDateFlexDataExpression = new ColumnExpression('shipment_date','flexData')
     const shipmentDateUtcFlexDataExpression = new ColumnExpression('shipment_date_utc','flexData')
-  
+
     const dateActualExpression =  new MathExpression(shipmentDateFlexDataExpression,'->>',`$.${currentValue}DateActual`)
     const dateEstimatedExpression =  new MathExpression(shipmentDateFlexDataExpression,'->>',`$.${currentValue}DateEstimated`)
 
