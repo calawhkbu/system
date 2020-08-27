@@ -1,0 +1,44 @@
+{
+  "layout": "v-card",
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [{
+          "name": "logoURL",
+          "component": "ImageField",
+          "class": "xs-12",
+          "props": {
+            "convertBase64": true,
+            "defaultImage": "/img/logo/swivel-logo-light.svg",
+            "style": {
+              "display": "flex",
+              "justify-content": "center"
+            },
+            "imageProps": {
+              "style": {
+                "max-height": "150px"
+              }
+            }
+          }
+        },
+        {
+          "component": "v-text-field",
+          "class": "xs-12 md-6",
+          "label": "CustomerPage.customerName",
+          "name": "name",
+          "validator": ["required"]
+        },
+        {
+          "component": "v-text-field",
+          "class": "xs-12 md-6",
+          "label": "CustomerPage.customerCode",
+          "name": "code",
+          "validator": ["nospace"],
+          "props": {
+            "disable": true
+          }
+        }
+      ]
+    }
+  }]
+}
