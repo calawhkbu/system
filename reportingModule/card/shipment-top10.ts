@@ -1,7 +1,7 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import { OrderBy } from 'node-jql'
-import { expandGroupEntity } from 'utils/card'
+import { expandGroupEntity, groupByEntityList,summaryVariableList } from 'utils/card'
 
 interface Result {
   result: any[]
@@ -30,28 +30,6 @@ export default {
         const summaryColumnName = (subqueries.yAxis as any).value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
         const { codeColumnName, nameColumnName } = expandGroupEntity(subqueries,'xAxis',true)
-
-        // const codeColumnName =
-        //   xAxis === 'carrier'
-        //     ? `carrierCode`
-        //     : xAxis === 'portOfLoadingCode'
-        //     ? `portOfLoadingCode`
-        //     : xAxis === 'portOfDischargeCode'
-        //     ? `portOfDischargeCode`
-        //     : xAxis === 'agentGroup'
-        //     ? `agentGroup`
-        //     : `${xAxis}PartyCode`
-        // const nameColumnName =
-        //   (xAxis === 'carrier'
-        //     ? `carrierName`
-        //     : xAxis === 'portOfLoadingCode'
-        //     ? `portOfLoadingCode`
-        //     : xAxis === 'portOfDischargeCode'
-        //     ? `portOfDischargeCode`
-        //     : xAxis === 'agentGroup'
-        //     ? `agentGroup`
-        //     : `${xAxis}PartyShortNameInReport`) + 'Any'
-        // ------------------------------
 
         prevResult.xAxis = xAxis
         prevResult.summaryColumnName = summaryColumnName
@@ -126,42 +104,13 @@ export default {
       name: 'yAxis',
       props: {
         items: [
-          {
-            label: 'chargeableWeight',
-            value: 'chargeableWeight',
-          },
-          {
-            label: 'grossWeight',
-            value: 'grossWeight',
-          },
-          {
-            label: 'cbm',
-            value: 'cbm',
-          },
-          {
-            label: 'totalShipment',
-            value: 'totalShipment',
-          },
-          {
-            label: 'teu',
-            value: 'teu',
-          },
-          {
-            label: 'teuInReport',
-            value: 'teuInReport',
-          },
-          {
-            label: 'quantity',
-            value: 'quantity',
-          },
-          {
-            label: 'cargoValue',
-            value: 'cargoValue'
-          },
-          {
-            label: 'containerCount',
-            value: 'containerCount'
-          }
+
+          ...summaryVariableList.map(summaryVariable => {
+            return {
+              label: summaryVariable,
+              value: summaryVariable
+            }
+          })
         ],
         required: true,
       },
@@ -172,42 +121,12 @@ export default {
       name: 'xAxis',
       props: {
         items: [
-          {
-            label: 'carrier',
-            value: 'carrier',
-          },
-          {
-            label: 'shipper',
-            value: 'shipper',
-          },
-          {
-            label: 'consignee',
-            value: 'consignee',
-          },
-          {
-            label: 'agent',
-            value: 'agent',
-          },
-          {
-            label: 'office',
-            value: 'office',
-          },
-          {
-            label: 'agentGroup',
-            value: 'agentGroup',
-          },
-          {
-            label: 'controllingCustomer',
-            value: 'controllingCustomer',
-          },
-          {
-            label: 'portOfLoading',
-            value: 'portOfLoadingCode',
-          },
-          {
-            label: 'portOfDischarge',
-            value: 'portOfDischargeCode',
-          }
+          ...groupByEntityList.map(groupByEntity => {
+            return {
+              label: groupByEntity,
+              value: groupByEntity
+            }
+          })
         ],
         required: true,
       },

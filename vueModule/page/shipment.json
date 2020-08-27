@@ -5,7 +5,10 @@
       "settingProp": {
         "overrideType": "shipment",
         "initAxiosParams": {
-          "url": "api/shipment/{{context.$route.params.params | urlEncode }}"
+          "url": "api/shipment/{{context.$route.params.params | urlEncode }}",
+          "headers": {
+            "Cache-Control": "{{cache}}"
+          }
         },
         "defaultAxiosParams": {
           "url": "default/shipment"

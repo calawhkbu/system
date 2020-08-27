@@ -44,31 +44,13 @@
               "downloadAxiosParams": {
                 "responseType": "blob",
                 "method": "GET",
-                "url": "swivel-trak/error/error"
+                "url": "swivel-trak/error/report/SEA"
               }
             },
             "slots": [{
               "is": "Icon",
               "props": {
                 "icon": "bug_report"
-              }
-            }]
-          }, {
-            "is": "DownloadButton",
-            "props": {
-              "small": true,
-              "flat": true,
-              "icon": true,
-              "downloadAxiosParams": {
-                "responseType": "blob",
-                "method": "GET",
-                "url": "swivel-trak/error/manual"
-              }
-            },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "system_update_alt"
               }
             }]
           }
@@ -83,12 +65,12 @@
           "is": "WidgetImport",
           "props": {
             "tableName": "tracking",
-            "importKey": "houseNo",
+            "importKey": "trackingNo",
             "importFileTypes": ["xlsx"],
             "importAxiosParams": {
               "z": {
                 "method": "POST",
-                "url": "api/shipment/import"
+                "url": "api/tracking/import"
               }
             },
             "importFormLayout": {
