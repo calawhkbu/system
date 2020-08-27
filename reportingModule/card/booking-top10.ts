@@ -181,14 +181,8 @@ export default {
             label: 'agent',
             value: 'agent',
           },
-          {
-            label: 'office',
-            value: 'office',
-          },
-          {
-            label: 'agentGroup',
-            value: 'agentGroup',
-          },
+       
+         
           {
             label: 'controllingCustomer',
             value: 'controllingCustomer',

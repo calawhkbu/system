@@ -62,7 +62,13 @@ export default {
 
  
 
-        const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
+        var { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
+          // -----------------------------groupBy variable
+          groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+          codeColumnName = prevResult.codeColumnName = groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierCode`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyCode`
+          nameColumnName = prevResult.nameColumnName = (groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierName`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyShortNameInReport`) + 'Any'
+         
+        
         console.log('preparParams')
         console.log(params)
         prevResult.groupByEntity = groupByEntity
@@ -262,10 +268,7 @@ export default {
             label: 'agent',
             value: 'agent',
           },
-          {
-            label: 'agentGroup',
-            value: 'agentGroup',
-          },
+         
           {
             label: 'controllingCustomer',
             value: 'controllingCustomer',
@@ -278,17 +281,14 @@ export default {
             label: 'roAgent',
             value: 'roAgent',
           },
-          {
-            label: 'office',
-            value: 'office',
-          },
+     
           {
             label : 'moduleType',
             value : 'moduleType'
           },
           {
-            label : 'houseNo',
-            value : 'houseNo'
+            label : 'bookingNo',
+            value : 'bookingNo'
           }
         ],
         required: true,
