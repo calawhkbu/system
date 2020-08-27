@@ -222,7 +222,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'calculatedStartAt',
-    expression: new ColumnExpression(taskTable, 'startAt'),
+    expression: IfNullExpression(new ColumnExpression(taskTable, 'startAt'), new ColumnExpression(taskTable, 'createdAt')),
     registered: true
   },
 
@@ -561,8 +561,11 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'startAt',
     expression: re => IfNullExpression(
-      IfNullExpression(re['inputStartAt'], re['calculatedStartAt']),
-      IfNullExpression(new ColumnExpression('parent', 'inputStartAt'), new ColumnExpression('parent', 'startAt'))
+      IfNullExpression(
+        IfNullExpression(re['inputStartAt'], re['calculatedStartAt']),
+        IfNullExpression(new ColumnExpression('parent', 'inputStartAt'), IfNullExpression(new ColumnExpression('parent', 'startAt'), new ColumnExpression('parent', 'createdAt')))
+      ),
+      new ColumnExpression(taskTable, 'createdAt')
     ),
     registered: true
   },
@@ -573,7 +576,7 @@ const shortcuts: IShortcut[] = [
     name: 'defaultStartAt',
     expression: re => IfNullExpression(
       re['calculatedStartAt'],
-      IfNullExpression(new ColumnExpression('parent', 'inputStartAt'), new ColumnExpression('parent', 'startAt'))
+      IfNullExpression(new ColumnExpression('parent', 'inputStartAt'), IfNullExpression(new ColumnExpression('parent', 'startAt'), new ColumnExpression('parent', 'createdAt')))
     )
   },
 
