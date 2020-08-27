@@ -1,0 +1,537 @@
+{
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "class": "padding-top-10",
+      "fields": [{
+          "label": "BookingPage.moduleType",
+          "name": "moduleTypeCode",
+          "component": "AsyncSelect",
+          "class": "xs-12 md-2",
+          "relation": "moduleType",
+          "validator": ["required"],
+          "props": {
+            "required": true,
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "MODULE"
+                  }
+                }
+              }
+            },
+            "item-text": "name",
+            "item-value": "code",
+            "showValue": false
+          }
+        },
+        {
+          "label": "BookingPage.boundType",
+          "name": "boundTypeCode",
+          "component": "AsyncSelect",
+          "class": "xs-12 md-2",
+          "relation": "boundType",
+          "validator": ["required"],
+          "props": {
+            "required": true,
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "BOUND"
+                  }
+                }
+              }
+            },
+            "item-text": "name",
+            "item-value": "code"
+          }
+        },
+        {
+          "label": "BookingPage.serviceCode",
+          "name": "serviceCode",
+          "component": "AsyncSelect",
+          "class": "xs-12 md-2",
+          "validator": ["required"],
+          "relation": "service",
+          "props": {
+            "required": true,
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "SERVTYPE"
+                  }
+                }
+              }
+            },
+            "item-text": "name",
+            "item-value": "code",
+            "showValue": false
+          }
+        },
+        {
+          "label": "BookingPage.vas",
+          "name": "vas",
+          "component": "AsyncSelect",
+          "class": "xs-12 md-6",
+          "props": {
+            "multiple": true,
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "VAS"
+                  }
+                }
+              }
+            },
+            "color": "red",
+            "item-text": "name",
+            "item-value": "code",
+            "showValue": false,
+            "showSpacer": false,
+            "selectedProps": {
+              "class": "multiple"
+            }
+          }
+        },
+        {
+          "label": "BookingPage.placeOfReceipt",
+          "name": "placeOfReceipt",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12 md-3",
+          "more": [{
+            "name": "placeOfReceiptCode",
+            "selector": "portCode"
+          }, {
+            "name": "placeOfReceiptName",
+            "selector": "name"
+          }],
+          "props": {
+            "searchValueParams": {
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleTypeCode": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "portCodeLike": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
+                }
+              }
+            },
+            "searchTextParams": {
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleTypeCode": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "name",
+            "item-value": "portCode"
+          }
+        },
+        {
+          "label": "BookingPage.portOfLoading",
+          "name": "portOfLoading",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12 md-3",
+          "validator": ["required"],
+          "more": [{
+            "name": "portOfLoadingCode",
+            "selector": "portCode"
+          }, {
+            "name": "portOfLoadingName",
+            "selector": "name"
+          }],
+          "props": {
+            "required": true,
+            "searchValueParams": {
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleTypeCode": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "portCodeLike": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
+                }
+              }
+            },
+            "searchTextParams": {
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleTypeCode": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "name",
+            "item-value": "portCode"
+          }
+        },
+        {
+          "label": "BookingPage.portOfDischarge",
+          "name": "portOfDischarge",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12 md-3",
+          "validator": ["required"],
+          "more": [{
+            "name": "portOfDischargeCode",
+            "selector": "portCode"
+          }, {
+            "name": "portOfDischargeName",
+            "selector": "name"
+          }],
+          "props": {
+            "required": true,
+            "searchValueParams": {
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleTypeCode": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "portCodeLike": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
+                }
+              }
+            },
+            "searchTextParams": {
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleTypeCode": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "name",
+            "item-value": "portCode"
+          }
+        },
+        {
+          "label": "BookingPage.placeOfDelivery",
+          "name": "placeOfDelivery",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12 md-3",
+          "more": [{
+            "name": "placeOfDeliveryCode",
+            "selector": "portCode"
+          }, {
+            "name": "placeOfDeliveryName",
+            "selector": "name"
+          }],
+          "props": {
+            "searchValueParams": {
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleTypeCode": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "portCodeLike": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
+                }
+              }
+            },
+            "searchTextParams": {
+              "method": "POST",
+              "url": "api/location/query/location",
+              "data": {
+                "subqueries": {
+                  "moduleTypeCode": {
+                    "value": "{{context.form.moduleTypeCode}}"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "name",
+            "item-value": "portCode"
+          }
+        },
+        {
+          "label": "BookingPage.carrier",
+          "name": "carrier",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12 md-3",
+          "relation": "carrier",
+          "more": [{
+            "name": "carrierCode",
+            "selector": "code"
+          }],
+          "props": {
+            "searchValueParams": {
+              "method": "POST",
+              "url": "api/code/query/code_master",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "CARRIER"
+                  },
+                  "code": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
+                }
+              }
+            },
+            "searchTextParams": {
+              "method": "POST",
+              "url": "api/code/query/code_master",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "CARRIER"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "name",
+            "item-value": "code"
+          }
+        },
+        {
+          "label": "BookingPage.contractNo",
+          "name": "flexData.contractNo",
+          "component": "v-text-field",
+          "class": "xs-12 md-3"
+        },
+        {
+          "label": "BookingPage.vesselName",
+          "name": "vesselName",
+          "component": "v-text-field",
+          "class": "xs-12 md-3",
+          "canEdit": "return false;",
+          "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA' && form.vesselName"
+        },
+        {
+          "label": "BookingPage.vesselName",
+          "name": "proposedVesselName",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12 md-3",
+          "relation": "proposedVesselName",
+          "relationMore": [{
+            "name": "proposedVesselName",
+            "selector": "name"
+          }],
+          "canEdit": [
+            "if (form && form.vesselName) {",
+            "return false;",
+            "}",
+            "return true;"
+          ],
+          "checkDisplayWhen": [
+            "if (form.vesselName) {",
+            "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA' && form.proposedVesselName;",
+            "}",
+            "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA';"
+          ],
+          "props": {
+            "canCreate": true,
+            "canCreateValue": {
+              "id": null,
+              "name": "{{autoSuggestModel}}"
+            },
+            "searchTextParams": {
+              "method": "POST",
+              "url": "api/code/query/code_master",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "VESSEL"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "name",
+            "item-value": "name"
+          }
+        },
+        {
+          "label": "BookingPage.voyageFlightNumber",
+          "name": "voyageFlightNumber",
+          "component": "v-text-field",
+          "class": "xs-12 md-3",
+          "canEdit": "return false;",
+          "checkDisplayWhen": "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA') && form.voyageFlightNumber;"
+        },
+        {
+          "label": "BookingPage.voyageFlightNumber",
+          "name": "proposedVoyageFlightNumber",
+          "component": "v-text-field",
+          "class": "xs-12 md-3",
+          "canEdit": [
+            "if (form && form.voyageFlightNumber) {",
+            "return false;",
+            "}",
+            "return true;"
+          ],
+          "checkDisplayWhen": [
+            "if (form.voyageFlightNumber) {",
+            "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA') && form.proposedVoyageFlightNumber;",
+            "}",
+            "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA');"
+          ]
+        },
+        {
+          "class": "xs-12 md-6",
+          "checkDisplayWhen": "return form && !(form.moduleTypeCode || form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA')"
+        },
+        {
+          "class": "xs-12 md-3",
+          "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'AIR'"
+        },
+        {
+          "label": "BookingPage.incoTermsCode",
+          "name": "incoTerms",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12 md-6",
+          "more": [{
+            "name": "incoTermsCode",
+            "selector": "code"
+          }],
+          "relationMore": [{
+              "name": "freightTermsCode",
+              "selector": "flexData.frieghtTermsCode"
+            },
+            {
+              "name": "otherTermsCode",
+              "selector": "flexData.otherTermsCode"
+            }
+          ],
+          "props": {
+            "searchTextParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "INCOTERMS"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "name",
+            "item-value": "code"
+          }
+        },
+        {
+          "label": "BookingPage.freightTermsCode",
+          "name": "freightTermsCode",
+          "component": "AsyncSelect",
+          "class": "xs-12 md-3",
+          "relation": "freightTerms",
+          "props": {
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "PAYTERMS"
+                  }
+                }
+              }
+            },
+            "item-text": "name",
+            "item-value": "code"
+          }
+        },
+        {
+          "label": "BookingPage.otherTerms",
+          "name": "otherTermsCode",
+          "component": "AsyncSelect",
+          "class": "xs-12 md-3",
+          "relation": "otherTerms",
+          "props": {
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "PAYTERMS"
+                  }
+                }
+              }
+            },
+            "item-text": "name",
+            "item-value": "code"
+          }
+        },
+        {
+          "label": "BookingPage.commodity",
+          "name": "commodity",
+          "component": "v-text-field",
+          "class": "xs-12 md-6",
+          "validator": ["required"],
+          "props": {
+            "required": true
+          }
+        },
+        {
+          "label": "BookingPage.polHScode",
+          "name": "polHScode",
+          "component": "v-text-field",
+          "class": "xs-12 md-6",
+          "more": ["podHScode"]
+        }
+      ]
+    }
+  }]
+}

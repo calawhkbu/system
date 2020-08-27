@@ -1,0 +1,150 @@
+{
+  "components": [{
+      "is": "DynamicComponent",
+      "props": {
+        "layout": "v-card",
+        "class": "absolute-topleft-20 zindex-300 width-48 height-48",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "icon": true
+          },
+          "events": {
+            "click.stop": [{
+              "type": "dispatch",
+              "otherParams": {
+                "name": "widget/changeMode",
+                "mode": "detail"
+              }
+            }]
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "arrow_back"
+            }
+          }]
+        }]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "layout": "v-card",
+        "style": {
+          "height": "calc(100vh - 100px)",
+          "position": "absolute",
+          "top": "20px",
+          "right": "20px"
+        },
+        "class": "zindex-250 max-width-300",
+        "components": [{
+          "is": "ClickHidden",
+          "props": {
+            "desktopOpen": true
+          },
+          "slots": [{
+            "is": "DynamicComponent",
+            "props": {
+              "style": {
+                "overflow": "auto"
+              },
+              "components": [{
+                "is": "WidgetForm",
+                "props": {
+                  "class": "full-width",
+                  "fields": [{
+                      "label": "ShipmentPage.houseNo",
+                      "name": "houseNo",
+                      "component": "v-text-field",
+                      "class": "xs-6"
+                    },
+                    {
+                      "label": "ShipmentPage.masterNo",
+                      "name": "masterNo",
+                      "checkDisplayWhen": "return form && form.masterNo",
+                      "component": "v-text-field",
+                      "class": "xs-6"
+                    },
+                    {
+                      "class": "xs-6",
+                      "checkDisplayWhen": "return form && !form.masterNo"
+                    },
+                    {
+                      "label": "ShipmentPage.carrier",
+                      "name": ["carrierName", "carrier.name", "carrierCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12",
+                      "checkDisplayWhen": "return form && (form.carrierName || (form.carrier && form.carrier.name) || form.carrierCode)"
+                    },
+                    {
+                      "label": "ShipmentPage.portOfLoading",
+                      "name": ["portOfLoadingName", "portOfLoading.name", "portOfLoadingCode"],
+                      "component": "v-text-field",
+                      "class": "xs-6",
+                      "checkDisplayWhen": "return form && (form.portOfLoadingName || (form.portOfLoading && form.portOfLoading.name) || form.portOfLoadingCode)"
+                    },
+                    {
+                      "label": "ShipmentPage.portOfDischarge",
+                      "name": ["portOfDischargeName", "portOfDischarge.name", "portOfDischargeCode"],
+                      "component": "v-text-field",
+                      "class": "xs-6",
+                      "checkDisplayWhen": "return form && (form.portOfDischargeName || (form.portOfDischarge && form.portOfDischarge.name) || form.portOfDischargeCode)"
+                    }
+                  ]
+                }
+              }, {
+                "is": "AsyncComponent",
+                "props": {
+                  "getDate": "shipmentDate",
+                  "class": "xs-12 margin-topbottom-2",
+                  "layoutName": "plugins/tracking-map",
+                  "loadWhenDataLoaded": true,
+                  "axiosBaseParams": [
+                    "const trackingNos = [];",
+                    "const data = context.$store.state.widget.data;",
+                    "if (data.masterNo) { trackingNos.push(data.masterNo) }",
+                    "if (data.shipmentContainers && data.shipmentContainers.length > 0) {",
+                    "for (const container of data.shipmentContainers) {",
+                    "if (container.carrierBookingNo) { trackingNos.push(container.carrierBookingNo) }",
+                    "if (container.containerNo) { trackingNos.push(container.containerNo) }",
+                    "}",
+                    "}",
+                    "return {",
+                    "url: 'api/swivel-tracking/get',",
+                    "method: 'POST',",
+                    "data: { trackingNos }",
+                    "};"
+                  ],
+                  "createdAtKey": "issueDate",
+                  "createI18nKey": "shipmentReceivedByForwarder"
+                }
+              }]
+            }
+          }]
+        }]
+      }
+    },
+    {
+      "is": "Map",
+      "props": {
+        "style": {
+          "width": "100%",
+          "height": "calc(100vh - 42px)"
+        }
+      },
+      "slots": [{
+        "is": "Route",
+        "props": {
+          "startPoint": "widget.data.portOfLoadingCode",
+          "endPoint": "widget.data.portOfDischargeCode",
+          "estimatedStartTime": "widget.data.shipmentDate.departureDateEstimated",
+          "actualStartTime": "widget.data.shipmentDate.departureDateActual",
+          "estimatedEndTime": "widget.data.shipmentDate.arrivalDateEstimated",
+          "actualEndTime": "widget.data.shipmentDate.arrivalDateActual",
+          "mode": "widget.data.moduleTypeCode"
+        }
+      }]
+    }
+  ]
+}
