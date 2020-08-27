@@ -671,22 +671,6 @@ const shortcuts: IShortcut[] = [
     }
   },
 
-  // field:isDone
-  {
-    type: 'field',
-    name: 'isDone',
-    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', generalIsDoneExpression('temp', true)), true), generalIsDoneExpression()),
-    registered: true
-  },
-
-  // field:isDue
-  {
-    type: 'field',
-    name: 'isDue',
-    expression: re => new BinaryExpression(re['dueAt'], '<', new FunctionExpression('UTC_TIMESTAMP')),
-    registered: true
-  },
-
   // field:isStarted
   {
     type: 'field',
@@ -695,6 +679,42 @@ const shortcuts: IShortcut[] = [
       new IsNullExpression(re['startAt'], false),
       new BinaryExpression(re['startAt'], '<', new FunctionExpression('UTC_TIMESTAMP'))
     ]),
+    registered: true
+  },
+
+  // field:startDays
+  {
+    type: 'field',
+    name: 'startDays',
+    expression: re => IfNullExpression(
+      new FunctionExpression('GREATEST', new FunctionExpression('DATEDIFF', new FunctionExpression('UTC_TIMESTAMP'), re['startAt']), new Value(0)),
+      new Value(0)
+    )
+  },
+
+  // field:isDone
+  {
+    type: 'field',
+    name: 'isDone',
+    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', generalIsDoneExpression('temp', true)), true), generalIsDoneExpression()),
+    registered: true
+  },
+
+  // field:dueDays
+  {
+    type: 'field',
+    name: 'dueDays',
+    expression: re => IfNullExpression(
+      new FunctionExpression('GREATEST', new FunctionExpression('DATEDIFF', new FunctionExpression('UTC_TIMESTAMP'), re['dueAt']), new Value(0)),
+      new Value(0)
+    )
+  },
+
+  // field:isDue
+  {
+    type: 'field',
+    name: 'isDue',
+    expression: re => new BinaryExpression(re['dueAt'], '<', new FunctionExpression('UTC_TIMESTAMP')),
     registered: true
   },
 
