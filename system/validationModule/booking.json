@@ -1,0 +1,31 @@
+[{
+    "field": "boundTypeCode",
+    "validator": "required",
+    "part": "BookingPage.GeneralForm"
+  },
+  {
+    "field": "moduleTypeCode",
+    "validator": "required",
+    "part": "BookingPage.GeneralForm"
+  },
+  {
+    "field": "serviceCode",
+    "validator": "required",
+    "part": "BookingPage.GeneralForm"
+  },
+  {
+    "field": "portOfLoading",
+    "validator": "required",
+    "part": "BookingPage.GeneralForm"
+  },
+  {
+    "field": "portOfDischarge",
+    "validator": "required",
+    "part": "BookingPage.GeneralForm"
+  },
+  {
+    "field": "commodity",
+    "validator": "required",
+    "part": "BookingPage.GeneralForm"
+  }
+]

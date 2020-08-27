@@ -100,7 +100,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'partyGroupCode',
     expression: re => new BinaryExpression(re['partyGroupCode'], '=', new Unknown()),
-    unknowns: [['value', 0]]
+    unknowns: true
   },
 
   // subquery:tableName
@@ -111,7 +111,7 @@ const shortcuts: IShortcut[] = [
       new IsNullExpression(re['tableName'], false),
       new BinaryExpression(re['tableName'], '=', new Unknown())
     ]),
-    unknowns: [['value', 0]]
+    unknowns: true
   },
 
   // subquery:category
@@ -119,7 +119,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'category',
     expression: re => new BinaryExpression(re['category'], '=', new Unknown()),
-    unknowns: [['value', 0]]
+    unknowns: true
   },
 
   // subquery:q
@@ -127,7 +127,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'q',
     expression: re => new RegexpExpression(re['group'], false, new Unknown()),
-    unknowns: [['value', 0]]
+    unknowns: true
   },
 
   // subquery:notDeleted

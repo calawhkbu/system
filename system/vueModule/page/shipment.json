@@ -1,0 +1,69 @@
+{
+  "components": [{
+    "is": "Widget",
+    "props": {
+      "settingProp": {
+        "overrideType": "shipment",
+        "initAxiosParams": {
+          "url": "api/shipment/{{context.$route.params.params | urlEncode }}"
+        },
+        "defaultAxiosParams": {
+          "url": "default/shipment"
+        },
+        "validateAxiosParams": {
+          "method": "post",
+          "url": "api/shipment/validate/{{id}}"
+        },
+        "saveAxiosParams": {
+          "method": "post",
+          "url": "api/shipment"
+        },
+        "availableFileTypes": ["xlsx"],
+        "importAxiosParams": {
+          "z": {
+            "method": "post",
+            "url": "api/shipment/import/import"
+          }
+        },
+        "deleteIfReturnTrue": [
+          "if (context.diff(oldData.shipmentContainers, data.shipmentContainers)) return true",
+          "return false"
+        ],
+        "extraAxiosParams": {
+          "method": "get",
+          "url": "api/booking/bookingNo/{{data.bookingNo}}"
+        },
+        "deleteKeyBeforeSave": [
+          "quantity", "quantityUnit", "grossWeight", "volumeWeight",
+          "chargeableWeight", "weightUnit", "teu", "cbm", "container20",
+          "container40", "containerHQ", "containerOthers"
+        ],
+        "importPrimaryKey": "houseNo",
+        "modeFunction": [
+          "const modes = ['detail', 'import', 'edit'];",
+          "const selectedMode = isNaN(Number(mode)) ? mode : 'detail';",
+          "if (!modes.includes(selectedMode)) {",
+          "throw new Error(`This mode (${selectedMode}) is not allowed`)",
+          "}",
+          "return selectedMode"
+        ],
+        "afterSaveMode": "detail",
+        "haveTermOnCreate": false,
+        "haveTermOnEdit": false,
+        "widgetComponentSetting": {
+          "import": {
+
+          },
+          "detail": {
+            "readonly": true
+          },
+          "edit": {
+            "readonly": false,
+            "stepper": 0,
+            "saveIcon": "save"
+          }
+        }
+      }
+    }
+  }]
+}
