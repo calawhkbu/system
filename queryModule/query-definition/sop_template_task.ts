@@ -97,7 +97,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'partyGroupCode',
     expression: re => new BinaryExpression(re['partyGroupCode'], '=', new Unknown()),
-    unknowns: [['value', 0]]
+    unknowns: true
   },
 
   // subquery:category
@@ -105,7 +105,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'category',
     expression: re => new BinaryExpression(re['category'], '=', new Unknown()),
-    unknowns: [['value', 0]]
+    unknowns: true
   },
 
   // subquery:notExistsIn
@@ -137,7 +137,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'subTasksOf',
     expression: re => new BinaryExpression(re['parentId'], '=', new Unknown()),
-    unknowns: [['value', 0]]
+    unknowns: true
   },
 
   // subquery:q
@@ -151,7 +151,7 @@ const shortcuts: IShortcut[] = [
       new RegexpExpression(re['name'], false, new Unknown()),
       new RegexpExpression(re['description'], false, new Unknown()),
     ]),
-    unknowns: [['value', 0], ['value', 1], ['value', 2], ['value', 3], ['value', 4]]
+    unknowns: { noOfUnknowns: 5 }
   },
 
   // subquery:notDeleted

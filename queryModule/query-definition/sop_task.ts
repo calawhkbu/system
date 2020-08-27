@@ -808,7 +808,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'partyGroupCode',
     expression: re => new BinaryExpression(re['partyGroupCode'], '=', new Unknown()),
-    unknowns: [['value', 0]],
+    unknowns: true,
     companions: ['table:sop_template_task']
   },
 
@@ -817,7 +817,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'tableName',
     expression: re => new BinaryExpression(re['tableName'], '=', new Unknown()),
-    unknowns: [['value', 0]]
+    unknowns: true
   },
 
   // subquery:primaryKey
@@ -825,7 +825,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'primaryKey',
     expression: re => new BinaryExpression(re['primaryKey'], '=', new Unknown()),
-    unknowns: [['value', 0]]
+    unknowns: true
   },
 
   // subquery:bookingNo
@@ -833,7 +833,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'bookingNo',
     expression: re => new BinaryExpression(re['bookingNo'], '=', new Unknown()),
-    unknowns: [['value', 0]],
+    unknowns: true,
     companions: ['table:booking']
   },
 
@@ -851,7 +851,7 @@ const shortcuts: IShortcut[] = [
         new BinaryExpression(new Unknown(), '<', re['deadline'])
       ])
     ]),
-    unknowns: [['from', 0], ['to', 1]],
+    unknowns: { fromTo: true },
   },
 
   // subquery:teams
@@ -1020,7 +1020,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'activeStatus',
     expression: re => new BinaryExpression(IfExpression(new BinaryExpression(re['isDeleted'], '=', new Value(1)), new Value('deleted'), new Value('active')), '=', new Unknown()),
-    unknowns: [['value', 0]]
+    unknowns: true
   }
 ]
 
