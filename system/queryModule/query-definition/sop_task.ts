@@ -222,7 +222,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'calculatedStartAt',
-    expression: new ColumnExpression(taskTable, 'startAt'),
+    expression: IfNullExpression(new ColumnExpression(taskTable, 'startAt'), new ColumnExpression(taskTable, 'createdAt')),
     registered: true
   },
 
@@ -561,8 +561,11 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'startAt',
     expression: re => IfNullExpression(
-      IfNullExpression(re['inputStartAt'], re['calculatedStartAt']),
-      IfNullExpression(new ColumnExpression('parent', 'inputStartAt'), new ColumnExpression('parent', 'startAt'))
+      IfNullExpression(
+        IfNullExpression(re['inputStartAt'], re['calculatedStartAt']),
+        IfNullExpression(new ColumnExpression('parent', 'inputStartAt'), IfNullExpression(new ColumnExpression('parent', 'startAt'), new ColumnExpression('parent', 'createdAt')))
+      ),
+      new ColumnExpression(taskTable, 'createdAt')
     ),
     registered: true
   },
@@ -573,7 +576,7 @@ const shortcuts: IShortcut[] = [
     name: 'defaultStartAt',
     expression: re => IfNullExpression(
       re['calculatedStartAt'],
-      IfNullExpression(new ColumnExpression('parent', 'inputStartAt'), new ColumnExpression('parent', 'startAt'))
+      IfNullExpression(new ColumnExpression('parent', 'inputStartAt'), IfNullExpression(new ColumnExpression('parent', 'startAt'), new ColumnExpression('parent', 'createdAt')))
     )
   },
 
@@ -668,22 +671,6 @@ const shortcuts: IShortcut[] = [
     }
   },
 
-  // field:isDone
-  {
-    type: 'field',
-    name: 'isDone',
-    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', generalIsDoneExpression('temp', true)), true), generalIsDoneExpression()),
-    registered: true
-  },
-
-  // field:isDue
-  {
-    type: 'field',
-    name: 'isDue',
-    expression: re => new BinaryExpression(re['dueAt'], '<', new FunctionExpression('UTC_TIMESTAMP')),
-    registered: true
-  },
-
   // field:isStarted
   {
     type: 'field',
@@ -692,6 +679,42 @@ const shortcuts: IShortcut[] = [
       new IsNullExpression(re['startAt'], false),
       new BinaryExpression(re['startAt'], '<', new FunctionExpression('UTC_TIMESTAMP'))
     ]),
+    registered: true
+  },
+
+  // field:startDays
+  {
+    type: 'field',
+    name: 'startDays',
+    expression: re => IfNullExpression(
+      new FunctionExpression('GREATEST', new FunctionExpression('DATEDIFF', new FunctionExpression('UTC_TIMESTAMP'), re['startAt']), new Value(0)),
+      new Value(0)
+    )
+  },
+
+  // field:isDone
+  {
+    type: 'field',
+    name: 'isDone',
+    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', generalIsDoneExpression('temp', true)), true), generalIsDoneExpression()),
+    registered: true
+  },
+
+  // field:dueDays
+  {
+    type: 'field',
+    name: 'dueDays',
+    expression: re => IfNullExpression(
+      new FunctionExpression('GREATEST', new FunctionExpression('DATEDIFF', new FunctionExpression('UTC_TIMESTAMP'), re['dueAt']), new Value(0)),
+      new Value(0)
+    )
+  },
+
+  // field:isDue
+  {
+    type: 'field',
+    name: 'isDue',
+    expression: re => new BinaryExpression(re['dueAt'], '<', new FunctionExpression('UTC_TIMESTAMP')),
     registered: true
   },
 
@@ -808,7 +831,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'partyGroupCode',
     expression: re => new BinaryExpression(re['partyGroupCode'], '=', new Unknown()),
-    unknowns: [['value', 0]],
+    unknowns: true,
     companions: ['table:sop_template_task']
   },
 
@@ -817,7 +840,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'tableName',
     expression: re => new BinaryExpression(re['tableName'], '=', new Unknown()),
-    unknowns: [['value', 0]]
+    unknowns: true
   },
 
   // subquery:primaryKey
@@ -825,7 +848,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'primaryKey',
     expression: re => new BinaryExpression(re['primaryKey'], '=', new Unknown()),
-    unknowns: [['value', 0]]
+    unknowns: true
   },
 
   // subquery:bookingNo
@@ -833,7 +856,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'bookingNo',
     expression: re => new BinaryExpression(re['bookingNo'], '=', new Unknown()),
-    unknowns: [['value', 0]],
+    unknowns: true,
     companions: ['table:booking']
   },
 
@@ -851,7 +874,7 @@ const shortcuts: IShortcut[] = [
         new BinaryExpression(new Unknown(), '<', re['deadline'])
       ])
     ]),
-    unknowns: [['from', 0], ['to', 1]],
+    unknowns: { fromTo: true },
   },
 
   // subquery:teams
@@ -1020,7 +1043,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'activeStatus',
     expression: re => new BinaryExpression(IfExpression(new BinaryExpression(re['isDeleted'], '=', new Value(1)), new Value('deleted'), new Value('active')), '=', new Unknown()),
-    unknowns: [['value', 0]]
+    unknowns: true
   }
 ]
 

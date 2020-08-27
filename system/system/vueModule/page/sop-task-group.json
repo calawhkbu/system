@@ -1,7 +1,0 @@
-{
-  "fillParent": true,
-  "components": [{
-    "is": "SopTaskGroupEditor",
-    "props": {}
-  }]
-}
