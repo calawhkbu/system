@@ -26,9 +26,10 @@ export default class ResendAlertEvent extends BaseEventHandler {
 
     const resendAlertDataList = eventDataList.map(eventData => {
 
-        const { partyGroupCode, tableName, primaryKey } = eventData
+        const { partyGroupCode, tableName, primaryKey, latestEntity } = eventData
 
         return {
+            latestEntity,
             partyGroupCode,
             tableName,
             primaryKey
