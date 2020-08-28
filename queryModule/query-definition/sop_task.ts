@@ -385,11 +385,12 @@ const shortcuts: IShortcut[] = [
     companions: ['table:sop_template']
   },
 
-  // field:order
+  // field:defaultSeqNo
   {
     type: 'field',
-    name: 'order',
-    expression: new ColumnExpression(templateTemplateTaskTable, 'order'),
+    name: 'defaultSeqNo',
+    expression: new ColumnExpression(templateTemplateTaskTable, 'seqNo'),
+    registered: true,
     companions: ['table:sop_template_template_task']
   },
 
@@ -397,7 +398,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'seqNo',
-    expression: new ColumnExpression(templateTemplateTaskTable, 'seqNo'),
+    expression: re => IfExpression(new BinaryExpression(new ColumnExpression(taskTable, 'seqNo'), '=', new Value(0)), re['defaultSeqNo'], new ColumnExpression(taskTable, 'seqNo')),
     companions: ['table:sop_template_template_task']
   },
 
@@ -1038,12 +1039,129 @@ const shortcuts: IShortcut[] = [
     })
   },
 
+  // subquery:category
+  {
+    type: 'subquery',
+    name: 'category',
+    expression: re => new BinaryExpression(re['category'], '=', new Unknown()),
+    unknowns: true,
+    companions: ['table:sop_template_task']
+  },
+
+  // subquery:pic
+  {
+    type: 'subquery',
+    name: 'pic',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'picEmail'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'picEmail'), false, new Unknown())
+    ]),
+    companions: ['table:booking', 'table:shipment'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
+  // subquery:team
+  {
+    type: 'subquery',
+    name: 'team',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'team'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'team'), false, new Unknown())
+    ]),
+    companions: ['table:booking', 'table:shipment'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
   // subquery:activeStatus
   {
     type: 'subquery',
     name: 'activeStatus',
     expression: re => new BinaryExpression(IfExpression(new BinaryExpression(re['isDeleted'], '=', new Value(1)), new Value('deleted'), new Value('active')), '=', new Unknown()),
     unknowns: true
+  },
+
+  // subquery:shipperPartyId
+  {
+    type: 'subquery',
+    name: 'shipperPartyId',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'shipperPartyId'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'shipperPartyId'), false, new Unknown())
+    ]),
+    companions: ['table:booking_party', 'table:shipment_party'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
+  // subquery:consigneePartyId
+  {
+    type: 'subquery',
+    name: 'consigneePartyId',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'consigneePartyId'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'consigneePartyId'), false, new Unknown())
+    ]),
+    companions: ['table:booking_party', 'table:shipment_party'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
+  // subquery:officePartyId
+  {
+    type: 'subquery',
+    name: 'officePartyId',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'officePartyId'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'officePartyId'), false, new Unknown())
+    ]),
+    companions: ['table:booking_party', 'table:shipment_party'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
+  // subquery:agentPartyId
+  {
+    type: 'subquery',
+    name: 'agentPartyId',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'agentPartyId'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'agentPartyId'), false, new Unknown())
+    ]),
+    companions: ['table:booking_party', 'table:shipment_party'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
+  // subquery:roAgentPartyId
+  {
+    type: 'subquery',
+    name: 'roAgentPartyId',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'roAgentPartyId'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'roAgentPartyId'), false, new Unknown())
+    ]),
+    companions: ['table:booking_party', 'table:shipment_party'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
+  // subquery:linerAgentPartyId
+  {
+    type: 'subquery',
+    name: 'linerAgentPartyId',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'linerAgentPartyId'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'linerAgentPartyId'), false, new Unknown())
+    ]),
+    companions: ['table:booking_party', 'table:shipment_party'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
+  // subquery:controllingCustomerPartyId
+  {
+    type: 'subquery',
+    name: 'controllingCustomerPartyId',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'controllingCustomerPartyId'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'controllingCustomerPartyId'), false, new Unknown())
+    ]),
+    companions: ['table:booking_party', 'table:shipment_party'],
+    unknowns: { noOfUnknowns: 2 }
   }
 ]
 
