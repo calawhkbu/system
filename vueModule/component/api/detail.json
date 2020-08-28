@@ -91,20 +91,12 @@
         "props": {
           "refreshToken": "$store.state.widget.data.refreshToken",
           "html": [
-            "<html>",
-            "  <head>",
-            "    <meta charset=\"utf-8\">",
-            "    <script src=\"https://unpkg.com/vue\"></script>",
-            "    <script src=\"{{frontendUrl}}/widget/swivel-widget.js\"></script>",
-            "  </head>",
-            "  <body>",
-            "    <swivel-widget",
-            "      apiToken=\"{{value}}\"",
-            "      name=\"{{name}}\"",
-            "      {% if data %}data='{{data|safe}}'{% endif %}",
-            "    />",
-            "  </body>",
-            "</html>"
+            "<script src=\"{{frontendUrl}}cdn/js/vue.min.js\"></script>",
+            "<script src=\"{{frontendUrl}}widget/swivel-widget.js\"></script>",
+            "<swivel-widget",
+            "  apiToken=\"{{value}}\"",
+            "  name=\"{{name}}\"{% if data %}\n  data='{{data|safe}}'{% endif %}",
+            "/>"
           ],
           "widgetItems": [{
             "text": "Search Tracking Widget",
