@@ -7,7 +7,7 @@ import { expandBottomSheetGroupByEntity,expandSummaryVariable, extendDate, handl
 import { group } from 'console'
 const summaryVariableList=summaryVariableListBooking;
 const groupByEntityList=groupByEntityListBooking;
-//test jira github
+//test jira githu
 
 interface Result {
   moment: typeof Moment
