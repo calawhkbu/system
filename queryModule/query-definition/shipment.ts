@@ -2146,15 +2146,15 @@ const haveDocumentExpressionList = documentFileNameList.map(documentFileName => 
       new Query({
 
         $select: [
-          new ResultColumn(new ColumnExpression('document', 'id'))
+          new ResultColumn(new ColumnExpression('document', 'primaryKey'))
         ],
         $from: 'document',
         $where: [
           new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', documentFileName),
           new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment'),
 
-          new IsNullExpression(new ColumnExpression('document', 'deletedAt'),true),
-          new IsNullExpression(new ColumnExpression('document', 'deletedBy'),true)
+          new IsNullExpression(new ColumnExpression('document', 'deletedAt'),false),
+          new IsNullExpression(new ColumnExpression('document', 'deletedBy'),false)
 
         ]
 
@@ -2642,7 +2642,7 @@ query.subquery(false,'haveDocument',((value: any, params?: IQueryParams) => {
 
     return new ExistsExpression(new Query({
       $select : [
-        new ResultColumn(new ColumnExpression('document','tableName'))
+        new ResultColumn(new ColumnExpression('document','primaryKey'))
       ],
       $from: 'document',
       $where : [
@@ -2650,8 +2650,8 @@ query.subquery(false,'haveDocument',((value: any, params?: IQueryParams) => {
         new BinaryExpression(new ColumnExpression('document','primaryKey'),'=',idExpression),
         new BinaryExpression(new ColumnExpression('document','fileName'),'=',fileName),
 
-        new IsNullExpression(new ColumnExpression('document', 'deletedAt'),true),
-        new IsNullExpression(new ColumnExpression('document', 'deletedBy'),true)
+        new IsNullExpression(new ColumnExpression('document', 'deletedAt'),false),
+        new IsNullExpression(new ColumnExpression('document', 'deletedBy'),false)
       ]
     }),false)
 
@@ -2677,7 +2677,7 @@ query.subquery(false,'missingDocument',((value: any, params?: IQueryParams) => {
 
     return new ExistsExpression(new Query({
       $select : [
-        new ResultColumn(new ColumnExpression('document','tableName'))
+        new ResultColumn(new ColumnExpression('document','primaryKey'))
       ],
       $from: 'document',
       $where : [
@@ -2685,8 +2685,8 @@ query.subquery(false,'missingDocument',((value: any, params?: IQueryParams) => {
         new BinaryExpression(new ColumnExpression('document','primaryKey'),'=',idExpression),
         new BinaryExpression(new ColumnExpression('document','fileName'),'=',fileName),
 
-        new IsNullExpression(new ColumnExpression('document', 'deletedAt'),true),
-        new IsNullExpression(new ColumnExpression('document', 'deletedBy'),true)
+        new IsNullExpression(new ColumnExpression('document', 'deletedAt'),false),
+        new IsNullExpression(new ColumnExpression('document', 'deletedBy'),false)
       ]
     }),true)
 
