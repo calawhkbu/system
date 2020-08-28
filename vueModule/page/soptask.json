@@ -60,6 +60,29 @@
             }
           },
           {
+            "name": "category",
+            "i18nContext": "SopTask",
+            "type": "list",
+            "props": {
+              "api": {
+                "query": {
+                  "url": "sopTemplate/categories/all",
+                  "method": "GET"
+                }
+              }
+            }
+          },
+          {
+            "name": "pic",
+            "i18nContext": "SopTask",
+            "type": "text"
+          },
+          {
+            "name": "team",
+            "i18nContext": "SopTask",
+            "type": "text"
+          },
+          {
             "name": "notDone",
             "type": "boolean",
             "display": "Hide Done",

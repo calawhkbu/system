@@ -157,9 +157,7 @@ export default {
                 total += value
               }
               row_[`total_${variable}${type}`] = total
-              console.log("DATA SVC CURRENT ROW =")
-              console.log(row);
-              row_['code']=row[codeColumnName];
+     
            
             }
 
