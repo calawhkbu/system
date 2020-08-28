@@ -78,11 +78,7 @@
                   "props": {
                     "small": true,
                     "flat": true,
-                    "icon": true,
-                    "blackList": [
-                      "id"
-                    ],
-                    "axiosParams": "{ \"method\" : \"POST\",\"url\" : \"/default\",\"data\" : { \"tableName\" : \"booking\" , \"name\" : {{name | safe}},\"value\" : {{value | safe }}   }   }"
+                    "icon": true
                   }
                 }]
               },
@@ -92,7 +88,7 @@
                   "is": "I18nText",
                   "props": {
                     "i18nContext": "BookingPage",
-                    "i18nKey": "Template"
+                    "i18nKey": "copy"
                   }
                 }]
               }
