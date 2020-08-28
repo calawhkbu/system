@@ -7,10 +7,11 @@ import {
     expandBottomSheetGroupByEntity,
     expandSummaryVariable,
     handleBottomSheetGroupByEntityValue,
-    summaryVariableList,
-    groupByEntityList
+    summaryVariableListBooking,
+    groupByEntityListBooking
 } from 'utils/card'
-
+const summaryVariableList=summaryVariableListBooking;
+const groupByEntityList=groupByEntityListBooking;
 
 interface Result {
   moment: typeof Moment
@@ -49,7 +50,7 @@ export default {
 
         handleBottomSheetGroupByEntityValue(subqueries)
 
-        const {
+        var {
             groupByEntity,
             codeColumnName,
             nameColumnName,
@@ -57,7 +58,31 @@ export default {
             dynamicColumnGroupByEntity,
             dynamicColumnNameColumnName
 
-        } = expandBottomSheetGroupByEntity(subqueries)
+        } = expandBottomSheetGroupByEntity(subqueries);
+          // -----------------------------groupBy variable
+  groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+  codeColumnName = prevResult.codeColumnName;
+  nameColumnName = prevResult.nameColumnName;
+  if(groupByEntity=='bookingNo'){
+    codeColumnName=groupByEntity;
+    nameColumnName=groupByEntity;
+  }else if(groupByEntity=='carrier'){
+    codeColumnName='carrierCode';
+    nameColumnName='carrierName';
+  }else if(groupByEntity=='moduleType'){
+    codeColumnName='moduleTypeCode';
+    nameColumnName='moduleTypeCode';
+    
+  }else if(groupByEntity=='portOfLoading'){
+    codeColumnName=groupByEntity+"Code";
+    nameColumnName=groupByEntity+"Name";
+  }else if(groupByEntity=='portOfDischarge'){
+    codeColumnName=groupByEntity+"Code";
+    nameColumnName=groupByEntity+"Name";
+  }else{
+    codeColumnName=`${groupByEntity}PartyCode`;
+    nameColumnName=`${groupByEntity}PartyShortNameInReport` + 'Any';
+  }
           
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
@@ -112,7 +137,7 @@ export default {
     },
     {
       type: 'callDataService',
-      dataServiceQuery: ['shipment', 'shipment'],
+      dataServiceQuery: ['booking', 'booking'],
       onResult(res, params, prevResult: Result): Result {
 
         const { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables } = prevResult
@@ -153,6 +178,7 @@ export default {
             subqueries[codeColumnName]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
                 value: codeList
             }
+            
 
             params.groupBy =  [codeColumnName,dynamicColumnCodeColumnName]
 
@@ -174,7 +200,7 @@ export default {
 
       {
         type: 'callDataService',
-        dataServiceQuery: ['shipment', 'shipment'],
+        dataServiceQuery: ['booking', 'booking'],
         onResult(res, params, prevResult: Result): any[] {
   
           var { 
