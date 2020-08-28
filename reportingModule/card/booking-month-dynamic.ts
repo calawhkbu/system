@@ -4,9 +4,11 @@ import { OrderBy } from 'node-jql'
 import Moment = require('moment')
 
 import { expandBottomSheetGroupByEntity,expandSummaryVariable, extendDate, handleBottomSheetGroupByEntityValue,summaryVariableListBooking,groupByEntityListBooking  } from 'utils/card'
-
+import { group } from 'console'
 const summaryVariableList=summaryVariableListBooking;
 const groupByEntityList=groupByEntityListBooking;
+
+
 interface Result {
   moment: typeof Moment
   groupByEntity: string
@@ -32,15 +34,42 @@ export default {
 
         // warning
         handleBottomSheetGroupByEntityValue(subqueries)
-        const { groupByEntity, codeColumnName,nameColumnName } = expandBottomSheetGroupByEntity(subqueries)
-          
+        var { groupByEntity, codeColumnName,nameColumnName } = expandBottomSheetGroupByEntity(subqueries)
+            // -----------------------------groupBy variable
+  groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
+  codeColumnName = prevResult.codeColumnName;
+  nameColumnName = prevResult.nameColumnName;
+  if(groupByEntity=='bookingNo'){
+    codeColumnName=groupByEntity;
+    nameColumnName=groupByEntity;
+  }else if(groupByEntity=='carrier'){
+    codeColumnName='carrierCode';
+    nameColumnName='carrierCode';
+  }else if(groupByEntity=='moduleType'){
+    codeColumnName='moduleTypeCode';
+    nameColumnName='moduleTypeCode';
+    
+  }else if(groupByEntity=='portOfLoading'){
+    codeColumnName=groupByEntity+"Code";
+    nameColumnName=groupByEntity+"Name";
+  }else if(groupByEntity=='portOfDischarge'){
+    codeColumnName=groupByEntity+"Code";
+    nameColumnName=groupByEntity+"Name";
+  }else{
+    codeColumnName=`${groupByEntity}PartyCode`;
+    nameColumnName=`${groupByEntity}PartyShortNameInReport` + 'Any';
+  }
+
+
+
+  // codeColumnName = prevResult.codeColumnName; = groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierCode`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyCode`
+  // nameColumnName = prevResult.nameColumnName; = (groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierName`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyShortNameInReport`) + 'Any'
+ 
 
 
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
         prevResult.nameColumnName = nameColumnName
-        console.log("PREPARE-PARAMS")
-        console.log(prevResult)
 
 
         const topX = subqueries.topX.value
@@ -48,7 +77,6 @@ export default {
 
         const summaryVariables = expandSummaryVariable(subqueries)
         prevResult.summaryVariables = summaryVariables
-   
 
         // extend date into whole year
         extendDate(subqueries,moment,'year')
@@ -88,11 +116,6 @@ export default {
       type: 'callDataService',
       dataServiceQuery: ['booking', 'booking'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
-       
-       console.log("ON RESULT")
-        console.log(summaryVariables)
-        console.log("ON-Results-Params")
-        console.log(params)
         return res.map(row => {
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
 

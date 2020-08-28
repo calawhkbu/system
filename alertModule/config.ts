@@ -62,7 +62,7 @@ const ASWAlertConfigList = [
       }
     } as IQueryParams,
 
-    contactRoleList: ['forwarder','personInCharge','shipper', 'consignee'],
+    contactRoleList: ['forwarder','personInCharge','office','shipper', 'consignee'],
     canCloseBy: [
       {
         type: 'all'
@@ -120,7 +120,7 @@ const ASWAlertConfigList = [
       }
     } as IQueryParams,
 
-    contactRoleList: ['forwarder','personInCharge','shipper', 'consignee'],
+    contactRoleList: ['forwarder','personInCharge','office','shipper', 'consignee'],
     canCloseBy: [
       {
         type: 'all'
@@ -177,7 +177,7 @@ const ASWAlertConfigList = [
       }
     } as IQueryParams,
 
-    contactRoleList: ['forwarder','personInCharge','shipper'],
+    contactRoleList: ['forwarder','personInCharge','office','shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -234,7 +234,7 @@ const ASWAlertConfigList = [
       }
     } as IQueryParams,
 
-    contactRoleList: ['forwarder','personInCharge','shipper'],
+    contactRoleList: ['forwarder','personInCharge','office','shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -294,7 +294,7 @@ const ASWAlertConfigList = [
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge','shipper'],
+    contactRoleList: ['forwarder','personInCharge','office','shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -360,7 +360,7 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -424,7 +424,7 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -488,7 +488,7 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -552,7 +552,7 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -622,7 +622,7 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -691,7 +691,7 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -760,7 +760,7 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -830,7 +830,7 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -903,7 +903,7 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -973,7 +973,7 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1033,7 +1033,7 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1093,7 +1093,7 @@ const shipmentSeaAlertList = [
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1163,7 +1163,7 @@ const shipmentSeaAlertList = [
     },
 
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1228,7 +1228,7 @@ const shipmentAirAlertList = [
         preAlertSendDateActualIsNotNull: true 
       }
     },
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1289,7 +1289,7 @@ const shipmentAirAlertList = [
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1359,7 +1359,7 @@ const shipmentAirAlertList = [
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1406,7 +1406,7 @@ const sopTaskAlertList = [
         noDueTasks: true 
       }
     },
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1446,7 +1446,7 @@ const sopTaskAlertList = [
         noDeadTasks: false 
       }
     },
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1623,7 +1623,7 @@ const testAlertList = [
     // } as IQueryParams,
 
 
-    contactRoleList: ['forwarder','personInCharge'],
+    contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
