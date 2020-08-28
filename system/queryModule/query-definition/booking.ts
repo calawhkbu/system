@@ -1326,6 +1326,21 @@ const summaryFieldList : SummaryField[]  = [
     name: 'chargeableWeight',
     summaryType : 'sum',
     expression: new ColumnExpression('booking', 'chargeableWeight')
+  },
+  {
+    name: 'container20',
+    summaryType : 'sum',
+    expression: new ColumnExpression('booking', 'container20')
+  },
+  {
+    name: 'container40',
+    summaryType : 'sum',
+    expression: new ColumnExpression('booking', 'container40')
+  },
+  {
+    name: 'containerHQ',
+    summaryType : 'sum',
+    expression: new ColumnExpression('booking', 'containerHQ')
   }
 ]
 

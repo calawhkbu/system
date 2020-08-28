@@ -44,7 +44,7 @@ export default {
     nameColumnName=groupByEntity;
   }else if(groupByEntity=='carrier'){
     codeColumnName='carrierCode';
-    nameColumnName='carrierCode';
+    nameColumnName='carrierName';
   }else if(groupByEntity=='moduleType'){
     codeColumnName='moduleTypeCode';
     nameColumnName='moduleTypeCode';
@@ -109,6 +109,8 @@ export default {
         }
 
         params.limit = topX
+        console.log("PREPARE PARAMS");
+        console.log(params)
         return params
       }
     },

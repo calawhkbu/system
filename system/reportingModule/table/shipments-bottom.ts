@@ -100,8 +100,8 @@ export default {
 
 
 
-        // console.log(`finalParams`)
-        // console.log(params)
+         console.log(`finalParams`)
+         console.log(params)
         // throw new Error(JSON.stringify(params))
 
         return params
