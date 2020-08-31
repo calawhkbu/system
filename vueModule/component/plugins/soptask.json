@@ -61,7 +61,7 @@
     ],
     "rowStyle": [
       {
-        "test": "return row.isEntityRow && row.tableName === 'Task Group'",
+        "test": "return row.isEntityRow && row.tableName === 'category'",
         "style": {
           "backgroundColor": "#f3f9ff",
           "height": "36px"
