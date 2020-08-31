@@ -22,6 +22,24 @@ table, tr, td {
   vertical-align: top;
   border-collapse: collapse; }
 
+.e_table {
+  border-collapse: collapse;
+  background-color: WhiteSmoke;
+}
+
+.e_tr, .e_td, .e_msg{
+  height: 30px;
+	width: 30%; 
+  border: 2px solid white;
+  font-size: 18px;
+  text-align: justify;
+  vertical-align: middle;
+}
+
+.e_td2{
+  width: 75%;
+}
+
 .ie-browser table, .mso-container table {
   table-layout: fixed; }
 
@@ -279,14 +297,34 @@ a[x-apple-data-detectors=true] {
                 <div style="font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif;line-height:150%;color:#555555; padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 20px;">
                   <div style="font-size:12px;line-height:18px;color:#555555;font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif;text-align:left;">
                     <p style="margin: 0;font-size: 14px;line-height: 18px;text-align: left">
-                      <b>{{message}}</b></p><br>
+                      <b class="e_msg">{{message}}</b></p><br>
                       <p style="margin: 0;font-size: 12px;line-height: 18px;text-align: left">
-                    ETD: {% if entity.estimatedDepartureDate %} {{entity.estimatedDepartureDate | date('d M Y')}} {% endif %}<br>
-                    ETA: {% if entity.estimatedArrivalDate %} {{entity.estimatedArrivalDate | date('d M Y')}} {% endif %}<br>
-                    Port Of Loading: {{entity.portOfLoading}}<br>
-                    Port Of Loading: {{entity.portOfDischarge}}<br>
-                    Commodity: {{entity.commodity}}<br>
-                    Status: {{entity.status}}<br>
+                       <table class="e_table">
+                         <tr class="e_tr">
+                           <td class="e_td">ETD</td>
+                           <td class="e_td e_td2">{% if entity.estimatedDepartureDate %} {{entity.estimatedDepartureDate | date('d M Y')}} {% endif %}</td>
+                         </tr>
+                         <tr class="e_tr">
+                           <td class="e_td">ETA</td>
+                           <td class="e_td">{% if entity.estimatedArrivalDate %} {{entity.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
+                         </tr>
+                         <tr class="e_tr">
+                          <td class="e_td">Port Of Loading</td>
+                          <td class="e_td">{{entity.portOfLoading}}</td>
+                        </tr>
+                        <tr class="e_tr">
+                          <td class="e_td">Port Of Loading</td>
+                          <td class="e_td">{{entity.portOfDischarge}}</td>
+                        </tr>
+                        <tr class="e_tr">
+                          <td class="e_td">Commodity</td>
+                          <td class="e_td">{{entity.commodity}}</td>
+                        </tr>
+                        <tr class="e_tr">
+                          <td class="e_td">Status</td>
+                          <td class="e_td">{{entity.status}}</td>
+                        </tr>
+                       </table>
                     </p>
                   </div>
                 </div>
