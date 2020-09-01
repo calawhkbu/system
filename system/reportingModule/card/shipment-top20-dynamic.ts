@@ -10,6 +10,7 @@ import {
     summaryVariableList,
     groupByEntityList
 } from 'utils/card'
+import { convertToStartOfDate } from 'utils/jql-subqueries'
 
 
 interface Result {
@@ -29,13 +30,75 @@ interface Result {
   groupByResult: any[]
 }
 
+var final
+var  originalParams;
+var erpInfo=[];
 
 export default {
   jqls: [
+
     {
+      //get erpSite info
       type: 'prepareParams',
       defaultResult: {},
-      async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
+      async prepareParams(params, {}: Result, user): Promise<IQueryParams> {
+originalParams=Object.assign({},params)
+console.log({originalParams})
+
+   console.log("get erpSite info")
+ console.log(params);
+ console.log("----------partyGroupCode")
+console.log(user.partyGroupCode)
+       params.fields=[
+         'id','name','partyGroupCode','thirdPartyCode','isBranch','erpCode'
+       ];
+   
+       params.sorting = [new OrderBy('id', 'DESC')];
+       params.limit=1000;
+    
+       
+       params.subqueries={
+         "partyGroupCodeEq":{
+           "value":user.partyGroupCode
+         },
+         "groupByEntity": {
+          "value": "id"
+      }
+       }
+       console.log(params)
+       console.log("//get erpSite info-params")
+       console.log(params)
+        return params;      
+      }
+    },
+    {
+      type: 'callDataService',
+      dataServiceQuery: ['party', 'party'],
+      onResult(res,params,{}: Result): any {
+   console.log("party-partycallDataService")
+        console.log(params)
+        console.log("erpSite")
+        console.log(res)
+        if(res && res.length>0){
+                for(let i =0;i<res.length;i++){
+                  if(res[i].isBranch==1){
+                    erpInfo.push({name:res[i].name,code:res[i].erpCode,erpSite:res[i].thirdPartyCode['erp-site']});
+                  }else{
+                    erpInfo.push({name:res[i].name,code:res[i].erpCode});
+                  }
+                }
+              }
+              console.log({erpInfo})
+              
+  
+      }
+    },
+     { type: 'prepareParams',
+      defaultResult: {},
+      async prepareParams({}, prevResult: Result, user): Promise<IQueryParams> {
+var params=Object.assign({},originalParams)
+console.log("after erpINO prepare PARAMS")
+console.log({params})
 
         const moment = prevResult.moment = (await this.preparePackages(user)).moment as typeof Moment
         const subqueries = (params.subqueries = params.subqueries || {})
@@ -107,17 +170,33 @@ export default {
         }
 
         params.limit = topY
+      
         return params
       }
     },
     {
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'shipment'],
-      onResult(res, params, prevResult: Result): Result {
+      onResult(res, originalParams, prevResult: Result): Result {
+        var params=Object.assign({},originalParams)
 
         const { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables } = prevResult
+
+        
+       
+
+
         prevResult.groupByResult = res.map(row => {
-          const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
+          console.log("codeCoulumn name")
+          console.log(row[codeColumnName] )
+          let temp=erpInfo.filter(o=>o.code==row[codeColumnName] );
+          let code;
+          if(temp.length==1 && temp[0].isBranch){
+           code=temp[0].erpSite;
+          }else{
+            code=row[nameColumnName];
+          }
+          const row_: any = { code: code, name: row[nameColumnName], groupByEntity }
 
           for (const variable of summaryVariables) {
 
@@ -127,14 +206,17 @@ export default {
 
           return row_
         })
-
+      final=prevResult;
         return prevResult
       }
     },
+   
     {
         type: 'prepareParams',
         defaultResult: {},
-        async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
+        async prepareParams(originalParams, prevResult: Result, user): Promise<IQueryParams> {
+          var params=Object.assign({},originalParams);
+
 
             const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -175,7 +257,8 @@ export default {
       {
         type: 'callDataService',
         dataServiceQuery: ['shipment', 'shipment'],
-        onResult(res, params, prevResult: Result): any[] {
+        onResult(res, originalParams, prevResult: Result): any[] {
+          var params=Object.assign({},originalParams);
   
           var { 
               moment,
@@ -238,11 +321,11 @@ export default {
             return row_
 
           })
-
-
           return finalResult
         }
       },
+    
+      
   ],
   filters: [
     // for this filter, user can only select single,
@@ -405,4 +488,3 @@ export default {
     }
   ]
 } as JqlDefinition
-
