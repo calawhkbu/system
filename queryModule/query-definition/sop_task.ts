@@ -234,6 +234,13 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
+  // field:startAtLocale
+  {
+    type: 'field',
+    name: 'startAtLocale',
+    expression: new ColumnExpression(taskTable, 'startAtLocale')
+  },
+
   // field:calculatedDueAt
   {
     type: 'field',
@@ -248,6 +255,13 @@ const shortcuts: IShortcut[] = [
     name: 'inputDueAt',
     expression: new ColumnExpression(taskTable, 'inputDueAt'),
     registered: true
+  },
+
+  // field:dueAtLocale
+  {
+    type: 'field',
+    name: 'dueAtLocale',
+    expression: new ColumnExpression(taskTable, 'dueAtLocale')
   },
 
   // field:dueScore
@@ -272,6 +286,13 @@ const shortcuts: IShortcut[] = [
     name: 'inputDeadline',
     expression: new ColumnExpression(taskTable, 'inputDeadline'),
     registered: true
+  },
+
+  // field:deadlineLocale
+  {
+    type: 'field',
+    name: 'deadlineLocale',
+    expression: new ColumnExpression(taskTable, 'deadlineLocale')
   },
 
   // field:deadlineScore

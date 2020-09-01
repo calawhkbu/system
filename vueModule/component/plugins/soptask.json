@@ -51,12 +51,14 @@
       {
         "key": "startAt",
         "format": "YYYY/MM/DD",
-        "width": 100
+        "width": 100,
+        "timezoneKey": "startAtLocale"
       },
       {
         "key": "dueAt",
         "format": "YYYY/MM/DD",
-        "width": 100
+        "width": 100,
+        "timezoneKey": "dueAtLocale"
       }
     ],
     "rowStyle": [
