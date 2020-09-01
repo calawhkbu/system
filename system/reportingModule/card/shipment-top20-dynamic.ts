@@ -189,6 +189,7 @@ console.log({params})
         prevResult.groupByResult = res.map(row => {
           console.log("codeCoulumn name")
           console.log(row[codeColumnName] )
+          console.log(res)
           let temp=erpInfo.filter(o=>o.code==row[codeColumnName] );
           let code;
           if(temp.length==1 && temp[0].isBranch){
