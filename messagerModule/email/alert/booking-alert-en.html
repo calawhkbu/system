@@ -300,6 +300,14 @@ a[x-apple-data-detectors=true] {
                       <b class="e_msg">{{message}}</b></p><br>
                       <p style="margin: 0;font-size: 12px;line-height: 18px;text-align: left">
                        <table class="e_table">
+                        <tr class="e_tr" style="background-color: #85C1E9;">
+                          <td class="e_td">Booking Ref.</td>
+                          <td class="e_td e_td2">{{entity.bookingNo}}</td>
+                        </tr>
+                        <tr class="e_tr">
+                          <td class="e_td">Customer Ref.</td>
+                          <td class="e_td e_td2">{{entity.poNo}}</td>
+                        </tr>
                          <tr class="e_tr">
                            <td class="e_td">ETD</td>
                            <td class="e_td e_td2">{% if entity.estimatedDepartureDate %} {{entity.estimatedDepartureDate | date('d M Y')}} {% endif %}</td>
@@ -309,11 +317,11 @@ a[x-apple-data-detectors=true] {
                            <td class="e_td">{% if entity.estimatedArrivalDate %} {{entity.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
                          </tr>
                          <tr class="e_tr">
-                          <td class="e_td">Port Of Loading</td>
+                          <td class="e_td">Loading</td>
                           <td class="e_td">{{entity.portOfLoading}}</td>
                         </tr>
                         <tr class="e_tr">
-                          <td class="e_td">Port Of Loading</td>
+                          <td class="e_td">Discharge</td>
                           <td class="e_td">{{entity.portOfDischarge}}</td>
                         </tr>
                         <tr class="e_tr">
@@ -328,6 +336,15 @@ a[x-apple-data-detectors=true] {
                     </p>
                   </div>
                 </div>
+
+                <div align="center" class="button-container center" style="padding-right: 10px; padding-left: 10px; padding-top:10px; padding-bottom:10px;">
+                  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top:10px; padding-bottom:10px;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{finalURL}}" style="height:31pt; v-text-anchor:middle; width:123pt;" arcsize="10%" strokecolor="#f15b29" fillcolor="#f15b29"><w:anchorlock/><v:textbox inset="0,0,0,0"><center style="color:#ffffff; font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif; font-size:16px;"><![endif]-->
+                    <a href="{{url}}" target="_blank" style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff; background-color: #f15b29; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; max-width: 164px; width: 64px;width: auto; border-top: 0px solid transparent; border-right: 0px solid transparent; border-bottom: 0px solid transparent; border-left: 0px solid transparent; padding-top: 5px; padding-right: 25px; padding-bottom: 5px; padding-left: 25px; font-family: 'Lato', Tahoma, Verdana, Segoe, sans-serif;mso-border-alt: none">
+                      View your Booking now!
+                    </a>
+                  <!--[if mso]></center></v:textbox></v:roundrect></td></tr></table><![endif]-->
+                </div>
+
               <!--[if (!mso)&(!IE)]><!--><div style="border-top: 0px solid #E2DFDF; border-left: 1px solid #E2DFDF; border-bottom: 0px solid #E2DFDF; border-right: 1px solid #E2DFDF; padding-top:0px; padding-bottom:0px; padding-right: 0px; padding-left: 0px;"><!--<![endif]-->
 
 
@@ -361,13 +378,7 @@ a[x-apple-data-detectors=true] {
 
 
 
-<div align="center" class="button-container center" style="padding-right: 10px; padding-left: 10px; padding-top:10px; padding-bottom:10px;">
-  <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top:10px; padding-bottom:10px;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{finalURL}}" style="height:31pt; v-text-anchor:middle; width:123pt;" arcsize="10%" strokecolor="#f15b29" fillcolor="#f15b29"><w:anchorlock/><v:textbox inset="0,0,0,0"><center style="color:#ffffff; font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif; font-size:16px;"><![endif]-->
-    <a href="{{url}}" target="_blank" style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff; background-color: #f15b29; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; max-width: 164px; width: 64px;width: auto; border-top: 0px solid transparent; border-right: 0px solid transparent; border-bottom: 0px solid transparent; border-left: 0px solid transparent; padding-top: 5px; padding-right: 25px; padding-bottom: 5px; padding-left: 25px; font-family: 'Lato', Tahoma, Verdana, Segoe, sans-serif;mso-border-alt: none">
-      View your Booking now!
-    </a>
-  <!--[if mso]></center></v:textbox></v:roundrect></td></tr></table><![endif]-->
-</div>
+
 
 
               <!--[if (!mso)&(!IE)]><!--></div><!--<![endif]-->
