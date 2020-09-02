@@ -4,11 +4,11 @@ import { OrderBy } from 'node-jql'
 import Moment = require('moment')
 
 import {
-    expandBottomSheetGroupByEntity,
-    expandSummaryVariable,
-    handleBottomSheetGroupByEntityValue,
-    summaryVariableList,
-    groupByEntityList
+  expandBottomSheetGroupByEntity,
+  expandSummaryVariable,
+  handleBottomSheetGroupByEntityValue,
+  summaryVariableList,
+  groupByEntityList
 } from 'utils/card'
 import { convertToStartOfDate } from 'utils/jql-subqueries'
 
@@ -31,8 +31,8 @@ interface Result {
 }
 
 var final
-var  originalParams;
-var erpInfo=[];
+var originalParams;
+var erpInfo = [];
 
 export default {
   jqls: [
@@ -41,64 +41,65 @@ export default {
       //get erpSite info
       type: 'prepareParams',
       defaultResult: {},
-      async prepareParams(params, {}: Result, user): Promise<IQueryParams> {
-originalParams=Object.assign({},params)
-console.log({originalParams})
+      async prepareParams(params, { }: Result, user): Promise<IQueryParams> {
+        originalParams = Object.assign({}, params)
+        console.log({ originalParams })
 
-   console.log("get erpSite info")
- console.log(params);
- console.log("----------partyGroupCode")
-console.log(user.partyGroupCode)
-       params.fields=[
-         'id','name','partyGroupCode','thirdPartyCode','isBranch','erpCode'
-       ];
-   
-       params.sorting = [new OrderBy('id', 'DESC')];
-       params.limit=1000;
-    
-       
-       params.subqueries={
-         "partyGroupCodeEq":{
-           "value":user.partyGroupCode
-         },
-         "groupByEntity": {
-          "value": "id"
-      }
-       }
-       console.log(params)
-       console.log("//get erpSite info-params")
-       console.log(params)
-        return params;      
+        console.log("get erpSite info")
+        console.log(params);
+        console.log("----------partyGroupCode")
+        console.log(user.partyGroupCode)
+        params.fields = [
+          'id', 'name', 'partyGroupCode', 'thirdPartyCode', 'isBranch', 'erpCode'
+        ];
+
+        params.sorting = [new OrderBy('id', 'DESC')];
+        params.limit = 1000;
+
+
+        params.subqueries = {
+          "partyGroupCodeEq": {
+            "value": user.partyGroupCode
+          },
+          "groupByEntity": {
+            "value": "id"
+          }
+        }
+        console.log(params)
+        console.log("//get erpSite info-params")
+        console.log(params)
+        return params;
       }
     },
     {
       type: 'callDataService',
       dataServiceQuery: ['party', 'party'],
-      onResult(res,params,{}: Result): any {
-   console.log("party-partycallDataService")
+      onResult(res, params, { }: Result): any {
+        console.log("party-partycallDataService")
         console.log(params)
         console.log("erpSite")
         console.log(res)
-        if(res && res.length>0){
-                for(let i =0;i<res.length;i++){
-                  if(res[i].isBranch==1){
-                    erpInfo.push({name:res[i].name,code:res[i].erpCode,erpSite:res[i].thirdPartyCode['erp-site']});
-                  }else{
-                    erpInfo.push({name:res[i].name,code:res[i].erpCode});
-                  }
-                }
-              }
-              console.log({erpInfo})
-              
-  
+        if (res && res.length > 0) {
+          for (let i = 0; i < res.length; i++) {
+            if (res[i].isBranch == 1) {
+              erpInfo.push({ name: res[i].name,isBranch:res[i].isBranch, code: res[i].erpCode, erpSite: res[i].thirdPartyCode['erp-site'] });
+            } else {
+              erpInfo.push({ name: res[i].name,isBranch:res[i].isBranch, code: res[i].erpCode });
+            }
+          }
+        }
+        console.log({ erpInfo })
+
+
       }
     },
-     { type: 'prepareParams',
+    {
+      type: 'prepareParams',
       defaultResult: {},
-      async prepareParams({}, prevResult: Result, user): Promise<IQueryParams> {
-var params=Object.assign({},originalParams)
-console.log("after erpINO prepare PARAMS")
-console.log({params})
+      async prepareParams({ }, prevResult: Result, user): Promise<IQueryParams> {
+        var params = Object.assign({}, originalParams)
+        console.log("after erpINO prepare PARAMS")
+        console.log({ params })
 
         const moment = prevResult.moment = (await this.preparePackages(user)).moment as typeof Moment
         const subqueries = (params.subqueries = params.subqueries || {})
@@ -113,15 +114,15 @@ console.log({params})
         handleBottomSheetGroupByEntityValue(subqueries)
 
         const {
-            groupByEntity,
-            codeColumnName,
-            nameColumnName,
-            dynamicColumnCodeColumnName,
-            dynamicColumnGroupByEntity,
-            dynamicColumnNameColumnName
+          groupByEntity,
+          codeColumnName,
+          nameColumnName,
+          dynamicColumnCodeColumnName,
+          dynamicColumnGroupByEntity,
+          dynamicColumnNameColumnName
 
         } = expandBottomSheetGroupByEntity(subqueries)
-          
+
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
         prevResult.nameColumnName = nameColumnName
@@ -138,12 +139,12 @@ console.log({params})
         const summaryVariables = expandSummaryVariable(subqueries)
         prevResult.summaryVariables = summaryVariables
 
-        subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+        subqueries[`${codeColumnName}IsNotNull`] = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
           value: true
         }
 
         subqueries[`${dynamicColumnCodeColumnName}IsNotNull`] = {
-            value: true
+          value: true
         }
 
         params.fields = [
@@ -161,7 +162,7 @@ console.log({params})
         if (subqueries.sorting && subqueries.sorting !== true && 'value' in subqueries.sorting) {
           const sortingValueList = subqueries.sorting.value as { value: string; ascOrDesc: 'ASC' | 'DESC' }[]
           sortingValueList.forEach(({ value, ascOrDesc }) => {
-            const orderByExpression = new OrderBy(value,ascOrDesc)
+            const orderByExpression = new OrderBy(value, ascOrDesc)
             sorting.push(orderByExpression)
           })
         }
@@ -170,7 +171,7 @@ console.log({params})
         }
 
         params.limit = topY
-      
+
         return params
       }
     },
@@ -178,189 +179,190 @@ console.log({params})
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'shipment'],
       onResult(res, originalParams, prevResult: Result): Result {
-        var params=Object.assign({},originalParams)
+        var params = Object.assign({}, originalParams)
 
         const { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables } = prevResult
 
-        
-       
+
+
 
 
         prevResult.groupByResult = res.map(row => {
-          console.log("codeCoulumn name")
-          console.log(row[codeColumnName] )
-          console.log(res)
-          let temp=erpInfo.filter(o=>o.code==row[codeColumnName] );
-          let code;
-          if(temp.length==1 && temp[0].isBranch){
-           code=temp[0].erpSite;
-          }else{
-            code=row[nameColumnName];
-          }
-          const row_: any = { code: code, name: row[nameColumnName], groupByEntity }
 
+          const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
           for (const variable of summaryVariables) {
-
             // change into number
             row_[`${variable}`] = +row[variable]
           }
 
           return row_
         })
-      final=prevResult;
+        final = prevResult;
         return prevResult
       }
     },
-   
+
     {
-        type: 'prepareParams',
-        defaultResult: {},
-        async prepareParams(originalParams, prevResult: Result, user): Promise<IQueryParams> {
-          var params=Object.assign({},originalParams);
+      type: 'prepareParams',
+      defaultResult: {},
+      async prepareParams(originalParams, prevResult: Result, user): Promise<IQueryParams> {
+        var params = Object.assign({}, originalParams);
 
 
-            const subqueries = (params.subqueries = params.subqueries || {})
+        const subqueries = (params.subqueries = params.subqueries || {})
 
-            const { moment, groupByResult, codeColumnName, dynamicColumnCodeColumnName, dynamicColumnNameColumnName, summaryVariables } = prevResult
+        const { moment, groupByResult, codeColumnName, dynamicColumnCodeColumnName, dynamicColumnNameColumnName, summaryVariables } = prevResult
 
-            const codeList = groupByResult.map(row => row.code)
+        const codeList = groupByResult.map(row => row.code)
 
-            params.fields = [
-                codeColumnName,
-                dynamicColumnCodeColumnName,
-                dynamicColumnNameColumnName,
-                ...summaryVariables
-            ]
+        params.fields = [
+          codeColumnName,
+          dynamicColumnCodeColumnName,
+          dynamicColumnNameColumnName,
+          ...summaryVariables
+        ]
 
-            // filter groupBy 
-            subqueries[codeColumnName]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
-                value: codeList
-            }
-
-            params.groupBy =  [codeColumnName,dynamicColumnCodeColumnName]
-
-            const sorting = params.sorting = []
-            if (subqueries.sorting && subqueries.sorting !== true && 'value' in subqueries.sorting) {
-              const sortingValueList = subqueries.sorting.value as { value: string; ascOrDesc: 'ASC' | 'DESC' }[]
-              sortingValueList.forEach(({ value, ascOrDesc }) => {
-                const orderByExpression = new OrderBy(value,ascOrDesc)
-                sorting.push(orderByExpression)
-              })
-            }
-            else {
-              params.sorting = new OrderBy(`${summaryVariables[0]}`, 'DESC')
-            }
-
-            return params
+        // filter groupBy 
+        subqueries[codeColumnName] = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+          value: codeList
         }
-      },
 
-      {
-        type: 'callDataService',
-        dataServiceQuery: ['shipment', 'shipment'],
-        onResult(res, originalParams, prevResult: Result): any[] {
-          var params=Object.assign({},originalParams);
-  
-          var { 
-              moment,
-              groupByEntity,
-              codeColumnName,
-              nameColumnName,
-              dynamicColumnCodeColumnName,
-              dynamicColumnNameColumnName,
-              summaryVariables,
-              groupByResult
-            } = prevResult
+        params.groupBy = [codeColumnName, dynamicColumnCodeColumnName]
 
-    const subqueries = (params.subqueries = params.subqueries || {})
+        const sorting = params.sorting = []
+        if (subqueries.sorting && subqueries.sorting !== true && 'value' in subqueries.sorting) {
+          const sortingValueList = subqueries.sorting.value as { value: string; ascOrDesc: 'ASC' | 'DESC' }[]
+          sortingValueList.forEach(({ value, ascOrDesc }) => {
+            const orderByExpression = new OrderBy(value, ascOrDesc)
+            sorting.push(orderByExpression)
+          })
+        }
+        else {
+          params.sorting = new OrderBy(`${summaryVariables[0]}`, 'DESC')
+        }
 
-          const topX = subqueries.topX.value
-          const topY = subqueries.topY.value
+        return params
+      }
+    },
+
+    {
+      type: 'callDataService',
+      dataServiceQuery: ['shipment', 'shipment'],
+      onResult(res, originalParams, prevResult: Result): any[] {
+        var params = Object.assign({}, originalParams);
+
+        var {
+          moment,
+          groupByEntity,
+          codeColumnName,
+          nameColumnName,
+          dynamicColumnCodeColumnName,
+          dynamicColumnNameColumnName,
+          summaryVariables,
+          groupByResult
+        } = prevResult
+
+        const subqueries = (params.subqueries = params.subqueries || {})
+
+        const topX = subqueries.topX.value
+        const topY = subqueries.topY.value
+
+        res.map(dynamicRow => {
+
+          const { dynamicCode } = { dynamicCode: dynamicRow[dynamicColumnCodeColumnName] }
+
+        })
+        console.log("res")
+        console.log(res)
+        const finalResult = groupByResult.map(row => {
+
+          var { code } = row
+
+          // calculate topX dynamicCodeList
+console.log({erpInfo})
+          // just get the first topX
+          const dynamicCodeList = [...new Set(res.map(dynamicRow => (
+            erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName]).length > 0 ?
+              erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName] && o.isBranch)[0]["erpSite"]
+              : erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName]).length>0?
+              erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName] )[0]["name"]
+              :dynamicRow[dynamicColumnNameColumnName]
+
+          )
+          ))].splice(0, topX)
+          const dynamicNameList = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnNameColumnName]))].splice(0, topX)
+
+          //console.log({ dynamicCodeList })
+        
+
+          const row_ = {
+            ...row,
+            dynamicCodeList,
+            dynamicNameList
+          }
+          console.log({ row_ })
 
           res.map(dynamicRow => {
 
             const { dynamicCode } = { dynamicCode: dynamicRow[dynamicColumnCodeColumnName] }
 
-          })
+            if (code === dynamicRow[codeColumnName]) {
 
-         const finalResult =  groupByResult.map(row => {
+              summaryVariables.map(summaryVariable => {
 
-            const { code } = row
+                const fieldName = `${dynamicCode}_${summaryVariable}`
 
-            // calculate topX dynamicCodeList
+                // forcefully make it into number
+                const dynamicValue = +dynamicRow[summaryVariable]
 
-            // just get the first topX
-            const dynamicCodeList = [ ...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0,topX)
-            const dynamicNameList = [ ...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnNameColumnName]))].splice(0,topX)
-
-            const row_ = {
-                ...row,
-                dynamicCodeList,
-                dynamicNameList
+                // add G0001_cbm into the row
+                row_[fieldName] = dynamicValue
+              })
             }
-
-            res.map(dynamicRow => {
-
-                const { dynamicCode } = { dynamicCode: dynamicRow[dynamicColumnCodeColumnName] }
-
-                if (code === dynamicRow[codeColumnName])
-                {
-
-                    summaryVariables.map(summaryVariable => {
-
-                        const fieldName = `${dynamicCode}_${summaryVariable}`
-    
-                        // forcefully make it into number
-                        const dynamicValue = +dynamicRow[summaryVariable]
-    
-                        // add G0001_cbm into the row
-                        row_[fieldName] = dynamicValue
-                    })
-                }
-            })
-
-            return row_
-
           })
-          return finalResult
-        }
-      },
-    
-      
+
+          return row_
+
+        })
+        return finalResult
+      }
+    },
+
+
   ],
   filters: [
     // for this filter, user can only select single,
     // but when config in card definition, use summaryVariables. Then we can set as multi
     {
-        display: 'topY',
-        name: 'topY',
-        props: {
-            items: [
-            {
-                label: '10',
-                value: 10,
-            },
-            {
-                label: '20',
-                value: 20,
-            },
-            {
-                label: '50',
-                value: 50,
-            },
-            {
-                label: '100',
-                value: 100,
-            },
-            {
-                label: '1000',
-                value: 1000,
-            }
-            ],
-            multi: false,
-            required: true,
-        },
-        type: 'list',
+      display: 'topY',
+      name: 'topY',
+      props: {
+        items: [
+          {
+            label: '10',
+            value: 10,
+          },
+          {
+            label: '20',
+            value: 20,
+          },
+          {
+            label: '50',
+            value: 50,
+          },
+          {
+            label: '100',
+            value: 100,
+          },
+          {
+            label: '1000',
+            value: 1000,
+          }
+        ],
+        multi: false,
+        required: true,
+      },
+      type: 'list',
     },
 
     {
@@ -368,22 +370,22 @@ console.log({params})
       name: 'summaryVariables',
       props: {
         items: [
-            ...summaryVariableList.reduce((acc,summaryVariable) => {
+          ...summaryVariableList.reduce((acc, summaryVariable) => {
 
-                acc = acc.concat(
-                    [
-                        {
-                            label: `${summaryVariable}`,
-                            value: `${summaryVariable}`,
-                        }
-                    ]
-                )
+            acc = acc.concat(
+              [
+                {
+                  label: `${summaryVariable}`,
+                  value: `${summaryVariable}`,
+                }
+              ]
+            )
 
-                return acc
+            return acc
 
-            },[])
+          }, [])
         ],
-        multi : true,
+        multi: true,
         required: true,
       },
       type: 'list',
@@ -393,20 +395,20 @@ console.log({params})
       name: 'groupByEntity',
       props: {
         items: [
-            ...groupByEntityList.reduce((acc,groupByEntity) => {
+          ...groupByEntityList.reduce((acc, groupByEntity) => {
 
-                acc = acc.concat(
-                    [
-                        {
-                            label: `${groupByEntity}`,
-                            value: `${groupByEntity}`,
-                        }
-                    ]
-                )
+            acc = acc.concat(
+              [
+                {
+                  label: `${groupByEntity}`,
+                  value: `${groupByEntity}`,
+                }
+              ]
+            )
 
-                return acc
+            return acc
 
-            },[])
+          }, [])
         ],
         required: true,
       },
@@ -418,20 +420,20 @@ console.log({params})
       name: 'bottomSheetGroupByEntity',
       props: {
         items: [
-            ...groupByEntityList.reduce((acc,groupByEntity) => {
+          ...groupByEntityList.reduce((acc, groupByEntity) => {
 
-                acc = acc.concat(
-                    [
-                        {
-                            label: `${groupByEntity}`,
-                            value: `${groupByEntity}`,
-                        }
-                    ]
-                )
+            acc = acc.concat(
+              [
+                {
+                  label: `${groupByEntity}`,
+                  value: `${groupByEntity}`,
+                }
+              ]
+            )
 
-                return acc
+            return acc
 
-            },[])
+          }, [])
         ],
         required: true,
       },
@@ -439,29 +441,29 @@ console.log({params})
     },
 
     {
-        display: 'dynamicColumnGroupByEntity',
-        name: 'dynamicColumnGroupByEntity',
-        props: {
-          items: [
-              ...groupByEntityList.reduce((acc,groupByEntity) => {
-  
-                  acc = acc.concat(
-                      [
-                          {
-                              label: `${groupByEntity}`,
-                              value: `${groupByEntity}`,
-                          }
-                      ]
-                  )
-  
-                  return acc
-  
-              },[])
-          ],
-          required: true,
-        },
-        type: 'list',
+      display: 'dynamicColumnGroupByEntity',
+      name: 'dynamicColumnGroupByEntity',
+      props: {
+        items: [
+          ...groupByEntityList.reduce((acc, groupByEntity) => {
+
+            acc = acc.concat(
+              [
+                {
+                  label: `${groupByEntity}`,
+                  value: `${groupByEntity}`,
+                }
+              ]
+            )
+
+            return acc
+
+          }, [])
+        ],
+        required: true,
       },
+      type: 'list',
+    },
 
     {
       display: 'sorting',
@@ -470,21 +472,21 @@ console.log({params})
       props: {
         multi: true,
         items: [
-              ...summaryVariableList.reduce((acc,summaryVariable) => {
+          ...summaryVariableList.reduce((acc, summaryVariable) => {
 
-                acc = acc.concat(
-                    [
-                        {
-                            label: `${summaryVariable}`,
-                            value: `${summaryVariable}`,
-                        }
-                    ]
-                )
+            acc = acc.concat(
+              [
+                {
+                  label: `${summaryVariable}`,
+                  value: `${summaryVariable}`,
+                }
+              ]
+            )
 
-                return acc
+            return acc
 
-            },[])
-          ],
+          }, [])
+        ],
       }
     }
   ]

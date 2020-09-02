@@ -209,6 +209,48 @@ export const setDataFunction = {
   },
 }
 
+export const dateTimezoneMapping = {
+  portOfLoading: [
+    'departure',
+    'oceanBill',
+    'cargoReady',
+    'scheduleAssigned',
+    'scheduleApproaved',
+    'spaceConfirmation',
+    'bookingSubmit',
+    'cyCutOff',
+    'documentCutOff',
+    'pickup',
+    'shipperLoad',
+    'returnLoad',
+    'cargoReceipt',
+    'shipperDocumentSubmit',
+    'shipperInstructionSubmit',
+    'houseBillDraftSubmit',
+    'houseBillConfirmation',
+    'masterBillReleased',
+    'preAlertSend',
+    'ediSend',
+    'cargoRolloverStatus',
+    'sentToShipper',
+    'gateIn',
+    'loadOnboard'
+  ],
+  portOfDischarge: [
+    'arrival',
+    'inboundTransfer',
+    'onRail',
+    'arrivalAtDepot',
+    'availableForPickup',
+    'pickupCargoBeforeDemurrage',
+    'finalCargo',
+    'cargoPickupWithDemurrage',
+    'finalDoorDelivery',
+    'returnEmptyContainer',
+    'sentToConsignee'
+  ]
+}
+
 export default async function getDefaultParams(
   conditions?: IConditionalExpression,
   queryName?: string,
