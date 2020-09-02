@@ -280,12 +280,15 @@ export default {
           // calculate topX dynamicCodeList
           // just get the first topX
           //show erpSite if exist , otherwise show the name, if not intial Office Select, show the original value 
+         
           const dynamicCodeList = [...new Set(res.map(dynamicRow => (
+            console.log("dnyamicRowCoulmnCodename-->"),
+            console.log(dynamicRow[dynamicColumnCodeColumnName]),
             erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName]).length > 0 ?
               erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName] && o.isBranch)[0]["erpSite"]
               : erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName]).length>0?
               erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName] )[0]["name"]
-              :dynamicRow[dynamicColumnNameColumnName]
+              :dynamicRow[dynamicColumnCodeColumnName]
 
           )
           ))].splice(0, topX)
