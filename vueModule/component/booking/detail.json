@@ -76,6 +76,7 @@
                 "components": [{
                   "is": "SaveEntityTemplateButton",
                   "props": {
+                    "tableName": "booking",
                     "small": true,
                     "flat": true,
                     "icon": true

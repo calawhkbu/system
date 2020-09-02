@@ -35,6 +35,7 @@ const query = new QueryDef(
   })
 )
 
+
 query.table('partyType', new Query({
 
   $from: new FromTable('party', {
@@ -135,10 +136,13 @@ const baseTableName = 'party'
 
 const fieldList = [
   'id',
+'thirdPartyCode',
+'partyGroupCode',
   'erpCode',
   'name',
   'shortName',
   'groupName',
+ 
   {
     name: 'showInfo',
     expression: showInfoExpression,

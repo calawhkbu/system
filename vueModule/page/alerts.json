@@ -72,7 +72,7 @@
         },
         {
           "key": "alertTitle",
-          "label" : "alertMessage",
+          "label" : "alertTitle",
           "i18nContext": "Alert",
           "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
         },
@@ -87,7 +87,7 @@
         },
         {
           "key": "alertType",
-          "hiddne": true
+          "hidden": true
         },
         {
           "key": "alertContent",

@@ -73,6 +73,11 @@
             }
           },
           {
+            "name": "sopScore",
+            "i18nContext": "SopTask",
+            "type": "range"
+          },
+          {
             "name": "pic",
             "i18nContext": "SopTask",
             "type": "text"
@@ -80,7 +85,15 @@
           {
             "name": "team",
             "i18nContext": "SopTask",
-            "type": "text"
+            "type": "list",
+            "props": {
+              "api": {
+                "query": {
+                  "url": "api/person/teams",
+                  "method": "GET"
+                }
+              }
+            }
           },
           {
             "name": "notDone",
