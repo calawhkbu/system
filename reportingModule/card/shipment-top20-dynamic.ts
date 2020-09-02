@@ -281,6 +281,9 @@ export default {
           // calculate topX dynamicCodeList
           // just get the first topX
           //show erpSite if exist , otherwise show the name, if not intial Office Select, show the original value 
+         const erpCode=erpInfo.filter(o => o.code == row["code"]).length > 0 ?
+         erpInfo.filter(o => o.code == row["code"] && o.isBranch)[0]["erpSite"]:null
+
          
           const dynamicCodeList = [...new Set(res.map(dynamicRow => (
             console.log("dnyamicRowCoulmnCodename-->"),
@@ -299,7 +302,8 @@ export default {
             ...row,
             dynamicCodeList,
             dynamicNameList,
-            dynamicCodeListRaw
+            dynamicCodeListRaw,
+            erpCode
           }
           if(res&&res.length>0){
             for(let i=0;i<res.length;i++){
