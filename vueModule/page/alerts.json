@@ -87,7 +87,7 @@
         },
         {
           "key": "alertType",
-          "hiddne": true
+          "hidden": true
         },
         {
           "key": "alertContent",
