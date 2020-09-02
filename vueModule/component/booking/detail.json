@@ -76,13 +76,10 @@
                 "components": [{
                   "is": "SaveEntityTemplateButton",
                   "props": {
+                    "tableName": "booking",
                     "small": true,
                     "flat": true,
-                    "icon": true,
-                    "blackList": [
-                      "id"
-                    ],
-                    "axiosParams": "{ \"method\" : \"POST\",\"url\" : \"/default\",\"data\" : { \"tableName\" : \"booking\" , \"name\" : {{name | safe}},\"value\" : {{value | safe }}   }   }"
+                    "icon": true
                   }
                 }]
               },
