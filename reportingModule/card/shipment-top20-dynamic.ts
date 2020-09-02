@@ -44,7 +44,6 @@ export default {
       async prepareParams(params, { }: Result, user): Promise<IQueryParams> {
         originalParams = Object.assign({}, params)
         console.log({ originalParams })
-
         console.log("get erpSite info")
         console.log(params);
         console.log("----------partyGroupCode")
@@ -54,7 +53,7 @@ export default {
         ];
 
         params.sorting = [new OrderBy('id', 'DESC')];
-        params.limit = 1000;
+        params.limit = 0;
 
 
         params.subqueries = {
@@ -68,6 +67,8 @@ export default {
         console.log(params)
         console.log("//get erpSite info-params")
         console.log(params)
+        console.log("user----")
+        console.log(user)
         return params;
       }
     },
