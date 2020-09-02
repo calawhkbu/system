@@ -272,15 +272,14 @@ export default {
           const { dynamicCode } = { dynamicCode: dynamicRow[dynamicColumnCodeColumnName] }
 
         })
-        console.log("res")
-        console.log(res)
+ 
         const finalResult = groupByResult.map(row => {
 
           var { code } = row
-
+  
           // calculate topX dynamicCodeList
-console.log({erpInfo})
           // just get the first topX
+          //show erpSite if exist , otherwise show the name, if not intial Office Select, show the original value 
           const dynamicCodeList = [...new Set(res.map(dynamicRow => (
             erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName]).length > 0 ?
               erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName] && o.isBranch)[0]["erpSite"]
@@ -290,31 +289,33 @@ console.log({erpInfo})
 
           )
           ))].splice(0, topX)
+          const dynamicCodeListRaw = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0, topX)
           const dynamicNameList = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnNameColumnName]))].splice(0, topX)
-
-          //console.log({ dynamicCodeList })
-        
-
           const row_ = {
             ...row,
             dynamicCodeList,
-            dynamicNameList
+            dynamicNameList,
+            dynamicCodeListRaw
           }
-          console.log({ row_ })
+          if(res&&res.length>0){
+            for(let i=0;i<res.length;i++){
+              if(dynamicColumnCodeColumnName=="officePartyCode"){
+              res[i]["erpSite"]=dynamicCodeList[0];
+            }
+            }
 
+          }
+  
           res.map(dynamicRow => {
-
             const { dynamicCode } = { dynamicCode: dynamicRow[dynamicColumnCodeColumnName] }
 
-            if (code === dynamicRow[codeColumnName]) {
-
+            if (row_["code"] === dynamicRow[codeColumnName]){
               summaryVariables.map(summaryVariable => {
-
-                const fieldName = `${dynamicCode}_${summaryVariable}`
+                var fieldName;
+                fieldName = dynamicRow&&dynamicRow["erpSite"]?`${dynamicRow["erpSite"]}_${summaryVariable}`:`${dynamicCode}_${summaryVariable}`;
 
                 // forcefully make it into number
                 const dynamicValue = +dynamicRow[summaryVariable]
-
                 // add G0001_cbm into the row
                 row_[fieldName] = dynamicValue
               })
