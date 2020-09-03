@@ -1694,6 +1694,24 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
+  // subquery:sop_date (has tasks within the given period)
+  {
+    type: 'subquery',
+    name: 'sop_date',
+    subqueryArg: () => (value, params) => new ExistsExpression(
+      addBookingCheck(
+        sopTaskQuery().apply({
+          subqueries: {
+            ...passSubquery(params, 'sop_date', 'date'),
+            ...passSubquery(params, 'notDone'),
+            ...passSubquery(params, 'notDeleted'),
+          }
+        })
+      ),
+      false
+    )
+  },
+
   // subquery:notClosed
   {
     type: 'subquery',

@@ -11,29 +11,50 @@
         "noExternal": true,
         "filters": [
           {
-            "name": "day",
-            "type": "list",
+            "name": "date",
+            "type": "date",
             "props": {
-              "items": [
+              "timezone": true,
+              "shortcuts": [
                 {
-                  "label": "Day after Tomorrow",
-                  "value": "day after tomorrow"
+                  "func": {
+                    "key": "day",
+                    "args": {
+                      "name": "day after tomorrow"
+                    }
+                  },
+                  "label": "Day after Tomorrow"
                 },
                 {
-                  "label": "Tomorrow",
-                  "value": "tomorrow"
+                  "func": {
+                    "key": "day",
+                    "args": {
+                      "name": "tomorrow"
+                    }
+                  },
+                  "label": "Tomorrow"
                 },
                 {
-                  "label": "Today",
-                  "value": "today"
+                  "func": "today",
+                  "label": "Today"
                 },
                 {
-                  "label": "Yesterday",
-                  "value": "yeaterday"
+                  "func": {
+                    "key": "day",
+                    "args": {
+                      "name": "yesterday"
+                    }
+                  },
+                  "label": "Yesterday"
                 },
                 {
-                  "label": "Day before Yesterday",
-                  "value": "day before yesterday"
+                  "func": {
+                    "key": "day",
+                    "args": {
+                      "name": "day before yesterday"
+                    }
+                  },
+                  "label": "Day before Yesterday"
                 }
               ]
             }
