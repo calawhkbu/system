@@ -7,8 +7,6 @@ import { expandBottomSheetGroupByEntity,expandSummaryVariable, extendDate, handl
 import { group } from 'console'
 const summaryVariableList=summaryVariableListBooking;
 const groupByEntityList=groupByEntityListBooking;
-//test jira github
-
 interface Result {
   moment: typeof Moment
   groupByEntity: string
@@ -16,6 +14,8 @@ interface Result {
   nameColumnName: string
   summaryVariables: string[]
 }
+
+
 
 
 export default {
@@ -36,9 +36,10 @@ export default {
         handleBottomSheetGroupByEntityValue(subqueries)
         var { groupByEntity, codeColumnName,nameColumnName } = expandBottomSheetGroupByEntity(subqueries)
             // -----------------------------groupBy variable
-  groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-  codeColumnName = prevResult.codeColumnName;
-  nameColumnName = prevResult.nameColumnName;
+
+  prevResult.groupByEntity = groupByEntity
+  prevResult.codeColumnName = codeColumnName
+  prevResult.nameColumnName = nameColumnName
   if(groupByEntity=='bookingNo'){
     codeColumnName=groupByEntity;
     nameColumnName=groupByEntity;
@@ -48,28 +49,23 @@ export default {
   }else if(groupByEntity=='moduleType'){
     codeColumnName='moduleTypeCode';
     nameColumnName='moduleTypeCode';
-    
   }else if(groupByEntity=='portOfLoading'){
     codeColumnName=groupByEntity+"Code";
     nameColumnName=groupByEntity+"Name";
   }else if(groupByEntity=='portOfDischarge'){
     codeColumnName=groupByEntity+"Code";
     nameColumnName=groupByEntity+"Name";
+  }else if(groupByEntity=='agent'){
+    codeColumnName=groupByEntity+"PartyCode";
+    nameColumnName=groupByEntity+"PartyName";
   }else{
     codeColumnName=`${groupByEntity}PartyCode`;
     nameColumnName=`${groupByEntity}PartyShortNameInReport` + 'Any';
+    
   }
 
 
 
-  // codeColumnName = prevResult.codeColumnName; = groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierCode`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyCode`
-  // nameColumnName = prevResult.nameColumnName; = (groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierName`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyShortNameInReport`) + 'Any'
- 
-
-
-        prevResult.groupByEntity = groupByEntity
-        prevResult.codeColumnName = codeColumnName
-        prevResult.nameColumnName = nameColumnName
 
 
         const topX = subqueries.topX.value
@@ -180,7 +176,6 @@ export default {
       props: {
         items: [
             ...summaryVariableList.reduce((acc,summaryVariable) => {
-
                 acc = acc.concat(
                     [
                         {

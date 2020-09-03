@@ -133,7 +133,8 @@ export default {
     { key: 'agentPartyName' },
     { key: 'agentPartyContactEmail' },
     { key: 'agentPartyContactName' },
-    { key: 'noOfOutstandingTasks' }
+    { key: 'noOfTasks' },
+    { key: 'sopScore' }
   ],
 } as JqlDefinition
 

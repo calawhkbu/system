@@ -163,13 +163,6 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
-  // field:id
-  {
-    type: 'field',
-    name: 'noOfTasks',
-    expression: re => new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', re['id']))
-  },
-
   // field:tableName
   {
     type: 'field',
@@ -832,6 +825,34 @@ const shortcuts: IShortcut[] = [
     }
   },
 
+  {
+    type: 'field',
+    name: 'sopScore',
+    expression: re => {
+      function sopScoreQueryExpression(tableName: 'booking'|'shipment') {
+        const query = require(`./${tableName}`).default as QueryDef
+        const result = query.apply({ fields: ['sopScore'] })
+        if (!result.$where) result.$where = new AndExpressions([])
+        const exprs = result.$where as AndExpressions
+        exprs.expressions.push(
+          new BinaryExpression(new ColumnExpression(tableName, 'id'), '=', new ColumnExpression(taskTable, 'primaryKey'))
+        )
+        return new QueryExpression(result)
+      }
+      return new CaseExpression([
+        {
+          $when: new BinaryExpression(re['tableName'], '=', new Value('booking')),
+          $then: sopScoreQueryExpression('booking')
+        },
+        {
+          $when: new BinaryExpression(re['tableName'], '=', new Value('shipment')),
+          $then: sopScoreQueryExpression('shipment')
+        }
+      ])
+    },
+    registered: true
+  },
+
   // field:deduct
   {
     type: 'field',
@@ -977,6 +998,18 @@ const shortcuts: IShortcut[] = [
     expression: re => new BinaryExpression(re['isDeleted'], '=', new Value(0))
   },
 
+  // subquery:sopScore
+  {
+    type: 'subquery',
+    name: 'sopScore',
+    expression: re => new AndExpressions([
+      new BinaryExpression(new Unknown(), '<', re['sopScore']),
+      new BinaryExpression(re['sopScore'], '<', new Unknown())
+    ]),
+    companions: ['table:booking', 'table:shipment'],
+    unknowns: { fromTo: true }
+  },
+
   // subquery:notReferencedIn
   {
     type: 'subquery',
@@ -1074,8 +1107,8 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'pic',
     expression: new OrExpressions([
-      new InExpression(new ColumnExpression(bookingPartyTable, 'picEmail'), false, new Unknown()),
-      new InExpression(new ColumnExpression(shipmentPartyTable, 'picEmail'), false, new Unknown())
+      new BinaryExpression(new ColumnExpression(bookingPartyTable, 'picEmail'), '=', new Unknown()),
+      new BinaryExpression(new ColumnExpression(shipmentPartyTable, 'picEmail'), '=', new Unknown())
     ]),
     companions: ['table:booking', 'table:shipment'],
     unknowns: { noOfUnknowns: 2 }

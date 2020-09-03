@@ -12,8 +12,7 @@
       "noPartyGroupFilters": false,
       "newReport": {
         "filters": {
-
-          "alertStatus" : {
+          "alertStatus": {
             "value": "open"
           },
           "activeStatus": {
@@ -33,7 +32,7 @@
         },
         "configurations": {
           "checkbox": {},
-          "i18nContext": "Alert",
+          "i18nContext": "AlertPage",
           "clickable": true,
           "draggable": true,
           "sorting": {
@@ -52,8 +51,7 @@
           }
         }
       },
-      "fieldOptions": [
-        {
+      "fieldOptions": [{
           "key": "alertId",
           "hidden": true
         },
@@ -72,22 +70,44 @@
         },
         {
           "key": "alertTitle",
-          "label" : "alertMessage",
+          "label": "alertTitle",
           "i18nContext": "Alert",
           "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
         },
         {
           "key": "alertMessage",
-          "label" : "alertMessage",
+          "label": "alertMessage",
           "i18nContext": "Alert",
           "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
+        },
+        {
+          "key": "alertSeverity"
+        },
+        {
+          "key": "alertStatus"
         },
         {
           "key": "alertCategory"
         },
         {
+          "i18nContext": "ShipmentPage",
+          "key": "houseNo"
+        },
+        {
+          "i18nContext": "ShipmentPage",
+          "key": "jobNo"
+        },
+        {
+          "i18nContext": "ShipmentPage",
+          "key": "masterNo"
+        },
+        {
+          "i18nContext": "ShipmentPage",
+          "key": "bookingNo"
+        },
+        {
           "key": "alertType",
-          "hiddne": true
+          "hidden": true
         },
         {
           "key": "alertContent",
@@ -209,8 +229,7 @@
     "scopedSlots": [{
       "name": "middle-button",
       "is": "ReportHandleAlertDialogButton",
-      "props": {
-      }
+      "props": {}
     }]
   }]
 }

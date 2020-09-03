@@ -124,22 +124,20 @@
                             "align-items": "center",
                             "display": "flex"
                           },
-                          "components": [
-                            {
-                              "is": "v-btn",
+                          "components": [{
+                            "is": "v-btn",
+                            "props": {
+                              "flat": true,
+                              "type": "submit"
+                            },
+                            "slots": [{
+                              "is": "i18nText",
+                              "name": "default",
                               "props": {
-                                "flat": true,
-                                "type": "submit"
-                              },
-                              "slots": [{
-                                "is": "i18nText",
-                                "name": "default",
-                                "props": {
-                                  "i18nKey": "Auth.RegisterCreateAccount"
-                                }
-                              }]
-                            }
-                          ]
+                                "i18nKey": "Auth.RegisterCreateAccount"
+                              }
+                            }]
+                          }]
                         }
                       }]
                     }
@@ -150,6 +148,40 @@
           },
           {
             "is": "v-spacer"
+          },
+          {
+            "is": "SaveEntityTemplateButton",
+            "props": {
+              "tableName": "user",
+              "small": true,
+              "flat": true,
+              "icon": true,
+              "templateFunc": [
+                "delete entity.id;",
+                "delete entity.personId;",
+                "delete entity.createdAt;",
+                "delete entity.updatedAt;",
+                "delete entity.deletedAt;",
+                "delete entity.createdBy;",
+                "delete entity.updatedBy;",
+                "delete entity.deletedBy;",
+                "delete entity.partyGroupCode;",
+                "delete entity.person.contacts",
+                "delete entity.person.id;",
+                "delete entity.person.userName;",
+                "delete entity.person.firstName;",
+                "delete entity.person.lastName;",
+                "delete entity.person.displayName;",
+                "delete entity.person.thirdPartyCode;",
+                "delete entity.person.createdAt;",
+                "delete entity.person.updatedAt;",
+                "delete entity.person.deletedAt;",
+                "delete entity.person.createdBy;",
+                "delete entity.person.updatedBy;",
+                "delete entity.person.deletedBy;",
+                "return entity"
+              ]
+            }
           },
           {
             "is": "v-btn",

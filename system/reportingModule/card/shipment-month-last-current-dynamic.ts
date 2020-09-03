@@ -81,7 +81,7 @@ export default {
         else {
         params.sorting = new OrderBy(`total_${summaryVariables[0]}Current`, 'DESC')
         }
-
+      console.log({params})
         return params
       }
     },
