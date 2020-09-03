@@ -689,7 +689,7 @@ const shortcuts: IShortcut[] = [
     name: 'isStarted',
     expression: re => new OrExpressions([
       new IsNullExpression(re['startAt'], false),
-      new BinaryExpression(re['startAt'], '<', new FunctionExpression('UTC_TIMESTAMP'))
+      new BinaryExpression(re['startAt'], '<=', new FunctionExpression('UTC_TIMESTAMP'))
     ]),
     registered: true
   },
@@ -726,7 +726,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'isDue',
-    expression: re => new BinaryExpression(re['dueAt'], '<', new FunctionExpression('UTC_TIMESTAMP')),
+    expression: re => new BinaryExpression(re['dueAt'], '<=', new FunctionExpression('UTC_TIMESTAMP')),
     registered: true
   },
 
@@ -754,7 +754,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'isDead',
-    expression: re => new BinaryExpression(re['deadline'], '<', new FunctionExpression('UTC_TIMESTAMP')),
+    expression: re => new BinaryExpression(re['deadline'], '<=', new FunctionExpression('UTC_TIMESTAMP')),
     registered: true
   },
 
@@ -879,11 +879,11 @@ const shortcuts: IShortcut[] = [
     expression: re => new AndExpressions([
       new OrExpressions([
         new IsNullExpression(re['startAt'], false),
-        new BinaryExpression(re['startAt'], '<', new Unknown())
+        new BinaryExpression(re['startAt'], '<=', new Unknown())
       ]),
       new OrExpressions([
         new IsNullExpression(re['deadline'], false),
-        new BinaryExpression(new Unknown(), '<', re['deadline'])
+        new BinaryExpression(new Unknown(), '<=', re['deadline'])
       ])
     ]),
     unknowns: { fromTo: true },
