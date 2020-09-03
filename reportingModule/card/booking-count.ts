@@ -228,16 +228,16 @@ export default {
             
 
             {
-              label: 'teu',
+              label: 'TEU',
               value: 'teu',
             },
             {
-              label: 'cbm',
+              label: 'CBM',
               value: 'cbm',
             },
          
             {
-              label: 'quantity',
+              label: 'QTY',
               value: 'quantity',
             },
          
@@ -253,24 +253,24 @@ export default {
       props: {
         items: [
           {
-            label: 'carrier',
+            label: 'Carrier',
             value: 'carrier',
           },
           {
-            label: 'shipper',
+            label: 'Shipper',
             value: 'shipper',
           },
           {
-            label: 'consignee',
+            label: 'Consignee',
             value: 'consignee',
           },
           {
-            label: 'agent',
+            label: 'Agent',
             value: 'agent',
           },
          
           {
-            label: 'controllingCustomer',
+            label: 'Controlling Customer',
             value: 'controllingCustomer',
           },
           {
@@ -289,7 +289,12 @@ export default {
           {
             label : 'bookingNo',
             value : 'bookingNo'
-          }
+          },
+          {
+            label : 'Forwarder',
+            value : 'forwarder'
+          },
+          
         ],
         required: true,
       },

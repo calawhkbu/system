@@ -60,9 +60,9 @@ export default {
 
         } = expandBottomSheetGroupByEntity(subqueries);
           // -----------------------------groupBy variable
-  groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-  codeColumnName = prevResult.codeColumnName;
-  nameColumnName = prevResult.nameColumnName;
+          prevResult.groupByEntity = groupByEntity
+          prevResult.codeColumnName = codeColumnName
+          prevResult.nameColumnName = nameColumnName
   if(groupByEntity=='bookingNo'){
     codeColumnName=groupByEntity;
     nameColumnName=groupByEntity;
@@ -79,6 +79,9 @@ export default {
   }else if(groupByEntity=='portOfDischarge'){
     codeColumnName=groupByEntity+"Code";
     nameColumnName=groupByEntity+"Name";
+  } else if (groupByEntity == 'agent') {
+    codeColumnName = groupByEntity + "PartyCode";
+    nameColumnName = groupByEntity + "PartyName";
   }else{
     codeColumnName=`${groupByEntity}PartyCode`;
     nameColumnName=`${groupByEntity}PartyShortNameInReport` + 'Any';
@@ -232,8 +235,12 @@ export default {
             // calculate topX dynamicCodeList
 
             // just get the first topX
-            const dynamicCodeList = [ ...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0,topX)
-            const dynamicNameList = [ ...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnNameColumnName]))].splice(0,topX)
+            var dynamicCodeList = [ ...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0,topX)
+            var dynamicNameList = [ ...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnNameColumnName]))].splice(0,topX)
+
+            if(dynamicColumnCodeColumnName.indexOf("agent")!=-1){ //for display table header 
+              dynamicCodeList=dynamicNameList;
+            }
 
             const row_ = {
                 ...row,
