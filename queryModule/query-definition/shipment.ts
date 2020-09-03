@@ -3516,7 +3516,8 @@ const shortcuts: IShortcut[] = [
         ),
         new Value(0)
       )))
-    )
+    ),
+    registered: true
   },
 
   // @field:hasDueTasks
