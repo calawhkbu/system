@@ -3,6 +3,7 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "i18nContext": "AlertPage",
       "reportingKey": "alerts",
       "jql": "alerts",
       "hasReports": true,
@@ -90,19 +91,15 @@
           "key": "alertCategory"
         },
         {
-          "i18nContext": "ShipmentPage",
           "key": "houseNo"
         },
         {
-          "i18nContext": "ShipmentPage",
           "key": "jobNo"
         },
         {
-          "i18nContext": "ShipmentPage",
           "key": "masterNo"
         },
         {
-          "i18nContext": "ShipmentPage",
           "key": "bookingNo"
         },
         {

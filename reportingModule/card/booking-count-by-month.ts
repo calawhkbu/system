@@ -258,7 +258,11 @@ export default {
           {
             label : 'bookingNo',
             value : 'bookingNo'
-          }
+          },
+          {
+            label : 'Forwarder',
+            value : 'forwarder'
+          },
         ],
         required: true,
       },

@@ -25,7 +25,6 @@ import {
   ExistsExpression,
 } from 'node-jql'
 import { passSubquery, ExpressionHelperInterface, registerAll, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
-import sopQuery from './sop_task'
 import { IShortcut } from 'classes/query/Shortcut'
 
 const partyList = [
@@ -1585,6 +1584,10 @@ query
   .register('value', 29)
   .register('value', 30)
 
+function sopTaskQuery(): QueryDef {
+  return require('./sop_task').default
+}
+
 function addBookingCheck(query: Query) {
   if (!query.$where) {
     query.$where = new AndExpressions([])
@@ -1613,7 +1616,7 @@ const shortcuts: IShortcut[] = [
     queryArg: () => params => ({
       $select: new ResultColumn(
         new QueryExpression(
-          addBookingCheck(sopQuery.apply({
+          addBookingCheck(sopTaskQuery().apply({
             fields: ['count'],
             subqueries: {
               ...passSubquery(params, 'sop_user', 'user'),
@@ -1640,7 +1643,7 @@ const shortcuts: IShortcut[] = [
       new ColumnExpression('booking', 'sopScore'),
       new FunctionExpression('GREATEST', new Value(0), new MathExpression(new Value(100), '-', IfNullExpression(
         new QueryExpression(
-          addBookingCheck(sopQuery.apply({
+          addBookingCheck(sopTaskQuery().apply({
             fields: ['deduct'],
             subqueries: { notDeleted: true }
           }))
@@ -1657,7 +1660,7 @@ const shortcuts: IShortcut[] = [
     name: 'hasDueTasks',
     expression: new ExistsExpression(
       addBookingCheck(
-        sopQuery.apply({
+        sopTaskQuery().apply({
           fields: ['deduct'],
           subqueries: {
             notDeleted: true,
@@ -1677,7 +1680,7 @@ const shortcuts: IShortcut[] = [
     name: 'hasDeadTasks',
     expression: new ExistsExpression(
       addBookingCheck(
-        sopQuery.apply({
+        sopTaskQuery().apply({
           fields: ['deduct'],
           subqueries: {
             notDeleted: true,
@@ -1689,6 +1692,24 @@ const shortcuts: IShortcut[] = [
       false
     ),
     registered: true
+  },
+
+  // subquery:sop_date (has tasks within the given period)
+  {
+    type: 'subquery',
+    name: 'sop_date',
+    subqueryArg: () => (value, params) => new ExistsExpression(
+      addBookingCheck(
+        sopTaskQuery().apply({
+          subqueries: {
+            ...passSubquery(params, 'sop_date', 'date'),
+            ...passSubquery(params, 'notDone'),
+            ...passSubquery(params, 'notDeleted'),
+          }
+        })
+      ),
+      false
+    )
   },
 
   // subquery:notClosed
@@ -1703,8 +1724,8 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'sopScore',
     expression: re => new AndExpressions([
-      new BinaryExpression(new Unknown(), '<', re['sopScore']),
-      new BinaryExpression(re['sopScore'], '<', new Unknown())
+      new BinaryExpression(new Unknown(), '<=', re['sopScore']),
+      new BinaryExpression(re['sopScore'], '<=', new Unknown())
     ]),
     unknowns: { fromTo: true }
   },
@@ -1731,7 +1752,7 @@ const shortcuts: IShortcut[] = [
     name: 'myTasksOnly',
     subqueryArg: () => (value, params) => ({
       $where: new ExistsExpression(addBookingCheck(
-        sopQuery.apply({
+        sopTaskQuery().apply({
           distinct: true,
           fields: ['id'],
           subqueries: {
