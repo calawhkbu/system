@@ -28,7 +28,6 @@ import {
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
 import { ExpressionHelperInterface, registerAll, SummaryField, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter, IfExpression, IfNullExpression, RegisterInterface, passSubquery } from 'utils/jql-subqueries'
-import sopQuery from './sop_task'
 import { IShortcut } from 'classes/query/Shortcut'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
@@ -3451,6 +3450,10 @@ query
   .register('value', 3)
   .register('value', 4)
 
+function sopTaskQuery(): QueryDef {
+  return require('./sop_task').default
+}
+
 function addShipmentCheck(query: Query) {
   if (!query.$where) {
     query.$where = new AndExpressions([])
@@ -3464,10 +3467,10 @@ function addShipmentCheck(query: Query) {
 }
 
 const shortcuts: IShortcut[] = [
-  // @field:tasksClosed
+  // @field:isClosed
   {
     type: 'field',
-    name: 'tasksClosed',
+    name: 'isClosed',
     expression: new IsNullExpression(new ColumnExpression('shipment', 'sopScore'), true),
     registered: true
   },
@@ -3479,7 +3482,7 @@ const shortcuts: IShortcut[] = [
     queryArg: () => params => ({
       $select: new ResultColumn(
         new QueryExpression(
-          addShipmentCheck(sopQuery.apply({
+          addShipmentCheck(sopTaskQuery().apply({
             fields: ['count'],
             subqueries: {
               ...passSubquery(params, 'sop_user', 'user'),
@@ -3488,7 +3491,6 @@ const shortcuts: IShortcut[] = [
               ...passSubquery(params, 'sop_today', 'today'),
               ...passSubquery(params, 'sop_date', 'date'),
               ...passSubquery(params, 'notDone'),
-              ...passSubquery(params, 'notClosed'),
               ...passSubquery(params, 'notDeleted')
             }
           }))
@@ -3503,17 +3505,17 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'sopScore',
     expression: re => IfExpression(
-      re['tasksClosed'],
+      re['isClosed'],
       new ColumnExpression('shipment', 'sopScore'),
-      new MathExpression(new Value(100), '-', IfNullExpression(
+      new FunctionExpression('GREATEST', new Value(0), new MathExpression(new Value(100), '-', IfNullExpression(
         new QueryExpression(
-          addShipmentCheck(sopQuery.apply({
+          addShipmentCheck(sopTaskQuery().apply({
             fields: ['deduct'],
             subqueries: { notDeleted: true }
           }))
         ),
         new Value(0)
-      ))
+      )))
     )
   },
 
@@ -3523,11 +3525,10 @@ const shortcuts: IShortcut[] = [
     name: 'hasDueTasks',
     expression: new ExistsExpression(
       addShipmentCheck(
-        sopQuery.apply({
+        sopTaskQuery().apply({
           fields: ['deduct'],
           subqueries: {
             notDeleted: true,
-            notClosed: true,
             notDone: true,
             isDue: true
           }
@@ -3544,11 +3545,10 @@ const shortcuts: IShortcut[] = [
     name: 'hasDeadTasks',
     expression: new ExistsExpression(
       addShipmentCheck(
-        sopQuery.apply({
+        sopTaskQuery().apply({
           fields: ['deduct'],
           subqueries: {
             notDeleted: true,
-            notClosed: true,
             notDone: true,
             isDead: true
           }
@@ -3559,13 +3559,47 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
+  // subquery:notClosed
+  {
+    type: 'subquery',
+    name: 'notClosed',
+    expression: re => new BinaryExpression(re['isClosed'], '<>', new Value(1))
+  },
+
+  // subquery:sopScore
+  {
+    type: 'subquery',
+    name: 'sopScore',
+    expression: re => new AndExpressions([
+      new BinaryExpression(new Unknown(), '<=', re['sopScore']),
+      new BinaryExpression(re['sopScore'], '<=', new Unknown())
+    ]),
+    unknowns: { fromTo: true }
+  },
+
+  // subquery:pic
+  {
+    type: 'subquery',
+    name: 'pic',
+    expression: new BinaryExpression(new ColumnExpression('shipment', 'picEmail'), '=', new Unknown()),
+    unknowns: true
+  },
+
+  // subquery:team
+  {
+    type: 'subquery',
+    name: 'team',
+    expression: new InExpression(new ColumnExpression('shipment', 'team'), false, new Unknown()),
+    unknowns: true
+  },
+
   // @subquery:myTasksOnly
   {
     type: 'subquery',
     name: 'myTasksOnly',
     subqueryArg: () => (value, params) => ({
       $where: new ExistsExpression(addShipmentCheck(
-        sopQuery.apply({
+        sopTaskQuery().apply({
           distinct: true,
           fields: ['id'],
           subqueries: {
@@ -3575,7 +3609,6 @@ const shortcuts: IShortcut[] = [
             ...passSubquery(params, 'sop_today', 'today'),
             ...passSubquery(params, 'sop_date', 'date'),
             ...passSubquery(params, 'notDone'),
-            ...passSubquery(params, 'notClosed'),
             ...passSubquery(params, 'notDeleted'),
             notSubTask: true
           }
