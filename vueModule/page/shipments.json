@@ -3,6 +3,7 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "i18nContext": "ShipmentPage",
       "title": "Shipment",
       "reportingKey": "shipments",
       "jql": "shipments",
@@ -477,7 +478,7 @@
           "key" : "haveDocument_Packing List",
           "label": "haveDocument_Packing List",
           "boolean" : true
-        }  
+        }
       ]
     },
     "slots": []
