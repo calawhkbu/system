@@ -70,14 +70,14 @@
           "hidden": true
         },
         {
-          "width": 350,
+          "width": 500,
           "key": "alertTitle",
           "label": "alertTitle",
           "i18nContext": "Alert",
           "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
         },
         {
-          "width": 350,
+          "width": 650,
           "key": "alertMessage",
           "label": "alertMessage",
           "i18nContext": "Alert",
@@ -132,7 +132,6 @@
               "query": {
                 "url": "api/alert/alertType/get",
                 "data": {
-                  "limit": 5,
                   "subqueries": {
                     "q": {
                       "value": "{{ q }}"
