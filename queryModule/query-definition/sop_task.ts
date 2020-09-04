@@ -419,6 +419,29 @@ const shortcuts: IShortcut[] = [
     companions: ['table:sop_template_template_task']
   },
 
+  // field:categorySeqNo
+  {
+    type: 'field',
+    name: 'categorySeqNo',
+    expression: re => new QueryExpression(new Query({
+      $select: new ResultColumn(new ColumnExpression('temp_template', 'seqNo'), 'seqNo'),
+      $from: new FromTable(templateTable, 'temp_template', new JoinClause('LEFT', new FromTable(selectedTemplateTable, 'temp_selected_template'), new AndExpressions([
+        new BinaryExpression(new ColumnExpression('temp_selected_template', 'templateId'), '=', new ColumnExpression('temp_template', 'id')),
+        new IsNullExpression(new ColumnExpression('temp_selected_template', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('temp_selected_template', 'deletedBy'), false)
+      ]))),
+      $where: [
+        new BinaryExpression(new ColumnExpression('temp_selected_template', 'tableName'), '=', re['tableName']),
+        new BinaryExpression(new ColumnExpression('temp_selected_template', 'primaryKey'), '=', re['primaryKey']),
+        new IsNullExpression(new ColumnExpression('temp_template', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('temp_template', 'deletedBy'), false),
+        new BinaryExpression(new ColumnExpression('temp_template', 'category'), '=', re['category'])
+      ],
+      $limit: 1
+    })),
+    companions: ['table:sop_template_task']
+  },
+
   // field:count
   {
     type: 'field',
@@ -1185,11 +1208,11 @@ const shortcuts: IShortcut[] = [
     name: 'seqNo',
     queryArg: re => () => ({
       $order: [
-        new OrderBy(re['category']),
+        ...wrapOrder(new ColumnExpression('categorySeqNo')),
         ...wrapOrder(re['seqNo'])
       ]
     }),
-    companions: ['table:sop_template_task', 'table:sop_template_template_task']
+    companions: ['table:sop_template_task', 'table:sop_template_template_task', 'field:categorySeqNo']
   },
 
   // orderBy:status (do in frontend)
