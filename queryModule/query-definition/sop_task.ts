@@ -16,6 +16,8 @@ const shipmentTable = 'shipment'
 const shipmentDateTable = 'shipment_date'
 const shipmentPartyTable = 'shipment_party'
 
+const statusList = ['Dead', 'Due', 'Open', 'Not Ready', 'Done', 'Closed', 'Deleted']
+
 const query = new QueryDef({
   $from: new FromTable(taskTable,
     new JoinClause('LEFT', new FromTable(taskTable, 'parent'),
@@ -789,7 +791,8 @@ const shortcuts: IShortcut[] = [
         { $when: re['isStarted'], $then: new Value('Open') }
       ],
       new Value('Not Ready')
-    )
+    ),
+    registered: true
   },
 
   // field:statusAt
@@ -1193,7 +1196,12 @@ const shortcuts: IShortcut[] = [
   {
     type: 'orderBy',
     name: 'status',
-    expression: new Value(1)
+    queryArg: re => () => ({
+      $order: [
+        new OrderBy(new FunctionExpression('FIELD', re['status'], ...statusList.map(v => new Value(v)))),
+        ...wrapOrder(re['seqNo'])
+      ]
+    })
   },
 
   // orderBy:dueAt
