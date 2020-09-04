@@ -1202,7 +1202,8 @@ const shortcuts: IShortcut[] = [
     name: 'dueAt',
     queryArg: re => () => ({
       $order: [
-        ...wrapOrder(re['dueAt'])
+        ...wrapOrder(re['dueAt']),
+        ...wrapOrder(re['seqNo'])
       ]
     }),
   },
@@ -1213,9 +1214,10 @@ const shortcuts: IShortcut[] = [
     name: 'startAt',
     queryArg: re => () => ({
       $order: [
-        ...wrapOrder(re['startAt'])
+        new OrderBy(re['startAt']),
+        ...wrapOrder(re['seqNo'])
       ]
-    }),
+    })
   }
 ]
 
