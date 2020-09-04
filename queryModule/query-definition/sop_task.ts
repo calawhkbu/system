@@ -1,6 +1,6 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery, ParameterExpression } from "node-jql";
-import { IfExpression, alwaysTrueExpression, table, IfNullExpression } from 'utils/jql-subqueries'
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery, ParameterExpression, OrderBy } from "node-jql";
+import { IfExpression, alwaysTrueExpression, wrapOrder, IfNullExpression } from 'utils/jql-subqueries'
 import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityField, getEntityTable } from "utils/sop-task";
 import { IShortcut } from 'classes/query/Shortcut'
 
@@ -413,6 +413,7 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'seqNo',
     expression: re => IfExpression(new BinaryExpression(new ColumnExpression(taskTable, 'seqNo'), '=', new Value(0)), re['defaultSeqNo'], new ColumnExpression(taskTable, 'seqNo')),
+    registered: true,
     companions: ['table:sop_template_template_task']
   },
 
@@ -1173,6 +1174,48 @@ const shortcuts: IShortcut[] = [
     ]),
     companions: ['table:booking_party', 'table:shipment_party'],
     unknowns: { noOfUnknowns: 2 }
+  },
+
+  // orderBy:seqNo
+  {
+    type: 'orderBy',
+    name: 'seqNo',
+    queryArg: re => () => ({
+      $order: [
+        new OrderBy(re['category']),
+        ...wrapOrder(re['seqNo'])
+      ]
+    }),
+    companions: ['table:sop_template_task', 'table:sop_template_template_task']
+  },
+
+  // orderBy:status (do in frontend)
+  {
+    type: 'orderBy',
+    name: 'status',
+    expression: new Value(1)
+  },
+
+  // orderBy:dueAt
+  {
+    type: 'orderBy',
+    name: 'dueAt',
+    queryArg: re => () => ({
+      $order: [
+        ...wrapOrder(re['dueAt'])
+      ]
+    }),
+  },
+
+  // orderBy:dueAt
+  {
+    type: 'orderBy',
+    name: 'startAt',
+    queryArg: re => () => ({
+      $order: [
+        ...wrapOrder(re['startAt'])
+      ]
+    }),
   }
 ]
 
