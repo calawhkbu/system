@@ -179,6 +179,18 @@
                       "name": "amountOfInsurance",
                       "component": "v-text-field",
                       "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.picId",
+                      "name": "picId",
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.picEmail",
+                      "name": "picEmail",
+                      "component": "v-text-field",
+                      "class": "xs-12"
                     }
                   ]
                 }
@@ -304,9 +316,15 @@
                 "class": "xs-6 md-3"
               },
               {
+                "label": "ShipmentPage.picId",
+                "name": "picId",
+                "component": "v-text-field",
                 "class": "xs-6 md-3"
               },
               {
+                "label": "ShipmentPage.picEmail",
+                "name": "picEmail",
+                "component": "v-text-field",
                 "class": "xs-6 md-3"
               },
               {
