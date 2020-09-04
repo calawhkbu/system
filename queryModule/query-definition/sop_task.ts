@@ -1224,7 +1224,8 @@ const shortcuts: IShortcut[] = [
         new OrderBy(new FunctionExpression('FIELD', re['status'], ...statusList.map(v => new Value(v)))),
         ...wrapOrder(re['seqNo'])
       ]
-    })
+    }),
+    companions: ['table:sop_template_template_task']
   },
 
   // orderBy:dueAt
@@ -1237,6 +1238,7 @@ const shortcuts: IShortcut[] = [
         ...wrapOrder(re['seqNo'])
       ]
     }),
+    companions: ['table:sop_template_template_task']
   },
 
   // orderBy:dueAt
@@ -1248,7 +1250,8 @@ const shortcuts: IShortcut[] = [
         new OrderBy(re['startAt']),
         ...wrapOrder(re['seqNo'])
       ]
-    })
+    }),
+    companions: ['table:sop_template_template_task']
   }
 ]
 
