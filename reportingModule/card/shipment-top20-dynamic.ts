@@ -60,6 +60,9 @@ export default {
           "partyGroupCodeEq": {
             "value": user.partyGroupCode
           },
+          "isBranchEq":{
+            "value":1
+          },
           "groupByEntity": {
             "value": "id"
           }
