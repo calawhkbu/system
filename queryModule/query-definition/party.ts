@@ -35,6 +35,7 @@ const query = new QueryDef(
   })
 )
 
+
 query.table('partyType', new Query({
 
   $from: new FromTable('party', {
@@ -135,10 +136,14 @@ const baseTableName = 'party'
 
 const fieldList = [
   'id',
+'thirdPartyCode',
+'partyGroupCode',
   'erpCode',
   'name',
   'shortName',
   'groupName',
+  'isBranch',
+ 
   {
     name: 'showInfo',
     expression: showInfoExpression,
@@ -161,7 +166,7 @@ const fieldList = [
   {
     name: 'contacts',
     expression: contactsExpression
-  },
+  } 
 ] as ExpressionHelperInterface[]
 
 registerAll(query, baseTableName, fieldList)

@@ -24,6 +24,7 @@ export default {
             'latestRemark',
             'latestRemarkAt',
             'latestRemarkBy',
+            'seqNo',
             'system',
             'category',
             'group',
@@ -65,42 +66,6 @@ export default {
 
         // subqueries
         const { timezone } = user.configuration
-        if (params.subqueries.day) {
-          switch (params.subqueries.day.value) {
-            case 'day before yesterday':
-              params.subqueries.date = {
-                from: moment.tz(timezone).subtract(2, 'd').startOf('d').utc().format('YYYY-MM-DD HH:mm:ss'),
-                to: moment.tz(timezone).subtract(2, 'd').endOf('d').utc().format('YYYY-MM-DD HH:mm:ss')
-              }
-              break
-            case 'yesterday':
-              params.subqueries.date = {
-                from: moment.tz(timezone).subtract(1, 'd').startOf('d').utc().format('YYYY-MM-DD HH:mm:ss'),
-                to: moment.tz(timezone).subtract(1, 'd').endOf('d').utc().format('YYYY-MM-DD HH:mm:ss')
-              }
-              break
-            case 'day after tomorrow':
-              params.subqueries.date = {
-                from: moment.tz(timezone).add(2, 'd').startOf('d').utc().format('YYYY-MM-DD HH:mm:ss'),
-                to: moment.tz(timezone).add(2, 'd').endOf('d').utc().format('YYYY-MM-DD HH:mm:ss')
-              }
-              break
-            case 'tomorrow':
-              params.subqueries.date = {
-                from: moment.tz(timezone).add(1, 'd').startOf('d').utc().format('YYYY-MM-DD HH:mm:ss'),
-                to: moment.tz(timezone).add(1, 'd').endOf('d').utc().format('YYYY-MM-DD HH:mm:ss')
-              }
-              break
-            case 'today':
-            default:
-              params.subqueries.date = {
-                from: moment.tz(timezone).startOf('d').utc().format('YYYY-MM-DD HH:mm:ss'),
-                to: moment.tz(timezone).endOf('d').utc().format('YYYY-MM-DD HH:mm:ss')
-              }
-              break
-          }
-          delete params.subqueries.day
-        }
 
         if (!params.subqueries.date || rangeTooLarge(params.subqueries.date)) {
           throw new BadRequestException('DATE_RANGE_TOO_LARGE')

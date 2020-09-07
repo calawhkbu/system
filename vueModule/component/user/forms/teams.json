@@ -23,7 +23,7 @@
                   }
                 },
                 {
-                  "label": "InvitationPage.category",
+                  "label": "SopTask.category",
                   "name": "category",
                   "component": "FreeTextAutoSuggest",
                   "props": {

@@ -23,11 +23,9 @@ import {
   MathExpression,
   QueryExpression,
   ExistsExpression,
-  IQuery,
 } from 'node-jql'
-import { ExpressionHelperInterface, registerAll, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
-import { hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression } from 'utils/sop-task'
-import sopQuery from './sop_task'
+import { passSubquery, ExpressionHelperInterface, registerAll, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
+import { IShortcut } from 'classes/query/Shortcut'
 
 const partyList = [
 
@@ -744,89 +742,6 @@ query.table('alert', new Query({
   })
 )
 
-query.table(
-  'workflowJoin', new Query({
-
-    $from: new FromTable('booking', {
-      operator: 'LEFT',
-      table: new FromTable({
-        table: new Query({
-          $select: [
-            new ResultColumn(new ColumnExpression('workflow', 'tableName')),
-            new ResultColumn(new ColumnExpression('workflow', 'primaryKey')),
-            new ResultColumn(
-              new FunctionExpression('ANY_VALUE', new ColumnExpression('workflow', 'statusName')),
-              'lastStatus'
-            ),
-            new ResultColumn(
-              new FunctionExpression('ANY_VALUE', new ColumnExpression('workflow', 'statusDate')),
-              'lastStatusDate'
-            ),
-          ],
-
-          $from: new FromTable(
-            new Query({
-              $select: [
-                new ResultColumn(new ColumnExpression('workflow', 'tableName')),
-                new ResultColumn(new ColumnExpression('workflow', 'primaryKey')),
-                new ResultColumn(
-                  new FunctionExpression('MAX', new ColumnExpression('workflow', 'statusDate')),
-                  'lastStatusDate'
-                ),
-              ],
-              $from: new FromTable('workflow'),
-              $group: new GroupBy([
-                new ColumnExpression('workflow', 'tableName'),
-                new ColumnExpression('workflow', 'primaryKey'),
-                // new ColumnExpression('workflow', 'statusName'),
-              ]),
-            }),
-            't1',
-
-            {
-              operator: 'LEFT',
-              table: new FromTable('workflow', 'workflow'),
-
-              $on: [
-                new BinaryExpression(
-                  new ColumnExpression('t1', 'tableName'),
-                  '=',
-                  new ColumnExpression('workflow', 'tableName')
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('t1', 'lastStatusDate'),
-                  '=',
-                  new ColumnExpression('workflow', 'statusDate')
-                ),
-                new BinaryExpression(
-                  new ColumnExpression('t1', 'primaryKey'),
-                  '=',
-                  new ColumnExpression('workflow', 'primaryKey')
-                ),
-              ],
-            },
-          ),
-
-          $group: new GroupBy([
-            new ColumnExpression('workflow', 'tableName'),
-            new ColumnExpression('workflow', 'primaryKey'),
-          ]),
-        }),
-        $as: 'finalWorkflow',
-      }),
-      $on: [
-        new BinaryExpression(new ColumnExpression('finalWorkflow', 'tableName'), '=', 'booking'),
-        new BinaryExpression(
-          new ColumnExpression('finalWorkflow', 'primaryKey'),
-          '=',
-          new ColumnExpression('booking', 'id')
-        ),
-      ],
-    })
-
-  })
-)
-
 //  register date field
 const jobDateExpression = new ColumnExpression('booking', 'createdAt')
 
@@ -1074,6 +989,7 @@ const masterNoExpression = new FunctionExpression(
   bookingMasterNoExpression,
 )
 
+
 // all field related to party
 const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInterface[], party) => {
 
@@ -1202,7 +1118,8 @@ const fieldList = [
   {
 
     name : 'houseNo',
-    expression : houseNoExpression
+    expression : houseNoExpression,
+    companion : ['table:booking_reference']
   },
   {
 
@@ -1386,6 +1303,16 @@ const summaryFieldList : SummaryField[]  = [
     summaryType : 'sum',
     expression: new ColumnExpression('booking', 'cbm')
   },
+  {
+    name: 'teu',
+    summaryType : 'sum',
+    expression: new ColumnExpression('booking', 'teu')
+  },
+  {
+    name: 'volumeWeight',
+    summaryType : 'sum',
+    expression: new ColumnExpression('booking', 'volumeWeight')
+  },
 
   {
     name: 'grossWeight',
@@ -1397,6 +1324,21 @@ const summaryFieldList : SummaryField[]  = [
     name: 'chargeableWeight',
     summaryType : 'sum',
     expression: new ColumnExpression('booking', 'chargeableWeight')
+  },
+  {
+    name: 'container20',
+    summaryType : 'sum',
+    expression: new ColumnExpression('booking', 'container20')
+  },
+  {
+    name: 'container40',
+    summaryType : 'sum',
+    expression: new ColumnExpression('booking', 'container40')
+  },
+  {
+    name: 'containerHQ',
+    summaryType : 'sum',
+    expression: new ColumnExpression('booking', 'containerHQ')
   }
 ]
 
@@ -1498,7 +1440,39 @@ const dateList = [
 registerAllDateField(query,'booking_date',dateList)
 
 // ----------------- filter in main filter menu
-
+query.register('containerNoLike', new Query({
+  $where: new InExpression(
+    new ColumnExpression('booking', 'id'),
+    false,
+    new Query({
+      $select: [new ResultColumn('bookingId')],
+      $from: new FromTable('booking_container'),
+      $where: new RegexpExpression(new ColumnExpression('booking_container', 'containerNo'), false)
+    })
+  )
+})).register('value', 0)
+query.register('soNoLike', new Query({
+  $where: new InExpression(
+    new ColumnExpression('booking', 'id'),
+    false,
+    new Query({
+      $select: [new ResultColumn('bookingId')],
+      $from: new FromTable('booking_container'),
+      $where: new RegexpExpression(new ColumnExpression('booking_container', 'soNo'), false)
+    })
+  )
+})).register('value', 0)
+query.register('sealNoLike', new Query({
+  $where: new InExpression(
+    new ColumnExpression('booking', 'id'),
+    false,
+    new Query({
+      $select: [new ResultColumn('bookingId')],
+      $from: new FromTable('booking_container'),
+      $where: new RegexpExpression(new ColumnExpression('booking_container', 'sealNo'), false)
+    })
+  )
+})).register('value', 0)
 query
   .register(
     'q',
@@ -1554,6 +1528,7 @@ query
               $where: new OrExpressions({
                 expressions: [
                   new RegexpExpression(new ColumnExpression('booking_container', 'containerNo'), false),
+                  // new RegexpExpression(new ColumnExpression('booking_container', 'soNo'), false),
                   new RegexpExpression(new ColumnExpression('booking_container', 'sealNo'), false),
                 ]
               })
@@ -1609,6 +1584,10 @@ query
   .register('value', 29)
   .register('value', 30)
 
+function sopTaskQuery(): QueryDef {
+  return require('./sop_task').default
+}
+
 function addBookingCheck(query: Query) {
   if (!query.$where) {
     query.$where = new AndExpressions([])
@@ -1618,126 +1597,206 @@ function addBookingCheck(query: Query) {
     new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
     new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
   )
+  return query
 }
 
-// @field noOfTasks
-// number of outstanding tasks
-query.field('noOfTasks', params => {
-  const noOfTasksQuery = sopQuery.apply({
-    fields: ['noOfTasks'],
-    subqueries: { notDeleted: true, notDone: true, notSubTask: true }
-  })
-  addBookingCheck(noOfTasksQuery)
-  return {
-    $select: new ResultColumn(new QueryExpression(noOfTasksQuery), 'noOfTasks')
-  }
-})
+const shortcuts: IShortcut[] = [
+  // field:isClosed
+  {
+    type: 'field',
+    name: 'isClosed',
+    expression: new IsNullExpression(new ColumnExpression('booking', 'sopScore'), true),
+    registered: true
+  },
 
-// @field sopScore
-// sop score field
-query.field('sopScore', params => {
-  const query = sopQuery.apply({
-    fields: ['deduct'],
-    subqueries: { notDeleted: true }
-  })
-  addBookingCheck(query)
-  return {
-    $select: new ResultColumn(IfExpression(
-      new IsNullExpression(new ColumnExpression('booking', 'sopScore'), true), // TODO booking status is closed
+  // field:noOfTasks
+  {
+    type: 'field',
+    name: 'noOfTasks',
+    queryArg: () => params => ({
+      $select: new ResultColumn(
+        new QueryExpression(
+          addBookingCheck(sopTaskQuery().apply({
+            fields: ['count'],
+            subqueries: {
+              ...passSubquery(params, 'sop_user', 'user'),
+              ...passSubquery(params, 'sop_partyGroupCode', 'partyGroupCode'),
+              ...passSubquery(params, 'sop_team', 'team'),
+              ...passSubquery(params, 'sop_today', 'today'),
+              ...passSubquery(params, 'sop_date', 'date'),
+              ...passSubquery(params, 'notDone'),
+              ...passSubquery(params, 'notDeleted')
+            }
+          }))
+        ),
+        'noOfTasks'
+      )
+    })
+  },
+
+  // field:sopScore (0-100)
+  {
+    type: 'field',
+    name: 'sopScore',
+    expression: re => IfExpression(
+      re['isClosed'],
       new ColumnExpression('booking', 'sopScore'),
-      new MathExpression(new Value(100), '-', IfNullExpression(new QueryExpression(query), new Value(0)))
-    ), 'sopScore')
+      new FunctionExpression('GREATEST', new Value(0), new MathExpression(new Value(100), '-', IfNullExpression(
+        new QueryExpression(
+          addBookingCheck(sopTaskQuery().apply({
+            fields: ['deduct'],
+            subqueries: { notDeleted: true }
+          }))
+        ),
+        new Value(0)
+      )))
+    ),
+    registered: true
+  },
+
+  // field:hasDueTasks
+  {
+    type: 'field',
+    name: 'hasDueTasks',
+    expression: new ExistsExpression(
+      addBookingCheck(
+        sopTaskQuery().apply({
+          fields: ['deduct'],
+          subqueries: {
+            notDeleted: true,
+            notDone: true,
+            isDue: true
+          }
+        })
+      ),
+      false
+    ),
+    registered: true
+  },
+
+  // field:hasDeadTasks
+  {
+    type: 'field',
+    name: 'hasDeadTasks',
+    expression: new ExistsExpression(
+      addBookingCheck(
+        sopTaskQuery().apply({
+          fields: ['deduct'],
+          subqueries: {
+            notDeleted: true,
+            notDone: true,
+            isDead: true
+          }
+        })
+      ),
+      false
+    ),
+    registered: true
+  },
+
+  // subquery:sop_date (has tasks within the given period)
+  {
+    type: 'subquery',
+    name: 'sop_date',
+    subqueryArg: () => (value, params) => new ExistsExpression(
+      addBookingCheck(
+        sopTaskQuery().apply({
+          subqueries: {
+            ...passSubquery(params, 'sop_date', 'date'),
+            ...passSubquery(params, 'notDone'),
+            ...passSubquery(params, 'notDeleted'),
+          }
+        })
+      ),
+      false
+    )
+  },
+
+  // subquery:notClosed
+  {
+    type: 'subquery',
+    name: 'notClosed',
+    expression: re => new BinaryExpression(re['isClosed'], '<>', new Value(1))
+  },
+
+  // subquery:sopScore
+  {
+    type: 'subquery',
+    name: 'sopScore',
+    expression: re => new AndExpressions([
+      new BinaryExpression(new Unknown(), '<=', re['sopScore']),
+      new BinaryExpression(re['sopScore'], '<=', new Unknown())
+    ]),
+    unknowns: { fromTo: true }
+  },
+
+  // subquery:pic
+  {
+    type: 'subquery',
+    name: 'pic',
+    expression: new BinaryExpression(new ColumnExpression('booking', 'picEmail'), '=', new Unknown()),
+    unknowns: true
+  },
+
+  // subquery:team
+  {
+    type: 'subquery',
+    name: 'team',
+    expression: new InExpression(new ColumnExpression('booking', 'team'), false, new Unknown()),
+    unknowns: true
+  },
+
+  // subquery:myTasksOnly
+  {
+    type: 'subquery',
+    name: 'myTasksOnly',
+    subqueryArg: () => (value, params) => ({
+      $where: new ExistsExpression(addBookingCheck(
+        sopTaskQuery().apply({
+          distinct: true,
+          fields: ['id'],
+          subqueries: {
+            ...passSubquery(params, 'sop_user', 'user'),
+            ...passSubquery(params, 'sop_partyGroupCode', 'partyGroupCode'),
+            ...passSubquery(params, 'sop_team', 'team'),
+            ...passSubquery(params, 'sop_today', 'today'),
+            ...passSubquery(params, 'sop_date', 'date'),
+            ...passSubquery(params, 'notDone'),
+            ...passSubquery(params, 'notDeleted'),
+            notSubTask: true
+          }
+        })
+      ), false)
+    })
+  },
+
+  // subquery:hasDueTasks
+  {
+    type: 'subquery',
+    name: 'hasDueTasks',
+    expression: re => new BinaryExpression(re['hasDueTasks'], '=', new Value(1))
+  },
+
+  // subquery:noDueTasks
+  {
+    type: 'subquery',
+    name: 'noDueTasks',
+    expression: re => new BinaryExpression(re['hasDueTasks'], '=', new Value(0))
+  },
+
+  // subquery:hasDeadTasks
+  {
+    type: 'subquery',
+    name: 'hasDeadTasks',
+    expression: re => new BinaryExpression(re['hasDeadTasks'], '=', new Value(1))
+  },
+
+  // subquery:noDeadTasks
+  {
+    type: 'subquery',
+    name: 'noDeadTasks',
+    expression: re => new BinaryExpression(re['hasDeadTasks'], '=', new Value(0))
   }
-})
+]
 
-// @subquery hasDueTasks
-// return bookings with due tasks
-const dueTasksQuery = sopQuery.apply({
-  fields: ['deduct'],
-  subqueries: {
-    notDeleted: true,
-    notClosed: true,
-    notDone: true,
-    isDue: true
-  }
-})
-addBookingCheck(dueTasksQuery)
-query.subquery('hasDueTasks', {
-  $where: new ExistsExpression(dueTasksQuery, false)
-})
-
-// @subquery noDueTasks
-// return bookings without due tasks
-query.subquery('noDueTasks', {
-  $where: new ExistsExpression(dueTasksQuery, true)
-})
-
-// @subquery hasDeadTasks
-// return bookings with dead tasks
-const deadTasksQuery = sopQuery.apply({
-  fields: ['deduct'],
-  subqueries: {
-    notDeleted: true,
-    notClosed: true,
-    notDone: true,
-    isDead: true
-  }
-})
-addBookingCheck(deadTasksQuery)
-query.subquery('hasDeadTasks', {
-  $where: new ExistsExpression(deadTasksQuery, false)
-})
-
-// @subquery noDeadTasks
-// return bookings without dead tasks
-query.subquery('noDeadTasks', {
-  $where: new ExistsExpression(deadTasksQuery, true)
-})
-
-// @field noOfOutstandingTasks
-query.field('noOfOutstandingTasks', params => {
-  let subqueries: any = { tableName: { value: 'booking' }, notSubTask: true }
-  if (params.subqueries.sop_user) subqueries.user = params.subqueries.sop_user
-  if (params.subqueries.sop_partyGroupCode) subqueries.partyGroupCode = params.subqueries.sop_partyGroupCode
-  if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
-  if (params.subqueries.sop_today) subqueries.today = params.subqueries.sop_today
-  if (params.subqueries.sop_date) subqueries.date = params.subqueries.sop_date
-  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
-  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
-  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
-  const query = sopQuery.apply({
-    fields: ['count'],
-    subqueries
-  })
-  addBookingCheck(query)
-  return {
-    $select: new ResultColumn(new QueryExpression(query), 'noOfOutstandingTasks')
-  }
-})
-
-// @subquery myTasksOnly
-query.subquery('myTasksOnly', (value, params) => {
-  let subqueries: any = {
-    tableName: { value: 'booking' },
-    notSubTask: true,
-    user: params.subqueries.sop_user,
-    partyGroupCode: params.subqueries.sop_partyGroupCode,
-    today: params.subqueries.sop_today,
-    date: params.subqueries.sop_date
-  }
-  if (params.subqueries.sop_teams) subqueries.teams = params.subqueries.sop_teams
-  if (params.subqueries.notDone) subqueries.notDone = params.subqueries.notDone
-  if (params.subqueries.notClosed) subqueries.notClosed = params.subqueries.notClosed
-  if (params.subqueries.notDeleted) subqueries.notDeleted = params.subqueries.notDeleted
-  const query = sopQuery.apply({
-    distinct: true,
-    fields: ['id'],
-    subqueries
-  })
-  addBookingCheck(query)
-  return {
-    $where: new ExistsExpression(query, false)
-  }
-})
-
-export default query
+export default query.useShortcuts(shortcuts)

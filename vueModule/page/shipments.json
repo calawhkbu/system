@@ -3,6 +3,7 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "i18nContext": "ShipmentPage",
       "title": "Shipment",
       "reportingKey": "shipments",
       "jql": "shipments",
@@ -461,6 +462,11 @@
         {
           "key" : "haveDocument_HBL Original",
           "label": "haveDocument_HBL Original",
+          "boolean" : true
+        },
+        {
+          "key" : "haveDocument_HBL Telex released",
+          "label": "haveDocument_HBL Telex released",
           "boolean" : true
         },
         {

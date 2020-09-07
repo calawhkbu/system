@@ -1,11 +1,12 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery } from "node-jql";
-import { IfExpression, alwaysTrueExpression, table, IfNullExpression } from 'utils/jql-subqueries'
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery, ParameterExpression, OrderBy } from "node-jql";
+import { IfExpression, alwaysTrueExpression, wrapOrder, IfNullExpression } from 'utils/jql-subqueries'
 import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityField, getEntityTable } from "utils/sop-task";
 import { IShortcut } from 'classes/query/Shortcut'
 
 const taskTable = 'sop_task'
 const templateTaskTable = 'sop_template_task'
+const templateTemplateTaskTable = 'sop_template_template_task'
 const selectedTemplateTable = 'sop_selected_template'
 const templateTable = 'sop_template'
 const bookingTable = 'booking'
@@ -14,6 +15,8 @@ const bookingPartyTable = 'booking_party'
 const shipmentTable = 'shipment'
 const shipmentDateTable = 'shipment_date'
 const shipmentPartyTable = 'shipment_party'
+
+const statusList = ['Dead', 'Due', 'Open', 'Not Ready', 'Done', 'Closed', 'Deleted']
 
 const query = new QueryDef({
   $from: new FromTable(taskTable,
@@ -126,6 +129,21 @@ const shortcuts: IShortcut[] = [
     })
   },
 
+  // table:sop_template_template_task
+  {
+    type: 'table',
+    name: 'sop_template_template_task',
+    queryArg: re => params => ({
+      $from: new FromTable(taskTable, new JoinClause('LEFT', templateTemplateTaskTable,
+        new AndExpressions([
+          new BinaryExpression(new ColumnExpression(templateTaskTable, 'id'), '=', new ColumnExpression(templateTemplateTaskTable, 'taskId')),
+          new BinaryExpression(new ColumnExpression(templateTable, 'id'), '=', new ColumnExpression(templateTemplateTaskTable, 'templateId'))
+        ])
+      ))
+    }),
+    companions: ['table:sop_template_task', 'table:sop_template']
+  },
+
   // table:sop_template
   {
     type: 'table',
@@ -147,13 +165,6 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
-  // field:id
-  {
-    type: 'field',
-    name: 'noOfTasks',
-    expression: re => new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', re['id']))
-  },
-
   // field:tableName
   {
     type: 'field',
@@ -167,14 +178,6 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'primaryKey',
     expression: new ColumnExpression(taskTable, 'primaryKey'),
-    registered: true
-  },
-
-  // field:seqNo
-  {
-    type: 'field',
-    name: 'seqNo',
-    expression: new ColumnExpression(taskTable, 'seqNo'),
     registered: true
   },
 
@@ -226,6 +229,13 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
+  // field:startAtLocale
+  {
+    type: 'field',
+    name: 'startAtLocale',
+    expression: new ColumnExpression(taskTable, 'startAtLocale')
+  },
+
   // field:calculatedDueAt
   {
     type: 'field',
@@ -240,6 +250,13 @@ const shortcuts: IShortcut[] = [
     name: 'inputDueAt',
     expression: new ColumnExpression(taskTable, 'inputDueAt'),
     registered: true
+  },
+
+  // field:dueAtLocale
+  {
+    type: 'field',
+    name: 'dueAtLocale',
+    expression: new ColumnExpression(taskTable, 'dueAtLocale')
   },
 
   // field:dueScore
@@ -264,6 +281,13 @@ const shortcuts: IShortcut[] = [
     name: 'inputDeadline',
     expression: new ColumnExpression(taskTable, 'inputDeadline'),
     registered: true
+  },
+
+  // field:deadlineLocale
+  {
+    type: 'field',
+    name: 'deadlineLocale',
+    expression: new ColumnExpression(taskTable, 'deadlineLocale')
   },
 
   // field:deadlineScore
@@ -375,6 +399,47 @@ const shortcuts: IShortcut[] = [
     expression: new ColumnExpression(templateTable, 'group'),
     registered: true,
     companions: ['table:sop_template']
+  },
+
+  // field:defaultSeqNo
+  {
+    type: 'field',
+    name: 'defaultSeqNo',
+    expression: new ColumnExpression(templateTemplateTaskTable, 'seqNo'),
+    registered: true,
+    companions: ['table:sop_template_template_task']
+  },
+
+  // field:seqNo
+  {
+    type: 'field',
+    name: 'seqNo',
+    expression: re => IfExpression(new BinaryExpression(new ColumnExpression(taskTable, 'seqNo'), '=', new Value(0)), re['defaultSeqNo'], new ColumnExpression(taskTable, 'seqNo')),
+    registered: true,
+    companions: ['table:sop_template_template_task']
+  },
+
+  // field:categorySeqNo
+  {
+    type: 'field',
+    name: 'categorySeqNo',
+    expression: re => new QueryExpression(new Query({
+      $select: new ResultColumn(new ColumnExpression('temp_template', 'seqNo'), 'seqNo'),
+      $from: new FromTable(templateTable, 'temp_template', new JoinClause('LEFT', new FromTable(selectedTemplateTable, 'temp_selected_template'), new AndExpressions([
+        new BinaryExpression(new ColumnExpression('temp_selected_template', 'templateId'), '=', new ColumnExpression('temp_template', 'id')),
+        new IsNullExpression(new ColumnExpression('temp_selected_template', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('temp_selected_template', 'deletedBy'), false)
+      ]))),
+      $where: [
+        new BinaryExpression(new ColumnExpression('temp_selected_template', 'tableName'), '=', re['tableName']),
+        new BinaryExpression(new ColumnExpression('temp_selected_template', 'primaryKey'), '=', re['primaryKey']),
+        new IsNullExpression(new ColumnExpression('temp_template', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('temp_template', 'deletedBy'), false),
+        new BinaryExpression(new ColumnExpression('temp_template', 'category'), '=', re['category'])
+      ],
+      $limit: 1
+    })),
+    companions: ['table:sop_template_task']
   },
 
   // field:count
@@ -644,6 +709,27 @@ const shortcuts: IShortcut[] = [
     }
   },
 
+  // field:isStarted
+  {
+    type: 'field',
+    name: 'isStarted',
+    expression: re => new OrExpressions([
+      new IsNullExpression(re['startAt'], false),
+      new BinaryExpression(re['startAt'], '<=', new FunctionExpression('UTC_TIMESTAMP'))
+    ]),
+    registered: true
+  },
+
+  // field:startDays
+  {
+    type: 'field',
+    name: 'startDays',
+    expression: re => IfNullExpression(
+      new FunctionExpression('GREATEST', new FunctionExpression('DATEDIFF', new FunctionExpression('UTC_TIMESTAMP'), re['startAt']), new Value(0)),
+      new Value(0)
+    )
+  },
+
   // field:isDone
   {
     type: 'field',
@@ -652,22 +738,21 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
+  // field:dueDays
+  {
+    type: 'field',
+    name: 'dueDays',
+    expression: re => IfNullExpression(
+      new FunctionExpression('GREATEST', new FunctionExpression('DATEDIFF', new FunctionExpression('UTC_TIMESTAMP'), re['dueAt']), new Value(0)),
+      new Value(0)
+    )
+  },
+
   // field:isDue
   {
     type: 'field',
     name: 'isDue',
-    expression: re => new BinaryExpression(re['dueAt'], '<', new FunctionExpression('UTC_TIMESTAMP')),
-    registered: true
-  },
-
-  // field:isStarted
-  {
-    type: 'field',
-    name: 'isStarted',
-    expression: re => new OrExpressions([
-      new IsNullExpression(re['startAt'], false),
-      new BinaryExpression(re['startAt'], '<', new FunctionExpression('UTC_TIMESTAMP'))
-    ]),
+    expression: re => new BinaryExpression(re['dueAt'], '<=', new FunctionExpression('UTC_TIMESTAMP')),
     registered: true
   },
 
@@ -695,7 +780,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'isDead',
-    expression: re => new BinaryExpression(re['deadline'], '<', new FunctionExpression('UTC_TIMESTAMP')),
+    expression: re => new BinaryExpression(re['deadline'], '<=', new FunctionExpression('UTC_TIMESTAMP')),
     registered: true
   },
 
@@ -729,7 +814,8 @@ const shortcuts: IShortcut[] = [
         { $when: re['isStarted'], $then: new Value('Open') }
       ],
       new Value('Not Ready')
-    )
+    ),
+    registered: true
   },
 
   // field:statusAt
@@ -784,7 +870,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'partyGroupCode',
     expression: re => new BinaryExpression(re['partyGroupCode'], '=', new Unknown()),
-    unknowns: [['value', 0]],
+    unknowns: true,
     companions: ['table:sop_template_task']
   },
 
@@ -793,7 +879,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'tableName',
     expression: re => new BinaryExpression(re['tableName'], '=', new Unknown()),
-    unknowns: [['value', 0]]
+    unknowns: true
   },
 
   // subquery:primaryKey
@@ -801,7 +887,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'primaryKey',
     expression: re => new BinaryExpression(re['primaryKey'], '=', new Unknown()),
-    unknowns: [['value', 0]]
+    unknowns: true
   },
 
   // subquery:bookingNo
@@ -809,7 +895,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'bookingNo',
     expression: re => new BinaryExpression(re['bookingNo'], '=', new Unknown()),
-    unknowns: [['value', 0]],
+    unknowns: true,
     companions: ['table:booking']
   },
 
@@ -820,14 +906,14 @@ const shortcuts: IShortcut[] = [
     expression: re => new AndExpressions([
       new OrExpressions([
         new IsNullExpression(re['startAt'], false),
-        new BinaryExpression(re['startAt'], '<', new Unknown())
+        new BinaryExpression(re['startAt'], '<=', new Unknown())
       ]),
       new OrExpressions([
         new IsNullExpression(re['deadline'], false),
-        new BinaryExpression(new Unknown(), '<', re['deadline'])
+        new BinaryExpression(new Unknown(), '<=', re['deadline'])
       ])
     ]),
-    unknowns: [['from', 0], ['to', 1]],
+    unknowns: { fromTo: true },
   },
 
   // subquery:teams
@@ -991,14 +1077,182 @@ const shortcuts: IShortcut[] = [
     })
   },
 
+  // subquery:category
+  {
+    type: 'subquery',
+    name: 'category',
+    expression: re => new BinaryExpression(re['category'], '=', new Unknown()),
+    unknowns: true,
+    companions: ['table:sop_template_task']
+  },
+
+  // subquery:pic
+  {
+    type: 'subquery',
+    name: 'pic',
+    expression: new OrExpressions([
+      new BinaryExpression(new ColumnExpression(bookingPartyTable, 'picEmail'), '=', new Unknown()),
+      new BinaryExpression(new ColumnExpression(shipmentPartyTable, 'picEmail'), '=', new Unknown())
+    ]),
+    companions: ['table:booking', 'table:shipment'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
+  // subquery:team
+  {
+    type: 'subquery',
+    name: 'team',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'team'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'team'), false, new Unknown())
+    ]),
+    companions: ['table:booking', 'table:shipment'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
   // subquery:activeStatus
   {
     type: 'subquery',
     name: 'activeStatus',
     expression: re => new BinaryExpression(IfExpression(new BinaryExpression(re['isDeleted'], '=', new Value(1)), new Value('deleted'), new Value('active')), '=', new Unknown()),
-    unknowns: [['value', 0]]
+    unknowns: true
+  },
+
+  // subquery:shipperPartyId
+  {
+    type: 'subquery',
+    name: 'shipperPartyId',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'shipperPartyId'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'shipperPartyId'), false, new Unknown())
+    ]),
+    companions: ['table:booking_party', 'table:shipment_party'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
+  // subquery:consigneePartyId
+  {
+    type: 'subquery',
+    name: 'consigneePartyId',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'consigneePartyId'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'consigneePartyId'), false, new Unknown())
+    ]),
+    companions: ['table:booking_party', 'table:shipment_party'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
+  // subquery:officePartyId
+  {
+    type: 'subquery',
+    name: 'officePartyId',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'officePartyId'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'officePartyId'), false, new Unknown())
+    ]),
+    companions: ['table:booking_party', 'table:shipment_party'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
+  // subquery:agentPartyId
+  {
+    type: 'subquery',
+    name: 'agentPartyId',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'agentPartyId'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'agentPartyId'), false, new Unknown())
+    ]),
+    companions: ['table:booking_party', 'table:shipment_party'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
+  // subquery:roAgentPartyId
+  {
+    type: 'subquery',
+    name: 'roAgentPartyId',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'roAgentPartyId'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'roAgentPartyId'), false, new Unknown())
+    ]),
+    companions: ['table:booking_party', 'table:shipment_party'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
+  // subquery:linerAgentPartyId
+  {
+    type: 'subquery',
+    name: 'linerAgentPartyId',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'linerAgentPartyId'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'linerAgentPartyId'), false, new Unknown())
+    ]),
+    companions: ['table:booking_party', 'table:shipment_party'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
+  // subquery:controllingCustomerPartyId
+  {
+    type: 'subquery',
+    name: 'controllingCustomerPartyId',
+    expression: new OrExpressions([
+      new InExpression(new ColumnExpression(bookingPartyTable, 'controllingCustomerPartyId'), false, new Unknown()),
+      new InExpression(new ColumnExpression(shipmentPartyTable, 'controllingCustomerPartyId'), false, new Unknown())
+    ]),
+    companions: ['table:booking_party', 'table:shipment_party'],
+    unknowns: { noOfUnknowns: 2 }
+  },
+
+  // orderBy:seqNo
+  {
+    type: 'orderBy',
+    name: 'seqNo',
+    queryArg: re => () => ({
+      $order: [
+        ...wrapOrder(new ColumnExpression('categorySeqNo')),
+        ...wrapOrder(re['seqNo'])
+      ]
+    }),
+    companions: ['table:sop_template_task', 'table:sop_template_template_task', 'field:categorySeqNo']
+  },
+
+  // orderBy:status (do in frontend)
+  {
+    type: 'orderBy',
+    name: 'status',
+    queryArg: re => () => ({
+      $order: [
+        new OrderBy(new FunctionExpression('FIELD', re['status'], ...statusList.map(v => new Value(v)))),
+        ...wrapOrder(re['seqNo'])
+      ]
+    }),
+    companions: ['table:sop_template_template_task']
+  },
+
+  // orderBy:dueAt
+  {
+    type: 'orderBy',
+    name: 'dueAt',
+    queryArg: re => () => ({
+      $order: [
+        ...wrapOrder(re['dueAt']),
+        ...wrapOrder(re['seqNo'])
+      ]
+    }),
+    companions: ['table:sop_template_template_task']
+  },
+
+  // orderBy:dueAt
+  {
+    type: 'orderBy',
+    name: 'startAt',
+    queryArg: re => () => ({
+      $order: [
+        new OrderBy(re['startAt']),
+        ...wrapOrder(re['seqNo'])
+      ]
+    }),
+    companions: ['table:sop_template_template_task']
   }
 ]
 
-export default query
 export default query.useShortcuts(shortcuts)

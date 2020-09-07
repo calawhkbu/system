@@ -3,6 +3,7 @@
   "components": [{
     "is": "TableTool",
     "props": {
+      "i18nContext": "AlertPage",
       "reportingKey": "alerts",
       "jql": "alerts",
       "hasReports": true,
@@ -12,8 +13,7 @@
       "noPartyGroupFilters": false,
       "newReport": {
         "filters": {
-
-          "alertStatus" : {
+          "alertStatus": {
             "value": "open"
           },
           "activeStatus": {
@@ -33,7 +33,7 @@
         },
         "configurations": {
           "checkbox": {},
-          "i18nContext": "Alert",
+          "i18nContext": "AlertPage",
           "clickable": true,
           "draggable": true,
           "sorting": {
@@ -52,8 +52,7 @@
           }
         }
       },
-      "fieldOptions": [
-        {
+      "fieldOptions": [{
           "key": "alertId",
           "hidden": true
         },
@@ -71,23 +70,46 @@
           "hidden": true
         },
         {
+          "width": 350,
           "key": "alertTitle",
-          "label" : "alertMessage",
+          "label": "alertTitle",
           "i18nContext": "Alert",
           "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
         },
         {
+          "width": 350,
           "key": "alertMessage",
-          "label" : "alertMessage",
+          "label": "alertMessage",
           "i18nContext": "Alert",
           "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
         },
         {
+          "width": 65,
+          "key": "alertSeverity"
+        },
+        {
+          "width": 65,
+          "key": "alertStatus"
+        },
+        {
+          "width": 75,
           "key": "alertCategory"
         },
         {
+          "key": "houseNo"
+        },
+        {
+          "key": "jobNo"
+        },
+        {
+          "key": "masterNo"
+        },
+        {
+          "key": "bookingNo"
+        },
+        {
           "key": "alertType",
-          "hiddne": true
+          "hidden": true
         },
         {
           "key": "alertContent",
@@ -209,8 +231,7 @@
     "scopedSlots": [{
       "name": "middle-button",
       "is": "ReportHandleAlertDialogButton",
-      "props": {
-      }
+      "props": {}
     }]
   }]
 }

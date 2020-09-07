@@ -134,49 +134,6 @@
                   "checkDisplayWhen": "return form && form.bookingParty && form.bookingParty.{{flex}}{{key}}PartyContactEmail"
                 },
                 {
-                  "label": "Widget.inviteEmail",
-                  "name": "bookingParty.{{flex}}{{key}}PartyContactEmail",
-                  "component": "button-field",
-                  "readonlyClass": "xs-2",
-                  "checkDisplayWhen": "return form && form.bookingParty && form.bookingParty.{{flex}}{{key}}PartyContactEmail",
-                  "slots": [{
-                    "is": "Icon",
-                    "props": {
-                      "icon": "email"
-                    }
-                  }],
-                  "props": {
-                    "flat": true,
-                    "icon": true,
-                    "events": {
-                      "click.stop": [{
-                        "type": "axios",
-                        "otherParams": {
-                          "axiosParams": {
-                            "url": "/api/invitation/invite/invite",
-                            "method": "POST",
-                            "data": {
-                              "entityId": "{{context.$store.state.widget.id}}",
-                              "tableName": "shipment",
-                              "partyId": ["{{ '`${args[0]}${args[1]}PartyId`'  | calculate(flex,key) | getFrom(context.$store.state.widget.data)}}"],
-                              "partyType": ["{{key}}"],
-                              "person": {
-                                "userName": "{{ context.fixValue }}"
-                              }
-                            }
-                          }
-                        },
-                        "afterActions": [{
-                          "type": "notify",
-                          "otherParams": {
-                            "notification": "invite success"
-                          }
-                        }]
-                      }]
-                    }
-                  }
-                },
-                {
                   "label": "Widget.contactPhone",
                   "name": "bookingParty.{{flex}}{{key}}PartyContactPhone",
                   "component": "v-text-field",
@@ -188,7 +145,6 @@
                   "component": "TableField",
                   "class": "xs-12",
                   "props": {
-                    "overrideRowIndex": 1,
                     "fields": [{
                         "label": "Widget.contactXName",
                         "name": "Name",

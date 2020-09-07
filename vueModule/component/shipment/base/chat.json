@@ -4,7 +4,8 @@
     "props": {
       "class": "xs-12 margin-topbottom-2",
       "layoutName": "plugins/chat",
-      "axiosBaseParams": false
+      "axiosBaseParams": false,
+      "tableName": "shipment"
     }
   }]
 }

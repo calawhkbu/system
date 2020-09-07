@@ -1,7 +1,7 @@
 import { BaseEvent } from 'modules/events/base-event'
 import { EventService, EventConfig } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
-import { Transaction, Sequelize } from 'sequelize'
+import { Transaction, Sequelize, QueryTypes } from 'sequelize'
 import moment = require('moment')
 
 import { Tracking } from 'models/main/tracking'
@@ -83,7 +83,7 @@ class TrackingUpdateDataEvent extends BaseEvent {
       ) entity ON entity.id = base.primaryKey
     `, {
       raw: true,
-      type: Sequelize.QueryTypes.SELECT,
+      type: QueryTypes.SELECT,
       transaction: this.transaction,
       replacements: { trackingNos: [masterNo].concat(soNo || [], containerNo || []), partyGroupCode }
     })
