@@ -301,53 +301,53 @@ a[x-apple-data-detectors=true] {
                       <p style="margin: 0;font-size: 12px;line-height: 18px;text-align: left">
                         <table class="e_table">
                           <tr class="e_tr" style="background-color: #85C1E9;">
-                            <td class="e_td">Job No.</td>
+                            <td class="e_td">作業號碼</td>
                             <td class="e_td e_td2">{{entity.jobNo}}</td>
                           </tr>
                           <tr class="e_tr">
-                            <td class="e_td">House No.</td>
+                            <td class="e_td">提單號碼</td>
                             <td class="e_td e_td2">{{entity.houseNo}}</td>
                           </tr>
                           <tr class="e_tr">
-                            <td class="e_td">Master No.</td>
+                            <td class="e_td">主單號碼</td>
                             <td class="e_td e_td2">{{entity.masterNo}}</td>
                           </tr>
                           <tr class="e_tr">
-                            <td class="e_td">PO No.</td>
+                            <td class="e_td">訂單號碼</td>
                             <td class="e_td e_td2">{{entity.poNos}}</td>
                           </tr>
                           <tr class="e_tr">
-                            <td class="e_td">Shipment Date</td>
+                            <td class="e_td">船運日期</td>
                             <td class="e_td e_td2">{% if entity.shipmentDate && entity.shipmentDate.estimatedArrivalDate %} {{entity.shipmentDate.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
                           </tr>
                            <tr class="e_tr">
-                            <td class="e_td">Loading from</td>
+                            <td class="e_td">裝貨港</td>
                             <td class="e_td e_td2">{% if entity.portOfLoading && entity.portOfLoading.name %} {{entity.portOfLoading.name }} {% endif %}</td>
                           </tr>
                           <tr class="e_tr">
-                            <td class="e_td">Discharge at</td>
+                            <td class="e_td">卸貨港</td>
                             <td class="e_td e_td2">{% if entity.portOfDischarge && entity.portOfDischarge.name %} {{entity.portOfDischarge.name }} {% endif %}</td>
                           </tr>
                           {% if entity.finalDestinationName %}
                           <tr class="e_tr">
-                            <td class="e_td">Destination</td>
+                            <td class="e_td">目的地</td>
                             <td class="e_td e_td2">{{entity.finalDestinationName}}</td>
                           </tr>
                           {% endif %}
                           <tr class="e_tr">
-                            <td class="e_td">Shipper</td>
+                            <td class="e_td">發貨人</td>
                             <td class="e_td e_td2">{{entity.shipmentParty.shipperPartyName}}</td>
                           </tr>
                           <tr class="e_tr">
-                            <td class="e_td">Consignee</td>
+                            <td class="e_td">收貨人</td>
                             <td class="e_td e_td2">{% if entity.shipmentDate && entity.shipmentDate.estimatedArrivalDate %}{{entity.shipmentDate.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
                           </tr>
                           <tr class="e_tr">
-                            <td class="e_td">Commodity</td>
+                            <td class="e_td">商品</td>
                             <td class="e_td e_td2">{{entity.commodity}}</td>
                           </tr>
                           <tr class="e_tr">
-                            <td class="e_td">Container No.</td>
+                            <td class="e_td">櫃號</td>
                             <td class="e_td e_td2">{{entity.containerNos}}</td>
                           </tr>
                          </table>
@@ -357,7 +357,7 @@ a[x-apple-data-detectors=true] {
                 <div align="center" class="button-container center" style="padding-right: 10px; padding-left: 10px; padding-top:10px; padding-bottom:10px;">
                   <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top:10px; padding-bottom:10px;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{finalURL}}" style="height:31pt; v-text-anchor:middle; width:123pt;" arcsize="10%" strokecolor="#f15b29" fillcolor="#f15b29"><w:anchorlock/><v:textbox inset="0,0,0,0"><center style="color:#ffffff; font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif; font-size:16px;"><![endif]-->
                     <a href="{{url}}" target="_blank" style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff; background-color: #f15b29; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; max-width: 190px; width: 84px;width: auto; height:35px ;border-top: 0px solid transparent; border-right: 0px solid transparent; border-bottom: 0px solid transparent; border-left: 0px solid transparent; padding-top: 5px; padding-right: 25px; padding-bottom: 5px; padding-left: 25px; font-family: 'Lato', Tahoma, Verdana, Segoe, sans-serif;mso-border-alt: none">
-                      <div style="margin-top: 8px;">Click to update status now</div>
+                      <div style="margin-top: 8px;">按此立即更新</div>
                     </a>
                   <!--[if mso]></center></v:textbox></v:roundrect></td></tr></table><![endif]-->
                 </div>
