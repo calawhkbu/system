@@ -12,6 +12,7 @@
           "data: {",
           "fields: [",
           "'id',",
+          "'taskId',",
           "'tableName',",
           "'primaryKey',",
           "'parentId',",

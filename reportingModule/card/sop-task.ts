@@ -12,6 +12,7 @@ export default {
         if (!params.fields) {
           params.fields = [
             'id',
+            'taskId',
             'tableName',
             'primaryKey',
             'parentId',
