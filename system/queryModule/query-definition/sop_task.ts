@@ -1,6 +1,6 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery, ParameterExpression } from "node-jql";
-import { IfExpression, alwaysTrueExpression, table, IfNullExpression } from 'utils/jql-subqueries'
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery, ParameterExpression, OrderBy } from "node-jql";
+import { IfExpression, alwaysTrueExpression, wrapOrder, IfNullExpression } from 'utils/jql-subqueries'
 import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityField, getEntityTable } from "utils/sop-task";
 import { IShortcut } from 'classes/query/Shortcut'
 
@@ -15,6 +15,8 @@ const bookingPartyTable = 'booking_party'
 const shipmentTable = 'shipment'
 const shipmentDateTable = 'shipment_date'
 const shipmentPartyTable = 'shipment_party'
+
+const statusList = ['Dead', 'Due', 'Open', 'Not Ready', 'Done', 'Closed', 'Deleted']
 
 const query = new QueryDef({
   $from: new FromTable(taskTable,
@@ -215,7 +217,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'calculatedStartAt',
-    expression: IfNullExpression(new ColumnExpression(taskTable, 'startAt'), new ColumnExpression(taskTable, 'createdAt')),
+    expression: new ColumnExpression(taskTable, 'startAt'),
     registered: true
   },
 
@@ -413,7 +415,31 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'seqNo',
     expression: re => IfExpression(new BinaryExpression(new ColumnExpression(taskTable, 'seqNo'), '=', new Value(0)), re['defaultSeqNo'], new ColumnExpression(taskTable, 'seqNo')),
+    registered: true,
     companions: ['table:sop_template_template_task']
+  },
+
+  // field:categorySeqNo
+  {
+    type: 'field',
+    name: 'categorySeqNo',
+    expression: re => new QueryExpression(new Query({
+      $select: new ResultColumn(new ColumnExpression('temp_template', 'seqNo'), 'seqNo'),
+      $from: new FromTable(templateTable, 'temp_template', new JoinClause('LEFT', new FromTable(selectedTemplateTable, 'temp_selected_template'), new AndExpressions([
+        new BinaryExpression(new ColumnExpression('temp_selected_template', 'templateId'), '=', new ColumnExpression('temp_template', 'id')),
+        new IsNullExpression(new ColumnExpression('temp_selected_template', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('temp_selected_template', 'deletedBy'), false)
+      ]))),
+      $where: [
+        new BinaryExpression(new ColumnExpression('temp_selected_template', 'tableName'), '=', re['tableName']),
+        new BinaryExpression(new ColumnExpression('temp_selected_template', 'primaryKey'), '=', re['primaryKey']),
+        new IsNullExpression(new ColumnExpression('temp_template', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('temp_template', 'deletedBy'), false),
+        new BinaryExpression(new ColumnExpression('temp_template', 'category'), '=', re['category'])
+      ],
+      $limit: 1
+    })),
+    companions: ['table:sop_template_task']
   },
 
   // field:count
@@ -576,11 +602,8 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'startAt',
     expression: re => IfNullExpression(
-      IfNullExpression(
-        IfNullExpression(re['inputStartAt'], re['calculatedStartAt']),
-        IfNullExpression(new ColumnExpression('parent', 'inputStartAt'), IfNullExpression(new ColumnExpression('parent', 'startAt'), new ColumnExpression('parent', 'createdAt')))
-      ),
-      new ColumnExpression(taskTable, 'createdAt')
+      IfNullExpression(re['inputStartAt'], re['calculatedStartAt']),
+      IfNullExpression(new ColumnExpression('parent', 'inputStartAt'), new ColumnExpression('parent', 'startAt'))
     ),
     registered: true
   },
@@ -591,7 +614,7 @@ const shortcuts: IShortcut[] = [
     name: 'defaultStartAt',
     expression: re => IfNullExpression(
       re['calculatedStartAt'],
-      IfNullExpression(new ColumnExpression('parent', 'inputStartAt'), IfNullExpression(new ColumnExpression('parent', 'startAt'), new ColumnExpression('parent', 'createdAt')))
+      IfNullExpression(new ColumnExpression('parent', 'inputStartAt'), new ColumnExpression('parent', 'startAt'))
     )
   },
 
@@ -692,7 +715,7 @@ const shortcuts: IShortcut[] = [
     name: 'isStarted',
     expression: re => new OrExpressions([
       new IsNullExpression(re['startAt'], false),
-      new BinaryExpression(re['startAt'], '<', new FunctionExpression('UTC_TIMESTAMP'))
+      new BinaryExpression(re['startAt'], '<=', new FunctionExpression('UTC_TIMESTAMP'))
     ]),
     registered: true
   },
@@ -729,7 +752,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'isDue',
-    expression: re => new BinaryExpression(re['dueAt'], '<', new FunctionExpression('UTC_TIMESTAMP')),
+    expression: re => new BinaryExpression(re['dueAt'], '<=', new FunctionExpression('UTC_TIMESTAMP')),
     registered: true
   },
 
@@ -757,7 +780,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'isDead',
-    expression: re => new BinaryExpression(re['deadline'], '<', new FunctionExpression('UTC_TIMESTAMP')),
+    expression: re => new BinaryExpression(re['deadline'], '<=', new FunctionExpression('UTC_TIMESTAMP')),
     registered: true
   },
 
@@ -791,7 +814,8 @@ const shortcuts: IShortcut[] = [
         { $when: re['isStarted'], $then: new Value('Open') }
       ],
       new Value('Not Ready')
-    )
+    ),
+    registered: true
   },
 
   // field:statusAt
@@ -882,11 +906,11 @@ const shortcuts: IShortcut[] = [
     expression: re => new AndExpressions([
       new OrExpressions([
         new IsNullExpression(re['startAt'], false),
-        new BinaryExpression(re['startAt'], '<', new Unknown())
+        new BinaryExpression(re['startAt'], '<=', new Unknown())
       ]),
       new OrExpressions([
         new IsNullExpression(re['deadline'], false),
-        new BinaryExpression(new Unknown(), '<', re['deadline'])
+        new BinaryExpression(new Unknown(), '<=', re['deadline'])
       ])
     ]),
     unknowns: { fromTo: true },
@@ -1176,6 +1200,58 @@ const shortcuts: IShortcut[] = [
     ]),
     companions: ['table:booking_party', 'table:shipment_party'],
     unknowns: { noOfUnknowns: 2 }
+  },
+
+  // orderBy:seqNo
+  {
+    type: 'orderBy',
+    name: 'seqNo',
+    queryArg: re => () => ({
+      $order: [
+        ...wrapOrder(new ColumnExpression('categorySeqNo')),
+        ...wrapOrder(re['seqNo'])
+      ]
+    }),
+    companions: ['table:sop_template_task', 'table:sop_template_template_task', 'field:categorySeqNo']
+  },
+
+  // orderBy:status (do in frontend)
+  {
+    type: 'orderBy',
+    name: 'status',
+    queryArg: re => () => ({
+      $order: [
+        new OrderBy(new FunctionExpression('FIELD', re['status'], ...statusList.map(v => new Value(v)))),
+        ...wrapOrder(re['seqNo'])
+      ]
+    }),
+    companions: ['table:sop_template_template_task']
+  },
+
+  // orderBy:dueAt
+  {
+    type: 'orderBy',
+    name: 'dueAt',
+    queryArg: re => () => ({
+      $order: [
+        ...wrapOrder(re['dueAt']),
+        ...wrapOrder(re['seqNo'])
+      ]
+    }),
+    companions: ['table:sop_template_template_task']
+  },
+
+  // orderBy:dueAt
+  {
+    type: 'orderBy',
+    name: 'startAt',
+    queryArg: re => () => ({
+      $order: [
+        new OrderBy(re['startAt']),
+        ...wrapOrder(re['seqNo'])
+      ]
+    }),
+    companions: ['table:sop_template_template_task']
   }
 ]
 

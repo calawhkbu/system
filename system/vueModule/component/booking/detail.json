@@ -89,7 +89,7 @@
                   "is": "I18nText",
                   "props": {
                     "i18nContext": "BookingPage",
-                    "i18nKey": "Template"
+                    "i18nKey": "copy"
                   }
                 }]
               }

@@ -70,8 +70,7 @@ export default {
         console.log(params)
         console.log("//get erpSite info-params")
         console.log(params)
-        console.log("user----")
-        console.log(user)
+   
         return params;
       }
     },
@@ -274,7 +273,7 @@ export default {
         res.map(dynamicRow => {
 
           const { dynamicCode } = { dynamicCode: dynamicRow[dynamicColumnCodeColumnName] }
-
+ 
         })
  
         const finalResult = groupByResult.map(row => {
@@ -310,7 +309,7 @@ export default {
           }
           if(res&&res.length>0){
             for(let i=0;i<res.length;i++){
-              if(dynamicColumnCodeColumnName=="officePartyCode"){
+               if(dynamicColumnCodeColumnName=="officePartyCode"){
               res[i]["erpSite"]=dynamicCodeList[0];
             }
             }
@@ -319,7 +318,7 @@ export default {
   
           res.map(dynamicRow => {
             const { dynamicCode } = { dynamicCode: dynamicRow[dynamicColumnCodeColumnName] }
-
+           console.log( {dynamicRow})
             if (row_["code"] === dynamicRow[codeColumnName]){
               summaryVariables.map(summaryVariable => {
                 var fieldName;

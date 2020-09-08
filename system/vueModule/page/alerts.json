@@ -70,24 +70,29 @@
           "hidden": true
         },
         {
+          "width": 350,
           "key": "alertTitle",
           "label": "alertTitle",
           "i18nContext": "Alert",
           "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
         },
         {
+          "width": 350,
           "key": "alertMessage",
           "label": "alertMessage",
           "i18nContext": "Alert",
           "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
         },
         {
+          "width": 65,
           "key": "alertSeverity"
         },
         {
+          "width": 65,
           "key": "alertStatus"
         },
         {
+          "width": 75,
           "key": "alertCategory"
         },
         {
