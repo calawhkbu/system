@@ -21,7 +21,7 @@
                 "type": "router",
                 "otherParams": {
                   "func": "push",
-                  "path": "/admin/product-categories"
+                  "path": "/admin/products"
                 }
               }]
             }
@@ -30,7 +30,7 @@
             "is": "I18nText",
             "props": {
               "class": "headline",
-              "i18nKey": "ProductCategoryPage.title"
+              "i18nKey": "ProductPage.title"
             }
           },
           {
@@ -55,7 +55,7 @@
           "is": "AsyncComponent",
           "props": {
             "class": "margin-topbottom-4 xs-12",
-            "layoutName": "product-category/forms/general"
+            "layoutName": "product/forms/general"
           }
         }]
       }

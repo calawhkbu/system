@@ -61,7 +61,7 @@
           "is": "AsyncComponent",
           "props": {
             "class": "margin-topbottom-4 xs-12",
-            "layoutName": "product-category/form/general"
+            "layoutName": "product-category/forms/general"
           }
         }]
       }
