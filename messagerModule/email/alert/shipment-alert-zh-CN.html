@@ -27,7 +27,7 @@ table, tr, td {
   background-color: WhiteSmoke;
 }
 
-.e_tr, .e_td, .e_msg{
+.e_tr, .e_td{
   height: 30px;
 	width: 30%; 
   border: 2px solid white;
@@ -296,26 +296,40 @@ a[x-apple-data-detectors=true] {
               <div style="background-color: transparent; width: 100% !important;">
                 <div style="font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif;line-height:150%;color:#555555; padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 20px;">
                   <div style="font-size:12px;line-height:18px;color:#555555;font-family:'Lato', Tahoma, Verdana, Segoe, sans-serif;text-align:left;">
-                    <p style="margin: 0;font-size: 14px;line-height: 18px;text-align: left">
-                      <b class="e_msg">{{message}}</b></p><br>
+                    <p style="font-size: 20px;line-height: 18px;text-align: left">
+                      <b>{{entity.shipmentParty.officePartyName}}</b></p>
+                      <p style="font-size: 16px;line-height: 18px;text-align: left">
+                        <b>{{message}}</b></p><br>
                       <p style="margin: 0;font-size: 12px;line-height: 18px;text-align: left">
                         <table class="e_table">
                           <tr class="e_tr" style="background-color: #85C1E9;">
-                            <td class="e_td">作業號碼</td>
+                            <td class="e_td">船運號碼</td>
                             <td class="e_td e_td2">{{entity.jobNo}}</td>
                           </tr>
+                          {% if entity.bookingNo %}
+                          <tr class="e_tr">
+                            <td class="e_td">訂單號碼</td>
+                            <td class="e_td e_td2">{{entity.bookingNo}}</td>
+                          </tr>
+                          {% End if %}
+                          {% if entity.houseNo %}
                           <tr class="e_tr">
                             <td class="e_td">提單號碼</td>
                             <td class="e_td e_td2">{{entity.houseNo}}</td>
                           </tr>
+                          {% End if %}
+                          {% if entity.masterNo %}
                           <tr class="e_tr">
                             <td class="e_td">主單號碼</td>
                             <td class="e_td e_td2">{{entity.masterNo}}</td>
                           </tr>
+                          {% End if %}
+                          {% if entity.poNos %}
                           <tr class="e_tr">
                             <td class="e_td">訂單號碼</td>
                             <td class="e_td e_td2">{{entity.poNos}}</td>
                           </tr>
+                          {% End if %}
                           <tr class="e_tr">
                             <td class="e_td">船運日期</td>
                             <td class="e_td e_td2">{% if entity.shipmentDate && entity.shipmentDate.estimatedArrivalDate %} {{entity.shipmentDate.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
@@ -342,14 +356,18 @@ a[x-apple-data-detectors=true] {
                             <td class="e_td">收貨人</td>
                             <td class="e_td e_td2">{% if entity.shipmentDate && entity.shipmentDate.estimatedArrivalDate %}{{entity.shipmentDate.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
                           </tr>
+                          {% if entity.commodity %}
                           <tr class="e_tr">
                             <td class="e_td">商品</td>
                             <td class="e_td e_td2">{{entity.commodity}}</td>
                           </tr>
+                          {% endif %}
+                          {% if entity.containerNos %}
                           <tr class="e_tr">
                             <td class="e_td">櫃號</td>
                             <td class="e_td e_td2">{{entity.containerNos}}</td>
                           </tr>
+                          {% endif %}
                          </table>
                     </p>
                   </div>
