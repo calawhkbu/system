@@ -719,25 +719,25 @@
                             <td class="e_td">Booking Ref.</td>
                             <td class="e_td e_td2">{{entity.bookingNo}}</td>
                           </tr>
-                          {% End if %}
+                          {% endif %}
                           {% if entity.houseNo %}
                           <tr class="e_tr">
                             <td class="e_td">House No.</td>
                             <td class="e_td e_td2">{{entity.houseNo}}</td>
                           </tr>
-                          {% End if %}
+                          {% endif %}
                           {% if entity.masterNo %}
                           <tr class="e_tr">
                             <td class="e_td">Master No.</td>
                             <td class="e_td e_td2">{{entity.masterNo}}</td>
                           </tr>
-                          {% End if %}
+                          {% endif %}
                           {% if entity.poNos %}
                           <tr class="e_tr">
                             <td class="e_td">PO No.</td>
                             <td class="e_td e_td2">{{entity.poNos}}</td>
                           </tr>
-                          {% End if %}
+                          {% endif %}
                           <tr class="e_tr">
                             <td class="e_td">Shipment Date</td>
                             <td class="e_td e_td2">{% if entity.shipmentDate && entity.shipmentDate.estimatedArrivalDate %} {{entity.shipmentDate.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
@@ -792,13 +792,13 @@
                             <td class="e_td">Commodity</td>
                             <td class="e_td e_td2">{{entity.commodity}}</td>
                           </tr>
-                          {% End if %}
+                          {% endif %}
                           {% if entity.containerNos %}
                           <tr class="e_tr">
                             <td class="e_td">Container No.</td>
                             <td class="e_td e_td2">{{entity.containerNos}}</td>
                           </tr>
-                          {% End if %}
+                          {% endif %}
                         </table>
                         </p>
                       </div>
