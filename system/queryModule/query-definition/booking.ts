@@ -24,7 +24,7 @@ import {
   QueryExpression,
   ExistsExpression,
 } from 'node-jql'
-import { passSubquery, ExpressionHelperInterface, registerAll, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
+import { passSubquery, ExpressionHelperInterface, registerAll, registerSummaryField, NestedSummaryCondition,registerNestedSummaryFilter, SummaryField, registerAllDateField, registerCheckboxField, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
 import { IShortcut } from 'classes/query/Shortcut'
 
 const partyList = [
@@ -1266,6 +1266,9 @@ registerAll(query, baseTableName, fieldList)
 
 // ===================================
 
+// summary fields  =================
+
+
   // warning !!! will not contain all if the list is too large
   query.registerResultColumn('primaryKeyListString',
     new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('booking', 'id'))), 'primaryKeyListString')
@@ -1283,7 +1286,82 @@ query
 )
 
 //  register summary field
-const nestedSummaryList = [] as NestedSummaryCondition[]
+// summary fields  =================
+
+const nestedSummaryList = [
+
+  {
+    name: 'frc',
+    companion: ['table:booking_party'],
+    cases: [
+      {
+        typeCode: 'F',
+        condition: new AndExpressions([
+          new BinaryExpression(new ColumnExpression('booking', 'nominatedTypeCode'), '=', 'F'),
+          new ExistsExpression(new Query({
+
+            $from: 'party_type',
+            $where: [
+              new BinaryExpression(new ColumnExpression('party_type', 'partyId'), '=', new ColumnExpression('booking_party', 'controllingCustomerPartyId')),
+              new BinaryExpression(new ColumnExpression('party_type', 'type'), '=', 'forwarder')
+            ]
+
+          }), true)
+        ])
+
+      },
+      {
+        typeCode: 'R',
+        condition: new AndExpressions([
+          new BinaryExpression(new ColumnExpression('booking', 'nominatedTypeCode'), '=', 'R'),
+          new ExistsExpression(new Query({
+
+            $from: 'party_type',
+            $where: [
+              new BinaryExpression(new ColumnExpression('party_type', 'partyId'), '=', new ColumnExpression('booking_party', 'controllingCustomerPartyId')),
+              new BinaryExpression(new ColumnExpression('party_type', 'type'), '=', 'forwarder')
+            ]
+
+          }), true)
+        ])
+      },
+      {
+        typeCode: 'C',
+        condition: new AndExpressions([
+          new ExistsExpression(new Query({
+
+            $from: 'party_type',
+            $where: [
+              new BinaryExpression(new ColumnExpression('party_type', 'partyId'), '=', new ColumnExpression('booking_party', 'controllingCustomerPartyId')),
+              new BinaryExpression(new ColumnExpression('party_type', 'type'), '=', 'forwarder')
+            ]
+
+          }), false)
+        ])
+      }
+    ]
+  },
+
+  {
+
+    name: 'fr',
+    companion: [],
+    cases: [
+      {
+        typeCode: 'F',
+        condition: new BinaryExpression(new ColumnExpression('booking', 'nominatedTypeCode'), '=', 'F')
+      },
+      {
+        typeCode: 'R',
+        condition: new BinaryExpression(new ColumnExpression('booking', 'nominatedTypeCode'), '=', 'R')
+      },
+    ]
+  }
+
+] as NestedSummaryCondition[]
+
+
+registerNestedSummaryFilter(query, nestedSummaryList)
 
 const summaryFieldList : SummaryField[]  = [
   {

@@ -100,10 +100,7 @@ export default {
             label: 'agent',
             value: 'agent',
           },
-          {
-            label: 'agentGroup',
-            value: 'agentGroup',
-          },
+        
           {
             label: 'controllingCustomer',
             value: 'controllingCustomer',
@@ -117,16 +114,16 @@ export default {
             value: 'roAgent',
           },
           {
-            label: 'office',
-            value: 'office',
+            label: 'forwader',
+            value: 'forwarder',
           },
           {
             label : 'moduleType',
             value : 'moduleType'
           },
           {
-            label : 'houseNo',
-            value : 'houseNo'
+            label : 'bookingNo',
+            value : 'bookingNo'
           }
         ],
         required: true,

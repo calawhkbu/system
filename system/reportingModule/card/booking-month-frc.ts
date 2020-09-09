@@ -34,11 +34,18 @@ export default {
         // const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
         // const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
         
-        const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
+        var { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
 
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
         prevResult.nameColumnName = nameColumnName
+        if(groupByEntity=='agent'){
+          codeColumnName=groupByEntity+"PartyCode";
+          nameColumnName=groupByEntity+"PartyName";
+        }else if(groupByEntity=='forwarder'){
+          codeColumnName=groupByEntity+"PartyCode";
+          nameColumnName=groupByEntity+"PartyName";
+        }
 
         const topX = subqueries.topX.value
 
@@ -82,6 +89,7 @@ export default {
           value: true
         }
 
+     
         // select
         params.fields = [
           // select Month statistics
@@ -103,10 +111,17 @@ export default {
     },
     {
       type: 'callDataService',
-      dataServiceQuery: ['shipment', 'shipment'],
+      dataServiceQuery: ['booking', 'booking'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
+        if(groupByEntity=='agent'){
+          codeColumnName=groupByEntity+"PartyCode";
+          nameColumnName=groupByEntity+"PartyName";
+        }else if(groupByEntity=='forwarder'){
+          codeColumnName=groupByEntity+"PartyCode";
+          nameColumnName=groupByEntity+"PartyName";
+        }
         return res.map(row => {
-          const row_: any = { groupByEntity, code: row[codeColumnName], name: row[nameColumnName] }
+          var row_: any = { groupByEntity, code: row[codeColumnName], name: row[nameColumnName] }
           for (const variable of summaryVariables) {
             for (const typeCode of params.constants.typeCodeList) {
               for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]) {
@@ -213,10 +228,7 @@ export default {
             label: 'agent',
             value: 'agent',
           },
-          {
-            label: 'agentGroup',
-            value: 'agentGroup',
-          },
+         
           {
             label: 'controllingCustomer',
             value: 'controllingCustomer',
@@ -230,16 +242,16 @@ export default {
             value: 'roAgent',
           },
           {
-            label: 'office',
-            value: 'office',
+            label: 'fowarder',
+            value: 'forwarder',
           },
           {
             label : 'moduleType',
             value : 'moduleType'
           },
           {
-            label : 'houseNo',
-            value : 'houseNo'
+            label : 'bookingNo',
+            value : 'bookingNo'
           }
         ],
         required: true,
