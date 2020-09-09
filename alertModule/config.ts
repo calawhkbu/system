@@ -845,143 +845,68 @@ const shipmentSeaAlertList = [
     alertCategory: 'Exception',
     severity: 'medium',
     alertType: 'demurrageWarning(SEA)',
-
     templatePath: 'alert/shipment-alert',
-
     handleAlertSubComponentLayoutName: 'alertForm.demurrageAlert',
-
-
-
-    // schedule: '0 * * * * *',
-
-    interval: {
-      value: 15,
-      unit: 'MINUTE'
-    },
-
+    interval: { value: 15, unit: 'MINUTE' },
     active: true,
-
-
     queryName: 'shipment',
     query: {
-
       subqueries: {
-
-        moduleTypeCode: {
-          value: 'SEA'
-        },
-
-
+        moduleTypeCode: { value: 'SEA' },
         // missing arrivalAtDepotActual
         arrivalAtDepotActualIsNull: true,
-
         // after ATA / ETA + 2 DAY
-        after_arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: {
-          value: {
-            value: 2,
-            unit: 'DAY'
-          }
-        },
-
+        arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtcIsNotNull: true,
+        after_arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: { value: { value: 2, unit: 'DAY' } },
         // until before_finalDoorDeliveryActual
-        before_finalDoorDeliveryActualInUtc: {
-          value: {
-            value: 0,
-            includeNull: true
-          }
-        }
-
+        before_finalDoorDeliveryActualInUtc: { value: { value: 0 } } // , includeNull: true
       },
-
     },
-
     closeQuery: {
       subqueries : {
         // have arrivalAtDepotActual
         arrivalAtDepotActualIsNotNull: true
       }
     },
-
-
     contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
       }
     ]
-
   },
-
   // demurrageAlert(SEA)
   {
     tableName: 'shipment',
     alertCategory: 'Exception',
     severity: 'medium',
     alertType: 'demurrageAlert(SEA)',
-
     templatePath: 'alert/shipment-alert',
-
     handleAlertSubComponentLayoutName: 'alertForm.demurrageAlert',
-
-
-    // schedule: '0 * * * * *',
-
-    interval: {
-      value: 15,
-      unit: 'MINUTE'
-    },
-
+    interval: { value: 15, unit: 'MINUTE' },
     active: true,
-
     queryName: 'shipment',
     query: {
-
       subqueries: {
-
-        moduleTypeCode: {
-          value: 'SEA'
-        },
-
+        moduleTypeCode: { value: 'SEA' },
         // missing pickupCargoBeforeDemurrageDateActual / cargoPickupWithDemurrageDateActual
         pickupCargoBeforeDemurrageDateActual_Or_cargoPickupWithDemurrageDateActualIsNull: true,
-
         // after ATA / ETA + 5 days
-        after_arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: {
-          value: {
-            value: 5,
-            unit: 'DAY'
-          }
-        },
-
+        arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtcIsNotNull: true,
+        after_arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: { value: { value: 5, unit: 'DAY' } },
         // before finalDoorDeliveryActual
-        before_finalDoorDeliveryActualInUtc: {
-          value: {
-            value: 0,
-            includeNull: true
-          }
-        }
-
+        before_finalDoorDeliveryActualInUtc: { value: { value: 0 } } // includeNull: true
       },
-
     },
-
     closeQuery: {
       subqueries : {
         // have pickupCargoBeforeDemurrageDateActual_Or_cargoPickupWithDemurrageDateActual
         pickupCargoBeforeDemurrageDateActual_Or_cargoPickupWithDemurrageDateActualIsNotNull: true
       }
     },
-
-
     contactRoleList: ['forwarder','personInCharge','office'],
-    canCloseBy: [
-      {
-        type: 'all'
-      }
-    ]
-
+    canCloseBy: [{ type: 'all' }]
   },
-
   // detentionWarning(SEA)
   {
     tableName: 'shipment',
