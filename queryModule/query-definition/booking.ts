@@ -1583,6 +1583,7 @@ query
   .register('value', 28)
   .register('value', 29)
   .register('value', 30)
+  .register('value', 31)
 
 function sopTaskQuery(): QueryDef {
   return require('./sop_task').default

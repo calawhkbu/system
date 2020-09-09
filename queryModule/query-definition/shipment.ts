@@ -3371,7 +3371,7 @@ query
               $from: new FromTable('shipment_reference'),
               $where: new AndExpressions({
                 expressions: [
-                  new BinaryExpression(new ColumnExpression('shipment_reference', 'refName'), '=', 'Shipment Reference ID'),
+                  // new BinaryExpression(new ColumnExpression('shipment_reference', 'refName'), '=', 'Shipment Reference ID'),
                   new RegexpExpression(new ColumnExpression('shipment_reference', 'refDescription'), false),
                 ]
               })
