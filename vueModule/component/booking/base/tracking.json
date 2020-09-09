@@ -32,6 +32,8 @@
         "data: { trackingNos }",
         "};"
       ],
+      "externalDataDateKey": "bookingDate",
+      "externalDataPrimaryKey": "bookingNo",
       "createI18nKey": "bookingReceivedByForwarder"
     }
   }]
