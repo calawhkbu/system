@@ -114,7 +114,10 @@
             }
           ]
         }
-      }],
+      }, {
+        "name": "shipId",
+        "type": "text"
+        }],
       "fieldOptions": [{
           "key": "id",
           "hidden": true
