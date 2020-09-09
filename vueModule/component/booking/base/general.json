@@ -234,6 +234,12 @@
                     }
                   ]
                 }
+              }, {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-bottom-2",
+                  "layoutName": "booking/base/generalMoreHidden"
+                }
               }]
             }
           }]
@@ -424,17 +430,23 @@
                 "label": "BookingPage.picId",
                 "name": "picId",
                 "component": "v-text-field",
-                "class": "xs-6 md-3"
+                "checkDisplayWhen": "return form && form.picId",
+                "class": "xs-6"
               },
               {
                 "label": "BookingPage.picEmail",
                 "name": "picEmail",
                 "component": "v-text-field",
-                "class": "xs-6 md-3"
-              },{
-                "class": "xs-3"
+                "checkDisplayWhen": "return form && form.picEmail",
+                "class": "xs-6"
               }
             ]
+          }
+        }, {
+          "is": "AsyncComponent",
+          "props": {
+            "class": "xs-12 margin-bottom-2",
+            "layoutName": "booking/base/generalMore"
           }
         }]
       }
