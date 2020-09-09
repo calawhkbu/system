@@ -1116,8 +1116,8 @@ const fieldList = [
   'isDirect',
   'isCoload',
 
-  'createdAt',
-  'updatedAt',
+  // 'createdAt',
+  // 'updatedAt',
 
   ...partyExpressionList,
   ...locationExpressionList,
