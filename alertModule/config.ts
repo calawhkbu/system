@@ -253,7 +253,7 @@ const ASWAlertConfigList = [
     templatePath: 'alert/shipment-alert',
 
     handleAlertSubComponentLayoutName: 'alertForm.containerReturn',
-    
+
     // schedule: '0 * * * * *',
 
     interval: {
@@ -284,13 +284,13 @@ const ASWAlertConfigList = [
         },
 
       },
-      
+
     },
 
     closeQuery: {
       subqueries : {
         // have returnEmptyContainerDateActual
-        returnEmptyContainerDateActualIsNotNull: true 
+        returnEmptyContainerDateActualIsNotNull: true
       }
     },
 
@@ -321,7 +321,7 @@ const shipmentSeaAlertList = [
     templatePath: 'alert/shipment-alert',
 
     handleAlertSubComponentLayoutName: 'alertForm.cancelBookingAlert',
-    
+
 
     // schedule: '0 * * * * *',
 
@@ -351,12 +351,12 @@ const shipmentSeaAlertList = [
           }
         }
       },
-      
+
     },
 
     closeQuery: {
       subqueries : {
-        cargoReceiptDateActualIsNotNull: true 
+        cargoReceiptDateActualIsNotNull: true
       }
     },
 
@@ -381,7 +381,7 @@ const shipmentSeaAlertList = [
     templatePath: 'alert/shipment-alert',
 
     handleAlertSubComponentLayoutName: 'alertForm.cargoDelayAlert',
-    
+
 
 
     // schedule: '0 * * * * *',
@@ -414,13 +414,13 @@ const shipmentSeaAlertList = [
         },
 
       },
-      
+
     },
 
     closeQuery: {
       subqueries : {
         // have gateInDateActual
-        gateInDateActualIsNotNull: true 
+        gateInDateActualIsNotNull: true
       }
     },
 
@@ -444,8 +444,8 @@ const shipmentSeaAlertList = [
 
     handleAlertSubComponentLayoutName: 'alertForm.cargoFailureToArrangeHualage',
 
-    
-    
+
+
 
     // schedule: '0 * * * * *',
 
@@ -478,13 +478,13 @@ const shipmentSeaAlertList = [
         },
 
       },
-      
+
     },
 
     closeQuery: {
       subqueries : {
         // have sentToShipperDateActual
-        sentToShipperDateActualIsNotNull: true 
+        sentToShipperDateActualIsNotNull: true
       }
     },
 
@@ -507,7 +507,7 @@ const shipmentSeaAlertList = [
     templatePath: 'alert/shipment-alert',
 
     handleAlertSubComponentLayoutName: 'alertForm.missingVGM',
-    
+
 
     // schedule: '0 * * * * *',
 
@@ -541,13 +541,13 @@ const shipmentSeaAlertList = [
         },
 
       },
-      
+
     },
 
     closeQuery: {
       subqueries : {
         // have vgm non-zero
-        vgmNonZeroQueryIdIn: true 
+        vgmNonZeroQueryIdIn: true
       }
     },
 
@@ -571,7 +571,7 @@ const shipmentSeaAlertList = [
     templatePath: 'alert/shipment-alert',
 
     handleAlertSubComponentLayoutName: 'alertForm.missingEdi',
-    
+
 
     // schedule: '0 * * * * *',
 
@@ -612,13 +612,13 @@ const shipmentSeaAlertList = [
         }
 
       },
-      
+
     },
 
     closeQuery: {
       subqueries : {
         // have ediSendDateActual
-        ediSendDateActualIsNotNull: true 
+        ediSendDateActualIsNotNull: true
       }
     },
 
@@ -641,7 +641,7 @@ const shipmentSeaAlertList = [
     templatePath: 'alert/shipment-alert',
 
     handleAlertSubComponentLayoutName: 'alertForm.missingPreAlert',
-    
+
 
     // schedule: '0 * * * * *',
 
@@ -680,13 +680,13 @@ const shipmentSeaAlertList = [
           }
         }
       },
-      
+
     },
 
     closeQuery: {
       subqueries : {
         // have preAlertSendDateActual
-        preAlertSendDateActualIsNotNull: true 
+        preAlertSendDateActualIsNotNull: true
       }
     },
 
@@ -709,7 +709,7 @@ const shipmentSeaAlertList = [
     templatePath: 'alert/shipment-alert',
 
     handleAlertSubComponentLayoutName: 'alertForm.missingMBL',
-    
+
 
     // schedule: '0 * * * * *',
 
@@ -750,13 +750,13 @@ const shipmentSeaAlertList = [
         }
 
       },
-      
+
     },
 
     closeQuery: {
       subqueries : {
         // have masterBillReleasedDateActual
-        masterBillReleasedDateActualIsNotNull: true 
+        masterBillReleasedDateActualIsNotNull: true
       }
     },
 
@@ -779,7 +779,7 @@ const shipmentSeaAlertList = [
     templatePath: 'alert/shipment-alert',
 
     handleAlertSubComponentLayoutName: 'alertForm.missingHBL',
-    
+
 
     // schedule: '0 * * * * *',
 
@@ -819,13 +819,13 @@ const shipmentSeaAlertList = [
         }
 
       },
-      
+
     },
 
     closeQuery: {
       subqueries : {
         // have houseBillConfirmationDateActual
-        houseBillConfirmationDateActualIsNotNull: true 
+        houseBillConfirmationDateActualIsNotNull: true
       }
     },
 
@@ -845,143 +845,68 @@ const shipmentSeaAlertList = [
     alertCategory: 'Exception',
     severity: 'medium',
     alertType: 'demurrageWarning(SEA)',
-
     templatePath: 'alert/shipment-alert',
-
     handleAlertSubComponentLayoutName: 'alertForm.demurrageAlert',
-
-    
-
-    // schedule: '0 * * * * *',
-
-    interval: {
-      value: 15,
-      unit: 'MINUTE'
-    },
-
+    interval: { value: 15, unit: 'MINUTE' },
     active: true,
-
-
     queryName: 'shipment',
     query: {
-
       subqueries: {
-
-        moduleTypeCode: {
-          value: 'SEA'
-        },
-
-
+        moduleTypeCode: { value: 'SEA' },
         // missing arrivalAtDepotActual
         arrivalAtDepotActualIsNull: true,
-
         // after ATA / ETA + 2 DAY
-        after_arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: {
-          value: {
-            value: 2,
-            unit: 'DAY'
-          }
-        },
-
+        arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtcIsNotNull: true,
+        after_arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: { value: { value: 2, unit: 'DAY' } },
         // until before_finalDoorDeliveryActual
-        before_finalDoorDeliveryActualInUtc: {
-          value: {
-            value: 0,
-            includeNull: true
-          }
-        }
-
+        before_finalDoorDeliveryActualInUtc: { value: { value: 0 } } // , includeNull: true
       },
-      
     },
-
     closeQuery: {
       subqueries : {
         // have arrivalAtDepotActual
-        arrivalAtDepotActualIsNotNull: true 
+        arrivalAtDepotActualIsNotNull: true
       }
     },
-
-
     contactRoleList: ['forwarder','personInCharge','office'],
     canCloseBy: [
       {
         type: 'all'
       }
     ]
-
   },
-
   // demurrageAlert(SEA)
   {
     tableName: 'shipment',
     alertCategory: 'Exception',
     severity: 'medium',
     alertType: 'demurrageAlert(SEA)',
-
     templatePath: 'alert/shipment-alert',
-
     handleAlertSubComponentLayoutName: 'alertForm.demurrageAlert',
-    
-
-    // schedule: '0 * * * * *',
-
-    interval: {
-      value: 15,
-      unit: 'MINUTE'
-    },
-
+    interval: { value: 15, unit: 'MINUTE' },
     active: true,
-
     queryName: 'shipment',
     query: {
-
       subqueries: {
-
-        moduleTypeCode: {
-          value: 'SEA'
-        },
-
+        moduleTypeCode: { value: 'SEA' },
         // missing pickupCargoBeforeDemurrageDateActual / cargoPickupWithDemurrageDateActual
         pickupCargoBeforeDemurrageDateActual_Or_cargoPickupWithDemurrageDateActualIsNull: true,
-
         // after ATA / ETA + 5 days
-        after_arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: {
-          value: {
-            value: 5,
-            unit: 'DAY'
-          }
-        },
-
+        arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtcIsNotNull: true,
+        after_arrivalDateActualInUtc_Or_arrivalDateEstimatedInUtc: { value: { value: 5, unit: 'DAY' } },
         // before finalDoorDeliveryActual
-        before_finalDoorDeliveryActualInUtc: {
-          value: {
-            value: 0,
-            includeNull: true
-          }
-        }
-
+        before_finalDoorDeliveryActualInUtc: { value: { value: 0 } } // includeNull: true
       },
-      
     },
-
     closeQuery: {
       subqueries : {
         // have pickupCargoBeforeDemurrageDateActual_Or_cargoPickupWithDemurrageDateActual
-        pickupCargoBeforeDemurrageDateActual_Or_cargoPickupWithDemurrageDateActualIsNotNull: true 
+        pickupCargoBeforeDemurrageDateActual_Or_cargoPickupWithDemurrageDateActualIsNotNull: true
       }
     },
-
-
     contactRoleList: ['forwarder','personInCharge','office'],
-    canCloseBy: [
-      {
-        type: 'all'
-      }
-    ]
-
+    canCloseBy: [{ type: 'all' }]
   },
-
   // detentionWarning(SEA)
   {
     tableName: 'shipment',
@@ -992,7 +917,7 @@ const shipmentSeaAlertList = [
     templatePath: 'alert/shipment-alert',
 
     handleAlertSubComponentLayoutName: 'alertForm.detentionAlert',
-    
+
     // schedule: '0 * * * * *',
 
     interval: {
@@ -1015,6 +940,7 @@ const shipmentSeaAlertList = [
         returnEmptyContainerDateActualIsNull: true,
 
         // after sendToConsigneeDateActual / sendToConsigneeDateEstimated + 3 days
+        sendToConsigneeDateActualInUtc_Or_sendToConsigneeDateEstimatedIsNotNull: true,
         after_sendToConsigneeDateActualInUtc_Or_sendToConsigneeDateEstimatedInUtc: {
           value: {
             value: 3,
@@ -1022,14 +948,14 @@ const shipmentSeaAlertList = [
           }
         }
       },
-      
+
     },
 
 
     closeQuery: {
       subqueries : {
         // have returnEmptyContainerDateActual
-        returnEmptyContainerDateActualIsNotNull: true 
+        returnEmptyContainerDateActualIsNotNull: true
       }
     },
 
@@ -1052,7 +978,7 @@ const shipmentSeaAlertList = [
     templatePath: 'alert/shipment-alert',
 
     handleAlertSubComponentLayoutName: 'alertForm.detentionAlert',
-    
+
 
     // schedule: '0 * * * * *',
 
@@ -1074,6 +1000,7 @@ const shipmentSeaAlertList = [
 
         // missing returnEmptyContainerDateActual
         returnEmptyContainerDateActualIsNull: true,
+        sendToConsigneeDateActualInUtc_Or_sendToConsigneeDateEstimatedIsNotNull: true,
 
         // after sendToConsigneeDateActual / sendToConsigneeDateEstimated + 6 days
         after_sendToConsigneeDateActualInUtc_Or_sendToConsigneeDateEstimatedInUtc: {
@@ -1083,13 +1010,13 @@ const shipmentSeaAlertList = [
           }
         }
       },
-      
+
     },
 
     closeQuery: {
       subqueries : {
         // have returnEmptyContainerDateActual
-        returnEmptyContainerDateActualIsNotNull: true 
+        returnEmptyContainerDateActualIsNotNull: true
       }
     },
 
@@ -1112,7 +1039,7 @@ const shipmentSeaAlertList = [
     templatePath: 'alert/shipment-alert',
 
     handleAlertSubComponentLayoutName: 'alertForm.missingDeliveryArrangement(SEA)',
-    
+
 
     // schedule: '0 * * * * *',
 
@@ -1152,13 +1079,13 @@ const shipmentSeaAlertList = [
         }
 
       },
-      
+
     },
 
     closeQuery: {
       subqueries : {
         // have finalDoorDeliveryDateActual
-        finalDoorDeliveryDateActualIsNotNull: true 
+        finalDoorDeliveryDateActualIsNotNull: true
       }
     },
 
@@ -1187,7 +1114,7 @@ const shipmentAirAlertList = [
     templatePath: 'alert/shipment-alert',
 
     handleAlertSubComponentLayoutName: 'alertForm.cargoDelayAlert',
-    
+
 
     // schedule: '0 * * * * *',
 
@@ -1218,14 +1145,14 @@ const shipmentAirAlertList = [
         },
 
       },
-      
+
     },
 
 
     closeQuery: {
       subqueries : {
         // have preAlertSendDateActual
-        preAlertSendDateActualIsNotNull: true 
+        preAlertSendDateActualIsNotNull: true
       }
     },
     contactRoleList: ['forwarder','personInCharge','office'],
@@ -1247,7 +1174,7 @@ const shipmentAirAlertList = [
     templatePath: 'alert/shipment-alert',
 
     handleAlertSubComponentLayoutName: 'alertForm.cargoDelayAlert',
-    
+
 
     // schedule: '0 * * * * *',
 
@@ -1279,13 +1206,13 @@ const shipmentAirAlertList = [
         },
 
       },
-      
+
     },
 
     closeQuery: {
       subqueries : {
         // have preAlertSendDateActual
-        preAlertSendDateActualIsNotNull: true 
+        preAlertSendDateActualIsNotNull: true
       }
     },
 
@@ -1306,9 +1233,9 @@ const shipmentAirAlertList = [
     alertType: 'missingDeliveryArrangement(AIR)',
 
     templatePath: 'alert/shipment-alert',
-  
+
     handleAlertSubComponentLayoutName: 'alertForm.missingDeliveryArrangement(AIR)',
-  
+
     // schedule: '0 * * * * *',
 
     interval: {
@@ -1349,13 +1276,13 @@ const shipmentAirAlertList = [
         }
 
       },
-      
+
     },
 
     closeQuery: {
       subqueries : {
         // have portOfLoadingCode
-        portOfLoadingCodeIsNotNull: true 
+        portOfLoadingCodeIsNotNull: true
       }
     },
 
@@ -1397,13 +1324,13 @@ const sopTaskAlertList = [
         hasDueTasks: true,
 
       },
-      
+
     },
 
     closeQuery: {
       subqueries : {
         // have preAlertSendDateActual
-        noDueTasks: true 
+        noDueTasks: true
       }
     },
     contactRoleList: ['forwarder','personInCharge','office'],
@@ -1436,14 +1363,14 @@ const sopTaskAlertList = [
       subqueries: {
         hasDeadTasks: true,
       },
-      
+
     },
 
 
     closeQuery: {
       subqueries : {
         // have preAlertSendDateActual
-        noDeadTasks: false 
+        noDeadTasks: false
       }
     },
     contactRoleList: ['forwarder','personInCharge','office'],
@@ -1467,7 +1394,7 @@ const oldAlertList = [
     alertType: 'shipmentArrivalDelayed(AIR)',
 
     templatePath: 'alert/shipment-alert',
-    
+
   },
 
   // shipmentArrivalDelayed(SEA)
@@ -1479,7 +1406,7 @@ const oldAlertList = [
     alertType: 'shipmentArrivalDelayed(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    
+
   },
 
   // shipmentDepartureDelayed(AIR)
@@ -1491,7 +1418,7 @@ const oldAlertList = [
     alertType: 'shipmentDepartureDelayed(AIR)',
 
     templatePath: 'alert/shipment-alert',
-    
+
   },
 
   // shipmentDepartureDelayed(SEA)
@@ -1503,7 +1430,7 @@ const oldAlertList = [
     alertType: 'shipmentDepartureDelayed(SEA)',
 
     templatePath: 'alert/shipment-alert',
-    
+
   },
 
   // shipmentEtaChanged
@@ -1515,7 +1442,7 @@ const oldAlertList = [
     alertType: 'shipmentEtaChanged',
 
     templatePath: 'alert/shipment-alert',
-    
+
   },
 
   // shipmentEtdChanged
@@ -1527,7 +1454,7 @@ const oldAlertList = [
     alertType: 'shipmentEtdChanged',
 
     templatePath: 'alert/shipment-alert',
-    
+
   },
 
 
@@ -1540,7 +1467,7 @@ const oldAlertList = [
     alertType: 'shipmentAtaChanged',
 
     templatePath: 'alert/shipment-alert',
-    
+
   },
 
   // shipmentAtdChanged
@@ -1552,7 +1479,7 @@ const oldAlertList = [
     alertType: 'shipmentAtdChanged',
 
     templatePath: 'alert/shipment-alert',
-    
+
   },
 
   // shipmentMessage
@@ -1564,7 +1491,7 @@ const oldAlertList = [
     alertType: 'shipmentMessage',
 
     templatePath: 'alert/shipment-alert',
-    
+
   }
 
 
@@ -1582,7 +1509,7 @@ const testAlertList = [
     alertType: 'sayHello',
 
     templatePath: 'alert/shipment-alert',
-    
+
     handleAlertSubComponentLayoutName: 'alertForm.sayHello',
 
     // schedule: '0 * * * * *',
@@ -1612,14 +1539,14 @@ const testAlertList = [
         boundTypeCode: { value: ['O'] },
       }
     } as IQueryParams,
-    
+
 
     // select only 1 person
     // extraPersonIdQuery: {
     //   subqueries: {
     //     userName: { value: 'marco.lor@swivelsoftware.com' }
     //   },
-    //   
+    //
     // } as IQueryParams,
 
 
