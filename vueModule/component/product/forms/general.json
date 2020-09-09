@@ -36,25 +36,27 @@
         "events": {
           "input": [{
             "type": "function",
-            "otherParams":{
+            "otherParams": {
               "func": [
-                "context.$options.propsData.fields[5].props.axiosParams = {",
-                "url: \"api/product-category/\" + context.$store.state.widget.data.productCategoryId,",
-                "method: \"GET\"",
-                "}"
+                "console.log(context)",
+                ""
               ]
             }
           }]
         }
       }, {
-        "label": "ProductPage.definition",
-        "name": "definition",
-        "component": "ProductDefinationChooseField",
-        "props": {
-          "required": true,
-          "axiosParams": {}
+          "label": "ProductPage.definition",
+          "name": "definition",
+          "component": "ProductDefinationChooseField",
+          "key": "{{form.productCategoryId}}",
+          "props": {
+            "name": "ProductPage.definition",
+            "required": true,
+            "CategoryId": "{{productCategoryId}}",
+            "axiosParams": "return {url: 'api/product-category/',  method: 'GET'}"
+          }
         }
-      }]
+      ]
     }
   }]
 }
