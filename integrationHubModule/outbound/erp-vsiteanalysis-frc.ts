@@ -280,7 +280,7 @@ const app = {
 
     let result = [] as any[]
     const anyRow = responseBody.find(r => r.officePartyCode === site)
-    const currency = anyRow ? anyRow.currency : 'HKD'
+    const currency = anyRow ? anyRow.currency : null
     for (const carrier of carriers) {
       const row: any = { officePartyCode: site, carrierName: carrier, currency }
       const rows = responseBody.filter(r => r.officePartyCode === site && r.carrierName === carrier)
