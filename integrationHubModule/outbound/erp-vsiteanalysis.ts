@@ -233,7 +233,7 @@ const app = {
 
     const result = [] as any[]
     const anyRow = responseBody.find(r => r.officePartyCode === site)
-    const currency = anyRow ? anyRow.currency : 'HKD'
+    const currency = anyRow ? anyRow.currency : null
     for (const month of months) {
       let row = responseBody.find(r => r.officePartyCode === site && r.jobMonth === month)
       if (!row)
