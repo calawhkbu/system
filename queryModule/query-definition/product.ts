@@ -8,16 +8,36 @@ import {
   FromTable,
   Value,
   CaseExpression,
+  QueryExpression,
+  ResultColumn,
 } from 'node-jql'
 import { registerAll } from 'utils/jql-subqueries'
 
+const productCategoryExpression = new QueryExpression(new Query({
+  $select : [
+    new ResultColumn(new ColumnExpression('product_category','name'))
+  ],
+  $from: new FromTable('product_category'),
+  $where: [
+    new BinaryExpression(
+      new ColumnExpression('product', 'productCategoryId'),
+      '=',
+      new ColumnExpression('product_category', 'id')
+    )
+  ]
+}))
+
 const CONSTANTS = {
-  tableName: 'product_category',
+  tableName: 'product',
   fieldList: [
     'id',
-    'productCategoryCode',
+    'productCode',
+    'skuCode',
     'name',
-    'description',
+    {
+      name: 'productCategory',
+      expression: productCategoryExpression
+    }
   ]
 }
 
@@ -37,8 +57,8 @@ registerAll(
           {
             $when : new BinaryExpression(
               new AndExpressions([
-                new IsNullExpression(new ColumnExpression('api', 'deletedAt'), false),
-                new IsNullExpression(new ColumnExpression('api', 'deletedBy'), false)
+                new IsNullExpression(new ColumnExpression('product', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('product', 'deletedBy'), false)
               ]),
               '=',
               false
