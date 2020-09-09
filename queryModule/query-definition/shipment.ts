@@ -47,6 +47,17 @@ const months = [
   'December',
 ]
 
+const createdAtExpression = new FunctionExpression(
+  'IFNULL',
+  new ColumnExpression('shipment', 'shipmentCreateTime'),
+  new ColumnExpression('shipment', 'createdAt')
+)
+const updatedAtExpression = new FunctionExpression(
+  'IFNULL',
+  new ColumnExpression('shipment', 'shipmentLastUpdateTime'),
+  new ColumnExpression('shipment', 'updatedAt')
+)
+
 const jobDateExpression = new ColumnExpression('shipment', 'jobDate')
 
 const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
@@ -3156,6 +3167,14 @@ const dateList = [
   {
     name: 'jobDate',
     expression: jobDateExpression
+  },
+  {
+    name: 'createdAt',
+    expression: createdAtExpression
+  },
+  {
+    name: 'updatedAt',
+    expression: updatedAtExpression
   },
   {
     name: 'alertCreatedAt',

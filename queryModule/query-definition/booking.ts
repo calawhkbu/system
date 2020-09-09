@@ -743,6 +743,17 @@ query.table('alert', new Query({
 )
 
 //  register date field
+const createdAtExpression = new FunctionExpression(
+  'IFNULL',
+  new ColumnExpression('booking', 'bookingCreateTime'),
+  new ColumnExpression('booking', 'createdAt')
+)
+const updatedAtExpression = new FunctionExpression(
+  'IFNULL',
+  new ColumnExpression('booking', 'bookingLastUpdateTime'),
+  new ColumnExpression('booking', 'updatedAt')
+)
+
 const jobDateExpression = new ColumnExpression('booking', 'createdAt')
 
 const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
@@ -1184,6 +1195,14 @@ const fieldList = [
   {
     name : 'jobDate',
     expression : jobDateExpression
+  },
+  {
+    name: 'createdAt',
+    expression: createdAtExpression
+  },
+  {
+    name: 'updatedAt',
+    expression: updatedAtExpression
   },
 
   {
