@@ -284,6 +284,7 @@ export default {
           // just get the first topX
           //show erpSite if exist , otherwise show the name, if not intial Office Select, show the original value 
          const erpCode=erpInfo.filter(o => o.code == row["code"]).length > 0 ?
+         erpInfo.filter(o => o.code == row["code"] && o.isBranch)[0]&&
          erpInfo.filter(o => o.code == row["code"] && o.isBranch)[0]["erpSite"]:null
 
          
