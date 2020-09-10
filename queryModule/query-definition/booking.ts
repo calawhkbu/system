@@ -1689,6 +1689,23 @@ const shortcuts: IShortcut[] = [
     expression: new ColumnExpression('booking', 'picEmail')
   },
 
+  // field:shipId
+  {
+    type: 'field',
+    name: 'shipId',
+    expression: new QueryExpression(new Query({
+      $select: new ResultColumn(new ColumnExpression('booking_reference', 'refDescription'), 'shipId'),
+      $from: 'booking_reference',
+      $where: [
+        new BinaryExpression(new ColumnExpression('booking_reference', 'bookingId'), '=', new ColumnExpression('booking', 'id')),
+        new BinaryExpression(new ColumnExpression('booking_reference', 'refName'), '=', new Value('Shipment Reference ID')),
+        new IsNullExpression(new ColumnExpression('booking_reference', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('booking_reference', 'deletedBy'), false)
+      ],
+      $limit: 1
+    }))
+  },
+
   // field:isClosed
   {
     type: 'field',
