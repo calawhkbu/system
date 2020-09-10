@@ -933,23 +933,41 @@ const shipmentIdExpression = new QueryExpression(new Query({
   ]
 }))
 
-const bookingHouseNoExpression = new FunctionExpression(
-  'IF',
-  new BinaryExpression(
-    new ColumnExpression('booking_reference', 'refName'),
-    '=',
-    new Value('HBL')
-  ),
-  new ColumnExpression('booking_reference', 'refDescription'),
-  new Value(null)
-)
+// SELECT `booking_reference`.`refDescription`
+//       FROM  `booking_reference`
+//       WHERE `booking`.`id` = `booking_reference`.`bookingId` and (`booking_reference`.`refName` = "HBL" or `booking_reference`.`refName` = "HAWB")
 
-const bookingMasterNoExpression = new FunctionExpression(
-  'IF',
-  new BinaryExpression(new ColumnExpression('booking_reference', 'refName'), '=', 'MBL'),
-  new ColumnExpression('booking_reference', 'refDescription'),
-  new Value(null)
-)
+const bookingHouseNoExpression = new QueryExpression(new Query({
+  $select : [
+    new ResultColumn(new ColumnExpression('booking_reference','refDescription'))
+  ],
+  $from: new FromTable({
+    table: 'booking_reference'
+  }),
+  $where: new AndExpressions([
+    new BinaryExpression(new ColumnExpression('booking','id'),'=',new ColumnExpression('booking_reference','bookingId')),
+    new OrExpressions([
+      new BinaryExpression(new ColumnExpression('booking_reference','refName'), '=', 'HBL'),
+      new BinaryExpression(new ColumnExpression('booking_reference','refName'), '=', 'HAWB'),
+    ])
+  ])
+}))
+
+const bookingMasterNoExpression = new QueryExpression(new Query({
+  $select : [
+    new ResultColumn(new ColumnExpression('booking_reference','refDescription'))
+  ],
+  $from: new FromTable({
+    table: 'booking_reference'
+  }),
+  $where: new AndExpressions([
+    new BinaryExpression(new ColumnExpression('booking','id'),'=',new ColumnExpression('booking_reference','bookingId')),
+    new OrExpressions([
+      new BinaryExpression(new ColumnExpression('booking_reference','refName'), '=', 'MBL'),
+      new BinaryExpression(new ColumnExpression('booking_reference','refName'), '=', 'MAWB'),
+    ])
+  ])
+}))
 
 
 const shipmentMasterNoExpression = new QueryExpression(new Query({
@@ -1074,7 +1092,7 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
   return accumulator.concat(resultExpressionList)
  }, [])
 
- const locationExpressionList = locationList.reduce((accumulator: ExpressionHelperInterface[], location) => {
+const locationExpressionList = locationList.reduce((accumulator: ExpressionHelperInterface[], location) => {
 
   const locationCodeExpressionInfo = {
     name : `${location}Code`,
@@ -1101,6 +1119,10 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
 
  }, [])
 
+const containerTypeCodeExpression = new ColumnExpression('booking_container', 'containerTypeCode')
+const soNoExpression = new ColumnExpression('booking_container', 'soNo')
+const containerNoExpression = new ColumnExpression('booking_container', 'containerNo')
+
 const baseTableName = 'booking'
 
 const fieldList = [
@@ -1115,6 +1137,14 @@ const fieldList = [
   'divisionCode',
   'isDirect',
   'isCoload',
+  {
+    name: 'totalQuantity',
+    expression: new ColumnExpression('booking', 'quantity')
+  },
+  {
+    name: 'totalQuantityUnit',
+    expression: new ColumnExpression('booking', 'quantityUnit')
+  },
 
   // 'createdAt',
   // 'updatedAt',
@@ -1129,20 +1159,34 @@ const fieldList = [
   {
 
     name : 'houseNo',
-    expression : houseNoExpression,
-    companion : ['table:booking_reference']
+    expression : houseNoExpression
   },
   {
 
     name : 'masterNo',
-    expression : masterNoExpression,
-    companion : ['table:booking_reference']
+    expression : masterNoExpression
   },
 
   {
 
     name : 'poNo',
     expression : poNoExpression
+  },
+
+  {
+    name: 'containerTypeCode',
+    expression: containerTypeCodeExpression,
+    companion: ['table:booking_container']
+  },
+  {
+    name: 'allSoNo',
+    expression: soNoExpression,
+    companion: ['table:booking_container']
+  },
+  {
+    name: 'allContainerNo',
+    expression: containerNoExpression,
+    companion: ['table:booking_container']
   },
 
 

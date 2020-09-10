@@ -78,6 +78,15 @@
           "hidden": true
         },
         {
+          "key": "houseNo",
+          "width": 150
+        },
+        {
+          "key": "bookingSubmitDateActual",
+          "width": 150,
+          "format": "YYYY-MM-DD HH:mm:ss"
+        },
+        {
           "key": "createdAt",
           "width": 150,
           "format": "YYYY-MM-DD"
