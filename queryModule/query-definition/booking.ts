@@ -1665,6 +1665,16 @@ function addBookingCheck(query: Query) {
 }
 
 const shortcuts: IShortcut[] = [
+  // field:distinct-team
+  {
+    type: 'field',
+    name: 'distinct-team',
+    queryArg: () => () => ({
+      $distinct: true,
+      $select: new ResultColumn(new ColumnExpression('booking', 'team'), 'team')
+    })
+  },
+
   // field:team
   {
     type: 'field',

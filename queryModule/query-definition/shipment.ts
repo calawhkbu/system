@@ -3486,7 +3486,31 @@ function addShipmentCheck(query: Query) {
 }
 
 const shortcuts: IShortcut[] = [
-  // @field:isClosed
+  // field:distinct-team
+  {
+    type: 'field',
+    name: 'distinct-team',
+    queryArg: () => () => ({
+      $distinct: true,
+      $select: new ResultColumn(new ColumnExpression('shipment', 'team'), 'team')
+    })
+  },
+
+  // field:team
+  {
+    type: 'field',
+    name: 'team',
+    expression: new ColumnExpression('shipment', 'team')
+  },
+
+  // field:picEmail
+  {
+    type: 'field',
+    name: 'picEmail',
+    expression: new ColumnExpression('shipment', 'picEmail')
+  },
+
+  // field:isClosed
   {
     type: 'field',
     name: 'isClosed',
@@ -3494,7 +3518,7 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
-  // @field:noOfTasks
+  // field:noOfTasks
   {
     type: 'field',
     name: 'noOfTasks',
@@ -3519,7 +3543,7 @@ const shortcuts: IShortcut[] = [
     })
   },
 
-  // @field:sopScore
+  // field:sopScore
   {
     type: 'field',
     name: 'sopScore',
@@ -3539,7 +3563,7 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
-  // @field:hasDueTasks
+  // field:hasDueTasks
   {
     type: 'field',
     name: 'hasDueTasks',
@@ -3559,7 +3583,7 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
-  // @field:hasDeadTasks
+  // field:hasDeadTasks
   {
     type: 'field',
     name: 'hasDeadTasks',
@@ -3577,6 +3601,24 @@ const shortcuts: IShortcut[] = [
       false
     ),
     registered: true
+  },
+
+  // subquery:sop_date (has tasks within the given period)
+  {
+    type: 'subquery',
+    name: 'sop_date',
+    subqueryArg: () => (value, params) => new ExistsExpression(
+      addShipmentCheck(
+        sopTaskQuery().apply({
+          subqueries: {
+            ...passSubquery(params, 'sop_date', 'date'),
+            ...passSubquery(params, 'notDone'),
+            ...passSubquery(params, 'notDeleted'),
+          }
+        })
+      ),
+      false
+    )
   },
 
   // subquery:notClosed
