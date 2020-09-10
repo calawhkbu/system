@@ -133,12 +133,16 @@
             "type": "boolean",
             "display": "Hide Deleted",
             "i18nContext": "SopTask"
+          },
+          {
+            "name": "createdAtBetween",
+            "type": "date"
           }
         ],
         "newReport": {
           "filters": {
-            "day": {
-              "value": "today"
+            "date": {
+              "func": "today"
             },
             "notDeleted": true
           },

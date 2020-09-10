@@ -1665,6 +1665,20 @@ function addBookingCheck(query: Query) {
 }
 
 const shortcuts: IShortcut[] = [
+  // field:team
+  {
+    type: 'field',
+    name: 'team',
+    expression: new ColumnExpression('booking', 'team')
+  },
+
+  // field:picEmail
+  {
+    type: 'field',
+    name: 'picEmail',
+    expression: new ColumnExpression('booking', 'picEmail')
+  },
+
   // field:isClosed
   {
     type: 'field',

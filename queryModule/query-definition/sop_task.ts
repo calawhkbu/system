@@ -1,5 +1,5 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery, ParameterExpression, OrderBy } from "node-jql";
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery, ParameterExpression, OrderBy, BetweenExpression } from "node-jql";
 import { IfExpression, alwaysTrueExpression, wrapOrder, IfNullExpression } from 'utils/jql-subqueries'
 import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityField, getEntityTable } from "utils/sop-task";
 import { IShortcut } from 'classes/query/Shortcut'
@@ -597,7 +597,7 @@ const shortcuts: IShortcut[] = [
     companions: getEntityTable([], [bookingTable], [shipmentTable])
   },
 
-  // field:startAt,
+  // field:startAt
   {
     type: 'field',
     name: 'startAt',
@@ -608,7 +608,7 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
-  // field:defaultStartAt,
+  // field:defaultStartAt
   {
     type: 'field',
     name: 'defaultStartAt',
@@ -618,7 +618,7 @@ const shortcuts: IShortcut[] = [
     )
   },
 
-  // field:dueAt,
+  // field:dueAt
   {
     type: 'field',
     name: 'dueAt',
@@ -629,7 +629,7 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
-  // field:defaultDueAt,
+  // field:defaultDueAt
   {
     type: 'field',
     name: 'defaultDueAt',
@@ -639,7 +639,7 @@ const shortcuts: IShortcut[] = [
     )
   },
 
-  // field:deadline,
+  // field:deadline
   {
     type: 'field',
     name: 'deadline',
@@ -650,7 +650,7 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
-  // field:defaultDeadline,
+  // field:defaultDeadline
   {
     type: 'field',
     name: 'defaultDeadline',
@@ -847,6 +847,24 @@ const shortcuts: IShortcut[] = [
       const byMeExpression = new BinaryExpression(statusByExpression, '=', me)
       return { $select: new ResultColumn(IfExpression(byMeExpression, new Value('me'), statusByExpression), 'statusBy') }
     }
+  },
+
+  // field:entityCreatedAt
+  {
+    type: 'field',
+    name: 'entityCreatedAt',
+    expression: re => new CaseExpression([
+      {
+        $when: new BinaryExpression(re['tableName'], '=', new Value(bookingTable)),
+        $then: IfNullExpression(new ColumnExpression(bookingTable, 'bookingCreateTime'), new ColumnExpression(bookingTable, 'createdAt'))
+      },
+      {
+        $when: new BinaryExpression(re['tableName'], '=', new Value(shipmentTable)),
+        $then: IfNullExpression(new ColumnExpression(shipmentTable, 'shipmentCreateTime'), new ColumnExpression(shipmentTable, 'createdAt'))
+      }
+    ]),
+    registered: true,
+    companions: ['table:booking', 'table:shipment']
   },
 
   // field:deduct
@@ -1091,8 +1109,8 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'pic',
     expression: new OrExpressions([
-      new BinaryExpression(new ColumnExpression(bookingPartyTable, 'picEmail'), '=', new Unknown()),
-      new BinaryExpression(new ColumnExpression(shipmentPartyTable, 'picEmail'), '=', new Unknown())
+      new BinaryExpression(new ColumnExpression(bookingTable, 'picEmail'), '=', new Unknown()),
+      new BinaryExpression(new ColumnExpression(shipmentTable, 'picEmail'), '=', new Unknown())
     ]),
     companions: ['table:booking', 'table:shipment'],
     unknowns: { noOfUnknowns: 2 }
@@ -1103,8 +1121,8 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'team',
     expression: new OrExpressions([
-      new InExpression(new ColumnExpression(bookingPartyTable, 'team'), false, new Unknown()),
-      new InExpression(new ColumnExpression(shipmentPartyTable, 'team'), false, new Unknown())
+      new BinaryExpression(new ColumnExpression(bookingTable, 'team'), '=', new Unknown()),
+      new BinaryExpression(new ColumnExpression(shipmentTable, 'team'), '=', new Unknown())
     ]),
     companions: ['table:booking', 'table:shipment'],
     unknowns: { noOfUnknowns: 2 }
@@ -1202,6 +1220,15 @@ const shortcuts: IShortcut[] = [
     unknowns: { noOfUnknowns: 2 }
   },
 
+  // subquery:createdAtBetween
+  {
+    type: 'subquery',
+    name: 'createdAtBetween',
+    expression: re => new BetweenExpression(re['entityCreatedAt'], false, new Unknown(), new Unknown()),
+    companions: ['table:booking', 'table:shipment'],
+    unknowns: { fromTo: true }
+  },
+
   // orderBy:seqNo
   {
     type: 'orderBy',
@@ -1215,7 +1242,7 @@ const shortcuts: IShortcut[] = [
     companions: ['table:sop_template_task', 'table:sop_template_template_task', 'field:categorySeqNo']
   },
 
-  // orderBy:status (do in frontend)
+  // orderBy:status
   {
     type: 'orderBy',
     name: 'status',
