@@ -137,8 +137,8 @@
         ],
         "newReport": {
           "filters": {
-            "day": {
-              "value": "today"
+            "date": {
+              "func": "today"
             },
             "notDeleted": true
           },
