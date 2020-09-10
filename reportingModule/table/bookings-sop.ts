@@ -102,7 +102,10 @@ export default {
     { key: 'agentPartyContactEmail' },
     { key: 'agentPartyContactName' },
     { key: 'noOfTasks' },
-    { key: 'sopScore' }
+    { key: 'sopScore' },
+    { key: 'team' },
+    { key: 'picEmail' },
+    { key: 'bookingCreateTime' }
   ],
 } as JqlDefinition
 
