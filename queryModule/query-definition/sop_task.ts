@@ -1109,8 +1109,8 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'pic',
     expression: new OrExpressions([
-      new BinaryExpression(new ColumnExpression(bookingPartyTable, 'picEmail'), '=', new Unknown()),
-      new BinaryExpression(new ColumnExpression(shipmentPartyTable, 'picEmail'), '=', new Unknown())
+      new BinaryExpression(new ColumnExpression(bookingTable, 'picEmail'), '=', new Unknown()),
+      new BinaryExpression(new ColumnExpression(shipmentTable, 'picEmail'), '=', new Unknown())
     ]),
     companions: ['table:booking', 'table:shipment'],
     unknowns: { noOfUnknowns: 2 }
@@ -1121,8 +1121,8 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'team',
     expression: new OrExpressions([
-      new InExpression(new ColumnExpression(bookingPartyTable, 'team'), false, new Unknown()),
-      new InExpression(new ColumnExpression(shipmentPartyTable, 'team'), false, new Unknown())
+      new BinaryExpression(new ColumnExpression(bookingTable, 'team'), '=', new Unknown()),
+      new BinaryExpression(new ColumnExpression(shipmentTable, 'team'), '=', new Unknown())
     ]),
     companions: ['table:booking', 'table:shipment'],
     unknowns: { noOfUnknowns: 2 }
