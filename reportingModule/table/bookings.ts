@@ -8,6 +8,7 @@ export default {
     }
   ],
   columns: [
+    { key: 'createdAt' },
     { key: 'updatedAt' },
     { key: 'id' },
     { key: 'shipmentId' },
@@ -71,6 +72,7 @@ export default {
     { key: 'agentPartyName' },
     { key: 'agentPartyContactEmail' },
     { key: 'agentPartyContactName' },
+    { key: 'shipId' },
     { key: 'containerTypeCode' },
     { key: 'allSoNo' },
     { key: 'allContainerNo' },

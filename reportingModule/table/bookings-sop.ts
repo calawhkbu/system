@@ -45,6 +45,7 @@ export default {
     }
   ],
   columns: [
+    { key: 'createdAt' },
     { key: 'updatedAt' },
     { key: 'id' },
     { key: 'houseNo' },
@@ -101,8 +102,11 @@ export default {
     { key: 'agentPartyName' },
     { key: 'agentPartyContactEmail' },
     { key: 'agentPartyContactName' },
+    { key: 'shipId' },
     { key: 'noOfTasks' },
-    { key: 'sopScore' }
+    { key: 'sopScore' },
+    { key: 'team' },
+    { key: 'picEmail' }
   ],
 } as JqlDefinition
 
