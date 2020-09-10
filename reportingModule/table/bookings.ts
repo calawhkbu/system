@@ -71,6 +71,7 @@ export default {
     { key: 'agentPartyName' },
     { key: 'agentPartyContactEmail' },
     { key: 'agentPartyContactName' },
+    { key: 'createdAt' },
     { key: 'containerTypeCode' },
     { key: 'allSoNo' },
     { key: 'allContainerNo' },
