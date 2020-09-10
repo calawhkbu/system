@@ -133,6 +133,10 @@
             "type": "boolean",
             "display": "Hide Deleted",
             "i18nContext": "SopTask"
+          },
+          {
+            "name": "createdAtBetween",
+            "type": "date"
           }
         ],
         "newReport": {
