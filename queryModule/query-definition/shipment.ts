@@ -47,6 +47,17 @@ const months = [
   'December',
 ]
 
+const createdAtExpression = new FunctionExpression(
+  'IFNULL',
+  new ColumnExpression('shipment', 'shipmentCreateTime'),
+  new ColumnExpression('shipment', 'createdAt')
+)
+const updatedAtExpression = new FunctionExpression(
+  'IFNULL',
+  new ColumnExpression('shipment', 'shipmentLastUpdateTime'),
+  new ColumnExpression('shipment', 'updatedAt')
+)
+
 const jobDateExpression = new ColumnExpression('shipment', 'jobDate')
 
 const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
@@ -3158,6 +3169,14 @@ const dateList = [
     expression: jobDateExpression
   },
   {
+    name: 'createdAt',
+    expression: createdAtExpression
+  },
+  {
+    name: 'updatedAt',
+    expression: updatedAtExpression
+  },
+  {
     name: 'alertCreatedAt',
     expression: alertCreatedAtExpression,
     companion: ['table:alert']
@@ -3371,7 +3390,7 @@ query
               $from: new FromTable('shipment_reference'),
               $where: new AndExpressions({
                 expressions: [
-                  new BinaryExpression(new ColumnExpression('shipment_reference', 'refName'), '=', 'Shipment Reference ID'),
+                  // new BinaryExpression(new ColumnExpression('shipment_reference', 'refName'), '=', 'Shipment Reference ID'),
                   new RegexpExpression(new ColumnExpression('shipment_reference', 'refDescription'), false),
                 ]
               })

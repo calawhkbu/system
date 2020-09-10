@@ -743,6 +743,17 @@ query.table('alert', new Query({
 )
 
 //  register date field
+const createdAtExpression = new FunctionExpression(
+  'IFNULL',
+  new ColumnExpression('booking', 'bookingCreateTime'),
+  new ColumnExpression('booking', 'createdAt')
+)
+const updatedAtExpression = new FunctionExpression(
+  'IFNULL',
+  new ColumnExpression('booking', 'bookingLastUpdateTime'),
+  new ColumnExpression('booking', 'updatedAt')
+)
+
 const jobDateExpression = new ColumnExpression('booking', 'createdAt')
 
 const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
@@ -1105,8 +1116,8 @@ const fieldList = [
   'isDirect',
   'isCoload',
 
-  'createdAt',
-  'updatedAt',
+  // 'createdAt',
+  // 'updatedAt',
 
   ...partyExpressionList,
   ...locationExpressionList,
@@ -1184,6 +1195,14 @@ const fieldList = [
   {
     name : 'jobDate',
     expression : jobDateExpression
+  },
+  {
+    name: 'createdAt',
+    expression: createdAtExpression
+  },
+  {
+    name: 'updatedAt',
+    expression: updatedAtExpression
   },
 
   {
@@ -1583,6 +1602,7 @@ query
   .register('value', 28)
   .register('value', 29)
   .register('value', 30)
+  .register('value', 31)
 
 function sopTaskQuery(): QueryDef {
   return require('./sop_task').default

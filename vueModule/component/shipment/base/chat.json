@@ -4,8 +4,15 @@
     "props": {
       "class": "xs-12 margin-topbottom-2",
       "layoutName": "plugins/chat",
-      "axiosBaseParams": false,
-      "tableName": "shipment"
+      "loadWhenDataLoaded": true,
+      "axiosBaseParams": [
+        "const data = context.$store.state.widget.data;",
+        "return {",
+        "url: 'api/chat',",
+        "method: 'POST',",
+        "data: { tableName: 'shipment', primaryKey: data.id }",
+        "};"
+      ]
     }
   }]
 }
