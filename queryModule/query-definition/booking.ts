@@ -1635,13 +1635,6 @@ const shortcuts: IShortcut[] = [
     expression: new ColumnExpression('booking', 'picEmail')
   },
 
-  // field:bookingCreateTime
-  {
-    type: 'field',
-    name: 'bookingCreateTime',
-    expression: IfNullExpression(new ColumnExpression('booking', 'bookingCreateTime'), new ColumnExpression('booking', 'createdAt'))
-  },
-
   // field:isClosed
   {
     type: 'field',

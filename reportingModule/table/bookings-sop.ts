@@ -105,7 +105,7 @@ export default {
     { key: 'sopScore' },
     { key: 'team' },
     { key: 'picEmail' },
-    { key: 'bookingCreateTime' }
+    { key: 'createdAt' }
   ],
 } as JqlDefinition
 

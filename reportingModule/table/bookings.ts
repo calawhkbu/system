@@ -65,7 +65,7 @@ export default {
     { key: 'agentPartyName' },
     { key: 'agentPartyContactEmail' },
     { key: 'agentPartyContactName' },
-    { key: 'bookingCreateTime' }
+    { key: 'createdAt' }
   ],
 } as JqlDefinition
 
