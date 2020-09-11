@@ -1123,6 +1123,18 @@ const containerTypeCodeExpression = new ColumnExpression('booking_container', 'c
 const soNoExpression = new ColumnExpression('booking_container', 'soNo')
 const containerNoExpression = new ColumnExpression('booking_container', 'containerNo')
 
+const vesselNameExpression =new FunctionExpression(
+  'IFNULL',
+  new ColumnExpression('booking', 'vesselName'),
+  new ColumnExpression('booking', 'proposedVesselName')
+)
+
+const voyageFlightNumberNameExpression =new FunctionExpression(
+  'IFNULL',
+  new ColumnExpression('booking', 'voyageFlightNumber'),
+  new ColumnExpression('booking', 'proposedVoyageFlightNumber')
+)
+
 const baseTableName = 'booking'
 
 const fieldList = [
@@ -1137,6 +1149,14 @@ const fieldList = [
   'divisionCode',
   'isDirect',
   'isCoload',
+  {
+    name: 'finalVesselName',
+    expression: vesselNameExpression
+  },
+  {
+    name: 'finalVoyageFlightNumber',
+    expression: voyageFlightNumberNameExpression
+  },
   {
     name: 'totalQuantity',
     expression: new ColumnExpression('booking', 'quantity')
