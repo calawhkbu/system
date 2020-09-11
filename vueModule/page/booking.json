@@ -40,7 +40,8 @@
             "readonly": false,
             "stepper": 0,
             "next": false,
-            "saveIcon": "create"
+            "saveIcon": "create",
+            "agreeOnClickSave": true
           },
           "detail": {
             "readonly": true
