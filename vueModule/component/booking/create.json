@@ -899,27 +899,6 @@
                       "layoutName": "booking/forms/reference"
                     }
                   }]
-                },
-                {
-                  "id": "BookingPage.TermAndCondition",
-                  "layout": "v-card",
-                  "class": "margin-8",
-                  "components": [{
-                    "is": "WidgetForm",
-                    "props": {
-                      "fields": [{
-                        "name": "Term",
-                        "component": "Term",
-                        "class": "xs-12",
-                        "props": {
-                          "type": "booking-term",
-                          "termProps": {
-                            "class": "margin-leftright-4 padding-leftright-4 overflow-auto"
-                          }
-                        }
-                      }]
-                    }
-                  }]
                 }
               ]
             }
