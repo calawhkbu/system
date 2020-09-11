@@ -1402,6 +1402,45 @@ const summaryFieldList : SummaryField[]  = [
     name: 'containerHQ',
     summaryType : 'sum',
     expression: new ColumnExpression('booking', 'containerHQ')
+  },
+  {
+    name: 'FCL',
+    summaryType: 'sum',
+    expression: IfExpression(new OrExpressions([
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('FCL/FCL')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CY /CY')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CY /DOOR')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CY /DR')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CY/FO')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DOOR/CY')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DOOR/DOOR')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DR /CY')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DR /DR')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('RAIL/RAIL'))
+    ]), new Value(1), new Value(0))
+  },
+  {
+    name: 'LCL',
+    summaryType: 'sum',
+    expression: IfExpression(new OrExpressions([
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('LCL/LCL')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CFS/CFS')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CFS/CY')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CFS/DOOR')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CFS/DR')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CY /CFS')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DOOR/CFS'))
+    ]), new Value(1), new Value(0))
+  },
+  {
+    name: 'RO',
+    summaryType: 'sum',
+    expression: IfExpression(new BinaryExpression(new ColumnExpression('booking', 'nominatedTypeCode'), '=', new Value('R')), new Value(1), new Value(0))
+  },
+  {
+    name: 'Freehand',
+    summaryType: 'sum',
+    expression: IfExpression(new BinaryExpression(new ColumnExpression('booking', 'nominatedTypeCode'), '=', new Value('F')), new Value(1), new Value(0))
   }
 ]
 
