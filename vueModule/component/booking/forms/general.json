@@ -361,18 +361,8 @@
             "name": "proposedVesselName",
             "selector": "name"
           }],
-          "canEdit": [
-            "if (form && form.vesselName) {",
-            "return false;",
-            "}",
-            "return true;"
-          ],
-          "checkDisplayWhen": [
-            "if (form.vesselName) {",
-            "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA' && form.proposedVesselName;",
-            "}",
-            "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA';"
-          ],
+          "canEdit": "return form && !form.vesselName;",
+          "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA' && !form.vesselName;",
           "props": {
             "canCreate": true,
             "canCreateValue": {
@@ -411,18 +401,8 @@
           "name": "proposedVoyageFlightNumber",
           "component": "v-text-field",
           "class": "xs-12 md-3",
-          "canEdit": [
-            "if (form && form.voyageFlightNumber) {",
-            "return false;",
-            "}",
-            "return true;"
-          ],
-          "checkDisplayWhen": [
-            "if (form.voyageFlightNumber) {",
-            "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA') && form.proposedVoyageFlightNumber;",
-            "}",
-            "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA');"
-          ]
+          "canEdit": "return form && !form.voyageFlightNumber;",
+          "checkDisplayWhen": "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA') && !form.voyageFlightNumber;"
         },
         {
           "class": "xs-12 md-6",
