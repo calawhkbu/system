@@ -167,7 +167,7 @@
                 },
                 {
                   "label": "Widget.remark",
-                  "name": "bookingDate.{{flex}}{{key}}Remark",
+                  "name": "bookingDate.{{flex}}{{key}}DateRemark",
                   "component": "v-text-field",
                   "class": "xs-12"
                 }

@@ -82,6 +82,21 @@
           "width": 150
         },
         {
+          "key": "shipperInstructionSubmitDateEstimated",
+          "width": 150,
+          "format": "YYYY-MM-DD HH:mm:ss"
+        },
+        {
+          "key": "shipperInstructionSubmitDateActual",
+          "width": 150,
+          "format": "YYYY-MM-DD HH:mm:ss"
+        },
+        {
+          "key": "bookingSubmitDateEstimated",
+          "width": 150,
+          "format": "YYYY-MM-DD HH:mm:ss"
+        },
+        {
           "key": "bookingSubmitDateActual",
           "width": 150,
           "format": "YYYY-MM-DD HH:mm:ss"
