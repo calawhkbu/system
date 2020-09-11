@@ -234,7 +234,8 @@ export const dateTimezoneMapping = {
     'cargoRolloverStatus',
     'sentToShipper',
     'gateIn',
-    'loadOnboard'
+    'loadOnboard',
+    'customClearanceLoadingPort'
   ],
   portOfDischarge: [
     'arrival',
@@ -247,7 +248,8 @@ export const dateTimezoneMapping = {
     'cargoPickupWithDemurrage',
     'finalDoorDelivery',
     'returnEmptyContainer',
-    'sentToConsignee'
+    'sentToConsignee',
+    'customClearanceDestinationPort'
   ]
 }
 
