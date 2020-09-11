@@ -1486,6 +1486,10 @@ const dateList = [
   'cargoReceiptDateAcutal',
   'finalDoorDeliveryDateEstimated',
   'finalDoorDeliveryDateActual',
+  'customClearanceLoadingPortDateEstimated',
+  'customClearanceLoadingPortDateActual',
+  'customClearanceDestinationPortDateEstimated',
+  'customClearanceDestinationPortDateActual',
   {
     name : 'alertCreatedAt',
     expression : alertCreatedAtExpression,
