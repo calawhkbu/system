@@ -842,6 +842,7 @@
             "is": "WidgetStepper",
             "props": {
               "topClick": false,
+              "topSave": true,
               "validateBeforeStepChange": true,
               "preview": false,
               "steps": [{
