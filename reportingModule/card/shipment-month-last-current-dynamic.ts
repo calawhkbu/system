@@ -235,7 +235,7 @@ export default {
     {
       display: 'sorting',
       name: 'sorting',
-      type: 'list',
+      type: 'sorting',
       props: {
         multi: true,
         items: [
