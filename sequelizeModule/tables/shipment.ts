@@ -89,8 +89,8 @@ export const setDataFunction = {
   container20: async({ container20 = null, shipmentContainers = [] }: Shipment) => {
     if (!container20) {
       let total = 0
-      for (const { is20Container } of shipmentContainers) {
-        if (is20Container) {
+      for (const { containerType } of shipmentContainers) {
+        if (containerType.startsWith('20')) {
           total++
         }
       }
@@ -101,8 +101,8 @@ export const setDataFunction = {
   container40: async({ container40 = null, shipmentContainers = [] }: Shipment) => {
     if (!container40) {
       let total = 0
-      for (const { is40Container } of shipmentContainers) {
-        if (is40Container) {
+      for (const { containerType } of shipmentContainers) {
+        if (containerType.startsWith('40')) {
           total++
         }
       }
@@ -113,8 +113,8 @@ export const setDataFunction = {
   containerHQ: async({ containerHQ = null, shipmentContainers = [] }: Shipment) => {
     if (!containerHQ) {
       let total = 0
-      for (const { isHQContainer } of shipmentContainers) {
-        if (isHQContainer) {
+      for (const { containerType } of shipmentContainers) {
+        if (containerType.startsWith('45')) {
           total++
         }
       }
@@ -125,8 +125,8 @@ export const setDataFunction = {
   containerOthers: async({ containerOthers = null, shipmentContainers = [] }: Shipment) => {
     if (!containerOthers) {
       let total = 0
-      for (const { isOtherContainer } of shipmentContainers) {
-        if (isOtherContainer) {
+      for (const { containerType } of shipmentContainers) {
+        if (!containerType.startsWith('20') && !containerType.startsWith('40') && !containerType.startsWith('45')) {
           total++
         }
       }
