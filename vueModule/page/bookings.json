@@ -82,6 +82,14 @@
           "width": 150
         },
         {
+          "key": "finalVesselName",
+          "label": "vesselName"
+        },
+        {
+          "key": "finalVoyageFlightNumber",
+          "label": "voyageFlightNumber"
+        },
+        {
           "key": "shipperInstructionSubmitDateEstimated",
           "width": 150,
           "format": "YYYY-MM-DD HH:mm:ss"

@@ -40,7 +40,8 @@
             "readonly": false,
             "stepper": 0,
             "next": false,
-            "saveIcon": "create"
+            "saveIcon": "create",
+            "agreeOnClickSave": true
           },
           "detail": {
             "readonly": true
@@ -48,7 +49,8 @@
           "edit": {
             "readonly": false,
             "stepper": 0,
-            "saveIcon": "save"
+            "saveIcon": "save",
+            "agreeOnClickSave": false
           }
         }
       }
