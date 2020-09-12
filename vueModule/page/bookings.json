@@ -90,24 +90,44 @@
           "label": "voyageFlightNumber"
         },
         {
+          "key": "customClearanceLoadingPortDateEstimated",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "customClearanceLoadingPortDateActual",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "customClearanceDestinationPortDateEstimated",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "customClearanceDestinationPortDateActual",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
           "key": "shipperInstructionSubmitDateEstimated",
           "width": 150,
-          "format": "YYYY-MM-DD HH:mm:ss"
+          "format": "YYYY-MM-DD"
         },
         {
           "key": "shipperInstructionSubmitDateActual",
           "width": 150,
-          "format": "YYYY-MM-DD HH:mm:ss"
+          "format": "YYYY-MM-DD"
         },
         {
           "key": "bookingSubmitDateEstimated",
           "width": 150,
-          "format": "YYYY-MM-DD HH:mm:ss"
+          "format": "YYYY-MM-DD"
         },
         {
           "key": "bookingSubmitDateActual",
           "width": 150,
-          "format": "YYYY-MM-DD HH:mm:ss"
+          "format": "YYYY-MM-DD"
         },
         {
           "key": "createdAt",
