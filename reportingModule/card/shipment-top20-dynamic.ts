@@ -289,8 +289,6 @@ export default {
 
          
           const dynamicCodeList = [...new Set(res.map(dynamicRow => (
-            console.log("dnyamicRowCoulmnCodename-->"),
-            console.log(dynamicRow[dynamicColumnCodeColumnName]),
             erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName]).length > 0 ?
               erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName] && o.isBranch)[0]["erpSite"]
               : erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName]).length>0?
