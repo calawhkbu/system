@@ -90,7 +90,7 @@
         }
       },
       {
-        "test": "return !row.isEntityRow && row.status === 'Due' || row.status === 'Dead'",
+        "test": "return !row.isEntityRow && (row.status === 'Due' || row.status === 'Dead')",
         "style": {
           "backgroundColor": "#ffcccb"
         }
