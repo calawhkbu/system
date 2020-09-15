@@ -1,4 +1,37 @@
 .DS_Store
 node_modules
+<<<<<<< HEAD
+/dist
+/dist-new
+/dist-old
+
+/tests/e2e/reports/
+selenium-debug.log
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
+
+/src/version.ts
+/widget-build-test/widgets
+
+yarn.lock
+package-lock.json
+=======
 package-lock.json
 yarn.lock
+>>>>>>> b881afe6a4f3953c9a81a41dac8be371da93f12a

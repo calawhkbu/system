@@ -2599,7 +2599,7 @@ const summaryFieldList: SummaryField[] = [
     inReportExpression: new FunctionExpression('IF',
       new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'FCL'),
       new ColumnExpression('shipment', 'teu'),
-      new FunctionExpression('ROUND', new MathExpression(new ColumnExpression('shipment', 'cbm'), '/', new Value(25)), new Value(3))
+      new FunctionExpression('ROUND', new MathExpression(new ColumnExpression('shipment', 'cbm'), '/', new Value(25)), new Value(2)),
     )
 
   },
@@ -2614,6 +2614,17 @@ const summaryFieldList: SummaryField[] = [
     summaryType: 'sum',
     expression: new ColumnExpression('shipment_cargo', 'cargo_value'),
     companion: ['table:shipment_cargo']
+  },
+
+  {
+    name: 'RO',
+    summaryType: 'sum',
+    expression: IfExpression(new BinaryExpression(new ColumnExpression('shipment', 'nominatedTypeCode'), '=', new Value('R')), new Value(1), new Value(0))
+  },
+  {
+    name: 'Freehand',
+    summaryType: 'sum',
+    expression: IfExpression(new BinaryExpression(new ColumnExpression('shipment', 'nominatedTypeCode'), '=', new Value('F')), new Value(1), new Value(0))
   },
 
   ...reportingSummaryFieldNameList.map(reportingSummaryFieldName => {

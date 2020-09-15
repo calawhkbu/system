@@ -162,8 +162,8 @@ export const setDataFunction = {
   container20: async({ container20 = null, bookingContainers = [] }: Booking) => {
     if (!container20) {
       let total = 0
-      for (const { is20Container } of bookingContainers) {
-        if (is20Container) {
+      for (const { containerTypeCode } of bookingContainers) {
+        if (containerTypeCode && containerTypeCode.startsWith('20')) {
           total++
         }
       }
@@ -174,8 +174,8 @@ export const setDataFunction = {
   container40: async({ container40 = null, bookingContainers = [] }: Booking) => {
     if (!container40) {
       let total = 0
-      for (const { is40Container } of bookingContainers) {
-        if (is40Container) {
+      for (const { containerTypeCode } of bookingContainers) {
+        if (containerTypeCode && containerTypeCode.startsWith('40')) {
           total++
         }
       }
@@ -186,8 +186,8 @@ export const setDataFunction = {
   containerHQ: async({ containerHQ = null, bookingContainers = [] }: Booking) => {
     if (!containerHQ) {
       let total = 0
-      for (const { isHQContainer } of bookingContainers) {
-        if (isHQContainer) {
+      for (const { containerTypeCode } of bookingContainers) {
+        if (containerTypeCode && containerTypeCode.startsWith('45')) {
           total++
         }
       }
@@ -198,8 +198,8 @@ export const setDataFunction = {
   containerOthers: async({ containerOthers = null, bookingContainers = [] }: Booking) => {
     if (!containerOthers) {
       let total = 0
-      for (const { isOtherContainer } of bookingContainers) {
-        if (isOtherContainer) {
+      for (const { containerTypeCode } of bookingContainers) {
+        if (containerTypeCode && !containerTypeCode.startsWith('20') && !containerTypeCode.startsWith('40') && !containerTypeCode.startsWith('45')) {
           total++
         }
       }

@@ -1433,10 +1433,10 @@ const summaryFieldList : SummaryField[]  = [
       new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CY /DR')),
       new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CY/FO')),
       new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DOOR/CY')),
-      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DOOR/DOOR')),
+     new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DOOR/DOOR')),
       new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DR /CY')),
-      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DR /DR')),
-      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('RAIL/RAIL'))
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DR /DR'))
+      //new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('RAIL/RAIL'))
     ]), new Value(1), new Value(0))
   },
   {
@@ -1448,8 +1448,10 @@ const summaryFieldList : SummaryField[]  = [
       new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CFS/CY')),
       new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CFS/DOOR')),
       new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CFS/DR')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CFS/FO')),
       new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CY /CFS')),
-      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DOOR/CFS'))
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('FAS/FAS'))
+     // new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DOOR/CFS'))
     ]), new Value(1), new Value(0))
   },
   {
