@@ -3,7 +3,11 @@ import { IQueryParams } from 'classes/query'
 import { BadRequestException } from '@nestjs/common'
 import Moment = require('moment')
 import { OrderBy } from 'node-jql'
-import { expandBottomSheetGroupByEntity, expandSummaryVariable, calculateLastCurrent, handleBottomSheetGroupByEntityValue,summaryVariableList,groupByEntityList } from 'utils/card'
+import { expandBottomSheetGroupByEntity, expandSummaryVariable, calculateLastCurrent, handleBottomSheetGroupByEntityValue, summaryVariableListBooking, groupByEntityListBooking } from 'utils/card'
+import { convertToStartOfDate } from 'utils/jql-subqueries'
+
+const summaryVariableList = summaryVariableListBooking;
+const groupByEntityList = groupByEntityListBooking;
 
 interface Result {
   moment: typeof Moment
@@ -12,13 +16,76 @@ interface Result {
   nameColumnName: string
   summaryVariables: string[]
 }
+var final
+var originalParams;
+var erpInfo = [];
 
 export default {
   jqls: [
     {
+      //get erpSite info
       type: 'prepareParams',
       defaultResult: {},
-      async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
+      async prepareParams(params, { }: Result, user): Promise<IQueryParams> {
+        originalParams = Object.assign({}, params)
+        // console.log({ originalParams })
+        // console.log("get erpSite info")
+        // console.log(params);
+        // console.log("----------partyGroupCode")
+        // console.log(user.partyGroupCode)
+        params.fields = [
+          'id', 'name', 'partyGroupCode', 'thirdPartyCode', 'isBranch', 'erpCode'
+        ];
+
+        params.sorting = [new OrderBy('id', 'DESC')];
+        params.limit = 0;
+
+
+        params.subqueries = {
+          "partyGroupCodeEq": {
+            "value": user.selectedPartyGroup.code
+          },
+          "isBranchEq":{
+            "value":1
+          },
+          "groupByEntity": {
+            "value": "id"
+          }
+        }
+        // console.log(params)
+        // console.log("//get erpSite info-params")
+        // console.log(params)
+
+        return params;
+      }
+    },
+    {
+      type: 'callDataService',
+      dataServiceQuery: ['party', 'party'],
+      onResult(res, params, { }: Result): any {
+        // console.log("party-partycallDataService")
+        // console.log(params)
+        // console.log("erpSite")
+        // console.log(res)
+        if (res && res.length > 0) {
+          for (let i = 0; i < res.length; i++) {
+            if (res[i].isBranch == 1) {
+              erpInfo.push({ name: res[i].name,isBranch:res[i].isBranch, code: res[i].erpCode, erpSite: res[i].thirdPartyCode['erp-site'] });
+            } else {
+              erpInfo.push({ name: res[i].name,isBranch:res[i].isBranch, code: res[i].erpCode });
+            }
+          }
+        }
+        // console.log({ erpInfo })
+
+
+      }
+    },
+    {
+      type: 'prepareParams',
+      defaultResult: {},
+      async prepareParams({}, prevResult: Result, user): Promise<IQueryParams> {
+        var params = Object.assign({}, originalParams)
         const moment = prevResult.moment = (await this.preparePackages(user)).moment
         const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -27,13 +94,42 @@ export default {
         if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
 
 
-        
-        handleBottomSheetGroupByEntityValue(subqueries)
-        const { groupByEntity, codeColumnName,nameColumnName } = expandBottomSheetGroupByEntity(subqueries)
 
+        handleBottomSheetGroupByEntityValue(subqueries)
+        var { groupByEntity, codeColumnName, nameColumnName } = expandBottomSheetGroupByEntity(subqueries)
+
+        // -----------------------------groupBy variable
+        //groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
         prevResult.nameColumnName = nameColumnName
+
+        if (groupByEntity == 'bookingNo') {
+          codeColumnName = groupByEntity;
+          nameColumnName = groupByEntity;
+        } else if (groupByEntity == 'carrier') {
+          codeColumnName = 'carrierCode';
+          nameColumnName = 'carrierName';
+        } else if (groupByEntity == 'moduleType') {
+          codeColumnName = 'moduleTypeCode';
+          nameColumnName = 'moduleTypeCode';
+
+        } else if (groupByEntity == 'portOfLoading') {
+          codeColumnName = groupByEntity + "Code";
+          nameColumnName = groupByEntity + "Name";
+        } else if (groupByEntity == 'agent') {
+          codeColumnName = groupByEntity + "PartyCode";
+          nameColumnName = groupByEntity + "PartyName";
+        } else if (groupByEntity == 'portOfDischarge') {
+          codeColumnName = groupByEntity + "Code";
+          nameColumnName = groupByEntity + "Name";
+        } else {
+          codeColumnName = `${groupByEntity}PartyCode`;
+          nameColumnName = `${groupByEntity}PartyShortNameInReport` + 'Any';
+        }
+
+        // console.log("after if statement, codeColumnName----")
+        // console.log(codeColumnName)
 
         const topX = subqueries.topX.value
 
@@ -41,7 +137,7 @@ export default {
         prevResult.summaryVariables = summaryVariables
 
         // ------------------------------
-        const { lastFrom, lastTo, currentFrom, currentTo } = calculateLastCurrent(subqueries,moment)
+        const { lastFrom, lastTo, currentFrom, currentTo } = calculateLastCurrent(subqueries, moment)
 
         subqueries.date = {
           lastFrom,
@@ -51,8 +147,8 @@ export default {
         } as any
 
         // ----------------------- filter
-        subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
-          value : true
+        subqueries[`${codeColumnName}IsNotNull`] = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+          value: true
         }
 
         params.fields = [
@@ -72,26 +168,63 @@ export default {
         // new way of handling sorting
         const sorting = params.sorting = []
         if (subqueries.sorting && subqueries.sorting !== true && 'value' in subqueries.sorting) {
-        const sortingValueList = subqueries.sorting.value as { value: string; ascOrDesc: 'ASC' | 'DESC' }[]
-        sortingValueList.forEach(({ value, ascOrDesc }) => {
-            const orderByExpression = new OrderBy(value,ascOrDesc)
+          const sortingValueList = subqueries.sorting.value as { value: string; ascOrDesc: 'ASC' | 'DESC' }[]
+          sortingValueList.forEach(({ value, ascOrDesc }) => {
+            const orderByExpression = new OrderBy(value, ascOrDesc)
             sorting.push(orderByExpression)
-        })
+          })
         }
         else {
-        params.sorting = new OrderBy(`total_${summaryVariables[0]}Current`, 'DESC')
+          params.sorting = new OrderBy(`total_${summaryVariables[0]}Current`, 'DESC')
         }
-      console.log({params})
+        // console.log("PREPARE PARAMS with bottom sheet variables ")
+        // console.log(params)
         return params
       }
     },
     {
       type: 'callDataService',
-      dataServiceQuery: ['shipment', 'shipment'],
-      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
+      dataServiceQuery: ['booking', 'booking'],
+      onResult(res, originalParams, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
+        var params = Object.assign({}, originalParams);
+
+        if (groupByEntity == 'bookingNo') {
+          codeColumnName = groupByEntity;
+          nameColumnName = groupByEntity;
+        } else if (groupByEntity == 'carrier') {
+          codeColumnName = 'carrierCode';
+          nameColumnName = 'carrierName';
+        } else if (groupByEntity == 'moduleType') {
+          codeColumnName = 'moduleTypeCode';
+          nameColumnName = 'moduleTypeCode';
+        } else if (groupByEntity == 'agent') {
+          codeColumnName = groupByEntity + "PartyCode";
+          nameColumnName = groupByEntity + "PartyName";
+        } else if (groupByEntity == 'portOfLoading') {
+          codeColumnName = groupByEntity + "Code";
+          nameColumnName = groupByEntity + "Name";
+        } else if (groupByEntity == 'portOfDischarge') {
+          codeColumnName = groupByEntity + "Code";
+          nameColumnName = groupByEntity + "Name";
+        }else if (groupByEntity == 'forwarder') {
+            codeColumnName = groupByEntity + "PartyCode";
+            nameColumnName = groupByEntity + "PartyName";
+        } else {
+          codeColumnName = `${groupByEntity}PartyCode`;
+          nameColumnName = `${groupByEntity}PartyShortNameInReport` + 'Any';
+        }
+
         return res.map(row => {
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
-
+          // console.log("DATA SVC")
+          // console.log(params);
+          const erpCode=erpInfo.filter(o => o.code == row["code"]).length > 0 ?
+          erpInfo.filter(o => o.code == row["code"] && o.isBranch)[0]&&
+          erpInfo.filter(o => o.code == row["code"] && o.isBranch)[0]["erpSite"]:null
+ 
+          const code = params.subqueries.groupByEntity.value;
+          // console.log("DATA SVC code")
+          // console.log(code);
           for (const variable of summaryVariables) {
             for (const type of ['Last', 'Current']) {
               let total = 0
@@ -104,6 +237,11 @@ export default {
                 total += value
               }
               row_[`total_${variable}${type}`] = total
+              row_['erpSite']=erpInfo&&erpInfo[0]?erpInfo[0]:null;
+              console.log("row_------")
+              console.log(row_);
+
+
             }
 
             for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
@@ -117,6 +255,9 @@ export default {
             const value = +row[key]
             row_[key] = isNaN(value) ? 0 : value
           }
+          // console.log("DATA SVC")
+          // console.log(row_)
+
 
           return row_
         })
@@ -152,7 +293,7 @@ export default {
             value: 1000,
           }
         ],
-        multi : false,
+        multi: false,
         required: true,
       },
       type: 'list',
@@ -162,22 +303,22 @@ export default {
       name: 'summaryVariables',
       props: {
         items: [
-            ...summaryVariableList.reduce((acc,summaryVariable) => {
+          ...summaryVariableList.reduce((acc, summaryVariable) => {
 
-                acc = acc.concat(
-                    [
-                        {
-                            label: `${summaryVariable}`,
-                            value: `${summaryVariable}`,
-                        }
-                    ]
-                )
+            acc = acc.concat(
+              [
+                {
+                  label: `${summaryVariable}`,
+                  value: `${summaryVariable}`,
+                }
+              ]
+            )
 
-                return acc
+            return acc
 
-            },[])
+          }, [])
         ],
-        multi : true,
+        multi: true,
         required: true,
       },
       type: 'list',
@@ -187,20 +328,20 @@ export default {
       name: 'groupByEntity',
       props: {
         items: [
-            ...groupByEntityList.reduce((acc,groupByEntity) => {
+          ...groupByEntityList.reduce((acc, groupByEntity) => {
 
-                acc = acc.concat(
-                    [
-                        {
-                            label: `${groupByEntity}`,
-                            value: `${groupByEntity}`,
-                        }
-                    ]
-                )
+            acc = acc.concat(
+              [
+                {
+                  label: `${groupByEntity}`,
+                  value: `${groupByEntity}`,
+                }
+              ]
+            )
 
-                return acc
+            return acc
 
-            },[])
+          }, [])
         ],
         required: true,
       },
@@ -212,26 +353,26 @@ export default {
       name: 'bottomSheetGroupByEntity',
       props: {
         items: [
-            ...groupByEntityList.reduce((acc,groupByEntity) => {
+          ...groupByEntityList.reduce((acc, groupByEntity) => {
 
-                acc = acc.concat(
-                    [
-                        {
-                            label: `${groupByEntity}`,
-                            value: `${groupByEntity}`,
-                        }
-                    ]
-                )
+            acc = acc.concat(
+              [
+                {
+                  label: `${groupByEntity}`,
+                  value: `${groupByEntity}`,
+                }
+              ]
+            )
 
-                return acc
+            return acc
 
-            },[])
+          }, [])
         ],
         required: true,
       },
       type: 'list',
     },
-    
+
     {
       display: 'sorting',
       name: 'sorting',
@@ -239,25 +380,25 @@ export default {
       props: {
         multi: true,
         items: [
-            ...summaryVariableList.reduce((acc,summaryVariable) => {
+          ...summaryVariableList.reduce((acc, summaryVariable) => {
 
-                acc = acc.concat(
-                    [
-                        {
-                            label: `${summaryVariable} current`,
-                            value: `total_${summaryVariable}Current`,
-                        },
-                        {
-                            label: `${summaryVariable} last`,
-                            value: `total_${summaryVariable}Last`,
-                        }
-                    ]
-                )
+            acc = acc.concat(
+              [
+                {
+                  label: `${summaryVariable} current`,
+                  value: `total_${summaryVariable}Current`,
+                },
+                {
+                  label: `${summaryVariable} last`,
+                  value: `total_${summaryVariable}Last`,
+                }
+              ]
+            )
 
-                return acc
+            return acc
 
-            },[])
-          ],
+          }, [])
+        ],
       }
     }
   ]

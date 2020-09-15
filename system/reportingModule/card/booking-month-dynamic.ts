@@ -118,6 +118,7 @@ console.log("============codeCoumnName")
       type: 'callDataService',
       dataServiceQuery: ['booking', 'booking'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
+        
         if(groupByEntity=='bookingNo'){
           codeColumnName=groupByEntity;
           nameColumnName=groupByEntity;
@@ -146,8 +147,6 @@ console.log("============codeCoumnName")
         }
         return res.map(row => {
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
-          console.log("res info-row")
-          console.log(row)
 
           for (const variable of summaryVariables) {
             let total = 0
