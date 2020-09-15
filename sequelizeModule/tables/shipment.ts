@@ -136,7 +136,7 @@ export const setDataFunction = {
     if (!containerOthers) {
       let total = 0
       for (const { containerType } of shipmentContainers) {
-        if (!containerType.startsWith('20') && !containerType.startsWith('40') && !containerType.startsWith('45')) {
+        if (containerType && !containerType.startsWith('20') && !containerType.startsWith('40') && !containerType.startsWith('45')) {
           total++
         }
       }
