@@ -1,9 +1,0 @@
-{
-  "fillParent": true,
-  "components": [{
-    "is": "SopTaskGroupEditor",
-    "props": {
-      "entityTypes": ["booking", "shipment"]
-    }
-  }]
-}
