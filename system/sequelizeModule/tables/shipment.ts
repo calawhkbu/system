@@ -90,7 +90,7 @@ export const setDataFunction = {
     if (!container20) {
       let total = 0
       for (const { containerType } of shipmentContainers) {
-        if (containerType.startsWith('20')) {
+        if (containerType && containerType.startsWith('20')) {
           total++
         }
       }
@@ -102,7 +102,7 @@ export const setDataFunction = {
     if (!container40) {
       let total = 0
       for (const { containerType } of shipmentContainers) {
-        if (containerType.startsWith('40')) {
+        if (containerType && containerType.startsWith('40')) {
           total++
         }
       }
@@ -114,7 +114,7 @@ export const setDataFunction = {
     if (!containerHQ) {
       let total = 0
       for (const { containerType } of shipmentContainers) {
-        if (containerType.startsWith('45')) {
+        if (containerType && containerType.startsWith('45')) {
           total++
         }
       }
@@ -126,7 +126,7 @@ export const setDataFunction = {
     if (!containerOthers) {
       let total = 0
       for (const { containerType } of shipmentContainers) {
-        if (!containerType.startsWith('20') && !containerType.startsWith('40') && !containerType.startsWith('45')) {
+        if (containerType && !containerType.startsWith('20') && !containerType.startsWith('40') && !containerType.startsWith('45')) {
           total++
         }
       }
