@@ -20,7 +20,6 @@
         "components": [{
           "is": "WidgetImport",
           "props": {
-            "entityType": "shipment",
             "importFormLayout": {
               "components": [{
                   "is": "DynamicComponent",

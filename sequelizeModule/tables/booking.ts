@@ -163,7 +163,7 @@ export const setDataFunction = {
           total = total + 2
         } else if (containerTypeCode && containerTypeCode.startsWith('45')) {
           total = total + 2.25
-        } 
+        }
       }
       return total
     }
@@ -209,7 +209,7 @@ export const setDataFunction = {
     if (!containerOthers) {
       let total = 0
       for (const { containerTypeCode } of bookingContainers) {
-        if (containerTypeCode && !containerTypeCode.startsWith('20') && !containerTypeCode.startsWith('40') && !containerTypeCode.startsWith('45')) {
+        if (!containerTypeCode.startsWith('20') && !containerTypeCode.startsWith('40') && !containerTypeCode.startsWith('45')) {
           total++
         }
       }
