@@ -163,7 +163,7 @@ export const setDataFunction = {
     if (!container20) {
       let total = 0
       for (const { containerTypeCode } of bookingContainers) {
-        if (containerTypeCode.startsWith('20')) {
+        if (containerTypeCode && containerTypeCode.startsWith('20')) {
           total++
         }
       }
@@ -175,7 +175,7 @@ export const setDataFunction = {
     if (!container40) {
       let total = 0
       for (const { containerTypeCode } of bookingContainers) {
-        if (containerTypeCode.startsWith('40')) {
+        if (containerTypeCode && containerTypeCode.startsWith('40')) {
           total++
         }
       }
@@ -187,7 +187,7 @@ export const setDataFunction = {
     if (!containerHQ) {
       let total = 0
       for (const { containerTypeCode } of bookingContainers) {
-        if (containerTypeCode.startsWith('45')) {
+        if (containerTypeCode && containerTypeCode.startsWith('45')) {
           total++
         }
       }
@@ -199,7 +199,7 @@ export const setDataFunction = {
     if (!containerOthers) {
       let total = 0
       for (const { containerTypeCode } of bookingContainers) {
-        if (!containerTypeCode.startsWith('20') && !containerTypeCode.startsWith('40') && !containerTypeCode.startsWith('45')) {
+        if (containerTypeCode && !containerTypeCode.startsWith('20') && !containerTypeCode.startsWith('40') && !containerTypeCode.startsWith('45')) {
           total++
         }
       }
