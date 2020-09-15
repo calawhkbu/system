@@ -82,7 +82,17 @@ export const setDataFunction = {
   },
   teu: async ({ teu = null, shipmentContainers = [] }: Shipment) => {
     if (!teu) {
-      return 0
+      let total = 0
+      for (const { containerType } of shipmentContainers) {
+        if (containerType && containerType.startsWith('20')) {
+          total++
+        } else if (containerType && containerType.startsWith('40')) {
+          total = total + 2
+        } else if (containerType && containerType.startsWith('45')) {
+          total = total + 2.25
+        }
+      }
+      return total
     }
     return teu
   },
@@ -90,7 +100,7 @@ export const setDataFunction = {
     if (!container20) {
       let total = 0
       for (const { containerType } of shipmentContainers) {
-        if (containerType.startsWith('20')) {
+        if (containerType && containerType.startsWith('20')) {
           total++
         }
       }
@@ -102,7 +112,7 @@ export const setDataFunction = {
     if (!container40) {
       let total = 0
       for (const { containerType } of shipmentContainers) {
-        if (containerType.startsWith('40')) {
+        if (containerType && containerType.startsWith('40')) {
           total++
         }
       }
@@ -114,7 +124,7 @@ export const setDataFunction = {
     if (!containerHQ) {
       let total = 0
       for (const { containerType } of shipmentContainers) {
-        if (containerType.startsWith('45')) {
+        if (containerType && containerType.startsWith('45')) {
           total++
         }
       }
