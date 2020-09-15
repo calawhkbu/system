@@ -1,0 +1,146 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "title": "Sop Task Groups",
+      "back": "/admin",
+      "urlFormat": "/admin/sop-task-templates",
+      "reportingKey": "sopTaskGroups",
+      "reportingKeyKey": "reportIdParams",
+      "jql": "sop-task-groups",
+      "hasReports": false,
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": false,
+      "noPartyGroupFilters": true,
+      "nextPageComponent": "sop-task-group",
+      "noCache": true,
+      "refreshWhenBack": true,
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/detail/{{id}}",
+          "base": true
+        }
+      },
+      "newReport": {
+        "filters": {
+          "notDeleted": true
+        },
+        "configurations": {
+          "i18nContext": "SopTask",
+          "clickable": true,
+          "sorting": {
+            "direction": "DESC",
+            "key": "updatedAt",
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "sop_template",
+              "name": "updatedAt"
+            }
+          },
+          "pagination": {
+            "current": 0,
+            "perPage": 20,
+            "remote": true
+          }
+        }
+      },
+      "fieldOptions": [
+        {
+          "key": "id",
+          "hidden": true
+        },
+        {
+          "key": "category",
+          "width": 300
+        },
+        {
+          "key": "tableName",
+          "i18nContext": "Reporting",
+          "label": "entityType",
+          "width": 150
+        },
+        {
+          "key": "updatedAt",
+          "i18nContext": "Reporting",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        }
+      ],
+      "filters": [
+        {
+          "name": "tableName",
+          "display": "entityType",
+          "type": "list",
+          "props": {
+            "items": [
+              {
+                "label": "Booking",
+                "value": "booking"
+              },
+              {
+                "label": "Shipment",
+                "value": "shipment"
+              },
+              {
+                "label": "Purchase Order",
+                "value": "purchase_order"
+              }
+            ]
+          }
+        },
+        {
+          "name": "category",
+          "i18nContext": "SopTask",
+          "type": "text"
+        },
+        {
+          "name": "q",
+          "display": "group",
+          "i18nContext": "SopTask",
+          "type": "text"
+        },
+        {
+          "name": "notDeleted",
+          "type": "boolean",
+          "display": "Hide Deleted",
+          "i18nContext": "SopTask"
+        }
+      ]
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "create",
+                "base": true
+              }
+            }]
+          }
+        }]
+      }
+    }]
+  }]
+}

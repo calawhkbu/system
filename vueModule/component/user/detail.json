@@ -1,0 +1,327 @@
+{
+  "class": "grid",
+  "components": [{
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
+        "components": [{
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/admin/users"
+                }
+              }]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "i18nContext": "InvitationPage",
+              "i18nKey": "title"
+            }
+          },
+          {
+            "is": "AuthUrl",
+            "props": {
+              "userName": "{{context.$store.state.widget.data.person.userName}}"
+            }
+          },
+          {
+            "is": "Dialog",
+            "if": "return ((context.$store.state.widget.data && context.$store.state.widget.data.status !== 'accepted') && context.isSwivelAdmin )",
+            "props": {
+              "width": "50%",
+              "persistent": true,
+              "button": {
+                "layout": "v-btn",
+                "small": true,
+                "flat": true,
+                "icon": true,
+                "components": [{
+                  "is": "Icon",
+                  "props": {
+                    "icon": "how_to_reg"
+                  }
+                }]
+              },
+              "closeButton": {
+                "class": "margin-4 zindex-1 right",
+                "flat": true,
+                "icon": true,
+                "small": true
+              }
+            },
+            "slots": [{
+              "is": "DynamicComponent",
+              "props": {
+                "components": [{
+                  "is": "Form",
+                  "props": {
+                    "showPreFormOnSubmit": true,
+                    "showFormOnSubmit": false,
+                    "showPostFormOnSubmit": false,
+                    "showLoadingOnSubmit": false,
+                    "form": {
+                      "password": "",
+                      "username": ""
+                    },
+                    "fields": [{
+                        "name": "password",
+                        "label": "Auth.password",
+                        "props": {
+                          "required": true
+                        },
+                        "component": "DisplayPasswordField",
+                        "validator": [
+                          "required"
+                        ]
+                      },
+                      {
+                        "name": "confirmPassword",
+                        "label": "Auth.confirmPassword",
+                        "props": {
+                          "required": true
+                        },
+                        "component": "DisplayPasswordField",
+                        "validator": [
+                          "required"
+                        ]
+                      }
+                    ],
+                    "submitActions": [{
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "auth/fakeRegister",
+                        "type": "local"
+                      }
+                    }]
+                  },
+                  "slots": [{
+                    "is": "DynamicComponent",
+                    "name": "post-form",
+                    "props": {
+                      "style": {
+                        "min-height": "100px"
+                      },
+                      "components": [{
+                        "is": "DynamicComponent",
+                        "props": {
+                          "style": {
+                            "align-items": "center",
+                            "display": "flex"
+                          },
+                          "components": [{
+                            "is": "v-btn",
+                            "props": {
+                              "flat": true,
+                              "type": "submit"
+                            },
+                            "slots": [{
+                              "is": "i18nText",
+                              "name": "default",
+                              "props": {
+                                "i18nKey": "Auth.RegisterCreateAccount"
+                              }
+                            }]
+                          }]
+                        }
+                      }]
+                    }
+                  }]
+                }]
+              }
+            }]
+          },
+          {
+            "is": "v-spacer"
+          },
+          {
+            "is": "SaveEntityTemplateButton",
+            "props": {
+              "tableName": "user",
+              "small": true,
+              "flat": true,
+              "icon": true,
+              "templateFunc": [
+                "delete entity.id;",
+                "delete entity.personId;",
+                "delete entity.createdAt;",
+                "delete entity.updatedAt;",
+                "delete entity.deletedAt;",
+                "delete entity.createdBy;",
+                "delete entity.updatedBy;",
+                "delete entity.deletedBy;",
+                "delete entity.partyGroupCode;",
+                "delete entity.person.contacts",
+                "delete entity.person.id;",
+                "delete entity.person.userName;",
+                "delete entity.person.firstName;",
+                "delete entity.person.lastName;",
+                "delete entity.person.displayName;",
+                "delete entity.person.thirdPartyCode;",
+                "delete entity.person.createdAt;",
+                "delete entity.person.updatedAt;",
+                "delete entity.person.deletedAt;",
+                "delete entity.person.createdBy;",
+                "delete entity.person.updatedBy;",
+                "delete entity.person.deletedBy;",
+                "return entity"
+              ]
+            }
+          },
+          {
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "icon": true,
+              "flat": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "delete"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "axios",
+                "otherParams": {
+                  "axiosParams": {
+                    "url": "/api/invitation/delete/{{context.$store.state.widget.data.id}}",
+                    "method": "DELETE"
+                  }
+                },
+                "afterActions": [{
+                    "type": "router",
+                    "otherParams": {
+                      "func": "replace",
+                      "path": "/users"
+                    }
+                  },
+                  {
+                    "type": "notify",
+                    "otherParams": {
+                      "notification": "Notify.deleteSuccess"
+                    }
+                  }
+                ]
+              }]
+            }
+          },
+          {
+            "is": "v-btn",
+            "if": "return context.$store.state.widget.data && (context.$store.state.widget.data.status === 'pending' || context.$store.state.widget.data.status === 'sent')",
+            "props": {
+              "small": true,
+              "icon": true,
+              "flat": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "send"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "axios",
+                "otherParams": {
+                  "axiosParams": {
+                    "url": "/api/invitation/resend/{{context.$store.state.widget.data.id}}",
+                    "method": "GET"
+                  }
+                },
+                "afterActions": [{
+                    "type": "dispatch",
+                    "otherParams": {
+                      "name": "widget/refreshData"
+                    }
+                  },
+                  {
+                    "type": "notify",
+                    "otherParams": {
+                      "notification": "Notify.resendSuccess"
+                    }
+                  }
+                ]
+              }]
+            }
+          },
+          {
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "icon": true,
+              "flat": true,
+              "class": "primary white-text"
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "edit"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "edit"
+                }
+              }]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 padding-left-8 padding-right-8 width-100 grid",
+        "components": [{
+            "is": "AsyncComponent",
+            "props": {
+              "class": "margin-topbottom-4 xs-12",
+              "layoutName": "user/forms/general"
+            }
+          },
+          {
+            "is": "AsyncComponent",
+            "props": {
+              "class": "margin-topbottom-4 xs-12",
+              "layoutName": "user/forms/preference"
+            }
+          },
+          {
+            "is": "AsyncComponent",
+            "props": {
+              "class": "margin-topbottom-4 xs-12",
+              "layoutName": "user/forms/contacts"
+            }
+          },
+          {
+            "is": "AsyncComponent",
+            "props": {
+              "class": "margin-topbottom-4 xs-12",
+              "layoutName": "user/forms/teams"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

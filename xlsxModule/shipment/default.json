@@ -1,0 +1,18 @@
+{
+  "jobNo": "--JOB NO--",
+  "divisionCode": "--DIVISION--",
+  "houseNo": "--HOUSE NO--",
+  "moduleTypeCode": "SHA",
+  "portOfLoadingCode": "HKHKG",
+  "portOfDischargeCode": "CNSHA",
+  "carrierCode": "OOCL",
+  "masterNo": "ONEY12233443565646543654",
+  "shipmentContainers": [{
+    "containerNo": "myContainerNo11",
+    "carrierbookingNo": "myCarrierBookingNo11"
+  }],
+  "shipmentDate": {
+    "departureDateEstimated": "2019-01-01",
+    "arrivalDateEstimated": "2019-01-01"
+  }
+}

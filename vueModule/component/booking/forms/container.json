@@ -1,0 +1,375 @@
+{
+  "components": [{
+    "is": "WidgetForm",
+    "class": "xs-12",
+    "props": {
+      "fields": [{
+          "label": "BookingPage.poNo",
+          "name": "flexData.poNo",
+          "component": "v-text-field",
+          "class": "xs-12 md-3"
+        }, {
+          "label": "BookingPage.quantity",
+          "name": "flexData.quantity",
+          "component": "v-text-field",
+          "class": "xs-12 md-3"
+        },
+        {
+          "label": "BookingPage.cargoValueCurrencyCode",
+          "name": "cargoValueCurrencyCode",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12 md-2",
+          "more": [{
+            "name": "cargoValueCurrencyCode",
+            "selector": "code"
+          }],
+          "props": {
+            "searchTextParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "CURRENCY"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                }
+              }
+            },
+            "onInit": true,
+            "item-text": "code",
+            "item-value": "code",
+            "showValue": false
+          }
+        },
+        {
+          "label": "BookingPage.cargoValue",
+          "name": "cargoValue",
+          "component": "v-text-field",
+          "class": "xs-12 md-4",
+          "props": {
+            "type": "number",
+            "min": 0
+          }
+        },
+        {
+          "label": "BookingPage.BookingPacking",
+          "name": "bookingPopackings",
+          "component": "TableField",
+          "props": {
+            "topLabel": true,
+            "fields": [{
+                "label": "BookingPage.ctns",
+                "name": "ctns",
+                "colGroupProps": {
+                  "style": {
+                    "width": "10%"
+                  }
+                },
+                "component": "NumberField",
+                "props": {
+                  "type": "number",
+                  "min": 0,
+                  "step": 1,
+                  "int": true
+                },
+                "slots": [{
+                  "name": "append",
+                  "is": "I18nText",
+                  "props": {
+                    "i18nKey": "CTNS"
+                  }
+                }]
+              },
+              {
+                "label": "BookingPage.quantity",
+                "name": "quantity",
+                "component": "NumberField",
+                "colGroupProps": {
+                  "style": {
+                    "width": "10%"
+                  }
+                },
+                "props": {
+                  "type": "number",
+                  "min": 0
+                }
+              },
+              {
+                "label": "BookingPage.quantityUnit",
+                "name": "quantityUnit",
+                "component": "v-select",
+                "colGroupProps": {
+                  "style": {
+                    "width": "7.5%"
+                  }
+                },
+                "props": {
+                  "items": [{
+                      "text": "W/C",
+                      "value": "W/C"
+                    },
+                    {
+                      "text": "PCS",
+                      "value": "PCS"
+                    },
+                    {
+                      "text": "M/C",
+                      "value": "M/C"
+                    },
+                    {
+                      "text": "BAG",
+                      "value": "BAG"
+                    },
+                    {
+                      "text": "CASE",
+                      "value": "CASE"
+                    },
+                    {
+                      "text": "PLT",
+                      "value": "PLT"
+                    },
+                    {
+                      "text": "ROLL",
+                      "value": "ROLL"
+                    },
+                    {
+                      "text": "PAIR",
+                      "value": "PAIR"
+                    },
+                    {
+                      "text": "CTN",
+                      "value": "CTN"
+                    }
+                  ]
+                }
+              },
+              {
+                "label": "BookingPage.volume",
+                "name": "volume",
+                "colGroupProps": {
+                  "style": {
+                    "width": "10%"
+                  }
+                },
+                "component": "NumberField",
+                "props": {
+                  "type": "number",
+                  "min": 0
+                },
+                "slots": [{
+                  "name": "append",
+                  "is": "I18nText",
+                  "props": {
+                    "i18nKey": "CBM"
+                  }
+                }]
+              },
+              {
+                "label": "BookingPage.length",
+                "name": "length",
+                "component": "NumberField",
+                "colGroupProps": {
+                  "style": {
+                    "width": "10%"
+                  }
+                },
+                "props": {
+                  "type": "number",
+                  "min": 0
+                },
+                "slots": [{
+                  "name": "append",
+                  "is": "I18nText",
+                  "props": {
+                    "i18nKey": "X"
+                  }
+                }]
+              },
+              {
+                "label": "BookingPage.width",
+                "name": "width",
+                "component": "NumberField",
+                "colGroupProps": {
+                  "style": {
+                    "width": "10%"
+                  }
+                },
+                "props": {
+                  "type": "number",
+                  "min": 0
+                },
+                "slots": [{
+                  "name": "append",
+                  "is": "I18nText",
+                  "props": {
+                    "i18nKey": "X"
+                  }
+                }]
+              },
+              {
+                "label": "BookingPage.height",
+                "name": "height",
+                "colGroupProps": {
+                  "style": {
+                    "width": "10%"
+                  }
+                },
+                "component": "NumberField",
+                "props": {
+                  "type": "number",
+                  "min": 0
+                }
+              },
+              {
+                "label": "BookingPage.lwhUnit",
+                "name": "lwhUnit",
+                "colGroupProps": {
+                  "style": {
+                    "width": "10%"
+                  }
+                },
+                "component": "v-select",
+                "props": {
+                  "items": [{
+                      "text": "CM",
+                      "value": "CM"
+                    },
+                    {
+                      "text": "IN",
+                      "value": "IN"
+                    }
+                  ]
+                }
+              },
+              {
+                "label": "BookingPage.weight",
+                "name": "weight",
+                "colGroupProps": {
+                  "style": {
+                    "width": "10%"
+                  }
+                },
+                "component": "NumberField",
+                "props": {
+                  "type": "number"
+                }
+              },
+              {
+                "label": "BookingPage.weightUnit",
+                "name": "weightUnit",
+                "colGroupProps": {
+                  "style": {
+                    "width": "7.5%"
+                  }
+                },
+                "component": "v-select",
+                "props": {
+                  "items": [{
+                      "text": "KGs",
+                      "value": "KGs"
+                    },
+                    {
+                      "text": "LBs",
+                      "value": "LBs"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "label": "BookingPage.BookingContainer",
+          "name": "bookingContainers",
+          "component": "TableField",
+          "props": {
+            "topLabel": true,
+            "fields": [{
+                "label": "BookingPage.containerTypeCode",
+                "name": "containerTypeCode",
+                "colGroupProps": {
+                  "style": {
+                    "width": "20%"
+                  }
+                },
+                "component": "AsyncSelect",
+                "props": {
+                  "item-text": "name",
+                  "item-value": "code",
+                  "axiosParams": {
+                    "url": "api/code/query/code_master",
+                    "method": "POST",
+                    "data": {
+                      "subqueries": {
+                        "codeType": {
+                          "value": "CONTTYPE"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "label": "BookingPage.containerNo",
+                "name": "containerNo",
+                "colGroupProps": {
+                  "style": {
+                    "width": "20%"
+                  }
+                },
+                "component": "v-text-field",
+                "props": {
+                  "color": "blue"
+                }
+              },
+              {
+                "label": "BookingPage.sealNo",
+                "name": "sealNo",
+                "colGroupProps": {
+                  "style": {
+                    "width": "20%"
+                  }
+                },
+                "component": "v-text-field"
+              },
+              {
+                "label": "BookingPage.soNo",
+                "name": "soNo",
+                "colGroupProps": {
+                  "style": {
+                    "width": "20%"
+                  }
+                },
+                "component": "v-text-field"
+              },
+              {
+                "label": "BookingPage.ctns",
+                "name": "ctns",
+                "colGroupProps": {
+                  "style": {
+                    "width": "15%"
+                  }
+                },
+                "component": "NumberField",
+                "props": {
+                  "type": "number",
+                  "min": 0
+                },
+                "slots": [{
+                  "name": "append",
+                  "is": "I18nText",
+                  "props": {
+                    "i18nKey": "CTNS"
+                  }
+                }]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }]
+}

@@ -1,0 +1,128 @@
+{
+  "components": [{
+    "is": "Form",
+    "props": {
+      "showPreFormOnSubmit": true,
+      "showFormOnSubmit": false,
+      "showPostFormOnSubmit": false,
+      "showLoadingOnSubmit": false,
+      "form": {
+        "password": "",
+        "username": ""
+      },
+      "style": {
+        "display": "flex",
+        "flex-direction": "column",
+        "min-height": "100%"
+      },
+      "fields": [{
+          "name": "username",
+          "label": "Auth.username",
+          "props": {
+            "required": true,
+            "type": "email",
+            "browser-autocomplete": "email",
+            "autocomplete": "email"
+          },
+          "component": "LoginField"
+        },
+        {
+          "name": "password",
+          "label": "Auth.password",
+          "props": {
+            "required": true,
+            "browser-autocomplete": "password",
+            "autocomplete": "password"
+          },
+          "component": "DisplayPasswordField",
+          "validator": ["required"]
+        }
+      ],
+      "submitActions": [{
+        "type": "dispatch",
+        "otherParams": {
+          "name": "auth/widgetLogin",
+          "type": "local"
+        }
+      }]
+    },
+    "slots": [{
+      "is": "DynamicComponent",
+      "name": "post-form",
+      "props": {
+        "style": {
+          "min-height": "100px"
+        },
+        "components": [{
+            "is": "DynamicComponent",
+            "props": {
+              "style": {
+                "display": "flex"
+              },
+              "components": [{
+                  "is": "v-spacer"
+                },
+                {
+                  "is": "v-btn",
+                  "props": {
+                    "flat": true
+                  },
+                  "events": {
+                    "click.stop": [{
+                      "type": "commit",
+                      "otherParams": {
+                        "name": "external/goToForgetPassword"
+                      }
+                    }]
+                  },
+                  "slots": [{
+                    "is": "i18nText",
+                    "name": "default",
+                    "props": {
+                      "i18nKey": "Auth.ForgetPassword?"
+                    }
+                  }]
+                }
+              ]
+            }
+          },
+          {
+            "is": "DynamicComponent",
+            "props": {
+              "style": {
+                "align-items": "center",
+                "display": "flex"
+              },
+              "components": [{
+                  "is": "i18nText",
+                  "name": "default",
+                  "props": {
+                    "isComponent": "small",
+                    "i18nKey": "Powered by Swivel Software Ltd."
+                  }
+                },
+                {
+                  "is": "v-spacer"
+                },
+                {
+                  "is": "v-btn",
+                  "props": {
+                    "flat": true,
+                    "type": "submit"
+                  },
+                  "slots": [{
+                    "is": "i18nText",
+                    "name": "default",
+                    "props": {
+                      "i18nKey": "Auth.Login"
+                    }
+                  }]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }]
+  }]
+}

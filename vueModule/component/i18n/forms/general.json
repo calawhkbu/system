@@ -1,0 +1,50 @@
+{
+  "layout": "v-card",
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [{
+          "label": "I18nPage.category",
+          "name": "category",
+          "canEdit": "return mode === 'create' ",
+          "class": "xs-6",
+          "component": "AsyncAutoSuggest",
+          "props": {
+            "searchValueParams": {
+              "method": "POST",
+              "url": "api/i18n/category/list",
+              "data": {
+                "subqueries": {
+                  "category": {
+                    "value": "{{context.autoSuggestModel}}"
+                  }
+                }
+              }
+            },
+            "searchTextParams": {
+              "method": "POST",
+              "url": "api/i18n/category/list",
+              "data": {
+                "subqueries": {
+                  "categoryLike": {
+                    "value": "{{context.search}}"
+                  }
+                }
+              },
+              "limit": 5
+            },
+            "canCreate": true,
+            "canCreateValue": "{{autoSuggestModel}}"
+          }
+        },
+        {
+          "label": "I18nPage.key",
+          "name": "key",
+          "component": "v-text-field",
+          "class": "xs-6",
+          "canEdit": "return mode === 'create'"
+        }
+      ]
+    }
+  }]
+}

@@ -1,5 +1,6 @@
 .DS_Store
 node_modules
+<<<<<<< HEAD
 /dist
 /dist-new
 /dist-old
@@ -30,3 +31,7 @@ yarn-error.log*
 
 yarn.lock
 package-lock.json
+=======
+package-lock.json
+yarn.lock
+>>>>>>> b881afe6a4f3953c9a81a41dac8be371da93f12a

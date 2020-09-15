@@ -1,0 +1,542 @@
+{
+  "class": "grid",
+  "components": [
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-2",
+        "components": [
+          {
+            "is": "v-btn",
+            "props": {
+              "class": "margin-0",
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
+                }
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "router",
+                  "otherParams": {
+                    "func": "push",
+                    "path": "/{{ p[0] }}/{{ p[1] }}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "i18nContext": "ShipmentPage",
+              "i18nKey": "title",
+              "html": true,
+              "i18nOptions": {
+                "title": "{{context.$store.state.widget.data.houseNo}}"
+              }
+            }
+          },
+          {
+            "is": "v-spacer"
+          },
+          {
+            "is": "WidgetExtraSelect",
+            "props": {
+              "i18nContext": "ShipmentPage",
+              "mainButtonKey": "Shipment",
+              "buttonIcon": "view_list",
+              "buttonProps": {
+                "icon": true,
+                "small": true,
+                "flat": true
+              },
+              "lodashToData": "shipmentBooking",
+              "lodashToKey": "houseNo",
+              "mainKey": "bookingNo"
+            }
+          },
+          {
+            "is": "ToolTip",
+            "props": {
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [
+                  {
+                    "is": "v-btn",
+                    "props": {
+                      "class": "margin-0",
+                      "small": true,
+                      "icon": true,
+                      "flat": true
+                    },
+                    "slots": [
+                      {
+                        "is": "Icon",
+                        "props": {
+                          "icon": "map"
+                        }
+                      }
+                    ],
+                    "events": {
+                      "click.stop": [
+                        {
+                          "type": "dispatch",
+                          "otherParams": {
+                            "name": "widget/changeMode",
+                            "mode": "map"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [
+                  {
+                    "is": "I18nText",
+                    "props": {
+                      "i18nContext": "ShipmentPage",
+                      "i18nKey": "map"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "is": "ToolTip",
+            "props": {
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [
+                  {
+                    "is": "BookmarkButton",
+                    "props": {
+                      "class": "margin-0",
+                      "entity": "shipment",
+                      "small": true,
+                      "icon": true,
+                      "flat": true
+                    }
+                  }
+                ]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [
+                  {
+                    "is": "I18nText",
+                    "props": {
+                      "i18nContext": "ShipmentPage",
+                      "i18nKey": "bookmark"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "is": "ToolTip",
+            "props": {
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "v-btn",
+                  "props": {
+                    "small": true,
+                    "flat": true,
+                    "icon": true,
+                    "class": "primary white-text"
+                  },
+                  "slots": [{
+                    "is": "Icon",
+                    "props": {
+                      "icon": "edit"
+                    }
+                  }],
+                  "events": {
+                    "click.stop": [{
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "widget/changeMode",
+                        "mode": "edit"
+                      }
+                    }]
+                  }
+                }]
+              }
+            },
+            "mainComponents": {
+              "layout": "span",
+              "components": [{
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "Shipment",
+                  "i18nKey": "edit"
+                }
+              }]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "WidgetTab",
+      "if": "return !context.$vuetify.breakpoint.mdAndUp",
+      "props": {
+        "show-arrows": true,
+        "tabComponents": [
+          {
+            "index": "general",
+            "tabComponents": [
+              {
+                "is": "i18nText",
+                "props": {
+                  "i18nContext": "ShipmentPage",
+                  "i18nKey": "General"
+                }
+              }
+            ],
+            "tabItemComponents": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "shipment/base/tracking"
+                }
+              },
+              {
+                "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "shipment/base/general"
+                    }
+                  }
+                ]
+              },
+              {
+                "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "shipment/base/container"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "index": "partyAndDate",
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "ShipmentPage",
+                  "i18nKey": "partyAndDate"
+                }
+              }
+            ],
+            "tabItemComponents": [
+              {
+                "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "shipment/base/party"
+                    }
+                  }
+                ]
+              },
+              {
+                "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "shipment/base/date"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "index": "alertAndDocument",
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "ShipmentPage",
+                  "i18nKey": "alertAndDocument"
+                }
+              }
+            ],
+            "tabItemComponents": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "shipment/base/document"
+                }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "shipment/base/alert"
+                }
+              }
+            ]
+          },
+          {
+            "index": "sopTasks",
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "ShipmentPage",
+                  "i18nKey": "sopTasks"
+                }
+              }
+            ],
+            "tabItemComponents": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "shipment/base/soptask"
+                }
+              }
+            ]
+          },
+          {
+            "index": "reference",
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "ShipmentPage",
+                  "i18nKey": "reference"
+                }
+              }
+            ],
+            "tabItemComponents": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "padding-top-4",
+                  "layoutName": "shipment/base/reference"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "if": "return context.$vuetify.breakpoint.mdAndUp",
+      "props": {
+        "class": "xs-12 grid full-width padding-2",
+        "components": [
+          {
+            "is": "DynamicComponent",
+            "if": "return !context.$store.state.widget.selectedExtra",
+            "props": {
+              "class": "xs-8 padding-2",
+              "components": [
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "xs-12 grid padding-bottom-2",
+                    "components": [
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-6 padding-right-2",
+                          "components": [
+                            {
+                              "is": "AsyncComponent",
+                              "props": {
+                                "layoutName": "shipment/base/party"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-6 padding-left-2",
+                          "components": [
+                            {
+                              "is": "AsyncComponent",
+                              "props": {
+                                "layoutName": "shipment/base/date"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2 padding-top-4",
+                    "layoutName": "shipment/base/general"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2 padding-top-4",
+                    "layoutName": "shipment/base/container"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2 padding-top-4",
+                    "layoutName": "shipment/base/reference"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "DynamicComponent",
+            "if": "return context.$store.state.widget.selectedExtra",
+            "props": {
+              "class": "xs-8 padding-2",
+              "components": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/general"
+                  }
+                },
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "xs-12 grid padding-bottom-2",
+                    "components": [{
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-6 padding-right-2",
+                          "components": [{
+                            "is": "AsyncComponent",
+                            "props": {
+                              "layoutName": "booking/base/party"
+                            }
+                          }]
+                        }
+                      },
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-6 padding-left-2",
+                          "components": [{
+                            "is": "AsyncComponent",
+                            "props": {
+                              "layoutName": "booking/base/date"
+                            }
+                          }]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/container"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/reference"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "DynamicComponent",
+            "props": {
+              "class": "xs-4 padding-2",
+              "components": [
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "shipment/base/tracking"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "shipment/base/alert"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "shipment/base/soptask"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/chat"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "shipment/base/document"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
