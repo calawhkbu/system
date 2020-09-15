@@ -90,7 +90,7 @@
         }
       },
       {
-        "test": "return !row.isEntityRow && (row.status === 'Due' || row.status === 'Dead')",
+        "test": "return !row.isEntityRow && row.status === 'Due' || row.status === 'Dead'",
         "style": {
           "backgroundColor": "#ffcccb"
         }
@@ -108,7 +108,7 @@
         }
       },
       {
-        "test": "return !row.isEntityRow && row.hasSubTasks && (context.expandAll || (context.expanded || []).indexOf(row.id) > -1)",
+        "test": "return !row.isEntityRow && row.hasSubTasks && (context.expandAll || context.expanded.indexOf(row.id) > -1)",
         "style": {
           "borderTop": "2px solid black"
         }
@@ -116,7 +116,7 @@
       {
         "test": [
           "const i = context.tasks.indexOf(row)",
-          "return !row.isEntityRow && row.parentId && (context.expandAll || (context.expanded || []).indexOf(row.parentId) > -1) &&",
+          "return !row.isEntityRow && row.parentId && (context.expandAll || context.expanded.indexOf(row.parentId) > -1) &&",
           "i > -1 && (context.tasks.length === i + 1 || context.tasks[i + 1].parentId !== row.parentId)"
         ],
         "style": {
