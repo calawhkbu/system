@@ -153,9 +153,19 @@ export const setDataFunction = {
     }
     return cbm
   },
-  teu: async ({ teu = null, bookingPopackings = [] }: Booking) => {
+  teu: async ({ teu = null, bookingContainers = [] }: Booking) => {
     if (!teu) {
-      return 0
+      let total = 0
+      for (const { containerTypeCode } of bookingContainers) {
+        if (containerTypeCode && containerTypeCode.startsWith('20')) {
+          total++
+        } else if (containerTypeCode && containerTypeCode.startsWith('40')) {
+          total = total + 2
+        } else if (containerTypeCode && containerTypeCode.startsWith('45')) {
+          total = total + 2.25
+        } 
+      }
+      return total
     }
     return teu
   },
