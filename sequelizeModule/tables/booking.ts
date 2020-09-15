@@ -90,7 +90,9 @@ export const setDataFunction = {
     if (!quantity) {
       let totalQuantity = 0
       for (const { quantity } of bookingPopackings) {
-        totalQuantity += quantity
+        if (quantity) {
+          totalQuantity += quantity
+        }
       }
       return totalQuantity
     }
@@ -209,7 +211,7 @@ export const setDataFunction = {
     if (!containerOthers) {
       let total = 0
       for (const { containerTypeCode } of bookingContainers) {
-        if (!containerTypeCode.startsWith('20') && !containerTypeCode.startsWith('40') && !containerTypeCode.startsWith('45')) {
+        if (containerTypeCode && !containerTypeCode.startsWith('20') && !containerTypeCode.startsWith('40') && !containerTypeCode.startsWith('45')) {
           total++
         }
       }
