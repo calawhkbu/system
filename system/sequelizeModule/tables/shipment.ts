@@ -82,16 +82,26 @@ export const setDataFunction = {
   },
   teu: async ({ teu = null, shipmentContainers = [] }: Shipment) => {
     if (!teu) {
-      return 0
+      let total = 0
+      for (const { containerType, loadCount } of shipmentContainers) {
+        if (containerType) {
+          try {
+            const containerSize = parseInt(containerType.substring(0, 1))
+            const containerTeu = containerSize / 20
+            total += (loadCount * containerTeu)
+          } catch (e) {}
+        }
+      }
+      return total
     }
     return teu
   },
   container20: async({ container20 = null, shipmentContainers = [] }: Shipment) => {
     if (!container20) {
       let total = 0
-      for (const { containerType } of shipmentContainers) {
+      for (const { containerType, loadCount } of shipmentContainers) {
         if (containerType && containerType.startsWith('20')) {
-          total++
+          total = total + loadCount
         }
       }
       return total
@@ -101,9 +111,9 @@ export const setDataFunction = {
   container40: async({ container40 = null, shipmentContainers = [] }: Shipment) => {
     if (!container40) {
       let total = 0
-      for (const { containerType } of shipmentContainers) {
+      for (const { containerType, loadCount } of shipmentContainers) {
         if (containerType && containerType.startsWith('40')) {
-          total++
+          total = total + loadCount
         }
       }
       return total
@@ -113,9 +123,9 @@ export const setDataFunction = {
   containerHQ: async({ containerHQ = null, shipmentContainers = [] }: Shipment) => {
     if (!containerHQ) {
       let total = 0
-      for (const { containerType } of shipmentContainers) {
+      for (const { containerType, loadCount } of shipmentContainers) {
         if (containerType && containerType.startsWith('45')) {
-          total++
+          total = total + loadCount
         }
       }
       return total
@@ -125,9 +135,9 @@ export const setDataFunction = {
   containerOthers: async({ containerOthers = null, shipmentContainers = [] }: Shipment) => {
     if (!containerOthers) {
       let total = 0
-      for (const { containerType } of shipmentContainers) {
+      for (const { containerType, loadCount } of shipmentContainers) {
         if (containerType && !containerType.startsWith('20') && !containerType.startsWith('40') && !containerType.startsWith('45')) {
-          total++
+          total = total + loadCount
         }
       }
       return total
