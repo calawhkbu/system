@@ -23,8 +23,8 @@ export const setDataFunction = {
     if (!quantity) {
       let totalQuantity = 0
       for (const { quantity } of shipmentContainers) {
-        const selectedQuantity = (typeof quantity === 'number' ? quantity : 0)
-        totalQuantity += selectedQuantity
+        const finalnumber = (typeof quantity === 'number' ? (quantity || 0) : (quantity ? parseInt(quantity) : 0))
+        totalQuantity += (finalnumber || 0)
       }
       return totalQuantity
     }
@@ -46,7 +46,8 @@ export const setDataFunction = {
     if (!grossWeight) {
       let totalGrossWeight = 0
       for (const { grossWeight, weightUnit = 'KGs' } of shipmentContainers) {
-        totalGrossWeight += (grossWeight || 0) / (weightUnit === 'LBs' ? 2.205 : 1)
+        const finalnumber = (typeof grossWeight === 'number' ? (grossWeight || 0) : (grossWeight ? parseInt(grossWeight) : 0))
+        totalGrossWeight += (finalnumber || 0) / (weightUnit === 'LBs' ? 2.205 : 1)
       }
       return totalGrossWeight.toFixed(6)
     }
@@ -56,7 +57,8 @@ export const setDataFunction = {
     if (!chargeableWeight) {
       let totalChargeableWeight = 0
       for (const { grossWeight, weightUnit = 'KGs' } of shipmentContainers) {
-        totalChargeableWeight += (grossWeight || 0) / (weightUnit === 'LBs' ? 2.205 : 1)
+        const finalnumber = (typeof grossWeight === 'number' ? (grossWeight || 0) : (grossWeight ? parseInt(grossWeight) : 0))
+        totalChargeableWeight += ((finalnumber || 0) / (weightUnit === 'LBs' ? 2.205 : 1))
       }
       return totalChargeableWeight.toFixed(6)
     }
@@ -83,16 +85,11 @@ export const setDataFunction = {
   teu: async ({ teu = null, shipmentContainers = [] }: Shipment) => {
     if (!teu) {
       let total = 0
-      for (const { containerType, loadCount } of shipmentContainers) {
-        if (containerType) {
-          try {
-            const containerSize = parseInt(containerType.substring(0, 1))
-            const containerTeu = containerSize / 20
-            total += (loadCount * containerTeu)
-          } catch (e) {}
-        }
+      for (const { loadTEU } of shipmentContainers) {
+        const finalnumber = (typeof loadTEU === 'number' ? (loadTEU || 0) : (loadTEU ? parseInt(loadTEU) : 0))
+        total += (finalnumber || 0)
       }
-      return total
+      return total.toFixed(6)
     }
     return teu
   },
@@ -101,10 +98,11 @@ export const setDataFunction = {
       let total = 0
       for (const { containerType, loadCount } of shipmentContainers) {
         if (containerType && containerType.startsWith('20')) {
-          total = total + loadCount
+          const finalnumber = (typeof loadCount === 'number' ? (loadCount || 0) : (loadCount ? parseInt(loadCount) : 0))
+          total += (finalnumber || 0)
         }
       }
-      return total
+      return total.toFixed(6)
     }
     return container20
   },
@@ -113,10 +111,11 @@ export const setDataFunction = {
       let total = 0
       for (const { containerType, loadCount } of shipmentContainers) {
         if (containerType && containerType.startsWith('40')) {
-          total = total + loadCount
+          const finalnumber = (typeof loadCount === 'number' ? (loadCount || 0) : (loadCount ? parseInt(loadCount) : 0))
+          total += (finalnumber || 0)
         }
       }
-      return total
+      return total.toFixed(6)
     }
     return container40
   },
@@ -125,10 +124,11 @@ export const setDataFunction = {
       let total = 0
       for (const { containerType, loadCount } of shipmentContainers) {
         if (containerType && containerType.startsWith('45')) {
-          total = total + loadCount
+          const finalnumber = (typeof loadCount === 'number' ? (loadCount || 0) : (loadCount ? parseInt(loadCount) : 0))
+          total += (finalnumber || 0)
         }
       }
-      return total
+      return total.toFixed(6)
     }
     return containerHQ
   },
@@ -137,10 +137,11 @@ export const setDataFunction = {
       let total = 0
       for (const { containerType, loadCount } of shipmentContainers) {
         if (containerType && !containerType.startsWith('20') && !containerType.startsWith('40') && !containerType.startsWith('45')) {
-          total = total + loadCount
+          const finalnumber = (typeof loadCount === 'number' ? (loadCount || 0) : (loadCount ? parseInt(loadCount) : 0))
+          total += (finalnumber || 0)
         }
       }
-      return total
+      return total.toFixed(6)
     }
     return containerOthers
   },
