@@ -1,6 +1,0 @@
-{
-  "first": "你好，您有来自Swivel 360的待办事项",
-  "keyword1": "{{alertCategoryChinese}}",
-  "keyword2": "{{messageChinese}}",
-  "remark": "点击{{url}}查看您的待办事项\nHello, you have a to-do-item from Swivel 360.\nType: {{alertCategory}}\nDescription: {{message}}\nClick to view your to-do-item"
-}
