@@ -90,9 +90,7 @@ export const setDataFunction = {
     if (!quantity) {
       let totalQuantity = 0
       for (const { quantity } of bookingPopackings) {
-        if (quantity) {
-          totalQuantity += quantity
-        }
+        totalQuantity += quantity
       }
       return totalQuantity
     }
@@ -155,19 +153,9 @@ export const setDataFunction = {
     }
     return cbm
   },
-  teu: async ({ teu = null, bookingContainers = [] }: Booking) => {
+  teu: async ({ teu = null, bookingPopackings = [] }: Booking) => {
     if (!teu) {
-      let total = 0
-      for (const { containerTypeCode } of bookingContainers) {
-        if (containerTypeCode && containerTypeCode.startsWith('20')) {
-          total++
-        } else if (containerTypeCode && containerTypeCode.startsWith('40')) {
-          total = total + 2
-        } else if (containerTypeCode && containerTypeCode.startsWith('45')) {
-          total = total + 2.25
-        }
-      }
-      return total
+      return 0
     }
     return teu
   },

@@ -43,11 +43,11 @@ export default {
       defaultResult: {},
       async prepareParams(params, { }: Result, user): Promise<IQueryParams> {
         originalParams = Object.assign({}, params)
-        console.log({ originalParams })
-        console.log("get erpSite info")
-        console.log(params);
-        console.log("----------partyGroupCode")
-        console.log(user.partyGroupCode)
+        // console.log({ originalParams })
+        // console.log("get erpSite info")
+        // console.log(params);
+        // console.log("----------partyGroupCode")
+        // console.log(user.partyGroupCode)
         params.fields = [
           'id', 'name', 'partyGroupCode', 'thirdPartyCode', 'isBranch', 'erpCode'
         ];
@@ -58,7 +58,7 @@ export default {
 
         params.subqueries = {
           "partyGroupCodeEq": {
-            "value": user.partyGroupCode
+            "value": user.selectedPartyGroup.code
           },
           "isBranchEq":{
             "value":1
@@ -67,11 +67,10 @@ export default {
             "value": "id"
           }
         }
-        console.log(params)
-        console.log("//get erpSite info-params")
-        console.log(params)
-        console.log("user----")
-        console.log(user)
+        // console.log(params)
+        // console.log("//get erpSite info-params")
+        // console.log(params)
+
         return params;
       }
     },
@@ -79,10 +78,10 @@ export default {
       type: 'callDataService',
       dataServiceQuery: ['party', 'party'],
       onResult(res, params, { }: Result): any {
-        console.log("party-partycallDataService")
-        console.log(params)
-        console.log("erpSite")
-        console.log(res)
+        // console.log("party-partycallDataService")
+        // console.log(params)
+        // console.log("erpSite")
+        // console.log(res)
         if (res && res.length > 0) {
           for (let i = 0; i < res.length; i++) {
             if (res[i].isBranch == 1) {
@@ -92,7 +91,7 @@ export default {
             }
           }
         }
-        console.log({ erpInfo })
+        // console.log({ erpInfo })
 
 
       }
@@ -102,8 +101,8 @@ export default {
       defaultResult: {},
       async prepareParams({ }, prevResult: Result, user): Promise<IQueryParams> {
         var params = Object.assign({}, originalParams)
-        console.log("after erpINO prepare PARAMS")
-        console.log({ params })
+        // console.log("after erpINO prepare PARAMS")
+        // console.log({ params })
 
         const moment = prevResult.moment = (await this.preparePackages(user)).moment as typeof Moment
         const subqueries = (params.subqueries = params.subqueries || {})
@@ -226,7 +225,7 @@ export default {
           ...summaryVariables
         ]
 
-        // filter groupBy 
+        // filter groupBy
         subqueries[codeColumnName] = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
           value: codeList
         }
@@ -276,18 +275,19 @@ export default {
           const { dynamicCode } = { dynamicCode: dynamicRow[dynamicColumnCodeColumnName] }
 
         })
- 
+
         const finalResult = groupByResult.map(row => {
 
           var { code } = row
-  
+
           // calculate topX dynamicCodeList
           // just get the first topX
-          //show erpSite if exist , otherwise show the name, if not intial Office Select, show the original value 
+          //show erpSite if exist , otherwise show the name, if not intial Office Select, show the original value
          const erpCode=erpInfo.filter(o => o.code == row["code"]).length > 0 ?
+         erpInfo.filter(o => o.code == row["code"] && o.isBranch)[0]&&
          erpInfo.filter(o => o.code == row["code"] && o.isBranch)[0]["erpSite"]:null
 
-         
+
           const dynamicCodeList = [...new Set(res.map(dynamicRow => (
             erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName]).length > 0 ?
               erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName] && o.isBranch)[0]["erpSite"]
@@ -308,16 +308,16 @@ export default {
           }
           if(res&&res.length>0){
             for(let i=0;i<res.length;i++){
-              if(dynamicColumnCodeColumnName=="officePartyCode"){
+               if(dynamicColumnCodeColumnName=="officePartyCode"){
               res[i]["erpSite"]=dynamicCodeList[0];
             }
             }
 
           }
-  
+
           res.map(dynamicRow => {
             const { dynamicCode } = { dynamicCode: dynamicRow[dynamicColumnCodeColumnName] }
-
+           // console.log( {dynamicRow})
             if (row_["code"] === dynamicRow[codeColumnName]){
               summaryVariables.map(summaryVariable => {
                 var fieldName;

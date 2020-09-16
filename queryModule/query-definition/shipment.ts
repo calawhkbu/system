@@ -2599,7 +2599,7 @@ const summaryFieldList: SummaryField[] = [
     inReportExpression: new FunctionExpression('IF',
       new BinaryExpression(new ColumnExpression('shipment', 'shipmentTypeCode'), '=', 'FCL'),
       new ColumnExpression('shipment', 'teu'),
-      new FunctionExpression('ROUND', new MathExpression(new ColumnExpression('shipment', 'cbm'), '/', new Value(25)), new Value(3))
+      new FunctionExpression('ROUND', new MathExpression(new ColumnExpression('shipment', 'cbm'), '/', new Value(25)), new Value(2)),
     )
 
   },

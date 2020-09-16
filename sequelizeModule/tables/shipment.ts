@@ -82,17 +82,7 @@ export const setDataFunction = {
   },
   teu: async ({ teu = null, shipmentContainers = [] }: Shipment) => {
     if (!teu) {
-      let total = 0
-      for (const { containerType } of shipmentContainers) {
-        if (containerType && containerType.startsWith('20')) {
-          total++
-        } else if (containerType && containerType.startsWith('40')) {
-          total = total + 2
-        } else if (containerType && containerType.startsWith('45')) {
-          total = total + 2.25
-        }
-      }
-      return total
+      return 0
     }
     return teu
   },
