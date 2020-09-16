@@ -327,6 +327,9 @@
               "url": "api/party/query/party_auto_suggest",
               "method": "POST",
               "data": {
+                "activeStatus": {
+                  "value": "active"
+                },
                 "subqueries": {
                   "q": {
                     "value": "{{context.search}}"

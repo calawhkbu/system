@@ -715,6 +715,9 @@
                       "method": "POST",
                       "data": {
                         "subqueries": {
+                          "activeStatus": {
+                            "value": "active"
+                          },
                           "isBranch": {
                             "value": 1
                           }

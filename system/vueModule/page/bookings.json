@@ -90,46 +90,6 @@
           "label": "voyageFlightNumber"
         },
         {
-          "key": "customClearanceLoadingPortDateEstimated",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "customClearanceLoadingPortDateActual",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "customClearanceDestinationPortDateEstimated",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "customClearanceDestinationPortDateActual",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "shipperInstructionSubmitDateEstimated",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "shipperInstructionSubmitDateActual",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "bookingSubmitDateEstimated",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "bookingSubmitDateActual",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
           "key": "createdAt",
           "width": 150,
           "format": "YYYY-MM-DD"
@@ -201,31 +161,93 @@
           "width": 100
         },
         {
+          "key": "customClearanceLoadingPortDateEstimated",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "customClearanceLoadingPortDateActual",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "customClearanceDestinationPortDateEstimated",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "customClearanceDestinationPortDateActual",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "shipperInstructionSubmitDateEstimated",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "shipperInstructionSubmitDateActual",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "bookingSubmitDateEstimated",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "bookingSubmitDateActual",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
           "key": "departureDateEstimated",
+          "width": 150,
           "format": "YYYY-MM-DD"
         },
         {
           "key": "departureDateActual",
+          "width": 150,
           "format": "YYYY-MM-DD"
         },
         {
           "key": "arrivalDateEstimated",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "arrivalDateActual",
+          "width": 150,
           "format": "YYYY-MM-DD"
         },
         {
           "key": "cargoReadyDateEstimated",
+          "width": 150,
           "format": "YYYY-MM-DD"
         },
         {
           "key": "cargoReadyDateActual",
+          "width": 150,
           "format": "YYYY-MM-DD"
         },
         {
           "key": "cYCutOffDateEstimated",
+          "width": 150,
           "format": "YYYY-MM-DD"
         },
         {
           "key": "cYCutOffDateActual",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "finalDoorDeliveryDateEstimated",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "finalDoorDeliveryDateActual",
+          "width": 150,
           "format": "YYYY-MM-DD"
         }
       ]

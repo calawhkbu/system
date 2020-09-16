@@ -118,7 +118,7 @@ export default {
           },
           {
             label: 'office',
-            value: 'office',
+            value: 'forwarder',
           },
           {
             label : 'moduleType',

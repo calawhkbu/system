@@ -3,7 +3,7 @@ import { IQueryParams } from 'classes/query'
 import { BadRequestException } from '@nestjs/common'
 import Moment = require('moment')
 import { OrderBy } from 'node-jql'
-import { expandBottomSheetGroupByEntity, expandSummaryVariable, calculateLastCurrent, handleBottomSheetGroupByEntityValue,summaryVariableList,groupByEntityList } from 'utils/card'
+import { expandBottomSheetGroupByEntity, expandSummaryVariable, calculateLastCurrent, handleBottomSheetGroupByEntityValue, summaryVariableList, groupByEntityList } from 'utils/card'
 
 interface Result {
   moment: typeof Moment
@@ -42,8 +42,8 @@ export default {
           "partyGroupCodeEq": {
             "value": user.selectedPartyGroup.code
           },
-          "isBranchEq":{
-            "value":1
+          "isBranchEq": {
+            "value": 1
           },
           "groupByEntity": {
             "value": "id"
@@ -67,9 +67,9 @@ export default {
         if (res && res.length > 0) {
           for (let i = 0; i < res.length; i++) {
             if (res[i].isBranch == 1) {
-              erpInfo.push({ name: res[i].name,isBranch:res[i].isBranch, code: res[i].erpCode, erpSite: res[i].thirdPartyCode['erp-site'] });
+              erpInfo.push({ name: res[i].name, isBranch: res[i].isBranch, code: res[i].erpCode, erpSite: res[i].thirdPartyCode['erp-site'] });
             } else {
-              erpInfo.push({ name: res[i].name,isBranch:res[i].isBranch, code: res[i].erpCode });
+              erpInfo.push({ name: res[i].name, isBranch: res[i].isBranch, code: res[i].erpCode });
             }
           }
         }
@@ -81,7 +81,7 @@ export default {
     {
       type: 'prepareParams',
       defaultResult: {},
-      async prepareParams({}, prevResult: Result, user): Promise<IQueryParams> {
+      async prepareParams({ }, prevResult: Result, user): Promise<IQueryParams> {
         var params = Object.assign({}, originalParams)
         const moment = prevResult.moment = (await this.preparePackages(user)).moment
         const subqueries = (params.subqueries = params.subqueries || {})
@@ -91,9 +91,9 @@ export default {
         if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
 
 
-        
+
         handleBottomSheetGroupByEntityValue(subqueries)
-        const { groupByEntity, codeColumnName,nameColumnName } = expandBottomSheetGroupByEntity(subqueries)
+        const { groupByEntity, codeColumnName, nameColumnName } = expandBottomSheetGroupByEntity(subqueries)
 
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
@@ -105,7 +105,7 @@ export default {
         prevResult.summaryVariables = summaryVariables
 
         // ------------------------------
-        const { lastFrom, lastTo, currentFrom, currentTo } = calculateLastCurrent(subqueries,moment)
+        const { lastFrom, lastTo, currentFrom, currentTo } = calculateLastCurrent(subqueries, moment)
 
         subqueries.date = {
           lastFrom,
@@ -115,8 +115,8 @@ export default {
         } as any
 
         // ----------------------- filter
-        subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
-          value : true
+        subqueries[`${codeColumnName}IsNotNull`] = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+          value: true
         }
 
         params.fields = [
@@ -136,14 +136,14 @@ export default {
         // new way of handling sorting
         const sorting = params.sorting = []
         if (subqueries.sorting && subqueries.sorting !== true && 'value' in subqueries.sorting) {
-        const sortingValueList = subqueries.sorting.value as { value: string; ascOrDesc: 'ASC' | 'DESC' }[]
-        sortingValueList.forEach(({ value, ascOrDesc }) => {
-            const orderByExpression = new OrderBy(value,ascOrDesc)
+          const sortingValueList = subqueries.sorting.value as { value: string; ascOrDesc: 'ASC' | 'DESC' }[]
+          sortingValueList.forEach(({ value, ascOrDesc }) => {
+            const orderByExpression = new OrderBy(value, ascOrDesc)
             sorting.push(orderByExpression)
-        })
+          })
         }
         else {
-        params.sorting = new OrderBy(`total_${summaryVariables[0]}Current`, 'DESC')
+          params.sorting = new OrderBy(`total_${summaryVariables[0]}Current`, 'DESC')
         }
 
         return params
@@ -154,18 +154,18 @@ export default {
       dataServiceQuery: ['shipment', 'shipment'],
       onResult(res, originalParams, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
         var params = Object.assign({}, originalParams)
- 
+
         return res.map(row => {
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
-          const erpCode=erpInfo.filter(o => o.code == row['officePartyCode']).length > 0 ?
-          erpInfo.filter(o => o.code == row['officePartyCode'] && o.isBranch)[0]&&
-          erpInfo.filter(o => o.code == row['officePartyCode'] && o.isBranch)[0]["erpSite"]:null
+          const erpCode = erpInfo.filter(o => o.code == row['officePartyCode']).length > 0 ?
+            erpInfo.filter(o => o.code == row['officePartyCode'] && o.isBranch)[0] &&
+            erpInfo.filter(o => o.code == row['officePartyCode'] && o.isBranch)[0]["erpSite"] : null
           // console.log("---------shipment-----")
           // console.log("---------row code-----")
           // console.log(row["code"])
           // console.log("---------erpCode-----")
           // console.log(erpCode)
- 
+
 
           for (const variable of summaryVariables) {
             for (const type of ['Last', 'Current']) {
@@ -192,9 +192,9 @@ export default {
             const value = +row[key]
             row_[key] = isNaN(value) ? 0 : value
           }
-          
-          row_['erpCode']=erpCode
-          
+
+          row_['erpCode'] = erpCode
+
 
           return row_
         })
@@ -230,7 +230,7 @@ export default {
             value: 1000,
           }
         ],
-        multi : false,
+        multi: false,
         required: true,
       },
       type: 'list',
@@ -240,22 +240,23 @@ export default {
       name: 'summaryVariables',
       props: {
         items: [
-            ...summaryVariableList.reduce((acc,summaryVariable) => {
+          ...summaryVariableList.reduce((acc, summaryVariable) => {
 
-                acc = acc.concat(
-                    [
-                        {
-                            label: `${summaryVariable}`,
-                            value: `${summaryVariable}`,
-                        }
-                    ]
-                )
+            acc = acc.concat(
+              [
+                {
+                  label: `${summaryVariable}`,
+                  value: `${summaryVariable}`,
+                }
 
-                return acc
+              ]
+            )
 
-            },[])
+            return acc
+
+          }, [])
         ],
-        multi : true,
+        multi: true,
         required: true,
       },
       type: 'list',
@@ -265,20 +266,21 @@ export default {
       name: 'groupByEntity',
       props: {
         items: [
-            ...groupByEntityList.reduce((acc,groupByEntity) => {
+          ...groupByEntityList.reduce((acc, groupByEntity) => {
 
-                acc = acc.concat(
-                    [
-                        {
-                            label: `${groupByEntity}`,
-                            value: `${groupByEntity}`,
-                        }
-                    ]
-                )
+            acc = acc.concat(
+              [
+                {
+                  label: `${groupByEntity}`,
+                  value: `${groupByEntity}`,
+                },
 
-                return acc
+              ]
+            )
 
-            },[])
+            return acc
+
+          }, [])
         ],
         required: true,
       },
@@ -290,26 +292,33 @@ export default {
       name: 'bottomSheetGroupByEntity',
       props: {
         items: [
-            ...groupByEntityList.reduce((acc,groupByEntity) => {
+          ...groupByEntityList.reduce((acc, groupByEntity) => {
 
-                acc = acc.concat(
-                    [
-                        {
-                            label: `${groupByEntity}`,
-                            value: `${groupByEntity}`,
-                        }
-                    ]
-                )
+            acc = acc.concat(
+              [
+                {
+                  label: `${groupByEntity}`,
+                  value: `${groupByEntity}`,
+                },
 
-                return acc
-
-            },[])
+              ]
+            )
+            return acc
+          }, []),
+          {
+            label: 'Freehand',
+            value: 'Freehand'
+          },
+          {
+            label: 'RO',
+            value: 'RO'
+          }
         ],
         required: true,
       },
       type: 'list',
     },
-    
+
     {
       display: 'sorting',
       name: 'sorting',
@@ -317,25 +326,25 @@ export default {
       props: {
         multi: true,
         items: [
-            ...summaryVariableList.reduce((acc,summaryVariable) => {
+          ...summaryVariableList.reduce((acc, summaryVariable) => {
 
-                acc = acc.concat(
-                    [
-                        {
-                            label: `${summaryVariable} current`,
-                            value: `total_${summaryVariable}Current`,
-                        },
-                        {
-                            label: `${summaryVariable} last`,
-                            value: `total_${summaryVariable}Last`,
-                        }
-                    ]
-                )
+            acc = acc.concat(
+              [
+                {
+                  label: `${summaryVariable} current`,
+                  value: `total_${summaryVariable}Current`,
+                },
+                {
+                  label: `${summaryVariable} last`,
+                  value: `total_${summaryVariable}Last`,
+                }
+              ]
+            )
 
-                return acc
+            return acc
 
-            },[])
-          ],
+          }, [])
+        ],
       }
     }
   ]

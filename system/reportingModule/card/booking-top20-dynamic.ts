@@ -31,12 +31,77 @@ interface Result {
 }
 
 
+var final
+var originalParams;
+var erpInfo = [];
+
+
 export default {
   jqls: [
     {
+      //get erpSite info
       type: 'prepareParams',
       defaultResult: {},
-      async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
+      async prepareParams(params, { }: Result, user): Promise<IQueryParams> {
+        originalParams = Object.assign({}, params)
+        // console.log({ originalParams })
+        // console.log("get erpSite info")
+        // console.log(params);
+        // console.log("----------partyGroupCode")
+        // console.log(user.partyGroupCode)
+        params.fields = [
+          'id', 'name', 'partyGroupCode', 'thirdPartyCode', 'isBranch', 'erpCode'
+        ];
+
+        params.sorting = [new OrderBy('id', 'DESC')];
+        params.limit = 0;
+
+
+        params.subqueries = {
+          "partyGroupCodeEq": {
+            "value": user.selectedPartyGroup.code
+          },
+          "isBranchEq":{
+            "value":1
+          },
+          "groupByEntity": {
+            "value": "id"
+          }
+        }
+        // console.log(params)
+        // console.log("//get erpSite info-params")
+        // console.log(params)
+
+        return params;
+      }
+    },
+    {
+      type: 'callDataService',
+      dataServiceQuery: ['party', 'party'],
+      onResult(res, params, { }: Result): any {
+        // console.log("party-partycallDataService")
+        // console.log(params)
+        // console.log("erpSite")
+        // console.log(res)
+        if (res && res.length > 0) {
+          for (let i = 0; i < res.length; i++) {
+            if (res[i].isBranch == 1) {
+              erpInfo.push({ name: res[i].name,isBranch:res[i].isBranch, code: res[i].erpCode, erpSite: res[i].thirdPartyCode['erp-site'] });
+            } else {
+              erpInfo.push({ name: res[i].name,isBranch:res[i].isBranch, code: res[i].erpCode });
+            }
+          }
+        }
+        // console.log({ erpInfo })
+
+
+      }
+    },
+    {
+      type: 'prepareParams',
+      defaultResult: {},
+      async prepareParams({}, prevResult: Result, user): Promise<IQueryParams> {
+        var params = Object.assign({}, originalParams)
 
         const moment = prevResult.moment = (await this.preparePackages(user)).moment as typeof Moment
         const subqueries = (params.subqueries = params.subqueries || {})
@@ -141,7 +206,8 @@ export default {
     {
       type: 'callDataService',
       dataServiceQuery: ['booking', 'booking'],
-      onResult(res, params, prevResult: Result): Result {
+      onResult(res, originalParams, prevResult: Result): Result {
+        var params = Object.assign({}, originalParams);
 
         const { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables } = prevResult
         prevResult.groupByResult = res.map(row => {
@@ -162,7 +228,8 @@ export default {
     {
         type: 'prepareParams',
         defaultResult: {},
-        async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
+        async prepareParams(originalParams, prevResult: Result, user): Promise<IQueryParams> {
+          var params = Object.assign({}, originalParams)
 
             const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -204,8 +271,8 @@ export default {
       {
         type: 'callDataService',
         dataServiceQuery: ['booking', 'booking'],
-        onResult(res, params, prevResult: Result): any[] {
-  
+        onResult(res, originalParams, prevResult: Result): any[] {
+          var params = Object.assign({}, originalParams)
           var { 
               moment,
               groupByEntity,
@@ -231,11 +298,22 @@ export default {
          const finalResult =  groupByResult.map(row => {
 
             const { code } = row
+            const erpCode=erpInfo.filter(o => o.code == row["code"]).length > 0 ?
+            erpInfo.filter(o => o.code == row["code"] && o.isBranch)[0]&&
+            erpInfo.filter(o => o.code == row["code"] && o.isBranch)[0]["erpSite"]:null
 
             // calculate topX dynamicCodeList
 
             // just get the first topX
-            var dynamicCodeList = [ ...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0,topX)
+            let dynamicCodeList = [...new Set(res.map(dynamicRow => (
+              erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName]).length > 0 ?
+                erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName] && o.isBranch)[0]["erpSite"]
+                : erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName]).length>0?
+                erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName] )[0]["name"]
+                :dynamicRow[dynamicColumnCodeColumnName]
+  
+            )
+            ))].splice(0, topX)
             var dynamicNameList = [ ...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnNameColumnName]))].splice(0,topX)
 
             if(dynamicColumnCodeColumnName.indexOf("agent")!=-1){ //for display table header 
@@ -267,6 +345,7 @@ export default {
                     })
                 }
             })
+            row_['erpCode']=erpCode;
 
             return row_
 
@@ -347,7 +426,7 @@ export default {
                 acc = acc.concat(
                     [
                         {
-                            label: `${groupByEntity}`,
+                          label: `${groupByEntity=='forwarder'?"Intial Office":groupByEntity}`,
                             value: `${groupByEntity}`,
                         }
                     ]
@@ -372,7 +451,7 @@ export default {
                 acc = acc.concat(
                     [
                         {
-                            label: `${groupByEntity}`,
+                          label: `${groupByEntity=='forwarder'?"Intial Office":groupByEntity}`,
                             value: `${groupByEntity}`,
                         }
                     ]
@@ -397,8 +476,8 @@ export default {
                   acc = acc.concat(
                       [
                           {
-                              label: `${groupByEntity}`,
-                              value: `${groupByEntity}`,
+                            label: `${groupByEntity=='forwarder'?"Intial Office":groupByEntity}`,
+                            value: `${groupByEntity}`,
                           }
                       ]
                   )
