@@ -1,6 +1,0 @@
-{
-  "fillParent": true,
-  "components": [{
-    "is": "ScheduleSearchComponent"
-  }]
-}
