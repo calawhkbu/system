@@ -146,24 +146,9 @@ export const setDataFunction = {
     return containerOthers
   },
   report: async({ shipmentContainers = [], shipmentCargos = [] }: Shipment) => {
+    return {
 
-
-    const result = {
-      containerCount : shipmentContainers.length
     }
-
-    shipmentContainers.map(shipmentContainer => {
-
-      const containerType = shipmentContainer.containerType
-      if (containerType)
-      {
-        const propName = `${containerType}_ContainerTypeCount`
-        result[propName] = result[propName] ? (result[propName] + 1) : 1
-      }
-
-    })
-
-    return result
   }
 }
 
