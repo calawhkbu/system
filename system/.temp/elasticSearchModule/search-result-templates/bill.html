@@ -1,0 +1,5 @@
+<p><b>Master No:</b> {{entity.masterNo}} <b>House Bill No:</b> {{entity.houseNo}}</p>
+{% for key, val in match.results %}
+<small><b>{{val.key}}:</b> {{val.value}} </small> 
+{% endfor %}
+<p><small>[Score: {{match.score}}]</small></p>

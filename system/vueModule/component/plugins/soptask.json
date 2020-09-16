@@ -1,0 +1,135 @@
+{
+  "layout": "Plugin",
+  "name": "SopTask",
+  "transition": "slide-y-reverse-transition",
+  "lazy": true,
+  "hide-overlay": true,
+  "remote": true,
+  "shareProps": {
+    "i18nContext": "SopTask",
+    "iconType": "",
+    "icon": "status",
+    "iconMap": {
+      "Open": "assignment",
+      "Due": "assignment_late",
+      "Dead": "warning"
+    },
+    "titleKey": "name",
+    "subTitleKeys": ["category"]
+  },
+  "baseSummaryProps": {
+    "size": -3
+  },
+  "baseDetailProps": {
+    "headers": [
+      {
+        "key": "noOfRemarks",
+        "boolean": true,
+        "i18nContext": "SopTask",
+        "tooltip": "hasRemarkMsg",
+        "showTooltipWhen": "true",
+        "trueIcon": "comment",
+        "trueColor": "grey",
+        "falseIcon": "",
+        "badgeKey": "noOfRemarks",
+        "label": "",
+        "width": 24
+      },
+      {
+        "key": "name",
+        "width": 130
+      },
+      {
+        "key": "system",
+        "width": 90,
+        "align": "center"
+      },
+      {
+        "key": "category",
+        "width": 90
+      },
+      {
+        "key": "startAt",
+        "format": "YYYY/MM/DD",
+        "width": 100,
+        "timezoneKey": "startAtLocale"
+      },
+      {
+        "key": "dueAt",
+        "format": "YYYY/MM/DD",
+        "width": 100,
+        "timezoneKey": "dueAtLocale"
+      }
+    ],
+    "rowStyle": [
+      {
+        "test": "return row.isEntityRow && row.tableName === 'category'",
+        "style": {
+          "backgroundColor": "#f3f9ff",
+          "height": "36px"
+        }
+      },
+      {
+        "test": "return !row.isEntityRow && row.status === 'Closed'",
+        "style": {
+          "backgroundColor": "gray",
+          "opacity": 0.6
+        }
+      },
+      {
+        "test": "return !row.isEntityRow && row.status === 'Done'",
+        "style": {
+          "backgroundColor": "darkgray",
+          "opacity": 0.8
+        }
+      },
+      {
+        "test": "return !row.isEntityRow && row.status === 'Not Ready'",
+        "style": {
+          "opacity": 0.6
+        }
+      },
+      {
+        "test": "return !row.isEntityRow && (row.status === 'Due' || row.status === 'Dead')",
+        "style": {
+          "backgroundColor": "#ffcccb"
+        }
+      },
+      {
+        "test": "return !row.isEntityRow && !row.isDue && row.isDueToday",
+        "style": {
+          "backgroundColor": "#fdc57f"
+        }
+      },
+      {
+        "test": "return !row.isEntityRow && row.status === 'Deleted'",
+        "style": {
+          "opacity": 0.2
+        }
+      },
+      {
+        "test": "return !row.isEntityRow && row.hasSubTasks && (context.expandAll || (context.expanded || []).indexOf(row.id) > -1)",
+        "style": {
+          "borderTop": "2px solid black"
+        }
+      },
+      {
+        "test": [
+          "const i = context.tasks.indexOf(row)",
+          "return !row.isEntityRow && row.parentId && (context.expandAll || (context.expanded || []).indexOf(row.parentId) > -1) &&",
+          "i > -1 && (context.tasks.length === i + 1 || context.tasks[i + 1].parentId !== row.parentId)"
+        ],
+        "style": {
+          "borderBottom": "2px solid black"
+        }
+      },
+      {
+        "test": "return !row.isEntityRow && context.predictDeleted.find(r => r.id === row.id)",
+        "style": {
+          "borderBottom": "2px solid red",
+          "boxShadow": "0 0 10px 1px #ff9999"
+        }
+      }
+    ]
+  }
+}

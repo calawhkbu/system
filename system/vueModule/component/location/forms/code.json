@@ -1,0 +1,29 @@
+{
+  "layout": "v-card",
+  "class": "margin-topbottom-8",
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [{
+          "label": "LocationPage.countryCode",
+          "name": "countryCode",
+          "component": "v-text-field",
+          "class": "xs-4"
+        },
+
+        {
+          "label": "LocationPage.locationCode",
+          "name": "locationCode",
+          "component": "v-text-field",
+          "class": "xs-4"
+        },
+        {
+          "label": "LocationPage.portCode",
+          "name": "portCode",
+          "component": "v-text-field",
+          "class": "xs-4"
+        }
+      ]
+    }
+  }]
+}

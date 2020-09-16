@@ -1,0 +1,18 @@
+{
+  "layout": "Plugin",
+  "lazy": true,
+  "hide-overlay": true,
+  "name": "Document",
+  "shareProps": {
+    "i18nKey": "Document",
+    "titleKey": "fileName",
+    "subTitleKeys": [{
+      "key": "updatedAt",
+      "is": "Datetime"
+    }]
+  },
+  "baseSummaryProps": {
+    "size": -3
+  },
+  "baseDetailProps": {}
+}

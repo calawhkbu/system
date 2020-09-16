@@ -1,0 +1,910 @@
+{
+  "class": "grid",
+  "components": [{
+      "is": "DynamicComponent",
+      "if": "const setting = context.$store.state.widget.componentSetting || {};return !setting.next;",
+      "props": {
+        "class": "grid",
+        "components": [{
+            "is": "DynamicComponent",
+            "props": {
+              "class": "xs-12 grid min-height-28 align-item-center full-width padding-leftright-8",
+              "components": [{
+                  "is": "v-btn",
+                  "if": [
+                    "const userProfile = context.$store.state.auth.userProfile;",
+                    "return userProfile && userProfile.isApi"
+                  ],
+                  "props": {
+                    "class": "margin-0",
+                    "small": true,
+                    "flat": true,
+                    "icon": true
+                  },
+                  "slots": [{
+                    "is": "Icon",
+                    "props": {
+                      "icon": "arrow_back"
+                    }
+                  }],
+                  "events": {
+                    "click.stop": [{
+                      "type": "emit-global",
+                      "otherParams": {
+                        "name": "back-list"
+                      }
+                    }]
+                  }
+                }, {
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "BookingPage",
+                    "i18nKey": "quickCreate"
+                  }
+                },
+                {
+                  "is": "v-spacer"
+                }
+              ]
+            }
+          },
+          {
+            "is": "WidgetForm",
+            "props": {
+              "class": "full-width padding-leftright-4",
+              "fields": [{
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.moduleType",
+                  "name": "moduleTypeCode",
+                  "component": "AsyncSelect",
+                  "class": "xs-12 md-3 padding-topbottom-4",
+                  "validator": ["required"],
+                  "relation": "moduleType",
+                  "props": {
+                    "required": true,
+                    "axiosParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "MODULE"
+                          }
+                        }
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "code"
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.boundType",
+                  "name": "boundTypeCode",
+                  "component": "AsyncSelect",
+                  "class": "xs-12 md-3 padding-topbottom-4",
+                  "relation": "boundType",
+                  "validator": ["required"],
+                  "props": {
+                    "required": true,
+                    "axiosParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "BOUND"
+                          }
+                        }
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "code"
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.serviceCode",
+                  "name": "serviceCode",
+                  "component": "AsyncSelect",
+                  "class": "xs-12 md-3 padding-topbottom-4",
+                  "validator": ["required"],
+                  "relation": "service",
+                  "props": {
+                    "required": true,
+                    "axiosParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "SERVTYPE"
+                          }
+                        }
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "code",
+                    "showValue": false
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.vas",
+                  "name": "vas",
+                  "component": "AsyncSelect",
+                  "class": "xs-12 md-3 padding-topbottom-4",
+                  "props": {
+                    "color": "red",
+                    "multiple": true,
+                    "axiosParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "VAS"
+                          }
+                        }
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "code",
+                    "showValue": false,
+                    "showSpacer": false,
+                    "selectedProps": {
+                      "class": "multiple"
+                    }
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.placeOfReceipt",
+                  "name": "placeOfReceipt",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-3 padding-topbottom-4",
+                  "more": [{
+                    "name": "placeOfReceiptCode",
+                    "selector": "portCode"
+                  }, {
+                    "name": "placeOfReceiptName",
+                    "selector": "name"
+                  }],
+                  "props": {
+                    "searchValueParams": {
+                      "method": "POST",
+                      "url": "api/location/query/location",
+                      "data": {
+                        "subqueries": {
+                          "moduleTypeCode": {
+                            "value": "{{context.form.moduleTypeCode}}"
+                          },
+                          "portCodeLike": {
+                            "value": "{{context.autoSuggestModel}}"
+                          }
+                        }
+                      }
+                    },
+                    "searchTextParams": {
+                      "method": "POST",
+                      "url": "api/location/query/location",
+                      "data": {
+                        "subqueries": {
+                          "moduleTypeCode": {
+                            "value": "{{context.form.moduleTypeCode}}"
+                          },
+                          "q": {
+                            "value": "{{context.search}}"
+                          }
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "portCode"
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.portOfLoading",
+                  "name": "portOfLoading",
+                  "more": [{
+                    "name": "portOfLoadingCode",
+                    "selector": "portCode"
+                  }, {
+                    "name": "portOfLoadingName",
+                    "selector": "name"
+                  }, {
+                    "name": "bookingParty.forwarderParty.id",
+                    "selector": "partyId",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderParty.name",
+                    "selector": "partyName",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderParty.erpCode",
+                    "selector": "partyErpCode",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderPartyId",
+                    "selector": "partyId",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderPartyName",
+                    "selector": "partyName",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderPartyCode",
+                    "selector": "partyErpCode",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderPartyPhone",
+                    "selector": "partyPhone",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderPartyFax",
+                    "selector": "partyFax",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderPartyEmail",
+                    "selector": "partyEmail",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderPartyAddress",
+                    "selector": "partyAddress",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderPartyCityCode",
+                    "selector": "partyCityCode",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderPartyStateCode",
+                    "selector": "partyStateCode",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderPartyCountryCode",
+                    "selector": "partyCountryCode",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderPartyZip",
+                    "selector": "partyZip",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderPartyContactPersonId",
+                    "selector": "contactPersonId",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderPartyContactPersonEmail",
+                    "selector": "contactPersonEmail",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderPartyContactPersonName",
+                    "selector": "contactPersonName",
+                    "nullNotApply": true
+                  }, {
+                    "name": "bookingParty.forwarderPartyContactPersonPhone",
+                    "selector": "contactPersonPhone",
+                    "nullNotApply": true
+                  }],
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-3 padding-topbottom-4",
+                  "validator": ["required"],
+                  "props": {
+                    "required": true,
+                    "searchTextParams": {
+                      "method": "POST",
+                      "url": "api/location/query/location",
+                      "data": {
+                        "fields": [
+                          "portCode",
+                          "name",
+                          "partyId",
+                          "partyName",
+                          "partyErpCode",
+                          "partyPhone",
+                          "partyFax",
+                          "partyEmail",
+                          "partyAddress",
+                          "partyCityCode",
+                          "partyStateCode",
+                          "partyCountryCode",
+                          "partyZip"
+                        ],
+                        "subqueries": {
+                          "moduleTypeCode": {
+                            "value": "{{context.form.moduleTypeCode}}"
+                          },
+                          "q": {
+                            "value": "{{context.search}}"
+                          }
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "portCode"
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.portOfDischarge",
+                  "name": "portOfDischarge",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-3 padding-topbottom-4",
+                  "validator": ["required"],
+                  "more": [{
+                    "name": "portOfDischargeCode",
+                    "selector": "portCode"
+                  }, {
+                    "name": "portOfDischargeName",
+                    "selector": "name"
+                  }],
+                  "props": {
+                    "required": true,
+                    "searchValueParams": {
+                      "method": "POST",
+                      "url": "api/location/query/location",
+                      "data": {
+                        "subqueries": {
+                          "moduleTypeCode": {
+                            "value": "{{context.form.moduleTypeCode}}"
+                          },
+                          "portCodeLike": {
+                            "value": "{{context.autoSuggestModel}}"
+                          }
+                        }
+                      }
+                    },
+                    "searchTextParams": {
+                      "method": "POST",
+                      "url": "api/location/query/location",
+                      "data": {
+                        "subqueries": {
+                          "moduleTypeCode": {
+                            "value": "{{context.form.moduleTypeCode}}"
+                          },
+                          "q": {
+                            "value": "{{context.search}}"
+                          }
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "portCode"
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.placeOfDelivery",
+                  "name": "placeOfDelivery padding-topbottom-4",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-3 padding-topbottom-4",
+                  "more": [{
+                    "name": "placeOfDeliveryCode",
+                    "selector": "portCode"
+                  }, {
+                    "name": "placeOfDeliveryName",
+                    "selector": "name"
+                  }],
+                  "props": {
+                    "searchValueParams": {
+                      "method": "POST",
+                      "url": "api/location/query/location",
+                      "data": {
+                        "subqueries": {
+                          "moduleTypeCode": {
+                            "value": "{{context.form.moduleTypeCode}}"
+                          },
+                          "portCodeLike": {
+                            "value": "{{context.autoSuggestModel}}"
+                          }
+                        }
+                      }
+                    },
+                    "searchTextParams": {
+                      "method": "POST",
+                      "url": "api/location/query/location",
+                      "data": {
+                        "subqueries": {
+                          "moduleTypeCode": {
+                            "value": "{{context.form.moduleTypeCode}}"
+                          },
+                          "q": {
+                            "value": "{{context.search}}"
+                          }
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "portCode"
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.poNo",
+                  "name": "flexData.poNo",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-3 padding-topbottom-4"
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.commodity",
+                  "name": "commodity",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-3 padding-topbottom-4",
+                  "validator": ["required"],
+                  "props": {
+                    "required": true
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.quantity",
+                  "name": "flexData.quantity",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-1 padding-topbottom-4"
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.incoTermsCode",
+                  "name": "incoTerms",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-1 padding-topbottom-4",
+                  "more": [{
+                    "name": "incoTermsCode",
+                    "selector": "code"
+                  }],
+                  "relationMore": [{
+                      "name": "freightTermsCode",
+                      "selector": "flexData.frieghtTermsCode"
+                    },
+                    {
+                      "name": "otherTermsCode",
+                      "selector": "flexData.otherTermsCode"
+                    }
+                  ],
+                  "props": {
+                    "showValue": false,
+                    "initList": true,
+                    "searchTextParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "INCOTERMS"
+                          },
+                          "q": {
+                            "value": "{% if context.search %}{{context.search}}{% else %}.*{% endif %}"
+                          }
+                        }
+                      }
+                    },
+                    "item-text": "code",
+                    "item-value": "code",
+                    "onInit": true
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.freightTermsCode",
+                  "name": "freightTermsCode",
+                  "component": "AsyncSelect",
+                  "class": "xs-12 md-1 padding-topbottom-4",
+                  "relation": "freightTerms",
+                  "props": {
+                    "axiosParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "PAYTERMS"
+                          }
+                        }
+                      }
+                    },
+                    "item-text": "code",
+                    "item-value": "code",
+                    "showValue": false
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.preferredCarrier",
+                  "name": "carrier",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-6 padding-topbottom-4",
+                  "relation": "carrier",
+                  "more": [{
+                    "name": "carrierCode",
+                    "selector": "code"
+                  }],
+                  "props": {
+                    "searchValueParams": {
+                      "method": "POST",
+                      "url": "api/code/query/code_master",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "CARRIER"
+                          },
+                          "code": {
+                            "value": "{{context.autoSuggestModel}}"
+                          }
+                        }
+                      }
+                    },
+                    "searchTextParams": {
+                      "method": "POST",
+                      "url": "api/code/query/code_master",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "CARRIER"
+                          },
+                          "q": {
+                            "value": "{{context.search}}"
+                          }
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "code"
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.contractNo",
+                  "name": "flexData.contractNo",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-6"
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.remark",
+                  "name": "remark",
+                  "component": "v-textarea",
+                  "class": "xs-12 md-6 padding-topbottom-4"
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.specialInstruction",
+                  "name": "flexData.specialInstruction",
+                  "component": "v-textarea",
+                  "class": "xs-12 md-6 padding-topbottom-4"
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.sopTask",
+                  "name": "taskTemplateIdList",
+                  "component": "SopTaskGroups",
+                  "class": "xs-12 padding-topbottom-4",
+                  "props": {
+                    "tableName": "booking"
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "BookingPage.forwarder",
+                  "name": "bookingParty.forwarderParty",
+                  "component": "AsyncSelect",
+                  "class": "xs-12 padding-topbottom-4",
+                  "relation": "bookingParty.forwarderParty",
+                  "relationMore": [{
+                    "name": "bookingParty.forwarderParty.id",
+                    "selector": "id"
+                  }, {
+                    "name": "bookingParty.forwarderParty.name",
+                    "selector": "name"
+                  }, {
+                    "name": "bookingParty.forwarderParty.erpCode",
+                    "selector": "erpCode"
+                  }, {
+                    "name": "bookingParty.forwarderPartyId",
+                    "selector": "id"
+                  }, {
+                    "name": "bookingParty.forwarderPartyName",
+                    "selector": "name"
+                  }, {
+                    "name": "bookingParty.forwarderPartyCode",
+                    "selector": "erpCode"
+                  }, {
+                    "name": "bookingParty.forwarderPartyPhone",
+                    "selector": "partyPhone"
+                  }, {
+                    "name": "bookingParty.forwarderPartyFax",
+                    "selector": "partyFax"
+                  }, {
+                    "name": "bookingParty.forwarderPartyEmail",
+                    "selector": "partyEmail"
+                  }, {
+                    "name": "bookingParty.forwarderPartyAddress",
+                    "selector": "partyAddress"
+                  }, {
+                    "name": "bookingParty.forwarderPartyCityCode",
+                    "selector": "partyCityCode"
+                  }, {
+                    "name": "bookingParty.forwarderPartyStateCode",
+                    "selector": "partyStateCode"
+                  }, {
+                    "name": "bookingParty.forwarderPartyCountryCode",
+                    "selector": "partyCountryCode"
+                  }, {
+                    "name": "bookingParty.forwarderPartyZip",
+                    "selector": "partyZip"
+                  }, {
+                    "name": "bookingParty.forwarderPartyContactPersonId",
+                    "selector": "contactPersonId"
+                  }, {
+                    "name": "bookingParty.forwarderPartyContactPersonEmail",
+                    "selector": "contactPersonEmail"
+                  }, {
+                    "name": "bookingParty.forwarderPartyContactPersonName",
+                    "selector": "contactPersonName"
+                  }, {
+                    "name": "bookingParty.forwarderPartyContactPersonPhone",
+                    "selector": "contactPersonPhone"
+                  }],
+                  "validator": ["required"],
+                  "props": {
+                    "required": true,
+                    "axiosParams": {
+                      "url": "api/party/query/office_auto_suggest",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "isBranch": {
+                            "value": 1
+                          }
+                        }
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "erpCode"
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "name": "Term",
+                  "component": "Term",
+                  "class": "xs-12 padding-topbottom-4",
+                  "props": {
+                    "width": "70%",
+                    "type": "booking-term",
+                    "termProps": {
+                      "class": "margin-leftright-4 padding-leftright-4 min-height-400 max-height-500 overflow-auto"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "DynamicComponent",
+            "props": {
+              "class": "flex padding-leftright-8 padding-topbottom-4",
+              "components": [{
+                  "is": "v-btn",
+                  "props": {
+                    "fab": true
+                  },
+                  "slots": [{
+                    "is": "Icon",
+                    "props": {
+                      "icon": "navigate_next"
+                    }
+                  }],
+                  "events": {
+                    "click.stop": [{
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "widget/updateComponentSetting",
+                        "value": {
+                          "next": true,
+                          "stepper": 0
+                        }
+                      }
+                    }]
+                  }
+                },
+                {
+                  "is": "div",
+                  "props": {
+                    "class": "width-20"
+                  }
+                },
+                {
+                  "is": "WidgetSave",
+                  "props": {
+                    "fab": true,
+                    "color": "primary"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "if": "const setting = context.$store.state.widget.componentSetting || {};return setting.next;",
+      "props": {
+        "class": "grid full-width",
+        "components": [{
+            "is": "DynamicComponent",
+            "props": {
+              "class": "xs-12 grid min-height-28 align-item-center full-width padding-leftright-8",
+              "components": [{
+                  "is": "v-btn",
+                  "props": {
+                    "class": "margin-0",
+                    "small": true,
+                    "flat": true,
+                    "icon": true
+                  },
+                  "events": {
+                    "click.stop": [{
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "widget/updateComponentSetting",
+                        "value": {
+                          "next": false,
+                          "stepper": 0
+                        }
+                      }
+                    }]
+                  },
+                  "slots": [{
+                    "is": "Icon",
+                    "props": {
+                      "icon": "arrow_back"
+                    }
+                  }]
+                },
+                {
+                  "is": "I18nText",
+                  "props": {
+                    "class": "title",
+                    "i18nContext": "BookingPage",
+                    "i18nKey": "createTitle"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "WidgetStepper",
+            "props": {
+              "topClick": false,
+              "topSave": true,
+              "validateBeforeStepChange": true,
+              "preview": false,
+              "steps": [{
+                  "id": "BookingPage.GeneralForm",
+                  "layout": "v-card",
+                  "class": "margin-8",
+                  "components": [{
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "booking/forms/general"
+                    }
+                  }]
+                },
+                {
+                  "id": "BookingPage.PartyForm",
+                  "layout": "v-card",
+                  "class": "margin-8",
+                  "components": [{
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "booking/forms/party"
+                    }
+                  }]
+                },
+                {
+                  "id": "BookingPage.DateForm",
+                  "layout": "v-card",
+                  "class": "margin-8",
+                  "components": [{
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "booking/forms/date"
+                    }
+                  }]
+                },
+                {
+                  "id": "BookingPage.ContainerForm",
+                  "layout": "v-card",
+                  "class": "margin-8",
+                  "components": [{
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "booking/forms/container"
+                    }
+                  }]
+                },
+                {
+                  "id": "BookingPage.referenceForm",
+                  "layout": "v-card",
+                  "class": "margin-8",
+                  "components": [{
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "booking/forms/reference"
+                    }
+                  }]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "class": "grid",
+  "components": [{
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
+        "components": [{
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/admin/card-accesses"
+                }
+              }]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "i18nContext": "CardAccessPage",
+              "i18nKey": "title"
+            }
+          },
+          {
+            "is": "v-spacer"
+          },
+          {
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "icon": true,
+              "flat": true,
+              "class": "primary white-text"
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "edit"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "edit"
+                }
+              }]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 padding-left-8 padding-right-8 width-100 grid",
+        "components": [{
+          "is": "AsyncComponent",
+          "props": {
+            "class": "margin-topbottom-4 xs-12",
+            "layoutName": "card-access/forms/general"
+          }
+        }]
+      }
+    }
+  ]
+}
