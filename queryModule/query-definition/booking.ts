@@ -23,9 +23,10 @@ import {
   MathExpression,
   QueryExpression,
   ExistsExpression,
-  JoinClause
+  JoinClause,
 } from 'node-jql'
-import { passSubquery, ExpressionHelperInterface, registerAll, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
+import { IQueryParams } from 'classes/query'
+import { convertToEndOfDate, convertToStartOfDate, addDateExpression, passSubquery, ExpressionHelperInterface, registerAll, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
 import { IShortcut } from 'classes/query/Shortcut'
 
 const partyList = [
@@ -604,6 +605,192 @@ partyList.map(party => {
   }), ...companion)
 
 })
+
+const dateStatusExpression = (queryParam: IQueryParams) => {
+
+  const subqueryParam = queryParam.subqueries.dateStatus as any as { today: any, currentTime: any }
+
+  if (!subqueryParam) {
+    throw new Error(`missing dateStatus in subqueries`)
+  }
+
+  const rawATAExpression = new ColumnExpression('booking_date', 'arrivalDateActual')
+  const rawETAExpression = new ColumnExpression('booking_date', 'arrivalDateEstimated')
+
+  const rawATDExpression = new ColumnExpression('booking_date', 'departureDateActual')
+  const rawETDExpression = new ColumnExpression('booking_date', 'departureDateEstimated')
+
+  const AIRDateStatusExpression = (subqueryParam) => {
+
+    // const todayExpression = new FunctionExpression('NOW')
+    const todayExpression = new Value(subqueryParam.today)
+    const currentTimeExpression = new Value(subqueryParam.currentTime)
+
+    const calculatedATAExpression = new CaseExpression({
+      cases: [
+        {
+          $when: new IsNullExpression(rawETAExpression, true),
+          $then: convertToEndOfDate(rawETAExpression)
+        },
+        {
+          $when: new IsNullExpression(rawETDExpression, true),
+          $then: convertToEndOfDate(addDateExpression(rawETDExpression, 2, 'DAY'))
+        }
+
+      ],
+
+      $else: new Value(null)
+
+    })
+
+    const calculatedATDExpression = convertToStartOfDate(addDateExpression(rawETDExpression, 1, 'DAY'))
+    const finalATAExpression = new FunctionExpression('IFNULL', rawATAExpression, calculatedATAExpression)
+    const finalATDExpression = new FunctionExpression('IFNULL', rawATDExpression, calculatedATDExpression)
+
+    const finalATAInPast = new BinaryExpression(finalATAExpression, '<=', currentTimeExpression)
+    const finalATDInPast = new BinaryExpression(new FunctionExpression('DATE', finalATDExpression), '<=', todayExpression)
+
+    return new CaseExpression({
+
+      cases: [
+
+        {
+          $when: finalATAInPast,
+          $then: new CaseExpression({
+
+            cases: [
+              {
+                $when: new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 1, 'DAY')), '<=', currentTimeExpression),
+                $then: new Value('inDelivery')
+              },
+            ],
+
+            $else: new Value('arrival')
+          })
+        },
+
+        {
+
+          $when: finalATDInPast,
+          $then: new CaseExpression({
+
+            cases: [
+              {
+                $when: new BinaryExpression(new FunctionExpression('DATE', finalATDExpression), '=', todayExpression),
+                $then: new Value('departure')
+              },
+
+            ],
+
+            $else: new Value('inTransit')
+          })
+        }
+
+      ],
+      $else: new Value('upcoming')
+    })
+
+  }
+
+  const SEADateStatusExpression = (subqueryParam) => {
+
+    const todayExpression = new Value(subqueryParam.today)
+    const currentTimeExpression = new Value(subqueryParam.currentTime)
+
+    const calculatedATAExpression = addDateExpression(rawETAExpression, 2, 'DAY')
+    const calculatedATDExpression = addDateExpression(rawETDExpression, 1, 'DAY')
+    const finalATAExpression = new FunctionExpression('IFNULL', rawATAExpression, calculatedATAExpression)
+    const finalATDExpression = new FunctionExpression('IFNULL', rawATDExpression, calculatedATDExpression)
+
+    const finalATAInPast = new BinaryExpression(finalATAExpression, '<=', todayExpression)
+    const finalATDInPast = new BinaryExpression(finalATDExpression, '<=', todayExpression)
+
+    return new CaseExpression({
+
+      cases: [
+
+        {
+          $when: finalATAInPast,
+          $then: new CaseExpression({
+            cases: [
+              {
+                $when: new BinaryExpression(addDateExpression(finalATAExpression, 3, 'DAY'), '<=', todayExpression),
+                $then: new Value('inDelivery')
+              } as ICase,
+            ],
+
+            $else: new Value('arrival')
+          }
+          )
+        },
+
+        {
+          $when: finalATDInPast,
+          $then: new CaseExpression({
+            cases: [
+              {
+                $when: new AndExpressions([
+                  new BinaryExpression(addDateExpression(finalATDExpression, 3, 'DAY'), '<=', todayExpression)
+                ]),
+                $then: new Value('inTransit')
+              } as ICase,
+            ],
+
+            $else: new Value('departure')
+          }
+          )
+        },
+
+        // {
+        //   $when : new AndExpressions([
+        //     new IsNullExpression(finalATAExpression, false),
+        //     new BinaryExpression(addDateExpression(finalATDExpression, 'add', 3, 'DAY'), '<=', todayExpression)
+        //   ]),
+        //   $then : new Value('inTransit')
+        // } as ICase,
+        // {
+        //   $when : new AndExpressions([
+
+        //     new IsNullExpression(finalATAExpression, false),
+        //     new BetweenExpression(finalATDExpression, false, todayExpression, addDateExpression(todayExpression, 'add', 3, 'DAY'))
+
+        //   ]),
+        //   $then : new Value('departure')
+        // } as ICase,
+
+        // {
+        //   $when : new AndExpressions([
+        //     new IsNullExpression(finalATAExpression, false),
+        //     new BinaryExpression(finalATDExpression, '<', todayExpression)
+        //   ]),
+        //   $then : new Value('upcoming')
+        // } as ICase,
+
+      ],
+
+      $else: new Value('upcoming')
+    })
+  }
+
+  const result = new CaseExpression({
+
+    cases: [
+      {
+        $when: new BinaryExpression(new ColumnExpression('booking', 'moduleTypeCode'), '=', 'AIR'),
+        $then: AIRDateStatusExpression(subqueryParam)
+      },
+      {
+        $when: new BinaryExpression(new ColumnExpression('booking', 'moduleTypeCode'), '=', 'SEA'),
+        $then: SEADateStatusExpression(subqueryParam)
+      }
+
+    ],
+    $else: new Value(null)
+  })
+
+  return result
+
+}
 
 // location table :  table:portOfLoading, table:portOfDischarge
 locationList.map(location => {
@@ -1199,6 +1386,12 @@ const fieldList = [
   {
     name: 'totalQuantityUnit',
     expression: new ColumnExpression('booking', 'quantityUnit')
+  },
+
+  {
+    name: 'dateStatus',
+    expression: dateStatusExpression,
+    companion: ['table:booking_date']
   },
 
   // 'createdAt',
