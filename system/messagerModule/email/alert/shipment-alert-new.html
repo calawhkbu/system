@@ -1,0 +1,30 @@
+<html>
+<body>
+
+
+    <h1>sentFrom : {{sendFrom}}</h1>
+
+    <h1>title : {{title}}</h1>
+    <h5>message :{{message}}</h5>
+
+    <h5>jobNo :{{jobNo}}</h5>
+    <h5>houseNo :{{houseNo}}</h5>
+    <h5>masterNo :{{masterNo}}</h5>
+
+
+    <h5>poNo :{{message}}</h5>
+    <h5>JobDate: {% if entity.jobDate %} {{entity.jobDate | date('d M Y')}} {% endif %}</h5>
+
+    <h5>portOfLoadingCode: {% if entity.portOfLoading && entity.portOfLoading.name %} {{entity.portOfLoading.name }} {% endif %}</h5>
+    <h5>portOfDischargeCode: {% if entity.portOfDischarge && entity.portOfDischarge.name %} {{entity.portOfDischarge.name }} {% endif %}</h5>
+
+
+    <h5>shipper: {% if entity.shipmentDate && entity.shipmentDate.estimatedArrivalDate %} {{entity.shipmentDate.estimatedArrivalDate | date('d M Y')}} {% endif %}</h5>
+    <h5>consignee: {% if entity.shipmentDate && entity.shipmentDate.estimatedArrivalDate %}
+        {{entity.shipmentDate.estimatedArrivalDate | date('d M Y')}} {% endif %}</h5>
+
+    <h5>url : {{url}}</h5>
+
+
+</body>
+</html>

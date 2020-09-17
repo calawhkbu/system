@@ -1,0 +1,23 @@
+{
+  "components": [
+    {
+      "is": "WidgetForm",
+      "props": {
+        "fields": [
+          {
+            "label": "PurchaseOrderPage.referenceNumber",
+            "name": "referenceNumber",
+            "component": "v-text-field",
+            "class": "xs-12 md-6"
+          },
+          {
+            "label": "PurchaseOrderPage.remark",
+            "name": "remark",
+            "component": "v-textarea",
+            "class": "xs-12 md-6"
+          }
+        ]
+      }
+    }
+  ]
+}
