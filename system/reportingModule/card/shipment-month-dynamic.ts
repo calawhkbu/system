@@ -33,17 +33,17 @@ export default {
         handleBottomSheetGroupByEntityValue(subqueries)
         let { groupByEntity, codeColumnName,nameColumnName } = expandBottomSheetGroupByEntity(subqueries)
           
-        if(groupByEntity=='coloader'){
-          codeColumnName="linerAgentPartyCode";
-          nameColumnName="linerAgentPartyName";
-        }
+       
 
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
         prevResult.nameColumnName = nameColumnName
 
         
-
+        if(groupByEntity=='coloader'){
+          codeColumnName="linerAgentPartyCode";
+          nameColumnName="linerAgentPartyName";
+        }
 
         const topX = subqueries.topX.value
 
@@ -63,8 +63,9 @@ export default {
           ...summaryVariables.map(variable => `${variable}Month`),
           codeColumnName,
           nameColumnName,
+          'erpSite'
         ]
-
+   
         // group by
         params.groupBy = [codeColumnName]
 
@@ -91,6 +92,7 @@ export default {
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'shipment'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
+        
 
         if(groupByEntity=='coloader'){
           codeColumnName="linerAgentPartyCode";
@@ -98,6 +100,7 @@ export default {
         }
         return res.map(row => {
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
+          row_['erpSite']=row['erpSite'];
        
 
           for (const variable of summaryVariables) {
@@ -214,7 +217,7 @@ export default {
                     [
                         {
                             label: `${groupByEntity}`,
-                            value: `${groupByEntity=='coloader'?'linerAgent':groupByEntity}`,
+                            value: `${groupByEntity=='coloader'?'linerAgentPartyCode':groupByEntity}`,
                         }
                     ]
                 )
