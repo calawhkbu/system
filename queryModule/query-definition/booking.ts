@@ -941,6 +941,11 @@ const shipmentIdExpression = new QueryExpression(new Query({
     new IsNullExpression(new ColumnExpression('shipment', 'deletedBy'), false),
     new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
   ],
+  $order: [
+    {
+      expression: new ColumnExpression('shipment', 'id')
+    }
+  ],
   $limit: 1
 }))
 
@@ -998,6 +1003,11 @@ const shipmentMasterNoExpression = new QueryExpression(new Query({
     new IsNullExpression(new ColumnExpression('shipment', 'deletedBy'), false),
     new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
   ],
+  $order: [
+    {
+      expression: new ColumnExpression('shipment', 'id')
+    }
+  ],
   $limit: 1
 }))
 
@@ -1017,6 +1027,11 @@ const shipmentHouseNoExpression = new QueryExpression(new Query({
     new IsNullExpression(new ColumnExpression('shipment', 'deletedAt'), false),
     new IsNullExpression(new ColumnExpression('shipment', 'deletedBy'), false),
     new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
+  ],
+  $order: [
+    {
+      expression: new ColumnExpression('shipment', 'id')
+    }
   ],
   $limit: 1
 }))
