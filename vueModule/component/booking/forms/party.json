@@ -110,6 +110,7 @@
           }],
           "props": {
             "createDialog": {
+              "canCreate": "return user.roles.find(r => r.name === 'INTERNAL')",
               "beforeItem": {
                 "layout": "Dummy",
                 "components": [{

@@ -402,7 +402,7 @@
                     "class": "padding-topbottom-8 padding-leftright-4"
                   },
                   "label": "BookingPage.placeOfDelivery",
-                  "name": "placeOfDelivery padding-topbottom-4",
+                  "name": "placeOfDelivery",
                   "component": "AsyncAutoSuggest",
                   "class": "xs-12 md-3 padding-topbottom-4",
                   "more": [{
