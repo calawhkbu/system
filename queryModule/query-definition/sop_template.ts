@@ -1,5 +1,5 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, BinaryExpression, FromTable, Unknown, OrExpressions, IsNullExpression, RegexpExpression, QueryExpression, Query, FunctionExpression, AndExpressions } from "node-jql";
+import { ColumnExpression, ResultColumn, BinaryExpression, FromTable, Unknown, OrExpressions, IsNullExpression, RegexpExpression, QueryExpression, Query, FunctionExpression, AndExpressions, Value, IExpression, LikeExpression } from "node-jql";
 import { IShortcut } from "classes/query/Shortcut";
 
 const templateTable = 'sop_template'
@@ -138,6 +138,17 @@ const shortcuts: IShortcut[] = [
       new IsNullExpression(re['deletedAt'], false),
       new IsNullExpression(re['deletedBy'], false)
     ])
+  },
+
+  // subquery:critria
+  {
+    type: 'subquery',
+    name: 'criteria',
+    subqueryArg: () => value => {
+      return {
+        $where: new OrExpressions(value.value.map(v => new LikeExpression(new ColumnExpression(templateTable, 'autoSelectSummary'), false, new Value(`%${v}%`))))
+      }
+    }
   }
 ]
 
