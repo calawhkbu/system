@@ -5,7 +5,10 @@
       "settingProp": {
         "overrideType": "tracking",
         "initAxiosParams": {
-          "url": "api/swivel-tracking/{{context.$route.params.params}}"
+          "url": "api/swivel-tracking/{{context.$route.params.params}}",
+          "headers": {
+            "Cache-Control": "{{cache}}"
+          }
         },
         "defaultAxiosParams": {
           "url": "default/tracking"

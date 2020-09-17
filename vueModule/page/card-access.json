@@ -6,7 +6,10 @@
         "settingProp": {
           "overrideType": "card-access",
           "initAxiosParams": {
-            "url": "api/cardAccess/{{context.$route.params.params}}"
+            "url": "api/cardAccess/{{context.$route.params.params}}",
+            "headers": {
+              "Cache-Control": "{{cache}}"
+            }
           },
           "defaultAxiosParams": {
             "url": "default/cardAccess"

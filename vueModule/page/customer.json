@@ -5,7 +5,10 @@
       "settingProp": {
         "overrideType": "party-group",
         "initAxiosParams": {
-          "url": "api/partyGroup/{{context.$route.params.params}}"
+          "url": "api/partyGroup/{{context.$route.params.params}}",
+          "headers": {
+            "Cache-Control": "{{cache}}"
+          }
         },
         "defaultAxiosParams": {
           "url": "default/partyGroup"
