@@ -1,0 +1,50 @@
+{
+  "components": [{
+    "is": "Widget",
+    "props": {
+      "settingProp": {
+        "overrideType": "role",
+        "initAxiosParams": {
+          "url": "api/role/{{context.$route.params.params}}",
+          "headers": {
+            "Cache-Control": "{{cache}}"
+          }
+        },
+        "defaultAxiosParams": {
+          "url": "default/role"
+        },
+        "validateAxiosParams": {
+          "method": "post",
+          "url": "api/role/validate/{{id}}"
+        },
+        "saveAxiosParams": {
+          "method": "post",
+          "url": "api/role"
+        },
+        "primaryKey": "id",
+        "modeFunction": "const modes = ['create', 'detail','edit']\nconst selectedMode = isNaN(Number(mode)) ? mode : 'detail'\n          if (!modes.includes(selectedMode)) {\n            throw new Error('This mode (' + selectedMode + ') is not allowed')\n          }\n          return selectedMode\n        ",
+        "haveTermOnCreate": false,
+        "haveTermOnEdit": false,
+        "widgetComponentSetting": {
+          "quick-create": {
+            "readonly": false
+          },
+          "create": {
+            "readonly": false,
+            "stepper": 0,
+            "next": false,
+            "saveIcon": "create"
+          },
+          "detail": {
+            "readonly": true
+          },
+          "edit": {
+            "readonly": false,
+            "stepper": 0,
+            "saveIcon": "save"
+          }
+        }
+      }
+    }
+  }]
+}
