@@ -23,6 +23,7 @@ import {
   MathExpression,
   QueryExpression,
   ExistsExpression,
+  JoinClause
 } from 'node-jql'
 import { passSubquery, ExpressionHelperInterface, registerAll, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
 import { IShortcut } from 'classes/query/Shortcut'
@@ -1746,6 +1747,18 @@ function addBookingCheck(query: Query) {
 }
 
 const shortcuts: IShortcut[] = [
+  // table:picPerson
+  {
+    type: 'table',
+    name: 'picPerson',
+    fromTable: new FromTable('booking', new JoinClause('LEFT', new FromTable('person', 'picPerson'),
+      new BinaryExpression(new ColumnExpression('booking', 'picEmail'), '=', new ColumnExpression('picPerson', 'userName')),
+      new BinaryExpression(new ColumnExpression('booking', 'partyGroupCode'), '=', new ColumnExpression('picPerson', 'partyGroupCode')),
+      new IsNullExpression(new ColumnExpression('picPerson', 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression('picPerson', 'deletedBy'), false),
+    ))
+  },
+
   // field:distinct-team
   {
     type: 'field',
@@ -1982,6 +1995,21 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'noDeadTasks',
     expression: re => new BinaryExpression(re['hasDeadTasks'], '=', new Value(0))
+  },
+
+  // subquery:picNotAssigned
+  {
+    type: 'subquery',
+    name: 'picNotAssigned',
+    expression: new IsNullExpression(new ColumnExpression('booking', 'picEmail'), false)
+  },
+
+  // subquery:invalidPic
+  {
+    type: 'subquery',
+    name: 'invalidPic',
+    expression: new IsNullExpression(new ColumnExpression('picPerson', 'id'), false),
+    companions: ['table:picPerson']
   }
 ]
 
