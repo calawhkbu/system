@@ -74,10 +74,6 @@ export default {
           {
             label: 'shipment',
             value: 'shipment',
-          },
-          {
-            label: 'purchase-order',
-            value: 'purchase-order',
           }
         ],
         required: true,

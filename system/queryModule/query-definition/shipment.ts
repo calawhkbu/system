@@ -3719,17 +3719,4 @@ const shortcuts: IShortcut[] = [
   }
 ]
 
-//get shortName from party table
-
-query.table('shortName', new Query({
-  $from: new FromTable('shipment', {
-    operator: 'LEFT',
-    table: 'party',
-    $on: [
-      new BinaryExpression(new ColumnExpression('shipment', 'linerAgentPartyId'), '=', new ColumnExpression('party','id'))
-    ]
-  }),
-  $where: new BinaryExpression(new ColumnExpression('party', 'id'), '=', new Unknown()
-}))
-
 export default query.useShortcuts(shortcuts)

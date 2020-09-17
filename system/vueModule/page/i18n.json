@@ -6,7 +6,10 @@
         "settingProp": {
           "overrideType": "i18n",
           "initAxiosParams": {
-            "url": "api/i18n/{{context.$route.params.params}}"
+            "url": "api/i18n/{{context.$route.params.params}}",
+            "headers": {
+              "Cache-Control": "{{cache}}"
+            }
           },
           "defaultAxiosParams": {
             "url": "default/i18n"

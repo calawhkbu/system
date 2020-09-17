@@ -5,7 +5,10 @@
       "settingProp": {
         "overrideType": "role",
         "initAxiosParams": {
-          "url": "api/role/{{context.$route.params.params}}"
+          "url": "api/role/{{context.$route.params.params}}",
+          "headers": {
+            "Cache-Control": "{{cache}}"
+          }
         },
         "defaultAxiosParams": {
           "url": "default/role"

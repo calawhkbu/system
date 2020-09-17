@@ -68,8 +68,8 @@ export default {
           }
         }
         // console.log(params)
-        // console.log("//get erpSite info-params")
-        // console.log(params)
+        //  console.log("//get erpSite info-params")
+        //  console.log(params)
 
         return params;
       }
@@ -280,6 +280,8 @@ export default {
 
           var { code } = row
 
+          
+
           // calculate topX dynamicCodeList
           // just get the first topX
           //show erpSite if exist , otherwise show the name, if not intial Office Select, show the original value
@@ -306,6 +308,8 @@ export default {
             dynamicCodeListRaw,
             erpCode
           }
+  
+
           if(res&&res.length>0){
             for(let i=0;i<res.length;i++){
                if(dynamicColumnCodeColumnName=="officePartyCode"){
@@ -330,6 +334,7 @@ export default {
               })
             }
           })
+  
 
           return row_
 

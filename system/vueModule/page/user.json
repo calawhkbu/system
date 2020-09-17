@@ -5,7 +5,10 @@
       "settingProp": {
         "overrideType": "user",
         "initAxiosParams": {
-          "url": "api/invitation/{{context.$route.params.params}}"
+          "url": "api/invitation/{{context.$route.params.params}}",
+          "headers": {
+            "Cache-Control": "{{cache}}"
+          }
         },
         "defaultAxiosParams": {
           "url": "default/invitation"

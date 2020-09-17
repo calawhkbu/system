@@ -6,7 +6,10 @@
         "settingProp": {
           "overrideType": "code-master",
           "initAxiosParams": {
-            "url": "api/code/{{context.$route.params.params}}"
+            "url": "api/code/{{context.$route.params.params}}",
+            "headers": {
+              "Cache-Control": "{{cache}}"
+            }
           },
           "defaultAxiosParams": {
             "url": "default/code"

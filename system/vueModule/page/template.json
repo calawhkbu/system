@@ -5,7 +5,10 @@
       "settingProp": {
         "overrideType": "template",
         "initAxiosParams": {
-          "url": "api/template/{{context.$route.params.params}}"
+          "url": "api/template/{{context.$route.params.params}}",
+          "headers": {
+            "Cache-Control": "{{cache}}"
+          }
         },
         "defaultAxiosParams": {
           "url": "default/template"

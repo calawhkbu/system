@@ -5,7 +5,10 @@
       "settingProp": {
         "overrideType": "product-category",
         "initAxiosParams": {
-          "url": "api/product-category/{{context.$route.params.params}}"
+          "url": "api/product-category/{{context.$route.params.params}}",
+          "headers": {
+            "Cache-Control": "{{cache}}"
+          }
         },
         "defaultAxiosParams": {
           "url": "default/product-category"
