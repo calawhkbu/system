@@ -31,13 +31,18 @@ export default {
 
         // warning
         handleBottomSheetGroupByEntityValue(subqueries)
-        const { groupByEntity, codeColumnName,nameColumnName } = expandBottomSheetGroupByEntity(subqueries)
+        let { groupByEntity, codeColumnName,nameColumnName } = expandBottomSheetGroupByEntity(subqueries)
           
-
+        if(groupByEntity=='coloader'){
+          codeColumnName="linerAgentPartyCode";
+          nameColumnName="linerAgentPartyName";
+        }
 
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
         prevResult.nameColumnName = nameColumnName
+
+        
 
 
         const topX = subqueries.topX.value
@@ -77,6 +82,8 @@ export default {
         }
 
         params.limit = topX
+        console.log("--------params")
+        console.log(params)
         return params
       }
     },
@@ -84,8 +91,14 @@ export default {
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'shipment'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
+
+        if(groupByEntity=='coloader'){
+          codeColumnName="linerAgentPartyCode";
+          nameColumnName="linerAgentPartyName";
+        }
         return res.map(row => {
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
+       
 
           for (const variable of summaryVariables) {
             let total = 0
@@ -201,7 +214,7 @@ export default {
                     [
                         {
                             label: `${groupByEntity}`,
-                            value: `${groupByEntity}`,
+                            value: `${groupByEntity=='coloader'?'linerAgent':groupByEntity}`,
                         }
                     ]
                 )
