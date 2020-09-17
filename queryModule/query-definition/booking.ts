@@ -927,10 +927,20 @@ const shipmentIdExpression = new QueryExpression(new Query({
   $select : [
     new ResultColumn(new ColumnExpression('shipment_booking','shipmentId'))
   ],
-  $from: new FromTable('shipment_booking'),
+  $from: new FromTable({
+    table: 'shipment_booking',
+    joinClauses : [{
+      operator: 'LEFT',
+      table: 'shipment',
+      $on: [new BinaryExpression(new ColumnExpression('shipment_booking', 'shipmentId'), '=', new ColumnExpression('shipment', 'id'))]
+    }]
+  }),
   $where: [
+    new IsNullExpression(new ColumnExpression('shipment', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('shipment', 'deletedBy'), false),
     new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
-  ]
+  ],
+  $limit: 1
 }))
 
 // SELECT `booking_reference`.`refDescription`
@@ -983,8 +993,11 @@ const shipmentMasterNoExpression = new QueryExpression(new Query({
     }]
   }),
   $where: [
+    new IsNullExpression(new ColumnExpression('shipment', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('shipment', 'deletedBy'), false),
     new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
-  ]
+  ],
+  $limit: 1
 }))
 
 const shipmentHouseNoExpression = new QueryExpression(new Query({
@@ -1000,8 +1013,11 @@ const shipmentHouseNoExpression = new QueryExpression(new Query({
     }]
   }),
   $where: [
+    new IsNullExpression(new ColumnExpression('shipment', 'deletedAt'), false),
+    new IsNullExpression(new ColumnExpression('shipment', 'deletedBy'), false),
     new BinaryExpression(new ColumnExpression('shipment_booking','bookingNo'),'=',new ColumnExpression('booking','bookingNo'))
-  ]
+  ],
+  $limit: 1
 }))
 
 const houseNoExpression = new FunctionExpression(
