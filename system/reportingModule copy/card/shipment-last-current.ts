@@ -22,7 +22,68 @@ export default {
         const moment = prevResult.moment = (await this.preparePackages(user)).moment
         const subqueries = params.subqueries = params.subqueries || {}
 
-       
+        // function calculateLastCurrent(lastCurrentUnit: string) {
+        //   if (!subqueries.date || !(subqueries.date !== true && 'from' in subqueries.date)) {
+        //     throw new BadRequestException('MISSING_DATE')
+        //   }
+
+        //   const from = subqueries.date.from
+        //   const currentYear = moment(from).year()
+        //   const currentQuarter = moment(from).quarter()
+        //   const currentMonth = moment(from).month()
+        //   const currentWeek = moment(from).week()
+
+        //   let lastFrom, lastTo, currentFrom, currentTo
+        //   if (lastCurrentUnit === 'year') {
+        //     lastFrom = moment(from).year(currentYear - 1).startOf('year').format('YYYY-MM-DD')
+        //     lastTo = moment(from).year(currentYear - 1).endOf('year').format('YYYY-MM-DD')
+        //     currentFrom = moment(from).year(currentYear).startOf('year').format('YYYY-MM-DD')
+        //     currentTo = moment(from).year(currentYear).endOf('year').format('YYYY-MM-DD')
+        //   }
+        //   else if (lastCurrentUnit === 'quarter') {
+        //     // special case !!!
+        //     lastFrom = moment(from).quarter(currentQuarter).subtract(1, 'years').startOf('quarter').format('YYYY-MM-DD')
+        //     lastTo = moment(from).quarter(currentQuarter).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
+        //     currentFrom = moment(from).quarter(currentQuarter).startOf('quarter').format('YYYY-MM-DD')
+        //     currentTo = moment(from).quarter(currentQuarter).endOf('quarter').format('YYYY-MM-DD')
+        //   }
+        //   else if (lastCurrentUnit === 'month') {
+        //     // special case !!!
+        //     lastFrom = moment(from).month(currentMonth).subtract(1, 'years').startOf('month').format('YYYY-MM-DD')
+        //     lastTo = moment(from).month(currentMonth).subtract(1, 'years').endOf('month').format('YYYY-MM-DD')
+        //     currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
+        //     currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
+        //   }
+        //   else if (lastCurrentUnit === 'previousQuarter') {
+        //     lastFrom = moment(from).subtract(1, 'quarters').startOf('quarter').format('YYYY-MM-DD')
+        //     lastTo = moment(from).subtract(1, 'quarters').endOf('quarter').format('YYYY-MM-DD')
+        //     currentFrom = moment(from).quarter(currentQuarter).startOf('quarter').format('YYYY-MM-DD')
+        //     currentTo = moment(from).quarter(currentQuarter).endOf('quarter').format('YYYY-MM-DD')
+        //   }
+        //   else if (lastCurrentUnit === 'previousMonth') {
+        //     lastFrom = moment(from).subtract(1, 'months').startOf('month').format('YYYY-MM-DD')
+        //     lastTo = moment(from).subtract(1, 'months').endOf('month').format('YYYY-MM-DD')
+        //     currentFrom = moment(from).month(currentMonth).startOf('month').format('YYYY-MM-DD')
+        //     currentTo = moment(from).month(currentMonth).endOf('month').format('YYYY-MM-DD')
+        //   }
+        //   else if (lastCurrentUnit === 'previousWeek') {
+        //     lastFrom = moment(from).subtract(1, 'weeks').startOf('week').format('YYYY-MM-DD')
+        //     lastTo = moment(from).subtract(1, 'weeks').endOf('week').format('YYYY-MM-DD')
+        //     currentFrom = moment(from).week(currentWeek).startOf('week').format('YYYY-MM-DD')
+        //     currentTo = moment(from).week(currentWeek).endOf('week').format('YYYY-MM-DD')
+        //   }
+        //   else if (lastCurrentUnit === 'previousDay') {
+        //     lastFrom = moment(from).subtract(1, 'days').startOf('day').format('YYYY-MM-DD')
+        //     lastTo = moment(from).subtract(1, 'days').endOf('day').format('YYYY-MM-DD')
+        //     currentFrom = moment(from).startOf('day').format('YYYY-MM-DD')
+        //     currentTo = moment(from).endOf('day').format('YYYY-MM-DD')
+        //   }
+        //   else {
+        //     throw new Error('INVALID_lastCurrentUnit')
+        //   }
+
+        //   return { lastFrom, lastTo, currentFrom, currentTo }
+        // }
 
         function guessSortingExpression(sortingValue: string, subqueries) {
           const variablePart = sortingValue.substr(0, sortingValue.lastIndexOf('_'))
@@ -64,27 +125,24 @@ export default {
         // const groupByEntity = prevResult.groupByEntity = (subqueries.groupByEntity as any).value // should be shipper/consignee/agent/controllingCustomer/carrier
         // const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
         // const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
-        var { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
-  // -----------------------------groupBy variable
-  groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-  codeColumnName = prevResult.codeColumnName = groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierCode`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyCode`
-  nameColumnName = prevResult.nameColumnName = (groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierName`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyShortNameInReport`) + 'Any'
- 
+        
+        const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
+
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
         prevResult.nameColumnName = nameColumnName
-
+        
         const metric1 = (subqueries.metric1 as any).value // should be chargeableWeight/cbm/grossWeight/totalShipment
         const metric2 = (subqueries.metric2 as any).value // should be chargeableWeight/cbm/grossWeight/totalShipment
         const metricList = prevResult.metricList = [metric1, metric2]
         const metricFieldList = metricList.map(metric => `${metric}LastCurrent`)
 
         const topX = (subqueries.topX as any).value
-        
         // const lastCurrentUnit = subqueries.lastCurrentUnit && subqueries.lastCurrentUnit !== true && 'value' in subqueries.lastCurrentUnit ? subqueries.lastCurrentUnit.value : '' // should be chargeableWeight/cbm/grossWeight/totalShipment
         
         // ------------------------------
         const { lastFrom, lastTo, currentFrom, currentTo } = calculateLastCurrent(subqueries,moment)
+        
 
         subqueries.date = {
           lastFrom,
@@ -111,15 +169,13 @@ export default {
         }
 
         params.limit = topX
-        console.log("prepareParams");
-        console.log(params);
 
         return params
       }
     },
     {
       type: 'callDataService',
-      dataServiceQuery: ['booking', 'booking'],
+      dataServiceQuery: ['shipment', 'shipment'],
       onResult(res, params, prevResult: Result): any[] {
         const { codeColumnName, nameColumnName, groupByEntity, metricList } = prevResult
         return res.map(row => {
@@ -163,7 +219,7 @@ export default {
             value: 1000,
           }
         ],
-        multi : false,
+        multi: false,
         required: true,
       },
       type: 'list',
@@ -224,19 +280,29 @@ export default {
             value: 'cbm',
           },
           {
-            label: 'totalBooking',
-            value: 'totalBooking',
+            label: 'totalShipment',
+            value: 'totalShipment',
           },
           {
             label: 'teu',
             value: 'teu',
           },
-         
+          {
+            label: 'teuInReport',
+            value: 'teuInReport',
+          },
           {
             label: 'quantity',
             value: 'quantity',
+          },
+          {
+            label: 'cargoValue',
+            value: 'cargoValue'
+          },
+          {
+            label: 'containerCount',
+            value: 'containerCount'
           }
-        
         ],
         required: true,
       },
@@ -260,19 +326,29 @@ export default {
             value: 'cbm',
           },
           {
-            label: 'totalBooking',
-            value: 'totalBooking',
+            label: 'totalShipment',
+            value: 'totalShipment',
           },
           {
             label: 'teu',
             value: 'teu',
           },
-         
+          {
+            label: 'teuInReport',
+            value: 'teuInReport',
+          },
           {
             label: 'quantity',
             value: 'quantity',
+          },
+          {
+            label: 'cargoValue',
+            value: 'cargoValue'
+          },
+          {
+            label: 'containerCount',
+            value: 'containerCount'
           }
-        
         ],
         required: true,
       },
@@ -299,7 +375,10 @@ export default {
             label: 'agent',
             value: 'agent',
           },
-      
+          {
+            label: 'agentGroup',
+            value: 'agentGroup',
+          },
           {
             label: 'controllingCustomer',
             value: 'controllingCustomer',
@@ -313,15 +392,80 @@ export default {
             value: 'roAgent',
           },
           {
-            label : 'moduleType',
-            value : 'moduleType'
+            label: 'office',
+            value: 'office',
           },
-        
+          {
+            label: 'moduleType',
+            value: 'moduleType'
+          },
+          {
+            label: 'houseNo',
+            value: 'houseNo'
+          }
         ],
         required: true,
       },
       type: 'list',
     },
+    {
+      display: 'sorting',
+      name: 'sorting',
+      type: 'list',
+      props: {
+        multi: true,
+        items: [
+          {
+            label: 'metric1Current_ASC',
+            value: 'metric1Current_ASC'
+          },
+          {
+            label: 'metric1Last_ASC',
+            value: 'metric1Last_ASC'
+          },
+          {
+            label: 'metric1PercentageChange_ASC',
+            value: 'metric1PercentageChange_ASC'
+          },
+          {
+            label: 'metric2Current_ASC',
+            value: 'metric2Current_ASC'
+          },
+          {
+            label: 'metric2Last_ASC',
+            value: 'metric2Last_ASC'
+          },
+          {
+            label: 'metric2PercentageChange_ASC',
+            value: 'metric2PercentageChange_ASC'
+          },
+          {
+            label: 'metric1Current_DESC',
+            value: 'metric1Current_DESC'
+          },
+          {
+            label: 'metric1Last_DESC',
+            value: 'metric1Last_DESC'
+          },
+          {
+            label: 'metric1PercentageChange_DESC',
+            value: 'metric1PercentageChange_DESC'
+          },
+          {
+            label: 'metric2Current_DESC',
+            value: 'metric2Current_DESC'
+          },
+          {
+            label: 'metric2Last_DESC',
+            value: 'metric2Last_DESC'
+          },
+          {
+            label: 'metric2PercentageChange_DESC',
+            value: 'metric2PercentageChange_DESC'
+          },
+        ]
+      }
+    }
   ]
 } as JqlDefinition
 
@@ -339,6 +483,7 @@ export default {
   ResultColumn,
   FunctionExpression,
   OrderBy,
+  IExpression,
 } from 'node-jql'
 
 import { parseCode } from 'utils/function'
@@ -418,6 +563,44 @@ function prepareParams(): Function {
       return { lastFrom, lastTo, currentFrom, currentTo }
     }
 
+    function guessSortingExpression(sortingValue: string, subqueries)
+    {
+      const variablePart = sortingValue.substr(0, sortingValue.lastIndexOf('_'))
+      const sortingDirection = sortingValue.substr(sortingValue.lastIndexOf('_') + 1)
+
+      if (!['ASC', 'DESC'].includes(sortingDirection))
+      {
+        throw new Error(`cannot guess sortingDirection`)
+      }
+
+      // here will handle 2 special cases : metric , summaryVariable
+
+      const metricRegex = new RegExp('metric[0-9]+')
+      const summaryVariableRegex = new RegExp('summaryVariable')
+
+      let finalColumnName: string
+
+      // summaryVariable case
+      if (summaryVariableRegex.test(variablePart))
+      {
+        finalColumnName = variablePart.replace('summaryVariable', subqueries.summaryVariable.value)
+      }
+
+      //
+      else if (metricRegex.test(variablePart))
+      {
+        const metricPart = variablePart.match(metricRegex)[0]
+        const metricValue = subqueries[metricPart].value
+        finalColumnName = variablePart.replace(metricPart, metricValue)
+      }
+
+      else {
+        finalColumnName = variablePart
+      }
+
+      return new OrderBy(finalColumnName, sortingDirection)
+    }
+
     const { moment } = params.packages
     const { OrderBy } = require('node-jql')
 
@@ -436,23 +619,23 @@ function prepareParams(): Function {
 
     const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
     const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
-    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyNameInReport`
+    const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`
 
-    const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalBooking
-    const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalBooking
+    const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const metricList  = [metric1, metric2]
+    const metricList = [metric1, metric2]
     const metricFieldList = metricList.map(metric => `${metric}LastCurrent`)
 
     const metricColumnList = metricList.reduce(((accumulator, currentValue) => {
 
       accumulator.push(`${currentValue}Last`)
       accumulator.push(`${currentValue}Current`)
-      return accumulator }), [])
+      return accumulator
+    }), [])
 
     const topX = subqueries.topX.value
-
-    const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalBooking
+    const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     // ------------------------------
 
     const { lastFrom, lastTo, currentFrom, currentTo } = calculateLastCurrent(lastCurrentUnit)
@@ -464,14 +647,52 @@ function prepareParams(): Function {
       currentTo
     }
 
-    subqueries[`${codeColumnName}IsNotNull`]  = {// should be carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
-      value : true
+    subqueries[`${codeColumnName}IsNotNull`] = {// should be carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+      value: true
     }
 
     params.fields = [...new Set([codeColumnName, nameColumnName, ...metricFieldList])]
     params.groupBy = [codeColumnName, nameColumnName]
 
-    params.sorting = new OrderBy(metricFieldList[0], 'DESC')
+    params.sorting = []
+
+    if (subqueries.sorting && subqueries.sorting.value) {
+
+      const sortingValueList = subqueries.sorting.value as string[]
+
+      sortingValueList.forEach(sortingValue => {
+
+        // will try to find in sortingExpressionMap first, if not found , just use the normal value
+        const orderByExpression = guessSortingExpression(sortingValue, subqueries)
+        params.sorting.push(orderByExpression)
+
+      })
+
+    }
+
+    // if (subqueries.sorting && subqueries.sorting.value) {
+
+    //   const sortingExpressionMap = composeSortingExpressionMap(subqueries)
+
+    //   const sortingValueList = subqueries.sorting.value as string[]
+
+    //   sortingValueList.forEach(sortingValue => {
+
+    //     if (!sortingExpressionMap[sortingValue]) {
+    //       throw new Error('sortingValue not found in sortingExpressionMap')
+    //     }
+
+    //     // will try to find in sortingExpressionMap first, if not found , just use the normal value
+    //     const orderByExpression = sortingExpressionMap[sortingValue]
+    //     params.sorting.push(orderByExpression)
+
+    //   })
+
+    // }
+
+    // metricFieldList[0] = totalShipmentLastCurrent
+    // metricList[0] = totalShipment
+    // params.sorting = new OrderBy(`${metricList[0]}Current`, sortingDirection)
 
     params.limit = topX
 
@@ -512,10 +733,10 @@ function dataQuery(): Function {
     const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
     const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`
 
-    const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalBooking
-    const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalBooking
+    const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const metricList  = [metric1, metric2]
+    const metricList = [metric1, metric2]
     const metricFieldList = metricList.map(metric => `${metric}LastCurrent`)
 
     // for easy looping
@@ -523,11 +744,12 @@ function dataQuery(): Function {
 
       accumulator.push(`${currentValue}Last`)
       accumulator.push(`${currentValue}Current`)
-      return accumulator }), [])
+      return accumulator
+    }), [])
 
     const topX = subqueries.topX.value
 
-    const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalBooking
+    const lastCurrentUnit = subqueries.lastCurrentUnit.value // should be chargeableWeight/cbm/grossWeight/totalShipment
     // ------------------------------
 
     const tableName = `final`
@@ -536,7 +758,7 @@ function dataQuery(): Function {
       $temporary: true,
       name: tableName,
 
-      $as :  new Query({
+      $as: new Query({
         $select: [
           new ResultColumn(new ColumnExpression(codeColumnName), 'code'),
           new ResultColumn(new ColumnExpression(nameColumnName), 'name'),
@@ -551,7 +773,7 @@ function dataQuery(): Function {
         $from: new FromTable(
           {
             method: 'POST',
-            url: 'api/booking/query/booking',
+            url: 'api/shipment/query/shipment',
             columns: [
               {
                 name: codeColumnName,
@@ -568,7 +790,7 @@ function dataQuery(): Function {
               })),
             ],
           },
-          'booking'
+          'shipment'
         ),
       })
 
@@ -577,9 +799,9 @@ function dataQuery(): Function {
   }
 }
 
-function finalQuery(){
+function finalQuery() {
 
-  return function(require, session, params){
+  return function(require, session, params) {
 
     const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -587,10 +809,10 @@ function finalQuery(){
     const codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
     const nameColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`
 
-    const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalBooking
-    const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalBooking
+    const metric1 = subqueries.metric1.value // should be chargeableWeight/cbm/grossWeight/totalShipment
+    const metric2 = subqueries.metric2.value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
-    const metricList  = [metric1, metric2]
+    const metricList = [metric1, metric2]
     const metricFieldList = metricList.map(metric => `${metric}LastCurrent`)
 
     // for easy looping
@@ -598,7 +820,8 @@ function finalQuery(){
 
       accumulator.push(`${currentValue}Last`)
       accumulator.push(`${currentValue}Current`)
-      return accumulator }), [])
+      return accumulator
+    }), [])
 
     const $select = [
       new ResultColumn(new ColumnExpression('code')),
@@ -608,8 +831,8 @@ function finalQuery(){
 
     for (const [index, metric] of metricList.entries()) {
 
-      $select.push(new ResultColumn(new ColumnExpression(`${metric}Current`), `current_metric${index + 1}`))
-      $select.push(new ResultColumn(new ColumnExpression(`${metric}Last`), `last_metric${index + 1}`))
+      $select.push(new ResultColumn(new ColumnExpression(`${metric}Current`), `metric${index + 1}Current`))
+      $select.push(new ResultColumn(new ColumnExpression(`${metric}Last`), `metric${index + 1}Last`))
 
       $select.push(new ResultColumn(new Value(metric), `metric${index + 1}`))
 
@@ -617,7 +840,7 @@ function finalQuery(){
 
     return new Query({
       $select,
-      $from : 'final'
+      $from: 'final'
     })
 
   }
@@ -660,7 +883,7 @@ export const filters = [
           value: 1000,
         }
       ],
-      multi : false,
+      multi: false,
       required: true,
     },
     type: 'list',
@@ -713,10 +936,33 @@ export const filters = [
     name: 'metric1',
     props: {
       items: [
-
         {
-          label: 'totalBooking',
-          value: 'totalBooking',
+          label: 'chargeableWeight',
+          value: 'chargeableWeight',
+        },
+        {
+          label: 'grossWeight',
+          value: 'grossWeight',
+        },
+        {
+          label: 'cbm',
+          value: 'cbm',
+        },
+        {
+          label: 'totalShipment',
+          value: 'totalShipment',
+        },
+        {
+          label: 'teu',
+          value: 'teu',
+        },
+        {
+          label: 'teuInReport',
+          value: 'teuInReport',
+        },
+        {
+          label: 'quantity',
+          value: 'quantity',
         },
       ],
       required: true,
@@ -729,10 +975,38 @@ export const filters = [
     name: 'metric2',
     props: {
       items: [
+
         {
-          label: 'totalBooking',
-          value: 'totalBooking',
+          label: 'chargeableWeight',
+          value: 'chargeableWeight',
         },
+        {
+          label: 'grossWeight',
+          value: 'grossWeight',
+        },
+        {
+          label: 'cbm',
+          value: 'cbm',
+        },
+        {
+          label: 'totalShipment',
+          value: 'totalShipment',
+        },
+
+        {
+          label: 'teu',
+          value: 'teu',
+        },
+        {
+          label: 'teuInReport',
+          value: 'teuInReport',
+        },
+
+        {
+          label: 'quantity',
+          value: 'quantity',
+        },
+
       ],
       required: true,
     },
@@ -784,16 +1058,78 @@ export const filters = [
           value: 'office',
         },
         {
-          label : 'moduleType',
-          value : 'moduleType'
+          label: 'moduleType',
+          value: 'moduleType'
         },
         {
-          label : 'houseNo',
-          value : 'houseNo'
+          label: 'houseNo',
+          value: 'houseNo'
         }
       ],
       required: true,
     },
     type: 'list',
   },
+
+  {
+    display: 'sorting',
+    name: 'sorting',
+    type: 'list',
+    props: {
+      multi: true,
+      items: [
+        {
+          label: 'metric1Current_ASC',
+          value: 'metric1Current_ASC'
+        },
+        {
+          label: 'metric1Last_ASC',
+          value: 'metric1Last_ASC'
+        },
+        {
+          label: 'metric1PercentageChange_ASC',
+          value: 'metric1PercentageChange_ASC'
+        },
+
+        {
+          label: 'metric2Current_ASC',
+          value: 'metric2Current_ASC'
+        },
+        {
+          label: 'metric2Last_ASC',
+          value: 'metric2Last_ASC'
+        },
+        {
+          label: 'metric2PercentageChange_ASC',
+          value: 'metric2PercentageChange_ASC'
+        },
+        {
+          label: 'metric1Current_DESC',
+          value: 'metric1Current_DESC'
+        },
+        {
+          label: 'metric1Last_DESC',
+          value: 'metric1Last_DESC'
+        },
+        {
+          label: 'metric1PercentageChange_DESC',
+          value: 'metric1PercentageChange_DESC'
+        },
+
+        {
+          label: 'metric2Current_DESC',
+          value: 'metric2Current_DESC'
+        },
+        {
+          label: 'metric2Last_DESC',
+          value: 'metric2Last_DESC'
+        },
+        {
+          label: 'metric2PercentageChange_DESC',
+          value: 'metric2PercentageChange_DESC'
+        },
+      ]
+    }
+
+  }
 ] */

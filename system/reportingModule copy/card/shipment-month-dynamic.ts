@@ -3,10 +3,9 @@ import { IQueryParams } from 'classes/query'
 import { OrderBy } from 'node-jql'
 import Moment = require('moment')
 
-import { expandBottomSheetGroupByEntity,expandSummaryVariable, extendDate, handleBottomSheetGroupByEntityValue,summaryVariableListBooking,groupByEntityListBooking  } from 'utils/card'
-import { group } from 'console'
-const summaryVariableList=summaryVariableListBooking;
-const groupByEntityList=groupByEntityListBooking;
+import { expandBottomSheetGroupByEntity,expandSummaryVariable, extendDate, handleBottomSheetGroupByEntityValue,summaryVariableList,groupByEntityList  } from 'utils/card'
+
+
 interface Result {
   moment: typeof Moment
   groupByEntity: string
@@ -16,76 +15,12 @@ interface Result {
 }
 
 
-var final
-var originalParams;
-var erpInfo = [];
-
 export default {
   jqls: [
     {
-      //get erpSite info
       type: 'prepareParams',
       defaultResult: {},
-      async prepareParams(params, { }: Result, user): Promise<IQueryParams> {
-        originalParams = Object.assign({}, params)
-        // console.log({ originalParams })
-        // console.log("get erpSite info")
-        // console.log(params);
-        // console.log("----------partyGroupCode")
-        // console.log(user.partyGroupCode)
-        params.fields = [
-          'id', 'name', 'partyGroupCode', 'thirdPartyCode', 'isBranch', 'erpCode'
-        ];
-
-        params.sorting = [new OrderBy('id', 'DESC')];
-        params.limit = 0;
-
-
-        params.subqueries = {
-          "partyGroupCodeEq": {
-            "value": user.selectedPartyGroup.code
-          },
-          "isBranchEq":{
-            "value":1
-          },
-          "groupByEntity": {
-            "value": "id"
-          }
-        }
-        // console.log(params)
-        // console.log("//get erpSite info-params")
-        // console.log(params)
-
-        return params;
-      }
-    },
-    {
-      type: 'callDataService',
-      dataServiceQuery: ['party', 'party'],
-      onResult(res, params, { }: Result): any {
-        // console.log("party-partycallDataService")
-        // console.log(params)
-        // console.log("erpSite")
-        // console.log(res)
-        if (res && res.length > 0) {
-          for (let i = 0; i < res.length; i++) {
-            if (res[i].isBranch == 1) {
-              erpInfo.push({ name: res[i].name,isBranch:res[i].isBranch, code: res[i].erpCode, erpSite: res[i].thirdPartyCode['erp-site'] });
-            } else {
-              erpInfo.push({ name: res[i].name,isBranch:res[i].isBranch, code: res[i].erpCode });
-            }
-          }
-        }
-        // console.log({ erpInfo })
-
-
-      }
-    },
-    {
-      type: 'prepareParams',
-      defaultResult: {},
-      async prepareParams({}, prevResult: Result, user): Promise<IQueryParams> {
-        var params = Object.assign({}, originalParams)
+      async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
 
         const moment = prevResult.moment = (await this.preparePackages(user)).moment as typeof Moment
         const subqueries = (params.subqueries = params.subqueries || {})
@@ -96,42 +31,18 @@ export default {
 
         // warning
         handleBottomSheetGroupByEntityValue(subqueries)
-        var { groupByEntity, codeColumnName,nameColumnName } = expandBottomSheetGroupByEntity(subqueries)
-            // -----------------------------groupBy variable
+        let { groupByEntity, codeColumnName,nameColumnName } = expandBottomSheetGroupByEntity(subqueries)
+          
+        if(groupByEntity=='coloader'){
+          codeColumnName="linerAgentPartyCode";
+          nameColumnName="linerAgentPartyName";
+        }
 
-  prevResult.groupByEntity = groupByEntity
-  prevResult.codeColumnName = codeColumnName
-  prevResult.nameColumnName = nameColumnName
-  if(groupByEntity=='bookingNo'){
-    codeColumnName=groupByEntity;
-    nameColumnName=groupByEntity;
-  }else if(groupByEntity=='carrier'){
-    codeColumnName='carrierCode';
-    nameColumnName='carrierName';
-  }else if(groupByEntity=='moduleType'){
-    codeColumnName='moduleTypeCode';
-    nameColumnName='moduleTypeCode';
-  }else if(groupByEntity=='portOfLoading'){
-    codeColumnName=groupByEntity+"Code";
-    nameColumnName=groupByEntity+"Name";
-  }else if(groupByEntity=='portOfDischarge'){
-    codeColumnName=groupByEntity+"Code";
-    nameColumnName=groupByEntity+"Name";
-  }else if(groupByEntity=='agent'){
-    codeColumnName=groupByEntity+"PartyCode";
-    nameColumnName=groupByEntity+"PartyName";
-  }else if(groupByEntity=='forwarder'){
-    codeColumnName=groupByEntity+"PartyCode";
-    nameColumnName=groupByEntity+"PartyName";
-  }else{
-    codeColumnName=`${groupByEntity}PartyCode`;
-    nameColumnName=`${groupByEntity}PartyShortNameInReport` + 'Any';
-    
-  }
-console.log("============codeCoumnName")
-  console.log(codeColumnName)
-  console.log(nameColumnName)
+        prevResult.groupByEntity = groupByEntity
+        prevResult.codeColumnName = codeColumnName
+        prevResult.nameColumnName = nameColumnName
 
+        
 
 
         const topX = subqueries.topX.value
@@ -171,47 +82,23 @@ console.log("============codeCoumnName")
         }
 
         params.limit = topX
-        console.log("PREPARE PARAMS");
+        console.log("--------params")
         console.log(params)
         return params
       }
     },
     {
       type: 'callDataService',
-      dataServiceQuery: ['booking', 'booking'],
-      onResult(res, originalParams, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
-        var params = Object.assign({}, originalParams)
-        if(groupByEntity=='bookingNo'){
-          codeColumnName=groupByEntity;
-          nameColumnName=groupByEntity;
-        }else if(groupByEntity=='carrier'){
-          codeColumnName='carrierCode';
-          nameColumnName='carrierName';
-        }else if(groupByEntity=='moduleType'){
-          codeColumnName='moduleTypeCode';
-          nameColumnName='moduleTypeCode';
-        }else if(groupByEntity=='portOfLoading'){
-          codeColumnName=groupByEntity+"Code";
-          nameColumnName=groupByEntity+"Name";
-        }else if(groupByEntity=='portOfDischarge'){
-          codeColumnName=groupByEntity+"Code";
-          nameColumnName=groupByEntity+"Name";
-        }else if(groupByEntity=='agent'){
-          codeColumnName=groupByEntity+"PartyCode";
-          nameColumnName=groupByEntity+"PartyName";
-        }else if(groupByEntity=='forwarder'){
-          codeColumnName=groupByEntity+"PartyCode";
-          nameColumnName=groupByEntity+"PartyName";
-        }else{
-          codeColumnName=`${groupByEntity}PartyCode`;
-          nameColumnName=`${groupByEntity}PartyShortNameInReport` + 'Any';
-          
+      dataServiceQuery: ['shipment', 'shipment'],
+      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
+
+        if(groupByEntity=='coloader'){
+          codeColumnName="linerAgentPartyCode";
+          nameColumnName="linerAgentPartyName";
         }
         return res.map(row => {
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
-          const erpCode=erpInfo.filter(o => o.code == row[codeColumnName]).length > 0 ?
-          erpInfo.filter(o => o.code == row[codeColumnName] && o.isBranch)[0]&&
-          erpInfo.filter(o => o.code == row[codeColumnName] && o.isBranch)[0]["erpSite"]:null
+       
 
           for (const variable of summaryVariables) {
             let total = 0
@@ -225,8 +112,6 @@ console.log("============codeCoumnName")
             }
             row_[`total_${variable}`] = total
           }
-
-          row_['erpCode']=erpCode;
 
           return row_
         })
@@ -274,6 +159,7 @@ console.log("============codeCoumnName")
       props: {
         items: [
             ...summaryVariableList.reduce((acc,summaryVariable) => {
+
                 acc = acc.concat(
                     [
                         {
@@ -302,7 +188,7 @@ console.log("============codeCoumnName")
                 acc = acc.concat(
                     [
                         {
-                          label: `${groupByEntity=='forwarder'?"Intial Office":groupByEntity}`,
+                            label: `${groupByEntity}`,
                             value: `${groupByEntity}`,
                         }
                     ]
@@ -327,8 +213,8 @@ console.log("============codeCoumnName")
                 acc = acc.concat(
                     [
                         {
-                            label: `${groupByEntity=='forwarder'?"Intial Office":groupByEntity}`,
-                            value: `${groupByEntity}`,
+                            label: `${groupByEntity}`,
+                            value: `${groupByEntity=='coloader'?'linerAgent':groupByEntity}`,
                         }
                     ]
                 )
