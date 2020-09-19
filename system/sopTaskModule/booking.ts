@@ -44,22 +44,8 @@ export const criteriaFields = [
   {
     name: 'portOfLoadingCode',
     component: {
-      is: 'AsyncAutoSuggest',
+      is: 'AsyncAutoComplete',
       props: {
-        containerProps: {
-          style: { width: '100%' }
-        },
-        searchValueParams: {
-          method: 'POST',
-          url: 'api/location/query/location',
-          data: {
-            subqueries: {
-              portCodeLike: {
-                value: '{{context.autoSuggestModel}}'
-              }
-            }
-          }
-        },
         searchTextParams: {
           method: 'POST',
           url: 'api/location/query/location',
@@ -73,29 +59,16 @@ export const criteriaFields = [
           }
         },
         'item-text': 'name',
-        'item-value': 'portCode'
+        'item-value': 'portCode',
+        'return-object': true
       }
     }
   },
   {
     name: 'portOfDischargeCode',
     component: {
-      is: 'AsyncAutoSuggest',
+      is: 'AsyncAutoComplete',
       props: {
-        containerProps: {
-          style: { width: '100%' }
-        },
-        searchValueParams: {
-          method: 'POST',
-          url: 'api/location/query/location',
-          data: {
-            subqueries: {
-              portCodeLike: {
-                value: '{{context.autoSuggestModel}}'
-              }
-            }
-          }
-        },
         searchTextParams: {
           method: 'POST',
           url: 'api/location/query/location',
@@ -109,8 +82,80 @@ export const criteriaFields = [
           }
         },
         'item-text': 'name',
-        'item-value': 'portCode'
+        'item-value': 'portCode',
+        'return-object': true
       }
     }
-  }
+  },
+  {
+    name: 'incoTermsCode',
+    component: {
+      is: 'AsyncSelect',
+      props: {
+        axiosParams: {
+          url: 'api/code/query/code_master',
+          method: 'POST',
+          data: {
+            subqueries: {
+              codeType: {
+                value: 'INCOTERMS'
+              }
+            }
+          }
+        },
+        showValue: false,
+        'item-text': 'code',
+        'item-value': 'code'
+      }
+    }
+  },
+  {
+    name: 'serviceCode',
+    component: {
+      is: 'AsyncSelect',
+      props: {
+        axiosParams: {
+          url: 'api/code/query/code_master',
+          method: 'POST',
+          data: {
+            subqueries: {
+              codeType: {
+                value: 'SERVTYPE'
+              }
+            }
+          }
+        },
+        showValue: false,
+        'item-text': 'name',
+        'item-value': 'code'
+      }
+    }
+  }/* ,
+  {
+    name: 'anyParty',
+    component: {
+      is: 'AsyncAutoComplete',
+      props: {
+        searchTextParams: {
+          url: 'api/party/query/party_auto_suggest',
+          method: 'POST',
+          data: {
+            subqueries: {
+              q: {
+                value: '{{context.search}}'
+              }
+            },
+            limit: 5
+          }
+        },
+        'item-text': 'name',
+        'item-value': 'erpCode',
+        'return-object': true
+      }
+    },
+    handle(entity: any, name: string): string[] {
+      // TODO
+      return []
+    }
+  } */
 ]

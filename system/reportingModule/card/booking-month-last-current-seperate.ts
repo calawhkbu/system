@@ -160,17 +160,17 @@ export default {
         if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw new Error('MISSING_groupByVariable')
         if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
 
-     
+
         var { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
   // -----------------------------groupBy variable
   groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
   codeColumnName = prevResult.codeColumnName = groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierCode`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyCode`
   nameColumnName = prevResult.nameColumnName = (groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierName`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyShortNameInReport`) + 'Any'
- 
+
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
         prevResult.nameColumnName = nameColumnName
-        
+
         const topX = subqueries.topX.value
 
         // // ---------------------summaryVariables
@@ -220,8 +220,8 @@ export default {
           const sortingExpression = guessSortingExpression(sortingValue)
           params.sorting = [sortingExpression]
         }
-console.log("PREPARE PARAMS")
-console.log(params)
+// console.log("PREPARE PARAMS")
+// console.log(params)
         return params
       }
     },
@@ -278,13 +278,13 @@ console.log(params)
           // const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
           // const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
           // const nameColumnName = prevResult.nameColumnName = (groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierName` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyShortNameInReport`) + 'Any'
-          
+
           const { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
 
           prevResult.groupByEntity = groupByEntity
           prevResult.codeColumnName = codeColumnName
           prevResult.nameColumnName = nameColumnName
-          
+
           const topX = subqueries.topX.value
 
           // // ---------------------summaryVariables
@@ -437,7 +437,7 @@ console.log(params)
             label: 'Quantity',
             value: 'quantity',
           }
-         
+
         ],
         multi: false,
         required: true,
@@ -465,8 +465,8 @@ console.log(params)
             label: 'agent',
             value: 'agent',
           },
-         
-      
+
+
           {
             label: 'linerAgent',
             value: 'linerAgent',
@@ -475,7 +475,7 @@ console.log(params)
             label: 'roAgent',
             value: 'roAgent',
           },
-        
+
           {
             label: 'moduleType',
             value: 'moduleType'
@@ -484,7 +484,7 @@ console.log(params)
             label: 'bookingNo',
             value: 'bookingNo'
           },
-         
+
         ],
         required: true,
       },
@@ -550,4 +550,3 @@ console.log(params)
     }
   ]
 } as JqlDefinition
-

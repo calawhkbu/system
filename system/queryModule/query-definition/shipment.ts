@@ -1213,12 +1213,6 @@ const officeErpSiteExpression = new MathExpression(
   '$.erpSite'
 )
 
-const ErpSiteExpression = new MathExpression(
-  new ColumnExpression('office', 'thirdPartyCode'),
-  '->>',
- '$.\"erp-site\"'
-)
-
 const officeErpCodeExpression = new MathExpression(
   new ColumnExpression('office', 'thirdPartyCode'),
   '->>',
@@ -2202,11 +2196,7 @@ const fieldList = [
     expression: officeErpSiteExpression,
     companion: ['table:office']
   },
-  {
-    name: 'erpSite',
-    expression: ErpSiteExpression,
-    companion: ['table:office']
-  },
+
   {
     name: 'controllingCustomerErpCode',
     expression: controllingCustomerErpCodeExpression,
@@ -3184,18 +3174,17 @@ const dateList = [
   }, []),
 
 
-
+  {
+    name : 'createdAt',
+    expression : createdAtExpression
+  },
+  {
+    name : 'updatedAt',
+    expression : updatedAtExpression
+  },
   {
     name: 'jobDate',
     expression: jobDateExpression
-  },
-  {
-    name: 'createdAt',
-    expression: createdAtExpression
-  },
-  {
-    name: 'updatedAt',
-    expression: updatedAtExpression
   },
   {
     name: 'alertCreatedAt',
@@ -3507,6 +3496,18 @@ function addShipmentCheck(query: Query) {
 }
 
 const shortcuts: IShortcut[] = [
+  // table:picPerson
+  {
+    type: 'table',
+    name: 'picPerson',
+    fromTable: new FromTable('shipment', new JoinClause('LEFT', new FromTable('person', 'picPerson'),
+      new BinaryExpression(new ColumnExpression('shipment', 'picEmail'), '=', new ColumnExpression('picPerson', 'userName')),
+      new BinaryExpression(new ColumnExpression('shipment', 'partyGroupCode'), '=', new ColumnExpression('picPerson', 'partyGroupCode')),
+      new IsNullExpression(new ColumnExpression('picPerson', 'deletedAt'), false),
+      new IsNullExpression(new ColumnExpression('picPerson', 'deletedBy'), false),
+    ))
+  },
+
   // field:distinct-team
   {
     type: 'field',
@@ -3726,6 +3727,21 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'noDeadTasks',
     expression: re => new BinaryExpression(re['hasDeadTasks'], '=', new Value(0))
+  },
+
+  // subquery:picNotAssigned
+  {
+    type: 'subquery',
+    name: 'picNotAssigned',
+    expression: new IsNullExpression(new ColumnExpression('shipment', 'picEmail'), false)
+  },
+
+  // subquery:invalidPic
+  {
+    type: 'subquery',
+    name: 'invalidPic',
+    expression: new IsNullExpression(new ColumnExpression('picPerson', 'id'), false),
+    companions: ['table:picPerson']
   }
 ]
 

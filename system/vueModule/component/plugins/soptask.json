@@ -79,7 +79,7 @@
       {
         "test": "return !row.isEntityRow && row.status === 'Done'",
         "style": {
-          "backgroundColor": "darkgray",
+          "backgroundColor": "#005eb8",
           "opacity": 0.8
         }
       },
@@ -92,13 +92,13 @@
       {
         "test": "return !row.isEntityRow && (row.status === 'Due' || row.status === 'Dead')",
         "style": {
-          "backgroundColor": "#ffcccb"
+          "backgroundColor": "#af272f"
         }
       },
       {
         "test": "return !row.isEntityRow && !row.isDue && row.isDueToday",
         "style": {
-          "backgroundColor": "#fdc57f"
+          "backgroundColor": "#f1b434"
         }
       },
       {

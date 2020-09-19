@@ -26,7 +26,22 @@ import {
   JoinClause,
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { convertToEndOfDate, convertToStartOfDate, addDateExpression, passSubquery, ExpressionHelperInterface, registerAll, registerSummaryField, NestedSummaryCondition, SummaryField, registerAllDateField, registerCheckboxField, IfExpression, IfNullExpression } from 'utils/jql-subqueries'
+import {
+  convertToEndOfDate,
+  convertToStartOfDate,
+  addDateExpression,
+  passSubquery,
+  ExpressionHelperInterface,
+  registerAll,
+  registerSummaryField,
+  NestedSummaryCondition,
+  registerNestedSummaryFilter,
+  SummaryField,
+  registerAllDateField,
+  registerCheckboxField,
+  IfExpression,
+  IfNullExpression
+} from 'utils/jql-subqueries'
 import { IShortcut } from 'classes/query/Shortcut'
 
 const partyList = [
@@ -1407,7 +1422,8 @@ const fieldList = [
   {
 
     name : 'houseNo',
-    expression : houseNoExpression
+    expression : houseNoExpression,
+    companion : ['table:booking_reference']
   },
   {
 
@@ -1577,6 +1593,9 @@ registerAll(query, baseTableName, fieldList)
 
 // ===================================
 
+// summary fields  =================
+
+
   // warning !!! will not contain all if the list is too large
   query.registerResultColumn('primaryKeyListString',
     new ResultColumn(new FunctionExpression('GROUP_CONCAT', new ParameterExpression('DISTINCT', new ColumnExpression('booking', 'id'))), 'primaryKeyListString')
@@ -1594,7 +1613,82 @@ query
 )
 
 //  register summary field
-const nestedSummaryList = [] as NestedSummaryCondition[]
+// summary fields  =================
+
+const nestedSummaryList = [
+
+  {
+    name: 'frc',
+    companion: ['table:booking_party'],
+    cases: [
+      {
+        typeCode: 'F',
+        condition: new AndExpressions([
+          new BinaryExpression(new ColumnExpression('booking', 'nominatedTypeCode'), '=', 'F'),
+          new ExistsExpression(new Query({
+
+            $from: 'party_type',
+            $where: [
+              new BinaryExpression(new ColumnExpression('party_type', 'partyId'), '=', new ColumnExpression('booking_party', 'controllingCustomerPartyId')),
+              new BinaryExpression(new ColumnExpression('party_type', 'type'), '=', 'forwarder')
+            ]
+
+          }), true)
+        ])
+
+      },
+      {
+        typeCode: 'R',
+        condition: new AndExpressions([
+          new BinaryExpression(new ColumnExpression('booking', 'nominatedTypeCode'), '=', 'R'),
+          new ExistsExpression(new Query({
+
+            $from: 'party_type',
+            $where: [
+              new BinaryExpression(new ColumnExpression('party_type', 'partyId'), '=', new ColumnExpression('booking_party', 'controllingCustomerPartyId')),
+              new BinaryExpression(new ColumnExpression('party_type', 'type'), '=', 'forwarder')
+            ]
+
+          }), true)
+        ])
+      },
+      {
+        typeCode: 'C',
+        condition: new AndExpressions([
+          new ExistsExpression(new Query({
+
+            $from: 'party_type',
+            $where: [
+              new BinaryExpression(new ColumnExpression('party_type', 'partyId'), '=', new ColumnExpression('booking_party', 'controllingCustomerPartyId')),
+              new BinaryExpression(new ColumnExpression('party_type', 'type'), '=', 'forwarder')
+            ]
+
+          }), false)
+        ])
+      }
+    ]
+  },
+
+  {
+
+    name: 'fr',
+    companion: [],
+    cases: [
+      {
+        typeCode: 'F',
+        condition: new BinaryExpression(new ColumnExpression('booking', 'nominatedTypeCode'), '=', 'F')
+      },
+      {
+        typeCode: 'R',
+        condition: new BinaryExpression(new ColumnExpression('booking', 'nominatedTypeCode'), '=', 'R')
+      },
+    ]
+  }
+
+] as NestedSummaryCondition[]
+
+
+registerNestedSummaryFilter(query, nestedSummaryList)
 
 const summaryFieldList : SummaryField[]  = [
   {
@@ -1661,10 +1755,10 @@ const summaryFieldList : SummaryField[]  = [
       new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CY /DR')),
       new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CY/FO')),
       new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DOOR/CY')),
-     new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DOOR/DOOR')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DOOR/DOOR')),
       new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DR /CY')),
-      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DR /DR'))
-      //new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('RAIL/RAIL'))
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DR /DR')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('RAIL/RAIL'))
     ]), new Value(1), new Value(0))
   },
   {
@@ -1678,8 +1772,10 @@ const summaryFieldList : SummaryField[]  = [
       new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CFS/DR')),
       new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CFS/FO')),
       new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CY /CFS')),
-      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('FAS/FAS'))
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('FAS/FAS')),
      // new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DOOR/CFS'))
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('CY /CFS')),
+      new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new Value('DOOR/CFS'))
     ]), new Value(1), new Value(0))
   },
   {

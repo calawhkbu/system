@@ -727,22 +727,6 @@
                     "item-text": "name",
                     "item-value": "erpCode"
                   }
-                },
-                {
-                  "containerComponent": "v-card",
-                  "containerComponentProps": {
-                    "class": "padding-topbottom-8 padding-leftright-4"
-                  },
-                  "name": "Term",
-                  "component": "Term",
-                  "class": "xs-12 padding-topbottom-4",
-                  "props": {
-                    "width": "70%",
-                    "type": "booking-term",
-                    "termProps": {
-                      "class": "margin-leftright-4 padding-leftright-4 min-height-400 max-height-500 overflow-auto"
-                    }
-                  }
                 }
               ]
             }

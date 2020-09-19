@@ -68,8 +68,8 @@ export default {
           }
         }
         // console.log(params)
-        //  console.log("//get erpSite info-params")
-        //  console.log(params)
+        // console.log("//get erpSite info-params")
+        // console.log(params)
 
         return params;
       }
@@ -222,8 +222,7 @@ export default {
           codeColumnName,
           dynamicColumnCodeColumnName,
           dynamicColumnNameColumnName,
-          ...summaryVariables,
-          'erpSite'
+          ...summaryVariables
         ]
 
         // filter groupBy
@@ -244,8 +243,7 @@ export default {
         else {
           params.sorting = new OrderBy(`${summaryVariables[0]}`, 'DESC')
         }
-        console.log('---params')
-        console.log(params)
+
         return params
       }
     },
@@ -254,8 +252,6 @@ export default {
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'shipment'],
       onResult(res, originalParams, prevResult: Result): any[] {
-        console.log('----res')
-        console.log(res)
         var params = Object.assign({}, originalParams);
 
         var {
@@ -284,53 +280,50 @@ export default {
 
           var { code } = row
 
-          
-
           // calculate topX dynamicCodeList
           // just get the first topX
-        //  const erpCode=erpInfo.filter(o => o.code == row["code"]).length > 0 ?
-        //  erpInfo.filter(o => o.code == row["code"] && o.isBranch)[0]&&
-        //  erpInfo.filter(o => o.code == row["code"] && o.isBranch)[0]["erpSite"]:null
+          //show erpSite if exist , otherwise show the name, if not intial Office Select, show the original value
+         const erpCode=erpInfo.filter(o => o.code == row["code"]).length > 0 ?
+         erpInfo.filter(o => o.code == row["code"] && o.isBranch)[0]&&
+         erpInfo.filter(o => o.code == row["code"] && o.isBranch)[0]["erpSite"]:null
 
 
-          // const dynamicCodeList = [...new Set(res.map(dynamicRow => (
-          //   erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName]).length > 0 ?
-          //     erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName] && o.isBranch)[0]["erpSite"]
-          //     : erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName]).length>0?
-          //     erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName] )[0]["name"]
-          //     :dynamicRow[dynamicColumnCodeColumnName]
+          const dynamicCodeList = [...new Set(res.map(dynamicRow => (
+            erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName]).length > 0 ?
+              erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName] && o.isBranch)[0]["erpSite"]
+              : erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName]).length>0?
+              erpInfo.filter(o => o.code == dynamicRow[dynamicColumnCodeColumnName] )[0]["name"]
+              :dynamicRow[dynamicColumnCodeColumnName]
 
-          // )
-          // ))].splice(0, topX)
-          console.log(row);
-          console.log('=====row')
-          const dynamicCodeList = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0, topX)
-          //const dynamicCodeListRaw = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0, topX)
+          )
+          ))].splice(0, topX)
+          const dynamicCodeListRaw = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0, topX)
           const dynamicNameList = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnNameColumnName]))].splice(0, topX)
           const row_ = {
             ...row,
             dynamicCodeList,
             dynamicNameList,
+            dynamicCodeListRaw,
+            erpCode
           }
-  
 
-          // if(res&&res.length>0){
-          //   for(let i=0;i<res.length;i++){
-          //      if(dynamicColumnCodeColumnName=="officePartyCode"){
-          //     res[i]["erpSite"]=dynamicCodeList[0];
-          //   }
-          //   }
 
-          // }
+          if(res&&res.length>0){
+            for(let i=0;i<res.length;i++){
+               if(dynamicColumnCodeColumnName=="officePartyCode"){
+              res[i]["erpSite"]=dynamicCodeList[0];
+            }
+            }
+
+          }
 
           res.map(dynamicRow => {
             const { dynamicCode } = { dynamicCode: dynamicRow[dynamicColumnCodeColumnName] }
            // console.log( {dynamicRow})
-           row_['erpSite']=dynamicRow['erpSite'];
             if (row_["code"] === dynamicRow[codeColumnName]){
               summaryVariables.map(summaryVariable => {
                 var fieldName;
-                fieldName = `${dynamicCode}_${summaryVariable}`;
+                fieldName = dynamicRow&&dynamicRow["erpSite"]?`${dynamicRow["erpSite"]}_${summaryVariable}`:`${dynamicCode}_${summaryVariable}`;
 
                 // forcefully make it into number
                 const dynamicValue = +dynamicRow[summaryVariable]
@@ -339,7 +332,7 @@ export default {
               })
             }
           })
-  
+
 
           return row_
 

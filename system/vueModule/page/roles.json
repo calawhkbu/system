@@ -41,17 +41,6 @@
         }
       },
       "nextPageComponent": "role",
-      "icons": [{
-        "icon": "add",
-        "click": [{
-          "type": "router",
-          "otherParams": {
-            "func": "push",
-            "path": "/role/create",
-            "base": true
-          }
-        }]
-      }],
       "filters": [{
         "name": "activeStatus",
         "type": "list",
@@ -71,7 +60,7 @@
 
         }
       }, {
-        "display" : "roleName",
+        "display": "roleName",
         "name": "roleNameLike",
         "type": "text"
       }],
@@ -120,8 +109,38 @@
           },
           "width": 50
         }
-
       ]
-    }
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "role/create",
+                "base": true
+              }
+            }]
+          }
+        }]
+      }
+    }]
   }]
 }

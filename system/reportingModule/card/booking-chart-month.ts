@@ -16,23 +16,23 @@ export default {
         async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
           const moment = prevResult.moment = (await this.preparePackages(user)).moment
           const subqueries = (params.subqueries = params.subqueries || {})
-  
-      
-  
+
+
+
           const summaryVariables = expandSummaryVariable(subqueries)
           prevResult.summaryVariables = summaryVariables
-  
+
           extendDate(subqueries,moment,'year')
-  
-    
-  
+
+
+
           // group by
           params.groupBy = ['jobMonth']
-  
+
           params.fields = ['jobMonth', ...summaryVariables]
-          console.log("paramsFIELD")
-          console.log(params)
-  
+          // console.log("paramsFIELD")
+          // console.log(params)
+
           return params
         }
       },
@@ -48,7 +48,7 @@ export default {
             }
             return row_
           })
-  
+
           const result: any[] = []
           for (const row of res) {
             for (const variable of summaryVariables) {
@@ -95,13 +95,13 @@ export default {
               label: 'teu',
               value: 'teu',
             },
-        
+
             {
               label: 'Quantity',
               value: 'quantity',
             }
-       
-            
+
+
           ],
         },
       },

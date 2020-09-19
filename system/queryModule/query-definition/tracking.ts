@@ -43,8 +43,8 @@ const lastStatusExpression = new FunctionExpression(
 
 const baseTableName = 'tracking'
 const fieldList = [
-
   'id',
+  'source',
   'trackingNo',
   'updatedAt',
   'manual',

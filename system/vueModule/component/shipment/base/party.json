@@ -400,6 +400,9 @@
                           "method": "POST",
                           "data": {
                             "subqueries": {
+                              "activeStatus": {
+                                "value": "active"
+                              },
                               "q": {
                                 "value": "{{context.search}}"
                               },

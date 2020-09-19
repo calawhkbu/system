@@ -27,7 +27,7 @@ export default {
         ]
 
         params.fields = defaultFields
-        
+
         const subqueries = (params.subqueries = params.subqueries || {})
 
         // used in mapCard to bottom sheet
@@ -96,22 +96,23 @@ export default {
 
 
         //check Fields not NUll
-       
-          subqueries[`${subqueries.groupByEntity.value}IsNotNull`]  = { 
+
+          subqueries[`${subqueries.groupByEntity.value}IsNotNull`]  = {
             value: true
           }
-        
+
+
+
+
+
+         // console.log(`finalParams`)
+         // console.log(params)
+         // console.log(subqueries)
+        // throw new Error(JSON.stringify(params))
 
         handleBottomSheetGroupByEntityValue(subqueries)
 
         handleGroupByEntityValueDatePart(subqueries,moment)
-
-
-
-         console.log(`finalParams`)
-         console.log(params)
-         console.log(subqueries)
-        // throw new Error(JSON.stringify(params))
 
         return params
       }
@@ -279,7 +280,7 @@ export default {
 //             label: 'Volume Weight',
 //             value: 'volumeWeight',
 //           },
-          
+
 
 //           {
 //             label: 'teu',
@@ -289,12 +290,12 @@ export default {
 //             label: 'cbm',
 //             value: 'cbm',
 //           },
-       
+
 //           {
 //             label: 'quantity',
 //             value: 'quantity',
 //           },
-       
+
 //         ],
 //         multi: false,
 //         required: true,
@@ -303,6 +304,5 @@ export default {
 //     },
 
 //   ],
-  
-// } as JqlDefinition
 
+// } as JqlDefinition

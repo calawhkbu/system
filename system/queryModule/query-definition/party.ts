@@ -136,14 +136,14 @@ const baseTableName = 'party'
 
 const fieldList = [
   'id',
+  'isBranch',
 'thirdPartyCode',
 'partyGroupCode',
   'erpCode',
   'name',
   'shortName',
   'groupName',
-  'isBranch',
- 
+
   {
     name: 'showInfo',
     expression: showInfoExpression,
@@ -166,7 +166,7 @@ const fieldList = [
   {
     name: 'contacts',
     expression: contactsExpression
-  } 
+  }
 ] as ExpressionHelperInterface[]
 
 registerAll(query, baseTableName, fieldList)

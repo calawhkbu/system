@@ -35,7 +35,7 @@ export default {
         } as IQueryParams
 
         return finalParams
-        
+
       }
     },
     {
@@ -43,8 +43,8 @@ export default {
       dataServiceQuery: ['shipment', 'shipmentInternal'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
 
-        console.log('res')
-        console.log(res)
+        // console.log('res')
+        // console.log(res)
 
         const finalResult = res.map(row => {
             const newRow = {...row}
@@ -58,4 +58,3 @@ export default {
   filters: [
   ]
 } as JqlDefinition
-

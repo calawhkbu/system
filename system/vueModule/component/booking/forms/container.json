@@ -107,6 +107,8 @@
                   }
                 },
                 "props": {
+                  "item-text": "text",
+                  "item-value": "value",
                   "items": [{
                       "text": "W/C",
                       "value": "W/C"

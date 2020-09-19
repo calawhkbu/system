@@ -359,11 +359,11 @@
       "is": "DynamicComponent",
       "if": "return context.$vuetify.breakpoint.mdAndUp",
       "props": {
-        "class": "xs-12 grid full-width padding-2",
+        "class": "xs-12 grid full-width padding-2 widget-grid",
         "components": [{
             "is": "DynamicComponent",
             "props": {
-              "class": "xs-8 padding-2",
+              "class": "xs-8 padding-2 widget-grid",
               "components": [{
                   "is": "AsyncComponent",
                   "props": {
@@ -378,7 +378,7 @@
                     "components": [{
                         "is": "DynamicComponent",
                         "props": {
-                          "class": "xs-6 padding-right-2",
+                          "class": "xs-6 padding-right-2 widget-grid",
                           "components": [{
                             "is": "AsyncComponent",
                             "props": {
@@ -390,7 +390,7 @@
                       {
                         "is": "DynamicComponent",
                         "props": {
-                          "class": "xs-6 padding-left-2",
+                          "class": "xs-6 padding-left-2 widget-grid",
                           "components": [{
                             "is": "AsyncComponent",
                             "props": {
@@ -422,7 +422,7 @@
           {
             "is": "DynamicComponent",
             "props": {
-              "class": "xs-4 padding-2",
+              "class": "xs-4 padding-2 widget-grid",
               "components": [{
                   "is": "AsyncComponent",
                   "props": {

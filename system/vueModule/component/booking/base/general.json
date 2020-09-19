@@ -439,6 +439,15 @@
                 "component": "v-text-field",
                 "checkDisplayWhen": "return form && form.picEmail",
                 "class": "xs-6"
+              },
+              {
+                "class": "xs-3"
+              },
+              {
+                "class": "xs-3"
+              },
+              {
+                "class": "xs-3"
               }
             ]
           }

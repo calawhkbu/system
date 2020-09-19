@@ -22,8 +22,11 @@
           "activeStatus": {
             "value": "active"
           },
-          "manual": {
-            "value": true
+          "source": {
+            "value": "MANUAL"
+          },
+          "lastStatusCodeNotIn": {
+            "value": ["RCVE"]
           }
         },
         "configurations": {
@@ -71,15 +74,24 @@
           ]
         }
       }, {
-        "name": "manual",
+        "name": "source",
         "type": "list",
         "props": {
           "items": [{
             "label": "yes",
-            "value": true
+            "value": "MANUAL"
           }, {
             "label": "no",
-            "value": false
+            "value": "M"
+          }]
+        }
+      }, {
+        "name": "lastStatusCodeNotIn",
+        "type": "list",
+        "props": {
+          "items": [{
+            "label": "Empty Container Return",
+            "value": "RCVE"
           }]
         }
       }],

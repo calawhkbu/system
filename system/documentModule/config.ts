@@ -55,12 +55,7 @@ export const entityConfigList = [
         isActive : (entity: Booking) => {
           return entity.moduleTypeCode === 'AIR' || entity.moduleTypeCode === 'SEA'
         },
-
-        // get the template by templateName and fill it
-        allowFillTemplate: true,
-        templateName: (entity: Booking) => {
-          return 'shippingOrder'
-        },
+        allowFillTemplate: false,
       },
 
       {
@@ -161,11 +156,11 @@ export const entityConfigList = [
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           'application/pdf'
         ],
-    
+
         isActive : true,
         allowFillTemplate: false
       },
-    
+
       {
         fileName: 'HBL Telex released',
         allowFileType: [
@@ -175,12 +170,12 @@ export const entityConfigList = [
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           'application/pdf'
         ],
-    
+
         isActive : true,
         allowFillTemplate: false
       },
-    
-    
+
+
       {
         fileName: 'Commercial Invoice',
         allowFileType: [
@@ -190,12 +185,12 @@ export const entityConfigList = [
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           'application/pdf'
         ],
-    
+
         isActive : true,
         allowFillTemplate: false
       },
-    
-    
+
+
       {
         fileName: 'Packing List',
         allowFileType: [
@@ -205,7 +200,7 @@ export const entityConfigList = [
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           'application/pdf'
         ],
-    
+
         isActive : true,
         allowFillTemplate: false
       },

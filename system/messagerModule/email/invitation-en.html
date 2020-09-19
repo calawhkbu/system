@@ -24,6 +24,11 @@
       padding: 0;
     }
 
+    .email-content{
+      font-size: 20px; 
+      padding-left: 8%;
+    }
+
     table,
     tr,
     td {
@@ -473,8 +478,18 @@
                       <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 20px;"><![endif]-->
                       <div style="font-family:'Roboto', Tahoma, Verdana, Segoe, sans-serif;line-height:150%;color:#555555; padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 20px;">
                         <div style="font-size:12px;line-height:18px;color:#555555;font-family:'Roboto', Tahoma, Verdana, Segoe, sans-serif;text-align:left;">
-                          <p style="margin: 0;font-size: 12px;line-height: 18px;text-align: center">Supply Chain Visibility is about to rock your world! Swivel 360 let's you easily book shipments, track orders, and measure your KPI's all in one
-                            portal.</p>
+                          <!--p style="margin: 0;font-size: 12px;line-height: 18px;text-align: center">
+                            Supply Chain Visibility is about to rock your world! Swivel 360 let's you easily book shipments, track orders, and measure your KPI's all in one
+                            portal.</p-->
+                          <p class="email-content">{{invitation.person.displayName}} is there already!</p><br>
+                          <p class="email-content">Let's start.</p>
+                          <p class="email-content"><span style="color:#005eb8">◆</span> Place booking</p>
+                          <p class="email-content"><span style="color:#00877d">◆</span> Track cargo status</p>
+                          <p class="email-content"><span style="color:#e35205">◆</span> Analyze data</p>
+                          <p class="email-content"><span style="color:#af272f">◆</span> Create personal dashboard</p>
+                          <p class="email-content"><span style="color:#f1b434">◆</span> Share documents</p>
+                          <p class="email-content"><span style="color:#E2EDFF">◆</span> Chat with business partners … and more…</p>
+                          
                           <p style="margin: 0;font-size: 12px;line-height: 18px;text-align: center">&#160;<br></p>
                           <p style="margin: 0;font-size: 12px;line-height: 18px;text-align: center"><span style="font-size: 16px; line-height: 24px;">Welcome to SWIVEL 360</span></p>
                         </div>
@@ -488,7 +503,7 @@
                         <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top:10px; padding-bottom:10px;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{registerUrl}}" style="height:31pt; v-text-anchor:middle; width:123pt;" arcsize="10%" strokecolor="#f15b29" fillcolor="#f15b29"><w:anchorlock/><v:textbox inset="0,0,0,0"><center style="color:#ffffff; font-family:'Roboto', Tahoma, Verdana, Segoe, sans-serif; font-size:16px;"><![endif]-->
                         <a href="{{frontendUrl}}register/{{token}}" target="_blank"
                           style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff; background-color: #f15b29; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; max-width: 164px; width: 64px;width: auto; border-top: 0px solid transparent; border-right: 0px solid transparent; border-bottom: 0px solid transparent; border-left: 0px solid transparent; padding-top: 5px; padding-right: 50px; padding-bottom: 5px; padding-left: 50px; font-family:'Roboto', Tahoma, Verdana, Segoe, sans-serif;mso-border-alt: none">
-                          <span style="font-size:16px;line-height:32px;">Register</span>
+                          <span style="font-size:16px;line-height:32px;">Register Now</span>
                         </a>
                         <!--[if mso]></center></v:textbox></v:roundrect></td></tr></table><![endif]-->
                       </div>
@@ -521,8 +536,10 @@
                         <div style="font-size:12px;line-height:14px;color:#555555;font-family:'Roboto', Tahoma, Verdana, Segoe, sans-serif;text-align:left;">
                           <p style="margin: 0;font-size: 14px;line-height: 17px;text-align: center"><span style="font-size: 16px; line-height: 19px;"><strong>Thank You!</strong></span></p>
                           <p style="margin: 0;font-size: 14px;line-height: 17px;text-align: center">&#160;<br></p>
-                          <p style="margin: 0;font-size: 14px;line-height: 17px;text-align: center"><em>Swivel Admin</em></p>
-                          <p style="margin: 0;font-size: 14px;line-height: 17px;text-align: center">Swivel Software</p>
+                          <p style="margin: 0;font-size: 14px;line-height: 17px;text-align: center"><em>This email is sent to you because you are being invited by your business partner. 
+                            If you have any queries, please let us know. Thank you.  </em></p>
+                            <br>
+                          <p style="margin: 0;font-size: 14px;line-height: 17px;text-align: center"><b>www.swivelsoftware.com</b></p>
                         </div>
                       </div>
                       <!--[if mso]></td></tr></table><![endif]-->
