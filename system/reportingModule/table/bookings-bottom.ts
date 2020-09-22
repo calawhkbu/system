@@ -96,10 +96,13 @@ export default {
 
 
         //check Fields not NUll
-
+        if (subqueries.groupByEntity) {
           subqueries[`${subqueries.groupByEntity.value}IsNotNull`]  = {
             value: true
           }
+        }
+
+
 
 
 

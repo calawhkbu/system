@@ -1212,6 +1212,11 @@ const officeErpSiteExpression = new MathExpression(
   '->>',
   '$.erpSite'
 )
+const ErpSiteExpression = new MathExpression(
+  new ColumnExpression('office', 'thirdPartyCode'),
+  '->>',
+  '$.\"erp-site\"'
+)
 
 const officeErpCodeExpression = new MathExpression(
   new ColumnExpression('office', 'thirdPartyCode'),
@@ -2194,6 +2199,11 @@ const fieldList = [
   {
     name: 'officeErpSite',
     expression: officeErpSiteExpression,
+    companion: ['table:office']
+  },
+  {
+    name: 'ErpSite',
+    expression: ErpSiteExpression,
     companion: ['table:office']
   },
 

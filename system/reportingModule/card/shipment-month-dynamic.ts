@@ -63,6 +63,7 @@ export default {
           ...summaryVariables.map(variable => `${variable}Month`),
           codeColumnName,
           nameColumnName,
+          'ErpSite'
         ]
 
         // group by
@@ -111,6 +112,7 @@ export default {
               total += value
             }
             row_[`total_${variable}`] = total
+            row_['erpCode']=row['ErpSite'];
           }
 
           return row_

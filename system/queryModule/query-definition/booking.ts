@@ -620,6 +620,11 @@ partyList.map(party => {
   }), ...companion)
 
 })
+const ErpSiteExpression = new MathExpression(
+  new ColumnExpression('forwarder', 'thirdPartyCode'),
+  '->>',
+  '$.\"erp-site\"'
+)
 
 const dateStatusExpression = (queryParam: IQueryParams) => {
 
@@ -1389,6 +1394,11 @@ const fieldList = [
   {
     name: 'finalVesselName',
     expression: vesselNameExpression
+  },
+  {
+    name: 'ErpSite',
+    expression: ErpSiteExpression,
+    companion: ['table:forwarder']
   },
   {
     name: 'finalVoyageFlightNumber',

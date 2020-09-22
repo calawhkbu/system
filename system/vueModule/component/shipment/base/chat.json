@@ -21,23 +21,9 @@
         "method: 'POST',",
         "data: {",
         "tableName: 'shipment',",
-        "primaryKey: entityData.id",
-        "chatroom: swig.name",
-        "userLists: swig.selectedNameList",
-        "}",
-        "}"
-      ],
-      "searchMemeberBaseParams": [
-        "const entityData = context.$store.state.widget.data;",
-        "return {",
-        "url: 'chat/searchMember',",
-        "method: 'POST',",
-        "data: {",
-        "tableName: 'shipment',",
         "primaryKey: entityData.id,",
-        "chatroomName: swig.chatroomName,",
-        "queryName: swig.query,",
-        "limit: swig.limit",
+        "chatroomName: swig.chatroom,",
+        "userLists: swig.userLists",
         "}",
         "}"
       ]

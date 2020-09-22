@@ -6,11 +6,86 @@
   "lazy": true,
   "hide-overlay": true,
   "remote": true,
-  "shareProps": {
-    "i18nContext": "Chat"
-  },
   "baseSummaryProps": {
-    "size": -3
-  },
-  "baseDetailProps": {}
+    "i18nContext": "Chat",
+    "createChatroomFormDialogFormProps": {
+        "showPostFormOnSubmit": false,
+        "onSubmitResetForm": true,
+        "form": {
+          "chatroom": "",
+          "userLists": []
+        },
+        "fields": [{
+          "label": "Chat.ChatroomName",
+          "name": "chatroom",
+          "component": "v-text-field",
+          "validator": ["required"],
+          "props": {
+            "required": true
+          }
+        }, {
+          "label": "Chat.ChatroomMemeber",
+          "name": "userLists",
+          "component": "AsyncAutoSuggest",
+          "validator": ["required"],
+          "props": {
+            "multiple": true,
+            "required": true,
+            "searchTextParams": {
+              "method": "POST",
+              "url": "chat/searchMember",
+              "data": {
+                "tableName": "{{tableName}}",
+                "primaryKey": "{{entity.id}}",
+                "chatroomName": "PUBLIC",
+                "query": "{{context.search}}",
+                "limit": 5
+              }
+            },
+            "item-text": "displayname",
+            "item-value": "userName"
+          }
+        }]
+    },
+    "createChatroomFormDialogFormSlots": [{
+      "is": "DynamicComponent",
+      "name": "pre-form",
+      "props": {
+        "layout": "v-card-title",
+        "class": ["headline", "grey", "lighten-2", "padding-10"],
+        "primary-title": true,
+        "components": [{
+          "is": "I18nText",
+          "props": {
+            "i18nContext": "Chat",
+            "i18nKey": "CreateNewChatroom"
+          }
+        }]
+      }
+    }, {
+      "is": "DynamicComponent",
+      "name": "post-form",
+      "props": {
+        "layout": "v-card-actions",
+        "components": [{
+          "is": "v-spacer"
+        }, {
+          "is": "v-btn",
+          "props": {
+            "flat": true,
+            "type": "submit"
+          },
+          "slots": [
+            {
+              "is": "I18nText",
+              "name": "default",
+              "props": {
+                "i18nKey": "Create"
+              }
+            }
+          ]
+        }]
+      }
+    }]
+  }
 }

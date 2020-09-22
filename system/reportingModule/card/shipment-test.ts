@@ -40,7 +40,7 @@ export default {
     },
     {
       type: 'callDataService',
-      dataServiceQuery: ['shipment', 'shipmentInternal'],
+      dataServiceQuery: ['shipment', 'shipment'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
 
         // console.log('res')
