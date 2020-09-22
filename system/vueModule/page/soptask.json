@@ -1,0 +1,231 @@
+{
+  "components": [
+    {
+      "is": "GridTool",
+      "props": {
+        "reportingKey": "soptask",
+        "hasReports": true,
+        "showFilterBar": true,
+        "enableShare": true,
+        "enableSetting": true,
+        "noExternal": true,
+        "filters": [
+          {
+            "name": "date",
+            "type": "date",
+            "props": {
+              "timezone": true,
+              "shortcuts": [
+                {
+                  "func": {
+                    "key": "day",
+                    "args": {
+                      "name": "day after tomorrow"
+                    }
+                  },
+                  "label": "Day after Tomorrow"
+                },
+                {
+                  "func": {
+                    "key": "day",
+                    "args": {
+                      "name": "tomorrow"
+                    }
+                  },
+                  "label": "Tomorrow"
+                },
+                {
+                  "func": "today",
+                  "label": "Today"
+                },
+                {
+                  "func": {
+                    "key": "day",
+                    "args": {
+                      "name": "yesterday"
+                    }
+                  },
+                  "label": "Yesterday"
+                },
+                {
+                  "func": {
+                    "key": "day",
+                    "args": {
+                      "name": "day before yesterday"
+                    }
+                  },
+                  "label": "Day before Yesterday"
+                }
+              ]
+            }
+          },
+          {
+            "name": "tableName",
+            "display": "entityType",
+            "type": "list",
+            "props": {
+              "items": [
+                {
+                  "label": "Booking",
+                  "value": "booking"
+                },
+                {
+                  "label": "Shipment",
+                  "value": "shipment"
+                },
+                {
+                  "label": "Purchase Order",
+                  "value": "purchase_order"
+                }
+              ]
+            }
+          },
+          {
+            "name": "category",
+            "i18nContext": "SopTask",
+            "type": "list",
+            "props": {
+              "api": {
+                "query": {
+                  "url": "sopTemplate/categories/all",
+                  "method": "GET"
+                }
+              }
+            }
+          },
+          {
+            "name": "sopScore",
+            "i18nContext": "SopTask",
+            "type": "range"
+          },
+          {
+            "name": "pic",
+            "i18nContext": "SopTask",
+            "type": "text"
+          },
+          {
+            "name": "team",
+            "i18nContext": "SopTask",
+            "type": "list",
+            "props": {
+              "api": {
+                "query": {
+                  "url": "api/person/teams",
+                  "method": "GET"
+                }
+              }
+            }
+          },
+          {
+            "name": "notDone",
+            "type": "boolean",
+            "display": "Hide Done",
+            "i18nContext": "SopTask"
+          },
+          {
+            "name": "isDue",
+            "type": "boolean",
+            "i18nContext": "SopTask"
+          },
+          {
+            "name": "isDead",
+            "type": "boolean",
+            "i18nContext": "SopTask"
+          },
+          {
+            "name": "notClosed",
+            "type": "boolean",
+            "display": "Hide Closed",
+            "i18nContext": "SopTask"
+          },
+          {
+            "name": "notDeleted",
+            "type": "boolean",
+            "display": "Hide Deleted",
+            "i18nContext": "SopTask"
+          },
+          {
+            "name": "createdAtBetween",
+            "type": "date"
+          }
+        ],
+        "newReport": {
+          "filters": {
+            "date": {
+              "func": "today"
+            },
+            "notDeleted": true
+          },
+          "configurations": {
+            "i18nContext": "SopTask",
+            "colors": [
+              "#005EB8",
+              "#008675",
+              "#E35205",
+              "#AF272F",
+              "#F1B434",
+              "#c9cbcf"
+            ],
+            "cards": [
+              {
+                "uuid": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
+                "cardId": "3e2e2337-17ec-4740-8568-2f3c9d7f3430",
+                "layouts": {
+                  "lg": {
+                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
+                    "x": 0,
+                    "y": 0,
+                    "w": 12,
+                    "h": 24,
+                    "minW": 2,
+                    "minH": 6
+                  },
+                  "md": {
+                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
+                    "x": 0,
+                    "y": 0,
+                    "w": 12,
+                    "h": 10,
+                    "minW": 2,
+                    "minH": 6
+                  },
+                  "sm": {
+                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
+                    "x": 0,
+                    "y": 0,
+                    "w": 4,
+                    "h": 10,
+                    "minW": 2,
+                    "minH": 6
+                  },
+                  "xs": {
+                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
+                    "x": 0,
+                    "y": 0,
+                    "w": 4,
+                    "h": 10,
+                    "minW": 2,
+                    "minH": 6
+                  }
+                },
+                "params": {
+                  "filters": {
+                    "pagination": {
+                      "remote": true,
+                      "current": 0,
+                      "perPage": 20
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "id": -1,
+          "reportingKey": "soptask",
+          "params": {},
+          "updatedAt": "2020-07-27T08:43:46.696Z"
+        }
+      }
+    }
+  ]
+}
