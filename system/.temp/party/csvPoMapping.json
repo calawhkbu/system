@@ -1,0 +1,325 @@
+{
+  "mappingAttributes": [
+    {
+      "name": "Po No",
+      "code": "poNo*",
+      "required": true
+    },
+    {
+      "name": "Mode",
+      "code": "moduleType",
+      "required": true
+    },
+    {
+      "name": "Port of Loading",
+      "code": "portOfLoading",
+      "required": false
+    },
+    {
+      "name": "Port of Discharge",
+      "code": "portOfDischarge",
+      "required": false
+    },
+    {
+      "name": "Incoterms",
+      "code": "incoTerms",
+      "required": false
+    },
+    {
+      "name": "Freight Term",
+      "code": "freightTerms",
+      "required": false
+    },
+    {
+      "name": "Reference No",
+      "code": "referenceNumber",
+      "required": false
+    },
+    {
+      "name": "Remarks",
+      "code": "remarks",
+      "required": false
+    },
+    {
+      "name": "Po Date",
+      "code": "transactionDates.PO Date",
+      "required": true
+    },
+    {
+      "name": "Estimated Shipping Date",
+      "code": "transactionDates.Shipping Date",
+      "required": true
+    },
+    {
+      "name": "Estimated Arrival Date",
+      "code": "transactionDates.Arrival Date",
+      "required": true
+    },
+    {
+      "name": "Estimated Ex-factory date",
+      "code": "transactionDates.Ex Factory Date",
+      "required": false
+    },
+    {
+      "name": "Do Not Ship Before",
+      "code": "transactionDates.Do Not Ship Before",
+      "required": false
+    },
+    {
+      "name": "Do Not Ship After",
+      "code": "transactionDates.Do Not Ship After",
+      "required": false
+    },
+    {
+      "name": "Estimated Delivery Date",
+      "code": "transactionDates.Delivery Date",
+      "required": false
+    },
+    {
+      "name": "Buyer Code",
+      "code": "purchaseOrderParties.BuyerCustomerPartyCode",
+      "required": false
+    },
+    {
+      "name": "Buyer Name",
+      "code": "purchaseOrderParties.BuyerName",
+      "required": false
+    },
+    {
+      "name": "Buyer Email",
+      "code": "purchaseOrderParties.BuyerEmail",
+      "required": false
+    },
+    {
+      "name": "Buyer address",
+      "code": "purchaseOrderParties.BuyerAddress1",
+      "required": false
+    },
+    {
+      "name": "Buyer city",
+      "code": "purchaseOrderParties.BuyerCityCode",
+      "required": false
+    },
+    {
+      "name": "Buyer State",
+      "code": "purchaseOrderParties.BuyerState",
+      "required": false
+    },
+    {
+      "name": "Buyer country",
+      "code": "purchaseOrderParties.BuyerCountry",
+      "required": false
+    },
+    {
+      "name": "Shipper Name",
+      "code": "purchaseOrderParties.ShipperName",
+      "required": true
+    },
+    {
+      "name": "Shipper Code",
+      "code": "purchaseOrderParties.ShipperCustomerPartyCode",
+      "required": true
+    },
+    {
+      "name": "Shipper Email",
+      "code": "purchaseOrderParties.ShipperEmail",
+      "required": true
+    },
+    {
+      "name": "Shipper address",
+      "code": "purchaseOrderParties.ShipperAddress1",
+      "required": false
+    },
+    {
+      "name": "Shipper State",
+      "code": "purchaseOrderParties.ShipperState",
+      "required": false
+    },
+    {
+      "name": "Shipper city",
+      "code": "purchaseOrderParties.ShipperCityCode",
+      "required": false
+    },
+    {
+      "name": "Shipper country",
+      "code": "purchaseOrderParties.ShipperCountry",
+      "required": false
+    },
+    {
+      "name": "Factory Code",
+      "code": "purchaseOrderParties.FactoryCustomerPartyCode",
+      "required": false
+    },
+    {
+      "name": "Factory Name",
+      "code": "purchaseOrderParties.FactoryName",
+      "required": false
+    },
+    {
+      "name": "Factory Email",
+      "code": "purchaseOrderParties.FactoryEmail",
+      "required": false
+    },
+    {
+      "name": "Factory address",
+      "code": "purchaseOrderParties.FactoryAddress1",
+      "required": false
+    },
+    {
+      "name": "Factory city",
+      "code": "purchaseOrderParties.FactoryCityCode",
+      "required": false
+    },
+    {
+      "name": "Factory State",
+      "code": "purchaseOrderParties.FactoryState",
+      "required": false
+    },
+    {
+      "name": "Factory country",
+      "code": "purchaseOrderParties.FactoryCountry",
+      "required": false
+    },
+    {
+      "name": "Consignee Code",
+      "code": "purchaseOrderParties.ConsigneeCustomerPartyCode",
+      "required": false
+    },
+    {
+      "name": "Consignee Name",
+      "code": "purchaseOrderParties.ConsigneeName",
+      "required": false
+    },
+    {
+      "name": "Consignee Email",
+      "code": "purchaseOrderParties.ConsigneeEmail",
+      "required": false
+    },
+    {
+      "name": "Consignee address",
+      "code": "purchaseOrderParties.ConsigneeAddress1",
+      "required": false
+    },
+    {
+      "name": "Consignee State",
+      "code": "purchaseOrderParties.ConsigneeState",
+      "required": false
+    },
+    {
+      "name": "Consignee country",
+      "code": "purchaseOrderParties.ConsigneeCountry",
+      "required": false
+    },
+    {
+      "name": "Consignee city",
+      "code": "purchaseOrderParties.ConsigneeCityCode",
+      "required": false
+    },
+    {
+      "name": "PO Item Quantity",
+      "code": "purchaseOrderItems.quantity",
+      "required": true
+    },
+    {
+      "name": "PO ItemCode",
+      "code": "purchaseOrderItems.itemCode",
+      "required": true
+    },
+    {
+      "name": "Sea",
+      "code": "purchaseOrderItems.flexData.Sea",
+      "required": false
+    },
+    {
+      "name": "PO Size",
+      "code": "purchaseOrderItems.flexData.size",
+      "required": false
+    },
+    {
+      "name": "PO Style",
+      "code": "purchaseOrderItems.flexData.style",
+      "required": false
+    },
+    {
+      "name": "Product Name",
+      "code": "purchaseOrderItems.product.name",
+      "required": true
+    },
+    {
+      "name": "Product id",
+      "code": "purchaseOrderItems.product.id",
+      "required": false
+    },
+    {
+      "name": "Piece",
+      "code": "purchaseOrderItems.flexData.Piece",
+      "required": false
+    },
+    {
+      "name": "Piece Desc",
+      "code": "purchaseOrderItems.flexData.Piece Desc",
+      "required": false
+    },
+    {
+      "name": "Color",
+      "code": "purchaseOrderItems.flexData.Color",
+      "required": false
+    },
+    {
+      "name": "Color Desc",
+      "code": "purchaseOrderItems.flexData.Color Desc",
+      "required": false
+    },
+    {
+      "name": "Pack",
+      "code": "purchaseOrderItems.flexData.Pack",
+      "required": false
+    },
+    {
+      "name": "Packing",
+      "code": "purchaseOrderItems.flexData.Packing",
+      "required": false
+    },
+    {
+      "name": "Per Package Qty",
+      "code": "purchaseOrderItems.flexData.Per Package Qty",
+      "required": false
+    }
+  ],
+  "postProcessing": {
+    "transactionDate": {
+      "postProcess": true,
+      "codes": {
+        "PO Date": "PO",
+        "Shipping Date": "ETD",
+        "Arrival Date": "ETA",
+        "Ex Factory Date": "EXF",
+        "Do Not Ship Before": "DONOTSHIPBEFORE",
+        "Do Not Ship After": "DONOTSHIPAFTER",
+        "Delivery Date": "DELIVERY"
+      },
+      "actualDatesList": ["PO Date", "Do Not Ship Before", "Do Not Ship After"]
+    },
+    "purchaseOrderParties": {
+      "postProcess": true,
+      "roles": ["Buyer", "Shipper", "Consignee", "Factory"],
+      "arrayTypes": ["email"],
+      "hint": "While parsing we are using jspath there mapping elementValues like .BuyerName/.ConsigneeEmail etc..",
+      "elements": {
+        "primaryText": "Name",
+        "customerPartyCode": "CustomerPartyCode",
+        "name": "Name",
+        "email": "Email",
+        "address1": "Address1",
+        "country": "Country",
+        "cityCode": "CityCode"
+      }
+    },
+    "purchaseOrderItem": {
+      "postProcess": true,
+      "elements": {
+        "productName": "flexData.data.Style Desc"
+      }
+    }
+  }
+}
