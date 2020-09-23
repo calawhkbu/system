@@ -147,6 +147,14 @@
           {
             "name": "createdAtBetween",
             "type": "date"
+          },
+          {
+            "name": "vesselName",
+            "type": "text"
+          },
+          {
+            "name": "voyageFlightNumber",
+            "type": "text"
           }
         ],
         "newReport": {

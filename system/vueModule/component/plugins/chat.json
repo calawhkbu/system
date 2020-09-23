@@ -7,6 +7,7 @@
   "hide-overlay": true,
   "remote": true,
   "baseSummaryProps": {
+    "limit": 3,
     "i18nContext": "Chat",
     "createChatroomFormDialogFormProps": {
         "showPostFormOnSubmit": false,
