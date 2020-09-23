@@ -17,76 +17,13 @@ interface Result {
   summaryVariables: string[]
 }
 
-var final
-var originalParams;
-var erpInfo = [];
+
 export default {
   jqls: [
     {
-      //get erpSite info
       type: 'prepareParams',
       defaultResult: {},
-      async prepareParams(params, { }: Result, user): Promise<IQueryParams> {
-        originalParams = Object.assign({}, params)
-        // console.log({ originalParams })
-        // console.log("get erpSite info")
-        // console.log(params);
-        // console.log("----------partyGroupCode")
-        // console.log(user.partyGroupCode)
-        params.fields = [
-          'id', 'name', 'partyGroupCode', 'thirdPartyCode', 'isBranch', 'erpCode'
-        ];
-
-        params.sorting = [new OrderBy('id', 'DESC')];
-        params.limit = 0;
-
-
-        params.subqueries = {
-          "partyGroupCodeEq": {
-            "value": user.selectedPartyGroup.code
-          },
-          "isBranchEq":{
-            "value":1
-          },
-          "groupByEntity": {
-            "value": "id"
-          }
-        }
-        // console.log(params)
-        // console.log("//get erpSite info-params")
-        // console.log(params)
-
-        return params;
-      }
-    },
-    {
-      type: 'callDataService',
-      dataServiceQuery: ['party', 'party'],
-      onResult(res, params, { }: Result): any {
-        // console.log("party-partycallDataService")
-        // console.log(params)
-        // console.log("erpSite")
-        // console.log(res)
-        if (res && res.length > 0) {
-          for (let i = 0; i < res.length; i++) {
-            if (res[i].isBranch == 1) {
-              erpInfo.push({ name: res[i].name,isBranch:res[i].isBranch, code: res[i].erpCode, erpSite: res[i].thirdPartyCode['erp-site'] });
-            } else {
-              erpInfo.push({ name: res[i].name,isBranch:res[i].isBranch, code: res[i].erpCode });
-            }
-          }
-        }
-        // console.log({ erpInfo })
-
-
-      }
-    },
-    {
-      type: 'prepareParams',
-      defaultResult: {},
-      async prepareParams({}, prevResult: Result, user): Promise<IQueryParams> {
-        var params = Object.assign({}, originalParams)
-
+      async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
         const moment = prevResult.moment = (await this.preparePackages(user)).moment
         const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -129,9 +66,7 @@ export default {
           nameColumnName = `${groupByEntity}PartyShortNameInReport` + 'Any';
         }
 
-        console.log("after if statement, codeColumnName----")
-        console.log(codeColumnName)
-
+       
         const topX = subqueries.topX.value
 
         const summaryVariables = expandSummaryVariable(subqueries)
@@ -157,6 +92,7 @@ export default {
           ...summaryVariables.map(variable => `${variable}MonthLastCurrent`),
           codeColumnName,
           nameColumnName,
+          'ErpSite'
         ]
 
         // group by
@@ -178,16 +114,15 @@ export default {
         else {
           params.sorting = new OrderBy(`total_${summaryVariables[0]}Current`, 'DESC')
         }
-        console.log("PREPARE PARAMS with bottom sheet variables ")
-        console.log(params)
+        // console.log("PREPARE PARAMS with bottom sheet variables ")
+        // console.log(params)
         return params
       }
     },
     {
       type: 'callDataService',
       dataServiceQuery: ['booking', 'booking'],
-      onResult(res, originalParams, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
-        var params = Object.assign({}, originalParams)
+      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
 
         if (groupByEntity == 'bookingNo') {
           codeColumnName = groupByEntity;
@@ -213,15 +148,8 @@ export default {
         }
 
         return res.map(row => {
-          const erpCode=erpInfo.filter(o => o.code == row[codeColumnName]).length > 0 ?
-          erpInfo.filter(o => o.code == row[codeColumnName] && o.isBranch)[0]&&
-          erpInfo.filter(o => o.code == row[codeColumnName] && o.isBranch)[0]["erpSite"]:null
+        
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
-          console.log("DATA SVC")
-          console.log(params);
-          const code = params.subqueries.groupByEntity.value;
-          console.log("DATA SVC code")
-          console.log(code);
           for (const variable of summaryVariables) {
             for (const type of ['Last', 'Current']) {
               let total = 0
@@ -249,9 +177,8 @@ export default {
             const value = +row[key]
             row_[key] = isNaN(value) ? 0 : value
           }
-          // console.log("DATA SVC")
-          // console.log(row_)
-          row_['erpCode']=erpCode;
+   
+          row_['erpCode']=row['ErpSite'];
 
 
           return row_
