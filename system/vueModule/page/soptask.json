@@ -94,6 +94,10 @@
             }
           },
           {
+            "name": "search",
+            "type": "text"
+          },
+          {
             "name": "sopScore",
             "i18nContext": "SopTask",
             "type": "range"

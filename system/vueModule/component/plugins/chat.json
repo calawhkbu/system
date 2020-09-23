@@ -18,6 +18,17 @@
   "baseSummaryProps": {
     "limit": 4,
     "i18nContext": "Chat",
+    "chatroomMemberListBaseParams": [
+      "return {",
+      "url: 'chat/member',",
+      "method: 'POST',",
+      "data: {",
+      "tableName: swig.tableName,",
+      "roomKey: swig.roomKey,",
+      "chatroomName: swig.chatroom,",
+      "}",
+      "}"
+    ],
     "createChatroomBaseParams": [
       "const entityData = context.$store.state.widget.data;",
       "return {",

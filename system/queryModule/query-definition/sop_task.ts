@@ -16,6 +16,7 @@ const bookingPartyTable = 'booking_party'
 const shipmentTable = 'shipment'
 const shipmentDateTable = 'shipment_date'
 const shipmentPartyTable = 'shipment_party'
+const shipmentBookingTable = 'shipment_booking'
 
 const statusList = ['Dead', 'Due', 'Open', 'Not Ready', 'Done', 'Closed', 'Deleted']
 
@@ -111,6 +112,20 @@ const shortcuts: IShortcut[] = [
         new BinaryExpression(new ColumnExpression(shipmentTable, 'id'), '=', new ColumnExpression(shipmentPartyTable, 'shipmentId')),
         new IsNullExpression(new ColumnExpression(shipmentPartyTable, 'deletedAt'), false),
         new IsNullExpression(new ColumnExpression(shipmentPartyTable, 'deletedBy'), false)
+      ])
+    )),
+    companions: ['table:shipment']
+  },
+
+  // table:shipment_booking
+  {
+    type: 'table',
+    name: 'shipment_booking',
+    fromTable: new FromTable(taskTable, new JoinClause('LEFT', shipmentBookingTable,
+      new AndExpressions([
+        new BinaryExpression(new ColumnExpression(shipmentTable, 'id'), '=', new ColumnExpression(shipmentBookingTable, 'shipmentId')),
+        new IsNullExpression(new ColumnExpression(shipmentBookingTable, 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression(shipmentBookingTable, 'deletedBy'), false)
       ])
     )),
     companions: ['table:shipment']
@@ -416,8 +431,7 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'seqNo',
     expression: re => IfExpression(new BinaryExpression(new ColumnExpression(taskTable, 'seqNo'), '=', new Value(0)), re['defaultSeqNo'], new ColumnExpression(taskTable, 'seqNo')),
-    registered: true,
-    companions: ['table:sop_template_template_task']
+    registered: true
   },
 
   // field:categorySeqNo
@@ -439,8 +453,7 @@ const shortcuts: IShortcut[] = [
         new BinaryExpression(new ColumnExpression('temp_template', 'category'), '=', re['category'])
       ],
       $limit: 1
-    })),
-    companions: ['table:sop_template_task']
+    }))
   },
 
   // field:count
@@ -454,26 +467,16 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'uniqueId',
-    expression: re => new FunctionExpression('CONCAT', re['partyGroupCode'], new Value('-'), re['partyGroupTaskId']) ,
-    companions: ['table:sop_template_task']
+    expression: re => new FunctionExpression('CONCAT', re['partyGroupCode'], new Value('-'), re['partyGroupTaskId'])
   },
 
   // field:bookingNo
   {
     type: 'field',
     name: 'bookingNo',
-    expression: re => new CaseExpression([
-      {
-        $when: new BinaryExpression(re['tableName'], '=', new Value(bookingTable)),
-        $then: new ColumnExpression(bookingTable, 'bookingNo')
-      },
-      {
-        $when: new BinaryExpression(re['tableName'], '=', new Value(shipmentTable)),
-        $then: new ColumnExpression(shipmentTable, 'bookingNo')
-      }
-    ]),
+    expression: re => new ColumnExpression(bookingTable, 'bookingNo'),
     registered: true,
-    companions: ['table:booking', 'table:shipment']
+    companions: ['table:booking']
   },
 
   // field:masterNo
@@ -481,7 +484,8 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'masterNo',
     expression: new ColumnExpression(shipmentTable, 'masterNo'),
-    companions: ['table:shipment']
+    companions: ['table:shipment'],
+    registered: true
   },
 
   // field:houseNo
@@ -497,7 +501,8 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'primaryNo',
     expression: getEntityExpression('primaryNo', [bookingTable, 'bookingNo'], [shipmentTable, 'houseNo']),
-    companions: ['table:booking', 'table:shipment']
+    companions: ['table:booking', 'table:shipment'],
+    registered: true
   },
 
   // field:vesselName
@@ -956,8 +961,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'partyGroupCode',
     expression: re => new BinaryExpression(re['partyGroupCode'], '=', new Unknown()),
-    unknowns: true,
-    companions: ['table:sop_template_task']
+    unknowns: true
   },
 
   // subquery:tableName
@@ -976,13 +980,15 @@ const shortcuts: IShortcut[] = [
     unknowns: true
   },
 
-  // subquery:bookingNo
+  // subquery:search
   {
     type: 'subquery',
-    name: 'bookingNo',
-    expression: re => new BinaryExpression(re['bookingNo'], '=', new Unknown()),
-    unknowns: true,
-    companions: ['table:booking']
+    name: 'search',
+    expression: re => new OrExpressions([
+      new BinaryExpression(re['primaryNo'], '=', new Unknown()),
+      new BinaryExpression(re['masterNo'], '=', new Unknown())
+    ]),
+    unknowns: { noOfUnknowns: 2 }
   },
 
   // subquery:date
@@ -1154,8 +1160,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'category',
     expression: re => new BinaryExpression(re['category'], '=', new Unknown()),
-    unknowns: true,
-    companions: ['table:sop_template_task']
+    unknowns: true
   },
 
   // subquery:pic
@@ -1163,7 +1168,6 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'pic',
     expression: re => new BinaryExpression(re['picEmail'], '=', new Unknown()),
-    companions: ['table:booking', 'table:shipment'],
     unknowns: true
   },
 
@@ -1172,7 +1176,6 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'team',
     expression: re => new BinaryExpression(re['team'], '=', new Unknown()),
-    companions: ['table:booking', 'table:shipment'],
     unknowns: true
   },
 
@@ -1189,8 +1192,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'vesselName',
     expression: re => new BinaryExpression(re['vesselName'], '=', new Unknown()),
-    unknowns: true,
-    companions: ['table:booking', 'table:shipment']
+    unknowns: true
   },
 
   // subquery:voyageFlightNumber
@@ -1198,25 +1200,14 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'voyageFlightNumber',
     expression: re => new BinaryExpression(re['voyageFlightNumber'], '=', new Unknown()),
-    unknowns: true,
-    companions: ['table:booking', 'table:shipment']
-  },
-
-  // subquery:category
-  {
-    type: 'subquery',
-    name: 'category',
-    expression: re => new BinaryExpression(re['category'], '=', new Unknown()),
-    unknowns: true,
-    companions: ['table:sop_template_task']
+    unknowns: true
   },
 
   // subquery:shipperPartyId
   {
     type: 'subquery',
     name: 'shipperPartyId',
-    expression: re => new InExpression(re['shipmentPartyId'], false, new Unknown()),
-    companions: ['table:booking_party', 'table:shipment_party'],
+    expression: re => new InExpression(re['shipperPartyId'], false, new Unknown()),
     unknowns: true
   },
 
@@ -1225,7 +1216,6 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'consigneePartyId',
     expression: re => new InExpression(re['consigneePartyId'], false, new Unknown()),
-    companions: ['table:booking_party', 'table:shipment_party'],
     unknowns: true
   },
 
@@ -1234,7 +1224,6 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'officePartyId',
     expression: re => new InExpression(re['officePartyId'], false, new Unknown()),
-    companions: ['table:booking_party', 'table:shipment_party'],
     unknowns: true
   },
 
@@ -1243,7 +1232,6 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'agentPartyId',
     expression: re => new InExpression(re['agentPartyId'], false, new Unknown()),
-    companions: ['table:booking_party', 'table:shipment_party'],
     unknowns: true
   },
 
@@ -1252,7 +1240,6 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'roAgentPartyId',
     expression: re => new InExpression(re['roAgentPartyId'], false, new Unknown()),
-    companions: ['table:booking_party', 'table:shipment_party'],
     unknowns: true
   },
 
@@ -1261,7 +1248,6 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'linerAgentPartyId',
     expression: re => new InExpression(re['linerAgentPartyId'], false, new Unknown()),
-    companions: ['table:booking_party', 'table:shipment_party'],
     unknowns: true
   },
 
@@ -1270,7 +1256,6 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'controllingCustomerPartyId',
     expression: re => new InExpression(re['controllingCustomerPartyId'], false, new Unknown()),
-    companions: ['table:booking_party', 'table:shipment_party'],
     unknowns: true
   },
 
@@ -1279,7 +1264,6 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'createdAtBetween',
     expression: re => new BetweenExpression(re['entityCreatedAt'], false, new Unknown(), new Unknown()),
-    companions: ['table:booking', 'table:shipment'],
     unknowns: { fromTo: true }
   },
 
@@ -1293,7 +1277,7 @@ const shortcuts: IShortcut[] = [
         ...wrapOrder(re['seqNo'])
       ]
     }),
-    companions: ['table:sop_template_template_task', 'field:categorySeqNo']
+    companions: ['field:categorySeqNo']
   },
 
   // orderBy:status
@@ -1305,8 +1289,7 @@ const shortcuts: IShortcut[] = [
         new OrderBy(new FunctionExpression('FIELD', re['status'], ...statusList.map(v => new Value(v)))),
         ...wrapOrder(re['seqNo'])
       ]
-    }),
-    companions: ['table:sop_template_template_task']
+    })
   },
 
   // orderBy:dueAt
@@ -1318,8 +1301,7 @@ const shortcuts: IShortcut[] = [
         ...wrapOrder(re['dueAt']),
         ...wrapOrder(re['seqNo'])
       ]
-    }),
-    companions: ['table:sop_template_template_task']
+    })
   },
 
   // orderBy:dueAt
@@ -1331,8 +1313,7 @@ const shortcuts: IShortcut[] = [
         new OrderBy(re['startAt']),
         ...wrapOrder(re['seqNo'])
       ]
-    }),
-    companions: ['table:sop_template_template_task']
+    })
   }
 ]
 
