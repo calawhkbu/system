@@ -58,7 +58,7 @@
           "],",
           "subqueries: {",
           "showAllTasks: true,",
-          "tableName: { value: 'booking' },",
+          "tableName: { value: 'shipment' },",
           "primaryKey: { value: context.$route.params.params },",
           "},",
           "sorting: context.$cookies.get('SopTaskDetail.orderBy') || 'seqNo'",

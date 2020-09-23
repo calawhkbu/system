@@ -79,7 +79,7 @@
       {
         "test": "return !row.isEntityRow && row.status === 'Done'",
         "style": {
-          "backgroundColor": "#2b97ff",
+          "backgroundColor": "#e8f8f5",
           "opacity": 0.8
         }
       },
@@ -92,7 +92,7 @@
       {
         "test": "return !row.isEntityRow && (row.status === 'Due' || row.status === 'Dead')",
         "style": {
-          "backgroundColor": "#ff5963"
+          "backgroundColor": "#fdedec"
         }
       },
       {

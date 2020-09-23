@@ -13,6 +13,7 @@ import {
   Unknown,
   Value,
   CaseExpression,
+  InExpression,
 } from 'node-jql'
 import { registerAll } from 'utils/jql-subqueries'
 
@@ -92,6 +93,15 @@ registerAll(query, baseTableName, fieldList)
 // query.register('trackingNo', new Query({
 //   $where: new RegexpExpression(new ColumnExpression('tracking', 'trackingNo'), false)
 // })).register('value', 0)
+
+query.subquery(true, 'lastStatusCodeNotIn', new Query({
+  $where: new OrExpressions({
+    expressions: [
+      new InExpression(new ColumnExpression('tracking', 'lastStatusCode'), true),
+      new IsNullExpression(new ColumnExpression('tracking', 'lastStatusCode'), true),
+    ]
+  }),
+})).register('value', 0)
 
 query.register('date', new Query({
   $where: new BetweenExpression(new ColumnExpression('tracking', 'lastStatusDate'), false)
