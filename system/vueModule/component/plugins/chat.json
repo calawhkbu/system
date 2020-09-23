@@ -6,9 +6,31 @@
   "lazy": true,
   "hide-overlay": true,
   "remote": true,
+  "axiosBaseParams": [
+    "const params = context.axiosParamsParams;",
+    "const entityData = context.$store.state.widget.data;",
+    "return {",
+    "url: 'chat/init',",
+    "method: 'POST',",
+    "data: { tableName: params.tableName, primaryKey: entityData.id }",
+    "};"
+  ],
   "baseSummaryProps": {
-    "limit": 3,
+    "limit": 4,
     "i18nContext": "Chat",
+    "createChatroomBaseParams": [
+      "const entityData = context.$store.state.widget.data;",
+      "return {",
+      "url: 'chat/newRoom',",
+      "method: 'POST',",
+      "data: {",
+      "tableName: swig.tableName,",
+      "primaryKey: entityData.id,",
+      "chatroomName: swig.chatroom,",
+      "userLists: swig.userLists",
+      "}",
+      "}"
+    ],
     "createChatroomFormDialogFormProps": {
         "showPostFormOnSubmit": false,
         "onSubmitResetForm": true,

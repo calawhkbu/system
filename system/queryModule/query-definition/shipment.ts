@@ -2236,6 +2236,7 @@ const fieldList = [
 
 
   'erpCode',
+   'billTypeCode',
   'moduleTypeCode',
   'boundTypeCode',
   'nominatedTypeCode',
@@ -2247,6 +2248,7 @@ const fieldList = [
   'jobNo',
   'masterNo',
   'containerNos',
+
   {
     name: 'primaryKeyListString',
     expression: primaryKeyListStringExpression
@@ -2734,9 +2736,7 @@ query.subquery(false,'missingDocument',((value: any, params?: IQueryParams) => {
 query.subquery(false, 'anyPartyId', ((value: any, params?: IQueryParams) => {
 
   const partyIdList = value.value
-
   const inExpressionList = partyList.reduce((acc, party) => {
-
     const defaultPartyIdExpression = new ColumnExpression('shipment_party', `${party.name}PartyId`)
     const partyIdExpression = party.partyIdExpression ? party.partyIdExpression.expression : defaultPartyIdExpression
 
@@ -2754,6 +2754,7 @@ query.subquery(false, 'anyPartyId', ((value: any, params?: IQueryParams) => {
 
 
 // Bill Type
+
 query.subquery(
   true,
   'billTypeCode',
@@ -2762,11 +2763,11 @@ query.subquery(
 
       cases: [
         {
-          $when: new BinaryExpression(new Value('default'), '=', new Unknown()),
+          $when: new BinaryExpression(new Value('default'), '=',! new Value('H') &&! new Value('M')&&! new Value('S') &&! new Value('W')  ),
           $then: new OrExpressions([
 
             new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'H'),
-            new AndExpressions([
+            new  AndExpressions([
               new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
               new ExistsExpression(new Query({
 
@@ -2774,7 +2775,7 @@ query.subquery(
                 $where: [
                   new BinaryExpression(new ColumnExpression('shipment', 'partyGroupCode'), '=', new ColumnExpression('b2', 'partyGroupCode')),
                   new BinaryExpression(new ColumnExpression('shipment', 'jobNo'), '=', new ColumnExpression('b2', 'jobNo')),
-                  new BinaryExpression(new ColumnExpression('b2', 'billTypeCode'), '=', 'H'),
+                 new BinaryExpression(new ColumnExpression('b2', 'billTypeCode'), '=', 'H'),
 
                   shipmentIsActiveExpression('b2')
                 ]
@@ -2785,7 +2786,7 @@ query.subquery(
           ])
         },
         {
-          $when: new BinaryExpression(new Value('skip'), '=', new Unknown()),
+          $when: new BinaryExpression(new Value('skip'), '=',new Unknown()),
           $then: new Value(true)
         },
         {
@@ -2808,7 +2809,10 @@ query.subquery(
   .register('value', 0)
   .register('value', 1)
   .register('value', 2)
-  .register('value', 3)
+  //.register('value', 3)
+ 
+
+
 
 query
   .registerQuery(

@@ -30,6 +30,12 @@
           }
         },
         {
+          "label": "RolePage.roleDescription",
+          "name": "roleDescription",
+          "component": "v-textarea",
+          "class": "xs-12"
+        },
+        {
           "label": "RolePage.shareable",
           "name": "shareable",
           "component": "BooleanField",

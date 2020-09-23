@@ -88,7 +88,8 @@ export default {
     },
     {
       type: 'callDataService',
-      dataServiceQuery: ['booking', 'booking-count']
+      dataServiceType: 'count',
+      dataServiceQuery: ['booking', 'booking']
     },
   ],
   columns: [

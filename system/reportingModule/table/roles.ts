@@ -11,6 +11,7 @@ export default {
     { key: 'id' },
     { key: 'roleName' },
     { key: 'roleGroup' },
+    { key: 'roleDescription' },
     { key: 'filter' },
     { key: 'canResetDefault' },
   ]

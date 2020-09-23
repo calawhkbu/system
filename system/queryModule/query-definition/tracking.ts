@@ -98,7 +98,7 @@ query.subquery(true, 'lastStatusCodeNotIn', new Query({
   $where: new OrExpressions({
     expressions: [
       new InExpression(new ColumnExpression('tracking', 'lastStatusCode'), true),
-      new IsNullExpression(new ColumnExpression('tracking', 'lastStatusCode'), true),
+      new IsNullExpression(new ColumnExpression('tracking', 'lastStatusCode'), false),
     ]
   }),
 })).register('value', 0)

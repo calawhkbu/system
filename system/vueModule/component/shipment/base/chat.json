@@ -5,28 +5,7 @@
       "class": "xs-12 margin-topbottom-2",
       "layoutName": "plugins/chat",
       "loadWhenDataLoaded": true,
-      "tableName": "shipment",
-      "axiosBaseParams": [
-        "const entityData = context.$store.state.widget.data;",
-        "return {",
-        "url: 'chat/init',",
-        "method: 'POST',",
-        "data: { tableName: 'shipment', primaryKey: entityData.id }",
-        "};"
-      ],
-      "createChatroomBaseParams": [
-        "const entityData = context.$store.state.widget.data;",
-        "return {",
-        "url: 'chat/newRoom',",
-        "method: 'POST',",
-        "data: {",
-        "tableName: 'shipment',",
-        "primaryKey: entityData.id,",
-        "chatroomName: swig.chatroom,",
-        "userLists: swig.userLists",
-        "}",
-        "}"
-      ]
+      "tableName": "shipment"
     }
   }]
 }
