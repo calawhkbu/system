@@ -327,7 +327,8 @@ const query = new QueryDef(new Query({
   $select: [
     new ResultColumn(new ColumnExpression('shipment', '*')),
     new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentId'),
-    new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentPartyId'),
+    new ResultColumn(new ColumnExpression('shipment', 'id'), 'shipmentPartyId')
+
   ],
   $from: new FromTable(
 
@@ -346,6 +347,8 @@ query.registerQuery('isMinCreatedAt', new Query({
   ])
 
 }))
+
+
 
 // all shipment join
 query.table('shipment_date', new Query({
@@ -2195,6 +2198,12 @@ const fieldList = [
   ...partyExpressionList,
   ...locationExpressionList,
   ...haveDocumentExpressionList,
+  // {
+  //   name:"masterShipment",
+  //   expression:new FunctionExpression('COUNT',new ParameterExpression('DISTINCT',new ColumnExpression('shipment', 'masterNo')))
+
+
+  // },
 
   {
     name: 'officeErpSite',
@@ -2233,6 +2242,7 @@ const fieldList = [
     name: 'jobYear',
     expression: jobYearExpression
   },
+ 
 
 
   'erpCode',
@@ -2568,6 +2578,9 @@ const reportingSummaryFieldNameList = [
 ]
 
 
+
+
+
 const summaryFieldList: SummaryField[] = [
 
 
@@ -2582,7 +2595,12 @@ const summaryFieldList: SummaryField[] = [
     } as SummaryField
 
   }),
-
+  // {
+  //   name: 'masterShipment',
+  //   summaryType: 'count',
+  //   expression:  new ColumnExpression('shipment', 'masterNo')
+  
+  // },
   {
     name: 'totalShipment',
     summaryType: 'count',
@@ -2763,7 +2781,7 @@ query.subquery(
 
       cases: [
         {
-          $when: new BinaryExpression(new Value('default'), '=',new Unknown() ),
+          $when: new BinaryExpression(new Value('default'), '=', new Unknown()),
           $then: new OrExpressions([
 
             new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'H'),

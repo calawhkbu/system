@@ -13,7 +13,7 @@ interface Result {
   nameColumnName: string
   summaryVariables: string[]
 }
-
+summaryVariableList.push('masterShipment')
 
 export default {
   jqls: [
@@ -64,7 +64,7 @@ export default {
           codeColumnName,
           nameColumnName,
           'ErpSite'
-        ]
+                ]
 
         // group by
         params.groupBy = [codeColumnName]
