@@ -470,6 +470,15 @@ const shortcuts: IShortcut[] = [
     expression: re => new FunctionExpression('CONCAT', re['partyGroupCode'], new Value('-'), re['partyGroupTaskId'])
   },
 
+  // field:jobNo
+  {
+    type: 'field',
+    name: 'jobNo',
+    expression: re => new ColumnExpression(bookingTable, 'jobNo'),
+    registered: true,
+    companions: ['table:shipment']
+  },
+
   // field:bookingNo
   {
     type: 'field',
@@ -503,6 +512,30 @@ const shortcuts: IShortcut[] = [
     expression: getEntityExpression('primaryNo', [bookingTable, 'bookingNo'], [shipmentTable, 'houseNo']),
     companions: ['table:booking', 'table:shipment'],
     registered: true
+  },
+
+  // field:divisionCode
+  {
+    type: 'field',
+    name: 'divisionCode',
+    expression: getEntityExpression('divisionCode', [bookingTable], [shipmentTable]),
+    companions: ['table:booking', 'table:shipment']
+  },
+
+  // field:moduleTypeCode
+  {
+    type: 'field',
+    name: 'moduleTypeCode',
+    expression: getEntityExpression('moduleTypeCode', [bookingTable], [shipmentTable]),
+    companions: ['table:booking', 'table:shipment']
+  },
+
+  // field:boundTypeCode
+  {
+    type: 'field',
+    name: 'boundTypeCode',
+    expression: getEntityExpression('boundTypeCode', [bookingTable], [shipmentTable]),
+    companions: ['table:booking', 'table:shipment']
   },
 
   // field:vesselName
@@ -977,6 +1010,14 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'primaryKey',
     expression: re => new BinaryExpression(re['primaryKey'], '=', new Unknown()),
+    unknowns: true
+  },
+
+  // subquery:bookingNo
+  {
+    type: 'subquery',
+    name: 'bookingNo',
+    expression: re => new BinaryExpression(re['bookingNo'], '=', new Unknown()),
     unknowns: true
   },
 

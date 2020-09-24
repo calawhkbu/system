@@ -263,6 +263,17 @@ export const dateTimezoneMapping = {
   ]
 }
 
+export const fixedPartyKeys = [
+  'shipper',
+  'consignee',
+  'forwarder',
+  'roAgent',
+  'linerAgent',
+  'agent',
+  'controllingCustomer',
+  'notifyParty',
+]
+
 export default async function getDefaultParams(
   conditions?: IConditionalExpression,
   queryName?: string,
@@ -284,35 +295,29 @@ export default async function getDefaultParams(
       const selectedPartyGroupCode = user.selectedPartyGroup ? user.selectedPartyGroup.code : null
       const partyTypesExpressions = user.parties.reduce(
         (selectedPartyType: BinaryExpression[], party: JwtPayloadParty) => {
-          if (
-            party.partyGroupCode === selectedPartyGroupCode &&
-            party.types &&
-            party.types.length
-          ) {
-            selectedPartyType = selectedPartyType.concat(
-              party.types.map((type: string) => {
-                const con = [
-                  'shipper',
-                  'consignee',
-                  'office',
-                  'forwarder',
-                  'roAgent',
-                  'linerAgent',
-                  'agent',
-                  'controllingCustomer',
-                ].includes(type)
-                  ? new ColumnExpression(
-                      'booking_party',
-                      `${type === 'office' ? 'forwarder' : type}PartyId`
-                    )
-                  : new MathExpression(
-                      new ColumnExpression('booking_party', 'flexData'),
-                      '->>',
-                      `$.${type}PartyId`
-                    )
-                return new BinaryExpression(con, '=', party.id)
-              })
-            )
+          if (party.partyGroupCode === selectedPartyGroupCode) {
+            for (const fixPartyKey of fixedPartyKeys) {
+              selectedPartyType.push(new BinaryExpression(new ColumnExpression('booking_party', `${fixPartyKey}PartyId`), '=', party.id))
+            }
+            if (party.types && party.types.length > 0) {
+              for (const type of party.types) {
+                selectedPartyType.push(
+                  new BinaryExpression(
+                    [...fixedPartyKeys, 'office'].includes(type)
+                      ? new ColumnExpression(
+                          'booking_party',
+                          `${type === 'office' ? 'forwarder' : type}PartyId`
+                        )
+                      : new MathExpression(
+                          new ColumnExpression('booking_party', 'flexData'),
+                          '->>',
+                          `$.${type}PartyId`
+                        ),
+                    '=',
+                    party.id)
+                )
+              }
+            }
           }
           return selectedPartyType
         },

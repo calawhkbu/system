@@ -100,16 +100,17 @@
               {
                 "label": "BookingPage.quantityUnit",
                 "name": "quantityUnit",
-                "component": "v-select",
+                "component": "LocalSelect",
                 "colGroupProps": {
                   "style": {
                     "width": "7.5%"
                   }
                 },
                 "props": {
+                  "showValue": false,
                   "item-text": "text",
                   "item-value": "value",
-                  "items": [{
+                  "funcItems": [{
                       "text": "W/C",
                       "value": "W/C"
                     },
@@ -233,9 +234,12 @@
                     "width": "10%"
                   }
                 },
-                "component": "v-select",
+                "component": "LocalSelect",
                 "props": {
-                  "items": [{
+                  "showValue": false,
+                  "item-text": "text",
+                  "item-value": "value",
+                  "funcItems": [{
                       "text": "CM",
                       "value": "CM"
                     },
@@ -267,9 +271,12 @@
                     "width": "7.5%"
                   }
                 },
-                "component": "v-select",
+                "component": "LocalSelect",
                 "props": {
-                  "items": [{
+                  "showValue": false,
+                  "item-text": "text",
+                  "item-value": "value",
+                  "funcItems": [{
                       "text": "KGs",
                       "value": "KGs"
                     },

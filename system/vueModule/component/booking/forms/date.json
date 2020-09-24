@@ -106,12 +106,12 @@
           "label": "Widget.port",
           "name": "bookingDate.{{flex}}{{key}}DatePort",
           "checkDisplayWhen": "return '{{flex}}' !== ''",
-          "component": "v-select",
+          "component": "LocalSelect",
           "class": "xs-12 md-4",
           "props": {
             "right": true,
             "class": "input-text-right",
-            "items": [
+            "funcItems": [
               {
                 "key": "portOfLoading",
                 "value": "Port of Loading"

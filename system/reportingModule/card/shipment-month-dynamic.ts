@@ -13,8 +13,6 @@ interface Result {
   nameColumnName: string
   summaryVariables: string[]
 }
-summaryVariableList.push('masterShipment')
-
 export default {
   jqls: [
     {
