@@ -2,7 +2,7 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import moment = require('moment')
 import { BadRequestException } from '@nestjs/common'
-import BookingsJQL from './bookings'
+import ShipmentsJQL from './shipments'
 
 export default {
   jqls: [
@@ -40,10 +40,10 @@ export default {
         return params
       }
     },
-    ...BookingsJQL.jqls
+    ...ShipmentsJQL.jqls
   ],
   columns: [
-    ...BookingsJQL.columns,
+    ...ShipmentsJQL.columns,
     { key: 'noOfTasks' },
     { key: 'sopScore' },
     { key: 'team' },

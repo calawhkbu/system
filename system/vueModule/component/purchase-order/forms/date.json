@@ -3,6 +3,7 @@
     {
       "is": "WidgetMoreForm",
       "props": {
+        "name": "purchaseOrderDate",
         "mainKey": "Date",
         "formProps": {
           "z": {
@@ -84,7 +85,7 @@
           },
           {
             "label": "Widget.estimatedDate",
-            "name": "{{flex}}{{key}}Date",
+            "name": "purchaseOrderDate.{{flex}}{{key}}Date",
             "component": "DateTimePicker",
             "class": "xs-12 md-6 {{actualOnly}}",
             "props": {
@@ -96,7 +97,7 @@
           },
           {
             "label": "Widget.estimatedDate",
-            "name": "{{flex}}{{key}}DateEstimated",
+            "name": "purchaseOrderDate.{{flex}}{{key}}DateEstimated",
             "component": "DateTimePicker",
             "class": "xs-12 md-6 {{notActualOnly}}",
             "props": {
@@ -108,7 +109,7 @@
           },
           {
             "label": "Widget.actualDate",
-            "name": "{{flex}}{{key}}DateActual",
+            "name": "purchaseOrderDate.{{flex}}{{key}}DateActual",
             "component": "DateTimePicker",
             "class": "xs-12 md-6 {{notActualOnly}}",
             "props": {
@@ -120,7 +121,7 @@
           },
           {
             "label": "Widget.remark",
-            "name": "{{flex}}{{key}}Remark",
+            "name": "purchaseOrderDate.{{flex}}{{key}}Remark",
             "component": "v-text-field",
             "class": "xs-12 md-12",
             "readonlyClass": "hidden"

@@ -3,7 +3,7 @@
     {
       "is": "WidgetMoreForm",
       "props": {
-        "mainKey": "Party",
+        "mainKey": "purchaseOrderParty",
         "formProps": {
           "z": {
             "class": "xs-12 md-6 padding-4"
@@ -28,8 +28,8 @@
             "class": "font-110 brown--text"
           }
         },
-        "fixedKeys": ["buyer", "shipper", "factory", "shipTo"],
-        "alwaysShowKeys": ["buyer", "shipper", "factory", "shipTo"],
+        "fixedKeys": ["buyer", "shipper", "factory", "shipTo", "forwarder"],
+        "alwaysShowKeys": ["buyer", "shipper", "factory", "shipTo", "forwarder"],
         "canAdd": true,
         "canAddProps": {
           "class": "xs-12 md-6 padding-20 min-height-200 margin-auto"
@@ -37,65 +37,65 @@
         "addItemsOrFunc": [],
         "fields": [
           {
-            "name": "{{flex}}{{key}}Party",
+            "name": "purchaseOrderParty.{{flex}}{{key}}Party",
             "component": "AsyncAutoSuggest",
             "class": "xs-12",
-            "relation": "{{flex}}{{key}}Party",
+            "relation": "purchaseOrderParty.{{flex}}{{key}}Party",
             "relationMore": [
               {
-                "name": "{{flex}}{{key}}PartyId",
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyId",
                 "selector": "id"
               },
               {
-                "name": "{{flex}}{{key}}PartyName",
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyName",
                 "selector": "name"
               },
               {
-                "name": "{{flex}}{{key}}PartyPhone",
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyPhone",
                 "selector": "partyPhone"
               },
               {
-                "name": "{{flex}}{{key}}PartyFax",
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyFax",
                 "selector": "partyFax"
               },
               {
-                "name": "{{flex}}{{key}}PartyEmail",
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyEmail",
                 "selector": "partyEmail"
               },
               {
-                "name": "{{flex}}{{key}}PartyAddress",
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyAddress",
                 "selector": "partyAddress"
               },
               {
-                "name": "{{flex}}{{key}}PartyCityCode",
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyCityCode",
                 "selector": "partyCityCode"
               },
               {
-                "name": "{{flex}}{{key}}PartyStateCode",
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyStateCode",
                 "selector": "partyStateCode"
               },
               {
-                "name": "{{flex}}{{key}}PartyCountryCode",
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyCountryCode",
                 "selector": "partyCountryCode"
               },
               {
-                "name": "{{flex}}{{key}}PartyZip",
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyZip",
                 "selector": "partyZip"
               },
               {
-                "name": "{{flex}}{{key}}PartyContactPersonId",
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyContactPersonId",
                 "selector": "contactPersonId"
               },
               {
-                "name": "{{flex}}{{key}}PartyContactPersonEmail",
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyContactPersonEmail",
                 "selector": "contactPersonEmail"
               },
               {
-                "name": "{{flex}}{{key}}PartyContactPersonName",
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyContactPersonName",
                 "selector": "contactPersonName"
               },
               {
-                "name": "{{flex}}{{key}}PartyContactPersonPhone",
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyContactPersonPhone",
                 "selector": "contactPersonPhone"
               }
             ],
@@ -133,27 +133,27 @@
           },
           {
             "label": "Widget.contactName",
-            "name": "{{flex}}{{key}}PartyContactName",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyContactName",
             "component": "v-text-field",
             "class": "xs-12 md-4",
             "readonlyClass": "hidden"
           },
           {
             "label": "Widget.contactEmail",
-            "name": "{{flex}}{{key}}PartyContactEmail",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyContactEmail",
             "component": "v-text-field",
             "class": "xs-12 md-4",
             "readonlyClass": "hidden"
           },
           {
             "label": "Widget.contactPhone",
-            "name": "{{flex}}{{key}}PartyContactPhone",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyContactPhone",
             "component": "v-text-field",
             "class": "xs-12 md-4",
             "readonlyClass": "hidden"
           },
           {
-            "name": "{{flex}}{{key}}PartyContacts",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyContacts",
             "component": "TableField",
             "class": "xs-12",
             "readonlyClass": "hidden",
@@ -186,7 +186,7 @@
           },
           {
             "label": "Widget.address",
-            "name": "{{flex}}{{key}}PartyAddress",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyAddress",
             "component": "v-textarea",
             "props": {
               "auto-grow": true,
@@ -197,7 +197,7 @@
           },
           {
             "label": "Widget.city",
-            "name": "{{flex}}{{key}}PartyCityCode",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyCityCode",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-4",
             "readonlyClass": "xs-12 md-4",
@@ -237,7 +237,7 @@
           },
           {
             "label": "Widget.state",
-            "name": "{{flex}}{{key}}PartyStateCode",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyStateCode",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-4",
             "readonlyClass": "xs-12 md-4",
@@ -284,7 +284,7 @@
           },
           {
             "label": "Widget.country",
-            "name": "{{flex}}{{key}}PartyCountryCode",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyCountryCode",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-4",
             "readonlyClass": "xs-12 md-4",
@@ -330,7 +330,7 @@
           },
           {
             "label": "Widget.zip",
-            "name": "{{flex}}{{key}}PartyZip",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyZip",
             "component": "v-text-field",
             "class": "xs-12 md-6",
             "readonlyClass": "hidden"

@@ -26,6 +26,16 @@
           "method": "post",
           "url": "api/booking"
         },
+        "deleteKeyBeforeSave": [
+          "quantity", "quantityUnit", "grossWeight", "volumeWeight",
+          "chargeableWeight", "weightUnit", "teu", "cbm", "container20",
+          "container40", "containerHQ", "containerOthers"
+        ],
+        "deleteIfReturnTrue": [
+          "if (context.diff(oldData.bookingPopackings, data.bookingPopackings)) return true",
+          "if (context.diff(oldData.bookingContainers, data.bookingContainers)) return true",
+          "return false"
+        ],
         "primaryKey": "id",
         "modeFunction": [
           "const modes = ['create']",
@@ -41,7 +51,8 @@
             "readonly": false,
             "stepper": 0,
             "next": false,
-            "saveIcon": "create"
+            "saveIcon": "create",
+            "agreeOnClickSave": true
           },
           "detail": {
             "readonly": true
@@ -49,7 +60,8 @@
           "edit": {
             "readonly": false,
             "stepper": 0,
-            "saveIcon": "save"
+            "saveIcon": "save",
+            "agreeOnClickSave": false
           }
         }
       }

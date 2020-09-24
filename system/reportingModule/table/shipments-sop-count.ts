@@ -2,7 +2,7 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import moment = require('moment')
 import { BadRequestException } from '@nestjs/common'
-import BookingsJQL from './bookings'
+import ShipmentsJQL from './shipments-count'
 
 export default {
   jqls: [
@@ -40,15 +40,9 @@ export default {
         return params
       }
     },
-    ...BookingsJQL.jqls
+    ...ShipmentsJQL.jqls
   ],
-  columns: [
-    ...BookingsJQL.columns,
-    { key: 'noOfTasks' },
-    { key: 'sopScore' },
-    { key: 'team' },
-    { key: 'picEmail' }
-  ],
+  columns: ShipmentsJQL.columns
 } as JqlDefinition
 
 function rangeTooLarge(date: { from: string, to: string }): boolean {

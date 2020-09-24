@@ -2214,18 +2214,20 @@ const shortcuts: IShortcut[] = [
   {
     type: 'subquery',
     name: 'sop_date',
-    subqueryArg: () => (value, params) => new ExistsExpression(
-      addBookingCheck(
-        sopTaskQuery().apply({
-          subqueries: {
-            ...passSubquery(params, 'sop_date', 'date'),
-            ...passSubquery(params, 'notDone'),
-            ...passSubquery(params, 'notDeleted'),
-          }
-        })
-      ),
-      false
-    )
+    subqueryArg: () => (value, params) => ({
+      $where: new ExistsExpression(
+        addBookingCheck(
+          sopTaskQuery().apply({
+            subqueries: {
+              ...passSubquery(params, 'sop_date', 'date'),
+              ...passSubquery(params, 'notDone'),
+              ...passSubquery(params, 'notDeleted'),
+            }
+          })
+        ),
+        false
+      )
+    })
   },
 
   // subquery:notClosed

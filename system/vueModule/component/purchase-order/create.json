@@ -1,96 +1,475 @@
 {
-  "class": "grid full-width",
-  "components": [
-    {
+  "class": "grid",
+  "components": [{
       "is": "DynamicComponent",
+      "if": "const setting = context.$store.state.widget.componentSetting || {};return !setting.next;",
       "props": {
-        "class": "grid full-width",
-        "components": [
-          {
+        "class": "grid",
+        "components": [{
             "is": "DynamicComponent",
             "props": {
-              "class": "flex align-item-center full-width",
-              "components": [
-                {
+              "class": "xs-12 grid min-height-28 align-item-center full-width padding-leftright-8",
+              "components": [{
                   "is": "v-btn",
+                  "if": [
+                    "const userProfile = context.$store.state.auth.userProfile;",
+                    "return userProfile && userProfile.isApi"
+                  ],
                   "props": {
+                    "class": "margin-0",
+                    "small": true,
                     "flat": true,
                     "icon": true
                   },
-                  "events": {
-                    "click.stop": [
-                      {
-                        "type": "router",
-                        "otherParams": {
-                          "func": "push",
-                          "path": "/{{ p[0] }}/{{ p[1] }}"
-                        }
-                      }
-                    ]
-                  },
-                  "slots": [
-                    {
-                      "is": "Icon",
-                      "props": {
-                        "icon": "arrow_back"
-                      }
+                  "slots": [{
+                    "is": "Icon",
+                    "props": {
+                      "icon": "arrow_back"
                     }
-                  ]
-                },
-                {
+                  }],
+                  "events": {
+                    "click.stop": [{
+                      "type": "emit-global",
+                      "otherParams": {
+                        "name": "back-list"
+                      }
+                    }]
+                  }
+                }, {
                   "is": "I18nText",
                   "props": {
-                    "class": "headline",
                     "i18nContext": "PurchaseOrderPage",
                     "i18nKey": "quickCreate"
-                  }
-                }
-              ]
-            },
-            "slots": [
-              {
-                "is": "Icon",
-                "props": {
-                  "icon": "arrow_back"
-                }
-              }
-            ]
-          },
-          {
-            "is": "I18nText",
-            "props": {
-              "class": "flex absolute-bottomright full-width",
-              "components": [
-                {
-                  "is": "v-btn",
-                  "props": {
-                    "fab": true
-                  },
-                  "slots": [
-                    {
-                      "is": "Icon",
-                      "props": {
-                        "icon": "navigate_next"
-                      }
-                    }
-                  ],
-                  "events": {
-                    "click.stop": [
-                      {
-                        "type": "dispatch",
-                        "otherParams": {
-                          "name": "widget/updateComponentSetting",
-                          "value": {
-                            "next": true,
-                            "stepper": 0
-                          }
-                        }
-                      }
-                    ]
                   }
                 },
                 {
                   "is": "v-spacer"
+                }
+              ]
+            }
+          },
+          {
+            "is": "WidgetForm",
+            "props": {
+              "class": "full-width padding-leftright-4",
+              "fields": [{
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "PurchaseOrderPage.moduleType",
+                  "name": "moduleTypeCode",
+                  "component": "AsyncSelect",
+                  "class": "xs-12 md-4 padding-topbottom-4",
+                  "validator": ["required"],
+                  "relation": "moduleType",
+                  "props": {
+                    "required": true,
+                    "axiosParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "MODULE"
+                          }
+                        }
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "code"
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "PurchaseOrderPage.portOfLoading",
+                  "name": "portOfLoading",
+                  "class": "xs-12 md-4",
+                  "more": [{
+                    "name": "portOfLoadingCode",
+                    "selector": "portCode"
+                  }, {
+                    "name": "portOfLoadingName",
+                    "selector": "name"
+                  },{
+                    "name": "portOfLoadingCode",
+                    "selector": "portCode"
+                  }, {
+                    "name": "portOfLoadingName",
+                    "selector": "name"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderParty.id",
+                    "selector": "partyId",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderParty.name",
+                    "selector": "partyName",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderParty.erpCode",
+                    "selector": "partyErpCode",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyId",
+                    "selector": "partyId",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyName",
+                    "selector": "partyName",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyCode",
+                    "selector": "partyErpCode",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyPhone",
+                    "selector": "partyPhone",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyFax",
+                    "selector": "partyFax",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyEmail",
+                    "selector": "partyEmail",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyAddress",
+                    "selector": "partyAddress",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyCityCode",
+                    "selector": "partyCityCode",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyStateCode",
+                    "selector": "partyStateCode",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyCountryCode",
+                    "selector": "partyCountryCode",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyZip",
+                    "selector": "partyZip",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyContactPersonId",
+                    "selector": "contactPersonId",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyContactPersonEmail",
+                    "selector": "contactPersonEmail",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyContactPersonName",
+                    "selector": "contactPersonName",
+                    "nullNotApply": true
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyContactPersonPhone",
+                    "selector": "contactPersonPhone",
+                    "nullNotApply": true
+                  }],
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-4 padding-topbottom-4",
+                  "validator": ["required"],
+                  "props": {
+                    "required": true,
+                    "searchTextParams": {
+                      "method": "POST",
+                      "url": "api/location/query/location",
+                      "data": {
+                        "fields": [
+                          "portCode",
+                          "name",
+                          "partyId",
+                          "partyName",
+                          "partyErpCode",
+                          "partyPhone",
+                          "partyFax",
+                          "partyEmail",
+                          "partyAddress",
+                          "partyCityCode",
+                          "partyStateCode",
+                          "partyCountryCode",
+                          "partyZip"
+                        ],
+                        "subqueries": {
+                          "moduleTypeCode": {
+                            "value": "{{context.form.moduleTypeCode}}"
+                          },
+                          "q": {
+                            "value": "{{context.search}}"
+                          }
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "portCode"
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "PurchaseOrderPage.portOfDischarge",
+                  "name": "portOfDischarge",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-4 padding-topbottom-4",
+                  "validator": ["required"],
+                  "more": [{
+                    "name": "portOfDischargeCode",
+                    "selector": "portCode"
+                  }, {
+                    "name": "portOfDischargeName",
+                    "selector": "name"
+                  }],
+                  "props": {
+                    "required": true,
+                    "searchValueParams": {
+                      "method": "POST",
+                      "url": "api/location/query/location",
+                      "data": {
+                        "subqueries": {
+                          "moduleTypeCode": {
+                            "value": "{{context.form.moduleTypeCode}}"
+                          },
+                          "portCodeLike": {
+                            "value": "{{context.autoSuggestModel}}"
+                          }
+                        }
+                      }
+                    },
+                    "searchTextParams": {
+                      "method": "POST",
+                      "url": "api/location/query/location",
+                      "data": {
+                        "subqueries": {
+                          "moduleTypeCode": {
+                            "value": "{{context.form.moduleTypeCode}}"
+                          },
+                          "q": {
+                            "value": "{{context.search}}"
+                          }
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "portCode"
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "PurchaseOrderPage.incoTermsCode",
+                  "name": "incoTerms",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-6 padding-topbottom-4",
+                  "more": [{
+                    "name": "incoTermsCode",
+                    "selector": "code"
+                  }],
+                  "relationMore": [{
+                      "name": "freightTermsCode",
+                      "selector": "flexData.frieghtTermsCode"
+                    },
+                    {
+                      "name": "otherTermsCode",
+                      "selector": "flexData.otherTermsCode"
+                    }
+                  ],
+                  "props": {
+                    "showValue": false,
+                    "initList": true,
+                    "searchTextParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "INCOTERMS"
+                          },
+                          "q": {
+                            "value": "{% if context.search %}{{context.search}}{% else %}.*{% endif %}"
+                          }
+                        }
+                      }
+                    },
+                    "item-text": "code",
+                    "item-value": "code",
+                    "onInit": true
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "PurchaseOrderPage.freightTermsCode",
+                  "name": "freightTermsCode",
+                  "component": "AsyncSelect",
+                  "class": "xs-12 md-6 padding-topbottom-4",
+                  "relation": "freightTerms",
+                  "props": {
+                    "axiosParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "codeType": {
+                            "value": "PAYTERMS"
+                          }
+                        }
+                      }
+                    },
+                    "item-text": "code",
+                    "item-value": "code",
+                    "showValue": false
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "PurchaseOrderPage.forwarder",
+                  "name": "purchaseOrderParty.forwarderParty",
+                  "component": "AsyncSelect",
+                  "class": "xs-12 md-12 padding-topbottom-4",
+                  "relation": "purchaseOrderParty.forwarderParty",
+                  "relationMore": [{
+                    "name": "purchaseOrderParty.forwarderParty.id",
+                    "selector": "id"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderParty.name",
+                    "selector": "name"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderParty.erpCode",
+                    "selector": "erpCode"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyId",
+                    "selector": "id"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyName",
+                    "selector": "name"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyCode",
+                    "selector": "erpCode"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyPhone",
+                    "selector": "partyPhone"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyFax",
+                    "selector": "partyFax"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyEmail",
+                    "selector": "partyEmail"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyAddress",
+                    "selector": "partyAddress"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyCityCode",
+                    "selector": "partyCityCode"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyStateCode",
+                    "selector": "partyStateCode"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyCountryCode",
+                    "selector": "partyCountryCode"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyZip",
+                    "selector": "partyZip"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyContactPersonId",
+                    "selector": "contactPersonId"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyContactPersonEmail",
+                    "selector": "contactPersonEmail"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyContactPersonName",
+                    "selector": "contactPersonName"
+                  }, {
+                    "name": "purchaseOrderParty.forwarderPartyContactPersonPhone",
+                    "selector": "contactPersonPhone"
+                  }],
+                  "validator": ["required"],
+                  "props": {
+                    "required": true,
+                    "axiosParams": {
+                      "url": "api/party/query/office_auto_suggest",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "isBranch": {
+                            "value": 1
+                          }
+                        }
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "erpCode"
+                  }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "name": "Term",
+                  "component": "Term",
+                  "class": "xs-12 padding-topbottom-4",
+                  "props": {
+                    "width": "70%",
+                    "type": "booking-term",
+                    "termProps": {
+                      "class": "margin-leftright-4 padding-leftright-4 min-height-400 max-height-500 overflow-auto"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "DynamicComponent",
+            "props": {
+              "class": "flex padding-leftright-8 padding-topbottom-4",
+              "components": [{
+                  "is": "v-btn",
+                  "props": {
+                    "fab": true
+                  },
+                  "slots": [{
+                    "is": "Icon",
+                    "props": {
+                      "icon": "navigate_next"
+                    }
+                  }],
+                  "events": {
+                    "click.stop": [{
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "widget/updateComponentSetting",
+                        "value": {
+                          "next": true,
+                          "stepper": 0
+                        }
+                      }
+                    }]
+                  }
+                },
+                {
+                  "is": "div",
+                  "props": {
+                    "class": "width-20"
+                  }
                 },
                 {
                   "is": "WidgetSave",
@@ -106,48 +485,45 @@
       }
     },
     {
-      "is": "WidgetStepper",
+      "is": "DynamicComponent",
+      "if": "const setting = context.$store.state.widget.componentSetting || {};return setting.next;",
       "props": {
         "class": "grid full-width",
-        "components": [
-          {
+        "components": [{
             "is": "DynamicComponent",
             "props": {
-              "class": "flex align-item-center full-width",
-              "components": [
-                {
+              "class": "xs-12 grid min-height-28 align-item-center full-width padding-leftright-8",
+              "components": [{
                   "is": "v-btn",
                   "props": {
+                    "class": "margin-0",
+                    "small": true,
                     "flat": true,
                     "icon": true
                   },
                   "events": {
-                    "click.stop": [
-                      {
-                        "type": "dispatch",
-                        "otherParams": {
-                          "name": "widget/updateComponentSetting",
-                          "value": {
-                            "next": false,
-                            "stepper": 0
-                          }
+                    "click.stop": [{
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "widget/updateComponentSetting",
+                        "value": {
+                          "next": false,
+                          "stepper": 0
                         }
                       }
-                    ]
+                    }]
                   },
-                  "slots": [
-                    {
-                      "is": "Icon",
-                      "props": {
-                        "icon": "arrow_back"
-                      }
+                  "slots": [{
+                    "is": "Icon",
+                    "props": {
+                      "icon": "arrow_back"
                     }
-                  ]
+                  }]
                 },
                 {
                   "is": "I18nText",
                   "props": {
-                    "class": "headline",
+                    "class": "title",
                     "i18nContext": "PurchaseOrderPage",
                     "i18nKey": "createTitle"
                   }
@@ -159,72 +535,63 @@
             "is": "WidgetStepper",
             "props": {
               "topClick": false,
+              "topSave": true,
               "validateBeforeStepChange": true,
-              "steps": [
-                {
+              "preview": false,
+              "steps": [{
                   "id": "PurchaseOrderPage.GeneralForm",
                   "layout": "v-card",
                   "class": "margin-8",
-                  "components": [
-                    {
-                      "is": "AsyncComponent",
-                      "props": {
-                        "layoutName": "purchase-order/forms/general"
-                      }
+                  "components": [{
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "purchase-order/forms/general"
                     }
-                  ]
+                  }]
                 },
                 {
                   "id": "PurchaseOrderPage.PartyForm",
                   "layout": "v-card",
                   "class": "margin-8",
-                  "components": [
-                    {
-                      "is": "AsyncComponent",
-                      "props": {
-                        "layoutName": "purchase-order/forms/party"
-                      }
+                  "components": [{
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "purchase-order/forms/party"
                     }
-                  ]
+                  }]
                 },
                 {
                   "id": "PurchaseOrderPage.DateForm",
                   "layout": "v-card",
                   "class": "margin-8",
-                  "components": [
-                    {
-                      "is": "AsyncComponent",
-                      "props": {
-                        "layoutName": "purchase-order/forms/date"
-                      }
+                  "components": [{
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "purchase-order/forms/date"
                     }
-                  ]
+                  }]
                 },
                 {
-                  "id": "PurchaseOrderPage.PoItemsForm",
+                  "id": "PurchaseOrderPage.ItemsForm",
                   "layout": "v-card",
                   "class": "margin-8",
-                  "components": [
-                    {
-                      "is": "AsyncComponent",
-                      "props": {
-                        "layoutName": "purchase-order/forms/po-items"
-                      }
+                  "components": [{
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "purchase-order/forms/po-items"
                     }
-                  ]
+                  }]
                 },
                 {
-                  "id": "PurchaseOrderPage.ReferenceForm",
+                  "id": "PurchaseOrderPage.referenceForm",
                   "layout": "v-card",
                   "class": "margin-8",
-                  "components": [
-                    {
-                      "is": "AsyncComponent",
-                      "props": {
-                        "layoutName": "purchase-order/forms/reference"
-                      }
+                  "components": [{
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "purchase-order/forms/reference"
                     }
-                  ]
+                  }]
                 }
               ]
             }

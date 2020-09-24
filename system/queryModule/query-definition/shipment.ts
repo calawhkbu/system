@@ -2170,8 +2170,8 @@ const haveDocumentExpressionList = documentFileNameList.map(documentFileName => 
           new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', documentFileName),
           new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment'),
 
-          new IsNullExpression(new ColumnExpression('document', 'deletedAt'),false),
-          new IsNullExpression(new ColumnExpression('document', 'deletedBy'),false)
+          new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
 
         ]
 
@@ -2180,8 +2180,8 @@ const haveDocumentExpressionList = documentFileNameList.map(documentFileName => 
   )
 
   return {
-    name : `haveDocument_${documentFileName}`,
-    expression : haveDocumentExpression
+    name: `haveDocument_${documentFileName}`,
+    expression: haveDocumentExpression
 
   } as RegisterInterface
 
@@ -2198,13 +2198,6 @@ const fieldList = [
   ...partyExpressionList,
   ...locationExpressionList,
   ...haveDocumentExpressionList,
-  // {
-  //   name:"masterShipment",
-  //   expression:new FunctionExpression('COUNT',new ParameterExpression('DISTINCT',new ColumnExpression('shipment', 'masterNo')))
-
-
-  // },
-
   {
     name: 'officeErpSite',
     expression: officeErpSiteExpression,
@@ -2242,11 +2235,11 @@ const fieldList = [
     name: 'jobYear',
     expression: jobYearExpression
   },
- 
+
 
 
   'erpCode',
-   'billTypeCode',
+  'billTypeCode',
   'moduleTypeCode',
   'boundTypeCode',
   'nominatedTypeCode',
@@ -2599,7 +2592,7 @@ const summaryFieldList: SummaryField[] = [
   //   name: 'masterShipment',
   //   summaryType: 'count',
   //   expression:  new ColumnExpression('shipment', 'masterNo')
-  
+
   // },
   {
     name: 'totalShipment',
@@ -2678,73 +2671,71 @@ registerCheckboxField(query)
 
 
 
-query.subquery(false,'haveDocument',((value: any, params?: IQueryParams) => {
+query.subquery(false, 'haveDocument', ((value: any, params?: IQueryParams) => {
 
 
-  const fileNameList = (value && value.value) ?  (Array.isArray(value.value) ? value.value : [value.value]) : []
+  const fileNameList = (value && value.value) ? (Array.isArray(value.value) ? value.value : [value.value]) : []
 
-  if (!fileNameList.length)
-  {
+  if (!fileNameList.length) {
     throw new Error('fileNameList empty')
   }
 
   const existExpressionList = fileNameList.map(fileName => {
 
     return new ExistsExpression(new Query({
-      $select : [
-        new ResultColumn(new ColumnExpression('document','primaryKey'))
+      $select: [
+        new ResultColumn(new ColumnExpression('document', 'primaryKey'))
       ],
       $from: 'document',
-      $where : [
-        new BinaryExpression(new ColumnExpression('document','tableName'),'=','shipment'),
-        new BinaryExpression(new ColumnExpression('document','primaryKey'),'=',idExpression),
-        new BinaryExpression(new ColumnExpression('document','fileName'),'=',fileName),
+      $where: [
+        new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment'),
+        new BinaryExpression(new ColumnExpression('document', 'primaryKey'), '=', idExpression),
+        new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', fileName),
 
-        new IsNullExpression(new ColumnExpression('document', 'deletedAt'),false),
-        new IsNullExpression(new ColumnExpression('document', 'deletedBy'),false)
+        new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
       ]
-    }),false)
+    }), false)
 
   })
 
 
   return new Query({
-    $where : new AndExpressions(existExpressionList)
+    $where: new AndExpressions(existExpressionList)
   })
 }))
 
-query.subquery(false,'missingDocument',((value: any, params?: IQueryParams) => {
+query.subquery(false, 'missingDocument', ((value: any, params?: IQueryParams) => {
 
 
-  const fileNameList = (value && value.value) ?  (Array.isArray(value.value) ? value.value : [value.value]) : []
+  const fileNameList = (value && value.value) ? (Array.isArray(value.value) ? value.value : [value.value]) : []
 
-  if (!fileNameList.length)
-  {
+  if (!fileNameList.length) {
     throw new Error('fileNameList empty')
   }
 
   const existExpressionList = fileNameList.map(fileName => {
 
     return new ExistsExpression(new Query({
-      $select : [
-        new ResultColumn(new ColumnExpression('document','primaryKey'))
+      $select: [
+        new ResultColumn(new ColumnExpression('document', 'primaryKey'))
       ],
       $from: 'document',
-      $where : [
-        new BinaryExpression(new ColumnExpression('document','tableName'),'=','shipment'),
-        new BinaryExpression(new ColumnExpression('document','primaryKey'),'=',idExpression),
-        new BinaryExpression(new ColumnExpression('document','fileName'),'=',fileName),
+      $where: [
+        new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment'),
+        new BinaryExpression(new ColumnExpression('document', 'primaryKey'), '=', idExpression),
+        new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', fileName),
 
-        new IsNullExpression(new ColumnExpression('document', 'deletedAt'),false),
-        new IsNullExpression(new ColumnExpression('document', 'deletedBy'),false)
+        new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
       ]
-    }),true)
+    }), true)
 
   })
 
 
   return new Query({
-    $where : new AndExpressions(existExpressionList)
+    $where: new AndExpressions(existExpressionList)
   })
 }))
 
@@ -2773,6 +2764,14 @@ query.subquery(false, 'anyPartyId', ((value: any, params?: IQueryParams) => {
 
 // Bill Type
 
+const MbillSEAExpression = new AndExpressions([
+  new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
+  new IsNullExpression(new ColumnExpression('shipment', 'masterNo'), true),
+]);
+
+const MbillAIRExpression = new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M');
+
+
 query.subquery(
   true,
   'billTypeCode',
@@ -2785,7 +2784,7 @@ query.subquery(
           $then: new OrExpressions([
 
             new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'H'),
-            new  AndExpressions([
+            new AndExpressions([
               new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
               new ExistsExpression(new Query({
 
@@ -2793,7 +2792,7 @@ query.subquery(
                 $where: [
                   new BinaryExpression(new ColumnExpression('shipment', 'partyGroupCode'), '=', new ColumnExpression('b2', 'partyGroupCode')),
                   new BinaryExpression(new ColumnExpression('shipment', 'jobNo'), '=', new ColumnExpression('b2', 'jobNo')),
-                 new BinaryExpression(new ColumnExpression('b2', 'billTypeCode'), '=', 'H'),
+                  new BinaryExpression(new ColumnExpression('b2', 'billTypeCode'), '=', 'H'),
 
                   shipmentIsActiveExpression('b2')
                 ]
@@ -2804,7 +2803,7 @@ query.subquery(
           ])
         },
         {
-          $when: new BinaryExpression(new Value('skip'), '=',new Unknown()),
+          $when: new BinaryExpression(new Value('skip'), '=', new Unknown()),
           $then: new Value(true)
         },
         {
@@ -2817,10 +2816,27 @@ query.subquery(
             ])
 
           ])
+        },
+        {
+          $when: new AndExpressions([
+            new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', new Value('M')),
+            new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', new Value('AIR')),
+
+          ]),
+          $then: MbillAIRExpression
+        },
+        {
+          $when: new AndExpressions([
+            new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', new Value('M')),
+            new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', new Value('SEA')),
+
+          ]),
+          $then: MbillSEAExpression
         }
+
       ],
       $else: new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', new Unknown())
-
+  
     }),
   })
 )
@@ -3172,11 +3188,11 @@ const dateList = [
   // date in shipment_date_utc table
   ...flexDataDateNameList.reduce((accumulator, currentValue) => {
 
-    const shipmentDateFlexDataExpression = new ColumnExpression('shipment_date','flexData')
-    const shipmentDateUtcFlexDataExpression = new ColumnExpression('shipment_date_utc','flexData')
+    const shipmentDateFlexDataExpression = new ColumnExpression('shipment_date', 'flexData')
+    const shipmentDateUtcFlexDataExpression = new ColumnExpression('shipment_date_utc', 'flexData')
 
-    const dateActualExpression =  new MathExpression(shipmentDateFlexDataExpression,'->>',`$.${currentValue}DateActual`)
-    const dateEstimatedExpression =  new MathExpression(shipmentDateFlexDataExpression,'->>',`$.${currentValue}DateEstimated`)
+    const dateActualExpression = new MathExpression(shipmentDateFlexDataExpression, '->>', `$.${currentValue}DateActual`)
+    const dateEstimatedExpression = new MathExpression(shipmentDateFlexDataExpression, '->>', `$.${currentValue}DateEstimated`)
 
     const dateActualInUtcExpression = new MathExpression(shipmentDateUtcFlexDataExpression, '->>', `$.${currentValue}DateActual`)
     const dateEstimatedInUtcExpression = new MathExpression(shipmentDateUtcFlexDataExpression, '->>', `$.${currentValue}DateEstimated`)
@@ -3207,12 +3223,12 @@ const dateList = [
 
 
   {
-    name : 'createdAt',
-    expression : createdAtExpression
+    name: 'createdAt',
+    expression: createdAtExpression
   },
   {
-    name : 'updatedAt',
-    expression : updatedAtExpression
+    name: 'updatedAt',
+    expression: updatedAtExpression
   },
   {
     name: 'jobDate',
@@ -3661,18 +3677,20 @@ const shortcuts: IShortcut[] = [
   {
     type: 'subquery',
     name: 'sop_date',
-    subqueryArg: () => (value, params) => new ExistsExpression(
-      addShipmentCheck(
-        sopTaskQuery().apply({
-          subqueries: {
-            ...passSubquery(params, 'sop_date', 'date'),
-            ...passSubquery(params, 'notDone'),
-            ...passSubquery(params, 'notDeleted'),
-          }
-        })
-      ),
-      false
-    )
+    subqueryArg: () => (value, params) => ({
+      $where: new ExistsExpression(
+        addShipmentCheck(
+          sopTaskQuery().apply({
+            subqueries: {
+              ...passSubquery(params, 'sop_date', 'date'),
+              ...passSubquery(params, 'notDone'),
+              ...passSubquery(params, 'notDeleted'),
+            }
+          })
+        ),
+        false
+      )
+    })
   },
 
   // subquery:notClosed

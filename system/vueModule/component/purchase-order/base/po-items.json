@@ -1,0 +1,498 @@
+{
+  "layout": "v-card",
+  "class": "min-height-263",
+  "components": [
+    {
+      "is": "MouseHidden",
+      "props": {
+        "hiddenProps": {
+          "style": {
+            "position": "absolute",
+            "right": "0px",
+            "top": "0px"
+          }
+        }
+      },
+      "slots": [
+        {
+          "name": "hidden",
+          "is": "DynamicComponent",
+          "props": {
+            "components": [
+              {
+                "is": "v-btn",
+                "props": {
+                  "icon": true,
+                  "small": true,
+                  "class": "zindex-3 margin-0"
+                },
+                "slots": [
+                  {
+                    "is": "Icon",
+                    "props": {
+                      "icon": "edit"
+                    }
+                  }
+                ],
+                "events": {
+                  "click.stop": [
+                    {
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "widget/changeMode",
+                        "mode": "edit"
+                      },
+                      "afterActions": [
+                        {
+                          "type": "dispatch",
+                          "otherParams": {
+                            "name": "widget/updateComponentSetting",
+                            "value": {
+                              "stepper": 3
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "is": "RightDrawer",
+                "props": {
+                  "hide-overlay": true,
+                  "buttonComponentProps": {
+                    "icon": true,
+                    "small": true,
+                    "class": "zindex-3 margin-0"
+                  }
+                },
+                "slots": [
+                  {
+                    "name": "button",
+                    "is": "Icon",
+                    "props": {
+                      "icon": "open_in_new"
+                    }
+                  },
+                  {
+                    "name": "default",
+                    "is": "WidgetForm",
+                    "props": {
+                      "fields": [
+                        {
+                          "name": "purchaseOrderItems",
+                          "component": "GridField",
+                          "label": "PurchaseOrderPage.purchaseOrderItems",
+                          "class": "xs-12",
+                          "props": {
+                            "overrideRowIndex": 1,
+                            "fields": [
+                              {
+                                "label": "PurchaseOrderPage.product",
+                                "name": "product.name",
+                                "component": "v-text-field",
+                                "class": "xs-12 sm-12 md-6 padding-top-4",
+                                "props": {
+                                  "placeholder": "  "
+                                }
+                              },
+                              {
+                                "label": "PurchaseOrderPage.itemKey",
+                                "name": "itemKey",
+                                "component": "v-text-field",
+                                "class": "xs-12 sm-6 md-8",
+                                "colGroupProps": {
+                                  "style": {
+                                    "width": "100%"
+                                  }
+                                },
+                                "props": {
+                                  "placeholder": "  "
+                                }
+                              },
+                              {
+                                "label": "PurchaseOrderPage.htsCode",
+                                "name": "htsCode",
+                                "component": "v-text-field",
+                                "class": "xs-12 sm-6 md-4",
+                                "colGroupProps": {
+                                  "style": {
+                                    "width": "100%"
+                                  }
+                                },
+                                "props": {
+                                  "placeholder": "  "
+                                }
+                              },
+                              {
+                                "label": "PurchaseOrderPage.ctns",
+                                "name": "ctns",
+                                "component": "NumberField",
+                                "class": "xs-12 sm-12 md-12",
+                                "props": {
+                                  "left": true,
+                                  "type": "number",
+                                  "min": 0,
+                                  "step": 1,
+                                  "int": true,
+                                  "placeholder": " "
+                                },
+                                "slots": [
+                                  {
+                                    "name": "append",
+                                    "is": "I18nText",
+                                    "props": {
+                                      "i18nKey": "CTNS"
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "label": "PurchaseOrderPage.ctnsFrom",
+                                "name": "ctnFrom",
+                                "component": "NumberField",
+                                "class": "xs-12 sm-6 md-6",
+                                "props": {
+                                  "left": true,
+                                  "type": "number",
+                                  "min": 0,
+                                  "step": 1,
+                                  "int": true,
+                                  "placeholder": " "
+                                },
+                                "slots": [
+                                  {
+                                    "name": "append",
+                                    "is": "I18nText",
+                                    "props": {
+                                      "i18nKey": "CTNS"
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "label": "PurchaseOrderPage.ctnTo",
+                                "name": "ctnTo",
+                                "component": "NumberField",
+                                "class": "xs-12 sm-6 md-6",
+                                "props": {
+                                  "left": true,
+                                  "type": "number",
+                                  "min": 0,
+                                  "step": 1,
+                                  "int": true,
+                                  "placeholder": " "
+                                },
+                                "slots": [
+                                  {
+                                    "name": "append",
+                                    "is": "I18nText",
+                                    "props": {
+                                      "i18nKey": "CTNS"
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "label": "PurchaseOrderPage.quantity",
+                                "name": "quantity",
+                                "component": "NumberField",
+                                "class": "xs-12 sm-6 md-6",
+                                "props": {
+                                  "left": true,
+                                  "type": "number",
+                                  "min": 0,
+                                  "step": 1,
+                                  "int": true,
+                                  "placeholder": " "
+                                }
+                              },
+                              {
+                                "label": "PurchaseOrderPage.quantityUnit",
+                                "name": "quantityUnit",
+                                "class": "xs-12 sm-6 md-6",
+                                "component": "v-text-field",
+                                "props": {
+                                  "placeholder": " "
+                                }
+                              },
+                              {
+                                "label": "PurchaseOrderPage.length",
+                                "name": "length",
+                                "component": "NumberField",
+                                "class": "xs-12 sm-3 md-3",
+                                "props": {
+                                  "left": true,
+                                  "type": "number",
+                                  "min": 0,
+                                  "step": 1,
+                                  "int": true,
+                                  "placeholder": " "
+                                }
+                              },
+                              {
+                                "label": "PurchaseOrderPage.width",
+                                "name": "width",
+                                "component": "NumberField",
+                                "class": "xs-12 sm-3 md-3",
+                                "props": {
+                                  "left": true,
+                                  "type": "number",
+                                  "min": 0,
+                                  "step": 1,
+                                  "int": true,
+                                  "placeholder": " "
+                                }
+                              },
+                              {
+                                "label": "PurchaseOrderPage.height",
+                                "name": "height",
+                                "component": "NumberField",
+                                "class": "xs-12 sm-3 md-3",
+                                "props": {
+                                  "left": true,
+                                  "type": "number",
+                                  "min": 0,
+                                  "step": 1,
+                                  "int": true,
+                                  "placeholder": " "
+                                }
+                              },
+                              {
+                                "label": "PurchaseOrderPage.lwhUnit",
+                                "name": "lwhUnit",
+                                "class": "xs-12 sm-3 md-3",
+                                "component": "v-text-field",
+                                "props": {
+                                  "placeholder": " "
+                                }
+                              },
+                              {
+                                "label": "PurchaseOrderPage.volume",
+                                "name": "volume",
+                                "component": "NumberField",
+                                "class": "xs-12 sm-4 md-4",
+                                "props": {
+                                  "left": true,
+                                  "type": "number",
+                                  "min": 0,
+                                  "step": 1,
+                                  "int": true,
+                                  "placeholder": " "
+                                },
+                                "slots": [
+                                  {
+                                    "name": "append",
+                                    "is": "I18nText",
+                                    "props": {
+                                      "i18nKey": "CBM"
+                                    }
+                                  }
+                                ]
+                              },
+                              {
+                                "label": "PurchaseOrderPage.weight",
+                                "name": "weight",
+                                "component": "NumberField",
+                                "class": "xs-12 sm-4 md-4",
+                                "props": {
+                                  "left": true,
+                                  "type": "number",
+                                  "min": 0,
+                                  "step": 1,
+                                  "int": true,
+                                  "placeholder": " "
+                                }
+                              },
+                              {
+                                "label": "PurchaseOrderPage.weightUnit",
+                                "name": "weightUnit",
+                                "class": "xs-12 sm-4 md-4",
+                                "component": "v-text-field",
+                                "props": {
+                                  "placeholder": " "
+                                }
+                              },
+                              {
+                                "component": "I18nText",
+                                "props": {
+                                  "i18nContext": "PurchaseOrderPage",
+                                  "i18nKey": "productDefinition"
+                                }
+                              },
+                              {
+                                "component": "TableField",
+                                "name": "product.definition",
+                                "props": {
+                                  "topLabel": true,
+                                  "fields": [{
+                                    "label": "PurchaseOrderPage.productCatFieldName",
+                                    "name": "fieldName",
+                                    "component": "v-text-field"
+                                  }, {
+                                    "label": "PurchaseOrderPage.productCatValue",
+                                    "name": "values",
+                                    "component": "v-text-field"
+                                  }]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "is": "DynamicComponent",
+          "props": {
+            "components": [
+              {
+                "is": "v-card-title",
+                "props": {
+                  "class": "bold uppercase padding-0 min-height-28 padding-leftright-4"
+                },
+                "slots": [
+                  {
+                    "is": "I18nText",
+                    "props": {
+                      "i18nContext": "PurchaseOrderPage",
+                      "i18nKey": "PoItemForm"
+                    }
+                  }
+                ]
+              },
+              {
+                "is": "v-divider"
+              },
+              {
+                "is": "WidgetForm",
+                "props": {
+                  "fields": [
+                    {
+                      "component": "TableField",
+                      "name": "purchaseOrderItems",
+                      "checkDisplayWhen": "return form && (form.purchaseOrderItems && form.purchaseOrderItems.length)",
+                      "props": {
+                        "topLabel": true,
+                        "fields": [
+                          {
+                            "label": "PurchaseOrderPage.product",
+                            "name": [
+                              "product.name",
+                              "productId"
+                            ],
+                            "component": "v-text-field"
+                          },
+                          {
+                            "label": "PurchaseOrderPage.itemKey",
+                            "name": "itemKey",
+                            "component": "v-text-field",
+                            "class": "xs-12 sm-6 md-8"
+                          },
+                          {
+                            "label": "PurchaseOrderPage.htsCode",
+                            "name": "htsCode",
+                            "component": "v-text-field",
+                            "class": "xs-12 sm-6 md-4"
+                          },
+                          {
+                            "label": "PurchaseOrderPage.ctns",
+                            "name": "ctns",
+                            "component": "NumberField",
+                            "class": "xs-12 sm-4 md-4",
+                            "props": {
+                              "left": true,
+                              "type": "number",
+                              "min": 0,
+                              "step": 1,
+                              "int": true
+                            },
+                            "slots": [
+                              {
+                                "name": "append",
+                                "is": "I18nText",
+                                "props": {
+                                  "i18nKey": "CTNS"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "label": "PurchaseOrderPage.ctnsFrom",
+                            "name": "ctnFrom",
+                            "component": "NumberField",
+                            "class": "xs-12 sm-4 md-4",
+                            "props": {
+                              "left": true,
+                              "type": "number",
+                              "min": 0,
+                              "step": 1,
+                              "int": true
+                            },
+                            "slots": [
+                              {
+                                "name": "append",
+                                "is": "I18nText",
+                                "props": {
+                                  "i18nKey": "CTNS"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "label": "PurchaseOrderPage.ctnTo",
+                            "name": "ctnTo",
+                            "component": "NumberField",
+                            "class": "xs-12 sm-4 md-4",
+                            "props": {
+                              "left": true,
+                              "type": "number",
+                              "min": 0,
+                              "step": 1,
+                              "int": true
+                            },
+                            "slots": [
+                              {
+                                "name": "append",
+                                "is": "I18nText",
+                                "props": {
+                                  "i18nKey": "CTNS"
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "label": "PurchaseOrderPage.quantity",
+                            "name": "quantity",
+                            "component": "NumberField",
+                            "props": {
+                              "type": "number",
+                              "min": 0,
+                              "step": 1,
+                              "int": true
+                            }
+                          },
+                          {
+                            "label": "PurchaseOrderPage.quantityUnit",
+                            "name": "quantityUnit",
+                            "component": "v-text-field"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

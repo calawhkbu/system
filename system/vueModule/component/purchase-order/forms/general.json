@@ -150,7 +150,6 @@
                 "url": "api/code/query/code_master",
                 "method": "POST",
                 "data": {
-                  "fields": ["code_master.*", "flex_data.data"],
                   "subqueries": {
                     "codeType": {
                       "value": "INCOTERMS"
@@ -165,7 +164,6 @@
                 "url": "api/code/query/code_master",
                 "method": "POST",
                 "data": {
-                  "fields": ["code_master.*", "flex_data.data"],
                   "subqueries": {
                     "codeType": {
                       "value": "INCOTERMS"

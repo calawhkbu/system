@@ -78,6 +78,7 @@ export default async function getDefaultParams(
                   'shipTo',
                   'factory',
                   'buyer',
+                  'forwarder'
                 ].includes(type)
                   ? new ColumnExpression(
                       'purchase_order_party',
@@ -98,7 +99,7 @@ export default async function getDefaultParams(
       )
       if (partyTypesExpressions && partyTypesExpressions.length) {
         const or = new InExpression(
-          new ColumnExpression('purchase_order_party', 'id'),
+          new ColumnExpression('purchase_order', 'id'),
           false,
           new Query({
             $select: [new ResultColumn(new ColumnExpression('purchase_order_party', 'poId'))],

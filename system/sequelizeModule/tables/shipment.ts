@@ -239,7 +239,7 @@ export default async function getDefaultParams(
                     [...fixedPartyKeys, 'forwarder'].includes(type)
                       ? new ColumnExpression(
                           'shipment_party',
-                          `${type === 'office' ? 'forwarder' : type}PartyId`
+                          `${type === 'forwarder' ? 'office' : type}PartyId`
                         )
                       : new MathExpression(
                           new ColumnExpression('shipment_party', 'flexData'),

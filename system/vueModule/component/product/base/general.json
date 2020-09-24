@@ -20,17 +20,30 @@
         "name": "description",
         "component": "v-text-field"
       }, {
-        "label": "ProductPage.productCategoryCode",
+        "label": "ProductPage.productCategory",
         "name": "productCategory.productCategoryCode",
         "component": "v-text-field"
       }, {
-        "label": "ProductPage.definition",
+        "label": "ProductCategoryPage.definition",
         "name": "definition",
-        "component": "MultiField",
+        "component": "TableField",
         "props": {
-          "onGetFixValueOverrideFunc": [
-            "return Array.isArray(value) ? value.map(v => v.fieldName + ': ' + v.values[0]) : [value.fieldName + ': ' + value.values[0]]"
-          ]
+          "topLabel": true,
+          "fields": [{
+            "component": "v-text-field",
+            "label": "ProductCategoryPage.fieldName",
+            "name": "fieldName",
+            "colGroupProps": {
+              "style": {
+                "width": "33%"
+              }
+            }
+          },
+          {
+            "component": "v-text-field",
+            "label": "ProductCategoryPage.values",
+            "name": "values"
+          }]
         }
       }]
     }

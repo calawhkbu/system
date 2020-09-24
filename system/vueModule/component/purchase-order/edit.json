@@ -36,9 +36,9 @@
             "is": "I18nText",
             "props": {
               "class": "headline",
-              "i18nKey": "BookingPage.updateTitle",
+              "i18nKey": "PurchaseOrderPage.updateTitle",
               "i18nOptions": {
-                "title": "{{context.$store.state.widget.data.bookingNo}}"
+                "title": "{{context.$store.state.widget.data.poNo}}"
               }
             }
           }
@@ -49,70 +49,71 @@
       "is": "WidgetStepper",
       "props": {
         "topClick": true,
+        "topSave": true,
         "validateBeforeStepChange": false,
-        "preview": "booking-preview",
+        "preview": false,
         "steps": [
           {
-            "id": "BookingPage.GeneralForm",
+            "id": "PurchaseOrderPage.GeneralForm",
             "layout": "v-card",
             "class": "margin-8",
             "components": [
               {
                 "is": "AsyncComponent",
                 "props": {
-                  "layoutName": "booking/forms/generalForm"
+                  "layoutName": "purchase-order/forms/general"
                 }
               }
             ]
           },
           {
-            "id": "BookingPage.PartyForm",
+            "id": "PurchaseOrderPage.PartyForm",
             "layout": "v-card",
             "class": "margin-8",
             "components": [
               {
                 "is": "AsyncComponent",
                 "props": {
-                  "layoutName": "booking/forms/partyForm"
+                  "layoutName": "purchase-order/forms/party"
                 }
               }
             ]
           },
           {
-            "id": "BookingPage.DateForm",
+            "id": "PurchaseOrderPage.DateForm",
             "layout": "v-card",
             "class": "margin-8",
             "components": [
               {
                 "is": "AsyncComponent",
                 "props": {
-                  "layoutName": "booking/forms/dateForm"
+                  "layoutName": "purchase-order/forms/date"
                 }
               }
             ]
           },
           {
-            "id": "BookingPage.ContainerForm",
+            "id": "PurchaseOrderPage.ItemsForm",
             "layout": "v-card",
             "class": "margin-8",
             "components": [
               {
                 "is": "AsyncComponent",
                 "props": {
-                  "layoutName": "booking/forms/containerForm"
+                  "layoutName": "purchase-order/forms/po-items"
                 }
               }
             ]
           },
           {
-            "id": "BookingPage.referenceForm",
+            "id": "PurchaseOrderPage.referenceForm",
             "layout": "v-card",
             "class": "margin-8",
             "components": [
               {
                 "is": "AsyncComponent",
                 "props": {
-                  "layoutName": "booking/forms/referenceForm"
+                  "layoutName": "purchase-order/forms/reference"
                 }
               }
             ]
