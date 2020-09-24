@@ -2763,7 +2763,7 @@ query.subquery(
 
       cases: [
         {
-          $when: new BinaryExpression(new Value('default'), '=',! new Value('H') &&! new Value('M')&&! new Value('S') &&! new Value('W')  ),
+          $when: new BinaryExpression(new Value('default'), '=',new Unknown() ),
           $then: new OrExpressions([
 
             new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'H'),
@@ -2809,7 +2809,7 @@ query.subquery(
   .register('value', 0)
   .register('value', 1)
   .register('value', 2)
- // .register('value', 3)
+  .register('value', 3)
 
 
 
