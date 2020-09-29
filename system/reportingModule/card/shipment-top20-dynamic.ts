@@ -54,7 +54,7 @@ export default {
 
         handleBottomSheetGroupByEntityValue(subqueries)
 
-        const {
+        var {
           groupByEntity,
           codeColumnName,
           nameColumnName,
@@ -72,6 +72,16 @@ export default {
         prevResult.dynamicColumnCodeColumnName = dynamicColumnCodeColumnName
         prevResult.dynamicColumnNameColumnName = dynamicColumnNameColumnName
 
+        if(groupByEntity=='coloader'){
+          codeColumnName="linerAgentPartyCode";
+          nameColumnName="linerAgentPartyShortNameInReportAny";
+        }
+
+        if(dynamicColumnGroupByEntity=='coloader'){
+          dynamicColumnCodeColumnName="linerAgentPartyCode";
+          dynamicColumnNameColumnName="linerAgentPartyShortNameInReportAny";
+        }
+
 
         const topX = subqueries.topX.value
         const topY = subqueries.topY.value
@@ -87,6 +97,8 @@ export default {
         subqueries[`${dynamicColumnCodeColumnName}IsNotNull`] = {
           value: true
         }
+
+        
 
         params.fields = [
           // select Month statistics
@@ -113,7 +125,8 @@ export default {
         }
 
         params.limit = topY
-
+        // console.log('--------params')
+        // console.log(params)
         return params
       }
     },
@@ -122,23 +135,29 @@ export default {
       dataServiceQuery: ['shipment', 'shipment'],
       onResult(res, params, prevResult: Result): Result {
 
-        const { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables } = prevResult
-
-
-
-
+        var { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables } = prevResult
 
         prevResult.groupByResult = res.map(row => {
 
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
-          for (const variable of summaryVariables) {
+          for (let variable of summaryVariables) {
             // change into number
+            if(variable=='coloader'){
+              variable="linerAgentPartyCode";
+            }
+            if(groupByEntity=='coloader'){
+              codeColumnName="linerAgentPartyCode";
+              nameColumnName="linerAgentPartyShortNameInReportAny";
+            }
             row_[`${variable}`] = +row[variable]
           }
           row_['erpCode']=row['ErpSite']
+          row_['code']=row[codeColumnName];
+          row_['name']=row[nameColumnName];
 
           return row_
         })
+ 
         return prevResult
       }
     },
@@ -151,7 +170,7 @@ export default {
 
         const subqueries = (params.subqueries = params.subqueries || {})
 
-        const { moment, groupByResult, codeColumnName, dynamicColumnCodeColumnName, dynamicColumnNameColumnName, summaryVariables } = prevResult
+        var { moment, groupByResult, codeColumnName, dynamicColumnGroupByEntity,dynamicColumnCodeColumnName, dynamicColumnNameColumnName, summaryVariables,groupByEntity,nameColumnName } = prevResult
 
         const codeList = groupByResult.map(row => row.code)
 
@@ -159,8 +178,18 @@ export default {
           codeColumnName,
           dynamicColumnCodeColumnName,
           dynamicColumnNameColumnName,
-          ...summaryVariables
+          ...summaryVariables,
+          'ErpSite'
         ]
+        if(groupByEntity=='coloader'){
+          codeColumnName="linerAgentPartyCode";
+          nameColumnName="linerAgentPartyShortNameInReportAny";
+        }
+
+        if(dynamicColumnGroupByEntity=='coloader'){
+          dynamicColumnCodeColumnName="linerAgentPartyCode";
+          dynamicColumnNameColumnName="linerAgentPartyShortNameInReportAny";
+        }
 
         // filter groupBy
         subqueries[codeColumnName] = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
@@ -188,8 +217,7 @@ export default {
     {
       type: 'callDataService',
       dataServiceQuery: ['shipment', 'shipment'],
-      onResult(res, originalParams, prevResult: Result): any[] {
-        var params = Object.assign({}, originalParams);
+      onResult(res, params, prevResult: Result): any[] {
 
         var {
           moment,
@@ -198,6 +226,7 @@ export default {
           nameColumnName,
           dynamicColumnCodeColumnName,
           dynamicColumnNameColumnName,
+          dynamicColumnGroupByEntity,
           summaryVariables,
           groupByResult
         } = prevResult
@@ -219,23 +248,33 @@ export default {
 
           // calculate topX dynamicCodeList
           
-          const dynamicCodeList= [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0, topX)
+          var dynamicCodeList= [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0, topX)
           const dynamicNameList = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnNameColumnName]))].splice(0, topX)
+          const dynamicerpSiteList = [...new Set(res.map(dynamicRow => dynamicRow['ErpSite']))].splice(0, topX)
+          const dynamicRawList = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0, topX)
+          if(dynamicColumnGroupByEntity=='office'){
+            dynamicCodeList=dynamicerpSiteList;
+          }
           const row_ = {
             ...row,
             dynamicCodeList,
             dynamicNameList,
+            dynamicerpSiteList,
+            dynamicRawList
           }
 
-
-         
-
+      
           res.map(dynamicRow => {
             const { dynamicCode } = { dynamicCode: dynamicRow[dynamicColumnCodeColumnName] }
+          
             if (row_["code"] === dynamicRow[codeColumnName]){
               summaryVariables.map(summaryVariable => {
                 var fieldName;
-                fieldName = `${dynamicCode}_${summaryVariable}`;
+                if(dynamicColumnGroupByEntity=='office'){
+                  fieldName = `${dynamicRow['ErpSite']}_${summaryVariable}`;
+                }else{
+                  fieldName = `${dynamicCode}_${summaryVariable}`;
+                }
 
                 // forcefully make it into number
                 const dynamicValue = +dynamicRow[summaryVariable]
