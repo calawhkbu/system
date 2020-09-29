@@ -2765,12 +2765,9 @@ query.subquery(false, 'anyPartyId', ((value: any, params?: IQueryParams) => {
 // Bill Type
 
 const MbillSEAExpression = new AndExpressions([
-  new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
+  // new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M'),
   new IsNullExpression(new ColumnExpression('shipment', 'masterNo'), true),
 ]);
-
-const MbillAIRExpression = new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', 'M');
-
 
 query.subquery(
   true,
@@ -2817,26 +2814,31 @@ query.subquery(
 
           ])
         },
-        {
-          $when: new AndExpressions([
-            new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', new Value('M')),
-            new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', new Value('AIR')),
 
-          ]),
-          $then: MbillAIRExpression
-        },
-        {
-          $when: new AndExpressions([
-            new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', new Value('M')),
-            new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', new Value('SEA')),
-
-          ]),
-          $then: MbillSEAExpression
-        }
 
       ],
-      $else: new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', new Unknown())
-  
+      $else: new CaseExpression({
+        cases: [
+          {
+            $when: new BinaryExpression('M', '=', new Unknown()),
+            $then: new CaseExpression({
+              cases: [
+                {
+                  $when: new AndExpressions([
+                    new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', new Value('SEA')),
+
+                  ]),
+                  $then: MbillSEAExpression
+                }
+              ],
+              $else: new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', new Unknown())
+            })
+          }
+
+        ],
+        $else: new BinaryExpression(new ColumnExpression('shipment', 'billTypeCode'), '=', new Unknown())
+      })
+
     }),
   })
 )
@@ -2844,6 +2846,8 @@ query.subquery(
   .register('value', 1)
   .register('value', 2)
   .register('value', 3)
+  .register('value', 4)
+  .register('value', 5)
 
 
 

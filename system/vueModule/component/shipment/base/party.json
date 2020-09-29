@@ -427,6 +427,13 @@
                     },
                     {
                       "label": "Widget.contactName",
+                      "canEdit": [
+                        "const value = extraFunction._.get(form, 'shipmentParty.{{flex}}{{key}}PartyId');",
+                        "if (value) {",
+                        "return true",
+                        "}",
+                        "return false"
+                      ],
                       "name": "shipmentParty.{{flex}}{{key}}PartyContactName",
                       "checkDisplayWhen": "return form && form.shipmentParty && form.shipmentParty.{{flex}}{{key}}PartyContactName",
                       "component": "v-text-field",
@@ -434,6 +441,13 @@
                     },
                     {
                       "label": "Widget.contactEmail",
+                      "canEdit": [
+                        "const value = extraFunction._.get(form, 'shipmentParty.{{flex}}{{key}}PartyId');",
+                        "if (value) {",
+                        "return true",
+                        "}",
+                        "return false"
+                      ],
                       "name": "shipmentParty.{{flex}}{{key}}PartyContactEmail",
                       "checkDisplayWhen": "return form && form.shipmentParty && form.shipmentParty.{{flex}}{{key}}PartyContactEmail",
                       "component": "v-text-field",
@@ -442,6 +456,13 @@
                     },
                     {
                       "label": "Widget.contactPhone",
+                      "canEdit": [
+                        "const value = extraFunction._.get(form, 'shipmentParty.{{flex}}{{key}}PartyId');",
+                        "if (value) {",
+                        "return true",
+                        "}",
+                        "return false"
+                      ],
                       "name": "shipmentParty.{{flex}}{{key}}PartyContactPhone",
                       "checkDisplayWhen": "return form && form.shipmentParty && form.shipmentParty.{{flex}}{{key}}PartyContactPhone",
                       "component": "v-text-field",
@@ -449,6 +470,13 @@
                     },
                     {
                       "name": "shipmentParty.{{flex}}{{key}}PartyContacts",
+                      "canEdit": [
+                        "const value = extraFunction._.get(form, 'shipmentParty.{{flex}}{{key}}PartyId');",
+                        "if (value) {",
+                        "return true",
+                        "}",
+                        "return false"
+                      ],
                       "component": "GridField",
                       "class": "xs-12",
                       "readonlyClass": "xs-12",
@@ -468,54 +496,11 @@
                             "readonlyClass": "xs-10 md-10"
                           },
                           {
-                            "label": "Widget.inviteEmail",
-                            "checkDisplayWhen": "return form.Email && mode.includes('detail')",
-                            "name": "Email",
-                            "component": "button-field",
-                            "readonlyClass": "xs-2 md-2",
-                            "slots": [{
-                              "is": "Icon",
-                              "props": {
-                                "icon": "email"
-                              }
-                            }],
-                            "props": {
-                              "flat": true,
-                              "icon": true,
-                              "events": {
-                                "click.stop": [{
-                                  "type": "axios",
-                                  "otherParams": {
-                                    "axiosParams": {
-                                      "url": "/api/invitation/invite/invite",
-                                      "method": "POST",
-                                      "data": {
-                                        "entityId": "{{context.$store.state.widget.id}}",
-                                        "tableName": "shipment",
-                                        "partyId": ["{{ '`${args[0]}${args[1]}PartyId`'  | calculate(flex,key) | getFrom(context.$store.state.widget.data)}}"],
-                                        "partyType": ["{{key}}"],
-                                        "person": {
-                                          "userName": "{{ context.fixValue }}"
-                                        }
-                                      }
-                                    }
-                                  },
-                                  "afterActions": [{
-                                    "type": "notify",
-                                    "otherParams": {
-                                      "notification": "invite success"
-                                    }
-                                  }]
-                                }]
-                              }
-                            }
-                          },
-                          {
                             "label": "Widget.contactXPhone",
                             "name": "Phone",
                             "component": "v-text-field",
                             "class": "xs-12 md-12",
-                            "_readonlyClass": "xs-12 md-12"
+                            "readonlyClass": "xs-12 md-12"
                           }
                         ]
                       }

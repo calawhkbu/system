@@ -474,7 +474,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'jobNo',
-    expression: re => new ColumnExpression(bookingTable, 'jobNo'),
+    expression: re => new ColumnExpression(shipmentTable, 'jobNo'),
     registered: true,
     companions: ['table:shipment']
   },

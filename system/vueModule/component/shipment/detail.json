@@ -292,13 +292,13 @@
             ]
           },
           {
-            "index": "alertAndDocument",
+            "index": "reference",
             "tabComponents": [
               {
                 "is": "I18nText",
                 "props": {
                   "i18nContext": "ShipmentPage",
-                  "i18nKey": "alertAndDocument"
+                  "i18nKey": "reference"
                 }
               }
             ],
@@ -306,9 +306,27 @@
               {
                 "is": "AsyncComponent",
                 "props": {
-                  "layoutName": "shipment/base/document"
+                  "class": "padding-top-4",
+                  "layoutName": "shipment/base/reference"
                 }
-              },
+              }
+            ]
+          },
+          {
+            "index": "alert",
+            "checkDisplayWhen": [
+              "return user.roles.find(role => role.name === 'WATCHDOG') || context.isSwivelAdmin;"
+            ],
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "ShipmentPage",
+                  "i18nKey": "alert"
+                }
+              }
+            ],
+            "tabItemComponents": [
               {
                 "is": "AsyncComponent",
                 "props": {
@@ -319,6 +337,9 @@
           },
           {
             "index": "sopTasks",
+            "checkDisplayWhen": [
+              "return user.roles.find(role => role.name === 'SOP_TASK') || context.isSwivelAdmin;"
+            ],
             "tabComponents": [
               {
                 "is": "I18nText",
@@ -338,13 +359,13 @@
             ]
           },
           {
-            "index": "reference",
+            "index": "document",
             "tabComponents": [
               {
                 "is": "I18nText",
                 "props": {
                   "i18nContext": "ShipmentPage",
-                  "i18nKey": "reference"
+                  "i18nKey": "document"
                 }
               }
             ],
@@ -352,8 +373,7 @@
               {
                 "is": "AsyncComponent",
                 "props": {
-                  "class": "padding-top-4",
-                  "layoutName": "shipment/base/reference"
+                  "layoutName": "shipment/base/document"
                 }
               }
             ]
@@ -507,6 +527,10 @@
                 },
                 {
                   "is": "AsyncComponent",
+                  "if": [
+                    "const user = context.$store.state.auth.userProfile;",
+                    "return user.roles.find(role => role.name === 'WATCHDOG') || context.isSwivelAdmin;"
+                  ],
                   "props": {
                     "class": "xs-12 margin-bottom-2",
                     "layoutName": "shipment/base/alert"
@@ -514,6 +538,10 @@
                 },
                 {
                   "is": "AsyncComponent",
+                  "if": [
+                    "const user = context.$store.state.auth.userProfile;",
+                    "return user.roles.find(role => role.name === 'SOP_TASK') || context.isSwivelAdmin;"
+                  ],
                   "props": {
                     "class": "xs-12 margin-bottom-2",
                     "layoutName": "shipment/base/soptask"
@@ -521,6 +549,10 @@
                 },
                 {
                   "is": "AsyncComponent",
+                  "if": [
+                    "const user = context.$store.state.auth.userProfile;",
+                    "return user.roles.find(role => role.name === 'CHAT') || context.isSwivelAdmin;"
+                  ],
                   "props": {
                     "class": "xs-12 margin-bottom-2",
                     "layoutName": "shipment/base/chat"

@@ -17,16 +17,6 @@
           "isComponent": "v-label",
           "i18nContext": "Widget",
           "class": "font-90"
-        },
-        "shipper": {
-          "isComponent": "v-label",
-          "i18nContext": "Widget",
-          "class": "font-90 required"
-        },
-        "consignee": {
-          "isComponent": "v-label",
-          "i18nContext": "Widget",
-          "class": "font-90 required"
         }
       },
       "fieldProps": {
@@ -58,9 +48,91 @@
       },
       "addItemsOrFunc": ["Trucker", "Broker", "Factory", "Warehouse"],
       "fields": [{
+          "checkDisplayWhen": "return '{{key}}' === 'forwarder'",
+          "name": "bookingParty.forwarderParty",
+          "component": "AsyncSelect",
+          "class": "xs-12 padding-topbottom-4",
+          "relation": "bookingParty.forwarderParty",
+          "relationMore": [{
+            "name": "bookingParty.forwarderParty.id",
+            "selector": "id"
+          }, {
+            "name": "bookingParty.forwarderParty.name",
+            "selector": "name"
+          }, {
+            "name": "bookingParty.forwarderParty.erpCode",
+            "selector": "erpCode"
+          }, {
+            "name": "bookingParty.forwarderPartyId",
+            "selector": "id"
+          }, {
+            "name": "bookingParty.forwarderPartyName",
+            "selector": "name"
+          }, {
+            "name": "bookingParty.forwarderPartyCode",
+            "selector": "erpCode"
+          }, {
+            "name": "bookingParty.forwarderPartyPhone",
+            "selector": "partyPhone"
+          }, {
+            "name": "bookingParty.forwarderPartyFax",
+            "selector": "partyFax"
+          }, {
+            "name": "bookingParty.forwarderPartyEmail",
+            "selector": "partyEmail"
+          }, {
+            "name": "bookingParty.forwarderPartyAddress",
+            "selector": "partyAddress"
+          }, {
+            "name": "bookingParty.forwarderPartyCityCode",
+            "selector": "partyCityCode"
+          }, {
+            "name": "bookingParty.forwarderPartyStateCode",
+            "selector": "partyStateCode"
+          }, {
+            "name": "bookingParty.forwarderPartyCountryCode",
+            "selector": "partyCountryCode"
+          }, {
+            "name": "bookingParty.forwarderPartyZip",
+            "selector": "partyZip"
+          }, {
+            "name": "bookingParty.forwarderPartyContactPersonId",
+            "selector": "contactPersonId"
+          }, {
+            "name": "bookingParty.forwarderPartyContactPersonEmail",
+            "selector": "contactPersonEmail"
+          }, {
+            "name": "bookingParty.forwarderPartyContactPersonName",
+            "selector": "contactPersonName"
+          }, {
+            "name": "bookingParty.forwarderPartyContactPersonPhone",
+            "selector": "contactPersonPhone"
+          }],
+          "validator": ["required"],
+          "props": {
+            "required": true,
+            "axiosParams": {
+              "url": "api/party/query/office_auto_suggest",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "activeStatus": {
+                    "value": "active"
+                  },
+                  "isBranch": {
+                    "value": 1
+                  }
+                }
+              }
+            },
+            "item-text": "name",
+            "item-value": "erpCode"
+          }
+        }, {
           "name": "bookingParty.{{flex}}{{key}}Party",
           "component": "AsyncAutoSuggest",
           "class": "xs-12",
+          "checkDisplayWhen": "return '{{key}}' !== 'forwarder'",
           "relation": "bookingParty.{{flex}}{{key}}Party",
           "relationMore": [{
             "name": "bookingParty.{{flex}}{{key}}PartyId",
@@ -433,7 +505,7 @@
         },
         {
           "name": "bookingParty.{{flex}}{{key}}PartyContacts",
-          "component": "TableField",
+          "component": "GridField",
           "class": "xs-12",
           "canEdit": [
             "const value = extraFunction._.get(form, 'bookingParty.{{flex}}{{key}}PartyId');",
@@ -447,22 +519,22 @@
                 "label": "Widget.contactXName",
                 "name": "Name",
                 "component": "v-text-field",
-                "class": "xs-12 md-4",
-                "_readonlyClass": "hidden"
+                "class": "xs-12 md-12",
+                "readonlyClass": "xs-12 md-12"
               },
               {
                 "label": "Widget.contactXEmail",
                 "name": "Email",
                 "component": "v-text-field",
-                "class": "xs-12 md-4",
-                "_readonlyClass": "hidden"
+                "class": "xs-12 md-12",
+                "readonlyClass": "xs-10 md-10"
               },
               {
                 "label": "Widget.contactXPhone",
                 "name": "Phone",
                 "component": "v-text-field",
-                "class": "xs-12 md-4",
-                "_readonlyClass": "hidden"
+                "class": "xs-12 md-12",
+                "readonlyClass": "xs-12 md-12"
               }
             ]
           }

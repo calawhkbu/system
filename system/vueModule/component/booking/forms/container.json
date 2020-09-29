@@ -60,29 +60,7 @@
           "component": "TableField",
           "props": {
             "topLabel": true,
-            "fields": [{
-                "label": "BookingPage.ctns",
-                "name": "ctns",
-                "colGroupProps": {
-                  "style": {
-                    "width": "10%"
-                  }
-                },
-                "component": "NumberField",
-                "props": {
-                  "type": "number",
-                  "min": 0,
-                  "step": 1,
-                  "int": true
-                },
-                "slots": [{
-                  "name": "append",
-                  "is": "I18nText",
-                  "props": {
-                    "i18nKey": "CTNS"
-                  }
-                }]
-              },
+            "fields": [
               {
                 "label": "BookingPage.quantity",
                 "name": "quantity",

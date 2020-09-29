@@ -261,7 +261,7 @@
             ]
           },
           {
-            "index": "partyDateAndReference",
+            "index": "PartyAndDate",
             "tabComponents": [{
               "is": "I18nText",
               "props": {
@@ -296,32 +296,46 @@
             ]
           },
           {
-            "index": "alertAndDocument",
-            "tabComponents": [
-              {
-                "is": "I18nText",
-                "props": {
-                  "i18nContext": "BookingPage",
-                  "i18nKey": "alertAndDocument"
-                }
+            "index": "reference",
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "BookingPage",
+                "i18nKey": "reference"
               }
+            }],
+            "tabItemComponents": [{
+              "is": "AsyncComponent",
+              "props": {
+                "class": "padding-top-4",
+                "layoutName": "booking/base/reference"
+              }
+            }]
+          },
+          {
+            "index": "alert",
+            "checkDisplayWhen": [
+              "return user.roles.find(role => role.name === 'WATCHDOG') || context.isSwivelAdmin;"
             ],
-            "tabItemComponents": [
-              {
-                "is": "AsyncComponent",
-                "props": {
-                  "layoutName": "booking/base/document"
-                }
-              },
-              {
-                "is": "AsyncComponent",
-                "props": {
-                  "layoutName": "shipment/base/alert"
-                }
-              }]
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "BookingPage",
+                "i18nKey": "alert"
+              }
+            }],
+            "tabItemComponents": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "shipment/base/alert"
+              }
+            }]
           },
           {
             "index": "sopTasks",
+            "checkDisplayWhen": [
+              "return user.roles.find(role => role.name === 'SOP_TASK') || context.isSwivelAdmin;"
+            ],
             "tabComponents": [{
               "is": "I18nText",
               "props": {
@@ -337,19 +351,18 @@
             }]
           },
           {
-            "index": "reference",
+            "index": "document",
             "tabComponents": [{
               "is": "I18nText",
               "props": {
                 "i18nContext": "BookingPage",
-                "i18nKey": "reference"
+                "i18nKey": "document"
               }
             }],
             "tabItemComponents": [{
               "is": "AsyncComponent",
               "props": {
-                "class": "padding-top-4",
-                "layoutName": "booking/base/reference"
+                "layoutName": "booking/base/document"
               }
             }]
           }
@@ -433,6 +446,10 @@
                 },
                 {
                   "is": "AsyncComponent",
+                  "if": [
+                    "const user = context.$store.state.auth.userProfile;",
+                    "return user.roles.find(role => role.name === 'WATCHDOG') || context.isSwivelAdmin;"
+                  ],
                   "props": {
                     "class": "xs-12 margin-bottom-2",
                     "layoutName": "booking/base/alert"
@@ -440,6 +457,10 @@
                 },
                 {
                   "is": "AsyncComponent",
+                  "if": [
+                    "const user = context.$store.state.auth.userProfile;",
+                    "return user.roles.find(role => role.name === 'SOP_TASK') || context.isSwivelAdmin;"
+                  ],
                   "props": {
                     "class": "xs-12 margin-bottom-2",
                     "layoutName": "booking/base/soptask"
@@ -447,6 +468,10 @@
                 },
                 {
                   "is": "AsyncComponent",
+                  "if": [
+                    "const user = context.$store.state.auth.userProfile;",
+                    "return user.roles.find(role => role.name === 'CHAT') || context.isSwivelAdmin;"
+                  ],
                   "props": {
                     "class": "xs-12 margin-bottom-2",
                     "layoutName": "booking/base/chat"

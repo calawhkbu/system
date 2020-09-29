@@ -962,7 +962,7 @@ const updatedAtExpression = new FunctionExpression(
   new ColumnExpression('booking', 'updatedAt')
 )
 
-const jobDateExpression = new ColumnExpression('booking', 'createdAt')
+const jobDateExpression = createdAtExpression
 
 const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
 
@@ -1822,7 +1822,7 @@ query
             new IsNullExpression(new Unknown(), false),
             new IsNullExpression(new Unknown(), false),
           ]),
-          new BetweenExpression(new ColumnExpression('booking', 'createdAt'), false, new Unknown(), new Unknown()),
+          new BetweenExpression(createdAtExpression, false, new Unknown(), new Unknown()),
         ]),
 
         // last current date case
@@ -1836,8 +1836,8 @@ query
             new IsNullExpression(new Unknown(), false),
           ]),
 
-          new BetweenExpression(new ColumnExpression('booking', 'createdAt'), false, new Unknown(), new Unknown()),
-          new BetweenExpression(new ColumnExpression('booking', 'createdAt'), false, new Unknown(), new Unknown())
+          new BetweenExpression(createdAtExpression, false, new Unknown(), new Unknown()),
+          new BetweenExpression(createdAtExpression, false, new Unknown(), new Unknown())
         ]),
 
       ])

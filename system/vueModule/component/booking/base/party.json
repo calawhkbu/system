@@ -79,16 +79,6 @@
                   "isComponent": "v-label",
                   "i18nContext": "Widget",
                   "class": "font-90"
-                },
-                "shipper": {
-                  "isComponent": "v-label",
-                  "i18nContext": "Widget",
-                  "class": "font-90 required"
-                },
-                "consignee": {
-                  "isComponent": "v-label",
-                  "i18nContext": "Widget",
-                  "class": "font-90 required"
                 }
               },
               "fieldProps": {
@@ -273,27 +263,17 @@
               "mainKey": "Party",
               "formProps": {
                 "z": {
-                  "class": "xs-12 md-6 padding-leftright-1"
+                  "class": "xs-12 padding-leftright-1"
                 }
               },
               "extraGridProps": {
-                "class": "xs-12 md-6 padding-leftright-1"
+                "class": "xs-12 padding-leftright-1"
               },
               "labelProps": {
                 "z": {
                   "isComponent": "v-label",
                   "i18nContext": "Widget",
                   "class": "font-90"
-                },
-                "shipper": {
-                  "isComponent": "v-label",
-                  "i18nContext": "Widget",
-                  "class": "font-90 required"
-                },
-                "consignee": {
-                  "isComponent": "v-label",
-                  "i18nContext": "Widget",
-                  "class": "font-90 required"
                 }
               },
               "fieldProps": {
@@ -320,7 +300,7 @@
                 "notifyParty"
               ],
               "checkDisplayWhen": [
-                "return form && (form[`${key}Party`] || form[`${key}PartyName`])"
+                "return index < 3 && form && (form[`${key}Party`] || form[`${key}PartyName`])"
               ],
               "fields": [{
                 "name": ["bookingParty.{{flex}}{{key}}Party.name", "bookingParty.{{flex}}{{key}}PartyName"],
