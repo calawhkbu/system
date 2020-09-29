@@ -112,17 +112,17 @@
                     "icon": true
                   }
                 }]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "BookingPage",
+                    "i18nKey": "bookmark"
+                  }
+                }]
               }
-            },
-            "mainComponents": {
-              "layout": "span",
-              "components": [{
-                "is": "I18nText",
-                "props": {
-                  "i18nContext": "BookingPage",
-                  "i18nKey": "bookmark"
-                }
-              }]
             }
           },
           {
@@ -155,17 +155,17 @@
                     }]
                   }
                 }]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "BookingPage",
+                    "i18nKey": "map"
+                  }
+                }]
               }
-            },
-            "mainComponents": {
-              "layout": "span",
-              "components": [{
-                "is": "I18nText",
-                "props": {
-                  "i18nContext": "BookingPage",
-                  "i18nKey": "map"
-                }
-              }]
             }
           },
           {
@@ -198,17 +198,17 @@
                     }]
                   }
                 }]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "BookingPage",
+                    "i18nKey": "edit"
+                  }
+                }]
               }
-            },
-            "mainComponents": {
-              "layout": "span",
-              "components": [{
-                "is": "I18nText",
-                "props": {
-                  "i18nContext": "BookingPage",
-                  "i18nKey": "edit"
-                }
-              }]
             }
           }
         ]

@@ -319,12 +319,14 @@
                 "label": "ShipmentPage.picId",
                 "name": "picId",
                 "component": "v-text-field",
+                "checkDisplayWhen": "return form && form.picId",
                 "class": "xs-6 md-3"
               },
               {
                 "label": "ShipmentPage.picEmail",
                 "name": "picEmail",
                 "component": "v-text-field",
+                "checkDisplayWhen": "return form && form.picEmail",
                 "class": "xs-6 md-3"
               },
               {

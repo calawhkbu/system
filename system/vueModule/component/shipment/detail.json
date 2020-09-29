@@ -179,17 +179,17 @@
                     }]
                   }
                 }]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "Shipment",
+                    "i18nKey": "edit"
+                  }
+                }]
               }
-            },
-            "mainComponents": {
-              "layout": "span",
-              "components": [{
-                "is": "I18nText",
-                "props": {
-                  "i18nContext": "Shipment",
-                  "i18nKey": "edit"
-                }
-              }]
             }
           }
         ]
