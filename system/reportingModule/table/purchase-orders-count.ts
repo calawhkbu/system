@@ -5,7 +5,7 @@ export default {
     {
       type: 'callDataService',
       dataServiceType: 'count',
-      dataServiceQuery: ['purchaseOrder', 'purchase_order']
+      dataServiceQuery: ['purchase_order', 'purchase_order']
     }
   ],
   columns: [

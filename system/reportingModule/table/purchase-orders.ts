@@ -4,7 +4,7 @@ export default {
   jqls: [
     {
       type: 'callDataService',
-      dataServiceQuery: ['purchaseOrder', 'purchase_order']
+      dataServiceQuery: ['purchase_order', 'purchase_order']
     }
   ],
   columns: [

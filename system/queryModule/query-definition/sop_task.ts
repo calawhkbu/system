@@ -1,9 +1,8 @@
 import { QueryDef } from "classes/query/QueryDef";
 import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery, ParameterExpression, OrderBy, BetweenExpression } from "node-jql";
 import { IfExpression, alwaysTrueExpression, wrapOrder, IfNullExpression } from 'utils/jql-subqueries'
-import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityExpression } from "utils/sop-task";
+import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityExpression, getLastStatusQuery } from "utils/sop-task";
 import { IShortcut } from 'classes/query/Shortcut'
-import { IQueryParams } from "classes/query";
 
 const taskTable = 'sop_task'
 const templateTaskTable = 'sop_template_task'
@@ -311,14 +310,6 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'deadlineScore',
     expression: new ColumnExpression(taskTable, 'deadlineScore'),
-    registered: true
-  },
-
-  // field:statusList
-  {
-    type: 'field',
-    name: 'statusList',
-    expression: new ColumnExpression(taskTable, 'statusList'),
     registered: true
   },
 
@@ -906,7 +897,7 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
-  // field:status
+  // field:status (calculated)
   {
     type: 'field',
     name: 'status',
@@ -924,6 +915,13 @@ const shortcuts: IShortcut[] = [
     registered: true
   },
 
+  // field:taskStatus (raw)
+  {
+    type: 'field',
+    name: 'taskStatus',
+    expression: re => new QueryExpression(getLastStatusQuery('status'))
+  },
+
   // field:statusAt
   {
     type: 'field',
@@ -933,7 +931,7 @@ const shortcuts: IShortcut[] = [
         { $when: re['isDeleted'], $then: new Value(null) },
         { $when: re['isClosed'], $then: re['closedAt'] }
       ],
-      new MathExpression(re['statusList'], '->>', new Value('$[0].statusAt'))
+      new QueryExpression(getLastStatusQuery('createdAt'))
     )
   },
 
@@ -947,7 +945,7 @@ const shortcuts: IShortcut[] = [
           { $when: re['isDeleted'], $then: new Value(null) },
           { $when: re['isClosed'], $then: re['closedBy'] }
         ],
-        new MathExpression(re['statusList'], '->>', new Value('$[0].statusBy'))
+        new QueryExpression(getLastStatusQuery('createdBy'))
       )
       const me = params.subqueries && typeof params.subqueries.user === 'object' && 'value' in params.subqueries.user ? params.subqueries.user.value : ''
       const byMeExpression = new BinaryExpression(statusByExpression, '=', me)

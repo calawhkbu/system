@@ -121,17 +121,17 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
 
   const partyTableName = party.name
 
-  const partyIdExpression = party.partyIdExpression  || { expression : new ColumnExpression('purchase_order_party', `${partyTableName}PartyId`), companion : ['table:purchase_order_party']}
-  const partyNameExpression = party.partyNameExpression ||  { expression :  new ColumnExpression('purchase_order_party', `${partyTableName}PartyName`), companion : ['table:purchase_order_party']}
-  const partyCodeExpression = party.partyCodeExpression || { expression :  new ColumnExpression('purchase_order_party', `${partyTableName}PartyCode`), companion : ['table:purchase_order_party']}
-  const partyNameInReportExpression = party.partyNameInReportExpression || { expression :  new ColumnExpression(party.name, `name`), companion : [`table:${party.name}`]}
-  const partyShortNameInReportExpression = party.partyShortNameInReportExpression ||  { expression : new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion : [`table:${party.name}`]}
+  const partyIdExpression = party.partyIdExpression || { expression: new ColumnExpression('purchase_order_party', `${partyTableName}PartyId`), companion: ['table:purchase_order_party'] }
+  const partyNameExpression = party.partyNameExpression || { expression: new ColumnExpression('purchase_order_party', `${partyTableName}PartyName`), companion: ['table:purchase_order_party'] }
+  const partyCodeExpression = party.partyCodeExpression || { expression: new ColumnExpression('purchase_order_party', `${partyTableName}PartyCode`), companion: ['table:purchase_order_party'] }
+  const partyNameInReportExpression = party.partyNameInReportExpression || { expression: new ColumnExpression(party.name, `name`), companion: [`table:${party.name}`] }
+  const partyShortNameInReportExpression = party.partyShortNameInReportExpression || { expression: new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion: [`table:${party.name}`] }
 
   const resultExpressionList = partyFieldList.map(partyField => {
 
     const fieldName = `${partyTableName}${partyField}`
 
-    let finalExpressionInfo: { expression: IExpression, companion: string[]}
+    let finalExpressionInfo: { expression: IExpression, companion: string[] }
 
     switch (partyField) {
 
@@ -157,36 +157,36 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
         break
 
       default:
-        finalExpressionInfo = { expression : new ColumnExpression('purchase_order_party', fieldName) as IExpression, companion : ['table:purchase_order_party'] }
+        finalExpressionInfo = { expression: new ColumnExpression('purchase_order_party', fieldName) as IExpression, companion: ['table:purchase_order_party'] }
         break
     }
 
     return {
-      name : fieldName,
+      name: fieldName,
       ...finalExpressionInfo
     } as ExpressionHelperInterface
   })
 
   return accumulator.concat(resultExpressionList)
- }, [])
+}, [])
 
 const locationExpressionList = locationList.reduce((accumulator: ExpressionHelperInterface[], location) => {
 
   const locationCodeExpressionInfo = {
-    name : `${location}Code`,
-    expression : new ColumnExpression('purchase_order', `${location}Code`),
+    name: `${location}Code`,
+    expression: new ColumnExpression('purchase_order', `${location}Code`),
   } as ExpressionHelperInterface
 
   const locationLatitudeExpressionInfo = {
-    name : `${location}Latitude`,
-    expression : new ColumnExpression(`${location}`, `latitude`),
-    companion : [`table:${location}`]
+    name: `${location}Latitude`,
+    expression: new ColumnExpression(`${location}`, `latitude`),
+    companion: [`table:${location}`]
   } as ExpressionHelperInterface
 
   const locationLongitudeExpressionInfo = {
-    name : `${location}Longitude`,
-    expression : new ColumnExpression(`${location}`, `longitude`),
-    companion : [`table:${location}`]
+    name: `${location}Longitude`,
+    expression: new ColumnExpression(`${location}`, `longitude`),
+    companion: [`table:${location}`]
   } as ExpressionHelperInterface
 
   accumulator.push(locationCodeExpressionInfo)
@@ -195,7 +195,7 @@ const locationExpressionList = locationList.reduce((accumulator: ExpressionHelpe
 
   return accumulator
 
- }, [])
+}, [])
 
 const query = new QueryDef(
   new Query({
@@ -242,10 +242,10 @@ query.table('purchaseOrderDate', new Query({
 
 query.table('incoTerms', new Query({
 
-  $from : new FromTable({
-    table : 'purchase_order',
+  $from: new FromTable({
+    table: 'purchase_order',
 
-    joinClauses : [
+    joinClauses: [
       {
         operator: 'LEFT',
         table: new FromTable('code_master', 'incoTerms'),
@@ -269,10 +269,10 @@ query.table('incoTerms', new Query({
 
 query.table('freightTerms', new Query({
 
-  $from : new FromTable({
-    table : 'purchase_order',
+  $from: new FromTable({
+    table: 'purchase_order',
 
-    joinClauses : [
+    joinClauses: [
       {
         operator: 'LEFT',
         table: new FromTable('code_master', 'freightTerms'),
@@ -296,10 +296,10 @@ query.table('freightTerms', new Query({
 
 query.table('moduleType', new Query({
 
-  $from : new FromTable({
-    table : 'purchase_order',
+  $from: new FromTable({
+    table: 'purchase_order',
 
-    joinClauses : [
+    joinClauses: [
       {
         operator: 'LEFT',
         table: new FromTable('code_master', 'moduleType'),
@@ -329,16 +329,16 @@ locationList.map(location => {
   // location join (e.g. portOfLoadingJoin)
   query.table(joinTableName, new Query({
 
-      $from: new FromTable({
+    $from: new FromTable({
 
-        table : 'purchase_order',
+      table: 'purchase_order',
 
-        joinClauses : [{
+      joinClauses: [{
 
         operator: 'LEFT',
-        table:  new FromTable({
-          table : 'location',
-          $as : `${location}`
+        table: new FromTable({
+          table: 'location',
+          $as: `${location}`
         }),
         $on: [
           new BinaryExpression(new ColumnExpression(`${location}`, 'portCode'), '=', new ColumnExpression('purchase_order', locationCode)),
@@ -346,9 +346,9 @@ locationList.map(location => {
       }]
     }),
 
-      $where: new IsNullExpression(new ColumnExpression('purchase_order', locationCode), true)
+    $where: new IsNullExpression(new ColumnExpression('purchase_order', locationCode), true)
 
-    })
+  })
   )
 
 })
@@ -358,14 +358,14 @@ partyList.map(party => {
   const partyTableName = party.name
 
   const companion = (party.partyIdExpression && party.partyIdExpression.companion) ? party.partyIdExpression.companion : [`table:purchase_order_party`]
-  const partyIdExpression = (party.partyIdExpression && party.partyIdExpression.expression) ? party.partyIdExpression.expression :  new ColumnExpression('purchase_order_party', `${partyTableName}PartyId`)
+  const partyIdExpression = (party.partyIdExpression && party.partyIdExpression.expression) ? party.partyIdExpression.expression : new ColumnExpression('purchase_order_party', `${partyTableName}PartyId`)
 
   query.table(partyTableName, new Query({
 
-    $from : new FromTable({
+    $from: new FromTable({
 
-      table : 'purchase_order',
-      joinClauses : [
+      table: 'purchase_order',
+      joinClauses: [
         {
           operator: 'LEFT',
           table: new FromTable('party', partyTableName),
@@ -385,34 +385,34 @@ partyList.map(party => {
 })
 
 const fieldList = [
-  'id', 
-  'poNo', 
-  'partyGroupCode', 
+  'id',
+  'poNo',
+  'partyGroupCode',
 
   //'purchaseOrderItems', 
   //'purchaseOrderDate', 
   //'purchaseOrderDateUtc', 
   //'purchaseOrderParty', 
 
-  'moduleTypeCode', 
+  'moduleTypeCode',
   {
-    name : 'moduleType',
-    expression : moduleTypeExpression,
-    companion : ['table:moduleType']
+    name: 'moduleType',
+    expression: moduleTypeExpression,
+    companion: ['table:moduleType']
   },
 
-  'incoTermsCode', 
+  'incoTermsCode',
   {
-    name : 'incoTerms',
-    expression : incoTermsExpression,
-    companion : ['table:incoTerms']
+    name: 'incoTerms',
+    expression: incoTermsExpression,
+    companion: ['table:incoTerms']
   },
 
-  'freightTermsCode', 
+  'freightTermsCode',
   {
-    name : 'freightTerms',
-    expression : freightTermsExpression,
-    companion : ['table:freightTerms']
+    name: 'freightTerms',
+    expression: freightTermsExpression,
+    companion: ['table:freightTerms']
   },
 
   // 'portOfLoadingCode', 
@@ -423,23 +423,59 @@ const fieldList = [
   // 'portOfDischargeName', 
   // 'portOfDischarge?', 
 
-  'remark', 
-  'referenceNumber', 
-  'edi', 
-  'errors', 
+  'remark',
+  'referenceNumber',
+  'edi',
+  'errors',
 
-  'createdAt', 
-  'updatedAt', 
+  'createdAt',
+  'updatedAt',
   ...partyExpressionList,
   ...locationExpressionList
 
 ] as ExpressionHelperInterface[]
 
+const baseTableName='purchase_order'
 registerAll(
   query,
-  'purchase_order',
+  baseTableName,
   fieldList
 )
+
+//  register date field
+const createdAtExpression = new ColumnExpression(baseTableName, 'createdAt')
+
+const updatedAtExpression = new ColumnExpression(baseTableName, 'updatedAt')
+
+const jobDateExpression = createdAtExpression
+
+const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
+
+const jobMonthExpression = new FunctionExpression('CONCAT', new FunctionExpression('YEAR', jobDateExpression),
+  '-',
+  new FunctionExpression('LPAD', new FunctionExpression('MONTH', jobDateExpression), 2, '0'))
+
+const jobWeekExpression = new FunctionExpression('LPAD', new FunctionExpression('WEEK', jobDateExpression), 2, '0')
+
+// ============
+const summaryFieldList : SummaryField[]  = [
+  {
+    name: 'totalpo',
+    summaryType: 'count',
+    expression: new ColumnExpression(baseTableName, 'id')
+  },
+];
+
+const nestedSummaryList = [
+  //tbc
+
+
+] as NestedSummaryCondition[]
+
+
+
+registerSummaryField(query, baseTableName, summaryFieldList, [], jobDateExpression)
+
 
 
 export default query
