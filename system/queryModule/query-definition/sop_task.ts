@@ -1,10 +1,11 @@
 import { QueryDef } from "classes/query/QueryDef";
 import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery, ParameterExpression, OrderBy, BetweenExpression } from "node-jql";
 import { IfExpression, alwaysTrueExpression, wrapOrder, IfNullExpression } from 'utils/jql-subqueries'
-import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityExpression, getLastStatusQuery } from "utils/sop-task";
+import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityExpression, taskStatusJoinClauses } from "utils/sop-task";
 import { IShortcut } from 'classes/query/Shortcut'
 
 const taskTable = 'sop_task'
+const taskStatusTable = 'sop_task_status'
 const templateTaskTable = 'sop_template_task'
 const templateTemplateTaskTable = 'sop_template_template_task'
 const selectedTemplateTable = 'sop_selected_template'
@@ -21,6 +22,7 @@ const statusList = ['Dead', 'Due', 'Open', 'Not Ready', 'Done', 'Closed', 'Delet
 
 const query = new QueryDef({
   $from: new FromTable(taskTable,
+    ...taskStatusJoinClauses(),
     new JoinClause('LEFT', new FromTable(taskTable, 'parent'),
       new AndExpressions([
         new BinaryExpression(new ColumnExpression(taskTable, 'parentId'), '=', new ColumnExpression('parent', 'id')),
@@ -310,22 +312,6 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'deadlineScore',
     expression: new ColumnExpression(taskTable, 'deadlineScore'),
-    registered: true
-  },
-
-  // field:closedAt
-  {
-    type: 'field',
-    name: 'closedAt',
-    expression: new ColumnExpression(taskTable, 'closedAt'),
-    registered: true
-  },
-
-  // field:closedBy
-  {
-    type: 'field',
-    name: 'closedBy',
-    expression: new ColumnExpression(taskTable, 'closedBy'),
     registered: true
   },
 
@@ -831,7 +817,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'isDone',
-    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', generalIsDoneExpression('temp', true)), true), generalIsDoneExpression()),
+    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', generalIsDoneExpression('temp_status', true)), true), generalIsDoneExpression()),
     registered: true
   },
 
@@ -885,7 +871,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'isClosed',
-    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', generalIsClosedExpression('temp', true)), true), generalIsClosedExpression()),
+    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', generalIsClosedExpression('temp_status', true)), true), generalIsClosedExpression()),
     registered: true
   },
 
@@ -919,19 +905,17 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'taskStatus',
-    expression: re => new QueryExpression(getLastStatusQuery('status'))
+    expression: re => new ColumnExpression(taskStatusTable, 'status')
   },
 
   // field:statusAt
   {
     type: 'field',
     name: 'statusAt',
-    expression: re => new CaseExpression(
-      [
-        { $when: re['isDeleted'], $then: new Value(null) },
-        { $when: re['isClosed'], $then: re['closedAt'] }
-      ],
-      new QueryExpression(getLastStatusQuery('createdAt'))
+    expression: re => IfExpression(
+      re['isDeleted'],
+      new Value(null),
+      new ColumnExpression(taskStatusTable, 'createdAt')
     )
   },
 
@@ -940,12 +924,10 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'statusBy',
     queryArg: re => params => {
-      const statusByExpression = new CaseExpression(
-        [
-          { $when: re['isDeleted'], $then: new Value(null) },
-          { $when: re['isClosed'], $then: re['closedBy'] }
-        ],
-        new QueryExpression(getLastStatusQuery('createdBy'))
+      const statusByExpression = IfExpression(
+        re['isDeleted'],
+        new Value(null),
+        new ColumnExpression(taskStatusTable, 'createdBy')
       )
       const me = params.subqueries && typeof params.subqueries.user === 'object' && 'value' in params.subqueries.user ? params.subqueries.user.value : ''
       const byMeExpression = new BinaryExpression(statusByExpression, '=', me)

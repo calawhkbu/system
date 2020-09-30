@@ -642,7 +642,7 @@
                   "props": {
                     "tableName": "booking"
                   },
-                  "checkDisplayWhen": "return user.roles.find(role => role.name === 'SOP_TASK') || context.isSwivelAdmin"
+                  "checkDisplayWhen": "return user.roles.find(role => role.name === 'SOP_TASK') || context.isSwivelAdmin;"
                 },
                 {
                   "containerComponent": "v-card",

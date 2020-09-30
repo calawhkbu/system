@@ -209,6 +209,76 @@ const query = new QueryDef(
   })
 )
 
+
+query.table('purchase_order_item', new Query({
+
+  $from : new FromTable({
+
+    table : 'purchase_order',
+    joinClauses : [
+      {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+            new ResultColumn(new ColumnExpression('purchase_order_item', '*')),
+             //new ResultColumn( new FunctionExpression('SUM',new ColumnExpression('purchase_order_item','quantity')),'qty')
+              
+    
+            ],
+            $from: new FromTable('purchase_order_item', 'purchase_order_item'),
+            $where: new AndExpressions({
+              expressions: [
+                new IsNullExpression(new ColumnExpression('purchase_order_item', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('purchase_order_item', 'deletedBy'), false),
+                new IsNullExpression(new ColumnExpression('purchase_order_item','poId'),true)
+
+              ]
+            }),
+            //$group: new GroupBy([new ColumnExpression('purchase_order_item', 'poId')]),
+           
+          }),
+          $as: 'purchase_order_item'
+        }),
+        $on: new BinaryExpression(new ColumnExpression('purchase_order', 'id'), '=', new ColumnExpression('purchase_order_item', 'poId'))
+    
+      },
+    ]
+  })
+
+}))
+
+
+query.table('purchase_order_party', new Query({
+
+  $from : new FromTable({
+
+    table : 'purchase_order_party',
+    joinClauses : [
+      {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('purchase_order_party', '*')),
+            ],
+            $from: new FromTable('purchase_order_party', 'purchase_order_party'),
+            $where: new AndExpressions({
+              expressions: [
+                new IsNullExpression(new ColumnExpression('purchase_order_party', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('purchase_order_party', 'deletedBy'), false),
+              ]
+            }),
+          }),
+          $as: 'purchase_order_party'
+        }),
+        $on: new BinaryExpression(new ColumnExpression('purchase_order', 'id'), '=', new ColumnExpression('purchase_order_party', 'poId'))
+      },
+    ]
+  })
+
+}))
+
 query.table('purchaseOrderDate', new Query({
   $from: new FromTable({
     table: 'purchase_order',
@@ -384,6 +454,25 @@ partyList.map(party => {
 
 })
 
+//  register date field
+const baseTableName='purchase_order'
+
+const createdAtExpression = new ColumnExpression(baseTableName, 'createdAt')
+
+const updatedAtExpression = new ColumnExpression(baseTableName, 'updatedAt')
+
+const jobDateExpression = createdAtExpression
+
+const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
+
+const jobMonthExpression = new FunctionExpression('CONCAT', new FunctionExpression('YEAR', jobDateExpression),
+  '-',
+  new FunctionExpression('LPAD', new FunctionExpression('MONTH', jobDateExpression), 2, '0'))
+
+const jobWeekExpression = new FunctionExpression('LPAD', new FunctionExpression('WEEK', jobDateExpression), 2, '0')
+
+// ============
+
 const fieldList = [
   'id',
   'poNo',
@@ -393,6 +482,11 @@ const fieldList = [
   //'purchaseOrderDate', 
   //'purchaseOrderDateUtc', 
   //'purchaseOrderParty', 
+  // {
+  //   name: 'quantity',
+  //   expression: new ColumnExpression("purchase_order_item",'quantity'),
+  //   companion: ['table:purchase_order_item']
+  // },
 
   'moduleTypeCode',
   {
@@ -430,40 +524,41 @@ const fieldList = [
 
   'createdAt',
   'updatedAt',
+  {
+    name: 'jobMonth',
+    expression: jobMonthExpression
+  },
   ...partyExpressionList,
   ...locationExpressionList
 
 ] as ExpressionHelperInterface[]
 
-const baseTableName='purchase_order'
 registerAll(
   query,
   baseTableName,
   fieldList
 )
 
-//  register date field
-const createdAtExpression = new ColumnExpression(baseTableName, 'createdAt')
 
-const updatedAtExpression = new ColumnExpression(baseTableName, 'updatedAt')
-
-const jobDateExpression = createdAtExpression
-
-const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
-
-const jobMonthExpression = new FunctionExpression('CONCAT', new FunctionExpression('YEAR', jobDateExpression),
-  '-',
-  new FunctionExpression('LPAD', new FunctionExpression('MONTH', jobDateExpression), 2, '0'))
-
-const jobWeekExpression = new FunctionExpression('LPAD', new FunctionExpression('WEEK', jobDateExpression), 2, '0')
-
-// ============
 const summaryFieldList : SummaryField[]  = [
   {
     name: 'totalpo',
     summaryType: 'count',
     expression: new ColumnExpression(baseTableName, 'id')
   },
+  {
+    name: 'quantity',
+    summaryType: 'sum',
+    expression: new ColumnExpression('purchase_order_item', 'quantity'),
+    companion: ['table:purchase_order_item']
+  },
+  {
+    name: 'weight',
+    summaryType: 'sum',
+    expression: new ColumnExpression('purchase_order_item', 'weight'),
+    companion: ['table:purchase_order_item']
+  }
+ 
 ];
 
 const nestedSummaryList = [

@@ -22,8 +22,7 @@ const groupbyList=["poNo",
 ];
 
 const summaryList=[
-  "poNo",
-  "moduleTypeCode"
+  "totalpo"
 
 ];
 
@@ -149,7 +148,7 @@ export default {
 
         params.limit = topX
 
-
+console.log({params})
         return params
       }
     },
