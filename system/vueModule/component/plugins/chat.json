@@ -18,6 +18,16 @@
   "baseSummaryProps": {
     "limit": 4,
     "i18nContext": "Chat",
+    "getChatBaseParams": [
+      "return {",
+      "url: `chat/getChat/${swig.type}`,",
+      "method: 'POST',",
+      "data: {",
+      "chatroomId: swig.id,",
+      "offset: swig.offset",
+      "}",
+      "};"
+    ],
     "chatroomMemberListBaseParams": [
       "return {",
       "url: 'chat/member',",
@@ -43,43 +53,43 @@
       "}"
     ],
     "createChatroomFormDialogFormProps": {
-        "showPostFormOnSubmit": false,
-        "onSubmitResetForm": true,
-        "form": {
-          "chatroom": "",
-          "userLists": []
-        },
-        "fields": [{
-          "label": "Chat.ChatroomName",
-          "name": "chatroom",
-          "component": "v-text-field",
-          "validator": ["required"],
-          "props": {
-            "required": true
-          }
-        }, {
-          "label": "Chat.ChatroomMemeber",
-          "name": "userLists",
-          "component": "AsyncAutoSuggest",
-          "validator": ["required"],
-          "props": {
-            "multiple": true,
-            "required": true,
-            "searchTextParams": {
-              "method": "POST",
-              "url": "chat/searchMember",
-              "data": {
-                "tableName": "{{tableName}}",
-                "primaryKey": "{{entity.id}}",
-                "chatroomName": "PUBLIC",
-                "query": "{{context.search}}",
-                "limit": 5
-              }
-            },
-            "item-text": "displayname",
-            "item-value": "userName"
-          }
-        }]
+      "showPostFormOnSubmit": false,
+      "onSubmitResetForm": true,
+      "form": {
+        "chatroom": "",
+        "userLists": []
+      },
+      "fields": [{
+        "label": "Chat.ChatroomName",
+        "name": "chatroom",
+        "component": "v-text-field",
+        "validator": ["required"],
+        "props": {
+          "required": true
+        }
+      }, {
+        "label": "Chat.ChatroomMemeber",
+        "name": "userLists",
+        "component": "AsyncAutoSuggest",
+        "validator": ["required"],
+        "props": {
+          "multiple": true,
+          "required": true,
+          "searchTextParams": {
+            "method": "POST",
+            "url": "chat/searchMember",
+            "data": {
+              "tableName": "{{tableName}}",
+              "primaryKey": "{{entity.id}}",
+              "chatroomName": "PUBLIC",
+              "query": "{{context.search}}",
+              "limit": 5
+            }
+          },
+          "item-text": "displayname",
+          "item-value": "userName"
+        }
+      }]
     },
     "createChatroomFormDialogFormSlots": [{
       "is": "DynamicComponent",
@@ -109,15 +119,13 @@
             "flat": true,
             "type": "submit"
           },
-          "slots": [
-            {
-              "is": "I18nText",
-              "name": "default",
-              "props": {
-                "i18nKey": "Create"
-              }
+          "slots": [{
+            "is": "I18nText",
+            "name": "default",
+            "props": {
+              "i18nKey": "Create"
             }
-          ]
+          }]
         }]
       }
     }]
