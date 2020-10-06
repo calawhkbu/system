@@ -68,21 +68,21 @@ export default {
          nameColumnName = prevResult.nameColumnName = (groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierName`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyShortNameInReport`) + 'Any'
         
 
-        console.log('preparParams')
-        console.log(params)
+        console.debug('preparParams')
+        console.debug(params)
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
         prevResult.nameColumnName = nameColumnName
 
         const topX = subqueries.topX.value
-        console.log("SUBQURIES");
-        console.log(subqueries)
+        console.debug("SUBQURIES");
+        console.debug(subqueries)
 
      
 
         const summaryVariables = expandSummaryVariable(subqueries)
-        console.log("summaryVariables")
-        console.log(summaryVariables);
+        console.debug("summaryVariables")
+        console.debug(summaryVariables);
 
         prevResult.summaryVariables = summaryVariables
 
@@ -124,9 +124,9 @@ export default {
         }
 
         params.limit = topX
-        console.log("params JQL expressions")
-        console.log(params)
-        console.log(prevResult)
+        console.debug("params JQL expressions")
+        console.debug(params)
+        console.debug(prevResult)
         return params
       }
     },
@@ -136,8 +136,8 @@ export default {
 
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
         //remove zero totalchargeable Weight
-        console.log("callDataService")
-        console.log(res)
+        console.debug("callDataService")
+        console.debug(res)
         // res=res.filter(o=>o.total_chargeableWeight&&o.total_chargeableWeight!=0 ||
         //   o.total_grossWeight&& o.total_grossWeight!=0);
    

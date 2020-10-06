@@ -15,7 +15,6 @@ export default class DefaultParser extends BaseExcelParser {
 
   async import(base64String: string) {
     const response = super.import(base64String)
-    console.log(response)
     return response
   }
 }

@@ -39,8 +39,8 @@ export default {
           extendDate(subqueries,moment,'year')
 
           params.fields = ['jobMonth', ...summaryVariables]
-          // console.log("paramsFIELD")
-          // console.log(params)
+          // console.debug("paramsFIELD")
+          // console.debug(params)
 
           return params
         }

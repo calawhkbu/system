@@ -111,8 +111,8 @@ export default {
         }
 
         params.limit = topX
-        console.log("prepareParams");
-        console.log(params);
+        console.debug("prepareParams");
+        console.debug(params);
 
         return params
       }

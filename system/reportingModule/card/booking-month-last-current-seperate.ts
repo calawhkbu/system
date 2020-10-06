@@ -220,8 +220,8 @@ export default {
           const sortingExpression = guessSortingExpression(sortingValue)
           params.sorting = [sortingExpression]
         }
-// console.log("PREPARE PARAMS")
-// console.log(params)
+// console.debug("PREPARE PARAMS")
+// console.debug(params)
         return params
       }
     },

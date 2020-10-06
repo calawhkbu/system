@@ -71,7 +71,6 @@ export default class CreateTrackingEvent extends BaseEventHandler {
         if (latestEntity.billStatus === null) {
           try {
             const registerForm = await this.getTrackingNo(latestEntity, loadashMapping)
-            console.log(registerForm)
             if (registerForm) {
               await trackService.register(registerForm, this.user)
             }

@@ -2041,7 +2041,7 @@ export default class EdiParser850 extends BaseEdiParser {
     return poList
   }
   async export(entityJSON: any): Promise<any> {
-    console.log(`export type: ${this.type}`)
+    // console.log(`export type: ${this.type}`)
     const result = await super.export(entityJSON)
     return result
   }

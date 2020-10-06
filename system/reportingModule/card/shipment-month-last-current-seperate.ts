@@ -843,8 +843,8 @@ function prepareFirstParam(): Function {
     }
 
 
-    console.log(`papapapa`)
-    console.log(params)
+    console.debug(`papapapa`)
+    console.debug(params)
     return params
   }
 
@@ -1057,7 +1057,7 @@ function prepareSecondParam(): Function {
 
     const resultList = new Resultset(await session.query(new Query(firstTableLastOrCurrent))).toArray() as any[]
 
-    console.log(resultList)
+    console.debug(resultList)
 
 
     const codeList = resultList.map(result => result[codeColumnName])
@@ -1066,12 +1066,12 @@ function prepareSecondParam(): Function {
       value : codeList
     }
 
-    console.log(codeList)
+    console.debug(codeList)
 
 
 
-    console.log(`testest`)
-    console.log(params)
+    console.debug(`testest`)
+    console.debug(params)
     return params
   }
 

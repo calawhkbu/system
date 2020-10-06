@@ -234,7 +234,6 @@ export default {
             return masterNo
           },
           soNo: ({ shipmentContainers = [] }: any) => {
-            console.log(shipmentContainers, 'here')
             return shipmentContainers.reduce((nos: string[], { carrierBookingNo }: any) => {
               if (carrierBookingNo) {
                 nos.push(carrierBookingNo)
@@ -243,7 +242,6 @@ export default {
             }, [])
           },
           containerNo: ({ shipmentContainers = [] }: any) => {
-            console.log(shipmentContainers, 'here')
             return shipmentContainers.reduce((nos: string[], { containerNo }: any) => {
               if (containerNo) {
                 nos.push(containerNo)
@@ -311,7 +309,6 @@ export default {
             return masterNo
           },
           soNo: ({ shipmentContainers = [] }: any) => {
-            console.log(shipmentContainers, 'here')
             return shipmentContainers.reduce((nos: string[], { carrierBookingNo }: any) => {
               if (carrierBookingNo) {
                 nos.push(carrierBookingNo)
@@ -320,7 +317,6 @@ export default {
             }, [])
           },
           containerNo: ({ shipmentContainers = [] }: any) => {
-            console.log(shipmentContainers, 'here')
             return shipmentContainers.reduce((nos: string[], { containerNo }: any) => {
               if (containerNo) {
                 nos.push(containerNo)

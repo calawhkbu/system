@@ -3,11 +3,11 @@ import { IQueryParams } from 'classes/query'
 import { BadRequestException } from '@nestjs/common'
 import Moment = require('moment')
 import { OrderBy } from 'node-jql'
-import { expandBottomSheetGroupByEntity, expandSummaryVariable, calculateLastCurrent, handleBottomSheetGroupByEntityValue, summaryVariableListBooking, groupByEntityListBooking } from 'utils/card'
+import { expandBottomSheetGroupByEntity, expandSummaryVariable, calculateLastCurrent, handleBottomSheetGroupByEntityValue } from 'utils/card'
 import { convertToStartOfDate } from 'utils/jql-subqueries'
 
-const summaryVariableList = summaryVariableListBooking;
-const groupByEntityList = groupByEntityListBooking;
+const summaryVariableList = ['totalpo','quantity']
+const groupByEntityList = ['poNo' ,'portOfLoading','portOfDischarge','moduleType']
 
 interface Result {
   moment: typeof Moment
@@ -42,7 +42,7 @@ export default {
         prevResult.codeColumnName = codeColumnName
         prevResult.nameColumnName = nameColumnName
  
-        if (groupByEntity == 'bookingNo') {
+        if (groupByEntity == 'poNo') {
           codeColumnName = groupByEntity;
           nameColumnName = groupByEntity;
         } else if (groupByEntity == 'carrier') {
@@ -92,7 +92,6 @@ export default {
           ...summaryVariables.map(variable => `${variable}MonthLastCurrent`),
           codeColumnName,
           nameColumnName,
-          'ErpSite'
         ]
 
         // group by
@@ -114,17 +113,17 @@ export default {
         else {
           params.sorting = new OrderBy(`total_${summaryVariables[0]}Current`, 'DESC')
         }
-        // console.debug("PREPARE PARAMS with bottom sheet variables ")
-        // console.debug(params)
+        // console.log("PREPARE PARAMS with bottom sheet variables ")
+        // console.log(params)
         return params
       }
     },
     {
       type: 'callDataService',
-      dataServiceQuery: ['booking', 'booking'],
+      dataServiceQuery: ['purchase_order', 'purchase_order'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
 
-        if (groupByEntity == 'bookingNo') {
+        if (groupByEntity == 'poNo') {
           codeColumnName = groupByEntity;
           nameColumnName = groupByEntity;
         } else if (groupByEntity == 'carrier') {
@@ -178,7 +177,6 @@ export default {
             row_[key] = isNaN(value) ? 0 : value
           }
    
-          row_['erpCode']=row['ErpSite'];
 
 
           return row_

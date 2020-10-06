@@ -43,8 +43,8 @@ export default {
       dataServiceQuery: ['shipment', 'shipment'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
 
-        // console.log('res')
-        // console.log(res)
+        // console.debug('res')
+        // console.debug(res)
 
         const finalResult = res.map(row => {
             const newRow = {...row}

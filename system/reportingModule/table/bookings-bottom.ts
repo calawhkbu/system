@@ -108,9 +108,9 @@ export default {
 
 
 
-         // console.log(`finalParams`)
-         // console.log(params)
-         // console.log(subqueries)
+         // console.debug(`finalParams`)
+         // console.debug(params)
+         // console.debug(subqueries)
         // throw new Error(JSON.stringify(params))
 
         handleBottomSheetGroupByEntityValue(subqueries)
@@ -154,8 +154,8 @@ export default {
 //       type: 'prepareParams',
 //       async prepareParams(params, prevResult, user): Promise<IQueryParams> {
 //         const { moment } = await this.preparePackages(user)
-//         console.log("PREPARE-PARAMS")
-//         console.log(params)
+//         console.debug("PREPARE-PARAMS")
+//         console.debug(params)
 
 //         params.fields = [
 //           'id',
@@ -235,8 +235,8 @@ export default {
 //             }
 //           }
 //         }
-//         console.log("PARAMS")
-//         console.log(params);
+//         console.debug("PARAMS")
+//         console.debug(params);
 //         return params
 //       }
 //     },

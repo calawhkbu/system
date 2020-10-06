@@ -1,7 +1,8 @@
 import { JwtPayload, JwtPayloadParty } from 'modules/auth/interfaces/jwt-payload'
+import { PartyTableService } from 'modules/sequelize/services/table/party'
 
 const convertToPartyOfBookingParty = (
-  party: JwtPayloadParty,
+  party: any,
   type: string
 ) => {
   return {
@@ -37,7 +38,7 @@ const convertToPartyOfBookingParty = (
 
 const mainParties = ['shipper', 'consignee', 'roAgent', 'linerAgent', 'agent', 'controllingCustomer', 'notifyParty']
 
-export default (user: JwtPayload) => {
+export default async (user: JwtPayload, helper: { partyTableService: PartyTableService }) => {
   let bookingParty: any = {}
 
 
@@ -80,6 +81,15 @@ export default (user: JwtPayload) => {
           moreParty: [defaultType],
           ...convertToPartyOfBookingParty(selectedParty, defaultType)
         }
+      }
+    }
+  }
+  if (!bookingParty.forwarderPartyId && user.selectedPartyGroup.configuration.defaultBookingForwarderId) {
+    const party = await helper.partyTableService.findOne(user.selectedPartyGroup.configuration.defaultBookingForwarderId)
+    if (party) {
+      bookingParty = {
+        ...bookingParty,
+        ...convertToPartyOfBookingParty(party, 'forwarder')
       }
     }
   }

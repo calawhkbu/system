@@ -104,9 +104,9 @@ export default {
 
 
 
-         // console.log(`finalParams`)
-         // console.log(params)
-         // console.log(subqueries)
+         // console.debug(`finalParams`)
+         // console.debug(params)
+         // console.debug(subqueries)
         // throw new Error(JSON.stringify(params))
 
         handleBottomSheetGroupByEntityValue(subqueries)

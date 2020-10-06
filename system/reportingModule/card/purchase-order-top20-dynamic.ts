@@ -7,11 +7,19 @@ import {
   expandBottomSheetGroupByEntity,
   expandSummaryVariable,
   handleBottomSheetGroupByEntityValue,
-  summaryVariableList,
-  groupByEntityList
 } from 'utils/card'
 import { convertToStartOfDate } from 'utils/jql-subqueries'
 
+
+const summaryVariableList=['totalpo','quantity'];
+const  groupByEntityList=["poNo",
+"productCategoryId",
+"moduleType",
+"incoTerms",
+"freightTerms",
+"portOfLoading",
+"portOfDischarge"
+];
 
 interface Result {
   moment: typeof Moment
@@ -35,12 +43,12 @@ interface Result {
 export default {
   jqls: [
 
-  
+
     {
       type: 'prepareParams',
       defaultResult: {},
       async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
-       
+
 
         const moment = prevResult.moment = (await this.preparePackages(user)).moment as typeof Moment
         const subqueries = (params.subqueries = params.subqueries || {})
@@ -72,14 +80,20 @@ export default {
         prevResult.dynamicColumnCodeColumnName = dynamicColumnCodeColumnName
         prevResult.dynamicColumnNameColumnName = dynamicColumnNameColumnName
 
-        if(groupByEntity=='coloader'){
-          codeColumnName="linerAgentPartyCode";
-          nameColumnName="linerAgentPartyShortNameInReportAny";
+        if (groupByEntity == 'coloader') {
+          codeColumnName = "linerAgentPartyCode";
+          nameColumnName = "linerAgentPartyShortNameInReportAny";
+        } else if (groupByEntity == 'poNo') {
+          codeColumnName = 'poNo';
+          nameColumnName = 'poNo';
         }
 
-        if(dynamicColumnGroupByEntity=='coloader'){
-          dynamicColumnCodeColumnName="linerAgentPartyCode";
-          dynamicColumnNameColumnName="linerAgentPartyShortNameInReportAny";
+        if (dynamicColumnGroupByEntity == 'coloader') {
+          dynamicColumnCodeColumnName = "linerAgentPartyCode";
+          dynamicColumnNameColumnName = "linerAgentPartyShortNameInReportAny";
+        } else if (dynamicColumnGroupByEntity == 'poNo') {
+          dynamicColumnCodeColumnName = dynamicColumnGroupByEntity;
+          dynamicColumnNameColumnName = dynamicColumnGroupByEntity;
         }
 
 
@@ -98,14 +112,13 @@ export default {
           value: true
         }
 
-        
+
 
         params.fields = [
           // select Month statistics
           ...summaryVariables,
           codeColumnName,
           nameColumnName,
-          'ErpSite'
         ]
 
         // group by
@@ -125,14 +138,14 @@ export default {
         }
 
         params.limit = topY
-        // console.debug('--------params')
-        // console.debug(params)
+        // console.log('--------params')
+        // console.log(params)
         return params
       }
     },
     {
       type: 'callDataService',
-      dataServiceQuery: ['shipment', 'shipment'],
+      dataServiceQuery: ['purchase_order', 'purchase_order'],
       onResult(res, params, prevResult: Result): Result {
 
         var { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables } = prevResult
@@ -142,22 +155,27 @@ export default {
           const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
           for (let variable of summaryVariables) {
             // change into number
-            if(variable=='coloader'){
-              variable="linerAgentPartyCode";
+            if (variable == 'coloader') {
+              variable = "linerAgentPartyCode";
+            }else if(variable=='poNo'){
+              variable=variable;
             }
-            if(groupByEntity=='coloader'){
-              codeColumnName="linerAgentPartyCode";
-              nameColumnName="linerAgentPartyShortNameInReportAny";
+
+            if (groupByEntity == 'coloader') {
+              codeColumnName = "linerAgentPartyCode";
+              nameColumnName = "linerAgentPartyShortNameInReportAny";
+            } else if (groupByEntity == 'poNo') {
+              codeColumnName = 'poNo';
+              nameColumnName = 'poNo';
             }
             row_[`${variable}`] = +row[variable]
           }
-          row_['erpCode']=row['ErpSite']
-          row_['code']=row[codeColumnName];
-          row_['name']=row[nameColumnName];
+          row_['code'] = row[codeColumnName];
+          row_['name'] = row[nameColumnName];
 
           return row_
         })
- 
+
         return prevResult
       }
     },
@@ -170,27 +188,33 @@ export default {
 
         const subqueries = (params.subqueries = params.subqueries || {})
 
-        var { moment, groupByResult, codeColumnName, dynamicColumnGroupByEntity,dynamicColumnCodeColumnName, dynamicColumnNameColumnName, summaryVariables,groupByEntity,nameColumnName } = prevResult
+        var { moment, groupByResult, codeColumnName, dynamicColumnGroupByEntity, dynamicColumnCodeColumnName, dynamicColumnNameColumnName, summaryVariables, groupByEntity, nameColumnName } = prevResult
 
         const codeList = groupByResult.map(row => row.code)
+
+     
+        if (groupByEntity == 'coloader') {
+          codeColumnName = "linerAgentPartyCode";
+          nameColumnName = "linerAgentPartyShortNameInReportAny";
+        } else if (groupByEntity == 'poNo') {
+          codeColumnName = 'poNo';
+          nameColumnName = 'poNo';
+        }
+
+        if (dynamicColumnGroupByEntity == 'coloader') {
+          dynamicColumnCodeColumnName = "linerAgentPartyCode";
+          dynamicColumnNameColumnName = "linerAgentPartyShortNameInReportAny";
+        }else if (dynamicColumnGroupByEntity == 'poNo') {
+          dynamicColumnCodeColumnName = dynamicColumnGroupByEntity;
+          dynamicColumnNameColumnName = dynamicColumnGroupByEntity;
+        }
 
         params.fields = [
           codeColumnName,
           dynamicColumnCodeColumnName,
           dynamicColumnNameColumnName,
           ...summaryVariables,
-          'ErpSite'
         ]
-        if(groupByEntity=='coloader'){
-          codeColumnName="linerAgentPartyCode";
-          nameColumnName="linerAgentPartyShortNameInReportAny";
-        }
-
-        if(dynamicColumnGroupByEntity=='coloader'){
-          dynamicColumnCodeColumnName="linerAgentPartyCode";
-          dynamicColumnNameColumnName="linerAgentPartyShortNameInReportAny";
-        }
-
         // filter groupBy
         subqueries[codeColumnName] = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
           value: codeList
@@ -209,14 +233,13 @@ export default {
         else {
           params.sorting = new OrderBy(`${summaryVariables[0]}`, 'DESC')
         }
-
         return params
       }
     },
 
     {
       type: 'callDataService',
-      dataServiceQuery: ['shipment', 'shipment'],
+      dataServiceQuery: ['purchase_order', 'purchase_order'],
       onResult(res, params, prevResult: Result): any[] {
 
         var {
@@ -230,6 +253,7 @@ export default {
           summaryVariables,
           groupByResult
         } = prevResult
+      
 
         const subqueries = (params.subqueries = params.subqueries || {})
 
@@ -241,40 +265,50 @@ export default {
           const { dynamicCode } = { dynamicCode: dynamicRow[dynamicColumnCodeColumnName] }
 
         })
+        console.log({prevResult})
 
         const finalResult = groupByResult.map(row => {
 
           var { code } = row
 
           // calculate topX dynamicCodeList
-          
-          var dynamicCodeList= [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0, topX)
-          const dynamicNameList = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnNameColumnName]))].splice(0, topX)
-          const dynamicerpSiteList = [...new Set(res.map(dynamicRow => dynamicRow['ErpSite']))].splice(0, topX)
-          const dynamicRawList = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0, topX)
-          if(dynamicColumnGroupByEntity=='office'){
-            dynamicCodeList=dynamicerpSiteList;
+          if (groupByEntity == 'coloader') {
+            codeColumnName = "linerAgentPartyCode";
+            nameColumnName = "linerAgentPartyShortNameInReportAny";
+          } else if (groupByEntity == 'poNo') {
+            codeColumnName = 'poNo';
+            nameColumnName = 'poNo';
           }
+
+          if (dynamicColumnGroupByEntity == 'coloader') {
+            dynamicColumnCodeColumnName = "linerAgentPartyCode";
+            dynamicColumnNameColumnName = "linerAgentPartyShortNameInReportAny";
+          }else if (dynamicColumnGroupByEntity == 'poNo') {
+            dynamicColumnCodeColumnName = dynamicColumnGroupByEntity;
+            dynamicColumnNameColumnName = dynamicColumnGroupByEntity;
+          }
+
+          var dynamicCodeList = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0, topX)
+          const dynamicNameList = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnNameColumnName]))].splice(0, topX)
+          const dynamicRawList = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0, topX)
+         
           const row_ = {
             ...row,
             dynamicCodeList,
             dynamicNameList,
-            dynamicerpSiteList,
             dynamicRawList
           }
 
-      
+
           res.map(dynamicRow => {
             const { dynamicCode } = { dynamicCode: dynamicRow[dynamicColumnCodeColumnName] }
-          
-            if (row_["code"] === dynamicRow[codeColumnName]){
+
+            if (row_["code"] === dynamicRow[codeColumnName]) {
               summaryVariables.map(summaryVariable => {
                 var fieldName;
-                if(dynamicColumnGroupByEntity=='office'){
-                  fieldName = `${dynamicRow['ErpSite']}_${summaryVariable}`;
-                }else{
-                  fieldName = `${dynamicCode}_${summaryVariable}`;
-                }
+
+                fieldName = `${dynamicCode}_${summaryVariable}`;
+
 
                 // forcefully make it into number
                 const dynamicValue = +dynamicRow[summaryVariable]
@@ -288,6 +322,7 @@ export default {
           return row_
 
         })
+        console.log({finalResult})
         return finalResult
       }
     },

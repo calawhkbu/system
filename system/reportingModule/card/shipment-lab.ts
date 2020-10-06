@@ -37,10 +37,10 @@ export default {
           ],
       
           params.limit = 10
-          console.log("PARAMS")
-          console.log(params)
-          console.log("PREVRESULTS")
-          console.log(prevResult)
+          console.debug("PARAMS")
+          console.debug(params)
+          console.debug("PREVRESULTS")
+          console.debug(prevResult)
           return params
           
         }
@@ -49,8 +49,8 @@ export default {
         type: 'callDataService',
         dataServiceQuery: ['shipment', 'lab'],
         onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
-     console.log("First callDataService")
-          console.log(res)
+     console.debug("First callDataService")
+          console.debug(res)
           const codeValue = params.subqueries.code.value as string
           const finalResult = res.map(row => {
       
@@ -75,16 +75,16 @@ export default {
         type: 'callDataService',
         dataServiceQuery: ['fields', 'fields'],
         onResult(res, {},{}: Result): void {
-          console.log("2nd call data SVC")
-          console.log(res)
+          console.debug("2nd call data SVC")
+          console.debug(res)
           //remove unwanted Fields
           const unwanted=['id','partyGroupCode'];
           for (let i of unwanted){
               res=res.filter(o=>o.COLUMN_NAME!=i);
 
           }
-          console.log("after FIlter")
-          console.log(res);
+          console.debug("after FIlter")
+          console.debug(res);
 
           for(let i of res){
             summaryVariableListlab.push({
@@ -92,8 +92,8 @@ export default {
               value:i.COLUMN_NAME
             })
           }
-          console.log("summaryVariableListlab")
-          console.log(summaryVariableListlab);
+          console.debug("summaryVariableListlab")
+          console.debug(summaryVariableListlab);
           return final;
         }
       },

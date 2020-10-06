@@ -84,6 +84,10 @@ const shortcuts: IShortcut[] = [
       new AndExpressions([
         new BinaryExpression(new ColumnExpression(taskTable, 'tableName'), '=', shipmentTable),
         new BinaryExpression(new ColumnExpression(taskTable, 'primaryKey'), '=', new ColumnExpression(shipmentTable, 'id')),
+        new OrExpressions([
+          new IsNullExpression(new ColumnExpression(shipmentTable, 'billStatus'), false),
+          new BinaryExpression(new ColumnExpression(shipmentTable, 'billStatus'), '<>', new Value('Delete'))
+        ]),
         new IsNullExpression(new ColumnExpression(shipmentTable, 'deletedAt'), false),
         new IsNullExpression(new ColumnExpression(shipmentTable, 'deletedBy'), false)
       ])
@@ -1090,7 +1094,14 @@ const shortcuts: IShortcut[] = [
   {
     type: 'subquery',
     name: 'notDeleted',
-    expression: re => new BinaryExpression(re['isDeleted'], '=', new Value(0))
+    expression: re => new AndExpressions([
+      new BinaryExpression(re['isDeleted'], '=', new Value(0)),
+      new OrExpressions([
+        new IsNullExpression(new ColumnExpression(shipmentTable, 'id'), true),
+        new IsNullExpression(new ColumnExpression(bookingTable, 'id'), true)
+      ])
+    ]),
+    companions: ['table:booking', 'table:shipment']
   },
 
   // subquery:notReferencedIn

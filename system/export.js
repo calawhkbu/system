@@ -17,9 +17,6 @@ let argv = Object.keys(process.env)
 argv = Object.assign(argv, minimist(process.argv.slice(2)))
 
 const helper = () => {
-  console.log('Export')
-  console.log(chalk.green(`Usage: ${chalk.yellow('yarn export {filePath} {exportType}')}`))
-  console.log(chalk.green(`Usage: ${chalk.yellow('npm run export {filePath} {exportType}')}`))
   return process.exit()
 }
 
@@ -106,7 +103,6 @@ const run = async (path, to) => {
     ? await requireDir(path)
     : await requireFile(path)
   for (const file of files) {
-    console.log(file.filepath)
     const content = await exportIt(file, to)
     if (content) {
       await writeFileSync(file.filepath.replace(file.extension, `.${to}`), content)

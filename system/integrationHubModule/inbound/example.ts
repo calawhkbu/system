@@ -3,7 +3,7 @@ import { Response } from 'classes/response'
 
 const app = {
   run: (req: Request, res: Response, helper: { [key: string]: Function }) => {
-    console.log('Inbound App Example')
+    console.debug('Inbound App Example')
   },
 }
 

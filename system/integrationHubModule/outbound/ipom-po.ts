@@ -12,7 +12,7 @@ export default {
   },
   requestHandler: (headers: any, body: any) => {
     const { errors, ...rest } = body.pojson
-    console.log({ pojson: rest }, 'SEND EDI')
+    console.debug({ pojson: rest }, 'SEND EDI')
     return {
       headers: {
         ...headers,

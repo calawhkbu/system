@@ -94,8 +94,8 @@ export default {
         const subqueries = (params.subqueries = params.subqueries || {})
         const showOther = subqueries.showOther || false
         const topX = (subqueries.topX as any).value
-        console.log("POSTPROCESS-PARAMS")
-        console.log(params)
+        console.debug("POSTPROCESS-PARAMS")
+        console.debug(params)
 
         const topXShipmentList: any[] = (result as any[]).filter(x => x[codeColumnName]).slice(0, topX)
         if (showOther) {

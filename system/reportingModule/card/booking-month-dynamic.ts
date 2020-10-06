@@ -67,9 +67,9 @@ export default {
     nameColumnName=`${groupByEntity}PartyShortNameInReport` + 'Any';
     
   }
-// console.log("============codeCoumnName")
-//   console.log(codeColumnName)
-//   console.log(nameColumnName)
+// console.debug("============codeCoumnName")
+//   console.debug(codeColumnName)
+//   console.debug(nameColumnName)
 
 
 
@@ -111,8 +111,8 @@ export default {
         }
 
         params.limit = topX
-        console.log("PREPARE PARAMS");
-        console.log(params)
+        console.debug("PREPARE PARAMS");
+        console.debug(params)
         return params
       }
     },

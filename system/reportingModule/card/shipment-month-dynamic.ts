@@ -81,8 +81,8 @@ export default {
         }
 
         params.limit = topX
-        console.log("--------params")
-        console.log(params)
+        console.debug("--------params")
+        console.debug(params)
         return params
       }
     },

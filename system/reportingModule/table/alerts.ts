@@ -18,8 +18,8 @@ export default {
       type: 'prepareParams',
       prepareParams(params: IQueryParams) {
         
-        // console.log(`hellot`)
-        // console.log(params.fields)
+        // console.debug(`hellot`)
+        // console.debug(params.fields)
 
         function getDynamicFieldList() {
           const entityType = ( params.subqueries.entityType as any).value

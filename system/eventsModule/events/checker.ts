@@ -47,8 +47,6 @@ export default class CheckerEventHandler extends BaseEventHandler {
   }
 
   public async mainFunction(eventDataList: EventData<any>[]) {
-
-    console.log(`in checker`)
     const checkerResult = {}
     const finalEventDataList = eventDataList.map(eventData => {
 

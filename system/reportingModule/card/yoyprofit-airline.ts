@@ -3,12 +3,12 @@ import { JqlDefinition } from 'modules/report/interface'
 export default {
   extend: 'card/yoyprofit-airline-frc',
   override: def => {
-    console.log('override', 'yoyprofit-airline')
+    console.debug('override', 'yoyprofit-airline')
     def.jqls.push({
       type: 'postProcess',
       async postProcess(params, prevResult: any[], user): Promise<any[]> {
         const { moment } = await this.preparePackages(user)
-        console.log('added postprocess', 'yoyprofit-airline')
+        console.debug('added postprocess', 'yoyprofit-airline')
         return prevResult.map(row => {
           const row_: any = { carrierName: row.carrierName }
           for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]) {

@@ -148,7 +148,7 @@ export default {
 
         params.limit = topX
 
-console.log({params})
+console.debug({params})
         return params
       }
     },
