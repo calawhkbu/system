@@ -16,8 +16,11 @@ import {
   Unknown,
   GroupBy,
   AndExpressions,
-  CaseExpression
+  CaseExpression,
+  LikeExpression,
+  OrderBy,
 } from 'node-jql'
+import { IQueryParams } from 'classes/query'
 import { registerAll, ExpressionHelperInterface } from 'utils/jql-subqueries'
 
 const query = new QueryDef(
@@ -272,7 +275,44 @@ query.register('unrelatedTo', new Query({
     ]
   }), true)
 }))
-  .register('value', 0)
+  .register('value', 0);
+
+query.orderBy('qOrder', (params: IQueryParams) => {
+  return {
+    $order: new OrderBy({
+      expression: new CaseExpression({
+        cases: [
+          {
+            $when: new LikeExpression(new ColumnExpression('party', 'name'), false, `${params.subqueries.q.value}%`),
+            $then: new Value(6)
+          },
+          {
+            $when: new LikeExpression(new ColumnExpression('party', 'shortName'), false, `${params.subqueries.q.value}%`),
+            $then: new Value(5)
+          },
+          {
+            $when: new LikeExpression(new ColumnExpression('party', 'name'), false, `%${params.subqueries.q.value}`),
+            $then: new Value(4)
+          },
+          {
+            $when: new LikeExpression(new ColumnExpression('party', 'shortName'), false, `%${params.subqueries.q.value}`),
+            $then: new Value(3)
+          },
+          {
+            $when: new LikeExpression(new ColumnExpression('party', 'name'), false, `%${params.subqueries.q.value}%`),
+            $then: new Value(2)
+          },
+          {
+            $when: new LikeExpression(new ColumnExpression('party', 'shortName'), false, `%${params.subqueries.q.value}%`),
+            $then: new Value(1)
+          },
+        ],
+        $else: new Value(0)
+      }),
+      order: 'DESC'
+    })
+  }
+})
 
 query.register('q', new Query({
   $where: new OrExpressions([

@@ -37,7 +37,16 @@ export default class UpdateDataFromTrackingEvent extends BaseEventHandler {
     const { trackService } = this.allService
     const trackingDataList = this.getAllTrackingData(eventDataList)
     if (trackingDataList && trackingDataList.length) {
-      await trackService.updateBackEntity(trackingDataList)
+      try {
+        await trackService.updateBackEntity(
+          trackingDataList,
+          await trackService.getShipmentMapping(trackingDataList, this.transaction),
+          await trackService.getBookingMapping(trackingDataList, this.transaction),
+        )
+      } catch (e) {
+        console.warn('Update back to Entitiy error', this.constructor.name)
+        console.error(e, e.stack, this.constructor.name)
+      }
     }
     return undefined
   }

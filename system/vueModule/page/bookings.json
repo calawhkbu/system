@@ -258,27 +258,46 @@
       "props": {
         "class": "button",
         "components": [{
-          "is": "v-btn",
+          "is": "ToolTip",
           "props": {
-            "small": true,
-            "flat": true,
-            "icon": true
-          },
-          "slots": [{
-            "is": "Icon",
-            "props": {
-              "icon": "add"
+            "bottom": true,
+            "activatorComponents": {
+              "layout": "span",
+              "components": [{
+                "is": "v-btn",
+                "props": {
+                  "small": true,
+                  "flat": true,
+                  "icon": true
+                },
+                "slots": [{
+                  "is": "Icon",
+                  "props": {
+                    "icon": "add"
+                  }
+                }],
+                "events": {
+                  "click.stop": [{
+                    "type": "router",
+                    "otherParams": {
+                      "func": "push",
+                      "path": "booking/create",
+                      "base": true
+                    }
+                  }]
+                }
+              }]
+            },
+            "mainComponents": {
+              "layout": "span",
+              "components": [{
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "BookingPage",
+                  "i18nKey": "create"
+                }
+              }]
             }
-          }],
-          "events": {
-            "click.stop": [{
-              "type": "router",
-              "otherParams": {
-                "func": "push",
-                "path": "booking/create",
-                "base": true
-              }
-            }]
           }
         }]
       }

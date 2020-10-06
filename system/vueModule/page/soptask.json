@@ -164,12 +164,66 @@
         "newReport": {
           "filters": {
             "date": {
-              "func": "today"
+              "to": "2020-09-04 23:59",
+              "from": "2020-09-04 00:00",
+              "func": "today",
+              "timezone": "Asia/Hong_Kong"
             },
+            "notClosed": true,
             "notDeleted": true
           },
           "configurations": {
-            "i18nContext": "SopTask",
+            "cards": [
+              {
+                "uuid": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
+                "cardId": "3e2e2337-17ec-4740-8568-2f3c9d7f3430",
+                "params": {
+                  "filters": {
+                    "__FE_grouped": true
+                  }
+                },
+                "layouts": {
+                  "lg": {
+                    "h": 24,
+                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
+                    "w": 12,
+                    "x": 0,
+                    "y": 0,
+                    "minH": 6,
+                    "minW": 2
+                  },
+                  "md": {
+                    "h": 24,
+                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
+                    "w": 12,
+                    "x": 0,
+                    "y": 0,
+                    "minH": 6,
+                    "minW": 2
+                  },
+                  "sm": {
+                    "h": 10,
+                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
+                    "w": 4,
+                    "x": 0,
+                    "y": 0,
+                    "hr": 1,
+                    "minH": 6,
+                    "minW": 2
+                  },
+                  "xs": {
+                    "h": 10,
+                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
+                    "w": 4,
+                    "x": 0,
+                    "y": 0,
+                    "hr": 1,
+                    "minH": 6,
+                    "minW": 2
+                  }
+                }
+              }
+            ],
             "colors": [
               "#005EB8",
               "#008675",
@@ -178,64 +232,8 @@
               "#F1B434",
               "#c9cbcf"
             ],
-            "cards": [
-              {
-                "uuid": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
-                "cardId": "3e2e2337-17ec-4740-8568-2f3c9d7f3430",
-                "layouts": {
-                  "lg": {
-                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
-                    "x": 0,
-                    "y": 0,
-                    "w": 12,
-                    "h": 24,
-                    "minW": 2,
-                    "minH": 6
-                  },
-                  "md": {
-                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
-                    "x": 0,
-                    "y": 0,
-                    "w": 12,
-                    "h": 10,
-                    "minW": 2,
-                    "minH": 6
-                  },
-                  "sm": {
-                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
-                    "x": 0,
-                    "y": 0,
-                    "w": 4,
-                    "h": 10,
-                    "minW": 2,
-                    "minH": 6
-                  },
-                  "xs": {
-                    "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
-                    "x": 0,
-                    "y": 0,
-                    "w": 4,
-                    "h": 10,
-                    "minW": 2,
-                    "minH": 6
-                  }
-                },
-                "params": {
-                  "filters": {
-                    "pagination": {
-                      "remote": true,
-                      "current": 0,
-                      "perPage": 20
-                    }
-                  }
-                }
-              }
-            ]
-          },
-          "id": -1,
-          "reportingKey": "soptask",
-          "params": {},
-          "updatedAt": "2020-07-27T08:43:46.696Z"
+            "i18nContext": "SopTask"
+          }
         }
       }
     }

@@ -94,39 +94,28 @@
                       "name": ["service.name", "serviceCode"],
                       "component": "v-text-field",
                       "class": "xs-12",
-                      "validator": ["required"],
-                      "props": {
-                        "required": true
-                      }
+                      "isRequired": "return form && form.moduleTypeCode !== 'AIR';"
                     },
                     {
-                      "label": "BookingPage.vas",
-                      "name": "vas",
-                      "component": "AsyncSelect",
-                      "class": "xs-`1`",
-                      "props": {
-                        "loadOnReadOnly": true,
-                        "multiple": true,
-                        "axiosParams": {
-                          "url": "api/code/query/code_master",
-                          "method": "POST",
-                          "data": {
-                            "subqueries": {
-                              "codeType": {
-                                "value": "VAS"
-                              }
-                            }
-                          }
-                        },
-                        "item-text": "name",
-                        "item-value": "code",
-                        "showValue": false,
-                        "showSpacer": false,
-                        "selectedProps": {
-                          "class": "multiple"
-                        }
-                      }
+
+                      "label": "BookingPage.isConsole",
+                      "component": "BooleanField",
+                      "name": "isConsole",
+                      "class": "xs-12"
                     },
+                    {
+                      "label": "BookingPage.isDirect",
+                      "component": "BooleanField",
+                      "name": "isDirect",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "BookingPage.telexRelease",
+                      "component": "BooleanField",
+                      "name": "telexRelease",
+                      "class": "xs-12"
+                    },
+
                     {
                       "label": "BookingPage.placeOfReceipt",
                       "name": ["placeOfReceiptName", "placeOfReceipt.name", "placeOfReceiptCode"],
@@ -184,6 +173,34 @@
                       "component": "v-text-field",
                       "class": "xs-12",
                       "checkDisplayWhen": "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA')"
+                    },
+                    {
+                      "label": "BookingPage.vas",
+                      "name": "vas",
+                      "component": "AsyncSelect",
+                      "class": "xs-12",
+                      "props": {
+                        "loadOnReadOnly": true,
+                        "multiple": true,
+                        "axiosParams": {
+                          "url": "api/code/query/code_master",
+                          "method": "POST",
+                          "data": {
+                            "subqueries": {
+                              "codeType": {
+                                "value": "VAS"
+                              }
+                            }
+                          }
+                        },
+                        "item-text": "name",
+                        "item-value": "code",
+                        "showValue": false,
+                        "showSpacer": false,
+                        "selectedProps": {
+                          "class": "multiple"
+                        }
+                      }
                     },
                     {
                       "label": "BookingPage.incoTermsCode",
@@ -291,39 +308,41 @@
                 "name": ["service.name", "serviceCode"],
                 "component": "v-text-field",
                 "class": "xs-3",
-                "validator": ["required"],
-                "props": {
-                  "required": true
-                }
+                "isRequired": "return form && form.moduleTypeCode !== 'AIR';",
+                "checkDisplayWhen": "return form && ((form.service && form.service.name) || form.serviceCode)"
               },
               {
-                "label": "BookingPage.vas",
-                "name": "vas",
-                "checkDisplayWhen": "return form && form.vas && form.vas.length",
-                "component": "AsyncSelect",
-                "class": "xs-3",
-                "props": {
-                  "loadOnReadOnly": true,
-                  "multiple": true,
-                  "axiosParams": {
-                    "url": "api/code/query/code_master",
-                    "method": "POST",
-                    "data": {
-                      "subqueries": {
-                        "codeType": {
-                          "value": "VAS"
-                        }
-                      }
-                    }
-                  },
-                  "item-text": "name",
-                  "item-value": "code",
-                  "showValue": false,
-                  "showSpacer": false,
-                  "selectedProps": {
-                    "class": "multiple"
-                  }
-                }
+                "label": "BookingPage.isConsole",
+                "component": "BooleanField",
+                "name": "isConsole",
+                "class": "xs-12 md-1",
+                "checkDisplayWhen": "return form && form.isConsole;"
+              },
+              {
+                "class": "xs-12 md-1",
+                "checkDisplayWhen": "return form && !form.isConsole;"
+              },
+              {
+                "label": "BookingPage.isDirect",
+                "component": "BooleanField",
+                "name": "isDirect",
+                "class": "xs-12 md-1",
+                "checkDisplayWhen": "return form && form.isDirect;"
+              },
+              {
+                "class": "xs-12 md-1",
+                "checkDisplayWhen": "return form && !form.isDirect;"
+              },
+              {
+                "label": "BookingPage.telexRelease",
+                "component": "BooleanField",
+                "name": "telexRelease",
+                "class": "xs-12 md-1",
+                "checkDisplayWhen": "return form && form.telexRelease;"
+              },
+              {
+                "class": "xs-12 md-1",
+                "checkDisplayWhen": "return form && !form.telexRelease;"
               },
               {
                 "label": "BookingPage.placeOfReceipt",
@@ -387,6 +406,35 @@
                 "component": "v-text-field",
                 "class": "xs-3",
                 "checkDisplayWhen": "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA') && (form.voyageFlightNumber || form.proposedVoyageFlightNumber)"
+              },
+              {
+                "label": "BookingPage.vas",
+                "name": "vas",
+                "checkDisplayWhen": "return form && form.vas && form.vas.length",
+                "component": "AsyncSelect",
+                "class": "xs-3",
+                "props": {
+                  "loadOnReadOnly": true,
+                  "multiple": true,
+                  "axiosParams": {
+                    "url": "api/code/query/code_master",
+                    "method": "POST",
+                    "data": {
+                      "subqueries": {
+                        "codeType": {
+                          "value": "VAS"
+                        }
+                      }
+                    }
+                  },
+                  "item-text": "name",
+                  "item-value": "code",
+                  "showValue": false,
+                  "showSpacer": false,
+                  "selectedProps": {
+                    "class": "multiple"
+                  }
+                }
               },
               {
                 "label": "BookingPage.incoTermsCode",

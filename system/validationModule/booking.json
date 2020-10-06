@@ -11,7 +11,8 @@
   {
     "field": "serviceCode",
     "validator": "required",
-    "part": "BookingPage.GeneralForm"
+    "part": "BookingPage.GeneralForm",
+    "skip": "return form && form.moduleTypeCode === 'AIR';"
   },
   {
     "field": "portOfLoading",

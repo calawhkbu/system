@@ -12,6 +12,8 @@ import {
   Value,
   FromTable,
   CaseExpression,
+  LikeExpression,
+  OrderBy,
 } from 'node-jql'
 import { registerAll, ExpressionHelperInterface } from 'utils/jql-subqueries'
 
@@ -84,6 +86,42 @@ registerAll(query, baseTableName, fieldList)
 
 // -----------------------------------
 
+query.orderBy('qOrder', (params: IQueryParams) => {
+  return {
+    $order: new OrderBy({
+      expression: new CaseExpression({
+        cases: [
+          {
+            $when: new LikeExpression(new ColumnExpression('location', 'name'), false, `${params.subqueries.q.value}%`),
+            $then: new Value(6)
+          },
+          {
+            $when: new LikeExpression(new ColumnExpression('location', 'portCode'), false, `${params.subqueries.q.value}%`),
+            $then: new Value(5)
+          },
+          {
+            $when: new LikeExpression(new ColumnExpression('location', 'name'), false, `%${params.subqueries.q.value}`),
+            $then: new Value(4)
+          },
+          {
+            $when: new LikeExpression(new ColumnExpression('location', 'portCode'), false, `%${params.subqueries.q.value}`),
+            $then: new Value(3)
+          },
+          {
+            $when: new LikeExpression(new ColumnExpression('location', 'name'), false, `%${params.subqueries.q.value}%`),
+            $then: new Value(2)
+          },
+          {
+            $when: new LikeExpression(new ColumnExpression('location', 'portCode'), false, `%${params.subqueries.q.value}%`),
+            $then: new Value(1)
+          },
+        ],
+        $else: new Value(0)
+      }),
+      order: 'DESC'
+    })
+  }
+})
 query
   .register(
     'q',
@@ -94,10 +132,13 @@ query
           new RegexpExpression(new ColumnExpression('location', 'name'), false),
         ],
       }),
-    })
+    }),
+    ...['orderBy:qOrder']
   )
   .register('value', 0)
   .register('value', 1)
+
+
 
 
 query.table('party', (params: IQueryParams) => {
