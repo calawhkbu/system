@@ -28,6 +28,10 @@
             "notActualOnly": ""
           },
           "exitFactory": {
+            "actualOnly": "hidden",
+            "notActualOnly": ""
+          },
+          "doNotShipBefore": {
             "actualOnly": "",
             "notActualOnly": "hidden"
           },
@@ -85,18 +89,6 @@
           },
           {
             "label": "Widget.estimatedDate",
-            "name": "purchaseOrderDate.{{flex}}{{key}}Date",
-            "component": "DateTimePicker",
-            "class": "xs-12 md-6 {{actualOnly}}",
-            "props": {
-              "type": "datetime",
-              "utc": true,
-              "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
-              "useOwnFormat": true
-            }
-          },
-          {
-            "label": "Widget.estimatedDate",
             "name": "purchaseOrderDate.{{flex}}{{key}}DateEstimated",
             "component": "DateTimePicker",
             "class": "xs-12 md-6 {{notActualOnly}}",
@@ -111,7 +103,7 @@
             "label": "Widget.actualDate",
             "name": "purchaseOrderDate.{{flex}}{{key}}DateActual",
             "component": "DateTimePicker",
-            "class": "xs-12 md-6 {{notActualOnly}}",
+            "class": "xs-12 md-6",
             "props": {
               "type": "datetime",
               "utc": true,

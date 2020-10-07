@@ -220,6 +220,7 @@ export default {
           nameColumnName,
           dynamicColumnCodeColumnName,
           dynamicColumnNameColumnName,
+          dynamicColumnGroupByEntity,
           summaryVariables,
           groupByResult
         } = prevResult
@@ -243,14 +244,20 @@ export default {
 
           var dynamicCodeList = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnCodeColumnName]))].splice(0, topX)
           var dynamicNameList = [...new Set(res.map(dynamicRow => dynamicRow[dynamicColumnNameColumnName]))].splice(0, topX)
+          const dynamicerpSiteList = [...new Set(res.map(dynamicRow => dynamicRow['ErpSite']))].splice(0, topX)
+
 
           if (dynamicColumnCodeColumnName.indexOf("agent") != -1) { //for display table header 
             dynamicCodeList = dynamicNameList;
           }
+          if(dynamicColumnGroupByEntity=='forwarder'){
+            dynamicCodeList=dynamicerpSiteList;
+          }
           var row_ = {
             ...row,
             dynamicCodeList,
-            dynamicNameList
+            dynamicNameList,
+            dynamicerpSiteList
           }
 
           res.map(dynamicRow => {
@@ -260,9 +267,13 @@ export default {
             if (code === dynamicRow[codeColumnName]) {
 
               summaryVariables.map(summaryVariable => {
+                var fieldName;
 
-                const fieldName = `${dynamicCode}_${summaryVariable}`
-
+                if(dynamicColumnGroupByEntity=='forwarder'){
+                  fieldName = `${dynamicRow['ErpSite']}_${summaryVariable}`;
+                }else{
+                  fieldName = `${dynamicCode}_${summaryVariable}`;
+                }
                 // forcefully make it into number
                 const dynamicValue = +dynamicRow[summaryVariable]
 

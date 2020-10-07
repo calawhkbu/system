@@ -34,6 +34,7 @@ const CONSTANTS = {
     'productCode',
     'skuCode',
     'name',
+    'productCategoryId',
     {
       name: 'productCategory',
       expression: productCategoryExpression

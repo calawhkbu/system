@@ -16,9 +16,98 @@
         "name": "description",
         "component": "v-text-field"
       }, {
+        "label": "ProductCategoryPage.buyerParty",
+        "name": "buyerParty",
+        "component": "AsyncAutoSuggest",
+        "class": "xs-12",
+        "more": [
+          {
+            "name": "buyerPartyId",
+            "selector": "id"
+          }
+        ],
+        "props": {
+          "showValue": false,
+          "canCreate": true,
+          "canCreateValue": {
+            "id": null,
+            "name": "{{autoSuggestModel}}"
+          },
+          "searchValueParams": {
+            "url": "api/party/{{context.autoSuggestModel}}"
+          },
+          "searchTextParams": {
+            "url": "api/party/query/party_auto_suggest",
+            "method": "POST",
+            "data": {
+              "subqueries": {
+                "activeStatus": {
+                  "value": "active"
+                },
+                "q": {
+                  "value": "{{context.search}}"
+                },
+                "partyTypeIn": {
+                  "value": ["buyer"]
+                }
+              },
+              "limit": 5
+            }
+          },
+          "item-text": "name",
+          "item-value": "id"
+        }
+      },
+      {
         "label": "ProductCategoryPage.definition",
         "name": "definition",
-        "component": "ProductDefinationField"
+        "component": "TableField",
+        "props": {
+          "topLabel": true,
+          "fields": [{
+            "label": "ProductCategoryPage.fieldName",
+            "name": "fieldName",
+            "component": "v-text-field"
+          },{
+            "label": "ProductCategoryPage.type",
+            "name": "type",
+            "component": "v-select",
+            "props": {
+              "items": [{
+                "text": "Text",
+                "value": "string"
+              },{
+                "text": "Number",
+                "value": "number"
+              },{
+                "text": "Date",
+                "value": "date"
+              }]
+            }
+          },{
+            "label": "ProductCategoryPage.displayAsGroupOrCol",
+            "name": "isGroup",
+            "component": "v-select",
+            "props": {
+              "items":[{
+                "text": "Group",
+                "value": true
+              },{
+                "text": "Column",
+                "value": false
+              }]
+            }
+          },{
+            "label": "ProductCategoryPage.toBooking",
+            "name": "toBooking",
+            "component": "BooleanField",
+            "colGroupProps": {
+              "style": {
+                "width": "10%"
+              }
+            }
+          }]
+        }
       }]
     }
   }]

@@ -56,6 +56,12 @@
             "name": ["freightTerms.name", "freightTermsCode"],
             "component": "v-text-field",
             "class": "xs-12"
+          },
+          {
+            "label": "PurchaseOrderPage.productCategory",
+            "name": ["productCategory.name", "productCategory.productCategoryCode"],
+            "component": "v-text-field",
+            "class": "xs-12"
           }
         ]
       }
