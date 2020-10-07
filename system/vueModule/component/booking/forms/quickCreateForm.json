@@ -427,7 +427,7 @@
           "name": "flexData.quantity",
           "component": "v-text-field",
           "class": "xs-12 md-4 padding-topbottom-4",
-          "checkDisplayWhen": "return form && form.serviceCode !== 'LCL/LCL';"
+          "checkDisplayWhen": "return form && form.serviceCode !== 'FCL/FCL';"
         },
         {
           "containerComponent": "v-card",
@@ -438,7 +438,7 @@
           "name": "draftContainer20",
           "component": "NumberField",
           "class": "xs-12 md-1 padding-topbottom-4",
-          "checkDisplayWhen": "return form && form.serviceCode === 'LCL/LCL';"
+          "checkDisplayWhen": "return form && form.serviceCode === 'FCL/FCL';"
         },
         {
           "containerComponent": "v-card",
@@ -449,7 +449,7 @@
           "name": "draftContainer40",
           "component": "v-text-field",
           "class": "xs-12 md-1 padding-topbottom-4",
-          "checkDisplayWhen": "return form && form.serviceCode === 'LCL/LCL';"
+          "checkDisplayWhen": "return form && form.serviceCode === 'FCL/FCL';"
         },
         {
           "containerComponent": "v-card",
@@ -460,7 +460,7 @@
           "name": "draftContainer40HQ",
           "component": "NumberField",
           "class": "xs-12 md-1 padding-topbottom-4",
-          "checkDisplayWhen": "return form && form.serviceCode === 'LCL/LCL';"
+          "checkDisplayWhen": "return form && form.serviceCode === 'FCL/FCL';"
         },
         {
           "containerComponent": "v-card",
@@ -471,7 +471,7 @@
           "name": "draftContainer45",
           "component": "NumberField",
           "class": "xs-12 md-1 padding-topbottom-4",
-          "checkDisplayWhen": "return form && form.serviceCode === 'LCL/LCL';"
+          "checkDisplayWhen": "return form && form.serviceCode === 'FCL/FCL';"
         },
         {
           "containerComponent": "v-card",

@@ -287,7 +287,7 @@
                 "label": "BookingPage.moduleType",
                 "name": ["moduleType.name", "moduleTypeCode"],
                 "component": "v-text-field",
-                "class": "xs-3",
+                "class": "xs-6 md-3",
                 "validator": ["required"],
                 "props": {
                   "required": true
@@ -297,7 +297,7 @@
                 "label": "BookingPage.boundType",
                 "name": ["boundType.name", "boundTypeCode"],
                 "component": "v-text-field",
-                "class": "xs-3",
+                "class": "xs-6 md-3",
                 "validator": ["required"],
                 "props": {
                   "required": true
@@ -307,7 +307,7 @@
                 "label": "BookingPage.serviceCode",
                 "name": ["service.name", "serviceCode"],
                 "component": "v-text-field",
-                "class": "xs-3",
+                "class": "xs-6 md-3",
                 "isRequired": "return form && form.moduleTypeCode !== 'AIR';",
                 "checkDisplayWhen": "return form && ((form.service && form.service.name) || form.serviceCode)"
               },
@@ -349,13 +349,13 @@
                 "checkDisplayWhen": "return form && (form.placeOfReceiptName || (form.placeOfReceipt && form.placeOfReceipt.name) || form.placeOfReceiptCode)",
                 "name": ["placeOfReceiptName", "placeOfReceipt.name", "placeOfReceiptCode"],
                 "component": "v-text-field",
-                "class": "xs-3"
+                "class": "xs-6 md-3"
               }, {
                 "label": "BookingPage.portOfLoading",
                 "name": "portOfLoading",
                 "name": ["portOfLoadingName", "portOfLoading.name", "portOfLoadingCode"],
                 "component": "v-text-field",
-                "class": "xs-3",
+                "class": "xs-6 md-3",
                 "validator": ["required"],
                 "props": {
                   "required": true
@@ -364,7 +364,7 @@
                 "label": "BookingPage.portOfDischarge",
                 "name": ["portOfDischargeName", "portOfDischarge.name", "portOfDischargeCode"],
                 "component": "v-text-field",
-                "class": "xs-3",
+                "class": "xs-6 md-3",
                 "validator": ["required"],
                 "props": {
                   "required": true
@@ -374,37 +374,37 @@
                 "checkDisplayWhen": "return form && (form.placeOfDeliveryName || (form.placeOfDelivery && form.placeOfDelivery.name) || form.placeOfDeliveryCode)",
                 "name": ["placeOfDeliveryName", "placeOfDelivery.name", "placeOfDeliveryCode"],
                 "component": "v-text-field",
-                "class": "xs-3"
+                "class": "xs-6 md-3"
               }, {
                 "label": "BookingPage.carrier",
                 "name": ["carrierName", "carrier.name", "carrierCode"],
                 "component": "v-text-field",
                 "checkDisplayWhen": "return form && (form.carrierName || (form.carrier && form.carrier.name) || form.carrierCode)",
-                "class": "xs-3"
+                "class": "xs-6 md-3"
               }, {
                 "label": "BookingPage.contractNo",
                 "name": "flexData.contractNo",
                 "component": "v-text-field",
-                "class": "xs-3",
+                "class": "xs-6 md-3",
                 "checkDisplayWhen": "return form && form.flexData && form.flexData.contractNo"
               }, {
                 "label": "BookingPage.vesselName",
                 "name": ["proposedVesselName", "vesselName"],
                 "component": "v-text-field",
-                "class": "xs-3",
+                "class": "xs-6 md-3",
                 "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA' && (form.proposedVesselName || form.vesselName)"
               }, {
                 "label": "BookingPage.voyageFlightNumber",
                 "name": ["proposedVoyageFlightNumber", "voyageFlightNumber"],
                 "component": "v-text-field",
-                "class": "xs-3",
+                "class": "xs-6 md-3",
                 "checkDisplayWhen": "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA') && (form.voyageFlightNumber || form.proposedVoyageFlightNumber)"
               },  {
                 "label": "BookingPage.vas",
                 "name": "vas",
                 "checkDisplayWhen": "return form && form.vas && form.vas.length",
                 "component": "AsyncSelect",
-                "class": "xs-3",
+                "class": "xs-6 md-3",
                 "props": {
                   "loadOnReadOnly": true,
                   "multiple": true,
@@ -431,25 +431,25 @@
                 "label": "BookingPage.incoTermsCode",
                 "name": "incoTermsCode",
                 "component": "v-text-field",
-                "class": "xs-3",
+                "class": "xs-6 md-3",
                 "checkDisplayWhen": "return form && ((form.incoTerms && form.incoTerms.name) || form.incoTermsCode)"
               }, {
                 "label": "BookingPage.freightTermsCode",
                 "name": "freightTermsCode",
                 "component": "v-text-field",
-                "class": "xs-3",
+                "class": "xs-6 md-3",
                 "checkDisplayWhen": "return form && ((form.freightTerms && form.freightTerms.name) || form.freightTermsCode)"
               }, {
                 "label": "BookingPage.otherTerms",
                 "name": "otherTermsCode",
                 "component": "v-text-field",
-                "class": "xs-3",
+                "class": "xs-6 md-3",
                 "checkDisplayWhen": "return form && ((form.otherTerms && form.otherTerms.name) || form.otherTermsCode)"
               }, {
                 "label": "BookingPage.commodity",
                 "name": "commodity",
                 "component": "v-text-field",
-                "class": "xs-3",
+                "class": "xs-6 md-3",
                 "validator": ["required"],
                 "props": {
                   "required": true
@@ -458,7 +458,7 @@
                 "label": "BookingPage.polHScode",
                 "name": "polHScode",
                 "component": "v-text-field",
-                "class": "xs-3",
+                "class": "xs-6 md-3",
                 "checkDisplayWhen": "return form && form.polHScode",
                 "more": ["podHScode"]
               },
