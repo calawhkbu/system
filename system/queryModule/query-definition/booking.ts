@@ -589,6 +589,8 @@ query.table('otherTerms', new Query({
   })
 }))
 
+
+
 // party join : table:office, table:shipper etc
 partyList.map(party => {
 
@@ -857,7 +859,7 @@ const bookingTrackingLastStatusCodeTableExpression = new Query({
     new ResultColumn(new ColumnExpression('tracking', 'lastActualUpdateDate'))
   ],
 
-  $from : 'tracking'
+  $from: 'tracking'
 
 })
 
@@ -875,14 +877,14 @@ const bookingTrackingStatusCodeTableExpression = new Query({
     new ResultColumn(new ColumnExpression('tracking_status', 'statusDate')),
   ],
 
-  $from : new FromTable({
-    table : 'tracking',
-    joinClauses : [
+  $from: new FromTable({
+    table: 'tracking',
+    joinClauses: [
 
       {
-        operator : 'LEFT',
-        $on : new BinaryExpression(new ColumnExpression('tracking_status', 'trackingId'), '=', new ColumnExpression('tracking', 'id')),
-        table : new FromTable('tracking_status')
+        operator: 'LEFT',
+        $on: new BinaryExpression(new ColumnExpression('tracking_status', 'trackingId'), '=', new ColumnExpression('tracking', 'id')),
+        table: new FromTable('tracking_status')
       }
     ]
   })
@@ -989,7 +991,11 @@ const activeStatusExpression = new CaseExpression({
   $else: new Value('active')
 })
 
-const lastStatusCodeExpression = new ColumnExpression('booking_tracking', 'lastStatusCode')
+const lastStatusCodeExpression = new ColumnExpression('bookingTrackingLastStatusCodeTable', 'lastStatusCode')  // booking_tracking
+const lastStatusDateExpression = new ColumnExpression('bookingTrackingLastStatusCodeTable', 'lastStatusDate')
+const lastStatusCodeOrDescriptionExpression = new FunctionExpression('IFNULL', new ColumnExpression('bookingTrackingLastStatusCodeTable', 'lastStatusCode'),
+ new ColumnExpression('bookingTrackingLastStatusCodeTable', 'lastStatusDescription'))
+
 
 function lastStatusExpressionFunction() {
 
@@ -1499,18 +1505,6 @@ const fieldList = [
   },
 
   {
-    name : 'lastStatusCode',
-    expression : lastStatusCodeExpression,
-    companion : ['table:lastStatus']
-  },
-
-  {
-    name : 'lastStatus',
-    expression : lastStatusExpression,
-    companion : ['table:lastStatus']
-  },
-
-  {
     name : 'jobDate',
     expression : jobDateExpression
   },
@@ -1595,6 +1589,26 @@ const fieldList = [
   {
     name : 'activeStatus',
     expression : activeStatusExpression
+  },
+  {
+    name: 'lastStatusCode',
+    expression: lastStatusCodeExpression,
+    companion: ['table:lastStatus']
+  },
+  {
+    name: 'lastStatus',
+    expression: lastStatusExpression,
+    companion: ['table:lastStatus']
+  },
+  {
+    name: 'lastStatusDate',
+    expression: lastStatusDateExpression,
+    companion: ['table:lastStatus']
+  },
+  {
+    name: 'lastStatusCodeOrDescription',
+    expression: lastStatusCodeOrDescriptionExpression,
+    companion: ['table:lastStatus']
   }
 
 ] as ExpressionHelperInterface[]
@@ -1900,6 +1914,59 @@ const dateList = [
 
 
 registerAllDateField(query,'booking_date',dateList)
+
+const dateNameList = [
+  //'departure',
+  'arrival',
+  //'oceanBill',
+  'cargoReady',
+  //'scheduleAssigned',
+  //'scheduleApproaved',
+  //'spaceConfirmation',
+  //'bookingSubmit',
+  // 'cyCutOff',
+  // 'documentCutOff',
+  // 'pickup',
+  // 'shipperLoad',
+  // 'returnLoad',
+  // 'cargoReceipt',
+  // 'shipperDocumentSubmit',
+  // 'shipperInstructionSubmit',
+  // 'houseBillDraftSubmit',
+  // 'houseBillConfirmation',
+  // 'masterBillReleased',
+  // 'preAlertSend',
+  // 'ediSend',
+  // 'cargoRolloverStatus',
+  // 'inboundTransfer',
+  // 'onRail',
+  // 'arrivalAtDepot',
+  // 'availableForPickup',
+  // 'pickupCargoBeforeDemurrage',
+  // 'finalCargo',
+  // 'cargoPickupWithDemurrage',
+  // 'finalDoorDelivery',
+  // 'returnEmptyContainer',
+  // 'sentToShipper',
+  // 'gateIn',
+  // 'sentToConsignee',
+  // 'loadOnboard'
+]
+
+query.registerResultColumn(
+  'lastStatusWidget',
+  new ResultColumn(new Value(1)),
+  'table:booking_date',
+  'field:bookingNo',
+  'field:id',
+
+
+  ...(dateNameList.reduce((companion: string[], dateString: string) => {
+    companion.push(`field:${dateString}DateEstimated`)
+    companion.push(`field:${dateString}DateActual`)
+    return companion
+  }, []))
+)
 
 // ----------------- filter in main filter menu
 query.register('containerNoLike', new Query({

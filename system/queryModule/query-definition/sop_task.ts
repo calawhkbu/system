@@ -1,7 +1,7 @@
 import { QueryDef } from "classes/query/QueryDef";
 import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery, ParameterExpression, OrderBy, BetweenExpression } from "node-jql";
-import { IfExpression, alwaysTrueExpression, wrapOrder, IfNullExpression } from 'utils/jql-subqueries'
-import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityExpression, taskStatusJoinClauses } from "utils/sop-task";
+import { IfExpression, wrapOrder, IfNullExpression } from 'utils/jql-subqueries'
+import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityCompanion, getEntityExpression, getEntityResultColumn, taskStatusJoinClauses } from "utils/sop-task";
 import { IShortcut } from 'classes/query/Shortcut'
 
 const taskTable = 'sop_task'
@@ -22,7 +22,6 @@ const statusList = ['Dead', 'Due', 'Open', 'Not Ready', 'Done', 'Closed', 'Delet
 
 const query = new QueryDef({
   $from: new FromTable(taskTable,
-    ...taskStatusJoinClauses(),
     new JoinClause('LEFT', new FromTable(taskTable, 'parent'),
       new AndExpressions([
         new BinaryExpression(new ColumnExpression(taskTable, 'parentId'), '=', new ColumnExpression('parent', 'id')),
@@ -38,7 +37,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'table',
     name: 'booking',
-    fromTable: new FromTable(taskTable, new JoinClause('LEFT', bookingTable,
+    fromTable: new FromTable(taskTable, new JoinClause('INNER', bookingTable,
       new AndExpressions([
         new BinaryExpression(new ColumnExpression(taskTable, 'tableName'), '=', bookingTable),
         new BinaryExpression(new ColumnExpression(taskTable, 'primaryKey'), '=', new ColumnExpression(bookingTable, 'id')),
@@ -80,7 +79,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'table',
     name: 'shipment',
-    fromTable: new FromTable(taskTable, new JoinClause('LEFT', shipmentTable,
+    fromTable: new FromTable(taskTable, new JoinClause('INNER', shipmentTable,
       new AndExpressions([
         new BinaryExpression(new ColumnExpression(taskTable, 'tableName'), '=', shipmentTable),
         new BinaryExpression(new ColumnExpression(taskTable, 'primaryKey'), '=', new ColumnExpression(shipmentTable, 'id')),
@@ -136,12 +135,19 @@ const shortcuts: IShortcut[] = [
     companions: ['table:shipment']
   },
 
+  // table:sop_task_status
+  {
+    type: 'table',
+    name: 'sop_task_status',
+    fromTable: new FromTable(taskTable, ...taskStatusJoinClauses())
+  },
+
   // table:sop_template_task
   {
     type: 'table',
     name: 'sop_template_task',
     queryArg: re => params => ({
-      $from: new FromTable(taskTable, new JoinClause('LEFT', templateTaskTable,
+      $from: new FromTable(taskTable, new JoinClause('INNER', templateTaskTable,
         new AndExpressions([
           new BinaryExpression(new ColumnExpression(taskTable, 'taskId'), '=', new ColumnExpression(templateTaskTable, 'id')),
           new BinaryExpression(new ColumnExpression(templateTaskTable, 'partyGroupCode'), '=', params.subqueries.partyGroupCode.value)
@@ -455,233 +461,218 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'jobNo',
-    expression: re => new ColumnExpression(shipmentTable, 'jobNo'),
-    registered: true,
-    companions: ['table:shipment']
+    queryArg: () => getEntityResultColumn('jobNo', [shipmentTable]),
+    companions: getEntityCompanion([], [shipmentTable])
   },
 
   // field:bookingNo
   {
     type: 'field',
     name: 'bookingNo',
-    expression: re => new ColumnExpression(bookingTable, 'bookingNo'),
-    registered: true,
-    companions: ['table:booking']
+    queryArg: () => getEntityResultColumn('bookingNo', [bookingTable]),
+    companions: getEntityCompanion([], [bookingTable])
   },
 
   // field:masterNo
   {
     type: 'field',
     name: 'masterNo',
-    expression: new ColumnExpression(shipmentTable, 'masterNo'),
-    companions: ['table:shipment'],
-    registered: true
+    queryArg: () => getEntityResultColumn('masterNo', [shipmentTable]),
+    companions: getEntityCompanion([], [shipmentTable])
   },
 
   // field:houseNo
   {
     type: 'field',
     name: 'houseNo',
-    expression: new ColumnExpression(shipmentTable, 'houseNo'),
-    companions: ['table:shipment']
+    queryArg: () => getEntityResultColumn('houseNo', [shipmentTable]),
+    companions: getEntityCompanion([], [shipmentTable])
   },
 
   // field:primaryNo
   {
     type: 'field',
     name: 'primaryNo',
-    expression: getEntityExpression('primaryNo', [bookingTable, 'bookingNo'], [shipmentTable, 'houseNo']),
-    companions: ['table:booking', 'table:shipment'],
-    registered: true
+    queryArg: () => getEntityResultColumn('primaryNo', [bookingTable, 'bookingNo'], [shipmentTable, 'houseNo']),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // field:divisionCode
   {
     type: 'field',
     name: 'divisionCode',
-    expression: getEntityExpression('divisionCode', [bookingTable], [shipmentTable]),
-    companions: ['table:booking', 'table:shipment']
+    queryArg: () => getEntityResultColumn('divisionCode', [bookingTable], [shipmentTable]),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // field:moduleTypeCode
   {
     type: 'field',
     name: 'moduleTypeCode',
-    expression: getEntityExpression('moduleTypeCode', [bookingTable], [shipmentTable]),
-    companions: ['table:booking', 'table:shipment']
+    queryArg: () => getEntityResultColumn('moduleTypeCode', [bookingTable], [shipmentTable]),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // field:boundTypeCode
   {
     type: 'field',
     name: 'boundTypeCode',
-    expression: getEntityExpression('boundTypeCode', [bookingTable], [shipmentTable]),
-    companions: ['table:booking', 'table:shipment']
+    queryArg: () => getEntityResultColumn('boundTypeCode', [bookingTable], [shipmentTable]),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // field:vesselName
   {
     type: 'field',
     name: 'vesselName',
-    expression: getEntityExpression('vesselName', [bookingTable], [shipmentTable, 'vessel']),
-    registered: true,
-    companions: ['table:booking', 'table:shipment']
+    queryArg: () => getEntityResultColumn('vesselName', [bookingTable], [shipmentTable, 'vessel']),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // field:voyageFlightNumber
   {
     type: 'field',
     name: 'voyageFlightNumber',
-    expression: getEntityExpression('voyageFlightNumber', [bookingTable], [shipmentTable]),
-    registered: true,
-    companions: ['table:booking', 'table:shipment']
+    queryArg: () => getEntityResultColumn('voyageFlightNumber', [bookingTable], [shipmentTable]),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // field:portOfLoadingCode
   {
     type: 'field',
     name: 'portOfLoadingCode',
-    expression: getEntityExpression('portOfLoadingCode', [bookingTable], [shipmentTable]),
-    companions: ['table:booking', 'table:shipment']
+    queryArg: () => getEntityResultColumn('portOfLoadingCode', [bookingTable], [shipmentTable]),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // field:portOfDischargeCode
   {
     type: 'field',
     name: 'portOfDischargeCode',
-    expression: getEntityExpression('portOfDischargeCode', [bookingTable], [shipmentTable]),
-    companions: ['table:booking', 'table:shipment']
+    queryArg: () => getEntityResultColumn('portOfDischargeCode', [bookingTable], [shipmentTable]),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // field:departureDate
   {
     type: 'field',
     name: 'departureDate',
-    expression: getEntityExpression(
+    queryArg: () => getEntityResultColumn(
       'departureDate',
       ([tableName, dateTable, field]) => IfNullExpression(new ColumnExpression(dateTable, `${field}Actual`), new ColumnExpression(dateTable, `${field}Estimated`)),
       [bookingTable, bookingDateTable, 'departureDate'],
       [shipmentTable, shipmentDateTable, 'departureDate']
     ),
-    companions: ['table:booking_date', 'table:shipment_date']
+    companions: getEntityCompanion([], [bookingTable, bookingDateTable], [shipmentTable, shipmentDateTable])
   },
 
   // field:arrivalDate
   {
     type: 'field',
     name: 'arrivalDate',
-    expression: getEntityExpression(
+    queryArg: () => getEntityResultColumn(
       'arrivalDate',
       ([tableName, dateTable, field]) => IfNullExpression(new ColumnExpression(dateTable, `${field}Actual`), new ColumnExpression(dateTable, `${field}Estimated`)),
       [bookingTable, bookingDateTable, 'arrivalDate'],
       [shipmentTable, shipmentDateTable, 'arrivalDate']
     ),
-    companions: ['table:booking_date', 'table:shipment_date']
+    companions: getEntityCompanion([], [bookingTable, bookingDateTable], [shipmentTable, shipmentDateTable])
   },
 
   // field:officePartyId
   {
     type: 'field',
     name: 'officePartyId',
-    expression: getEntityExpression('officePartyId', [bookingTable, bookingPartyTable, 'forwarderPartyId'], [shipmentTable, shipmentPartyTable]),
-    registered: true,
-    companions: ['table:booking_party', 'table:shipment_party']
+    queryArg: () => getEntityResultColumn('officePartyId', [bookingTable, bookingPartyTable, 'forwarderPartyId'], [shipmentTable, shipmentPartyTable]),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // field:shipperPartyId
   {
     type: 'field',
     name: 'shipperPartyId',
-    expression: getEntityExpression('shipperPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable]),
-    registered: true,
-    companions: ['table:booking_party', 'table:shipment_party']
+    queryArg: () => getEntityResultColumn('shipperPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable]),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // field:shipper
   {
     type: 'field',
     name: 'shipper',
-    expression: getEntityExpression('shipper', [bookingTable, bookingPartyTable, 'shipperPartyName'], [shipmentTable, shipmentPartyTable, 'shipperPartyName']),
-    companions: ['table:booking_party', 'table:shipment_party']
+    queryArg: () => getEntityResultColumn('shipper', [bookingTable, bookingPartyTable, 'shipperPartyName'], [shipmentTable, shipmentPartyTable, 'shipperPartyName']),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // field:consigneePartyId
   {
     type: 'field',
     name: 'consigneePartyId',
-    expression: getEntityExpression('consigneePartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable]),
-    registered: true,
-    companions: ['table:booking_party', 'table:shipment_party']
+    queryArg: () => getEntityResultColumn('consigneePartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable]),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // field:consignee
   {
     type: 'field',
     name: 'consignee',
-    expression: getEntityExpression('consignee', [bookingTable, bookingPartyTable, 'consigneePartyName'], [shipmentTable, shipmentPartyTable, 'consigneePartyName']),
-    companions: ['table:booking_party', 'table:shipment_party']
+    queryArg: () => getEntityResultColumn('consignee', [bookingTable, bookingPartyTable, 'consigneePartyName'], [shipmentTable, shipmentPartyTable, 'consigneePartyName']),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // field:agentPartyId
   {
     type: 'field',
     name: 'agentPartyId',
-    expression: getEntityExpression('agentPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable]),
-    registered: true,
-    companions: ['table:booking_party', 'table:shipment_party']
+    queryArg: () => getEntityResultColumn('agentPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable]),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // field:agent
   {
     type: 'field',
     name: 'agent',
-    expression: getEntityExpression('agent', [bookingTable, bookingPartyTable, 'agentPartyName'], [shipmentTable, shipmentPartyTable, 'agentPartyName']),
-    companions: ['table:booking_party', 'table:shipment_party']
+    queryArg: () => getEntityResultColumn('agent', [bookingTable, bookingPartyTable, 'agentPartyName'], [shipmentTable, shipmentPartyTable, 'agentPartyName']),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // field:roAgentPartyId
   {
     type: 'field',
     name: 'roAgentPartyId',
-    expression: getEntityExpression('roAgentPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable]),
-    registered: true,
-    companions: ['table:booking_party', 'table:shipment_party']
+    queryArg: () => getEntityResultColumn('roAgentPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable]),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // field:linerAgentPartyId
   {
     type: 'field',
     name: 'linerAgentPartyId',
-    expression: getEntityExpression('linerAgentPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable]),
-    registered: true,
-    companions: ['table:booking_party', 'table:shipment_party']
+    queryArg: () => getEntityResultColumn('linerAgentPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable]),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // field:controllingCustomerPartyId
   {
     type: 'field',
     name: 'controllingCustomerPartyId',
-    expression: getEntityExpression('controllingCustomerPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable]),
-    registered: true,
-    companions: ['table:booking_party', 'table:shipment_party']
+    queryArg: () => getEntityResultColumn('controllingCustomerPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable]),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // field:picEmail
   {
     type: 'field',
     name: 'picEmail',
-    expression: getEntityExpression('picEmail', [bookingTable], [shipmentTable]),
-    registered: true,
-    companions: ['table:booking', 'table:shipment']
+    queryArg: () => getEntityResultColumn('picEmail', [bookingTable], [shipmentTable]),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // field:team
   {
     type: 'field',
     name: 'team',
-    expression: getEntityExpression('team', [bookingTable], [shipmentTable]),
-    registered: true,
-    companions: ['table:booking', 'table:shipment']
+    queryArg: () => getEntityResultColumn('team', [bookingTable], [shipmentTable]),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // field:startAt
@@ -821,8 +812,9 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'isDone',
-    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', generalIsDoneExpression('temp_status', true)), true), generalIsDoneExpression()),
-    registered: true
+    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', true, generalIsDoneExpression('temp_status', true)), true), generalIsDoneExpression()),
+    registered: true,
+    companions: ['table:sop_task_status']
   },
 
   // field:dueDays
@@ -875,8 +867,9 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'isClosed',
-    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', generalIsClosedExpression('temp_status', true)), true), generalIsClosedExpression()),
-    registered: true
+    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', true, generalIsClosedExpression('temp_status', true)), true), generalIsClosedExpression()),
+    registered: true,
+    companions: ['table:sop_task_status']
   },
 
   // field:isDeleted
@@ -909,7 +902,8 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'taskStatus',
-    expression: re => new ColumnExpression(taskStatusTable, 'status')
+    expression: () => new ColumnExpression(taskStatusTable, 'status'),
+    companions: ['table:sop_task_status']
   },
 
   // field:statusAt
@@ -920,7 +914,8 @@ const shortcuts: IShortcut[] = [
       re['isDeleted'],
       new Value(null),
       new ColumnExpression(taskStatusTable, 'createdAt')
-    )
+    ),
+    companions: ['table:sop_task_status']
   },
 
   // field:statusBy
@@ -936,25 +931,21 @@ const shortcuts: IShortcut[] = [
       const me = params.subqueries && typeof params.subqueries.user === 'object' && 'value' in params.subqueries.user ? params.subqueries.user.value : ''
       const byMeExpression = new BinaryExpression(statusByExpression, '=', me)
       return { $select: new ResultColumn(IfExpression(byMeExpression, new Value('me'), statusByExpression), 'statusBy') }
-    }
+    },
+    companions: ['table:sop_task_status']
   },
 
   // field:entityCreatedAt
   {
     type: 'field',
     name: 'entityCreatedAt',
-    expression: re => new CaseExpression([
-      {
-        $when: new BinaryExpression(re['tableName'], '=', new Value(bookingTable)),
-        $then: IfNullExpression(new ColumnExpression(bookingTable, 'bookingCreateTime'), new ColumnExpression(bookingTable, 'createdAt'))
-      },
-      {
-        $when: new BinaryExpression(re['tableName'], '=', new Value(shipmentTable)),
-        $then: IfNullExpression(new ColumnExpression(shipmentTable, 'shipmentCreateTime'), new ColumnExpression(shipmentTable, 'createdAt'))
-      }
-    ]),
-    registered: true,
-    companions: ['table:booking', 'table:shipment']
+    queryArg: () => getEntityResultColumn(
+      'entityCreatedAt',
+      ([tableName, field]) => IfNullExpression(new ColumnExpression(tableName, field), new ColumnExpression(tableName, 'createdAt')),
+      [bookingTable, 'bookingCreateTime'],
+      [shipmentTable, 'shipmentCreateTime']
+    ),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // field:deduct
@@ -971,14 +962,6 @@ const shortcuts: IShortcut[] = [
         $then: IfNullExpression(new ColumnExpression('sop_task', 'dueScore'), new Value(0))
       }
     ], new Value(0)))
-  },
-
-  // subquery:partyGroupCode
-  {
-    type: 'subquery',
-    name: 'partyGroupCode',
-    expression: re => new BinaryExpression(re['partyGroupCode'], '=', new Unknown()),
-    unknowns: true
   },
 
   // subquery:tableName
@@ -1001,19 +984,23 @@ const shortcuts: IShortcut[] = [
   {
     type: 'subquery',
     name: 'bookingNo',
-    expression: re => new BinaryExpression(re['bookingNo'], '=', new Unknown()),
-    unknowns: true
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BinaryExpression(getEntityExpression('bookingNo', [bookingTable])(params), '=', new Value(value))
+    }),
+    companions: getEntityCompanion([], [bookingTable])
   },
 
   // subquery:search
   {
     type: 'subquery',
     name: 'search',
-    expression: re => new OrExpressions([
-      new BinaryExpression(re['primaryNo'], '=', new Unknown()),
-      new BinaryExpression(re['masterNo'], '=', new Unknown())
-    ]),
-    unknowns: { noOfUnknowns: 2 }
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new OrExpressions([
+        new BinaryExpression(getEntityExpression('primaryNo', [bookingTable, 'bookingNo'], [shipmentTable, 'houseNo'])(params), '=', new Value(value)),
+        new BinaryExpression(getEntityExpression('masterNo', [shipmentTable, 'masterNo'])(params), '=', new Value(value))
+      ])
+    }),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // subquery:date
@@ -1037,22 +1024,13 @@ const shortcuts: IShortcut[] = [
   {
     type: 'subquery',
     name: 'teams',
-    subqueryArg: re => ({ value }, params) => {
+    subqueryArg: () => ({ value }, params) => {
       const me = typeof params.subqueries.user === 'object' && 'value' in params.subqueries.user ? params.subqueries.user.value : ''
-      return {
-        $where: new CaseExpression([
-          {
-            $when: new BinaryExpression(re['tableName'], '=', new Value(bookingTable)),
-            $then: inChargeExpression(bookingTable, me, value)
-          },
-          {
-            $when: new BinaryExpression(re['tableName'], '=', new Value(shipmentTable)),
-            $then: inChargeExpression(shipmentTable, me, value)
-          }
-        ], alwaysTrueExpression)
-      }
+      const tableName = params.subqueries.tableName
+      if (!(tableName && tableName.value)) return { $where: new Value(1) }
+      return inChargeExpression(bookingTable, me, value)
     },
-    companions: ['table:sop_template_task', 'table:booking', 'table:shipment']
+    companions: getEntityCompanion([templateTaskTable], [bookingTable], [shipmentTable])
   },
 
   // subquery:notDone
@@ -1094,14 +1072,17 @@ const shortcuts: IShortcut[] = [
   {
     type: 'subquery',
     name: 'notDeleted',
-    expression: re => new AndExpressions([
-      new BinaryExpression(re['isDeleted'], '=', new Value(0)),
-      new OrExpressions([
-        new IsNullExpression(new ColumnExpression(shipmentTable, 'id'), true),
-        new IsNullExpression(new ColumnExpression(bookingTable, 'id'), true)
-      ])
-    ]),
-    companions: ['table:booking', 'table:shipment']
+    subqueryArg: re => (value, params) => {
+      const tableName = params.subqueries.tableName
+      if (!(tableName && tableName.value)) return { $where: new Value(0) }
+      return {
+        $where: new AndExpressions([
+          new BinaryExpression(re['isDeleted'], '=', new Value(0)),
+          new IsNullExpression(new ColumnExpression(tableName.value, 'id'), true)
+        ])
+      }
+    },
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // subquery:notReferencedIn
@@ -1199,16 +1180,20 @@ const shortcuts: IShortcut[] = [
   {
     type: 'subquery',
     name: 'pic',
-    expression: re => new BinaryExpression(re['picEmail'], '=', new Unknown()),
-    unknowns: true
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BinaryExpression(getEntityExpression('picEmail', [bookingTable], [shipmentTable])(params), '=', new Value(value))
+    }),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // subquery:team
   {
     type: 'subquery',
     name: 'team',
-    expression: re => new BinaryExpression(re['team'], '=', new Unknown()),
-    unknowns: true
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BinaryExpression(getEntityExpression('team', [bookingTable], [shipmentTable])(params), '=', new Value(value))
+    }),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // subquery:activeStatus
@@ -1223,80 +1208,108 @@ const shortcuts: IShortcut[] = [
   {
     type: 'subquery',
     name: 'vesselName',
-    expression: re => new BinaryExpression(re['vesselName'], '=', new Unknown()),
-    unknowns: true
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BinaryExpression(getEntityExpression('vesselName', [bookingTable], [shipmentTable, 'vessel'])(params), '=', new Value(value))
+    }),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // subquery:voyageFlightNumber
   {
     type: 'subquery',
     name: 'voyageFlightNumber',
-    expression: re => new BinaryExpression(re['voyageFlightNumber'], '=', new Unknown()),
-    unknowns: true
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BinaryExpression(getEntityExpression('voyageFlightNumber', [bookingTable], [shipmentTable])(params), '=', new Value(value))
+    }),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // subquery:shipperPartyId
   {
     type: 'subquery',
     name: 'shipperPartyId',
-    expression: re => new InExpression(re['shipperPartyId'], false, new Unknown()),
-    unknowns: true
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new InExpression(getEntityExpression('shipperPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])(params), false, new Value(value)),
+    }),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // subquery:consigneePartyId
   {
     type: 'subquery',
     name: 'consigneePartyId',
-    expression: re => new InExpression(re['consigneePartyId'], false, new Unknown()),
-    unknowns: true
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new InExpression(getEntityExpression('consigneePartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])(params), false, new Value(value)),
+    }),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // subquery:officePartyId
   {
     type: 'subquery',
     name: 'officePartyId',
-    expression: re => new InExpression(re['officePartyId'], false, new Unknown()),
-    unknowns: true
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new InExpression(getEntityExpression('officePartyId', [bookingTable, bookingPartyTable, 'forwarderPartyId'], [shipmentTable, shipmentPartyTable])(params), false, new Value(value)),
+    }),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // subquery:agentPartyId
   {
     type: 'subquery',
     name: 'agentPartyId',
-    expression: re => new InExpression(re['agentPartyId'], false, new Unknown()),
-    unknowns: true
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new InExpression(getEntityExpression('agentPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])(params), false, new Value(value)),
+    }),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // subquery:roAgentPartyId
   {
     type: 'subquery',
     name: 'roAgentPartyId',
-    expression: re => new InExpression(re['roAgentPartyId'], false, new Unknown()),
-    unknowns: true
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new InExpression(getEntityExpression('roAgentPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])(params), false, new Value(value)),
+    }),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // subquery:linerAgentPartyId
   {
     type: 'subquery',
     name: 'linerAgentPartyId',
-    expression: re => new InExpression(re['linerAgentPartyId'], false, new Unknown()),
-    unknowns: true
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new InExpression(getEntityExpression('linerAgentPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])(params), false, new Value(value)),
+    }),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // subquery:controllingCustomerPartyId
   {
     type: 'subquery',
     name: 'controllingCustomerPartyId',
-    expression: re => new InExpression(re['controllingCustomerPartyId'], false, new Unknown()),
-    unknowns: true
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new InExpression(getEntityExpression('controllingCustomerPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])(params), false, new Value(value)),
+    }),
+    companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
 
   // subquery:createdAtBetween
   {
     type: 'subquery',
     name: 'createdAtBetween',
-    expression: re => new BetweenExpression(re['entityCreatedAt'], false, new Unknown(), new Unknown()),
-    unknowns: { fromTo: true }
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BetweenExpression(getEntityExpression(
+        'entityCreatedAt',
+        ([tableName, field]) => IfNullExpression(new ColumnExpression(tableName, field), new ColumnExpression(tableName, 'createdAt')),
+        [bookingTable, 'bookingCreateTime'],
+        [shipmentTable, 'shipmentCreateTime']
+      )(params), false,
+        new FunctionExpression('DATE_SUB', new FunctionExpression('UTC_TIMESTAMP'), new ParameterExpression('INTERVAL', new Value(value), 'DAY')),
+        new FunctionExpression('DATE_ADD', new FunctionExpression('UTC_TIMESTAMP'), new ParameterExpression('INTERVAL', new Value(value), 'DAY'))
+      )
+    }),
+    companions: getEntityCompanion([], [bookingTable], [shipmentTable])
   },
 
   // orderBy:seqNo

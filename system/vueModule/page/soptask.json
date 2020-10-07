@@ -60,6 +60,15 @@
             }
           },
           {
+            "name": "createdAtBetween",
+            "type": "text",
+            "props": {
+              "type": "number",
+              "prefix": "Today ±",
+              "suffix": "Day(s)"
+            }
+          },
+          {
             "name": "tableName",
             "display": "entityType",
             "type": "list",
@@ -149,10 +158,6 @@
             "i18nContext": "SopTask"
           },
           {
-            "name": "createdAtBetween",
-            "type": "date"
-          },
-          {
             "name": "vesselName",
             "type": "text"
           },
@@ -163,11 +168,17 @@
         ],
         "newReport": {
           "filters": {
+            "tableName": {
+              "value": "booking"
+            },
             "date": {
               "to": "2020-09-04 23:59",
               "from": "2020-09-04 00:00",
               "func": "today",
               "timezone": "Asia/Hong_Kong"
+            },
+            "createdAtBetween": {
+              "value": 30
             },
             "notClosed": true,
             "notDeleted": true

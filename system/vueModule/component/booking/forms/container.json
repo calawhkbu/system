@@ -58,6 +58,9 @@
               "method": "POST",
               "data": {
                 "subqueries": {
+                  "activeStatus": {
+                    "value": "active"
+                  },
                   "codeType": {
                     "value": "CURRENCY"
                   },
@@ -89,8 +92,7 @@
           "component": "TableField",
           "props": {
             "topLabel": true,
-            "fields": [
-              {
+            "fields": [{
                 "label": "BookingPage.quantity",
                 "name": "quantity",
                 "component": "NumberField",
@@ -320,6 +322,9 @@
                     "method": "POST",
                     "data": {
                       "subqueries": {
+                        "activeStatus": {
+                          "value": "active"
+                        },
                         "codeType": {
                           "value": "CONTTYPE"
                         }

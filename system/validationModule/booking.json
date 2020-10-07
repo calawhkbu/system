@@ -12,7 +12,7 @@
     "field": "serviceCode",
     "validator": "required",
     "part": "BookingPage.GeneralForm",
-    "skip": "return form && form.moduleTypeCode === 'AIR';"
+    "skip": "return form && (form.from === 'erp' || form.moduleTypeCode === 'AIR');"
   },
   {
     "field": "portOfLoading",
@@ -27,6 +27,7 @@
   {
     "field": "commodity",
     "validator": "required",
-    "part": "BookingPage.GeneralForm"
+    "part": "BookingPage.GeneralForm",
+    "skip": "return form && form.from === 'erp';"
   }
 ]
