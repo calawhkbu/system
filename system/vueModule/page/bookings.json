@@ -1,306 +1,359 @@
 {
   "fillParent": true,
-  "components": [{
-    "is": "TableTool",
-    "props": {
-      "i18nContext": "BookingPage",
-      "title": "Booking",
-      "reportingKey": "bookings",
-      "jql": "bookings",
-      "hasReports": true,
-      "showFilterBar": true,
-      "enableShare": true,
-      "enableSetting": true,
-      "noPartyGroupFilters": false,
-      "clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "func": "push",
-          "path": "{% if shipmentId === null %}booking{% else %}shipment{% endif %}/{% if shipmentId === null %}{{id}}{% else %}{{shipmentId}}{% endif %}",
-          "base": true
-        }
-      },
-      "newReport": {
-        "filters": {
-          "activeStatus": {
-            "value": "active"
-          },
-          "date": {
-            "func": {
-              "args": {
-                "unit": "year"
-              },
-              "key": "current"
-            }
+  "components": [
+    {
+      "is": "TableTool",
+      "props": {
+        "i18nContext": "BookingPage",
+        "title": "Booking",
+        "reportingKey": "bookings",
+        "jql": "bookings",
+        "hasReports": true,
+        "showFilterBar": true,
+        "enableShare": true,
+        "enableSetting": true,
+        "noPartyGroupFilters": false,
+        "clickFunction": {
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "{% if shipmentId === null %}booking{% else %}shipment{% endif %}/{% if shipmentId === null %}{{id}}{% else %}{{shipmentId}}{% endif %}",
+            "base": true
           }
         },
-        "configurations": {
-          "i18nContext": "BookingPage",
-          "clickable": true,
-          "draggable": true,
-          "sorting": {
-            "direction": "DESC",
-            "key": "updatedAt",
-            "sql": {
-              "classname": "ColumnExpression",
-              "table": "booking",
-              "name": "updatedAt"
-            }
-          },
-          "pagination": {
-            "remote": true,
-            "current": 0,
-            "perPage": 20
-          }
-        }
-      },
-      "filters": [{
-        "name": "activeStatus",
-        "type": "list",
-        "props": {
-          "items": [{
-              "label": "active",
+        "newReport": {
+          "filters": {
+            "activeStatus": {
               "value": "active"
             },
-            {
-              "label": "deleted",
-              "value": "deleted"
-            }
-          ]
-        }
-      }],
-      "fieldOptions": [{
-          "key": "id",
-          "hidden": true
-        },
-        {
-          "key": "shipmentId",
-          "hidden": true
-        },
-        {
-          "key": "houseNo",
-          "width": 150
-        },
-        {
-          "key": "finalVesselName",
-          "label": "vesselName"
-        },
-        {
-          "key": "finalVoyageFlightNumber",
-          "label": "voyageFlightNumber"
-        },
-        {
-          "key": "createdAt",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "updatedAt",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "bookingNo",
-          "width": 150
-        },
-        {
-          "key": "service",
-          "label": "serviceName",
-          "width": 100
-        },
-        {
-          "key": "moduleType",
-          "width": 100
-        },
-        {
-          "key": "boundType",
-          "width": 100
-        },
-        {
-          "key": "incoTerms",
-          "width": 100
-        },
-        {
-          "key": "otherTerms",
-          "label": "otherTerms",
-          "width": 100
-        },
-        {
-          "key": "freightTerms",
-          "label": "freightTermsCode",
-          "width": 100
-        },
-        {
-          "key": "portOfDischargeName",
-          "label": "portOfDischarge",
-          "width": 100
-        },
-        {
-          "key": "portOfLoadingName",
-          "label": "portOfLoading",
-          "width": 100
-        },
-        {
-          "key": "placeOfReceiptName",
-          "label": "placeOfReceipt",
-          "width": 100
-        },
-        {
-          "key": "placeOfDeliveryName",
-          "label": "placeOfDelivery",
-          "width": 100
-        },
-        {
-          "key": "finalDestinationName",
-          "label": "finalDestination",
-          "width": 100
-        },
-        {
-          "key": "carrierName",
-          "label": "carrier",
-          "width": 100
-        },
-        {
-          "key": "customClearanceLoadingPortDateEstimated",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "customClearanceLoadingPortDateActual",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "customClearanceDestinationPortDateEstimated",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "customClearanceDestinationPortDateActual",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "shipperInstructionSubmitDateEstimated",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "shipperInstructionSubmitDateActual",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "bookingSubmitDateEstimated",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "bookingSubmitDateActual",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "departureDateEstimated",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "departureDateActual",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "arrivalDateEstimated",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "arrivalDateActual",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "cargoReadyDateEstimated",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "cargoReadyDateActual",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "cYCutOffDateEstimated",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "cYCutOffDateActual",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "finalDoorDeliveryDateEstimated",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        },
-        {
-          "key": "finalDoorDeliveryDateActual",
-          "width": 150,
-          "format": "YYYY-MM-DD"
-        }
-      ]
-    },
-    "slots": [{
-      "name": "middle-button",
-      "is": "DynamicComponent",
-      "props": {
-        "class": "button",
-        "components": [{
-          "is": "ToolTip",
-          "props": {
-            "bottom": true,
-            "activatorComponents": {
-              "layout": "span",
-              "components": [{
-                "is": "v-btn",
-                "props": {
-                  "small": true,
-                  "flat": true,
-                  "icon": true
+            "date": {
+              "func": {
+                "args": {
+                  "unit": "year"
                 },
-                "slots": [{
-                  "is": "Icon",
-                  "props": {
-                    "icon": "add"
-                  }
-                }],
-                "events": {
-                  "click.stop": [{
-                    "type": "router",
-                    "otherParams": {
-                      "func": "push",
-                      "path": "booking/create",
-                      "base": true
-                    }
-                  }]
-                }
-              }]
+                "key": "current"
+              }
+            }
+          },
+          "configurations": {
+            "i18nContext": "BookingPage",
+            "clickable": true,
+            "draggable": true,
+            "sorting": {
+              "direction": "DESC",
+              "key": "updatedAt",
+              "sql": {
+                "classname": "ColumnExpression",
+                "table": "booking",
+                "name": "updatedAt"
+              }
             },
-            "mainComponents": {
-              "layout": "span",
-              "components": [{
-                "is": "I18nText",
-                "props": {
-                  "i18nContext": "BookingPage",
-                  "i18nKey": "create"
-                }
-              }]
+            "pagination": {
+              "remote": true,
+              "current": 0,
+              "perPage": 20
             }
           }
-        }]
-      }
-    }]
-  }]
+        },
+        "filters": [
+          {
+            "name": "activeStatus",
+            "type": "list",
+            "props": {
+              "items": [
+                {
+                  "label": "active",
+                  "value": "active"
+                },
+                {
+                  "label": "deleted",
+                  "value": "deleted"
+                }
+              ]
+            }
+          }
+        ],
+        "fieldOptions": [
+          {
+            "key": "id",
+            "hidden": true
+          },
+          {
+            "key": "shipmentId",
+            "hidden": true
+          },
+          {
+            "key": "houseNo",
+            "width": 150
+          },
+          {
+            "key": "finalVesselName",
+            "label": "vesselName"
+          },
+          {
+            "key": "finalVoyageFlightNumber",
+            "label": "voyageFlightNumber"
+          },
+          {
+            "key": "createdAt",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "updatedAt",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "bookingNo",
+            "width": 150
+          },
+          {
+            "key": "service",
+            "label": "serviceName",
+            "width": 100
+          },
+          {
+            "key": "moduleType",
+            "width": 100
+          },
+          {
+            "key": "boundType",
+            "width": 100
+          },
+          {
+            "key": "incoTerms",
+            "width": 100
+          },
+          {
+            "key": "otherTerms",
+            "label": "otherTerms",
+            "width": 100
+          },
+          {
+            "key": "freightTerms",
+            "label": "freightTermsCode",
+            "width": 100
+          },
+          {
+            "key": "portOfDischargeName",
+            "label": "portOfDischarge",
+            "width": 100
+          },
+          {
+            "key": "portOfLoadingName",
+            "label": "portOfLoading",
+            "width": 100
+          },
+          {
+            "key": "placeOfReceiptName",
+            "label": "placeOfReceipt",
+            "width": 100
+          },
+          {
+            "key": "placeOfDeliveryName",
+            "label": "placeOfDelivery",
+            "width": 100
+          },
+          {
+            "key": "finalDestinationName",
+            "label": "finalDestination",
+            "width": 100
+          },
+          {
+            "key": "carrierName",
+            "label": "carrier",
+            "width": 100
+          },
+          {
+            "key": "customClearanceLoadingPortDateEstimated",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "customClearanceLoadingPortDateActual",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "customClearanceDestinationPortDateEstimated",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "customClearanceDestinationPortDateActual",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "shipperInstructionSubmitDateEstimated",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "shipperInstructionSubmitDateActual",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "bookingSubmitDateEstimated",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "bookingSubmitDateActual",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "departureDateEstimated",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "departureDateActual",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "arrivalDateEstimated",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "arrivalDateActual",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "cargoReadyDateEstimated",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "cargoReadyDateActual",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "cYCutOffDateEstimated",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "cYCutOffDateActual",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "finalDoorDeliveryDateEstimated",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "finalDoorDeliveryDateActual",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "lastStatusDate",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "lastStatusWidget",
+            "label": "lastStatusWidget",
+            "width": 500,
+            "tdComponent": {
+              "is": "AsyncComponent",
+              "props": {
+                "noDialog": true,
+                "getDate": "shipmentDate",
+                "class": "xs-12 margin-topbottom-2",
+                "layoutName": "plugins/tracking-table",
+                "getExternalDateFunc": [
+                  "const data = context.$attrs.row;",
+                  "return { houseNo: data.bookingNo, shipmentDate: data }"
+                ],
+                "axiosBaseParams": [
+                  "const data = context.$attrs.row;",
+                  "let trackingNos = [];",
+                  "trackingNos = trackingNos.push(data.currentTrackingNo)",
+                  "return {",
+                  "url: 'api/swivel-tracking/get',",
+                  "method: 'POST',",
+                  "data: { trackingNos:data.currentTrackingNo }",
+                  "};"
+                ],
+                "createdAtKey": "createdAt",
+                "createI18nKey": "shipmentReceivedByForwarder"
+              }
+            }
+          }
+        ]
+      },
+      "slots": [
+        {
+          "name": "middle-button",
+          "is": "DynamicComponent",
+          "props": {
+            "class": "button",
+            "components": [
+              {
+                "is": "ToolTip",
+                "props": {
+                  "bottom": true,
+                  "activatorComponents": {
+                    "layout": "span",
+                    "components": [
+                      {
+                        "is": "v-btn",
+                        "props": {
+                          "small": true,
+                          "flat": true,
+                          "icon": true
+                        },
+                        "slots": [
+                          {
+                            "is": "Icon",
+                            "props": {
+                              "icon": "add"
+                            }
+                          }
+                        ],
+                        "events": {
+                          "click.stop": [
+                            {
+                              "type": "router",
+                              "otherParams": {
+                                "func": "push",
+                                "path": "booking/create",
+                                "base": true
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "mainComponents": {
+                    "layout": "span",
+                    "components": [
+                      {
+                        "is": "I18nText",
+                        "props": {
+                          "i18nContext": "BookingPage",
+                          "i18nKey": "create"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
 }

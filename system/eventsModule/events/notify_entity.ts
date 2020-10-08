@@ -18,7 +18,7 @@ interface NotifyObject {
 
 export default class NotifyEntityEvent extends BaseEventHandler {
   constructor(
-    protected  eventDataList: EventData<any>[],
+    protected eventDataList: EventData<any>[],
     protected readonly eventHandlerConfig: EventHandlerConfig,
     protected readonly repo: string,
     protected readonly eventService: EventService,
@@ -49,53 +49,54 @@ export default class NotifyEntityEvent extends BaseEventHandler {
         originalEntity,
         latestEntity,
         tableName,
-        notifyKeys = []
-      }: EventData<any>
+        notifyKeys = {},
+      }: EventData<any> & { tableName: string, primaryKey: string }
     ) => {
       const partyGroupCode = _.get(latestEntity, 'partyGroupCode', null)
+      const finalKeys = notifyKeys[partyGroupCode] || []
       const picEmail = _.get(latestEntity, 'picEmail', null)
-      if (picEmail && notifyKeys.include('pic')) {
+      if (picEmail && finalKeys.include('pic')) {
         dataList.push({
           name: _.get(latestEntity, 'picId', null),
           email: _.get(latestEntity, 'picEmail', null),
           entity: originalEntity,
           isUpdate: originalEntity ? true : false,
           partyGroupCode,
-          subject: originalEntity ? 'booking-preview' : 'new-booking-preview',
+          subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
           language: 'en',
-          template: originalEntity ? 'message/booking-preview' : 'message/new-booking-preview',
+          template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
         })
       }
       const createdBy = _.get(latestEntity, 'createdBy', null)
-      if (createdBy && notifyKeys.include('createdBy')) {
+      if (createdBy && finalKeys.include('createdBy')) {
         dataList.push({
           name: createdBy, // TODO:: createdBy name
           email: createdBy,
           entity: originalEntity,
           isUpdate: originalEntity ? true : false,
           partyGroupCode,
-          subject: originalEntity ? 'booking-preview' : 'new-booking-preview',
+          subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
           language: 'en',
-          template: originalEntity ? 'message/booking-preview' : 'message/new-booking-preview',
+          template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
         })
       }
       const updatedBy = _.get(latestEntity, 'updatedBy', null)
-      if (updatedBy && createdBy !== updatedBy && notifyKeys.include('updatedBy')) {
+      if (updatedBy && createdBy !== updatedBy && finalKeys.include('updatedBy')) {
         dataList.push({
           name: updatedBy, // TODO:: updatedBy name
           email: updatedBy,
           entity: originalEntity,
           isUpdate: originalEntity ? true : false,
           partyGroupCode,
-          subject: originalEntity ? 'booking-preview' : 'new-booking-preview',
+          subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
           language: 'en',
-          template: originalEntity ? 'message/booking-preview' : 'message/new-booking-preview',
+          template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
         })
       }
       const partyTable = _.get(latestEntity, `${tableName}Party`, {})
       const partyTableFlexData = _.get(partyTable, `flexData`, {})
       for (const mainKey of this.getFixedKeyByTableName(tableName)) {
-        if (notifyKeys.include(mainKey)) {
+        if (finalKeys.include(mainKey)) {
           const party = _.get(partyTable, `${mainKey}Party`, null)
           const sentEmail = _.get(partyTable, `${mainKey}PartyEmail`, null) ||
             _.get(partyTable, `${mainKey}Party.email`, null) ||
@@ -107,9 +108,9 @@ export default class NotifyEntityEvent extends BaseEventHandler {
               entity: originalEntity,
               isUpdate: originalEntity ? true : false,
               partyGroupCode,
-              subject: originalEntity ? 'booking-preview' : 'new-booking-preview',
+              subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
               language: 'en',
-              template: originalEntity ? 'message/booking-preview' : 'message/new-booking-preview',
+              template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
             })
           }
           const mainContactEmail = _.get(partyTable, `${mainKey}PartyContactEmail`, null)
@@ -120,9 +121,9 @@ export default class NotifyEntityEvent extends BaseEventHandler {
               entity: originalEntity,
               isUpdate: originalEntity ? true : false,
               partyGroupCode,
-              subject: originalEntity ? 'booking-preview' : 'new-booking-preview',
+              subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
               language: 'en',
-              template: originalEntity ? 'message/booking-preview' : 'message/new-booking-preview',
+              template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
             })
           }
           const otherContacts = _.get(partyTable, `${mainKey}PartyContacts`, [])
@@ -135,9 +136,9 @@ export default class NotifyEntityEvent extends BaseEventHandler {
                   entity: originalEntity,
                   isUpdate: originalEntity ? true : false,
                   partyGroupCode,
-                  subject: originalEntity ? 'booking-preview' : 'new-booking-preview',
+                  subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
                   language: 'en',
-                  template: originalEntity ? 'message/booking-preview' : 'message/new-booking-preview',
+                  template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
                 })
               }
             }
@@ -149,7 +150,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
         const morePartyKeys = _.get(partyTableFlexData, 'moreParty', [])
         if (morePartyKeys && morePartyKeys.length) {
           for (const morePartyKey of morePartyKeys) {
-            if (notifyKeys.include(morePartyKey)) {
+            if (finalKeys.include(morePartyKey)) {
               const partyId = _.get(partyTableFlexData, `${morePartyKey}PartyId`, null)
               if (partyId) {
                 const party = _.get(partyTableFlexData, `${morePartyKey}Party`, null)
@@ -163,9 +164,9 @@ export default class NotifyEntityEvent extends BaseEventHandler {
                     entity: originalEntity,
                     isUpdate: originalEntity ? true : false,
                     partyGroupCode,
-                    subject: originalEntity ? 'booking-preview' : 'new-booking-preview',
+                    subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
                     language: 'en',
-                    template: originalEntity ? 'message/booking-preview' : 'message/new-booking-preview',
+                    template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
                   })
                 }
                 const mainContactName = _.get(partyTableFlexData, `${morePartyKey}PartyContactName`, null)
@@ -177,9 +178,9 @@ export default class NotifyEntityEvent extends BaseEventHandler {
                     entity: originalEntity,
                     isUpdate: originalEntity ? true : false,
                     partyGroupCode,
-                    subject: originalEntity ? 'booking-preview' : 'new-booking-preview',
+                    subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
                     language: 'en',
-                    template: originalEntity ? 'message/booking-preview' : 'message/new-booking-preview',
+                    template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
                   })
                 }
                 const otherContacts = _.get(partyTableFlexData, `${morePartyKey}PartyContacts`, [])
@@ -192,9 +193,9 @@ export default class NotifyEntityEvent extends BaseEventHandler {
                         entity: originalEntity,
                         isUpdate: originalEntity ? true : false,
                         partyGroupCode,
-                        subject: originalEntity ? 'booking-preview' : 'new-booking-preview',
+                        subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
                         language: 'en',
-                        template: originalEntity ? 'message/booking-preview' : 'message/new-booking-preview',
+                        template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
                       })
                     }
                   }
@@ -202,6 +203,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
               }
             }
           }
+
         }
       }
       return dataList
@@ -212,7 +214,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
     console.debug('Start Excecute [Notify Party]...', this.constructor.name)
     const lists = this.getPartyFromEntity(eventDataList)
     if (lists && lists.length) {
-      await BluebirdPromise.map(lists, async({ name, email, entity, isUpdate, partyGroupCode, language, template, subject }: NotifyObject) => {
+      await BluebirdPromise.map(lists, async ({ name, email, entity, isUpdate, partyGroupCode, language, template, subject }: NotifyObject) => {
         try {
           await this.allService.messagerService.scheduleSend({
             type: 'email',

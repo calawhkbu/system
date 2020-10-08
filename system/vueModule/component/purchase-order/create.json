@@ -564,7 +564,8 @@
                 {
                   "is": "v-btn",
                   "props": {
-                    "fab": true
+                    "fab": true,
+                    "color": "primary"
                   },
                   "slots": [
                     {

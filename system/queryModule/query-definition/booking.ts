@@ -43,6 +43,44 @@ import {
   IfNullExpression
 } from 'utils/jql-subqueries'
 import { IShortcut } from 'classes/query/Shortcut'
+const dateNameList = [
+  'departure',
+  'arrival',
+  //'oceanBill',
+  'cargoReady',
+  'scheduleAssigned',
+  'scheduleApproaved',
+  'spaceConfirmation',
+  'bookingSubmit',
+  'cyCutOff',
+  'documentCutOff',
+  'pickup',
+  'shipperLoad',
+  'returnLoad',
+  'cargoReceipt',
+  'shipperDocumentSubmit',
+  'shipperInstructionSubmit',
+  'houseBillDraftSubmit',
+  'houseBillConfirmation',
+  'masterBillReleased',
+  'preAlertSend',
+  'ediSend',
+  'cargoRolloverStatus',
+  'inboundTransfer',
+  'onRail',
+  'arrivalAtDepot',
+  'availableForPickup',
+  'pickupCargoBeforeDemurrage',
+  'finalCargo',
+  'cargoPickupWithDemurrage',
+  'finalDoorDelivery',
+  'returnEmptyContainer',
+  'sentToShipper',
+  'gateIn',
+  'sentToConsignee',
+  'loadOnboard'
+]
+//for Bookings
 
 const partyList = [
 
@@ -1389,14 +1427,14 @@ const fieldList = [
   'id',
   'partyGroupCode',
   'bookingNo',
-
   'moduleTypeCode',
   'boundTypeCode',
   'nominatedTypeCode',
-  'shipmentTypeCode',
+  //'shipmentTypeCode',
   'divisionCode',
   'isDirect',
   'isCoload',
+
   {
     name: 'finalVesselName',
     expression: vesselNameExpression
@@ -1424,10 +1462,6 @@ const fieldList = [
     expression: dateStatusExpression,
     companion: ['table:booking_date']
   },
-
-  // 'createdAt',
-  // 'updatedAt',
-
   ...partyExpressionList,
   ...locationExpressionList,
 
@@ -1613,6 +1647,7 @@ const fieldList = [
 
 ] as ExpressionHelperInterface[]
 
+console.log(fieldList)
 registerAll(query, baseTableName, fieldList)
 
 // ===================================
@@ -1876,29 +1911,45 @@ query
 
    // regiter date filter
 const dateList = [
-  'departureDateEstimated',
-  'departureDateAcutal',
-  'arrivalDateEstimated',
-  'arrivalDateActual',
+  // 'departureDateEstimated',
+  // 'departureDateAcutal',
+  // 'arrivalDateEstimated',
+  // 'arrivalDateActual',
 
   'oceanBillDateEstimated',
   'oceanBillDateAcutal',
-  'cargoReadyDateEstimated',
-  'cargoReadyDateActual',
+  // 'cargoReadyDateEstimated',
+  // 'cargoReadyDateActual',
 
-  'cyCutOffDateEstimated',
-  'cyCutOffDateAcutal',
-  'pickupDateEstimated',
-  'pickupDateActual',
+  // 'cyCutOffDateEstimated',
+  // 'cyCutOffDateAcutal',
+  // 'pickupDateEstimated',
+  // 'pickupDateActual',
 
-  'cargoReceiptDateEstimated',
-  'cargoReceiptDateAcutal',
-  'finalDoorDeliveryDateEstimated',
-  'finalDoorDeliveryDateActual',
+  // 'cargoReceiptDateEstimated',
+  // 'cargoReceiptDateAcutal',
+  // 'finalDoorDeliveryDateEstimated',
+  // 'finalDoorDeliveryDateActual',
   'customClearanceLoadingPortDateEstimated',
   'customClearanceLoadingPortDateActual',
   'customClearanceDestinationPortDateEstimated',
   'customClearanceDestinationPortDateActual',
+
+  ...dateNameList.reduce((accumulator, currentValue) => {
+    return accumulator.concat([
+      {
+        name: `${currentValue}DateActual`,
+        expression: new ColumnExpression('booking_date',`${currentValue}DateActual`),
+        companion: ['table:booking_date']
+      },
+      {
+        name: `${currentValue}DateEstimated`,
+        expression: new ColumnExpression('booking_date',`${currentValue}DateEstimated`),
+        companion: ['table:booking_date']
+      },
+   
+    ])
+  }, []),
   {
     name : 'alertCreatedAt',
     expression : alertCreatedAtExpression,
@@ -1915,43 +1966,7 @@ const dateList = [
 
 registerAllDateField(query,'booking_date',dateList)
 
-const dateNameList = [
-  //'departure',
-  'arrival',
-  //'oceanBill',
-  'cargoReady',
-  //'scheduleAssigned',
-  //'scheduleApproaved',
-  //'spaceConfirmation',
-  //'bookingSubmit',
-  // 'cyCutOff',
-  // 'documentCutOff',
-  // 'pickup',
-  // 'shipperLoad',
-  // 'returnLoad',
-  // 'cargoReceipt',
-  // 'shipperDocumentSubmit',
-  // 'shipperInstructionSubmit',
-  // 'houseBillDraftSubmit',
-  // 'houseBillConfirmation',
-  // 'masterBillReleased',
-  // 'preAlertSend',
-  // 'ediSend',
-  // 'cargoRolloverStatus',
-  // 'inboundTransfer',
-  // 'onRail',
-  // 'arrivalAtDepot',
-  // 'availableForPickup',
-  // 'pickupCargoBeforeDemurrage',
-  // 'finalCargo',
-  // 'cargoPickupWithDemurrage',
-  // 'finalDoorDelivery',
-  // 'returnEmptyContainer',
-  // 'sentToShipper',
-  // 'gateIn',
-  // 'sentToConsignee',
-  // 'loadOnboard'
-]
+
 
 query.registerResultColumn(
   'lastStatusWidget',

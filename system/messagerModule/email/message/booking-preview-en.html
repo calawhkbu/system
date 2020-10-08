@@ -380,8 +380,7 @@
                 <h4>{{ entity.forwarderPartyAddress | splitLineBreak(2) }}</h4>
                 <h4>Shipping Order</h4>
                 <div style="font-size:12px;line-height:14px;color:#555555;font-family:Georgia, Times, 'Times New Roman', serif;text-align:left;">
-                  <p style="margin: 0;line-height: 22px;font-size: 18px;text-align: center">
-                    <a style="color:#0068A5;text-decoration: underline;" href="{{frontendUrl}}/bookings/new/booking/{{entity.id}}" target="_blank">{% if entity.bookingNo %} Booking No. {{entity.bookingNo}} {% endif %}</a>
+                  <p style="margin: 0;line-height: 22px;font-size: 18px;text-align: center"><a style="color:#0068A5;text-decoration: underline;" href="{{url}}" target="_blank">{% if entity.bookingNo %} Booking No. {{entity.bookingNo}} {% endif %}</a>
                   </p>
                 </div>
               </center>

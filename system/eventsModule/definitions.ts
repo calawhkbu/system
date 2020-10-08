@@ -7,7 +7,7 @@ export default {
   create_related_party: [{ handlerName: 'create_related_party' }], // create related party record
   create_related_person: [{ handlerName: 'create_related_person' }], // create related party record
   create_tracking: [{ handlerName: 'create_tracking' }], // create tracking from entity
-  notify_entity: [{ handlerName: 'notify_entity'}]
+  notify_entity: [{ handlerName: 'notify_entity'}],
   resend_alert: [{ handlerName: 'resend_alert' }], // resend alert
   send_data_to_external: [{ handlerName: 'send_data_to_external' }], // send data to external system
   update_data_from_tracking: [{ handlerName: 'update_data_from_tracking' }], // update tracking id to entity
@@ -106,9 +106,25 @@ export default {
               return eventData.latestEntity.id
             }
           }
+        }, {// notify entity
+          eventName: 'notify_entity',
+          otherParameters: {
+            partyGroupCode: (eventData: EventData<Booking>) => {
+              return eventData.latestEntity.partyGroupCode
+            },
+            primaryKey: (eventData: EventData<Booking>) => {
+              return eventData.latestEntity.id
+            },
+            tableName: 'booking',
+            notifyKeys: {
+              DEV: ['createdBy', 'forwarder'],
+              STD: ['createdBy', 'forwarder']
+            }
+          },
         }
       ]
     },
+
     // fill shipping order
   ],
   afterUpdate_booking: [
@@ -200,6 +216,21 @@ export default {
             },
             tableName: 'shipment',
           }
+        }, {// notify entity
+          eventName: 'notify_entity',
+          otherParameters: {
+            partyGroupCode: (eventData: EventData<Booking>) => {
+              return eventData.latestEntity.partyGroupCode
+            },
+            primaryKey: (eventData: EventData<Booking>) => {
+              return eventData.latestEntity.id
+            },
+            tableName: 'booking',
+            notifyKeys: {
+              DEV: ['createdBy', 'forwarder'],
+              STD: ['createdBy', 'forwarder']
+            }
+          },
         }
       ]
     },

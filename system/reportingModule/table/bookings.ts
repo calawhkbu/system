@@ -89,7 +89,7 @@ export default {
     { key: 'totalQuantityUnit' },
     { key: 'lastStatusCodeOrDescription' },
     { key: 'lastStatusDate' },
-    { key: 'lastStatusWidget' },
+    { key: 'lastStatusWidget' }
   ],
 } as JqlDefinition
 
