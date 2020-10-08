@@ -16,15 +16,15 @@ export default async function getDefaultParams(
   if (user) {
     const repo = user ? `customer-${user.selectedPartyGroup.code}` : 'system'
 
-    if (!params.subqueries || !params.subqueries.tableName) throw new BadRequestException('MISSING_ENTITY_TYPE')
-
-    const tableExtra = (await this.loadCustomFile(repo, params.subqueries.tableName.value) || {})
-    if (typeof tableExtra.applyAccessRightConditions === 'function') {
-      conditions = await tableExtra.applyAccessRightConditions.apply(this, [
-        conditions,
-        user,
-        transaction
-      ])
+    if (params.subqueries && params.subqueries.tableName) {
+      const tableExtra = (await this.loadCustomFile(repo, params.subqueries.tableName.value) || {})
+      if (typeof tableExtra.applyAccessRightConditions === 'function') {
+        conditions = await tableExtra.applyAccessRightConditions.apply(this, [
+          conditions,
+          user,
+          transaction
+        ])
+      }
     }
   }
 
