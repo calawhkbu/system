@@ -5,10 +5,7 @@
       "class": "xs-12 margin-topbottom-2",
       "layoutName": "plugins/chat",
       "loadWhenDataLoaded": true,
-      "axiosBaseParams": [
-        "const primaryKey = encodeURIComponent(context.finalId);",
-        "return null"
-      ]
+      "tableName": "booking"
     }
   }]
 }

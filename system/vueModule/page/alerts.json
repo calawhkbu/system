@@ -1,236 +1,38 @@
 {
-  "fillParent": true,
   "components": [{
-    "is": "TableTool",
+    "is": "GridTool",
     "props": {
-      "i18nContext": "AlertPage",
-      "reportingKey": "alerts",
-      "jql": "alerts",
+      "reportingKey": "watchdog",
       "hasReports": true,
       "showFilterBar": true,
       "enableShare": true,
       "enableSetting": true,
-      "noPartyGroupFilters": false,
       "newReport": {
         "filters": {
-          "alertStatus": {
-            "value": "open"
-          },
           "activeStatus": {
             "value": "active"
           },
-          "entityType": {
-            "value": "shipment"
-          },
-          "alertCreatedAt": {
+          "date": {
             "func": {
               "args": {
-                "unit": "week"
+                "unit": "month"
               },
               "key": "current"
             }
           }
         },
         "configurations": {
-          "checkbox": {},
-          "i18nContext": "AlertPage",
-          "clickable": true,
-          "draggable": true,
-          "sorting": {
-            "direction": "DESC",
-            "key": "updatedAt",
-            "sql": {
-              "classname": "ColumnExpression",
-              "table": "alert",
-              "name": "updatedAt"
-            }
-          },
-          "pagination": {
-            "current": 0,
-            "perPage": 20,
-            "remote": true
-          }
+          "i18nContext": "Reporting",
+          "colors": [
+            "#005EB8",
+            "#008675",
+            "#E35205",
+            "#AF272F",
+            "#F1B434",
+            "#c9cbcf"
+          ]
         }
-      },
-      "fieldOptions": [{
-          "key": "alertId",
-          "hidden": true
-        },
-        {
-          "key": "checkbox",
-          "checkbox": true,
-          "showCheckAll": true
-        },
-        {
-          "key": "alertTableName",
-          "hidden": true
-        },
-        {
-          "key": "alertPrimaryKey",
-          "hidden": true
-        },
-        {
-          "width": 500,
-          "key": "alertTitle",
-          "label": "alertTitle",
-          "i18nContext": "Alert",
-          "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
-        },
-        {
-          "width": 650,
-          "key": "alertMessage",
-          "label": "alertMessage",
-          "i18nContext": "Alert",
-          "i18nOptions": "return (row && row.alertContent && row.alertContent.entity)  ? ({ entity : row.alertContent.entity }) : ({})"
-        },
-        {
-          "width": 65,
-          "key": "alertSeverity"
-        },
-        {
-          "width": 65,
-          "key": "alertStatus"
-        },
-        {
-          "width": 75,
-          "key": "alertCategory"
-        },
-        {
-          "key": "houseNo"
-        },
-        {
-          "key": "jobNo"
-        },
-        {
-          "key": "masterNo"
-        },
-        {
-          "key": "bookingNo"
-        },
-        {
-          "key": "alertType",
-          "hidden": true
-        },
-        {
-          "key": "alertContent",
-          "hidden": true
-        },
-        {
-          "key": "alertUpdatedAt",
-          "hidden": true
-        },
-        {
-          "key": "alertCreatedAt",
-          "hidden": true
-        }
-      ],
-      "filters": [{
-          "name": "alertType",
-          "type": "autocomplete",
-          "props": {
-            "api": {
-              "query": {
-                "url": "api/alert/alertType/get",
-                "data": {
-                  "subqueries": {
-                    "q": {
-                      "value": "{{ q }}"
-                    }
-                  }
-                },
-                "method": "POST",
-                "labelKey": "alertTitle",
-                "valueKey": "alertType",
-                "subLabelKey": "alertType"
-              },
-              "resolve": {
-                "url": "api/alert/alertType/get",
-                "data": {
-                  "subqueries": {
-                    "alertType": {
-                      "value": "{{value}}"
-                    }
-                  }
-                },
-                "method": "POST",
-                "labelKey": "alertTitle",
-                "valueKey": "alertType",
-                "subLabelKey": "alertType"
-              }
-            },
-            "threshold": 0,
-            "showAllIfEmpty": true,
-            "multi": true
-          },
-          "display": "alertType"
-        },
-        {
-          "display": "alertStatus",
-          "name": "alertStatus",
-          "props": {
-            "items": [{
-                "label": "open",
-                "value": "open"
-              },
-              {
-                "label": "closed",
-                "value": "closed"
-              }
-            ]
-          },
-          "type": "list"
-        },
-        {
-          "display": "entityType",
-          "name": "entityType",
-          "props": {
-            "items": [{
-                "label": "booking",
-                "value": "booking"
-              },
-              {
-                "label": "shipment",
-                "value": "shipment"
-              }
-            ],
-            "required": true
-          },
-          "type": "list"
-        },
-        {
-          "name": "alertUpdatedAt",
-          "type": "date"
-        },
-        {
-          "name": "alertCreatedAt",
-          "type": "date",
-          "props": {
-            "required": true
-          }
-        },
-        {
-          "display": "date",
-          "name": "date",
-          "type": "date",
-          "props": {
-            "required": false
-          }
-        }
-      ],
-      "clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "base": true,
-          "func": "push",
-          "path": "{{alertTableName}}/{{alertPrimaryKey}}"
-        }
-      },
-      "icons": []
-    },
-    "scopedSlots": [{
-      "name": "middle-button",
-      "is": "ReportHandleAlertDialogButton",
-      "props": {}
-    }]
+      }
+    }
   }]
 }
