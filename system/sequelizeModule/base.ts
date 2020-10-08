@@ -1,6 +1,7 @@
 import { IConditionalExpression, OrExpressions, AndExpressions } from 'node-jql'
 import { JwtPayload, JwtPayloadRole } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
+import { IQueryParams } from 'classes/query'
 
 interface Selected {
   group: string
@@ -8,6 +9,7 @@ interface Selected {
 }
 
 export default async function getDefaultParams(
+  params: IQueryParams,
   conditions?: IConditionalExpression,
   queryName?: string,
   user?: JwtPayload,

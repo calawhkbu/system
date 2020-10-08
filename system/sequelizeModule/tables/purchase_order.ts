@@ -3,6 +3,7 @@ import { JwtPayload, JwtPayloadParty } from 'modules/auth/interfaces/jwt-payload
 import { Transaction, Op } from 'sequelize'
 import moment = require('moment')
 import { PurchaseOrder } from 'models/main/purchaseOrder'
+import { IQueryParams } from 'classes/query'
 
 export const setDataFunction = {
   partyGroupCode: async({ partyGroupCode }: PurchaseOrder, user: JwtPayload) => {
@@ -46,6 +47,7 @@ export const dateTimezoneMapping = {
 }
 
 export default async function getDefaultParams(
+  params: IQueryParams,
   conditions?: IConditionalExpression,
   queryName?: string,
   user?: JwtPayload,

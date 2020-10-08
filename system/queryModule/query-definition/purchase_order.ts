@@ -454,6 +454,22 @@ partyList.map(party => {
 
 })
 
+
+const isActiveConditionExpression = new AndExpressions([
+  new IsNullExpression(new ColumnExpression('purchase_order', 'deletedAt'), false),
+  new IsNullExpression(new ColumnExpression('purchase_order', 'deletedBy'), false)
+])
+
+const activeStatusExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new BinaryExpression(isActiveConditionExpression, '=', false),
+      $then: new Value('deleted')
+    }
+  ],
+  $else: new Value('active')
+})
+
 //  register date field
 const baseTableName='purchase_order'
 
@@ -530,6 +546,10 @@ const fieldList = [
   },
   ...partyExpressionList,
   ...locationExpressionList
+  {
+    name : 'activeStatus',
+    expression : activeStatusExpression
+  }
 
 ] as ExpressionHelperInterface[]
 

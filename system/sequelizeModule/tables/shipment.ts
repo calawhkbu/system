@@ -3,6 +3,7 @@ import { JwtPayload, JwtPayloadParty } from 'modules/auth/interfaces/jwt-payload
 import { Transaction } from 'sequelize'
 import { joinData } from 'utils/helper'
 import { Shipment } from 'models/main/shipment'
+import { IQueryParams } from 'classes/query'
 
 export const setDataFunction = {
   partyGroupCode: async({ partyGroupCode }, user: JwtPayload) => {
@@ -207,93 +208,103 @@ export const fixedPartyKeys = [
   'notifyParty'
 ]
 
+export async function applyAccessRightConditions(
+  conditions?: IConditionalExpression,
+  user?: JwtPayload,
+  transaction?: Transaction
+): Promise<IConditionalExpression> {
+  if (user.selectedPartyGroup) {
+    const partyGroupExpression = new BinaryExpression(
+      new ColumnExpression('shipment', 'partyGroupCode'),
+      '=',
+      user.selectedPartyGroup.code
+    )
+    conditions = conditions
+      ? new AndExpressions([conditions, partyGroupExpression])
+      : partyGroupExpression
+  }
+  if (user.authTypeCode === 'person' && user.parties && user.parties.length) {
+    const selectedPartyGroupCode = user.selectedPartyGroup ? user.selectedPartyGroup.code : null
+    const partyTypesExpressions = user.parties.reduce(
+      (selectedPartyType: BinaryExpression[], party: JwtPayloadParty) => {
+        if (party.partyGroupCode === selectedPartyGroupCode) {
+          for (const fixPartyKey of fixedPartyKeys) {
+            selectedPartyType.push(new BinaryExpression(new ColumnExpression('shipment_party', `${fixPartyKey}PartyId`), '=', party.id))
+          }
+          if (party.types && party.types.length > 0) {
+            for (const type of party.types) {
+              selectedPartyType.push(
+                new BinaryExpression(
+                  [...fixedPartyKeys, 'forwarder'].includes(type)
+                    ? new ColumnExpression(
+                        'shipment_party',
+                        `${type === 'forwarder' ? 'office' : type}PartyId`
+                      )
+                    : new MathExpression(
+                        new ColumnExpression('shipment_party', 'flexData'),
+                        '->>',
+                        `$.${type}PartyId`
+                      ),
+                  '=',
+                  party.id)
+              )
+            }
+          }
+        }
+        return selectedPartyType
+      },
+      []
+    )
+    if (partyTypesExpressions && partyTypesExpressions.length) {
+      const or = new InExpression(
+        new ColumnExpression('shipment', 'id'),
+        false,
+        new Query({
+          $select: [new ResultColumn(new ColumnExpression('shipment_party', 'shipmentId'))],
+          $from: new FromTable('shipment_party'),
+          $where: new OrExpressions({ expressions: partyTypesExpressions }),
+        })
+      )
+      conditions = conditions ? new AndExpressions([conditions, or]) : or
+    }
+  }
+  if (user.authTypeCode === 'person' && user.thirdPartyCode && user.thirdPartyCode.erp) {
+    const salesmanExpression = new OrExpressions({
+      expressions: [
+        new BinaryExpression(
+          new ColumnExpression('shipment', 'rSalesmanPersonCode'),
+          '=',
+          user.thirdPartyCode.erp
+        ),
+        new BinaryExpression(
+          new ColumnExpression('shipment', 'cSalesmanPersonCode'),
+          '=',
+          user.thirdPartyCode.erp
+        ),
+        new BinaryExpression(
+          new ColumnExpression('shipment', 'sSalesmanPersonCode'),
+          '=',
+          user.thirdPartyCode.erp
+        ),
+      ],
+    })
+    conditions = conditions
+      ? new AndExpressions([conditions, salesmanExpression])
+      : salesmanExpression
+  }
+
+  return conditions
+}
+
 export default async function getDefaultParams(
+  params: IQueryParams,
   conditions?: IConditionalExpression,
   queryName?: string,
   user?: JwtPayload,
   transaction?: Transaction
 ): Promise<IConditionalExpression> {
   if (user) {
-    if (user.selectedPartyGroup) {
-      const partyGroupExpression = new BinaryExpression(
-        new ColumnExpression('shipment', 'partyGroupCode'),
-        '=',
-        user.selectedPartyGroup.code
-      )
-      conditions = conditions
-        ? new AndExpressions([conditions, partyGroupExpression])
-        : partyGroupExpression
-    }
-    if (user.authTypeCode === 'person' && user.parties && user.parties.length) {
-      const selectedPartyGroupCode = user.selectedPartyGroup ? user.selectedPartyGroup.code : null
-      const partyTypesExpressions = user.parties.reduce(
-        (selectedPartyType: BinaryExpression[], party: JwtPayloadParty) => {
-          if (party.partyGroupCode === selectedPartyGroupCode) {
-            for (const fixPartyKey of fixedPartyKeys) {
-              selectedPartyType.push(new BinaryExpression(new ColumnExpression('shipment_party', `${fixPartyKey}PartyId`), '=', party.id))
-            }
-            if (party.types && party.types.length > 0) {
-              for (const type of party.types) {
-                selectedPartyType.push(
-                  new BinaryExpression(
-                    [...fixedPartyKeys, 'forwarder'].includes(type)
-                      ? new ColumnExpression(
-                          'shipment_party',
-                          `${type === 'forwarder' ? 'office' : type}PartyId`
-                        )
-                      : new MathExpression(
-                          new ColumnExpression('shipment_party', 'flexData'),
-                          '->>',
-                          `$.${type}PartyId`
-                        ),
-                    '=',
-                    party.id)
-                )
-              }
-            }
-          }
-          return selectedPartyType
-        },
-        []
-      )
-      if (partyTypesExpressions && partyTypesExpressions.length) {
-        const or = new InExpression(
-          new ColumnExpression('shipment', 'id'),
-          false,
-          new Query({
-            $select: [new ResultColumn(new ColumnExpression('shipment_party', 'shipmentId'))],
-            $from: new FromTable('shipment_party'),
-            $where: new OrExpressions({ expressions: partyTypesExpressions }),
-          })
-        )
-        conditions = conditions ? new AndExpressions([conditions, or]) : or
-      }
-    }
-    if (user.authTypeCode === 'person' && user.thirdPartyCode && user.thirdPartyCode.erp) {
-      const salesmanExpression = new OrExpressions({
-        expressions: [
-          new BinaryExpression(
-            new ColumnExpression('shipment', 'rSalesmanPersonCode'),
-            '=',
-            user.thirdPartyCode.erp
-          ),
-          new BinaryExpression(
-            new ColumnExpression('shipment', 'cSalesmanPersonCode'),
-            '=',
-            user.thirdPartyCode.erp
-          ),
-          new BinaryExpression(
-            new ColumnExpression('shipment', 'sSalesmanPersonCode'),
-            '=',
-            user.thirdPartyCode.erp
-          ),
-        ],
-      })
-      conditions = conditions
-        ? new AndExpressions([conditions, salesmanExpression])
-        : salesmanExpression
-    }
+    conditions = await applyAccessRightConditions(conditions, user, transaction)
   }
-
   return conditions
 }

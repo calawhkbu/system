@@ -1,5 +1,5 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery, ParameterExpression, OrderBy, BetweenExpression } from "node-jql";
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery, ParameterExpression, OrderBy, BetweenExpression, Variable } from "node-jql";
 import { IfExpression, wrapOrder, IfNullExpression } from 'utils/jql-subqueries'
 import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityCompanion, getEntityExpression, getEntityResultColumn, taskStatusJoinClauses } from "utils/sop-task";
 import { IShortcut } from 'classes/query/Shortcut'
@@ -742,8 +742,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'hasSubTasks',
-    expression: new ExistsExpression(hasSubTaskQuery('temp'), false),
-    registered: true
+    expression: new BinaryExpression(new Variable('hasSubTasks'), ':=', new ExistsExpression(hasSubTaskQuery('temp'), false))
   },
 
   // field:noOfRemarks
@@ -765,14 +764,14 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'latestRemark',
-    expression: re => new MathExpression(re['remark'], '->>', new Value('$[0].message'))
+    expression: re => new MathExpression(new ColumnExpression(taskTable, 'remark'), '->>', new Value('$[0].message'))
   },
 
   // field:latestRemarkAt
   {
     type: 'field',
     name: 'latestRemarkAt',
-    expression: re => new MathExpression(re['remark'], '->>', new Value('$[0].messageAt'))
+    expression: re => new MathExpression(new ColumnExpression(taskTable, 'remark'), '->>', new Value('$[0].messageAt'))
   },
 
   // field:latestRemarkBy
@@ -780,7 +779,7 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'latestRemarkBy',
     queryArg: re => params => {
-      const latestRemarkByExpression = new MathExpression(re['remark'], '->>', new Value('$[0].messageBy'))
+      const latestRemarkByExpression = new MathExpression(new ColumnExpression(taskTable, 'remark'), '->>', new Value('$[0].messageBy'))
       const me = typeof params.subqueries.user === 'object' && 'value' in params.subqueries.user ? params.subqueries.user.value : ''
       const byMeExpression = new BinaryExpression(latestRemarkByExpression, '=', me)
       return { $select: new ResultColumn(IfExpression(byMeExpression, new Value('me'), latestRemarkByExpression), 'latestRemarkBy') }
@@ -812,9 +811,9 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'isDone',
-    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', true, generalIsDoneExpression('temp_status', true)), true), generalIsDoneExpression()),
+    expression: () => new BinaryExpression(new Variable('isDone'), ':=', IfExpression(new Variable('hasSubTasks'), new ExistsExpression(hasSubTaskQuery('temp', true, generalIsDoneExpression('temp_status', true)), true), generalIsDoneExpression())),
     registered: true,
-    companions: ['table:sop_task_status']
+    companions: ['table:sop_task_status', 'field:hasSubTasks']
   },
 
   // field:dueDays
@@ -867,9 +866,9 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'isClosed',
-    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', true, generalIsClosedExpression('temp_status', true)), true), generalIsClosedExpression()),
+    expression: () => new BinaryExpression(new Variable('isClosed'), ':=', IfExpression(new Variable('hasSubTasks'), new ExistsExpression(hasSubTaskQuery('temp', true, generalIsClosedExpression('temp_status', true)), true), generalIsClosedExpression())),
     registered: true,
-    companions: ['table:sop_task_status']
+    companions: ['table:sop_task_status', 'field:hasSubTasks']
   },
 
   // field:isDeleted
@@ -887,15 +886,16 @@ const shortcuts: IShortcut[] = [
     expression: re => new CaseExpression(
       [
         { $when: re['isDeleted'], $then: new Value('Deleted') },
-        { $when: re['isClosed'], $then: new Value('Closed') },
-        { $when: re['isDone'], $then: new Value('Done') },
+        { $when: new Variable('isClosed'), $then: new Value('Closed') },
+        { $when: new Variable('isDone'), $then: new Value('Done') },
         { $when: re['isDead'], $then: new Value('Dead') },
         { $when: re['isDue'], $then: new Value('Due') },
         { $when: re['isStarted'], $then: new Value('Open') }
       ],
       new Value('Not Ready')
     ),
-    registered: true
+    registered: true,
+    companions: ['field:isClosed', 'field:isDone']
   },
 
   // field:taskStatus (raw)
@@ -1331,7 +1331,7 @@ const shortcuts: IShortcut[] = [
     name: 'status',
     queryArg: re => () => ({
       $order: [
-        new OrderBy(new FunctionExpression('FIELD', re['status'], ...statusList.map(v => new Value(v)))),
+        new OrderBy(new FunctionExpression('FIELD', re['status'], ...statusList.map(v => new Value(v))), 'ASC'),
         ...wrapOrder(re['seqNo'])
       ]
     })

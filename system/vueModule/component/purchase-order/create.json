@@ -402,7 +402,7 @@
                   },
                   "label": "PurchaseOrderPage.buyer",
                   "name": "purchaseOrderParty.buyerParty",
-                  "component": "AsyncSelect",
+                  "component": "AsyncAutoSuggest",
                   "class": "xs-12 md-12 padding-topbottom-4",
                   "relation": "purchaseOrderParty.buyerParty",
                   "relationMore": [
@@ -484,7 +484,10 @@
                   ],
                   "props": {
                     "required": true,
-                    "axiosParams": {
+                    "searchValueParams": {
+                      "url": "api/party/{{context.autoSuggestModel}}"
+                    },
+                    "searchTextParams": {
                       "url": "api/party/query/party_auto_suggest",
                       "method": "POST",
                       "data": {
@@ -494,12 +497,16 @@
                           },
                           "partyType": {
                             "value": "buyer"
+                          },
+                          "q": {
+                            "value": "{{context.search}}"
                           }
-                        }
+                        },
+                        "limit": 5
                       }
                     },
                     "item-text": "name",
-                    "item-value": "erpCode"
+                    "item-value": "id"
                   }
                 },
                 {
@@ -535,22 +542,6 @@
                     "item-text": "name",
                     "item-value": "productCategoryCode",
                     "onInit": true
-                  }
-                },
-                {
-                  "containerComponent": "v-card",
-                  "containerComponentProps": {
-                    "class": "padding-topbottom-8 padding-leftright-4"
-                  },
-                  "name": "Term",
-                  "component": "Term",
-                  "class": "xs-12 padding-topbottom-4",
-                  "props": {
-                    "width": "70%",
-                    "type": "booking-term",
-                    "termProps": {
-                      "class": "margin-leftright-4 padding-leftright-4 min-height-400 max-height-500 overflow-auto"
-                    }
                   }
                 }
               ]

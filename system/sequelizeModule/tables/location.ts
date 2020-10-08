@@ -1,6 +1,7 @@
 import { IsNullExpression, IConditionalExpression, OrExpressions, AndExpressions, BinaryExpression, ColumnExpression, FunctionExpression, InExpression, Query, ResultColumn, FromTable } from 'node-jql'
 import { JwtPayload, JwtPayloadParty } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
+import { IQueryParams } from 'classes/query'
 
 export const setDataFunction = {
   partyGroupCode: async({ partyGroupCode }, user: JwtPayload) => {
@@ -27,6 +28,7 @@ export const setDataFunction = {
 }
 
 export default async function getDefaultParams(
+  params: IQueryParams,
   conditions?: IConditionalExpression,
   queryName?: string,
   user?: JwtPayload,
