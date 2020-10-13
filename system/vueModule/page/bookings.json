@@ -111,7 +111,7 @@
           {
             "key": "service",
             "label": "serviceName",
-            "width": 100
+            "width": 150
           },
           {
             "key": "moduleType",
@@ -123,7 +123,7 @@
           },
           {
             "key": "incoTerms",
-            "width": 100
+            "width": 150
           },
           {
             "key": "otherTerms",
@@ -138,32 +138,32 @@
           {
             "key": "portOfDischargeName",
             "label": "portOfDischarge",
-            "width": 100
+            "width": 200
           },
           {
             "key": "portOfLoadingName",
             "label": "portOfLoading",
-            "width": 100
+            "width": 200
           },
           {
             "key": "placeOfReceiptName",
             "label": "placeOfReceipt",
-            "width": 100
+            "width": 200
           },
           {
             "key": "placeOfDeliveryName",
             "label": "placeOfDelivery",
-            "width": 100
+            "width": 200
           },
           {
             "key": "finalDestinationName",
             "label": "finalDestination",
-            "width": 100
+            "width": 200
           },
           {
             "key": "carrierName",
             "label": "carrier",
-            "width": 100
+            "width": 200
           },
           {
             "key": "customClearanceLoadingPortDateEstimated",

@@ -6,6 +6,18 @@ import { Booking } from 'models/main/booking'
 import { IQueryParams } from 'classes/query'
 
 export const setDataFunction = {
+  bookingCreateTime: async({ bookingCreateTime }: Booking, user: JwtPayload) => {
+    if (!bookingCreateTime) {
+      return moment.utc()
+    }
+    return bookingCreateTime
+  },
+  bookingLastUpdateTime: async({ bookingLastUpdateTime }: Booking, user: JwtPayload) => {
+    if (!bookingLastUpdateTime) {
+      return moment.utc()
+    }
+    return bookingLastUpdateTime
+  },
   partyGroupCode: async({ partyGroupCode }: Booking, user: JwtPayload) => {
     if (user) {
       return user.selectedPartyGroup.code || partyGroupCode

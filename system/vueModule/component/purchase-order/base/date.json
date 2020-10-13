@@ -86,8 +86,8 @@
                 "shipping",
                 "arrival",
                 "exitFactory",
-                "doNotShipBefore",
-                "doNotShipAfter",
+                "dontShipBefore",
+                "dontShipAfter",
                 "delivery"
               ],
               "fields": [{
@@ -200,7 +200,7 @@
               "exitFactory": {
                 "class": "font-110 brown--text"
               },
-              "doNotShipAfter": {
+              "dontShipAfter": {
                 "class": "font-110 indigo--text"
               },
               "delivery": {
@@ -212,8 +212,8 @@
               "shipping",
               "arrival",
               "exitFactory",
-              "doNotShipBefore",
-              "doNotShipAfter",
+              "dontShipBefore",
+              "dontShipAfter",
               "delivery"
             ],
             "checkDisplayWhen": [

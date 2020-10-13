@@ -15,12 +15,12 @@
     "skip": "return form && (form.from === 'erp' || form.moduleTypeCode === 'AIR');"
   },
   {
-    "field": "portOfLoading",
+    "field": "portOfLoadingCode",
     "validator": "required",
     "part": "BookingPage.GeneralForm"
   },
   {
-    "field": "portOfDischarge",
+    "field": "portOfDischargeCode",
     "validator": "required",
     "part": "BookingPage.GeneralForm"
   },

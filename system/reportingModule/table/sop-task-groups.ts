@@ -4,7 +4,7 @@ export default {
   jqls: [
     {
       type: 'callDataService',
-      dataServiceQuery: ['sop_task', 'sop_template']
+      dataServiceQuery: ['sop_template', 'sop_template']
     }
   ],
   columns: [

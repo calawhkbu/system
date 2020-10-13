@@ -31,11 +31,11 @@
             "actualOnly": "hidden",
             "notActualOnly": ""
           },
-          "doNotShipBefore": {
+          "dontShipBefore": {
             "actualOnly": "",
             "notActualOnly": "hidden"
           },
-          "doNotShipAfter": {
+          "dontShipAfter": {
             "actualOnly": "",
             "notActualOnly": "hidden"
           },
@@ -62,7 +62,7 @@
           "exitFactory": {
             "class": "font-110 brown--text"
           },
-          "doNotShipAfter": {
+          "dontShipAfter": {
             "class": "font-110 indigo--text"
           },
           "delivery": {
@@ -74,8 +74,8 @@
           "shipping",
           "arrival",
           "exitFactory",
-          "doNotShipBefore",
-          "doNotShipAfter",
+          "dontShipBefore",
+          "dontShipAfter",
           "delivery"
         ],
         "alwaysShowKeys": ["po", "shipping", "exitFactory", "delivery"],
