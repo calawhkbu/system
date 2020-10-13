@@ -22,7 +22,7 @@
           }
         },
         "configurations": {
-          "i18nContext": "Reporting",
+          "i18nContext": "Alert",
           "colors": [
             "#005EB8",
             "#008675",
