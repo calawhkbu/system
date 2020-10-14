@@ -1,8 +1,12 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
+import { alertConfigList } from '../../alertModule/config'
+import _ = require('lodash')
 
 // const shipmentBottomSheetId = 'cb22011b-728d-489b-a64b-b881914be600'
 // const bookingBottomSheetId = 'bde2d806-d2bb-490c-b3e3-9e4792f353dd'
+var Alert = alertConfigList;
+
 
 export default {
   jqls: [
@@ -11,84 +15,105 @@ export default {
       async prepareParams(params, prevResult, user): Promise<IQueryParams> {
         const { moment } = await this.preparePackages(user)
 
-        const subqueries = params.subqueries || {}
+        var subqueries = params.subqueries || {}
+        let originalDate={};
+        Object.assign(originalDate,params.subqueries.date);
+        console.log({originalDate})
+        let originalParams={}
+        Object.assign(originalParams,params.subqueries);
+        console.log({originalParams})
+
 
         if (!subqueries.entityType || !(subqueries.entityType !== true && 'value' in subqueries.entityType)) throw new Error('MISSING_ENTITY_TYPE')
         if (['shipment', 'booking', 'purchase-order'].indexOf(subqueries.entityType.value) === -1) {
           throw new Error(`INVALID_ENTITY_TYPE_${String(subqueries.entityType.value).toLocaleUpperCase()}`)
         }
 
-        if (!subqueries.alertCreatedAt || !subqueries.alertCreatedAt.from)
-        {
+        if (!subqueries.alertCreatedAt || !subqueries.alertCreatedAt.from) {
           throw new Error(`MISSING_alertCreatedAt`)
         }
 
 
-        delete subqueries.date
+        let find = Alert.find(o => o.alertType == 'sayHello');
 
         subqueries.alertStatus = { value: ['open'] }
-        subqueries.alertCategory = { value: ['Exception', 'Notification'] }
+        //subqueries.alertCategory = { value: ['Exception', 'Notification'] }
+       // Object.assign(params, find.query);
+        _.merge(params,find.query);
+     delete params.subqueries.alertCreatedAt;
+     
+        subqueries.alertCategory={value:find.alertCategory}
+        params.subqueries.alertTypeIsNotNull = {
+          value: true
+        
+      }
+        
+      
 
         params.fields = ['alertType', 'alertCategory', 'tableName', 'primaryKeyListString', 'count']
         params.groupBy = ['alertType', 'alertCategory', 'tableName']
-
+        params.limit = 10;
+      console.debug({ params })
         return params
-      },
     },
-    {
-      type: 'callDataService',
-      getDataServiceQuery(params): [string, string] {
-        let entityType = 'shipment'
-        const subqueries = (params.subqueries = params.subqueries || {})
-        if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
-          entityType = subqueries.entityType.value
-        }
-        return [entityType, entityType]
-      },
+    },
+{
+  type: 'callDataService',
+    getDataServiceQuery(params): [string, string] {
+    //   let entityType = 'shipment'
+    //   const subqueries = (params.subqueries = params.subqueries || {})
+    //   if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
+    //     entityType = subqueries.entityType.value
+    // }
+    //   return [entityType, entityType]
+    return [Alert[0].tableName, Alert[0].tableName]
 
-      
-      // onResult(res, params): any[] {
 
-      //   let bottomSheetId = shipmentBottomSheetId
-      //   const subqueries = (params.subqueries = params.subqueries || {})
-      //   if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
-      //     if (subqueries.entityType.value === 'booking') bottomSheetId = bookingBottomSheetId
-      //   }
+  },
 
-      //   return res.map(r => ({ ...r, bottomSheetId }))
-      // }
-    }
+
+  // onResult(res, params): any[] {
+
+  //   let bottomSheetId = shipmentBottomSheetId
+  //   const subqueries = (params.subqueries = params.subqueries || {})
+  //   if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
+  //     if (subqueries.entityType.value === 'booking') bottomSheetId = bookingBottomSheetId
+  //   }
+
+  //   return res.map(r => ({ ...r, bottomSheetId }))
+  // }
+}
   ],
-  filters: [
-    {
-      name: 'entityType',
-      props: {
-        items: [
-          {
-            label: 'booking',
-            value: 'booking',
-          },
-          {
-            label: 'shipment',
-            value: 'shipment',
-          },
-          {
-            label: 'purchase-order',
-            value: 'purchase-order',
-          }
-        ],
-        required: true,
-      },
-      type: 'list',
+filters: [
+  {
+    name: 'entityType',
+    props: {
+      items: [
+        {
+          label: 'booking',
+          value: 'booking',
+        },
+        {
+          label: 'shipment',
+          value: 'shipment',
+        },
+        {
+          label: 'purchase-order',
+          value: 'purchase-order',
+        }
+      ],
+      required: true,
     },
-    {
-      name: 'alertCreatedAt',
-      type: 'date',
-      props: {
-        required: true
-      }
-    },
-  ]
+    type: 'list',
+  },
+  {
+    name: 'alertCreatedAt',
+    type: 'date',
+    props: {
+      required: true
+    }
+  },
+]
 } as JqlDefinition
 
 /* import {
