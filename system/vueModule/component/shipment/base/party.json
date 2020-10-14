@@ -62,31 +62,7 @@
                     "z": {
                       "isComponent": "v-label",
                       "i18nContext": "Widget",
-                      "class": "font-90"
-                    },
-                    "shipper": {
-                      "class": "font-90"
-                    },
-                    "consignee": {
-                      "class": "font-90"
-                    },
-                    "office": {
-                      "class": "font-90"
-                    },
-                    "agent": {
-                      "class": "font-90"
-                    },
-                    "linerAgent": {
-                      "class": "font-90"
-                    },
-                    "roAgent": {
-                      "class": "font-90"
-                    },
-                    "controllingCustomer": {
-                      "class": "font-90"
-                    },
-                    "notifyParty": {
-                      "class": "font-90"
+                      "class": "font-110-important"
                     }
                   },
                   "fieldProps": {
@@ -561,38 +537,14 @@
             "mainKey": "Party",
             "formProps": {
               "z": {
-                "class": "xs-12 md-6 padding-leftright-1"
+                "class": "xs-12 padding-leftright-1"
               }
             },
             "labelProps": {
               "z": {
                 "isComponent": "v-label",
                 "i18nContext": "Widget",
-                "class": "font-90"
-              },
-              "shipper": {
-                "class": "font-90"
-              },
-              "consignee": {
-                "class": "font-90"
-              },
-              "office": {
-                "class": "font-90"
-              },
-              "agent": {
-                "class": "font-90"
-              },
-              "linerAgent": {
-                "class": "font-90"
-              },
-              "roAgent": {
-                "class": "font-90"
-              },
-              "controllingCustomer": {
-                "class": "font-90"
-              },
-              "notifyParty": {
-                "class": "font-90"
+                "class": "font-110-important"
               }
             },
             "fieldProps": {
@@ -628,11 +580,12 @@
               "controllingCustomer",
               "notifyParty"
             ],
+            "maxShow": 3,
             "checkDisplayWhen": [
-              "return form && (form[`${key}PartyId`] || form[`${key}PartyName`])"
+              "return form && (context._.get(form, `${key}Party`, null) || context._.get(form, `${key}PartyName`, null))"
             ],
             "extraGridProps": {
-              "class": "xs-12 md-6 padding-leftright-1"
+              "class": "xs-12 padding-leftright-1"
             },
             "canAdd": false,
             "fields": [{

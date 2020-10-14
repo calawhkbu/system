@@ -13,7 +13,7 @@
         "z": {
           "isComponent": "v-label",
           "i18nContext": "Widget",
-          "class": "font-110"
+          "class": "font-110-important"
         }
       },
       "fieldProps": {

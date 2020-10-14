@@ -13,31 +13,7 @@
         "z": {
           "isComponent": "v-label",
           "i18nContext": "Widget",
-          "class": "font-90"
-        },
-        "shipper": {
-          "class": "font-90"
-        },
-        "consignee": {
-          "class": "font-90"
-        },
-        "office": {
-          "class": "font-90"
-        },
-        "agent": {
-          "class": "font-90"
-        },
-        "linerAgent": {
-          "class": "font-90"
-        },
-        "roAgent": {
-          "class": "font-90"
-        },
-        "controllingCustomer": {
-          "class": "font-90"
-        },
-        "notifyParty": {
-          "class": "font-90"
+          "class": "font-110-important"
         }
       },
       "fieldProps": {

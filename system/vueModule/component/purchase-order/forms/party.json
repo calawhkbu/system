@@ -16,16 +16,14 @@
             "class": "font-110"
           },
           "buyer": {
-            "class": "font-110 teal--text required form-label"
+            "isComponent": "v-label",
+            "i18nContext": "Widget",
+            "class": "font-110 required form-label"
           },
-          "shipper": {
-            "class": "font-110 green--text required form-label"
-          },
-          "factory": {
-            "class": "font-110 blue--text"
-          },
-          "shipTo": {
-            "class": "font-110 brown--text"
+          "forwarder": {
+            "isComponent": "v-label",
+            "i18nContext": "Widget",
+            "class": "font-110 required form-label"
           }
         },
         "fixedKeys": ["buyer", "shipper", "factory", "shipTo", "forwarder"],

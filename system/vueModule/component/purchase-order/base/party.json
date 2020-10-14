@@ -78,17 +78,17 @@
                 "z": {
                   "isComponent": "v-label",
                   "i18nContext": "Widget",
-                  "class": "font-90"
+                  "class": "font-110-important"
                 },
                 "shipper": {
                   "isComponent": "v-label",
                   "i18nContext": "Widget",
-                  "class": "font-90 required"
+                  "class": "font-110-important required"
                 },
                 "consignee": {
                   "isComponent": "v-label",
                   "i18nContext": "Widget",
-                  "class": "font-90 required"
+                  "class": "font-110-important required"
                 }
               },
               "fieldProps": {
@@ -274,17 +274,17 @@
                 "z": {
                   "isComponent": "v-label",
                   "i18nContext": "Widget",
-                  "class": "font-90"
+                  "class": "font-110-important"
                 },
-                "shipper": {
+                "buyer": {
                   "isComponent": "v-label",
                   "i18nContext": "Widget",
-                  "class": "font-90 required"
+                  "class": "font-110 required form-label"
                 },
-                "consignee": {
+                "forwarder": {
                   "isComponent": "v-label",
                   "i18nContext": "Widget",
-                  "class": "font-90 required"
+                  "class": "font-110 required form-label"
                 }
               },
               "fieldProps": {
@@ -301,8 +301,9 @@
                 }
               },
               "fixedKeys": ["buyer", "shipper", "factory", "shipTo", "forwarder"],
+              "maxShow": 3,
               "checkDisplayWhen": [
-                "return form && (form[`${key}Party`] || form[`${key}PartyName`])"
+                "return form && (context._.get(form, `${key}Party`, null) || context._.get(form, `${key}PartyName`, null))"
               ],
               "fields": [{
                 "name": ["purchaseOrderParty.{{flex}}{{key}}Party.name", "purchaseOrderParty.{{flex}}{{key}}PartyName"],

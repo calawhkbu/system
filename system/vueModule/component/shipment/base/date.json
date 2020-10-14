@@ -62,19 +62,7 @@
                     "z": {
                       "isComponent": "v-label",
                       "i18nContext": "Widget",
-                      "class": "font-90"
-                    },
-                    "cargoReady": {
-                      "class": "font-90"
-                    },
-                    "cargoReceipt": {
-                      "class": "font-90"
-                    },
-                    "departure": {
-                      "class": "font-90"
-                    },
-                    "arrival": {
-                      "class": "font-90"
+                      "class": "font-110-important"
                     }
                   },
                   "fixedKeys": [
@@ -203,19 +191,7 @@
               "z": {
                 "isComponent": "v-label",
                 "i18nContext": "Widget",
-                "class": "font-90"
-              },
-              "cargoReady": {
-                "class": "font-90"
-              },
-              "cargoReceipt": {
-                "class": "font-90"
-              },
-              "departure": {
-                "class": "font-90"
-              },
-              "arrival": {
-                "class": "font-90"
+                "class": "font-110-important"
               }
             },
             "fixedKeys": [

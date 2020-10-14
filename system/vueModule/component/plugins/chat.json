@@ -36,6 +36,7 @@
       "tableName: swig.tableName,",
       "roomKey: swig.roomKey,",
       "chatroomName: swig.chatroom,",
+      "query: swig.query,",
       "}",
       "}"
     ],

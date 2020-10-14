@@ -78,7 +78,7 @@
                 "z": {
                   "isComponent": "v-label",
                   "i18nContext": "Widget",
-                  "class": "font-90"
+                  "class": "font-110-important"
                 }
               },
               "fieldProps": {
@@ -273,7 +273,12 @@
                 "z": {
                   "isComponent": "v-label",
                   "i18nContext": "Widget",
-                  "class": "font-90"
+                  "class": "font-110-important"
+                },
+                "forwarder": {
+                  "isComponent": "v-label",
+                  "i18nContext": "Widget",
+                  "class": "font-110 required form-label"
                 }
               },
               "fieldProps": {
@@ -299,8 +304,9 @@
                 "controllingCustomer",
                 "notifyParty"
               ],
+              "maxShow": 3,
               "checkDisplayWhen": [
-                "return index < 3 && form && (form[`${key}Party`] || form[`${key}PartyName`])"
+                "return form && (context._.get(form, `${key}Party`, null) || context._.get(form, `${key}PartyName`, null))"
               ],
               "fields": [{
                 "name": ["bookingParty.{{flex}}{{key}}Party.name", "bookingParty.{{flex}}{{key}}PartyName"],

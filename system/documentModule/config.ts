@@ -171,16 +171,16 @@ export const entityConfigList = [
         isActive : true,
         allowFillTemplate: false
       },
-      {
-        fileName: 'FCL Document',
-        isActive : false,
-        allowFillTemplate: false
-      },
-      {
-        fileName: 'LCL Document',
-        isActive : false,
-        allowFillTemplate: false
-      },
+      // {
+      //   fileName: 'FCL Document',
+      //   isActive : false,
+      //   allowFillTemplate: false
+      // },
+      // {
+      //   fileName: 'LCL Document',
+      //   isActive : false,
+      //   allowFillTemplate: false
+      // },
     ]
   } as EntityConfig
 
