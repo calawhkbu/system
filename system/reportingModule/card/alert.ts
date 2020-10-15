@@ -10,73 +10,7 @@ var Alert=alertConfigList;
 var originParams={};
 
 
-// var template = {};
-// temaplte: [
 
-//   {
-//     type: 'prepareParams',
-//     async prepareParams(params, prevResult, user): Promise<IQueryParams> {
-//       const { moment } = await this.preparePackages(user)
-
-//       var subqueries = params.subqueries || {}
-
-
-//       if (!subqueries.entityType || !(subqueries.entityType !== true && 'value' in subqueries.entityType)) throw new Error('MISSING_ENTITY_TYPE')
-//       if (['shipment', 'booking', 'purchase-order'].indexOf(subqueries.entityType.value) === -1) {
-//         throw new Error(`INVALID_ENTITY_TYPE_${String(subqueries.entityType.value).toLocaleUpperCase()}`)
-//       }
-
-//       if (!subqueries.alertCreatedAt || !subqueries.alertCreatedAt.from) {
-//         throw new Error(`MISSING_alertCreatedAt`)
-//       }
-
-
-//       var find = Alert.filter(o => o.tableName == subqueries.entityType.value);
-
-//       subqueries.alertStatus = { value: ['open'] }
-
-//       _.merge(params, find[0].query);
-//       delete params.subqueries.alertCreatedAt;
-//       subqueries.alertCategory = { value: find[0].alertCategory }
-//       params.subqueries.alertTypeIsNotNull = {
-//         value: true
-
-//       }
-
-//       params.fields = ['alertType', 'alertCategory', 'tableName', 'primaryKeyListString', 'count']
-//       params.groupBy = ['alertType', 'alertCategory', 'tableName']
-//       params.limit = 10;
-//       console.log(find[0].alertType)
-//       return params
-//     },
-//   },
-//   {
-//     type: 'callDataService',
-//     getDataServiceQuery(params): [string, string] {
-//       //   let entityType = 'shipment'
-//       //   const subqueries = (params.subqueries = params.subqueries || {})
-//       //   if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
-//       //     entityType = subqueries.entityType.value
-//       // }
-//       //   return [entityType, entityType]
-//       return [Alert[0].tableName, Alert[0].tableName]
-//     },
-
-
-//     onResult(res, params): any[] {
-
-//       let bottomSheetId = shipmentBottomSheetId
-//       const subqueries = (params.subqueries = params.subqueries || {})
-//       if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
-//         if (subqueries.entityType.value === 'booking') bottomSheetId = bookingBottomSheetId
-//       }
-
-//       let query = Alert[0].query;
-
-//       return res.map(r => ({ ...r, bottomSheetId, query }))
-//     },
-//   },
-// ]
 
 export default {
   jqls: [
@@ -120,15 +54,14 @@ export default {
               if(index>0) delete params.subqueries;
            
               _.merge(params,Alert[index].query?{subqueries:Alert[index].query}:{subqueries:{}};
-              console.log({params});
-              console.log('after merge');
+              // console.log({params});
+              // console.log('after merge');
              
          
-              //params.subqueries.entityType={value:originParams['subqueries'].entityType.value};
-             // subqueries.alertCategory = { value: Alert[index].alertCategory }
+          
               params.subqueries['alertTypeIsNotNull'] = {value:true}
-              
-           
+            
+   
 
 
               params.fields = ['alertType', 'alertCategory', 'tableName', 'primaryKeyListString', 'count']

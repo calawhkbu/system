@@ -8,8 +8,8 @@ export default {
     {
       type: 'prepareParams',
       async prepareParams(params, prevResult, user): Promise<IQueryParams> {
-        console.debug(params);
-        console.debug('----shipments-')
+        // console.debug(params);
+        // console.debug('----shipments-')
         const { moment } = await this.preparePackages(user)
 
         //For alert
