@@ -17,6 +17,7 @@ const shipmentTable = 'shipment'
 const shipmentDateTable = 'shipment_date'
 const shipmentPartyTable = 'shipment_party'
 const shipmentBookingTable = 'shipment_booking'
+const partyTable = 'party'
 
 const statusList = ['Dead', 'Due', 'Open', 'Not Ready', 'Done', 'Closed', 'Deleted']
 
@@ -75,6 +76,20 @@ const shortcuts: IShortcut[] = [
     companions: ['table:booking']
   },
 
+  // table:booking_branch
+  {
+    type: 'table',
+    name: 'booking_branch',
+    fromTable: new FromTable(taskTable, new JoinClause('LEFT', partyTable,
+      new AndExpressions([
+        new BinaryExpression(new ColumnExpression(bookingPartyTable, 'forwarderPartyId'), '=', new ColumnExpression(partyTable, 'id')),
+        new IsNullExpression(new ColumnExpression(partyTable, 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression(partyTable, 'deletedBy'), false)
+      ])
+    )),
+    companions: ['table:booking_party']
+  },
+
   // table:shipment
   {
     type: 'table',
@@ -119,6 +134,20 @@ const shortcuts: IShortcut[] = [
       ])
     )),
     companions: ['table:shipment']
+  },
+
+  // table:shipment_branch
+  {
+    type: 'table',
+    name: 'shipment_branch',
+    fromTable: new FromTable(taskTable, new JoinClause('LEFT', partyTable,
+      new AndExpressions([
+        new BinaryExpression(new ColumnExpression(shipmentPartyTable, 'officePartyId'), '=', new ColumnExpression(partyTable, 'id')),
+        new IsNullExpression(new ColumnExpression(partyTable, 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression(partyTable, 'deletedBy'), false)
+      ])
+    )),
+    companions: ['table:shipment_party']
   },
 
   // table:shipment_booking
@@ -1115,6 +1144,7 @@ const shortcuts: IShortcut[] = [
               ),
               $where: [
                 new InExpression(new ColumnExpression(templateTable, 'id'), false, new Value(value.value)),
+                new IsNullExpression(new ColumnExpression(templateTaskTable, 'id'), true),
                 new IsNullExpression(new ColumnExpression(templateTable, 'deletedAt'), false),
                 new IsNullExpression(new ColumnExpression(templateTable, 'deletedBy'), false)
               ]
@@ -1160,6 +1190,7 @@ const shortcuts: IShortcut[] = [
           $where: [
             new BinaryExpression(new ColumnExpression(selectedTemplateTable, 'tableName'), '=', re['tableName']),
             new BinaryExpression(new ColumnExpression(selectedTemplateTable, 'primaryKey'), '=', re['primaryKey']),
+            new IsNullExpression(new ColumnExpression(templateTaskTable, 'id'), true),
             new IsNullExpression(new ColumnExpression(selectedTemplateTable, 'deletedAt'), false),
             new IsNullExpression(new ColumnExpression(selectedTemplateTable, 'deletedBy'), false)
           ]
@@ -1229,7 +1260,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'shipperPartyId',
     subqueryArg: () => ({ value }, params) => ({
-      $where: new InExpression(getEntityExpression('shipperPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])(params), false, new Value(value)),
+      $where: new InExpression(getEntityExpression('shipperPartyId', [bookingTable, bookingPartyTable, 'shipperPartyId'], [shipmentTable, shipmentPartyTable, 'shipperPartyId'])(params), false, new Value(value)),
     }),
     companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
@@ -1239,9 +1270,23 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'consigneePartyId',
     subqueryArg: () => ({ value }, params) => ({
-      $where: new InExpression(getEntityExpression('consigneePartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])(params), false, new Value(value)),
+      $where: new InExpression(getEntityExpression('consigneePartyId', [bookingTable, bookingPartyTable, 'consigneePartyId'], [shipmentTable, shipmentPartyTable, 'consigneePartyId'])(params), false, new Value(value)),
     }),
     companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
+  },
+
+  // subquery:branch
+  {
+    type: 'subquery',
+    name: 'branch',
+    subqueryArg: () => ({ value }, params) => {
+      const thirdPartyCodeExpression = getEntityExpression('thirdPartyCode', [bookingTable, partyTable, 'thirdPartyCode'], [shipmentTable, partyTable, 'thirdPartyCode'])(params)
+      const branchExpression = new BinaryExpression(thirdPartyCodeExpression, '->>', new Value('$.\"erp-site\"'))
+      return {
+        $where: new BinaryExpression(branchExpression, '=', new Value(value))
+      }
+    },
+    companions: getEntityCompanion([], [bookingTable, 'booking_branch'], [shipmentTable, 'shipment_branch'])
   },
 
   // subquery:officePartyId
@@ -1249,7 +1294,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'officePartyId',
     subqueryArg: () => ({ value }, params) => ({
-      $where: new InExpression(getEntityExpression('officePartyId', [bookingTable, bookingPartyTable, 'forwarderPartyId'], [shipmentTable, shipmentPartyTable])(params), false, new Value(value)),
+      $where: new InExpression(getEntityExpression('officePartyId', [bookingTable, bookingPartyTable, 'forwarderPartyId'], [shipmentTable, shipmentPartyTable, 'officePartyId'])(params), false, new Value(value)),
     }),
     companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
@@ -1259,7 +1304,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'agentPartyId',
     subqueryArg: () => ({ value }, params) => ({
-      $where: new InExpression(getEntityExpression('agentPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])(params), false, new Value(value)),
+      $where: new InExpression(getEntityExpression('agentPartyId', [bookingTable, bookingPartyTable, 'agentPartyId'], [shipmentTable, shipmentPartyTable, 'agentPartyId'])(params), false, new Value(value)),
     }),
     companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
@@ -1269,7 +1314,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'roAgentPartyId',
     subqueryArg: () => ({ value }, params) => ({
-      $where: new InExpression(getEntityExpression('roAgentPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])(params), false, new Value(value)),
+      $where: new InExpression(getEntityExpression('roAgentPartyId', [bookingTable, bookingPartyTable, 'roAgentPartyId'], [shipmentTable, shipmentPartyTable, 'roAgentPartyId'])(params), false, new Value(value)),
     }),
     companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
@@ -1279,7 +1324,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'linerAgentPartyId',
     subqueryArg: () => ({ value }, params) => ({
-      $where: new InExpression(getEntityExpression('linerAgentPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])(params), false, new Value(value)),
+      $where: new InExpression(getEntityExpression('linerAgentPartyId', [bookingTable, bookingPartyTable, 'linerAgentPartyId'], [shipmentTable, shipmentPartyTable, 'linerAgentPartyId'])(params), false, new Value(value)),
     }),
     companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },
@@ -1289,7 +1334,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'controllingCustomerPartyId',
     subqueryArg: () => ({ value }, params) => ({
-      $where: new InExpression(getEntityExpression('controllingCustomerPartyId', [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])(params), false, new Value(value)),
+      $where: new InExpression(getEntityExpression('controllingCustomerPartyId', [bookingTable, bookingPartyTable, 'controllingCustomerPartyId'], [shipmentTable, shipmentPartyTable, 'controllingCustomerPartyId'])(params), false, new Value(value)),
     }),
     companions: getEntityCompanion([], [bookingTable, bookingPartyTable], [shipmentTable, shipmentPartyTable])
   },

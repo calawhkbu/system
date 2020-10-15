@@ -123,14 +123,7 @@ export default {
               console.log({params});
               console.log('after merge');
              
-              // _.merge(params, Alert[index].query);
-            //   console.log({originParams});
-            //   console.log('after merge');
-            //  Object.assign(params,originParams);
-            //  console.log({params});
-            //  console.log('after merge');
-
-             // delete params.subqueries.alertCreatedAt;
+         
               //params.subqueries.entityType={value:originParams['subqueries'].entityType.value};
              // subqueries.alertCategory = { value: Alert[index].alertCategory }
               params.subqueries['alertTypeIsNotNull'] = {value:true}
@@ -139,7 +132,7 @@ export default {
 
 
               params.fields = ['alertType', 'alertCategory', 'tableName', 'primaryKeyListString', 'count']
-              params.groupBy = ['alertType', 'alertCategory', 'tableName']
+              params.groupBy = ['alertType', 'tableName']
               params.limit = 10;
               console.log(Alert[index].alertType)
               return params

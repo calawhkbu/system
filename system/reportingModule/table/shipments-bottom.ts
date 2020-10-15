@@ -8,7 +8,17 @@ export default {
     {
       type: 'prepareParams',
       async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+        console.debug(params);
+        console.debug('----shipments-')
         const { moment } = await this.preparePackages(user)
+
+        //For alert
+        let query=params.subqueries.query.value;
+        for(let i=0;i<query.length;i++){
+          query=query.replace('&quot;','"');
+        }
+        query=JSON.parse(query);
+        /// End for Alert
 
         const defaultFields = [
           'id',
@@ -27,7 +37,7 @@ export default {
 
         params.fields = defaultFields
 
-        const subqueries = (params.subqueries = params.subqueries || {})
+        var subqueries = (params.subqueries = params.subqueries || {})
 
         // used in mapCard to bottom sheet
         if (subqueries.location && subqueries.locationCode) {
@@ -71,6 +81,7 @@ export default {
           }
           delete subqueries.date
           subqueries.alertCreatedAt = alertCreatedAtJson
+          subqueries=query;
         }
 
         // split primaryKeyListString and search by id
@@ -96,8 +107,6 @@ export default {
         handleBottomSheetGroupByEntityValue(subqueries)
 
         handleGroupByEntityValueDatePart(subqueries, moment)
-
-
         return params
       }
     },
