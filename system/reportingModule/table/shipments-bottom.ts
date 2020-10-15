@@ -10,7 +10,6 @@ export default {
       async prepareParams(params, prevResult, user): Promise<IQueryParams> {
         const { moment } = await this.preparePackages(user)
 
-
         const defaultFields = [
           'id',
           'houseNo',
@@ -27,7 +26,7 @@ export default {
         ]
 
         params.fields = defaultFields
-        
+
         const subqueries = (params.subqueries = params.subqueries || {})
 
         // used in mapCard to bottom sheet
@@ -52,7 +51,7 @@ export default {
         if (subqueries.alertType) {
           if (!(subqueries.alertType !== true && 'value' in subqueries.alertType && Array.isArray(subqueries.alertType.value))) throw new Error('MISSING_alertType')
           subqueries.alertJoin = true
-          let alertCreatedAtJson: { from: any, to: any}
+          let alertCreatedAtJson: { from: any, to: any }
           if (subqueries.withinHours) {
             const withinHours = subqueries.withinHours as { value: any }
             alertCreatedAtJson = {
@@ -96,7 +95,7 @@ export default {
 
         handleBottomSheetGroupByEntityValue(subqueries)
 
-        handleGroupByEntityValueDatePart(subqueries,moment)
+        handleGroupByEntityValueDatePart(subqueries, moment)
 
 
         return params
