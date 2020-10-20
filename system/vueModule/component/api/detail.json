@@ -92,7 +92,7 @@
           "refreshToken": "$store.state.widget.data.refreshToken",
           "html": [
             "<script src=\"{{frontendUrl}}cdn/js/vue.min.js\"></script>",
-            "<script src=\"{{frontendUrl}}widget/swivel-widget.js\"></script>",
+            "<script src=\"{{frontendUrl}}widgets/swivel-widget.js\"></script>",
             "<swivel-widget",
             "  apiToken=\"{{value}}\"",
             "  name=\"{{name}}\"{% if data %}\n  data='{{data|safe}}'{% endif %}",
