@@ -6,7 +6,8 @@
       "hasReports": true,
       "showFilterBar": true,
       "enableShare": true,
-      "enableSetting": true,
+      "enableSetting": false,
+      "noExternal": true,
       "newReport": {
         "filters": {
           "activeStatus": {
@@ -14,15 +15,69 @@
           },
           "date": {
             "func": {
+              "key": "range",
               "args": {
-                "unit": "month"
-              },
-              "key": "current"
+                "unit": "day",
+                "value": 30
+              }
             }
           }
         },
         "configurations": {
           "i18nContext": "Alert",
+          "cards": [
+            {
+              "uuid": "c99f10ad-0b51-4094-984b-4886593344c8",
+              "cardId": "a3e37a33-169b-4b36-a375-c0a7d7945e7c",
+              "params": {
+                "filters": {
+                  "entityType": {
+                    "value": "shipment"
+                  }
+                }
+              },
+              "layouts": {
+                "lg": {
+                  "h": 19,
+                  "i": "c99f10ad-0b51-4094-984b-4886593344c8",
+                  "w": 12,
+                  "x": 0,
+                  "y": 0,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "md": {
+                  "h": 12,
+                  "i": "c99f10ad-0b51-4094-984b-4886593344c8",
+                  "w": 6,
+                  "x": 0,
+                  "y": 0,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "sm": {
+                  "h": 12,
+                  "i": "c99f10ad-0b51-4094-984b-4886593344c8",
+                  "w": 4,
+                  "x": 0,
+                  "y": 0,
+                  "hr": 1,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "xs": {
+                  "h": 12,
+                  "i": "c99f10ad-0b51-4094-984b-4886593344c8",
+                  "w": 4,
+                  "x": 0,
+                  "y": 0,
+                  "hr": 1,
+                  "minH": 6,
+                  "minW": 2
+                }
+              }
+            }
+          ],
           "colors": [
             "#005EB8",
             "#008675",

@@ -54,8 +54,9 @@ export default class NotifyEntityEvent extends BaseEventHandler {
     ) => {
       const partyGroupCode = _.get(latestEntity, 'partyGroupCode', null)
       const finalKeys = notifyKeys[partyGroupCode] || []
+      console.log(finalKeys, this.constructor.name)
       const picEmail = _.get(latestEntity, 'picEmail', null)
-      if (picEmail && finalKeys.include('pic')) {
+      if (picEmail && finalKeys.includes('pic')) {
         dataList.push({
           name: _.get(latestEntity, 'picId', null),
           email: _.get(latestEntity, 'picEmail', null),
@@ -68,7 +69,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
         })
       }
       const createdBy = _.get(latestEntity, 'createdBy', null)
-      if (createdBy && finalKeys.include('createdBy')) {
+      if (createdBy && finalKeys.includes('createdBy')) {
         dataList.push({
           name: createdBy, // TODO:: createdBy name
           email: createdBy,
@@ -81,7 +82,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
         })
       }
       const updatedBy = _.get(latestEntity, 'updatedBy', null)
-      if (updatedBy && createdBy !== updatedBy && finalKeys.include('updatedBy')) {
+      if (updatedBy && createdBy !== updatedBy && finalKeys.includes('updatedBy')) {
         dataList.push({
           name: updatedBy, // TODO:: updatedBy name
           email: updatedBy,
@@ -96,7 +97,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
       const partyTable = _.get(latestEntity, `${tableName}Party`, {})
       const partyTableFlexData = _.get(partyTable, `flexData`, {})
       for (const mainKey of this.getFixedKeyByTableName(tableName)) {
-        if (finalKeys.include(mainKey)) {
+        if (finalKeys.includes(mainKey)) {
           const party = _.get(partyTable, `${mainKey}Party`, null)
           const sentEmail = _.get(partyTable, `${mainKey}PartyEmail`, null) ||
             _.get(partyTable, `${mainKey}Party.email`, null) ||
@@ -150,7 +151,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
         const morePartyKeys = _.get(partyTableFlexData, 'moreParty', [])
         if (morePartyKeys && morePartyKeys.length) {
           for (const morePartyKey of morePartyKeys) {
-            if (finalKeys.include(morePartyKey)) {
+            if (finalKeys.includes(morePartyKey)) {
               const partyId = _.get(partyTableFlexData, `${morePartyKey}PartyId`, null)
               if (partyId) {
                 const party = _.get(partyTableFlexData, `${morePartyKey}Party`, null)
@@ -212,24 +213,40 @@ export default class NotifyEntityEvent extends BaseEventHandler {
 
   public async mainFunction(eventDataList: EventData<any>[]): Promise<any[]> {
     console.debug('Start Excecute [Notify Party]...', this.constructor.name)
-    const lists = this.getPartyFromEntity(eventDataList)
-    if (lists && lists.length) {
-      await BluebirdPromise.map(lists, async ({ name, email, entity, isUpdate, partyGroupCode, language, template, subject }: NotifyObject) => {
-        try {
-          await this.allService.messagerService.scheduleSend({
-            type: 'email',
-            option: {
-              to: [email],
-              subject,
-              html: { path: template, language, partyGroupCode }
-            },
-            context: entity,
-            handlerName: 'mailgun'
-          })
-        } catch (e) {
-          console.error(e, e.stack, this.constructor.name)
-        }
-      }, { concurrency: 30 })
+    try {
+      const lists = this.getPartyFromEntity(eventDataList)
+      console.log(`Send out email size = ${lists.length}`, this.constructor.name)
+      if (lists && lists.length) {
+        await BluebirdPromise.map(lists, async ({ name, email, entity, isUpdate, partyGroupCode, language, template, subject }: NotifyObject) => {
+          try {
+            await this.allService.messagerService.send(
+              'email',
+              {
+                to: [email],
+                subject,
+                html: { path: template, language, partyGroupCode }
+              },
+              entity,
+              new Date(),
+              'mailgun'
+            )
+            // await this.allService.messagerService.scheduleSend({
+            //   type: 'email',
+            //   option: {
+            //     to: [email],
+            //     subject,
+            //     html: { path: template, language, partyGroupCode }
+            //   },
+            //   context: entity,
+            //   handlerName: 'mailgun'
+            // })
+          } catch (e) {
+            console.error(e, e.stack, this.constructor.name)
+          }
+        }, { concurrency: 30 })
+      }
+    } catch (e) {
+      console.error(e, e.stack, this.constructor.name)
     }
     console.debug('End Excecute [Notify Party]...', this.constructor.name)
     return null

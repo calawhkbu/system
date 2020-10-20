@@ -1,5 +1,5 @@
 import { QueryDef } from "classes/query/QueryDef";
-import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, ICase, QueryExpression, Query, ExistsExpression, IExpression, InExpression, Expression, BinaryOperator, IQuery, ParameterExpression, OrderBy, BetweenExpression, Variable } from "node-jql";
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, QueryExpression, Query, ExistsExpression, InExpression, Expression, ParameterExpression, OrderBy, BetweenExpression } from "node-jql";
 import { IfExpression, wrapOrder, IfNullExpression } from 'utils/jql-subqueries'
 import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityCompanion, getEntityExpression, getEntityResultColumn, taskStatusJoinClauses } from "utils/sop-task";
 import { IShortcut } from 'classes/query/Shortcut'
@@ -771,7 +771,8 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'hasSubTasks',
-    expression: new BinaryExpression(new Variable('hasSubTasks'), ':=', new ExistsExpression(hasSubTaskQuery('temp'), false))
+    expression: new ExistsExpression(hasSubTaskQuery('temp'), false),
+    registered: true
   },
 
   // field:noOfRemarks
@@ -840,9 +841,9 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'isDone',
-    expression: () => new BinaryExpression(new Variable('isDone'), ':=', IfExpression(new Variable('hasSubTasks'), new ExistsExpression(hasSubTaskQuery('temp', true, generalIsDoneExpression('temp_status', true)), true), generalIsDoneExpression())),
+    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', true, generalIsDoneExpression('temp_status', true)), true), generalIsDoneExpression()),
     registered: true,
-    companions: ['table:sop_task_status', 'field:hasSubTasks']
+    companions: ['table:sop_task_status']
   },
 
   // field:dueDays
@@ -895,9 +896,9 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'isClosed',
-    expression: () => new BinaryExpression(new Variable('isClosed'), ':=', IfExpression(new Variable('hasSubTasks'), new ExistsExpression(hasSubTaskQuery('temp', true, generalIsClosedExpression('temp_status', true)), true), generalIsClosedExpression())),
+    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', true, generalIsClosedExpression('temp_status', true)), true), generalIsClosedExpression()),
     registered: true,
-    companions: ['table:sop_task_status', 'field:hasSubTasks']
+    companions: ['table:sop_task_status']
   },
 
   // field:isDeleted
@@ -915,16 +916,15 @@ const shortcuts: IShortcut[] = [
     expression: re => new CaseExpression(
       [
         { $when: re['isDeleted'], $then: new Value('Deleted') },
-        { $when: new Variable('isClosed'), $then: new Value('Closed') },
-        { $when: new Variable('isDone'), $then: new Value('Done') },
+        { $when: re['isClosed'], $then: new Value('Closed') },
+        { $when: re['isDone'], $then: new Value('Done') },
         { $when: re['isDead'], $then: new Value('Dead') },
         { $when: re['isDue'], $then: new Value('Due') },
         { $when: re['isStarted'], $then: new Value('Open') }
       ],
       new Value('Not Ready')
     ),
-    registered: true,
-    companions: ['field:isClosed', 'field:isDone']
+    registered: true
   },
 
   // field:taskStatus (raw)
