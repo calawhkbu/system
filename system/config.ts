@@ -16,5 +16,16 @@ export default {
   },
   bookingContainer : {
     calculateCtns : false
+  },
+  cards: {
+    'Profit': true,
+    'Demo': true,
+    'Booking': true,
+    'Shipment': true,
+    'Tracking': true,
+    'Alert': true,
+    'Job': true,
+    'Task': true,
+    'Purchase Order': true
   }
 }

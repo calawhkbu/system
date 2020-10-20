@@ -73,7 +73,7 @@ export default {
         if (params.subqueries.date ? rangeTooLarge(params.subqueries.date) : !params.subqueries.createdAtBetween) {
           throw new BadRequestException('DATE_RANGE_TOO_LARGE')
         }
-
+    
         return params
       }
     },

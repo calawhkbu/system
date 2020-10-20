@@ -55,10 +55,7 @@ export default {
                 dataServiceType: 'count',
                 dataServiceQuery: [tableName, queryName],
                 onResult(res, params, prevResult: any): any {
-                  console.log('----callDataService----prevResult and alertType')
-                  console.log({res})
-                  console.log(prevResult);
-                  console.log(alertType)
+
                   prevResult[alertType] = res
                   return prevResult
                 }
@@ -151,10 +148,10 @@ export default {
       name: 'entityType',
       props: {
         items: [
-          {
-            label: 'booking',
-            value: 'booking',
-          },
+          // {
+          //   label: 'booking',
+          //   value: 'booking',
+          // },
           {
             label: 'shipment',
             value: 'shipment',
