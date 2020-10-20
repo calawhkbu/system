@@ -102,6 +102,7 @@ const partyList = [
   },
   {
     name: 'office',
+    override: 'forwarder'
   },
   {
     name: 'controllingCustomer',
@@ -112,6 +113,7 @@ const partyList = [
 ] as {
 
   name: string,
+  override: string,
   partyNameExpression?: {
     companion: string[],
     expression: IExpression
@@ -632,10 +634,12 @@ query.table('otherTerms', new Query({
 // party join : table:office, table:shipper etc
 partyList.map(party => {
 
+  const override = party.override || party.name
+
   const partyTableName = party.name
 
   const companion = (party.partyIdExpression && party.partyIdExpression.companion) ? party.partyIdExpression.companion : [`table:booking_party`]
-  const partyIdExpression = (party.partyIdExpression && party.partyIdExpression.expression) ? party.partyIdExpression.expression :  new ColumnExpression('booking_party', `${partyTableName}PartyId`)
+  const partyIdExpression = (party.partyIdExpression && party.partyIdExpression.expression) ? party.partyIdExpression.expression :  new ColumnExpression('booking_party', `${override}PartyId`)
 
   query.table(partyTableName, new Query({
 
@@ -645,12 +649,12 @@ partyList.map(party => {
       joinClauses : [
         {
           operator: 'LEFT',
-          table: new FromTable('party', partyTableName),
+          table: new FromTable('party', override),
           $on: [
             new BinaryExpression(
               partyIdExpression,
               '=',
-              new ColumnExpression(partyTableName, 'id')
+              new ColumnExpression(override, 'id')
             ),
           ],
         }
@@ -1327,17 +1331,17 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
     'PartyAddress'
   ]
 
+  const override = party.override || party.name
+
   const partyTableName = party.name
 
-  const partyIdExpression = party.partyIdExpression  || { expression : new ColumnExpression('booking_party', `${partyTableName}PartyId`), companion : ['table:booking_party']}
-  const partyNameExpression = party.partyNameExpression ||  { expression :  new ColumnExpression('booking_party', `${partyTableName}PartyName`), companion : ['table:booking_party']}
-  const partyCodeExpression = party.partyCodeExpression || { expression :  new ColumnExpression('booking_party', `${partyTableName}PartyCode`), companion : ['table:booking_party']}
-  const partyNameInReportExpression = party.partyNameInReportExpression || { expression :  new ColumnExpression(party.name, `name`), companion : [`table:${party.name}`]}
-  const partyShortNameInReportExpression = party.partyShortNameInReportExpression ||  { expression : new FunctionExpression('IFNULL', new ColumnExpression(party.name, `shortName`), partyNameInReportExpression.expression), companion : [`table:${party.name}`]}
+  const partyIdExpression = party.partyIdExpression  || { expression : new ColumnExpression('booking_party', `${override}PartyId`), companion : ['table:booking_party']}
+  const partyNameExpression = party.partyNameExpression ||  { expression :  new ColumnExpression('booking_party', `${override}PartyName`), companion : ['table:booking_party']}
+  const partyCodeExpression = party.partyCodeExpression || { expression :  new ColumnExpression('booking_party', `${override}PartyCode`), companion : ['table:booking_party']}
+  const partyNameInReportExpression = party.partyNameInReportExpression || { expression :  new ColumnExpression(party.name, `name`), companion : [`table:${override}`]}
+  const partyShortNameInReportExpression = party.partyShortNameInReportExpression ||  { expression : new FunctionExpression('IFNULL', new ColumnExpression(override, `shortName`), partyNameInReportExpression.expression), companion : [`table:${override}`]}
 
   const resultExpressionList = partyFieldList.map(partyField => {
-
-    const fieldName = `${partyTableName}${partyField}`
 
     let finalExpressionInfo: { expression: IExpression, companion: string[]}
 
@@ -1365,12 +1369,12 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
         break
 
       default:
-        finalExpressionInfo = { expression : new ColumnExpression('booking_party', fieldName) as IExpression, companion : ['table:booking_party'] }
+        finalExpressionInfo = { expression : new ColumnExpression('booking_party', `${override}${partyField}`) as IExpression, companion : ['table:booking_party'] }
         break
     }
 
     return {
-      name : fieldName,
+      name : `${partyTableName}${partyField}`,
       ...finalExpressionInfo
     } as ExpressionHelperInterface
   })

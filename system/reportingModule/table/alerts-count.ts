@@ -9,7 +9,6 @@ export default {
         const subqueries = (params.subqueries = params.subqueries || {})
         subqueries.alertJoin = true
         params.fields = ['alertCount']
-        console.debug({params})
         return params
       }
     },

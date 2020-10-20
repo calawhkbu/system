@@ -31,6 +31,7 @@ export default {
           { type: 'getCompleteAlertConfig', options: [user.selectedPartyGroup.code] },
           user
         )
+     
         return alertConfigList.reduce((finalTasks: Array<JqlTask | JqlTask[]>, { alertType, tableName, queryName, query, active }) => {
           if (query && active && tableName === subqueries.entityType.value) {
             finalTasks.push([
@@ -54,6 +55,10 @@ export default {
                 dataServiceType: 'count',
                 dataServiceQuery: [tableName, queryName],
                 onResult(res, params, prevResult: any): any {
+                  console.log('----callDataService----prevResult and alertType')
+                  console.log({res})
+                  console.log(prevResult);
+                  console.log(alertType)
                   prevResult[alertType] = res
                   return prevResult
                 }
@@ -99,86 +104,6 @@ export default {
         return results
       }
     }
-    // ...Alert.reduce((acc, template, index) => {
-    //
-    //   acc = acc.concat(
-    //     [
-    //       {
-    //         type: 'prepareParams',
-    //         async prepareParams(params, prevResult, user): Promise<IQueryParams> {
-    //           Object.assign(params, originParams);
-    //           console.log(index);
-    //           console.log('array index');
-    //           console.log({ params });
-    //           console.log('params in jql array');
-    //
-    //
-    //           var subqueries = params.subqueries || {}
-    //
-    //
-
-    //
-    //           // if (!subqueries.alertCreatedAt || !subqueries.alertCreatedAt.from) {
-    //           //   throw new Error(`MISSING_alertCreatedAt`)
-    //           // }
-    //
-    //
-    //
-    //           subqueries.alertStatus = { value: ['open'] }
-    //           if (index > 0) delete params.subqueries;
-    //
-    //           _.merge(params, Alert[index].query ? { subqueries: Alert[index].query } : { subqueries: {} };
-    //           // console.log({params});
-    //           // console.log('after merge');
-    //
-    //
-    //
-    //           params.subqueries['alertTypeIsNotNull'] = { value: true }
-    //
-    //
-    //
-    //
-    //           params.fields = ['alertType', 'alertCategory', 'tableName', 'primaryKeyListString', 'count']
-    //           params.groupBy = ['alertType', 'tableName']
-    //           params.limit = 10;
-    //           console.log(Alert[index].alertType)
-    //           return params
-    //         },
-    //       },
-    //       {
-    //         type: 'callDataService',
-    //         getDataServiceQuery(params): [string, string] {
-    //           //   let entityType = 'shipment'
-    //           //   const subqueries = (params.subqueries = params.subqueries || {})
-    //           //   if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
-    //           //     entityType = subqueries.entityType.value
-    //           // }
-    //           //   return [entityType, entityType]
-    //           return [Alert[index].tableName, Alert[index].tableName]
-    //         },
-    //
-    //
-    //         onResult(res, params): any[] {
-    //
-    //           let bottomSheetId = shipmentBottomSheetId
-    //           const subqueries = (params.subqueries = params.subqueries || {})
-    //           if (subqueries.entityType && subqueries.entityType !== true && 'value' in subqueries.entityType) {
-    //             if (subqueries.entityType.value === 'booking') bottomSheetId = bookingBottomSheetId
-    //           }
-    //
-    //           let query = Alert[index].query;
-    //           return res.map(r => ({ ...r, bottomSheetId, query }))
-    //         },
-    //       },
-    //     ]
-    //   )
-    //
-    //   return acc
-    //
-    // }, [])
-
-
-
   ],
   filters: [
     {
@@ -226,10 +151,10 @@ export default {
       name: 'entityType',
       props: {
         items: [
-          // {
-          //   label: 'booking',
-          //   value: 'booking',
-          // },
+          {
+            label: 'booking',
+            value: 'booking',
+          },
           {
             label: 'shipment',
             value: 'shipment',

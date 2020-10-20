@@ -68,7 +68,7 @@ export default class CreateTrackingEvent extends BaseEventHandler {
     await BluebirdPromise.map(
       eventDataList,
       async({ latestEntity, loadashMapping, tableName }) => {
-        if (latestEntity.billStatus === null) {
+        if (tableName === 'booking' || (tableName === 'shipment' && latestEntity.billStatus === null)) {
           try {
             const registerForm = await this.getTrackingNo(latestEntity, loadashMapping)
             if (registerForm) {
