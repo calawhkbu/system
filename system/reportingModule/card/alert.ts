@@ -59,8 +59,13 @@ export default {
                 dataServiceType: 'count',
                 dataServiceQuery: [tableName, queryName],
                 onResult(res, params, prevResult: any): any {
-
+                   
                   prevResult[alertType] = res
+                  prevResult['tableName']=tableName
+                  prevResult['subqueries']=subqueries
+                  prevResult['alertType']=alertType
+
+
                   return prevResult
                 }
               }
@@ -83,6 +88,8 @@ export default {
           user: user
         })
         const results = []
+      
+
         for (const key of Object.keys(prevResult)) {
           const result = prevResult[key]
           if (result && result.length && result[0].count > 0) {
@@ -90,7 +97,14 @@ export default {
             results.push({
               alertTypeCode: key,
               alertType: translation ? swig.render(translation, { locals: {} }) : translation,
-              count: result[0].count
+              count: result[0].count,
+              tableName:prevResult.tableName,
+              subqueries:prevResult.subqueries,
+              collapsed:`${prevResult.tableName}-${key}`,
+              expanded:0,
+              indicator:'-',
+              isEntityRow:true
+              
             })
           }
         }
