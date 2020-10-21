@@ -34,6 +34,7 @@ export default {
      
         return alertConfigList.reduce((finalTasks: Array<JqlTask | JqlTask[]>, { alertType, tableName, queryName, query, active }) => {
           if (query && active && tableName === subqueries.entityType.value) {
+  
             finalTasks.push([
               {
                 type: 'prepareParams',
@@ -41,10 +42,13 @@ export default {
                   params: IQueryParams,
                   prevResult?: any,
                   user?: JwtPayload
-                ): Promise<IQueryParams> {
+                ): Promise<IQueryParams> {;
+                  let mainCard_subq=_.cloneDeep(params.subqueries||{})
+                  
                   return {
                     // fields: ['primaryKeyListString'],
                     subqueries: {
+                      ...{mainCard_subq},
                       ...(subqueries || {}),
                       ...(query.subqueries || {})
                     }

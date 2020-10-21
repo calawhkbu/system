@@ -174,6 +174,7 @@ const app = {
         ...xHouseNo,
         grpcarrier: 0,
         grpfreehand: 0,
+        grpagent: 0
       }),
     }
   },

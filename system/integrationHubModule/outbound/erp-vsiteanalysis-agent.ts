@@ -1,5 +1,6 @@
 import vsiteanalysis from './erp-vsiteanalysis'
 import moment = require('moment')
+import { BadRequestException } from '@nestjs/common'
 
 const app = {
   consumeError: true,
@@ -9,7 +10,7 @@ const app = {
     boundTypes: [] as string[],
   },
   method: vsiteanalysis.method,
-  getUrl: vsiteanalysis.getUrl,
+  getUrl: body => `${vsiteanalysis.getUrl(body)}_test`,
   requestHandler: async(
     params: any,
     body: any,
@@ -18,13 +19,13 @@ const app = {
   ) => {
     const result = await vsiteanalysis.requestHandler(params, body, constants, helper)
     body = JSON.parse(result.body)
+    if (!body.xmodule) throw new BadRequestException('MISSING_MODULE_TYPE')
 
     return {
       headers: result.headers,
       body: JSON.stringify({
         ...body,
-        grpcarrier: 1,
-        grpfreehand: 1
+        grpagent: 1
       })
     }
   },
@@ -32,86 +33,90 @@ const app = {
     // parse results
     let responseBody = JSON.parse(JSON.parse(response.responseBody).d)
 
-    const carriers: string[] = []
+    const agents: string[] = []
+    let result: any[] = []
 
     // regroup results
     responseBody = responseBody.reduce((result, row) => {
-      if (row.carrier.trim()) {
+      if (row.agent.trim()) {
         const jobMonth = moment(row.yymm, 'YYYYMM').format('YYYY-MM')
-        let resultRow = result.find(r => r.officePartyCode === row.xsite && r.carrierName === row.carrier && r.jobMonth === jobMonth)
-        let totalRow = result.find(r => r.officePartyCode === row.xsite && r.carrierName === row.carrier && r.jobMonth === 'total')
+        let resultRow = result.find(r => r.officePartyCode === row.xsite && r.agentCode === row.agent && r.jobMonth === jobMonth)
+        let totalRow = result.find(r => r.officePartyCode === row.xsite && r.agentCode === row.agent && r.jobMonth === 'total')
         if (!resultRow)
-          result.push((resultRow = { officePartyCode: row.xsite, carrierName: row.carrier, currency: row.currency, jobMonth }))
+          result.push((resultRow = { officePartyCode: row.xsite, agentCode: row.agent, currency: row.currency, moduleTypeCode: row.module, jobMonth }))
         if (!totalRow)
-          result.push((totalRow = { officePartyCode: row.xsite, carrierName: row.carrier, currency: row.currency, jobMonth: 'total' }))
+          result.push((totalRow = { officePartyCode: row.xsite, agentCode: row.agent, currency: row.currency, moduleTypeCode: row.module, jobMonth: 'total' }))
 
-        if (carriers.indexOf(row.carrier) === -1) carriers.push(row.carrier)
+        if (agents.indexOf(row.agent) === -1) agents.push(row.agent)
 
-        const nominatedTypeCode = row.freehand
-
-        resultRow[`${nominatedTypeCode}_grossProfit`] =
-          (resultRow[`${nominatedTypeCode}_grossProfit`] || 0) +
+        resultRow.grossProfit =
+          (resultRow.grossProfit || 0) +
           boundTypes.reduce(
             (result, type) => result + (row[`${type.toLocaleLowerCase()}profit`] || 0),
             0
           )
-        resultRow[`${nominatedTypeCode}_profitShareIncome`] =
-          (resultRow[`${nominatedTypeCode}_profitShareIncome`] || 0) +
+        resultRow.profitShareIncome =
+          (resultRow.profitShareIncome || 0) +
           boundTypes.reduce(
             (result, type) => result + (row[`${type.toLocaleLowerCase()}ps_income`] || 0),
             0
           )
-        resultRow[`${nominatedTypeCode}_profitShareCost`] =
-          (resultRow[`${nominatedTypeCode}_profitShareCost`] || 0) +
+        resultRow.profitShareCost =
+          (resultRow.profitShareCost || 0) +
           boundTypes.reduce(
             (result, type) => result + (row[`${type.toLocaleLowerCase()}ps_cost`] || 0),
             0
           )
-        resultRow[`${nominatedTypeCode}_profitShare`] =
-          (resultRow[`${nominatedTypeCode}_profitShare`] || 0) +
-          boundTypes.reduce((result, type) => result + (row[`${type.toLocaleLowerCase()}ps`] || 0), 0)
-        resultRow[`${nominatedTypeCode}_otherProfit`] =
-          (resultRow[`${nominatedTypeCode}_otherProfit`] || 0) +
+        resultRow.profitShare =
+          (resultRow.profitShare || 0) +
+          boundTypes.reduce(
+            (result, type) => result + (row[`${type.toLocaleLowerCase()}ps`] || 0),
+            0
+          )
+        resultRow.otherProfit =
+          (resultRow.otherProfit || 0) +
           boundTypes.reduce(
             (result, type) => result + (row[`${type.toLocaleLowerCase()}othprofit`] || 0),
             0
           )
-        resultRow[`${nominatedTypeCode}_revenue`] =
-          (resultRow[`${nominatedTypeCode}_revenue`] || 0) +
+        resultRow.revenue =
+          (resultRow.revenue || 0) +
           boundTypes.reduce(
             (result, type) => result + (row[`${type.toLocaleLowerCase()}sales`] || 0),
             0
           )
-
-        totalRow[`${nominatedTypeCode}_grossProfit`] =
-          (totalRow[`${nominatedTypeCode}_grossProfit`] || 0) +
+        totalRow.grossProfit =
+          (totalRow.grossProfit || 0) +
           boundTypes.reduce(
             (result, type) => result + (row[`${type.toLocaleLowerCase()}profit`] || 0),
             0
           )
-        totalRow[`${nominatedTypeCode}_profitShareIncome`] =
-          (totalRow[`${nominatedTypeCode}_profitShareIncome`] || 0) +
+        totalRow.profitShareIncome =
+          (totalRow.profitShareIncome || 0) +
           boundTypes.reduce(
             (result, type) => result + (row[`${type.toLocaleLowerCase()}ps_income`] || 0),
             0
           )
-        totalRow[`${nominatedTypeCode}_profitShareCost`] =
-          (totalRow[`${nominatedTypeCode}_profitShareCost`] || 0) +
+        totalRow.profitShareCost =
+          (totalRow.profitShareCost || 0) +
           boundTypes.reduce(
             (result, type) => result + (row[`${type.toLocaleLowerCase()}ps_cost`] || 0),
             0
           )
-        totalRow[`${nominatedTypeCode}_profitShare`] =
-          (totalRow[`${nominatedTypeCode}_profitShare`] || 0) +
-          boundTypes.reduce((result, type) => result + (row[`${type.toLocaleLowerCase()}ps`] || 0), 0)
-        totalRow[`${nominatedTypeCode}_otherProfit`] =
-          (totalRow[`${nominatedTypeCode}_otherProfit`] || 0) +
+        totalRow.profitShare =
+          (totalRow.profitShare || 0) +
+          boundTypes.reduce(
+            (result, type) => result + (row[`${type.toLocaleLowerCase()}ps`] || 0),
+            0
+          )
+        totalRow.otherProfit =
+          (totalRow.otherProfit || 0) +
           boundTypes.reduce(
             (result, type) => result + (row[`${type.toLocaleLowerCase()}othprofit`] || 0),
             0
           )
-        totalRow[`${nominatedTypeCode}_revenue`] =
-          (totalRow[`${nominatedTypeCode}_revenue`] || 0) +
+        totalRow.revenue =
+          (totalRow.revenue || 0) +
           boundTypes.reduce(
             (result, type) => result + (row[`${type.toLocaleLowerCase()}sales`] || 0),
             0
@@ -124,25 +129,22 @@ const app = {
     responseBody.sort((l, r) => {
       if (l.officePartyCode !== r.officePartyCode)
         return l.officePartyCode.localeCompare(r.officePartyCode)
-      if (l.carrierName !== r.carrierName)
-        return l.carrierName.localeCompare(r.carrierName)
+      if (l.agentCode !== r.agentCode)
+        return l.agentCode.localeCompare(r.agentCode)
       return l.jobMonth.localeCompare(r.jobMonth)
     })
 
-    let result = [] as any[]
     const anyRow = responseBody.find(r => r.officePartyCode === site)
     const currency = anyRow ? anyRow.currency : null
-    for (const carrier of carriers) {
-      const row: any = { officePartyCode: site, carrierName: carrier, currency }
-      const rows = responseBody.filter(r => r.officePartyCode === site && r.carrierName === carrier)
+    for (const agent of agents) {
+      const row: any = { officePartyCode: site, agentCode: agent, currency }
+      const rows = responseBody.filter(r => r.officePartyCode === site && r.agentCode === agent)
 
       for (const month of [...months, 'total']) {
         const r = rows.find(r => r.jobMonth === month)
         const monthName = month === 'total' ? month : moment(month, 'YYYY-MM').format('MMMM')
-        for (const nominatedTypeCode of ['F', 'R', 'C']) {
-          for (const field of ['grossProfit', 'profitShareIncome', 'profitShareCode', 'profitShare', 'otherProfit', 'revenue']) {
-            row[`${monthName}_${nominatedTypeCode}_${field}`] = (r && r[`${nominatedTypeCode}_${field}`]) || 0
-          }
+        for (const field of ['grossProfit', 'profitShareIncome', 'profitShareCode', 'profitShare', 'otherProfit', 'revenue']) {
+          row[`${monthName}_${field}`] = (r && r[field]) || 0
         }
       }
 
@@ -150,17 +152,17 @@ const app = {
     }
 
     result = result.sort((l, r) => {
-      const l_grossProfit = (l.total_F_grossProfit || 0) + (l.total_R_grossProfit || 0) + (l.total_C_grossProfit || 0)
-      const r_grossProfit = (r.total_F_grossProfit || 0) + (r.total_R_grossProfit || 0) + (r.total_C_grossProfit || 0)
+      const l_grossProfit = (l.total_grossProfit || 0) + (l.total_grossProfit || 0) + (l.total_grossProfit || 0)
+      const r_grossProfit = (r.total_grossProfit || 0) + (r.total_grossProfit || 0) + (r.total_grossProfit || 0)
       return l_grossProfit < r_grossProfit ? 1 : l_grossProfit > r_grossProfit ? -1 : 0
     })
 
     /* {
       officePartyCode: string,
-      carrierName: string,
+      agentCode: string,
       currency: string,
 
-      // by month, by frc
+      // by month
       grossProfit: number,
       profitShareIncome: number,
       profitShareCost: number,
