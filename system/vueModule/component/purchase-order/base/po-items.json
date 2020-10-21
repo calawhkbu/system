@@ -18,9 +18,6 @@
           "name": "hidden",
           "is": "DynamicComponent",
           "props": {
-            "style": {
-              "overflow": "scroll"
-            },
             "components": [
               {
                 "is": "v-btn",
@@ -68,6 +65,9 @@
                     "icon": true,
                     "small": true,
                     "class": "zindex-3 margin-0"
+                  },
+                  "style": {
+                    "width": "50%"
                   }
                 },
                 "slots": [
@@ -82,9 +82,6 @@
                     "name": "default",
                     "is": "WidgetForm",
                     "props": {
-                      "style": {
-                        "overflow-x": "auto"
-                      },
                       "fields": [
                         {
                           "label": "PurchaseOrderPage.purchaseOrderItems",
@@ -97,6 +94,9 @@
                               "style": {
                                 "min-width": "100px"
                               }
+                            },
+                            "style": {
+                              "overflow-x": "auto"
                             },
                             "topLabel": true,
                             "fields": [
@@ -223,7 +223,7 @@
                               }
                             ],
                             "axiosParams": {
-                              "method": "get",
+                              "method": "POST",
                               "url": "api/product-category/columns/{{context.$store.state.widget.data.productCategoryId}}"
                             },
                             "storeInFlexData": true
@@ -263,146 +263,28 @@
               {
                 "is": "WidgetForm",
                 "props": {
-                  "style": {
-                    "overflow-x": "auto"
-                  },
                   "fields": [
                     {
                       "label": "PurchaseOrderPage.purchaseOrderItems",
-                      "component": "TableField",
+                      "component": "AsyncColumnTableField",
                       "name": "purchaseOrderItems",
                       "class": "xs-12 sm-12 md-12",
                       "checkDisplayWhen": "return form.productCategoryId",
                       "props": {
-                        "defaultColGroupProps": {
-                          "style": {
-                            "min-width": "50%"
+                        "topLabel": true,
+                        "fields": [],
+                        "axiosParams": {
+                          "method": "POST",
+                          "url": "api/product-category/columns/{{context.$store.state.widget.data.productCategoryId}}",
+                          "data": {
+                            "limit": 6,
+                            "containFixedColumn": true
                           }
                         },
-                        "topLabel": true,
-                        "fields": [
-                          {
-                            "label": "PurchaseOrderPage.itemKey",
-                            "name": "itemKey",
-                            "component": "v-text-field",
-                            "colGroupProps": {
-                              "style": {
-                                "min-width": "50%"
-                              }
-                            },
-                            "props": {
-                              "placeholder": " "
-                            }
-                          },
-                          {
-                            "label": "PurchaseOrderPage.htsCode",
-                            "name": "htsCode",
-                            "component": "v-text-field",
-                            "colGroupProps": {
-                              "style": {
-                                "min-width": "50%"
-                              }
-                            },
-                            "props": {
-                              "placeholder": " "
-                            }
-                          },
-                          {
-                            "label": "PurchaseOrderPage.skuCode",
-                            "name": "product.skuCode",
-                            "component": "v-text-field",
-                            "colGroupProps": {
-                              "style": {
-                                "min-width": "50%"
-                              }
-                            },
-                            "props": {
-                              "placeholder": " "
-                            }
-                          },
-                          {
-                            "label": "PurchaseOrderPage.skuName",
-                            "name": "product.name",
-                            "component": "v-text-field",
-                            "colGroupProps": {
-                              "style": {
-                                "min-width": "50%"
-                              }
-                            },
-                            "props": {
-                              "placeholder": " "
-                            }
-                          },
-                          {
-                            "label": "PurchaseOrderPage.quantity",
-                            "name": "quantity",
-                            "component": "NumberField",
-                            "colGroupProps": {
-                              "style": {
-                                "min-width": "50%"
-                              }
-                            },
-                            "props": {
-                              "right": true,
-                              "type": "number",
-                              "min": 0,
-                              "step": 1,
-                              "int": true,
-                              "placeholder": " "
-                            }
-                          },
-                          {
-                            "label": "PurchaseOrderPage.quantityUnit",
-                            "name": "quantityUnit",
-                            "component": "v-select",
-                            "colGroupProps": {
-                              "style": {
-                                "min-width": "50%"
-                              }
-                            },
-                            "props": {
-                              "items": [
-                                {
-                                  "text": "W/C",
-                                  "value": "W/C"
-                                },
-                                {
-                                  "text": "PCS",
-                                  "value": "PCS"
-                                },
-                                {
-                                  "text": "M/C",
-                                  "value": "M/C"
-                                },
-                                {
-                                  "text": "BAG",
-                                  "value": "BAG"
-                                },
-                                {
-                                  "text": "CASE",
-                                  "value": "CASE"
-                                },
-                                {
-                                  "text": "PLT",
-                                  "value": "PLT"
-                                },
-                                {
-                                  "text": "ROLL",
-                                  "value": "ROLL"
-                                },
-                                {
-                                  "text": "PAIR",
-                                  "value": "PAIR"
-                                },
-                                {
-                                  "text": "CTN",
-                                  "value": "CTN"
-                                }
-                              ],
-                              "placeholder": " "
-                            }
-                          }
-                        ]
+                        "storeInFlexData": true,
+                        "overflowX": "auto",
+                        "calculateWidthInPercentage": true,
+                        "fixedFieldLabelContext": "PurchaseOrderPage"
                       }
                     }
                   ]

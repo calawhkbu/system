@@ -58,8 +58,10 @@
                 "limit": 5
               }
             },
+            "displayText": ["shortName", "name"],
+            "displayKey": ["erpCode"],
             "item-text": "name",
-            "item-value": "erpCode"
+            "item-value": "id"
           }
         },
         {

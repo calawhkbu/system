@@ -22,10 +22,12 @@ export default {
     'Demo': true,
     'Booking': true,
     'Shipment': true,
+    'Tools': true,
     'Tracking': true,
     'Alert': true,
     'Job': true,
     'Task': true,
-    'Purchase Order': true
+    'Purchase Order': true,
+    'Base': true
   }
 }

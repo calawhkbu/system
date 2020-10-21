@@ -59,6 +59,60 @@
         }
       },
       {
+        "component": "I18nText",
+        "props": {
+          "i18nContext": "ProductCategoryPage",
+          "i18nKey": "fixedFieldConfig"
+        }
+      },
+      {
+        "component": "WidgetMoreForm",
+        "class": "full-width",
+        "props": { 
+          "mainKey": "ColDefinition",
+          "fixedKeys": [
+            "itemKey",
+            "skuCode",
+            "skuName",
+            "htsCode",
+            "quantity",
+            "quantityUnit"
+          ],
+          "formProps": {
+            "z": {
+              "class": "xs-12 md-6 padding-leftright-4"
+            }
+          },
+          "labelProps": {
+            "z": {
+              "isComponent": "v-label",
+              "i18nContext": "PurchaseOrderPage",
+              "class": "font-110-important"
+            }
+          },
+          "canAdd": false,
+          "fields": [{
+            "label": "ProductCategoryPage.width",
+            "name": "flexData.fixColDefinition.{{key}}Width",
+            "component": "NumberField",
+            "class": "xs-6",
+            "props": {
+              "type": "number",
+              "min": 0
+            }
+          },{
+            "label": "ProductCategoryPage.sequence",
+            "name": "flexData.fixColDefinition.{{key}}Order",
+            "component": "NumberField",
+            "class": "xs-6",
+            "props": {
+              "type": "number",
+              "min": 0
+            }
+          }]
+        }
+      },
+      {
         "label": "ProductCategoryPage.definition",
         "name": "definition",
         "component": "TableField",
@@ -105,6 +159,32 @@
               "style": {
                 "width": "10%"
               }
+            }
+          },{
+            "label": "ProductCategoryPage.width",
+            "name": "width",
+            "component": "NumberField",
+            "colGroupProps": {
+              "style": {
+                "width": "10%"
+              }
+            },
+            "props": {
+              "type": "number",
+              "min": 0
+            }
+          },{
+            "label": "ProductCategoryPage.sequence",
+            "name": "order",
+            "component": "NumberField",
+            "colGroupProps": {
+              "style": {
+                "width": "10%"
+              }
+            },
+            "props": {
+              "type": "number",
+              "min": 0
             }
           }]
         }
