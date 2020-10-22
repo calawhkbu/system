@@ -31,7 +31,6 @@
         "trueIcon": "comment",
         "trueColor": "grey",
         "falseIcon": "",
-        "badgeKey": "noOfRemarks",
         "label": "",
         "width": 24
       },

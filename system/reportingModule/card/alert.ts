@@ -4,6 +4,7 @@ import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import _ = require('lodash')
 import swig = require('swig-templates')
 
+
 const bottomSheetId = {
   shipment: 'cb22011b-728d-489b-a64b-b881914be600',
   booking: 'bde2d806-d2bb-490c-b3e3-9e4792f353dd'
@@ -14,12 +15,12 @@ export default {
     {
       type: 'runParallel',
       defaultResult: {},
-      async  createJqls(
+      async createJqls(
         params: IQueryParams,
         prevResult?: any,
         user?: JwtPayload
       ): Promise<Array<JqlTask | JqlTask[]>> {
-        const subqueries = params.subqueries || {}
+        var subqueries = params.subqueries || {}
         if (!subqueries.entityType || !(subqueries.entityType !== true && 'value' in subqueries.entityType)) {
           throw new Error('MISSING_ENTITY_TYPE')
         }
@@ -31,45 +32,84 @@ export default {
           { type: 'getCompleteAlertConfig', options: [user.selectedPartyGroup.code] },
           user
         )
-     
+
+
         return alertConfigList.reduce((finalTasks: Array<JqlTask | JqlTask[]>, { alertType, tableName, queryName, query, active }) => {
+
+
+          let addRow = true;
           if (query && active && tableName === subqueries.entityType.value) {
-  
-            finalTasks.push([
-              {
-                type: 'prepareParams',
-                async prepareParams(
-                  params: IQueryParams,
-                  prevResult?: any,
-                  user?: JwtPayload
-                ): Promise<IQueryParams> {;
-                  let mainCard_subq=_.cloneDeep(params.subqueries||{})
-                  
-                  return {
-                    // fields: ['primaryKeyListString'],
-                    subqueries: {
-                      ...{mainCard_subq},
-                      ...(subqueries || {}),
-                      ...(query.subqueries || {})
-                    }
+            let mainCard_subq = _.cloneDeep(params.subqueries || {})
+            let keys = Object.keys(mainCard_subq);
+            keys = keys.filter(o => o != 'date')
+            keys = keys.filter(o => o != 'active')
+            keys = keys.filter(o => o != 'entityType')
+            keys = keys.filter(o => o != 'activeStatus')
+
+
+            var alertConfigKeys = Object.keys(query.subqueries);
+
+            if (keys && keys.length > 0) {
+              for (let i = 0; i < keys.length; i++) {
+
+                let exist = alertConfigKeys.find(o => o == keys[i]);
+
+
+                if (exist) {
+                  let alertVal = Array.isArray(query.subqueries[exist].value) ? query.subqueries[exist].value[0] : query.subqueries[exist].value
+                  let mainCard = mainCard_subq[exist].value[0] || undefined
+
+                  if (alertVal != mainCard) {
+                    addRow = false;
+                  } else {
+                    addRow = true;
                   }
-                }
-              }, {
-                type: 'callDataService',
-                dataServiceType: 'count',
-                dataServiceQuery: [tableName, queryName],
-                onResult(res, params, prevResult: any): any {
-                   
-                  prevResult[alertType] = res
-                  prevResult['tableName']=tableName
-                  prevResult['subqueries']=subqueries
-                  prevResult['alertType']=alertType
-
-
-                  return prevResult
+                } else {
+                  addRow = false;
                 }
               }
-            ])
+            }
+
+
+
+            if (addRow) {
+              finalTasks.push([
+                {
+                  type: 'prepareParams',
+                  async prepareParams(
+                    params: IQueryParams,
+                    prevResult?: any,
+                    user?: JwtPayload
+                  ): Promise<IQueryParams> {
+                    ;
+
+                    return {
+                      subqueries: {
+                        ...mainCard_subq,
+                        //...(subqueries || {}),
+                        ...(query.subqueries || {})
+                      }
+                    }
+
+                  }
+                }, {
+                  type: 'callDataService',
+                  dataServiceType: 'count',
+                  dataServiceQuery: [tableName, queryName],
+                  onResult(res, params, prevResult: any): any {
+                
+
+                    prevResult[alertType] = res
+                    prevResult['tableName'] = tableName
+                    prevResult['subqueries'] = subqueries
+                    prevResult['alertType'] = alertType
+                    return prevResult
+                  }
+                }
+              ])
+            }
+
+
           }
           return finalTasks
         }, [])
@@ -88,7 +128,7 @@ export default {
           user: user
         })
         const results = []
-      
+
 
         for (const key of Object.keys(prevResult)) {
           const result = prevResult[key]
@@ -98,13 +138,13 @@ export default {
               alertTypeCode: key,
               alertType: translation ? swig.render(translation, { locals: {} }) : translation,
               count: result[0].count,
-              tableName:prevResult.tableName,
-              subqueries:prevResult.subqueries,
-              collapsed:`${prevResult.tableName}-${key}`,
-              expanded:0,
-              indicator:'-',
-              isEntityRow:true
-              
+              tableName: prevResult.tableName,
+              subqueries: prevResult.subqueries,
+              collapsed: `${prevResult.tableName}-${key}`,
+              expanded: 0,
+              indicator: '-',
+              isEntityRow: true
+
             })
           }
         }

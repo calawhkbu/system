@@ -1,13 +1,13 @@
 import { NotImplementedException } from '@nestjs/common'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Op } from 'sequelize'
-import { InternalJobService } from 'modules/internal-job/service'
+import { Job } from 'modules/internal-job/job'
 
-export default async function recalculateDates(this: InternalJobService, { tableName, subqueries = {}, lastId = 0, per = 50 }: any, user: JwtPayload) {
+export default async function recalculateDates(this: Job, { tableName, subqueries = {}, lastId = 0, per = 50 }: any, user: JwtPayload) {
   let ids: any[] = []
   switch (tableName) {
     case 'booking': {
-      const result = await this.bookingService.reportQuery('booking', { fields: ['id'], subqueries: {
+      const result = await this.service.bookingService.reportQuery('booking', { fields: ['id'], subqueries: {
         activeStatus: { value: 'active' },
         ...subqueries
       } }, user)
@@ -15,7 +15,7 @@ export default async function recalculateDates(this: InternalJobService, { table
       break
     }
     case 'shipment': {
-      const result = await this.shipmentService.reportQuery('shipment', { fields: ['id'], subqueries: {
+      const result = await this.service.shipmentService.reportQuery('shipment', { fields: ['id'], subqueries: {
         activeStatus: { value: 'active' },
         ...subqueries
       } }, user)
@@ -34,8 +34,8 @@ export default async function recalculateDates(this: InternalJobService, { table
   try {
     const repo = user ? user.selectedPartyGroup.code : 'system'
     const file = `sequelizeModule/tables/${tableName}.ts`
-    const fullpath = await this.customBackendService.resolve(`customer-${repo}`, file)
-    const esModule = this.scriptService.require<any>(fullpath)
+    const fullpath = await this.service.customBackendService.resolve(`customer-${repo}`, file)
+    const esModule = this.service.scriptService.require<any>(fullpath)
     const dateTimezoneMapping = esModule.dateTimezoneMapping || {}
 
     for (let i = 0, length = ids.length; i < length; i += per) {
@@ -43,17 +43,17 @@ export default async function recalculateDates(this: InternalJobService, { table
       let entities: any[]
       switch (tableName) {
         case 'booking': {
-          entities = await this.bookingService.find({ where: { id: { [Op.in]: ids_ } } }, user)
+          entities = await this.service.bookingService.find({ where: { id: { [Op.in]: ids_ } } }, user)
           break
         }
         case 'shipment': {
-          entities = await this.shipmentService.find({ where: { id: { [Op.in]: ids_ } } }, user)
+          entities = await this.service.shipmentService.find({ where: { id: { [Op.in]: ids_ } } }, user)
           break
         }
         default:
           throw new NotImplementedException()
       }
-      await this.sopTaskTableService.bulkUpdateDates(tableName, entities, user, dateTimezoneMapping)
+      await this.service.sopTaskTableService.bulkUpdateDates(tableName, entities, user, dateTimezoneMapping)
       result.push(...ids_)
     }
   }

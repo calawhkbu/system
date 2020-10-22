@@ -62,7 +62,7 @@ const ASWAlertConfigList = [
       }
     } as IQueryParams,
 
-    contactRoleList: ['forwarder','personInCharge','office','shipper', 'consignee'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office', 'shipper', 'consignee'],
     canCloseBy: [
       {
         type: 'all'
@@ -120,7 +120,7 @@ const ASWAlertConfigList = [
       }
     } as IQueryParams,
 
-    contactRoleList: ['forwarder','personInCharge','office','shipper', 'consignee'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office', 'shipper', 'consignee'],
     canCloseBy: [
       {
         type: 'all'
@@ -177,7 +177,7 @@ const ASWAlertConfigList = [
       }
     } as IQueryParams,
 
-    contactRoleList: ['forwarder','personInCharge','office','shipper'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office', 'shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -234,7 +234,7 @@ const ASWAlertConfigList = [
       }
     } as IQueryParams,
 
-    contactRoleList: ['forwarder','personInCharge','office','shipper'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office', 'shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -288,13 +288,13 @@ const ASWAlertConfigList = [
     },
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have returnEmptyContainerDateActual
         returnEmptyContainerDateActualIsNotNull: true
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge','office','shipper'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office', 'shipper'],
     canCloseBy: [
       {
         type: 'all'
@@ -337,7 +337,7 @@ const shipmentSeaAlertList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: 'SEA'
+          value: ['SEA']
         },
 
         // missing cargoReceiptDateActual
@@ -355,12 +355,12 @@ const shipmentSeaAlertList = [
     },
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         cargoReceiptDateActualIsNotNull: true
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -399,7 +399,7 @@ const shipmentSeaAlertList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: 'SEA'
+          value: ['SEA']
         },
 
         // missing gateInDateActual
@@ -418,13 +418,13 @@ const shipmentSeaAlertList = [
     },
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have gateInDateActual
         gateInDateActualIsNotNull: true
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -462,7 +462,7 @@ const shipmentSeaAlertList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: 'SEA'
+          value: ['SEA']
         },
 
         // missing sentToShipperDateActual
@@ -482,13 +482,13 @@ const shipmentSeaAlertList = [
     },
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have sentToShipperDateActual
         sentToShipperDateActualIsNotNull: true
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -524,7 +524,7 @@ const shipmentSeaAlertList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: 'SEA'
+          value: ['SEA']
         },
 
         // missing VGM in any one of the shipment container
@@ -545,14 +545,14 @@ const shipmentSeaAlertList = [
     },
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have vgm non-zero
         vgmNonZeroQueryIdIn: true
       }
     },
 
 
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -588,7 +588,7 @@ const shipmentSeaAlertList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: 'SEA'
+          value: ['SEA']
         },
 
         // missing preAlertSendDateActual
@@ -616,13 +616,13 @@ const shipmentSeaAlertList = [
     },
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have ediSendDateActual
         ediSendDateActualIsNotNull: true
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -658,7 +658,7 @@ const shipmentSeaAlertList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: 'SEA'
+          value: ['SEA']
         },
 
         // missing preAlertSendDateActual
@@ -684,14 +684,14 @@ const shipmentSeaAlertList = [
     },
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have preAlertSendDateActual
         preAlertSendDateActualIsNotNull: true
       }
     },
 
 
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -726,7 +726,7 @@ const shipmentSeaAlertList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: 'SEA'
+          value: ['SEA']
         },
 
 
@@ -754,13 +754,13 @@ const shipmentSeaAlertList = [
     },
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have masterBillReleasedDateActual
         masterBillReleasedDateActualIsNotNull: true
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -796,7 +796,7 @@ const shipmentSeaAlertList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: 'SEA'
+          value: ['SEA']
         },
 
         // missing houseBillConfirmationDateActual
@@ -823,14 +823,14 @@ const shipmentSeaAlertList = [
     },
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have houseBillConfirmationDateActual
         houseBillConfirmationDateActualIsNotNull: true
       }
     },
 
 
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -852,7 +852,7 @@ const shipmentSeaAlertList = [
     queryName: 'shipment',
     query: {
       subqueries: {
-        moduleTypeCode: { value: 'SEA' },
+        moduleTypeCode: { value: ['SEA'] },
         // missing arrivalAtDepotActual
         arrivalAtDepotActualIsNull: true,
         // after ATA / ETA + 2 DAY
@@ -863,12 +863,12 @@ const shipmentSeaAlertList = [
       },
     },
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have arrivalAtDepotActual
         arrivalAtDepotActualIsNotNull: true
       }
     },
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -888,7 +888,7 @@ const shipmentSeaAlertList = [
     queryName: 'shipment',
     query: {
       subqueries: {
-        moduleTypeCode: { value: 'SEA' },
+        moduleTypeCode: { value: ['SEA'] },
         // missing pickupCargoBeforeDemurrageDateActual / cargoPickupWithDemurrageDateActual
         pickupCargoBeforeDemurrageDateActual_Or_cargoPickupWithDemurrageDateActualIsNull: true,
         // after ATA / ETA + 5 days
@@ -899,12 +899,12 @@ const shipmentSeaAlertList = [
       },
     },
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have pickupCargoBeforeDemurrageDateActual_Or_cargoPickupWithDemurrageDateActual
         pickupCargoBeforeDemurrageDateActual_Or_cargoPickupWithDemurrageDateActualIsNotNull: true
       }
     },
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [{ type: 'all' }]
   },
   // detentionWarning(SEA)
@@ -933,7 +933,7 @@ const shipmentSeaAlertList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: 'SEA'
+          value: ['SEA']
         },
 
         // missing returnEmptyContainerDateActual
@@ -953,13 +953,13 @@ const shipmentSeaAlertList = [
 
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have returnEmptyContainerDateActual
         returnEmptyContainerDateActualIsNotNull: true
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -995,7 +995,7 @@ const shipmentSeaAlertList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: 'SEA'
+          value: ['SEA']
         },
 
         // missing returnEmptyContainerDateActual
@@ -1014,13 +1014,13 @@ const shipmentSeaAlertList = [
     },
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have returnEmptyContainerDateActual
         returnEmptyContainerDateActualIsNotNull: true
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1056,7 +1056,7 @@ const shipmentSeaAlertList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: 'SEA'
+          value: ['SEA']
         },
 
         // missing finalDoorDeliveryDateActual
@@ -1083,14 +1083,14 @@ const shipmentSeaAlertList = [
     },
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have finalDoorDeliveryDateActual
         finalDoorDeliveryDateActualIsNotNull: true
       }
     },
 
 
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1150,12 +1150,12 @@ const shipmentAirAlertList = [
 
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have preAlertSendDateActual
         preAlertSendDateActualIsNotNull: true
       }
     },
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1210,13 +1210,13 @@ const shipmentAirAlertList = [
     },
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have preAlertSendDateActual
         preAlertSendDateActualIsNotNull: true
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1280,13 +1280,13 @@ const shipmentAirAlertList = [
     },
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have portOfLoadingCode
         portOfLoadingCodeIsNotNull: true
       }
     },
 
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1328,12 +1328,12 @@ const sopTaskAlertList = [
     },
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have preAlertSendDateActual
         noDueTasks: true
       }
     },
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1368,12 +1368,12 @@ const sopTaskAlertList = [
 
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         // have preAlertSendDateActual
         noDeadTasks: false
       }
     },
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
@@ -1519,14 +1519,13 @@ const testAlertList = [
       unit: 'MINUTE'
     },
 
-    active: false,
+    active: true,
 
     queryName: 'shipment',
     query: {
       subqueries: {
         moduleTypeCode: { value: ['AIR'] },
         boundTypeCode: { value: ['O'] },
-
         activeStatus: { value: 'active' }
       },
 
@@ -1534,9 +1533,10 @@ const testAlertList = [
     } as IQueryParams,
 
     closeQuery: {
-      subqueries : {
+      subqueries: {
         moduleTypeCode: { value: ['AIR'] },
         boundTypeCode: { value: ['O'] },
+
       }
     } as IQueryParams,
 
@@ -1550,7 +1550,7 @@ const testAlertList = [
     // } as IQueryParams,
 
 
-    contactRoleList: ['forwarder','personInCharge','office'],
+    contactRoleList: ['forwarder', 'personInCharge', 'office'],
     canCloseBy: [
       {
         type: 'all'
