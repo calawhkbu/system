@@ -307,7 +307,7 @@
                             },
                             "thProps": {
                               "style": {
-                                "text-align": "right"
+                                "text-align": ""
                               }
                             },
                             "props": {
@@ -333,7 +333,7 @@
                             "component": "NumberField",
                             "thProps": {
                               "style": {
-                                "text-align": "right"
+                                "text-align": ""
                               }
                             },
                             "colGroupProps": {
@@ -364,7 +364,7 @@
                             "component": "NumberField",
                             "thProps": {
                               "style": {
-                                "text-align": "right"
+                                "text-align": ""
                               }
                             },
                             "colGroupProps": {
@@ -714,7 +714,7 @@
                       },
                       "thProps": {
                         "style": {
-                          "text-align": "right"
+                          "text-align": ""
                         }
                       },
                       "props": {
@@ -740,7 +740,7 @@
                       "component": "NumberField",
                       "thProps": {
                         "style": {
-                          "text-align": "right"
+                          "text-align": ""
                         }
                       },
                       "colGroupProps": {
@@ -771,7 +771,7 @@
                       "component": "NumberField",
                       "thProps": {
                         "style": {
-                          "text-align": "right"
+                          "text-align": ""
                         }
                       },
                       "colGroupProps": {
@@ -793,35 +793,35 @@
                 "name": "quantity",
                 "component": "NumberField",
                 "checkDisplayWhen": "return form && form.quantity && form.quantity !== 0",
-                "class": "xs-3"
+                "class": "xs-1"
               },
               {
                 "label": "ShipmentPage.totalQuantityUnit",
                 "name": "quantityUnit",
                 "checkDisplayWhen": "return form && form.quantityUnit",
                 "component": "v-text-field",
-                "class": "xs-3"
+                "class": "xs-2"
               },
               {
                 "label": "ShipmentPage.totalTeu",
                 "name": "teu",
                 "component": "NumberField",
                 "checkDisplayWhen": "return form && form.teu && form.teu !== 0",
-                "class": "xs-3"
+                "class": "xs-1"
               },
               {
                 "label": "ShipmentPage.totalCbm",
                 "name": "cbm",
                 "component": "NumberField",
                 "checkDisplayWhen": "return form && form.cbm && form.cbm !== 0",
-                "class": "xs-3"
+                "class": "xs-2"
               },
               {
-                "class": "xs-3",
+                "class": "xs-2",
                 "checkDisplayWhen": "return !form || !form.teu || form.teu === 0"
               },
               {
-                "class": "xs-3",
+                "class": "xs-2",
                 "checkDisplayWhen": "return !form || !form.cbm || form.cbm === 0"
               },
               {
@@ -829,39 +829,39 @@
                 "name": "grossWeight",
                 "component": "NumberField",
                 "checkDisplayWhen": "return form && form.grossWeight && form.grossWeight !== 0",
-                "class": "xs-3"
+                "class": "xs-2"
               },
               {
                 "label": "ShipmentPage.totalVolumeWeight",
                 "name": "volumeWeight",
                 "component": "NumberField",
                 "checkDisplayWhen": "return form && form.volumeWeight && form.volumeWeight !== 0",
-                "class": "xs-3"
+                "class": "xs-2"
               },
               {
                 "label": "ShipmentPage.totalChargeableWeight",
                 "name": "chargeableWeight",
                 "component": "NumberField",
                 "checkDisplayWhen": "return form && form.chargeableWeight && form.chargeableWeight !== 0",
-                "class": "xs-3"
+                "class": "xs-2"
               },
               {
-                "class": "xs-3",
+                "class": "xs-2",
                 "checkDisplayWhen": "return !form || !form.grossWeight || form.grossWeight === 0"
               },
               {
-                "class": "xs-3",
+                "class": "xs-2",
                 "checkDisplayWhen": "return !form || !form.volumeWeight || form.volumeWeight === 0"
               },
               {
-                "class": "xs-3",
+                "class": "xs-2",
                 "checkDisplayWhen": "return !form || !form.chargeableWeight || form.chargeableWeight === 0"
               },
               {
                 "label": "ShipmentPage.totalWeightUnit",
                 "name": "weightUnit",
                 "checkDisplayWhen": "return form && form.totalWeightUnit",
-                "class": "xs-3",
+                "class": "xs-2",
                 "component": "v-text-field"
               }
             ]

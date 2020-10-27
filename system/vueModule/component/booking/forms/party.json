@@ -21,7 +21,7 @@
         "forwarder": {
           "isComponent": "v-label",
           "i18nContext": "Widget",
-          "class": "font-110 required form-label"
+          "class": "font-110-important required form-label"
         }
       },
       "fieldProps": {
@@ -130,8 +130,10 @@
                 }
               }
             },
+            "displayText": ["name"],
+            "displayKey": ["shortName", "erpCode"],
             "item-text": "name",
-            "item-value": "erpCode"
+            "item-value": "id"
           }
         }, {
           "name": "bookingParty.{{flex}}{{key}}Party",

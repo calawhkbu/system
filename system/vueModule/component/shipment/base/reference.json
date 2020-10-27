@@ -69,7 +69,8 @@
                             "component": "v-text-field",
                             "colGroupProps": {
                               "style": {
-                                "width": "50%"
+                                "width": "50%",
+                                "padding-bottom": "4px !important"
                               }
                             }
                           },

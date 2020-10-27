@@ -1,7 +1,7 @@
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import axios from 'axios'
 import { Location } from 'models/main/location'
-import { Op } from 'sequelize'
+import { Op, QueryTypes } from 'sequelize'
 import { Job } from 'modules/internal-job/job'
 import parse = require('csv-parse/lib/sync')
 
@@ -32,13 +32,13 @@ export default async function updateAirports(this: Job, { system = false, per = 
     let locations: Location[] = []
     for (const airport of airports) {
       const portCode = airport[4]
-      if (portCode !== '\\N') {
+      const countryCode = findCountry(airport[3])
+      if (portCode !== '\\N' && countryCode) {
         locations.push({
-          partyGroupCode: system ? null : user.selectedPartyGroup.code,
-          countryCode: findCountry(airport[3]),
+          countryCode,
           locationCode: portCode, // TODO ???
           portCode,
-          name: airport[1],
+          name: airport[2],
           moduleTypeCode: 'AIR',
           latitude: airport[6],
           longitude: airport[7],
@@ -48,15 +48,20 @@ export default async function updateAirports(this: Job, { system = false, per = 
         if (locations.length === per) {
           // filter exist 
           const existing = await this.service.locationTableService.find({ where: {
-            partyGroupCode: user.selectedPartyGroup.code,
+            partyGroupCode: system ? null : user.selectedPartyGroup.code,
             moduleTypeCode: 'AIR',
             portCode: { [Op.in]: locations.map(l => l.portCode) }
           } }, user, transaction)
           locations = locations.filter(l => !existing.find(e => l.portCode === e.portCode))
 
           // insert
-          await this.service.locationTableService.save(locations, user, transaction)
-          console.debug(`Inserted ${locations.map(l => l.portCode).join(', ')}`, 'updateAirports')
+          const records = await this.service.locationTableService.save(locations, user, transaction)
+          console.debug(`Inserted ${locations.map(l => l.portCode).join(',')}`, 'updateAirports')
+
+          // fix partyGroupCode
+          if (system) {
+            await this.service.locationTableService.query(`UPDATE location SET partyGroupCode = null WHERE id IN (${records.map(r => r.id).join(',')})`, { type: QueryTypes.UPDATE, transaction })
+          }
 
           // reset
           locations = []

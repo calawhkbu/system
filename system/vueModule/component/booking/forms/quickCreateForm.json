@@ -39,7 +39,7 @@
           "label": "BookingPage.boundType",
           "name": "boundTypeCode",
           "component": "AsyncSelect",
-          "class": "xs-12 md-3 padding-topbottom-4",
+          "class": "xs-12 md-2 padding-topbottom-4",
           "relation": "boundType",
           "validator": ["required"],
           "props": {
@@ -67,7 +67,7 @@
           "label": "BookingPage.serviceCode",
           "name": "serviceCode",
           "component": "AsyncSelect",
-          "class": "xs-12 md-3 padding-topbottom-4",
+          "class": "xs-12 md-2 padding-topbottom-4",
           "relation": "service",
           "isRequired": "return form && form.moduleTypeCode !== 'AIR';",
           "props": {
@@ -532,7 +532,7 @@
           "label": "BookingPage.contractNo",
           "name": "flexData.container40",
           "component": "v-text-field",
-          "class": "xs-12 md-3"
+          "class": "xs-12 md-3 padding-topbottom-4"
         },
         {
           "containerComponent": "v-card",
@@ -753,8 +753,10 @@
                 }
               }
             },
+            "displayText": ["name"],
+            "displayKey": ["shortName", "erpCode"],
             "item-text": "name",
-            "item-value": "erpCode"
+            "item-value": "id"
           }
         }
       ]

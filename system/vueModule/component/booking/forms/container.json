@@ -196,7 +196,7 @@
                   "name": "append",
                   "is": "I18nText",
                   "props": {
-                    "i18nKey": "X"
+                    "i18nKey": ""
                   }
                 }]
               },
@@ -217,7 +217,7 @@
                   "name": "append",
                   "is": "I18nText",
                   "props": {
-                    "i18nKey": "X"
+                    "i18nKey": ""
                   }
                 }]
               },

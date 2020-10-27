@@ -40,7 +40,8 @@ import {
   registerAllDateField,
   registerCheckboxField,
   IfExpression,
-  IfNullExpression
+  IfNullExpression,
+  RegisterInterface,
 } from 'utils/jql-subqueries'
 import { IShortcut } from 'classes/query/Shortcut'
 const dateNameList = [
@@ -1427,6 +1428,50 @@ const voyageFlightNumberNameExpression =new FunctionExpression(
 
 const baseTableName = 'booking'
 
+
+const idExpression = new ColumnExpression('booking', 'id')
+const documentFileNameList = [
+  'Freight Invoice',
+  'MBL',
+  'HBL Original',
+  'HBL Telex released',
+  'Commercial Invoice',
+  'Packing List',
+  'Quotation',
+]
+
+const haveDocumentExpressionList = documentFileNameList.map(documentFileName => {
+
+  const haveDocumentExpression = new InExpression(idExpression, false,
+    new QueryExpression(
+      new Query({
+
+        $select: [
+          new ResultColumn(new ColumnExpression('document', 'primaryKey'))
+        ],
+        $from: 'document',
+        $where: [
+          new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', documentFileName),
+          new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'booking'),
+
+          new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
+
+        ]
+
+      })
+    )
+  )
+
+  return {
+    name: `haveDocument_${documentFileName}`,
+    expression: haveDocumentExpression
+
+  } as RegisterInterface
+
+
+})
+
 const fieldList = [
   'id',
   'partyGroupCode',
@@ -1647,8 +1692,8 @@ const fieldList = [
     name: 'lastStatusCodeOrDescription',
     expression: lastStatusCodeOrDescriptionExpression,
     companion: ['table:lastStatus']
-  }
-
+  },
+  ...haveDocumentExpressionList,
 ] as ExpressionHelperInterface[]
 
 console.log(fieldList)
@@ -1866,6 +1911,76 @@ const summaryFieldList : SummaryField[]  = [
 registerSummaryField(query, baseTableName, summaryFieldList, nestedSummaryList, jobDateExpression)
 
 registerCheckboxField(query)
+
+
+
+query.subquery(false, 'haveDocument', ((value: any, params?: IQueryParams) => {
+
+
+  const fileNameList = (value && value.value) ? (Array.isArray(value.value) ? value.value : [value.value]) : []
+
+  if (!fileNameList.length) {
+    throw new Error('fileNameList empty')
+  }
+
+  const existExpressionList = fileNameList.map(fileName => {
+
+    return new ExistsExpression(new Query({
+      $select: [
+        new ResultColumn(new ColumnExpression('document', 'primaryKey'))
+      ],
+      $from: 'document',
+      $where: [
+        new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'booking'),
+        new BinaryExpression(new ColumnExpression('document', 'primaryKey'), '=', idExpression),
+        new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', fileName),
+
+        new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
+      ]
+    }), false)
+
+  })
+
+
+  return new Query({
+    $where: new AndExpressions(existExpressionList)
+  })
+}))
+
+query.subquery(false, 'missingDocument', ((value: any, params?: IQueryParams) => {
+
+
+  const fileNameList = (value && value.value) ? (Array.isArray(value.value) ? value.value : [value.value]) : []
+
+  if (!fileNameList.length) {
+    throw new Error('fileNameList empty')
+  }
+
+  const existExpressionList = fileNameList.map(fileName => {
+
+    return new ExistsExpression(new Query({
+      $select: [
+        new ResultColumn(new ColumnExpression('document', 'primaryKey'))
+      ],
+      $from: 'document',
+      $where: [
+        new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'booking'),
+        new BinaryExpression(new ColumnExpression('document', 'primaryKey'), '=', idExpression),
+        new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', fileName),
+
+        new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
+        new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
+      ]
+    }), true)
+
+  })
+
+
+  return new Query({
+    $where: new AndExpressions(existExpressionList)
+  })
+}))
 
 
 

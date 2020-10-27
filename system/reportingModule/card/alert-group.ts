@@ -36,73 +36,47 @@ export default {
 
         return alertConfigList.reduce((finalTasks: Array<JqlTask | JqlTask[]>, { alertType, tableName, queryName, query, active }) => {
 
-          let addRow = true;
           if (query && active && tableName === subqueries.entityType.value) {
             let mainCard_subq = _.cloneDeep(params.subqueries || {})
             let keys = Object.keys(mainCard_subq);
-            keys = keys.filter(o => o != 'date')
-            keys = keys.filter(o => o != 'active')
-            keys = keys.filter(o => o != 'entityType')
-            keys = keys.filter(o => o != 'activeStatus')
+
+            finalTasks.push([
+              {
+                type: 'prepareParams',
+                async prepareParams(
+                  params: IQueryParams,
+                  prevResult?: any,
+                  user?: JwtPayload
+                ): Promise<IQueryParams> {
+                  ;
 
 
-            var alertConfigKeys = Object.keys(query.subqueries);
-
-            if (keys && keys.length > 0) {
-              for (let i = 0; i < keys.length; i++) {
-                let exist = alertConfigKeys.find(o => o == keys[i]);
-                if (exist) {
-                  let alertVal = Array.isArray(query.subqueries[exist].value) ? query.subqueries[exist].value[0] : query.subqueries[exist].value
-                  let mainCard = mainCard_subq[exist].value[0] || undefined
-
-                  if (alertVal != mainCard) {
-                    addRow = false;
-                  } else {
-                    addRow = true;
+                  return {
+                    subqueries: {
+                      ...mainCard_subq,
+                      ...(subqueries || {}),
+                      ...(query.subqueries || {})
+                    }
                   }
-                } else {
-                  addRow = false;
+                }
+
+              }, {
+                type: 'callDataService',
+                dataServiceType: 'count',
+                dataServiceQuery: [tableName, queryName],
+                onResult(res, params, prevResult: any): any {
+                  console.log('paramssssss')
+                  console.log({ params })
+
+
+                  prevResult[alertType] = res
+                  prevResult['tableName'] = tableName
+                  prevResult['subqueries'] = subqueries
+                  prevResult['alertType'] = alertType
+                  return prevResult
                 }
               }
-            }
-
- 
-            if (addRow) {
-              finalTasks.push([
-                {
-                  type: 'prepareParams',
-                  async prepareParams(
-                    params: IQueryParams,
-                    prevResult?: any,
-                    user?: JwtPayload
-                  ): Promise<IQueryParams> {
-                    ;
-
-                    return {
-                      subqueries: {
-                        ...mainCard_subq,
-                        ...(subqueries || {}),
-                        ...(query.subqueries || {})
-                      }
-                    }
-
-                  }
-                }, {
-                  type: 'callDataService',
-                  dataServiceType: 'count',
-                  dataServiceQuery: [tableName, queryName],
-                  onResult(res, params, prevResult: any): any {
-                
-                    prevResult[alertType] = res
-                    prevResult['tableName'] = tableName
-                    prevResult['subqueries'] = subqueries
-                    prevResult['alertType'] = alertType
-                    return prevResult
-                  }
-                }
-              ])
-            }
-
+            ])
 
           }
           return finalTasks
@@ -134,8 +108,8 @@ export default {
               count: result[0].count,
               tableName: prevResult.tableName,
               subqueries: prevResult.subqueries,
-              collapsed: `${prevResult.tableName}-${key}`,
-              expanded: 0,
+              //collapsed: `${prevResult.tableName}-${key}`,
+              expanded: -1,
               indicator: '-',
               isEntityRow: true
 
@@ -165,10 +139,15 @@ export default {
             data: {
               subqueries: {
                 q: {
-                  value: '{{ q }}'
-                }
+                  value: '{{q}}'
+                },
+                "fields": [
+                  "alertType"
+
+                ]
               },
-              limit: 5
+
+              limit: 3
             },
             method: 'POST',
             labelKey: 'alertTitle',
@@ -191,11 +170,12 @@ export default {
           }
         },
         multi: true,
-        threshold: 0,
-        showAllIfEmpty: true
+        //threshold: 0,
+         showAllIfEmpty: true
       },
       display: 'alertType'
     },
+    
     {
       name: 'entityType',
       props: {
