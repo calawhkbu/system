@@ -14,11 +14,6 @@
               "checkDisplayWhen": "return form.productCategoryId",
               "props": {
                 "topLabel": true,
-                "defaultColGroupProps": {
-                  "style": {
-                    "min-width": "100px"
-                  }
-                },
                 "fields": [
                   {
                     "label": "PurchaseOrderPage.itemKey",
@@ -174,7 +169,7 @@
                   }
                 ],
                 "axiosParams": {
-                  "method": "POST",
+                  "method": "get",
                   "url": "api/product-category/columns/{{context.$store.state.widget.data.productCategoryId}}"
                 },
                 "storeInFlexData": true

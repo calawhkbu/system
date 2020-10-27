@@ -3,6 +3,7 @@ import { IQueryParams } from 'classes/query'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import _ = require('lodash')
 import swig = require('swig-templates')
+import { convertToStartOfDate } from 'utils/jql-subqueries'
 
 
 const bottomSheetId = {
@@ -33,13 +34,11 @@ export default {
           user
         )
 
-
         return alertConfigList.reduce((finalTasks: Array<JqlTask | JqlTask[]>, { alertType, tableName, queryName, query, active }) => {
 
           if (query && active && tableName === subqueries.entityType.value) {
             let mainCard_subq = _.cloneDeep(params.subqueries || {})
             let keys = Object.keys(mainCard_subq);
-
             finalTasks.push([
               {
                 type: 'prepareParams',
@@ -50,11 +49,14 @@ export default {
                 ): Promise<IQueryParams> {
                   ;
 
+                  delete mainCard_subq.alertType
+                  console.log('before return')
+                   console.log(mainCard_subq)
 
                   return {
                     subqueries: {
                       ...mainCard_subq,
-                      ...(subqueries || {}),
+                      //...(subqueries || {}),
                       ...(query.subqueries || {})
                     }
                   }
@@ -65,10 +67,6 @@ export default {
                 dataServiceType: 'count',
                 dataServiceQuery: [tableName, queryName],
                 onResult(res, params, prevResult: any): any {
-                  console.log('paramssssss')
-                  console.log({ params })
-
-
                   prevResult[alertType] = res
                   prevResult['tableName'] = tableName
                   prevResult['subqueries'] = subqueries
@@ -77,9 +75,12 @@ export default {
                 }
               }
             ])
-
+           if (subqueries.alertType && subqueries.alertType.value.filter(o => o == alertType).length == 0) {
+              //if not selected from the UI, filtered out, not show
+          finalTasks.pop()
+            }
           }
-          return finalTasks
+            return finalTasks
         }, [])
       }
     },
@@ -139,7 +140,7 @@ export default {
             data: {
               subqueries: {
                 q: {
-                  value: '{{ context.$store.value }}'
+                  value: '{{ q }}'
                 },
                 "fields": [
                   "alertType"
@@ -171,7 +172,7 @@ export default {
         },
         multi: true,
         threshold: 0,
-         showAllIfEmpty: true
+        showAllIfEmpty: true
       },
       display: 'alertType'
     },

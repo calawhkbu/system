@@ -77,11 +77,6 @@ export const entityConfigList = [
         isActive : true,
         allowFillTemplate: false
       },
-      {
-        fileName: 'Quotation',
-        isActive: true,
-        allowFillTemplate: false
-      }
       // {
       //   fileName: 'Shipping Order',
       //   isActive : (entity: Booking) => {

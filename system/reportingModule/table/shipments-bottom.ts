@@ -8,17 +8,8 @@ export default {
     {
       type: 'prepareParams',
       async prepareParams(params, prevResult, user): Promise<IQueryParams> {
-        // console.debug(params);
-        // console.debug('----shipments-')
         const { moment } = await this.preparePackages(user)
 
-        //For alert
-        // let query=params.subqueries.query.value;
-        // for(let i=0;i<query.length;i++){
-        //   query=query.replace('&quot;','"');
-        // }
-        // query=JSON.parse(query);
-        /// End for Alert
 
         const defaultFields = [
           'id',
@@ -36,8 +27,8 @@ export default {
         ]
 
         params.fields = defaultFields
-
-        var subqueries = (params.subqueries = params.subqueries || {})
+        
+        const subqueries = (params.subqueries = params.subqueries || {})
 
         // used in mapCard to bottom sheet
         if (subqueries.location && subqueries.locationCode) {
@@ -58,44 +49,30 @@ export default {
         }
 
         // alertType case
-        if (subqueries.selectedAlertType) {
-          const { alertConfigList } = await this.getDataService().crudEntity(
-            'alert',
-            { type: 'getCompleteAlertConfig', options: [user.selectedPartyGroup.code] },
-            user
-          )
-          const alertType = alertConfigList.find(({ alertType }) => alertType === subqueries.selectedAlertType.value)
-          if (!alertType) throw new Error('WRONG_ALERT_TYPE')
-          params.subqueries = {
-            ...(subqueries || {}),
-            ...(alertType.query.subqueries || {})
+        if (subqueries.alertType) {
+          if (!(subqueries.alertType !== true && 'value' in subqueries.alertType && Array.isArray(subqueries.alertType.value))) throw new Error('MISSING_alertType')
+          subqueries.alertJoin = true
+          let alertCreatedAtJson: { from: any, to: any}
+          if (subqueries.withinHours) {
+            const withinHours = subqueries.withinHours as { value: any }
+            alertCreatedAtJson = {
+              from: moment().subtract(withinHours.value, 'hours'),
+              to: moment()
+            }
           }
+          else {
+            // default use currentMonth
+            const date = subqueries.date as { from: any, to: any }
+            const selectedDate = date ? moment(date.from, 'YYYY-MM-DD') : moment()
+            const currentMonth = selectedDate.month()
+            alertCreatedAtJson = {
+              from: selectedDate.month(currentMonth).startOf('month').format('YYYY-MM-DD'),
+              to: selectedDate.month(currentMonth).endOf('month').format('YYYY-MM-DD'),
+            }
+          }
+          delete subqueries.date
+          subqueries.alertCreatedAt = alertCreatedAtJson
         }
-        // if (subqueries.alertType) {
-        //   if (!(subqueries.alertType !== true && 'value' in subqueries.alertType && Array.isArray(subqueries.alertType.value))) throw new Error('MISSING_alertType')
-        //   // subqueries.alertJoin = true
-        //   // let alertCreatedAtJson: { from: any, to: any }
-        //   // if (subqueries.withinHours) {
-        //   //   const withinHours = subqueries.withinHours as { value: any }
-        //   //   alertCreatedAtJson = {
-        //   //     from: moment().subtract(withinHours.value, 'hours'),
-        //   //     to: moment()
-        //   //   }
-        //   // }
-        //   // else {
-        //   //   // default use currentMonth
-        //   //   const date = subqueries.date as { from: any, to: any }
-        //   //   const selectedDate = date ? moment(date.from, 'YYYY-MM-DD') : moment()
-        //   //   const currentMonth = selectedDate.month()
-        //   //   alertCreatedAtJson = {
-        //   //     from: selectedDate.month(currentMonth).startOf('month').format('YYYY-MM-DD'),
-        //   //     to: selectedDate.month(currentMonth).endOf('month').format('YYYY-MM-DD'),
-        //   //   }
-        //   // }
-        //   // delete subqueries.date
-        //   // subqueries.alertCreatedAt = alertCreatedAtJson
-        //   // subqueries=query;
-        // }
 
         // split primaryKeyListString and search by id
         if (subqueries.primaryKeyListString) {
@@ -119,7 +96,9 @@ export default {
 
         handleBottomSheetGroupByEntityValue(subqueries)
 
-        handleGroupByEntityValueDatePart(subqueries, moment)
+        handleGroupByEntityValueDatePart(subqueries,moment)
+
+
         return params
       }
     },

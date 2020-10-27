@@ -78,7 +78,7 @@
                 "z": {
                   "isComponent": "v-label",
                   "i18nContext": "Widget",
-                  "class": "font-110-important"
+                  "class": "font-110"
                 }
               },
               "fixedKeys": [
@@ -86,8 +86,8 @@
                 "shipping",
                 "arrival",
                 "exitFactory",
-                "dontShipBefore",
-                "dontShipAfter",
+                "doNotShipBefore",
+                "doNotShipAfter",
                 "delivery"
               ],
               "fields": [{
@@ -186,7 +186,25 @@
               "z": {
                 "isComponent": "v-label",
                 "i18nContext": "Widget",
-                "class": "font-110-important"
+                "class": "font-110"
+              },
+              "po": {
+                "class": "font-110 blue--text"
+              },
+              "shipping": {
+                "class": "font-110 teal--text"
+              },
+              "arrival": {
+                "class": "font-110 green--text"
+              },
+              "exitFactory": {
+                "class": "font-110 brown--text"
+              },
+              "doNotShipAfter": {
+                "class": "font-110 indigo--text"
+              },
+              "delivery": {
+                "class": "font-110 pink--text"
               }
             },
             "fixedKeys": [
@@ -194,8 +212,8 @@
               "shipping",
               "arrival",
               "exitFactory",
-              "dontShipBefore",
-              "dontShipAfter",
+              "doNotShipBefore",
+              "doNotShipAfter",
               "delivery"
             ],
             "checkDisplayWhen": [

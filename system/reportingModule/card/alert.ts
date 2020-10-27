@@ -44,6 +44,7 @@ export default {
             keys = keys.filter(o => o != 'active')
             keys = keys.filter(o => o != 'entityType')
             keys = keys.filter(o => o != 'activeStatus')
+            keys = keys.filter(o => o != 'alertType')
 
 
             var alertConfigKeys = Object.keys(query.subqueries);
@@ -66,7 +67,7 @@ export default {
               }
             }
 
- 
+
             if (addRow) {
               finalTasks.push([
                 {
@@ -77,11 +78,11 @@ export default {
                     user?: JwtPayload
                   ): Promise<IQueryParams> {
                     ;
-
+                    delete mainCard_subq.alertType
                     return {
                       subqueries: {
                         ...mainCard_subq,
-                        ...(subqueries || {}),
+                        //...(subqueries || {}),
                         ...(query.subqueries || {})
                       }
                     }
@@ -92,7 +93,7 @@ export default {
                   dataServiceType: 'count',
                   dataServiceQuery: [tableName, queryName],
                   onResult(res, params, prevResult: any): any {
-                
+
                     prevResult[alertType] = res
                     prevResult['tableName'] = tableName
                     prevResult['subqueries'] = subqueries
@@ -101,9 +102,11 @@ export default {
                   }
                 }
               ])
+              if (subqueries.alertType && subqueries.alertType.value.filter(o => o == alertType).length == 0) {
+                //if not selected from the UI, filtered out, not show
+                finalTasks.pop()
+              }
             }
-
-
           }
           return finalTasks
         }, [])
@@ -121,6 +124,7 @@ export default {
           version: undefined,
           user: user
         })
+        console.log({ params })
         const results = []
 
 
