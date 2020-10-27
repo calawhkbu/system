@@ -139,7 +139,7 @@ export default {
             data: {
               subqueries: {
                 q: {
-                  value: '{{q}}'
+                  value: '{{ context.$store.value }}'
                 },
                 "fields": [
                   "alertType"
@@ -147,7 +147,7 @@ export default {
                 ]
               },
 
-              limit: 3
+              limit: 5
             },
             method: 'POST',
             labelKey: 'alertTitle',
@@ -159,7 +159,7 @@ export default {
             data: {
               subqueries: {
                 alertType: {
-                  value: '{{value}}'
+                  value: '{{ value }}'
                 }
               }
             },
@@ -170,12 +170,12 @@ export default {
           }
         },
         multi: true,
-        //threshold: 0,
+        threshold: 0,
          showAllIfEmpty: true
       },
       display: 'alertType'
     },
-    
+
     {
       name: 'entityType',
       props: {
@@ -196,6 +196,6 @@ export default {
         required: true,
       },
       type: 'list',
-    },
+    }
   ]
 } as JqlDefinition
