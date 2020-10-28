@@ -1505,7 +1505,10 @@ const fieldList = [
     name: 'totalQuantityUnit',
     expression: new ColumnExpression('booking', 'quantityUnit')
   },
-
+  {
+    name: 'haveCurrentTrackingNo',
+    expression: new FunctionExpression('IF', new IsNullExpression(new ColumnExpression('booking', 'currentTrackingNo'), false), '', '_')
+  },
   {
     name: 'dateStatus',
     expression: dateStatusExpression,

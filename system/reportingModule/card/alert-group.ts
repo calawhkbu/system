@@ -48,11 +48,7 @@ export default {
                   user?: JwtPayload
                 ): Promise<IQueryParams> {
                   ;
-
                   delete mainCard_subq.alertType
-                  console.log('before return')
-                   console.log(mainCard_subq)
-
                   return {
                     subqueries: {
                       ...mainCard_subq,
@@ -101,6 +97,20 @@ export default {
 
         for (const key of Object.keys(prevResult)) {
           const result = prevResult[key]
+    console.log(prevResult)
+          let test=Object.entries(prevResult)
+          console.log(test)
+        
+          let hideAll_default=Object.keys(prevResult);
+          hideAll_default=hideAll_default.filter(o=>o!='tableName' && o!='subqueries' && o!='alertType')
+          //add tableName as prefix e.g. shipment-sayHello
+          var temp=[];
+         for (let i=0;i<hideAll_default.length;i++){
+           temp.push(`${prevResult.tableName}-${hideAll_default[i]}`);
+          
+         }
+         hideAll_default=temp;
+
           if (result && result.length && result[0].count > 0) {
             const translation = _.get(i18n, `Alert.${key}Title`, null)
             results.push({
@@ -109,14 +119,23 @@ export default {
               count: result[0].count,
               tableName: prevResult.tableName,
               subqueries: prevResult.subqueries,
-              //collapsed: `${prevResult.tableName}-${key}`,
-              expanded: -1,
-              indicator: '-',
-              isEntityRow: true
+              collapsed: `${prevResult.tableName}-${key}`,
+              hideAll:[...hideAll_default,`${prevResult.tableName}-${key}`]
 
             })
           }
+          
         }
+        //demo
+        results.push({
+          alertTypeCode: 'demo',
+          alertType: 'demo',
+          count:99,
+          tableName: prevResult.tableName,
+          subqueries: prevResult.subqueries,
+          collapsed: `shipment-detentionAlert(SEA)`,
+
+        })
         results.sort((a, b) => {
           if (a.alertType > b.alertType) {
             return 1

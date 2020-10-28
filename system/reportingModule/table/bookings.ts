@@ -101,6 +101,7 @@ export default {
     { key: 'lastStatusCodeOrDescription' },
     { key: 'lastStatusDate' },
     { key: 'lastStatusWidget' },
+    { key: 'haveCurrentTrackingNo' },
     ...documentFileNameList.map(documentFileName => {
 
       return { key: `haveDocument_${documentFileName}` }
