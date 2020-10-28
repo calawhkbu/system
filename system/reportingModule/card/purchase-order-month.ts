@@ -23,6 +23,8 @@ const groupbyList=["poNo",
 
 const summaryList=[
   "totalpo"
+  "poNo",
+  "moduleTypeCode"
 
 ];
 
@@ -73,7 +75,7 @@ export default {
         var { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
   // -----------------------------groupBy variable
   groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-  
+
   if(groupByEntity=='poNo'){
     codeColumnName="poNo";
     nameColumnName="poNo";
@@ -106,7 +108,7 @@ export default {
 
         const topX = subqueries.topX.value
 
-       
+
 
         const summaryVariables = expandSummaryVariable(subqueries)
         prevResult.summaryVariables = summaryVariables
@@ -216,7 +218,7 @@ console.debug({params})
       name: 'summaryVariable',
       props: {
         items: [
-      
+
           ...summaryList.reduce((acc, summary) => {
 
             acc = acc.concat(

@@ -34,7 +34,7 @@ export default {
           user
         )
 
-        return alertConfigList.reduce((finalTasks: Array<JqlTask | JqlTask[]>, { alertType, tableName, queryName, query, active }) => {
+        return alertConfigList.reduce((finalTasks: Array<JqlTask | JqlTask[]>, { alertType,tableName, queryName, query, active }) => {
 
           if (query && active && tableName === subqueries.entityType.value) {
             let mainCard_subq = _.cloneDeep(params.subqueries || {})
@@ -67,16 +67,18 @@ export default {
                   prevResult['tableName'] = tableName
                   prevResult['subqueries'] = subqueries
                   prevResult['alertType'] = alertType
+                  prevResult['active'] = active
+
                   return prevResult
                 }
               }
             ])
-           if (subqueries.alertType && subqueries.alertType.value.filter(o => o == alertType).length == 0) {
+            if (subqueries.alertType && subqueries.alertType.value.filter(o => o == alertType).length == 0) {
               //if not selected from the UI, filtered out, not show
-          finalTasks.pop()
+              finalTasks.pop()
             }
           }
-            return finalTasks
+          return finalTasks
         }, [])
       }
     },
@@ -97,19 +99,18 @@ export default {
 
         for (const key of Object.keys(prevResult)) {
           const result = prevResult[key]
-    console.log(prevResult)
-          let test=Object.entries(prevResult)
-          console.log(test)
-        
-          let hideAll_default=Object.keys(prevResult);
-          hideAll_default=hideAll_default.filter(o=>o!='tableName' && o!='subqueries' && o!='alertType')
+          console.log(prevResult)
+
+
+          let hideAll_default = Object.keys(prevResult)
+          hideAll_default = hideAll_default.filter(o => o != 'tableName' && o != 'subqueries' && o != 'alertType')
           //add tableName as prefix e.g. shipment-sayHello
-          var temp=[];
-         for (let i=0;i<hideAll_default.length;i++){
-           temp.push(`${prevResult.tableName}-${hideAll_default[i]}`);
-          
-         }
-         hideAll_default=temp;
+          var temp = [];
+          for (let i = 0; i < hideAll_default.length; i++) {
+            temp.push(`${prevResult.tableName}-${hideAll_default[i]}`);
+
+          }
+
 
           if (result && result.length && result[0].count > 0) {
             const translation = _.get(i18n, `Alert.${key}Title`, null)
@@ -120,29 +121,45 @@ export default {
               tableName: prevResult.tableName,
               subqueries: prevResult.subqueries,
               collapsed: `${prevResult.tableName}-${key}`,
-              hideAll:[...hideAll_default,`${prevResult.tableName}-${key}`]
+              hideAll: [...temp, `${prevResult.tableName}-${key}`],
+              isEntityRow: true,
+              active:prevResult.active,
+              primaryId:5
 
             })
           }
-          
+
         }
         //demo
         results.push({
-          alertTypeCode: 'demo',
-          alertType: 'demo',
-          count:99,
+          alertTypeCode: 'detentionAlert(SEA)',
+          alertType: "Alert ! Ocean Container free detention time expiring notice for house# : ",
+          primaryId: 5,
           tableName: prevResult.tableName,
           subqueries: prevResult.subqueries,
           collapsed: `shipment-detentionAlert(SEA)`,
-
+          isEntityRow: false
         })
+        results.push({
+          alertTypeCode: 'detentionAlert(SEA)',
+          alertType: "Alert ! Ocean Container free detention time expiring notice for house# : ",
+          count: 99,
+          primaryId: 1234,
+          tableName: prevResult.tableName,
+          subqueries: prevResult.subqueries,
+          collapsed: `shipment-detentionAlert(SEA)`,
+          isEntityRow: false
+        })
+
         results.sort((a, b) => {
-          if (a.alertType > b.alertType) {
-            return 1
-          } else if (a.alertType < b.alertType) {
-            return -1
-          }
-          return 0
+            if (a.alertType > b.alertType) {
+              return 1
+            } else if (a.alertType < b.alertType) {
+              return -1
+            } else {
+              return 0
+            }
+
         })
         return results
       }

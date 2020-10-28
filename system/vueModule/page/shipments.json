@@ -481,6 +481,11 @@
           "key" : "haveDocument_Packing List",
           "label": "haveDocument_Packing List",
           "boolean" : true
+        },
+        {
+          "key" : "haveDocument_OTHER",
+          "label": "haveDocument_OTHER",
+          "boolean" : true
         }
       ]
     },

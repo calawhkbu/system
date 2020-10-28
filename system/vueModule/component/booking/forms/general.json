@@ -90,36 +90,20 @@
           "component": "BooleanField",
           "name": "isConsole",
           "class": "xs-12 md-1",
-          "props": {
-            "showValue": false,
-            "item-text": "text",
-            "item-value": "value",
-            "funcItems": [{
-              "value": 1,
-              "text": "Yes"
-            }, {
-              "value": 0,
-              "text": "No"
-            }]
-          }
+          "more": [{
+            "name": "isDirect",
+            "func": "return value ? 0 : 1"
+          }]
         },
         {
           "label": "BookingPage.isDirect",
           "component": "BooleanField",
           "name": "isDirect",
           "class": "xs-12 md-1",
-          "props": {
-            "showValue": false,
-            "item-text": "text",
-            "item-value": "value",
-            "funcItems": [{
-              "value": 1,
-              "text": "Yes"
-            }, {
-              "value": 0,
-              "text": "No"
-            }]
-          }
+          "more": [{
+            "name": "isConsole",
+            "func": "return value ? 0 : 1"
+          }]
         },
         {
           "label": "BookingPage.telexRelease",
@@ -152,27 +136,13 @@
             "selector": "name"
           }],
           "props": {
-            "searchValueParams": {
-              "method": "POST",
-              "url": "api/location/query/location",
-              "data": {
-                "subqueries": {
-                  "moduleTypeCode": {
-                    "value": "{{context.form.moduleTypeCode}}"
-                  },
-                  "portCodeLike": {
-                    "value": "{{context.autoSuggestModel}}"
-                  }
-                }
-              }
-            },
             "searchTextParams": {
               "method": "POST",
               "url": "api/location/query/location",
               "data": {
                 "subqueries": {
                   "moduleTypeCode": {
-                    "value": "{{context.form.moduleTypeCode}}"
+                    "value": "{% if context.form.moduleTypeCode == 'SEAAIR' %}SEA{% else %}{{context.form.moduleTypeCode}}{% endif %}"
                   },
                   "q": {
                     "value": "{{context.search}}"
@@ -200,27 +170,13 @@
           }],
           "props": {
             "required": true,
-            "searchValueParams": {
-              "method": "POST",
-              "url": "api/location/query/location",
-              "data": {
-                "subqueries": {
-                  "moduleTypeCode": {
-                    "value": "{{context.form.moduleTypeCode}}"
-                  },
-                  "portCodeLike": {
-                    "value": "{{context.autoSuggestModel}}"
-                  }
-                }
-              }
-            },
             "searchTextParams": {
               "method": "POST",
               "url": "api/location/query/location",
               "data": {
                 "subqueries": {
                   "moduleTypeCode": {
-                    "value": "{{context.form.moduleTypeCode}}"
+                    "value": "{% if context.form.moduleTypeCode == 'SEAAIR' %}SEA{% else %}{{context.form.moduleTypeCode}}{% endif %}"
                   },
                   "q": {
                     "value": "{{context.search}}"
@@ -248,27 +204,13 @@
           }],
           "props": {
             "required": true,
-            "searchValueParams": {
-              "method": "POST",
-              "url": "api/location/query/location",
-              "data": {
-                "subqueries": {
-                  "moduleTypeCode": {
-                    "value": "{{context.form.moduleTypeCode}}"
-                  },
-                  "portCodeLike": {
-                    "value": "{{context.autoSuggestModel}}"
-                  }
-                }
-              }
-            },
             "searchTextParams": {
               "method": "POST",
               "url": "api/location/query/location",
               "data": {
                 "subqueries": {
                   "moduleTypeCode": {
-                    "value": "{{context.form.moduleTypeCode}}"
+                    "value": "{% if context.form.moduleTypeCode == 'SEAAIR' %}SEA{% else %}{{context.form.moduleTypeCode}}{% endif %}"
                   },
                   "q": {
                     "value": "{{context.search}}"
@@ -294,27 +236,13 @@
             "selector": "name"
           }],
           "props": {
-            "searchValueParams": {
-              "method": "POST",
-              "url": "api/location/query/location",
-              "data": {
-                "subqueries": {
-                  "moduleTypeCode": {
-                    "value": "{{context.form.moduleTypeCode}}"
-                  },
-                  "portCodeLike": {
-                    "value": "{{context.autoSuggestModel}}"
-                  }
-                }
-              }
-            },
             "searchTextParams": {
               "method": "POST",
               "url": "api/location/query/location",
               "data": {
                 "subqueries": {
                   "moduleTypeCode": {
-                    "value": "{{context.form.moduleTypeCode}}"
+                    "value": "{% if context.form.moduleTypeCode == 'SEAAIR' %}SEA{% else %}{{context.form.moduleTypeCode}}{% endif %}"
                   },
                   "q": {
                     "value": "{{context.search}}"
@@ -577,16 +505,38 @@
           "class": "xs-12 md-6",
           "more": ["podHScode"]
         }, {
+          "label": "BookingPage.nominatedType",
+          "name": "nominatedTypeCode",
+          "component": "AsyncSelect",
+          "class": "xs-12 md-3",
+          "relation": "nominatedType",
+          "props": {
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "NOMINATED_TYPE"
+                  }
+                }
+              }
+            },
+            "item-text": "name",
+            "item-value": "code",
+            "showValue": false
+          }
+        }, {
           "label": "BookingPage.picId",
           "name": "picId",
           "component": "v-text-field",
-          "class": "xs-12 md-6"
+          "class": "xs-12 md-3"
         },
         {
           "label": "BookingPage.picEmail",
           "name": "picEmail",
           "component": "v-text-field",
-          "class": "xs-12 md-6"
+          "class": "xs-12 md-3"
         }
       ]
     }

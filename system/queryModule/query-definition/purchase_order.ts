@@ -223,8 +223,8 @@ query.table('purchase_order_item', new Query({
             $select: [
             new ResultColumn(new ColumnExpression('purchase_order_item', '*')),
              //new ResultColumn( new FunctionExpression('SUM',new ColumnExpression('purchase_order_item','quantity')),'qty')
-              
-    
+
+
             ],
             $from: new FromTable('purchase_order_item', 'purchase_order_item'),
             $where: new AndExpressions({
@@ -236,12 +236,12 @@ query.table('purchase_order_item', new Query({
               ]
             }),
             //$group: new GroupBy([new ColumnExpression('purchase_order_item', 'poId')]),
-           
+
           }),
           $as: 'purchase_order_item'
         }),
         $on: new BinaryExpression(new ColumnExpression('purchase_order', 'id'), '=', new ColumnExpression('purchase_order_item', 'poId'))
-    
+
       },
     ]
   })
@@ -494,10 +494,10 @@ const fieldList = [
   'poNo',
   'partyGroupCode',
 
-  //'purchaseOrderItems', 
-  //'purchaseOrderDate', 
-  //'purchaseOrderDateUtc', 
-  //'purchaseOrderParty', 
+  //'purchaseOrderItems',
+  //'purchaseOrderDate',
+  //'purchaseOrderDateUtc',
+  //'purchaseOrderParty',
   // {
   //   name: 'quantity',
   //   expression: new ColumnExpression("purchase_order_item",'quantity'),
@@ -525,13 +525,13 @@ const fieldList = [
     companion: ['table:freightTerms']
   },
 
-  // 'portOfLoadingCode', 
-  // 'portOfLoadingName', 
-  // 'portOfLoading', 
+  // 'portOfLoadingCode',
+  // 'portOfLoadingName',
+  // 'portOfLoading',
 
-  // 'portOfDischargeCode', 
-  // 'portOfDischargeName', 
-  // 'portOfDischarge?', 
+  // 'portOfDischargeCode',
+  // 'portOfDischargeName',
+  // 'portOfDischarge?',
 
   'remark',
   'referenceNumber',
@@ -553,11 +553,47 @@ const fieldList = [
 
 ] as ExpressionHelperInterface[]
 
+const baseTableName='purchase_order'
 registerAll(
   query,
   baseTableName,
   fieldList
 )
+
+//  register date field
+const createdAtExpression = new ColumnExpression(baseTableName, 'createdAt')
+
+const updatedAtExpression = new ColumnExpression(baseTableName, 'updatedAt')
+
+const jobDateExpression = createdAtExpression
+
+const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
+
+const jobMonthExpression = new FunctionExpression('CONCAT', new FunctionExpression('YEAR', jobDateExpression),
+  '-',
+  new FunctionExpression('LPAD', new FunctionExpression('MONTH', jobDateExpression), 2, '0'))
+
+const jobWeekExpression = new FunctionExpression('LPAD', new FunctionExpression('WEEK', jobDateExpression), 2, '0')
+
+// ============
+const summaryFieldList : SummaryField[]  = [
+  {
+    name: 'totalpo',
+    summaryType: 'count',
+    expression: new ColumnExpression(baseTableName, 'id')
+  },
+];
+
+const nestedSummaryList = [
+  //tbc
+
+
+] as NestedSummaryCondition[]
+
+
+
+registerSummaryField(query, baseTableName, summaryFieldList, [], jobDateExpression)
+
 
 
 const summaryFieldList : SummaryField[]  = [
@@ -578,7 +614,7 @@ const summaryFieldList : SummaryField[]  = [
     expression: new ColumnExpression('purchase_order_item', 'weight'),
     companion: ['table:purchase_order_item']
   }
- 
+
 ];
 
 const nestedSummaryList = [

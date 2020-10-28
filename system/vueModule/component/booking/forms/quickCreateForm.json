@@ -11,7 +11,7 @@
           "label": "BookingPage.moduleType",
           "name": "moduleTypeCode",
           "component": "AsyncSelect",
-          "class": "xs-12 md-3 padding-topbottom-4",
+          "class": "xs-12 md-2 padding-topbottom-4",
           "validator": ["required"],
           "relation": "moduleType",
           "props": {
@@ -39,7 +39,7 @@
           "label": "BookingPage.boundType",
           "name": "boundTypeCode",
           "component": "AsyncSelect",
-          "class": "xs-12 md-3 padding-topbottom-4",
+          "class": "xs-12 md-2 padding-topbottom-4",
           "relation": "boundType",
           "validator": ["required"],
           "props": {
@@ -67,7 +67,7 @@
           "label": "BookingPage.serviceCode",
           "name": "serviceCode",
           "component": "AsyncSelect",
-          "class": "xs-12 md-3 padding-topbottom-4",
+          "class": "xs-12 md-2 padding-topbottom-4",
           "relation": "service",
           "isRequired": "return form && form.moduleTypeCode !== 'AIR';",
           "props": {
@@ -89,6 +89,32 @@
             "item-value": "code",
             "showValue": false
           }
+        }, {
+          "containerComponent": "v-card",
+          "containerComponentProps": {
+            "class": "padding-topbottom-8 padding-leftright-4"
+          },
+          "label": "BookingPage.nominatedType",
+          "name": "nominatedTypeCode",
+          "component": "AsyncSelect",
+          "class": "xs-12 md-2 padding-topbottom-4",
+          "relation": "nominatedType",
+          "props": {
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "NOMINATED_TYPE"
+                  }
+                }
+              }
+            },
+            "item-text": "name",
+            "item-value": "code",
+            "showValue": false
+          }
         },
         {
           "containerComponent": "v-card",
@@ -98,7 +124,11 @@
           "label": "BookingPage.isConsole",
           "component": "BooleanField",
           "name": "isConsole",
-          "class": "xs-12 md-1"
+          "class": "xs-12 md-1",
+          "more": [{
+            "name": "isDirect",
+            "func": "return value ? 0 : 1"
+          }]
         },
         {
           "containerComponent": "v-card",
@@ -108,7 +138,11 @@
           "label": "BookingPage.isDirect",
           "component": "BooleanField",
           "name": "isDirect",
-          "class": "xs-12 md-1"
+          "class": "xs-12 md-1",
+          "more": [{
+            "name": "isConsole",
+            "func": "return value ? 0 : 1"
+          }]
         },
         {
           "containerComponent": "v-card",
@@ -118,7 +152,7 @@
           "label": "BookingPage.telexRelease",
           "component": "BooleanField",
           "name": "telexRelease",
-          "class": "xs-12 md-1"
+          "class": "xs-12 md-2"
         },
         {
           "containerComponent": "v-card",
@@ -137,27 +171,13 @@
             "selector": "name"
           }],
           "props": {
-            "searchValueParams": {
-              "method": "POST",
-              "url": "api/location/query/location",
-              "data": {
-                "subqueries": {
-                  "moduleTypeCode": {
-                    "value": "{{context.form.moduleTypeCode}}"
-                  },
-                  "portCodeLike": {
-                    "value": "{{context.autoSuggestModel}}"
-                  }
-                }
-              }
-            },
             "searchTextParams": {
               "method": "POST",
               "url": "api/location/query/location",
               "data": {
                 "subqueries": {
                   "moduleTypeCode": {
-                    "value": "{{context.form.moduleTypeCode}}"
+                    "value": "{% if context.form.moduleTypeCode == 'SEAAIR' %}SEA{% else %}{{context.form.moduleTypeCode}}{% endif %}"
                   },
                   "q": {
                     "value": "{{context.search}}"
@@ -282,7 +302,7 @@
                 ],
                 "subqueries": {
                   "moduleTypeCode": {
-                    "value": "{{context.form.moduleTypeCode}}"
+                    "value": "{% if context.form.moduleTypeCode == 'SEAAIR' %}SEA{% else %}{{context.form.moduleTypeCode}}{% endif %}"
                   },
                   "q": {
                     "value": "{{context.search}}"
@@ -314,27 +334,13 @@
           }],
           "props": {
             "required": true,
-            "searchValueParams": {
-              "method": "POST",
-              "url": "api/location/query/location",
-              "data": {
-                "subqueries": {
-                  "moduleTypeCode": {
-                    "value": "{{context.form.moduleTypeCode}}"
-                  },
-                  "portCodeLike": {
-                    "value": "{{context.autoSuggestModel}}"
-                  }
-                }
-              }
-            },
             "searchTextParams": {
               "method": "POST",
               "url": "api/location/query/location",
               "data": {
                 "subqueries": {
                   "moduleTypeCode": {
-                    "value": "{{context.form.moduleTypeCode}}"
+                    "value": "{% if context.form.moduleTypeCode == 'SEAAIR' %}SEA{% else %}{{context.form.moduleTypeCode}}{% endif %}"
                   },
                   "q": {
                     "value": "{{context.search}}"
@@ -364,27 +370,13 @@
             "selector": "name"
           }],
           "props": {
-            "searchValueParams": {
-              "method": "POST",
-              "url": "api/location/query/location",
-              "data": {
-                "subqueries": {
-                  "moduleTypeCode": {
-                    "value": "{{context.form.moduleTypeCode}}"
-                  },
-                  "portCodeLike": {
-                    "value": "{{context.autoSuggestModel}}"
-                  }
-                }
-              }
-            },
             "searchTextParams": {
               "method": "POST",
               "url": "api/location/query/location",
               "data": {
                 "subqueries": {
                   "moduleTypeCode": {
-                    "value": "{{context.form.moduleTypeCode}}"
+                    "value": "{% if context.form.moduleTypeCode == 'SEAAIR' %}SEA{% else %}{{context.form.moduleTypeCode}}{% endif %}"
                   },
                   "q": {
                     "value": "{{context.search}}"
@@ -415,7 +407,7 @@
           "label": "BookingPage.commodity",
           "name": "commodity",
           "component": "v-text-field",
-          "class": "xs-12 md-4 padding-topbottom-4",
+          "class": "xs-12 md-2 padding-topbottom-4",
           "validator": ["required"],
           "props": {
             "required": true

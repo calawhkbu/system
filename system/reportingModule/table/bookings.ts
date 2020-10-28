@@ -9,6 +9,7 @@ const documentFileNameList = [
   'Commercial Invoice',
   'Packing List',
   'Quotation',
+  'OTHER'
 ]
 
 export default {
@@ -23,13 +24,13 @@ export default {
     { key: 'updatedAt' },
     { key: 'id' },
     { key: 'shipId' },
-   { key: 'shipmentId' },
+    { key: 'shipmentId' },
     { key: 'houseNo' },
     { key: 'masterNo' },
-     { key: 'poNo' },
+    { key: 'poNo' },
     { key: 'bookingNo' },
     { key: 'moduleType' }, //need this
-   { key: 'boundType' },
+    { key: 'boundType' },
     { key: 'service' },
     { key: 'incoTerms' },
     { key: 'freightTerms' },

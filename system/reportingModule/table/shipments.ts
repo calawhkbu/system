@@ -8,6 +8,7 @@ const documentFileNameList = [
   'HBL Telex released',
   'Commercial Invoice',
   'Packing List',
+  'OTHER'
 ]
 
 export default {
@@ -69,7 +70,7 @@ export default {
       return { key: `haveDocument_${documentFileName}` }
 
     })
-    
+
 
   ]
 } as JqlDefinition

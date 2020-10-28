@@ -1223,7 +1223,8 @@ const bookingHouseNoExpression = new QueryExpression(new Query({
       new BinaryExpression(new ColumnExpression('booking_reference','refName'), '=', 'HBL'),
       new BinaryExpression(new ColumnExpression('booking_reference','refName'), '=', 'HAWB'),
     ])
-  ])
+  ]),
+  $limit: 1
 }))
 
 const bookingMasterNoExpression = new QueryExpression(new Query({
@@ -1239,7 +1240,8 @@ const bookingMasterNoExpression = new QueryExpression(new Query({
       new BinaryExpression(new ColumnExpression('booking_reference','refName'), '=', 'MBL'),
       new BinaryExpression(new ColumnExpression('booking_reference','refName'), '=', 'MAWB'),
     ])
-  ])
+  ]),
+  $limit: 1
 }))
 
 
@@ -1472,6 +1474,24 @@ const haveDocumentExpressionList = documentFileNameList.map(documentFileName => 
 
 })
 
+const otherDocumentExpression = {
+  name: 'haveDocument_OTHER',
+  expression: new InExpression(idExpression, false,
+    new QueryExpression(
+      new Query({
+        $select: [new ResultColumn(new ColumnExpression('document', 'primaryKey'))],
+        $from: 'document',
+        $where: [
+          new InExpression(new ColumnExpression('document', 'fileName'), true, documentFileNameList),
+          new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'booking'),
+          new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
+        ]
+      })
+    )
+  )
+}
+
 const fieldList = [
   'id',
   'partyGroupCode',
@@ -1697,6 +1717,7 @@ const fieldList = [
     companion: ['table:lastStatus']
   },
   ...haveDocumentExpressionList,
+  otherDocumentExpression,
 ] as ExpressionHelperInterface[]
 
 console.log(fieldList)
@@ -1928,6 +1949,23 @@ query.subquery(false, 'haveDocument', ((value: any, params?: IQueryParams) => {
 
   const existExpressionList = fileNameList.map(fileName => {
 
+    if (fileName === 'OTHER') {
+      return new ExistsExpression(new Query({
+          $select: [
+            new ResultColumn(new ColumnExpression('document', 'primaryKey'))
+          ],
+          $from: 'document',
+          $where: [
+            new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'booking'),
+            new BinaryExpression(new ColumnExpression('document', 'primaryKey'), '=', idExpression),
+            new InExpression(new ColumnExpression('document', 'fileName'), true, documentFileNameList),
+
+            new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
+            new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
+          ]
+        }), false)
+    }
+
     return new ExistsExpression(new Query({
       $select: [
         new ResultColumn(new ColumnExpression('document', 'primaryKey'))
@@ -1961,6 +1999,23 @@ query.subquery(false, 'missingDocument', ((value: any, params?: IQueryParams) =>
   }
 
   const existExpressionList = fileNameList.map(fileName => {
+
+    if (fileName === 'OTHER') {
+      return new ExistsExpression(new Query({
+          $select: [
+            new ResultColumn(new ColumnExpression('document', 'primaryKey'))
+          ],
+          $from: 'document',
+          $where: [
+            new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'booking'),
+            new BinaryExpression(new ColumnExpression('document', 'primaryKey'), '=', idExpression),
+            new InExpression(new ColumnExpression('document', 'fileName'), true, documentFileNameList),
+
+            new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
+            new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
+          ]
+        }), true)
+    }
 
     return new ExistsExpression(new Query({
       $select: [

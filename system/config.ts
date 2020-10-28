@@ -5,6 +5,7 @@ export default {
         // query
         job: 'erp-joblockrpt',
         profit: 'erp-vsiteanalysis',
+        'profit-agent': 'erp-vsiteanalysis-agent',
         // 'shipment-status': 'old360-shipment-status',
         // 'shipment': 'old360-shipments', // 'erp-shipments',
         // // count

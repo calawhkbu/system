@@ -368,6 +368,11 @@
             "key" : "haveDocument_Quotation",
             "label": "haveDocument_Quotation",
             "boolean" : true
+          },
+          {
+            "key" : "haveDocument_OTHER",
+            "label": "haveDocument_OTHER",
+            "boolean" : true
           }
         ]
       },

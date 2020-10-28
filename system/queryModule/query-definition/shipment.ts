@@ -2156,37 +2156,41 @@ const documentFileNameList = [
   'Packing List',
 ]
 
-const haveDocumentExpressionList = documentFileNameList.map(documentFileName => {
-
-  const haveDocumentExpression = new InExpression(idExpression, false,
+const haveDocumentExpressionList = documentFileNameList.map(documentFileName => ({
+  name: `haveDocument_${documentFileName}`,
+  expression: new InExpression(idExpression, false,
     new QueryExpression(
       new Query({
-
-        $select: [
-          new ResultColumn(new ColumnExpression('document', 'primaryKey'))
-        ],
+        $select: [new ResultColumn(new ColumnExpression('document', 'primaryKey'))],
         $from: 'document',
         $where: [
           new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', documentFileName),
           new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment'),
-
           new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
           new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
-
         ]
-
       })
     )
   )
+} as RegisterInterface))
 
-  return {
-    name: `haveDocument_${documentFileName}`,
-    expression: haveDocumentExpression
-
-  } as RegisterInterface
-
-
-})
+const otherDocumentExpression = {
+  name: 'haveDocument_OTHER',
+  expression: new InExpression(idExpression, false,
+    new QueryExpression(
+      new Query({
+        $select: [new ResultColumn(new ColumnExpression('document', 'primaryKey'))],
+        $from: 'document',
+        $where: [
+          new InExpression(new ColumnExpression('document', 'fileName'), true, documentFileNameList),
+          new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment'),
+          new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
+        ]
+      })
+    )
+  )
+}
 
 const baseTableName = 'shipment'
 const fieldList = [
@@ -2198,6 +2202,7 @@ const fieldList = [
   ...partyExpressionList,
   ...locationExpressionList,
   ...haveDocumentExpressionList,
+  otherDocumentExpression,
   {
     name: 'officeErpSite',
     expression: officeErpSiteExpression,
@@ -2472,7 +2477,6 @@ registerAll(query, baseTableName, fieldList)
 
 
 // summary fields  =================
-
 const nestedSummaryList = [
 
   {
@@ -2545,34 +2549,22 @@ const nestedSummaryList = [
 
 ] as NestedSummaryCondition[]
 
-
 registerNestedSummaryFilter(query, nestedSummaryList)
-
-
-
-
 const containerTypeList = [
   '20',
   '40',
   'HQ'
 ]
-
-
 const reportContainerTypeList = [
   '20',
   '40',
   'HQ'
 ]
-
 // field that store in report json
 const reportingSummaryFieldNameList = [
   ...reportContainerTypeList.map(containerType => `${containerType}_ContainerTypeCount`),
   'containerCount'
 ]
-
-
-
-
 
 const summaryFieldList: SummaryField[] = [
 
@@ -2672,15 +2664,27 @@ registerCheckboxField(query)
 
 
 query.subquery(false, 'haveDocument', ((value: any, params?: IQueryParams) => {
-
-
-  const fileNameList = (value && value.value) ? (Array.isArray(value.value) ? value.value : [value.value]) : []
-
+  const fileNameList: any[] = (value && value.value) ? (Array.isArray(value.value) ? value.value : [value.value]) : []
   if (!fileNameList.length) {
     throw new Error('fileNameList empty')
   }
-
   const existExpressionList = fileNameList.map(fileName => {
+    if (fileName === 'OTHER') {
+      return new ExistsExpression(new Query({
+          $select: [
+            new ResultColumn(new ColumnExpression('document', 'primaryKey'))
+          ],
+          $from: 'document',
+          $where: [
+            new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment'),
+            new BinaryExpression(new ColumnExpression('document', 'primaryKey'), '=', idExpression),
+            new InExpression(new ColumnExpression('document', 'fileName'), true, documentFileNameList),
+
+            new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
+            new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
+          ]
+        }), false)
+    }
 
     return new ExistsExpression(new Query({
       $select: [
@@ -2691,7 +2695,6 @@ query.subquery(false, 'haveDocument', ((value: any, params?: IQueryParams) => {
         new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment'),
         new BinaryExpression(new ColumnExpression('document', 'primaryKey'), '=', idExpression),
         new BinaryExpression(new ColumnExpression('document', 'fileName'), '=', fileName),
-
         new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
         new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
       ]
@@ -2715,6 +2718,22 @@ query.subquery(false, 'missingDocument', ((value: any, params?: IQueryParams) =>
   }
 
   const existExpressionList = fileNameList.map(fileName => {
+    if (fileName === 'OTHER') {
+      return new ExistsExpression(new Query({
+          $select: [
+            new ResultColumn(new ColumnExpression('document', 'primaryKey'))
+          ],
+          $from: 'document',
+          $where: [
+            new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment'),
+            new BinaryExpression(new ColumnExpression('document', 'primaryKey'), '=', idExpression),
+            new InExpression(new ColumnExpression('document', 'fileName'), true, documentFileNameList),
+
+            new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
+            new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
+          ]
+        }), true)
+    }
 
     return new ExistsExpression(new Query({
       $select: [

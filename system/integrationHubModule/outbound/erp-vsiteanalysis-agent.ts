@@ -10,7 +10,7 @@ const app = {
     boundTypes: [] as string[],
   },
   method: vsiteanalysis.method,
-  getUrl: body => `${vsiteanalysis.getUrl(body)}_test`,
+  getUrl: vsiteanalysis.getUrl,
   requestHandler: async(
     params: any,
     body: any,
