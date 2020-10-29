@@ -9,16 +9,14 @@ export default {
   jqls: [
     {
       type: 'prepareParams',
-      async prepareParams(params,prevResult, user): Promise<IQueryParams> {
-        console.log('shipmentBottom=----')
-      
-    
+      async prepareParams(params, prevResult, user): Promise<IQueryParams> {
+
         //For alert
-        let query=params.subqueries.query.value;
-        for(let i=0;i<query.length;i++){
-          query=query.replace('&quot;','"');
+        let query = params.subqueries.query.value;
+        for (let i = 0; i < query.length; i++) {
+          query = query.replace('&quot;', '"');
         }
-        query=JSON.parse(query);
+        query = JSON.parse(query);
         /// End for Alert
         const { moment } = await this.preparePackages(user)
 
@@ -39,7 +37,7 @@ export default {
         ]
 
         params.fields = defaultFields
-        
+
         const subqueries = (params.subqueries = params.subqueries || {})
 
         // used in mapCard to bottom sheet
@@ -62,13 +60,17 @@ export default {
 
         // alertType case
         if (subqueries.selectedAlertType) {
+
+          delete params.subqueries.alertCreatedAt
           //merge subqueries of clicked row 
-          let date=_.cloneDeep(params.subqueries.date)
-          _.merge(params.subqueries,query)
-         params.subqueries.date=date
-         // if (!(subqueries.alertType !== true && 'value' in subqueries.alertType && Array.isArray(subqueries.alertType.value))) throw new Error('MISSING_alertType')
+          let date = _.cloneDeep(params.subqueries.date)
+          _.merge(params.subqueries, query)
+          params.subqueries.date = date
+          delete params.subqueries.alertType
+
+          // if (!(subqueries.alertType !== true && 'value' in subqueries.alertType && Array.isArray(subqueries.alertType.value))) throw new Error('MISSING_alertType')
           subqueries.alertJoin = true
-          let alertCreatedAtJson: { from: any, to: any}
+          let alertCreatedAtJson: { from: any, to: any }
           if (subqueries.withinHours) {
             const withinHours = subqueries.withinHours as { value: any }
             alertCreatedAtJson = {
@@ -76,10 +78,9 @@ export default {
               to: moment()
             }
 
-            delete params.subqueries.alertCreatedAt
-        
-          }
-          else {
+
+
+          } else {
             // default use currentMonth
             const date = subqueries.date as { from: any, to: any }
             const selectedDate = date ? moment(date.from, 'YYYY-MM-DD') : moment()
@@ -113,7 +114,7 @@ export default {
         }
 
         handleBottomSheetGroupByEntityValue(subqueries)
-        handleGroupByEntityValueDatePart(subqueries,moment)
+        handleGroupByEntityValueDatePart(subqueries, moment)
         delete params.subqueries.alertCreatedAt
         return params
       }

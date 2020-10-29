@@ -3,7 +3,6 @@ import { IQueryParams } from 'classes/query'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import _ = require('lodash')
 import swig = require('swig-templates')
-import { PurchaseOrderItemTableService } from 'modules/sequelize/services/table/purchaseOrderItem'
 
 
 const bottomSheetId = {
@@ -42,7 +41,6 @@ export default {
           if (query && active && tableName === subqueries.entityType.value) {
             let mainCard_subq = _.cloneDeep(params.subqueries || {})
             let keys = Object.keys(mainCard_subq);
-            let alertQ=_.cloneDeep(query.subqueries)
             keys = keys.filter(o => o != 'date')
             keys = keys.filter(o => o != 'active')
             keys = keys.filter(o => o != 'entityType')
@@ -143,8 +141,8 @@ export default {
             )
              let query=alertConfigList.find(o=>o.alertType==key);
              query=query.query.subqueries||{}
-      
-    
+             
+
             results.push({
               alertTypeCode: key,
               alertType: translation ? swig.render(translation, { locals: {} }) : translation,

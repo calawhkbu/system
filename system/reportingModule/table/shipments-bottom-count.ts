@@ -10,12 +10,12 @@ export default {
       type: 'prepareParams',
       async prepareParams(params, prevResult, user): Promise<IQueryParams> {
         const { moment } = await this.preparePackages(user)
-         //For alert
-   let query=params.subqueries.query.value;
-   for(let i=0;i<query.length;i++){
-     query=query.replace('&quot;','"');
-   }
-   query=JSON.parse(query);
+        //For alert
+        let query = params.subqueries.query.value;
+        for (let i = 0; i < query.length; i++) {
+          query = query.replace('&quot;', '"');
+        }
+        query = JSON.parse(query);
 
         params.fields = [
           'id',
@@ -53,19 +53,22 @@ export default {
 
         // alertType case
         if (subqueries.selectedAlertType) {
+          //merge subqueries of clicked row 
+          let date = _.cloneDeep(params.subqueries.date)
+          _.merge(params.subqueries, query)
+          params.subqueries.date = date
+          delete params.subqueries.alertType
+
           if (!(subqueries.alertType !== true && 'value' in subqueries.alertType && Array.isArray(subqueries.alertType.value))) throw new Error('MISSING_alertType')
           subqueries.alertJoin = true
-          let alertCreatedAtJson: { from: any, to: any}
+          let alertCreatedAtJson: { from: any, to: any }
           if (subqueries.withinHours) {
             const withinHours = subqueries.withinHours as { value: any }
             alertCreatedAtJson = {
               from: moment().subtract(withinHours.value, 'hours'),
               to: moment()
             }
-            //merge subqueries of clicked row 
-          let date=_.cloneDeep(params.subqueries.date)
-          _.merge(params.subqueries,query)
-         params.subqueries.date=date
+
           } else {
             const date = subqueries.date as { from: any, to: any }
             const selectedDate = date ? moment(date.from, 'YYYY-MM-DD') : moment()
@@ -100,7 +103,7 @@ export default {
         }
 
         handleBottomSheetGroupByEntityValue(subqueries)
-        handleGroupByEntityValueDatePart(subqueries,moment)
+        handleGroupByEntityValueDatePart(subqueries, moment)
         delete params.subqueries.alertCreatedAt
 
         return params

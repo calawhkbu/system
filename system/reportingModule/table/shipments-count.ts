@@ -30,8 +30,6 @@ export default {
           let date=_.cloneDeep(params.subqueries.date)
           _.merge(params.subqueries,query)
          params.subqueries.date=date
-         console.log('params in shipmentscount...')
-         console.log({params})
         }
   
         return params
