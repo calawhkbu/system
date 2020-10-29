@@ -239,25 +239,9 @@
                     },
                     {
                       "label": "BookingPage.nominatedType",
-                      "name": "nominatedTypeCode",
-                      "component": "AsyncSelect",
-                      "class": "xs-12",
-                      "relation": "nominatedType",
-                      "props": {
-                        "axiosParams": {
-                          "url": "api/code/query/code_master",
-                          "method": "POST",
-                          "data": {
-                            "subqueries": {
-                              "codeType": {
-                                "value": "NOMINATED_TYPE"
-                              }
-                            }
-                          }
-                        },
-                        "item-text": "name",
-                        "item-value": "code"
-                      }
+                      "name": ["nominatedType.name", "nominatedTypeCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12"
                     },
                     {
                       "label": "BookingPage.picId",
@@ -486,26 +470,11 @@
               },
               {
                 "label": "BookingPage.nominatedType",
-                "name": "nominatedTypeCode",
-                "component": "AsyncSelect",
+                "name": ["nominatedType.name", "nominatedTypeCode"],
+                "component": "v-text-field",
                 "class": "xs-6 md-3",
                 "relation": "nominatedType",
-                "props": {
-                  "axiosParams": {
-                    "url": "api/code/query/code_master",
-                    "method": "POST",
-                    "data": {
-                      "subqueries": {
-                        "codeType": {
-                          "value": "NOMINATED_TYPE"
-                        }
-                      }
-                    }
-                  },
-                  "item-text": "name",
-                  "item-value": "code"
-                },
-                "checkDisplayWhen": "return form && form.nominatedTypeCode"
+                "checkDisplayWhen": "return form && (form.nominatedTypeCode || (form.nominatedType && form.nominatedType.name))"
               },
               {
                 "label": "BookingPage.picId",

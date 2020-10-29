@@ -132,7 +132,6 @@ export default class CreateRelatedPartyEvent extends BaseEventHandler {
               }
               await this.allService.relatedPartyTableService.save(relatedParty, this.user) // no transaction as need to keep transaction
             } catch (e) {
-              console.error(e, e.stack, this.constructor.name)
             }
           },
           { concurrency: 15 }

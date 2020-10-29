@@ -1,4 +1,4 @@
-import { QueryDef } from 'classes/query/QueryDef'
+import { QueryDef,SubqueryArg } from 'classes/query/QueryDef'
 import {
   Query,
   FromTable,
@@ -141,6 +141,7 @@ const partyList = [
 const locationList = ['portOfLoading', 'portOfDischarge', 'placeOfDelivery', 'placeOfReceipt', 'finalDestination']
 
 
+
 const query = new QueryDef(
   new Query({
 
@@ -155,6 +156,7 @@ const query = new QueryDef(
     ),
   })
 )
+
 
 query.table('booking_date', new Query({
   $from : new FromTable({
@@ -996,11 +998,40 @@ query.table('alert', new Query({
 )
 
 //  register date field
-const createdAtExpression = new FunctionExpression(
+var createdAtExpression = new FunctionExpression(
   'IFNULL',
   new ColumnExpression('booking', 'bookingCreateTime'),
-  new ColumnExpression('booking', 'createdAt')
+  //new ColumnExpression('booking', 'createdAt'))
+  new ColumnExpression('booking_date', 'departureDateEstimated'))
+
+query.subquery('dateSource', ((value: any, params?: IQueryParams) => {
+  console.log('dateSource......')
+  console.log(params.subqueries.dateSource&& params.subqueries.dateSource.value)
+
+
+  if(params.subqueries.dateSource&& params.subqueries.dateSource.value=='createdAt'){
+     createdAtExpression=new ColumnExpression('booking','createdAt')
+  }else{
+     createdAtExpression=new ColumnExpression('booking_date','departureDateEstimated')
+  }
+}) as SubqueryArg
 )
+
+console.log('params---------dataSource--createdAtExpression')
+console.log(createdAtExpression)
+
+
+// const createdAtExpression=dateSourceExpression;
+// console.log('register date field')
+// console.log(dateSourceExpression)
+
+
+
+
+
+
+
+//  register date field
 const updatedAtExpression = new FunctionExpression(
   'IFNULL',
   new ColumnExpression('booking', 'bookingLastUpdateTime'),
@@ -1853,7 +1884,8 @@ const summaryFieldList : SummaryField[]  = [
   {
     name: 'totalBooking',
     summaryType: 'count',
-    expression: new ColumnExpression('booking', 'id')
+    expression: new ColumnExpression('booking', 'id'),
+    companion:['table:booking_date']
   },
   {
     name: 'quantity',
@@ -1865,7 +1897,9 @@ const summaryFieldList : SummaryField[]  = [
   {
     name: 'cbm',
     summaryType : 'sum',
-    expression: new ColumnExpression('booking', 'cbm')
+    expression: new ColumnExpression('booking', 'cbm'),
+    companion:['table:booking_date']
+
   },
   {
     name: 'teu',
@@ -2043,6 +2077,25 @@ query.subquery(false, 'missingDocument', ((value: any, params?: IQueryParams) =>
 
 
 // Date Filter=================
+// query.register(
+//   'dateSource',new Query({
+//     $where: new CaseExpressions({
+
+
+//     })
+//     $when: new BinaryExpression(new Value('dateSource'), '=', new Unknown()),
+//     $then: new ColumnExpression('booking','createdAt'),
+//     $else:new ColumnExpression('booking_date','departureDateEstimated'),
+//   }))
+//   .register('value', 0)
+
+// query.subquery(true,'dateSource',((value: any, param?: IQueryParams) => {
+//   return new Query({
+//     $where: dateSourceExpression(param),
+//   })
+// }) as SubqueryArg
+// )
+
 
 query
   .register(
@@ -2096,9 +2149,8 @@ query
   .register('currentFrom', 10)
   .register('currentTo', 11)
 
-   // regiter date filter
 const dateList = [
-  // 'departureDateEstimated',
+  //'departureDateEstimated',
   // 'departureDateAcutal',
   // 'arrivalDateEstimated',
   // 'arrivalDateActual',
