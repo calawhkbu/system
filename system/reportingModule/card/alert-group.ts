@@ -99,7 +99,6 @@ export default {
 
         for (const key of Object.keys(prevResult)) {
           const result = prevResult[key]
-          console.log(prevResult)
 
 
           let hideAll_default = Object.keys(prevResult)
@@ -124,8 +123,6 @@ export default {
               hideAll: [...temp, `${prevResult.tableName}-${key}`],
               isEntityRow: true,
               active:prevResult.active,
-              primaryId:5
-
             })
           }
 
@@ -134,7 +131,7 @@ export default {
         results.push({
           alertTypeCode: 'detentionAlert(SEA)',
           alertType: "Alert ! Ocean Container free detention time expiring notice for house# : ",
-          primaryId: 5,
+          primaryId: 290924,
           tableName: prevResult.tableName,
           subqueries: prevResult.subqueries,
           collapsed: `shipment-detentionAlert(SEA)`,

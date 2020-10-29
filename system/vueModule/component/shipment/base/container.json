@@ -222,7 +222,8 @@
                             "label": "ShipmentPage.cbm",
                             "colGroupProps": {
                               "style": {
-                                "width": "10%"
+                                "width": "10%",
+                                "min-width": "75px"
                               }
                             },
                             "name": "cbm",
@@ -239,7 +240,8 @@
                             "component": "v-text-field",
                             "colGroupProps": {
                               "style": {
-                                "width": "10%"
+                                "width": "30%",
+                                "min-width": "150px"
                               }
                             }
                           }
@@ -645,7 +647,7 @@
                       "component": "v-text-field",
                       "colGroupProps": {
                         "style": {
-                          "width": "10%"
+                          "width": "30%"
                         }
                       }
                     }
