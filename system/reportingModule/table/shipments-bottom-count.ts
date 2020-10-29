@@ -2,6 +2,7 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import { expandGroupEntity, LastCurrentUnit, calculateLastCurrent, extendDate, handleGroupByEntityValueDatePart, handleBottomSheetGroupByEntityValue } from 'utils/card'
 import * as  rawMoment from 'moment'
+import _ = require('lodash')
 
 export default {
   jqls: [
@@ -9,6 +10,12 @@ export default {
       type: 'prepareParams',
       async prepareParams(params, prevResult, user): Promise<IQueryParams> {
         const { moment } = await this.preparePackages(user)
+         //For alert
+   let query=params.subqueries.query.value;
+   for(let i=0;i<query.length;i++){
+     query=query.replace('&quot;','"');
+   }
+   query=JSON.parse(query);
 
         params.fields = [
           'id',
@@ -45,7 +52,7 @@ export default {
         }
 
         // alertType case
-        if (subqueries.alertType) {
+        if (subqueries.selectedAlertType) {
           if (!(subqueries.alertType !== true && 'value' in subqueries.alertType && Array.isArray(subqueries.alertType.value))) throw new Error('MISSING_alertType')
           subqueries.alertJoin = true
           let alertCreatedAtJson: { from: any, to: any}
@@ -55,8 +62,11 @@ export default {
               from: moment().subtract(withinHours.value, 'hours'),
               to: moment()
             }
-          }
-          else {
+            //merge subqueries of clicked row 
+          let date=_.cloneDeep(params.subqueries.date)
+          _.merge(params.subqueries,query)
+         params.subqueries.date=date
+          } else {
             const date = subqueries.date as { from: any, to: any }
             const selectedDate = date ? moment(date.from, 'YYYY-MM-DD') : moment()
             const currentMonth = selectedDate.month()
@@ -65,7 +75,7 @@ export default {
               to: selectedDate.month(currentMonth).endOf('month').format('YYYY-MM-DD'),
             }
           }
-          delete subqueries.date
+          //delete subqueries.date
           subqueries.alertCreatedAt = alertCreatedAtJson
         }
 
@@ -91,6 +101,7 @@ export default {
 
         handleBottomSheetGroupByEntityValue(subqueries)
         handleGroupByEntityValueDatePart(subqueries,moment)
+        delete params.subqueries.alertCreatedAt
 
         return params
       }

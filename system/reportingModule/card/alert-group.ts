@@ -65,7 +65,7 @@ export default {
                 onResult(res, params, prevResult: any): any {
                   prevResult[alertType] = res
                   prevResult['tableName'] = tableName
-                  prevResult['subqueries'] = subqueries
+                  prevResult['query'] = query.subqueries
                   prevResult['alertType'] = alertType
                   prevResult['active'] = active
 
