@@ -1,7 +1,5 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
-import _ = require('lodash')
-
 
 export default {
   jqls: [
@@ -9,12 +7,7 @@ export default {
       type: 'prepareParams',
       prepareParams(params): IQueryParams {
         const subqueries = (params.subqueries = params.subqueries || {})
-   //For alert
-   let query=params.subqueries.query.value;
-   for(let i=0;i<query.length;i++){
-     query=query.replace('&quot;','"');
-   }
-   query=JSON.parse(query);
+  
 
         // lastStatusList case
         if (subqueries.lastStatus) {
@@ -26,10 +19,6 @@ export default {
         if (subqueries.selectedAlertType) {
           if (!(subqueries.alertType !== true && 'value' in subqueries.selectedAlertType && Array.isArray(subqueries.selectedAlertType.value))) throw new Error('MISSING_alertType')
           subqueries.alertJoin = true
-          //merge subqueries of clicked row 
-          let date=_.cloneDeep(params.subqueries.date)
-          _.merge(params.subqueries,query)
-         params.subqueries.date=date
         }
   
         return params

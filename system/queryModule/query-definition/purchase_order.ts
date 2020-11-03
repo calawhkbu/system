@@ -553,48 +553,11 @@ const fieldList = [
 
 ] as ExpressionHelperInterface[]
 
-const baseTableName='purchase_order'
 registerAll(
   query,
   baseTableName,
   fieldList
 )
-
-//  register date field
-const createdAtExpression = new ColumnExpression(baseTableName, 'createdAt')
-
-const updatedAtExpression = new ColumnExpression(baseTableName, 'updatedAt')
-
-const jobDateExpression = createdAtExpression
-
-const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
-
-const jobMonthExpression = new FunctionExpression('CONCAT', new FunctionExpression('YEAR', jobDateExpression),
-  '-',
-  new FunctionExpression('LPAD', new FunctionExpression('MONTH', jobDateExpression), 2, '0'))
-
-const jobWeekExpression = new FunctionExpression('LPAD', new FunctionExpression('WEEK', jobDateExpression), 2, '0')
-
-// ============
-const summaryFieldList : SummaryField[]  = [
-  {
-    name: 'totalpo',
-    summaryType: 'count',
-    expression: new ColumnExpression(baseTableName, 'id')
-  },
-];
-
-const nestedSummaryList = [
-  //tbc
-
-
-] as NestedSummaryCondition[]
-
-
-
-registerSummaryField(query, baseTableName, summaryFieldList, [], jobDateExpression)
-
-
 
 const summaryFieldList : SummaryField[]  = [
   {

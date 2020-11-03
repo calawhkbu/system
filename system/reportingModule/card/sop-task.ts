@@ -44,15 +44,6 @@ export default {
             'description',
             'remark',
             'primaryNo',
-            'vesselName',
-            'voyageFlightNumber',
-            'portOfLoadingCode',
-            'portOfDischargeCode',
-            'departureDate',
-            'arrivalDate',
-            'shipper',
-            'consignee',
-            'agent',
             'picEmail',
             'team'
           ]

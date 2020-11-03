@@ -15,6 +15,7 @@ export default {
         const defaultFields = [
           'id',
           'bookingNo',
+          'houseNo',
           'masterNo',
           'jobDate',
           'carrierCode',
@@ -130,6 +131,7 @@ export default {
   columns: [
     { key: 'id' },
     { key: 'bookingNo' },
+    { key: 'houseNo' },
     { key: 'masterNo' },
     { key: 'jobDate' },
     { key: 'carrierCode' },

@@ -114,7 +114,20 @@
           {
             "name": "pic",
             "i18nContext": "SopTask",
-            "type": "text"
+            "type": "autocomplete",
+            "props": {
+              "api": {
+                "query": {
+                  "url": "sopTask/pic/list",
+                  "method": "GET",
+                  "sublabelKey": "picEmail",
+                  "labelKey": "picId",
+                  "valueKey": "picEmail"
+                }
+              },
+              "showAllIfEmpty": true,
+              "multi": true
+            }
           },
           {
             "name": "team",

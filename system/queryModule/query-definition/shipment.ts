@@ -2475,6 +2475,20 @@ const fieldList = [
 
 registerAll(query, baseTableName, fieldList)
 
+query.field('pic', {
+  $distinct: true,
+  $select: [
+    new ResultColumn(new ColumnExpression(baseTableName, 'picId'), 'picId'),
+    new ResultColumn(new ColumnExpression(baseTableName, 'picEmail'), 'picEmail')
+  ]
+})
+
+query.subquery('picNotNull', {
+  $where: [
+    new IsNullExpression(new ColumnExpression(baseTableName, 'picId'), true),
+    new IsNullExpression(new ColumnExpression(baseTableName, 'picEmail'), true)
+  ]
+})
 
 // summary fields  =================
 const nestedSummaryList = [

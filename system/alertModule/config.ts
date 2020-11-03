@@ -9,7 +9,7 @@ const schedulerActive = false
 // make sure those email already have an acc
 const testMode = false
 const testAlertEmailList = [
-  'marco.lor+0843@swivelsoftware.com'
+  'ken.chan+watchdog@swivelsoftware.com'
 ]
 
 
@@ -20,24 +20,16 @@ const ASWAlertConfigList = [
     alertCategory: 'Exception',
     severity: 'high',
     alertType: 'lateArrival(SEA)',
-
     templatePath: 'alert/shipment-alert',
-
     handleAlertSubComponentLayoutName: 'alertForm.lateArrival',
-
-    interval: {
-      value: 15,
-      unit: 'MINUTE'
-    },
-
+    interval: { value: 15, unit: 'MINUTE' },
     active: true,
-
     queryName: 'shipment',
     query: {
       subqueries: {
 
         moduleTypeCode: {
-          value: "SEA"
+          value: ["SEA"]
         },
 
         // missing arrivalDateActual
@@ -55,13 +47,11 @@ const ASWAlertConfigList = [
       },
 
     } as IQueryParams,
-
     closeQuery: {
       subqueries: {
         arrivalDateActualIsNotNull: true,
       }
     } as IQueryParams,
-
     contactRoleList: ['forwarder', 'personInCharge', 'office', 'shipper', 'consignee'],
     canCloseBy: [
       {
@@ -69,38 +59,27 @@ const ASWAlertConfigList = [
       }
     ],
   } as AlertConfig,
-
-
-
   // lateArrival(AIR)
   {
     tableName: 'shipment',
     alertCategory: 'Exception',
     severity: 'high',
     alertType: 'lateArrival(AIR)',
-
     templatePath: 'alert/shipment-alert',
-
     handleAlertSubComponentLayoutName: 'alertForm.lateArrival',
-
     interval: {
       value: 15,
       unit: 'MINUTE'
     },
-
     active: true,
-
     queryName: 'shipment',
     query: {
       subqueries: {
-
         moduleTypeCode: {
-          value: "AIR"
+          value: ["AIR"]
         },
-
         // missing arrivalDateActual
         arrivalDateActualIsNull: true,
-
         // after arrivalDateActual + 1 day
         after_arrivalDateEstimatedInUtc: {
           value: {
@@ -113,13 +92,11 @@ const ASWAlertConfigList = [
       },
 
     } as IQueryParams,
-
     closeQuery: {
       subqueries: {
         arrivalDateActualIsNotNull: true,
       }
     } as IQueryParams,
-
     contactRoleList: ['forwarder', 'personInCharge', 'office', 'shipper', 'consignee'],
     canCloseBy: [
       {
@@ -152,7 +129,7 @@ const ASWAlertConfigList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: "AIR"
+          value: ["AIR"]
         },
 
         // missing sendAMSDateActual
@@ -209,7 +186,7 @@ const ASWAlertConfigList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: "SEA"
+          value: ["SEA"]
         },
 
         // missing sendAMSDateActual
@@ -269,7 +246,7 @@ const ASWAlertConfigList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: "SEA"
+          value: ["SEA"]
         },
 
         // missing returnEmptyContainerDateActual
@@ -1130,7 +1107,7 @@ const shipmentAirAlertList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: 'AIR'
+          value: ['AIR']
         },
 
         // missing preAlertSendDateActual
@@ -1191,7 +1168,7 @@ const shipmentAirAlertList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: 'AIR'
+          value: ['AIR']
         },
 
         // missing preAlertSendDateActual
@@ -1251,7 +1228,7 @@ const shipmentAirAlertList = [
       subqueries: {
 
         moduleTypeCode: {
-          value: 'AIR'
+          value: ['AIR']
         },
 
         // missing portOfLoadingCode
@@ -1314,7 +1291,7 @@ const sopTaskAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -1355,7 +1332,7 @@ const sopTaskAlertList = [
       value: 15,
       unit: 'MINUTE'
     },
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {
@@ -1519,7 +1496,7 @@ const testAlertList = [
       unit: 'MINUTE'
     },
 
-    active: true,
+    active: false,
 
     queryName: 'shipment',
     query: {

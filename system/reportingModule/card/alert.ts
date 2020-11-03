@@ -5,9 +5,42 @@ import _ = require('lodash')
 import swig = require('swig-templates')
 
 
-const bottomSheetId = {
-  shipment: 'cb22011b-728d-489b-a64b-b881914be600',
-  booking: 'bde2d806-d2bb-490c-b3e3-9e4792f353dd'
+const entityTypes = [
+  // {
+  //   label: 'booking',
+  //   value: 'booking',
+  // },
+  {
+    label: 'shipment',
+    value: 'shipment',
+  },
+  // {
+  //   label: 'purchase-order',
+  //   value: 'purchase-order',
+  // }
+]
+
+
+const handleParams = (baseParams: IQueryParams): { entityParams: IQueryParams, alertParams: { entityType: string, alertType: string[], isImportant: boolean } } => {
+  const { entityType = null, alertType = null, isImportant = null, ...entitySubqueries } = baseParams.subqueries || {}
+  const selectedEntityType = entityType && entityType.value ? entityType.value : undefined
+  if (!selectedEntityType) {
+    throw new Error('MISSING_ENTITY_TYPE')
+  }
+  if (!entityTypes.find(type => type.value === selectedEntityType)) {
+    throw new Error(`INVALID_ENTITY_TYPE_${String(selectedEntityType).toLocaleUpperCase()}`)
+  }
+  return {
+    entityParams: {
+      ...baseParams,
+      subqueries: entitySubqueries
+    },
+    alertParams: {
+      entityType: selectedEntityType,
+      alertType: alertType && alertType.value ? alertType.value : [],
+      isImportant
+    }
+  }
 }
 
 export default {
@@ -20,92 +53,53 @@ export default {
         prevResult?: any,
         user?: JwtPayload
       ): Promise<Array<JqlTask | JqlTask[]>> {
-        var subqueries = params.subqueries || {}
-        if (!subqueries.entityType || !(subqueries.entityType !== true && 'value' in subqueries.entityType)) {
-          throw new Error('MISSING_ENTITY_TYPE')
-        }
-        if (Object.keys(bottomSheetId).indexOf(subqueries.entityType.value) === -1) {
-          throw new Error(`INVALID_ENTITY_TYPE_${String(subqueries.entityType.value).toLocaleUpperCase()}`)
-        }
-        const { alertConfigList } = await this.getDataService().crudEntity(
+        const { entityParams, alertParams } = handleParams(params)
+        const entitySuqueries = entityParams.subqueries || {}
+        const { alertConfigList = [] } = await this.getDataService().crudEntity(
           'alert',
           { type: 'getCompleteAlertConfig', options: [user.selectedPartyGroup.code] },
           user
         )
-        
 
-
-        return alertConfigList.reduce((finalTasks: Array<JqlTask | JqlTask[]>, { alertType, tableName, queryName, query, active }) => {
-
-          let addRow = true;
-          if (query && active && tableName === subqueries.entityType.value) {
-            let mainCard_subq = _.cloneDeep(params.subqueries || {})
-            let keys = Object.keys(mainCard_subq);
-            keys = keys.filter(o => o != 'date')
-            keys = keys.filter(o => o != 'active')
-            keys = keys.filter(o => o != 'entityType')
-            keys = keys.filter(o => o != 'activeStatus')
-            keys = keys.filter(o => o != 'alertType')
-
-
-            var alertConfigKeys = Object.keys(query.subqueries);
-
-            if (keys && keys.length > 0) {
-              for (let i = 0; i < keys.length; i++) {
-                let exist = alertConfigKeys.find(o => o == keys[i]);
-                if (exist) {
-                  let alertVal = Array.isArray(query.subqueries[exist].value) ? query.subqueries[exist].value[0] : query.subqueries[exist].value
-                  let mainCard = mainCard_subq[exist].value[0] || undefined
-
-                  if (alertVal != mainCard) {
-                    addRow = false;
-                  } else {
-                    addRow = true;
-                  }
-                } else {
-                  addRow = false;
-                }
+        return alertConfigList.reduce((finalTasks: Array<JqlTask | JqlTask[]>, { alertType, tableName, queryName, query, active, severity }) => {
+          if (
+            active && query && // if it is active watchdog
+            tableName === alertParams.entityType && // entityType filter
+            (!alertParams.alertType.length || alertParams.alertType.includes(alertType)) && // alert type filer
+            ((alertParams.isImportant && severity === 'high') || (!alertParams.isImportant && severity !== 'high')) && // important filter
+            Object.keys(entitySuqueries).reduce((add: boolean, key: string) => {
+              const baseSubqueries = query.subqueries || {}
+              if (add && baseSubqueries[key] && !_.isEqual(baseSubqueries[key], entitySuqueries[key])) {
+                add = false
               }
-            }
-
-
-            if (addRow) {
-              finalTasks.push([
-                {
-                  type: 'prepareParams',
-                  async prepareParams(
-                    params: IQueryParams,
-                    prevResult?: any,
-                    user?: JwtPayload
-                  ): Promise<IQueryParams> {
-                    ;
-                    delete mainCard_subq.alertType
-                    return {
-                      subqueries: {
-                        ...mainCard_subq,
-                        //...(subqueries || {}),
-                        ...(query.subqueries || {})
-                      }
+              return add
+            }, true)
+          ) {
+            finalTasks.push([
+              {
+                type: 'prepareParams',
+                async prepareParams(
+                  params: IQueryParams,
+                  prevResult?: any,
+                  user?: JwtPayload
+                ): Promise<IQueryParams> {
+                  return {
+                    subqueries: {
+                      ...(entitySuqueries),
+                      ...(query.subqueries || {})
                     }
-
-                  }
-                }, {
-                  type: 'callDataService',
-                  dataServiceType: 'count',
-                  dataServiceQuery: [tableName, queryName],
-                  onResult(res, params, prevResult: any): any {
-                    prevResult[alertType] = res
-                    prevResult['tableName'] = tableName
-                    prevResult['alertType'] = alertType
-                    return prevResult
                   }
                 }
-              ])
-              if (subqueries.alertType && subqueries.alertType.value.filter(o => o == alertType).length == 0) {
-                //if not selected from the UI, filtered out, not show
-                finalTasks.pop()
+              }, {
+                type: 'callDataService',
+                dataServiceType: 'count',
+                dataServiceQuery: [tableName, queryName],
+                onResult(res, params, prevResult: any): any {
+                  prevResult[alertType] = res
+                  return prevResult
+                }
               }
-            }
+            ])
           }
           return finalTasks
         }, [])
@@ -118,41 +112,29 @@ export default {
         prevResult?: any,
         user?: JwtPayload
       ) {
-
         const i18n = await this.getI18nService().find({
           locale: 'en',
           version: undefined,
           user: user
         })
         const results = []
-      
-      
 
 
         for (const key of Object.keys(prevResult)) {
           const result = prevResult[key]
-         
           if (result && result.length && result[0].count > 0) {
             const translation = _.get(i18n, `Alert.${key}Title`, null)
-            const { alertConfigList } = await this.getDataService().crudEntity(
-              'alert',
-              { type: 'getCompleteAlertConfig', options: [user.selectedPartyGroup.code] },
-              user
-            )
-             let query=alertConfigList.find(o=>o.alertType==key);
-             query=query.query.subqueries||{}
-             
-
             results.push({
               alertTypeCode: key,
               alertType: translation ? swig.render(translation, { locals: {} }) : translation,
               count: result[0].count,
               tableName: prevResult.tableName,
-              query: query,
+              subqueries: prevResult.subqueries,
               collapsed: `${prevResult.tableName}-${key}`,
               expanded: 0,
               indicator: '-',
               isEntityRow: true
+
             })
           }
         }
@@ -164,7 +146,6 @@ export default {
           }
           return 0
         })
-  
         return results
       }
     }
@@ -214,23 +195,15 @@ export default {
     {
       name: 'entityType',
       props: {
-        items: [
-          // {
-          //   label: 'booking',
-          //   value: 'booking',
-          // },
-          {
-            label: 'shipment',
-            value: 'shipment',
-          },
-          // {
-          //   label: 'purchase-order',
-          //   value: 'purchase-order',
-          // }
-        ],
+        items: entityTypes,
         required: true,
       },
       type: 'list',
+    },
+    {
+      display: 'isImportant',
+      name: 'isImportant',
+      type: 'boolean',
     },
   ]
 } as JqlDefinition

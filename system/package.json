@@ -43,6 +43,8 @@
     "prepare:eslint-plugin-import": "ln -s ../../../swivel-backend-new/node_modules/eslint-plugin-import node_modules/eslint-plugin-import",
     "prepare:eslint-plugin-jsdoc": "ln -s ../../../swivel-backend-new/node_modules/typescript node_modules/eslint-plugin-jsdoc",
     "prepare:eslint-plugin-prefer-arrow": "ln -s ../../../swivel-backend-new/node_modules/typescript node_modules/eslint-plugin-prefer-arrow",
+    "prepare:microService": "yarn prepare:cta",
+    "prepare:cta": "ln -s ../../../swivel-cta-service/src/modules/cta node_modules/modules/cta",
     "export": "node export"
   },
   "dependencies": {
