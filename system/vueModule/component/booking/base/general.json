@@ -293,7 +293,7 @@
                 "label": "BookingPage.moduleType",
                 "name": ["moduleType.name", "moduleTypeCode"],
                 "component": "v-text-field",
-                "class": "xs-6 md-3",
+                "class": "xs-6 md-4",
                 "validator": ["required"],
                 "props": {
                   "required": true
@@ -313,7 +313,7 @@
                 "label": "BookingPage.serviceCode",
                 "name": ["service.name", "serviceCode"],
                 "component": "v-text-field",
-                "class": "xs-6 md-3",
+                "class": "xs-6 md-1",
                 "isRequired": "return form && form.moduleTypeCode !== 'AIR';",
                 "checkDisplayWhen": "return form && ((form.service && form.service.name) || form.serviceCode)"
               },

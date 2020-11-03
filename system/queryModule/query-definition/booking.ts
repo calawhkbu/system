@@ -1008,6 +1008,8 @@ const updatedAtExpression = new FunctionExpression(
 )
 
 const jobDateExpression = createdAtExpression
+const jobDateExpressionETD = new ColumnExpression('booking_date','departureDateEstimated')
+
 
 const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
 
@@ -1613,6 +1615,11 @@ const fieldList = [
   {
     name : 'jobDate',
     expression : jobDateExpression
+  },
+  {
+    name : 'jobDateETD',
+    expression : new ColumnExpression('booking_date','departureDateEstimated'),
+    companion:['table:booking_date']
   },
   {
     name: 'createdAt',

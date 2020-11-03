@@ -45,10 +45,12 @@
     "prepare:eslint-plugin-prefer-arrow": "ln -s ../../../swivel-backend-new/node_modules/typescript node_modules/eslint-plugin-prefer-arrow",
     "prepare:microService": "yarn prepare:cta",
     "prepare:cta": "ln -s ../../../swivel-cta-service/src/modules/cta node_modules/modules/cta",
-    "export": "node export"
+    "clone-custom": "ts-node clone-custom"
   },
   "dependencies": {
+    "node-cmd": "^3.0.0",
     "randomstring": "^1.1.5",
-    "sha256": "^0.2.0"
+    "sha256": "^0.2.0",
+    "ts-node": "^9.0.0"
   }
 }

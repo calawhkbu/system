@@ -93,6 +93,10 @@ export default {
           nameColumnName,
           'ErpSite'
         ]
+        if(!params.dateSource||params.dateSource&&params.dateSource.value!='createdAt'){
+          console.log('-------createdAt not detected')
+          params.fields.push('jobDateETD')
+        }
 
         // group by
         params.groupBy = [codeColumnName]
@@ -173,6 +177,26 @@ export default {
   filters: [
     // for this filter, user can only select single,
     // but when config in card definition, use summaryVariables. Then we can set as multi
+    {
+      display: "dateSource",
+      name: "dateSource",
+      props: {
+        items: [
+          {
+            label: "departureDateEstimated",
+            value: "departureDateEstimated"
+          },
+          {
+            label: "createdAt",
+            value: "createdAt"
+          }
+
+        ],
+        multi: false,
+        required: true,
+      },
+      type: 'list',
+    },
     {
       display: 'topX',
       name: 'topX',
