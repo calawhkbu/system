@@ -86,25 +86,22 @@ export default {
         // select
         params.fields = [
           // select Month statistics
-          ...summaryVariables.map(variable => `${params.constants.name}_${variable}Month`),
+           ...summaryVariables.map(variable => `${params.constants.name}_${variable}Month`),
           codeColumnName,
           nameColumnName,
         ]
 
         // group by
         params.groupBy = [codeColumnName]
-
         // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
         params.sorting = new OrderBy(`total_T_${summaryVariables[0]}`, 'DESC')
-
         params.limit = topX
-
         return params
       }
     },
     {
       type: 'callDataService',
-      dataServiceQuery: ['shipment', 'shipment'],
+      dataServiceQuery: ['booking', 'booking'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
         return res.map(row => {
           const row_: any = { groupByEntity, code: row[codeColumnName], name: row[nameColumnName] }

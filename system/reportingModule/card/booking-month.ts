@@ -129,13 +129,13 @@ export default {
         subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
           value: true
         }
-
         params.fields = [
           // select Month statistics
           ...summaryVariables.map(variable => `${variable}Month`),
           codeColumnName,
           nameColumnName,
         ]
+     
 
         // group by
         params.groupBy = [codeColumnName]

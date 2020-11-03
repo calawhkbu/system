@@ -44,7 +44,6 @@ import {
   RegisterInterface,
 } from 'utils/jql-subqueries'
 import { IShortcut } from 'classes/query/Shortcut'
-import { createPartiallyEmittedExpression } from 'typescript'
 const dateNameList = [
   'departure',
   'arrival',
@@ -1826,7 +1825,7 @@ const nestedSummaryList = [
   {
 
     name: 'fr',
-    companion: [],
+    companion: ['table:booking_date'],
     cases: [
       {
         typeCode: 'F',
@@ -1875,9 +1874,7 @@ const summaryFieldList : SummaryField[]  = [
   {
     name: 'totalBooking',
     summaryType: 'count',
-    expression: new ColumnExpression('booking', 'id'),
-    companion: ['table:booking_date']
-
+    expression: new ColumnExpression('booking', 'id')
   },
   {
     name: 'quantity',
