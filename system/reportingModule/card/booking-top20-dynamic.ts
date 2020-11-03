@@ -10,6 +10,7 @@ import {
   summaryVariableListBooking,
   groupByEntityListBooking
 } from 'utils/card'
+import { dateSourceList } from './booking-month'
 const summaryVariableList = summaryVariableListBooking;
 const groupByEntityList = groupByEntityListBooking;
 
@@ -293,6 +294,7 @@ export default {
   filters: [
     // for this filter, user can only select single,
     // but when config in card definition, use summaryVariables. Then we can set as multi
+    {...dateSourceList},
     {
       display: 'topY',
       name: 'topY',

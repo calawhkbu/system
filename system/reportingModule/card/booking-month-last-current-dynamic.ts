@@ -5,6 +5,7 @@ import Moment = require('moment')
 import { OrderBy } from 'node-jql'
 import { expandBottomSheetGroupByEntity, expandSummaryVariable, calculateLastCurrent, handleBottomSheetGroupByEntityValue, summaryVariableListBooking, groupByEntityListBooking } from 'utils/card'
 import { convertToStartOfDate } from 'utils/jql-subqueries'
+import { dateSourceList } from './booking-month'
 
 const summaryVariableList = summaryVariableListBooking;
 const groupByEntityList = groupByEntityListBooking;
@@ -189,6 +190,7 @@ export default {
   filters: [
     // for this filter, user can only select single,
     // but when config in card definition, use summaryVariables. Then we can set as multi
+    {...dateSourceList},
     {
       display: 'topX',
       name: 'topX',

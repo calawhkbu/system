@@ -4,6 +4,7 @@ import Moment = require('moment')
 import { OrderBy } from 'node-jql'
 import { BadRequestException } from '@nestjs/common'
 import { expandGroupEntity, expandSummaryVariable } from 'utils/card'
+import { dateSourceList } from './booking-month'
 
 interface Result {
   moment: typeof Moment
@@ -377,6 +378,7 @@ export default {
   filters: [
     // for this filter, user can only select single,
     // but when config in card definition, use summaryVariables. Then we can set as multi
+    {...dateSourceList},
     {
       display: 'topX',
       name: 'topX',

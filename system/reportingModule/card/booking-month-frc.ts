@@ -3,6 +3,7 @@ import { IQueryParams } from 'classes/query'
 import Moment = require('moment')
 import { OrderBy } from 'node-jql'
 import { expandGroupEntity, expandSummaryVariable, extendDate } from 'utils/card'
+import { dateSourceList } from './booking-month'
 
 interface Result {
   moment: typeof Moment
@@ -124,7 +125,8 @@ export default {
   ],
   filters: [
     // for this filter, user can only select single,
-    // but when config in card definition, use summaryVariables. Then we can set as multi
+  // but when config in card definition, use summaryVariables. Then we can set as multi
+{...dateSourceList},
     {
       display: 'topX',
       name: 'topX',

@@ -1,14 +1,16 @@
 import { JqlDefinition } from 'modules/report/interface'
+import { dateSourceList } from './booking-month'
 
 export default {
   constants: {
-    name : 'fr',
-    typeCodeList : ['F', 'R', 'T']
+    name: 'fr',
+    typeCodeList: ['F', 'R', 'T']
   },
   extend: 'card/booking-month-frc',
   filters: [
     // for this filter, user can only select single,
     // but when config in card definition, use summaryVariables. Then we can set as multi
+    { ...dateSourceList },
     {
       display: 'topX',
       name: 'topX',
@@ -35,7 +37,7 @@ export default {
             value: 1000,
           }
         ],
-        multi : false,
+        multi: false,
         required: true,
       },
       type: 'list',
@@ -43,7 +45,7 @@ export default {
     {
       display: 'summaryVariables',
       name: 'summaryVariables',
-      hidden:true,
+      hidden: true,
       props: {
         items: [
           {
@@ -66,16 +68,16 @@ export default {
             label: 'teu',
             value: 'teu',
           },
-       
+
           {
             label: 'quantity',
             value: 'quantity',
           },
-    
+
         ],
         multi: false,
         required: true,
-      
+
       },
       type: 'list',
     },
@@ -121,12 +123,12 @@ export default {
             value: 'forwarder',
           },
           {
-            label : 'moduleType',
-            value : 'moduleType'
+            label: 'moduleType',
+            value: 'moduleType'
           },
           {
-            label : 'houseNo',
-            value : 'houseNo'
+            label: 'houseNo',
+            value: 'houseNo'
           }
         ],
         required: true,

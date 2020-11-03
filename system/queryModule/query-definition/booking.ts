@@ -44,6 +44,7 @@ import {
   RegisterInterface,
 } from 'utils/jql-subqueries'
 import { IShortcut } from 'classes/query/Shortcut'
+import { createPartiallyEmittedExpression } from 'typescript'
 const dateNameList = [
   'departure',
   'arrival',
@@ -996,20 +997,24 @@ query.table('alert', new Query({
 )
 
 //  register date field
-const createdAtExpression = new FunctionExpression(
-  'IFNULL',
-  new ColumnExpression('booking', 'bookingCreateTime'),
-  new ColumnExpression('booking', 'createdAt')
-)
+// const createdAtExpression = new FunctionExpression(
+//   'IFNULL',
+//   new ColumnExpression('booking', 'bookingCreateTime'),
+//   new ColumnExpression('booking', 'createdAt')
+// )
+
+var createdAtExpression=new ColumnExpression('booking','createdAt');
+var ETDExpression=new ColumnExpression('booking_date','departureDateEstimated');
+
+ 
+
 const updatedAtExpression = new FunctionExpression(
   'IFNULL',
   new ColumnExpression('booking', 'bookingLastUpdateTime'),
   new ColumnExpression('booking', 'updatedAt')
 )
 
-const jobDateExpression = createdAtExpression
-const jobDateExpressionETD = new ColumnExpression('booking_date','departureDateEstimated')
-
+var jobDateExpression = createdAtExpression
 
 const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
 
@@ -1616,11 +1621,7 @@ const fieldList = [
     name : 'jobDate',
     expression : jobDateExpression
   },
-  {
-    name : 'jobDateETD',
-    expression : new ColumnExpression('booking_date','departureDateEstimated'),
-    companion:['table:booking_date']
-  },
+
   {
     name: 'createdAt',
     expression: createdAtExpression
@@ -1772,7 +1773,7 @@ const nestedSummaryList = [
 
   {
     name: 'frc',
-    companion: ['table:booking_party'],
+    companion: ['table:booking_party','table:booking_date'],
     cases: [
       {
         typeCode: 'F',
@@ -1874,7 +1875,9 @@ const summaryFieldList : SummaryField[]  = [
   {
     name: 'totalBooking',
     summaryType: 'count',
-    expression: new ColumnExpression('booking', 'id')
+    expression: new ColumnExpression('booking', 'id'),
+    companion: ['table:booking_date']
+
   },
   {
     name: 'quantity',
@@ -2064,6 +2067,13 @@ query.subquery(false, 'missingDocument', ((value: any, params?: IQueryParams) =>
 
 
 // Date Filter=================
+
+
+
+
+
+
+
 
 query
   .register(

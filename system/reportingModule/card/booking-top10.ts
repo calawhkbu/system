@@ -2,6 +2,7 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import { OrderBy } from 'node-jql'
 import { expandGroupEntity } from 'utils/card'
+import { dateSourceList } from './booking-month'
 
 interface Result {
   result: any[]
@@ -200,6 +201,7 @@ export default {
       },
       type: 'list',
     },
+    {...dateSourceList},
     {
       display: 'topX',
       name: 'topX',

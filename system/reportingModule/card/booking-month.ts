@@ -12,6 +12,29 @@ interface Result {
   summaryVariables: string[]
 }
 
+//base file and list for dateSourceList, implementation 
+//in swivel-backend-new/src/utils/jql-subqueries.ts
+export const dateSourceList=  {
+  display: "dateSource",
+  name: "dateSource",
+  props: {
+    items: [
+      {
+        label: "departureDateEstimated",
+        value: "departureDateEstimated"
+      },
+      {
+        label: "createdAt",
+        value: "createdAt"
+      }
+
+    ],
+    multi: false,
+    required: true,
+  },
+  type: 'list'
+}
+
 export default {
   jqls: [
     {
@@ -167,6 +190,9 @@ export default {
   filters: [
     // for this filter, user can only select single,
     // but when config in card definition, use summaryVariables. Then we can set as multi
+{
+  ...dateSourceList
+},
     {
       display: 'topX',
       name: 'topX',

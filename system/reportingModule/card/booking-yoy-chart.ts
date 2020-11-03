@@ -3,6 +3,7 @@ import { IQueryParams } from 'classes/query'
 import Moment = require('moment')
 import { BadRequestException } from '@nestjs/common'
 import { OrderBy } from 'node-jql'
+import { dateSourceList } from './booking-month'
 
 interface Result {
   moment: typeof Moment
@@ -105,7 +106,9 @@ export default {
       }
     },
   ],
-  filters: [{
+  filters: [
+    {...dateSourceList},
+    {
     display: 'yAxis',
     name: 'yAxis',
     props: {

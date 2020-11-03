@@ -4,6 +4,7 @@ import Moment = require('moment')
 import { OrderBy } from 'node-jql'
 import { BadRequestException } from '@nestjs/common'
 import { expandGroupEntity, calculateLastCurrent } from 'utils/card'
+import { dateSourceList } from './booking-month'
 
 interface Result {
   moment: typeof Moment
@@ -137,6 +138,7 @@ export default {
     },
   ],
   filters: [
+    {...dateSourceList},
     {
       display: 'topX',
       name: 'topX',

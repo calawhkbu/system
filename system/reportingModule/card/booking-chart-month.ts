@@ -2,6 +2,7 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import Moment = require('moment')
 import { expandSummaryVariable, extendDate } from 'utils/card'
+import { dateSourceList } from './booking-month'
 
 interface Result {
   moment: typeof Moment
@@ -64,6 +65,7 @@ export default {
       }
     ],
     filters: [
+      {...dateSourceList},
       {
         // what to find in the groupby
         name: 'summaryVariables',
