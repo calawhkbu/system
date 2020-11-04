@@ -1,0 +1,51 @@
+{
+  "layout": "v-card",
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [{
+        "label": "ProductPage.productCode",
+        "name": "productCode",
+        "component": "v-text-field"
+      }, {
+        "label": "ProductPage.skuCode",
+        "name": "skuCode",
+        "component": "v-text-field"
+      }, {
+        "label": "ProductPage.name",
+        "name": "name",
+        "component": "v-text-field"
+      }, {
+        "label": "ProductPage.description",
+        "name": "description",
+        "component": "v-text-field"
+      }, {
+        "label": "ProductPage.productCategory",
+        "name": "productCategory.productCategoryCode",
+        "component": "v-text-field"
+      }, {
+        "label": "ProductCategoryPage.definition",
+        "name": "definition",
+        "component": "TableField",
+        "props": {
+          "topLabel": true,
+          "fields": [{
+            "component": "v-text-field",
+            "label": "ProductCategoryPage.fieldName",
+            "name": "fieldName",
+            "colGroupProps": {
+              "style": {
+                "width": "33%"
+              }
+            }
+          },
+          {
+            "component": "v-text-field",
+            "label": "ProductCategoryPage.values",
+            "name": "values"
+          }]
+        }
+      }]
+    }
+  }]
+}

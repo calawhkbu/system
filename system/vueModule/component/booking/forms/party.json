@@ -1,0 +1,685 @@
+{
+  "components": [{
+    "is": "WidgetMoreForm",
+    "props": {
+      "name": "bookingParty",
+      "mainKey": "Party",
+      "formProps": {
+        "z": {
+          "class": "xs-12 md-6 padding-leftright-1"
+        }
+      },
+      "extraGridProps": {
+        "class": "xs-12 md-6 padding-leftright-1"
+      },
+      "labelProps": {
+        "z": {
+          "isComponent": "v-label",
+          "i18nContext": "Widget",
+          "class": "font-110-important"
+        },
+        "forwarder": {
+          "isComponent": "v-label",
+          "i18nContext": "Widget",
+          "class": "font-110-important required form-label"
+        }
+      },
+      "fieldProps": {
+        "z": {
+          "thirdPartyCode.erp": "{{thirdPartyCode.erp}}",
+          "id": "{{id}}",
+          "name": "{{name}}",
+          "address": "{{address}}",
+          "cityCode": "{{cityCode}}",
+          "countryCode": "{{countryCode}}",
+          "zip": "{{zip}}",
+          "shortName": "{{shortName}}",
+          "fixValue": "{{fixValue}}"
+        }
+      },
+      "fixedKeys": [
+        "shipper",
+        "consignee",
+        "agent",
+        "forwarder",
+        "roAgent",
+        "linerAgent",
+        "controllingCustomer",
+        "notifyParty"
+      ],
+      "canAdd": true,
+      "canAddProps": {
+        "class": "xs-12 md-6 min-height-200 padding-leftright-1"
+      },
+      "addItemsOrFunc": ["Trucker", "Broker", "Factory", "Warehouse"],
+      "fields": [{
+          "checkDisplayWhen": "return '{{key}}' === 'forwarder'",
+          "name": "bookingParty.forwarderParty",
+          "component": "AsyncSelect",
+          "class": "xs-12 padding-topbottom-4",
+          "relation": "bookingParty.forwarderParty",
+          "relationMore": [{
+            "name": "bookingParty.forwarderParty.id",
+            "selector": "id"
+          }, {
+            "name": "bookingParty.forwarderParty.name",
+            "selector": "name"
+          }, {
+            "name": "bookingParty.forwarderParty.erpCode",
+            "selector": "erpCode"
+          }, {
+            "name": "bookingParty.forwarderPartyId",
+            "selector": "id"
+          }, {
+            "name": "bookingParty.forwarderPartyName",
+            "selector": "name"
+          }, {
+            "name": "bookingParty.forwarderPartyCode",
+            "selector": "erpCode"
+          }, {
+            "name": "bookingParty.forwarderPartyPhone",
+            "selector": "partyPhone"
+          }, {
+            "name": "bookingParty.forwarderPartyFax",
+            "selector": "partyFax"
+          }, {
+            "name": "bookingParty.forwarderPartyEmail",
+            "selector": "partyEmail"
+          }, {
+            "name": "bookingParty.forwarderPartyAddress",
+            "selector": "partyAddress"
+          }, {
+            "name": "bookingParty.forwarderPartyCityCode",
+            "selector": "partyCityCode"
+          }, {
+            "name": "bookingParty.forwarderPartyStateCode",
+            "selector": "partyStateCode"
+          }, {
+            "name": "bookingParty.forwarderPartyCountryCode",
+            "selector": "partyCountryCode"
+          }, {
+            "name": "bookingParty.forwarderPartyZip",
+            "selector": "partyZip"
+          }, {
+            "name": "bookingParty.forwarderPartyContactPersonId",
+            "selector": "contactPersonId"
+          }, {
+            "name": "bookingParty.forwarderPartyContactPersonEmail",
+            "selector": "contactPersonEmail"
+          }, {
+            "name": "bookingParty.forwarderPartyContactPersonName",
+            "selector": "contactPersonName"
+          }, {
+            "name": "bookingParty.forwarderPartyContactPersonPhone",
+            "selector": "contactPersonPhone"
+          }],
+          "validator": ["required"],
+          "props": {
+            "required": true,
+            "axiosParams": {
+              "url": "api/party/query/office_auto_suggest",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "activeStatus": {
+                    "value": "active"
+                  },
+                  "isBranch": {
+                    "value": 1
+                  }
+                }
+              }
+            },
+            "displayText": ["name"],
+            "displayKey": ["shortName", "erpCode"],
+            "item-text": "name",
+            "item-value": "id"
+          }
+        }, {
+          "name": "bookingParty.{{flex}}{{key}}Party",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12",
+          "checkDisplayWhen": "return '{{key}}' !== 'forwarder'",
+          "relation": "bookingParty.{{flex}}{{key}}Party",
+          "relationMore": [{
+            "name": "bookingParty.{{flex}}{{key}}PartyId",
+            "selector": "id"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyCode",
+            "selector": "erpCode"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyName",
+            "selector": "name"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyPhone",
+            "selector": "partyPhone"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyFax",
+            "selector": "partyFax"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyEmail",
+            "selector": "partyEmail"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyAddress",
+            "selector": "partyAddress"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyCityCode",
+            "selector": "partyCityCode"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyStateCode",
+            "selector": "partyStateCode"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyCountryCode",
+            "selector": "partyCountryCode"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyZip",
+            "selector": "partyZip"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyContactPersonId",
+            "selector": "contactPersonId"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyContactPersonEmail",
+            "selector": "contactPersonEmail"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyContactPersonName",
+            "selector": "contactPersonName"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyContactPersonPhone",
+            "selector": "contactPersonPhone"
+          }],
+          "props": {
+            "createDialog": {
+              "canCreate": "return user.roles.find(r => r.name === 'INTERNAL')",
+              "beforeItem": {
+                "layout": "Dummy",
+                "components": [{
+                  "is": "Icon",
+                  "props": {
+                    "icon": "add"
+                  }
+                }, {
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "Widget",
+                    "i18nKey": "Click here to create a new Party"
+                  }
+                }, {
+                  "is": "I18nText",
+                  "props": {
+                    "i18nKey": "("
+                  }
+                }]
+              },
+              "afterItem": {
+                "layout": "Dummy",
+                "components": [{
+                  "is": "I18nText",
+                  "props": {
+                    "i18nKey": ")"
+                  }
+                }]
+              },
+              "beforeDialog": {
+                "layout": "v-card-title",
+                "components": [{
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "Widget",
+                    "i18nKey": "Create a new party"
+                  }
+                }]
+              },
+              "nameKey": "name",
+              "api": {
+                "url": "api/party/create",
+                "method": "POST",
+                "item-text": "name",
+                "item-value": "thirdPartyCode.erp"
+              },
+              "defaultValue": {
+                "types": [{
+                  "type": "{{key}}"
+                }]
+              },
+              "keepParsedKey": [
+                "id",
+                {
+                  "from": "id",
+                  "to": "partyId"
+                },
+                "name",
+                {
+                  "from": "name",
+                  "to": "partyName"
+                },
+                {
+                  "from": "thirdPartyCode.erp",
+                  "to": "erpCode"
+                },
+                "shortName",
+                {
+                  "from": "email",
+                  "to": "partyEmail"
+                },
+                {
+                  "from": "fax",
+                  "to": "partyFax"
+                },
+                {
+                  "from": "phone",
+                  "to": "partyPhone"
+                },
+                {
+                  "from": "address",
+                  "to": "partyAddress"
+                },
+                {
+                  "from": "cityCode",
+                  "to": "partyCityCode"
+                },
+                {
+                  "from": "stateCode",
+                  "to": "partyStateCode"
+                },
+                {
+                  "from": "countryCode",
+                  "to": "partyCountryCode"
+                },
+                {
+                  "from": "zip",
+                  "to": "partyZip"
+                }
+              ],
+              "parseReturnValue": {
+                "contactPersonEmail": null,
+                "contactPersonId": null,
+                "contactPersonName": null,
+                "erpCode": "{{thirdPartyCode.erp}}",
+                "id": "{{id}}",
+                "name": "{{name}}",
+                "old360Id": null,
+                "partyAddress": "{{address}}",
+                "partyCityCode": "{{cityCode}}",
+                "partyStateCode": "{{stateCode}}",
+                "partyCountryCode": "{{countryCode}}",
+                "partyEmail": null,
+                "partyFax": null,
+                "partyId": "{{id}}",
+                "partyName": "{{name}}",
+                "partyPhone": null,
+                "partyZip": "{{zip}}",
+                "shortName": "{{shortName}}"
+              },
+              "fields": [{
+                  "label": "Widget.partyName",
+                  "name": "name",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-8",
+                  "validator": ["required"],
+                  "props": {
+                    "required": true
+                  }
+                },
+                {
+                  "label": "Widget.erpCode",
+                  "name": "thirdPartyCode.erp",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-4"
+                },
+                {
+                  "label": "Widget.address",
+                  "name": "address",
+                  "component": "v-textarea",
+                  "props": {
+                    "auto-grow": true,
+                    "rows": 5
+                  },
+                  "class": "xs-12",
+                  "readonlyClass": "hidden"
+                },
+                {
+                  "label": "Widget.city",
+                  "name": "cityCode",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-4",
+                  "readonlyClass": "xs-12 md-4",
+                  "relation": "cityCode",
+                  "relationMore": [{
+                    "name": "cityCode",
+                    "selector": "locationCode"
+                  }],
+                  "props": {
+                    "canCreate": true,
+                    "canCreateValue": {
+                      "id": null,
+                      "code": "{{autoSuggestModel}}"
+                    },
+                    "searchTextParams": {
+                      "url": "api/location/query/location",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "q": {
+                            "value": "{{context.search}}"
+                          }
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "locationCode"
+                  }
+                },
+                {
+                  "label": "Widget.state",
+                  "name": "stateCode",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-4",
+                  "readonlyClass": "xs-12 md-4",
+                  "relation": "stateCode",
+                  "relationMore": [{
+                    "name": "stateCode",
+                    "selector": "code"
+                  }],
+                  "props": {
+                    "canCreate": true,
+                    "canCreateValue": {
+                      "id": null,
+                      "code": "{{autoSuggestModel}}"
+                    },
+                    "searchTextParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "activeStatus": {
+                            "value": "active"
+                          },
+                          "codeType": {
+                            "value": "STATE-PROVINCE"
+                          },
+                          "q": {
+                            "value": "{{context.search}}"
+                          }
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "code"
+                  }
+                },
+                {
+                  "label": "Widget.country",
+                  "name": "countryCode",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-4",
+                  "readonlyClass": "xs-12 md-4",
+                  "relation": "countryCode",
+                  "relationMore": [{
+                    "name": "countryCode",
+                    "selector": "code"
+                  }],
+                  "props": {
+                    "canCreate": true,
+                    "canCreateValue": {
+                      "id": null,
+                      "code": "{{autoSuggestModel}}"
+                    },
+                    "searchTextParams": {
+                      "url": "api/code/query/code_master",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "activeStatus": {
+                            "value": "active"
+                          },
+                          "codeType": {
+                            "value": "COUNTRY"
+                          },
+                          "q": {
+                            "value": "{{context.search}}"
+                          }
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "item-text": "name",
+                    "item-value": "code"
+                  }
+                },
+                {
+                  "label": "Widget.zip",
+                  "name": "zip",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-6",
+                  "readonlyClass": "hidden"
+                }
+              ]
+            },
+            "searchTextParams": {
+              "url": "api/party/query/party_auto_suggest",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "activeStatus": {
+                    "value": "active"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "ellipsis": false,
+            "item-text": "name",
+            "item-value": "erpCode"
+          }
+        },
+        {
+          "label": "Widget.contactName",
+          "canEdit": [
+            "const value = extraFunction._.get(form, 'bookingParty.{{flex}}{{key}}PartyId');",
+            "if (value) {",
+            "return true",
+            "}",
+            "return false"
+          ],
+          "name": "bookingParty.{{flex}}{{key}}PartyContactName",
+          "component": "v-text-field",
+          "class": "xs-12 md-4"
+        },
+        {
+          "label": "Widget.contactEmail",
+          "canEdit": [
+            "const value = extraFunction._.get(form, 'bookingParty.{{flex}}{{key}}PartyId');",
+            "if (value) {",
+            "return true",
+            "}",
+            "return false"
+          ],
+          "name": "bookingParty.{{flex}}{{key}}PartyContactEmail",
+          "component": "v-text-field",
+          "class": "xs-12 md-4"
+        },
+        {
+          "label": "Widget.contactPhone",
+          "canEdit": [
+            "const value = extraFunction._.get(form, 'bookingParty.{{flex}}{{key}}PartyId');",
+            "if (value) {",
+            "return true",
+            "}",
+            "return false"
+          ],
+          "name": "bookingParty.{{flex}}{{key}}PartyContactPhone",
+          "component": "v-text-field",
+          "class": "xs-12 md-4"
+        },
+        {
+          "name": "bookingParty.{{flex}}{{key}}PartyContacts",
+          "component": "GridField",
+          "class": "xs-12",
+          "canEdit": [
+            "const value = extraFunction._.get(form, 'bookingParty.{{flex}}{{key}}PartyId');",
+            "if (value) {",
+            "return true",
+            "}",
+            "return false"
+          ],
+          "props": {
+            "fields": [{
+                "label": "Widget.contactXName",
+                "name": "Name",
+                "component": "v-text-field",
+                "class": "xs-12 md-12",
+                "readonlyClass": "xs-12 md-12"
+              },
+              {
+                "label": "Widget.contactXEmail",
+                "name": "Email",
+                "component": "v-text-field",
+                "class": "xs-12 md-12",
+                "readonlyClass": "xs-10 md-10"
+              },
+              {
+                "label": "Widget.contactXPhone",
+                "name": "Phone",
+                "component": "v-text-field",
+                "class": "xs-12 md-12",
+                "readonlyClass": "xs-12 md-12"
+              }
+            ]
+          }
+        },
+        {
+          "label": "Widget.address",
+          "name": "bookingParty.{{flex}}{{key}}PartyAddress",
+          "component": "v-textarea",
+          "checkDisplayWhen": "return !readonly",
+          "props": {
+            "auto-grow": true,
+            "rows": 5
+          },
+          "class": "xs-12",
+          "readonlyClass": "hidden"
+        },
+        {
+          "label": "Widget.city",
+          "name": "bookingParty.{{flex}}{{key}}PartyCityCode",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12 md-4",
+          "checkDisplayWhen": "return !readonly",
+          "readonlyClass": "xs-12 md-6",
+          "relation": "bookingParty.{{flex}}{{key}}PartyCityCode",
+          "relationMore": [{
+            "name": "bookingParty.{{flex}}{{key}}PartyCityCode",
+            "selector": "locationCode"
+          }],
+          "props": {
+            "canCreate": true,
+            "canCreateValue": {
+              "id": null,
+              "code": "{{autoSuggestModel}}"
+            },
+            "searchTextParams": {
+              "url": "api/location/query/location",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "name",
+            "item-value": "locationCode"
+          }
+        },
+        {
+          "label": "Widget.state",
+          "name": "bookingParty.{{flex}}{{key}}PartyStateCode",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12 md-4",
+          "readonlyClass": "xs-12 md-3",
+          "checkDisplayWhen": "return !readonly",
+          "relation": "bookingParty.{{flex}}{{key}}PartyStateCode",
+          "relationMore": [{
+            "name": "bookingParty.{{flex}}{{key}}PartyStateCode",
+            "selector": "code"
+          }],
+          "props": {
+            "canCreate": true,
+            "canCreateValue": {
+              "id": null,
+              "code": "{{autoSuggestModel}}"
+            },
+            "searchTextParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "STATE-PROVINCE"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "name",
+            "item-value": "code"
+          }
+        },
+        {
+          "label": "Widget.country",
+          "name": "bookingParty.{{flex}}{{key}}PartyCountryCode",
+          "component": "AsyncAutoSuggest",
+          "class": "xs-12 md-4",
+          "readonlyClass": "xs-12 md-3",
+          "checkDisplayWhen": "return !readonly",
+          "relation": "bookingParty.{{flex}}{{key}}PartyCountryCode",
+          "relationMore": [{
+            "name": "bookingParty.{{flex}}{{key}}PartyCountryCode",
+            "selector": "code"
+          }],
+          "props": {
+            "canCreate": true,
+            "canCreateValue": {
+              "id": null,
+              "code": "{{autoSuggestModel}}"
+            },
+            "searchTextParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "codeType": {
+                    "value": "COUNTRY"
+                  },
+                  "q": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "name",
+            "item-value": "code"
+          }
+        },
+        {
+          "label": "Widget.zip",
+          "name": "bookingParty.{{flex}}{{key}}PartyZip",
+          "component": "v-text-field",
+          "class": "xs-12 md-6",
+          "checkDisplayWhen": "return !readonly"
+        }
+      ]
+    }
+  }]
+}

@@ -1,0 +1,477 @@
+{
+  "class": "grid",
+  "components": [
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-2",
+        "components": [
+          {
+            "is": "v-btn",
+            "if": "return context.$store.state.main.widget",
+            "props": {
+              "class": "margin-0",
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
+                }
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "emit-global",
+                  "otherParams": {
+                    "name": "back-list"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "v-btn",
+            "if": "return !context.$store.state.main.widget",
+            "props": {
+              "class": "margin-0",
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
+                }
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "router",
+                  "otherParams": {
+                    "func": "push",
+                    "path": "/{{ p[0] }}/{{ p[1] }}"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "i18nContext": "PurchaseOrderPage",
+              "i18nKey": "title",
+              "i18nOptions": {
+                "title": "{{context.$store.state.widget.data.poNo}}"
+              }
+            }
+          },
+          {
+            "is": "v-spacer"
+          },
+          {
+            "is": "ToolTip",
+            "if": "return !context.$store.state.main.widget",
+            "props": {
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [
+                  {
+                    "is": "SaveEntityTemplateButton",
+                    "props": {
+                      "tableName": "purchase_order",
+                      "small": true,
+                      "flat": true,
+                      "icon": true
+                    }
+                  }
+                ]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [
+                  {
+                    "is": "I18nText",
+                    "props": {
+                      "i18nContext": "PurchaseOrderPage",
+                      "i18nKey": "copy"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "is": "ToolTip",
+            "if": "return !context.$store.state.main.widget",
+            "props": {
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [
+                  {
+                    "is": "BookmarkButton",
+                    "props": {
+                      "entity": "purchaseOrder",
+                      "small": true,
+                      "flat": true,
+                      "icon": true
+                    }
+                  }
+                ]
+              }
+            },
+            "mainComponents": {
+              "layout": "span",
+              "components": [
+                {
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "PurchaseOrderPage",
+                    "i18nKey": "bookmark"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "ToolTip",
+            "if": "return !context.$store.state.main.widget",
+            "props": {
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [
+                  {
+                    "is": "v-btn",
+                    "props": {
+                      "small": true,
+                      "flat": true,
+                      "icon": true
+                    },
+                    "slots": [
+                      {
+                        "is": "Icon",
+                        "props": {
+                          "icon": "map"
+                        }
+                      }
+                    ],
+                    "events": {
+                      "click.stop": [
+                        {
+                          "type": "dispatch",
+                          "otherParams": {
+                            "name": "widget/changeMode",
+                            "mode": "map"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "mainComponents": {
+              "layout": "span",
+              "components": [
+                {
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "PurchaseOrderPage",
+                    "i18nKey": "map"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "ToolTip",
+            "props": {
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [
+                  {
+                    "is": "v-btn",
+                    "props": {
+                      "small": true,
+                      "flat": true,
+                      "icon": true,
+                      "class": "primary white-text"
+                    },
+                    "slots": [
+                      {
+                        "is": "Icon",
+                        "props": {
+                          "icon": "edit"
+                        }
+                      }
+                    ],
+                    "events": {
+                      "click.stop": [
+                        {
+                          "type": "dispatch",
+                          "otherParams": {
+                            "name": "widget/changeMode",
+                            "mode": "edit"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            "mainComponents": {
+              "layout": "span",
+              "components": [
+                {
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "PurchaseOrderPage",
+                    "i18nKey": "edit"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "WidgetTab",
+      "if": "return !context.$vuetify.breakpoint.mdAndUp",
+      "props": {
+        "show-arrows": true,
+        "tabComponents": [
+          {
+            "index": "gereral",
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "PurchaseOrderPage",
+                  "i18nKey": "GeneralForm"
+                }
+              }
+            ],
+            "tabItemComponents": [
+              {
+                "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "purchase-order/base/general"
+                    }
+                  }
+                ]
+              },
+              {
+                "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "purchase-order/base/po-items"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "index": "partyDateAndReference",
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "PurchaseOrderPage",
+                  "i18nKey": "PartyAndDate"
+                }
+              }
+            ],
+            "tabItemComponents": [
+              {
+                "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "purchase-order/base/party"
+                    }
+                  }
+                ]
+              },
+              {
+                "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
+                "slots": [
+                  {
+                    "is": "AsyncComponent",
+                    "props": {
+                      "layoutName": "purchase-order/base/date"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "index": "reference",
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "PurchaseOrderPage",
+                  "i18nKey": "reference"
+                }
+              }
+            ],
+            "tabItemComponents": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "padding-top-4",
+                  "layoutName": "purchase-order/base/reference"
+                }
+              }
+            ]
+          },
+          {
+            "index": "alertAndDocument",
+            "tabComponents": [
+              {
+                "is": "I18nText",
+                "props": {
+                  "i18nContext": "PurchaseOrderPage",
+                  "i18nKey": "alertAndDocument"
+                }
+              }
+            ],
+            "tabItemComponents": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "purchase-order/base/document"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "if": "return context.$vuetify.breakpoint.mdAndUp",
+      "props": {
+        "class": "xs-12 grid padding-2",
+        "style": {
+          "flex-wrap": "nowrap"
+        },
+        "components": [
+          {
+            "is": "DynamicComponent",
+            "props": {
+              "class": "xs-8 padding-2",
+              "components": [
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "purchase-order/base/general"
+                  }
+                },
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "xs-12 grid padding-bottom-2",
+                    "components": [
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-6 padding-right-2",
+                          "components": [
+                            {
+                              "is": "AsyncComponent",
+                              "props": {
+                                "layoutName": "purchase-order/base/party"
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-6 padding-left-2",
+                          "components": [
+                            {
+                              "is": "AsyncComponent",
+                              "props": {
+                                "layoutName": "purchase-order/base/date"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2 padding-bottom-2 padding-right-2",
+                    "layoutName": "purchase-order/base/po-items"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2 padding-right-2",
+                    "layoutName": "purchase-order/base/reference"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "DynamicComponent",
+            "props": {
+              "class": "xs-4 padding-2 widget-grid",
+              "components": [
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "purchase-order/base/document"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

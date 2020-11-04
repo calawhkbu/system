@@ -1,0 +1,146 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "title": "Roles",
+      "back": "/admin",
+      "urlFormat": "/admin/roles",
+      "reportingKey": "roles",
+      "reportingKeyKey": "reportIdParams",
+      "jql": "roles",
+      "noPartyGroupFilters": true,
+      "hasReports": false,
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": false,
+      "noCache": true,
+      "refreshWhenBack": true,
+      "newReport": {
+        "filters": {
+          "activeStatus": {
+            "value": "active"
+          }
+        },
+        "configurations": {
+          "i18nContext": "RolePage",
+          "clickable": true,
+          "sorting": {},
+          "pagination": {
+            "current": 0,
+            "perPage": 20,
+            "remote": true
+          }
+        }
+      },
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/admin/roles/detail/{{id}}"
+        }
+      },
+      "nextPageComponent": "role",
+      "filters": [{
+        "name": "activeStatus",
+        "type": "list",
+        "props": {
+          "items": [
+
+            {
+              "label": "active",
+              "value": "active"
+            },
+            {
+              "label": "deleted",
+              "value": "deleted"
+            }
+          ]
+
+
+        }
+      }, {
+        "display": "roleName",
+        "name": "roleNameLike",
+        "type": "text"
+      }],
+      "fieldOptions": [{
+          "key": "id",
+          "sql": {
+            "classname": "ColumnExpression",
+            "table": "role",
+            "name": "id"
+          },
+          "hidden": true
+        },
+        {
+          "key": "roleName"
+        },
+        {
+          "key": "roleGroup"
+        },
+        {
+          "label": "",
+          "key": "canResetDefault",
+          "sortable": false,
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/api/role/resetDefault/{{row.id}}",
+                "method": "POST"
+              }
+            },
+            "afterActions": [{
+              "type": "notify",
+              "otherParams": {
+                "notification": "Notify.resetDefaultSuccess"
+              }
+            }]
+          },
+
+          "tdComponent": {
+            "hideIfFalse": true,
+            "is": "icon",
+            "props": {
+              "icon": "refresh"
+            }
+          },
+          "width": 50
+        }
+      ]
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "role/create",
+                "base": true
+              }
+            }]
+          }
+        }]
+      }
+    }]
+  }]
+}

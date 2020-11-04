@@ -1,0 +1,127 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "title": "Relationship",
+      "reportingKey": "parties",
+      "jql": "parties",
+      "hasReports": true,
+      "showFilterBar": true,
+      "enableShare": true,
+      "enableSetting": true,
+      "noPartyGroupFilters": true,
+      "nextPageComponent": "party",
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "base": true,
+          "func": "push",
+          "path": "/party/{{id}}"
+        }
+      },
+      "newReport": {
+        "filters": {
+          "activeStatus": {
+            "value": "active"
+          }
+        },
+        "configurations": {
+          "i18nContext": "PartyPage",
+          "sorting": {
+            "direction": "ASC",
+            "key": "updatedAt",
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "party",
+              "name": "name"
+            }
+          },
+          "pagination": {
+            "remote": true,
+            "current": 0,
+            "perPage": 20
+          }
+        }
+      },
+      "filters": [{
+        "name": "activeStatus",
+        "type": "list",
+        "props": {
+          "items": [{
+              "label": "active",
+              "value": "active"
+            },
+            {
+              "label": "deleted",
+              "value": "deleted"
+            }
+          ]
+        }
+      }, {
+        "display": "shortName",
+        "name": "shortNameLike",
+        "type": "text",
+        "i18nContext": "PartyPage"
+      }, {
+        "display": "name",
+        "name": "nameLike",
+        "type": "text",
+        "i18nContext": "PartyPage"
+      }, {
+        "display": "groupName",
+        "name": "groupNameLike",
+        "type": "text",
+        "i18nContext": "PartyPage"
+      }],
+      "fieldOptions": [{
+          "key": "id",
+          "hidden": true
+        },
+        {
+          "key": "name",
+          "width": 300
+        },
+        {
+          "key": "shortName",
+          "width": 150
+        },
+        {
+          "key": "groupName",
+          "width": 150
+        }
+      ]
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "party/create",
+                "base": true
+              }
+            }]
+          }
+        }]
+      }
+    }]
+  }]
+}

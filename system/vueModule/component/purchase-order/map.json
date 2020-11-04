@@ -1,0 +1,140 @@
+{
+  "components": [{
+      "is": "DynamicComponent",
+      "props": {
+        "layout": "v-card",
+        "class": "absolute-topleft-20 zindex-300 width-48 height-48",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "icon": true
+          },
+          "events": {
+            "click.stop": [{
+              "type": "dispatch",
+              "otherParams": {
+                "name": "widget/changeMode",
+                "mode": "detail"
+              }
+            }]
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "arrow_back"
+            }
+          }]
+        }]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "layout": "v-card",
+        "style": {
+          "height": "calc(100vh - 100px)",
+          "position": "absolute",
+          "top": "20px",
+          "right": "20px"
+        },
+        "class": "zindex-250 max-width-300",
+        "components": [{
+          "is": "ClickHidden",
+          "props": {
+            "desktopOpen": true
+          },
+          "slots": [{
+            "is": "DynamicComponent",
+            "props": {
+              "style": {
+                "height": "500px",
+                "max-height": "75%",
+                "overflow": "auto"
+              },
+              "components": [{
+                "is": "WidgetForm",
+                "props": {
+                  "style": {
+                    "max-width": "400px"
+                  },
+                  "fields": [
+                    {
+                      "label": "ShipmentPage.portOfLoading",
+                      "name": ["portOfLoadingName", "portOfLoading.name", "portOfLoadingCode"],
+                      "component": "v-text-field",
+                      "class": "xs-6",
+                      "checkDisplayWhen": "return form && (form.portOfLoadingName || (form.portOfLoading && form.portOfLoading.name) || form.portOfLoadingCode)"
+                    },
+                    {
+                      "label": "ShipmentPage.portOfDischarge",
+                      "name": ["portOfDischargeName", "portOfDischarge.name", "portOfDischargeCode"],
+                      "component": "v-text-field",
+                      "class": "xs-6",
+                      "checkDisplayWhen": "return form && (form.portOfDischargeName || (form.portOfDischarge && form.portOfDischarge.name) || form.portOfDischargeCode)"
+                    }
+                  ]
+                }
+              }, {
+                "is": "AsyncComponent",
+                "props": {
+                  "getDate": "bookingDate",
+                  "class": "xs-12 margin-topbottom-2",
+                  "layoutName": "plugins/tracking-map",
+                  "loadWhenDataLoaded": true,
+                  "axiosBaseParams": [
+                    "const trackingNos = [];",
+                    "const data = context.$store.state.widget.data;",
+                    "if (data.bookingReference && data.bookingReference.length > 0) {",
+                    "for (const reference of data.bookingReference || []) {",
+                    "if ((reference.refName === 'MAWB' || reference.refName === 'MBL') && reference.refDescription){",
+                    "trackingNos.push(reference.refDescription)",
+                    "}",
+                    "}",
+                    "}",
+                    "if (data.bookingContainers && data.bookingContainers.length > 0) {",
+                    "for (const containers of data.bookingContainers) {",
+                    "if (containers.soNo){",
+                    "trackingNos.push(containers.soNo)",
+                    "}",
+                    "if (containers.containerNo){",
+                    "trackingNos.push(containers.containerNo)",
+                    "}",
+                    "}",
+                    "}",
+                    "return {",
+                    "url: 'api/swivel-tracking/get',",
+                    "method: 'POST',",
+                    "data: { trackingNos }",
+                    "};"
+                  ],
+                  "createI18nKey": "bookingReceivedByForwarder"
+                }
+              }]
+            }
+          }]
+        }]
+      }
+    },
+    {
+      "is": "Map",
+      "props": {
+        "style": {
+          "width": "100%",
+          "height": "calc(100vh - 42px)"
+        }
+      },
+      "slots": [{
+        "is": "Route",
+        "props": {
+          "startPoint": "widget.data.portOfLoadingCode",
+          "endPoint": "widget.data.portOfDischargeCode",
+          "estimatedStartTime": "widget.data.departureDateEstimated",
+          "actualStartTime": "widget.data.departureDateActual",
+          "estimatedEndTime": "widget.data.arrivalDateEstimated",
+          "actualEndTime": "widget.data.arrivalDateActual",
+          "mode": "widget.data.moduleTypeCode"
+        }
+      }]
+    }
+  ]
+}

@@ -1,0 +1,445 @@
+{
+  "booking": [
+    {
+      "name": "quotation",
+      "label": "Quotation",
+      "type": "text",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "referenceNumber",
+      "label": "Ref. No.",
+      "type": "text",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "vesselCode",
+      "label": "Vessel Code",
+      "type": "text",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "preCarriage",
+      "label": "Pre-Carriage",
+      "type": "text",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "telexRelease",
+      "label": "Telex Release",
+      "type": "Boolean",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "requestBillType",
+      "label": "Request Bill Type",
+      "type": "list-codemaster",
+      "mandatory": false,
+      "important": false,
+      "codeType": "REQBILL"
+    },
+    {
+      "name": "preferredSchedule",
+      "label": "Preferred Schedule",
+      "type": "text",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "insurance",
+      "label": "Insurance By",
+      "type": "text",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "methodOfEntry",
+      "label": "Method of Entry",
+      "type": "text",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "remarks",
+      "label": "Remarks",
+      "type": "text",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "shipMarks",
+      "label": "Shipping Marks",
+      "type": "text",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "goodsDescription",
+      "label": "Goods Description",
+      "type": "text",
+      "mandatory": false,
+      "important": false
+    }
+  ],
+  "transactionDate": [
+    {
+      "name": "poDate",
+      "label": "PO Date",
+      "dateCode": "PO",
+      "type": "date",
+      "mandatory": true,
+      "important": true,
+      "actualOnly": true
+    },
+    {
+      "name": "cargoReadyDate",
+      "label": "Cargo Ready Date",
+      "dateCode": "CARGO",
+      "type": "date",
+      "mandatory": false,
+      "important": true,
+      "actualOnly": true
+    },
+    {
+      "name": "departureDate",
+      "label": "Departure Date",
+      "dateCode": "DEPARTURE",
+      "type": "date",
+      "mandatory": false,
+      "important": false,
+      "actualOnly": false
+    },
+    {
+      "name": "arrivalDate",
+      "label": "Arrival Date",
+      "dateCode": "ARRIVAL",
+      "type": "date",
+      "mandatory": false,
+      "important": false,
+      "actualOnly": false
+    },
+    {
+      "name": "deliveryDate",
+      "label": "Final Delivery Date",
+      "dateCode": "DELIVERYDATE",
+      "type": "date",
+      "mandatory": false,
+      "important": false,
+      "actualOnly": false
+    }
+  ],
+  "bookingParties": [
+    {
+      "name": "Shipper",
+      "label": "Shipper",
+      "mandatory": true,
+      "important": true,
+      "roleCode": "SHP",
+      "expanded": true
+    },
+    {
+      "name": "Consignee",
+      "label": "Consignee",
+      "mandatory": true,
+      "important": true,
+      "roleCode": "CGN",
+      "expanded": true
+    },
+    {
+      "name": "Forwarder",
+      "label": "Forwarder",
+      "mandatory": false,
+      "important": true,
+      "roleCode": "FWD",
+      "expanded": false
+    },
+    {
+      "name": "Notify Party 1",
+      "label": "Notify Party",
+      "mandatory": false,
+      "important": false,
+      "roleCode": "NT1",
+      "expanded": false
+    },
+    {
+      "name": "Agent",
+      "label": "Agent",
+      "mandatory": false,
+      "important": true,
+      "roleCode": "AGT",
+      "expanded": false
+    }
+  ],
+  "delivaryDetails": [
+    {
+      "name": "moduleType",
+      "label": "Transport Mode",
+      "type": "list-codemaster",
+      "mandatory": true,
+      "important": true,
+      "codeType": "MODULE"
+    },
+    {
+      "name": "boundType",
+      "label": "Bound",
+      "type": "list-codemaster",
+      "mandatory": true,
+      "important": true,
+      "codeType": "BOUND"
+    },
+    {
+      "name": "portOfLoading",
+      "label": "Port Of Loading",
+      "type": "autosuggest-port",
+      "mandatory": true,
+      "important": true
+    },
+    {
+      "name": "portOfDischarge",
+      "label": "Port Of Discharge",
+      "type": "autosuggest-port",
+      "mandatory": true,
+      "important": true
+    },
+    {
+      "name": "estimatedDepartureDate",
+      "label": "Estimated Departure Date",
+      "dateCode": "ETD",
+      "type": "date",
+      "mandatory": true,
+      "important": true,
+      "disablePastDays": true
+    },
+    {
+      "name": "estimatedArrivalDate",
+      "label": "Estimated Arrival Date",
+      "dateCode": "ETA",
+      "type": "date",
+      "mandatory": false,
+      "important": true,
+      "disablePastDays": true
+    },
+    {
+      "name": "placeOfReceipt",
+      "label": "Place of Receipt",
+      "type": "autosuggest-port",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "placeOfDelivery",
+      "label": "Place of Delivery",
+      "type": "autosuggest-port",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "finalDestination",
+      "label": "Final Destination",
+      "type": "autosuggest-port",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "carrierCode",
+      "label": "Carrier",
+      "type": "carrier-autosuggest",
+      "mandatory": false,
+      "important": true
+    },
+    {
+      "name": "vesselName",
+      "label": "Vessel",
+      "type": "vessel-autosuggest",
+      "mandatory": false,
+      "important": true,
+      "createNew": false
+    },
+    {
+      "name": "voyageFlightNumber",
+      "label": "Voyage",
+      "type": "text",
+      "mandatory": false,
+      "visibility": {
+        "moduleType": "SEA,ROAD,null"
+      },
+      "important": true
+    },
+    {
+      "name": "voyageFlightNumber",
+      "label": "Flight Number",
+      "type": "text",
+      "mandatory": false,
+      "visibility": {
+        "moduleType": "AIR"
+      },
+      "important": true
+    }
+  ],
+  "freightDetails": [
+    {
+      "name": "service",
+      "label": "Service",
+      "type": "list-codemaster",
+      "mandatory": true,
+      "important": true,
+      "codeType": "SERVTYPE"
+    },
+    {
+      "name": "incoTerms",
+      "label": "Incoterms",
+      "type": "list-codemaster",
+      "mandatory": false,
+      "important": true,
+      "codeType": "INCOTERMS"
+    },
+    {
+      "name": "freightTerms",
+      "label": "Freight Term",
+      "type": "list-codemaster",
+      "mandatory": false,
+      "important": false,
+      "codeType": "PAYTERMS"
+    },
+    {
+      "name": "otherTerms",
+      "label": "Other Term",
+      "type": "list-codemaster",
+      "mandatory": false,
+      "important": false,
+      "codeType": "PAYTERMS"
+    }
+  ],
+  "commodityDetails": [
+    {
+      "name": "commodity",
+      "label": "Commodity",
+      "type": "text",
+      "mandatory": true,
+      "important": true
+    }
+  ],
+  "remarks": [
+    {
+      "name": "shipMarks",
+      "label": "Marks and Numbers",
+      "type": "multi-line-text",
+      "mandatory": false,
+      "important": true
+    },
+    {
+      "name": "goodsDescription",
+      "label": "Description of Goods",
+      "type": "multi-line-text",
+      "mandatory": false,
+      "important": true
+    }
+  ],
+  "transactionDateDetails": [
+    {
+      "name": "Cargo Ready Date",
+      "label": "Cargo Ready Date",
+      "dateCode": "CARGO",
+      "type": "date",
+      "mandatory": false,
+      "important": true,
+      "actualOnly": false,
+      "disablePastDays": true
+    },
+    {
+      "name": "CY Cutoff",
+      "label": "CY Cutoff",
+      "dateCode": "CYCUTOFF",
+      "type": "date",
+      "mandatory": false,
+      "important": true,
+      "actualOnly": true,
+      "disablePastDays": true
+    }
+  ],
+  "cargoDetails": [
+    {
+      "name": "polHScode",
+      "label": "POL HS Code",
+      "type": "text",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "podHScode",
+      "label": "POD HS Code",
+      "type": "text",
+      "mandatory": false,
+      "important": false
+    },
+    {
+      "name": "currency",
+      "label": "Currency",
+      "type": "list-codemaster",
+      "mandatory": false,
+      "important": false,
+      "codeType": "USD"
+    },
+    {
+      "name": "cargoValue",
+      "label": "Cargo Value",
+      "type": "number",
+      "mandatory": false,
+      "important": false
+    }
+  ],
+  "bookingReference": [
+    {
+      "name": "refName",
+      "label": "Reference Type",
+      "codeMasterCode": "REFERENCE_TYPE",
+      "type": "autosuggest-codeMaster",
+      "mandatory": false,
+      "important": true
+    },
+    {
+      "name": "refDescription",
+      "label": "Reference Number",
+      "type": "text",
+      "mandatory": false,
+      "important": true
+    },
+    {
+      "name": "docDate",
+      "label": "Doc Date",
+      "type": "date",
+      "mandatory": false,
+      "important": true,
+      "disablePastDays": true
+    }
+  ],
+  "trackingReference": [
+    {
+      "name": "trackingNoType",
+      "label": "Tracking No Type",
+      "codeType": "TRACKING_TYPE",
+      "type": "list-codemaster",
+      "madatory": false,
+      "important": true
+    },
+    {
+      "name": "trackingSource",
+      "label": "Tracking Company",
+      "type": "text",
+      "madatory": false,
+      "important": true
+    },
+    {
+      "name": "trackingNo",
+      "label": "Tracking No",
+      "type": "text",
+      "madatory": false,
+      "important": true
+    }
+  ]
+}

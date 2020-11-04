@@ -1,0 +1,146 @@
+<style>
+  table.repeatable thead, tfoot { display: table-header-group; }
+  .double-underline { border-bottom: 3px double; }
+  .input { font-size: 14px; }
+</style>
+<div class='header'>
+  This is a header.
+</div>
+<div class='footer'>
+  This is a footer. (<span class='pageNumber'></span> / <span class='totalPages'></span>)
+</div>
+<div style='text-align:center'>
+  <span style='font-size:32px'>
+    <strong><em>BAOFA (FUJIAN) SHOES</em></strong>
+  </span>
+</div>
+<div style='text-align:center'>
+  <span style='font-size:14px'>
+    6TH FLOOR, 9TH BUILDING NO.8 XIBIN TOWN,
+  </span>
+</div>
+<div style='text-align:center'>
+  <span style='font-size:14px'>
+    JINJIANG CITY, QUANZHOU CITY, FUJIAN PROVINCE,
+  </span>
+</div>
+<div style='text-align:center'>
+  <span style='font-size:14px'>
+    CHINA
+  </span>
+</div>
+<div style='text-align:center'>
+  <span style='font-size:32px'>
+    <strong><span class='double-underline'>PACKING LIST</span></strong>
+  </span>
+</div>
+<table style='border-bottom:1px solid;border-spacing:4px;margin-bottom:2px;table-layout:fixed;width:100%'>
+  <tbody>
+    <tr>
+      <td><strong>NO.</strong></td>
+      <td colspan='5' style='border-bottom:1px solid'></td>
+      <td><strong>Dated:</strong></td>
+      <td style='border-bottom:1px solid;text-align:center'><span class='input'>FEB 26, 2018</span></td>
+    </tr>
+    <tr>
+      <td colspan='2'><strong>PACKING LIST of</strong></td>
+      <td colspan='4' style='border-bottom:1px solid'><span class='input'>138 CTNS (2382 PAIRS) OF FOOTWEAR</span></td>
+      <td colspan='2'><span style='border-bottom:1px solid'><strong>Marks &amp; Nos.&nbsp;</strong></span></td>
+    </tr>
+    <tr>
+      <td colspan='3'><strong>For account and risk of Messrs.</strong></td>
+      <td colspan='3' style='border-bottom:1px solid'><span class='input'>VCS GROUP LLC</span></td>
+      <td colspan='2' rowspan='7'></td>
+    </tr>
+    <tr>
+      <td colspan='6' style='border-bottom:1px solid'><span class='input'>411 WEST PUTNAM AVENUE GREENWICH 06830 US</span></td>
+    </tr>
+    <tr>
+      <td colspan='6' style='border-bottom:1px solid'>&nbsp;</td>
+    </tr>
+    <tr>
+      <td><strong>Per S.S.</strong></td>
+      <td colspan='5' style='border-bottom:1px solid'><span class='input'>MAERSK ENPINE / 801N</span></td>
+    </tr>
+    <tr>
+      <td colspan='2'><strong>Sailing on or about</strong></td>
+      <td colspan='4' style='border-bottom:1px solid'><span class='input'>JAN 15, 2018</span></td>
+    </tr>
+    <tr>
+      <td><strong>ETA:</strong></td>
+      <td colspan='5' style='border-bottom:1px solid'><span class='input'>FEB 09, 2018</span></td>
+    </tr>
+    <tr>
+      <td><strong>From</strong></td>
+      <td colspan='5'><span class='input'>YANTIAN, CHINA to DALLAS, TX</span></td>
+    </tr>
+  </tbody>
+</table>
+<table class='repeatable' style='border-collapse:collapse;width:100%'>
+  <thead style='border-top:1px solid;border-bottom:1px solid'>
+    <tr>
+      <th style='border-right:1px solid;padding:4px'>Packing No.</th>
+      <th style='border-right:1px solid;padding:4px'>Description</th>
+      <th style='border-right:1px solid;padding:4px'>CTNS</th>
+      <th style='border-right:1px solid;padding:4px'>Quantity</th>
+      <th style='border-right:1px solid;padding:4px'>N.W. (KG)</th>
+      <th style='border-right:1px solid;padding:4px'>G.W. (KG)</th>
+      <th style='text-align:right;padding:4px'>Meas' (CM)</th>
+    </tr>
+  </thead>
+  <tbody class='input'>
+    {{#containers}}
+      <tr><td colspan='7'>&nbsp;</td></tr>
+      <tr>
+        <td>CONTAINER#:</td>
+        <td colspan='6'>
+          <div>MEDU9513985</div>
+        </td>
+      </tr>
+      {{#purchaseOrders}}
+        <tr>
+          <td></td>
+          <td colspan='6'>
+            <br>
+            <div>P.O.No: 0707DD0856</div>
+            <div>STYLE NO: S18/040</div>
+            <div>-</div>
+          </td>
+        </tr>
+        {{#purchaseOrderItems}}
+          <tr>
+            <td style='vertical-align:top'>-</td>
+            <td style='vertical-align:top'>SIZE 6.5</td>
+            <td style='vertical-align:top'></td>
+            <td style='vertical-align:top'>
+              <div style='display:flex'>
+                <div>@</div>
+                <div style='flex:1'></div>
+                <div>PRS</div>
+              </div>
+              <div style='display:flex'>
+                <div style='flex:1'></div>
+                <div>PRS</div>
+              </div>
+            </td>
+            <td style='vertical-align:top'>@</td>
+            <td style='vertical-align:top'>@</td>
+            <td style='vertical-align:top'>
+              <div>@</div>
+              <div style='text-align:right'>0.000</div>
+            </td>
+          </tr>
+        {{/purchaseOrderItems}}
+        <tr><td colspan='7'>&nbsp;</td></tr>
+        <tr>
+          <td colspan='3'>SUB-TOTAL: 138 CTNS</td>
+          <td style='text-align:right'>0 PRS</td>
+          <td style='text-align:right'>0.00</td>
+          <td style='text-align:right'>1,880.00</td>
+          <td style='text-align:right'>18.790</td>
+        </tr>
+      {{/purchaseOrders}}
+    {{/containers}}
+  </tbody>
+</table>
+  

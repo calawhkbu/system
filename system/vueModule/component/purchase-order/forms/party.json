@@ -1,0 +1,340 @@
+{
+  "components": [
+    {
+      "is": "WidgetMoreForm",
+      "props": {
+        "mainKey": "purchaseOrderParty",
+        "formProps": {
+          "z": {
+            "class": "xs-12 md-6 padding-4"
+          }
+        },
+        "labelProps": {
+          "z": {
+            "isComponent": "v-label",
+            "i18nContext": "Widget",
+            "class": "font-110"
+          },
+          "buyer": {
+            "isComponent": "v-label",
+            "i18nContext": "Widget",
+            "class": "font-110 required form-label"
+          },
+          "forwarder": {
+            "isComponent": "v-label",
+            "i18nContext": "Widget",
+            "class": "font-110 required form-label"
+          }
+        },
+        "fixedKeys": ["buyer", "shipper", "factory", "shipTo", "forwarder"],
+        "alwaysShowKeys": ["buyer", "shipper", "factory", "shipTo", "forwarder"],
+        "canAdd": true,
+        "canAddProps": {
+          "class": "xs-12 md-6 padding-20 min-height-200 margin-auto"
+        },
+        "addItemsOrFunc": [],
+        "fields": [
+          {
+            "name": "purchaseOrderParty.{{flex}}{{key}}Party",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12",
+            "relation": "purchaseOrderParty.{{flex}}{{key}}Party",
+            "relationMore": [
+              {
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyId",
+                "selector": "id"
+              },
+              {
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyName",
+                "selector": "name"
+              },
+              {
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyPhone",
+                "selector": "partyPhone"
+              },
+              {
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyFax",
+                "selector": "partyFax"
+              },
+              {
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyEmail",
+                "selector": "partyEmail"
+              },
+              {
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyAddress",
+                "selector": "partyAddress"
+              },
+              {
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyCityCode",
+                "selector": "partyCityCode"
+              },
+              {
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyStateCode",
+                "selector": "partyStateCode"
+              },
+              {
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyCountryCode",
+                "selector": "partyCountryCode"
+              },
+              {
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyZip",
+                "selector": "partyZip"
+              },
+              {
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyContactPersonId",
+                "selector": "contactPersonId"
+              },
+              {
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyContactPersonEmail",
+                "selector": "contactPersonEmail"
+              },
+              {
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyContactPersonName",
+                "selector": "contactPersonName"
+              },
+              {
+                "name": "purchaseOrderParty.{{flex}}{{key}}PartyContactPersonPhone",
+                "selector": "contactPersonPhone"
+              }
+            ],
+            "props": {
+              "showValue": false,
+              "canCreate": true,
+              "canCreateValue": {
+                "id": null,
+                "name": "{{autoSuggestModel}}"
+              },
+              "searchValueParams": {
+                "url": "api/party/{{context.autoSuggestModel}}"
+              },
+              "searchTextParams": {
+                "url": "api/party/query/party_auto_suggest",
+                "method": "POST",
+                "data": {
+                  "subqueries": {
+                    "activeStatus": {
+                      "value": "active"
+                    },
+                    "q": {
+                      "value": "{{context.search}}"
+                    },
+                    "partyTypeIn": {
+                      "value": ["{{key}}"]
+                    }
+                  },
+                  "limit": 5
+                }
+              },
+              "item-text": "name",
+              "item-value": "id"
+            }
+          },
+          {
+            "label": "Widget.contactName",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyContactName",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.contactEmail",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyContactEmail",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.contactPhone",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyContactPhone",
+            "component": "v-text-field",
+            "class": "xs-12 md-4",
+            "readonlyClass": "hidden"
+          },
+          {
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyContacts",
+            "component": "TableField",
+            "class": "xs-12",
+            "readonlyClass": "hidden",
+            "props": {
+              "overrideRowIndex": 1,
+              "fields": [
+                {
+                  "label": "Widget.contactXName",
+                  "name": "Name",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-4",
+                  "_readonlyClass": "hidden"
+                },
+                {
+                  "label": "Widget.contactXEmail",
+                  "name": "Email",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-4",
+                  "_readonlyClass": "hidden"
+                },
+                {
+                  "label": "Widget.contactXPhone",
+                  "name": "Phone",
+                  "component": "v-text-field",
+                  "class": "xs-12 md-4",
+                  "_readonlyClass": "hidden"
+                }
+              ]
+            }
+          },
+          {
+            "label": "Widget.address",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyAddress",
+            "component": "v-textarea",
+            "props": {
+              "auto-grow": true,
+              "rows": 5
+            },
+            "class": "xs-12",
+            "readonlyClass": "hidden"
+          },
+          {
+            "label": "Widget.city",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyCityCode",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-4",
+            "readonlyClass": "xs-12 md-4",
+            "more": [
+              {
+                "name": "{{key}}PartyCityCode",
+                "selector": "code"
+              }
+            ],
+            "props": {
+              "searchValueParams": {
+                "url": "api/location/query/location",
+                "method": "POST",
+                "data": {
+                  "subqueries": {
+                    "q": {
+                      "value": "{{context.autoSuggestModel}}"
+                    }
+                  }
+                }
+              },
+              "searchTextParams": {
+                "url": "api/location/query/location",
+                "method": "POST",
+                "data": {
+                  "subqueries": {
+                    "q": {
+                      "value": "{{context.search}}"
+                    }
+                  },
+                  "limit": 5
+                }
+              },
+              "item-text": "name",
+              "item-value": "locationCode"
+            }
+          },
+          {
+            "label": "Widget.state",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyStateCode",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-4",
+            "readonlyClass": "xs-12 md-4",
+            "relation": "{{key}}PartyStateCode",
+            "relationMore": [
+              {
+                "name": "{{key}}PartyStateCode",
+                "selector": "code"
+              }
+            ],
+            "props": {
+              "searchValueParams": {
+                "url": "api/code/query/code_master",
+                "method": "POST",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "STATE-PROVINCE"
+                    },
+                    "q": {
+                      "value": "{{context.autoSuggestModel}}"
+                    }
+                  }
+                }
+              },
+              "searchTextParams": {
+                "url": "api/code/query/code_master",
+                "method": "POST",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "STATE-PROVINCE"
+                    },
+                    "q": {
+                      "value": "{{context.search}}"
+                    }
+                  },
+                  "limit": 5
+                }
+              },
+              "item-text": "name",
+              "item-value": "code"
+            }
+          },
+          {
+            "label": "Widget.country",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyCountryCode",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-4",
+            "readonlyClass": "xs-12 md-4",
+            "more": [
+              {
+                "name": "{{key}}PartyCountryCode",
+                "selector": "code"
+              }
+            ],
+            "props": {
+              "searchValueParams": {
+                "url": "api/code/query/code_master",
+                "method": "POST",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "COUNTRY"
+                    },
+                    "q": {
+                      "value": "{{context.autoSuggestModel}}"
+                    }
+                  }
+                }
+              },
+              "searchTextParams": {
+                "url": "api/code/query/code_master",
+                "method": "POST",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "COUNTRY"
+                    },
+                    "q": {
+                      "value": "{{context.search}}"
+                    }
+                  },
+                  "limit": 5
+                }
+              },
+              "item-text": "name",
+              "item-value": "code"
+            }
+          },
+          {
+            "label": "Widget.zip",
+            "name": "purchaseOrderParty.{{flex}}{{key}}PartyZip",
+            "component": "v-text-field",
+            "class": "xs-12 md-6",
+            "readonlyClass": "hidden"
+          }
+        ]
+      }
+    }
+  ]
+}

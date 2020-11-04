@@ -1,0 +1,33 @@
+[{
+    "field": "boundTypeCode",
+    "validator": "required",
+    "part": "BookingPage.GeneralForm"
+  },
+  {
+    "field": "moduleTypeCode",
+    "validator": "required",
+    "part": "BookingPage.GeneralForm"
+  },
+  {
+    "field": "serviceCode",
+    "validator": "required",
+    "part": "BookingPage.GeneralForm",
+    "skip": "return form && (form.from === 'erp' || form.moduleTypeCode === 'AIR');"
+  },
+  {
+    "field": "portOfLoadingCode",
+    "validator": "required",
+    "part": "BookingPage.GeneralForm"
+  },
+  {
+    "field": "portOfDischargeCode",
+    "validator": "required",
+    "part": "BookingPage.GeneralForm"
+  },
+  {
+    "field": "commodity",
+    "validator": "required",
+    "part": "BookingPage.GeneralForm",
+    "skip": "return form && form.from === 'erp';"
+  }
+]

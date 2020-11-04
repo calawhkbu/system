@@ -1,0 +1,116 @@
+{
+  "class": "grid",
+  "components": [{
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-2",
+        "components": [{
+            "is": "v-btn",
+            "props": {
+              "class": "margin-0",
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/resetData"
+                },
+                "afterActions": [{
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "detail"
+                  }
+                }]
+              }]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "class": "swivel-title",
+              "i18nContext": "BookingPage",
+              "i18nKey": "updateTitle",
+              "i18nOptions": {
+                "title": "{{context.$store.state.widget.data.bookingNo}}"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "WidgetStepper",
+      "props": {
+        "topClick": true,
+        "validateBeforeStepChange": false,
+        "preview": false,
+        "steps": [{
+            "id": "BookingPage.GeneralForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "booking/forms/general"
+              }
+            }]
+          },
+          {
+            "id": "BookingPage.PartyForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "booking/forms/party"
+              }
+            }]
+          },
+          {
+            "id": "BookingPage.DateForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "booking/forms/date"
+              }
+            }]
+          },
+          {
+            "id": "BookingPage.ContainerForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "booking/forms/container"
+              }
+            }]
+          },
+          {
+            "id": "BookingPage.referenceForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "booking/forms/reference"
+              }
+            }]
+          }
+        ]
+      }
+    }
+  ]
+}

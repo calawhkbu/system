@@ -1,0 +1,455 @@
+{
+  "class": "grid",
+  "components": [{
+    "is": "DynamicComponent",
+    "props": {
+      "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
+      "components": [{
+        "is": "v-btn",
+        "props": {
+          "small": true,
+          "flat": true,
+          "icon": true
+        },
+        "slots": [{
+          "is": "Icon",
+          "props": {
+            "icon": "arrow_back"
+          }
+        }],
+        "events": {
+          "click.stop": [{
+            "type": "router",
+            "otherParams": {
+              "func": "push",
+              "path": "/admin/trackings"
+            }
+          }]
+        }
+      }, {
+        "is": "I18nText",
+        "props": {
+          "i18nContext": "TrackingPage",
+          "i18nKey": "title"
+        }
+      }, {
+        "is": "v-spacer"
+      }, {
+        "is": "v-btn",
+        "props": {
+          "small": true,
+          "icon": true,
+          "flat": true,
+          "class": "primary white-text"
+        },
+        "slots": [{
+          "is": "Icon",
+          "props": {
+            "small": true,
+            "icon": "edit"
+          }
+        }],
+        "events": {
+          "click.stop": [{
+            "type": "dispatch",
+            "otherParams": {
+              "name": "widget/changeMode",
+              "mode": "edit"
+            }
+          }]
+        }
+      }]
+    }
+  }, {
+    "is": "DynamicComponent",
+    "props": {
+      "layout": "v-card",
+      "class": "xs-12 margin-bottom-8",
+      "components": [{
+        "is": "WidgetForm",
+        "props": {
+          "class": "xs-12",
+          "fields": [{
+              "label": "TrackingPage.source",
+              "name": "source",
+              "component": "v-text-field",
+              "class": "xs-12",
+              "props": {
+                "disabled": "disabled"
+              }
+            }, {
+              "label": "TrackingPage.trackingNo",
+              "name": "trackingNo",
+              "component": "v-text-field",
+              "class": "xs-12"
+            },
+            {
+              "name": "details.trackingContainers",
+              "label": "TrackingPage.containers",
+              "component": "GridField",
+              "class": "xs-12",
+              "props": {
+                "overrideRowIndex": 1,
+                "fields": [{
+                  "label": "TrackingPage.containerNo",
+                  "name": "containerNo",
+                  "component": "v-text-field",
+                  "class": "xs-12"
+                }, {
+                  "label": "TrackingPage.sealNo",
+                  "name": "sealNo",
+                  "component": "v-text-field",
+                  "class": "xs-4 hidden"
+                }, {
+                  "label": "TrackingPage.container",
+                  "name": "sealNo",
+                  "component": "v-text-field",
+                  "class": "xs-4 hidden"
+                }, {
+                  "label": "TrackingPage.status",
+                  "name": "trackingStatus",
+                  "component": "TableField",
+                  "class": "xs-12",
+                  "props": {
+                    "topLabel": true,
+                    "fields": [{
+                      "label": "TrackingPage.isEstimated",
+                      "name": "isEstimated",
+                      "component": "BooleanField",
+                      "colGroupProps": {
+                        "style": {
+                          "width": "5%"
+                        }
+                      }
+                    }, {
+                      "label": "TrackingPage.statusCode",
+                      "name": "statusCode",
+                      "component": "v-select",
+                      "colGroupProps": {
+                        "style": {
+                          "width": "20%"
+                        }
+                      },
+                      "props": {
+                        "item-text": "text",
+                        "item-value": "value",
+                        "items": [{
+                            "text": "Sent to shipper",
+                            "value": "STSP"
+                          },
+                          {
+                            "text": "Loaded in container",
+                            "value": "EPRL"
+                          },
+                          {
+                            "text": "Gate in",
+                            "value": "GITM"
+                          },
+                          {
+                            "text": "Load onboard",
+                            "value": "LOBD"
+                          },
+                          {
+                            "text": "Departure from port of loading",
+                            "value": "DLPT"
+                          },
+                          {
+                            "text": "Loaded at transfer station",
+                            "value": "TSLB"
+                          },
+                          {
+                            "text": "Departure from transfer station",
+                            "value": "TSDC"
+                          },
+                          {
+                            "text": "Arrived at port of discharge",
+                            "value": "BDAR"
+                          },
+                          {
+                            "text": "Discharged from vessel",
+                            "value": "DSCH"
+                          },
+                          {
+                            "text": "Customs clearance",
+                            "value": "PASS"
+                          },
+                          {
+                            "text": "Terminal clearance",
+                            "value": "TMPS"
+                          },
+                          {
+                            "text": "Sent to consignee",
+                            "value": "STCS"
+                          },
+                          {
+                            "text": "Empty container returned",
+                            "value": "RCVE"
+                          },
+                          {
+                            "text": "Booked (AIR)",
+                            "value": "BKD"
+                          },
+                          {
+                            "text": "Cargo Receipt (AIR)",
+                            "value": "RCS"
+                          },
+                          {
+                            "text": "Loading (AIR)",
+                            "value": "MNF"
+                          },
+                          {
+                            "text": "Departure (AIR)",
+                            "value": "DEP"
+                          },
+                          {
+                            "text": "Transit Arrival (AIR)",
+                            "value": "TAR"
+                          },
+                          {
+                            "text": "Transit Departure (AIR)",
+                            "value": "TDE"
+                          },
+                          {
+                            "text": "Arrival (AIR)",
+                            "value": "ARR"
+                          },
+                          {
+                            "text": "Acquiring (AIR)",
+                            "value": "RWB"
+                          },
+                          {
+                            "text": "Discharged (AIR)",
+                            "value": "RCF"
+                          },
+                          {
+                            "text": "Customs Clearance (AIR)",
+                            "value": "CUS"
+                          },
+                          {
+                            "text": "Arrival Notice (AIR)",
+                            "value": "NFD"
+                          },
+                          {
+                            "text": "Delivered (AIR)",
+                            "value": "DLV"
+                          },
+                          {
+                            "text": "Other",
+                            "value": null
+                          }
+                        ]
+                      }
+                    }, {
+                      "label": "TrackingPage.statusDate",
+                      "name": "statusDate",
+                      "component": "DateTimePicker",
+                      "colGroupProps": {
+                        "style": {
+                          "width": "15%"
+                        }
+                      },
+                      "props": {
+                        "type": "datetime",
+                        "utc": true,
+                        "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                        "useOwnFormat": true
+                      }
+                    }, {
+                      "label": "TrackingPage.statusDescription",
+                      "name": "statusDescription",
+                      "component": "v-text-field",
+                      "colGroupProps": {
+                        "style": {
+                          "width": "40%"
+                        }
+                      }
+                    }, {
+                      "label": "TrackingPage.statusPlace",
+                      "name": "statusPlace",
+                      "component": "v-text-field",
+                      "colGroupProps": {
+                        "style": {
+                          "width": "20%"
+                        }
+                      }
+                    }]
+                  }
+                }]
+              }
+            },
+            {
+              "label": "TrackingPage.status",
+              "name": "details.trackingStatus",
+              "component": "TableField",
+              "class": "xs-12",
+              "props": {
+                "topLabel": true,
+                "fields": [{
+                  "label": "TrackingPage.isEstimated",
+                  "name": "isEstimated",
+                  "component": "BooleanField",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "5%"
+                    }
+                  }
+                }, {
+                  "label": "TrackingPage.statusCode",
+                  "name": "statusCode",
+                  "component": "v-select",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "20%"
+                    }
+                  },
+                  "props": {
+                    "item-text": "text",
+                    "item-value": "value",
+                    "items": [{
+                        "text": "Sent to shipper",
+                        "value": "STSP"
+                      },
+                      {
+                        "text": "Loaded in container",
+                        "value": "EPRL"
+                      },
+                      {
+                        "text": "Gate in",
+                        "value": "GITM"
+                      },
+                      {
+                        "text": "Load onboard",
+                        "value": "LOBD"
+                      },
+                      {
+                        "text": "Departure from port of loading",
+                        "value": "DLPT"
+                      },
+                      {
+                        "text": "Loaded at transfer station",
+                        "value": "TSLB"
+                      },
+                      {
+                        "text": "Departure from transfer station",
+                        "value": "TSDC"
+                      },
+                      {
+                        "text": "Arrived at port of discharge",
+                        "value": "BDAR"
+                      },
+                      {
+                        "text": "Discharged from vessel",
+                        "value": "DSCH"
+                      },
+                      {
+                        "text": "Customs clearance",
+                        "value": "PASS"
+                      },
+                      {
+                        "text": "Terminal clearance",
+                        "value": "TMPS"
+                      },
+                      {
+                        "text": "Sent to consignee",
+                        "value": "STCS"
+                      },
+                      {
+                        "text": "Empty container returned",
+                        "value": "RCVE"
+                      },
+                      {
+                        "text": "Booked (AIR)",
+                        "value": "BKD"
+                      },
+                      {
+                        "text": "Cargo Receipt (AIR)",
+                        "value": "RCS"
+                      },
+                      {
+                        "text": "Loading (AIR)",
+                        "value": "MNF"
+                      },
+                      {
+                        "text": "Departure (AIR)",
+                        "value": "DEP"
+                      },
+                      {
+                        "text": "Transit Arrival (AIR)",
+                        "value": "TAR"
+                      },
+                      {
+                        "text": "Transit Departure (AIR)",
+                        "value": "TDE"
+                      },
+                      {
+                        "text": "Arrival (AIR)",
+                        "value": "ARR"
+                      },
+                      {
+                        "text": "Acquiring (AIR)",
+                        "value": "RWB"
+                      },
+                      {
+                        "text": "Discharged (AIR)",
+                        "value": "RCF"
+                      },
+                      {
+                        "text": "Customs Clearance (AIR)",
+                        "value": "CUS"
+                      },
+                      {
+                        "text": "Arrival Notice (AIR)",
+                        "value": "NFD"
+                      },
+                      {
+                        "text": "Delivered (AIR)",
+                        "value": "DLV"
+                      },
+                      {
+                        "text": "Other",
+                        "value": null
+                      }
+                    ]
+                  }
+                }, {
+                  "label": "TrackingPage.statusDate",
+                  "name": "statusDate",
+                  "component": "DateTimePicker",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "15%"
+                    }
+                  },
+                  "props": {
+                    "type": "datetime",
+                    "utc": true,
+                    "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                    "useOwnFormat": true
+                  }
+                }, {
+                  "label": "TrackingPage.statusDescription",
+                  "name": "statusDescription",
+                  "component": "v-text-field",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "40%"
+                    }
+                  }
+                }, {
+                  "label": "TrackingPage.statusPlace",
+                  "name": "statusPlace",
+                  "component": "v-text-field",
+                  "colGroupProps": {
+                    "style": {
+                      "width": "20%"
+                    }
+                  }
+                }]
+              }
+            }
+          ]
+        }
+      }]
+    }
+  }]
+}

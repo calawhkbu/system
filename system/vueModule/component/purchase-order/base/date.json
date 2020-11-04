@@ -1,0 +1,256 @@
+{
+  "layout": "v-card",
+  "class": "min-height-263",
+  "components": [{
+    "is": "MouseHidden",
+    "props": {
+      "hiddenProps": {
+        "style": {
+          "position": "absolute",
+          "right": "0px",
+          "top": "0px"
+        }
+      }
+    },
+    "slots": [{
+      "name": "hidden",
+      "is": "DynamicComponent",
+      "props": {
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "icon": true,
+            "small": true,
+            "class": "zindex-3 margin-0"
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "edit"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "dispatch",
+              "otherParams": {
+                "name": "widget/changeMode",
+                "mode": "edit"
+              },
+              "afterActions": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/updateComponentSetting",
+                  "value": {
+                    "stepper": 2
+                  }
+                }
+              }]
+            }]
+          }
+        }, {
+          "is": "RightDrawer",
+          "props": {
+            "hide-overlay": true,
+            "buttonComponentProps": {
+              "icon": true,
+              "small": true,
+              "class": "zindex-3 margin-0"
+            }
+          },
+          "slots": [{
+            "name": "button",
+            "is": "Icon",
+            "props": {
+              "icon": "open_in_new"
+            }
+          }, {
+            "name": "default",
+            "is": "WidgetMoreForm",
+            "props": {
+              "name": "purchaseOrderDate",
+              "mainKey": "Date",
+              "formProps": {
+                "z": {
+                  "class": "xs-12 padding-leftright-4"
+                }
+              },
+              "labelProps": {
+                "z": {
+                  "isComponent": "v-label",
+                  "i18nContext": "Widget",
+                  "class": "font-110"
+                }
+              },
+              "fixedKeys": [
+                "po",
+                "shipping",
+                "arrival",
+                "exitFactory",
+                "doNotShipBefore",
+                "doNotShipAfter",
+                "delivery"
+              ],
+              "fields": [{
+                  "label": "Widget.estimatedDate",
+                  "name": "purchaseOrderDate.{{flex}}{{key}}DateEstimated",
+                  "component": "DateTimePicker",
+                  "class": "xs-{% if flex === '' %}6{% else %}4{% endif %}",
+                  "props": {
+                    "right": true,
+                    "type": "datetime",
+                    "utc": true,
+                    "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                    "useOwnFormat": true
+                  }
+                },
+                {
+                  "label": "Widget.actualDate",
+                  "name": "purchaseOrderDate.{{flex}}{{key}}DateActual",
+                  "component": "DateTimePicker",
+                  "class": "xs-{% if flex === '' %}6{% else %}4{% endif %}",
+                  "props": {
+                    "right": true,
+                    "type": "datetime",
+                    "utc": true,
+                    "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                    "useOwnFormat": true
+                  }
+                },
+                {
+                  "label": "Widget.port",
+                  "name": "purchaseOrderDate.{{flex}}{{key}}DatePort",
+                  "checkDisplayWhen": "return '{{flex}}' !== ''",
+                  "component": "v-select",
+                  "class": "xs-12 md-4",
+                  "props": {
+                    "right": true,
+                    "class": "input-text-right",
+                    "items": [
+                      {
+                        "key": "portOfLoading",
+                        "value": "Port of Loading"
+                      }, {
+                        "key": "portOfDischarge",
+                        "value": "Port of Discharge"
+                      }
+                    ],
+                    "item-text": "value",
+                    "item-value": "key"
+                  }
+                },
+                {
+                  "label": "Widget.remark",
+                  "name": "purchaseOrderDate.{{flex}}{{key}}DateRemark",
+                  "component": "v-text-field",
+                  "class": "xs-12"
+                }
+              ]
+            }
+          }]
+        }]
+      }
+    }, {
+      "is": "DynamicComponent",
+      "props": {
+        "components": [{
+          "is": "v-card-title",
+          "props": {
+            "class": "bold uppercase padding-0 min-height-28 padding-leftright-4"
+          },
+          "slots": [{
+            "is": "I18nText",
+            "props": {
+              "i18nContext": "PurchaseOrderPage",
+              "i18nKey": "DateForm"
+            }
+          }]
+        }, {
+          "is": "v-divider"
+        }, {
+          "is": "WidgetMoreForm",
+          "props": {
+            "small": true,
+            "name": "purchaseOrderDate",
+            "mainKey": "Date",
+            "formProps": {
+              "z": {
+                "class": "xs-12 padding-leftright-4"
+              },
+              "formContainerProps": {
+                "style": {
+                  "margin-top": "-2px"
+                }
+              }
+            },
+            "labelProps": {
+              "z": {
+                "isComponent": "v-label",
+                "i18nContext": "Widget",
+                "class": "font-110"
+              },
+              "po": {
+                "class": "font-110 blue--text"
+              },
+              "shipping": {
+                "class": "font-110 teal--text"
+              },
+              "arrival": {
+                "class": "font-110 green--text"
+              },
+              "exitFactory": {
+                "class": "font-110 brown--text"
+              },
+              "doNotShipAfter": {
+                "class": "font-110 indigo--text"
+              },
+              "delivery": {
+                "class": "font-110 pink--text"
+              }
+            },
+            "fixedKeys": [
+              "po",
+              "shipping",
+              "arrival",
+              "exitFactory",
+              "doNotShipBefore",
+              "doNotShipAfter",
+              "delivery"
+            ],
+            "checkDisplayWhen": [
+              "if (!['shipping', 'arrival', 'delivery'].includes(key)) { return false }",
+              "return true"
+            ],
+            "canAdd": false,
+            "fields": [{
+                "label": "Widget.estimatedDate",
+                "name": "purchaseOrderDate.{{flex}}{{key}}DateEstimated",
+                "component": "DateTimePicker",
+                "class": "xs-6",
+                "props": {
+                  "right": true,
+                  "type": "datetime",
+                  "utc": true,
+                  "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                  "useOwnFormat": true
+                }
+              },
+              {
+                "label": "Widget.actualDate",
+                "name": "purchaseOrderDate.{{flex}}{{key}}DateActual",
+                "component": "DateTimePicker",
+                "class": "xs-6",
+                "props": {
+                  "right": true,
+                  "type": "datetime",
+                  "utc": true,
+                  "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                  "useOwnFormat": true
+                }
+              }
+            ]
+          }
+        }]
+      }
+    }]
+  }]
+}

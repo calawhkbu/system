@@ -1,0 +1,742 @@
+{
+  "root": {
+    "component": "WizardGrid",
+    "spacing": 8,
+    "children": [
+      {
+        "xs": 12,
+        "sm": 12,
+        "md": 8,
+        "lg": 8,
+        "children": [
+          {
+            "component": "WizardGrid",
+            "spacing": 8,
+            "children": [
+              {
+                "xs": 12,
+                "sm": 12,
+                "md": 8,
+                "lg": 8,
+                "children": [
+                  {
+                    "component": "TransactionPartyDetail",
+                    "displaySetting": {
+                      "top": ["SHP", "CGN"]
+                    },
+                    "field": {
+                      "card": [
+                        {
+                          "field": {
+                            "children": {
+                              "empty": ""
+                            },
+                            "field": [["name", "party.partyName"]]
+                          }
+                        },
+                        {
+                          "field": {
+                            "children": {
+                              "empty": ""
+                            },
+                            "field": ["cityCode", "country"]
+                          }
+                        },
+                        {
+                          "field": {
+                            "children": {
+                              "empty": ""
+                            },
+                            "field": ["email"]
+                          }
+                        }
+                      ],
+                      "popup": [
+                        {
+                          "label": {
+                            "children": {
+                              "context": "Shipment.TransactionParty",
+                              "i18nKey": "name"
+                            }
+                          },
+                          "field": {
+                            "children": {
+                              "empty": ""
+                            },
+                            "field": [["name", "party.partyName"]]
+                          }
+                        },
+                        {
+                          "label": {
+                            "children": {
+                              "context": "Shipment.TransactionParty",
+                              "i18nKey": "City / Country"
+                            }
+                          },
+                          "field": {
+                            "children": {
+                              "empty": ""
+                            },
+                            "field": ["country", "city"]
+                          }
+                        },
+                        {
+                          "label": {
+                            "children": {
+                              "context": "Shipment.TransactionParty",
+                              "i18nKey": "Address"
+                            }
+                          },
+                          "field": {
+                            "children": {
+                              "empty": ""
+                            },
+                            "field": ["address1", "address2", "address3", "address4", "address5"]
+                          }
+                        },
+                        {
+                          "label": {
+                            "children": {
+                              "context": "Shipment.TransactionParty",
+                              "i18nKey": "Contact Person"
+                            }
+                          },
+                          "field": {
+                            "children": {
+                              "empty": ""
+                            },
+                            "field": ["contact"]
+                          }
+                        },
+                        {
+                          "label": {
+                            "children": {
+                              "context": "Shipment.TransactionParty",
+                              "i18nKey": "Tel."
+                            }
+                          },
+                          "field": {
+                            "children": {
+                              "empty": ""
+                            },
+                            "field": ["phone"]
+                          }
+                        },
+                        {
+                          "label": {
+                            "children": {
+                              "context": "Shipment.TransactionParty",
+                              "i18nKey": "Email"
+                            }
+                          },
+                          "field": {
+                            "children": {
+                              "empty": ""
+                            },
+                            "field": ["email"]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "xs": 12,
+                "sm": 12,
+                "md": 4,
+                "lg": 4,
+                "children": [
+                  {
+                    "component": "TransactionDateDetail",
+                    "displayDate": {
+                      "top": ["DEPARTURE", "ARRIVAL"]
+                    },
+                    "actualOnlyFields": [
+                      "OCEANBILL",
+                      "PPSALESINVOICE",
+                      "CCSALESINVOICE",
+                      "CYCUTOFF"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "component": "CardWithDrawer",
+            "children": [
+              {
+                "style": {
+                  "marginBottom": 16
+                },
+                "fields": [
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "House #"
+                        }
+                      },
+                      "field": {
+                        "field": ["houseNo"]
+                      }
+                    }
+                  },
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Master #"
+                        }
+                      },
+                      "field": {
+                        "field": ["masterNo"]
+                      }
+                    }
+                  },
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Estimated Departure Date"
+                        }
+                      },
+                      "field": {
+                        "field": ["estimatedDepartureDate"],
+                        "children": {
+                          "type": "momentdate-utc"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Estimated Arrival Date"
+                        }
+                      },
+                      "field": {
+                        "field": ["estimatedArrivalDate"],
+                        "children": {
+                          "type": "momentdate-utc"
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "style": {
+                  "marginBottom": 16
+                },
+                "fields": [
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Place of Receipt"
+                        }
+                      },
+                      "field": {
+                        "field": ["placeOfReceipt"]
+                      }
+                    }
+                  },
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Place Of Delivery"
+                        }
+                      },
+                      "field": {
+                        "field": ["placeOfDelivery"]
+                      }
+                    }
+                  },
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Port of Loading"
+                        }
+                      },
+                      "field": {
+                        "field": ["portOfLoading"]
+                      }
+                    }
+                  },
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Port of Discharge"
+                        }
+                      },
+                      "field": {
+                        "field": ["portOfDischarge"]
+                      }
+                    }
+                  },
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Final Destination"
+                        }
+                      },
+                      "field": {
+                        "field": ["finalDestination"]
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "style": {
+                  "marginBottom": 16
+                },
+                "fields": [
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Carrier"
+                        }
+                      },
+                      "field": {
+                        "field": ["billTransports[0].carrierCode"]
+                      }
+                    }
+                  },
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Flight #"
+                        }
+                      },
+                      "field": {
+                        "field": ["billTransports[0].transport"]
+                      }
+                    },
+                    "hiddenWhen": {
+                      "moduleType": "SEA"
+                    }
+                  },
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Vessel/Voyage"
+                        }
+                      },
+                      "field": {
+                        "field": ["billTransports[0].transport"]
+                      }
+                    },
+                    "hiddenWhen": {
+                      "moduleType": "AIR"
+                    }
+                  },
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Service"
+                        }
+                      },
+                      "field": {
+                        "field": ["service"]
+                      }
+                    }
+                  },
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Service"
+                        }
+                      },
+                      "field": {
+                        "field": ["incoTerms"]
+                      }
+                    }
+                  },
+                  {
+                    "xs": 12,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Issuing Agent"
+                        }
+                      },
+                      "field": {
+                        "field": ["issuingAgent"]
+                      },
+                      "hiddenWhen": {
+                        "moduleType": "SEA"
+                      }
+                    }
+                  },
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Value For Carriage"
+                        },
+                        "isDisplay": true
+                      },
+                      "field": {
+                        "type": "display-empty",
+                        "field": ["valueForCarriage"]
+                      },
+                      "hiddenWhen": {
+                        "moduleType": "SEA"
+                      }
+                    }
+                  },
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Value For Customs"
+                        },
+                        "isDisplay": true
+                      },
+                      "field": {
+                        "displaytype": "display-empty",
+                        "field": ["valueForCustoms"]
+                      },
+                      "hiddenWhen": {
+                        "moduleType": "SEA"
+                      }
+                    }
+                  },
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Amount Of Insurance"
+                        },
+                        "isDisplay": true
+                      },
+                      "field": {
+                        "type": "display-empty",
+                        "field": ["amountOfInsurance"]
+                      },
+                      "hiddenWhen": {
+                        "moduleType": "SEA"
+                      }
+                    }
+                  },
+                  {
+                    "xs": 6,
+                    "field": {
+                      "label": {
+                        "children": {
+                          "context": "Shipment",
+                          "i18nKey": "Issue At"
+                        },
+                        "isDisplay": true
+                      },
+                      "field": {
+                        "type": "display-empty",
+                        "field": ["issueAt"]
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "component": "CargoDetail",
+            "fields": [
+              {
+                "label": {
+                  "children": {
+                    "context": "Shipment.Cargo",
+                    "i18nKey": "Commodity"
+                  }
+                },
+                "field": {
+                  "field": ["commodity"],
+                  "children": {
+                    "empty": "unavailable"
+                  }
+                }
+              },
+              {
+                "label": {
+                  "children": {
+                    "context": "Shipment.Cargo",
+                    "i18nKey": "Quantity"
+                  }
+                },
+                "field": {
+                  "field": ["quantity", "quantityUnit"],
+                  "children": {
+                    "empty": "unavailable"
+                  }
+                }
+              },
+              {
+                "label": {
+                  "children": {
+                    "context": "Shipment.Cargo",
+                    "i18nKey": "Weight"
+                  },
+                  "isDisplay": true
+                },
+                "field": {
+                  "field": ["grossWeight", "weightUnit"],
+                  "children": {
+                    "empty": "unavailable"
+                  }
+                }
+              },
+              {
+                "label": {
+                  "children": {
+                    "context": "Shipment.Cargo",
+                    "i18nKey": "CBM"
+                  }
+                },
+                "field": {
+                  "field": ["cbm"],
+                  "children": {
+                    "empty": "unavailable"
+                  }
+                }
+              }
+            ],
+            "popperFields": [
+              {
+                "label": {
+                  "children": {
+                    "context": "Shipment.Cargo",
+                    "i18nKey": "Marks and Numbers"
+                  }
+                },
+                "field": {
+                  "field": ["shipMarks"],
+                  "children": {
+                    "empty": "unavailable",
+                    "type": "ellipsis",
+                    "style": {
+                      "width": 192,
+                      "cursor": "pointer"
+                    }
+                  }
+                }
+              },
+              {
+                "label": {
+                  "children": {
+                    "context": "Shipment.Cargo",
+                    "i18nKey": "Descriptions of Goods"
+                  }
+                },
+                "field": {
+                  "field": ["goodsDescription"],
+                  "children": {
+                    "empty": "unavailable",
+                    "type": "ellipsis",
+                    "style": {
+                      "width": 192,
+                      "cursor": "pointer"
+                    }
+                  }
+                }
+              },
+              {
+                "label": {
+                  "children": {
+                    "context": "Shipment.Cargo",
+                    "i18nKey": "Dimension"
+                  },
+                  "isDisplay": true
+                },
+                "field": {
+                  "field": ["dimension"],
+                  "type": "display-empty",
+                  "children": {
+                    "empty": "unavailable",
+                    "type": "ellipsis",
+                    "style": {
+                      "width": 192,
+                      "cursor": "pointer"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "component": "ContainerDetail",
+            "fields": [
+              {
+                "label": {
+                  "children": {
+                    "context": "Shipment.Container",
+                    "i18nKey": "Container #"
+                  }
+                },
+                "field": {
+                  "field": ["containerNo"],
+                  "children": {
+                    "empty": "unavailable"
+                  }
+                }
+              },
+              {
+                "xs": 2,
+                "label": {
+                  "children": {
+                    "context": "Shipment.Container",
+                    "i18nKey": "Carrier Booking #"
+                  },
+                  "style": {
+                    "fontSize": "0.8rem"
+                  }
+                },
+                "field": {
+                  "field": ["carrierBookingNo"],
+                  "children": {
+                    "empty": "unavailable"
+                  }
+                }
+              },
+              {
+                "label": {
+                  "children": {
+                    "context": "Shipment.Container",
+                    "i18nKey": "Seal #"
+                  },
+                  "isDisplay": true
+                },
+                "field": {
+                  "field": ["sealNo1"],
+                  "children": {
+                    "empty": "unavailable"
+                  }
+                }
+              },
+              {
+                "label": {
+                  "children": {
+                    "context": "Shipment.Container",
+                    "i18nKey": "Type"
+                  }
+                },
+                "field": {
+                  "field": ["containerType"],
+                  "children": {
+                    "empty": "unavailable"
+                  }
+                }
+              },
+              {
+                "label": {
+                  "children": {
+                    "context": "Shipment.Container",
+                    "i18nKey": "Quantity"
+                  }
+                },
+                "field": {
+                  "field": ["quantity", "quantityUnit"],
+                  "children": {
+                    "empty": "unavailable"
+                  }
+                }
+              },
+              {
+                "label": {
+                  "children": {
+                    "context": "Shipment.Container",
+                    "i18nKey": "Weight"
+                  }
+                },
+                "field": {
+                  "field": ["grossWeight", "weightUnit"],
+                  "children": {
+                    "empty": "unavailable"
+                  }
+                }
+              },
+              {
+                "label": {
+                  "children": {
+                    "context": "Shipment.Container",
+                    "i18nKey": "CBM"
+                  }
+                },
+                "field": {
+                  "field": ["cbm"],
+                  "children": {
+                    "empty": "unavailable"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "xs": 12,
+        "sm": 12,
+        "md": 4,
+        "lg": 4,
+        "children": [
+          {
+            "component": "TrackingStatusCard"
+          },
+          {
+            "component": "AlertCard"
+          },
+          {
+            "component": "DocumentCard"
+          }
+        ]
+      }
+    ]
+  }
+}

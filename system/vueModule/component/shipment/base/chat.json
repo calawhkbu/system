@@ -1,0 +1,11 @@
+{
+  "components": [{
+    "is": "AsyncComponent",
+    "props": {
+      "class": "xs-12 margin-topbottom-2",
+      "layoutName": "plugins/chat",
+      "loadWhenDataLoaded": true,
+      "tableName": "shipment"
+    }
+  }]
+}

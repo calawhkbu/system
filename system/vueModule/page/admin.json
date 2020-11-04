@@ -1,0 +1,15 @@
+{
+  "keepAlive": false,
+  "components": [
+    {
+      "is": "SimpleGridTool",
+      "props": {
+        "reportingKey": "admin",
+        "i18nContext": "AdminPage",
+        "nextPageKey": "reportIdParams",
+        "reportUrl": "report/admin",
+        "noAnimation": true
+      }
+    }
+  ]
+}

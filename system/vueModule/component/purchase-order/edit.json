@@ -1,0 +1,125 @@
+{
+  "class": "grid",
+  "components": [
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid align-item-center",
+        "components": [
+          {
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true
+            },
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
+                }
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "detail"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "class": "headline",
+              "i18nKey": "PurchaseOrderPage.updateTitle",
+              "i18nOptions": {
+                "title": "{{context.$store.state.widget.data.poNo}}"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "WidgetStepper",
+      "props": {
+        "topClick": true,
+        "topSave": true,
+        "validateBeforeStepChange": false,
+        "preview": false,
+        "steps": [
+          {
+            "id": "PurchaseOrderPage.GeneralForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "purchase-order/forms/general"
+                }
+              }
+            ]
+          },
+          {
+            "id": "PurchaseOrderPage.PartyForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "purchase-order/forms/party"
+                }
+              }
+            ]
+          },
+          {
+            "id": "PurchaseOrderPage.DateForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "purchase-order/forms/date"
+                }
+              }
+            ]
+          },
+          {
+            "id": "PurchaseOrderPage.ItemsForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "purchase-order/forms/po-items"
+                }
+              }
+            ]
+          },
+          {
+            "id": "PurchaseOrderPage.referenceForm",
+            "layout": "v-card",
+            "class": "margin-8",
+            "components": [
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "purchase-order/forms/reference"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

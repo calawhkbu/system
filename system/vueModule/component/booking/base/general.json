@@ -1,0 +1,514 @@
+{
+  "layout": "v-card",
+  "components": [{
+    "is": "MouseHidden",
+    "props": {
+      "hiddenProps": {
+        "style": {
+          "position": "absolute",
+          "right": "0px",
+          "top": "0px"
+        }
+      }
+    },
+    "slots": [{
+      "name": "hidden",
+      "is": "DynamicComponent",
+      "props": {
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "icon": true,
+            "small": true,
+            "class": "zindex-3 margin-0"
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "edit"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "dispatch",
+              "otherParams": {
+                "name": "widget/changeMode",
+                "mode": "edit"
+              },
+              "afterActions": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/updateComponentSetting",
+                  "value": {
+                    "stepper": 0
+                  }
+                }
+              }]
+            }]
+          }
+        }, {
+          "is": "RightDrawer",
+          "props": {
+            "hide-overlay": true,
+            "buttonComponentProps": {
+              "icon": true,
+              "small": true,
+              "class": "zindex-3 margin-0"
+            }
+          },
+          "slots": [{
+            "name": "button",
+            "is": "Icon",
+            "props": {
+              "icon": "open_in_new"
+            }
+          }, {
+            "name": "default",
+            "is": "DynamicComponent",
+            "props": {
+              "components": [{
+                "is": "WidgetForm",
+                "props": {
+                  "fields": [{
+                      "label": "BookingPage.moduleType",
+                      "name": ["moduleType.name", "moduleTypeCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12",
+                      "validator": ["required"],
+                      "props": {
+                        "required": true
+                      }
+                    },
+                    {
+                      "label": "BookingPage.boundType",
+                      "name": ["boundType.name", "boundTypeCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12",
+                      "validator": ["required"],
+                      "props": {
+                        "required": true
+                      }
+                    },
+                    {
+                      "label": "BookingPage.serviceCode",
+                      "name": ["service.name", "serviceCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12",
+                      "isRequired": "return form && form.moduleTypeCode !== 'AIR';"
+                    },
+                    {
+
+                      "label": "BookingPage.isConsole",
+                      "component": "BooleanField",
+                      "name": "isConsole",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "BookingPage.isDirect",
+                      "component": "BooleanField",
+                      "name": "isDirect",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "BookingPage.telexRelease",
+                      "component": "BooleanField",
+                      "name": "telexRelease",
+                      "class": "xs-12"
+                    },
+
+                    {
+                      "label": "BookingPage.placeOfReceipt",
+                      "name": ["placeOfReceiptName", "placeOfReceipt.name", "placeOfReceiptCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "BookingPage.portOfLoading",
+                      "name": ["portOfLoadingName", "portOfLoading.name", "portOfLoadingCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12",
+                      "validator": ["required"],
+                      "props": {
+                        "required": true
+                      }
+                    },
+                    {
+                      "label": "BookingPage.portOfDischarge",
+                      "name": ["portOfDischargeName", "portOfDischarge.name", "portOfDischargeCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12",
+                      "validator": ["required"],
+                      "props": {
+                        "required": true
+                      }
+                    },
+                    {
+                      "label": "BookingPage.placeOfDelivery",
+                      "name": ["placeOfDeliveryName", "placeOfDelivery.name", "placeOfDeliveryCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "BookingPage.carrier",
+                      "name": ["carrierName", "carrier.name", "carrierCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "BookingPage.contractNo",
+                      "name": "flexData.contractNo",
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "BookingPage.vesselName",
+                      "name": ["proposedVesselName", "vesselName"],
+                      "component": "v-text-field",
+                      "class": "xs-12",
+                      "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA'"
+                    },
+                    {
+                      "label": "BookingPage.voyageFlightNumber",
+                      "name": ["proposedVoyageFlightNumber", "voyageFlightNumber"],
+                      "component": "v-text-field",
+                      "class": "xs-12",
+                      "checkDisplayWhen": "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA')"
+                    },
+                    {
+                      "label": "BookingPage.vas",
+                      "name": "vas",
+                      "component": "AsyncSelect",
+                      "class": "xs-12",
+                      "props": {
+                        "loadOnReadOnly": true,
+                        "multiple": true,
+                        "axiosParams": {
+                          "url": "api/code/query/code_master",
+                          "method": "POST",
+                          "data": {
+                            "subqueries": {
+                              "codeType": {
+                                "value": "VAS"
+                              }
+                            }
+                          }
+                        },
+                        "item-text": "name",
+                        "item-value": "code",
+                        "showValue": false,
+                        "showSpacer": false,
+                        "selectedProps": {
+                          "class": "multiple"
+                        }
+                      }
+                    },
+                    {
+                      "label": "BookingPage.incoTermsCode",
+                      "name": ["incoTerms.name", "incoTermsCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "BookingPage.freightTermsCode",
+                      "name": ["freightTerms.name", "freightTermsCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "BookingPage.otherTerms",
+                      "name": ["otherTerms.name", "otherTermsCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "BookingPage.commodity",
+                      "name": "commodity",
+                      "component": "v-text-field",
+                      "class": "xs-12",
+                      "validator": ["required"],
+                      "props": {
+                        "required": true
+                      }
+                    },
+                    {
+                      "label": "BookingPage.polHScode",
+                      "name": "polHScode",
+                      "component": "v-text-field",
+                      "class": "xs-12",
+                      "more": ["podHScode"]
+                    },
+                    {
+                      "label": "BookingPage.nominatedType",
+                      "name": ["nominatedType.name", "nominatedTypeCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "BookingPage.picId",
+                      "name": "picId",
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "BookingPage.picEmail",
+                      "name": "picEmail",
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    }
+                  ]
+                }
+              }, {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "xs-12 margin-bottom-2",
+                  "layoutName": "booking/base/generalMoreHidden"
+                }
+              }]
+            }
+          }]
+        }]
+      }
+    }, {
+      "is": "DynamicComponent",
+      "props": {
+        "components": [{
+          "is": "v-card-title",
+          "props": {
+            "class": "bold uppercase padding-0 min-height-28 padding-leftright-4"
+          },
+          "slots": [{
+            "is": "I18nText",
+            "props": {
+              "i18nContext": "BookingPage",
+              "i18nKey": "GeneralForm"
+            }
+          }]
+        }, {
+          "is": "v-divider"
+        }, {
+          "is": "WidgetForm",
+          "props": {
+            "class": "padding-top-5",
+            "fields": [{
+                "label": "BookingPage.moduleType",
+                "name": ["moduleType.name", "moduleTypeCode"],
+                "component": "v-text-field",
+                "class": "xs-6 md-3",
+                "validator": ["required"],
+                "props": {
+                  "required": true
+                }
+              },
+              {
+                "label": "BookingPage.boundType",
+                "name": ["boundType.name", "boundTypeCode"],
+                "component": "v-text-field",
+                "class": "xs-6 md-3",
+                "validator": ["required"],
+                "props": {
+                  "required": true
+                }
+              },
+              {
+                "label": "BookingPage.serviceCode",
+                "name": ["service.name", "serviceCode"],
+                "component": "v-text-field",
+                "class": "xs-6 md-2",
+                "isRequired": "return form && form.moduleTypeCode !== 'AIR';",
+                "checkDisplayWhen": "return form && ((form.service && form.service.name) || form.serviceCode)"
+              },
+              {
+                "label": "BookingPage.isConsole",
+                "component": "BooleanField",
+                "name": "isConsole",
+                "class": "xs-12 md-1",
+                "checkDisplayWhen": "return form && (form.isConsole || form.isDirect || form.telexRelease) && form.isConsole;"
+              },
+              {
+                "class": "xs-12 md-1",
+                "checkDisplayWhen": "return form && (form.isConsole || form.isDirect || form.telexRelease)  && !form.isConsole;"
+              },
+              {
+                "label": "BookingPage.isDirect",
+                "component": "BooleanField",
+                "name": "isDirect",
+                "class": "xs-12 md-1",
+                "checkDisplayWhen": "return form && (form.isConsole || form.isDirect || form.telexRelease)  && form.isDirect;"
+              },
+              {
+                "class": "xs-12 md-1",
+                "checkDisplayWhen": "return form && (form.isConsole || form.isDirect || form.telexRelease)  && !form.isDirect;"
+              },
+              {
+                "label": "BookingPage.telexRelease",
+                "component": "BooleanField",
+                "name": "telexRelease",
+                "class": "xs-12 md-1",
+                "checkDisplayWhen": "return form && (form.isConsole || form.isDirect || form.telexRelease)  && form.telexRelease;"
+              },
+              {
+                "class": "xs-12 md-1",
+                "checkDisplayWhen": "return form && (form.isConsole || form.isDirect || form.telexRelease)  && !form.telexRelease;"
+              },
+              {
+                "label": "BookingPage.placeOfReceipt",
+                "checkDisplayWhen": "return form && (form.placeOfReceiptName || (form.placeOfReceipt && form.placeOfReceipt.name) || form.placeOfReceiptCode)",
+                "name": ["placeOfReceiptName", "placeOfReceipt.name", "placeOfReceiptCode"],
+                "component": "v-text-field",
+                "class": "xs-6 md-3"
+              }, {
+                "label": "BookingPage.portOfLoading",
+                "name": "portOfLoading",
+                "name": ["portOfLoadingName", "portOfLoading.name", "portOfLoadingCode"],
+                "component": "v-text-field",
+                "class": "xs-6 md-3",
+                "validator": ["required"],
+                "props": {
+                  "required": true
+                }
+              }, {
+                "label": "BookingPage.portOfDischarge",
+                "name": ["portOfDischargeName", "portOfDischarge.name", "portOfDischargeCode"],
+                "component": "v-text-field",
+                "class": "xs-6 md-3",
+                "validator": ["required"],
+                "props": {
+                  "required": true
+                }
+              }, {
+                "label": "BookingPage.placeOfDelivery",
+                "checkDisplayWhen": "return form && (form.placeOfDeliveryName || (form.placeOfDelivery && form.placeOfDelivery.name) || form.placeOfDeliveryCode)",
+                "name": ["placeOfDeliveryName", "placeOfDelivery.name", "placeOfDeliveryCode"],
+                "component": "v-text-field",
+                "class": "xs-6 md-3"
+              }, {
+                "label": "BookingPage.carrier",
+                "name": ["carrierName", "carrier.name", "carrierCode"],
+                "component": "v-text-field",
+                "checkDisplayWhen": "return form && (form.carrierName || (form.carrier && form.carrier.name) || form.carrierCode)",
+                "class": "xs-6 md-3"
+              }, {
+                "label": "BookingPage.contractNo",
+                "name": "flexData.contractNo",
+                "component": "v-text-field",
+                "class": "xs-6 md-3",
+                "checkDisplayWhen": "return form && form.flexData && form.flexData.contractNo"
+              }, {
+                "label": "BookingPage.vesselName",
+                "name": ["proposedVesselName", "vesselName"],
+                "component": "v-text-field",
+                "class": "xs-6 md-3",
+                "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA' && (form.proposedVesselName || form.vesselName)"
+              }, {
+                "label": "BookingPage.voyageFlightNumber",
+                "name": ["proposedVoyageFlightNumber", "voyageFlightNumber"],
+                "component": "v-text-field",
+                "class": "xs-6 md-3",
+                "checkDisplayWhen": "return form && form.moduleTypeCode && (form.moduleTypeCode === 'AIR' || form.moduleTypeCode === 'SEA') && (form.voyageFlightNumber || form.proposedVoyageFlightNumber)"
+              },  {
+                "label": "BookingPage.vas",
+                "name": "vas",
+                "checkDisplayWhen": "return form && form.vas && form.vas.length",
+                "component": "AsyncSelect",
+                "class": "xs-6 md-3",
+                "props": {
+                  "loadOnReadOnly": true,
+                  "multiple": true,
+                  "axiosParams": {
+                    "url": "api/code/query/code_master",
+                    "method": "POST",
+                    "data": {
+                      "subqueries": {
+                        "codeType": {
+                          "value": "VAS"
+                        }
+                      }
+                    }
+                  },
+                  "item-text": "name",
+                  "item-value": "code",
+                  "showValue": false,
+                  "showSpacer": false,
+                  "selectedProps": {
+                    "class": "multiple"
+                  }
+                }
+              }, {
+                "label": "BookingPage.incoTermsCode",
+                "name": "incoTermsCode",
+                "component": "v-text-field",
+                "class": "xs-6 md-3",
+                "checkDisplayWhen": "return form && ((form.incoTerms && form.incoTerms.name) || form.incoTermsCode)"
+              }, {
+                "label": "BookingPage.freightTermsCode",
+                "name": "freightTermsCode",
+                "component": "v-text-field",
+                "class": "xs-6 md-3",
+                "checkDisplayWhen": "return form && ((form.freightTerms && form.freightTerms.name) || form.freightTermsCode)"
+              }, {
+                "label": "BookingPage.otherTerms",
+                "name": "otherTermsCode",
+                "component": "v-text-field",
+                "class": "xs-6 md-3",
+                "checkDisplayWhen": "return form && ((form.otherTerms && form.otherTerms.name) || form.otherTermsCode)"
+              }, {
+                "label": "BookingPage.commodity",
+                "name": "commodity",
+                "component": "v-text-field",
+                "class": "xs-6 md-3",
+                "validator": ["required"],
+                "props": {
+                  "required": true
+                }
+              }, {
+                "label": "BookingPage.polHScode",
+                "name": "polHScode",
+                "component": "v-text-field",
+                "class": "xs-6 md-3",
+                "checkDisplayWhen": "return form && form.polHScode",
+                "more": ["podHScode"]
+              },
+              {
+                "label": "BookingPage.nominatedType",
+                "name": ["nominatedType.name", "nominatedTypeCode"],
+                "component": "v-text-field",
+                "class": "xs-6 md-3",
+                "relation": "nominatedType",
+                "checkDisplayWhen": "return form && (form.nominatedTypeCode || (form.nominatedType && form.nominatedType.name))"
+              },
+              {
+                "label": "BookingPage.picId",
+                "name": "picId",
+                "component": "v-text-field",
+                "checkDisplayWhen": "return form && form.picId",
+                "class": "xs-6"
+              },
+              {
+                "label": "BookingPage.picEmail",
+                "name": "picEmail",
+                "component": "v-text-field",
+                "checkDisplayWhen": "return form && form.picEmail",
+                "class": "xs-6"
+              },
+              {
+                "class": "xs-3"
+              },
+              {
+                "class": "xs-3"
+              },
+              {
+                "class": "xs-3"
+              }
+            ]
+          }
+        }, {
+          "is": "AsyncComponent",
+          "props": {
+            "class": "xs-12 margin-bottom-2",
+            "layoutName": "booking/base/generalMore"
+          }
+        }]
+      }
+    }]
+  }]
+}

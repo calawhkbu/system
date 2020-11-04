@@ -1,0 +1,70 @@
+{
+  "class": "grid",
+  "components": [{
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
+        "components": [{
+            "is": "v-btn",
+            "props": {
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/resetData"
+                },
+                "afterActions": [{
+                  "type": "dispatch",
+                  "otherParams": {
+                    "name": "widget/changeMode",
+                    "mode": "detail"
+                  }
+                }]
+              }]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "class": "headline",
+              "i18nKey": "ProductPage.title"
+            }
+          },
+          {
+            "is": "v-spacer"
+          },
+          {
+            "is": "WidgetSave",
+            "props": {
+              "small": true,
+              "icon": true,
+              "flat": true,
+              "class": "primary"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "components": [{
+          "is": "AsyncComponent",
+          "props": {
+            "class": "margin-topbottom-4 xs-12",
+            "layoutName": "product/forms/general"
+          }
+        }]
+      }
+    }
+  ]
+}

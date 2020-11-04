@@ -1,0 +1,341 @@
+{
+  "layout": "v-card",
+  "components": [{
+    "is": "MouseHidden",
+    "props": {
+      "hiddenProps": {
+        "style": {
+          "position": "absolute",
+          "right": "0px",
+          "top": "0px"
+        }
+      }
+    },
+    "slots": [{
+      "name": "hidden",
+      "is": "DynamicComponent",
+      "props": {
+        "components": [{
+          "is": "RightDrawer",
+          "props": {
+            "hide-overlay": true,
+            "buttonComponentProps": {
+              "icon": true,
+              "small": true,
+              "class": "zindex-3"
+            }
+          },
+          "slots": [{
+            "name": "button",
+            "is": "Icon",
+            "props": {
+              "icon": "open_in_new"
+            }
+          }, {
+            "name": "default",
+            "is": "DynamicComponent",
+            "props": {
+              "class": "full-width full-height",
+              "components": [{
+                "is": "WidgetForm",
+                "props": {
+                  "formId": "general",
+                  "fields": [{
+                      "label": "ShipmentPage.houseNo",
+                      "name": "houseNo",
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.masterNo",
+                      "name": "masterNo",
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.carrier",
+                      "name": ["carrierName", "carrier.name", "carrierCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.vessel",
+                      "name": "vessel",
+                      "component": "v-text-field",
+                      "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA'",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.flightNo",
+                      "name": "voyageFlightNumber",
+                      "component": "v-text-field",
+                      "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'AIR'",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.placeOfReceipt",
+                      "name": ["placeOfReceiptName", "placeOfReceipt.name", "placeOfReceiptCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.portOfLoading",
+                      "name": ["portOfLoadingName", "portOfLoading.name", "portOfLoadingCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.portOfDischarge",
+                      "name": ["portOfDischargeName", "portOfDischarge.name", "portOfDischargeCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.placeOfDelivery",
+                      "name": ["placeofDeliveryName", "placeOfDelivery.name", "placeofDeliveryCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.finalDestination",
+                      "name": ["finalDestinationName", "finalDestination.name", "finalDestinationCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.service",
+                      "name": "serviceCode",
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.departureDateEstimated",
+                      "name": "shipmentDate.departureDateEstimated",
+                      "component": "DateTimePicker",
+                      "class": "xs-12",
+                      "props": {
+                        "type": "datetime",
+                        "utc": true,
+                        "defaultFormat": "ddd MMM DD YYYY",
+                        "useOwnFormat": true
+                      }
+                    },
+                    {
+                      "label": "ShipmentPage.arrivalDateEstimated",
+                      "name": "shipmentDate.arrivalDateEstimated",
+                      "component": "DateTimePicker",
+                      "class": "xs-12",
+                      "props": {
+                        "type": "datetime",
+                        "utc": true,
+                        "defaultFormat": "ddd MMM DD YYYY",
+                        "useOwnFormat": true
+                      }
+                    },
+                    {
+                      "label": "ShipmentPage.incoTerms",
+                      "name": "incoTermsCode",
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.nominatedType",
+                      "name": ["nominatedType.name", "nominatedTypeCode"],
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.issuingAgent",
+                      "name": "issuingAgent",
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.issueAt",
+                      "name": "issueDate",
+                      "component": "DateTimePicker",
+                      "class": "xs-12",
+                      "props": {
+                        "type": "datetime",
+                        "utc": true,
+                        "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                        "useOwnFormat": true
+                      }
+                    },
+                    {
+                      "label": "ShipmentPage.valueForCarriage",
+                      "name": "valueForCarriage",
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.valueForCustoms",
+                      "name": "valueForCustoms",
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.amountOfInsurance",
+                      "name": "amountOfInsurance",
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.picId",
+                      "name": "picId",
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    },
+                    {
+                      "label": "ShipmentPage.picEmail",
+                      "name": "picEmail",
+                      "component": "v-text-field",
+                      "class": "xs-12"
+                    }
+                  ]
+                }
+              }]
+            }
+          }]
+        }]
+      }
+    }, {
+      "is": "DynamicComponent",
+      "props": {
+        "components": [{
+          "is": "WidgetForm",
+          "props": {
+            "fields": [{
+                "label": "ShipmentPage.houseNo",
+                "name": "houseNo",
+                "checkDisplayWhen": "return form && form.houseNo",
+                "component": "v-text-field",
+                "class": "xs-6 md-3"
+              },
+              {
+                "label": "ShipmentPage.masterNo",
+                "name": "masterNo",
+                "checkDisplayWhen": "return form && form.masterNo",
+                "component": "v-text-field",
+                "class": "xs-6 md-3"
+              },
+              {
+                "label": "ShipmentPage.carrier",
+                "name": ["carrierName", "carrier.name", "carrierCode"],
+                "checkDisplayWhen": "return form && (form.carrierName || (form.carrier && form.carrier.name) || form.carrierCode)",
+                "component": "v-text-field",
+                "class": "xs-6 md-3"
+              },
+              {
+                "label": "ShipmentPage.vessel",
+                "name": "vessel",
+                "component": "v-text-field",
+                "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'SEA' && form.vessel",
+                "class": "xs-6 md-3"
+              },
+              {
+                "label": "ShipmentPage.flightNo",
+                "name": "voyageFlightNumber",
+                "component": "v-text-field",
+                "checkDisplayWhen": "return form && form.moduleTypeCode && form.moduleTypeCode === 'AIR' && form.voyageFlightNumber",
+                "class": "xs-6 md-3"
+              },
+              {
+                "label": "ShipmentPage.placeOfReceipt",
+                "name": ["placeOfReceiptName", "placeOfReceipt.name", "placeOfReceiptCode"],
+                "checkDisplayWhen": "return form && (form.placeOfReceiptName || (form.placeOfReceipt && form.placeOfReceipt.name) || form.placeOfReceiptCode)",
+                "component": "v-text-field",
+                "class": "xs-6 md-3"
+              },
+              {
+                "label": "ShipmentPage.portOfLoading",
+                "name": ["portOfLoadingName", "portOfLoading.name", "portOfLoadingCode"],
+                "checkDisplayWhen": "return form && (form.portOfLoadingName || (form.portOfLoading && form.portOfLoading.name) || form.portOfLoadingCode)",
+                "component": "v-text-field",
+                "class": "xs-6 md-3"
+              },
+              {
+                "label": "ShipmentPage.portOfDischarge",
+                "name": ["portOfDischargeName", "portOfDischarge.name", "portOfDischargeCode"],
+                "checkDisplayWhen": "return form && (form.portOfDischargeName || (form.portOfDischarge && form.portOfDischarge.name) || form.portOfDischargeCode)",
+                "component": "v-text-field",
+                "class": "xs-6 md-3"
+              },
+              {
+                "label": "ShipmentPage.placeOfDelivery",
+                "name": ["placeOfDeliveryName", "placeOfDelivery.name", "placeOfDeliveryCode"],
+                "checkDisplayWhen": "return form && (form.placeOfDeliveryName || (form.placeOfDelivery && form.placeOfDelivery.name) || form.placeOfDeliveryCode)",
+                "component": "v-text-field",
+                "class": "xs-6 md-3"
+              },
+              {
+                "label": "ShipmentPage.finalDestination",
+                "name": ["finalDestinationName", "finalDestination.name", "finalDestinationCode"],
+                "checkDisplayWhen": "return form && (form.finalDestinationName || (form.finalDestination && form.finalDestination.name) || form.finalDestinationCode)",
+                "component": "v-text-field",
+                "class": "xs-6 md-3"
+              },
+              {
+                "label": "ShipmentPage.service",
+                "name": "serviceCode",
+                "checkDisplayWhen": "return form && form.serviceCode",
+                "component": "v-text-field",
+                "class": "xs-6 md-3"
+              },
+              {
+                "label": "ShipmentPage.departureDateEstimated",
+                "name": "shipmentDate.departureDateEstimated",
+                "component": "DateTimePicker",
+                "checkDisplayWhen": "return form && form.shipmentDate && form.shipmentDate.departureDateEstimated",
+                "class": "xs-6 md-3",
+                "props": {
+                  "type": "datetime",
+                  "utc": true,
+                  "defaultFormat": "ddd MMM DD YYYY",
+                  "useOwnFormat": true
+                }
+              },
+              {
+                "label": "ShipmentPage.arrivalDateEstimated",
+                "name": "shipmentDate.arrivalDateEstimated",
+                "component": "DateTimePicker",
+                "checkDisplayWhen": "return form && form.shipmentDate && form.shipmentDate.arrivalDateEstimated",
+                "class": "xs-6 md-3",
+                "props": {
+                  "type": "datetime",
+                  "utc": true,
+                  "defaultFormat": "ddd MMM DD YYYY",
+                  "useOwnFormat": true
+                }
+              },
+              {
+                "label": "ShipmentPage.incoTerms",
+                "name": "incoTermsCode",
+                "checkDisplayWhen": "return form && form.incoTerms",
+                "component": "v-text-field",
+                "class": "xs-6 md-3"
+              },
+              {
+                "label": "ShipmentPage.picId",
+                "name": "picId",
+                "component": "v-text-field",
+                "checkDisplayWhen": "return form && form.picId",
+                "class": "xs-6 md-3"
+              },
+              {
+                "label": "ShipmentPage.picEmail",
+                "name": "picEmail",
+                "component": "v-text-field",
+                "checkDisplayWhen": "return form && form.picEmail",
+                "class": "xs-6 md-3"
+              },
+              {
+                "class": "xs-6 md-3"
+              }
+            ]
+          }
+        }]
+      }
+    }]
+  }]
+}

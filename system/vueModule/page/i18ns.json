@@ -1,0 +1,147 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "title": "Translations",
+      "back": "/admin",
+      "reportingKey": "i18ns",
+      "urlFormat": "/admin/i18ns",
+      "reportingKeyKey": "reportIdParams",
+      "jql": "i18ns",
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": false,
+      "noPartyGroupFilters": true,
+      "noCache": true,
+      "refreshWhenBack": true,
+      "nextPageComponent": "i18n",
+      "newReport": {
+        "filters": {
+          "activeStatusEq": {
+            "value": "active",
+            "locked": true
+          }
+        },
+        "configurations": {
+          "i18nContext": "I18nPage",
+          "clickable": true,
+          "pagination": {
+            "current": 0,
+            "perPage": 20,
+            "remote": true
+          }
+        }
+      },
+      "fieldOptions": [{
+          "key": "id",
+          "hidden": true
+        },
+        {
+          "key": "version",
+          "hidden": true
+        },
+        {
+          "key": "partyGroupCode",
+          "hidden": true
+        },
+        {
+          "key": "category"
+        },
+        {
+          "key": "key"
+        },
+        {
+          "label": "canResetDefault",
+          "key": "canResetDefault",
+          "sortable": false,
+          "align": "center",
+          "clickFunction": {
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "/api/i18n/resetDefault/{{row.id}}",
+                "method": "POST"
+              }
+            },
+            "afterActions": [{
+              "type": "notify",
+              "otherParams": {
+                "notification": "Notify.resetDefaultSuccess"
+              }
+            }]
+          },
+          "tdComponent": {
+            "hideIfFalse": true,
+            "is": "icon",
+            "props": {
+              "icon": "refresh"
+            }
+          }
+        }
+      ],
+      "filters": [{
+        "name": "activeStatus",
+        "type": "list",
+        "props": {
+          "items": [{
+              "label": "active",
+              "value": "active"
+            },
+            {
+              "label": "deleted",
+              "value": "deleted"
+            }
+          ]
+        }
+      }, {
+        "i18nContext": "I18nPage",
+        "name": "category",
+        "type": "text"
+      }, {
+        "i18nContext": "I18nPage",
+        "name": "key",
+        "type": "text"
+      }],
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/detail/{{id}}",
+          "base": true
+        }
+      }
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "i18n/create",
+                "base": true
+              }
+            }]
+          }
+        }]
+      }
+    }]
+  }]
+}

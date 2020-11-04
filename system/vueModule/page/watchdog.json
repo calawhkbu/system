@@ -1,0 +1,271 @@
+{
+  "components": [{
+    "is": "GridTool",
+    "props": {
+      "reportingKey": "watchdog",
+      "hasReports": true,
+      "showFilterBar": true,
+      "enableShare": true,
+      "enableSetting": false,
+      "noExternal": true,
+      "newReport": {
+        "filters": {
+          "activeStatus": {
+            "value": "active"
+          },
+          "date": {
+            "func": {
+              "key": "range",
+              "args": {
+                "unit": "day",
+                "value": 30
+              }
+            }
+          }
+        },
+        "configurations": {
+          "cards": [{
+              "uuid": "c99f10ad-0b51-4094-984b-4886593344c8",
+              "cardId": "a3e37a33-169b-4b36-a375-c0a7d7945e7c",
+              "params": {
+                "name": "SEA WATCHDOG*",
+                "filters": {
+                  "entityType": {
+                    "value": "shipment"
+                  },
+                  "isImportant": true,
+                  "moduleTypeCode": {
+                    "value": [
+                      "SEA"
+                    ]
+                  }
+                }
+              },
+              "layouts": {
+                "lg": {
+                  "h": 12,
+                  "i": "c99f10ad-0b51-4094-984b-4886593344c8",
+                  "w": 6,
+                  "x": 0,
+                  "y": 0,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "md": {
+                  "h": 12,
+                  "i": "c99f10ad-0b51-4094-984b-4886593344c8",
+                  "w": 6,
+                  "x": 0,
+                  "y": 0,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "sm": {
+                  "h": 12,
+                  "i": "c99f10ad-0b51-4094-984b-4886593344c8",
+                  "w": 4,
+                  "x": 0,
+                  "y": 0,
+                  "hr": 1,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "xs": {
+                  "h": 12,
+                  "i": "c99f10ad-0b51-4094-984b-4886593344c8",
+                  "w": 4,
+                  "x": 0,
+                  "y": 0,
+                  "hr": 1,
+                  "minH": 6,
+                  "minW": 2
+                }
+              }
+            },
+            {
+              "uuid": "11e10523-b87c-484f-9117-54788790cb34",
+              "cardId": "a3e37a33-169b-4b36-a375-c0a7d7945e7c",
+              "params": {
+                "name": "AIR WATCHDOG*",
+                "filters": {
+                  "entityType": {
+                    "value": "shipment"
+                  },
+                  "isImportant": true,
+                  "moduleTypeCode": {
+                    "value": [
+                      "AIR"
+                    ]
+                  }
+                }
+              },
+              "layouts": {
+                "lg": {
+                  "h": 12,
+                  "i": "11e10523-b87c-484f-9117-54788790cb34",
+                  "w": 6,
+                  "x": 6,
+                  "y": 0,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "md": {
+                  "h": 12,
+                  "i": "11e10523-b87c-484f-9117-54788790cb34",
+                  "w": 6,
+                  "x": 6,
+                  "y": 0,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "sm": {
+                  "h": 12,
+                  "i": "11e10523-b87c-484f-9117-54788790cb34",
+                  "w": 4,
+                  "x": 0,
+                  "y": 12,
+                  "hr": 1,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "xs": {
+                  "h": 12,
+                  "i": "11e10523-b87c-484f-9117-54788790cb34",
+                  "w": 4,
+                  "x": 0,
+                  "y": 12,
+                  "hr": 1,
+                  "minH": 6,
+                  "minW": 2
+                }
+              }
+            },
+            {
+              "uuid": "70169a02-1794-4b9b-9f9a-54d3e6bf176d",
+              "cardId": "a3e37a33-169b-4b36-a375-c0a7d7945e7c",
+              "params": {
+                "name": "SEA WATCHDOG",
+                "filters": {
+                  "entityType": {
+                    "value": "shipment"
+                  },
+                  "moduleTypeCode": {
+                    "value": [
+                      "SEA"
+                    ]
+                  }
+                }
+              },
+              "layouts": {
+                "lg": {
+                  "h": 12,
+                  "i": "70169a02-1794-4b9b-9f9a-54d3e6bf176d",
+                  "w": 6,
+                  "x": 0,
+                  "y": 12,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "md": {
+                  "h": 12,
+                  "i": "70169a02-1794-4b9b-9f9a-54d3e6bf176d",
+                  "w": 6,
+                  "x": 0,
+                  "y": 12,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "sm": {
+                  "h": 12,
+                  "i": "70169a02-1794-4b9b-9f9a-54d3e6bf176d",
+                  "w": 4,
+                  "x": 0,
+                  "y": 24,
+                  "hr": 1,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "xs": {
+                  "h": 12,
+                  "i": "70169a02-1794-4b9b-9f9a-54d3e6bf176d",
+                  "w": 4,
+                  "x": 0,
+                  "y": 24,
+                  "hr": 1,
+                  "minH": 6,
+                  "minW": 2
+                }
+              }
+            },
+            {
+              "uuid": "e65e9363-ff94-4031-be84-77f92acd778b",
+              "cardId": "a3e37a33-169b-4b36-a375-c0a7d7945e7c",
+              "params": {
+                "name": "AIR WATCHDOG",
+                "filters": {
+                  "entityType": {
+                    "value": "shipment"
+                  },
+                  "moduleTypeCode": {
+                    "value": [
+                      "AIR"
+                    ]
+                  }
+                }
+              },
+              "layouts": {
+                "lg": {
+                  "h": 12,
+                  "i": "e65e9363-ff94-4031-be84-77f92acd778b",
+                  "w": 6,
+                  "x": 6,
+                  "y": 12,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "md": {
+                  "h": 12,
+                  "i": "e65e9363-ff94-4031-be84-77f92acd778b",
+                  "w": 6,
+                  "x": 6,
+                  "y": 12,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "sm": {
+                  "h": 12,
+                  "i": "e65e9363-ff94-4031-be84-77f92acd778b",
+                  "w": 4,
+                  "x": 0,
+                  "y": 36,
+                  "hr": 1,
+                  "minH": 6,
+                  "minW": 2
+                },
+                "xs": {
+                  "h": 12,
+                  "i": "e65e9363-ff94-4031-be84-77f92acd778b",
+                  "w": 4,
+                  "x": 0,
+                  "y": 36,
+                  "hr": 1,
+                  "minH": 6,
+                  "minW": 2
+                }
+              }
+            }
+          ],
+          "i18nContext": "Alert",
+          "colors": [
+            "#005EB8",
+            "#008675",
+            "#E35205",
+            "#AF272F",
+            "#F1B434",
+            "#c9cbcf"
+          ]
+        }
+      }
+    }
+  }]
+}

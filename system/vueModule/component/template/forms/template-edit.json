@@ -1,0 +1,25 @@
+{
+  "components": [{
+      "is": "WidgetForm",
+      "props": {
+        "fields": [{
+            "label": "TemplatePage.templateName",
+            "name": "templateName",
+            "component": "v-text-field",
+            "class": "xs-12",
+            "canEdit": "return false",
+            "props": {
+              "disable": true
+            }
+          },
+          {
+            "label": "TemplatePage.format",
+            "name": "format",
+            "component": "JsonField",
+            "class": "xs-12"
+          }
+        ]
+      }
+    }
+  ]
+}

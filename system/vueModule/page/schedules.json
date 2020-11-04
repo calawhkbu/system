@@ -1,0 +1,115 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "title": "Manual Schedule",
+      "back": "/admin",
+      "urlFormat": "/admin/schedules",
+      "reportingKey": "schedules",
+      "reportingKeyKey": "reportIdParams",
+      "jql": "schedules",
+      "hasReports": false,
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": false,
+      "noPartyGroupFilters": true,
+      "noCache": true,
+      "refreshWhenBack": true,
+      "nextPageComponent": "schedule",
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/detail/{{id}}",
+          "base": true
+        }
+      },
+      "newReport": {
+        "filters": {
+          "activeStatus": {
+            "value": "active"
+          }
+        },
+        "configurations": {
+          "i18nContext": "SchedulePage",
+          "clickable": true,
+          "sorting": {
+            "direction": "DESC",
+            "key": "estimatedDepartureDate"
+          },
+          "pagination": {
+            "current": 0,
+            "perPage": 20
+          }
+        }
+      },
+      "fieldOptions": [{
+          "key": "id",
+          "hidden": true
+        },
+        {
+          "key": "cyCutoffDate",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "estimatedDepartureDate",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        },
+        {
+          "key": "estimatedArrivalDate",
+          "width": 150,
+          "format": "YYYY-MM-DD"
+        }
+      ],
+      "filters": [{
+        "name": "activeStatus",
+        "type": "list",
+        "props": {
+          "items": [{
+              "label": "active",
+              "value": "active"
+            },
+            {
+              "label": "deleted",
+              "value": "deleted"
+            }
+          ]
+        }
+      }]
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "schedule/create",
+                "base": true
+              }
+            }]
+          }
+        }]
+      }
+    }]
+  }]
+}

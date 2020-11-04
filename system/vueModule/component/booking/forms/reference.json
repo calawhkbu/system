@@ -1,0 +1,86 @@
+{
+  "components": [{
+    "is": "WidgetForm",
+    "props": {
+      "fields": [{
+          "label": "BookingPage.references",
+          "name": "bookingReference",
+          "component": "TableField",
+          "class": "xs-12",
+          "props": {
+            "topLabel": true,
+            "fields": [{
+                "label": "BookingPage.refName",
+                "name": "refName",
+                "class": "xs-12 md-5",
+                "component": "LocalAutoSuggest",
+                "colGroupProps": {
+                  "style": {
+                    "width": "25%"
+                  }
+                },
+                "props": {
+                  "canCreate": true,
+                  "funcItems": ["MBL", "MAWB", "HBL", "HAWB"]
+                }
+              },
+              {
+                "label": "BookingPage.refDescription",
+                "name": "refDescription",
+                "class": "xs-12 md-5",
+                "component": "v-text-field",
+                "colGroupProps": {
+                  "style": {
+                    "width": "50%",
+                    "padding-bottom": "4px"
+                  }
+                }
+              },
+              {
+                "label": "BookingPage.docDate",
+                "name": "docDate",
+                "component": "DateTimePicker",
+                "class": "xs-12 md-2",
+                "colGroupProps": {
+                  "style": {
+                    "width": "20%"
+                  }
+                },
+                "props": {
+                  "type": "date",
+                  "utc": true,
+                  "defaultFormat": "ddd MMM DD YYYY",
+                  "useOwnFormat": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "label": "BookingPage.shipMarks",
+          "name": "shipMarks",
+          "component": "v-textarea",
+          "class": "xs-12 md-6"
+        },
+        {
+          "label": "BookingPage.goodsDescription",
+          "name": "goodsDescription",
+          "component": "v-textarea",
+          "class": "xs-12 md-6"
+        },
+        {
+          "label": "BookingPage.remark",
+          "name": "remark",
+          "component": "v-textarea",
+          "class": "xs-12 md-6"
+        },
+        {
+          "label": "BookingPage.specialInstruction",
+          "name": "flexData.specialInstruction",
+          "component": "v-textarea",
+          "class": "xs-12 md-6"
+        }
+      ]
+    }
+  }]
+}

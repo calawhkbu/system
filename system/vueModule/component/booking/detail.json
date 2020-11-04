@@ -1,0 +1,569 @@
+{
+  "class": "grid",
+  "components": [{
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-2",
+        "components": [{
+            "is": "v-btn",
+            "if": "return context.$store.state.main.widget",
+            "props": {
+              "class": "margin-0",
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "emit-global",
+                "otherParams": {
+                  "name": "back-list"
+                }
+              }]
+            }
+          },
+          {
+            "is": "v-btn",
+            "if": "return !context.$store.state.main.widget",
+            "props": {
+              "class": "margin-0",
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "arrow_back"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/{{ p[0] }}/{{ p[1] }}"
+                }
+              }]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "class": "title swivel-title",
+              "i18nContext": "BookingPage",
+              "i18nKey": "title",
+              "i18nOptions": {
+                "title": "{{context.$store.state.widget.data.bookingNo}}"
+              }
+            }
+          },
+          {
+            "is": "v-spacer"
+          },
+          {
+            "is": "ToolTip",
+            "if": "return !context.$store.state.main.widget",
+            "props": {
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "SaveEntityTemplateButton",
+                  "props": {
+                    "tableName": "booking",
+                    "small": true,
+                    "flat": true,
+                    "icon": true,
+                    "templateFunc": [
+                      "delete entity.id",
+                      "delete entity.bookingNo",
+                      "delete entity.bookingCreateTime",
+                      "delete entity.bookingLastUpdateTime",
+                      "delete entity.createdUserEmail",
+                      "delete entity.createdUserName",
+                      "delete entity.createdUserPersonId",
+                      "delete entity.createdUserPhone",
+                      "delete entity.currentTrackingNo",
+                      "delete entity.updatedUserEmail",
+                      "delete entity.updatedUserName",
+                      "delete entity.updatedUserPersonId",
+                      "delete entity.updatedUserPhone",
+                      "delete entity.quantity",
+                      "delete entity.quantityUnit",
+                      "delete entity.grossWeight",
+                      "delete entity.volumeWeight",
+                      "delete entity.chargeableWeight",
+                      "delete entity.weightUnit",
+                      "delete entity.teu",
+                      "delete entity.cbm",
+                      "delete entity.container20",
+                      "delete entity.container40",
+                      "delete entity.containerHQ",
+                      "delete entity.containerOthers",
+                      "delete entity.createdAt",
+                      "delete entity.createdBy",
+                      "delete entity.updatedAt",
+                      "delete entity.updatedBy",
+                      "delete entity.deletedAt",
+                      "delete entity.deletedBy",
+                      "delete entity.bookingParty.id",
+                      "delete entity.bookingParty.bookingId",
+                      "delete entity.bookingParty.createdAt",
+                      "delete entity.bookingParty.createdBy",
+                      "delete entity.bookingParty.updatedAt",
+                      "delete entity.bookingParty.updatedBy",
+                      "delete entity.bookingParty.deletedAt",
+                      "delete entity.bookingParty.deletedBy",
+                      "return {",
+                      "...entity,",
+                      "bookingDate: {},",
+                      "bookingDateUtc: {},",
+                      "bookingContainers: entity.bookingContainers.map(({ id, bookingId, createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy, ...bookingContainer }) => ({ ...bookingContainer })),",
+                      "bookingPopackings: entity.bookingPopackings.map(({ id, bookingId, createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy, ...bookingPopacking }) => ({ ...bookingPopacking })),",
+                      "bookingReference: entity.bookingReference.map(({ id, bookingId, createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy, ...bookingReference }) => ({ ...bookingReference })),",
+                      "}"
+                    ]
+                  }
+                }]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "BookingPage",
+                    "i18nKey": "copy"
+                  }
+                }]
+              }
+            }
+          },
+          {
+            "is": "ToolTip",
+            "if": "return !context.$store.state.main.widget",
+            "props": {
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "BookmarkButton",
+                  "props": {
+                    "entity": "booking",
+                    "small": true,
+                    "flat": true,
+                    "icon": true
+                  }
+                }]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "BookingPage",
+                    "i18nKey": "bookmark"
+                  }
+                }]
+              }
+            }
+          },
+          {
+            "is": "ToolTip",
+            "if": "return !context.$store.state.main.widget",
+            "props": {
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "v-btn",
+                  "props": {
+                    "small": true,
+                    "flat": true,
+                    "icon": true
+                  },
+                  "slots": [{
+                    "is": "Icon",
+                    "props": {
+                      "icon": "map"
+                    }
+                  }],
+                  "events": {
+                    "click.stop": [{
+                      "type": "dispatch",
+                      "otherParams": {
+                        "name": "widget/changeMode",
+                        "mode": "map"
+                      }
+                    }]
+                  }
+                }]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "BookingPage",
+                    "i18nKey": "map"
+                  }
+                }]
+              }
+            }
+          },
+          {
+            "is": "ToolTip",
+            "if": [
+              "const data = context.$store.state.widget.data;",
+              "if (data && data.from.toUpperCase() !== 'ERP') {",
+              "return !context.$store.state.main.widget",
+              "}",
+              "return false"
+            ],
+            "props": {
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "DoubleConfirmButton",
+                  "props": {
+                    "small": true,
+                    "flat": true,
+                    "icon": "delete",
+                    "color": "error",
+                    "confirmLabel": "Delete ?"
+                  },
+                  "events": {
+                    "click": [{
+                      "type": "axios",
+                      "otherParams": {
+                        "axiosParams": [
+                          "const data = context.$store.state.widget.data;",
+                          "if (!data) {",
+                          "throw new Error('No DATA');",
+                          "}",
+                          "return {",
+                            "url: 'api/booking/status/delete',",
+                            "method: 'POST',",
+                            "data,",
+                          "}"
+                        ]
+                      },
+                      "afterActions": [{
+                        "type": "router",
+                        "otherParams": {
+                          "func": "push",
+                          "path": "/{{ p[0] }}/{{ p[1] }}"
+                        }
+                      }]
+                    }]
+                  }
+                }]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "BookingPage",
+                    "i18nKey": "delete"
+                  }
+                }]
+              }
+            }
+          },
+          {
+            "is": "AsyncComponent",
+            "props": {
+              "layoutName": "booking/extraButton"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "is": "WidgetTab",
+      "if": "return !context.$vuetify.breakpoint.mdAndUp",
+      "props": {
+        "show-arrows": true,
+        "tabComponents": [{
+            "index": "gereral",
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "BookingPage",
+                "i18nKey": "GeneralForm"
+              }
+            }],
+            "tabItemComponents": [{
+                "is": "AsyncComponent",
+                "props": {
+                  "layoutName": "booking/base/tracking"
+                }
+              },
+              {
+                "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
+                "slots": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "booking/base/general"
+                  }
+                }]
+              },
+              {
+                "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
+                "slots": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "booking/base/container"
+                  }
+                }]
+              }
+            ]
+          },
+          {
+            "index": "PartyAndDate",
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "BookingPage",
+                "i18nKey": "PartyAndDate"
+              }
+            }],
+            "tabItemComponents": [{
+                "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
+                "slots": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "booking/base/party"
+                  }
+                }]
+              },
+              {
+                "is": "v-card",
+                "props": {
+                  "class": "margin-bottom-2"
+                },
+                "slots": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "layoutName": "booking/base/date"
+                  }
+                }]
+              }
+            ]
+          },
+          {
+            "index": "reference",
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "BookingPage",
+                "i18nKey": "reference"
+              }
+            }],
+            "tabItemComponents": [{
+              "is": "AsyncComponent",
+              "props": {
+                "class": "padding-top-4",
+                "layoutName": "booking/base/reference"
+              }
+            }]
+          },
+          {
+            "index": "alert",
+            "checkDisplayWhen": [
+              "const user = context.$store.state.auth.userProfile;",
+              "return false; // return user.roles.find(role => role.name === 'WATCHDOG') || context.isSwivelAdmin;"
+            ],
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "BookingPage",
+                "i18nKey": "alert"
+              }
+            }],
+            "tabItemComponents": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "shipment/base/alert"
+              }
+            }]
+          },
+          {
+            "index": "sopTasks",
+            "checkDisplayWhen": [
+              "const user = context.$store.state.auth.userProfile;",
+              "return user.roles.find(role => role.name === 'SOP_TASK') || context.isSwivelAdmin;"
+            ],
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "BookingPage",
+                "i18nKey": "sopTasks"
+              }
+            }],
+            "tabItemComponents": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "booking/base/soptask"
+              }
+            }]
+          },
+          {
+            "index": "document",
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "BookingPage",
+                "i18nKey": "document"
+              }
+            }],
+            "tabItemComponents": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "booking/base/document"
+              }
+            }]
+          }
+        ]
+      }
+    },
+    {
+      "is": "DynamicComponent",
+      "if": "return context.$vuetify.breakpoint.mdAndUp",
+      "props": {
+        "class": "xs-12 grid full-width padding-2 widget-grid",
+        "components": [{
+            "is": "DynamicComponent",
+            "props": {
+              "class": "xs-8 padding-2 widget-grid",
+              "components": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/general"
+                  }
+                },
+                {
+                  "is": "DynamicComponent",
+                  "props": {
+                    "class": "xs-12 grid padding-bottom-2",
+                    "components": [{
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-6 padding-right-2 widget-grid",
+                          "components": [{
+                            "is": "AsyncComponent",
+                            "props": {
+                              "layoutName": "booking/base/party"
+                            }
+                          }]
+                        }
+                      },
+                      {
+                        "is": "DynamicComponent",
+                        "props": {
+                          "class": "xs-6 padding-left-2 widget-grid",
+                          "components": [{
+                            "is": "AsyncComponent",
+                            "props": {
+                              "layoutName": "booking/base/date"
+                            }
+                          }]
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/container"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/reference"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "DynamicComponent",
+            "props": {
+              "class": "xs-4 padding-2 widget-grid",
+              "components": [{
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/tracking"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "if": [
+                    "const user = context.$store.state.auth.userProfile;",
+                    "return false; // return user.roles.find(role => role.name === 'WATCHDOG') || context.isSwivelAdmin;"
+                  ],
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/alert"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "if": [
+                    "const user = context.$store.state.auth.userProfile;",
+                    "return user.roles.find(role => role.name === 'SOP_TASK') || context.isSwivelAdmin;"
+                  ],
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/soptask"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "if": [
+                    "const user = context.$store.state.auth.userProfile;",
+                    "return user.roles.find(role => role.name === 'CHAT') || context.isSwivelAdmin;"
+                  ],
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/chat"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/document"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
