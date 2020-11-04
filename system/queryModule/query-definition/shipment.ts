@@ -1804,6 +1804,13 @@ const dateStatusExpression = (queryParam: IQueryParams) => {
   const rawATDExpression = new ColumnExpression('shipment_date', 'departureDateActual')
   const rawETDExpression = new ColumnExpression('shipment_date', 'departureDateEstimated')
 
+  const rawfinalDoorDeliveryActualExpression = new ColumnExpression('shipment_date', 'finalDoorDeliveryDateActual')
+  const rawfinalDoorDeliveryEstimatedExpression = new ColumnExpression('shipment_date', 'finalDoorDeliveryDateEstimated')
+
+  const rawsentToCosigneeActualExpression = new ColumnExpression('shipment_date', 'sentToConsigneeDateActual')
+  const rawsentToCosigneeEstimatedExpression = new ColumnExpression('shipment_date', 'sentToConsigneeDateEstimated')
+
+
   const AIRDateStatusExpression = (subqueryParam) => {
 
     // const todayExpression = new FunctionExpression('NOW')
@@ -1844,7 +1851,15 @@ const dateStatusExpression = (queryParam: IQueryParams) => {
 
             cases: [
               {
-                $when: new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 1, 'DAY')), '<=', currentTimeExpression),
+                $when: new AndExpressions([
+                  new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 1, 'DAY')), '<=', currentTimeExpression),
+                  new OrExpressions([
+                    new IsNullExpression(rawfinalDoorDeliveryActualExpression, true),
+                    new IsNullExpression(rawfinalDoorDeliveryEstimatedExpression, true),
+                    new IsNullExpression(rawsentToCosigneeActualExpression, true),
+                    new IsNullExpression(rawsentToCosigneeEstimatedExpression, true),
+                  ])
+                ]),
                 $then: new Value('inDelivery')
               },
             ],
@@ -1898,7 +1913,15 @@ const dateStatusExpression = (queryParam: IQueryParams) => {
           $then: new CaseExpression({
             cases: [
               {
-                $when: new BinaryExpression(addDateExpression(finalATAExpression, 3, 'DAY'), '<=', todayExpression),
+                $when: new AndExpressions([
+                  new BinaryExpression(addDateExpression(finalATAExpression, 3, 'DAY'), '<=', todayExpression),
+                  new OrExpressions([
+                    new IsNullExpression(rawfinalDoorDeliveryActualExpression, true),
+                    new IsNullExpression(rawfinalDoorDeliveryEstimatedExpression, true),
+                    new IsNullExpression(rawsentToCosigneeActualExpression, true),
+                    new IsNullExpression(rawsentToCosigneeEstimatedExpression, true),
+                  ])
+                   ]),
                 $then: new Value('inDelivery')
               } as ICase,
             ],
@@ -2685,19 +2708,19 @@ query.subquery(false, 'haveDocument', ((value: any, params?: IQueryParams) => {
   const existExpressionList = fileNameList.map(fileName => {
     if (fileName === 'OTHER') {
       return new ExistsExpression(new Query({
-          $select: [
-            new ResultColumn(new ColumnExpression('document', 'primaryKey'))
-          ],
-          $from: 'document',
-          $where: [
-            new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment'),
-            new BinaryExpression(new ColumnExpression('document', 'primaryKey'), '=', idExpression),
-            new InExpression(new ColumnExpression('document', 'fileName'), true, documentFileNameList),
+        $select: [
+          new ResultColumn(new ColumnExpression('document', 'primaryKey'))
+        ],
+        $from: 'document',
+        $where: [
+          new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment'),
+          new BinaryExpression(new ColumnExpression('document', 'primaryKey'), '=', idExpression),
+          new InExpression(new ColumnExpression('document', 'fileName'), true, documentFileNameList),
 
-            new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
-            new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
-          ]
-        }), false)
+          new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
+        ]
+      }), false)
     }
 
     return new ExistsExpression(new Query({
@@ -2734,19 +2757,19 @@ query.subquery(false, 'missingDocument', ((value: any, params?: IQueryParams) =>
   const existExpressionList = fileNameList.map(fileName => {
     if (fileName === 'OTHER') {
       return new ExistsExpression(new Query({
-          $select: [
-            new ResultColumn(new ColumnExpression('document', 'primaryKey'))
-          ],
-          $from: 'document',
-          $where: [
-            new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment'),
-            new BinaryExpression(new ColumnExpression('document', 'primaryKey'), '=', idExpression),
-            new InExpression(new ColumnExpression('document', 'fileName'), true, documentFileNameList),
+        $select: [
+          new ResultColumn(new ColumnExpression('document', 'primaryKey'))
+        ],
+        $from: 'document',
+        $where: [
+          new BinaryExpression(new ColumnExpression('document', 'tableName'), '=', 'shipment'),
+          new BinaryExpression(new ColumnExpression('document', 'primaryKey'), '=', idExpression),
+          new InExpression(new ColumnExpression('document', 'fileName'), true, documentFileNameList),
 
-            new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
-            new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
-          ]
-        }), true)
+          new IsNullExpression(new ColumnExpression('document', 'deletedAt'), false),
+          new IsNullExpression(new ColumnExpression('document', 'deletedBy'), false)
+        ]
+      }), true)
     }
 
     return new ExistsExpression(new Query({

@@ -263,6 +263,10 @@ const fieldList = [
   {
     name : 'updatedAt',
     expression : updatedAtExpression
+  },
+  {
+    name: 'erpCode',
+    expression: new ColumnExpression('person', 'erpCode')
   }
 
 ]

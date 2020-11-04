@@ -24,7 +24,8 @@ const query = new QueryDef({
         new IsNullExpression(new ColumnExpression('parent', 'deletedAt'), false),
         new IsNullExpression(new ColumnExpression('parent', 'deletedBy'), false)
       ])
-    )
+    ),
+    ...taskStatusJoinClauses()
   )
 })
 
@@ -56,13 +57,6 @@ const shortcuts: IShortcut[] = [
         new IsNullExpression(new ColumnExpression(shipmentTable, 'deletedBy'), false)
       ])
     ))
-  },
-
-  // table:sop_task_status
-  {
-    type: 'table',
-    name: 'sop_task_status',
-    fromTable: new FromTable(taskTable, ...taskStatusJoinClauses())
   },
 
   // table:sop_template_task
@@ -598,8 +592,7 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'isDone',
     expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', true, generalIsDoneExpression('temp_status', true)), true), generalIsDoneExpression()),
-    registered: true,
-    companions: ['table:sop_task_status']
+    registered: true
   },
 
   // field:dueDays
@@ -653,8 +646,7 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'isClosed',
     expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', true, generalIsClosedExpression('temp_status', true)), true), generalIsClosedExpression()),
-    registered: true,
-    companions: ['table:sop_task_status']
+    registered: true
   },
 
   // field:isDeleted
@@ -687,8 +679,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'taskStatus',
-    expression: () => new ColumnExpression(taskStatusTable, 'status'),
-    companions: ['table:sop_task_status']
+    expression: () => new ColumnExpression(taskStatusTable, 'status')
   },
 
   // field:statusAt
@@ -699,8 +690,7 @@ const shortcuts: IShortcut[] = [
       re['isDeleted'],
       new Value(null),
       new ColumnExpression(taskStatusTable, 'createdAt')
-    ),
-    companions: ['table:sop_task_status']
+    )
   },
 
   // field:statusBy
@@ -716,8 +706,7 @@ const shortcuts: IShortcut[] = [
       const me = params.subqueries && typeof params.subqueries.user === 'object' && 'value' in params.subqueries.user ? params.subqueries.user.value : ''
       const byMeExpression = new BinaryExpression(statusByExpression, '=', me)
       return { $select: new ResultColumn(IfExpression(byMeExpression, new Value('me'), statusByExpression), 'statusBy') }
-    },
-    companions: ['table:sop_task_status']
+    }
   },
 
   // field:entityCreatedAt
@@ -848,7 +837,7 @@ const shortcuts: IShortcut[] = [
       const tableName = params.subqueries.tableName
       if (tableName && tableName.value) {
         if (isSopTaskSupported(tableName.value)) {
-          return inChargeExpression(tableName, me, value)
+          return inChargeExpression(tableName.value, me, value)
         }
       }
       return { $where: new Value(1) }
@@ -1117,7 +1106,7 @@ const shortcuts: IShortcut[] = [
     name: 'anyPartyId',
     subqueryArg: () => (value, params) => getEntityPartySubquery('officePartyId', ({ value }, { expression, partyTable, entityIdExpression }) => {
       return new Query({
-        $select: new ResultColumn(entityIdExpression),
+        $select: new ResultColumn(entityIdExpression, 'primaryKey'),
         $from: partyTable,
         $where: [
           new InExpression(getEntityExpression('shipperPartyId')(params), false, new Value(value)),
@@ -1167,7 +1156,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'moduleTypeCode',
     subqueryArg: () => ({ value }, params) => ({
-      $where: new BinaryExpression(getEntityExpression('moduleTypeCode')(params), '=', new Value(value))
+      $where: new InExpression(getEntityExpression('moduleTypeCode')(params), false, new Value(value))
     }),
     companions: getEntityCompanion('moduleTypeCode')
   },
@@ -1177,7 +1166,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'boundTypeCode',
     subqueryArg: () => ({ value }, params) => ({
-      $where: new BinaryExpression(getEntityExpression('boundTypeCode')(params), '=', new Value(value))
+      $where: new InExpression(getEntityExpression('boundTypeCode')(params), false, new Value(value))
     }),
     companions: getEntityCompanion('boundTypeCode')
   },

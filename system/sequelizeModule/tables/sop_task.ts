@@ -15,8 +15,11 @@ export default async function getDefaultParams(
 ): Promise<IConditionalExpression> {
   if (user) {
     const repo = user ? `customer-${user.selectedPartyGroup.code}` : 'system'
-
+    if (!params.tables) {
+      params.tables = []
+    }
     if (params.subqueries && params.subqueries.tableName) {
+      params.tables.push(params.subqueries.tableName.value)
       const tableExtra = (await this.loadCustomFile(repo, params.subqueries.tableName.value) || {})
       if (typeof tableExtra.applyAccessRightConditions === 'function') {
         conditions = await tableExtra.applyAccessRightConditions.apply(this, [
@@ -29,6 +32,7 @@ export default async function getDefaultParams(
     else {
       const SOP_SUPPORTED_ENTITY = sopTaskSupportedTables()
       const promises = SOP_SUPPORTED_ENTITY.map(async t => {
+        params.tables.push(t)
         const tableExtra = (await this.loadCustomFile(repo, t) || {})
         if (typeof tableExtra.applyAccessRightConditions === 'function') {
           return tableExtra.applyAccessRightConditions.apply(this, [

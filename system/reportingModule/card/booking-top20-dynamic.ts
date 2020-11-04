@@ -294,7 +294,7 @@ export default {
   filters: [
     // for this filter, user can only select single,
     // but when config in card definition, use summaryVariables. Then we can set as multi
-    {...dateSourceList},
+    // {...dateSourceList},
     {
       display: 'topY',
       name: 'topY',
