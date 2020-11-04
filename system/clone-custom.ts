@@ -23,7 +23,7 @@ const helpers = {
 
 const config = {
   username: 'admin-swivel',
-  token: '344db1415f25c68a1c467622f2539c73614bb7f6',
+  pw: '7739825561095c261a9a77a1ea9705859131529c',
   branch: ['prod', 'uat-new', 'master'],
   repos: [
     'customer-DEV',
@@ -45,10 +45,10 @@ const run = () => {
   }
   return Promise.all(config.repos.map((repo) => new Promise((resolve, reject) => {
     const repoPath = pathResolve(basePath, repo)
-    var url = `https://${config.username}:${config.token}@github.com/swivelsoftware-config/${repo}.git`
+    var url = `https://${config.username}:${config.pw}@github.com/swivelsoftware-config/${repo}.git`
     let command = `cd ${basePath};`
     if(existsSync(repoPath)) {
-      command = `${command}cd ${repoPath};`
+      command = `${command}cd ${repoPath};git remote set-url origin ${url};`
     } else {
       command = `${command}git clone ${url};cd ${repoPath};git config --local --unset credential.helper;${config.branch.map(branch => `git checkout ${branch}`).join(';')};`
     }
