@@ -28,7 +28,8 @@ export default {
 
         params.groupBy = ['dateStatus']
         params.fields = ['primaryKeyListString', 'dateStatus', 'count']
-
+        console.log('params-----traciking-date-status')
+        console.log(params)
         return params
       }
     },

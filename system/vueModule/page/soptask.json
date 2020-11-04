@@ -81,10 +81,6 @@
                 {
                   "label": "Shipment",
                   "value": "shipment"
-                },
-                {
-                  "label": "Purchase Order",
-                  "value": "purchase_order"
                 }
               ]
             }

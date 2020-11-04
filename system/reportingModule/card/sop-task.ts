@@ -57,7 +57,10 @@ export default {
           delete params.subqueries.sorting
         }
         if (!params.sorting) {
-          params.sorting = new OrderBy(new ColumnExpression('sop_task', 'primaryKey'), 'ASC')
+          params.sorting = [
+            new OrderBy(new ColumnExpression('sop_task', 'tableName'), 'ASC'),
+            new OrderBy(new ColumnExpression('sop_task', 'primaryKey'), 'ASC')
+          ]
         }
 
         // subqueries
