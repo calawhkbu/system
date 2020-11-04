@@ -1851,15 +1851,7 @@ const dateStatusExpression = (queryParam: IQueryParams) => {
 
             cases: [
               {
-                $when: new AndExpressions([
-                  new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 1, 'DAY')), '<=', currentTimeExpression),
-                  new OrExpressions([
-                    new IsNullExpression(rawfinalDoorDeliveryActualExpression, true),
-                    new IsNullExpression(rawfinalDoorDeliveryEstimatedExpression, true),
-                    new IsNullExpression(rawsentToCosigneeActualExpression, true),
-                    new IsNullExpression(rawsentToCosigneeEstimatedExpression, true),
-                  ])
-                ]),
+                $when: new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 1, 'DAY')), '<=', currentTimeExpression),  
                 $then: new Value('inDelivery')
               },
             ],
@@ -1913,15 +1905,7 @@ const dateStatusExpression = (queryParam: IQueryParams) => {
           $then: new CaseExpression({
             cases: [
               {
-                $when: new AndExpressions([
-                  new BinaryExpression(addDateExpression(finalATAExpression, 3, 'DAY'), '<=', todayExpression),
-                  new OrExpressions([
-                    new IsNullExpression(rawfinalDoorDeliveryActualExpression, true),
-                    new IsNullExpression(rawfinalDoorDeliveryEstimatedExpression, true),
-                    new IsNullExpression(rawsentToCosigneeActualExpression, true),
-                    new IsNullExpression(rawsentToCosigneeEstimatedExpression, true),
-                  ])
-                   ]),
+                $when:  new BinaryExpression(addDateExpression(finalATAExpression, 3, 'DAY'), '<=', todayExpression),
                 $then: new Value('inDelivery')
               } as ICase,
             ],
