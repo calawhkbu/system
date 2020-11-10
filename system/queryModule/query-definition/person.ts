@@ -219,4 +219,8 @@ query.field('distinct-team', {
   $select: new ResultColumn(new ColumnExpression('person_team', 'team'), 'team')
 }, 'table:person_team')
 
+query.subquery('teamNotNull', {
+  $where: new IsNullExpression(new ColumnExpression('person_team', 'team'), true)
+})
+
 export default query

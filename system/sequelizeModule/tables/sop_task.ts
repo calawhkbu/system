@@ -2,7 +2,7 @@ import { IQueryParams } from "classes/query"
 import { JwtPayload } from "modules/auth/interfaces/jwt-payload"
 import { SopTaskTableService } from "modules/sequelize/services/table/sopTask"
 import { sopTaskSupportedTables } from "modules/sop-task/settings"
-import { AndExpressions, BinaryExpression, CaseExpression, ColumnExpression, IConditionalExpression, Value } from "node-jql"
+import { AndExpressions, BinaryExpression, CaseExpression, ColumnExpression, IConditionalExpression, InExpression, Query, ResultColumn, Value } from "node-jql"
 import { Transaction } from "sequelize/types"
 
 export default async function getDefaultParams(
@@ -19,14 +19,28 @@ export default async function getDefaultParams(
       params.tables = []
     }
     if (params.subqueries && params.subqueries.tableName) {
-      params.tables.push(params.subqueries.tableName.value)
-      const tableExtra = (await this.loadCustomFile(repo, params.subqueries.tableName.value) || {})
+      const table = params.subqueries.tableName.value
+      params.tables.push(table)
+      const tableExtra = (await this.loadCustomFile(repo, table) || {})
       if (typeof tableExtra.applyAccessRightConditions === 'function') {
-        conditions = await tableExtra.applyAccessRightConditions.apply(this, [
-          conditions,
-          user,
-          transaction
-        ])
+        const expr = new InExpression(new ColumnExpression('sop_task', 'primaryKey'), false, new Query({
+          $select: new ResultColumn(new ColumnExpression(table, 'id'), 'id'),
+          $from: table,
+          $where: await tableExtra.applyAccessRightConditions.apply(this, [
+            null,
+            user,
+            transaction
+          ])
+        }))
+        if (conditions instanceof AndExpressions) {
+          conditions.expressions.push(expr)
+        }
+        else if (conditions) {
+          conditions = new AndExpressions([conditions, expr])
+        }
+        else {
+          conditions = expr
+        }
       }
     }
     else {
@@ -44,13 +58,20 @@ export default async function getDefaultParams(
       })
       const results = await Promise.all(promises)
       const caseExpression = new CaseExpression({
-        cases: SOP_SUPPORTED_ENTITY.map((t, i) => {
-          if (Array.isArray(t)) t = t[0]
-          return {
-            $when: new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value(t)),
-            $then: results[i] || new Value(0)
+        cases: SOP_SUPPORTED_ENTITY.reduce((r, table, i) => {
+          if (results[i]) {
+            const expr = new InExpression(new ColumnExpression('sop_task', 'primaryKey'), false, new Query({
+              $select: new ResultColumn(new ColumnExpression(table, 'id'), 'id'),
+              $from: table,
+              $where: results[i]
+            }))
+            r.push({
+              $when: new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value(table)),
+              $then: expr
+            })
           }
-        })
+          return r
+        }, [])
       })
       conditions = conditions ? new AndExpressions([conditions, caseExpression]) : caseExpression
     }

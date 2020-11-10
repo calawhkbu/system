@@ -231,7 +231,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
                 subject,
                 html: { path: template, language, partyGroupCode }
               },
-              entity,
+              { ...entity, frontendUrl: finalFrontendUrl },
               new Date(),
               'mailgun'
             )

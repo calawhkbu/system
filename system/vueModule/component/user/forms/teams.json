@@ -18,7 +18,7 @@
                   "props": {
                     "axiosParams": {
                       "method": "GET",
-                      "url": "api/person/teams"
+                      "url": "sopTask/team/list"
                     }
                   }
                 },

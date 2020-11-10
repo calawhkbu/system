@@ -27,9 +27,8 @@ import {
   MathExpression,
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, SummaryField, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter, IfExpression, IfNullExpression, RegisterInterface, passSubquery } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, SummaryField, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter, IfExpression, RegisterInterface } from 'utils/jql-subqueries'
 import { supportSopTask } from 'utils/sop-task'
-import sopTaskQuery from './sop_task'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -2490,21 +2489,6 @@ const fieldList = [
 
 registerAll(query, baseTableName, fieldList)
 
-query.field('pic', {
-  $distinct: true,
-  $select: [
-    new ResultColumn(new ColumnExpression(baseTableName, 'picId'), 'picId'),
-    new ResultColumn(new ColumnExpression(baseTableName, 'picEmail'), 'picEmail')
-  ]
-})
-
-query.subquery('picNotNull', {
-  $where: [
-    new IsNullExpression(new ColumnExpression(baseTableName, 'picId'), true),
-    new IsNullExpression(new ColumnExpression(baseTableName, 'picEmail'), true)
-  ]
-})
-
 // summary fields  =================
 const nestedSummaryList = [
 
@@ -3579,4 +3563,97 @@ query
   .register('value', 3)
   .register('value', 4)
 
-export default supportSopTask('shipment', query, sopTaskQuery)
+export default supportSopTask('shipment', query, () => require('./sop_task').default,
+  // subquery:bookingNo
+  {
+    type: 'subquery',
+    name: 'bookingNo',
+    expression: new ExistsExpression(new Query({
+      $select: new ResultColumn(new Value('x'), 'x'),
+      $from: 'shipment_booking',
+      $where: [
+        new BinaryExpression(new ColumnExpression('shipment_booking', 'shipmentId'), '=', new ColumnExpression('shipment', 'id')),
+        new BinaryExpression(new ColumnExpression('shipment_booking', 'bookingNo'), '=', new Unknown()),
+        new IsNullExpression(new ColumnExpression('shipment_booking', 'deletedAt'), true),
+        new IsNullExpression(new ColumnExpression('shipment_booking', 'deletedBy'), true)
+      ]
+    }), false),
+    unknowns: true
+  },
+
+  // subquery:vesselName
+  {
+    type: 'subquery',
+    name: 'vesselName',
+    expression: new OrExpressions([
+      new BinaryExpression(new ColumnExpression('shipment', 'vessel'), '=', new Unknown()),
+      new ExistsExpression(new Query({
+        $select: new ResultColumn(new Value('x'), 'x'),
+        $from: 'shipment_transport',
+        $where: [
+          new BinaryExpression(new ColumnExpression('shipment_transport', 'vesselName'), '=', new Unknown()),
+          new IsNullExpression(new ColumnExpression('shipment_transport', 'deletedAt'), true),
+          new IsNullExpression(new ColumnExpression('shipment_transport', 'deletedBy'), true)
+        ]
+      }))
+    ]),
+    unknowns: [
+      ['value', 0],
+      ['value', 1]
+    ]
+  },
+
+  // subquery:voyageFlightNumber
+  {
+    type: 'subquery',
+    name: 'voyageFlightNumber',
+    expression: new OrExpressions([
+      new BinaryExpression(new ColumnExpression('shipment', 'voyageFlightNumber'), '=', new Unknown()),
+      new ExistsExpression(new Query({
+        $select: new ResultColumn(new Value('x'), 'x'),
+        $from: 'shipment_transport',
+        $where: [
+          new BinaryExpression(new ColumnExpression('shipment_transport', 'voyageFlightNumber'), '=', new Unknown()),
+          new IsNullExpression(new ColumnExpression('shipment_transport', 'deletedAt'), true),
+          new IsNullExpression(new ColumnExpression('shipment_transport', 'deletedBy'), true)
+        ]
+      }))
+    ]),
+    unknowns: [
+      ['value', 0],
+      ['value', 1]
+    ]
+  },
+
+  // subquery:createdAtBeweenRange
+  {
+    type: 'subquery',
+    name: 'createdAtBetweenRange',
+    expression: new BetweenExpression(
+      createdAtExpression,
+      false,
+      new FunctionExpression('DATE_SUB', new FunctionExpression('UTC_TIMESTAMP'), new ParameterExpression('INTERVAL', new Unknown(), 'DAY')),
+      new FunctionExpression('DATE_ADD', new FunctionExpression('UTC_TIMESTAMP'), new ParameterExpression('INTERVAL', new Unknown(), 'DAY'))
+    ),
+    unknowns: [
+      ['value', 0],
+      ['value', 1]
+    ]
+  },
+
+  // subquery:updatedAtBeweenRange
+  {
+    type: 'subquery',
+    name: 'updatedAtBetweenRange',
+    expression: new BetweenExpression(
+      updatedAtExpression,
+      false,
+      new FunctionExpression('DATE_SUB', new FunctionExpression('UTC_TIMESTAMP'), new ParameterExpression('INTERVAL', new Unknown(), 'DAY')),
+      new FunctionExpression('DATE_ADD', new FunctionExpression('UTC_TIMESTAMP'), new ParameterExpression('INTERVAL', new Unknown(), 'DAY'))
+    ),
+    unknowns: [
+      ['value', 0],
+      ['value', 1]
+    ]
+  }
+)

@@ -51,7 +51,7 @@ export default {
 
                   delete mainCard_subq.alertType
                   console.log('before return')
-                   console.log(mainCard_subq)
+                  console.log(mainCard_subq)
 
                   return {
                     subqueries: {
@@ -75,12 +75,12 @@ export default {
                 }
               }
             ])
-           if (subqueries.alertType && subqueries.alertType.value.filter(o => o == alertType).length == 0) {
+            if (subqueries.alertType && subqueries.alertType.value.filter(o => o == alertType).length == 0) {
               //if not selected from the UI, filtered out, not show
-          finalTasks.pop()
+              finalTasks.pop()
             }
           }
-            return finalTasks
+          return finalTasks
         }, [])
       }
     },
@@ -106,13 +106,13 @@ export default {
 
         }
 
-        let i=0;
+        let i = 0;
         for (const key of Object.keys(prevResult)) {
           const result = prevResult[key]
           if (result && result.length && result[0].count > 0) {
             const translation = _.get(i18n, `Alert.${key}Title`, null)
             results.push({
-              id:i++,
+              id: i++,
               alertTypeCode: key,
               alertType: translation ? swig.render(translation, { locals: {} }) : translation,
               count: result[0].count,
@@ -120,15 +120,18 @@ export default {
               subqueries: prevResult.subqueries,
               hideAll: [...temp, `${prevResult.tableName}-${key}`],
               expanded: false,
-              //collapsed:`${prevResult.tableName}-${key}`,
+              collapsed: `${prevResult.tableName}-${key}`,
               isEntityRow: true,
 
             })
-             
+
           }
         }
-         //demo
-         results.push({
+        //demo
+        results.push({
+          id: i++,
+          category: 'Booking',
+          group: 'detentionAlert(SEA)',
           alertTypeCode: 'detentionAlert(SEA)',
           alertType: 'ABC',
           count: 10,
@@ -136,17 +139,60 @@ export default {
           subqueries: prevResult.subqueries,
           collapsed: `${prevResult.tableName}-detentionAlert(SEA)'`,
           isEntityRow: false,
-          primaryId:'primaryId',
-          parentId:0
+          primaryId: 1234,
+
+        })
+        results.push({
+          group: 'detentionAlert(SEA)',
+          alertTypeCode: 'detentionAlert(SEA)',
+          alertType: 'BBC',
+          count: 10,
+          tableName: prevResult.tableName,
+          subqueries: prevResult.subqueries,
+          collapsed: `${prevResult.tableName}-detentionAlert(SEA)'`,
+          isEntityRow: false,
+          primaryId: 2234,
+          masterNo: 'ABCD-2234',
+          category: "Booking",
+          deadline: null,
+          description: null,
+          dueAt: null,
+          hasSubTasks: 0,
+          id: i++,
+          isClosed: 0,
+          isDead: null,
+          isDeleted: 0,
+          isDone: 0,
+          isDue: null,
+          isDueToday: null,
+          latestRemark: null,
+          latestRemarkAt: null,
+          latestRemarkBy: null,
+          name: "Contact Shipper for CRD, pick up date, ETD, ETA and collect booking note",
+          noOfRemarks: null,
+          picEmail: null,
+          primaryKey: "4738",
+          primaryNo: "01-2010125411",
+          remark: null,
+          seqNo: 110,
+          startAt: "2020-10-11T08:33:20.000Z",
+          status: "Open",
+          statusAt: "2020-11-10T01:37:17.000Z",
+          statusBy: "me",
+          system: "Email/ Phone",
+          taskId: 111,
+          taskStatus: "Open",
+          team: null,
+          uniqueId: "DEV-111"
 
         })
 
 
 
         results.sort((a, b) => {
-          if (a.alertType > b.alertType) {
+          if (a.alertType && a.id > b.alertType && b.id) {
             return 1
-          } else if (a.alertType < b.alertType) {
+          } else if (a.alertType && a.id< b.alertType && b.id ) {
             return -1
           }
           return 0

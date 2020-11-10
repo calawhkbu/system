@@ -23,14 +23,12 @@ import {
   MathExpression,
   QueryExpression,
   ExistsExpression,
-  JoinClause,
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
 import {
   convertToEndOfDate,
   convertToStartOfDate,
   addDateExpression,
-  passSubquery,
   ExpressionHelperInterface,
   registerAll,
   registerSummaryField,
@@ -43,9 +41,7 @@ import {
   IfNullExpression,
   RegisterInterface,
 } from 'utils/jql-subqueries'
-import { IShortcut } from 'classes/query/Shortcut'
 import { supportSopTask } from 'utils/sop-task'
-import sopTaskQuery from './sop_task'
 
 const dateNameList = [
   'departure',
@@ -1008,7 +1004,7 @@ query.table('alert', new Query({
 //   new ColumnExpression('booking', 'createdAt')
 // )
 
-var createdAtExpression=new ColumnExpression('booking','createdAt');
+var createdAtExpression = IfNullExpression(new ColumnExpression('booking', 'bookingCreateTime'), new ColumnExpression('booking','createdAt'));
 var ETDExpression=new ColumnExpression('booking_date','departureDateEstimated');
 
 
@@ -1511,6 +1507,38 @@ const otherDocumentExpression = {
   )
 }
 
+const rSalesmanCodeExpression = new ColumnExpression('booking', 'rSalesmanPersonCode')
+const cSalesmanCodeExpression = new ColumnExpression('booking', 'cSalesmanPersonCode')
+const sSalesmanCodeExpression = new ColumnExpression('booking', 'sSalesmanPersonCode')
+
+const salesmanCodeExpression = new CaseExpression({
+  cases: [
+    {
+      $when: new IsNullExpression(
+        rSalesmanCodeExpression, true
+      ),
+      $then: rSalesmanCodeExpression
+    },
+    {
+      $when: new BinaryExpression(
+        new ColumnExpression('booking', 'boundTypeCode'),
+        '=',
+        'O'
+      ),
+      $then: sSalesmanCodeExpression
+    },
+    {
+      $when: new BinaryExpression(
+        new ColumnExpression('booking', 'boundTypeCode'),
+        '=',
+        'I'
+      ),
+      $then: cSalesmanCodeExpression
+    }
+  ],
+  $else: null
+})
+
 const fieldList = [
   'id',
   'partyGroupCode',
@@ -1737,26 +1765,20 @@ const fieldList = [
     expression: lastStatusCodeOrDescriptionExpression,
     companion: ['table:lastStatus']
   },
+  {
+    name: 'salesmanCode',
+    expression: salesmanCodeExpression
+  },
+
+  {
+    name: 'rSalesmanCode',
+    expression: rSalesmanCodeExpression,
+  },
   ...haveDocumentExpressionList,
   otherDocumentExpression,
 ] as ExpressionHelperInterface[]
 
 registerAll(query, baseTableName, fieldList)
-
-query.field('pic', {
-  $distinct: true,
-  $select: [
-    new ResultColumn(new ColumnExpression(baseTableName, 'picId'), 'picId'),
-    new ResultColumn(new ColumnExpression(baseTableName, 'picEmail'), 'picEmail')
-  ]
-})
-
-query.subquery('picNotNull', {
-  $where: [
-    new IsNullExpression(new ColumnExpression(baseTableName, 'picId'), true),
-    new IsNullExpression(new ColumnExpression(baseTableName, 'picEmail'), true)
-  ]
-})
 
 // ===================================
 
@@ -2382,7 +2404,8 @@ query
   .register('value', 30)
   .register('value', 31)
 
-export default supportSopTask('booking', query, sopTaskQuery,
+export default supportSopTask('booking', query, () => require('./sop_task').default,
+  // field:shipId
   {
     type: 'field',
     name: 'shipId',
@@ -2397,5 +2420,53 @@ export default supportSopTask('booking', query, sopTaskQuery,
       ],
       $limit: 1
     }))
+  },
+
+  // subquery:vesselName
+  {
+    type: 'subquery',
+    name: 'vesselName',
+    expression: new BinaryExpression(vesselNameExpression, '=', new Unknown()),
+    unknowns: true
+  },
+
+  // subquery:voyageFlightNumber
+  {
+    type: 'subquery',
+    name: 'voyageFlightNumber',
+    expression: new BinaryExpression(voyageFlightNumberNameExpression, '=', new Unknown()),
+    unknowns: true
+  },
+
+  // subquery:createdAtBeweenRange
+  {
+    type: 'subquery',
+    name: 'createdAtBetweenRange',
+    expression: new BetweenExpression(
+      createdAtExpression,
+      false,
+      new FunctionExpression('DATE_SUB', new FunctionExpression('UTC_TIMESTAMP'), new ParameterExpression('INTERVAL', new Unknown(), 'DAY')),
+      new FunctionExpression('DATE_ADD', new FunctionExpression('UTC_TIMESTAMP'), new ParameterExpression('INTERVAL', new Unknown(), 'DAY'))
+    ),
+    unknowns: [
+      ['value', 0],
+      ['value', 1]
+    ]
+  },
+
+  // subquery:updatedAtBeweenRange
+  {
+    type: 'subquery',
+    name: 'updatedAtBetweenRange',
+    expression: new BetweenExpression(
+      updatedAtExpression,
+      false,
+      new FunctionExpression('DATE_SUB', new FunctionExpression('UTC_TIMESTAMP'), new ParameterExpression('INTERVAL', new Unknown(), 'DAY')),
+      new FunctionExpression('DATE_ADD', new FunctionExpression('UTC_TIMESTAMP'), new ParameterExpression('INTERVAL', new Unknown(), 'DAY'))
+    ),
+    unknowns: [
+      ['value', 0],
+      ['value', 1]
+    ]
   }
 )

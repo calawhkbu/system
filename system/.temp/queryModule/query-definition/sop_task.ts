@@ -1,10 +1,9 @@
-import { IQueryParams } from "classes/query"
-import { QueryDef } from "classes/query/QueryDef"
-import { IShortcut } from "classes/query/Shortcut"
-import { isSopTaskSupported, sopTaskSettings, sopTaskSupportedTables } from "modules/sop-task/settings"
-import { AndExpressions, BinaryExpression, CaseExpression, ColumnExpression, ExistsExpression, Expression, FromTable, FunctionExpression, InExpression, IsNullExpression, JoinClause, MathExpression, OrderBy, OrExpressions, ParameterExpression, Query, QueryExpression, ResultColumn, Unknown, Value } from "node-jql"
-import { IfExpression, IfNullExpression, wrapOrder } from "utils/jql-subqueries"
-import { generalIsClosedExpression, generalIsDeletedExpression, generalIsDoneExpression, getEntityExpression, getEntityExpressionSubquery, getEntityPartySubquery, hasSubTaskQuery, taskStatusJoinClauses } from "utils/sop-task"
+import { QueryDef } from "classes/query/QueryDef";
+import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, QueryExpression, Query, ExistsExpression, InExpression, Expression, ParameterExpression, OrderBy, BetweenExpression } from "node-jql";
+import { IfExpression, wrapOrder, IfNullExpression } from 'utils/jql-subqueries'
+import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityCompanion, getEntityExpression, getEntityResultColumn, taskStatusJoinClauses, getEntityPartySubquery } from "utils/sop-task";
+import { IShortcut, ITableArgShortcut } from 'classes/query/Shortcut'
+import { isSopTaskSupported, sopTaskSettings, sopTaskSupportedTables } from 'modules/sop-task/settings'
 
 const taskTable = 'sop_task'
 const taskStatusTable = 'sop_task_status'
@@ -29,6 +28,24 @@ const query = new QueryDef({
 })
 
 const shortcuts: IShortcut[] = [
+  // table:[sop_task_supported_table]
+  ...sopTaskSupportedTables().map(tableName => ({
+    type: 'table',
+    name: tableName,
+    queryArg: () => params => {
+      const settings = sopTaskSettings[tableName]
+      let joinCondition = settings.joinCondition
+      if (settings.joinSubqueries) {
+        const temp = new QueryDef(new Query({ $from: tableName })).useShortcuts(settings.joinSubqueries)
+        const query = temp.apply({ subqueries: params.subqueries })
+        if (query.$where) joinCondition = new AndExpressions([joinCondition, query.$where])
+      }
+      return {
+        $from: new FromTable(taskTable, new JoinClause('LEFT', tableName, joinCondition))
+      }
+    }
+  }) as ITableArgShortcut),
+
   // table:sop_template_task
   {
     type: 'table',
@@ -344,6 +361,62 @@ const shortcuts: IShortcut[] = [
     expression: re => new FunctionExpression('CONCAT', re['partyGroupCode'], new Value('-'), re['partyGroupTaskId'])
   },
 
+  // field:jobNo
+  {
+    type: 'field',
+    name: 'jobNo',
+    queryArg: () => getEntityResultColumn('jobNo'),
+    companions: getEntityCompanion('jobNo')
+  },
+
+  // field:primaryNo
+  {
+    type: 'field',
+    name: 'primaryNo',
+    queryArg: () => getEntityResultColumn('primaryNo'),
+    companions: getEntityCompanion('primaryNo')
+  },
+
+  // field:divisionCode
+  {
+    type: 'field',
+    name: 'divisionCode',
+    queryArg: () => getEntityResultColumn('divisionCode'),
+    companions: getEntityCompanion('divisionCode')
+  },
+
+  // field:moduleTypeCode
+  {
+    type: 'field',
+    name: 'moduleTypeCode',
+    queryArg: () => getEntityResultColumn('moduleTypeCode'),
+    companions: getEntityCompanion('moduleTypeCode')
+  },
+
+  // field:boundTypeCode
+  {
+    type: 'field',
+    name: 'boundTypeCode',
+    queryArg: () => getEntityResultColumn('boundTypeCode'),
+    companions: getEntityCompanion('boundTypeCode')
+  },
+
+  // field:picEmail
+  {
+    type: 'field',
+    name: 'picEmail',
+    queryArg: () => getEntityResultColumn('picEmail'),
+    companions: getEntityCompanion('picEmail')
+  },
+
+  // field:team
+  {
+    type: 'field',
+    name: 'team',
+    queryArg: () => getEntityResultColumn('team'),
+    companions: getEntityCompanion('team')
+  },
+
   // field:startAt
   {
     type: 'field',
@@ -599,6 +672,14 @@ const shortcuts: IShortcut[] = [
     }
   },
 
+  // field:entityCreatedAt
+  {
+    type: 'field',
+    name: 'entityCreatedAt',
+    queryArg: () => getEntityResultColumn('entityCreatedAt'),
+    companions: getEntityCompanion('entityCreatedAt')
+  },
+
   // field:deduct
   {
     type: 'field',
@@ -615,118 +696,21 @@ const shortcuts: IShortcut[] = [
     ], new Value(0)))
   },
 
-  // field:primaryNo
-  {
-    type: 'field',
-    name: 'primaryNo',
-    queryArg: () => getEntityExpressionSubquery('primaryNo')
-  },
-
-  // field:picEmail
-  {
-    type: 'field',
-    name: 'picEmail',
-    queryArg: () => getEntityExpressionSubquery('picEmail')
-  },
-
-  // field:team
-  {
-    type: 'field',
-    name: 'team',
-    queryArg: () => getEntityExpressionSubquery('team')
-  },
-  
-  // field:jobNo
-  {
-    type: 'field',
-    name: 'jobNo',
-    queryArg: () => getEntityExpressionSubquery('jobNo')
-  },
-
-  // field:moduleTypeCode
-  {
-    type: 'field',
-    name: 'moduleTypeCode',
-    queryArg: () => getEntityExpressionSubquery('moduleTypeCode')
-  },
-
-  // field:boundTypeCode
-  {
-    type: 'field',
-    name: 'boundTypeCode',
-    queryArg: () => getEntityExpressionSubquery('boundTypeCode')
-  },
-
-  // field:divisionCode
-  {
-    type: 'field',
-    name: 'divisionCode',
-    queryArg: () => getEntityExpressionSubquery('divisionCode')
-  },
-
   // subquery:default
-  // filters for entity table(s)
   {
     type: 'subquery',
     name: 'default',
     subqueryArg: () => (value, params) => {
-      const tables: string[] = []
-      if (params.subqueries.tableName) {
-        if (params.subqueries.tableName.value && isSopTaskSupported(params.subqueries.tableName.value)) {
-          tables.push(params.subqueries.tableName.value)
-        }
+      const tableName = params.subqueries && params.subqueries.tableName
+      let tables = sopTaskSupportedTables()
+      if (tableName && tableName.value) {
+        tables = [tableName.value]
       }
-      else {
-        tables.push(...sopTaskSupportedTables())
+      if (!params.tables || !tables.reduce((r, t) => r && params.tables.indexOf(t) > -1, true)) {
+        return { $where: new Value(1) }
       }
-      
-      // table not supported
-      if (!tables.length) return {}
-
-      if (tables.length === 1) {
-        const table = tables[0]
-        const queryDef: QueryDef = require(`./${table}`).default
-        const supported = sopTaskSettings[table].subqueries
-        let found = false
-        const params_: IQueryParams = {
-          fields: ['id'],
-          subqueries: Object.keys(params.subqueries).reduce((r, k) => {
-            if (supported.indexOf(k) > -1) {
-              r[k] = params.subqueries[k]
-              found = true
-            }
-            return r
-          }, {})
-        }
-        if (!found) return {}
-        const query = queryDef.apply(params_)
-        return { $where: new InExpression(new ColumnExpression(taskTable, 'primaryKey'), false, query) }
-      }
-      else {
-        const cases = tables.reduce((r, table) => {
-          const queryDef: QueryDef = require(`./${table}`).default
-          const supported = sopTaskSettings[table].subqueries
-          let found = false
-          const params_: IQueryParams = {
-            fields: ['id'],
-            subqueries: Object.keys(params.subqueries).reduce((r, k) => {
-              if (supported.indexOf(k) > -1) {
-                r[k] = params.subqueries[k]
-                found = true
-              }
-              return r
-            }, {})
-          }
-          if (found) {
-            const query = queryDef.apply(params_)
-            r.push({
-              $when: new BinaryExpression(new ColumnExpression(taskTable, 'tableName'), '=', new Value(table)),
-              $then: new InExpression(new ColumnExpression(taskTable, 'primaryKey'), false, query)
-            })
-          }
-          return r
-        }, [])
-        return cases.length ? { $where: new CaseExpression(cases) } : {}
+      return {
+        $where: new OrExpressions(tables.map(t => new IsNullExpression(new ColumnExpression(t, 'id'), true)))
       }
     }
   },
@@ -747,6 +731,52 @@ const shortcuts: IShortcut[] = [
     unknowns: true
   },
 
+  // subquery:masterNo
+  {
+    type: 'subquery',
+    name: 'masterNo',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BinaryExpression(getEntityExpression('masterNo')(params), '=', new Value(value))
+    }),
+    companions: getEntityCompanion('masterNo')
+  },
+
+  // subquery:houseNo
+  {
+    type: 'subquery',
+    name: 'houseNo',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BinaryExpression(getEntityExpression('houseNo')(params), '=', new Value(value))
+    }),
+    companions: getEntityCompanion('houseNo')
+  },
+
+  // subquery:bookingNo
+  {
+    type: 'subquery',
+    name: 'bookingNo',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new InExpression(new Value(value), false, getEntityExpression('bookingNo')(params))
+    }),
+    companions: getEntityCompanion('bookingNo')
+  },
+
+  // subquery:search
+  {
+    type: 'subquery',
+    name: 'search',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new OrExpressions([
+        new BinaryExpression(getEntityExpression('primaryNo')(params), '=', new Value(value)),
+        new BinaryExpression(getEntityExpression('masterNo')(params), '=', new Value(value))
+      ])
+    }),
+    companions: params => [
+      ...getEntityCompanion('primaryNo')(params),
+      ...getEntityCompanion('masterNo')(params)
+    ]
+  },
+
   // subquery:date
   {
     type: 'subquery',
@@ -762,6 +792,23 @@ const shortcuts: IShortcut[] = [
       ])
     ]),
     unknowns: { fromTo: true },
+  },
+
+  // subquery:teams
+  {
+    type: 'subquery',
+    name: 'teams',
+    subqueryArg: () => ({ value }, params) => {
+      const me = typeof params.subqueries.user === 'object' && 'value' in params.subqueries.user ? params.subqueries.user.value : ''
+      const tableName = params.subqueries.tableName
+      if (tableName && tableName.value) {
+        if (isSopTaskSupported(tableName.value)) {
+          return inChargeExpression(tableName.value, me, value)
+        }
+      }
+      return { $where: new Value(1) }
+    },
+    companions: getEntityCompanion(true, templateTaskTable)
   },
 
   // subquery:notDone
@@ -899,12 +946,52 @@ const shortcuts: IShortcut[] = [
     unknowns: true
   },
 
+  // subquery:pic
+  {
+    type: 'subquery',
+    name: 'pic',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new InExpression(getEntityExpression('picEmail')(params), false, new Value(value))
+    }),
+    companions: getEntityCompanion('picEmail')
+  },
+
+  // subquery:team
+  {
+    type: 'subquery',
+    name: 'team',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BinaryExpression(getEntityExpression('team')(params), '=', new Value(value))
+    }),
+    companions: getEntityCompanion('team')
+  },
+
   // subquery:activeStatus
   {
     type: 'subquery',
     name: 'activeStatus',
     expression: re => new BinaryExpression(IfExpression(new BinaryExpression(re['isDeleted'], '=', new Value(1)), new Value('deleted'), new Value('active')), '=', new Unknown()),
     unknowns: true
+  },
+
+  // subquery:vesselName
+  {
+    type: 'subquery',
+    name: 'vesselName',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BinaryExpression(getEntityExpression('vesselName')(params), '=', new Value(value))
+    }),
+    companions: getEntityCompanion('vesselName')
+  },
+
+  // subquery:voyageFlightNumber
+  {
+    type: 'subquery',
+    name: 'voyageFlightNumber',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BinaryExpression(getEntityExpression('voyageFlightNumber')(params), '=', new Value(value))
+    }),
+    companions: getEntityCompanion('voyageFlightNumber')
   },
 
   // subquery:shipperPartyId
@@ -998,6 +1085,116 @@ const shortcuts: IShortcut[] = [
         ]
       })
     })(value, params)
+  },
+
+  // subquery:createdAtBetween
+  {
+    type: 'subquery',
+    name: 'createdAtBetween',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BetweenExpression(
+        getEntityExpression('entityCreatedAt')(params),
+        false,
+        new FunctionExpression('DATE_SUB', new FunctionExpression('UTC_TIMESTAMP'), new ParameterExpression('INTERVAL', new Value(value), 'DAY')),
+        new FunctionExpression('DATE_ADD', new FunctionExpression('UTC_TIMESTAMP'), new ParameterExpression('INTERVAL', new Value(value), 'DAY'))
+      )
+    }),
+    companions: getEntityCompanion('entityCreatedAt')
+  },
+
+  // subquery:updatedAtBetween
+  {
+    type: 'subquery',
+    name: 'updatedAtBetween',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BetweenExpression(
+        getEntityExpression('entityUpdatedAt')(params),
+        false,
+        new FunctionExpression('DATE_SUB', new FunctionExpression('UTC_TIMESTAMP'), new ParameterExpression('INTERVAL', new Value(value), 'DAY')),
+        new FunctionExpression('DATE_ADD', new FunctionExpression('UTC_TIMESTAMP'), new ParameterExpression('INTERVAL', new Value(value), 'DAY'))
+      )
+    }),
+    companions: getEntityCompanion('entityUpdatedAt')
+  },
+
+  // subquery:moduleTypeCode
+  {
+    type: 'subquery',
+    name: 'moduleTypeCode',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new InExpression(getEntityExpression('moduleTypeCode')(params), false, new Value(value))
+    }),
+    companions: getEntityCompanion('moduleTypeCode')
+  },
+
+  // subquery:boundTypeCode
+  {
+    type: 'subquery',
+    name: 'boundTypeCode',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new InExpression(getEntityExpression('boundTypeCode')(params), false, new Value(value))
+    }),
+    companions: getEntityCompanion('boundTypeCode')
+  },
+
+  // subquery:nominatedTypeCode
+  {
+    type: 'subquery',
+    name: 'nominatedTypeCode',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BinaryExpression(getEntityExpression('nominatedTypeCode')(params), '=', new Value(value))
+    }),
+    companions: getEntityCompanion('nominatedTypeCode')
+  },
+
+  // subquery:shipmentTypeCode
+  {
+    type: 'subquery',
+    name: 'shipmentTypeCode',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BinaryExpression(getEntityExpression('shipmentTypeCode')(params), '=', new Value(value))
+    }),
+    companions: getEntityCompanion('shipmentTypeCode')
+  },
+
+  // subquery:portOfDischargeCode
+  {
+    type: 'subquery',
+    name: 'portOfDischargeCode',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new InExpression(getEntityExpression('portOfDischargeCode')(params), false, new Value(value))
+    }),
+    companions: getEntityCompanion('portOfDischargeCode')
+  },
+
+  // subquery:portOfLoadingCode
+  {
+    type: 'subquery',
+    name: 'portOfLoadingCode',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new InExpression(getEntityExpression('portOfLoadingCode')(params), false, new Value(value))
+    }),
+    companions: getEntityCompanion('portOfLoadingCode')
+  },
+
+  // subquery:salesmanCode
+  {
+    type: 'subquery',
+    name: 'salesmanCode',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BinaryExpression(getEntityExpression('salesmanCode')(params), '=', new Value(value))
+    }),
+    companions: getEntityCompanion('salesmanCode')
+  },
+
+  // subquery:rSalesmanCode
+  {
+    type: 'subquery',
+    name: 'rSalesmanCode',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BinaryExpression(getEntityExpression('rSalesmanCode')(params), '=', new Value(value))
+    }),
+    companions: getEntityCompanion('rSalesmanCode')
   },
 
   // orderBy:seqNo

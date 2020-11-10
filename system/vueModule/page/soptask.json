@@ -60,7 +60,16 @@
             }
           },
           {
-            "name": "createdAtBetween",
+            "name": "createdAtBetweenRange",
+            "type": "text",
+            "props": {
+              "type": "number",
+              "prefix": "Today ±",
+              "suffix": "Day(s)"
+            }
+          },
+          {
+            "name": "updatedAtBetweenRange",
             "type": "text",
             "props": {
               "type": "number",
@@ -95,8 +104,9 @@
             }
           },
           {
-            "name": "search",
-            "type": "text"
+            "name": "q",
+            "type": "text",
+            "display": "search"
           },
           {
             "name": "sopScore",
@@ -118,20 +128,26 @@
                 }
               },
               "showAllIfEmpty": true,
+              "localFiltering": true,
               "multi": true
             }
           },
           {
             "name": "team",
             "i18nContext": "SopTask",
-            "type": "list",
+            "type": "autocomplete",
             "props": {
               "api": {
                 "query": {
-                  "url": "api/person/teams",
-                  "method": "GET"
+                  "url": "sopTask/team/list",
+                  "method": "GET",
+                  "labelKey": "team",
+                  "valueKey": "team"
                 }
-              }
+              },
+              "showAllIfEmpty": true,
+              "localFiltering": true,
+              "multi": true
             }
           },
           {
@@ -203,7 +219,7 @@
               "func": "today",
               "timezone": "Asia/Hong_Kong"
             },
-            "createdAtBetween": {
+            "createdAtBetweenRange": {
               "value": 30
             },
             "notClosed": true,
