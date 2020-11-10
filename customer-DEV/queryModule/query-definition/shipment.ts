@@ -8,7 +8,8 @@ import {
   FunctionExpression,
   BinaryExpression,
   AndExpressions,
-  OrExpressions
+  OrExpressions,
+  ICase
 
 
 } from 'node-jql'

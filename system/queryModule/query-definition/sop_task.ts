@@ -2,8 +2,8 @@ import { QueryDef } from "classes/query/QueryDef";
 import { ColumnExpression, ResultColumn, IsNullExpression, BinaryExpression, FunctionExpression, FromTable, JoinClause, Value, CaseExpression, Unknown, AndExpressions, MathExpression, OrExpressions, QueryExpression, Query, ExistsExpression, InExpression, Expression, ParameterExpression, OrderBy, BetweenExpression } from "node-jql";
 import { IfExpression, wrapOrder, IfNullExpression } from 'utils/jql-subqueries'
 import { generalIsDeletedExpression, hasSubTaskQuery, generalIsDoneExpression, generalIsClosedExpression, inChargeExpression, getEntityCompanion, getEntityExpression, getEntityResultColumn, taskStatusJoinClauses, getEntityPartySubquery } from "utils/sop-task";
-import { IShortcut } from 'classes/query/Shortcut'
-import { isSopTaskSupported, sopTaskSupportedTables } from 'modules/sop-task/settings'
+import { IShortcut, ITableArgShortcut } from 'classes/query/Shortcut'
+import { isSopTaskSupported, sopTaskSettings, sopTaskSupportedTables } from 'modules/sop-task/settings'
 
 const taskTable = 'sop_task'
 const taskStatusTable = 'sop_task_status'
@@ -11,8 +11,6 @@ const templateTaskTable = 'sop_template_task'
 const templateTemplateTaskTable = 'sop_template_template_task'
 const selectedTemplateTable = 'sop_selected_template'
 const templateTable = 'sop_template'
-const bookingTable = 'booking'
-const shipmentTable = 'shipment'
 
 const statusList = ['Dead', 'Due', 'Open', 'Not Ready', 'Done', 'Closed', 'Deleted']
 
@@ -30,34 +28,23 @@ const query = new QueryDef({
 })
 
 const shortcuts: IShortcut[] = [
-  // table:booking
-  {
+  // table:[sop_task_supported_table]
+  ...sopTaskSupportedTables().map(tableName => ({
     type: 'table',
-    name: 'booking',
-    fromTable: new FromTable(taskTable, new JoinClause('LEFT', bookingTable,
-      new AndExpressions([
-        new BinaryExpression(new ColumnExpression(taskTable, 'tableName'), '=', bookingTable),
-        new BinaryExpression(new ColumnExpression(taskTable, 'primaryKey'), '=', new ColumnExpression(bookingTable, 'id')),
-        new IsNullExpression(new ColumnExpression(bookingTable, 'deletedAt'), false),
-        new IsNullExpression(new ColumnExpression(bookingTable, 'deletedBy'), false)
-      ])
-    ))
-  },
-
-  // table:shipment
-  {
-    type: 'table',
-    name: 'shipment',
-    fromTable: new FromTable(taskTable, new JoinClause('LEFT', shipmentTable,
-      new AndExpressions([
-        new BinaryExpression(new ColumnExpression(taskTable, 'tableName'), '=', shipmentTable),
-        new BinaryExpression(new ColumnExpression(taskTable, 'primaryKey'), '=', new ColumnExpression(shipmentTable, 'id')),
-        new IsNullExpression(new ColumnExpression(shipmentTable, 'billStatus'), false),
-        new IsNullExpression(new ColumnExpression(shipmentTable, 'deletedAt'), false),
-        new IsNullExpression(new ColumnExpression(shipmentTable, 'deletedBy'), false)
-      ])
-    ))
-  },
+    name: tableName,
+    queryArg: () => params => {
+      const settings = sopTaskSettings[tableName]
+      let joinCondition = settings.joinCondition
+      if (settings.joinSubqueries) {
+        const temp = new QueryDef(new Query({ $from: tableName })).useShortcuts(settings.joinSubqueries)
+        const query = temp.apply({ subqueries: params.subqueries })
+        if (query.$where) joinCondition = new AndExpressions([joinCondition, query.$where])
+      }
+      return {
+        $from: new FromTable(taskTable, new JoinClause('LEFT', tableName, joinCondition))
+      }
+    }
+  }) as ITableArgShortcut),
 
   // table:sop_template_task
   {
@@ -380,30 +367,6 @@ const shortcuts: IShortcut[] = [
     name: 'jobNo',
     queryArg: () => getEntityResultColumn('jobNo'),
     companions: getEntityCompanion('jobNo')
-  },
-
-  // field:bookingNo (for booking only)
-  {
-    type: 'field',
-    name: 'bookingNo',
-    queryArg: () => getEntityResultColumn('bookingNo'),
-    companions: getEntityCompanion('bookingNo')
-  },
-
-  // field:masterNo
-  {
-    type: 'field',
-    name: 'masterNo',
-    queryArg: () => getEntityResultColumn('masterNo'),
-    companions: getEntityCompanion('masterNo')
-  },
-
-  // field:houseNo
-  {
-    type: 'field',
-    name: 'houseNo',
-    queryArg: () => getEntityResultColumn('houseNo'),
-    companions: getEntityCompanion('houseNo')
   },
 
   // field:primaryNo
@@ -743,6 +706,9 @@ const shortcuts: IShortcut[] = [
       if (tableName && tableName.value) {
         tables = [tableName.value]
       }
+      if (!params.tables || !tables.reduce((r, t) => r && params.tables.indexOf(t) > -1, true)) {
+        return { $where: new Value(1) }
+      }
       return {
         $where: new OrExpressions(tables.map(t => new IsNullExpression(new ColumnExpression(t, 'id'), true)))
       }
@@ -790,7 +756,7 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'bookingNo',
     subqueryArg: () => ({ value }, params) => ({
-      $where: new BinaryExpression(getEntityExpression('bookingNo')(params), '=', new Value(value))
+      $where: new InExpression(new Value(value), false, getEntityExpression('bookingNo')(params))
     }),
     companions: getEntityCompanion('bookingNo')
   },
@@ -1211,14 +1177,24 @@ const shortcuts: IShortcut[] = [
     companions: getEntityCompanion('portOfLoadingCode')
   },
 
-  // subquery:divisionCode
+  // subquery:salesmanCode
   {
     type: 'subquery',
-    name: 'divisionCode',
+    name: 'salesmanCode',
     subqueryArg: () => ({ value }, params) => ({
-      $where: new InExpression(getEntityExpression('divisionCode')(params), false, new Value(value))
+      $where: new BinaryExpression(getEntityExpression('salesmanCode')(params), '=', new Value(value))
     }),
-    companions: getEntityCompanion('divisionCode')
+    companions: getEntityCompanion('salesmanCode')
+  },
+
+  // subquery:rSalesmanCode
+  {
+    type: 'subquery',
+    name: 'rSalesmanCode',
+    subqueryArg: () => ({ value }, params) => ({
+      $where: new BinaryExpression(getEntityExpression('rSalesmanCode')(params), '=', new Value(value))
+    }),
+    companions: getEntityCompanion('rSalesmanCode')
   },
 
   // orderBy:seqNo

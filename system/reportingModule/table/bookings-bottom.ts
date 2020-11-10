@@ -17,6 +17,7 @@ export default {
           'bookingNo',
           'houseNo',
           'masterNo',
+          'houseNo',
           'jobDate',
           'carrierCode',
           'shipperPartyName',

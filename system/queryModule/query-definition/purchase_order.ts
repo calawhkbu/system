@@ -454,6 +454,15 @@ partyList.map(party => {
 
 })
 
+query.register('getPoItemById',
+  new Query({
+    $from: new FromTable('purchase_order_item', 'purchase_order_item'),
+    $where: 
+        new RegexpExpression(new ColumnExpression('purchase_order_item', 'poId'), false)
+  })
+)
+.register('value', 0)
+
 
 const isActiveConditionExpression = new AndExpressions([
   new IsNullExpression(new ColumnExpression('purchase_order', 'deletedAt'), false),
@@ -545,7 +554,7 @@ const fieldList = [
     expression: jobMonthExpression
   },
   ...partyExpressionList,
-  ...locationExpressionList
+  ...locationExpressionList,
   {
     name : 'activeStatus',
     expression : activeStatusExpression

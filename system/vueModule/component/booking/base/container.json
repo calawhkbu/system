@@ -129,7 +129,23 @@
                   "component": "TableField",
                   "props": {
                     "topLabel": true,
-                    "fields": [{
+                    "fields": [
+                      {
+                        "label": "ItemKey",
+                        "name": "purchaseOrderItem.itemKey",
+                        "component": "v-text-field"
+                      },
+                      {
+                        "label": "SkuCode",
+                        "name": "purchaseOrderItem.product.skuCode",
+                        "component": "v-text-field"
+                      },
+                      {
+                        "label": "SkuName",
+                        "name": "purchaseOrderItem.product.name",
+                        "component": "v-text-field"
+                      },
+                      {
                         "label": "BookingPage.ctns",
                         "name": "ctns",
                         "colGroupProps": {
@@ -527,7 +543,18 @@
                 "checkDisplayWhen": "return form && (form.bookingPopackings && form.bookingPopackings.length)",
                 "props": {
                   "topLabel": true,
-                  "fields": [{
+                  "fields": [
+                    {
+                      "label": "ItemKey",
+                      "name": "purchaseOrderItem.itemKey",
+                      "component": "v-text-field"
+                    },
+                    {
+                      "label": "SkuCode",
+                      "name": "purchaseOrderItem.product.skuCode",
+                      "component": "v-text-field"
+                    },
+                    {
                       "label": "BookingPage.ctns",
                       "name": "ctns",
                       "colGroupProps": {

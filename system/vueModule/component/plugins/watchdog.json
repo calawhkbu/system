@@ -1,0 +1,29 @@
+{
+  "layout": "Plugin",
+  "name": "Watchdog",
+  "loadWhenDataLoaded": true,
+  "transition": "slide-y-reverse-transition",
+  "lazy": true,
+  "hide-overlay": true,
+  "remote": true,
+  "axiosBaseParams": [
+    "const params = context.axiosParamsParams;",
+    "const entityData = context.$store.state.widget.data;",
+    "return {",
+    "url: `fake-watchdog/list/${params.tableName}/${entityData.id}`,",
+    "method: 'POST',",
+    "};"
+  ],
+  "shareProps": {
+    "i18nContext": "Alert",
+    "iconType": "",
+    "icon": "icon",
+    "titleKey": "alertType",
+    "subTitleKeys": ["alertContent"]
+  },
+  "baseSummaryProps": {
+    "size": -3
+  },
+  "baseDetailProps": {
+  }
+}

@@ -220,11 +220,8 @@
           {
             "is": "ToolTip",
             "if": [
-              "const data = context.$store.state.widget.data;",
-              "if (data && data.from.toUpperCase() !== 'ERP') {",
-              "return !context.$store.state.main.widget",
-              "}",
-              "return false"
+              "const user = context.$store.state.auth.userProfile;",
+              "return user && user.selectedPartyGroup && ((user.selectedPartyGroup.configuration || {}).installedService || []).includes('BOOKING_DELETE')"
             ],
             "props": {
               "bottom": true,
@@ -388,7 +385,6 @@
           {
             "index": "alert",
             "checkDisplayWhen": [
-              "const user = context.$store.state.auth.userProfile;",
               "return false; // return user.roles.find(role => role.name === 'WATCHDOG') || context.isSwivelAdmin;"
             ],
             "tabComponents": [{
@@ -408,7 +404,6 @@
           {
             "index": "sopTasks",
             "checkDisplayWhen": [
-              "const user = context.$store.state.auth.userProfile;",
               "return user.roles.find(role => role.name === 'SOP_TASK') || context.isSwivelAdmin;"
             ],
             "tabComponents": [{

@@ -77,9 +77,8 @@
                     }
                   }
                 },
-                "maxShow": 3,
+                "maxShow": 10,
                 "mainKey": "name",
-                "shortName": "shortName",
                 "url": "/party/new/party/{{answer.id}}",
                 "i18nContext": "PartyPage",
                 "before": "Party that you have been created:"
@@ -88,12 +87,64 @@
               "label": "PartyPage.partyShortName",
               "name": "shortName",
               "component": "v-text-field",
-              "class": "xs-12"
+              "class": "xs-12",
+              "props": {
+                "autocomplete": "off"
+              },
+              "hintComponent": "CreatedHint",
+              "hintComponentProps": {
+                "checkCreatedAxiosParams": {
+                  "url": "api/party/query/party_auto_suggest",
+                  "method": "POST",
+                  "data": {
+                    "subqueries": {
+                      "activeStatus": {
+                        "value": "active"
+                      },
+                      "q": {
+                        "value": "{{value}}"
+                      }
+                    }
+                  }
+                },
+                "maxShow": 10,
+                "mainKey": "name",
+                "subKey": "shortName",
+                "url": "/party/new/party/{{answer.id}}",
+                "i18nContext": "PartyPage",
+                "before": "Party that you have been created:"
+              }
             }, {
               "label": "PartyPage.groupName",
               "name": "groupName",
               "component": "v-text-field",
-              "class": "xs-12"
+              "class": "xs-12",
+              "props": {
+                "autocomplete": "off"
+              },
+              "hintComponent": "CreatedHint",
+              "hintComponentProps": {
+                "checkCreatedAxiosParams": {
+                  "url": "api/party/query/party_auto_suggest",
+                  "method": "POST",
+                  "data": {
+                    "subqueries": {
+                      "activeStatus": {
+                        "value": "active"
+                      },
+                      "q": {
+                        "value": "{{value}}"
+                      }
+                    }
+                  }
+                },
+                "maxShow": 10,
+                "mainKey": "name",
+                "subKey": "groupName",
+                "url": "/party/new/party/{{answer.id}}",
+                "i18nContext": "PartyPage",
+                "before": "Party that you have been created:"
+              }
             },
             {
               "label": "PartyPage.email",

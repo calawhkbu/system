@@ -219,6 +219,11 @@ export default class NotifyEntityEvent extends BaseEventHandler {
       if (lists && lists.length) {
         await BluebirdPromise.map(lists, async ({ name, email, entity, isUpdate, partyGroupCode, language, template, subject }: NotifyObject) => {
           try {
+            const { frontendUrl } = await this.allService.swivelConfigService.get()
+            const partyGroup = await this.allService.partyGroupTableService.findOne({ where: { code: partyGroupCode } }, this.user)
+            const finalFrontendUrl = partyGroup && partyGroup.configuration && partyGroup.configuration.frontendUrl
+              ? partyGroup.configuration.frontendUrl
+              : frontendUrl
             await this.allService.messagerService.send(
               'email',
               {

@@ -72,50 +72,58 @@
               ]
             }
           },
-        {
+          {
             "name": "haveDocument",
             "type": "list",
             "props": {
-                "api": {
-                    "query": {
-                        "url": "api/document/documentList/booking",
-                        "method": "GET",
-                        "labelKey": "fileName",
-                        "valueKey": "fileName"
-                    },
-                    "resolve": {
-                        "url": "api/document/documentList/booking",
-                        "method": "GET",
-                        "labelKey": "fileName",
-                        "valueKey": "fileName"
-                    }
+              "api": {
+                "query": {
+                  "url": "api/document/documentList/booking",
+                  "method": "GET",
+                  "labelKey": "fileName",
+                  "valueKey": "fileName"
                 },
-                "multi": true
+                "resolve": {
+                  "url": "api/document/documentList/booking",
+                  "method": "GET",
+                  "labelKey": "fileName",
+                  "valueKey": "fileName"
+                }
+              },
+              "multi": true
             },
             "display": "haveDocument"
-        },
-        {
+          },
+          {
             "name": "missingDocument",
             "type": "list",
             "props": {
-                "api": {
-                    "query": {
-                        "url": "api/document/documentList/booking",
-                        "method": "GET",
-                        "labelKey": "fileName",
-                        "valueKey": "fileName"
-                    },
-                    "resolve": {
-                        "url": "api/document/documentList/booking",
-                        "method": "GET",
-                        "labelKey": "fileName",
-                        "valueKey": "fileName"
-                    }
+              "api": {
+                "query": {
+                  "url": "api/document/documentList/booking",
+                  "method": "GET",
+                  "labelKey": "fileName",
+                  "valueKey": "fileName"
                 },
-                "multi": true
+                "resolve": {
+                  "url": "api/document/documentList/booking",
+                  "method": "GET",
+                  "labelKey": "fileName",
+                  "valueKey": "fileName"
+                }
+              },
+              "multi": true
             },
             "display": "missingDocument"
-        }
+          },
+          {
+            "name": "picNotAssigned",
+            "type": "boolean"
+          },
+          {
+            "name": "teamNotAssigned",
+            "type": "boolean"
+          }
         ],
         "fieldOptions": [
           {
@@ -335,44 +343,52 @@
             }
           },
           {
-            "key" : "haveDocument_Freight Invoice",
+            "key": "haveDocument_Freight Invoice",
             "label": "haveDocument_Freight Invoice",
-            "boolean" : true
+            "boolean": true
           },
           {
-            "key" : "haveDocument_MBL",
+            "key": "haveDocument_MBL",
             "label": "haveDocument_MBL",
-            "boolean" : true
+            "boolean": true
           },
           {
-            "key" : "haveDocument_HBL Original",
+            "key": "haveDocument_HBL Original",
             "label": "haveDocument_HBL Original",
-            "boolean" : true
+            "boolean": true
           },
           {
-            "key" : "haveDocument_HBL Telex released",
+            "key": "haveDocument_HBL Telex released",
             "label": "haveDocument_HBL Telex released",
-            "boolean" : true
+            "boolean": true
           },
           {
-            "key" : "haveDocument_Commercial Invoice",
+            "key": "haveDocument_Commercial Invoice",
             "label": "haveDocument_Commercial Invoice",
-            "boolean" : true
+            "boolean": true
           },
           {
-            "key" : "haveDocument_Packing List",
+            "key": "haveDocument_Packing List",
             "label": "haveDocument_Packing List",
-            "boolean" : true
+            "boolean": true
           },
           {
-            "key" : "haveDocument_Quotation",
+            "key": "haveDocument_Quotation",
             "label": "haveDocument_Quotation",
-            "boolean" : true
+            "boolean": true
           },
           {
-            "key" : "haveDocument_OTHER",
+            "key": "haveDocument_OTHER",
             "label": "haveDocument_OTHER",
-            "boolean" : true
+            "boolean": true
+          },
+          {
+            "key": "poNo",
+            "tdComponent": {
+              "props": {
+                "html": "{% if value != null %}{{ JSON.parse(value) | join(', ') }}{% endif %}"
+              }
+            }
           }
         ]
       },

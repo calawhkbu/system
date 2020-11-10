@@ -308,6 +308,38 @@ a[x-apple-data-detectors=true] {
                           <td class="e_td">Customer Ref.</td>
                           <td class="e_td e_td2">{{entity.poNo}}</td>
                         </tr>
+                        <tr class="e_tr">
+                          <td class="e_td">Shipper</td>
+                          <td class="e_td e_td2">{{entity.shipperPartyName}}</td>
+                        </tr>
+                        <tr class="e_tr">
+                          <td class="e_td">Consignee</td>
+                          <td class="e_td e_td2">{{entity.consigneePartyName}}</td>
+                        </tr>
+                        <tr class="e_tr">
+                          <td class="e_td">Port Of Loading</td>
+                          <td class="e_td e_td2">{{entity.portOfLoadingName}}</td>
+                        </tr>
+                        <tr class="e_tr">
+                          <td class="e_td">Port Of Discharge</td>
+                          <td class="e_td e_td2">{{entity.portOfDischargeName}}</td>
+                        </tr>
+                        <tr class="e_tr">
+                          <td class="e_td">Final Destination</td>
+                          <td class="e_td e_td2">{{entity.finalDestinationName}}</td>
+                        </tr>
+                        <tr class="e_tr">
+                          <td class="e_td">Carrier</td>
+                          <td class="e_td e_td2">{{entity.carrierCode}}</td>
+                        </tr>
+                        <tr class="e_tr">
+                          <td class="e_td">Vessel / Voyage</td>
+                          <td class="e_td e_td2">{{entity.vesselName}} / {{entity.voyageFlightNumber}}</td>
+                        </tr>
+                        <tr class="e_tr">
+                          <td class="e_td">Cargo Ready</td>
+                          <td class="e_td e_td2">{{entity.cargoReadyDateEstimated}}</td>
+                        </tr>
                          <tr class="e_tr">
                            <td class="e_td">ETD</td>
                            <td class="e_td e_td2">{% if entity.estimatedDepartureDate %} {{entity.estimatedDepartureDate | date('d M Y')}} {% endif %}</td>
@@ -317,20 +349,36 @@ a[x-apple-data-detectors=true] {
                            <td class="e_td">{% if entity.estimatedArrivalDate %} {{entity.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
                          </tr>
                          <tr class="e_tr">
-                          <td class="e_td">Loading</td>
-                          <td class="e_td">{{entity.portOfLoading}}</td>
+                           <td class="e_td">Commodity</td>
+                           <td class="e_td">{{entity.commodity}}</td>
+                         </tr>
+                         <tr class="e_tr">
+                           <td class="e_td">Pay Terms</td>
+                           <td class="e_td">{{entity.freightTerms}}</td>
+                         </tr>
+                         <tr class="e_tr">
+                          <td class="e_td">Container Service</td>
+                          <td class="e_td">{{entity.serviceCode}}</td>
+                        </tr>
+                         <tr class="e_tr">
+                          <td class="e_td">Total CTN</td>
+                          <td class="e_td">{{entity.bookingPopackings.quantity}}</td>
                         </tr>
                         <tr class="e_tr">
-                          <td class="e_td">Discharge</td>
-                          <td class="e_td">{{entity.portOfDischarge}}</td>
+                          <td class="e_td">Total KGS</td>
+                          <td class="e_td">{{entity.bookingPopackings.weight}}</td>
                         </tr>
                         <tr class="e_tr">
-                          <td class="e_td">Commodity</td>
-                          <td class="e_td">{{entity.commodity}}</td>
+                          <td class="e_td">Total CBM</td>
+                          <td class="e_td">{{entity.cbm}}</td>
                         </tr>
                         <tr class="e_tr">
-                          <td class="e_td">Status</td>
-                          <td class="e_td">{{entity.status}}</td>
+                          <td class="e_td">PO No</td>
+                          <td class="e_td">{{entity.poNo}}</td>
+                        </tr>
+                        <tr class="e_tr">
+                          <td class="e_td">Container</td>
+                          <td class="e_td">{{entity.bookingContainers.containerTypeCode}}</td>
                         </tr>
                        </table>
                     </p>

@@ -1,0 +1,552 @@
+{
+  "components": [
+    {
+      "is": "WidgetForm",
+      "props": {
+        "fields": [
+          {
+            "label": "BookingPage.poNo",
+            "name": "flexData.poNo",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12",
+            "props": {
+              "showValue": false,
+              "multiple": true,
+              "searchTextParams": {
+                "url": "api/purchase-order/query/purchase_order",
+                "method": "POST",
+                "data": {
+                  "fields": [
+                    "poNo"
+                  ],
+                  "subqueries": {
+                    "poNoLike": {
+                      "value": "{{context.search}}"
+                    }
+                  },
+                  "limit": 5
+                }
+              },
+              "item-text": "poNo",
+              "item-value": "poNo",
+              "onInit": true,
+              "onGetFixValueOverrideFunc": [
+                "if (Array.isArray(value)) {",
+                  "return value.map((item) => { return { poNo: item }})",
+                "}",
+                "return value"
+              ],
+              "onSetFixValueOverrideFunc": [
+                "return value.map((item) => item.poNo)"
+              ]
+            }
+          },
+          {
+            "label": "BookingPage.poItems",
+            "component": "TableField",
+            "name": "bookingPopackings",
+            "class": "xs-12",
+            "props": {
+              "topLabel": true,
+              "readonly" : true,
+              "topAddButton": true,
+              "style": {
+                "width": "100%"
+              },
+              "fields": [
+                {
+                  "label": "PO#",
+                  "name": "purchaseOrderItem.purchaseOrder.poNo",
+                  "component": "v-text-field",
+                  "props": {
+                    "readonly": true
+                  },
+                  "colGroupProps": {
+                    "style": { 
+                      "width": "300px" 
+                    }
+                  }
+                },
+                {
+                  "label": "Item Key",
+                  "name": "purchaseOrderItem.itemKey",
+                  "component": "v-text-field",
+                  "props": {
+                    "readonly": true
+                  },
+                  "colGroupProps": {
+                    "style": { 
+                      "width": "300px" 
+                    }
+                  }
+                },
+                {
+                  "label": "Quantity",
+                  "name": "quantity",
+                  "component": "NumberField",
+                  "props": {
+                    "min": 0
+                  },
+                  "colGroupProps": {
+                    "style": { 
+                      "width": "150px" 
+                    }
+                  }
+                },
+                {
+                  "label": "Quantity Unit",
+                  "name": "purchaseOrderItem.quantityUnit",
+                  "component": "v-text-field",
+                  "props": {
+                    "readonly": true
+                  },
+                  "colGroupProps": {
+                    "style": { 
+                      "width": "150px" 
+                    }
+                  }
+                },
+                {
+                  "label": "BookingPage.volume",
+                  "name": "volume",
+                  "component": "NumberField",
+                  "props": {
+                    "type": "number",
+                    "min": 0
+                  },
+                  "slots": [
+                    {
+                      "name": "append",
+                      "is": "I18nText",
+                      "props": {
+                        "i18nKey": "CBM"
+                      }
+                    }
+                  ],
+                  "colGroupProps": {
+                    "style": { 
+                      "width": "150px" 
+                    }
+                  }
+                },
+                {
+                  "label": "BookingPage.length",
+                  "name": "length",
+                  "component": "NumberField",
+                  "props": {
+                    "type": "number",
+                    "min": 0
+                  },
+                  "slots": [
+                    {
+                      "name": "append",
+                      "is": "I18nText",
+                      "props": {
+                        "i18nKey": "X"
+                      }
+                    }
+                  ],
+                  "colGroupProps": {
+                    "style": { 
+                      "width": "150px" 
+                    }
+                  }
+                },
+                {
+                  "label": "BookingPage.width",
+                  "name": "width",
+                  "component": "NumberField",
+                  "props": {
+                    "type": "number",
+                    "min": 0
+                  },
+                  "slots": [
+                    {
+                      "name": "append",
+                      "is": "I18nText",
+                      "props": {
+                        "i18nKey": "X"
+                      }
+                    }
+                  ],
+                  "colGroupProps": {
+                    "style": { 
+                      "width": "150px" 
+                    }
+                  }
+                },
+                {
+                  "label": "BookingPage.height",
+                  "name": "height",
+                  "component": "NumberField",
+                  "props": {
+                    "type": "number",
+                    "min": 0
+                  },
+                  "colGroupProps": {
+                    "style": { 
+                      "width": "150px" 
+                    }
+                  }
+                },
+                {
+                  "label": "BookingPage.lwhUnit",
+                  "name": "lwhUnit",
+                  "component": "LocalSelect",
+                  "props": {
+                    "showValue": false,
+                    "item-text": "text",
+                    "item-value": "value",
+                    "funcItems": [
+                      {
+                        "text": "CM",
+                        "value": "CM"
+                      },
+                      {
+                        "text": "IN",
+                        "value": "IN"
+                      }
+                    ]
+                  },
+                  "colGroupProps": {
+                    "style": { 
+                      "width": "150px" 
+                    }
+                  }
+                },
+                {
+                  "label": "BookingPage.weight",
+                  "name": "weight",
+                  "component": "NumberField",
+                  "props": {
+                    "type": "number"
+                  },
+                  "colGroupProps": {
+                    "style": { 
+                      "width": "150px" 
+                    }
+                  }
+                },
+                {
+                  "label": "BookingPage.weightUnit",
+                  "name": "weightUnit",
+                  "component": "LocalSelect",
+                  "props": {
+                    "showValue": false,
+                    "item-text": "text",
+                    "item-value": "value",
+                    "funcItems": [
+                      {
+                        "text": "KGs",
+                        "value": "KGs"
+                      },
+                      {
+                        "text": "LBs",
+                        "value": "LBs"
+                      }
+                    ]
+                  },
+                  "colGroupProps": {
+                    "style": { 
+                      "width": "150px" 
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "label": "BookingPage.poItem",
+            "component": "Dialog",
+            "name": "poItem",
+            "class": "xs-12",
+            "checkDisplayWhen": "return context.$store.state.widget.data.flexData && context.$store.state.widget.data.flexData.poNo && context.$store.state.widget.data.flexData.poNo.length != 0",
+            "props": {
+              "width": "70%",
+              "persistent": true,
+              "button": {
+                "layout": "v-btn",
+                "flat": false,
+                "left": false,
+                "depressed": true,
+                "style": {
+                  "width": "100%"
+                },
+                "components": [
+                  {
+                    "is": "Icon",
+                    "props": {
+                      "icon": "add"
+                    }
+                  },
+                  {
+                    "is": "I18nText",
+                    "props": {
+                      "i18nContext": "BookingPage",
+                      "i18nKey": "pickPoItems"
+                    }
+                  }
+                ]
+              },
+              "closeButton": {
+                "class": "margin-4 zindex-1 right",
+                "flat": true,
+                "icon": true,
+                "small": true
+              }
+            },
+            "slots": [
+              {
+                "is": "DynamicComponent",
+                "props": {
+                  "components": [              {
+                    "containerComponent": "v-card",
+                    "containerComponentProps": {
+                      "class": "padding-topbottom-8 padding-leftright-4"
+                    },
+                    "is": "POSimpleTableTool",
+                    "if": "return context.$store.state.dialog.dialog",
+                    "props": {
+                      "reportingKey": "purchase-order-items",
+                      "jql": "purchase-order-items",
+                      "title": "PO items",
+                      "reportUrl": "",
+                      "reportingKeyKey": "reportIdParams",
+                      "hasReports": false,
+                      "showFilterBar": true,
+                      "enableShare": false,
+                      "enableSetting": false,
+                      "noPartyGroupFilters": true,
+                      "checkbox": true,
+                      "nextPageComponent": "purchase-order",
+                      "nextPageKey": "purchaseOrderItems",
+                      "refreshWhenBack": true,
+                      "pickItemColKey": "Pick",
+                      "formDataCheckKey": "bookingPopackings",
+                      "formDataCheckFunc": [
+                        "return item.poItemId"
+                      ],
+                      "localReport": {
+                        "id": 0,
+                        "name": "purchase-order-items",
+                        "reportingKey": "purchase-order-items",
+                        "filters": {
+                          "poNo": {
+                            "dispatchValue": "$store.state.widget.data.flexData.poNo"
+                          }, 
+                          "activeStatus":{
+                            "value": "active"
+                          },
+                          "unbookedQuantityNotEq": {
+                            "value": 0
+                          },
+                          "showResend": true
+                        },
+                        "configurations": {
+                          "i18nContext": "PurchaseOrderPage",
+                          "sorting": {
+                            "direction": "DESC",
+                            "key": "updatedAt",
+                            "sql": {
+                              "classname": "ColumnExpression",
+                              "table": "purchase_order_item",
+                              "name": "updatedAt"
+                            }
+                          },
+                          "tableWrapperStyle": {
+                            "min-height": "calc(100vh - 265px)"
+                          },
+                          "tableStyle": {
+                            "min-height": "calc(100vh - 265px)"
+                          },
+                          "bodyWrapperStyle": {
+                            "min-height": "calc(100vh - 265px)"
+                          }
+                        }
+                      },
+                      "fieldOptions": [
+                        {
+                          "key": "id",
+                          "hidden": true
+                        },
+                        {
+                          "key": "definition",
+                          "width": 200
+                        },
+                        {
+                          "key": "quantity",
+                          "width": 100
+                        },
+                        {
+                          "key": "updatedAt",
+                          "width": 150,
+                          "format": "YYYY-MM-DD"
+                        },
+                        {
+                          "key": "flexData",
+                          "hidden": true
+                        },
+                        {
+                          "key": "Pick",
+                          "label": "",
+                          "checkbox": true,
+                          "showCheckAll": true
+                        }
+                      ],
+                      "localFilters": [
+                        {
+                          "name": "activeStatus",
+                          "type": "list",
+                          "props": {
+                            "items": [
+                              {
+                                "label": "active",
+                                "value": "active"
+                              },
+                              {
+                                "label": "deleted",
+                                "value": "deleted"
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "name": "poNo",
+                          "type": "list",
+                          "props": {
+                            "funcItems": [
+                              "return context.$store.state.widget.data.flexData.poNo.map((item) => {",
+                                "return {",
+                                  "value: item,",
+                                  "label: item",
+                                "}",
+                              "})"
+                            ]
+                          }
+                        },
+                        {
+                          "name": "itemKey",
+                          "type": "text"
+                        },
+                        {
+                          "name": "skuName",
+                          "type": "text"
+                        },
+                        {
+                          "name": "skuCode",
+                          "type": "text"
+                        }
+                      ],
+                      "icons": [
+                        {
+                          "icon": "add",
+                          "tooltips": true,
+                          "label": "BookingPage.addPoItems",
+                          "click": [{
+                            "type": "function",
+                            "otherParams": {
+                              "func": [
+                                "const poPacking = context.$store.state.widget.data.bookingPopackings || []",
+                                "const rawData = context.checkedData",
+                                "const dataToImport = rawData.reduce((result, item) => { ",
+                                  "if ( item.bookedQuantity === item.quantity || ",
+                                  "  poPacking.find((packing) => packing.poItemId === item.id)) { return result }",
+                                  "const finalQuantity = item.quantity - ( item.bookedQuantity || 0 ) ",
+                                  "result.push({",
+                                    "purchaseOrderItem: {",
+                                        "purchaseOrder: { poNo: item.poNo },",
+                                        "product: {",
+                                          "skuCode: item.skuCode,",
+                                          "name: item.skuName",
+                                        "},",
+                                        "itemKey: item.itemKey,",
+                                        "quantity: item.quantity,",
+                                        "quantityUnit: item.quantityUnit,",
+                                      "},",
+                                      "poItemId: item.id,",
+                                      "quantity: finalQuantity,",
+                                      "quantityUnit: item.quantityUnit,",
+                                      "flexData: item.flexData",
+                                  "})",
+                                  "return result",
+                                "}, [])",
+                                "const finalPacking = poPacking.concat(dataToImport)",
+                                "context.runFunctions([{",
+                                  "type: 'dispatch',",
+                                  "otherParams: {",
+                                      "name: 'widget/updateData',",
+                                      "value: { bookingPopackings: finalPacking }",
+                                    "}",
+                                "},{",
+                                  "type: 'dispatch',",
+                                  "otherParams: {",
+                                    "name: 'dialog/updateDialog',",
+                                    "value: false",
+                                  "}",
+                                "}])"
+                              ]
+                            }
+                          }]
+                        },
+                        {
+                          "icon": "post_add",
+                          "tooltips": true,
+                          "label": "BookingPage.addAllPoItems",
+                          "click": [{
+                            "type": "function",
+                            "otherParams": {
+                              "func": [
+                                "const poPacking = context.$store.state.widget.data.bookingPopackings || []",
+                                "const rawData = context.data",
+                                "const dataToImport = rawData.reduce((result, item) => { ",
+                                  "if ( item.bookedQuantity === item.quantity || ",
+                                  "  poPacking.find((packing) => packing.poItemId === item.id)) { return result }",
+                                  "const finalQuantity = item.quantity - ( item.bookedQuantity || 0 ) ",
+                                  "result.push({",
+                                    "purchaseOrderItem: {",
+                                        "purchaseOrder: { poNo: item.poNo },",
+                                        "product: {",
+                                          "skuCode: item.skuCode,",
+                                          "name: item.skuName",
+                                        "},",
+                                        "itemKey: item.itemKey,",
+                                        "quantity: item.quantity,",
+                                        "quantityUnit: item.quantityUnit,",
+                                      "},",
+                                      "poItemId: item.id,",
+                                      "quantity: finalQuantity,",
+                                      "quantityUnit: item.quantityUnit,",
+                                      "flexData: item.flexData",
+                                  "})",
+                                  "return result",
+                                "}, [])",
+                                "const finalPacking = poPacking.concat(dataToImport)",
+                                "context.runFunctions([{",
+                                  "type: 'dispatch',",
+                                  "otherParams: {",
+                                      "name: 'widget/updateData',",
+                                      "value: { bookingPopackings: finalPacking }",
+                                    "}",
+                                  "},{",
+                                  "type: 'dispatch',",
+                                  "otherParams: {",
+                                    "name: 'dialog/updateDialog',",
+                                    "value: false",
+                                  "}",
+                                "}])"
+                              ]
+                            }
+                          }]
+                        }
+                      ]
+                    }
+                  }]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -73,16 +73,12 @@
             "display": "entityType",
             "type": "list",
             "props": {
-              "items": [
-                {
-                  "label": "Booking",
-                  "value": "booking"
-                },
-                {
-                  "label": "Shipment",
-                  "value": "shipment"
+              "api": {
+                "query": {
+                  "url": "sopTask/supported",
+                  "method": "GET"
                 }
-              ]
+              }
             }
           },
           {
@@ -173,13 +169,34 @@
           {
             "name": "voyageFlightNumber",
             "type": "text"
+          },
+          {
+            "name": "bookingNo",
+            "type": "text"
+          },
+          {
+            "name": "billTypeCode",
+            "removed": true
+          },
+          {
+            "name": "containerNosLike",
+            "removed": true
+          },
+          {
+            "name": "batchNumber",
+            "removed": true
+          },
+          {
+            "name": "haveDocument",
+            "removed": true
+          },
+          {
+            "name": "missingDocument",
+            "removed": true
           }
         ],
         "newReport": {
           "filters": {
-            "tableName": {
-              "value": "booking"
-            },
             "date": {
               "to": "2020-09-04 23:59",
               "from": "2020-09-04 00:00",

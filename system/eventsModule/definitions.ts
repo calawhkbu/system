@@ -39,7 +39,7 @@ export default {
               if (soNo) {
                 nos.push(soNo)
               }
-              return soNo
+              return nos
             }, [])
           },
           containerNo: ({ bookingContainers = [] }: any) => {
@@ -47,7 +47,7 @@ export default {
               if (containerNo) {
                 nos.push(containerNo)
               }
-              return containerNo
+              return nos
             }, [])
           },
         }
@@ -153,7 +153,7 @@ export default {
               if (soNo) {
                 nos.push(soNo)
               }
-              return soNo
+              return nos
             }, [])
           },
           containerNo: ({ bookingContainers = [] }: any) => {
@@ -161,7 +161,7 @@ export default {
               if (containerNo) {
                 nos.push(containerNo)
               }
-              return containerNo
+              return nos
             }, [])
           },
         }

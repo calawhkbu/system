@@ -44,6 +44,9 @@ import {
   RegisterInterface,
 } from 'utils/jql-subqueries'
 import { IShortcut } from 'classes/query/Shortcut'
+import { supportSopTask } from 'utils/sop-task'
+import sopTaskQuery from './sop_task'
+
 const dateNameList = [
   'departure',
   'arrival',
@@ -1005,7 +1008,7 @@ query.table('alert', new Query({
 var createdAtExpression=new ColumnExpression('booking','createdAt');
 var ETDExpression=new ColumnExpression('booking_date','departureDateEstimated');
 
- 
+
 
 const updatedAtExpression = new FunctionExpression(
   'IFNULL',
@@ -1346,7 +1349,14 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
 
   const partyIdExpression = party.partyIdExpression  || { expression : new ColumnExpression('booking_party', `${override}PartyId`), companion : ['table:booking_party']}
   const partyNameExpression = party.partyNameExpression ||  { expression :  new ColumnExpression('booking_party', `${override}PartyName`), companion : ['table:booking_party']}
-  const partyCodeExpression = party.partyCodeExpression || { expression :  new ColumnExpression('booking_party', `${override}PartyCode`), companion : ['table:booking_party']}
+  const partyCodeExpression = party.partyCodeExpression || {
+    expression: new FunctionExpression(
+      'IFNULL',
+      new ColumnExpression('booking_party', `${partyTableName}PartyCode`),
+      new ColumnExpression('booking_party', `${partyTableName}PartyId`)
+    ),
+    companion : ['table:booking_party']
+  }
   const partyNameInReportExpression = party.partyNameInReportExpression || { expression :  new ColumnExpression(party.name, `name`), companion : [`table:${override}`]}
   const partyShortNameInReportExpression = party.partyShortNameInReportExpression ||  { expression : new FunctionExpression('IFNULL', new ColumnExpression(override, `shortName`), partyNameInReportExpression.expression), companion : [`table:${override}`]}
 
@@ -2344,60 +2354,7 @@ query
   .register('value', 30)
   .register('value', 31)
 
-function sopTaskQuery(): QueryDef {
-  return require('./sop_task').default
-}
-
-function addBookingCheck(query: Query) {
-  if (!query.$where) {
-    query.$where = new AndExpressions([])
-  }
-  const expr = query.$where as AndExpressions
-  expr.expressions.push(
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('booking')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('booking', 'id'))
-  )
-  return query
-}
-
-const shortcuts: IShortcut[] = [
-  // table:picPerson
-  {
-    type: 'table',
-    name: 'picPerson',
-    fromTable: new FromTable('booking', new JoinClause('LEFT', new FromTable('person', 'picPerson'),
-      new BinaryExpression(new ColumnExpression('booking', 'picEmail'), '=', new ColumnExpression('picPerson', 'userName')),
-      new BinaryExpression(new ColumnExpression('booking', 'partyGroupCode'), '=', new ColumnExpression('picPerson', 'partyGroupCode')),
-      new IsNullExpression(new ColumnExpression('picPerson', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('picPerson', 'deletedBy'), false),
-    ))
-  },
-
-  // field:distinct-team
-  {
-    type: 'field',
-    name: 'distinct-team',
-    queryArg: () => () => ({
-      $distinct: true,
-      $select: new ResultColumn(new ColumnExpression('booking', 'team'), 'team')
-    })
-  },
-
-  // field:team
-  {
-    type: 'field',
-    name: 'team',
-    expression: new ColumnExpression('booking', 'team')
-  },
-
-  // field:picEmail
-  {
-    type: 'field',
-    name: 'picEmail',
-    expression: new ColumnExpression('booking', 'picEmail')
-  },
-
-  // field:shipId
+export default supportSopTask('booking', query, sopTaskQuery,
   {
     type: 'field',
     name: 'shipId',
@@ -2412,221 +2369,5 @@ const shortcuts: IShortcut[] = [
       ],
       $limit: 1
     }))
-  },
-
-  // field:isClosed
-  {
-    type: 'field',
-    name: 'isClosed',
-    expression: new IsNullExpression(new ColumnExpression('booking', 'sopScore'), true),
-    registered: true
-  },
-
-  // field:noOfTasks
-  {
-    type: 'field',
-    name: 'noOfTasks',
-    queryArg: () => params => ({
-      $select: new ResultColumn(
-        new QueryExpression(
-          addBookingCheck(sopTaskQuery().apply({
-            fields: ['count'],
-            subqueries: {
-              ...passSubquery(params, 'sop_user', 'user'),
-              ...passSubquery(params, 'sop_partyGroupCode', 'partyGroupCode'),
-              ...passSubquery(params, 'sop_team', 'team'),
-              ...passSubquery(params, 'sop_today', 'today'),
-              ...passSubquery(params, 'sop_date', 'date'),
-              ...passSubquery(params, 'notDone'),
-              ...passSubquery(params, 'notDeleted')
-            }
-          }))
-        ),
-        'noOfTasks'
-      )
-    })
-  },
-
-  // field:sopScore (0-100)
-  {
-    type: 'field',
-    name: 'sopScore',
-    expression: re => IfExpression(
-      re['isClosed'],
-      new ColumnExpression('booking', 'sopScore'),
-      new FunctionExpression('GREATEST', new Value(0), new MathExpression(new Value(100), '-', IfNullExpression(
-        new QueryExpression(
-          addBookingCheck(sopTaskQuery().apply({
-            fields: ['deduct'],
-            subqueries: { notDeleted: true }
-          }))
-        ),
-        new Value(0)
-      )))
-    ),
-    registered: true
-  },
-
-  // field:hasDueTasks
-  {
-    type: 'field',
-    name: 'hasDueTasks',
-    expression: new ExistsExpression(
-      addBookingCheck(
-        sopTaskQuery().apply({
-          fields: ['deduct'],
-          subqueries: {
-            notDeleted: true,
-            notDone: true,
-            isDue: true
-          }
-        })
-      ),
-      false
-    ),
-    registered: true
-  },
-
-  // field:hasDeadTasks
-  {
-    type: 'field',
-    name: 'hasDeadTasks',
-    expression: new ExistsExpression(
-      addBookingCheck(
-        sopTaskQuery().apply({
-          fields: ['deduct'],
-          subqueries: {
-            notDeleted: true,
-            notDone: true,
-            isDead: true
-          }
-        })
-      ),
-      false
-    ),
-    registered: true
-  },
-
-  // subquery:sop_date (has tasks within the given period)
-  {
-    type: 'subquery',
-    name: 'sop_date',
-    subqueryArg: () => (value, params) => ({
-      $where: new ExistsExpression(
-        addBookingCheck(
-          sopTaskQuery().apply({
-            subqueries: {
-              ...passSubquery(params, 'sop_date', 'date'),
-              ...passSubquery(params, 'notDone'),
-              ...passSubquery(params, 'notDeleted'),
-            }
-          })
-        ),
-        false
-      )
-    })
-  },
-
-  // subquery:notClosed
-  {
-    type: 'subquery',
-    name: 'notClosed',
-    expression: re => new BinaryExpression(re['isClosed'], '<>', new Value(1))
-  },
-
-  // subquery:sopScore
-  {
-    type: 'subquery',
-    name: 'sopScore',
-    expression: re => new AndExpressions([
-      new BinaryExpression(new Unknown(), '<=', re['sopScore']),
-      new BinaryExpression(re['sopScore'], '<=', new Unknown())
-    ]),
-    unknowns: { fromTo: true }
-  },
-
-  // subquery:pic
-  {
-    type: 'subquery',
-    name: 'pic',
-    expression: new BinaryExpression(new ColumnExpression('booking', 'picEmail'), '=', new Unknown()),
-    unknowns: true
-  },
-
-  // subquery:team
-  {
-    type: 'subquery',
-    name: 'team',
-    expression: new InExpression(new ColumnExpression('booking', 'team'), false, new Unknown()),
-    unknowns: true
-  },
-
-  // subquery:myTasksOnly
-  {
-    type: 'subquery',
-    name: 'myTasksOnly',
-    subqueryArg: () => (value, params) => ({
-      $where: new ExistsExpression(addBookingCheck(
-        sopTaskQuery().apply({
-          distinct: true,
-          fields: ['id'],
-          subqueries: {
-            ...passSubquery(params, 'sop_user', 'user'),
-            ...passSubquery(params, 'sop_partyGroupCode', 'partyGroupCode'),
-            ...passSubquery(params, 'sop_team', 'team'),
-            ...passSubquery(params, 'sop_today', 'today'),
-            ...passSubquery(params, 'sop_date', 'date'),
-            ...passSubquery(params, 'notDone'),
-            ...passSubquery(params, 'notDeleted'),
-            notSubTask: true
-          }
-        })
-      ), false)
-    })
-  },
-
-  // subquery:hasDueTasks
-  {
-    type: 'subquery',
-    name: 'hasDueTasks',
-    expression: re => new BinaryExpression(re['hasDueTasks'], '=', new Value(1))
-  },
-
-  // subquery:noDueTasks
-  {
-    type: 'subquery',
-    name: 'noDueTasks',
-    expression: re => new BinaryExpression(re['hasDueTasks'], '=', new Value(0))
-  },
-
-  // subquery:hasDeadTasks
-  {
-    type: 'subquery',
-    name: 'hasDeadTasks',
-    expression: re => new BinaryExpression(re['hasDeadTasks'], '=', new Value(1))
-  },
-
-  // subquery:noDeadTasks
-  {
-    type: 'subquery',
-    name: 'noDeadTasks',
-    expression: re => new BinaryExpression(re['hasDeadTasks'], '=', new Value(0))
-  },
-
-  // subquery:picNotAssigned
-  {
-    type: 'subquery',
-    name: 'picNotAssigned',
-    expression: new IsNullExpression(new ColumnExpression('booking', 'picEmail'), false)
-  },
-
-  // subquery:invalidPic
-  {
-    type: 'subquery',
-    name: 'invalidPic',
-    expression: new IsNullExpression(new ColumnExpression('picPerson', 'id'), false),
-    companions: ['table:picPerson']
   }
-]
-
-export default query.useShortcuts(shortcuts)
+)

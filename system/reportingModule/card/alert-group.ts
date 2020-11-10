@@ -97,26 +97,52 @@ export default {
           user: user
         })
         const results = []
+        let hideAll_default = Object.keys(prevResult)
+        hideAll_default = hideAll_default.filter(o => o != 'tableName' && o != 'subqueries' && o != 'alertType')
+        //add tableName as prefix e.g. shipment-sayHello
+        var temp = [];
+        for (let i = 0; i < hideAll_default.length; i++) {
+          temp.push(`${prevResult.tableName}-${hideAll_default[i]}`);
 
+        }
 
+        let i=0;
         for (const key of Object.keys(prevResult)) {
           const result = prevResult[key]
           if (result && result.length && result[0].count > 0) {
             const translation = _.get(i18n, `Alert.${key}Title`, null)
             results.push({
+              id:i++,
               alertTypeCode: key,
               alertType: translation ? swig.render(translation, { locals: {} }) : translation,
               count: result[0].count,
               tableName: prevResult.tableName,
               subqueries: prevResult.subqueries,
-              //collapsed: `${prevResult.tableName}-${key}`,
-              expanded: -1,
-              indicator: '-',
-              isEntityRow: true
+              hideAll: [...temp, `${prevResult.tableName}-${key}`],
+              expanded: false,
+              collapsed:`${prevResult.tableName}-${key}`,
+              isEntityRow: true,
+              subTasks:false
 
             })
+             
           }
         }
+         //demo
+         results.push({
+          alertTypeCode: 'detentionAlert(SEA)',
+          alertType: 'ABC',
+          count: 10,
+          tableName: prevResult.tableName,
+          subqueries: prevResult.subqueries,
+          collapsed: `${prevResult.tableName}-detentionAlert(SEA)'`,
+          isEntityRow: false,
+          parentId:0
+
+        })
+
+
+
         results.sort((a, b) => {
           if (a.alertType > b.alertType) {
             return 1

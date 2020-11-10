@@ -3,17 +3,8 @@
     "is": "AsyncComponent",
     "props": {
       "class": "xs-12 margin-topbottom-2",
-      "layoutName": "plugins/alert",
-      "axiosBaseParams": [
-        "return {",
-        "url: 'api/alert/list/history',",
-        "method: 'POST',",
-        "data: {",
-        "tableName: 'shipment',",
-        "primaryKey: context.$route.params.params,",
-        "}",
-        "};"
-      ],
+      "layoutName": "plugins/watchdog",
+      "tableName": "shipment",
       "sendMessageAxiosParams": [
         "const primaryKey = encodeURIComponent(context.$route.params.params);",
         "return {",

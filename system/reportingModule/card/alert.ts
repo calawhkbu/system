@@ -123,18 +123,20 @@ export default {
         for (const key of Object.keys(prevResult)) {
           const result = prevResult[key]
           if (result && result.length && result[0].count > 0) {
-            const translation = _.get(i18n, `Alert.${key}Title`, null)
+            const titleTranslation = _.get(i18n, `Alert.${key}Title`, null)
+            const messageTranslation = _.get(i18n, `Alert.${key}Message`, null)
             results.push({
               alertTypeCode: key,
-              alertType: translation ? swig.render(translation, { locals: {} }) : translation,
+              alertType: titleTranslation ? swig.render(titleTranslation, { locals: {} }) : key,
+              alertContent: messageTranslation ? swig.render(messageTranslation, { locals: {} }) : key,
               count: result[0].count,
+              icon: 'notification_important',
               tableName: prevResult.tableName,
               subqueries: prevResult.subqueries,
               collapsed: `${prevResult.tableName}-${key}`,
               expanded: 0,
               indicator: '-',
               isEntityRow: true
-
             })
           }
         }

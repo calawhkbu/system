@@ -396,14 +396,43 @@
           },
           "label": "BookingPage.poNo",
           "name": "flexData.poNo",
-          "component": "v-text-field",
-          "class": "xs-12 md-4 padding-topbottom-4"
+          "component": "AsyncAutoSuggest",
+          "checkDisplayWhen": "return user.roles.some((role) => role.name == 'PURCHASE_ORDER')",
+          "class": "xs-12 md-4 padding-topbottom-4",
+          "props": {
+            "showValue": false,
+            "multiple": true,
+            "searchTextParams": {
+              "url": "api/purchase-order/query/purchase_order",
+              "method": "POST",
+              "data": {
+                "fields": [
+                  "poNo"
+                ],
+                "subqueries": {
+                  "poNoLike": {
+                    "value": "{{context.search}}"
+                  }
+                },
+                "limit": 5
+              }
+            },
+            "item-text": "poNo",
+            "item-value": "poNo",
+            "onInit": true,
+            "onGetFixValueOverrideFunc": [
+              "if (Array.isArray(value)) {",
+                "return value.map((item) => { return { poNo: item }})",
+              "}",
+              "return value"
+            ],
+            "onSetFixValueOverrideFunc": [
+              "return value.map((item) => item.poNo)"
+            ]
+          }
         },
         {
-          "containerComponent": "v-card",
-          "containerComponentProps": {
-            "class": "padding-topbottom-8 padding-leftright-4"
-          },
+
           "label": "BookingPage.commodity",
           "name": "commodity",
           "component": "v-text-field",

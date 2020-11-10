@@ -28,7 +28,8 @@ import {
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
 import { ExpressionHelperInterface, registerAll, SummaryField, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter, IfExpression, IfNullExpression, RegisterInterface, passSubquery } from 'utils/jql-subqueries'
-import { IShortcut } from 'classes/query/Shortcut'
+import { supportSopTask } from 'utils/sop-task'
+import sopTaskQuery from './sop_task'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
 
@@ -1851,7 +1852,7 @@ const dateStatusExpression = (queryParam: IQueryParams) => {
 
             cases: [
               {
-                $when: new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 1, 'DAY')), '<=', currentTimeExpression),  
+                $when: new BinaryExpression(convertToEndOfDate(addDateExpression(finalATAExpression, 1, 'DAY')), '<=', currentTimeExpression),
                 $then: new Value('inDelivery')
               },
             ],
@@ -2072,7 +2073,14 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
   // these 3 will get from shipment_party table
   const partyIdExpression = party.partyIdExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyId`), companion: ['table:shipment_party'] }
 
-  const partyCodeExpression = party.partyCodeExpression || { expression: new ColumnExpression('shipment_party', `${partyTableName}PartyCode`), companion: ['table:shipment_party'] }
+  const partyCodeExpression = party.partyCodeExpression || {
+    expression: new FunctionExpression(
+      'IFNULL',
+      new ColumnExpression('shipment_party', `${partyTableName}PartyCode`),
+      new ColumnExpression('shipment_party', `${partyTableName}PartyId`)
+    ),
+    companion: ['table:shipment_party']
+  }
   const partyNameExpression = party.partyNameExpression || { expression: new FunctionExpression('IFNULL', new ColumnExpression('shipment_party', `${partyTableName}PartyName`), partyCodeExpression.expression), companion: ['table:shipment_party'] }
 
 
@@ -3571,272 +3579,4 @@ query
   .register('value', 3)
   .register('value', 4)
 
-function sopTaskQuery(): QueryDef {
-  return require('./sop_task').default
-}
-
-function addShipmentCheck(query: Query) {
-  if (!query.$where) {
-    query.$where = new AndExpressions([])
-  }
-  const expr = query.$where as AndExpressions
-  expr.expressions.push(
-    new BinaryExpression(new ColumnExpression('sop_task', 'tableName'), '=', new Value('shipment')),
-    new BinaryExpression(new ColumnExpression('sop_task', 'primaryKey'), '=', new ColumnExpression('shipment', 'id'))
-  )
-  return query
-}
-
-const shortcuts: IShortcut[] = [
-  // table:picPerson
-  {
-    type: 'table',
-    name: 'picPerson',
-    fromTable: new FromTable('shipment', new JoinClause('LEFT', new FromTable('person', 'picPerson'),
-      new BinaryExpression(new ColumnExpression('shipment', 'picEmail'), '=', new ColumnExpression('picPerson', 'userName')),
-      new BinaryExpression(new ColumnExpression('shipment', 'partyGroupCode'), '=', new ColumnExpression('picPerson', 'partyGroupCode')),
-      new IsNullExpression(new ColumnExpression('picPerson', 'deletedAt'), false),
-      new IsNullExpression(new ColumnExpression('picPerson', 'deletedBy'), false),
-    ))
-  },
-
-  // field:distinct-team
-  {
-    type: 'field',
-    name: 'distinct-team',
-    queryArg: () => () => ({
-      $distinct: true,
-      $select: new ResultColumn(new ColumnExpression('shipment', 'team'), 'team')
-    })
-  },
-
-  // field:team
-  {
-    type: 'field',
-    name: 'team',
-    expression: new ColumnExpression('shipment', 'team')
-  },
-
-  // field:picEmail
-  {
-    type: 'field',
-    name: 'picEmail',
-    expression: new ColumnExpression('shipment', 'picEmail')
-  },
-
-  // field:isClosed
-  {
-    type: 'field',
-    name: 'isClosed',
-    expression: new IsNullExpression(new ColumnExpression('shipment', 'sopScore'), true),
-    registered: true
-  },
-
-  // field:noOfTasks
-  {
-    type: 'field',
-    name: 'noOfTasks',
-    queryArg: () => params => ({
-      $select: new ResultColumn(
-        new QueryExpression(
-          addShipmentCheck(sopTaskQuery().apply({
-            fields: ['count'],
-            subqueries: {
-              ...passSubquery(params, 'sop_user', 'user'),
-              ...passSubquery(params, 'sop_partyGroupCode', 'partyGroupCode'),
-              ...passSubquery(params, 'sop_team', 'team'),
-              ...passSubquery(params, 'sop_today', 'today'),
-              ...passSubquery(params, 'sop_date', 'date'),
-              ...passSubquery(params, 'notDone'),
-              ...passSubquery(params, 'notDeleted')
-            }
-          }))
-        ),
-        'noOfTasks'
-      )
-    })
-  },
-
-  // field:sopScore
-  {
-    type: 'field',
-    name: 'sopScore',
-    expression: re => IfExpression(
-      re['isClosed'],
-      new ColumnExpression('shipment', 'sopScore'),
-      new FunctionExpression('GREATEST', new Value(0), new MathExpression(new Value(100), '-', IfNullExpression(
-        new QueryExpression(
-          addShipmentCheck(sopTaskQuery().apply({
-            fields: ['deduct'],
-            subqueries: { notDeleted: true }
-          }))
-        ),
-        new Value(0)
-      )))
-    ),
-    registered: true
-  },
-
-  // field:hasDueTasks
-  {
-    type: 'field',
-    name: 'hasDueTasks',
-    expression: new ExistsExpression(
-      addShipmentCheck(
-        sopTaskQuery().apply({
-          fields: ['deduct'],
-          subqueries: {
-            notDeleted: true,
-            notDone: true,
-            isDue: true
-          }
-        })
-      ),
-      false
-    ),
-    registered: true
-  },
-
-  // field:hasDeadTasks
-  {
-    type: 'field',
-    name: 'hasDeadTasks',
-    expression: new ExistsExpression(
-      addShipmentCheck(
-        sopTaskQuery().apply({
-          fields: ['deduct'],
-          subqueries: {
-            notDeleted: true,
-            notDone: true,
-            isDead: true
-          }
-        })
-      ),
-      false
-    ),
-    registered: true
-  },
-
-  // subquery:sop_date (has tasks within the given period)
-  {
-    type: 'subquery',
-    name: 'sop_date',
-    subqueryArg: () => (value, params) => ({
-      $where: new ExistsExpression(
-        addShipmentCheck(
-          sopTaskQuery().apply({
-            subqueries: {
-              ...passSubquery(params, 'sop_date', 'date'),
-              ...passSubquery(params, 'notDone'),
-              ...passSubquery(params, 'notDeleted'),
-            }
-          })
-        ),
-        false
-      )
-    })
-  },
-
-  // subquery:notClosed
-  {
-    type: 'subquery',
-    name: 'notClosed',
-    expression: re => new BinaryExpression(re['isClosed'], '<>', new Value(1))
-  },
-
-  // subquery:sopScore
-  {
-    type: 'subquery',
-    name: 'sopScore',
-    expression: re => new AndExpressions([
-      new BinaryExpression(new Unknown(), '<=', re['sopScore']),
-      new BinaryExpression(re['sopScore'], '<=', new Unknown())
-    ]),
-    unknowns: { fromTo: true }
-  },
-
-  // subquery:pic
-  {
-    type: 'subquery',
-    name: 'pic',
-    expression: new BinaryExpression(new ColumnExpression('shipment', 'picEmail'), '=', new Unknown()),
-    unknowns: true
-  },
-
-  // subquery:team
-  {
-    type: 'subquery',
-    name: 'team',
-    expression: new InExpression(new ColumnExpression('shipment', 'team'), false, new Unknown()),
-    unknowns: true
-  },
-
-  // @subquery:myTasksOnly
-  {
-    type: 'subquery',
-    name: 'myTasksOnly',
-    subqueryArg: () => (value, params) => ({
-      $where: new ExistsExpression(addShipmentCheck(
-        sopTaskQuery().apply({
-          distinct: true,
-          fields: ['id'],
-          subqueries: {
-            ...passSubquery(params, 'sop_user', 'user'),
-            ...passSubquery(params, 'sop_partyGroupCode', 'partyGroupCode'),
-            ...passSubquery(params, 'sop_team', 'team'),
-            ...passSubquery(params, 'sop_today', 'today'),
-            ...passSubquery(params, 'sop_date', 'date'),
-            ...passSubquery(params, 'notDone'),
-            ...passSubquery(params, 'notDeleted'),
-            notSubTask: true
-          }
-        })
-      ), false)
-    })
-  },
-
-  // @subquery:hasDueTasks
-  {
-    type: 'subquery',
-    name: 'hasDueTasks',
-    expression: re => new BinaryExpression(re['hasDueTasks'], '=', new Value(1))
-  },
-
-  // @subquery:noDueTasks
-  {
-    type: 'subquery',
-    name: 'noDueTasks',
-    expression: re => new BinaryExpression(re['hasDueTasks'], '=', new Value(0))
-  },
-
-  // @subquery:hasDeadTasks
-  {
-    type: 'subquery',
-    name: 'hasDeadTasks',
-    expression: re => new BinaryExpression(re['hasDeadTasks'], '=', new Value(1))
-  },
-
-  // @subquery:noDeadTasks
-  {
-    type: 'subquery',
-    name: 'noDeadTasks',
-    expression: re => new BinaryExpression(re['hasDeadTasks'], '=', new Value(0))
-  },
-
-  // subquery:picNotAssigned
-  {
-    type: 'subquery',
-    name: 'picNotAssigned',
-    expression: new IsNullExpression(new ColumnExpression('shipment', 'picEmail'), false)
-  },
-
-  // subquery:invalidPic
-  {
-    type: 'subquery',
-    name: 'invalidPic',
-    expression: new IsNullExpression(new ColumnExpression('picPerson', 'id'), false),
-    companions: ['table:picPerson']
-  }
-]
-
-export default query.useShortcuts(shortcuts)
+export default supportSopTask('shipment', query, sopTaskQuery)

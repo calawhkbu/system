@@ -409,48 +409,48 @@
                                 "label": "ShipmentPage.totalQuantity",
                                 "name": "quantity",
                                 "component": "NumberField",
-                                "class": "xs-12"
+                                "class": "xs-12 md-6"
                               },
                               {
                                 "label": "ShipmentPage.totalQuantityUnit",
                                 "name": "quantityUnit",
                                 "component": "v-text-field",
-                                "class": "xs-12"
+                                "class": "xs-12 md-6"
                               },
                               {
                                 "label": "ShipmentPage.totalTeu",
                                 "name": "teu",
                                 "component": "NumberField",
-                                "class": "xs-12"
+                                "class": "xs-12 md-6"
                               },
                               {
                                 "label": "ShipmentPage.totalCbm",
                                 "name": "cbm",
                                 "component": "NumberField",
-                                "class": "xs-12"
+                                "class": "xs-12 md-6"
                               },
                               {
                                 "label": "ShipmentPage.totalGrossWeight",
                                 "name": "grossWeight",
                                 "component": "NumberField",
-                                "class": "xs-12"
+                                "class": "xs-12 md-6"
                               },
                               {
                                 "label": "ShipmentPage.totalVolumeWeight",
                                 "name": "volumeWeight",
                                 "component": "NumberField",
-                                "class": "xs-12"
+                                "class": "xs-12 md-6"
                               },
                               {
                                 "label": "ShipmentPage.totalChargeableWeight",
                                 "name": "chargeableWeight",
                                 "component": "NumberField",
-                                "class": "xs-12"
+                                "class": "xs-12 md-6"
                               },
                               {
                                 "label": "ShipmentPage.totalWeightUnit",
                                 "name": "weightUnit",
-                                "class": "xs-12",
+                                "class": "xs-12 md-6",
                                 "component": "v-text-field"
                               }
                             ]
@@ -662,7 +662,8 @@
                             "label": "ShipmentPage.cbm",
                             "colGroupProps": {
                               "style": {
-                                "width": "10%"
+                                "width": "10%",
+                                "min-width": "75px"
                               }
                             },
                             "name": "cbm",

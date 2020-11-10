@@ -225,6 +225,46 @@
           "display": "name",
           "name": "nameLike",
           "type": "text"
+        }, {
+          "i18nContext": "InvitationPage",
+          "name": "role",
+          "type": "autocomplete",
+          "props": {
+              "api": {
+                "query": {
+                  "data": {
+                    "limit": 5,
+                    "fields": [
+                      "id", "roleName"
+                    ],
+                    "subqueries": {
+                      "q": {
+                        "value": "{{ q }}"
+                      }
+                    }
+                  },
+                  "labelKey": "roleName",
+                  "method": "POST",
+                  "url": "api/role/query/role",
+                  "valueKey": "id"
+                },
+                "resolve": {
+                  "data": {
+                    "fields": ["id", "roleName"],
+                    "subqueries": {
+                      "roleName": {
+                        "value": "{{value}}"
+                      }
+                    }
+                  },
+                  "labelKey": "roleName",
+                  "method": "POST",
+                  "url": "api/code/query/code_master",
+                  "valueKey": "id"
+                }
+              },
+              "multi": true
+          }
         }
       ]
     },

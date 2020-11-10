@@ -308,6 +308,38 @@ a[x-apple-data-detectors=true] {
                         <td class="e_td">客戶參考號碼</td>
                         <td class="e_td e_td2">{{entity.poNo}}</td>
                       </tr>
+                      <tr class="e_tr">
+                        <td class="e_td">托運商</td>
+                        <td class="e_td e_td2">{{entity.shipperPartyName}}</td>
+                      </tr>
+                      <tr class="e_tr">
+                        <td class="e_td">收貨人</td>
+                        <td class="e_td e_td2">{{entity.consigneePartyName}}</td>
+                      </tr>
+                      <tr class="e_tr">
+                        <td class="e_td">裝貨港口</td>
+                        <td class="e_td e_td2">{{entity.portOfLoadingName}}</td>
+                      </tr>
+                      <tr class="e_tr">
+                        <td class="e_td">卸貨港口</td>
+                        <td class="e_td e_td2">{{entity.portOfDischargeName}}</td>
+                      </tr>
+                      <tr class="e_tr">
+                        <td class="e_td">最終目的地</td>
+                        <td class="e_td e_td2">{{entity.finalDestinationName}}</td>
+                      </tr>
+                      <tr class="e_tr">
+                        <td class="e_td">運送商</td>
+                        <td class="e_td e_td2">{{entity.carrierCode}}</td>
+                      </tr>
+                      <tr class="e_tr">
+                        <td class="e_td">船隻名稱 / 航海編號</td>
+                        <td class="e_td e_td2">{{entity.vesselName}} / {{entity.voyageFlightNumber}}</td>
+                      </tr>
+                      <tr class="e_tr">
+                        <td class="e_td">貨物準備好實際日期</td>
+                        <td class="e_td e_td2">{{entity.cargoReadyDateEstimated}}</td>
+                      </tr>
                        <tr class="e_tr">
                          <td class="e_td">預計出發日期</td>
                          <td class="e_td e_td2">{% if entity.estimatedDepartureDate %} {{entity.estimatedDepartureDate | date('d M Y')}} {% endif %}</td>
@@ -317,21 +349,37 @@ a[x-apple-data-detectors=true] {
                          <td class="e_td">{% if entity.estimatedArrivalDate %} {{entity.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
                        </tr>
                        <tr class="e_tr">
-                        <td class="e_td">裝貨港</td>
-                        <td class="e_td">{{entity.portOfLoading}}</td>
-                      </tr>
-                      <tr class="e_tr">
-                        <td class="e_td">卸貨港</td>
-                        <td class="e_td">{{entity.portOfDischarge}}</td>
-                      </tr>
-                      <tr class="e_tr">
                         <td class="e_td">商品</td>
                         <td class="e_td">{{entity.commodity}}</td>
                       </tr>
                       <tr class="e_tr">
-                        <td class="e_td">狀態</td>
-                        <td class="e_td">{{entity.status}}</td>
+                        <td class="e_td">運輸條件</td>
+                        <td class="e_td">{{entity.freightTerms}}</td>
                       </tr>
+                      <tr class="e_tr">
+                       <td class="e_td">運輸方法</td>
+                       <td class="e_td">{{entity.serviceCode}}</td>
+                     </tr>
+                      <tr class="e_tr">
+                       <td class="e_td">Total CTN</td>
+                       <td class="e_td">{{entity.bookingPopackings.quantity}}</td>
+                     </tr>
+                     <tr class="e_tr">
+                       <td class="e_td">Total KGS</td>
+                       <td class="e_td">{{entity.bookingPopackings.weight}}</td>
+                     </tr>
+                     <tr class="e_tr">
+                       <td class="e_td">Total CBM</td>
+                       <td class="e_td">{{entity.cbm}}</td>
+                     </tr>
+                     <tr class="e_tr">
+                       <td class="e_td">PO No</td>
+                       <td class="e_td">{{entity.poNo}}</td>
+                     </tr>
+                     <tr class="e_tr">
+                       <td class="e_td">貨櫃種類</td>
+                       <td class="e_td">{{entity.bookingContainers.containerTypeCode}}</td>
+                     </tr>
                      </table>
                   </p>
                   </div>
