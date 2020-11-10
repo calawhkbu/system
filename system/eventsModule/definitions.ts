@@ -88,20 +88,20 @@ export default {
           return eventData.latestEntity.id
         },
         tableName: 'booking',
-        selectedPartyGroup: ['DEV', 'STD']
+        invitationStatus: {
+          DEV: 'sent',
+          STD: 'sent'
+        }
       },
       afterEvent: [
         {// resend alert
           condition: true,
           eventName: 'resend_alert',
           otherParameters: {
-
+            tableName: 'booking',
             partyGroupCode: (eventData: EventData<Shipment>) => {
               return eventData.latestEntity.partyGroupCode
             },
-
-            tableName: 'booking',
-
             primaryKey: (eventData: EventData<Shipment>) => {
               return eventData.latestEntity.id
             }
@@ -125,7 +125,6 @@ export default {
         }
       ]
     },
-
     // fill shipping order
   ],
   afterUpdate_booking: [
@@ -202,7 +201,10 @@ export default {
           return eventData.latestEntity.id
         },
         tableName: 'booking',
-        selectedPartyGroup: ['DEV', 'STD']
+        invitationStatus: {
+          DEV: 'sent',
+          STD: 'sent'
+        }
       },
       afterEvent: [
         {// resend alert
@@ -306,7 +308,10 @@ export default {
           return eventData.latestEntity.id
         },
         tableName: 'shipment',
-        selectedPartyGroup: ['DEV', 'STD']
+        invitationStatus: {
+          DEV: 'sent',
+          STD: 'sent'
+        }
       },
       afterEvent: [
         {// resend alert
@@ -381,7 +386,10 @@ export default {
           return eventData.latestEntity.id
         },
         tableName: 'shipment',
-        selectedPartyGroup: ['DEV', 'STD']
+        invitationStatus: {
+          DEV: 'sent',
+          STD: 'sent'
+        }
       },
       afterEvent: [
         {// resend alert

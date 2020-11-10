@@ -674,6 +674,9 @@ const ErpSiteExpression = new MathExpression(
   '$.\"erp-site\"'
 )
 
+
+
+
 const dateStatusExpression = (queryParam: IQueryParams) => {
 
   const subqueryParam = queryParam.subqueries.dateStatus as any as { today: any, currentTime: any }
@@ -1555,7 +1558,8 @@ const fieldList = [
 
   {
     name: 'shipmentId',
-    expression: shipmentIdExpression
+    expression: shipmentIdExpression,
+    companion:['table:booking_party']
   },
   {
 
@@ -1774,6 +1778,30 @@ query
   'alertCount',
   new ResultColumn(new FunctionExpression('COUNT', new ParameterExpression('DISTINCT', new ColumnExpression('alert', 'id'))), 'alertCount')
 )
+
+
+//general Card any Party Role
+// search all party in partyList
+query.subquery(false, 'anyPartyId', ((value: any, params?: IQueryParams) => {
+
+  const partyIdList = value.value
+  const inExpressionList = partyList.reduce((acc, party) => {
+    if(party.name=='office') party.name='forwarder' //override 
+    
+    const defaultPartyIdExpression = new ColumnExpression('booking_party', `${party.name}PartyId`)
+    const partyIdExpression = party.partyIdExpression ? party.partyIdExpression.expression : defaultPartyIdExpression
+
+    const inPartyInExpression = new InExpression(partyIdExpression, false, partyIdList)
+
+    acc.push(inPartyInExpression)
+    return acc
+
+  }, [])
+
+  return new Query({
+    $where: new OrExpressions(inExpressionList)
+  })
+}), 'table:booking_party')
 
 //  register summary field
 // summary fields  =================

@@ -120,9 +120,8 @@ export default {
               subqueries: prevResult.subqueries,
               hideAll: [...temp, `${prevResult.tableName}-${key}`],
               expanded: false,
-              collapsed:`${prevResult.tableName}-${key}`,
+              //collapsed:`${prevResult.tableName}-${key}`,
               isEntityRow: true,
-              subTasks:false
 
             })
              
@@ -137,6 +136,7 @@ export default {
           subqueries: prevResult.subqueries,
           collapsed: `${prevResult.tableName}-detentionAlert(SEA)'`,
           isEntityRow: false,
+          primaryId:'primaryId',
           parentId:0
 
         })
