@@ -421,6 +421,22 @@
             }]
           },
           {
+            "index": "chat",
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "BookingPage",
+                "i18nKey": "chat"
+              }
+            }],
+            "tabItemComponents": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "booking/base/chat"
+              }
+            }]
+          },
+          {
             "index": "document",
             "tabComponents": [{
               "is": "I18nText",
@@ -538,10 +554,6 @@
                 },
                 {
                   "is": "AsyncComponent",
-                  "if": [
-                    "const user = context.$store.state.auth.userProfile;",
-                    "return user.roles.find(role => role.name === 'CHAT') || context.isSwivelAdmin;"
-                  ],
                   "props": {
                     "class": "xs-12 margin-bottom-2",
                     "layoutName": "booking/base/chat"

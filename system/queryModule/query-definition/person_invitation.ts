@@ -277,6 +277,22 @@ registerAll(query, baseTableName, fieldList)
 
 query
   .subquery(
+    'salesmanLike',
+    new Query({
+      $where: new OrExpressions([
+        new RegexpExpression(new ColumnExpression('person', 'erpCode'), false),
+        new RegexpExpression(new ColumnExpression('person', 'firstName'), false),
+        new RegexpExpression(new ColumnExpression('person', 'lastName'), false),
+        new RegexpExpression(new ColumnExpression('person', 'displayName'), false)
+      ])
+    })
+  )
+  .register('value', 0)
+  .register('value', 1)
+  .register('value', 2)
+  .register('value', 3)
+query
+  .subquery(
     'nameLike',
     new Query({
       $where: new OrExpressions([

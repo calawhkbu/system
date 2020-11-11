@@ -10,7 +10,7 @@ export default {
         subqueries.alertJoin = true
         params.fields = ['alertCount']
         return params
-      }
+      
     },
     {
       type: 'callDataService',

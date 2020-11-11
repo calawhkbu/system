@@ -223,7 +223,7 @@ export async function applyAccessRightConditions(
       ? new AndExpressions([conditions, partyGroupExpression])
       : partyGroupExpression
   }
-  if (user.authTypeCode === 'person' && user.parties && user.parties.length) {
+  if (user.parties && user.parties.length) {
     const selectedPartyGroupCode = user.selectedPartyGroup ? user.selectedPartyGroup.code : null
     const partyTypesExpressions = user.parties.reduce(
       (selectedPartyType: BinaryExpression[], party: JwtPayloadParty) => {

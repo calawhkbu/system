@@ -69,7 +69,7 @@
         "label": "PartyPage.groupName",
         "name": "groupName",
         "component": "v-text-field",
-        "class": "xs-12",
+        "class": "xs-8",
         "props": {
           "autocomplete": "off"
         },
@@ -97,6 +97,11 @@
           "before": "Party that you have been created:"
         }
       }, {
+        "label": "PartyPage.isBranch",
+        "name": "isBranch",
+        "class": "xs-4",
+        "component": "BooleanField"
+        }, {
         "_label": "PartyPage.identity",
         "_name": "identity",
         "_component": "v-text-field",

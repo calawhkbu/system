@@ -1808,8 +1808,8 @@ query.subquery(false, 'anyPartyId', ((value: any, params?: IQueryParams) => {
 
   const partyIdList = value.value
   const inExpressionList = partyList.reduce((acc, party) => {
-    if(party.name=='office') party.name='forwarder' //override 
-    
+    if(party.name=='office') party.name='forwarder' //override
+
     const defaultPartyIdExpression = new ColumnExpression('booking_party', `${party.name}PartyId`)
     const partyIdExpression = party.partyIdExpression ? party.partyIdExpression.expression : defaultPartyIdExpression
 

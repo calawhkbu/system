@@ -46,7 +46,7 @@ export default {
 
         // alertType case
         if (subqueries.selectedAlertType) {
-          const { alertConfigList } = await this.getDataService().crudEntity(
+          const { alertConfigList = [] } = await this.getDataService().crudEntity(
             'alert',
             { type: 'getCompleteAlertConfig', options: [user.selectedPartyGroup.code] },
             user
@@ -57,6 +57,7 @@ export default {
             ...(subqueries || {}),
             ...(alertType.query.subqueries || {})
           }
+          delete params.subqueries.alertType
         }
         // if (subqueries.alertType) {
         //   if (!(subqueries.alertType !== true && 'value' in subqueries.alertType && Array.isArray(subqueries.alertType.value))) throw new Error('MISSING_alertType')

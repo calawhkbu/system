@@ -110,7 +110,7 @@ const ASWAlertConfigList = [
   {
     tableName: 'shipment',
     alertCategory: 'Exception',
-    severity: 'medium',
+    severity: 'high',
     alertType: 'missingAMS(AIR)',
 
     templatePath: 'alert/shipment-alert',
@@ -167,7 +167,7 @@ const ASWAlertConfigList = [
   {
     tableName: 'shipment',
     alertCategory: 'Exception',
-    severity: 'medium',
+    severity: 'high',
     alertType: 'missingAMS(SEA)',
 
     templatePath: 'alert/shipment-alert',
@@ -224,7 +224,7 @@ const ASWAlertConfigList = [
   {
     tableName: 'shipment',
     alertCategory: 'Exception',
-    severity: 'medium',
+    severity: 'high',
     alertType: 'containerReturn',
 
     templatePath: 'alert/shipment-alert',

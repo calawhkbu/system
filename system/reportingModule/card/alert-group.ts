@@ -50,8 +50,7 @@ export default {
                   ;
 
                   delete mainCard_subq.alertType
-                  console.log('before return')
-                  console.log(mainCard_subq)
+
 
                   return {
                     subqueries: {
@@ -111,88 +110,71 @@ export default {
           const result = prevResult[key]
           if (result && result.length && result[0].count > 0) {
             const translation = _.get(i18n, `Alert.${key}Title`, null)
-            results.push({
-              id: i++,
-              alertTypeCode: key,
-              alertType: translation ? swig.render(translation, { locals: {} }) : translation,
-              count: result[0].count,
-              tableName: prevResult.tableName,
-              subqueries: prevResult.subqueries,
-              hideAll: [...temp, `${prevResult.tableName}-${key}`],
-              expanded: false,
-              collapsed: `${prevResult.tableName}-${key}`,
-              isEntityRow: true,
+            if (prevResult.tableName == params.subqueries.entityType.value) {
+              //show record based on selected entityType
 
-            })
+
+              results.push({
+                id: i++,
+                alertTypeCode: key,
+                alertType: translation ? swig.render(translation, { locals: {} }) : translation,
+                count: result[0].count,
+                tableName: prevResult.tableName,
+                subqueries: prevResult.subqueries,
+                hideAll: [...temp, `${prevResult.tableName}-${key}`],
+                expanded: false,
+                collapsed: `${prevResult.tableName}-${key}`,
+                isEntityRow: true,
+
+              })
+            }
 
           }
         }
-        //demo
-        results.push({
-          id: i++,
-          category: 'Booking',
-          group: 'detentionAlert(SEA)',
-          alertTypeCode: 'detentionAlert(SEA)',
-          alertType: 'ABC',
-          count: 10,
-          tableName: prevResult.tableName,
-          subqueries: prevResult.subqueries,
-          collapsed: `${prevResult.tableName}-detentionAlert(SEA)'`,
-          isEntityRow: false,
-          primaryId: 1234,
+           //demo
+           let tempTableName='shipment'
+           if(tempTableName==params.subqueries.entityType.value){
+           results.push({
+            id: i++,
+            alertTypeCode: 'detentionAlert(SEA)',
+            alertType: 'ABC',
+            tableName: tempTableName,
+            collapsed: `${tempTableName}-detentionAlert(SEA)'`,
+            isEntityRow: false,
 
-        })
-        results.push({
-          group: 'detentionAlert(SEA)',
-          alertTypeCode: 'detentionAlert(SEA)',
-          alertType: 'BBC',
-          count: 10,
-          tableName: prevResult.tableName,
-          subqueries: prevResult.subqueries,
-          collapsed: `${prevResult.tableName}-detentionAlert(SEA)'`,
-          isEntityRow: false,
-          primaryId: 2234,
-          masterNo: 'ABCD-2234',
-          category: "Booking",
-          deadline: null,
-          description: null,
-          dueAt: null,
-          hasSubTasks: 0,
-          id: i++,
-          isClosed: 0,
-          isDead: null,
-          isDeleted: 0,
-          isDone: 0,
-          isDue: null,
-          isDueToday: null,
-          latestRemark: null,
-          latestRemarkAt: null,
-          latestRemarkBy: null,
-          name: "Contact Shipper for CRD, pick up date, ETD, ETA and collect booking note",
-          noOfRemarks: null,
-          picEmail: null,
-          primaryKey: "4738",
-          primaryNo: "01-2010125411",
-          remark: null,
-          seqNo: 110,
-          startAt: "2020-10-11T08:33:20.000Z",
-          status: "Open",
-          statusAt: "2020-11-10T01:37:17.000Z",
-          statusBy: "me",
-          system: "Email/ Phone",
-          taskId: 111,
-          taskStatus: "Open",
-          team: null,
-          uniqueId: "DEV-111"
+          })
+          results.push({
+            id: i++,
+            alertTypeCode: 'detentionAlert(SEA)',
+            alertType: 'This is a test',
+            tableName: tempTableName,
+            collapsed: `${tempTableName}-detentionAlert(SEA)'`,
+            primaryId: 364962,
 
-        })
+          })
+        }
+         tempTableName='booking'
+        if (tempTableName == params.subqueries.entityType.value ) {
+       
+          results.push({
+            id: i++,
+            alertTypeCode: 'detentionAlert(SEA)',
+            alertType: 'booking-test',
+            tableName: tempTableName,
+            collapsed: `booking-detentionAlert(SEA)'`,
+            primaryId: 8758,
+
+          })
+        }
+
+
 
 
 
         results.sort((a, b) => {
           if (a.alertType && a.id > b.alertType && b.id) {
             return 1
-          } else if (a.alertType && a.id< b.alertType && b.id ) {
+          } else if (a.alertType && a.id < b.alertType && b.id) {
             return -1
           }
           return 0
@@ -253,10 +235,10 @@ export default {
       name: 'entityType',
       props: {
         items: [
-          // {
-          //   label: 'booking',
-          //   value: 'booking',
-          // },
+          {
+            label: 'booking',
+            value: 'booking',
+          },
           {
             label: 'shipment',
             value: 'shipment',

@@ -18,7 +18,12 @@
         "label": "PartyPage.groupName",
         "name": "groupName",
         "component": "v-text-field",
-        "class": "xs-12"
+        "class": "xs-8"
+      }, {
+        "label": "PartyPage.isBranch",
+        "name": "isBranch",
+        "component": "BooleanField",
+        "class": "xs-4"
       }, {
         "_label": "PartyPage.identity",
         "_name": "identity",

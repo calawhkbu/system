@@ -251,7 +251,7 @@
                         "partyA": null,
                         "partyBId": null,
                         "partyB": null,
-                        "partyTypes": []
+                        "partyTypes": ["CUSTOMER"]
                       },
                       "fields": [{
                         "label": "PartyPage.partyBName",
@@ -282,32 +282,15 @@
                             }
                           },
                           "ellipsis": false,
+                          "displayText": ["shortName", "name"],
+                          "displayKey": ["erpCode"],
                           "item-text": "name",
-                          "item-value": "erpCode"
+                          "item-value": "id"
                         }
                       }, {
-                        "label": "PartyPage.partyTypes",
-                        "component": "AsyncSelect",
-                        "name": "partyTypes",
-                        "class": "xs-12",
-                        "validator": ["required"],
                         "props": {
-                          "required": true,
-                          "multiple": true,
-                          "item-text": "name",
-                          "item-value": "code",
-                          "showValue": false,
-                          "noDelete": true,
-                          "axiosParams": {
-                            "url": "api/code/query/code_master",
-                            "method": "POST",
-                            "data": {
-                              "subqueries": {
-                                "codeType": {
-                                  "value": "PARTY_TYPE"
-                                }
-                              }
-                            }
+                          "style": {
+                            "min-height": "200px"
                           }
                         }
                       }]
@@ -349,6 +332,11 @@
                         }]
                       }
                     }]
+                  }, {
+                    "is": "div",
+                    "style": {
+                      "min-height": "200px"
+                    }
                   }]
                 }
               }]
