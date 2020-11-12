@@ -16,6 +16,7 @@
   <title></title>
   <!--[if !mso]><!-- -->
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+  <link href="https://s3-ap-southeast-1.amazonaws.com/invitation-email/lato.css" rel="stylesheet" type="text/css">
   <!--<![endif]-->
 
   <style type="text/css" id="media-query">
@@ -336,218 +337,134 @@
       }
     }
   </style>
+  <style type="text/css">
+    .tg {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    .tg td {
+      font-size: 16px;
+      padding: 7px 15px !important;
+      padding: 2px 5px;
+      border-style: dashed;
+      border-width: 0px;
+      overflow: hidden;
+      word-break: normal;
+      border-color: #bfbfbf !important;
+    }
+
+    .tg .tg-us36 {
+      border-color: inherit;
+      vertical-align: top
+    }
+  </style>
   <!--[if IE]><div class="ie-browser"><![endif]-->
   <!--[if mso]><div class="mso-container"><![endif]-->
-  <table class="nl-container" style="border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #FFFFFF;width: 100%"
-    cellpadding="0" cellspacing="0">
+    
+    
+    
+    <table style="border-color:black;border-style:solid;border-width:0px; font-size: 20px;font-weight:normal;overflow:hidden;padding:7px 15px;word-break:normal;border-collapse: collapse;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #FFFFFF;width: 100%;
+                  font-family:'Maven Pro', 'Arial', sans-serif !important;" cellpadding="0" cellspacing="0">
+    <thead>
+      <tr>
+        <th style="border-color:inherit;text-align:left;vertical-align:top" colspan="2">
+          <span style="white-space: pre-line">Your booking is well received by ( Initial Office ).
+            You can click the button to get the latest status anytime.</span>
+        </th>
+      </tr>
+      <tr>
+        <th style="border-color:inherit;text-align:left;vertical-align:top" colspan="2">Booking Details.</th>
+      </tr>
+    </thead>
     <tbody>
-      <style type="text/css">
-        .tg {
-          border-collapse: collapse;
-          border-spacing: 0;
-        }
-
-        .tg td {
-          font-size: 16px;
-          padding: 7px 15px !important;
-          padding: 2px 5px;
-          border-style: dashed;
-          border-width: 0px;
-          overflow: hidden;
-          word-break: normal;
-          border-color: #bfbfbf !important;
-        }
-
-        .tg .tg-us36 {
-          border-color: inherit;
-          vertical-align: top
-        }
-      </style>
-
-      <tr style="vertical-align: top">
-        <table class="tg" width="100%">
-          <tr style="border-top:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
-            <td class="tg-us36" colspan="2" style="padding:10px 5px 7px">
-              <b style="color:#f1b35f;">Shipper</b>
-            </td>
-            <td class="tg-us36" rowspan="18" colspan="2" width="50%" style="border-left:1px solid #bfbfbf;border-right:1px solid #bfbfbf;">
-              <center style="position:relative;top:30px;">
-                <img class="center  autowidth  fullwidth" align="center" border="0" src="https://static.wixstatic.com/media/47186a_945e6c3508f343e8965d7f650b4a3bf9~mv2.png/v1/fill/w_634,h_174,al_c,lg_1/47186a_945e6c3508f343e8965d7f650b4a3bf9~mv2.png"
-                  alt="Image" title="Image" style="outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: 0;height: auto;float: none;width: 100%;max-width: 320px" />
-                <h2>{{entity.forwarderPartyName}}</h2>
-                <h4>{{ entity.forwarderPartyAddress | splitLineBreak(0) }}</h4>
-                <h4>{{ entity.forwarderPartyAddress | splitLineBreak(1) }}</h4>
-                <h4>{{ entity.forwarderPartyAddress | splitLineBreak(2) }}</h4>
-                <h4>Shipping Order</h4>
-                <div style="font-size:12px;line-height:14px;color:#555555;font-family:Georgia, Times, 'Times New Roman', serif;text-align:left;">
-                  <p style="margin: 0;line-height: 22px;font-size: 18px;text-align: center"><a style="color:#0068A5;text-decoration: underline;" href="{{url}}" target="_blank">{% if entity.bookingNo %} Booking No. {{entity.bookingNo}} {% endif %}</a>
-                  </p>
-                </div>
-              </center>
-            </td>
-          </tr>
-          <tr>
-            <td class="tg-us36" width="8%" style="border-left:1px solid #bfbfbf;">Name:</td>
-            <td class="tg-us36" width="">{{entity.shipperPartyName}}</td>
-          </tr>
-          <tr>
-            <td class="tg-us36" rowspan="3" style="border-left:1px solid #bfbfbf;">Address:</td>
-            <td class="tg-us36">{{ entity.shipperPartyAddress | splitLineBreak(0) }}</td>
-          </tr>
-          <tr>
-            <td class="tg-us36">{{ entity.shipperPartyAddress | splitLineBreak(1) }}</td>
-          </tr>
-          <tr>
-            <td class="tg-us36">{{ entity.shipperPartyAddress | splitLineBreak(2) }}</td>
-          </tr>
-
-          <tr>
-            <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Tel:</td>
-            <td class="tg-us36">{{entity.shipperPartyContactPhone}}</td>
-          </tr>
-
-          <tr>
-            <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Email:</td>
-            <td class="tg-us36">{{entity.shipperPartyEmail}}</td>
-          </tr>
-
-          <tr>
-            <td class="tg-us36" style="border-left:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;">Contact:</td>
-            <td class="tg-us36" style="padding-bottom:7px;">{{entity.shipperPartyContactName}}</td>
-          </tr>
-
-          <tr>
-            <td class="tg-us36" colspan="2" style="padding:10px 5px 7px; border-left:1px solid #bfbfbf;">
-              <b style="color:#63acad;">Consignee</b>
-            </td>
-          </tr>
-          <tr>
-            <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Name:</td>
-            <td class="tg-us36">{{entity.consigneePartyName}}</td>
-          </tr>
-          <tr>
-            <td class="tg-us36" rowspan="3" style="border-left:1px solid #bfbfbf;">Address:</td>
-            <td class="tg-us36">{{ entity.consigneePartyAddress | splitLineBreak(0) }}</td>
-          </tr>
-          <tr>
-            <td class="tg-us36">{{ entity.consigneePartyAddress | splitLineBreak(1) }}</td>
-          </tr>
-          <tr>
-            <td class="tg-us36">{{ entity.consigneePartyAddress | splitLineBreak(2) }}</td>
-          </tr>
-
-          <tr>
-            <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Tel:</td>
-            <td class="tg-us36">{{entity.consigneePartyContactPhone}}</td>
-          </tr>
-
-          <tr>
-            <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Email:</td>
-            <td class="tg-us36">{{entity.consigneePartyContactEmail}}</td>
-          </tr>
-
-          <tr>
-            <td class="tg-us36" style="border-left:1px solid #bfbfbf; border-bottom:1px solid #bfbfbf;">Contact:</td>
-            <td class="tg-us36" style="padding-bottom:7px;">{{entity.consigneePartyContactName}}</td>
-          </tr>
-
-          <tr>
-            <td class="tg-us36" colspan="2" style="padding:10px 5px 7px; border-left:1px solid #bfbfbf;border-right:1px solid #bfbfbf;">
-              <b style="color:#9588eb">Notify Party</b>
-            </td>
-          </tr>
-          <tr>
-            <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Name:</td>
-            <td class="tg-us36" style="border-right:1px solid #bfbfbf;">{{entity.notifyPartyPartyName}}</td>
-          </tr>
-          <tr>
-            <td class="tg-us36" rowspan="3" style="border-left:1px solid #bfbfbf;">Address:</td>
-            <td class="tg-us36">{{ entity.notifyPartyAddress | splitLineBreak(0) }}</td>
-            <td class="tg-us36" rowspan="3" width="10%" style="border-left:1px solid #bfbfbf;">Address:</td>
-            <td width="40%" style="border-right:1px solid #bfbfbf;">{{ entity.forwarderPartyAddress | splitLineBreak(0) }}</td>
-          </tr>
-          <tr>
-            <td class="tg-us36">{{ entity.notifyPartyAddress | splitLineBreak(1) }}</td>
-            <td style="border-right:1px solid #bfbfbf;">{{ entity.forwarderPartyAddress | splitLineBreak(1) }}</td>
-          </tr>
-          <tr>
-            <td class="tg-us36">{{ entity.notifyPartyAddress | splitLineBreak(2) }}</td>
-            <td style="border-right:1px solid #bfbfbf;">{{ entity.forwarderPartyAddress | splitLineBreak(2) }}</td>
-          </tr>
-
-          <tr>
-            <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Tel:</td>
-            <td class="tg-us36">{{entity.notifyPartyPartyContactPhone}}</td>
-            <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Tel:</td>
-            <td style="border-right:1px solid #bfbfbf;">{{entity.forwarderPartyContactPhone}}</td>
-          </tr>
-
-          <tr>
-            <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Email:</td>
-            <td class="tg-us36">{{entity.notifyPartyPartyContactEmail}}</td>
-            <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Email:</td>
-            <td style="border-right:1px solid #bfbfbf;">{{entity.forwarderPartyContactEmail}}</td>
-          </tr>
-
-          <tr style="border-bottom:1px solid #bfbfbf;">
-            <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Contact:</td>
-            <td class="tg-us36">{{entity.notifyPartyPartyContactName}}</td>
-            <td class="tg-us36" style="border-left:1px solid #bfbfbf;">Contact:</td>
-            <td style="border-right:1px solid #bfbfbf; padding-bottom:7px;">{{entity.forwarderPartyContactName}}</td>
-          </tr>
-          <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
-            <td>Port Of Loading:</td>
-            <td style="border-right:1px solid #bfbfbf;">{{booking.portOfLoadingCode}}</td>
-            <td>Port of Discharge:</td>
-            <td>{{booking.portOfDischargeCode}}</td>
-          </tr>
-          <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
-            <td>ETD:</td>
-            <td style="border-right:1px solid #bfbfbf;">{% if entity.departureDateEstimated %} {{entity.departureDateEstimated | date('d M Y')}} {% endif %}</td>
-            <td>ETA:</td>
-            <td>{% if entity.arrivalDateEstimated %} {{entity.arrivalDateEstimated | date('d M Y')}} {% endif %}</td>
-          </tr>
-          <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
-            <td>Transport Mode:</td>
-            <td style="border-right:1px solid #bfbfbf;">{{entity.moduleTypeCode}}</td>
-            <td>Bound:</td>
-            <td>{{entity.boundTypeCode}}</td>
-          </tr>
-          <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
-            <td>Service Type:</td>
-            <td style="border-right:1px solid #bfbfbf;">{{entity.serviceCode}}</td>
-            <td>IncoTerms:</td>
-            <td>{{entity.incoTermsCode}}</td>
-          </tr>
-          <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
-            <td>Fright Terms:</td>
-            <td style="border-right:1px solid #bfbfbf;">{{entity.freightTermsCode}}</td>
-            <td>Final Destination:</td>
-            <td>{{entity.finalDestinationCode}}</td>
-          </tr>
-          <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
-            <td>Cargo Ready Date:</td>
-            <td style="border-right:1px solid #bfbfbf;">{{entity.cargoReadyDateEstimated}}</td>
-            <td>Carrier:</td>
-            <td>{{entity.carrierCode}}</td>
-          </tr>
-          <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
-            <td>Vessel Name:</td>
-            <td style="border-right:1px solid #bfbfbf;">{{entity.vesselName}}</td>
-            <td>Voyage Number:</td>
-            <td>{{entity.voyageFlightNumber}}</td>
-          </tr>
-          <tr style="border-right:1px solid #bfbfbf;border-bottom:1px solid #bfbfbf;border-left:1px solid #bfbfbf;">
-            <td>Commodity:</td>
-            <td style="border-right:1px solid #bfbfbf;">{{entity.commodity}}</td>
-            <td>Goods Description:</td>
-            <td>{{entity.goodsDescription}}</td>
-          </tr>
-        </table>
-
+      <tr>
+        <td style="text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;" style="min-width: 100px;">Customer Ref:</td>
+        <td style="text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.poNo}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">Shipper:</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.shipperPartyName}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">Consignee:</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.shipperPartyName}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">Port of Loading</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.portOfLoadingName}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">Port of Discharge</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.portOfDischargeName}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">Final Destination</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.finalDestinationName}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">Carrier</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.carrierCode}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">Vessel / Voyage</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.vesselName}} / {{entity.voyageFlightNumber}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">Cargo Ready</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.cargoReadyDateEstimated}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">ETD</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{% if entity.estimatedDepartureDate %} {{entity.estimatedDepartureDate | date('d M Y')}} {% endif %}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">ETA</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{% if entity.estimatedArrivalDate %} {{entity.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">Commodity</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.commodity}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">Pay Terms</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.freightTerms}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">Container Service</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.serviceCode}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">Total CTN</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.bookingPopackings.quantity}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">Total KGS</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.bookingPopackings.weight}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">Total CBM</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.cbm}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">PO No</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.poNo}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">Container</td>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">{{entity.bookingContainers.containerTypeCode}}</td>
+      </tr>
+      <tr>
+        <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;" colspan="2" style="align-items: center; text-align: center;" align="center">
+          <div align="center" class="button-container center" >
+              <a href="{{frontendUrl}}" target="_blank" style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff;background-color: #f15b29;border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;max-width: 164px;width: 64px;width: auto;border-top: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-left: 0px solid transparent;padding-top: 10px;padding-right: 25px;padding-bottom: 10px;padding-left: 25px;mso-border-alt: none;">
+                Click For Details
+              </a>
+          </div>
+        </td>
       </tr>
     </tbody>
-  </table>
+    </table>
   <!--[if (mso)|(IE)]></div><![endif]-->
 
 

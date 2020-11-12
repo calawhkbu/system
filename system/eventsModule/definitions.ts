@@ -192,7 +192,7 @@ export default {
     },
     // create related person
     {
-      eventName: 'create_related_person',
+      handlerName: 'create_related_person',
       otherParameters: {
         partyGroupCode: (eventData: EventData<Shipment>) => {
           return eventData.latestEntity.partyGroupCode
@@ -220,6 +220,7 @@ export default {
             tableName: 'shipment',
           }
         }, {// notify entity
+          condition: true,
           eventName: 'notify_entity',
           otherParameters: {
             partyGroupCode: (eventData: EventData<Booking>) => {

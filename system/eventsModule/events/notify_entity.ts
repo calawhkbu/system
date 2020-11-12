@@ -89,7 +89,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
           entity: originalEntity,
           isUpdate: originalEntity ? true : false,
           partyGroupCode,
-          subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
+          subject: originalEntity ? `${tableName}-preview updated by ${updatedBy}` : `new-${tableName}-preview updated by ${updatedBy}`,
           language: 'en',
           template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
         })
