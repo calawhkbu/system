@@ -500,6 +500,15 @@
             "key": "haveDocument_OTHER",
             "label": "haveDocument_OTHER",
             "boolean": true
+          },
+          {
+            "key": "noOfTasks",
+            "i18nContext": "SopTask",
+            "label": "noOfOutstandingTasks"
+          },
+          {
+            "key": "sopScore",
+            "i18nContext": "SopTask"
           }
         ]
       },

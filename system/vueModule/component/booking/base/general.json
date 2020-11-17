@@ -318,18 +318,14 @@
                                 "label": "BookingPage.team",
                                 "name": "team",
                                 "component": "v-text-field",
-                                "class": "xs-12"
-                              },
-                              {
-                                "label": "BookingPage.picId",
-                                "name": "picId",
-                                "component": "v-text-field",
+                                "checkDisplayWhen": "return form && form.team",
                                 "class": "xs-12"
                               },
                               {
                                 "label": "BookingPage.picEmail",
                                 "name": "picEmail",
                                 "component": "v-text-field",
+                                "checkDisplayWhen": "return form && form.picEmail",
                                 "class": "xs-12"
                               }
                             ]

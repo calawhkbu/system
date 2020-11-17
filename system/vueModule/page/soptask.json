@@ -175,6 +175,11 @@
             "i18nContext": "SopTask"
           },
           {
+            "name": "isDueToday",
+            "type": "boolean",
+            "i18nContext": "SopTask"
+          },
+          {
             "name": "isDue",
             "type": "boolean",
             "i18nContext": "SopTask"

@@ -42,13 +42,8 @@ export default async (user: JwtPayload, helper: { partyTableService: PartyTableS
   let bookingParty: any = {}
 
 
-  const isInternalUser = user.parties.reduce((answer: boolean, party: JwtPayloadParty) => {
-    if (!answer) {
-      return party.types.includes('forwarder') || party.types.includes('office')
-    }
-    return answer
-  }, false)
-  if (isInternalUser) { // internal User
+  const internalParties = user.parties.filter(party => party.isBranch)
+  if (internalParties && internalParties.length) { // internal User
     for (const party of user.parties) {
       if (party.partyGroupCode === user.selectedPartyGroup.code && !bookingParty['forwarderPartyId']) {
         const isForwarder = party.types.includes('forwarder') || party.types.includes('office')

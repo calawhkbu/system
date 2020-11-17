@@ -23,7 +23,51 @@
           }
         },
         "configurations": {
-          "i18nContext": "Reporting",
+          "i18nContext": "ChatPage",
+          "cards": [{
+            "uuid": "3a512c6c-87a6-41cf-b4a9-b0c427c97db2",
+            "cardId": "446fed57-3c74-4988-94b4-f5c930ddbbd4",
+            "layouts": {
+              "lg": {
+                "minW": 2,
+                "h": 10,
+                "w": 12,
+                "minH": 6,
+                "x": 0,
+                "y": 10
+              },
+              "md": {
+                "minW": 2,
+                "h": 10,
+                "w": 12,
+                "minH": 6,
+                "x": 0,
+                "y": 10
+              },
+              "sm": {
+                "minW": 2,
+                "h": 10,
+                "w": 4,
+                "minH": 6,
+                "x": 0,
+                "y": 10
+              },
+              "xs": {
+                "minW": 2,
+                "h": 10,
+                "w": 4,
+                "minH": 6,
+                "x": 0,
+                "y": 10
+              }
+            },
+            "params": {
+              "filters": {
+              
+              },
+              "name": "Unread Message List"
+            }
+          }],
           "colors": [
             "#005EB8",
             "#008675",

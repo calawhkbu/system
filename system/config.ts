@@ -1,5 +1,10 @@
 export default {
   dataSetting: {
+    booking: {
+      override: {
+        'erp-team': 'erp-teammaster'
+      }
+    },
     shipment: {
       override: {
         // query
@@ -32,6 +37,7 @@ export default {
     'Job': true,
     'Task': true,
     'Purchase Order': true,
-    'Base': true
+    'Base': true,
+    'Chat':true
   }
 }

@@ -216,20 +216,16 @@
                               },
                               {
                                 "label": "ShipmentPage.team",
-                                "name": "picId",
+                                "name": "team",
                                 "component": "v-text-field",
-                                "class": "xs-12"
-                              },
-                              {
-                                "label": "ShipmentPage.picId",
-                                "name": "picId",
-                                "component": "v-text-field",
+                                "checkDisplayWhen": "return form && form.team",
                                 "class": "xs-12"
                               },
                               {
                                 "label": "ShipmentPage.picEmail",
                                 "name": "picEmail",
                                 "component": "v-text-field",
+                                "checkDisplayWhen": "return form && form.picEmail",
                                 "class": "xs-12"
                               }
                             ]

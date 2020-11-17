@@ -389,6 +389,15 @@
                 "html": "{% if value != null %}{{ JSON.parse(value) | join(', ') }}{% endif %}"
               }
             }
+          },
+          {
+            "key": "noOfTasks",
+            "i18nContext": "SopTask",
+            "label": "noOfOutstandingTasks"
+          },
+          {
+            "key": "sopScore",
+            "i18nContext": "SopTask"
           }
         ]
       },

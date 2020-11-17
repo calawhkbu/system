@@ -415,7 +415,12 @@
                                 "label": "ShipmentPage.totalQuantityUnit",
                                 "name": "quantityUnit",
                                 "component": "v-text-field",
-                                "class": "xs-12 md-6"
+                                "class": "xs-12 md-6",
+                                "props": {
+                                  "style": {
+                                    "text-align-last": "center"
+                                  }
+                                }
                               },
                               {
                                 "label": "ShipmentPage.totalTeu",
@@ -451,7 +456,12 @@
                                 "label": "ShipmentPage.totalWeightUnit",
                                 "name": "weightUnit",
                                 "class": "xs-12 md-6",
-                                "component": "v-text-field"
+                                "component": "v-text-field",
+                                "props": {
+                                  "style": {
+                                    "text-align-last": "center"
+                                  }
+                                }
                               }
                             ]
                           }

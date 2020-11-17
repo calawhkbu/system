@@ -114,7 +114,8 @@
             "item-text": "name",
             "item-value": "code",
             "showSelectionText": false,
-            "showValue": true
+            "showValue": false,
+            "showValueOnDisplay": true
           }
         },
         {
@@ -436,7 +437,10 @@
           }
         },
         {
-
+          "containerComponent": "v-card",
+          "containerComponentProps": {
+            "class": "padding-topbottom-8 padding-leftright-4"
+          },
           "label": "BookingPage.commodity",
           "name": "commodity",
           "component": "v-text-field",
