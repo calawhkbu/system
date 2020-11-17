@@ -1,6 +1,6 @@
 import vsiteanalysis from './erp-vsiteanalysis'
 import moment = require('moment')
-import { BadRequestException } from '@nestjs/common'
+import { ERROR } from 'utils/error'
 
 const app = {
   consumeError: true,
@@ -19,7 +19,7 @@ const app = {
   ) => {
     const result = await vsiteanalysis.requestHandler(params, body, constants, helper)
     body = JSON.parse(result.body)
-    if (!body.xmodule) throw new BadRequestException('MISSING_MODULE_TYPE')
+    if (!body.xmodule) throw ERROR.MISSING_MODULE_TYPE()
 
     return {
       headers: result.headers,

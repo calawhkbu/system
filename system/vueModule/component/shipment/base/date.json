@@ -102,6 +102,12 @@
                     "finalDoorDelivery",
                     "returnEmptyContainer"
                   ],
+                  "checkDisplayWhen": [
+                    "if (!['oceanBill','cargoReady','scheduleAssigned','scheduleApproaved','spaceConfirmation','bookingSubmit','cyCutOff','documentCutOff','sentToShipper','pickup','shipperLoad','returnLoad','gateIn','cargoReceipt','shipperDocumentSubmit','shipperInstructionSubmit','houseBillDraftSubmit','houseBillConfirmation','masterBillReleased','preAlertSend','ediSend','cargoRolloverStatus','loadOnboard','departure','arrival','inboundTransfer','onRail','arrivalAtDepot','availableForPickup','pickupCargoBeforeDemurrage','finalCargo','cargoPickupWithDemurrage','sentToConsignee','finalDoorDelivery','returnEmptyContainer'].includes(key)) { return false }",
+                    "const estimated = context._.get(form, `${key}DateEstimated`, null);",
+                    "const actual = context._.get(form, `${key}DateActual`, null);",
+                    "return estimated || actual"
+                  ],
                   "canAdd": true,
                   "canAddProps": {
                     "class": "xs-12 md-6 padding-20 min-height-200 margin-auto"

@@ -41,6 +41,7 @@
       }, {
         "is": "BottomSheet",
         "props": {
+          "class": "margin-leftright-4",
           "hide-overlay": true,
           "button": {
             "layout": "ToolTip",
@@ -90,6 +91,7 @@
       }, {
         "is": "BottomSheet",
         "props": {
+          "class": "margin-leftright-4",
           "hide-overlay": true,
           "button": {
             "layout": "ToolTip",

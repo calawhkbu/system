@@ -1,11 +1,10 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
-import { BadRequestException } from '@nestjs/common'
 import Moment = require('moment')
 import { OrderBy } from 'node-jql'
 import { expandBottomSheetGroupByEntity, expandSummaryVariable, calculateLastCurrent, handleBottomSheetGroupByEntityValue, summaryVariableListBooking, groupByEntityListBooking } from 'utils/card'
-import { convertToStartOfDate } from 'utils/jql-subqueries'
 import { dateSourceList } from './booking-month'
+import { ERROR } from 'utils/error'
 
 const summaryVariableList = summaryVariableListBooking;
 const groupByEntityList = groupByEntityListBooking;
@@ -29,8 +28,8 @@ export default {
         const subqueries = (params.subqueries = params.subqueries || {})
 
         // idea : userGroupByVariable and userSummaryVariable is selected within filter by user
-        if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw new Error('MISSING_groupByVariable')
-        if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
+        if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw ERROR.MISSING_GROUP_BY()
+        if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw ERROR.MISSING_TOP_X()
 
 
 

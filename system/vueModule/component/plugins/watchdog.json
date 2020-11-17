@@ -18,8 +18,10 @@
     "i18nContext": "Alert",
     "iconType": "",
     "icon": "icon",
-    "titleKey": "alertType",
-    "subTitleKeys": ["alertContent"]
+    "titleKey": "alertTypeCode",
+    "subTitleKeys": ["alertTypeCode"],
+    "titleConvertFunction": "return `${value}Title`",
+    "subTitleConvertFunction": "return `${value}Message`"
   },
   "baseSummaryProps": {
     "size": -3

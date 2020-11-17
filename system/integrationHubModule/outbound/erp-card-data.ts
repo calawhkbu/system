@@ -1,4 +1,4 @@
-import { NotImplementedException, BadRequestException } from '@nestjs/common'
+import { ERROR } from 'utils/error'
 
 export default {
   constants: {
@@ -11,8 +11,8 @@ export default {
   },
   method: 'GET',
   getUrl: async({ id, partyGroup: { api } }: any, params: any, constants: any, helper: { [key: string]: Function }): Promise<string> => {
-    if (!api.erp || !api.erp.url) throw new NotImplementedException('ERP_NOT_LINKED')
-    if (!params.subqueries || !params.subqueries.type) throw new BadRequestException('MISSING_TYPE')
+    if (!api.erp || !api.erp.url) throw ERROR.ERP_NOT_SETUP()
+    if (!params.subqueries || !params.subqueries.type) throw ERROR.MISSING_EXTERNAL_CARD_TYPE()
     const { type, enableFiltering, ...subqueries } = params.subqueries
     if (enableFiltering) constants.subqueries = subqueries
     const card = constants.card = await helper.getCard({

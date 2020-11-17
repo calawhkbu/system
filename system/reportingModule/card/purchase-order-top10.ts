@@ -1,7 +1,8 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import { OrderBy } from 'node-jql'
-import { expandGroupEntity, summaryVariableList } from 'utils/card'
+import { expandGroupEntity } from 'utils/card'
+import { ERROR } from 'utils/error'
 
 interface Result {
   result: any[]
@@ -20,9 +21,9 @@ export default {
         const subqueries = (params.subqueries = params.subqueries || {})
 
         // warning cannot display from frontend
-        if (!subqueries.xAxis) throw new Error('MISSING_xAxis')
-        if (!subqueries.yAxis) throw new Error('MISSING_yAxis')
-        if (!subqueries.topX) throw new Error('MISSING_topX')
+        if (!subqueries.xAxis) throw ERROR.MISSING_X_AXIS_METRIC()
+        if (!subqueries.yAxis) throw ERROR.MISSING_Y_AXIS_METRIC()
+        if (!subqueries.topX) throw ERROR.MISSING_TOP_X()
 
         // most important part of this card
         // dynamically choose the fields and summary value
@@ -30,7 +31,7 @@ export default {
         const summaryColumnName = (subqueries.yAxis as any).value // should be chargeableWeight/cbm/grossWeight/totalShipment
 
         
-        var summaryVariableList { codeColumnName, nameColumnName } = expandGroupEntity(subqueries,'xAxis',true)
+        var { codeColumnName, nameColumnName } = expandGroupEntity(subqueries,'xAxis',true)
 
 
          codeColumnName =

@@ -1,6 +1,7 @@
 import { JqlDefinition, Field } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import { stringify } from 'querystring'
+import { type } from 'os'
 
 const displayCols = [
   'id', 
@@ -12,18 +13,18 @@ const displayCols = [
   'quantity',
   'bookedQuantity',
   'quantityUnit',
-  'updatedAt',
-  'flexData'
+  'htsCode',
+  'buyerPartyName',
+  'flexData',
+  'dontShipBeforeDateActual',
+  'dontShipAfterDateActual',
+  'updatedAt'
 ]
 
 // cols for getting data only but not for display
-const tempCols = [
-  'htsCode'
-]
+const tempCols = []
 
-const fixedDefinitionField = [
-  'htsCode'
-]
+const fixedDefinitionField = []
 
 const reportColDefinition = displayCols.map((item) => { 
   if (typeof item === 'object') {
@@ -37,7 +38,6 @@ export default {
     {
       type: 'prepareParams',
       async prepareParams(params, prevResult, user): Promise<IQueryParams> {
-        console.debug(params, 'poItems')
         params.tables = [
           'purchase_order',
           'product_category'
@@ -47,7 +47,30 @@ export default {
           ... displayCols,
           ... tempCols
         ]
+        
+        const subqueries = params.subqueries || []
+        const flexFieldsSubQueries = {}
+        const flexFields = Object.keys(subqueries).reduce((re, subKey) => {
+          if (subKey.startsWith('flexData.')) {
+            const fieldName = subKey.replace('flexData.', '')
+            re.push(fieldName)
+            flexFieldsSubQueries[fieldName] = subqueries[subKey]
+          }
+          return re
+        }, [])
 
+        if(flexFields && flexFields.length > 0) {
+          params.subqueries = {
+            ... params.subqueries,
+            flexDataField: {
+              fieldName: flexFields,
+              fieldValues: flexFieldsSubQueries
+            }
+          }
+        }
+        
+        console.debug('hhhhh')
+        console.debug(params)
         return params
       }
     },
@@ -55,13 +78,11 @@ export default {
       type: 'callDataService',
       dataServiceQuery: ['purchase_order_item', 'purchase_order_item'],
       onResult(result, params, prevResult: any): any[] {
-        console.debug(result, 'poItems')
-        console.debug(prevResult, 'poItems')
         return result.map((item) => {
           if(item.flexData && item.definition){
             const flexDefKeys = Object.keys(item.flexData)
             const fixedDefinition = fixedDefinitionField.reduce((returnItems, field) => {
-              if(item.hasOwnProperty(field)) {
+              if(item.hasOwnProperty(field) && item[field] != null) {
                 returnItems.flexData[field] = item[field]
                 returnItems.display += field + ': ' + item[field] + "\n"
               }

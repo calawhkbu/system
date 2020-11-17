@@ -1,4 +1,4 @@
-import { NotImplementedException, NotFoundException, BadRequestException } from '@nestjs/common'
+import { ERROR } from 'utils/error'
 
 const app = {
   constants: {
@@ -10,7 +10,7 @@ const app = {
   },
   method: 'POST',
   getUrl: ({ id, partyGroup: { api } }: any, params: any, constants: any) => {
-    if (!api.wmsrpt || !api.wmsrpt.url) throw new NotImplementedException()
+    if (!api.wmsrpt || !api.wmsrpt.url) throw ERROR.WMS_NOT_SETUP()
     constants.url = `${api.wmsrpt.url}/getschrptlist`
     return `${api.wmsrpt.url}/getschrptdata?id=` + id
   },

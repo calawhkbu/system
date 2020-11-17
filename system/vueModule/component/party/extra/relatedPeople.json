@@ -1,5 +1,250 @@
 {
-  "component": [{
-    "is": "p"
+  "components": [{
+    "is": "DynamicComponent",
+    "props": {
+      "class": "RelationshipTableTool",
+      "style": {
+        "min-height": "calc(100vh - 80px)"
+      },
+      "components": [{
+        "is": "SimpleTableTool",
+        "props": {
+          "reportingKey": "related-persons",
+          "jql": "related-persons",
+          "reportUrl": "relationship/report/person/{{ context.routeParams }}",
+          "hasReports": false,
+          "showFilterBar": true,
+          "enableShare": false,
+          "enableSetting": false,
+          "noPartyGroupFilters": true,
+          "nextPageKey": "user",
+          "filters": [
+
+            {
+              "name": "activeStatus",
+              "type": "list",
+              "props": {
+                "items": [{
+                    "label": "active",
+                    "value": "active"
+                  },
+                  {
+                    "label": "deleted",
+                    "value": "deleted"
+                  }
+                ]
+              }
+            }, {
+              "display": "status",
+              "name": "invitationStatus",
+              "i18nContext": "InvitationPage",
+              "props": {
+                "multi": true,
+                "items": [{
+                    "value": "sent",
+                    "label": "sent"
+                  },
+                  {
+                    "value": "accepted",
+                    "label": "accepted"
+                  },
+                  {
+                    "value": "pending",
+                    "label": "pending"
+                  },
+                  {
+                    "value": "disabled",
+                    "label": "disabled"
+                  }
+                ]
+              },
+              "type": "list"
+            },
+            {
+
+              "i18nContext": "InvitationPage",
+              "display": "email",
+              "name": "userNameLike",
+              "type": "text"
+            },
+            {
+
+              "i18nContext": "InvitationPage",
+              "display": "name",
+              "name": "nameLike",
+              "type": "text"
+            }, {
+              "i18nContext": "InvitationPage",
+              "name": "role",
+              "type": "autocomplete",
+              "props": {
+                "api": {
+                  "query": {
+                    "data": {
+                      "limit": 5,
+                      "fields": [
+                        "id", "roleName"
+                      ],
+                      "subqueries": {
+                        "q": {
+                          "value": "{{ q }}"
+                        }
+                      }
+                    },
+                    "labelKey": "roleName",
+                    "method": "POST",
+                    "url": "api/role/query/role",
+                    "valueKey": "id"
+                  },
+                  "resolve": {
+                    "data": {
+                      "fields": ["id", "roleName"],
+                      "subqueries": {
+                        "roleName": {
+                          "value": "{{value}}"
+                        }
+                      }
+                    },
+                    "labelKey": "roleName",
+                    "method": "POST",
+                    "url": "api/code/query/code_master",
+                    "valueKey": "id"
+                  }
+                },
+                "multi": true
+              }
+            }
+          ],
+          "fieldOptions": [
+
+            {
+              "key": "id",
+              "hidden": true
+            },
+            {
+              "key": "updatedAt",
+              "width": 150,
+              "format": "YYYY-MM-DD"
+            },
+            {
+              "label": "status",
+              "key": "invitationStatus",
+              "width": 150
+            },
+            {
+              "label": "",
+              "key": "canResend",
+              "sortable": false,
+              "align": "center",
+              "clickFunction": {
+                "type": "axios",
+                "otherParams": {
+                  "axiosParams": {
+                    "url": "/api/invitation/resend/{{row.id}}",
+                    "method": "GET"
+                  }
+                },
+                "afterActions": [{
+                  "type": "notify",
+                  "otherParams": {
+                    "notification": "Notify.resendSuccess"
+                  }
+                }]
+              },
+              "tdComponent": {
+                "is": "icon",
+                "hideIfFalse": true,
+                "props": {
+                  "icon": "email"
+                }
+              },
+              "width": 50
+            },
+            {
+              "label": "",
+              "key": "canDelete",
+              "sortable": false,
+              "align": "center",
+              "clickFunction": {
+                "type": "axios",
+                "otherParams": {
+                  "axiosParams": {
+                    "url": "/api/invitation/delete/{{row.id}}",
+                    "method": "DELETE"
+                  }
+                },
+                "afterActions": [{
+                  "type": "notify",
+                  "otherParams": {
+                    "notification": "Notify.deleteSuccess"
+                  }
+                }]
+              },
+
+              "tdComponent": {
+                "is": "icon",
+                "hideIfFalse": true,
+                "props": {
+                  "icon": "delete"
+                }
+              },
+              "width": 50
+            },
+            {
+              "label": "",
+              "key": "canRestore",
+              "sortable": false,
+              "align": "center",
+              "clickFunction": {
+                "type": "axios",
+                "otherParams": {
+                  "axiosParams": {
+                    "url": "/api/invitation/restore/{{row.id}}",
+                    "method": "GET"
+                  }
+                },
+                "afterActions": [{
+                  "type": "notify",
+                  "otherParams": {
+                    "notification": "Notify.restoreSuccess"
+                  }
+                }]
+              },
+
+              "tdComponent": {
+                "is": "icon",
+                "hideIfFalse": true,
+                "props": {
+                  "icon": "refresh"
+                }
+              },
+              "width": 50
+            },
+            {
+              "key": "userName"
+            },
+            {
+              "key": "firstName",
+              "hidden": true
+            },
+            {
+              "key": "lastName",
+              "hidden": true
+            },
+            {
+              "key": "displayName",
+              "hidden": true
+            },
+            {
+              "key": "fullDisplayName"
+            },
+            {
+              "key": "partiesName"
+            }
+          ]
+        },
+        "slots": []
+      }]
+    }
   }]
 }

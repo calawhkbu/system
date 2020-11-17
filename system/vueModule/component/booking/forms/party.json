@@ -557,8 +557,10 @@
               }
             },
             "ellipsis": false,
+            "displayText": ["name"],
+            "displayKey": ["shortName", "erpCode"],
             "item-text": "name",
-            "item-value": "erpCode"
+            "item-value": "id"
           }
         },
         {

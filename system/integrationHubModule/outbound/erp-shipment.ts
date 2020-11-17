@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  NotFoundException,
-  NotImplementedException,
-} from '@nestjs/common'
+import { ERROR } from 'utils/error'
 
 const app = {
   constants: {
@@ -15,7 +10,7 @@ const app = {
   },
   method: 'POST', // 'GET'|'POST'|'PUT'|'DELETE'|'HEAD'|'OPTIONS'
   getUrl: ({ api }: { api: any }) => {
-    if (!api.erp || (!api.erp.url2 && !api.erp.url)) throw new NotImplementedException()
+    if (!api.erp || (!api.erp.url2 && !api.erp.url)) throw ERROR.ERP_NOT_SETUP()
     return `${api.erp.url2 || api.erp.url}/getshipdetail`
   },
   requestHandler: async(
@@ -39,7 +34,7 @@ const app = {
     requestBody.xModule = moduleTypeCode
 
     // xHouseNo
-    if (!houseNo) throw new BadRequestException('MISSING_HOUSE_NO')
+    if (!houseNo) throw ERROR.MISSING_HOUSE_NO()
     requestBody.xHouseNo = constants.houseNo = houseNo
 
     return {
@@ -56,7 +51,7 @@ const app = {
       responseBody = JSON.parse(JSON.parse(response.responseBody).d)[0]
     } catch (e) {
       console.error(e, e.stack, 'erp-shipment')
-      throw new NotFoundException(`SHIPMENT_${houseNo.toLocaleUpperCase()}_NOT_FOUND`)
+      throw ERROR.SHIPMENT_NOT_FOUND()
     }
 
     // rename

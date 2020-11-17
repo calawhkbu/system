@@ -1,3 +1,4 @@
+import { IQueryParams } from 'classes/query'
 import { QueryDef } from 'classes/query/QueryDef'
 import {
   BinaryExpression,
@@ -10,7 +11,8 @@ import {
   CaseExpression,
   QueryExpression,
   ResultColumn,
-  MathExpression
+  MathExpression,
+  FunctionExpression
 } from 'node-jql'
 import { registerAll } from 'utils/jql-subqueries'
 
@@ -64,6 +66,27 @@ const unbookedQuantityExpression = {
   )
 }
 
+const poDateExpressionList = [
+  'dontShipBeforeDateActual',
+  'dontShipAfterDateActual'
+].map((col) => {
+  return {
+    name: col,
+    expression: new ColumnExpression('purchase_order_date', col),
+    companion: ['table:purchase_order']
+  }
+})
+
+const poPartyExpressionList = [
+  'buyerPartyName'
+].map((col) => {
+  return {
+    name: col,
+    expression: new ColumnExpression('purchase_order_party', col),
+    companion: ['table:purchase_order']
+  }
+})
+
 const CONSTANTS = {
   tableName: 'purchase_order_item',
   fieldList: [
@@ -92,6 +115,8 @@ const CONSTANTS = {
     },
     ... purchaseOrderExpressionList,
     productCategoryDefinition,
+    ... poDateExpressionList,
+    ... poPartyExpressionList,
     'updatedAt'
   ]
 }
@@ -125,7 +150,29 @@ query.table('purchase_order', new Query({
             new ColumnExpression('purchase_order', 'productCategoryId')
           )
         ]
-      }
+      },
+      {
+        operator: 'LEFT',
+        table: new FromTable('purchase_order_party', 'purchase_order_party'),
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('purchase_order_party', 'poId'),
+            '=',
+            new ColumnExpression('purchase_order', 'id')
+          )
+        ]
+      },
+      {
+        operator: 'LEFT',
+        table: new FromTable('purchase_order_date', 'purchase_order_date'),
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('purchase_order_date', 'poId'),
+            '=',
+            new ColumnExpression('purchase_order', 'id')
+          )
+        ]
+      },
     ]
   })
 }))
@@ -147,6 +194,33 @@ query.table('product', new Query({
   })
 }))
 
+query.subquery('flexDataField',  (value: any, params?: IQueryParams) => {
+  let flexDataFields = value.fieldName
+  const fieldValues = value.fieldValues
+
+  if(!flexDataFields) {
+    return null
+  }
+
+  if(typeof flexDataFields === 'string') {
+    flexDataFields = [ flexDataFields ]
+  }
+
+  return new Query({
+    $where: Object.keys(fieldValues).map((field) => {
+      const value = fieldValues[field].value
+      return new BinaryExpression(
+        new FunctionExpression(
+          'JSON_EXTRACT', 
+          new ColumnExpression('purchase_order_item', 'flexData'),
+          `$.${field}`
+        ),
+        '=',
+        new Value(value)
+      )
+    })
+  })
+})
 
 registerAll(
   query,

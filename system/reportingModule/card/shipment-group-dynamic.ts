@@ -4,6 +4,7 @@ import { OrderBy } from 'node-jql'
 import Moment = require('moment')
 
 import { expandBottomSheetGroupByEntity,expandSummaryVariable, extendDate, handleBottomSheetGroupByEntityValue,summaryVariableList,groupByEntityList  } from 'utils/card'
+import { ERROR } from 'utils/error'
 
 
 interface Result {
@@ -27,8 +28,8 @@ export default {
         const subqueries = (params.subqueries = params.subqueries || {})
 
         // idea: userGroupByVariable and userSummaryVariable is selected within filter by user
-        if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw new Error('MISSING_groupByVariable')
-        if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
+        if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw ERROR.MISSING_GROUP_BY()
+        if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw ERROR.MISSING_TOP_X()
 
         // warning
         handleBottomSheetGroupByEntityValue(subqueries)

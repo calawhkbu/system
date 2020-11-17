@@ -9,58 +9,16 @@ export default {
   ],
   columns: [
     { key: 'partyAId' },
-    { key: 'partyBId' },
     { key: 'partyAName' },
+    { key: 'partyAShortName' },
+    { key: 'partyAGroupName' },
+    { key: 'partyAErpCode' },
+    { key: 'partyBId' },
     { key: 'partyBName' },
+    { key: 'partyBShortName' },
+    { key: 'partyBGroupName' },
+    { key: 'partyBErpCode' },
     { key: 'partyType' },
     { key: 'showDelete' },
   ]
 } as JqlDefinition
-
-/* import { Query, FromTable } from 'node-jql'
-
-const query = new Query({
-  $from: new FromTable(
-    {
-      method: 'POST',
-      url: 'api/party/query/related-party',
-      columns: [
-        {
-          name: 'partyAId',
-          type: 'number',
-        },
-        {
-          name: 'partyBId',
-          type: 'number',
-        },
-        {
-          name: 'partyAName',
-          type: 'string',
-        },
-        {
-          name: 'partyBName',
-          type: 'string',
-        },
-        {
-          name: 'partyBShortName',
-          type: 'string',
-        },
-        {
-          name: 'partyBGroupName',
-          type: 'string',
-        },
-        {
-          name: 'partyTypes',
-          type: 'string',
-        },
-        {
-          name: 'showDelete',
-          type: 'number',
-        },
-      ],
-    },
-    'party'
-  ),
-})
-
-export default query.toJson() */

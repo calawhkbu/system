@@ -1,4 +1,4 @@
-import { NotImplementedException } from '@nestjs/common'
+import { ERROR } from 'utils/error'
 
 const app = {
   constants: {
@@ -11,7 +11,7 @@ const app = {
   },
   method: 'POST',
   getUrl: async({ id, partyGroup: { api } }: any, params: any, constants: { [key: string]: any }, helper: { [key: string]: Function }): Promise<string> => {
-    if (!api.wmsrpt || !api.wmsrpt.url) throw new NotImplementedException()
+    if (!api.wmsrpt || !api.wmsrpt.url) throw ERROR.WMS_NOT_SETUP()
     const { type, enableFiltering, ...subqueries } = params.subqueries
     if (enableFiltering) constants.subqueries = subqueries
     const card = constants.card = await helper.getCard({

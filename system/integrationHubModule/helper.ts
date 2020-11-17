@@ -10,6 +10,7 @@ import { Op } from 'sequelize'
 import _ = require('lodash')
 import axios from 'axios'
 import moment = require('moment')
+import { ERROR } from 'utils/error'
 
 const app = {
   /*******************************/
@@ -54,6 +55,17 @@ const app = {
         },
       },
     })
+  },
+
+  checkError(responseBody: string) {
+    if (responseBody.startsWith('<html>')) {
+      if (responseBody.indexOf('Unknown web method')) {
+        throw ERROR.API_NOT_SETUP()
+      }
+      else {
+        throw ERROR.API_NOT_READY()
+      }
+    }
   },
 
   /*******************************/
@@ -338,7 +350,7 @@ const app = {
       case 'LOG':
         return 0
       default:
-        throw new BadRequestException(`Unavailable division '${division}'`)
+        throw ERROR.UNSUPPORTED_DIVISION()
     }
   },
 

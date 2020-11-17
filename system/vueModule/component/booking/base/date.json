@@ -119,6 +119,12 @@
                 "finalDoorDelivery",
                 "returnEmptyContainer"
               ],
+              "checkDisplayWhen": [
+                "if (!['cargoReady','scheduleAssigned','scheduleApproaved','spaceConfirmation','bookingSubmit','cyCutOff','documentCutOff','sentToShipper','pickup','shipperLoad','returnLoad','gateIn','cargoReceipt','customClearanceLoadingPort','shipperDocumentSubmit','shipperInstructionSubmit','houseBillDraftSubmit','houseBillConfirmation','masterBillReleased','preAlertSend','ediSend','cargoRolloverStatus','loadOnboard','departure','arrival','inboundTransfer','onRail','arrivalAtDepot','customClearanceDestinationPort','availableForPickup','pickupCargoBeforeDemurrage','finalCargo','cargoPickupWithDemurrage','sentToConsignee','finalDoorDelivery','returnEmptyContainer'].includes(key)) { return false }",
+                "const estimated = context._.get(form, `${key}DateEstimated`, null);",
+                "const actual = context._.get(form, `${key}DateActual`, null);",
+                "return estimated || actual"
+              ],
               "fields": [{
                   "label": "Widget.estimatedDate",
                   "name": "bookingDate.{{flex}}{{key}}DateEstimated",

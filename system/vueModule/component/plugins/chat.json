@@ -74,6 +74,9 @@
         "component": "AsyncAutoSuggest",
         "validator": ["required"],
         "props": {
+          "style": {
+            "margin-top": "0px"
+          },
           "multiple": true,
           "required": true,
           "searchTextParams": {

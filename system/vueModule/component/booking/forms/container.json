@@ -97,7 +97,7 @@
           "label": "BookingPage.BookingPacking",
           "name": "bookingPopackings",
           "component": "TableField",
-          "checkDisplayWhen": "return context.$store.state.auth.userProfile.roles.some((role) => role.name !== 'PURCHASE_ORDER')",
+          "checkDisplayWhen": "return !context.$store.state.auth.userProfile.roles.some((role) => role.name === 'PURCHASE_ORDER')",
           "props": {
             "topLabel": true,
             "fields": [{

@@ -3625,6 +3625,14 @@ export default supportSopTask('shipment', query, () => require('./sop_task').def
     ]
   },
 
+  // subquery:createdSince
+  {
+    type: 'subquery',
+    name: 'createdSince',
+    expression: new BinaryExpression(createdAtExpression, '>=', new Unknown()),
+    unknowns: { fromTo: true }
+  },
+
   // subquery:createdAtBeweenRange
   {
     type: 'subquery',

@@ -15,9 +15,8 @@
           "hasReports": false,
           "showFilterBar": true,
           "enableShare": false,
-          "enableSetting": true,
+          "enableSetting": false,
           "noPartyGroupFilters": true,
-          "checkbox": true,
           "nextPageKey": "relatedParty",
           "filters": [{
             "name": "activeStatus",
@@ -133,16 +132,37 @@
             "key": "partyAName",
             "hidden": true
           }, {
+            "key": "partyAShortName",
+            "hidden": true
+          }, {
+            "key": "partyAGroupName",
+            "hidden": true
+          }, {
+            "key": "partyAErpCode",
+            "hidden": true
+          }, {
             "key": "partyBId",
             "hidden": true
           }, {
             "i18nContext": "PartyPage",
             "key": "partyBName",
-            "width": 200
+            "width": 400
           }, {
             "i18nContext": "PartyPage",
-            "key": "partyType",
-            "width": 300
+            "key": "partyBShortName",
+            "width": 250
+          }, {
+            "i18nContext": "PartyPage",
+            "key": "partyBGroupName",
+            "width": 250
+          }, {
+            "i18nContext": "PartyPage",
+            "key": "partyBErpCode",
+            "width": 150
+          }, {
+            "i18nContext": "PartyPage",
+            "key": "partyTypes",
+            "width": 150
           }, {
             "key": "showDelete",
             "label": "",
@@ -287,12 +307,6 @@
                           "item-text": "name",
                           "item-value": "id"
                         }
-                      }, {
-                        "props": {
-                          "style": {
-                            "min-height": "200px"
-                          }
-                        }
                       }]
                     },
                     "slots": [{
@@ -332,11 +346,6 @@
                         }]
                       }
                     }]
-                  }, {
-                    "is": "div",
-                    "style": {
-                      "min-height": "200px"
-                    }
                   }]
                 }
               }]

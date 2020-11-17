@@ -1,8 +1,8 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import moment = require('moment')
-import { BadRequestException } from '@nestjs/common'
 import ShipmentsJQL from './shipments'
+import { ERROR } from 'utils/error'
 
 export default {
   jqls: [
@@ -27,14 +27,16 @@ export default {
           }
         }
 
-        const { timezone } = user.configuration
         if (params.subqueries.date) {
           params.subqueries.sop_date = params.subqueries.date
           delete params.subqueries.date
         }
-
-        if (!params.subqueries.sop_date || rangeTooLarge(params.subqueries.sop_date)) {
-          throw new BadRequestException('SOP_DATE_RANGE_TOO_LARGE')
+        
+        if (!params.subqueries.sop_date) {
+          throw ERROR.MISSING_DATE()
+        }
+        else if (rangeTooLarge(params.subqueries.sop_date)) {
+          throw ERROR.DATE_RANGE_TOO_LARGE()
         }
 
         return params

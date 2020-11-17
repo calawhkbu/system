@@ -10,7 +10,7 @@ import {
   summaryVariableList,
   groupByEntityList
 } from 'utils/card'
-import { convertToStartOfDate } from 'utils/jql-subqueries'
+import { ERROR } from 'utils/error'
 
 
 interface Result {
@@ -46,11 +46,11 @@ export default {
         const subqueries = (params.subqueries = params.subqueries || {})
 
         // idea: userGroupByVariable and userSummaryVariable is selected within filter by user
-        if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw new Error('MISSING_groupByEntity')
-        if (!subqueries.dynamicColumnGroupByEntity || !(subqueries.dynamicColumnGroupByEntity !== true && 'value' in subqueries.dynamicColumnGroupByEntity)) throw new Error('MISSING_dynamicColumnGroupByEntity')
+        if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw ERROR.MISSING_GROUP_BY()
+        if (!subqueries.dynamicColumnGroupByEntity || !(subqueries.dynamicColumnGroupByEntity !== true && 'value' in subqueries.dynamicColumnGroupByEntity)) throw ERROR.MISSING_DYNAMIC_COLUMN_GROUP_BY()
 
-        if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
-        if (!subqueries.topY || !(subqueries.topY !== true && 'value' in subqueries.topY)) throw new Error('MISSING_topY')
+        if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw ERROR.MISSING_TOP_X()
+        if (!subqueries.topY || !(subqueries.topY !== true && 'value' in subqueries.topY)) throw ERROR.MISSING_TOP_Y()
 
         handleBottomSheetGroupByEntityValue(subqueries)
 

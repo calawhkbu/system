@@ -3,6 +3,7 @@ import { IQueryParams } from 'classes/query'
 import { OrderBy } from 'node-jql'
 import Moment = require('moment')
 import { expandGroupEntity, expandSummaryVariable, extendDate } from 'utils/card'
+import { ERROR } from 'utils/error'
 
 interface Result {
   moment: typeof Moment
@@ -22,7 +23,7 @@ const groupbyList=["poNo",
 ];
 
 const summaryList=[
-  "totalpo"
+  "totalpo",
   "poNo",
   "moduleTypeCode"
 
@@ -37,10 +38,10 @@ export default {
       async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
         function guessSortingExpression(sortingValue: string, subqueries) {
           const variablePart = sortingValue.substr(0, sortingValue.lastIndexOf('_'))
-          const sortingDirection = sortingValue.substr(sortingValue.lastIndexOf('_') + 1)
+          let sortingDirection = sortingValue.substr(sortingValue.lastIndexOf('_') + 1)
 
           if (!['ASC', 'DESC'].includes(sortingDirection)) {
-            throw new Error(`cannot guess sortingDirection`)
+            sortingDirection = 'ASC'
           }
 
           // here will handle 2 special cases : metric , summaryVariable
@@ -68,8 +69,8 @@ export default {
         const subqueries = (params.subqueries = params.subqueries || {})
 
         // idea: userGroupByVariable and userSummaryVariable is selected within filter by user
-        if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw new Error('MISSING_groupByVariable')
-        if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
+        if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw ERROR.MISSING_GROUP_BY()
+        if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw ERROR.MISSING_TOP_X()
 
 
         var { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)

@@ -1,7 +1,9 @@
+import { ERROR } from "utils/error"
+
 export default {
   method: 'POST',
   getUrl: () => {
-    throw new Error('Please define the erp link in Customer folder')
+    throw ERROR.CRM_NOT_SETUP()
   },
   requestHandler: (headers: any, body: any) => {
     return {

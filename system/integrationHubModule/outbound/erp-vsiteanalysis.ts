@@ -1,5 +1,5 @@
-import { BadRequestException, ForbiddenException, NotImplementedException } from '@nestjs/common'
 import moment = require('moment')
+import { ERROR } from 'utils/error'
 
 const app = {
   consumeError: true,
@@ -10,7 +10,7 @@ const app = {
   },
   method: 'POST',
   getUrl: ({ api }: { api: any }) => {
-    if (!api.erp || !api.erp.url) throw new NotImplementedException()
+    if (!api.erp || !api.erp.url) throw ERROR.ERP_NOT_SETUP()
     return `${api.erp.url}/vsiteanalysis`
   },
   requestHandler: async(
@@ -27,16 +27,16 @@ const app = {
 
     // resolve parties
     party = await helper.resolveParties(partyService, partyGroup, party)
-    if (!party.length) throw new ForbiddenException('NO_ACCESS_RIGHT')
+    if (!party.length) throw ERROR.NOT_ALLOWED()
 
     const subqueries = query.subqueries || {}
 
     // datefr && dateto
-    if (!subqueries.date) throw new BadRequestException('MISSING_DATE_RANGE')
+    if (!subqueries.date) throw ERROR.MISSING_DATE()
     const datefr = moment(subqueries.date.from, 'YYYY-MM-DD')
     const dateto = moment(subqueries.date.to, 'YYYY-MM-DD')
     if (dateto.diff(datefr, 'years', true) > 1)
-      throw new BadRequestException('DATE_RANGE_TOO_LARGE')
+      throw ERROR.DATE_RANGE_TOO_LARGE()
 
     const months = (constants.months = [])
     const momentStart = moment(datefr).startOf('month')
@@ -49,12 +49,12 @@ const app = {
     const availableModuleTypes = helper.getModuleTypes(roleFilters)
     let xmodule: string
     if (availableModuleTypes.length === 0 && subqueries.moduleTypeCode) {
-      throw new ForbiddenException('NO_ACCESS_RIGHT')
+      throw ERROR.NOT_ALLOWED()
     } else if (subqueries.moduleTypeCode) {
       // warning : getting the first one only
       xmodule = availableModuleTypes.find(type => type === subqueries.moduleTypeCode.value[0])
 
-      if (!xmodule) throw new BadRequestException('INVALID_MODULE_TYPE')
+      if (!xmodule) throw ERROR.NOT_ALLOWED()
     } else if (availableModuleTypes.length === 1) {
       xmodule = availableModuleTypes[0]
     } else {
@@ -65,21 +65,21 @@ const app = {
     const availableBoundTypes = helper.getBoundType(roleFilters)
     let xbound: string[]
     if (availableBoundTypes.length === 0) {
-      throw new ForbiddenException('NO_ACCESS_RIGHT')
+      throw ERROR.NOT_ALLOWED()
     } else if (subqueries.boundTypeCode) {
       // warning : getting the first one only
       xbound = availableBoundTypes.filter(type => type === subqueries.boundTypeCode.value[0])
 
-      if (!xbound) throw new BadRequestException('INVALID_BOUND_TYPE')
+      if (!xbound) throw ERROR.NOT_ALLOWED()
     } else {
       xbound = availableBoundTypes
     }
     constants.boundTypes = xbound
 
     // xsite
+    if (!subqueries.officePartyId) throw ERROR.MISSING_INITIAL_OFFICE()
     const sites = helper.getOfficeParties('erp-site', party, subqueries.officePartyId)
-    if (!sites.length) throw new BadRequestException('MISSING_SITE')
-    if (!subqueries.viaHKG && sites.length > 1) throw new BadRequestException('TOO_MANY_SITES')
+    if (!subqueries.viaHKG && sites.length > 1) throw ERROR.INITIAL_OFFICE_TOO_MANY()
     let xsite = (constants.site = sites[0])
 
     // via HKG => xsite = 'HKG'
@@ -88,7 +88,7 @@ const app = {
         xsite = (constants.site = 'HKG')
       }
       else {
-        throw new BadRequestException('NO_ACCESS_RIGHT')
+        throw ERROR.NOT_ALLOWED()
       }
     }
 
@@ -120,7 +120,7 @@ const app = {
     if (subqueries.isColoader) {
       // filter isColoader cannot be used together with controllingCustomerIncludeRole OR controllingCustomerExcludeRole
       if (subqueries.controllingCustomerIncludeRole || subqueries.controllingCustomerExcludeRole)
-        throw new BadRequestException('ISCOLOADER_INCLUDE_EXCLUDE_CUSTOMER_EITHER_ONE')
+        throw ERROR.EITHER_COLOADER_OR_INCLUDE_CUSTOMER_OR_EXCLUDE_CUSTOMER()
 
       if (subqueries.isColoader.value) {
         xCustomer.xicltype = 'F'
@@ -130,7 +130,7 @@ const app = {
     }
 
     if (subqueries.controllingCustomerIncludeRole && subqueries.controllingCustomerExcludeRole)
-      throw new BadRequestException('INCLUDE_EXCLUDE_CUSTOMER_EITHER_ONE')
+      throw ERROR.EITHER_COLOADER_OR_INCLUDE_CUSTOMER_OR_EXCLUDE_CUSTOMER()
     if (subqueries.controllingCustomerIncludeRole) {
       const values = subqueries.controllingCustomerIncludeRole.value.map(v => helper.getRole(v))
       xCustomer.xicltype = values.join('')
@@ -151,7 +151,7 @@ const app = {
       exblno: '',
     }
     if (subqueries.houseNoLike && subqueries.houseNoNotLike)
-      throw new BadRequestException('LIKE_NOTLIKE_HOUSENO_EITHER_ONE')
+      throw ERROR.EITHER_LIKE_OR_NOT_LIKE_HOUSE_NO()
     if (subqueries.houseNoLike) xHouseNo.inblno = subqueries.houseNoLike.value
     if (subqueries.houseNoNotLike) xHouseNo.exblno = subqueries.houseNoNotLike.value
 

@@ -133,17 +133,20 @@
                       {
                         "label": "ItemKey",
                         "name": "purchaseOrderItem.itemKey",
-                        "component": "v-text-field"
+                        "component": "v-text-field",
+                        "checkDisplayWhen": "return user.roles.some((role) => role.name === 'PURCHASE_ORDER')"
                       },
                       {
                         "label": "SkuCode",
                         "name": "purchaseOrderItem.product.skuCode",
-                        "component": "v-text-field"
+                        "component": "v-text-field",
+                        "checkDisplayWhen": "return user.roles.some((role) => role.name === 'PURCHASE_ORDER')"
                       },
                       {
                         "label": "SkuName",
                         "name": "purchaseOrderItem.product.name",
-                        "component": "v-text-field"
+                        "component": "v-text-field",
+                        "checkDisplayWhen": "return user.roles.some((role) => role.name === 'PURCHASE_ORDER')"
                       },
                       {
                         "label": "BookingPage.ctns",
@@ -547,12 +550,14 @@
                     {
                       "label": "ItemKey",
                       "name": "purchaseOrderItem.itemKey",
-                      "component": "v-text-field"
+                      "component": "v-text-field",
+                      "checkDisplayWhen": "return user.roles.some((role) => role.name === 'PURCHASE_ORDER')"
                     },
                     {
                       "label": "SkuCode",
                       "name": "purchaseOrderItem.product.skuCode",
-                      "component": "v-text-field"
+                      "component": "v-text-field",
+                      "checkDisplayWhen": "return user.roles.some((role) => role.name === 'PURCHASE_ORDER')"
                     },
                     {
                       "label": "BookingPage.ctns",

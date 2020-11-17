@@ -3,6 +3,7 @@ import { IQueryParams } from 'classes/query'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import _ = require('lodash')
 import swig = require('swig-templates')
+import { ERROR } from 'utils/error'
 
 
 const entityTypes = [
@@ -25,10 +26,10 @@ const handleParams = (baseParams: IQueryParams): { entityParams: IQueryParams, a
   const { entityType = null, alertType = null, isImportant = null, ...entitySubqueries } = baseParams.subqueries || {}
   const selectedEntityType = entityType && entityType.value ? entityType.value : undefined
   if (!selectedEntityType) {
-    throw new Error('MISSING_ENTITY_TYPE')
+    throw ERROR.MISSING_ENTITY_TYPE()
   }
   if (!entityTypes.find(type => type.value === selectedEntityType)) {
-    throw new Error(`INVALID_ENTITY_TYPE_${String(selectedEntityType).toLocaleUpperCase()}`)
+    throw ERROR.UNSUPPORTED_ENTITY_TYPE()
   }
   return {
     entityParams: {
@@ -61,7 +62,7 @@ export default {
           user
         )
 
-        return alertConfigList.reduce((finalTasks: Array<JqlTask | JqlTask[]>, { alertType, tableName, queryName, query, active, severity }) => {
+        return alertConfigList.reduce((finalTasks: Array<JqlTask | JqlTask[]>, { handleAlertSubComponentLayoutName, alertType, tableName, queryName, query, active, severity }) => {
           if (
             active && query && // if it is active watchdog
             tableName === alertParams.entityType && // entityType filter
@@ -95,7 +96,10 @@ export default {
                 dataServiceType: 'count',
                 dataServiceQuery: [tableName, queryName],
                 onResult(res, params, prevResult: any): any {
-                  prevResult[alertType] = res
+                  prevResult[alertType] = {
+                    handleAlertSubComponentLayoutName,
+                    result: res
+                  }
                   return prevResult
                 }
               }
@@ -121,7 +125,7 @@ export default {
 
 
         for (const key of Object.keys(prevResult)) {
-          const result = prevResult[key]
+          const { handleAlertSubComponentLayoutName, result } = prevResult[key]
           if (result && result.length && result[0].count > 0) {
             const titleTranslation = _.get(i18n, `Alert.${key}Title`, null)
             const messageTranslation = _.get(i18n, `Alert.${key}Message`, null)
@@ -136,7 +140,8 @@ export default {
               collapsed: `${prevResult.tableName}-${key}`,
               expanded: 0,
               indicator: '-',
-              isEntityRow: true
+              isEntityRow: true,
+              handleAlertSubComponentLayoutName
             })
           }
         }

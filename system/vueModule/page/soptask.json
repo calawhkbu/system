@@ -14,6 +14,7 @@
             "name": "date",
             "type": "date",
             "props": {
+              "range": false,
               "timezone": true,
               "shortcuts": [
                 {
@@ -57,6 +58,14 @@
                   "label": "Day before Yesterday"
                 }
               ]
+            }
+          },
+          {
+            "name": "createdSince",
+            "type": "date",
+            "props": {
+              "range": false,
+              "timezone": true
             }
           },
           {
@@ -120,11 +129,11 @@
             "props": {
               "api": {
                 "query": {
-                  "url": "sopTask/pic/list",
-                  "method": "GET",
-                  "sublabelKey": "picEmail",
-                  "labelKey": "picId",
-                  "valueKey": "picEmail"
+                  "url": "api/person/same-parties",
+                  "method": "POST",
+                  "sublabelKey": "userName",
+                  "labelKey": "displayName",
+                  "valueKey": "userName"
                 }
               },
               "showAllIfEmpty": true,
@@ -138,12 +147,21 @@
             "type": "autocomplete",
             "props": {
               "api": {
-                "query": {
-                  "url": "sopTask/team/list",
-                  "method": "GET",
-                  "labelKey": "team",
-                  "valueKey": "team"
-                }
+                "query": [
+                  {
+                    "url": "api/shipment/query/erp-team",
+                    "method": "POST",
+                    "labelKey": "team",
+                    "valueKey": "team",
+                    "sublabelKey": "officePartyCode"
+                  },
+                  {
+                    "url": "sopTask/team/list",
+                    "method": "GET",
+                    "labelKey": "team",
+                    "valueKey": "team"
+                  }
+                ]
               },
               "showAllIfEmpty": true,
               "localFiltering": true,

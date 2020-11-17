@@ -4,7 +4,7 @@ import { IShortcut } from "classes/query/Shortcut"
 import { isSopTaskSupported, sopTaskSettings, sopTaskSupportedTables } from "modules/sop-task/settings"
 import { AndExpressions, BinaryExpression, CaseExpression, ColumnExpression, ExistsExpression, Expression, FromTable, FunctionExpression, InExpression, IsNullExpression, JoinClause, MathExpression, OrderBy, OrExpressions, ParameterExpression, Query, QueryExpression, ResultColumn, Unknown, Value } from "node-jql"
 import { IfExpression, IfNullExpression, wrapOrder } from "utils/jql-subqueries"
-import { generalIsClosedExpression, generalIsDeletedExpression, generalIsDoneExpression, getEntityExpression, getEntityExpressionSubquery, getEntityPartySubquery, hasSubTaskQuery, taskStatusJoinClauses } from "utils/sop-task"
+import { generalIsClosedExpression, generalIsDeletedExpression, generalIsDoneExpression, getEntityExpression, getEntityExpressionSubquery, getEntityPartySubquery, getIsDueTodayExpression, hasSubTaskQuery, taskStatusJoinClauses } from "utils/sop-task"
 
 const taskTable = 'sop_task'
 const taskStatusTable = 'sop_task_status'
@@ -508,18 +508,7 @@ const shortcuts: IShortcut[] = [
     type: 'field',
     name: 'isDueToday',
     queryArg: re => params => {
-      let expression: Expression
-      if (params.subqueries && typeof params.subqueries.today === 'object' && 'from' in params.subqueries.today) {
-        expression = new AndExpressions([
-          re['isStarted'],
-          new BinaryExpression(new Value(params.subqueries.today.from), '<=', re['dueAt']),
-          new BinaryExpression(re['dueAt'], '<=', new Value(params.subqueries.today.to))
-        ])
-      }
-      else {
-        expression = new Value(0)
-      }
-      return { $select: new ResultColumn(expression, 'isDueToday') }
+      return { $select: new ResultColumn(getIsDueTodayExpression()(re, params), 'isDueToday') }
     }
   },
 
@@ -535,7 +524,7 @@ const shortcuts: IShortcut[] = [
   {
     type: 'field',
     name: 'isClosed',
-    expression: re => IfExpression(re['hasSubTasks'], new ExistsExpression(hasSubTaskQuery('temp', true, generalIsClosedExpression('temp_status', true)), true), generalIsClosedExpression()),
+    expression: generalIsClosedExpression(),
     registered: true
   },
 
@@ -751,15 +740,9 @@ const shortcuts: IShortcut[] = [
   {
     type: 'subquery',
     name: 'date',
-    expression: re => new AndExpressions([
-      new OrExpressions([
-        new IsNullExpression(re['startAt'], false),
-        new BinaryExpression(re['startAt'], '<=', new Unknown())
-      ]),
-      new OrExpressions([
-        new IsNullExpression(re['deadline'], false),
-        new BinaryExpression(new Unknown(), '<=', re['deadline'])
-      ])
+    expression: re => new OrExpressions([
+      new IsNullExpression(re['startAt'], false),
+      new BinaryExpression(re['startAt'], '<=', new Unknown())
     ]),
     unknowns: { fromTo: true },
   },
@@ -776,6 +759,15 @@ const shortcuts: IShortcut[] = [
     type: 'subquery',
     name: 'isDue',
     expression: re => new BinaryExpression(re['isDue'], '=', new Value(1))
+  },
+
+  // subquery:isDueToday
+  {
+    type: 'subquery',
+    name: 'isDueToday',
+    subqueryArg: re => (value, params) => {
+      return { $where: new BinaryExpression(getIsDueTodayExpression()(re, params), '=', new Value(1)) }
+    }
   },
 
   // subquery:isDead

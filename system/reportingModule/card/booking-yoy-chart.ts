@@ -1,9 +1,9 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import Moment = require('moment')
-import { BadRequestException } from '@nestjs/common'
 import { OrderBy } from 'node-jql'
 import { dateSourceList } from './booking-month'
+import { ERROR } from 'utils/error'
 
 interface Result {
   moment: typeof Moment
@@ -15,7 +15,7 @@ function prepareParams(params: IQueryParams, moment: typeof Moment, current: boo
   const subqueries = (params.subqueries = params.subqueries || {})
 
   // warning cannot display from frontend
-  if (!subqueries.yAxis) throw new BadRequestException('MISSING_yAxis')
+  if (!subqueries.yAxis) throw ERROR.MISSING_Y_AXIS_METRIC()
 
   if (subqueries.date && subqueries.date !== true && 'from' in subqueries.date) {
     let year = moment(subqueries.date.from, 'YYYY-MM-DD').year()

@@ -1,5 +1,5 @@
-import { BadRequestException, ForbiddenException, NotImplementedException } from '@nestjs/common'
 import moment = require('moment')
+import { ERROR } from 'utils/error'
 
 const app = {
   constants: {
@@ -59,7 +59,7 @@ const app = {
   },
   method: 'POST', // 'GET'|'POST'|'PUT'|'DELETE'|'HEAD'|'OPTIONS'
   getUrl: ({ api }: { api: any }) => {
-    if (!api.erp || (!api.erp.url2 && !api.erp.url)) throw new NotImplementedException()
+    if (!api.erp || (!api.erp.url2 && !api.erp.url)) throw ERROR.ERP_NOT_SETUP()
     return `${api.erp.url2 || api.erp.url}/getshipsummary`
   },
   requestHandler: async(
@@ -113,13 +113,13 @@ const app = {
 
     // xsite
     const sites = helper.getOfficeParties('erp-site', party, subqueries.officePartyId)
-    if (!sites.length) throw new BadRequestException('MISSING_SITE')
+    if (!sites.length) throw ERROR.MISSING_INITIAL_OFFICE()
     para.xsite = sites
 
     // TODO xcustomecode
 
     // jobDate
-    if (!subqueries.date) throw new BadRequestException('MISSING_DATE_RANGE')
+    if (!subqueries.date) throw ERROR.MISSING_DATE()
     para.jobDate = {
       from: moment(subqueries.date.from, 'YYYY-MM-DD'),
       to: moment(subqueries.date.to, 'YYYY-MM-DD'),
@@ -176,7 +176,7 @@ const app = {
         type => subqueries.moduleTypeCode.value.indexOf(type) > -1
       )
     }
-    if (availableModuleTypes.length === 0) throw new ForbiddenException('NO_ACCESS_RIGHT')
+    if (availableModuleTypes.length === 0) throw ERROR.NOT_ALLOWED()
     para.moduleType = availableModuleTypes
 
     // boundType
@@ -186,7 +186,7 @@ const app = {
         type => subqueries.boundTypeCode.value.indexOf(type) > -1
       )
     }
-    if (availableBoundTypes.length === 0) throw new ForbiddenException('NO_ACCESS_RIGHT')
+    if (availableBoundTypes.length === 0) throw ERROR.NOT_ALLOWED()
     para.boundType = availableBoundTypes
 
     // nominatedType

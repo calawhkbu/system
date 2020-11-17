@@ -1,4 +1,4 @@
-import { NotImplementedException, BadRequestException } from '@nestjs/common'
+import { ERROR } from 'utils/error'
 
 const app = {
   constants: {
@@ -11,8 +11,8 @@ const app = {
   },
   method: 'GET',
   getUrl: async({ id, partyGroup: { api } }: any, params: any, constants: { [key: string]: any }, helper: { [key: string]: Function }): Promise<string> => {
-    if (!api.ipom || !api.ipom.url) throw new NotImplementedException('ipom_NOT_LINKED')
-    if (!params.subqueries || !params.subqueries.type) throw new BadRequestException('MISSING_TYPE')
+    if (!api.ipom || !api.ipom.url) throw ERROR.POM_NOT_SETUP()
+    if (!params.subqueries || !params.subqueries.type) throw ERROR.MISSING_EXTERNAL_CARD_TYPE()
     const { type, enableFiltering, ...subqueries } = params.subqueries
     if (enableFiltering) constants.subqueries = subqueries
     const card = constants.card = await helper.getCard({

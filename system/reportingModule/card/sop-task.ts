@@ -1,8 +1,8 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import moment = require('moment')
-import { BadRequestException } from '@nestjs/common'
 import { ColumnExpression, OrderBy } from 'node-jql'
+import { ERROR } from 'utils/error'
 
 export default {
   jqls: [
@@ -64,8 +64,14 @@ export default {
         }
 
         // subqueries
-        if (params.subqueries.date ? rangeTooLarge(params.subqueries.date) : !params.subqueries.createdAtBetween) {
-          throw new BadRequestException('DATE_RANGE_TOO_LARGE')
+        if (params.subqueries.date && rangeTooLarge(params.subqueries.date)) {
+          throw ERROR.DATE_RANGE_TOO_LARGE()
+        }
+        else if (!params.subqueries.date && !params.subqueries.createdAtBetween) {
+          throw ERROR.MISSING_DATE()
+        }
+        else if (params.subqueries.createdAtBetween && params.subqueries.createdAtBetween.value > 100) {
+          throw ERROR.CREATED_AT_RANGE_TOO_LARGE()
         }
     
         return params

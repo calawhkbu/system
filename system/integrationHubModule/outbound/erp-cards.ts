@@ -1,9 +1,9 @@
-import { NotImplementedException } from '@nestjs/common'
+import { ERROR } from 'utils/error'
 
 export default {
   method: 'POST',
   getUrl: ({ api }: { api: any }) => {
-    if (!api.erp || !api.erp.url) throw new NotImplementedException()
+    if (!api.erp || !api.erp.url) throw ERROR.ERP_NOT_SETUP()
     return `${api.erp.url}/getschrptlist`
   },
   requestHandler: () => {

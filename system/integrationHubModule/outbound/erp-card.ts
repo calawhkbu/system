@@ -1,4 +1,4 @@
-import { NotImplementedException, NotFoundException, BadRequestException } from '@nestjs/common'
+import { ERROR } from 'utils/error'
 
 const app = {
   constants: {
@@ -10,14 +10,14 @@ const app = {
   },
   method: 'POST',
   getUrl: ({ partyGroup: { api } }: any, params: any, constants: any) => {
-    if (!api.erp || !api.erp.url) throw new NotImplementedException()
+    if (!api.erp || !api.erp.url) throw ERROR.ERP_NOT_SETUP()
     constants.url = `${api.erp.url}/getschrptlist`
     return `${api.erp.url}/getschrptdata`
   },
   requestHandler: ({ id, getPostProcessFunc, partyGroup }: any, params: any, constants: any) => {
     constants.partyGroup = partyGroup
     constants.getPostProcessFunc = getPostProcessFunc
-    if (!params.subqueries || !params.subqueries.type) throw new BadRequestException()
+    if (!params.subqueries || !params.subqueries.type) throw ERROR.MISSING_EXTERNAL_CARD_TYPE()
     console.debug('zyh = ' + id + ', zyd = ' + params.subqueries.type.value, 'erp-card:system')
     return {
       headers: {
@@ -36,7 +36,7 @@ const app = {
   ) => {
     // parse results
     const responseBody = JSON.parse(JSON.parse(response.responseBody).d) as any[]
-    if (!responseBody.length) throw new NotFoundException('REPORT_NOT_READY')
+    if (!responseBody.length) throw ERROR.ERP_REPORT_NOT_READY()
 
     let card = await helper.prepareCard(responseBody[0], 'erp', 'Swivel ERP', zyh, zyd, {
       method: 'POST',

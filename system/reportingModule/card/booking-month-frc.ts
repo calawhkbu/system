@@ -4,6 +4,7 @@ import Moment = require('moment')
 import { OrderBy } from 'node-jql'
 import { expandGroupEntity, expandSummaryVariable, extendDate } from 'utils/card'
 import { dateSourceList } from './booking-month'
+import { ERROR } from 'utils/error'
 
 interface Result {
   moment: typeof Moment
@@ -27,8 +28,8 @@ export default {
         const subqueries = params.subqueries = params.subqueries || {}
 
         // idea : userGroupByVariable and userSummaryVariable is selected within filter by user
-        if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw new Error('MISSING_groupByVariable')
-        if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
+        if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw ERROR.MISSING_GROUP_BY()
+        if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw ERROR.MISSING_TOP_X()
 
         // -----------------------------groupBy variable
         // const groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier

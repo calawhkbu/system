@@ -54,6 +54,7 @@ export default async function recalculateDates(this: Job, { tableName, subquerie
           throw new NotImplementedException()
       }
       await this.service.sopTaskTableService.bulkUpdateDates(tableName, entities, user, dateTimezoneMapping)
+      this.progress(Math.min(i + per, ids.length) / ids.length)
       result.push(...ids_)
     }
   }

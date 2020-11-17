@@ -1,8 +1,8 @@
 
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
-import { expandSummaryVariable, expandGroupEntity, extendDate, LastCurrentUnit, calculateLastCurrent, handleGroupByEntityValueDatePart, handleBottomSheetGroupByEntityValue } from 'utils/card'
-import * as  rawMoment from 'moment'
+import { handleGroupByEntityValueDatePart, handleBottomSheetGroupByEntityValue } from 'utils/card'
+import { ERROR } from 'utils/error'
 
 export default {
   jqls: [
@@ -34,8 +34,8 @@ export default {
 
         // used in mapCard to bottom sheet
         if (subqueries.location && subqueries.locationCode) {
-          if (!(subqueries.location !== true && 'value' in subqueries.location)) throw new Error('MISSING_location')
-          if (!(subqueries.locationCode !== true && 'value' in subqueries.locationCode)) throw new Error('MISSING_locationCode')
+          if (!(subqueries.location !== true && 'value' in subqueries.location)) throw ERROR.MISSING_LOCATION_TYPE()
+          if (!(subqueries.locationCode !== true && 'value' in subqueries.locationCode)) throw ERROR.MISSING_LOCATION_CODE()
 
           const location = subqueries.location.value
           const locationCode = `${location}Code`
@@ -46,13 +46,13 @@ export default {
 
         // lastStatus case
         if (subqueries.lastStatus) {
-          if (!(subqueries.lastStatus !== true && 'value' in subqueries.lastStatus && Array.isArray(subqueries.lastStatus.value))) throw new Error('MISSING_lastStatus')
+          if (!(subqueries.lastStatus !== true && 'value' in subqueries.lastStatus && Array.isArray(subqueries.lastStatus.value))) throw ERROR.MISSING_LAST_STATUS()
           // subqueries.lastStatusJoin = true
         }
 
         // alertType case
         if (subqueries.alertType) {
-          if (!(subqueries.alertType !== true && 'value' in subqueries.alertType && Array.isArray(subqueries.alertType.value))) throw new Error('MISSING_alertType')
+          if (!(subqueries.alertType !== true && 'value' in subqueries.alertType && Array.isArray(subqueries.alertType.value))) throw ERROR.MISSING_ALERT_TYPE()
           subqueries.alertJoin = true
           let alertCreatedAtJson: { from: any, to: any}
           if (subqueries.withinHours) {
@@ -83,17 +83,19 @@ export default {
           const count = Number.parseInt(primaryKeyListString.countString, 10)
 
           // if too many, just query again
-          if (count > countLimit) {
-            delete subqueries.primaryKeyListString
-          }
-          else {
-            const idList = primaryKeyListString.value.split(',')
+          if (count <= countLimit) {
+            const idList = primaryKeyListString.value.split(',').map(n => Number(n))
 
             // reset params.subqueries, just id left
             params.subqueries = {
+              ...params.subqueries,
               id: { value: idList }
             }
+            if (params.subqueries.dateStatus) {
+              delete params.subqueries.dateStatus
+            }
           }
+          delete params.subqueries.primaryKeyListString
         }
 
 

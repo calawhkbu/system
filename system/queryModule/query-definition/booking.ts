@@ -2438,6 +2438,14 @@ export default supportSopTask('booking', query, () => require('./sop_task').defa
     unknowns: true
   },
 
+  // subquery:createdSince
+  {
+    type: 'subquery',
+    name: 'createdSince',
+    expression: new BinaryExpression(createdAtExpression, '>=', new Unknown()),
+    unknowns: { fromTo: true }
+  },
+
   // subquery:createdAtBeweenRange
   {
     type: 'subquery',

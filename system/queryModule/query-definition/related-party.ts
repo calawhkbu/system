@@ -40,7 +40,7 @@ const CONSTANTS = {
 
 const query = new QueryDef(new Query({
   $from: new FromTable(
-    'related_party',
+    CONSTANTS.tableName,
     {
       operator: 'LEFT',
       table: new FromTable('party', 'party'),

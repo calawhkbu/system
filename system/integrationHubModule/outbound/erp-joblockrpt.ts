@@ -1,5 +1,5 @@
-import { BadRequestException, NotImplementedException } from '@nestjs/common'
 import moment = require('moment')
+import { ERROR } from 'utils/error'
 
 const app = {
   constants: {
@@ -9,7 +9,7 @@ const app = {
   },
   method: 'POST',
   getUrl: ({ api }: { api: any }) => {
-    if (!api.erp || !api.erp.url) throw new NotImplementedException()
+    if (!api.erp || !api.erp.url) throw ERROR.ERP_NOT_SETUP()
     return `${api.erp.url}/joblockrpt`
   },
   requestHandler: async(
@@ -30,17 +30,16 @@ const app = {
     const subqueries = query.subqueries || {}
 
     // datefr && dateto
-    if (!subqueries.date) throw new BadRequestException('MISSING_DATE_RANGE')
+    if (!subqueries.date) throw ERROR.MISSING_DATE()
     const datefr = moment(subqueries.date.from, 'YYYY-MM-DD')
     const dateto = moment(subqueries.date.to, 'YYYY-MM-DD')
-    if (dateto.diff(datefr, 'years', true) > 1)
-      throw new BadRequestException('DATE_RANGE_TOO_LARGE')
+    if (dateto.diff(datefr, 'years', true) > 1) throw ERROR.DATE_RANGE_TOO_LARGE()
 
     // xsite
+    if (!subqueries.officePartyId) throw ERROR.MISSING_INITIAL_OFFICE()
     constants.siteNames = helper.getOfficeNames('erp-site', party, subqueries.officePartyId)
     const sites = helper.getOfficeParties('erp-site', party, subqueries.officePartyId)
-    if (!sites.length) throw new BadRequestException('MISSING_SITE')
-    if (sites.length > 1) throw new BadRequestException('TOO_MANY_SITES')
+    if (sites.length > 1) throw ERROR.INITIAL_OFFICE_TOO_MANY()
     const xsite = (constants.sites = sites)
 
     // xdivision (for later use)

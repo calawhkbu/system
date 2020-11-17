@@ -1,9 +1,9 @@
-import { NotImplementedException } from '@nestjs/common'
+import { ERROR } from 'utils/error'
 
 export default {
   method: 'POST',
   getUrl: ({ api }: { api: any }) => {
-    if (!api.wms || !api.wms.url) throw new NotImplementedException()
+    if (!api.wms || !api.wms.url) throw ERROR.WMS_NOT_SETUP()
     return `${api.wms.url}/getschrptlist`
   },
   requestHandler: ({ api }: { api: any }) => {

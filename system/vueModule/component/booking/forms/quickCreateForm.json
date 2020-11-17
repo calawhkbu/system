@@ -113,7 +113,8 @@
             },
             "item-text": "name",
             "item-value": "code",
-            "showValue": false
+            "showSelectionText": false,
+            "showValue": true
           }
         },
         {
@@ -124,11 +125,7 @@
           "label": "BookingPage.isConsole",
           "component": "BooleanField",
           "name": "isConsole",
-          "class": "xs-12 md-1",
-          "more": [{
-            "name": "isDirect",
-            "func": "return value ? 0 : 1"
-          }]
+          "class": "xs-12 md-1"
         },
         {
           "containerComponent": "v-card",
@@ -138,11 +135,7 @@
           "label": "BookingPage.isDirect",
           "component": "BooleanField",
           "name": "isDirect",
-          "class": "xs-12 md-1",
-          "more": [{
-            "name": "isConsole",
-            "func": "return value ? 0 : 1"
-          }]
+          "class": "xs-12 md-1"
         },
         {
           "containerComponent": "v-card",
@@ -396,8 +389,19 @@
           },
           "label": "BookingPage.poNo",
           "name": "flexData.poNo",
+          "component": "v-text-field",
+          "checkDisplayWhen": "return user.roles.filter((role) => role.name === 'PURCHASE_ORDER').length === 0",
+          "class": "xs-12 md-4 padding-topbottom-4"
+        },
+        {
+          "containerComponent": "v-card",
+          "containerComponentProps": {
+            "class": "padding-topbottom-8 padding-leftright-4"
+          },
+          "label": "BookingPage.poNo",
+          "name": "flexData.poNo",
           "component": "AsyncAutoSuggest",
-          "checkDisplayWhen": "return user.roles.some((role) => role.name == 'PURCHASE_ORDER')",
+          "checkDisplayWhen": "return user.roles.filter((role) => role.name === 'PURCHASE_ORDER').length > 0",
           "class": "xs-12 md-4 padding-topbottom-4",
           "props": {
             "showValue": false,

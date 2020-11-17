@@ -198,7 +198,7 @@
                   }
                 ],
                 "axiosParams": {
-                  "method": "get",
+                  "method": "post",
                   "url": "api/product-category/columns/{{context.$store.state.widget.data.productCategoryId}}"
                 },
                 "storeInFlexData": true

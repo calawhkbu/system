@@ -1,9 +1,10 @@
 import { NotImplementedException } from '@nestjs/common'
+import { ERROR } from 'utils/error'
 
 export default {
   method: 'POST',
   getUrl: ({ api }: { api: any }) => {
-    if (!api.ipom || !api.ipom.url) throw new NotImplementedException()
+    if (!api.ipom || !api.ipom.url) throw ERROR.POM_NOT_SETUP()
     return `${api.ipom.url}/getschrptlist`
   },
   requestHandler: ({ api }: { api: any }) => {

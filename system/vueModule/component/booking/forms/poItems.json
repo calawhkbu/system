@@ -17,7 +17,7 @@
                 "method": "POST",
                 "data": {
                   "fields": [
-                    "poNo"
+                    "poNo", "productCategoryId"
                   ],
                   "subqueries": {
                     "poNoLike": {
@@ -42,7 +42,7 @@
             }
           },
           {
-            "label": "BookingPage.poItems",
+            "label": "BookingPage.BookingPacking",
             "component": "TableField",
             "name": "bookingPopackings",
             "class": "xs-12",
@@ -299,7 +299,8 @@
               {
                 "is": "DynamicComponent",
                 "props": {
-                  "components": [              {
+                  "components": [  
+                    {
                     "containerComponent": "v-card",
                     "containerComponentProps": {
                       "class": "padding-topbottom-8 padding-leftright-4"
@@ -309,7 +310,7 @@
                     "props": {
                       "reportingKey": "purchase-order-items",
                       "jql": "purchase-order-items",
-                      "title": "PO items",
+                      "title": "pickPoItems",
                       "reportUrl": "",
                       "reportingKeyKey": "reportIdParams",
                       "hasReports": false,
@@ -326,9 +327,9 @@
                       "formDataCheckFunc": [
                         "return item.poItemId"
                       ],
+                      "poNos": "flexData.poNo",
                       "localReport": {
                         "id": 0,
-                        "name": "purchase-order-items",
                         "reportingKey": "purchase-order-items",
                         "filters": {
                           "poNo": {
@@ -354,13 +355,10 @@
                             }
                           },
                           "tableWrapperStyle": {
-                            "min-height": "calc(100vh - 265px)"
+                            "max-height": "calc(100vh - 250px)"
                           },
                           "tableStyle": {
-                            "min-height": "calc(100vh - 265px)"
-                          },
-                          "bodyWrapperStyle": {
-                            "min-height": "calc(100vh - 265px)"
+                            "min-height": "calc(100vh - 250px)"
                           }
                         }
                       },
@@ -371,11 +369,16 @@
                         },
                         {
                           "key": "definition",
-                          "width": 200
+                          "width": 200,
+                          "hidden": true
                         },
                         {
                           "key": "quantity",
                           "width": 100
+                        },
+                        {
+                          "key": "flexData",
+                          "hidden": true
                         },
                         {
                           "key": "updatedAt",
@@ -383,14 +386,23 @@
                           "format": "YYYY-MM-DD"
                         },
                         {
-                          "key": "flexData",
-                          "hidden": true
-                        },
-                        {
                           "key": "Pick",
                           "label": "",
-                          "checkbox": true,
-                          "showCheckAll": true
+                          "checkbox": true
+                        },
+                        {
+                          "key": "dontShipBeforeDateActual",
+                          "i18nContext": "Widget",
+                          "label": "dontShipBefore",
+                          "width": 150,
+                          "format": "YYYY-MM-DD"
+                        },
+                        {
+                          "key": "dontShipAfterDateActual",
+                          "i18nContext": "Widget",
+                          "label": "dontShipAfter",
+                          "width": 150,
+                          "format": "YYYY-MM-DD"
                         }
                       ],
                       "localFilters": [
@@ -435,6 +447,18 @@
                         {
                           "name": "skuCode",
                           "type": "text"
+                        },
+                        {
+                          "name": "htsCode",
+                          "type": "text"
+                        },
+                        {
+                          "name": "dontShipBeforeActual",
+                          "type": "date"
+                        },
+                        {
+                          "name": "dontShipAfterActual",
+                          "type": "date"
                         }
                       ],
                       "icons": [

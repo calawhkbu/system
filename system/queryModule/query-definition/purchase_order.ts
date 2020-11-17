@@ -310,6 +310,23 @@ query.table('purchaseOrderDate', new Query({
   })
 }))
 
+query.table('productCategory', new Query({
+  $from: new FromTable({
+    table: 'purchase_order',
+    joinClauses: [{
+      operator: 'LEFT',
+      table: new FromTable('product_category'),
+      $on: [
+        new BinaryExpression(
+          new ColumnExpression('product_category', 'id'),
+          '=',
+          new ColumnExpression('purchase_order', 'productCategoryId')
+        )
+      ]
+    }]
+  })
+}))
+
 query.table('incoTerms', new Query({
 
   $from: new FromTable({
@@ -541,6 +558,17 @@ const fieldList = [
   // 'portOfDischargeCode',
   // 'portOfDischargeName',
   // 'portOfDischarge?',
+  'productCategoryId',
+  {
+    name: 'productCategoryName',
+    expression: new ColumnExpression('product_category', 'name'),
+    companion: ['table:productCategory']
+  },
+  {
+    name: 'productCategoryDefinition',
+    expression: new ColumnExpression('product_category', 'definition'),
+    companion: ['table:productCategory']
+  },
 
   'remark',
   'referenceNumber',

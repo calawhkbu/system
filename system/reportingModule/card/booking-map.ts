@@ -1,5 +1,6 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
+import { ERROR } from 'utils/error'
 
 interface Result {
   location: string
@@ -15,9 +16,9 @@ export default {
         const subqueries = params.subqueries || {}
 
         // show pol/pod
-        if (!subqueries.location || !(subqueries.location !== true && 'value' in subqueries.location)) throw new Error('MISSING_location')
+        if (!subqueries.location || !(subqueries.location !== true && 'value' in subqueries.location)) throw ERROR.MISSING_LOCATION_TYPE()
         const location = prevResult.location = subqueries.location.value
-        if (!locationList.find(x => x === location)) throw new Error(`INVALID_location_${String(subqueries.location.value).toLocaleUpperCase()}`)
+        if (!locationList.find(x => x === location)) throw ERROR.UNSUPPORTED_LOCATION_TYPE()
 
         const locationCode = `${location}Code`
         const locationLatitude = `${location}Latitude`

@@ -1,95 +1,39 @@
 {
-  "fillParent": true,
   "components": [{
-    "is": "TableTool",
+    "is": "GridTool",
     "props": {
-      "i18nContext": "ChatPage",
       "reportingKey": "chat",
-      "jql": "chat",
+      "hasReports": true,
+      "showFilterBar": true,
       "enableShare": true,
       "enableSetting": true,
-      "noPartyGroupFilters": false,
+      "noPartyGroupFilters": true,
       "newReport": {
         "filters": {
-       
+          "activeStatus": {
+            "value": "active"
+          },
+          "date": {
+            "func": {
+              "args": {
+                "unit": "month"
+              },
+              "key": "current"
+            }
+          }
         },
         "configurations": {
-          "checkbox": {},
-          "i18nContext": "ChatPage",
-          "clickable": true,
-          "draggable": true,
-          "sorting": {
-            "direction": "DESC",
-            "key": "updatedAt",
-            "sql": {
-              "classname": "ColumnExpression",
-              "table": "chat",
-              "name": "updatedAt"
-            }
-          },
-          "pagination": {
-            "current": 0,
-            "perPage": 20,
-            "remote": true
-          }
+          "i18nContext": "Reporting",
+          "colors": [
+            "#005EB8",
+            "#008675",
+            "#E35205",
+            "#AF272F",
+            "#F1B434",
+            "#c9cbcf"
+          ]
         }
-      },
-      "fieldOptions": [
-        {
-          "key": "id",
-          "hidden": true
-        },
-        {
-          "key": "chatroom"
-        },
-        {
-          "key": "roomKey",
-          "label":"primaryKey"
-        }
-        
-      ],
-      "filters": [
-        {
-          "display": "entityType",
-          "name": "entityType",
-          "props": {
-            "items": [{
-                "label": "booking",
-                "value": "booking"
-              },
-              {
-                "label": "shipment",
-                "value": "shipment"
-              }
-            ],
-            "required": true
-          },
-          "type": "list"
-        },
-        
-        {
-          "display": "date",
-          "name": "date",
-          "type": "date",
-          "props": {
-            "required": false
-          }
-        }
-      ],
-      "clickFunction": {
-        "type": "router",
-        "otherParams": {
-          "base": true,
-          "func": "push",
-          "path": "{{alertTableName}}/{{alertPrimaryKey}}"
-        }
-      },
-      "icons": []
-    },
-    "scopedSlots": [{
-      "name": "middle-button",
-      "is": "ReportHandleAlertDialogButton",
-      "props": {}
-    }]
+      }
+    }
   }]
 }

@@ -2,9 +2,9 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import Moment = require('moment')
 import { OrderBy } from 'node-jql'
-import { BadRequestException } from '@nestjs/common'
 import { expandGroupEntity, expandSummaryVariable } from 'utils/card'
 import { dateSourceList } from './booking-month'
+import { ERROR } from 'utils/error'
 
 interface Result {
   moment: typeof Moment
@@ -19,7 +19,7 @@ interface Result {
 
 function specialCalculateLastCurrent(subqueries: any, moment: typeof Moment, lastCurrentUnit: string, lastOrCurrent_: 'last' | 'current') {
   if (!subqueries.date || !(subqueries.date !== true && 'from' in subqueries.date)) {
-    throw new BadRequestException('MISSING_DATE')
+    throw ERROR.MISSING_DATE()
   }
 
   const rawFrom = subqueries.date.from
@@ -100,7 +100,7 @@ function specialCalculateLastCurrent(subqueries: any, moment: typeof Moment, las
     }
   }
   else {
-    throw new Error('INVALID_lastCurrentUnit')
+    throw ERROR.UNSUPPORTED_LAST_CURRENT_UNIT()
   }
 
   return { from, to }
@@ -126,10 +126,10 @@ export default {
 
         function guessSortingExpression(sortingValue: string) {
           const variablePart = sortingValue.substr(0, sortingValue.lastIndexOf('_'))
-          const sortingDirection = sortingValue.substr(sortingValue.lastIndexOf('_') + 1)
+          let sortingDirection = sortingValue.substr(sortingValue.lastIndexOf('_') + 1)
 
           if (!['ASC', 'DESC'].includes(sortingDirection)) {
-            throw new Error(`cannot guess sortingDirection`)
+            sortingDirection = 'ASC'
           }
 
           // here will handle 2 special cases : metric , summaryVariable
@@ -158,8 +158,8 @@ export default {
           return new OrderBy(finalColumnName, sortingDirection as 'ASC' | 'DESC')
         }
 
-        if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw new Error('MISSING_groupByVariable')
-        if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
+        if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw ERROR.MISSING_GROUP_BY()
+        if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw ERROR.MISSING_TOP_X()
 
 
         var { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
@@ -273,8 +273,8 @@ export default {
         // first round, don't have result, need to perform full search again, compose subqueries again
         else {
 
-          if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw new Error('MISSING_groupByVariable')
-          if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw new Error('MISSING_topX')
+          if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw ERROR.MISSING_GROUP_BY()
+          if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw ERROR.MISSING_TOP_X()
           // -----------------------------groupBy variable
           // const groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
           // const codeColumnName = prevResult.codeColumnName = groupByEntity === 'houseNo' ? 'houseNo' : groupByEntity === 'carrier' ? `carrierCode` : groupByEntity === 'agentGroup' ? 'agentGroup' : groupByEntity === 'moduleType' ? 'moduleTypeCode' : `${groupByEntity}PartyCode`
@@ -334,10 +334,7 @@ export default {
         // result should be the firstTable
         // res is the second table
 
-        if (!result.length && !res.length)
-        {
-          throw new Error('NO DATA FOR BOTH YEAR')
-        }
+        if (!result.length && !res.length) return []
 
         let last: any[], current: any[]
         if (firstTableLastOrCurrent === 'last') {

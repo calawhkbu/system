@@ -17,9 +17,16 @@
                   "component": "FreeTextAutoSuggest",
                   "props": {
                     "axiosParams": {
-                      "method": "GET",
-                      "url": "sopTask/team/list"
-                    }
+                      "method": "POST",
+                      "url": "api/shipment/query/erp-team",
+                      "data": {
+                        "subqueries": {
+                          "distinct-team": true
+                        }
+                      }
+                    },
+                    "item-text": "team",
+                    "item-value": "team"
                   }
                 },
                 {

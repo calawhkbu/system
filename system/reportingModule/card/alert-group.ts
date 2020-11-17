@@ -3,7 +3,7 @@ import { IQueryParams } from 'classes/query'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import _ = require('lodash')
 import swig = require('swig-templates')
-import { convertToStartOfDate } from 'utils/jql-subqueries'
+import { ERROR } from 'utils/error'
 
 
 const bottomSheetId = {
@@ -26,10 +26,10 @@ export default {
       ): Promise<Array<JqlTask | JqlTask[]>> {
         var subqueries = params.subqueries || {}
         if (!subqueries.entityType || !(subqueries.entityType !== true && 'value' in subqueries.entityType)) {
-          throw new Error('MISSING_ENTITY_TYPE')
+          throw ERROR.MISSING_ENTITY_TYPE()
         }
         if (Object.keys(bottomSheetId).indexOf(subqueries.entityType.value) === -1) {
-          throw new Error(`INVALID_ENTITY_TYPE_${String(subqueries.entityType.value).toLocaleUpperCase()}`)
+          throw ERROR.UNSUPPORTED_ENTITY_TYPE()
         }
         const { alertConfigList } = await this.getDataService().crudEntity(
           'alert',

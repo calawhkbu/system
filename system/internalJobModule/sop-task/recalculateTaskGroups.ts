@@ -40,6 +40,7 @@ export default async function recalculateTaskGroups(this: Job, { tableName, subq
     for (let i = 0, length = ids.length; i < length; i += per) {
       const ids_ = ids.slice(i, Math.min(ids.length, i + per))
       await this.service.sopTemplateService.bulkAutoSelect(tableName, ids_, user, fields)
+      this.progress(Math.min(i + per, ids.length) / ids.length)
       result.push(...ids_)
     }
   }

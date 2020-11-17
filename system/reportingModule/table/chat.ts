@@ -60,32 +60,7 @@ export default {
       dataServiceQuery: ['chat', 'chat'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
         
-        if(groupByEntity=='bookingNo'){
-          codeColumnName=groupByEntity;
-          nameColumnName=groupByEntity;
-        }else if(groupByEntity=='carrier'){
-          codeColumnName='carrierCode';
-          nameColumnName='carrierName';
-        }else if(groupByEntity=='moduleType'){
-          codeColumnName='moduleTypeCode';
-          nameColumnName='moduleTypeCode';
-        }else if(groupByEntity=='portOfLoading'){
-          codeColumnName=groupByEntity+"Code";
-          nameColumnName=groupByEntity+"Name";
-        }else if(groupByEntity=='portOfDischarge'){
-          codeColumnName=groupByEntity+"Code";
-          nameColumnName=groupByEntity+"Name";
-        }else if(groupByEntity=='agent'){
-          codeColumnName=groupByEntity+"PartyCode";
-          nameColumnName=groupByEntity+"PartyName";
-        }else if(groupByEntity=='forwarder'){
-          codeColumnName=groupByEntity+"PartyCode";
-          nameColumnName=groupByEntity+"PartyName";
-        }else{
-          codeColumnName=`${groupByEntity}PartyCode`;
-          nameColumnName=`${groupByEntity}PartyShortNameInReport` + 'Any';
-          
-        }
+      
 
         // EDIT HERE
       return res
