@@ -115,14 +115,6 @@
               "multi": true
             },
             "display": "missingDocument"
-          },
-          {
-            "name": "picNotAssigned",
-            "type": "boolean"
-          },
-          {
-            "name": "teamNotAssigned",
-            "type": "boolean"
           }
         ],
         "fieldOptions": [

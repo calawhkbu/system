@@ -4,7 +4,7 @@ import { IShortcut } from "classes/query/Shortcut"
 import { isSopTaskSupported, sopTaskSettings, sopTaskSupportedTables } from "modules/sop-task/settings"
 import { AndExpressions, BinaryExpression, CaseExpression, ColumnExpression, ExistsExpression, Expression, FromTable, FunctionExpression, InExpression, IsNullExpression, JoinClause, MathExpression, OrderBy, OrExpressions, ParameterExpression, Query, QueryExpression, ResultColumn, Unknown, Value } from "node-jql"
 import { IfExpression, IfNullExpression, wrapOrder } from "utils/jql-subqueries"
-import { generalIsClosedExpression, generalIsDeletedExpression, generalIsDoneExpression, getEntityExpression, getEntityExpressionSubquery, getEntityPartySubquery, getIsDueTodayExpression, hasSubTaskQuery, taskStatusJoinClauses } from "utils/sop-task"
+import { generalIsClosedExpression, generalIsDeletedExpression, generalIsDoneExpression, getEntityExpression, getEntityExpressionSubquery, getEntityPartySubquery, hasSubTaskQuery, taskStatusJoinClauses, getIsDueTodayExpression } from "utils/sop-task"
 
 const taskTable = 'sop_task'
 const taskStatusTable = 'sop_task_status'
@@ -624,7 +624,7 @@ const shortcuts: IShortcut[] = [
     name: 'team',
     queryArg: () => getEntityExpressionSubquery('team')
   },
-  
+
   // field:jobNo
   {
     type: 'field',
@@ -668,7 +668,7 @@ const shortcuts: IShortcut[] = [
       else {
         tables.push(...sopTaskSupportedTables())
       }
-      
+
       // table not supported
       if (!tables.length) return {}
 

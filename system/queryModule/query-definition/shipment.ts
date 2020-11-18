@@ -1268,7 +1268,7 @@ const carrierCodeExpression = new FunctionExpression('IFNULL',
         $then: new QueryExpression(new Query({
 
           $select: [
-            new ResultColumn(new ColumnExpression('cm1', 'name'))
+            new ResultColumn(new ColumnExpression('cm1', 'code'))
           ],
           $from: new FromTable({
 
@@ -1278,7 +1278,8 @@ const carrierCodeExpression = new FunctionExpression('IFNULL',
           $where: [
             new BinaryExpression(new ColumnExpression('cm1', 'codeType'), '=', 'CARRIER_SWIVEL_TO_YD'),
             new BinaryExpression(new ColumnExpression('cm1', 'code'), '=', new FunctionExpression('LEFT', new ColumnExpression('shipment', 'masterNo'), 3))
-          ]
+          ],
+          $limit: 1
 
         }))
       }

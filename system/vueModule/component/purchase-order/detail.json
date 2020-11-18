@@ -77,6 +77,42 @@
             "is": "v-spacer"
           },
           {
+            "is": "WidgetAsyncExtraSelect",
+            "if": "return context.$store.state.widget.data.id",
+            "props": {
+              "i18nContext": "PurchaseOrderPage",
+              "mainButtonKey": "Shipment",
+              "buttonIcon": "view_list",
+              "buttonProps": {
+                "icon": true,
+                "small": true,
+                "flat": true
+              },
+              "mainKey": "bookingNo",
+              "axiosParams": {
+                "method": "POST",
+                "url": "/api/purchase-order/query/purchase_order",
+                "data": {
+                  "distinct": true,
+                  "fields": ["bookingId", "bookingNo"],
+                  "subqueries": {
+                    "bookedPo": {
+                      "poId": "{{ context.$store.state.widget.data.id }}" 
+                    }
+                  }
+                }
+              },
+              "onListClickFunc": [{
+                "type": "router",
+                "otherParams": {
+                  "func": "push",
+                  "path": "/bookings/new/booking/{{ value.bookingId }}",
+                  "base": false
+                }
+              }]
+            }
+          },
+          {
             "is": "ToolTip",
             "if": "return !context.$store.state.main.widget",
             "props": {
@@ -359,6 +395,41 @@
             ]
           },
           {
+            "index": "sopTasks",
+            "checkDisplayWhen": [
+              "return user.roles.find(role => role.name === 'SOP_TASK') || context.isSwivelAdmin;"
+            ],
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "PurchaseOrderPage",
+                "i18nKey": "sopTasks"
+              }
+            }],
+            "tabItemComponents": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "purchase-order/base/soptask"
+              }
+            }]
+          },
+          {
+            "index": "chat",
+            "tabComponents": [{
+              "is": "I18nText",
+              "props": {
+                "i18nContext": "PurchaseOrderPage",
+                "i18nKey": "chat"
+              }
+            }],
+            "tabItemComponents": [{
+              "is": "AsyncComponent",
+              "props": {
+                "layoutName": "purchase-order/base/chat"
+              }
+            }]
+          },
+          {
             "index": "alertAndDocument",
             "tabComponents": [
               {
@@ -460,6 +531,24 @@
             "props": {
               "class": "xs-4 padding-2 widget-grid",
               "components": [
+                {
+                  "is": "AsyncComponent",
+                  "if": [
+                    "const user = context.$store.state.auth.userProfile;",
+                    "return user.roles.find(role => role.name === 'SOP_TASK') || context.isSwivelAdmin;"
+                  ],
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "purchase-order/base/soptask"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "purchase-order/base/chat"
+                  }
+                },
                 {
                   "is": "AsyncComponent",
                   "props": {

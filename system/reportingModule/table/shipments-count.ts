@@ -1,9 +1,11 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import { ERROR } from 'utils/error'
+import ShipmentJql from './shipments'
 
 export default {
   jqls: [
+    ShipmentJql.jqls[0],
     {
       type: 'prepareParams',
       prepareParams(params): IQueryParams {

@@ -57,10 +57,8 @@ export default {
         }
 
         //filter Logged In Users's message`
-        let tableName=_.clone(params.subqueries.entityType&&params.subqueries.entityType.value)
-        console.log('tableName')
-        console.log(tableName)
-          if(params.subqueries.entityType && params.subqueries.entityType.value){
+        let tableName=_.clone(params.subqueries.entityType&&params.subqueries.entityType.value)||undefined
+          if(tableName){
             params.subqueries = {
               tableName: { value: tableName } ,
               userName:{value:user.username}

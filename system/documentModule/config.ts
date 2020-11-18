@@ -207,6 +207,49 @@ export const entityConfigList = [
       //   allowFillTemplate: false
       // },
     ]
+  } as EntityConfig,
+  {
+    tableName: 'purchase_order',
+    defaultDocumentConfig: {
+      isActive : true,
+      allowFileType: [
+        'image/png',
+        'image/gif',
+        'image/jpeg',
+        'application/zip',
+        'application/pdf',
+        'application/msword',
+        'application/vnd.ms-excel',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'application/vnd.oasis.opendocument.presentation',
+        'application/vnd.oasis.opendocument.spreadsheet',
+        'application/vnd.oasis.opendocument.text',
+        'text/csv',
+        'url',
+        'application/octet-stream'
+      ],
+      allowFillTemplate: false
+    },
+    documentList: [
+      {
+        fileName: 'EDI',
+        isActive : true,
+        allowFillTemplate: false
+      },
+      {
+        fileName: 'Po Invoice',
+        isActive : true,
+        allowFillTemplate: false
+      },
+      {
+        fileName: 'Order Info',
+        isActive : true,
+        allowFillTemplate: false
+      }
+    ]
   } as EntityConfig
 
 ] as EntityConfig[]

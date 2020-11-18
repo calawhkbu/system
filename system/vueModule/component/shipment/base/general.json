@@ -192,7 +192,7 @@
                                 "props": {
                                   "type": "datetime",
                                   "utc": true,
-                                  "defaultFormat": "ddd MMM DD YYYY HH:mm:ss",
+                                  "defaultFormat": "ddd MMM DD YYYY HH:mm",
                                   "useOwnFormat": true
                                 }
                               },

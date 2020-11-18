@@ -65,6 +65,9 @@
             }
           },
           {
+            "is": "WorkflowStatus"
+          },
+          {
             "is": "v-spacer"
           },
           {

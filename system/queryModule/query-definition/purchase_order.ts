@@ -496,6 +496,35 @@ const activeStatusExpression = new CaseExpression({
   $else: new Value('active')
 })
 
+// get poItem that is booked 
+query.subquery('bookedPo', new Query({
+  $from: new FromTable({
+    table: 'booking',
+    joinClauses: [{
+      operator: 'LEFT',
+      table: new FromTable('booking_popacking', 'booking_popacking'),
+      $on: new BinaryExpression(
+        new ColumnExpression('booking_popacking', 'bookingId'),
+        '=',
+        new ColumnExpression('booking', 'id')
+      )
+    }, {
+      operator: 'LEFT',
+      table: new FromTable('purchase_order_item', 'purchase_order_item'),
+      $on: new BinaryExpression(
+        new ColumnExpression('booking_popacking', 'poItemId'),
+        '=',
+        new ColumnExpression('purchase_order_item', 'id')
+      )
+    }]
+  }),
+  $where: new BinaryExpression(
+    new ColumnExpression('purchase_order_item', 'poId'),
+    '='
+  )
+}))
+.register('poId', 0)
+
 //  register date field
 const baseTableName='purchase_order'
 

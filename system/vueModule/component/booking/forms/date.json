@@ -1,6 +1,6 @@
 {
   "components": [{
-    "is": "WidgetExpandMoreForm",
+    "is": "WidgetMoreForm",
     "props": {
       "name": "bookingDate",
       "mainKey": "Date",

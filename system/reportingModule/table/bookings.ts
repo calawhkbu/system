@@ -36,6 +36,12 @@ export default {
           }
         }
 
+        if (params.subqueries && params.subqueries.sopScore) {
+          if (params.subqueries.sopScore.from === 0 && params.subqueries.sopScore.to === 100) {
+            delete params.subqueries.sopScore
+          }
+        }
+
         return params
       }
     },
@@ -63,8 +69,6 @@ export default {
     { key: 'finalVesselName' },
     { key: 'finalVoyageFlightNumber' },
     { key: 'commodity' },
-    { key: 'noOfTasks' },
-    { key: 'sopScore' },
     { key: 'picId' },
     { key: 'picEmail' },
     { key: 'team' },

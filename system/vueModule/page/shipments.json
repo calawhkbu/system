@@ -122,14 +122,6 @@
           {
             "name": "shipId",
             "type": "text"
-          },
-          {
-            "name": "picNotAssigned",
-            "type": "boolean"
-          },
-          {
-            "name": "teamNotAssigned",
-            "type": "boolean"
           }
         ],
         "fieldOptions": [

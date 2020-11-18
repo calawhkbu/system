@@ -14,7 +14,6 @@
             "name": "date",
             "type": "date",
             "props": {
-              "range": false,
               "timezone": true,
               "shortcuts": [
                 {
@@ -118,11 +117,6 @@
             "display": "search"
           },
           {
-            "name": "sopScore",
-            "i18nContext": "SopTask",
-            "type": "range"
-          },
-          {
             "name": "pic",
             "i18nContext": "SopTask",
             "type": "autocomplete",
@@ -202,6 +196,24 @@
             "i18nContext": "SopTask"
           },
           {
+            "name": "sopScore",
+            "i18nContext": "SopTask",
+            "type": "range"
+          },
+          {
+            "name": "picNotAssigned",
+            "type": "boolean"
+          },
+          {
+            "name": "teamNotAssigned",
+            "type": "boolean"
+          },
+          {
+            "name": "sopTasksClosed",
+            "type": "boolean",
+            "i18nContext": "SopTask"
+          },
+          {
             "name": "vesselName",
             "type": "text"
           },
@@ -239,8 +251,7 @@
             "date": {
               "to": "2020-09-04 23:59",
               "from": "2020-09-04 00:00",
-              "func": "today",
-              "timezone": "Asia/Hong_Kong"
+              "func": "today"
             },
             "createdAtBetweenRange": {
               "value": 30
@@ -278,7 +289,7 @@
                     "minW": 2
                   },
                   "sm": {
-                    "h": 10,
+                    "h": 12,
                     "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
                     "w": 4,
                     "x": 0,
@@ -288,7 +299,7 @@
                     "minW": 2
                   },
                   "xs": {
-                    "h": 10,
+                    "h": 12,
                     "i": "b2c6db91-c6af-4ef6-8895-23dc9bba8a21",
                     "w": 4,
                     "x": 0,

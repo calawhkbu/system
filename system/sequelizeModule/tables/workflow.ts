@@ -15,20 +15,12 @@ export const setDataFunction = {
 }
 
 export const mapping = {
+  // Please notice that add the entity to the workflow
   // booking: async (
   //   changeType: 'create'|'update'|'delete',
   //   entity: any,
-  // ): Promise<Workflow> => {
-  //   switch (changeType) {
-  //     case 'create': {
-  //       return {
-  //         tableName: 'booking',
-  //         primaryKey: entity.id,
-  //         statusName: 'ACTIVE',
-  //
-  //       } as Workflow
-  //     }
-  //   }
+  // ): Promise<Workflow[]> => {
+  //   return []
   // }
 }
 
