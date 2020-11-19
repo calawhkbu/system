@@ -3,7 +3,7 @@ export default async function test() {
     return new Promise(resolve => {
       setTimeout(() => {
         console.debug(`Tick ${count}`, 'Testing internal job')
-        return count === 0 ? resolve() : tick(count - 1, ms)
+        return count === 0 ? resolve() : resolve(tick(count - 1, ms))
       }, ms)
     })
   }

@@ -55,36 +55,45 @@ const query = new QueryDef(
     $from: new FromTable(
       'chatroom'
     ),
+  
   })
 )
 
-query.table('chat', new Query({
-  $from : new FromTable({
-    table : baseTableName,
-    joinClauses : [
-      {
-        operator: 'LEFT',
-        table: new FromTable({
-          table: new Query({
-            $select: [
-              new ResultColumn(new ColumnExpression('chat', '*')),
-            ],
-            $from: new FromTable('chat', 'chat'),
-            $where: new AndExpressions({
-              expressions: [
-                new IsNullExpression(new ColumnExpression('chat', 'deletedAt'), false),
-                new IsNullExpression(new ColumnExpression('chat', 'deletedBy'), false),
-              ]
-            }),
-          }),
-          $as: 'chat'
-        }),
-        $on: new BinaryExpression(new ColumnExpression('chat', 'chatroomId'), '=', new ColumnExpression('chatroom', 'id'))
-      }
-    ]
-  })
+query.table('chat',(params:IQueryParams)=>{
+ const user=params.constants.user
+  return   new Query({
+    $from : new FromTable({
+      table : baseTableName,
+      joinClauses : [
+        {
+          operator: 'LEFT',
+          table: new FromTable({
+            table: new Query({
+              $select: [
+                new ResultColumn(new ColumnExpression('chat', '*')),
+                new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'id')),'lastMessageIndex'),
 
-}))
+                   ],
+              $from: new FromTable('chat', 'chat'),
+              $where:[ new AndExpressions({
+                expressions: [
+                  new IsNullExpression(new ColumnExpression('chat', 'deletedAt'), false),
+                  new IsNullExpression(new ColumnExpression('chat', 'deletedBy'), false),
+                ]
+              }),
+            ], 
+  
+            }),
+            $as: 'chat'
+          }),
+          $on: new BinaryExpression(new ColumnExpression('chat', 'chatroomId'), '=', new ColumnExpression('chatroom', 'id'))
+        }
+      ]
+    })
+  }) 
+})
+
+
 
 
 query.table('booking', new Query({
@@ -146,6 +155,44 @@ query.table('shipment', new Query({
 
 
 
+//custom Expressions
+
+// query.register('lastMessageIndex',new Query({
+//   $where:    new BinaryExpression(new ColumnExpression('chat','chatroomId'),'=',new Unknown()),
+//   $limit:1
+
+
+// })).register('chatroomId',0)
+
+// const lastMessageIndexExpression = new QueryExpression(new Query({
+//   $select : [
+//     new ResultColumn(new ColumnExpression('chatroom','id'))
+//   ],
+//   $from: new FromTable({
+//     table: baseTableName,
+//     joinClauses : [{
+//       operator: 'LEFT',
+//       table: 'chat',
+//       $on: [new BinaryExpression(new ColumnExpression('chatroom', 'id'), '=', new ColumnExpression('chat', 'chatroomId'))]
+//     }]
+//   }),
+//   $where: [
+//     new IsNullExpression(new ColumnExpression('chat', 'deletedAt'), false),
+//     new IsNullExpression(new ColumnExpression('chat', 'deletedBy'), false),
+//     new BinaryExpression(new ColumnExpression('chat','chatroomId'),'=',new Unknown()),
+
+//   ],
+//   $order: [
+//     {
+//       expression: new ColumnExpression('chat', 'id'),
+//       order: 'DESC'
+
+//     }
+//   ],
+//   $limit: 1
+// }))
+
+
 
 const fieldList = [
   'id',
@@ -157,7 +204,12 @@ const fieldList = [
   {
     name:'readIndex',
     expression:new ColumnExpression('chatroom','readIndex')
+
   },
+  // {
+  //   name:'lastMessageIndex',
+  //   expression:lastMessageIndexExpression
+  // },
   {
     name: 'chatroomId',
     expression: new ColumnExpression('chat','chatroomId'),

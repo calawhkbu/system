@@ -37,6 +37,7 @@ export default {
           "roomKey",
           "chatroom",
           "readIndex",
+          "lastMessageIndex",
           "createdAt",
           "messageWithoutTag",
           "createdBy",
@@ -68,13 +69,10 @@ export default {
              }
           }else{
             params.subqueries = {
-              userName: { value: user.username } 
-  
+              userName: { value: user.username },
              }
           }
 
-        console.log('params..')
-        console.log(params)
 
         return params
       }
@@ -83,14 +81,12 @@ export default {
       type: 'callDataService',
       dataServiceQuery: ['chatroom', 'chatroom'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
-
-
-
         // EDIT HERE
         return res
 
       }
     }
+   
   ],
   filters: [
     // for this filter, user can only select single,

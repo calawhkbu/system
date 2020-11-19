@@ -1,8 +1,46 @@
 import { NotImplementedException } from '@nestjs/common'
+import { IQueryParams } from 'classes/query'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Job } from 'modules/internal-job/job'
+import { ERROR } from 'utils/error'
 
-export default async function recalculateTaskGroups(this: Job, { tableName, subqueries = {}, lastId = 0, per = 50 }: any, user: JwtPayload) {
+export const filters: any[] = [
+  {
+    name: 'tableName',
+    display: 'entityType',
+    type: 'list',
+    props: {
+      api: {
+        query: {
+          url: 'sopTask/supported',
+          method: 'GET'
+        }
+      }
+    }
+  },
+  {
+    name: 'per',
+    type: 'list',
+    props: {
+      items: [
+        '10',
+        '20',
+        '50',
+        '100'
+      ]
+    }
+  }
+]
+
+export default async function recalculateTaskGroups(this: Job, params: IQueryParams, user: JwtPayload) {
+  let subqueries = params.subqueries || {}
+  const tableName = subqueries.tableName && subqueries.tableName.value
+  const lastId = +(subqueries.lastId && subqueries.lastId.value) || 0
+  const per = +(subqueries.per && subqueries.per.value) || 50
+
+  const { tableName: t_, lastId: l_, per: p_, ...subqueries_ } = subqueries
+  subqueries = subqueries_
+
   let ids: any[] = []
   switch (tableName) {
     case 'booking': {
@@ -22,7 +60,7 @@ export default async function recalculateTaskGroups(this: Job, { tableName, subq
       break
     }
     default:
-      throw new NotImplementedException()
+      throw ERROR.UNSUPPORTED_ENTITY_TYPE()
   }
 
   // order
@@ -41,8 +79,11 @@ export default async function recalculateTaskGroups(this: Job, { tableName, subq
       const ids_ = ids.slice(i, Math.min(ids.length, i + per))
       await this.service.sopTemplateService.bulkAutoSelect(tableName, ids_, user, fields)
       this.progress(Math.min(i + per, ids.length) / ids.length)
+      await this.log(`Completed ${Math.min(i + per, ids.length)}/${ids.length} records`)
       result.push(...ids_)
     }
+
+    await this.log(`All ${ids.length} records completed`)
   }
   catch (e) {
     console.error(e, e.stack, 'recalculateTaskGroups')

@@ -122,7 +122,10 @@
                         "type": "datetime",
                         "utc": true,
                         "defaultFormat": "ddd MMM DD YYYY HH:mm",
-                        "useOwnFormat": true
+                        "useOwnFormat": true,
+                        "inputProps": {
+                          "class": "input-text-small"
+                        }
                       }
                     },
                     {
@@ -135,7 +138,10 @@
                         "type": "datetime",
                         "utc": true,
                         "defaultFormat": "ddd MMM DD YYYY HH:mm",
-                        "useOwnFormat": true
+                        "useOwnFormat": true,
+                        "inputProps": {
+                          "class": "input-text-small"
+                        }
                       }
                     },
                     {
@@ -146,7 +152,7 @@
                       "class": "xs-4",
                       "props": {
                         "right": true,
-                        "class": "input-text-right",
+                        "class": "input-text-rightinput-text-right input-text-small",
                         "items": [
                           {
                             "key": "portOfLoading",
@@ -165,7 +171,10 @@
                       "name": "shipmentDate.{{flex}}{{key}}DateRemark",
                       "component": "v-text-field",
                       "checkDisplayWhen": "return !(user.parties.findIndex(x => x.erpCode === 'L1052') >= 0 && ['departure'].includes('{{key}}')) ",
-                      "class": "xs-12 md-12"
+                      "class": "xs-12 md-12",
+                      "props": {
+                        "class": "input-text-small input-text-italic"
+                      }
                     }
                   ]
                 }
@@ -254,7 +263,10 @@
                   "type": "datetime",
                   "utc": true,
                   "defaultFormat": "ddd MMM DD YYYY HH:mm",
-                  "useOwnFormat": true
+                  "useOwnFormat": true,
+                  "inputProps": {
+                    "class": "input-text-small"
+                  }
                 }
               },
               {
@@ -267,7 +279,10 @@
                   "type": "datetime",
                   "utc": true,
                   "defaultFormat": "ddd MMM DD YYYY HH:mm",
-                  "useOwnFormat": true
+                  "useOwnFormat": true,
+                  "inputProps": {
+                    "class": "input-text-small"
+                  }
                 }
               }
             ]

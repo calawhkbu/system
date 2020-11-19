@@ -4,8 +4,32 @@ import { Location } from 'models/main/location'
 import { Op, QueryTypes } from 'sequelize'
 import { Job } from 'modules/internal-job/job'
 import parse = require('csv-parse/lib/sync')
+import { IQueryParams } from 'classes/query'
 
-export default async function updateAirports(this: Job, { system = false, per = 100 }: any, user: JwtPayload) {
+export const filters: any[] = [
+  {
+    name: 'system',
+    type: 'boolean'
+  },
+  {
+    name: 'per',
+    type: 'list',
+    props: {
+      items: [
+        '10',
+        '20',
+        '50',
+        '100'
+      ]
+    }
+  }
+]
+
+export default async function updateAirports(this: Job, params: IQueryParams, user: JwtPayload) {
+  const subqueries = params.subqueries || {}
+  const system = subqueries.system || false
+  const per = +(subqueries.per && subqueries.per.value) || 100
+
   return await this.service.internalJobTableService.transaction(async transaction => {
     const countriesRes = await axios.get('https://raw.githubusercontent.com/jpatokal/openflights/master/data/countries.dat')
     const countries: any[][] = parse(countriesRes.data, {
