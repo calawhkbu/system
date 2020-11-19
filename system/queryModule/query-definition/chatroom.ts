@@ -33,7 +33,6 @@ import {
   addDateExpression,
   ExpressionHelperInterface,
   registerAll,
-  registerField,
   registerSummaryField,
   NestedSummaryCondition,
   registerNestedSummaryFilter,
@@ -85,7 +84,6 @@ query.table('chat',(params:IQueryParams)=>{
                   new IsNullExpression(new ColumnExpression('chat', 'deletedBy'), false),
                   new BinaryExpression(new ColumnExpression('chatroom','userName'),'=',user.username),
                   new BinaryExpression(new ColumnExpression('chat','chatroomId'),'=',new ColumnExpression('chatroom','id')),
-                  //new BinaryExpression(new ColumnExpression('chatroom','readIndex'),'!=',new ColumnExpression('chat', 'id'))
 
                 ]
               }),
@@ -101,47 +99,6 @@ query.table('chat',(params:IQueryParams)=>{
     })
   }) 
 })
- query.table('lastMessageIndex',(params:IQueryParams)=>{
-  const user=params.constants.user
-   return  new Query({
-     $from : new FromTable({
-       table : baseTableName,
-       joinClauses : [
-         {
-           operator: 'LEFT',
-           table: new FromTable({
-             table: new Query({
-               $select: [
-                 new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'id'))),
- 
-                    ],
-               $from: [new FromTable('chat', 'chat'),new FromTable('chatroom', 'chatroom')],
-               $where:[ new AndExpressions({
-                 expressions: [
-                   new IsNullExpression(new ColumnExpression('chat', 'deletedAt'), false),
-                   new IsNullExpression(new ColumnExpression('chat', 'deletedBy'), false),
-                  new BinaryExpression(new ColumnExpression('chat','chatroomId'),'=',new ColumnExpression('chatroom','id')),
-                  new BinaryExpression(new ColumnExpression('chatroom','userName'),'=',user.username)
-
-                 ]
-               }),
-             ], 
-             $limit:1,
-             $group:new GroupBy(new ColumnExpression('chat','chatroomId')),
-             $order:new OrderBy(new ColumnExpression('chat','id'),'DESC')
-          
-             }),
-             
-             $as: 'lastMessageIndex'
-           }),
-           $on: new BinaryExpression(new ColumnExpression('chat', 'chatroomId'), '=', new ColumnExpression('chatroom', 'id'))
-         }
-       ]
-     })
-   }) 
- })
-
-//  registerField(query,'lastMessageIndex', lastMessageIndexExpresion,[],false)
 
 
 
