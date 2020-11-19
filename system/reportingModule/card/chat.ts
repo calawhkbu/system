@@ -82,7 +82,12 @@ export default {
       dataServiceQuery: ['chatroom', 'chatroom'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
         // EDIT HERE
-        return res
+        let results:any=[]
+        //get unread Messages Only
+     res.forEach(el => {
+       if(el.readIndex!==el.lastMessageIndex) results.push(el)
+     });
+        return results && results.length>0?results :null
 
       }
     }
