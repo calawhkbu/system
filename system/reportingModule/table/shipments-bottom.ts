@@ -114,7 +114,6 @@ export default {
 
         handleGroupByEntityValueDatePart(subqueries,moment)
 
-
         return params
       }
     },

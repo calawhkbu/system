@@ -42,6 +42,7 @@ import {
   RegisterInterface,
 } from 'utils/jql-subqueries'
 
+const baseTableName='chatroom'
 
 const query = new QueryDef(
   new Query({
@@ -59,7 +60,7 @@ const query = new QueryDef(
 
 query.table('chat', new Query({
   $from : new FromTable({
-    table : 'chatroom',
+    table : baseTableName,
     joinClauses : [
       {
         operator: 'LEFT',
@@ -86,11 +87,66 @@ query.table('chat', new Query({
 }))
 
 
+query.table('booking', new Query({
+  $from : new FromTable({
+    table : baseTableName,
+    joinClauses : [
+      {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('booking', '*')),
+            ],
+            $from: new FromTable('booking', 'booking'),
+            $where: new AndExpressions({
+              expressions: [
+                new IsNullExpression(new ColumnExpression('booking', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('booking', 'deletedBy'), false),
+              ]
+            }),
+          }),
+          $as: 'booking'
+        }),
+        $on: new BinaryExpression(new ColumnExpression('chatroom', 'roomKey'), '=', new ColumnExpression('booking', 'id'))
+      }
+    ]
+  })
+
+}))
+
+query.table('shipment', new Query({
+  $from : new FromTable({
+    table : baseTableName,
+    joinClauses : [
+      {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('shipment', '*')),
+            ],
+            $from: new FromTable('shipment', 'shipment'),
+            $where: new AndExpressions({
+              expressions: [
+                new IsNullExpression(new ColumnExpression('shipment', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('shipment', 'deletedBy'), false),
+              ]
+            }),
+          }),
+          $as: 'shipment'
+        }),
+        $on: new BinaryExpression(new ColumnExpression('chatroom', 'roomKey'), '=', new ColumnExpression('shipment', 'id'))
+      }
+    ]
+  })
+
+}))
 
 
 
 
-const baseTableName='chatroom'
+
 const fieldList = [
   'id',
   'chatroom',
@@ -120,11 +176,23 @@ const fieldList = [
     expression: new ColumnExpression('chat','createdAt'),
     companion:['table:chat']
 
-  }
+  },
   {
     name:'createdBy',
     expression: new ColumnExpression('chat','createdBy'),
     companion:['table:chat']
+
+  },
+  {
+    name:'bookingNo',
+    expression: new ColumnExpression('booking','bookingNo'),
+    companion:['table:booking']
+
+  },
+  {
+    name:'houseNo',
+    expression: new ColumnExpression('shipment','houseNo'),
+    companion:['table:shipment']
 
   }
 

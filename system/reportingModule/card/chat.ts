@@ -39,7 +39,9 @@ export default {
           "readIndex",
           "createdAt",
           "messageWithoutTag",
-          "createdBy"
+          "createdBy",
+          "houseNo",
+          "bookingNo"
         ]
 
 
@@ -53,7 +55,7 @@ export default {
           })
         }
         else {
-          params.sorting = new OrderBy(new ColumnExpression('chatroom','createdAt'), 'DESC')
+          params.sorting = new OrderBy(new ColumnExpression('chat','createdAt'), 'DESC')
         }
 
         //filter Logged In Users's message`
