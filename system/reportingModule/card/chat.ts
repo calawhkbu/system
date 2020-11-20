@@ -27,6 +27,8 @@ export default {
       async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
 
         const moment = prevResult.moment = (await this.preparePackages(user)).moment as typeof Moment
+        console.log('moment------------------')
+        console.log(moment)
         const subqueries = (params.subqueries = params.subqueries || {})
 
         params.fields = [
