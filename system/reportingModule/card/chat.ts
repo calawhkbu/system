@@ -39,7 +39,7 @@ export default {
           "readIndex",
           "lastMessageIndex",
           "createdAt",
-          "messageWithoutTag",
+          "lastMessage",
           "createdBy",
           "houseNo",
           "bookingNo"
@@ -85,7 +85,7 @@ export default {
         let results:any=[]
         //get unread Messages Only
      res.forEach(el => {
-       if(el.readIndex!==el.lastMessageIndex) results.push(el)
+       if(el.readIndex!==el.lastMessageIndex && el.lastMessageIndex) results.push(el)
      });
         return results && results.length>0?results :null
 

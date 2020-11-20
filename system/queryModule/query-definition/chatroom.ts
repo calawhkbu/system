@@ -75,6 +75,8 @@ query.table('chat',(params:IQueryParams)=>{
               $select: [
                 new ResultColumn(new ColumnExpression('chat', '*')),
                 new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'id')),'lastMessageIndex'),
+                new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'messageWithoutTag')),'lastMessage'),
+
 
                    ],
                    $from: [new FromTable('chat', 'chat'),new FromTable('chatroom', 'chatroom')],
@@ -222,15 +224,14 @@ const fieldList = [
     name: 'chatroomId',
     expression: new ColumnExpression('chat','chatroomId'),
   },
-  {
-    name: 'message',
-    expression: new ColumnExpression('chat','message'),
-  },
-  {
+  
+  // {
 
-    name: 'messageWithoutTag',
-    expression: new ColumnExpression('chat','messageWithoutTag'),
-  },
+  //   name: 'messageWithoutTag',
+  //   expression: new ColumnExpression('chat','messageWithoutTag'),
+  //   companion:['table:chat']
+
+  // },
   {
     name:'createdAt',
     expression: new ColumnExpression('chat','createdAt'),
