@@ -76,6 +76,9 @@ query.table('chat',(params:IQueryParams)=>{
                 new ResultColumn(new ColumnExpression('chat', '*')),
                 new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'id')),'lastMessageIndex'),
                 new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'messageWithoutTag')),'lastMessage'),
+                new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'createdAt')),'createdAtLast'),
+                new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'createdBy')),'createdByLast'),
+
 
 
                    ],
@@ -86,6 +89,7 @@ query.table('chat',(params:IQueryParams)=>{
                   new IsNullExpression(new ColumnExpression('chat', 'deletedBy'), false),
                   new BinaryExpression(new ColumnExpression('chatroom','userName'),'=',user.username),
                   new BinaryExpression(new ColumnExpression('chat','chatroomId'),'=',new ColumnExpression('chatroom','id')),
+
 
                 ]
               }),
@@ -161,47 +165,6 @@ query.table('shipment', new Query({
 }))
 
 
-
-
-//custom Expressions
-
-// query.register('lastMessageIndex',new Query({
-//   $where:    new BinaryExpression(new ColumnExpression('chat','chatroomId'),'=',new Unknown()),
-//   $limit:1
-
-
-// })).register('chatroomId',0)
-
-// const lastMessageIndexExpression = new QueryExpression(new Query({
-//   $select : [
-//     new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat','id')))
-//   ],
-//   $from: new FromTable({
-//     table: baseTableName,
-//     joinClauses : [{
-//       operator: 'LEFT',
-//       table: 'chat',
-//       $on: [new BinaryExpression(new ColumnExpression('chatroom', 'id'), '=', new ColumnExpression('chat', 'chatroomId'))]
-//     }]
-//   }),
-//   $where: [
-//     new IsNullExpression(new ColumnExpression('chat', 'deletedAt'), false),
-//     new IsNullExpression(new ColumnExpression('chat', 'deletedBy'), false),
-//     new BinaryExpression(new ColumnExpression('chat','chatroomId'),'=',new ColumnExpression('chatroom','id')),
-
-//   ],
-//   $order: [
-//     {
-//       expression: new ColumnExpression('chat', 'id'),
-//       order: 'DESC'
-
-//     }
-//   ],
-//   //$limit: 1
-// }))
-
-
-
 const fieldList = [
   'id',
   'chatroom',
@@ -224,26 +187,18 @@ const fieldList = [
     name: 'chatroomId',
     expression: new ColumnExpression('chat','chatroomId'),
   },
-  
   // {
-
-  //   name: 'messageWithoutTag',
-  //   expression: new ColumnExpression('chat','messageWithoutTag'),
+  //   name:'createdAt',
+  //   expression: new ColumnExpression('chat','createdAtLast'),
   //   companion:['table:chat']
 
   // },
-  {
-    name:'createdAt',
-    expression: new ColumnExpression('chat','createdAt'),
-    companion:['table:chat']
+  // {
+  //   name:'createdBy',
+  //   expression: new ColumnExpression('chat','createdByLast'),
+  //   companion:['table:chat']
 
-  },
-  {
-    name:'createdBy',
-    expression: new ColumnExpression('chat','createdBy'),
-    companion:['table:chat']
-
-  },
+  // },
   {
     name:'bookingNo',
     expression: new ColumnExpression('booking','bookingNo'),

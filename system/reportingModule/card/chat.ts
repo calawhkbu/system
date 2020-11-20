@@ -38,9 +38,9 @@ export default {
           "chatroom",
           "readIndex",
           "lastMessageIndex",
-          "createdAt",
+          "createdAtLast",
+          "createdByLast",
           "lastMessage",
-          "createdBy",
           "houseNo",
           "bookingNo"
         ]
@@ -85,7 +85,10 @@ export default {
         let results:any=[]
         //get unread Messages Only
      res.forEach(el => {
-       if(el.readIndex!==el.lastMessageIndex && el.lastMessageIndex) results.push(el)
+       if(el.readIndex!==el.lastMessageIndex && el.lastMessageIndex){
+         el.createdAtLast=moment( el.createdAtLast).add(8,'h')
+        results.push(el)
+       }
      });
         return results && results.length>0?results :null
 
