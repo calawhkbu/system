@@ -2,7 +2,6 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import { ColumnExpression, OrderBy } from 'node-jql'
 import Moment = require('moment-timezone')
-import moment = require('moment-timezone')
 
 import _ =require('lodash')
 
