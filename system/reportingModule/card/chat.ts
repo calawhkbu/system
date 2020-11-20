@@ -1,7 +1,9 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import { ColumnExpression, OrderBy } from 'node-jql'
-import Moment = require('moment')
+import Moment = require('moment-timezone')
+import moment = require('moment-timezone')
+
 import _ =require('lodash')
 
 import { expandBottomSheetGroupByEntity, expandSummaryVariable, extendDate, handleBottomSheetGroupByEntityValue, summaryVariableListBooking, groupByEntityListBooking } from 'utils/card'
@@ -27,9 +29,8 @@ export default {
       async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
 
         const moment = prevResult.moment = (await this.preparePackages(user)).moment as typeof Moment
-        console.log('moment------------------')
-        console.log(moment)
         const subqueries = (params.subqueries = params.subqueries || {})
+       
 
         params.fields = [
       
@@ -82,13 +83,13 @@ export default {
     {
       type: 'callDataService',
       dataServiceQuery: ['chatroom', 'chatroom'],
-      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
-        // EDIT HERE
+      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result,user): any[] {
+        const timezone=user.configuration.timezone
         let results:any=[]
         //get unread Messages Only
      res.forEach(el => {
        if(el.readIndex!==el.lastMessageIndex && el.lastMessageIndex){
-         el.createdAtLast=moment( el.createdAtLast).add(8,'h')
+         el.createdAtLast=moment(el.createdAtLast).tz(timezone).format('YYYY-MM-DD HH:mm:ss')
         results.push(el)
        }
      });
