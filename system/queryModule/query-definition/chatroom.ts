@@ -187,18 +187,6 @@ const fieldList = [
     name: 'chatroomId',
     expression: new ColumnExpression('chat','chatroomId'),
   },
-  // {
-  //   name:'createdAt',
-  //   expression: new ColumnExpression('chat','createdAtLast'),
-  //   companion:['table:chat']
-
-  // },
-  // {
-  //   name:'createdBy',
-  //   expression: new ColumnExpression('chat','createdByLast'),
-  //   companion:['table:chat']
-
-  // },
   {
     name:'bookingNo',
     expression: new ColumnExpression('booking','bookingNo'),

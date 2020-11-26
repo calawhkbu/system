@@ -27,7 +27,7 @@ import {
   MathExpression,
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
-import { ExpressionHelperInterface, registerAll, SummaryField, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter, IfExpression, RegisterInterface } from 'utils/jql-subqueries'
+import { ExpressionHelperInterface, registerAll, SummaryField, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter, IfExpression, RegisterInterface, IfNullExpression } from 'utils/jql-subqueries'
 import { supportSopTask } from 'utils/sop-task'
 
 // warning : this file should not be called since the shipment should be getting from outbound but not from internal
@@ -3233,7 +3233,6 @@ const dateList = [
 
     const dateActualInUtcExpression = new MathExpression(shipmentDateUtcFlexDataExpression, '->>', `$.${currentValue}DateActual`)
     const dateEstimatedInUtcExpression = new MathExpression(shipmentDateUtcFlexDataExpression, '->>', `$.${currentValue}DateEstimated`)
-
     return accumulator.concat([
       {
         name: `${currentValue}DateActual`,
@@ -3254,7 +3253,7 @@ const dateList = [
         name: `${currentValue}DateEstimatedInUtc`,
         expression: dateEstimatedInUtcExpression,
         companion: ['table:shipment_date_utc']
-      },
+      }
     ])
   }, []),
 
@@ -3310,6 +3309,39 @@ query.registerResultColumn(
     companion.push(`field:${dateString}DateActual`)
     return companion
   }, []))
+)
+
+
+//AWS Tailored Made Conditions
+//sentToConsigneeDateActual
+const sentToConsigneeDateActual=new ColumnExpression('shipment_date_utc','sentToConsigneeDateActual')
+const sentToConsigneeDateEstimated=new ColumnExpression('shipment_date_utc','sentToConsigneeDateEstimated')
+ const nowExpression = new FunctionExpression('UTC_TIMESTAMP')
+ const departureDateEstimated=new ColumnExpression('shipment_date_utc','departureDateEstimated')
+ const departureDateActual=new ColumnExpression('shipment_date_utc','departureDateActual')
+ const arrivalDateEstimated=new ColumnExpression('shipment_date_utc','arrivalDateEstimated')
+
+
+query.subquery(true,'containerReturnConditions', new Query({
+  $where: new CaseExpression({
+    cases: [
+      {
+        $when:  new AndExpressions([new OrExpressions([
+            new IsNullExpression(sentToConsigneeDateActual,false),
+            new IsNullExpression(sentToConsigneeDateEstimated,false)
+          ]),  
+          new BinaryExpression(nowExpression,'>=',IfNullExpression(departureDateEstimated,departureDateActual))
+        ]),
+        $then:new BinaryExpression(nowExpression,'>=',new FunctionExpression('DATE_ADD',IfNullExpression(sentToConsigneeDateActual,sentToConsigneeDateEstimated),new ParameterExpression({prefix: 'INTERVAL',
+        expression: 4,
+        suffix: 'DAY'})))
+      },
+    ],
+      $else:  new BinaryExpression(nowExpression,'>=',new FunctionExpression('DATE_ADD',arrivalDateEstimated,new ParameterExpression({prefix: 'INTERVAL',
+      expression: 7,
+      suffix: 'DAY'})))
+  }),
+}),'table:shipment_date_utc'
 )
 
 // Search

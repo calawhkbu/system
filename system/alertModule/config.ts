@@ -34,7 +34,6 @@ const ASWAlertConfigList = [
 
         // missing arrivalDateActual
         arrivalDateActualIsNull: true,
-
         // after arrivalDateEstimated + 1 day
         after_arrivalDateEstimatedInUtc: {
           value: {
@@ -191,7 +190,7 @@ const ASWAlertConfigList = [
 
         // missing sendAMSDateActual
         sendAMSDateActualIsNull: true,
-
+        
         // after_arrivalDateEstimatedInUtc + 1 day
         after_arrivalDateEstimatedInUtc: {
           value: {

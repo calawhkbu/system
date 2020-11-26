@@ -135,12 +135,8 @@ export default {
               alertContent: messageTranslation ? swig.render(messageTranslation, { locals: {} }) : key,
               count: result[0].count,
               icon: 'notification_important',
-              tableName: prevResult.tableName,
+              tableName: params.subqueries.entityType && params.subqueries.entityType.value||null,
               subqueries: prevResult.subqueries,
-              collapsed: `${prevResult.tableName}-${key}`,
-              expanded: 0,
-              indicator: '-',
-              isEntityRow: true,
               handleAlertSubComponentLayoutName
             })
           }
