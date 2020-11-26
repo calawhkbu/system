@@ -383,6 +383,12 @@
                 "class": "padding-top-4",
                 "layoutName": "booking/base/reference"
               }
+            }, {
+              "is": "AsyncComponent",
+              "props": {
+                "class": "padding-top-4",
+                "layoutName": "booking/base/audit"
+              }
             }]
           },
           {
@@ -517,6 +523,13 @@
                   "props": {
                     "class": "xs-12 margin-bottom-2",
                     "layoutName": "booking/base/reference"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/audit"
                   }
                 }
               ]

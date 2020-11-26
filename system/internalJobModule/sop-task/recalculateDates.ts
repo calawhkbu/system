@@ -1,4 +1,3 @@
-import { NotImplementedException } from '@nestjs/common'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Op } from 'sequelize'
 import { Job } from 'modules/internal-job/job'
@@ -11,6 +10,7 @@ export const filters: any[] = [
     display: 'entityType',
     type: 'list',
     props: {
+      required: true,
       api: {
         query: {
           url: 'sopTask/supported',
@@ -24,10 +24,22 @@ export const filters: any[] = [
     type: 'list',
     props: {
       items: [
-        '10',
-        '20',
-        '50',
-        '100'
+        {
+          value: 10,
+          label: '10'
+        },
+        {
+          value: 20,
+          label: '20'
+        },
+        {
+          value: 50,
+          label: '50'
+        },
+        {
+          value: 100,
+          label: '100'
+        }
       ]
     }
   }
@@ -67,6 +79,8 @@ export default async function recalculateDates(this: Job, params: IQueryParams, 
   // order
   ids = ids.sort((l, r) => l < r ? -1 : l > r ? 1 : 0).filter(id => id > lastId)
 
+  await this.log(`${ids.length} ${tableName} records found matched`)
+
   const result: any[] = []
   let error: any
   try {
@@ -92,12 +106,12 @@ export default async function recalculateDates(this: Job, params: IQueryParams, 
           throw ERROR.UNSUPPORTED_ENTITY_TYPE()
       }
       await this.service.sopTaskTableService.bulkUpdateDates(tableName, entities, user, dateTimezoneMapping)
-      this.progress(Math.min(i + per, ids.length) / ids.length)
+      this.progress(Math.min(i + per, ids.length) / ids.length * 100)
       await this.log(`Completed ${Math.min(i + per, ids.length)}/${ids.length} records`)
       result.push(...ids_)
     }
 
-    await this.log(`All ${ids.length} records completed`)
+    await this.log(`All ${ids.length} ${tableName} records completed`)
   }
   catch (e) {
     console.error(e, e.stack, 'PrepareService')

@@ -40,51 +40,52 @@ const mainParties = ['shipper', 'consignee', 'roAgent', 'linerAgent', 'agent', '
 
 export default async (user: JwtPayload, helper: { partyTableService: PartyTableService }) => {
   let bookingParty: any = {}
-
-
-  const internalParties = user.parties.filter(party => party.isBranch)
-  if (internalParties && internalParties.length) { // internal User
-    for (const party of user.parties) {
-      if (party.partyGroupCode === user.selectedPartyGroup.code && !bookingParty['forwarderPartyId']) {
-        const isForwarder = party.types.includes('forwarder') || party.types.includes('office')
-        if (isForwarder) {
-          bookingParty = {
-            ...bookingParty,
-            ...convertToPartyOfBookingParty(party, 'forwarder')
+  const selectedPartyGroup = user.selectedPartyGroup
+  if (selectedPartyGroup) {
+    const selectedParties = user.parties.filter(party => party.partyGroupCode === selectedPartyGroup.code)
+    const internalParties = selectedParties.filter(party => party.isBranch)
+    if (internalParties && internalParties.length) { // internal User
+      for (const party of internalParties) {
+        if (party.partyGroupCode === user.selectedPartyGroup.code && !bookingParty['forwarderPartyId']) {
+          if (party.isBranch) {
+            bookingParty = {
+              ...bookingParty,
+              ...convertToPartyOfBookingParty(party, 'forwarder')
+            }
+          }
+        }
+      }
+    } else { // external party
+      let selectedParty = user.parties.find(party => {
+        const defaultType = party.defaultType || party.types[0]
+        return defaultType && mainParties.includes(defaultType)
+      })
+      if (!selectedParty) {
+        selectedParty = user.parties[0]
+      }
+      const defaultType = selectedParty.defaultType || selectedParty.types[0]
+      if (mainParties.includes(defaultType)) {
+        bookingParty = {
+          ...bookingParty,
+          ...convertToPartyOfBookingParty(selectedParty, defaultType)
+        }
+      } else {
+        bookingParty = {
+          ...bookingParty,
+          flexData: {
+            moreParty: [defaultType],
+            ...convertToPartyOfBookingParty(selectedParty, defaultType)
           }
         }
       }
     }
-  } else { // external party
-    let selectedParty = user.parties.find(party => {
-      const defaultType = party.defaultType || party.types[0]
-      return defaultType && mainParties.includes(defaultType)
-    })
-    if (!selectedParty) {
-      selectedParty = user.parties[0]
-    }
-    const defaultType = selectedParty.defaultType || selectedParty.types[0]
-    if (mainParties.includes(defaultType)) {
-      bookingParty = {
-        ...bookingParty,
-        ...convertToPartyOfBookingParty(selectedParty, defaultType)
-      }
-    } else {
-      bookingParty = {
-        ...bookingParty,
-        flexData: {
-          moreParty: [defaultType],
-          ...convertToPartyOfBookingParty(selectedParty, defaultType)
+    if (!bookingParty.forwarderPartyId && user.selectedPartyGroup.configuration.defaultBookingForwarderId) {
+      const party = await helper.partyTableService.findOne(user.selectedPartyGroup.configuration.defaultBookingForwarderId)
+      if (party) {
+        bookingParty = {
+          ...bookingParty,
+          ...convertToPartyOfBookingParty(party, 'forwarder')
         }
-      }
-    }
-  }
-  if (!bookingParty.forwarderPartyId && user.selectedPartyGroup.configuration.defaultBookingForwarderId) {
-    const party = await helper.partyTableService.findOne(user.selectedPartyGroup.configuration.defaultBookingForwarderId)
-    if (party) {
-      bookingParty = {
-        ...bookingParty,
-        ...convertToPartyOfBookingParty(party, 'forwarder')
       }
     }
   }

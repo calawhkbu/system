@@ -1,0 +1,216 @@
+{
+  "layout": "v-card",
+  "components": [
+    {
+      "is": "MouseHidden",
+      "props": {
+        "hiddenProps": {
+          "style": {
+            "position": "absolute",
+            "right": "0px",
+            "top": "0px"
+          }
+        }
+      },
+      "slots": [
+        {
+          "name": "hidden",
+          "is": "DynamicComponent",
+          "props": {
+            "components": [
+              {
+                "is": "RightDrawer",
+                "props": {
+                  "hide-overlay": true,
+                  "buttonComponentProps": {
+                    "icon": true,
+                    "small": true,
+                    "class": "zindex-3 margin-0"
+                  }
+                },
+                "slots": [
+                  {
+                    "name": "button",
+                    "is": "Icon",
+                    "props": {
+                      "icon": "open_in_new"
+                    }
+                  },
+                  {
+                    "name": "default",
+                    "is": "DynamicComponent",
+                    "props": {
+                      "components": [
+                        {
+                          "is": "WidgetForm",
+                          "props": {
+                            "fields": [
+                              {
+                                "label": "ShipmentPage.createdUserId",
+                                "name": "createdUserId",
+                                "component": "v-text-field",
+                                "checkDisplayWhen": "return form && form.createdUserId",
+                                "class": "xs-12"
+                              },
+                              {
+                                "label": "ShipmentPage.createdUserEmail",
+                                "name": ["createdUserEmail", "createdBy"],
+                                "component": "v-text-field",
+                                "checkDisplayWhen": "return form && (form.createdUserEmail || form.createdBy)",
+                                "class": "xs-12"
+                              },
+                              {
+                                "label": "ShipmentPage.createdAt",
+                                "name": ["shipmentCreateTime", "createdAt"],
+                                "component": "DateTimePicker",
+                                "checkDisplayWhen": "return form && (form.shipmentCreateTime || form.createdAt)",
+                                "class": "xs-12",
+                                "props": {
+                                  "type": "datetime",
+                                  "defaultFormat": "ddd MMM DD YYYY HH:mm",
+                                  "useOwnFormat": true
+                                }
+                              },
+                              {
+                                "label": "ShipmentPage.updatedUserId",
+                                "name": "updatedUserId",
+                                "component": "v-text-field",
+                                "checkDisplayWhen": "return form && form.updatedUserId",
+                                "class": "xs-12"
+                              },
+                              {
+                                "label": "ShipmentPage.updatedUserEmail",
+                                "name": ["updatedUserEmail", "updatedBy"],
+                                "component": "v-text-field",
+                                "checkDisplayWhen": "return form && (form.updatedUserEmail || form.updatedBy)",
+                                "class": "xs-12"
+                              },
+                              {
+                                "label": "ShipmentPage.updatedAt",
+                                "name": ["shipmentLastUpdateTime", "updatedAt"],
+                                "component": "DateTimePicker",
+                                "checkDisplayWhen": "return form && (form.shipmentLastUpdateTime || form.updatedAt)",
+                                "class": "xs-12",
+                                "props": {
+                                  "type": "datetime",
+                                  "defaultFormat": "ddd MMM DD YYYY HH:mm",
+                                  "useOwnFormat": true
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "is": "DynamicComponent",
+          "props": {
+            "components": [
+              {
+                "is": "v-card-title",
+                "props": {
+                  "class": "bold uppercase padding-0 min-height-28 padding-leftright-4"
+                },
+                "slots": [
+                ]
+              },
+              {
+                "is": "v-divider"
+              },
+              {
+                "is": "WidgetForm",
+                "props": {
+                  "class": "padding-top-5",
+                  "fields": [
+                    {
+                      "label": "ShipmentPage.createdUserId",
+                      "name": "createdUserId",
+                      "component": "v-text-field",
+                      "checkDisplayWhen": "return form && form.createdUserId",
+                      "class": "xs-12 md-4"
+                    },
+                    {
+                      "checkDisplayWhen": "return form && !form.createdUserId",
+                      "class": "xs-12 md-4"
+                    },
+                    {
+                      "label": "ShipmentPage.createdUserEmail",
+                      "name": ["createdUserEmail", "createdBy"],
+                      "component": "v-text-field",
+                      "checkDisplayWhen": "return form && (form.createdUserEmail || form.createdBy)",
+                      "class": "xs-12 md-4"
+                    },
+                    {
+                      "checkDisplayWhen": "return form && !(form.createdUserEmail || form.createdBy)",
+                      "class": "xs-12 md-4"
+                    },
+                    {
+                      "label": "ShipmentPage.createdAt",
+                      "name": ["shipmentCreateTime", "createdAt"],
+                      "component": "DateTimePicker",
+                      "checkDisplayWhen": "return form && (form.shipmentCreateTime || form.createdAt)",
+                      "class": "xs-12 md-4",
+                      "props": {
+                        "type": "datetime",
+                        "defaultFormat": "ddd MMM DD YYYY HH:mm",
+                        "useOwnFormat": true
+                      }
+                    },
+                    {
+                      "checkDisplayWhen": "return form && !(form.shipmentCreateTime || form.createdAt)",
+                      "class": "xs-12 md-4"
+                    },
+                    {
+                      "label": "ShipmentPage.updatedUserId",
+                      "name": "updatedUserId",
+                      "component": "v-text-field",
+                      "checkDisplayWhen": "return form && form.updatedUserId",
+                      "class": "xs-12 md-4"
+                    },
+                    {
+                      "checkDisplayWhen": "return form && !form.updatedUserId",
+                      "class": "xs-12 md-4"
+                    },
+                    {
+                      "label": "ShipmentPage.updatedUserEmail",
+                      "name": ["updatedUserEmail", "updatedBy"],
+                      "component": "v-text-field",
+                      "checkDisplayWhen": "return form && (form.updatedUserEmail || form.updatedBy)",
+                      "class": "xs-12 md-4"
+                    },
+                    {
+                      "checkDisplayWhen": "return form && !(form.updatedUserEmail || form.updatedBy)",
+                      "class": "xs-12 md-4"
+                    },
+                    {
+                      "label": "ShipmentPage.updatedAt",
+                      "name": ["shipmentLastUpdateTime", "updatedAt"],
+                      "component": "DateTimePicker",
+                      "checkDisplayWhen": "return form && (form.shipmentLastUpdateTime || form.updatedAt)",
+                      "class": "xs-12 md-4",
+                      "props": {
+                        "type": "datetime",
+                        "defaultFormat": "ddd MMM DD YYYY HH:mm",
+                        "useOwnFormat": true
+                      }
+                    },
+                    {
+                      "checkDisplayWhen": "return form && !(form.shipmentLastUpdateTime || form.updatedAt)",
+                      "class": "xs-12 md-4"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -43,13 +43,13 @@ const fieldList = (propParam: PropParam) => {
   }
 
   if (includeEstimated) {
-    fieldList.push(fieldObject(`${dateName}DateEstimated`))
+    fieldList.push(fieldObject(`${tableName}.${dateName}DateEstimated`))
   }
   if (includeActual) {
-    fieldList.push(fieldObject(`${dateName}DateActual`))
+    fieldList.push(fieldObject(`${tableName}.${dateName}DateActual`))
   }
   if (includeRemark) {
-    fieldList.push(fieldObject(`${dateName}DateRemark`,'v-text-field'))
+    fieldList.push(fieldObject(`${tableName}.${dateName}DateRemark`,'v-text-field'))
   }
 
   return fieldList

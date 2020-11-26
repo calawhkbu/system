@@ -185,8 +185,11 @@
             "name": "bookingParty.{{flex}}{{key}}PartyContactPersonName",
             "selector": "contactPersonName"
           }, {
-            "name": "bookingParty.{{flex}}{{key}}PartyContactPersonPhone",
+            "name": "bookingParty.{{flex}}{{key}}PartyIsBuyer",
             "selector": "contactPersonPhone"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyIsBuyer",
+            "selector": "isBuyer"
           }],
           "props": {
             "createDialog": {
@@ -551,7 +554,8 @@
                   },
                   "q": {
                     "value": "{{context.search}}"
-                  }
+                  },
+                  "checkBuyer": ""
                 },
                 "limit": 5
               }

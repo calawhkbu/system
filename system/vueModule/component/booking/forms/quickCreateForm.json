@@ -391,7 +391,7 @@
           "label": "BookingPage.poNo",
           "name": "flexData.poNo",
           "component": "v-text-field",
-          "checkDisplayWhen": "return user.roles.filter((role) => role.name === 'PURCHASE_ORDER').length === 0",
+          "checkDisplayWhen": "return context.$store.state.widget.data && context.$store.state.widget.data.bookingParty && !context.$store.state.widget.data.bookingParty.controllingCustomerPartyIsBuyer",
           "class": "xs-12 md-4 padding-topbottom-4"
         },
         {
@@ -402,7 +402,7 @@
           "label": "BookingPage.poNo",
           "name": "flexData.poNo",
           "component": "AsyncAutoSuggest",
-          "checkDisplayWhen": "return user.roles.filter((role) => role.name === 'PURCHASE_ORDER').length > 0",
+          "checkDisplayWhen": "return context.$store.state.widget.data && context.$store.state.widget.data.bookingParty && context.$store.state.widget.data.bookingParty.controllingCustomerPartyIsBuyer",
           "class": "xs-12 md-4 padding-topbottom-4",
           "props": {
             "showValue": false,
@@ -459,7 +459,7 @@
           "name": "flexData.quantity",
           "component": "v-text-field",
           "class": "xs-12 md-4 padding-topbottom-4",
-          "checkDisplayWhen": "return form && form.serviceCode !== 'FCL/FCL';"
+          "checkDisplayWhen": "return form && ((!form.serviceCode) || (form.service && form.service.flexData && !form.service.flexData.changeContainer) || (!(form.service || {}).flexData && form.serviceCode && !form.serviceCode.includes('FCL')));"
         },
         {
           "containerComponent": "v-card",
@@ -470,7 +470,7 @@
           "name": "draftContainer20",
           "component": "NumberField",
           "class": "xs-12 md-1 padding-topbottom-4",
-          "checkDisplayWhen": "return form && form.serviceCode === 'FCL/FCL';"
+          "checkDisplayWhen": "return form && ((form.service && form.service.flexData && form.service.flexData.changeContainer) || (!(form.service || {}).flexData && form.serviceCode && form.serviceCode.includes('FCL')));"
         },
         {
           "containerComponent": "v-card",
@@ -481,7 +481,7 @@
           "name": "draftContainer40",
           "component": "v-text-field",
           "class": "xs-12 md-1 padding-topbottom-4",
-          "checkDisplayWhen": "return form && form.serviceCode === 'FCL/FCL';"
+          "checkDisplayWhen": "return form && ((form.service && form.service.flexData && form.service.flexData.changeContainer) || (!(form.service || {}).flexData && form.serviceCode && form.serviceCode.includes('FCL')));"
         },
         {
           "containerComponent": "v-card",
@@ -492,7 +492,7 @@
           "name": "draftContainer40HQ",
           "component": "NumberField",
           "class": "xs-12 md-1 padding-topbottom-4",
-          "checkDisplayWhen": "return form && form.serviceCode === 'FCL/FCL';"
+          "checkDisplayWhen": "return form && ((form.service && form.service.flexData && form.service.flexData.changeContainer) || (!(form.service || {}).flexData && form.serviceCode && form.serviceCode.includes('FCL')));"
         },
         {
           "containerComponent": "v-card",
@@ -503,7 +503,7 @@
           "name": "draftContainer45",
           "component": "NumberField",
           "class": "xs-12 md-1 padding-topbottom-4",
-          "checkDisplayWhen": "return form && form.serviceCode === 'FCL/FCL';"
+          "checkDisplayWhen": "return form && ((form.service && form.service.flexData && form.service.flexData.changeContainer) || (!(form.service || {}).flexData && form.serviceCode && form.serviceCode.includes('FCL')));"
         },
         {
           "containerComponent": "v-card",

@@ -375,14 +375,6 @@
             "boolean": true
           },
           {
-            "key": "poNo",
-            "tdComponent": {
-              "props": {
-                "html": "{% if value != null %}{{ JSON.parse(value) | join(', ') }}{% endif %}"
-              }
-            }
-          },
-          {
             "key": "noOfTasks",
             "i18nContext": "SopTask",
             "label": "noOfOutstandingTasks"

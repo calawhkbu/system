@@ -251,6 +251,68 @@
                       "width": "150px" 
                     }
                   }
+                },
+                {
+                  "component": "LocalSelect",
+                  "label": "BookingPage.containerNo",
+                  "name": "bookingContainer.containerNo",
+                  "props": {
+                    "item-text": "containerNo",
+                    "item-value": "containerNo",
+                    "showValue": false,
+                    "funcItems": "return (context.$store.state.widget.data.bookingContainers || []).reduce((re, item) => { if(item.containerNo) { re = re || []; re.push({ id: item.id, containerNo: item.containerNo })} return re }, null)"
+                  },
+                  "colGroupProps": {
+                    "style": { 
+                      "width": "150px" 
+                    }
+                  }
+                },
+                {
+                  "label": "Split Po Item",
+                  "component": "button-field",
+                  "name": "dummy",
+                  "slots": [{
+                    "is": "Icon",
+                    "props": {
+                      "icon": "call_split"
+                    }
+                  }],
+                  "props": {
+                    "flat": true,
+                    "icon": true,
+                    "events": {
+                      "click.stop": [{
+                        "type": "function",
+                        "otherParams": {
+                          "func": [
+                            "const curRow = context.form",
+                            "if (!curRow || !curRow.quantity) return",
+                            "const newRow = context._.cloneDeep(curRow)",
+                            "const newQuantity = Math.floor(curRow.quantity / 2)",
+                            "newRow.quantity = curRow.quantity - newQuantity",
+                            "curRow.quantity = newQuantity",
+                            "if (newRow.id) { delete newRow.id }",
+                            "const poPack = context.$store.state.widget.data.bookingPopackings",
+                            "const index = parseInt(context.id.split('-')[2])",
+                            "const finalPacking = [",
+                            "... poPack.slice(0, index),",
+                            "curRow,",
+                            "newRow,",
+                            "... poPack.slice(index+1)",
+                            "]",
+                            "context.runFunctions([{",
+                            "type: 'dispatch',",
+                            "otherParams: {",
+                                "name: 'widget/updateData',",
+                                "value: { bookingPopackings: finalPacking }",
+                              "}",
+                            "}])"
+                          ]
+                        }
+                      }]
+                    }
+                  }
                 }
               ]
             }

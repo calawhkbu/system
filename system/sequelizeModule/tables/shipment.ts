@@ -1,6 +1,7 @@
 import { IConditionalExpression, OrExpressions, AndExpressions, BinaryExpression, ColumnExpression, FunctionExpression, InExpression, Query, ResultColumn, FromTable, MathExpression } from 'node-jql'
 import { JwtPayload, JwtPayloadParty } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
+import moment = require('moment')
 import { joinData } from 'utils/helper'
 import { Shipment } from 'models/main/shipment'
 import { IQueryParams } from 'classes/query'
@@ -11,6 +12,18 @@ export const setDataFunction = {
       return user.selectedPartyGroup.code || partyGroupCode
     }
     return partyGroupCode
+  },
+  shipmentCreateTime: async({ shipmentCreateTime }: Shipment, user: JwtPayload) => {
+    if (!shipmentCreateTime) {
+      return moment.utc()
+    }
+    return shipmentCreateTime
+  },
+  shipmentLastUpdateTime: async({ shipmentLastUpdateTime }: Shipment, user: JwtPayload) => {
+    if (!shipmentLastUpdateTime) {
+      return moment.utc()
+    }
+    return shipmentLastUpdateTime
   },
   bookingNo: async({ shipmentBooking = [] }) => joinData(shipmentBooking, 'bookingNo'),
   contractNos: async({ shipmentContainers = [] }: any) => joinData(shipmentContainers, 'contractNo'),

@@ -47,7 +47,7 @@ const query = new QueryDef(
       new ResultColumn(new ColumnExpression('party', 'cityCode'), 'partyCityCode'),
       new ResultColumn(new ColumnExpression('party', 'stateCode'), 'partyStateCode'),
       new ResultColumn(new ColumnExpression('party', 'countryCode'), 'partyCountryCode'),
-      new ResultColumn(new ColumnExpression('party', 'zip'), 'partyZip'),
+      new ResultColumn(new ColumnExpression('party', 'zip'), 'partyZip')
     ],
     $from: new FromTable(
       'party',
@@ -168,5 +168,41 @@ query
   .register('value', 0)
   .register('value', 1)
   .register('value', 2)
+
+// for checking if user has po function in creating Booking in frontend
+const checkBuyerConditionExpression = new CaseExpression({
+  cases: [{
+      $when: new QueryExpression(new Query({
+        $select: new Value(1),
+        $from: new FromTable('party_type', 'party_type_buyer_check'),
+        $where: [
+          new BinaryExpression(
+            new ColumnExpression('party', 'id'),
+            '=',
+            new ColumnExpression('party_type_buyer_check', 'partyId')
+          ),
+          new BinaryExpression(
+            new ColumnExpression('party_type_buyer_check', 'type'),
+            '=',
+            new Value('buyer')
+          )
+        ],
+        $limit: 1
+    })),
+    $then: new Value(true)
+  }],
+  $else: new Value(false)
+})
+
+query
+  .register(
+    'checkBuyer',
+    new Query({
+      $select: new ResultColumn(
+        checkBuyerConditionExpression,
+        'isBuyer'
+      )
+    })
+  )
 
 export default query

@@ -3,7 +3,7 @@
     {
       "is": "AsyncComponent",
       "class": "xs-12 full-width",
-      "if": "return context.$store.state.auth.userProfile.roles.some((role) => role.name === 'PURCHASE_ORDER')",
+      "if": "try { return context.$store.state.widget.data.bookingParty.controllingCustomerPartyIsBuyer } catch(e) { return false }",
       "props": {
         "layoutName": "booking/forms/poItems"
       }
@@ -13,6 +13,13 @@
       "class": "xs-12",
       "props": {
         "fields": [
+          {
+            "label": "BookingPage.poNo",
+            "name": "flexData.poNo",
+            "component": "v-text-field",
+            "class": "xs-12 md-2",
+            "checkDisplayWhen": "return !(form && form.bookingParty.controllingCustomerPartyIsBuyer)"
+          },
           {
             "label": "BookingPage.quantity",
             "name": "flexData.quantity",
@@ -97,7 +104,7 @@
           "label": "BookingPage.BookingPacking",
           "name": "bookingPopackings",
           "component": "TableField",
-          "checkDisplayWhen": "return !context.$store.state.auth.userProfile.roles.some((role) => role.name === 'PURCHASE_ORDER')",
+          "checkDisplayWhen": "return !(form && form.bookingParty.controllingCustomerPartyIsBuyer)",
           "props": {
             "topLabel": true,
             "fields": [{
@@ -302,6 +309,22 @@
                       "value": "LBs"
                     }
                   ]
+                }
+              },
+              {
+                "component": "LocalSelect",
+                "label": "BookingPage.containerNo",
+                "name": "bookingContainer.containerNo",
+                "props": {
+                  "item-text": "containerNo",
+                  "item-value": "containerNo",
+                  "showValue": false,
+                  "funcItems": "return (context.$store.state.widget.data.bookingContainers || []).reduce((re, item) => { if(item.containerNo) { re = re || []; re.push({ id: item.id, containerNo: item.containerNo })} return re }, null)"
+                },
+                "colGroupProps": {
+                  "style": { 
+                    "width": "10%" 
+                  }
                 }
               }
             ]

@@ -1,4 +1,7 @@
-import { QueryDef, SubqueryArg } from 'classes/query/QueryDef'
+import {
+  QueryDef,
+  SubqueryArg
+} from 'classes/query/QueryDef'
 import {
   Query,
   FromTable,
@@ -21,26 +24,11 @@ import {
 import { IQueryParams } from 'classes/query'
 import { registerAll, ExpressionHelperInterface } from 'utils/jql-subqueries'
 
+const baseTableName = 'code_master'
+
 const query = new QueryDef(
   new Query({
-    $from : new FromTable('code_master'),
-    $where : new OrExpressions([
-      new IsNullExpression(new ColumnExpression('code_master', 'partyGroupCode'), true),
-      new AndExpressions([
-        new IsNullExpression(new ColumnExpression('code_master', 'partyGroupCode'), false),
-        new ExistsExpression(new Query({
-          $from : new FromTable({
-            table : 'code_master',
-            $as : 'b'
-          }),
-          $where : [
-            new BinaryExpression(new ColumnExpression('b', 'codeType'), '=', new ColumnExpression('code_master', 'codeType')),
-            new BinaryExpression(new ColumnExpression('b', 'code'), '=', new ColumnExpression('code_master', 'code')),
-            new IsNullExpression(new ColumnExpression('b', 'partyGroupCode'), true)
-          ]
-        }), true)
-      ])
-    ])
+    $from : new FromTable(baseTableName, baseTableName),
   })
 )
 
@@ -65,7 +53,7 @@ const activeStatusExpression = new CaseExpression({
   $else : new Value('active')
 })
 
-const baseTableName = 'code_master'
+
 
 const fieldList = [
 

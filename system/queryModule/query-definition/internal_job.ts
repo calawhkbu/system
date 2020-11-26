@@ -45,6 +45,7 @@ export default query.useShortcuts([
     name: 'progress',
     expression: re => IfExpression(
       new OrExpressions([
+        new BinaryExpression(re['status'], '=', new Value('Pending')),
         new BinaryExpression(re['status'], '=', new Value('Running')),
         new BinaryExpression(re['status'], '=', new Value('Error'))
       ]),

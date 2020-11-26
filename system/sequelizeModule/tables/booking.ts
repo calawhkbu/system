@@ -56,7 +56,7 @@ export const setDataFunction = {
       const party = await context.partyTableService.findOneWithScope(
         'onlyItself',
         {
-          where: { thirdPartyCode: { erp: bookingParty.controllingCustomerPartyCode } }
+          where: { erpCode: bookingParty.controllingCustomerPartyCode }
         } as any,
         user,
         transaction
@@ -72,7 +72,7 @@ export const setDataFunction = {
       const party = await context.partyTableService.findOneWithScope(
         'onlyItself',
         {
-          where: { thirdPartyCode: { erp: bookingParty.shipperPartyCode } }
+          where: { erpCode: bookingParty.shipperPartyCode }
         } as any,
         user,
         transaction
@@ -88,7 +88,7 @@ export const setDataFunction = {
       const party = await context.partyTableService.findOneWithScope(
         'onlyItself',
         {
-          where: { thirdPartyCode: { erp: bookingParty.consigneePartyCode } }
+          where: { erpCode: bookingParty.consigneePartyCode }
         } as any,
         user,
         transaction

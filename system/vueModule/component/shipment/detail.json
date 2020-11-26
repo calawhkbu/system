@@ -309,6 +309,13 @@
                   "class": "padding-top-4",
                   "layoutName": "shipment/base/reference"
                 }
+              },
+              {
+                "is": "AsyncComponent",
+                "props": {
+                  "class": "padding-top-4",
+                  "layoutName": "shipment/base/audit"
+                }
               }
             ]
           },
@@ -465,6 +472,13 @@
                     "class": "xs-12 margin-bottom-2 padding-top-4",
                     "layoutName": "shipment/base/reference"
                   }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "shipment/base/audit"
+                  }
                 }
               ]
             }
@@ -524,6 +538,13 @@
                   "props": {
                     "class": "xs-12 margin-bottom-2",
                     "layoutName": "booking/base/reference"
+                  }
+                },
+                {
+                  "is": "AsyncComponent",
+                  "props": {
+                    "class": "xs-12 margin-bottom-2",
+                    "layoutName": "booking/base/audit"
                   }
                 }
               ]

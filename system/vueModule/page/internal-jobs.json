@@ -1,0 +1,158 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "TableTool",
+    "props": {
+      "title": "Internal Jobs",
+      "back": "/admin",
+      "urlFormat": "/admin/internal-jobs",
+      "reportingKey": "internalJobs",
+      "reportingKeyKey": "reportIdParams",
+      "jql": "internal-jobs",
+      "hasReports": false,
+      "showFilterBar": true,
+      "enableShare": false,
+      "enableSetting": false,
+      "noPartyGroupFilters": true,
+      "nextPageComponent": "internal-job",
+      "noCache": true,
+      "clickFunction": {
+        "type": "router",
+        "otherParams": {
+          "func": "push",
+          "path": "/detail/{{id}}",
+          "base": true
+        }
+      },
+      "newReport": {
+        "filters": {
+          "status": {
+            "value": ["Pending", "Running"]
+          }
+        },
+        "configurations": {
+          "i18nContext": "InternalJob",
+          "sorting": {
+            "direction": "DESC",
+            "key": "createdAt",
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "internal_job",
+              "name": "createdAt"
+            }
+          },
+          "pagination": {
+            "current": 0,
+            "perPage": 20,
+            "remote": true
+          }
+        }
+      },
+      "fieldOptions": [
+        {
+          "key": "id",
+          "hidden": true
+        },
+        {
+          "key": "category",
+          "i18nContext": "SopTask"
+        },
+        {
+          "key": "progress",
+          "tdComponent": {
+            "is": "ProgressCell",
+            "props": {
+              "api": {
+                "method": "GET",
+                "url": "internal-job/progress/{{ row.id }}"
+              }
+            }
+          },
+          "align": "left"
+        },
+        {
+          "key": "elapsed",
+          "hidden": true
+        },
+        {
+          "key": "createdAt",
+          "i18nContext": "Reporting",
+          "local": true,
+          "width": 150,
+          "format": "YYYY-MM-DD HH:mm:ss"
+        },
+        {
+          "key": "error",
+          "hidden": true
+        }
+      ],
+      "filters": [
+        {
+          "name": "category",
+          "i18nContext": "SopTask",
+          "type": "text"
+        },
+        {
+          "name": "status",
+          "type": "list",
+          "props": {
+            "multi": true,
+            "items": [
+              {
+                "label": "Pending",
+                "value": "Pending"
+              },
+              {
+                "label": "Running",
+                "value": "Running"
+              },
+              {
+                "label": "Completed",
+                "value": "Completed"
+              },
+              {
+                "label": "Error",
+                "value": "Error"
+              },
+              {
+                "label": "Canceled",
+                "value": "Canceled"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "slots": [{
+      "name": "middle-button",
+      "is": "DynamicComponent",
+      "props": {
+        "class": "button",
+        "components": [{
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
+              "icon": "add"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "create",
+                "base": true
+              }
+            }]
+          }
+        }]
+      }
+    }]
+  }]
+}

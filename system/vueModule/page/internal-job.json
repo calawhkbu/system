@@ -1,0 +1,6 @@
+{
+  "fillParent": true,
+  "components": [{
+    "is": "InternalJobForm"
+  }]
+}
