@@ -151,6 +151,18 @@
           },
           {
             "is": "ToolTip",
+            "if": [
+              "if (context.isSwivelAdmin) { return true; }",
+              "const user = context.$store.state.auth.userProfile;",
+              "if (!user) { return false; }",
+              "const partyGroup = user.selectedPartyGroup",
+              "const partyGroupInstalled = (user.selectedPartyGroup.configuration || {}).installedService || [];",
+              "const userRoles = user.roles || []",
+              "if (partyGroupInstalled.find(install => install === 'SHIPMENT_CONTROL')) {",
+                "return !userRoles.find(role => role.name === 'BLOCK_SHIPMENT_EDIT')",
+              "}",
+              "return true"
+            ],
             "props": {
               "bottom": true,
               "activatorComponents": {

@@ -17,6 +17,18 @@
       "props": {
         "components": [{
           "is": "v-btn",
+          "if": [
+            "if (context.isSwivelAdmin) { return true; }",
+            "const user = context.$store.state.auth.userProfile;",
+            "if (!user) { return false; }",
+            "const partyGroup = user.selectedPartyGroup",
+            "const partyGroupInstalled = (user.selectedPartyGroup.configuration || {}).installedService || [];",
+            "const userRoles = user.roles || []",
+            "if (partyGroupInstalled.find(install => install === 'BOOKING_CONTROL')) {",
+              "return !userRoles.find(role => role.name === 'BLOCK_BOOKING_EDIT')",
+            "}",
+            "return true"
+          ],
           "props": {
             "icon": true,
             "small": true,

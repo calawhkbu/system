@@ -154,12 +154,20 @@
                             "value": "DLPT"
                           },
                           {
+                            "text": "Arrival at transfer station",
+                            "value": "TSBA"
+                          },
+                          {
+                            "text": "Discharged from transfer station",
+                            "value": "TSDC"
+                          },
+                          {
                             "text": "Loaded at transfer station",
                             "value": "TSLB"
                           },
                           {
                             "text": "Departure from transfer station",
-                            "value": "TSDC"
+                            "value": "TSDP"
                           },
                           {
                             "text": "Arrived at port of discharge",
@@ -326,12 +334,20 @@
                         "value": "DLPT"
                       },
                       {
+                        "text": "Arrival at transfer station",
+                        "value": "TSBA"
+                      },
+                      {
+                        "text": "Discharged from transfer station",
+                        "value": "TSDC"
+                      },
+                      {
                         "text": "Loaded at transfer station",
                         "value": "TSLB"
                       },
                       {
                         "text": "Departure from transfer station",
-                        "value": "TSDC"
+                        "value": "TSDP"
                       },
                       {
                         "text": "Arrived at port of discharge",

@@ -62,6 +62,44 @@ const query = new QueryDef(
   })
 )
 
+query.table('person',(params:IQueryParams)=>{
+  const user=params.constants.user
+   return   new Query({
+     $from : new FromTable({
+       table : 'person',
+       joinClauses : [
+         {
+           operator: 'LEFT',
+           table: new FromTable({
+             table: new Query({
+               $select: [
+                 new ResultColumn(new ColumnExpression('person', 'photoURL')),
+    
+ 
+ 
+ 
+                    ],
+                    $from: [new FromTable('person', 'person')],
+                    $where:[ new AndExpressions({
+                 expressions: [
+                   new IsNullExpression(new ColumnExpression('person', 'deletedAt'), false),
+                   new IsNullExpression(new ColumnExpression('person', 'deletedBy'), false),
+                   new BinaryExpression(new ColumnExpression('person','id'),'=',user.id), 
+ 
+                 ]
+               }),
+             ], 
+             }),
+             $as: 'person'
+           }),
+           $on: new BinaryExpression(new ColumnExpression('chatroom', 'userName'), '=', user.username)
+         }
+       ]
+     })
+   }) 
+ })
+ 
+  
 query.table('chat',(params:IQueryParams)=>{
  const user=params.constants.user
   return   new Query({
@@ -105,8 +143,6 @@ query.table('chat',(params:IQueryParams)=>{
     })
   }) 
 })
-
-
 
 query.table('booking', new Query({
   $from : new FromTable({
@@ -197,6 +233,12 @@ const fieldList = [
     name:'houseNo',
     expression: new ColumnExpression('shipment','houseNo'),
     companion:['table:shipment']
+
+  },
+  {
+    name:'photoURL',
+    expression: new ColumnExpression('person','photoURL'),
+    companion:['table:person']
 
   }
 

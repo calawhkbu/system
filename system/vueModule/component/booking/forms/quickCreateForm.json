@@ -69,6 +69,7 @@
           "component": "AsyncSelect",
           "class": "xs-12 md-1 padding-topbottom-4",
           "relation": "service",
+          "checkDisplayWhen": "return form && form.moduleTypeCode !== 'AIR';",
           "isRequired": "return form && form.moduleTypeCode !== 'AIR';",
           "props": {
             "axiosParams": {

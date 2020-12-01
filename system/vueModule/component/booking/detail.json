@@ -65,9 +65,6 @@
             }
           },
           {
-            "is": "WorkflowStatus"
-          },
-          {
             "is": "v-spacer"
           },
           {
@@ -223,8 +220,16 @@
           {
             "is": "ToolTip",
             "if": [
+              "if (context.isSwivelAdmin) { return true; }",
               "const user = context.$store.state.auth.userProfile;",
-              "return user && user.selectedPartyGroup && ((user.selectedPartyGroup.configuration || {}).installedService || []).includes('BOOKING_DELETE')"
+              "if (!user) { return false; }",
+              "const partyGroup = user.selectedPartyGroup",
+              "const partyGroupInstalled = (user.selectedPartyGroup.configuration || {}).installedService || [];",
+              "const userRoles = user.roles || []",
+              "if (partyGroupInstalled.find(install => install === 'BOOKING_CONTROL') && partyGroupInstalled.find(install => install === 'BOOKING_DELETE')) {",
+              "return !userRoles.find(role => role.name === 'BLOCK_BOOKING_DELETE')",
+              "}",
+              "return false"
             ],
             "props": {
               "bottom": true,
@@ -249,9 +254,9 @@
                           "throw new Error('No DATA');",
                           "}",
                           "return {",
-                            "url: 'api/booking/status/delete',",
-                            "method: 'POST',",
-                            "data,",
+                          "url: 'api/booking/status/delete',",
+                          "method: 'POST',",
+                          "data,",
                           "}"
                         ]
                       },

@@ -136,11 +136,18 @@
             "item-text": "name",
             "item-value": "id"
           }
-        }, {
+        },
+        {
+          "class": "xs-12 md-12 padding-topbottom-4",
+          "component": "v-text-field",
+          "name": "bookingParty.{{flex}}{{key}}PartyName",
+          "checkDisplayWhen": "return (context.isSwivelAdmin ? false : (user.roles || []).filter(role => role.name === 'INTERNAL').length === 0) && ('{{key}}' !== 'forwarder')"
+        },
+        {
           "name": "bookingParty.{{flex}}{{key}}Party",
           "component": "AsyncAutoSuggest",
           "class": "xs-12",
-          "checkDisplayWhen": "return '{{key}}' !== 'forwarder'",
+          "checkDisplayWhen": "return (context.isSwivelAdmin || (user.roles || []).filter(role => role.name === 'INTERNAL').length > 0) && ('{{key}}' !== 'forwarder')",
           "relation": "bookingParty.{{flex}}{{key}}Party",
           "relationMore": [{
             "name": "bookingParty.{{flex}}{{key}}PartyId",
@@ -191,6 +198,11 @@
             "name": "bookingParty.{{flex}}{{key}}PartyIsBuyer",
             "selector": "isBuyer"
           }],
+          "topHintComponent": "CustomerDropDownHint",
+          "hintComponentProps": {
+            "i18nContext": "Widget",
+            "foundKey": "bookingParty.{{flex}}{{key}}Party"
+          },
           "props": {
             "createDialog": {
               "width": "50%",

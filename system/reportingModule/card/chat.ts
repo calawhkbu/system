@@ -44,7 +44,8 @@ export default {
           "createdByLast",
           "lastMessage",
           "houseNo",
-          "bookingNo"
+          "bookingNo",
+       //  "photoURL"
         ]
 
 
@@ -62,6 +63,7 @@ export default {
         }
 
         //filter Logged In Users's message`
+
         let tableName=_.clone(params.subqueries.entityType&&params.subqueries.entityType.value)||undefined
           if(tableName){
             params.subqueries = {
@@ -85,6 +87,7 @@ export default {
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result,user): any[] {
         const timezone=user.configuration.timezone
         let results:any=[]
+        console.log({res})
         //get unread Messages Only
      res.forEach(el => {
        if(el.readIndex!==el.lastMessageIndex && el.lastMessageIndex){

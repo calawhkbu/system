@@ -4,6 +4,7 @@ import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
 import { Transaction } from 'sequelize'
 import _ = require('lodash')
 import BluebirdPromise = require('bluebird')
+import { BookingTableService } from 'modules/sequelize/services/table/booking'
 
 interface NotifyObject {
   isUpdate: boolean
@@ -60,7 +61,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
         dataList.push({
           name: _.get(latestEntity, 'picId', null),
           email: _.get(latestEntity, 'picEmail', null),
-          entity: originalEntity,
+          entity: latestEntity,
           isUpdate: originalEntity ? true : false,
           partyGroupCode,
           subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
@@ -73,7 +74,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
         dataList.push({
           name: createdBy, // TODO:: createdBy name
           email: createdBy,
-          entity: originalEntity,
+          entity: latestEntity,
           isUpdate: originalEntity ? true : false,
           partyGroupCode,
           subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
@@ -86,7 +87,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
         dataList.push({
           name: updatedBy, // TODO:: updatedBy name
           email: updatedBy,
-          entity: originalEntity,
+          entity: latestEntity,
           isUpdate: originalEntity ? true : false,
           partyGroupCode,
           subject: originalEntity ? `${tableName}-preview updated by ${updatedBy}` : `new-${tableName}-preview updated by ${updatedBy}`,
@@ -106,7 +107,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
             dataList.push({
               name: _.get(partyTable, `${mainKey}PartyName`, null) || _.get(partyTable, `${mainKey}Party.name`, null),
               email: sentEmail,
-              entity: originalEntity,
+              entity: latestEntity,
               isUpdate: originalEntity ? true : false,
               partyGroupCode,
               subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
@@ -119,7 +120,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
             dataList.push({
               name: _.get(partyTable, `${mainKey}PartyContactName`, null),
               email: mainContactEmail,
-              entity: originalEntity,
+              entity: latestEntity,
               isUpdate: originalEntity ? true : false,
               partyGroupCode,
               subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
@@ -134,7 +135,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
                 dataList.push({
                   name: Name,
                   email: Email,
-                  entity: originalEntity,
+                  entity: latestEntity,
                   isUpdate: originalEntity ? true : false,
                   partyGroupCode,
                   subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
@@ -162,7 +163,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
                   dataList.push({
                     name: _.get(partyTableFlexData, `${morePartyKey}PartyName`, null) || _.get(partyTableFlexData, `${morePartyKey}Party.name`, null),
                     email: sentEmail,
-                    entity: originalEntity,
+                    entity: latestEntity,
                     isUpdate: originalEntity ? true : false,
                     partyGroupCode,
                     subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
@@ -176,7 +177,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
                   dataList.push({
                     name: mainContactName,
                     email: mainContactEmail,
-                    entity: originalEntity,
+                    entity: latestEntity,
                     isUpdate: originalEntity ? true : false,
                     partyGroupCode,
                     subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
@@ -191,7 +192,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
                       dataList.push({
                         name: Name,
                         email: Email,
-                        entity: originalEntity,
+                        entity: latestEntity,
                         isUpdate: originalEntity ? true : false,
                         partyGroupCode,
                         subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
@@ -231,7 +232,12 @@ export default class NotifyEntityEvent extends BaseEventHandler {
                 subject,
                 html: { path: template, language, partyGroupCode }
               },
-              { entity, frontendUrl: finalFrontendUrl },
+              { 
+                entity, 
+                frontendUrl: finalFrontendUrl,
+                partyGroup: partyGroup,
+                bookingUrl: finalFrontendUrl + 'bookings/default/booking/' + entity.id
+              },
               new Date(),
               'mailgun'
             )

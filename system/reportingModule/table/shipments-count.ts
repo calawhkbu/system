@@ -1,5 +1,6 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
+import ShipmentJql from './shipments'
 import { ERROR } from 'utils/error'
 import ShipmentJql from './shipments'
 
@@ -10,20 +11,20 @@ export default {
       type: 'prepareParams',
       prepareParams(params): IQueryParams {
         const subqueries = (params.subqueries = params.subqueries || {})
-  
+
 
         // lastStatusList case
         if (subqueries.lastStatus) {
           if (!(subqueries.lastStatus !== true && 'value' in subqueries.lastStatus && Array.isArray(subqueries.lastStatus.value))) throw ERROR.MISSING_LAST_STATUS()
           subqueries.lastStatusJoin = true
         }
-        
+
         //alertType case
         if (subqueries.selectedAlertType) {
           if (!(subqueries.alertType !== true && 'value' in subqueries.selectedAlertType && Array.isArray(subqueries.selectedAlertType.value))) throw ERROR.MISSING_ALERT_TYPE()
           subqueries.alertJoin = true
         }
-  
+
         return params
       }
     },
