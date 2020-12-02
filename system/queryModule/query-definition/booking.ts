@@ -109,6 +109,9 @@ const partyList = [
   },
   {
     name: 'forwarder',
+  },
+  {
+    name: 'controllingParty'
   }
 ] as {
 
@@ -1549,7 +1552,7 @@ const fieldList = [
   //'shipmentTypeCode',
   'divisionCode',
   'isDirect',
-  'isCoload',
+  // 'isCoload',
 
   {
     name: 'finalVesselName',
@@ -2334,6 +2337,8 @@ query
                   new RegexpExpression(new ColumnExpression('booking_party', 'roAgentPartyCode'), false),
                   new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyCode'), false),
                   new RegexpExpression(new ColumnExpression('booking_party', 'shipperPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'controllingPartyPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('booking_party', 'controllingPartyPartyName'), false),
                 ]
               })
             })

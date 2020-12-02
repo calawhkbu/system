@@ -45,11 +45,10 @@ export default class UpdateShipmentAction extends CtaActionInt {
       },
       data: entity
     })
-    if (!response || !response.data || String(response.data.id) !== primaryKey) {
-      throw new InternalServerErrorException('FAIL_SAVE_SHIPMENT')
+    if (response.data && String(response.data.id) === primaryKey) {
+      body.locals.shipment = response.data
+      return Result.SUCCESS
     }
-    body.locals.shipment = response.data
-
-    return Result.SUCCESS
+    throw new Error('ERROR_UPDATE_SHIPMENT')
   }
 }

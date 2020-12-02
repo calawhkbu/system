@@ -285,6 +285,7 @@ export const fixedPartyKeys = [
   'agent',
   'controllingCustomer',
   'notifyParty',
+  'controllingParty',
 ]
 
 export async function applyAccessRightConditions(

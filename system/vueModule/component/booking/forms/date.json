@@ -1,6 +1,6 @@
 {
   "components": [{
-    "is": "WidgetMoreForm",
+    "is": "WidgetExpandMoreForm",
     "props": {
       "name": "bookingDate",
       "mainKey": "Date",
@@ -15,6 +15,20 @@
           "i18nContext": "Widget",
           "class": "font-110-important"
         }
+      },
+      "groupProps": {
+        "numberOfGroups":5,
+        "slice":[
+          0,8,24,29,33,36
+        ],
+        "i18nContext": "dateGroup",
+        "groupName":[
+          "cargoPreparation",
+          "pickUpAndDeparture",
+          "arrival",
+          "cargoPickup",
+          "delivery"
+        ]
       },
       "fixedKeys": [
         "cargoReady",

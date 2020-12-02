@@ -25,11 +25,11 @@ export default class CreateRelatedPartyEvent extends BaseEventHandler {
     switch (tableName) {
       case 'shipment': return [
         'shipper', 'consignee', 'office', 'roAgent',
-        'controllingCustomer', 'linerAgent', 'agent', 'notifyParty'
+        'controllingCustomer', 'linerAgent', 'agent', 'notifyParty', 'controllingParty'
       ]
       case 'booking': return [
         'shipper', 'consignee', 'forwarder', 'roAgent',
-        'controllingCustomer', 'linerAgent', 'agent', 'notifyParty'
+        'controllingCustomer', 'linerAgent', 'agent', 'notifyParty', 'controllingParty'
       ]
       default: return []
     }

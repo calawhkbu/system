@@ -95,9 +95,6 @@
                                 "min-width": "100px"
                               }
                             },
-                            "style": {
-                              "overflow-x": "auto"
-                            },
                             "topLabel": true,
                             "fields": [
                               {
@@ -226,7 +223,8 @@
                               "method": "POST",
                               "url": "api/product-category/columns/{{context.$store.state.widget.data.productCategoryId}}"
                             },
-                            "storeInFlexData": true
+                            "storeInFlexData": true,
+                            "tableMaxWidthFunc": "return '423px'"
                           }
                         }
                       ]
@@ -265,6 +263,21 @@
                 "props": {
                   "fields": [
                     {
+                      "label": "PurchaseOrderPage.quantity",
+                      "component": "v-text-field",
+                      "class": "xs-2",
+                      "name": "quantity"
+                    },
+                    {
+                      "label": "PurchaseOrderPage.quantityUnit",
+                      "component": "v-text-field",
+                      "class": "xs-2",
+                      "name": "quantityUnit"
+                    },
+                    {
+                      "class": "xs-8"
+                    },
+                    {
                       "label": "PurchaseOrderPage.purchaseOrderItems",
                       "component": "AsyncColumnTableField",
                       "name": "purchaseOrderItems",
@@ -283,8 +296,21 @@
                         },
                         "storeInFlexData": true,
                         "overflowX": "auto",
-                        "calculateWidthInPercentage": true,
-                        "fixedFieldLabelContext": "PurchaseOrderPage"
+                        "calculateWidthInPercentage": false,
+                        "fixedFieldLabelContext": "PurchaseOrderPage",
+                        "filterColsWithoutSeq": true,
+                        "tableMaxWidthFunc": [
+                          "const isDrawer = context.$store.state.main.drawer",
+                          "const isMini = context.$store.state.main.mini",
+                          "const winWidth = context.width",
+                          "let contentWidth",
+                          "if (isDrawer) {",
+                          "contentWidth = winWidth - (isMini ? 80 : 240)",
+                          "return `${contentWidth * 0.66666 - 14}px`",
+                          "} else {",
+                          "return `${winWidth - 14}px`",
+                          "}"
+                        ]
                       }
                     }
                   ]

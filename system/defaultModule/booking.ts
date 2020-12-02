@@ -36,7 +36,7 @@ const convertToPartyOfBookingParty = (
   }
 }
 
-const mainParties = ['shipper', 'consignee', 'roAgent', 'linerAgent', 'agent', 'controllingCustomer', 'notifyParty']
+const mainParties = ['shipper', 'consignee', 'roAgent', 'linerAgent', 'agent', 'controllingCustomer', 'notifyParty', 'controllingParty']
 
 export default async (user: JwtPayload, helper: { partyTableService: PartyTableService }) => {
   let bookingParty: any = {}

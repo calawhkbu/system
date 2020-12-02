@@ -214,6 +214,9 @@ const partyList = [
     name: 'controllingCustomer',
   },
   {
+    name: 'controllingParty'
+  },
+  {
     name: 'agent',
     partyIdExpression: {
       expression: agentPartyIdExpression,
@@ -3473,6 +3476,8 @@ query
                   new RegexpExpression(new ColumnExpression('shipment_party', 'roAgentPartyCode'), false),
                   new RegexpExpression(new ColumnExpression('shipment_party', 'shipperPartyCode'), false),
                   new RegexpExpression(new ColumnExpression('shipment_party', 'shipperPartyName'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'controllingPartyPartyCode'), false),
+                  new RegexpExpression(new ColumnExpression('shipment_party', 'controllingPartyPartyName'), false),
                 ]
               })
             })

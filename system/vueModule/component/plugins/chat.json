@@ -90,7 +90,7 @@
               "limit": 5
             }
           },
-          "item-text": "displayname",
+          "item-text": "displayName",
           "item-value": "userName"
         }
       }]

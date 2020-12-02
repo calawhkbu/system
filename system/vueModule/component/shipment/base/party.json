@@ -24,17 +24,7 @@
               "icon": true,
               "small": true,
               "class": "zindex-3"
-            },
-            "closeFunction": [{
-              "type": "dispatch",
-              "otherParams": {
-                "name": "widget/changeEdit",
-                "data": {
-                  "id": "shipmentParty",
-                  "isEdit": false
-                }
-              }
-            }]
+            }
           },
           "slots": [{
             "name": "button",
@@ -86,7 +76,8 @@
                     "roAgent",
                     "linerAgent",
                     "controllingCustomer",
-                    "notifyParty"
+                    "notifyParty",
+                    "controllingParty"
                   ],
                   "canAdd": true,
                   "canAddProps": {
@@ -568,7 +559,8 @@
               "roAgent",
               "linerAgent",
               "controllingCustomer",
-              "notifyParty"
+              "notifyParty",
+              "controllingParty"
             ],
             "alwaysShowKeys": [
               "shipper",
@@ -578,7 +570,8 @@
               "roAgent",
               "linerAgent",
               "controllingCustomer",
-              "notifyParty"
+              "notifyParty",
+              "controllingParty"
             ],
             "maxShow": 3,
             "checkDisplayWhen": [

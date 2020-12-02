@@ -67,7 +67,7 @@ export default {
             active && query && // if it is active watchdog
             tableName === alertParams.entityType && // entityType filter
             (!alertParams.alertType.length || alertParams.alertType.includes(alertType)) && // alert type filer
-            ((alertParams.isImportant && severity === 'high') || (!alertParams.isImportant && severity !== 'high')) && // important filter
+            (alertParams.isImportant === null || (alertParams.isImportant && severity === 'high') || (!alertParams.isImportant && severity !== 'high')) && // important filter
             Object.keys(entitySuqueries).reduce((add: boolean, key: string) => {
               const baseSubqueries = query.subqueries || {}
               if (add && baseSubqueries[key] && !_.isEqual(baseSubqueries[key], entitySuqueries[key])) {

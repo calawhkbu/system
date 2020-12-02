@@ -20,7 +20,6 @@
         },
         "primaryKey": "id",
         "modeFunction": [
-          "console.log(mode)",
           "const modes = ['create', 'detail', 'edit'];",
           "const selectedMode = isNaN(Number(mode)) ? mode : 'detail';",
           "if (!modes.includes(selectedMode)) {",

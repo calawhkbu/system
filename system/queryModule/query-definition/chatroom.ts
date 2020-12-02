@@ -65,37 +65,38 @@ const query = new QueryDef(
 query.table('person',(params:IQueryParams)=>{
   const user=params.constants.user
    return   new Query({
-     $from : new FromTable({
-       table : 'person',
-       joinClauses : [
-         {
-           operator: 'LEFT',
-           table: new FromTable({
-             table: new Query({
-               $select: [
-                 new ResultColumn(new ColumnExpression('person', 'photoURL')),
     
- 
- 
- 
-                    ],
-                    $from: [new FromTable('person', 'person')],
-                    $where:[ new AndExpressions({
-                 expressions: [
-                   new IsNullExpression(new ColumnExpression('person', 'deletedAt'), false),
-                   new IsNullExpression(new ColumnExpression('person', 'deletedBy'), false),
-                   new BinaryExpression(new ColumnExpression('person','id'),'=',user.id), 
- 
-                 ]
-               }),
-             ], 
-             }),
-             $as: 'person'
-           }),
-           $on: new BinaryExpression(new ColumnExpression('chatroom', 'userName'), '=', user.username)
-         }
-       ]
-     })
+     $from : new FromTable({
+       table :baseTableName,
+       joinClauses : [
+        {
+          operator: 'LEFT',
+          table: new FromTable({
+            table: new Query({
+              $select: [
+                new ResultColumn(new ColumnExpression('person', 'photoURL')),
+
+
+
+                   ],
+                   $from: [new FromTable('person', 'person')],
+                   $where:[ new AndExpressions({
+                expressions: [
+                
+                  new BinaryExpression(user.username, '=', new ColumnExpression('person','userName'))
+
+
+                ]
+              }),
+            ], 
+            }),
+            $as: 'person'
+          }),
+          $on: new BinaryExpression(user.username,'=', new ColumnExpression('person','userName'))
+        }
+      ]
+   
+     }),
    }) 
  })
  
@@ -116,17 +117,21 @@ query.table('chat',(params:IQueryParams)=>{
                 new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'messageWithoutTag')),'lastMessage'),
                 new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'createdAt')),'createdAtLast'),
                 new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'createdBy')),'createdByLast'),
+                new ResultColumn(new ColumnExpression('person', 'photoURL'),'photoURL'),
+
 
 
 
                    ],
-                   $from: [new FromTable('chat', 'chat'),new FromTable('chatroom', 'chatroom')],
+                   $from: [new FromTable('chat', 'chat'),new FromTable('chatroom', 'chatroom'),new FromTable('person', 'person')],
                    $where:[ new AndExpressions({
                 expressions: [
                   new IsNullExpression(new ColumnExpression('chat', 'deletedAt'), false),
                   new IsNullExpression(new ColumnExpression('chat', 'deletedBy'), false),
                   new BinaryExpression(new ColumnExpression('chatroom','userName'),'=',user.username),
                   new BinaryExpression(new ColumnExpression('chat','chatroomId'),'=',new ColumnExpression('chatroom','id')),
+                  new BinaryExpression(new ColumnExpression('person','userName'),'=',new ColumnExpression('chat', 'createdBy')),
+
 
 
                 ]
@@ -237,8 +242,8 @@ const fieldList = [
   },
   {
     name:'photoURL',
-    expression: new ColumnExpression('person','photoURL'),
-    companion:['table:person']
+    expression: new ColumnExpression('chat','photoURL'),
+    companion:['table:chat']
 
   }
 

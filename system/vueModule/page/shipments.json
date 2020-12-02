@@ -27,6 +27,7 @@
             "agentPartyName: row.agentPartyName,",
             "controllingCustomerPartyName: row.controllingCustomerPartyName,",
             "notifyPartyPartyName: row.notifyPartyPartyName,",
+            "controllingPartyPartyName: row.controllingPartyPartyName,",
             "},",
             "shipmentDate: {",
             "departureDateEstimated: row.departureDateEstimated,",

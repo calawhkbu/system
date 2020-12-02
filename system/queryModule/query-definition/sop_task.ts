@@ -720,6 +720,14 @@ const shortcuts: IShortcut[] = [
     }
   },
 
+  // subquery:id
+  {
+    type: 'subquery',
+    name: 'id',
+    expression: re => new BinaryExpression(re['id'], '=', new Unknown()),
+    unknowns: true
+  },
+
   // subquery:tableName
   {
     type: 'subquery',

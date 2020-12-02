@@ -24,17 +24,7 @@
               "icon": true,
               "small": true,
               "class": "zindex-3"
-            },
-            "closeFunction": [{
-              "type": "dispatch",
-              "otherParams": {
-                "name": "widget/changeEdit",
-                "data": {
-                  "id": "shipmentDate",
-                  "isEdit": false
-                }
-              }
-            }]
+            }
           },
           "slots": [{
             "name": "button",

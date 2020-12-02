@@ -78,7 +78,7 @@
           },
           {
             "is": "WidgetAsyncExtraSelect",
-            "if": "return context.$store.state.widget.data.id",
+            "if": "return context.$store.state.widget.data && context.$store.state.widget.data.id",
             "props": {
               "i18nContext": "PurchaseOrderPage",
               "mainButtonKey": "Shipment",

@@ -3,8 +3,8 @@ import { CtaActionInt, IBody, Result } from 'modules/cta/interface'
 import axios from 'axios'
 
 export default class UpdateTaskStatusAction extends CtaActionInt {
-  async run(tablName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
-    const task = body.entity
+  async run(tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
+    const task = body.locals[tableName]
     const { backendUrl, accessToken } = body.locals
 
     if (task.status && task.status !== 'Not Ready' && task.status !== 'Closed') {
@@ -17,10 +17,10 @@ export default class UpdateTaskStatusAction extends CtaActionInt {
           Authorization: `Bearer ${accessToken || user.fullAccessToken}`
         }
       })
-      if (!response || !response.data || response.data.id !== task.id) {
-        throw new Error('ACTION_FAIL_UPDATE_TASK_STATUS')
+      if (response.data && response.data.id === task.id) {
+        return Result.SUCCESS
       }
-      return Result.SUCCESS
+      throw new Error('ERROR_UPDATE_TASK_STATUS')
     }
     else {
       throw new Error('TASK_STATUS_NOT_AVAILABLE')

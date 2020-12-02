@@ -45,11 +45,10 @@ export default class UpdateBookingAction extends CtaActionInt {
       },
       data: entity
     })
-    if (!response || !response.data || String(response.data.id) !== primaryKey) {
-      throw new InternalServerErrorException('FAIL_SAVE_BOOKING')
+    if (response.data && String(response.data.id) === primaryKey) {
+      body.locals.booking = response.data
+      return Result.SUCCESS
     }
-    body.locals.booking = response.data
-
-    return Result.SUCCESS
+    throw new Error('ERROR_UPDATE_BOOKING')
   }
 }

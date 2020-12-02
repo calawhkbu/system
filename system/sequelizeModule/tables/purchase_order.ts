@@ -29,6 +29,23 @@ export const setDataFunction = {
     }
     return poNo
   },
+  quantity: async({ quantity = null, purchaseOrderItems = [] }: PurchaseOrder) => {
+    let totalQuantity = 0
+    for (const { quantity } of purchaseOrderItems) {
+      const finalnumber = (typeof quantity === 'number' ? (quantity || 0) : (quantity ? parseInt(quantity) : 0))
+      totalQuantity += (finalnumber || 0)
+    }
+    return totalQuantity
+  },
+  quantityUnit: async ({ quantityUnit, purchaseOrderItems = [] }: PurchaseOrder) => {
+    const units = []
+    for (const { quantityUnit } of purchaseOrderItems) {
+      if (!units.find(u => u === quantityUnit)) {
+        units.push(quantityUnit)
+      }
+    }
+    return units.join(',')
+  }
 }
 
 export const dateTimezoneMapping = {

@@ -119,7 +119,8 @@
                 "roAgent",
                 "linerAgent",
                 "controllingCustomer",
-                "notifyParty"
+                "notifyParty",
+                "controllingParty"
               ],
               "fields": [{
                   "name": ["bookingParty.{{flex}}{{key}}PartyName", "bookingParty.{{flex}}{{key}}Party.name"],
@@ -319,7 +320,8 @@
                 "roAgent",
                 "linerAgent",
                 "controllingCustomer",
-                "notifyParty"
+                "notifyParty",
+                "controllingParty"
               ],
               "maxShow": 3,
               "checkDisplayWhen": [

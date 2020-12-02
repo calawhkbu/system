@@ -38,7 +38,8 @@
         "roAgent",
         "linerAgent",
         "controllingCustomer",
-        "notifyParty"
+        "notifyParty",
+        "controllingParty"
       ],
       "canAdd": true,
       "canAddProps": {
