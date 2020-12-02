@@ -5,24 +5,18 @@ import { JwtMicroPayload } from 'modules/auth/interfaces/jwt-payload'
 import { NotFoundException } from '@nestjs/common'
 import { Logger } from 'modules/cta/logger'
 
-// extra local variables
-export async function getLocals(this: CtaService, { entity, entityId, locals: { backendUrl, accessToken } }: IBody, logger: Logger, user: JwtMicroPayload) {
-  // get shipment
-  let shipment = entity
-  if (!shipment) {
-    const response = await axios.request({
-      method: 'GET',
-      url: `${backendUrl}/api/shipment/${entityId}`,
-      headers: {
-        Authorization: `Bearer ${accessToken || user.fullAccessToken}`
-      }
-    })
-    if (!response.data || String(response.data.id) !== String(entityId)) {
-      throw new NotFoundException('SHIPMENT_NOT_FOUND')
+export async function getEntity(this: CtaService, body: IBody, logger: Logger, user: JwtMicroPayload) {
+  const { entityId, locals: { backendUrl, accessToken } } = body
+  const response = await axios.request({
+    method: 'GET',
+    url: `${backendUrl}/api/shipment/${entityId}`,
+    headers: {
+      Authorization: `Bearer ${accessToken || user.fullAccessToken}`
     }
-    await logger.log(`Get shipment=${entityId}`)
-    shipment = response.data
+  })
+  if (!response.data || String(response.data.id) !== String(entityId)) {
+    throw new NotFoundException('SHIPMENT_NOT_FOUND')
   }
-
-  return { booking: shipment }
+  await logger.log(`Get shipment=${entityId}`)
+  return response.data
 }

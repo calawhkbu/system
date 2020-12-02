@@ -103,6 +103,7 @@ query.table('person',(params:IQueryParams)=>{
   
 query.table('chat',(params:IQueryParams)=>{
  const user=params.constants.user
+ const tableName=params.subqueries.tableName.value && params.subqueries.tableName
   return   new Query({
     $from : new FromTable({
       table : baseTableName,
@@ -114,7 +115,9 @@ query.table('chat',(params:IQueryParams)=>{
               $select: [
                 new ResultColumn(new ColumnExpression('chat', '*')),
                 new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'id')),'lastMessageIndex'),
-                new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'messageWithoutTag')),'lastMessage'),
+                 //new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'messageWithoutTag')),'lastMessage'),
+                 new ResultColumn(new ColumnExpression('chat', 'messageWithoutTag'),'lastMessage'),
+
                 new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'createdAt')),'createdAtLast'),
                 new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'createdBy')),'createdByLast'),
                 new ResultColumn(new ColumnExpression('person', 'photoURL'),'photoURL'),
@@ -130,15 +133,14 @@ query.table('chat',(params:IQueryParams)=>{
                   new IsNullExpression(new ColumnExpression('chat', 'deletedBy'), false),
                   new BinaryExpression(new ColumnExpression('chatroom','userName'),'=',user.username),
                   new BinaryExpression(new ColumnExpression('chat','chatroomId'),'=',new ColumnExpression('chatroom','id')),
-                  new BinaryExpression(new ColumnExpression('person','userName'),'=',new ColumnExpression('chat', 'createdBy')),
-
-
+                  new BinaryExpression(new ColumnExpression('chat','createdBy'),'=',new ColumnExpression('person','userName')),
 
                 ]
               }),
             ], 
             $group:new GroupBy(new ColumnExpression('chat','chatroomId')),
             $order:new OrderBy(new ColumnExpression('chat','id'), 'DESC'),
+            
             }),
             $as: 'chat'
           }),
@@ -238,6 +240,12 @@ const fieldList = [
     name:'houseNo',
     expression: new ColumnExpression('shipment','houseNo'),
     companion:['table:shipment']
+
+  },
+  {
+    name:'lastMessage',
+    expression: new ColumnExpression('chat','lastMessage'),
+    companion:['table:chat']
 
   },
   {

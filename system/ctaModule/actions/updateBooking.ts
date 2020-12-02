@@ -25,7 +25,7 @@ export default class UpdateBookingAction extends CtaActionInt {
         if (!response || !response.data || String(response.data.id) !== primaryKey) {
           throw new NotFoundException('BOOKING_NOT_FOUND')
         }
-        body.locals.booking = entity = response.data
+        entity = response.data
       }
       else {
         throw new InternalServerErrorException('UNSUPPORTED_ENTITY_TYPE')
@@ -46,7 +46,9 @@ export default class UpdateBookingAction extends CtaActionInt {
       data: entity
     })
     if (response.data && String(response.data.id) === primaryKey) {
-      body.locals.booking = response.data
+      const result = response.data
+      body.locals.booking = result
+      if (tableName === 'booking') body.entity = result
       return Result.SUCCESS
     }
     throw new Error('ERROR_UPDATE_BOOKING')

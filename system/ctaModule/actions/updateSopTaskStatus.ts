@@ -4,7 +4,7 @@ import axios from 'axios'
 
 export default class UpdateTaskStatusAction extends CtaActionInt {
   async run(tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
-    const task = body.locals[tableName]
+    const task = body.entity
     const { backendUrl, accessToken } = body.locals
 
     if (task.status && task.status !== 'Not Ready' && task.status !== 'Closed') {

@@ -2057,7 +2057,6 @@ const partyExpressionList = partyList.reduce((accumulator: ExpressionHelperInter
     //  very special case , get back the value from the party join
     'PartyNameInReport',
     'PartyShortNameInReport',
-
     'PartyId',
     'PartyName',
     'PartyCode',

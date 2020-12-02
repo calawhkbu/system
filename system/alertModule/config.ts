@@ -34,6 +34,13 @@ const ASWAlertConfigList = [
 
         // missing arrivalDateActual
         arrivalDateActualIsNull: true,
+          //if ETD date is earlier than today, no need to show
+          before_departureDateActualInUtc_Or_departureDateEstimatedInUtc:{
+            value:{
+              value:1,
+              unit:'DAY'
+            }
+          },
         // after arrivalDateEstimated + 1 day
         after_arrivalDateEstimatedInUtc: {
           value: {
@@ -79,6 +86,13 @@ const ASWAlertConfigList = [
         },
         // missing arrivalDateActual
         arrivalDateActualIsNull: true,
+            //if ETD date is earlier than today, no need to show
+            before_departureDateActualInUtc_Or_departureDateEstimatedInUtc:{
+              value:{
+                value:1,
+                unit:'DAY'
+              }
+            },
         // after arrivalDateActual + 1 day
         after_arrivalDateEstimatedInUtc: {
           value: {
@@ -134,10 +148,10 @@ const ASWAlertConfigList = [
         // missing sendAMSDateActual
         sendAMSDateActualIsNull: true,
 
-        // after_arrivalDateEstimatedInUtc + 1 day
-        after_arrivalDateEstimatedInUtc: {
+        // It should be ETD - 3 hours
+        before_departureDateEstimatedInUtc: {
           value: {
-            value: 1,
+            value: 3,
             unit: 'HOUR'
           }
         },
@@ -191,10 +205,10 @@ const ASWAlertConfigList = [
         // missing sendAMSDateActual
         sendAMSDateActualIsNull: true,
         
-        // after_arrivalDateEstimatedInUtc + 1 day
-        after_arrivalDateEstimatedInUtc: {
+       // It should be ETD - 2 days
+        before_arrivalDateEstimatedInUtc: {
           value: {
-            value: 1,
+            value: 2,
             unit: 'DAY'
           }
         },
@@ -250,14 +264,22 @@ const ASWAlertConfigList = [
 
         // missing returnEmptyContainerDateActual
         returnEmptyContainerDateActualIsNull: true,
-
+        containerReturnConditions:true, 
+         /*
+        MODULE = "SEA"
+      Return Container Actual is null
+      NOW is to ETA + 7 days and 
+      add a condition that if Sent to Consignee date is not empty, 
+      use Sent to consignee Date + 4 days. Need to make sure today must be later than ETD Date
+        */
+       
         // after arrivalDateEstimated + 1 day
-        after_arrivalDateEstimatedInUtc: {
-          value: {
-            value: 1,
-            unit: 'DAY'
-          }
-        },
+        // after_arrivalDateEstimatedInUtc: {
+        //   value: {
+        //     value: 1,
+        //     unit: 'DAY'
+        //   }
+        // },
 
       },
 

@@ -5,26 +5,28 @@ import { JwtMicroPayload } from 'modules/auth/interfaces/jwt-payload'
 import { NotFoundException } from '@nestjs/common'
 import { Logger } from 'modules/cta/logger'
 
-// extra local variables
-export async function getLocals(this: CtaService, { entity, entityId, locals: { backendUrl, accessToken } }: IBody, logger: Logger, user: JwtMicroPayload) {
-  // get sop_task
-  let task = entity
-  if (!task) {
-    const response = await axios.request({
-      method: 'GET',
-      url: `${backendUrl}/sopTask/${entityId}`,
-      headers: {
-        Authorization: `Bearer ${accessToken || user.fullAccessToken}`
-      }
-    })
-    if (!response.data || String(response.data.id) !== String(entityId)) {
-      throw new NotFoundException('TASK_NOT_FOUND')
+
+export async function getEntity(this: CtaService, body: IBody, logger: Logger, user: JwtMicroPayload) {
+  const { entityId, locals: { backendUrl, accessToken } } = body
+  const response = await axios.request({
+    method: 'GET',
+    url: `${backendUrl}/sopTask/${entityId}`,
+    headers: {
+      Authorization: `Bearer ${accessToken || user.fullAccessToken}`
     }
-    task = response.data
-    await logger.log(`Get sop_task=${entityId}`)
+  })
+  if (!response.data || String(response.data.id) !== String(entityId)) {
+    throw new NotFoundException('TASK_NOT_FOUND')
   }
-  let tableName = task.tableName
-  const primaryKey = task.primaryKey
+  await logger.log(`Get sop_task=${entityId}`)
+  return response.data
+}
+
+// extra local variables
+export async function getLocals(this: CtaService, body: IBody, logger: Logger, user: JwtMicroPayload) {
+  let { entity, locals: { backendUrl, accessToken } } = body
+  let tableName = entity.tableName
+  const primaryKey = entity.primaryKey
 
   // rename tableName
   if (tableName === 'purchase_order') tableName = 'purchaseOrder'
@@ -40,8 +42,8 @@ export async function getLocals(this: CtaService, { entity, entityId, locals: { 
   if (!response.data || String(response.data.id) !== primaryKey) {
     throw new NotFoundException('TASK_ENTITY_NOT_FOUND')
   }
-  await logger.log(`Get ${task.tableName}=${task.primaryKey}`)
-  return { sop_template_task: task, [tableName]: response.data }
+  await logger.log(`Get ${tableName}=${primaryKey}`)
+  return { [tableName]: response.data }
 }
 
 export const afterActions: ICtaAction[] = [{
