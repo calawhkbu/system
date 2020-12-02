@@ -43,6 +43,7 @@ import {
   IfNullExpression,
   RegisterInterface,
 } from 'utils/jql-subqueries'
+import { TableHints } from 'sequelize/types'
 
 const baseTableName='chatroom'
 
@@ -100,10 +101,10 @@ query.table('person',(params:IQueryParams)=>{
    }) 
  })
  
-  
+  // select messageWithoutTag from chat where 
 query.table('chat',(params:IQueryParams)=>{
  const user=params.constants.user
- const tableName=params.subqueries.tableName.value && params.subqueries.tableName
+ const tableName=params.subqueries.tableName && params.subqueries.tableName.value||null
   return   new Query({
     $from : new FromTable({
       table : baseTableName,
@@ -113,14 +114,66 @@ query.table('chat',(params:IQueryParams)=>{
           table: new FromTable({
             table: new Query({
               $select: [
-                new ResultColumn(new ColumnExpression('chat', '*')),
+                new ResultColumn(new ColumnExpression('chat', 'chatroomId')),
+                new ResultColumn(new ColumnExpression('chat', 'createdAt')),
                 new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'id')),'lastMessageIndex'),
-                 //new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'messageWithoutTag')),'lastMessage'),
-                 new ResultColumn(new ColumnExpression('chat', 'messageWithoutTag'),'lastMessage'),
+                 new ResultColumn(new QueryExpression(new Query({
+                    $select:[
+                      new ResultColumn(new ColumnExpression('chat','messageWithoutTag'))
+                    ],
+                    $from:'chat',
+                    $where :[
+                      new BinaryExpression(new ColumnExpression('chat','chatroomId'),'=',new FunctionExpression('max',new ColumnExpression('chatroom','id')))
 
+                    ],
+                    $order:new OrderBy(new ColumnExpression('chat','id'),"DESC"),
+                    $limit:1
+
+                 })),'lastMessage'),
+
+                 new ResultColumn(new QueryExpression(new Query({
+                    $select:[
+                      new ResultColumn(new ColumnExpression('chat','message'))
+                    ],
+                    $from:'chat',
+                    $where :[
+                      new BinaryExpression(new ColumnExpression('chat','chatroomId'),'=',new FunctionExpression('max',new ColumnExpression('chatroom','id')))
+
+                    ],
+                    $order:new OrderBy(new ColumnExpression('chat','id'),"DESC"),
+                    $limit:1
+
+                 })),'message'),
+   
                 new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'createdAt')),'createdAtLast'),
-                new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'createdBy')),'createdByLast'),
-                new ResultColumn(new ColumnExpression('person', 'photoURL'),'photoURL'),
+                new ResultColumn(new QueryExpression(new Query({
+                  $select:[
+                    new ResultColumn(new ColumnExpression('chat','createdBy'))
+                  ],
+                  $from:'chat',
+                  $where :[
+                    new BinaryExpression(new ColumnExpression('chat','chatroomId'),'=',new FunctionExpression('max',new ColumnExpression('chatroom','id')))
+
+                  ],
+                  $order:new OrderBy(new ColumnExpression('chat','id'),"DESC"),
+                  $limit:1
+
+               })),'createdByLast'),
+               
+               new ResultColumn(new QueryExpression(new Query({
+                $select:[
+                  new ResultColumn(new ColumnExpression('chat','nameList'))
+                ],
+                $from:'chat',
+                $where :[
+                  new BinaryExpression(new ColumnExpression('chat','chatroomId'),'=',new FunctionExpression('max',new ColumnExpression('chatroom','id')))
+
+                ],
+                $order:new OrderBy(new ColumnExpression('chat','id'),"DESC"),
+                $limit:1
+
+             })),'mentions'),
+              new ResultColumn(new ColumnExpression('person', 'photoURL'),'photoURL'),
 
 
 
@@ -245,6 +298,16 @@ const fieldList = [
   {
     name:'lastMessage',
     expression: new ColumnExpression('chat','lastMessage'),
+    companion:['table:chat']
+  },
+  {
+    name:'message',
+    expression: new ColumnExpression('chat','message'),
+    companion:['table:chat']
+  },
+  {
+    name:'mentions',
+    expression: new ColumnExpression('chat','mentions'),
     companion:['table:chat']
 
   },

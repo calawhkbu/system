@@ -1,11 +1,15 @@
 import { JwtMicroPayload } from 'modules/auth/interfaces/jwt-payload'
 import { CtaActionInt, IBody, Result } from 'modules/cta/interface'
 import axios from 'axios'
-import { InternalServerErrorException, NotFoundException } from '@nestjs/common'
+import { InternalServerErrorException } from '@nestjs/common'
 import _ = require('lodash')
+import { Props } from './updateBooking'
 
-export default class UpdateShipmentAction extends CtaActionInt {
-  async run(tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
+export default class UpdateShipmentAction extends CtaActionInt<Props> {
+  needLocals = true
+
+  async run(system: string, tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
+    if (!this.props) throw new InternalServerErrorException('MISSING_PROPS')
     let entity = body.entity
     const { accessToken, backendUrl } = body.locals
 
@@ -14,26 +18,13 @@ export default class UpdateShipmentAction extends CtaActionInt {
       if (body.locals.shipment) {
         entity = body.locals.shipment
       }
-      else if (entity.tableName === 'shipment' && entity.primaryKey) {
-        const response = await axios.request({
-          method: 'GET',
-          url: `${backendUrl}/api/shipment/${entity.primaryKey}`,
-          headers: {
-            Authorization: `Bearer ${accessToken || user.fullAccessToken}`
-          }
-        })
-        if (!response || !response.data || String(response.data.id) !== primaryKey) {
-          throw new NotFoundException('SHIPMENT_NOT_FOUND')
-        }
-        entity = response.data
-      }
       else {
         throw new InternalServerErrorException('UNSUPPORTED_ENTITY_TYPE')
       }
     }
 
-    for (const key of Object.keys(body.inputResult)) {
-      _.set(entity, key, body.inputResult[key])
+    for (const { key, path = key } of this.props.fields) {
+      _.set(entity, path, body.inputResult[key])
     }
 
     // save shipment

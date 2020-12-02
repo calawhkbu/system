@@ -3,7 +3,7 @@ import { CtaActionInt, IBody, Result } from 'modules/cta/interface'
 import axios from 'axios'
 
 export default class UpdateTaskStatusAction extends CtaActionInt {
-  async run(tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
+  async run(system: string, tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
     const task = body.entity
     const { backendUrl, accessToken } = body.locals
 

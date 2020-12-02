@@ -42,10 +42,12 @@ export default {
           "lastMessageIndex",
           "createdAtLast",
           "createdByLast",
+          "message",
           "lastMessage",
           "houseNo",
           "bookingNo",
-         "photoURL"
+         "photoURL",
+         "mentions"
         ]
 
 
@@ -86,14 +88,31 @@ export default {
       dataServiceQuery: ['chatroom', 'chatroom'],
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result,user): any[] {
         const timezone=user.configuration.timezone
+        const fullName=user.fullName
         let results:any=[]
         //get unread Messages Only
      res.forEach(el => {
+      let msg=[]   
        if(el.readIndex!==el.lastMessageIndex && el.lastMessageIndex){
          el.createdAtLast=moment(el.createdAtLast).tz(timezone).format('YYYY-MM-DD HH:mm:ss')
+          //remove @ mentions and return clean messagesWithout Tag
+      let cleanText = el.messageWithoutTag.replace(/<\/?[^>]+(>|$)/g, "")// remove mentions @ 
+      cleanText
+      cleanText = cleanText&&cleanText.replace('<p>','')
+      cleanText = cleanText&&cleanText.replace('</p>','')
+     console.log('cleanText')
+     console.log(cleanText)
+     el.lastMessage=cleanText
+     console.log('-----lastMessage')
+     console.log(el.lastMessage)
         results.push(el)
        }
      });
+
+   
+
+
+
         return results && results.length>0?results :null
 
       }

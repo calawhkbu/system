@@ -1,6 +1,7 @@
 import { JwtMicroPayload } from 'modules/auth/interfaces/jwt-payload'
 import { CtaActionInt, IBody, Result } from 'modules/cta/interface'
 import axios from 'axios'
+import { InternalServerErrorException } from '@nestjs/common'
 
 interface IProps {
   handler?: string
@@ -11,7 +12,8 @@ interface IProps {
 export default class SendEmailAction extends CtaActionInt<IProps> {
   needLocals = true
 
-  async run(tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
+  async run(system: string, tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
+    if (!this.props) throw new InternalServerErrorException('MISSING_PROPS')
     const { messengerUrl } = await this.ctaService.getConfig()
     const { handler, ...data } = this.props
     const { entity, entityId } = body
@@ -21,6 +23,7 @@ export default class SendEmailAction extends CtaActionInt<IProps> {
     data.context = {
       ...data.context,
       ...locals,
+      system,
       tableName,
       entity,
       entityId,

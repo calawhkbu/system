@@ -1,11 +1,23 @@
 import { JwtMicroPayload } from 'modules/auth/interfaces/jwt-payload'
 import { CtaActionInt, IBody, Result } from 'modules/cta/interface'
 import axios from 'axios'
-import { InternalServerErrorException, NotFoundException } from '@nestjs/common'
+import { InternalServerErrorException } from '@nestjs/common'
 import _ = require('lodash')
 
-export default class UpdateBookingAction extends CtaActionInt {
-  async run(tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
+export interface IField {
+  key: string
+  path?: string|string[]
+}
+
+export interface Props {
+  fields: IField[]
+}
+
+export default class UpdateBookingAction extends CtaActionInt<Props> {
+  needLocals = true
+
+  async run(system: string, tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
+    if (!this.props) throw new InternalServerErrorException('MISSING_PROPS')
     let entity = body.entity
     const { accessToken, backendUrl } = body.locals
 
@@ -14,26 +26,13 @@ export default class UpdateBookingAction extends CtaActionInt {
       if (body.locals.booking) {
         entity = body.locals.booking
       }
-      else if (entity.tableName === 'booking' && entity.primaryKey) {
-        const response = await axios.request({
-          method: 'GET',
-          url: `${backendUrl}/api/booking/${entity.primaryKey}`,
-          headers: {
-            Authorization: `Bearer ${accessToken || user.fullAccessToken}`
-          }
-        })
-        if (!response || !response.data || String(response.data.id) !== primaryKey) {
-          throw new NotFoundException('BOOKING_NOT_FOUND')
-        }
-        entity = response.data
-      }
       else {
         throw new InternalServerErrorException('UNSUPPORTED_ENTITY_TYPE')
       }
     }
 
-    for (const key of Object.keys(body.inputResult)) {
-      _.set(entity, key, body.inputResult[key])
+    for (const { key, path = key } of this.props.fields) {
+      _.set(entity, path, body.inputResult[key])
     }
 
     // save booking
