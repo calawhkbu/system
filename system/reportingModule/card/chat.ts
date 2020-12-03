@@ -33,7 +33,6 @@ export default {
        
 
         params.fields = [
-      
           "id",
           "userName",
           "tableName",
@@ -47,9 +46,8 @@ export default {
           "lastMessage",
           "houseNo",
           "bookingNo",
-         "mentions"
+         "mentions",
         ]
-
 
         // new way of handling sorting
         const sorting = params.sorting = []
@@ -65,7 +63,6 @@ export default {
         }
 
         //filter Logged In Users's message`
-
         let tableName=_.clone(params.subqueries.entityType&&params.subqueries.entityType.value)||undefined
           if(tableName){
             params.subqueries = {
@@ -86,31 +83,66 @@ export default {
     {
       type: 'callDataService',
       dataServiceQuery: ['chatroom', 'chatroom'],
-      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result,user): any[] {
+      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result,user): any {
         const timezone=user.configuration.timezone
         const fullName=user.fullName
+        results=[]
 
-
-    
         //get unread Messages Only
      res.forEach(el => {
       let msg=[]   
        if(el.readIndex!==el.lastMessageIndex && el.lastMessageIndex){
          el.createdAtLast=moment(el.createdAtLast).tz(timezone).format('YYYY-MM-DD HH:mm:ss')
-          //remove @ mentions and return clean messagesWithout Tag
-    //   let cleanText = el.messageWithoutTag.replace(/<\/?[^>]+(>|$)/g, "")// remove mentions @ 
-    //   cleanText
-    //   cleanText = cleanText&&cleanText.replace('<p>','')
-    //   cleanText = cleanText&&cleanText.replace('</p>','')
-    //  console.log('cleanText')
-    //  console.log(cleanText)
-    //  el.lastMessage=cleanText
-    //  console.log('-----lastMessage')
-    //  console.log(el.lastMessage)
         results.push(el)
        }
      });
-        return results && results.length>0?results :null
+        //return results && results.length>0?results :null
+      
+        params.fields=['displayName','firstName','lastName','photoURL']
+        if(res&&res.length>0&&res[2]['mentions'] && res[2]['mentions'].length>0){
+          params.subqueries.search={value:res[2]['mentions']}
+        }else{
+          params.subqueries.search={value:user.username}
+        }
+      
+        //remove irrelevant
+        delete params.sorting
+        delete params.subqueries.userName
+        return params
+      }
+    }, 
+    {
+      type: 'callDataService',
+      dataServiceQuery: ['person', 'person'],
+      onResult(res, params, prevResult: Result,user): any {
+        var finalResults=[]
+
+        if(res&&res.length>0){
+          results[0]['mentionsData']=res
+          results.forEach(el => {
+            let lenOfmentionsData=el.mentionsData&&el.mentionsData.length ||-1
+                for(let i=0;i<lenOfmentionsData;i++){
+                  let name='';
+                  //remove @mention from lastMessage return clean message, no Tags no mentions
+                  if(el.mentionsData[i].displayName){
+                    name=el.mentionsData[i].displayName
+                  }else{
+                    name=el.mentionsData[i].firstName+" "+el.mentionsData[i].lastName
+                  }
+  
+                 el.lastMessage= el.lastMessage.replace('@'+name,'')
+                 el.lastMessage=el.lastMessage.trim()
+
+                } 
+                finalResults.push(el)
+              }
+        });
+
+      
+        return finalResults
+        
+       
+    
       }
     }, 
   ],

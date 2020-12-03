@@ -12,7 +12,8 @@ import {
   Value,
   OrExpressions,
   AndExpressions,
-  JoinClause
+  JoinClause,
+  GroupBy
 } from 'node-jql'
 
 const query = new QueryDef(
@@ -66,6 +67,15 @@ const query = new QueryDef(
     ),
   })
 )
+
+query.register(
+  'search',
+  new Query({
+    
+    $where:  new OrExpressions([new InExpression(new ColumnExpression('person','userName'),false,new Unknown())]),
+    $group:new GroupBy(new ColumnExpression('person','userName'))
+  })
+).register('value',0)
 
 query.register(
   'primaryKey',

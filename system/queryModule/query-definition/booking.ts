@@ -458,11 +458,15 @@ query.table('carrier', new Query({
             '=',
             new Value('CARRIER')
           ),
-
           new BinaryExpression(
             new ColumnExpression('booking', 'carrierCode'),
             '=',
             new ColumnExpression('carrier', 'code')
+          ),
+          new BinaryExpression(
+            new ColumnExpression('booking', 'partyGroupCode'),
+            '=',
+            new ColumnExpression('carrier', 'partyGroupCode')
           ),
         ],
       },
@@ -491,8 +495,14 @@ query.table('moduleType', new Query({
             '=',
             new ColumnExpression('moduleType', 'code')
           ),
+          new BinaryExpression(
+            new ColumnExpression('booking', 'partyGroupCode'),
+            '=',
+            new ColumnExpression('moduleType', 'partyGroupCode')
+          ),
         ],
       },
+
     ]
   })
 }))
@@ -517,6 +527,11 @@ query.table('boundType', new Query({
             new ColumnExpression('booking', 'boundTypeCode'),
             '=',
             new ColumnExpression('boundType', 'code')
+          ),
+          new BinaryExpression(
+            new ColumnExpression('booking', 'partyGroupCode'),
+            '=',
+            new ColumnExpression('boundType', 'partyGroupCode')
           ),
         ],
       },
@@ -545,6 +560,11 @@ query.table('service', new Query({
             '=',
             new ColumnExpression('service', 'code')
           ),
+          new BinaryExpression(
+            new ColumnExpression('booking', 'partyGroupCode'),
+            '=',
+            new ColumnExpression('service', 'partyGroupCode')
+          ),
         ],
       },
     ]
@@ -571,6 +591,11 @@ query.table('incoTerms', new Query({
             new ColumnExpression('booking', 'incoTermsCode'),
             '=',
             new ColumnExpression('incoTerms', 'code')
+          ),
+          new BinaryExpression(
+            new ColumnExpression('booking', 'partyGroupCode'),
+            '=',
+            new ColumnExpression('incoTerms', 'partyGroupCode')
           ),
         ],
       },
@@ -599,6 +624,11 @@ query.table('freightTerms', new Query({
             '=',
             new ColumnExpression('freightTerms', 'code')
           ),
+          new BinaryExpression(
+            new ColumnExpression('booking', 'partyGroupCode'),
+            '=',
+            new ColumnExpression('freightTerms', 'partyGroupCode')
+          ),
         ],
       },
     ]
@@ -625,6 +655,11 @@ query.table('otherTerms', new Query({
             new ColumnExpression('booking', 'otherTermsCode'),
             '=',
             new ColumnExpression('otherTerms', 'code')
+          ),
+          new BinaryExpression(
+            new ColumnExpression('booking', 'partyGroupCode'),
+            '=',
+            new ColumnExpression('otherTerms', 'partyGroupCode')
           ),
         ],
       }
@@ -1942,8 +1977,7 @@ const summaryFieldList : SummaryField[]  = [
   {
     name: 'quantity',
     summaryType: 'sum',
-    expression: new ColumnExpression('booking_popacking', 'quantity'),
-    companion: ['table:booking_popacking']
+    expression: new ColumnExpression('booking', 'quantity'),
   },
 
   {

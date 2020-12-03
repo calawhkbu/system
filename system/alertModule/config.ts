@@ -204,7 +204,7 @@ const ASWAlertConfigList = [
 
         // missing sendAMSDateActual
         sendAMSDateActualIsNull: true,
-        
+
        // It should be ETD - 2 days
         before_arrivalDateEstimatedInUtc: {
           value: {
@@ -264,15 +264,15 @@ const ASWAlertConfigList = [
 
         // missing returnEmptyContainerDateActual
         returnEmptyContainerDateActualIsNull: true,
-        containerReturnConditions:true, 
+        containerReturnConditions:true,
          /*
         MODULE = "SEA"
       Return Container Actual is null
-      NOW is to ETA + 7 days and 
-      add a condition that if Sent to Consignee date is not empty, 
+      NOW is to ETA + 7 days and
+      add a condition that if Sent to Consignee date is not empty,
       use Sent to consignee Date + 4 days. Need to make sure today must be later than ETD Date
         */
-       
+
         // after arrivalDateEstimated + 1 day
         // after_arrivalDateEstimatedInUtc: {
         //   value: {

@@ -78,8 +78,6 @@ query.table('chat',(params:IQueryParams)=>{
             table: new Query({
               $select: [
                 new ResultColumn(new ColumnExpression('chat', 'chatroomId')),
-                new ResultColumn(new ColumnExpression('person', 'fullName')),
-
                 new ResultColumn(new ColumnExpression('chat', 'createdAt')),
                 new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'id')),'lastMessageIndex'),
                  new ResultColumn(new QueryExpression(new Query({
@@ -138,20 +136,32 @@ query.table('chat',(params:IQueryParams)=>{
                 $limit:1
 
              })),'mentions'),
-              new ResultColumn(new ColumnExpression('person', 'photoURL'),'photoURL'),
+
+          //    new ResultColumn(new QueryExpression(new Query({
+          //     $select:[
+          //       new ResultColumn(new ColumnExpression('person','displayName'))
+          //     ],
+          //     $from:'person',
+          //     $where :[
+          //       new InExpression(new ColumnExpression('person','userName'),false,new Value(['360@swivelsoftware.com'])),
+            
+          //     ],
+          //      $group: new GroupBy(new ColumnExpression('person','userName'))
+
+          //  })),'displayName'),
 
 
 
 
                    ],
-                   $from: [new FromTable('chat', 'chat'),new FromTable('chatroom', 'chatroom'),new FromTable('person', 'person')],
+                   $from: [new FromTable('chat', 'chat'),new FromTable('chatroom', 'chatroom')],
                    $where:[ new AndExpressions({
                 expressions: [
                   new IsNullExpression(new ColumnExpression('chat', 'deletedAt'), false),
                   new IsNullExpression(new ColumnExpression('chat', 'deletedBy'), false),
                   new BinaryExpression(new ColumnExpression('chatroom','userName'),'=',user.username),
                   new BinaryExpression(new ColumnExpression('chat','chatroomId'),'=',new ColumnExpression('chatroom','id')),
-                  new InExpression(new ColumnExpression('person','userName'),false,new ColumnExpression('chat','nameList'))
+                  //new InExpression(new ColumnExpression('person','userName'),false,new ColumnExpression('chat','nameList'))
 
                 ]
               }),
@@ -225,46 +235,54 @@ query.table('shipment', new Query({
 
 }))
 
-// query.table('person',new Query({
-//   $select:new ResultColumn(new ColumnExpression('person','*')),
-//   $from:'person',
-//   $where: new BinaryExpression(new ColumnExpression('person','userName'),'=',new Unknown())
+
+query.table('person',(params:IQueryParams)=>{
+  const user=params.constants.user
+  const tableName=params.subqueries.tableName && params.subqueries.tableName.value||null
+   return   new Query({
+     $from : new FromTable({
+       table : baseTableName,
+       joinClauses : [
+         {
+           operator: 'LEFT',
+           table: new FromTable({
+             table: new Query({
+               $select: [ new ResultColumn(new ColumnExpression('person', '*')),
+              
+                    ],
+                    $from: [new FromTable('person', 'person'),],
+                    $where:[ new AndExpressions({
+                 expressions: [
+                   new IsNullExpression(new ColumnExpression('person', 'deletedAt'), false),
+                   new IsNullExpression(new ColumnExpression('person', 'deletedBy'), false),
+ 
+                 ]
+               }),
+             ], 
+             
+             }),
+             $as: 'person'
+           }),
+           $on: new BinaryExpression(new ColumnExpression('person', 'partyGroupCode'), '=', user.partyGroupCode)
+         }
+       ]
+     })
+   }) 
+ })
+
+
+ 
+// query.subquery('person',new Query({
+// $select:[
+//   new ResultColumn(new ColumnExpression('person','displayName')),
+//   new ResultColumn(new ColumnExpression('chatroom','roomKey')),
+
+// ],
+// $from: [new FromTable('person', 'person'),new FromTable('chatroom','chatroom')],
+// $where:[new InExpression(new ColumnExpression('person','userName'),false,new Value(['marco.lor@swivelsoftware.com','calvin.law@swivelsoftware.com']))],
 // })).register('value',0)
 
-query.subquery('person', new Query({
-  $from : new FromTable({
-    table : baseTableName,
-    joinClauses : [
-      {
-        operator: 'LEFT',
-        table: new FromTable({
-          table: new Query({
-            $select: [
-              new ResultColumn(new ColumnExpression('person', 'id')),
-              new ResultColumn(new ColumnExpression('person', 'userName')),
-              new ResultColumn(new ColumnExpression('person', 'photoURL')),
-              new ResultColumn(new ColumnExpression('person', 'displayName')),
-              new ResultColumn(new ColumnExpression('person', 'firstName')),
-              new ResultColumn(new ColumnExpression('person', 'lastName')),
-            ],
-            $from: new FromTable('person', 'person'),
-            $where: new AndExpressions({
-              expressions: [
-                new IsNullExpression(new ColumnExpression('person', 'deletedAt'), false),
-                new IsNullExpression(new ColumnExpression('person', 'deletedBy'), false),
-              ]
-            }),
-            $group:new GroupBy(new ColumnExpression('person','userName')),
 
-          }),
-          $as: 'person'
-        }),
-        $on: new InExpression(new ColumnExpression('person','userName'),false,new Unknown())
-      }
-    ]
-  })
-
-}))
 
 const fieldList = [
   'id',
@@ -273,6 +291,7 @@ const fieldList = [
   'roomKey',
   'userName',
   'chatroomIndex',
+ 
   {
     name:'readIndex',
     expression:new ColumnExpression('chatroom','readIndex')
@@ -316,13 +335,8 @@ const fieldList = [
     companion:['table:chat']
 
   },
-  {
-    name:'fullName',
-    expression: new ColumnExpression('chat','fullName'),
-    companion:['table:chat']
-
-  },
-
+ 
+  
 
 
   

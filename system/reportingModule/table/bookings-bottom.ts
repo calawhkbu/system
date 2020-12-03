@@ -3,7 +3,6 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import { handleGroupByEntityValueDatePart, handleBottomSheetGroupByEntityValue } from 'utils/card'
 import { ERROR } from 'utils/error'
-import { isLabeledStatement } from 'typescript'
 
 export default {
   jqls: [
@@ -20,7 +19,7 @@ export default {
           'masterNo',
           'houseNo',
           'jobDate',
-          'carrierCode',
+          // 'carrierCode',
           'carrierName',
           'shipperPartyName',
           'consigneePartyName',
@@ -139,9 +138,8 @@ export default {
     { key: 'houseNo' },
     { key: 'masterNo' },
     { key: 'jobDate' },
-    { key: 'carrierName',
-    label:'carrier'
-  },
+    // { key: 'carrierCode' },
+    { key: 'carrierName' },
     { key: 'shipperPartyName' },
     { key: 'consigneePartyName' },
     { key: 'portOfLoadingCode' },
