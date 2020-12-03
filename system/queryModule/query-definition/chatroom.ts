@@ -63,43 +63,43 @@ const query = new QueryDef(
   })
 )
 
-query.table('person',(params:IQueryParams)=>{
-  const user=params.constants.user
-   return   new Query({
+// query.table('person',(params:IQueryParams)=>{
+//   const user=params.constants.user
+//    return   new Query({
     
-     $from : new FromTable({
-       table :baseTableName,
-       joinClauses : [
-        {
-          operator: 'LEFT',
-          table: new FromTable({
-            table: new Query({
-              $select: [
-                new ResultColumn(new ColumnExpression('person', 'photoURL')),
+//      $from : new FromTable({
+//        table :baseTableName,
+//        joinClauses : [
+//         {
+//           operator: 'LEFT',
+//           table: new FromTable({
+//             table: new Query({
+//               $select: [
+//                 new ResultColumn(new ColumnExpression('person', 'photoURL')),
 
 
 
-                   ],
-                   $from: [new FromTable('person', 'person')],
-                   $where:[ new AndExpressions({
-                expressions: [
+//                    ],
+//                    $from: [new FromTable('person', 'person')],
+//                    $where:[ new AndExpressions({
+//                 expressions: [
                 
-                  new BinaryExpression(user.username, '=', new ColumnExpression('person','userName'))
+//                   new BinaryExpression(user.username, '=', new ColumnExpression('person','userName'))
 
 
-                ]
-              }),
-            ], 
-            }),
-            $as: 'person'
-          }),
-          $on: new BinaryExpression(user.username,'=', new ColumnExpression('person','userName'))
-        }
-      ]
+//                 ]
+//               }),
+//             ], 
+//             }),
+//             $as: 'person'
+//           }),
+//           $on: new BinaryExpression(user.username,'=', new ColumnExpression('person','userName'))
+//         }
+//       ]
    
-     }),
-   }) 
- })
+//      }),
+//    }) 
+//  })
  
   // select messageWithoutTag from chat where 
 query.table('chat',(params:IQueryParams)=>{
@@ -260,6 +260,44 @@ query.table('shipment', new Query({
 
 }))
 
+// query.table('person',new Query({
+//   $select:new ResultColumn(new ColumnExpression('person','*')),
+//   $from:'person',
+//   $where: new BinaryExpression(new ColumnExpression('person','userName'),'=',new Unknown())
+// })).register('value',0)
+
+query.subquery('person', new Query({
+  $from : new FromTable({
+    table : baseTableName,
+    joinClauses : [
+      {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: new Query({
+            $select: [
+              new ResultColumn(new ColumnExpression('person', 'id')),
+              new ResultColumn(new ColumnExpression('person', 'userName')),
+              new ResultColumn(new ColumnExpression('person', 'photoURL')),
+              new ResultColumn(new ColumnExpression('person', 'displayName')),
+              new ResultColumn(new ColumnExpression('person', 'firstName')),
+              new ResultColumn(new ColumnExpression('person', 'lastName')),
+            ],
+            $from: new FromTable('person', 'person'),
+            $where: new AndExpressions({
+              expressions: [
+                new IsNullExpression(new ColumnExpression('person', 'deletedAt'), false),
+                new IsNullExpression(new ColumnExpression('person', 'deletedBy'), false),
+              ]
+            }),
+          }),
+          $as: 'person'
+        }),
+        $on: new BinaryExpression(new ColumnExpression('person','userName'),'=',new Unknown())
+      }
+    ]
+  })
+
+})).register('value',0)
 
 const fieldList = [
   'id',
@@ -311,12 +349,11 @@ const fieldList = [
     companion:['table:chat']
 
   },
-  {
-    name:'photoURL',
-    expression: new ColumnExpression('chat','photoURL'),
-    companion:['table:chat']
-
-  }
+  // {
+  //   name:'photoURL',
+  //   expression: new ColumnExpression('person','photoURL'),
+  //   companion:['table:person']
+  // }
 
   
 ] as ExpressionHelperInterface[]
