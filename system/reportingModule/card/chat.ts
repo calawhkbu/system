@@ -16,6 +16,7 @@ interface Result {
   nameColumnName: string
   summaryVariables: string[]
 }
+var results:any=[]
 
 
 
@@ -46,7 +47,6 @@ export default {
           "lastMessage",
           "houseNo",
           "bookingNo",
-         //"photoURL",
          "mentions"
         ]
 
@@ -76,7 +76,6 @@ export default {
           }else{
             params.subqueries = {
               userName: { value: user.username },
-              person:{value:'marco.lou@swivelsoftware.com'}
              }
           }
 
@@ -90,7 +89,9 @@ export default {
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result,user): any[] {
         const timezone=user.configuration.timezone
         const fullName=user.fullName
-        let results:any=[]
+
+
+    
         //get unread Messages Only
      res.forEach(el => {
       let msg=[]   
@@ -109,16 +110,9 @@ export default {
         results.push(el)
        }
      });
-
-   
-
-
-
         return results && results.length>0?results :null
-
       }
-    }
-   
+    }, 
   ],
   filters: [
     // for this filter, user can only select single,

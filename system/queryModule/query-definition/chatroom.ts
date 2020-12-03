@@ -63,43 +63,6 @@ const query = new QueryDef(
   })
 )
 
-// query.table('person',(params:IQueryParams)=>{
-//   const user=params.constants.user
-//    return   new Query({
-    
-//      $from : new FromTable({
-//        table :baseTableName,
-//        joinClauses : [
-//         {
-//           operator: 'LEFT',
-//           table: new FromTable({
-//             table: new Query({
-//               $select: [
-//                 new ResultColumn(new ColumnExpression('person', 'photoURL')),
-
-
-
-//                    ],
-//                    $from: [new FromTable('person', 'person')],
-//                    $where:[ new AndExpressions({
-//                 expressions: [
-                
-//                   new BinaryExpression(user.username, '=', new ColumnExpression('person','userName'))
-
-
-//                 ]
-//               }),
-//             ], 
-//             }),
-//             $as: 'person'
-//           }),
-//           $on: new BinaryExpression(user.username,'=', new ColumnExpression('person','userName'))
-//         }
-//       ]
-   
-//      }),
-//    }) 
-//  })
  
   // select messageWithoutTag from chat where 
 query.table('chat',(params:IQueryParams)=>{
@@ -115,6 +78,8 @@ query.table('chat',(params:IQueryParams)=>{
             table: new Query({
               $select: [
                 new ResultColumn(new ColumnExpression('chat', 'chatroomId')),
+                new ResultColumn(new ColumnExpression('person', 'fullName')),
+
                 new ResultColumn(new ColumnExpression('chat', 'createdAt')),
                 new ResultColumn(new FunctionExpression('max',new ColumnExpression('chat', 'id')),'lastMessageIndex'),
                  new ResultColumn(new QueryExpression(new Query({
@@ -186,7 +151,7 @@ query.table('chat',(params:IQueryParams)=>{
                   new IsNullExpression(new ColumnExpression('chat', 'deletedBy'), false),
                   new BinaryExpression(new ColumnExpression('chatroom','userName'),'=',user.username),
                   new BinaryExpression(new ColumnExpression('chat','chatroomId'),'=',new ColumnExpression('chatroom','id')),
-                  new BinaryExpression(new ColumnExpression('chat','createdBy'),'=',new ColumnExpression('person','userName')),
+                  new InExpression(new ColumnExpression('person','userName'),false,new ColumnExpression('chat','nameList'))
 
                 ]
               }),
@@ -289,15 +254,17 @@ query.subquery('person', new Query({
                 new IsNullExpression(new ColumnExpression('person', 'deletedBy'), false),
               ]
             }),
+            $group:new GroupBy(new ColumnExpression('person','userName')),
+
           }),
           $as: 'person'
         }),
-        $on: new BinaryExpression(new ColumnExpression('person','userName'),'=',new Unknown())
+        $on: new InExpression(new ColumnExpression('person','userName'),false,new Unknown())
       }
     ]
   })
 
-})).register('value',0)
+}))
 
 const fieldList = [
   'id',
@@ -349,11 +316,14 @@ const fieldList = [
     companion:['table:chat']
 
   },
-  // {
-  //   name:'photoURL',
-  //   expression: new ColumnExpression('person','photoURL'),
-  //   companion:['table:person']
-  // }
+  {
+    name:'fullName',
+    expression: new ColumnExpression('chat','fullName'),
+    companion:['table:chat']
+
+  },
+
+
 
   
 ] as ExpressionHelperInterface[]
