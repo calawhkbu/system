@@ -1,0 +1,399 @@
+{
+  "components": [{
+    "is": "WidgetForm",
+    "class": "xs-12",
+    "props": {
+      "fields": [{
+          "label": "ShipmentPage.poNo",
+          "name": "shipmentPo",
+          "component": "MultiField",
+          "checkDisplayWhen": "return form.shipmentPo && form.shipmentPo.length > 0",
+          "class": "xs-12",
+          "props": {
+            "onGetFixValueOverrideFunc": [
+              "return Array.isArray(value) ? value.map(v => v.poNo) : [value]"
+            ],
+            "onSetFixValueOverrideFunc": [
+              "console.log(value)",
+              "return value.map(v => ({ poNo: v }))"
+            ]
+          }
+        }, {
+          "label": "ShipmentPage.cargos",
+          "name": "shipmentCargos",
+          "component": "TableField",
+          "class": "xs-12",
+          "props": {
+            "topLabel": true,
+            "fields": [{
+                "label": "ShipmentPage.goodsDescription",
+                "name": "goodsDescription",
+                "component": "v-textarea",
+                "colGroupProps": {
+                  "style": {
+                    "width": "25%"
+                  }
+                },
+                "props": {
+                  "rows": 5
+                }
+              },
+              {
+                "label": "ShipmentPage.commodity",
+                "name": "commodity",
+                "component": "v-text-field",
+                "colGroupProps": {
+                  "style": {
+                    "width": "18%"
+                  }
+                }
+              },
+              {
+                "label": "ShipmentPage.quantity",
+                "name": "quantity",
+                "component": "NumberField",
+                "colGroupProps": {
+                  "style": {
+                    "width": "7%"
+                  }
+                },
+                "props": {
+                  "right": true,
+                  "type": "number",
+                  "min": 0,
+                  "step": 1,
+                  "int": true
+                }
+              },
+              {
+                "label": "ShipmentPage.quantityUnit",
+                "name": "quantityUnit",
+                "colGroupProps": {
+                  "style": {
+                    "width": "3%",
+                    "min-width": "50px"
+                  }
+                },
+                "component": "v-select",
+                "props": {
+                  "items": [{
+                      "text": "W/C",
+                      "value": "W/C"
+                    },
+                    {
+                      "text": "PCS",
+                      "value": "PCS"
+                    },
+                    {
+                      "text": "M/C",
+                      "value": "M/C"
+                    },
+                    {
+                      "text": "BAG",
+                      "value": "BAG"
+                    },
+                    {
+                      "text": "CASE",
+                      "value": "CASE"
+                    },
+                    {
+                      "text": "PLT",
+                      "value": "PLT"
+                    },
+                    {
+                      "text": "ROLL",
+                      "value": "ROLL"
+                    },
+                    {
+                      "text": "PAIR",
+                      "value": "PAIR"
+                    },
+                    {
+                      "text": "CTN",
+                      "value": "CTN"
+                    }
+                  ]
+                }
+              },
+              {
+                "label": "ShipmentPage.grossWeight",
+                "name": "grossWeight",
+                "component": "NumberField",
+                "colGroupProps": {
+                  "style": {
+                    "width": "7%"
+                  }
+                },
+                "props": {
+                  "right": true,
+                  "type": "number",
+                  "min": 0
+                }
+              },
+              {
+                "label": "ShipmentPage.volumeWeight",
+                "name": "volumeWeight",
+                "component": "NumberField",
+                "colGroupProps": {
+                  "style": {
+                    "width": "7%"
+                  }
+                },
+                "props": {
+                  "right": true,
+                  "type": "number",
+                  "min": 0
+                }
+              },
+              {
+                "label": "ShipmentPage.chargeableWeight",
+                "name": "chargeableWeight",
+                "component": "NumberField",
+                "colGroupProps": {
+                  "style": {
+                    "width": "7%"
+                  }
+                },
+                "props": {
+                  "right": true,
+                  "type": "number",
+                  "min": 0
+                }
+              },
+              {
+                "label": "ShipmentPage.weightUnit",
+                "name": "weightUnit",
+                "colGroupProps": {
+                  "style": {
+                    "width": "3%",
+                    "min-width": "50px"
+                  }
+                },
+                "component": "v-select",
+                "props": {
+                  "items": [{
+                      "text": "KGs",
+                      "value": "KGs"
+                    },
+                    {
+                      "text": "LBs",
+                      "value": "LBs"
+                    }
+                  ]
+                }
+              },
+              {
+                "label": "ShipmentPage.cbm",
+                "colGroupProps": {
+                  "style": {
+                    "width": "10%"
+                  }
+                },
+                "name": "cbm",
+                "component": "NumberField",
+                "props": {
+                  "right": true,
+                  "type": "number",
+                  "min": 0
+                }
+              },
+              {
+                "label": "ShipmentPage.dimension",
+                "name": "dimension",
+                "component": "v-text-field",
+                "colGroupProps": {
+                  "style": {
+                    "width": "10%"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "label": "ShipmentPage.containers",
+          "name": "shipmentContainers",
+          "component": "TableField",
+          "class": "xs-12",
+          "props": {
+            "topLabel": true,
+            "fields": [{
+                "label": "ShipmentPage.containerNo",
+                "name": "containerNo",
+                "component": "v-text-field",
+                "colGroupProps": {
+                  "style": {
+                    "width": "15%"
+                  }
+                },
+                "props": {
+                  "color": "blue"
+                }
+              },
+              {
+                "label": "ShipmentPage.carrierBookingNo",
+                "name": "carrierBookingNo",
+                "colGroupProps": {
+                  "style": {
+                    "width": "15%"
+                  }
+                },
+                "component": "v-text-field"
+              },
+              {
+                "label": "ShipmentPage.sealNo",
+                "name": "sealNo",
+                "colGroupProps": {
+                  "style": {
+                    "width": "15%"
+                  }
+                },
+                "component": "v-text-field"
+              },
+              {
+                "label": "ShipmentPage.containerType",
+                "name": "containerType",
+                "colGroupProps": {
+                  "width": "10%"
+                },
+                "component": "AsyncSelect",
+                "props": {
+                  "item-text": "name",
+                  "item-value": "code",
+                  "axiosParams": {
+                    "url": "api/code/query/code_master",
+                    "method": "POST",
+                    "data": {
+                      "subqueries": {
+                        "codeType": {
+                          "value": "CONTTYPE"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "label": "ShipmentPage.quantity",
+                "name": "quantity",
+                "component": "NumberField",
+                "colGroupProps": {
+                  "style": {
+                    "width": "10%"
+                  }
+                },
+                "props": {
+                  "right": true,
+                  "type": "number",
+                  "min": 0
+                }
+              },
+              {
+                "label": "ShipmentPage.quantityUnit",
+                "name": "quantityUnit",
+                "colGroupProps": {
+                  "style": {
+                    "width": "2%",
+                    "min-width": "50px"
+                  }
+                },
+                "component": "v-select",
+                "props": {
+                  "items": [{
+                      "text": "W/C",
+                      "value": "W/C"
+                    },
+                    {
+                      "text": "PCS",
+                      "value": "PCS"
+                    },
+                    {
+                      "text": "M/C",
+                      "value": "M/C"
+                    },
+                    {
+                      "text": "BAG",
+                      "value": "BAG"
+                    },
+                    {
+                      "text": "CASE",
+                      "value": "CASE"
+                    },
+                    {
+                      "text": "PLT",
+                      "value": "PLT"
+                    },
+                    {
+                      "text": "ROLL",
+                      "value": "ROLL"
+                    },
+                    {
+                      "text": "PAIR",
+                      "value": "PAIR"
+                    },
+                    {
+                      "text": "CTN",
+                      "value": "CTN"
+                    }
+                  ]
+                }
+              },
+              {
+                "label": "ShipmentPage.grossWeight",
+                "name": "grossWeight",
+                "component": "NumberField",
+                "colGroupProps": {
+                  "style": {
+                    "width": "10%"
+                  }
+                },
+                "props": {
+                  "right": true,
+                  "type": "number",
+                  "min": 0
+                }
+              },
+              {
+                "label": "ShipmentPage.weightUnit",
+                "name": "weightUnit",
+                "colGroupProps": {
+                  "style": {
+                    "width": "2%",
+                    "min-width": "50px"
+                  }
+                },
+                "component": "v-select",
+                "props": {
+                  "items": [{
+                      "text": "KGs",
+                      "value": "KGs"
+                    },
+                    {
+                      "text": "LBs",
+                      "value": "LBs"
+                    }
+                  ]
+                }
+              },
+              {
+                "label": "ShipmentPage.cbm",
+                "name": "cbm",
+                "component": "NumberField",
+                "colGroupProps": {
+                  "style": {
+                    "width": "15%"
+                  }
+                },
+                "props": {
+                  "right": true,
+                  "type": "number",
+                  "min": 0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }]
+}

@@ -51,6 +51,7 @@ export default {
     }
   ],
   columns: [
+    { key: 'checkbox' },
     { key: 'createdAt' },
     { key: 'updatedAt' },
     { key: 'id' },
@@ -63,7 +64,7 @@ export default {
     { key: 'moduleType' }, //need this
     { key: 'boundType' },
     { key: 'service' },
-    { key: 'incoTerms' },
+    { key: 'incoTermsCode' },
     { key: 'freightTerms' },
     { key: 'otherTerms' },
     { key: 'finalVesselName' },
@@ -149,6 +150,15 @@ export default {
     { key: 'allContainerNo' },
     { key: 'totalQuantity' },
     { key: 'totalQuantityUnit' },
+    { key: 'bookingGrossWeight' },
+    { key: 'bookingChargeableWeight' },
+    { key: 'bookingVolumeWeight' },
+    { key: 'bookingWeightUnit' },
+    { key: 'bookingCbm' },
+    { key: 'shipMarks' },
+    { key: 'goodsDescription' },
+    { key: 'remark' },
+    { key: 'specialInstruction' },
     { key: 'lastStatusCodeOrDescription' },
     { key: 'lastStatusDate' },
     { key: 'lastStatusWidget' },

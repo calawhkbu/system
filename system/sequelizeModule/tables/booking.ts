@@ -1,9 +1,178 @@
 import { IConditionalExpression, OrExpressions, AndExpressions, BinaryExpression, ColumnExpression, FunctionExpression, InExpression, Query, ResultColumn, FromTable, MathExpression } from 'node-jql'
 import { JwtPayload, JwtPayloadParty } from 'modules/auth/interfaces/jwt-payload'
+import { BadRequestException } from '@nestjs/common'
 import { Transaction, Op } from 'sequelize'
 import moment = require('moment')
 import { Booking } from 'models/main/booking'
 import { IQueryParams } from 'classes/query'
+
+import { Shipment } from 'models/main/shipment'
+import { ShipmentAmount } from 'models/main/shipmentAmount'
+import { ShipmentCargo } from 'models/main/shipmentCargo'
+import { ShipmentContainer } from 'models/main/shipmentContainer'
+import { ShipmentPo } from 'models/main/shipmentPo'
+import { ShipmentTransport } from 'models/main/shipmentTransport'
+import { ShipmentReference } from 'models/main/shipmentReference'
+import { ShipmentBooking } from 'models/main/shipmentBooking'
+import { ShipmentDate } from 'models/main/shipmentDate'
+import { ShipmentDateUtc } from 'models/main/shipmentDateUtc'
+import { ShipmentParty } from 'models/main/shipmentParty'
+
+import { BookingDate } from 'models/main/bookingDate'
+import { BookingParty } from 'models/main/bookingParty'
+import { BookingReference } from 'models/main/bookingReference'
+import { BookingPopacking } from 'models/main/bookingPopacking'
+import { BookingContainer } from 'models/main/bookingContainer'
+import { BookingAmount } from 'models/main/bookingAmount'
+import { Invitation } from 'models/main/invitation'
+import { PurchaseOrderItem } from 'models/main/purchaseOrderItem'
+
+export async function convertBookingToShipment(bookings: Booking[], helper?: any, user?: JwtPayload, transaction?: Transaction) {
+  return bookings.reduce((result: any, entity) => {
+    const moduleType = entity.moduleTypeCode;
+
+    //check houseNo and masterNo
+    const  { houseNo, masterNo } = (entity.bookingReference || []).reduce((result, ref) => {
+      switch(moduleType) {
+        case 'AIR':
+          if (ref.refName === 'HAWB') {
+            result.houseNo = ref.refDescription
+          } else if (ref.refName === 'MAWB') {
+            result.masterNo = ref.refDescription
+          }
+          break
+        case 'SEA':
+          if (ref.refName === 'HBL') {
+            result.houseNo = ref.refDescription
+          } else if (ref.refName === 'MBL') {
+            result.masterNo = ref.refDescription
+          }
+          break
+      }
+
+      return result
+    }, { houseNo: null, masterNo: null })
+
+    if (!masterNo || !houseNo) {
+      throw new BadRequestException(`missing masterNo or houseNo for booking: ${entity.bookingNo}`)
+    }
+
+    const { shipmentPo, shipmentCargo } = ( entity.bookingPopackings || []).reduce((result, popack) => {
+      let dimensionStr = null
+      if (popack.length && popack.width && popack.height && popack.lwhUnit) {
+        const length = (+popack.length).toFixed(2)
+        const width = (+popack.width).toFixed(2)
+        const height = (+popack.height).toFixed(2)
+
+        dimensionStr = `${length}x${width}x${height}(${popack.lwhUnit})`
+      }
+
+
+      result.shipmentCargo.push({
+        dimension: dimensionStr,
+        quantity: popack.quantity,
+        quantityUnit: popack.quantityUnit,
+        cbm: popack.volume,
+        grossWeight: popack.weight,
+        weightUnit: popack.weightUnit,
+        commodity: entity.commodity
+      } as ShipmentCargo)
+
+      if (popack.purchaseOrderItem &&
+          popack.purchaseOrderItem.purchaseOrder &&
+          popack.purchaseOrderItem.purchaseOrder.poNo) {
+        const poNo = popack.purchaseOrderItem.purchaseOrder.poNo
+
+        if(!result.shipmentPo.find((item) => item.poNo === poNo)) {
+          result.shipmentPo.push({
+            poNo: poNo
+          } as ShipmentPo)
+        }
+      }
+
+      return result
+    }, {shipmentPo: [], shipmentCargo: []})
+
+    const convertedShipment = {
+      ... entity as any as Shipment,
+      houseNo: houseNo,
+      masterNo:  masterNo,
+      vessel: entity.vesselName,
+      shipmentContainers: (entity.bookingContainers || []).map((container) => {
+        const result = {
+          ... container as any as ShipmentContainer,
+          carrierBookingNo: container.soNo,
+          containerType: container.containerTypeCode,
+          quantity: container.ctns,
+          quantityUnit: "CTNs"
+        } as ShipmentContainer
+
+        delete result.id
+
+        return result
+      }),
+      shipmentDate: entity.bookingDate as any as ShipmentDate,
+      shipmentDateUtc: entity.bookingDateUtc as any as ShipmentDateUtc,
+      shipmentParty: {
+        ... entity.bookingParty as any as ShipmentParty,
+        officePartyId: entity.bookingParty.forwarderPartyId,
+        officePartyCode: entity.bookingParty.forwarderPartyCode,
+        officePartyName: entity.bookingParty.forwarderPartyName,
+        officePartyContactPersonId: entity.bookingParty.forwarderPartyContactPersonId,
+        officePartyContactEmail: entity.bookingParty.forwarderPartyContactEmail,
+        officePartyContactIdentity: entity.bookingParty.forwarderPartyIdentity,
+        officePartyContactName: entity.bookingParty.forwarderPartyContactName,
+        officePartyContactPhone: entity.bookingParty.forwarderPartyContactPhone,
+        officePartyContacts: entity.bookingParty.forwarderPartyContacts,
+        officePartyIdentity: entity.bookingParty.forwarderPartyIdentity,
+        officePartyAddress: entity.bookingParty.forwarderPartyAddress,
+        officePartyCityCode: entity.bookingParty.forwarderPartyCityCode,
+        officePartyStateCode: entity.bookingParty.forwarderPartyStateCode,
+        officePartyCountryCode: entity.bookingParty.forwarderPartyCountryCode,
+        officePartyZip: entity.bookingParty.forwarderPartyZip,
+      } as ShipmentParty,
+      shipmentPo: shipmentPo,
+      shipmentCargos: shipmentCargo,
+      shipmentReference: entity.bookingReference.map(({id, ...ref}) => {
+        return ref
+      }),
+      shipmentBooking: [{
+        bookingId: entity.id,
+        bookingNo: entity.bookingNo
+      }]
+    } as any
+
+    // TODO: clean unnessary field from Booking
+    delete convertedShipment.id
+    delete convertedShipment.shipmentParty.id
+    delete convertedShipment.shipmentDate.id
+    delete convertedShipment.shipmentDateUtc.id
+    delete convertedShipment.poNos
+    delete convertedShipment.bookingAmount
+    delete convertedShipment.bookingContainers
+    delete convertedShipment.bookingDate
+    delete convertedShipment.bookingParty
+    delete convertedShipment.bookingDateUtc
+    delete convertedShipment.bookingCreateTime
+    delete convertedShipment.bookingLastUpdateTime
+    delete convertedShipment.bookingNo
+    delete convertedShipment.bookingPopackings
+    delete convertedShipment.bookingReference
+    delete convertedShipment.grossWeight
+    delete convertedShipment.cbm
+    delete convertedShipment.chargeableWeight
+    delete convertedShipment.commodity
+    delete convertedShipment.container20
+    delete convertedShipment.container40
+    delete convertedShipment.containerHQ
+    delete convertedShipment.containerOthers
+    delete convertedShipment.report
+    delete convertedShipment.createdAt
+    delete convertedShipment.createdBy
+
+    return convertedShipment as Shipment // Only handle single booking here only
+  }, null)
+}
 
 export const setDataFunction = {
   bookingCreateTime: async({ bookingCreateTime }: Booking, user: JwtPayload) => {

@@ -68,7 +68,8 @@
           "}",
           "};"
         ],
-        "customDetailLoading": true
+        "customDetailLoading": true,
+        "entityType": "purchase_order"
       }
     }
   ]

@@ -76,7 +76,8 @@
             "skuName",
             "htsCode",
             "quantity",
-            "quantityUnit"
+            "quantityUnit",
+            "bookedQuantity"
           ],
           "formProps": {
             "z": {

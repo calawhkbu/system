@@ -63,10 +63,11 @@ export const dateTimezoneMapping = {
   ]
 }
 
-export default async function getDefaultParams(
-  params: IQueryParams,
+
+}
+
+export async function applyAccessRightConditions(
   conditions?: IConditionalExpression,
-  queryName?: string,
   user?: JwtPayload,
   transaction?: Transaction
 ): Promise<IConditionalExpression> {
@@ -85,11 +86,7 @@ export default async function getDefaultParams(
       const selectedPartyGroupCode = user.selectedPartyGroup ? user.selectedPartyGroup.code : null
       const partyTypesExpressions = user.parties.reduce(
         (selectedPartyType: BinaryExpression[], party: JwtPayloadParty) => {
-          if (
-            party.partyGroupCode === selectedPartyGroupCode &&
-            party.types &&
-            party.types.length
-          ) {
+          if (party.partyGroupCode === selectedPartyGroupCode) {
             selectedPartyType = selectedPartyType.concat(
               party.types.map((type: string) => {
                 const con = [
@@ -129,6 +126,19 @@ export default async function getDefaultParams(
         conditions = conditions ? new AndExpressions([conditions, or]) : or
       }
     }
+  }
+  return conditions
+}
+
+export default async function getDefaultParams(
+  params: IQueryParams,
+  conditions?: IConditionalExpression,
+  queryName?: string,
+  user?: JwtPayload,
+  transaction?: Transaction
+): Promise<IConditionalExpression> {
+  if (user) {
+    conditions = await applyAccessRightConditions(conditions, user, transaction)
   }
   return conditions
 }

@@ -1611,6 +1611,34 @@ const fieldList = [
     expression: new ColumnExpression('booking', 'quantityUnit')
   },
   {
+    name: 'bookingGrossWeight',
+    expression: new ColumnExpression('booking', 'grossWeight')
+  },
+  {
+    name: 'bookingChargeableWeight',
+    expression: new ColumnExpression('booking', 'chargeableWeight')
+  },
+  {
+    name: 'bookingVolumeWeight',
+    expression: new ColumnExpression('booking', 'volumeWeight')
+  },
+  {
+    name: 'bookingWeightUnit',
+    expression: new ColumnExpression('booking', 'weightUnit')
+  },
+  {
+    name: 'bookingCbm',
+    expression: new ColumnExpression('booking', 'cbm')
+  },
+  {
+    name: 'specialInstruction',
+    expression: new MathExpression(
+      new ColumnExpression('booking', 'flexData'),
+      '->>',
+      '$.specialInstruction'
+    )
+  },
+  {
     name: 'haveCurrentTrackingNo',
     expression: new FunctionExpression('IF', new IsNullExpression(new ColumnExpression('booking', 'currentTrackingNo'), false), '', '_')
   },

@@ -65,7 +65,50 @@
             }
           },
           {
+            "is": "WorkflowStatus",
+            "if": "return false"
+          },
+          {
             "is": "v-spacer"
+          },
+          {
+            "is": "ToolTip",
+            "if": "return !context.$store.state.main.widget",
+            "props": {
+              "bottom": true,
+              "activatorComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "SaveEntityTemplateButton",
+                  "props": {
+                    "tableName": "shipment",
+                    "targePage": "create",
+                    "small": true,
+                    "flat": true,
+                    "icon": true,
+                    "iconValue": "fas fa-shipping-fast",
+                    "axiosParams": [
+                      "const bookingId = context.$store.state.widget.data.id",
+                      "return {",
+                      "url: 'api/booking/convertToShipment',",
+                      "method: 'POST',",
+                      "data: { bookingIds: [ bookingId ] }",
+                      "}"
+                    ]
+                  }
+                }]
+              },
+              "mainComponents": {
+                "layout": "span",
+                "components": [{
+                  "is": "I18nText",
+                  "props": {
+                    "i18nContext": "BookingPage",
+                    "i18nKey": "convertToShipment"
+                  }
+                }]
+              }
+            }
           },
           {
             "is": "ToolTip",

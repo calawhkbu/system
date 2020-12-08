@@ -54,6 +54,7 @@
                       }
                     },
                     "props": {
+                      "orderName": "product.skuCode",
                       "searchTextParams": {
                         "method": "POST",
                         "url": "api/product/query/product",
@@ -199,9 +200,13 @@
                 ],
                 "axiosParams": {
                   "method": "post",
-                  "url": "api/product-category/columns/{{context.$store.state.widget.data.productCategoryId}}"
+                  "url": "api/product-category/columns/{{context.$store.state.widget.data.productCategoryId}}",
+                  "data": {
+                    "containFixedColumn": true
+                  }
                 },
-                "storeInFlexData": true
+                "storeInFlexData": true,
+                "sortWithOrder": true
               }
             }
           ]

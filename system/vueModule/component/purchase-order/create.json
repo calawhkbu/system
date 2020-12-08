@@ -543,6 +543,20 @@
                     "item-value": "productCategoryCode",
                     "onInit": true
                   }
+                },
+                {
+                  "containerComponent": "v-card",
+                  "containerComponentProps": {
+                    "class": "padding-topbottom-8 padding-leftright-4"
+                  },
+                  "label": "PurchaseOrderPage.sopTask",
+                  "name": "taskTemplateIdList",
+                  "component": "SopTaskGroups",
+                  "class": "xs-12 padding-topbottom-4",
+                  "props": {
+                    "tableName": "purchase_order"
+                  },
+                  "checkDisplayWhen": "return user.roles.find(role => role.name === 'SOP_TASK') || context.isSwivelAdmin;"
                 }
               ]
             }
