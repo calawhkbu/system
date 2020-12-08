@@ -193,10 +193,6 @@ export default {
             value: 'totalShipment',
           },
           {
-            label: 'teu',
-            value: 'teu',
-          },
-          {
             label: 'teuInReport',
             value: 'teuInReport',
           },
@@ -239,10 +235,7 @@ export default {
             label: 'totalShipment',
             value: 'totalShipment',
           },
-          {
-            label: 'teu',
-            value: 'teu',
-          },
+        
           {
             label: 'teuInReport',
             value: 'teuInReport',

@@ -33,10 +33,6 @@ export default {
 
 
         params.fields = [
-<<<<<<< HEAD
-=======
-
->>>>>>> 9ad4ae0ed0cc0dd351896f491843e733a77c7300
           "id",
           "userName",
           "tableName",
@@ -97,16 +93,7 @@ export default {
       let msg=[]
        if(el.readIndex!==el.lastMessageIndex && el.lastMessageIndex){
          el.createdAtLast=moment(el.createdAtLast).tz(timezone).format('YYYY-MM-DD HH:mm:ss')
-          //remove @ mentions and return clean messagesWithout Tag
-    //   let cleanText = (el.messageWithoutTag || '').replace(/<\/?[^>]+(>|$)/g, "")// remove mentions @
-    // //  cleanText
-    //   cleanText = cleanText&&cleanText.replace('<p>','')
-    //   cleanText = cleanText&&cleanText.replace('</p>','')
-    //  console.log('cleanText')
-    //  console.log(cleanText)
      el.lastMessage=el.lastMessage || ''
-     // console.log('-----lastMessage')
-     // console.log(el.lastMessage)
         results.push(el)
        }
      });
@@ -152,9 +139,10 @@ export default {
               }
           )}
         return finalResults
-      }
-    }
+            }
+    },
   ],
+
   filters: [
     // for this filter, user can only select single,
     // but when config in card definition, use summaryVariables. Then we can set as multi
