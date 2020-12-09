@@ -25,6 +25,7 @@ export default class SendEmailAction extends CtaActionInt<IProps> {
       ...locals,
       system,
       tableName,
+      primaryKey,
       entity,
       entityId,
       accessToken: user.accessToken

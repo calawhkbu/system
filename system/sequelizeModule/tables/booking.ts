@@ -53,10 +53,6 @@ export async function convertBookingToShipment(bookings: Booking[], helper?: any
       return result
     }, { houseNo: null, masterNo: null })
 
-    if (!masterNo || !houseNo) {
-      throw new BadRequestException(`missing masterNo or houseNo for booking: ${entity.bookingNo}`)
-    }
-
     const { shipmentPo, shipmentCargo } = ( entity.bookingPopackings || []).reduce((result, popack) => {
       let dimensionStr = null
       if (popack.length && popack.width && popack.height && popack.lwhUnit) {
@@ -97,6 +93,7 @@ export async function convertBookingToShipment(bookings: Booking[], helper?: any
       ... entity as any as Shipment,
       houseNo: houseNo,
       masterNo:  masterNo,
+      taskTemplateIdList: null,
       vessel: entity.vesselName,
       shipmentContainers: (entity.bookingContainers || []).map((container) => {
         const result = {

@@ -103,7 +103,7 @@ export default {
         if(res&&res.length>0&&res[2]['mentions'] && res[2]['mentions'].length>0){
           params.subqueries.search={value:res[2]['mentions']}
         }else{
-          params.subqueries.search={value:user.username}
+          params.subqueries.search={value:[user.username]}
         }
       
         //remove irrelevant
@@ -118,7 +118,7 @@ export default {
       onResult(res, params, prevResult: Result,user): any {
         var finalResults=[]
 
-        if(res&&res.length>0){
+        if(res&&res.length>0 && results&&results.length>0){
           results[0]['mentionsData']=res
           results.forEach(el => {
             let lenOfmentionsData=el.mentionsData&&el.mentionsData.length ||-1

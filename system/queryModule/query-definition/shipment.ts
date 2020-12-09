@@ -2266,6 +2266,7 @@ const fieldList = [
   'boundTypeCode',
   'nominatedTypeCode',
   'shipmentTypeCode',
+  'serviceCode',
   'divisionCode',
   'isDirect',
   'isCoload',

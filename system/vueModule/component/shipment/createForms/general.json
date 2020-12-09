@@ -18,14 +18,69 @@
             "class": "xs-12 md-3"
           },
           {
-            "label": "ShipmentPage.carrier",
-            "name": [
-              "carrierName",
-              "carrier.name",
-              "carrierCode"
+            "label": "ShipmentPage.moduleType",
+            "name": "moduleTypeCode",
+            "component": "AsyncSelect",
+            "class": "xs-12 md-3",
+            "relation": "moduleType",
+            "validator": [
+              "required"
             ],
-            "component": "v-text-field",
-            "class": "xs-12 md-3"
+            "props": {
+              "required": true,
+              "axiosParams": {
+                "url": "api/code/query/code_master",
+                "method": "POST",
+                "data": {
+                  "subqueries": {
+                    "activeStatus": {
+                      "value": "active"
+                    },
+                    "codeType": {
+                      "value": "MODULE"
+                    }
+                  }
+                }
+              },
+              "item-text": "name",
+              "item-value": "code",
+              "showValue": false
+            }
+          },
+          {
+            "label": "ShipmentPage.carrier",
+            "name": "carrier",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-3",
+            "relation": "carrier",
+            "more": [
+              {
+                "name": "carrierCode",
+                "selector": "code"
+              }
+            ],
+            "props": {
+              "searchTextParams": {
+                "method": "POST",
+                "url": "api/code/query/code_master",
+                "data": {
+                  "subqueries": {
+                    "activeStatus": {
+                      "value": "active"
+                    },
+                    "codeType": {
+                      "value": "CARRIER"
+                    },
+                    "q": {
+                      "value": "{{context.search}}"
+                    }
+                  },
+                  "limit": 5
+                }
+              },
+              "item-text": "name",
+              "item-value": "code"
+            }
           },
           {
             "label": "ShipmentPage.vessel",
@@ -43,74 +98,282 @@
           },
           {
             "label": "ShipmentPage.placeOfReceipt",
-            "name": [
-              "placeOfReceiptName",
-              "placeOfReceipt.name",
-              "placeOfReceiptCode"
+            "name": "placeOfReceipt",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-3",
+            "more": [
+              {
+                "name": "placeOfReceiptCode",
+                "selector": "portCode"
+              },
+              {
+                "name": "placeOfReceiptName",
+                "selector": "name"
+              }
             ],
-            "component": "v-text-field",
-            "class": "xs-12 md-3"
+            "props": {
+              "searchTextParams": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "moduleTypeCode": {
+                      "value": "{% if context.form.moduleTypeCode == 'SEAAIR' %}SEA{% else %}{{context.form.moduleTypeCode}}{% endif %}"
+                    },
+                    "q": {
+                      "value": "{{context.search}}"
+                    }
+                  },
+                  "limit": 5
+                }
+              },
+              "item-text": "name",
+              "item-value": "portCode"
+            }
           },
           {
             "label": "ShipmentPage.portOfLoading",
-            "name": [
-              "portOfLoadingName",
-              "portOfLoading.name",
-              "portOfLoadingCode"
+            "name": "portOfLoading",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-3",
+            "validator": [
+              "required"
             ],
-            "component": "v-text-field",
-            "class": "xs-12 md-3"
+            "more": [
+              {
+                "name": "portOfLoadingCode",
+                "selector": "portCode"
+              },
+              {
+                "name": "portOfLoadingName",
+                "selector": "name"
+              }
+            ],
+            "props": {
+              "required": true,
+              "searchTextParams": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "moduleTypeCode": {
+                      "value": "{% if context.form.moduleTypeCode == 'SEAAIR' %}SEA{% else %}{{context.form.moduleTypeCode}}{% endif %}"
+                    },
+                    "q": {
+                      "value": "{{context.search}}"
+                    }
+                  },
+                  "limit": 5
+                }
+              },
+              "item-text": "name",
+              "item-value": "portCode"
+            }
           },
           {
             "label": "ShipmentPage.portOfDischarge",
-            "name": [
-              "portOfDischargeName",
-              "portOfDischarge.name",
-              "portOfDischargeCode"
+            "name": "portOfDischarge",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-3",
+            "validator": [
+              "required"
             ],
-            "component": "v-text-field",
-            "class": "xs-12 md-3"
+            "more": [
+              {
+                "name": "portOfDischargeCode",
+                "selector": "portCode"
+              },
+              {
+                "name": "portOfDischargeName",
+                "selector": "name"
+              }
+            ],
+            "props": {
+              "required": true,
+              "searchTextParams": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "moduleTypeCode": {
+                      "value": "{% if context.form.moduleTypeCode == 'SEAAIR' %}SEA{% else %}{{context.form.moduleTypeCode}}{% endif %}"
+                    },
+                    "q": {
+                      "value": "{{context.search}}"
+                    }
+                  },
+                  "limit": 5
+                }
+              },
+              "item-text": "name",
+              "item-value": "portCode"
+            }
           },
           {
             "label": "ShipmentPage.placeOfDelivery",
-            "name": [
-              "placeofDeliveryName",
-              "placeOfDelivery.name",
-              "placeofDeliveryCode"
+            "name": "placeOfDelivery",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-3",
+            "more": [
+              {
+                "name": "placeOfDeliveryCode",
+                "selector": "portCode"
+              },
+              {
+                "name": "placeOfDeliveryName",
+                "selector": "name"
+              }
             ],
-            "component": "v-text-field",
-            "class": "xs-12 md-3"
+            "props": {
+              "searchTextParams": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "moduleTypeCode": {
+                      "value": "{% if context.form.moduleTypeCode == 'SEAAIR' %}SEA{% else %}{{context.form.moduleTypeCode}}{% endif %}"
+                    },
+                    "q": {
+                      "value": "{{context.search}}"
+                    }
+                  },
+                  "limit": 5
+                }
+              },
+              "item-text": "name",
+              "item-value": "portCode"
+            }
           },
           {
             "label": "ShipmentPage.finalDestination",
-            "name": [
-              "finalDestinationName",
-              "finalDestination.name",
-              "finalDestinationCode"
+            "name": "finalDestination",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-3",
+            "more": [
+              {
+                "name": "finalDestinationCode",
+                "selector": "portCode"
+              },
+              {
+                "name": "finalDestinationName",
+                "selector": "name"
+              }
             ],
-            "component": "v-text-field",
-            "class": "xs-12 md-4"
+            "props": {
+              "searchTextParams": {
+                "method": "POST",
+                "url": "api/location/query/location",
+                "data": {
+                  "subqueries": {
+                    "moduleTypeCode": {
+                      "value": "{% if context.form.moduleTypeCode == 'SEAAIR' %}SEA{% else %}{{context.form.moduleTypeCode}}{% endif %}"
+                    },
+                    "q": {
+                      "value": "{{context.search}}"
+                    }
+                  },
+                  "limit": 5
+                }
+              },
+              "item-text": "name",
+              "item-value": "portCode"
+            }
           },
           {
             "label": "ShipmentPage.service",
             "name": "serviceCode",
-            "component": "v-text-field",
-            "class": "xs-12 md-4"
+            "component": "AsyncSelect",
+            "class": "xs-12 md-3",
+            "isRequired": "return form && form.moduleTypeCode !== 'AIR';",
+            "relation": "service",
+            "props": {
+              "axiosParams": {
+                "url": "api/code/query/code_master",
+                "method": "POST",
+                "data": {
+                  "subqueries": {
+                    "activeStatus": {
+                      "value": "active"
+                    },
+                    "codeType": {
+                      "value": "SERVTYPE"
+                    }
+                  }
+                }
+              },
+              "item-text": "name",
+              "item-value": "code",
+              "showValue": false
+            }
           },
           {
-            "label": "ShipmentPage.incoTerms",
-            "name": "incoTermsCode",
-            "component": "v-text-field",
-            "class": "xs-12 md-4"
+            "label": "ShipmentPage.incoTermsCode",
+            "name": "incoTerms",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12 md-3",
+            "more": [
+              {
+                "name": "incoTermsCode",
+                "selector": "code"
+              }
+            ],
+            "relationMore": [
+              {
+                "name": "freightTermsCode",
+                "selector": "flexData.frieghtTermsCode"
+              },
+              {
+                "name": "otherTermsCode",
+                "selector": "flexData.otherTermsCode"
+              }
+            ],
+            "props": {
+              "searchTextParams": {
+                "url": "api/code/query/code_master",
+                "method": "POST",
+                "data": {
+                  "subqueries": {
+                    "activeStatus": {
+                      "value": "active"
+                    },
+                    "codeType": {
+                      "value": "INCOTERMS"
+                    },
+                    "q": {
+                      "value": "{{context.search}}"
+                    }
+                  },
+                  "limit": 5
+                }
+              },
+              "item-text": "name",
+              "item-value": "code"
+            }
           },
           {
             "label": "ShipmentPage.nominatedType",
-            "name": [
-              "nominatedType.name",
-              "nominatedTypeCode"
-            ],
-            "component": "v-text-field",
-            "class": "xs-12 md-4"
+            "name": "nominatedTypeCode",
+            "component": "AsyncSelect",
+            "class": "xs-12 md-3",
+            "relation": "nominatedType",
+            "props": {
+              "axiosParams": {
+                "url": "api/code/query/code_master",
+                "method": "POST",
+                "data": {
+                  "subqueries": {
+                    "codeType": {
+                      "value": "NOMINATED_TYPE"
+                    }
+                  }
+                }
+              },
+              "item-text": "name",
+              "item-value": "code",
+              "showSelectionText": false,
+              "showValue": false,
+              "showValueOnDisplay": true
+            }
           },
           {
             "label": "ShipmentPage.issuingAgent",
@@ -153,14 +416,14 @@
             "name": "team",
             "component": "v-text-field",
             "checkDisplayWhen": "return form && form.team",
-            "class": "xs-12"
+            "class": "xs-12 md-4"
           },
           {
             "label": "ShipmentPage.picEmail",
             "name": "picEmail",
             "component": "v-text-field",
             "checkDisplayWhen": "return form && form.picEmail",
-            "class": "xs-12"
+            "class": "xs-12 md-4"
           }
         ]
       }

@@ -1612,15 +1612,15 @@ const fieldList = [
   },
   {
     name: 'bookingGrossWeight',
-    expression: new ColumnExpression('booking', 'grossWeight')
+    expression: new FunctionExpression('ROUND', new ColumnExpression('booking', 'grossWeight'), 3)
   },
   {
     name: 'bookingChargeableWeight',
-    expression: new ColumnExpression('booking', 'chargeableWeight')
+    expression: new FunctionExpression('ROUND', new ColumnExpression('booking', 'chargeableWeight'), 3)
   },
   {
     name: 'bookingVolumeWeight',
-    expression: new ColumnExpression('booking', 'volumeWeight')
+    expression: new FunctionExpression('ROUND', new ColumnExpression('booking', 'volumeWeight'), 3)
   },
   {
     name: 'bookingWeightUnit',
