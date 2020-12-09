@@ -15,8 +15,7 @@ export default {
   constants: {
     moduleTypeCodeList: {
       AIR: ['AC', 'AD', 'AM', 'AN', 'AZ'],
-      SEA: ['SA', 'SB', 'SC', 'SR', 'SS', 'ST'],
-      LOGISTICS: ['ZL'],
+      SEA: ['SA', 'SB', 'SC', 'SR', 'SS', 'ST', 'SZ']
     },
     reportingGroupList: {
       AC: ['AIR', 'EXPORT'],
@@ -32,15 +31,13 @@ export default {
       SS: ['SEA', 'IMPORT'],
       ST: ['SEA', 'IMPORT'],
       SW: ['SEA', 'MISCELLANEOUS'],
-      SZ: ['SEA', 'MISCELLANEOUS'],
-      ZL: ['LOGISTICS']
+      SZ: ['SEA', 'MISCELLANEOUS']
     },
     teuReportingGroupList: [
     ],
     searchUserRoleList: [
       'AIR',
       'SEA',
-      'LOGISTICS',
       'EXPORT',
       'IMPORT',
       'MISCELLANEOUS'

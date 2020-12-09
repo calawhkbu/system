@@ -19,81 +19,132 @@
   <link href="https://s3-ap-southeast-1.amazonaws.com/invitation-email/lato.css" rel="stylesheet" type="text/css">
   <!--<![endif]-->
 </head>
-<body style="margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: lightgray">
-    <style>
-        .block{
-            Margin: 0 auto;
-            min-height:50px;
-            min-width: 300px;
-            max-width: 500px;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
-            word-break: break-word;
-        }
-        .tb{
-            border-color:white;
-            border-style:solid;
-            border-width:10px; 
-            font-size: 20px;
-            font-weight:normal;
-            overflow:hidden;
-            padding:7px 15px;
-            word-break:normal;
-            border-collapse: collapse;
-            border-spacing: 0;
-            mso-table-lspace: 0pt;
-            mso-table-rspace: 0pt;
-            vertical-align: top;
-            min-width: 320px;
-            Margin: 0 auto;
-            background-color: #FFFFFF;
-            width: 100%;
-            font-family:'Maven Pro', 'Arial', sans-serif !important;
-        }
-        th{
-            padding: 10px;
-        }
-        td{
-            padding: 40px
-        }
-    </style>
-    <div class="block"></div>
-    <div class="block">
-        <table class="tb" cellpadding="0" cellspacing="0">
-            <thead style="text-align:left;">
-                <tr>
-                    <th>
-                        Dear {{recevier}}
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        {{sender}} is wating for your response under {{chatRoom.id}}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding-top: 20px;">Click the below button to view the message.</td>
-                </tr>
-                <tr>
-                    <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;" colspan="2" style="align-items: center; text-align: center;" align="center">
-                      <div align="center" class="button-container center" >
-                          <a href="{{url}}" target="_blank" style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff;background-color: #f15b29;border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;max-width: 164px;width: 64px;width: auto;border-top: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-left: 0px solid transparent;padding-top: 10px;padding-right: 25px;padding-bottom: 10px;padding-left: 25px;mso-border-alt: none;">
-                            Click For Details
-                          </a>
-                      </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <span  style="white-space: pre-line;font-size: small; text-align: center;">This email is sent out under the Swivel 360.
-                            If you have any queries on the email, please contact the administrator.
-                            [customer's admin email]
-                        </span>
-                    </td>
-                </tr>
-            </tbody>
+
+<body style="color:#555555;font-family:'Lato','Roboto','Helvetica','Arial',sans-serif;">
+  <div style="background-color: lightgray;padding:30px">
+    <div style="max-width: 570px;Margin: 0 auto;padding-top:20px;padding-bottom:20px;font-size: 15px;font-family:'Maven Pro', 'Arial', sans-serif !important;background-color:white">
+      <table style="border-color:white;border-style:solid;border-width:10px; font-size: 15px;font-weight:normal;overflow:hidden;padding:7px 15px;word-break:normal;border-collapse: collapse;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #FFFFFF;width: 100%;
+                    font-family:'Maven Pro', 'Arial', sans-serif !important;" cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th style="border-color:inherit;text-align:left;vertical-align:top;padding: 10px;" colspan="2">
+            <span style="white-space: pre-line;font-size:larger;">Dear {{entity.controllingCustomerParty.name}}
+            
+            Thank you for your order.
+            Your booking will be handled by {{entity.officePartyName}}.
+            </span>
+          </th>
+        </tr>
+        <tr>
+          <th style="border-color:black;text-align:left;vertical-align:top;padding: 10px;" colspan="2">
+            Booking No : {{entity.bookingNo}}
+          </th>
+        </tr>
+      </thead>
+      </table>
+      
+      <table style="border: 2px solid black;width:80%;margin:0 auto">
+        <tr>
+          <td style="padding:5px 5px;min-width:150px">&nbsp;Customer Ref</td>
+          <td style="padding:5px 5px;">&nbsp;{{entity.poNo}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;Shipper</td>
+          <td>&nbsp;{{entity.shipperPartyName}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;Consignee</td>
+          <td>&nbsp;{{entity.shipperPartyName}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;Port of Loading</td>
+          <td>&nbsp;{{entity.portOfLoadingName}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;Port of Discharge</td>
+          <td>&nbsp;{{entity.portOfDischargeName}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;Final Destination</td>
+          <td>&nbsp;{{entity.finalDestinationName}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;Carrier</td>
+          <td>&nbsp;{{entity.carrierCode}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;Vessel / Voyage</td>
+          <td>&nbsp;{{entity.vesselName}} / {{entity.voyageFlightNumber}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;Cargo Ready</td>
+          <td>&nbsp;{{entity.cargoReadyDateEstimated}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;ETD</td>
+          <td>&nbsp;{% if entity.estimatedDepartureDate %} {{entity.estimatedDepartureDate | date('d M Y')}} {% endif %}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;ETA</td>
+          <td>&nbsp;{% if entity.estimatedArrivalDate %} {{entity.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;Commodity</td>
+          <td>&nbsp;{{entity.commodity}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;Pay Terms</td>
+          <td>&nbsp;{{entity.freightTermsCode}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;Container Service</td>
+          <td>&nbsp;{{entity.serviceCode}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;Total CTN</td>
+          <td>&nbsp;{{entity.bookingPopackings.quantity}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;Total KGS</td>
+          <td>&nbsp;{{entity.bookingPopackings.weight}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;Total CBM</td>
+          <td>&nbsp;{{entity.cbm}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;PO No</td>
+          <td>&nbsp;{{entity.poNo}}</td>
+        </tr>
+        <tr>
+          <td style="padding:5px 5px;">&nbsp;Container</td>
+          <td>&nbsp;{{entity.bookingContainers.containerTypeCode}}</td>
+        </tr>
         </table>
+        <table style="border: 0px solid black;background-color: #FFFFFF;">
+        <tr>
+          <td colspan="2" style="align-items: center; text-align: center;padding-top:20px;padding-bottom:20px">
+            <div align="center" class="button-container center" >
+                <a href="{{bookingUrl}}" target="_blank" style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff;background-color: #f15b29;border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;max-width: 164px;width: 64px;width: auto;border-top: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-left: 0px solid transparent;padding-top: 10px;padding-right: 25px;padding-bottom: 10px;padding-left: 25px;mso-border-alt: none;">
+                  Click For Details
+                </a>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: center;font-size:small;padding:5px 20px;font-style:italic;" colspan="2">
+            If you have any doubts on the email, please contact us at ({{entity.officePartyContactEmail}})
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: center;font-size:small;padding:5px 10px;font-style:italic;" colspan="2">
+            {{entity.officePartyName}}
+          </td>
+        </tr>
+      </table>
     </div>
+  </div>
+
 </body>
+
+</html>

@@ -8,7 +8,8 @@
     "titleKey": "fileName",
     "subTitleKeys": [{
       "key": "updatedAt",
-      "is": "Datetime"
+      "is": "Datetime",
+      "format": "YYYY-MM-DD"
     }]
   },
   "baseSummaryProps": {

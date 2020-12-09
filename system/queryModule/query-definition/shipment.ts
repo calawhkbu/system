@@ -2274,7 +2274,6 @@ const fieldList = [
   'jobNo',
   'masterNo',
   'containerNos',
-
   {
     name: 'primaryKeyListString',
     expression: primaryKeyListStringExpression
@@ -3332,7 +3331,7 @@ query.subquery(true,'containerReturnConditions', new Query({
         $when:  new AndExpressions([new OrExpressions([
             new IsNullExpression(sentToConsigneeDateActual,false),
             new IsNullExpression(sentToConsigneeDateEstimated,false)
-          ]),  
+          ]),
           new BinaryExpression(nowExpression,'>=',IfNullExpression(departureDateEstimated,departureDateActual))
         ]),
         $then:new BinaryExpression(nowExpression,'>=',new FunctionExpression('DATE_ADD',IfNullExpression(sentToConsigneeDateActual,sentToConsigneeDateEstimated),new ParameterExpression({prefix: 'INTERVAL',
@@ -3416,6 +3415,19 @@ query.subquery('poNoLike', new Query({
       ],
       $from: new FromTable('shipment_po'),
       $where: new RegexpExpression(new ColumnExpression('shipment_po', 'poNo'), false)
+    })
+  ),
+})).register('value', 0)
+query.subquery('bookingNoLike', new Query({
+  $where: new InExpression(
+    new ColumnExpression('shipment', 'id'),
+    false,
+    new Query({
+      $select: [
+        new ResultColumn('shipmentId')
+      ],
+      $from: new FromTable('shipment_booking'),
+      $where: new RegexpExpression(new ColumnExpression('shipment_booking', 'bookingNo'), false)
     })
   ),
 })).register('value', 0)

@@ -42,7 +42,8 @@
               "i18nKey": "title",
               "html": true,
               "i18nOptions": {
-                "title": "{{context.$store.state.widget.data.houseNo}}"
+                "label": "{% if context.$store.state.widget && context.$store.state.widget.selectedExtra %}booking{% else %}shipment{% endif %}",
+                "title": "{% if context.$store.state.widget && context.$store.state.widget.selectedExtra %}{{context.$store.state.widget.selectedExtra.bookingNo}}{% else %}{{context.$store.state.widget.data.houseNo}}{% endif %}"
               }
             }
           },
@@ -62,7 +63,11 @@
               },
               "lodashToData": "shipmentBooking",
               "lodashToKey": "houseNo",
-              "mainKey": "bookingNo"
+              "mainKey": "bookingNo",
+              "axiosParams": {
+                "method": "get",
+                "url": "api/booking/bookingNo/{{data.bookingNo}}"
+              }
             }
           },
           {

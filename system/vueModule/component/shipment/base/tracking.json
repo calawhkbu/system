@@ -22,6 +22,18 @@
         "data: { trackingNos }",
         "};"
       ],
+      "getExternalDateFunc": [
+        "const selectedExtra = context.$store.state.widget.selectedExtra;",
+        "return selectedExtra || context.$store.state.widget.data;"
+      ],
+      "externalDataDateKey": [
+        "const selectedExtra = context.$store.state.widget.selectedExtra;",
+        "return selectedExtra ? 'bookingDate' : 'shipmentDate';"
+      ],
+      "externalDataPrimaryKey": [
+        "const selectedExtra = context.$store.state.widget.selectedExtra;",
+        "return selectedExtra ? 'bookingNo' : 'houseNo';"
+      ],
       "createdAtKey": "issueDate",
       "createI18nKey": "shipmentReceivedByForwarder"
     }

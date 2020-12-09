@@ -7,12 +7,11 @@
   "hide-overlay": true,
   "remote": true,
   "axiosBaseParams": [
+    "const selectedExtra = context.$store.state.widget.selectedExtra;",
     "const params = context.axiosParamsParams;",
-    "const entityData = context.$store.state.widget.data || params.data;",
-    "return {",
-    "url: 'chat/init',",
-    "method: 'POST',",
-    "data: { tableName: params.tableName, primaryKey: entityData.id }",
+    "const entityData = selectedExtra ? selectedExtra : (context.$store.state.widget.data || params.data);",
+    "return { method: 'POST', url: 'chat/init',",
+    "data: { tableName: selectedExtra ? 'booking' : params.tableName, primaryKey: entityData.id }",
     "};"
   ],
   "baseSummaryProps": {
@@ -29,11 +28,12 @@
       "};"
     ],
     "chatroomMemberListBaseParams": [
+      "const selectedExtra = context.$store.state.widget.selectedExtra;",
       "return {",
       "url: 'chat/member',",
       "method: 'POST',",
       "data: {",
-      "tableName: swig.tableName,",
+      "tableName: selectedExtra ? 'booking' : swig.tableName,",
       "roomKey: swig.roomKey,",
       "chatroomName: swig.chatroom,",
       "query: swig.query,",
@@ -41,12 +41,13 @@
       "}"
     ],
     "createChatroomBaseParams": [
-      "const entityData = context.$store.state.widget.data;",
+      "const selectedExtra = context.$store.state.widget.selectedExtra;",
+      "const entityData = selectedExtra || context.$store.state.widget.data;",
       "return {",
       "url: 'chat/newRoom',",
       "method: 'POST',",
       "data: {",
-      "tableName: swig.tableName,",
+      "tableName: selectedExtra ? 'booking' : swig.tableName,",
       "primaryKey: entityData.id,",
       "chatroomName: swig.chatroom,",
       "userLists: swig.userLists",

@@ -18,444 +18,150 @@
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
   <link href="https://s3-ap-southeast-1.amazonaws.com/invitation-email/lato.css" rel="stylesheet" type="text/css">
   <!--<![endif]-->
-
-  <style type="text/css" id="media-query">
-    body {
-      margin: 0;
-      padding: 0;
-      color: #555555;
-      font-family: 'Lato', 'Roboto', 'Helvetica', 'Arial', sans-serif;
-    }
-
-    table,
-    tr,
-    td {
-      vertical-align: top;
-      border-collapse: collapse;
-    }
-
-    .ie-browser table,
-    .mso-container table {
-      table-layout: fixed;
-    }
-
-    * {
-      line-height: inherit;
-    }
-
-    a[x-apple-data-detectors=true] {
-      color: inherit !important;
-      text-decoration: none !important;
-    }
-
-    [owa] .img-container div,
-    [owa] .img-container button {
-      display: block !important;
-    }
-
-    [owa] .fullwidth button {
-      width: 100% !important;
-    }
-
-    [owa] .block-grid .col {
-      display: table-cell;
-      float: none !important;
-      vertical-align: top;
-    }
-
-    .ie-browser .num12,
-    .ie-browser .block-grid,
-    [owa] .num12,
-    [owa] .block-grid {
-      width: 640px !important;
-    }
-
-    .ExternalClass,
-    .ExternalClass p,
-    .ExternalClass span,
-    .ExternalClass font,
-    .ExternalClass td,
-    .ExternalClass div {
-      line-height: 100%;
-    }
-
-    .ie-browser .mixed-two-up .num4,
-    [owa] .mixed-two-up .num4 {
-      width: 212px !important;
-    }
-
-    .ie-browser .mixed-two-up .num8,
-    [owa] .mixed-two-up .num8 {
-      width: 424px !important;
-    }
-
-    .ie-browser .block-grid.two-up .col,
-    [owa] .block-grid.two-up .col {
-      width: 320px !important;
-    }
-
-    .ie-browser .block-grid.three-up .col,
-    [owa] .block-grid.three-up .col {
-      width: 213px !important;
-    }
-
-    .ie-browser .block-grid.four-up .col,
-    [owa] .block-grid.four-up .col {
-      width: 160px !important;
-    }
-
-    .ie-browser .block-grid.five-up .col,
-    [owa] .block-grid.five-up .col {
-      width: 128px !important;
-    }
-
-    .ie-browser .block-grid.six-up .col,
-    [owa] .block-grid.six-up .col {
-      width: 106px !important;
-    }
-
-    .ie-browser .block-grid.seven-up .col,
-    [owa] .block-grid.seven-up .col {
-      width: 91px !important;
-    }
-
-    .ie-browser .block-grid.eight-up .col,
-    [owa] .block-grid.eight-up .col {
-      width: 80px !important;
-    }
-
-    .ie-browser .block-grid.nine-up .col,
-    [owa] .block-grid.nine-up .col {
-      width: 71px !important;
-    }
-
-    .ie-browser .block-grid.ten-up .col,
-    [owa] .block-grid.ten-up .col {
-      width: 64px !important;
-    }
-
-    .ie-browser .block-grid.eleven-up .col,
-    [owa] .block-grid.eleven-up .col {
-      width: 58px !important;
-    }
-
-    .ie-browser .block-grid.twelve-up .col,
-    [owa] .block-grid.twelve-up .col {
-      width: 53px !important;
-    }
-
-    @media only screen and (min-width: 660px) {
-      .block-grid {
-        width: 640px !important;
-      }
-
-      .block-grid .col {
-        vertical-align: top;
-      }
-
-      .block-grid .col.num12 {
-        width: 640px !important;
-      }
-
-      .block-grid.mixed-two-up .col.num4 {
-        width: 212px !important;
-      }
-
-      .block-grid.mixed-two-up .col.num8 {
-        width: 424px !important;
-      }
-
-      .block-grid.two-up .col {
-        width: 320px !important;
-      }
-
-      .block-grid.three-up .col {
-        width: 213px !important;
-      }
-
-      .block-grid.four-up .col {
-        width: 160px !important;
-      }
-
-      .block-grid.five-up .col {
-        width: 128px !important;
-      }
-
-      .block-grid.six-up .col {
-        width: 106px !important;
-      }
-
-      .block-grid.seven-up .col {
-        width: 91px !important;
-      }
-
-      .block-grid.eight-up .col {
-        width: 80px !important;
-      }
-
-      .block-grid.nine-up .col {
-        width: 71px !important;
-      }
-
-      .block-grid.ten-up .col {
-        width: 64px !important;
-      }
-
-      .block-grid.eleven-up .col {
-        width: 58px !important;
-      }
-
-      .block-grid.twelve-up .col {
-        width: 53px !important;
-      }
-    }
-
-    @media (max-width: 660px) {
-
-      .block-grid,
-      .col {
-        min-width: 320px !important;
-        max-width: 100% !important;
-        display: block !important;
-      }
-
-      .block-grid {
-        width: calc(100% - 40px) !important;
-      }
-
-      .col {
-        width: 100% !important;
-      }
-
-      .col>div {
-        margin: 0 auto;
-      }
-
-      img.fullwidth,
-      img.fullwidthOnMobile {
-        max-width: 100% !important;
-      }
-
-      .no-stack .col {
-        min-width: 0 !important;
-        display: table-cell !important;
-      }
-
-      .no-stack.two-up .col {
-        width: 50% !important;
-      }
-
-      .no-stack.mixed-two-up .col.num4 {
-        width: 33% !important;
-      }
-
-      .no-stack.mixed-two-up .col.num8 {
-        width: 66% !important;
-      }
-
-      .no-stack.three-up .col.num4 {
-        width: 33% !important;
-      }
-
-      .no-stack.four-up .col.num3 {
-        width: 25% !important;
-      }
-
-      .mobile_hide {
-        min-height: 0px;
-        max-height: 0px;
-        max-width: 0px;
-        display: none;
-        overflow: hidden;
-        font-size: 0px;
-      }
-    }
-  </style>
 </head>
 
-<body class="clean-body" style="margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: lightgray">
-  <style type="text/css" id="media-query-bodytag">
-    @media (max-width: 520px) {
-      .block-grid {
-        min-width: 320px !important;
-        max-width: 100% !important;
-        width: 100% !important;
-        display: block !important;
-      }
-
-      .col {
-        min-width: 320px !important;
-        max-width: 100% !important;
-        width: 100% !important;
-        display: block !important;
-      }
-
-      .col>div {
-        margin: 0 auto;
-      }
-
-      img.fullwidth {
-        max-width: 100% !important;
-      }
-
-      img.fullwidthOnMobile {
-        max-width: 100% !important;
-      }
-
-      .no-stack .col {
-        min-width: 0 !important;
-        display: table-cell !important;
-      }
-
-      .no-stack.two-up .col {
-        width: 50% !important;
-      }
-
-      .no-stack.mixed-two-up .col.num4 {
-        width: 33% !important;
-      }
-
-      .no-stack.mixed-two-up .col.num8 {
-        width: 66% !important;
-      }
-
-      .no-stack.three-up .col.num4 {
-        width: 33% !important;
-      }
-
-      .no-stack.four-up .col.num3 {
-        width: 25% !important;
-      }
-
-      .mobile_hide {
-        min-height: 0px !important;
-        max-height: 0px !important;
-        max-width: 0px !important;
-        display: none !important;
-        overflow: hidden !important;
-        font-size: 0px !important;
-      }
-    }
-  </style>
-  <style type="text/css">
-    .tg {
-      border-collapse: collapse;
-      border-spacing: 0;
-    }
-
-    .tg td {
-      font-size: 16px;
-      padding: 7px 15px !important;
-      padding: 2px 5px;
-      border-style: dashed;
-      border-width: 0px;
-      overflow: hidden;
-      word-break: normal;
-      border-color: #bfbfbf !important;
-    }
-
-    .tg .tg-us36 {
-      border-color: inherit;
-      vertical-align: top
-    }
-  </style>
-  <!--[if IE]><div class="ie-browser"><![endif]-->
-  <!--[if mso]><div class="mso-container"><![endif]-->
-    
-    <div style="Margin: 0 auto;min-height:50px;min-width: 500px;max-width: 700px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;"></div>
-    <div style="Margin: 0 auto;min-width: 500px;max-width: 700px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;">
-      <table style="border-color:white;border-style:solid;border-width:10px; font-size: 20px;font-weight:normal;overflow:hidden;padding:7px 15px;word-break:normal;border-collapse: collapse;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #FFFFFF;width: 100%;
+<body style="color:#555555;font-family:'Lato','Roboto','Helvetica','Arial',sans-serif;">
+  <div style="background-color: lightgray;padding:30px">
+    <div style="max-width: 570px;Margin: 0 auto;padding-top:20px;padding-bottom:20px;font-size: 15px;font-family:'Maven Pro', 'Arial', sans-serif !important;background-color:white">
+      <table style="border-color:white;border-style:solid;border-width:10px; font-size: 15px;font-weight:normal;overflow:hidden;padding:7px 15px;word-break:normal;border-collapse: collapse;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #FFFFFF;width: 100%;
                     font-family:'Maven Pro', 'Arial', sans-serif !important;" cellpadding="0" cellspacing="0">
       <thead>
         <tr>
           <th style="border-color:inherit;text-align:left;vertical-align:top;padding: 10px;" colspan="2">
-            <span style="white-space: pre-line">Your booking is well received by ( Initial Office ).
-              You can click the button to get the latest status anytime.</span>
+            <span style="white-space: pre-line;font-size:larger;">Dear {{entity.controllingCustomerParty.name}}
+            
+            Thank you for your order.
+            Your booking will be handled by {{entity.officePartyName}}.
+            </span>
           </th>
         </tr>
         <tr>
-          <th style="border-color:inherit;text-align:left;vertical-align:top;padding: 10px;" colspan="2">Booking Details.</th>
+          <th style="border-color:black;text-align:left;vertical-align:top;padding: 10px;" colspan="2">
+            Booking No : {{entity.bookingNo}}
+          </th>
         </tr>
       </thead>
-      <tbody style="padding-left:5px;padding-right:5px;">
+      </table>
+      
+      <table style="border: 2px solid black;width:80%;margin:0 auto">
+        {% if entity.poNo %}
         <tr>
-          <td style="text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;min-width: 200px;">&nbsp;Customer Ref</td>
-          <td style="text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.poNo}}</td>
+          <td style="padding:5px 5px;min-width:150px">&nbsp;Customer Ref</td>
+          <td style="padding:5px 5px;">&nbsp;{{entity.poNo}}</td>
         </tr>
+        {% end if %}
+        {% if entity.shipperPartyName %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;Shipper</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.shipperPartyName}}</td>
+          <td style="padding:5px 5px;">&nbsp;Shipper</td>
+          <td>&nbsp;{{entity.shipperPartyName}}</td>
         </tr>
+        {% end if %}
+        {% if entity.shipperPartyNamepoNo %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;Consignee</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.shipperPartyName}}</td>
+          <td style="padding:5px 5px;">&nbsp;Consignee</td>
+          <td>&nbsp;{{entity.shipperPartyName}}</td>
         </tr>
+        {% end if %}
+        {% if entity.portOfLoadingName %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;Port of Loading</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.portOfLoadingName}}</td>
+          <td style="padding:5px 5px;">&nbsp;Port of Loading</td>
+          <td>&nbsp;{{entity.portOfLoadingName}}</td>
         </tr>
+        {% end if %}
+        {% if entity.portOfDischargeName %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;Port of Discharge</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.portOfDischargeName}}</td>
+          <td style="padding:5px 5px;">&nbsp;Port of Discharge</td>
+          <td>&nbsp;{{entity.portOfDischargeName}}</td>
         </tr>
+        {% end if %}
+        {% if entity.finalDestinationName %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;Final Destination</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.finalDestinationName}}</td>
+          <td style="padding:5px 5px;">&nbsp;Final Destination</td>
+          <td>&nbsp;{{entity.finalDestinationName}}</td>
         </tr>
+        {% end if %}
+        {% if entity.carrierCode %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;Carrier</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.carrierCode}}</td>
+          <td style="padding:5px 5px;">&nbsp;Carrier</td>
+          <td>&nbsp;{{entity.carrierCode}}</td>
         </tr>
+        {% end if %}
+        {% if entity.vesselName ||  entity.voyageFlightNumber %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;Vessel / Voyage</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.vesselName}} / {{entity.voyageFlightNumber}}</td>
+          <td style="padding:5px 5px;">&nbsp;Vessel / Voyage</td>
+          <td>&nbsp;{{entity.vesselName}}{% if entity.vesselName && entity.voyageFlightNumber %} / {% end if %}{{entity.voyageFlightNumber}}</td>
         </tr>
+        {% end if %}
+        {% if entity.cargoReadyDateEstimated %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;Cargo Ready</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.cargoReadyDateEstimated}}</td>
+          <td style="padding:5px 5px;">&nbsp;Cargo Ready</td>
+          <td>&nbsp;{{entity.cargoReadyDateEstimated}}</td>
         </tr>
+        {% end if %}
+        {% if entity.estimatedDepartureDate %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;ETD</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{% if entity.estimatedDepartureDate %} {{entity.estimatedDepartureDate | date('d M Y')}} {% endif %}</td>
+          <td style="padding:5px 5px;">&nbsp;ETD</td>
+          <td>&nbsp;{% if entity.estimatedDepartureDate %} {{entity.estimatedDepartureDate | date('d M Y')}} {% endif %}</td>
         </tr>
+        {% end if %}
+        {% if entity.estimatedArrivalDate %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;ETA</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{% if entity.estimatedArrivalDate %} {{entity.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
+          <td style="padding:5px 5px;">&nbsp;ETA</td>
+          <td>&nbsp;{% if entity.estimatedArrivalDate %} {{entity.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
         </tr>
+        {% end if %}
+        {% if entity.commodity %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;Commodity</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.commodity}}</td>
+          <td style="padding:5px 5px;">&nbsp;Commodity</td>
+          <td>&nbsp;{{entity.commodity}}</td>
         </tr>
+        {% end if %}
+        {% if entity.freightTermsCode %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;Pay Terms</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.freightTermsCode}}</td>
+          <td style="padding:5px 5px;">&nbsp;Pay Terms</td>
+          <td>&nbsp;{{entity.freightTermsCode}}</td>
         </tr>
+        {% end if %}
+        {% if entity.serviceCode %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;Container Service</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.serviceCode}}</td>
+          <td style="padding:5px 5px;">&nbsp;Container Service</td>
+          <td>&nbsp;{{entity.serviceCode}}</td>
         </tr>
+        {% end if %}
+        {% if entity.bookingPopackings.quantity %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;Total CTN</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.bookingPopackings.quantity}}</td>
+          <td style="padding:5px 5px;">&nbsp;Total CTN</td>
+          <td>&nbsp;{{entity.bookingPopackings.quantity}}</td>
         </tr>
+        {% end if %}
+        {% if entity.bookingPopackings.weight %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;Total KGS</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.bookingPopackings.weight}}</td>
+          <td style="padding:5px 5px;">&nbsp;Total KGS</td>
+          <td>&nbsp;{{entity.bookingPopackings.weight}}</td>
         </tr>
+        {% end if %}
+        {% if entity.cbm %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;Total CBM</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.cbm}}</td>
+          <td style="padding:5px 5px;">&nbsp;Total CBM</td>
+          <td>&nbsp;{{entity.cbm}}</td>
         </tr>
+        {% end if %}
+        {% if entity.poNo %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;PO No</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.poNo}}</td>
+          <td style="padding:5px 5px;">&nbsp;PO No</td>
+          <td>&nbsp;{{entity.poNo}}</td>
         </tr>
+        {% end if %}
+        {% if entity.bookingContainers.containerTypeCode %}
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;Container</td>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;">&nbsp;{{entity.bookingContainers.containerTypeCode}}</td>
+          <td style="padding:5px 5px;">&nbsp;Container</td>
+          <td>&nbsp;{{entity.bookingContainers.containerTypeCode}}</td>
         </tr>
+        {% end if %}
+        </table>
+        <table style="border: 0px solid black;background-color: #FFFFFF;">
         <tr>
-          <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;" colspan="2" style="align-items: center; text-align: center;" align="center">
+          <td colspan="2" style="align-items: center; text-align: center;padding-top:20px;padding-bottom:20px">
             <div align="center" class="button-container center" >
                 <a href="{{bookingUrl}}" target="_blank" style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff;background-color: #f15b29;border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;max-width: 164px;width: 64px;width: auto;border-top: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-left: 0px solid transparent;padding-top: 10px;padding-right: 25px;padding-bottom: 10px;padding-left: 25px;mso-border-alt: none;">
                   Click For Details
@@ -463,11 +169,19 @@
             </div>
           </td>
         </tr>
-      </tbody>
+        <tr>
+          <td style="text-align: center;font-size:small;padding:5px 20px;font-style:italic;" colspan="2">
+            If you have any doubts on the email, please contact us at ({{entity.officePartyContactEmail}})
+          </td>
+        </tr>
+        <tr>
+          <td style="text-align: center;font-size:small;padding:5px 10px;font-style:italic;" colspan="2">
+            {{entity.officePartyName}}
+          </td>
+        </tr>
       </table>
-  <!--[if (mso)|(IE)]></div><![endif]--> 
     </div>
-    <div style="Margin: 0 auto;min-height:50px;min-width: 500px;max-width: 700px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;"></div>
+  </div>
 
 </body>
 
