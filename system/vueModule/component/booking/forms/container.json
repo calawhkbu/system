@@ -1,71 +1,76 @@
 {
-  "components": [
-    {
-      "is": "AsyncComponent",
-      "class": "xs-12 full-width",
-      "if": "try { return context.$store.state.widget.data.bookingParty.controllingCustomerPartyIsBuyer } catch(e) { return false }",
+  "components": [{
+      "is": "WidgetForm",
+      "class": "xs-12",
       "props": {
-        "layoutName": "booking/forms/poItems"
+        "fields": [{
+            "label": "BookingPage.poNo",
+            "name": "flexData.poNo",
+            "component": "v-text-field",
+            "class": "xs-12",
+            "checkDisplayWhen": "return !(form && form.bookingParty.controllingCustomerPartyIsBuyer)"
+          },
+          {
+            "label": "BookingPage.poNo",
+            "name": "flexData.poNo",
+            "component": "AsyncAutoSuggest",
+            "class": "xs-12",
+            "checkDisplayWhen": "return (form && form.bookingParty.controllingCustomerPartyIsBuyer)",
+            "props": {
+              "showValue": false,
+              "multiple": true,
+              "searchTextParams": {
+                "url": "api/purchase-order/query/purchase_order",
+                "method": "POST",
+                "data": {
+                  "fields": [
+                    "poNo", "productCategoryId"
+                  ],
+                  "subqueries": {
+                    "poNoLike": {
+                      "value": "{{context.search}}"
+                    }
+                  },
+                  "limit": 5
+                }
+              },
+              "item-text": "poNo",
+              "item-value": "poNo",
+              "onInit": true,
+              "onGetFixValueOverrideFunc": [
+                "if (Array.isArray(value)) {",
+                "return value.map((item) => { return { poNo: item }})",
+                "}",
+                "return value"
+              ],
+              "onSetFixValueOverrideFunc": [
+                "return value.map((item) => item.poNo)"
+              ]
+            }
+          }
+        ]
       }
     },
     {
       "is": "WidgetForm",
       "class": "xs-12",
       "props": {
-        "fields": [
-          {
-            "label": "BookingPage.poNo",
-            "name": "flexData.poNo",
-            "component": "v-text-field",
-            "class": "xs-12 md-2",
-            "checkDisplayWhen": "return !(form && form.bookingParty.controllingCustomerPartyIsBuyer)"
-          },
-          {
+        "fields": [{
             "label": "BookingPage.quantity",
             "name": "flexData.quantity",
             "component": "v-text-field",
-            "class": "xs-12 md-4",
-            "checkDisplayWhen": "return form && form.serviceCode !== 'FCL/FCL';"
-          },
-          {
-            "label": "BookingPage.draftContainer20",
-            "name": "draftContainer20",
-            "component": "NumberField",
-            "class": "xs-12 md-1 padding-topbottom-4",
-            "checkDisplayWhen": "return form && form.serviceCode === 'FCL/FCL';"
-          },
-          {
-            "label": "BookingPage.draftContainer40",
-            "name": "draftContainer40",
-            "component": "v-text-field",
-            "class": "xs-12 md-1 padding-topbottom-4",
-            "checkDisplayWhen": "return form && form.serviceCode === 'FCL/FCL';"
-          },
-          {
-            "label": "BookingPage.draftContainer40HQ",
-            "name": "draftContainer40HQ",
-            "component": "NumberField",
-            "class": "xs-12 md-1 padding-topbottom-4",
-            "checkDisplayWhen": "return form && form.serviceCode === 'FCL/FCL';"
-          },
-          {
-            "label": "BookingPage.draftContainer45",
-            "name": "draftContainer45",
-            "component": "NumberField",
-            "class": "xs-12 md-1 padding-topbottom-4",
-            "checkDisplayWhen": "return form && form.serviceCode === 'FCL/FCL';"
+            "class": "xs-12 md-6",
+            "checkDisplayWhen": "return form && form.shipmentTypeCode !== 'FCL';"
           },
           {
             "label": "BookingPage.cargoValueCurrencyCode",
             "name": "cargoValueCurrencyCode",
             "component": "AsyncAutoSuggest",
             "class": "xs-12 md-2",
-            "more": [
-              {
-                "name": "cargoValueCurrencyCode",
-                "selector": "code"
-              }
-            ],
+            "more": [{
+              "name": "cargoValueCurrencyCode",
+              "selector": "code"
+            }],
             "props": {
               "searchTextParams": {
                 "url": "api/code/query/code_master",
@@ -99,8 +104,15 @@
               "type": "number",
               "min": 0
             }
-          },
-        {
+          }
+        ]
+      }
+    },
+    {
+      "is": "WidgetForm",
+      "class": "xs-12",
+      "props": {
+        "fields": [{
           "label": "BookingPage.BookingPacking",
           "name": "bookingPopackings",
           "component": "TableField",
@@ -322,22 +334,63 @@
                   "funcItems": "return (context.$store.state.widget.data.bookingContainers || []).reduce((re, item) => { if(item.containerNo) { re = re || []; re.push({ id: item.id, containerNo: item.containerNo })} return re }, null)"
                 },
                 "colGroupProps": {
-                  "style": { 
-                    "width": "10%" 
+                  "style": {
+                    "width": "10%"
                   }
                 }
               }
             ]
           }
-        },
+        }]
+      }
+    },
+    {
+      "is": "AsyncComponent",
+      "class": "xs-12 full-width",
+      "if": "try { return context.$store.state.widget.data.bookingParty.controllingCustomerPartyIsBuyer } catch(e) { return false }",
+      "props": {
+        "layoutName": "booking/forms/poItems"
+      }
+    },
+    {
+      "is": "WidgetForm",
+      "class": "xs-12",
+      "props": {
+        "fields": [{
+            "label": "BookingPage.draftContainer20",
+            "name": "draftContainer20",
+            "component": "NumberField",
+            "class": "xs-12 md-1 padding-topbottom-4",
+            "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL';"
+          },
+          {
+            "label": "BookingPage.draftContainer40",
+            "name": "draftContainer40",
+            "component": "NumberField",
+            "class": "xs-12 md-1 padding-topbottom-4",
+            "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL';"
+          },
+          {
+            "label": "BookingPage.draftContainer40HQ",
+            "name": "draftContainer40HQ",
+            "component": "NumberField",
+            "class": "xs-12 md-1 padding-topbottom-4",
+            "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL';"
+          },
+          {
+            "label": "BookingPage.draftContainer45",
+            "name": "draftContainer45",
+            "component": "NumberField",
+            "class": "xs-12 md-1 padding-topbottom-4",
+            "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL';"
+          },
           {
             "label": "BookingPage.BookingContainer",
             "name": "bookingContainers",
             "component": "TableField",
             "props": {
               "topLabel": true,
-              "fields": [
-                {
+              "fields": [{
                   "label": "BookingPage.containerTypeCode",
                   "name": "containerTypeCode",
                   "colGroupProps": {
@@ -411,15 +464,13 @@
                     "type": "number",
                     "min": 0
                   },
-                  "slots": [
-                    {
-                      "name": "append",
-                      "is": "I18nText",
-                      "props": {
-                        "i18nKey": "CTNS"
-                      }
+                  "slots": [{
+                    "name": "append",
+                    "is": "I18nText",
+                    "props": {
+                      "i18nKey": "CTNS"
                     }
-                  ]
+                  }]
                 }
               ]
             }

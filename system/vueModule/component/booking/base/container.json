@@ -88,36 +88,35 @@
                   "name": "flexData.quantity",
                   "component": "v-text-field",
                   "class": "xs-12",
-
-                  "checkDisplayWhen": "return form && form.serviceCode !== 'LCL/LCL';"
+                  "checkDisplayWhen": "return form && form.shipmentTypeCode !== 'FCL';"
                 },
                 {
                   "label": "BookingPage.draftContainer20",
                   "name": "draftContainer20",
                   "component": "NumberField",
                   "class": "xs-12 md-1 padding-topbottom-4",
-                  "checkDisplayWhen": "return form && form.serviceCode === 'LCL/LCL';"
+                  "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL';"
                 },
                 {
                   "label": "BookingPage.draftContainer40",
                   "name": "draftContainer40",
                   "component": "v-text-field",
                   "class": "xs-12 md-1 padding-topbottom-4",
-                  "checkDisplayWhen": "return form && form.serviceCode === 'LCL/LCL';"
+                  "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL';"
                 },
                 {
                   "label": "BookingPage.draftContainer40HQ",
                   "name": "draftContainer40HQ",
                   "component": "NumberField",
                   "class": "xs-12 md-1 padding-topbottom-4",
-                  "checkDisplayWhen": "return form && form.serviceCode === 'LCL/LCL';"
+                  "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL';"
                 },
                 {
                   "label": "BookingPage.draftContainer45",
                   "name": "draftContainer45",
                   "component": "NumberField",
                   "class": "xs-12 md-1 padding-topbottom-4",
-                  "checkDisplayWhen": "return form && form.serviceCode === 'LCL/LCL';"
+                  "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL';"
                 },
                 {
                   "label": "BookingPage.cargoValueCurrencyCode",
@@ -366,8 +365,8 @@
                         "label": "BookingPage.containerNo",
                         "name": "bookingContainer.containerNo",
                         "colGroupProps": {
-                          "style": { 
-                            "width": "10%" 
+                          "style": {
+                            "width": "10%"
                           }
                         }
                       }
@@ -615,8 +614,8 @@
                         "label": "BookingPage.containerNo",
                         "name": "bookingContainer.containerNo",
                         "colGroupProps": {
-                          "style": { 
-                            "width": "10%" 
+                          "style": {
+                            "width": "10%"
                           }
                         }
                       }
@@ -732,7 +731,7 @@
                 "label": "BookingPage.quantity",
                 "name": "flexData.quantity",
                 "component": "v-text-field",
-                "checkDisplayWhen": "return form && form.serviceCode !== 'LCL/LCL' && form.flexData && form.flexData.quantity",
+                "checkDisplayWhen": "return form && form.shipmentTypeCode !== 'FCL' && form.flexData && form.flexData.quantity",
                 "class": "xs-4"
               },
               {
@@ -740,28 +739,28 @@
                 "name": "draftContainer20",
                 "component": "NumberField",
                 "class": "xs-12 md-1 padding-topbottom-4",
-                "checkDisplayWhen": "return form && form.serviceCode === 'LCL/LCL' && form.draftContainer20;"
+                "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL' && form.draftContainer20;"
               },
               {
                 "label": "BookingPage.draftContainer40",
                 "name": "draftContainer40",
                 "component": "v-text-field",
                 "class": "xs-12 md-1 padding-topbottom-4",
-                "checkDisplayWhen": "return form && form.serviceCode === 'LCL/LCL' && form.draftContainer40;"
+                "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL' && form.draftContainer40;"
               },
               {
                 "label": "BookingPage.draftContainer40HQ",
                 "name": "draftContainer40HQ",
                 "component": "NumberField",
                 "class": "xs-12 md-1 padding-topbottom-4",
-                "checkDisplayWhen": "return form && form.serviceCode === 'LCL/LCL' && form.draftContainer40HQ;"
+                "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL' && form.draftContainer40HQ;"
               },
               {
                 "label": "BookingPage.draftContainer45",
                 "name": "draftContainer45",
                 "component": "NumberField",
                 "class": "xs-12 md-1 padding-topbottom-4",
-                "checkDisplayWhen": "return form && form.serviceCode === 'LCL/LCL' && form.draftContainer45;"
+                "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL' && form.draftContainer45;"
               },
               {
                 "label": "BookingPage.cargoValueCurrencyCode",

@@ -5,43 +5,6 @@
       "props": {
         "fields": [
           {
-            "label": "BookingPage.poNo",
-            "name": "flexData.poNo",
-            "component": "AsyncAutoSuggest",
-            "class": "xs-12",
-            "props": {
-              "showValue": false,
-              "multiple": true,
-              "searchTextParams": {
-                "url": "api/purchase-order/query/purchase_order",
-                "method": "POST",
-                "data": {
-                  "fields": [
-                    "poNo", "productCategoryId"
-                  ],
-                  "subqueries": {
-                    "poNoLike": {
-                      "value": "{{context.search}}"
-                    }
-                  },
-                  "limit": 5
-                }
-              },
-              "item-text": "poNo",
-              "item-value": "poNo",
-              "onInit": true,
-              "onGetFixValueOverrideFunc": [
-                "if (Array.isArray(value)) {",
-                  "return value.map((item) => { return { poNo: item }})",
-                "}",
-                "return value"
-              ],
-              "onSetFixValueOverrideFunc": [
-                "return value.map((item) => item.poNo)"
-              ]
-            }
-          },
-          {
             "label": "BookingPage.BookingPacking",
             "component": "TableField",
             "name": "bookingPopackings",
@@ -62,8 +25,8 @@
                     "readonly": true
                   },
                   "colGroupProps": {
-                    "style": { 
-                      "width": "300px" 
+                    "style": {
+                      "width": "300px"
                     }
                   }
                 },
@@ -75,8 +38,8 @@
                     "readonly": true
                   },
                   "colGroupProps": {
-                    "style": { 
-                      "width": "300px" 
+                    "style": {
+                      "width": "300px"
                     }
                   }
                 },
@@ -88,8 +51,8 @@
                     "min": 0
                   },
                   "colGroupProps": {
-                    "style": { 
-                      "width": "150px" 
+                    "style": {
+                      "width": "150px"
                     }
                   }
                 },
@@ -101,8 +64,8 @@
                     "readonly": true
                   },
                   "colGroupProps": {
-                    "style": { 
-                      "width": "150px" 
+                    "style": {
+                      "width": "150px"
                     }
                   }
                 },
@@ -124,8 +87,8 @@
                     }
                   ],
                   "colGroupProps": {
-                    "style": { 
-                      "width": "150px" 
+                    "style": {
+                      "width": "150px"
                     }
                   }
                 },
@@ -147,8 +110,8 @@
                     }
                   ],
                   "colGroupProps": {
-                    "style": { 
-                      "width": "150px" 
+                    "style": {
+                      "width": "150px"
                     }
                   }
                 },
@@ -170,8 +133,8 @@
                     }
                   ],
                   "colGroupProps": {
-                    "style": { 
-                      "width": "150px" 
+                    "style": {
+                      "width": "150px"
                     }
                   }
                 },
@@ -184,8 +147,8 @@
                     "min": 0
                   },
                   "colGroupProps": {
-                    "style": { 
-                      "width": "150px" 
+                    "style": {
+                      "width": "150px"
                     }
                   }
                 },
@@ -209,8 +172,8 @@
                     ]
                   },
                   "colGroupProps": {
-                    "style": { 
-                      "width": "150px" 
+                    "style": {
+                      "width": "150px"
                     }
                   }
                 },
@@ -222,8 +185,8 @@
                     "type": "number"
                   },
                   "colGroupProps": {
-                    "style": { 
-                      "width": "150px" 
+                    "style": {
+                      "width": "150px"
                     }
                   }
                 },
@@ -247,8 +210,8 @@
                     ]
                   },
                   "colGroupProps": {
-                    "style": { 
-                      "width": "150px" 
+                    "style": {
+                      "width": "150px"
                     }
                   }
                 },
@@ -263,8 +226,8 @@
                     "funcItems": "return (context.$store.state.widget.data.bookingContainers || []).reduce((re, item) => { if(item.containerNo) { re = re || []; re.push({ id: item.id, containerNo: item.containerNo })} return re }, null)"
                   },
                   "colGroupProps": {
-                    "style": { 
-                      "width": "150px" 
+                    "style": {
+                      "width": "150px"
                     }
                   }
                 },
@@ -361,7 +324,7 @@
               {
                 "is": "DynamicComponent",
                 "props": {
-                  "components": [  
+                  "components": [
                     {
                     "containerComponent": "v-card",
                     "containerComponentProps": {
@@ -396,7 +359,7 @@
                         "filters": {
                           "poNo": {
                             "dispatchValue": "$store.state.widget.data.flexData.poNo"
-                          }, 
+                          },
                           "activeStatus":{
                             "value": "active"
                           },

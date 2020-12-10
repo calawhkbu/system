@@ -9,7 +9,7 @@
     "part": "BookingPage.GeneralForm"
   },
   {
-    "field": "serviceCode",
+    "field": "shipmentTypeCode",
     "validator": "required",
     "part": "BookingPage.GeneralForm",
     "skip": "return form && (form.from === 'erp' || form.moduleTypeCode === 'AIR');"

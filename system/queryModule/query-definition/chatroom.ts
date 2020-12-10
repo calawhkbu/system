@@ -137,19 +137,6 @@ query.table('chat',(params:IQueryParams)=>{
 
              })),'mentions'),
 
-          //    new ResultColumn(new QueryExpression(new Query({
-          //     $select:[
-          //       new ResultColumn(new ColumnExpression('person','displayName'))
-          //     ],
-          //     $from:'person',
-          //     $where :[
-          //       new InExpression(new ColumnExpression('person','userName'),false,new Value(['360@swivelsoftware.com'])),
-            
-          //     ],
-          //      $group: new GroupBy(new ColumnExpression('person','userName'))
-
-          //  })),'displayName'),
-
 
 
 

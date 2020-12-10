@@ -9,7 +9,7 @@
             "label": "BookingPage.moduleType",
             "name": "moduleTypeCode",
             "component": "AsyncSelect",
-            "class": "xs-12 md-3",
+            "class": "xs-12 md-2",
             "relation": "moduleType",
             "validator": [
               "required"
@@ -39,7 +39,7 @@
             "label": "BookingPage.boundType",
             "name": "boundTypeCode",
             "component": "AsyncSelect",
-            "class": "xs-12 md-3",
+            "class": "xs-12 md-2",
             "relation": "boundType",
             "validator": [
               "required"
@@ -65,11 +65,37 @@
             }
           },
           {
+            "label": "BookingPage.shipmentTypeCode",
+            "name": "shipmentTypeCode",
+            "component": "AsyncSelect",
+            "class": "xs-12 md-2",
+            "isRequired": "return form && form.moduleTypeCode !== 'AIR';",
+            "relation": "shipmentType",
+            "props": {
+              "axiosParams": {
+                "url": "api/code/query/code_master",
+                "method": "POST",
+                "data": {
+                  "subqueries": {
+                    "activeStatus": {
+                      "value": "active"
+                    },
+                    "codeType": {
+                      "value": "SHIPTYPE"
+                    }
+                  }
+                }
+              },
+              "item-text": "name",
+              "item-value": "code",
+              "showValue": false
+            }
+          },
+          {
             "label": "BookingPage.serviceCode",
             "name": "serviceCode",
             "component": "AsyncSelect",
-            "class": "xs-12 md-3",
-            "isRequired": "return form && form.moduleTypeCode !== 'AIR';",
+            "class": "xs-12 md-2",
             "relation": "service",
             "props": {
               "axiosParams": {
@@ -107,7 +133,7 @@
             "label": "BookingPage.telexRelease",
             "component": "BooleanField",
             "name": "telexRelease",
-            "class": "xs-12 md-1",
+            "class": "xs-12 md-2",
             "props": {
               "item-text": "text",
               "item-value": "value",

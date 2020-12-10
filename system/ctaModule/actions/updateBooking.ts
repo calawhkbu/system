@@ -45,7 +45,7 @@ export default class UpdateBookingAction extends CtaActionInt<Props> {
       },
       data: entity
     })
-    if (response.data && String(response.data.id) === primaryKey) {
+    if (response.data && response.data.id === entity.id) {
       const result = response.data
       body.locals.booking = result
       if (tableName === 'booking') body.entity = result

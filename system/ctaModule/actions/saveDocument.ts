@@ -4,8 +4,7 @@ import { CtaActionInt, IBody, Result } from "modules/cta/interface"
 import axios from 'axios'
 
 export interface IProps {
-  entityType: string
-  fileType: string
+  entityType?: string
   fileName: string
 
   // get base64 file string from inputResult
@@ -18,7 +17,7 @@ export default class SaveDocumentAction<Props extends IProps = IProps> extends C
 
   async run(system: string, tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
     if (!this.props) throw new InternalServerErrorException('MISSING_PROPS')
-    const { entityType, fileType, fileName, type, key } = this.props
+    const { entityType = tableName, fileName, type, key } = this.props
     const { locals, inputResult } = body
     const { backendUrl, accessToken } = locals
     const entity = tableName === entityType ? body.entity : body.locals[entityType]
@@ -39,13 +38,14 @@ export default class SaveDocumentAction<Props extends IProps = IProps> extends C
 
     const response = await axios.request({
       method: 'POST',
-      url: `${backendUrl}/document/external-upload`,
+      url: `${backendUrl}/api/document/document/upload`,
       data: {
-        entityType,
-        searchBy: { id: entity.id },
-        fileType,
+        tableName: entityType,
+        primaryKey: entity.id,
         fileName,
-        fileBase64
+        fileData: {
+          base64String: fileBase64,
+        }
       },
       headers: {
         Authorization: `Bearer ${user.fullAccessToken || accessToken}`

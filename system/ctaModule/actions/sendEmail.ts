@@ -9,6 +9,9 @@ export interface IProps {
   options?: any
   context?: any
 
+  // the entity has [tableName, primaryKey]
+  ownEntity?: boolean
+
   // parties
   toParty?: [string, string][]
   ccParty?: [string, string][]
@@ -29,8 +32,8 @@ export default class SendEmailAction<Props extends IProps = IProps> extends CtaA
   async run(system: string, tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
     if (!this.props) throw new InternalServerErrorException('MISSING_PROPS')
     const { messengerUrl } = await this.ctaService.getConfig()
-    const { handler, toParty, ccParty, bccParty, ...data } = this.props
-    const { entity, entityId } = body
+    const { handler, ownEntity, toParty, ccParty, bccParty, ...data } = this.props
+    let { entity, entityId } = body
     const { backendUrl, ...locals } = body.locals
 
     const options = data.options = _.cloneDeep(data.options || {} as any)
@@ -61,6 +64,12 @@ export default class SendEmailAction<Props extends IProps = IProps> extends CtaA
     }
     if (typeof options.html === 'object') {
       this.props.options.html.partyGroupCode = user.customer
+    }
+
+    if (ownEntity) {
+      tableName = entity.tableName
+      entityId = primaryKey = entity.primaryKey
+      entity = locals[tableName]
     }
 
     if (options.to && (!Array.isArray(options.to) || options.to.length)) {

@@ -126,14 +126,23 @@
                                 }
                               },
                               {
+                                "label": "BookingPage.shipmentTypeCode",
+                                "name": [
+                                  "shipmentType.name",
+                                  "shipmentTypeCode"
+                                ],
+                                "component": "v-text-field",
+                                "class": "xs-12",
+                                "isRequired": "return form && form.moduleTypeCode !== 'AIR';"
+                              },
+                              {
                                 "label": "BookingPage.serviceCode",
                                 "name": [
                                   "service.name",
                                   "serviceCode"
                                 ],
                                 "component": "v-text-field",
-                                "class": "xs-12",
-                                "isRequired": "return form && form.moduleTypeCode !== 'AIR';"
+                                "class": "xs-12"
                               },
                               {
                                 "label": "BookingPage.isConsole",
@@ -414,6 +423,17 @@
                       "props": {
                         "required": true
                       }
+                    },
+                    {
+                      "label": "BookingPage.shipmentTypeCode",
+                      "name": [
+                        "shipmentType.name",
+                        "shipmentTypeCode"
+                      ],
+                      "component": "v-text-field",
+                      "class": "xs-6 md-2",
+                      "isRequired": "return form && form.moduleTypeCode !== 'AIR';",
+                      "checkDisplayWhen": "return form && ((form.shipmentType && form.shipmentType.name) || form.shipmentTypeCode)"
                     },
                     {
                       "label": "BookingPage.serviceCode",

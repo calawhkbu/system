@@ -11,7 +11,7 @@
           "label": "BookingPage.moduleType",
           "name": "moduleTypeCode",
           "component": "AsyncSelect",
-          "class": "xs-12 md-4 padding-topbottom-4",
+          "class": "xs-12 md-2 padding-topbottom-4",
           "validator": ["required"],
           "relation": "moduleType",
           "props": {
@@ -64,13 +64,43 @@
           "containerComponentProps": {
             "class": "padding-topbottom-8 padding-leftright-4"
           },
+          "label": "BookingPage.shipmentTypeCode",
+          "name": "shipmentTypeCode",
+          "component": "AsyncSelect",
+          "class": "xs-12 md-2 padding-topbottom-4",
+          "relation": "shipmentType",
+          "checkDisplayWhen": "return form && form.moduleTypeCode !== 'AIR';",
+          "isRequired": "return form && form.moduleTypeCode !== 'AIR';",
+          "props": {
+            "axiosParams": {
+              "url": "api/code/query/code_master",
+              "method": "POST",
+              "data": {
+                "subqueries": {
+                  "activeStatus": {
+                    "value": "active"
+                  },
+                  "codeType": {
+                    "value": "SHIPTYPE"
+                  }
+                }
+              }
+            },
+            "item-text": "name",
+            "item-value": "code",
+            "showValue": false
+          }
+        },
+        {
+          "containerComponent": "v-card",
+          "containerComponentProps": {
+            "class": "padding-topbottom-8 padding-leftright-4"
+          },
           "label": "BookingPage.serviceCode",
           "name": "serviceCode",
           "component": "AsyncSelect",
           "class": "xs-12 md-1 padding-topbottom-4",
           "relation": "service",
-          "checkDisplayWhen": "return form && form.moduleTypeCode !== 'AIR';",
-          "isRequired": "return form && form.moduleTypeCode !== 'AIR';",
           "props": {
             "axiosParams": {
               "url": "api/code/query/code_master",
@@ -90,7 +120,8 @@
             "item-value": "code",
             "showValue": false
           }
-        }, {
+        },
+        {
           "containerComponent": "v-card",
           "containerComponentProps": {
             "class": "padding-topbottom-8 padding-leftright-4"
@@ -428,7 +459,7 @@
             "onInit": true,
             "onGetFixValueOverrideFunc": [
               "if (Array.isArray(value)) {",
-                "return value.map((item) => { return { poNo: item }})",
+              "return value.map((item) => { return { poNo: item }})",
               "}",
               "return value"
             ],
@@ -460,7 +491,7 @@
           "name": "flexData.quantity",
           "component": "v-text-field",
           "class": "xs-12 md-4 padding-topbottom-4",
-          "checkDisplayWhen": "return form && ((!form.serviceCode) || (form.service && form.service.flexData && !form.service.flexData.changeContainer) || (!(form.service || {}).flexData && form.serviceCode && !form.serviceCode.includes('FCL')));"
+          "checkDisplayWhen": "return form && form.shipmentTypeCode !== 'FCL';"
         },
         {
           "containerComponent": "v-card",
@@ -471,7 +502,7 @@
           "name": "draftContainer20",
           "component": "NumberField",
           "class": "xs-12 md-1 padding-topbottom-4",
-          "checkDisplayWhen": "return form && ((form.service && form.service.flexData && form.service.flexData.changeContainer) || (!(form.service || {}).flexData && form.serviceCode && form.serviceCode.includes('FCL')));"
+          "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL';"
         },
         {
           "containerComponent": "v-card",
@@ -480,9 +511,9 @@
           },
           "label": "BookingPage.draftContainer40",
           "name": "draftContainer40",
-          "component": "v-text-field",
+          "component": "NumberField",
           "class": "xs-12 md-1 padding-topbottom-4",
-          "checkDisplayWhen": "return form && ((form.service && form.service.flexData && form.service.flexData.changeContainer) || (!(form.service || {}).flexData && form.serviceCode && form.serviceCode.includes('FCL')));"
+          "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL';"
         },
         {
           "containerComponent": "v-card",
@@ -493,7 +524,7 @@
           "name": "draftContainer40HQ",
           "component": "NumberField",
           "class": "xs-12 md-1 padding-topbottom-4",
-          "checkDisplayWhen": "return form && ((form.service && form.service.flexData && form.service.flexData.changeContainer) || (!(form.service || {}).flexData && form.serviceCode && form.serviceCode.includes('FCL')));"
+          "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL';"
         },
         {
           "containerComponent": "v-card",
@@ -504,7 +535,7 @@
           "name": "draftContainer45",
           "component": "NumberField",
           "class": "xs-12 md-1 padding-topbottom-4",
-          "checkDisplayWhen": "return form && ((form.service && form.service.flexData && form.service.flexData.changeContainer) || (!(form.service || {}).flexData && form.serviceCode && form.serviceCode.includes('FCL')));"
+          "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL';"
         },
         {
           "containerComponent": "v-card",
