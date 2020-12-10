@@ -1,7 +1,7 @@
 import { JwtMicroPayload } from 'modules/auth/interfaces/jwt-payload'
 import { CtaActionInt, IBody, Result } from 'modules/cta/interface'
 import axios from 'axios'
-import { InternalServerErrorException } from '@nestjs/common'
+import { BadRequestException, InternalServerErrorException } from '@nestjs/common'
 import _ = require('lodash')
 
 export interface IField {
@@ -31,6 +31,7 @@ export default class UpdateBookingAction extends CtaActionInt<Props> {
       }
     }
 
+    if (!body.inputResult) throw new BadRequestException('MISSING_INPUT_RESULT')
     for (const { key, path = key } of this.props.fields) {
       _.set(entity, path, body.inputResult[key])
     }

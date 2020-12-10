@@ -17,7 +17,7 @@ export default {
   constants: {
     moduleTypeCodeList: {
       AIR: ['AC', 'AD', 'AM', 'AN', 'AZ'],
-      SEA: ['SA', 'SB', 'SC', 'SR', 'SS', 'ST', 'SZ'],
+      SEA: ['SA', 'SB', 'SC', 'SR', 'SS', 'ST', 'SZ']
     },
     reportingGroupList: {
       AC: ['AIR', 'EXPORT'],

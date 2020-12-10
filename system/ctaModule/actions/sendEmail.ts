@@ -2,43 +2,89 @@ import { JwtMicroPayload } from 'modules/auth/interfaces/jwt-payload'
 import { CtaActionInt, IBody, Result } from 'modules/cta/interface'
 import axios from 'axios'
 import { InternalServerErrorException } from '@nestjs/common'
+import _ = require('lodash')
 
-interface IProps {
+export interface IProps {
   handler?: string
-  options: any
+  options?: any
   context?: any
+
+  // parties
+  toParty?: [string, string][]
+  ccParty?: [string, string][]
+  bccParty?: [string, string][]
+
+  // TODO attachment
 }
 
-export default class SendEmailAction extends CtaActionInt<IProps> {
+export default class SendEmailAction<Props extends IProps = IProps> extends CtaActionInt<Props> {
   needLocals = true
+
+  getEmail(tableName: string, body: IBody, [entityType, key]: [string, string]) {
+    const entity = entityType === tableName ? body.entity : body.locals[entityType]
+    if (entityType === 'purchase_order') entityType = 'purchaseOrder'
+    if (entity[`${entityType}Party`] && entity[`${entityType}Party`][`${key}Party`]) return entity[`${entityType}Party`][`${key}PartyContactEmail`] || entity[`${entityType}Party`][`${key}Party`].email
+  }
 
   async run(system: string, tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
     if (!this.props) throw new InternalServerErrorException('MISSING_PROPS')
     const { messengerUrl } = await this.ctaService.getConfig()
-    const { handler, ...data } = this.props
+    const { handler, toParty, ccParty, bccParty, ...data } = this.props
     const { entity, entityId } = body
     const { backendUrl, ...locals } = body.locals
 
-    if (!data.context) data.context = {}
-    data.context = {
-      ...data.context,
-      ...locals,
-      system,
-      tableName,
-      primaryKey,
-      entity,
-      entityId,
-      accessToken: user.accessToken
+    const options = data.options = _.cloneDeep(data.options || {} as any)
+    if (this.props.toParty) {
+      options.to = options.to || []
+      if (!Array.isArray(options.to)) options.to = [options.to]
+      const emails = this.props.toParty.map(p => this.getEmail(tableName, body, p)).filter(s => !!s)
+      options.to.push(...emails)
+    }
+    if (this.props.ccParty) {
+      options.cc = options.cc || []
+      if (!Array.isArray(options.cc)) options.cc = [options.cc]
+      const emails = this.props.ccParty.map(p => this.getEmail(tableName, body, p)).filter(s => !!s)
+      options.cc.push(...emails)
+    }
+    if (this.props.bccParty) {
+      options.bcc = options.bcc || []
+      if (!Array.isArray(options.bcc)) options.bcc = [options.bcc]
+      const emails = this.props.bccParty.map(p => this.getEmail(tableName, body, p)).filter(s => !!s)
+      options.bcc.push(...emails)
     }
 
-    const response = await axios.request({
-      method: 'POST',
-      url: handler ? `${messengerUrl}/send/cta/email/${handler}` : `${messengerUrl}/send/cta/email`,
-      data,
-      headers: {
-        Authorization: `Bearer ${user.accessToken}`
+    if (typeof options.subject === 'object') {
+      this.props.options.subject.partyGroupCode = user.customer
+    }
+    if (typeof options.text === 'object') {
+      this.props.options.text.partyGroupCode = user.customer
+    }
+    if (typeof options.html === 'object') {
+      this.props.options.html.partyGroupCode = user.customer
+    }
+
+    if (options.to && (!Array.isArray(options.to) || options.to.length)) {
+      if (!data.context) data.context = {}
+      data.context = {
+        ...data.context,
+        ...locals,
+        system,
+        tableName,
+        primaryKey,
+        entity,
+        entityId,
+        accessToken: user.accessToken
       }
-    })
+
+      const response = await axios.request({
+        method: 'POST',
+        url: handler ? `${messengerUrl}/send/cta/email/${handler}` : `${messengerUrl}/send/cta/email`,
+        data,
+        headers: {
+          Authorization: `Bearer ${user.accessToken}`
+        }
+      })
+    }
     return Result.SUCCESS
   }
 }

@@ -55,8 +55,7 @@
                 </tr>
                 <tr>
                     <td style="padding: 40px;padding-top:0;font-size:xx-small; text-align: center;font-style:italic;">
-                          If you have any queries on the email, please contact the administrator.
-                            {{entity.bookingParty.forwarderParty.email}}
+                          If you have any queries on the email, please contact the administrator.({% if chatRoom.tableName === 'shipment' %} {{entity.shipmentParty.officeParty.email}} {% elseif chatRoom.tableName === 'booking' %}  {{entity.bookingParty.forwarderParty.email}} {% endif %})
                     </td>
                 </tr>
             </tbody>
