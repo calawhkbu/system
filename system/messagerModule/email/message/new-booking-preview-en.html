@@ -16,7 +16,6 @@
   <title></title>
   <!--[if !mso]><!-- -->
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
-  <link href="https://s3-ap-southeast-1.amazonaws.com/invitation-email/lato.css" rel="stylesheet" type="text/css">
   <!--<![endif]-->
 </head>
 
@@ -25,158 +24,165 @@
     <div style="max-width: 570px;Margin: 0 auto;padding-top:20px;padding-bottom:20px;font-size: 15px;font-family:'Maven Pro', 'Arial', sans-serif !important;background-color:white">
       <table style="border-color:white;border-style:solid;border-width:10px; font-size: 15px;font-weight:normal;overflow:hidden;padding:7px 15px;word-break:normal;border-collapse: collapse;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #FFFFFF;width: 100%;
                     font-family:'Maven Pro', 'Arial', sans-serif !important;" cellpadding="0" cellspacing="0">
-      <thead>
-        <tr>
-          <th style="border-color:inherit;text-align:left;vertical-align:top;padding: 10px;" colspan="2">
-            <span style="white-space: pre-line;font-size:larger;">Dear {{entity.controllingCustomerParty.name}}
-            
-            Thank you for your order.
-            Your booking will be handled by {{entity.officePartyName}}.
-            </span>
-          </th>
-        </tr>
-        <tr>
-          <th style="border-color:black;text-align:left;vertical-align:top;padding: 10px;" colspan="2">
-            Booking No : {{entity.bookingNo}}
-          </th>
-        </tr>
-      </thead>
+        <thead>
+          <tr>
+            <td style="border-color:inherit;text-align:left;vertical-align:top;padding: 10px;" colspan="2">
+              <span style="white-space: pre-line;font-size:larger;">
+                Dear {{name}},
+              <span>
+            </td>
+          </tr>
+          <tr>
+            <td style="border-color:black;text-align:left;vertical-align:top;padding: 10px;" colspan="2">
+              <span style="white-space: pre-line;">
+                Thank you for your order.
+                Your booking will be handled by {{entity.bookingParty.forwarderPartyName}}.
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td style="border-color:black;text-align:left;vertical-align:top;padding: 10px;" colspan="2">
+              <span style="font-size: larger;">Booking No : <span style="font-size: larger;">{{entity.bookingNo}}</span></span>
+            </td>
+          </tr>
+        </thead>
       </table>
-      
-      <table style="border: 2px solid black;width:80%;margin:0 auto">
-        {% if entity.poNo %}
+
+      <table style="border: 2px solid black;width:80%;margin:0 auto; font-size: small;">
+        {% if entity.bookingNo %}
         <tr>
           <td style="padding:5px 5px;min-width:150px">&nbsp;Customer Ref</td>
-          <td style="padding:5px 5px;">&nbsp;{{entity.poNo}}</td>
+          <td style="padding:5px 5px;">&nbsp;{{entity.bookingNo}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.shipperPartyName %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;Shipper</td>
           <td>&nbsp;{{entity.shipperPartyName}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.shipperPartyNamepoNo %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;Consignee</td>
           <td>&nbsp;{{entity.shipperPartyName}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.portOfLoadingName %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;Port of Loading</td>
           <td>&nbsp;{{entity.portOfLoadingName}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.portOfDischargeName %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;Port of Discharge</td>
           <td>&nbsp;{{entity.portOfDischargeName}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.finalDestinationName %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;Final Destination</td>
           <td>&nbsp;{{entity.finalDestinationName}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.carrierCode %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;Carrier</td>
           <td>&nbsp;{{entity.carrierCode}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.vesselName ||  entity.voyageFlightNumber %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;Vessel / Voyage</td>
-          <td>&nbsp;{{entity.vesselName}}{% if entity.vesselName && entity.voyageFlightNumber %} / {% end if %}{{entity.voyageFlightNumber}}</td>
+          <td>&nbsp;{{entity.vesselName}}{% if entity.vesselName && entity.voyageFlightNumber %} / {% endif %}{{entity.voyageFlightNumber}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.cargoReadyDateEstimated %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;Cargo Ready</td>
           <td>&nbsp;{{entity.cargoReadyDateEstimated}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.estimatedDepartureDate %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;ETD</td>
           <td>&nbsp;{% if entity.estimatedDepartureDate %} {{entity.estimatedDepartureDate | date('d M Y')}} {% endif %}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.estimatedArrivalDate %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;ETA</td>
           <td>&nbsp;{% if entity.estimatedArrivalDate %} {{entity.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.commodity %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;Commodity</td>
           <td>&nbsp;{{entity.commodity}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.freightTermsCode %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;Pay Terms</td>
           <td>&nbsp;{{entity.freightTermsCode}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.serviceCode %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;Container Service</td>
           <td>&nbsp;{{entity.serviceCode}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.bookingPopackings.quantity %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;Total CTN</td>
           <td>&nbsp;{{entity.bookingPopackings.quantity}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.bookingPopackings.weight %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;Total KGS</td>
           <td>&nbsp;{{entity.bookingPopackings.weight}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.cbm %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;Total CBM</td>
           <td>&nbsp;{{entity.cbm}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.poNo %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;PO No</td>
           <td>&nbsp;{{entity.poNo}}</td>
         </tr>
-        {% end if %}
+        {% endif %}
         {% if entity.bookingContainers.containerTypeCode %}
         <tr>
           <td style="padding:5px 5px;">&nbsp;Container</td>
           <td>&nbsp;{{entity.bookingContainers.containerTypeCode}}</td>
         </tr>
-        {% end if %}
-        </table>
-        <table style="border: 0px solid black;background-color: #FFFFFF;">
+        {% endif %}
+      </table>
+      <table style="border: 0px solid black;background-color: #FFFFFF;width: 100%;">
         <tr>
           <td colspan="2" style="align-items: center; text-align: center;padding-top:20px;padding-bottom:20px">
-            <div align="center" class="button-container center" >
-                <a href="{{bookingUrl}}" target="_blank" style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff;background-color: #f15b29;border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;max-width: 164px;width: 64px;width: auto;border-top: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-left: 0px solid transparent;padding-top: 10px;padding-right: 25px;padding-bottom: 10px;padding-left: 25px;mso-border-alt: none;">
-                  Click For Details
-                </a>
+            <div align="center" class="button-container center">
+              <a href="{{bookingUrl}}" target="_blank"
+                style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff;background-color: #f15b29;border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;max-width: 164px;width: 64px;width: auto;border-top: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-left: 0px solid transparent;padding-top: 10px;padding-right: 25px;padding-bottom: 10px;padding-left: 25px;mso-border-alt: none;">
+                Click For Details
+              </a>
             </div>
           </td>
         </tr>
         <tr>
           <td style="text-align: center;font-size:small;padding:5px 20px;font-style:italic;" colspan="2">
-            If you have any doubts on the email, please contact us at ({{entity.officePartyContactEmail}})
+            If you have any doubts on the email, please contact us at ({{entity.bookingParty.forwarderParty.name}})
           </td>
         </tr>
         <tr>
           <td style="text-align: center;font-size:small;padding:5px 10px;font-style:italic;" colspan="2">
-            {{entity.officePartyName}}
+            {{entity.bookingParty.forwarderParty.email}}
           </td>
         </tr>
       </table>

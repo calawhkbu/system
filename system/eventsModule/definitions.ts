@@ -231,8 +231,8 @@ export default {
             },
             tableName: 'booking',
             notifyKeys: {
-              DEV: ['createdBy', 'forwarder'],
-              STD: ['createdBy', 'forwarder']
+              DEV: ['updatedBy', 'forwarder'],
+              STD: ['updatedBy', 'forwarder']
             }
           },
         }

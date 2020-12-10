@@ -1,8 +1,9 @@
 import BaseEventHandler from 'modules/events/baseEventHandler'
 import { EventService, EventConfig, EventData, EventHandlerConfig, EventAllService } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
-import { Transaction } from 'sequelize'
+import { Transaction, Op } from 'sequelize'
 import _ = require('lodash')
+import * as qrcode from 'yaqrcode'
 import BluebirdPromise = require('bluebird')
 import { BookingTableService } from 'modules/sequelize/services/table/booking'
 
@@ -10,12 +11,15 @@ interface NotifyObject {
   isUpdate: boolean
   name: string
   email: string
+  originalEntity: any
   entity: any
   partyGroupCode: string
   subject: string
   language: string
   template: string
 }
+
+const noName = 'Sir / Madam'
 
 export default class NotifyEntityEvent extends BaseEventHandler {
   constructor(
@@ -47,6 +51,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
     return eventDataList.reduce((
       dataList: NotifyObject[],
       {
+        eventType,
         originalEntity,
         latestEntity,
         tableName,
@@ -55,44 +60,82 @@ export default class NotifyEntityEvent extends BaseEventHandler {
     ) => {
       const partyGroupCode = _.get(latestEntity, 'partyGroupCode', null)
       const finalKeys = notifyKeys[partyGroupCode] || []
-      console.log(finalKeys, this.constructor.name)
       const picEmail = _.get(latestEntity, 'picEmail', null)
       if (picEmail && finalKeys.includes('pic')) {
         dataList.push({
-          name: _.get(latestEntity, 'picId', null),
-          email: _.get(latestEntity, 'picEmail', null),
+          name: _.get(latestEntity, 'picId', noName),
+          email: picEmail,
+          originalEntity: originalEntity,
           entity: latestEntity,
-          isUpdate: originalEntity ? true : false,
+          isUpdate: eventType === 'update' ? true : false,
           partyGroupCode,
-          subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
+          subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
           language: 'en',
-          template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
+          template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
         })
       }
       const createdBy = _.get(latestEntity, 'createdBy', null)
+      const createdPerson = _.get(latestEntity, 'createdPerson', null)
       if (createdBy && finalKeys.includes('createdBy')) {
         dataList.push({
-          name: createdBy, // TODO:: createdBy name
+          name: createdPerson && (createdPerson.displayName || createdPerson.lastName || createdPerson.displayName)
+            ? (createdPerson.displayName || `${createdPerson.firstName} ${createdPerson.lastName}`)
+            : noName,
           email: createdBy,
+          originalEntity: originalEntity,
           entity: latestEntity,
-          isUpdate: originalEntity ? true : false,
+          isUpdate: eventType === 'update' ? true : false,
           partyGroupCode,
-          subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
+          subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
           language: 'en',
-          template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
+          template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
+        })
+      }
+      const createdUserId = _.get(latestEntity, 'createdUserId', null)
+      const createdUserEmail = _.get(latestEntity, 'createdUserEmail', null)
+      if (createdUserEmail && finalKeys.includes('createdBy')) {
+        dataList.push({
+          name: createdUserId, // TODO:: createdBy name
+          email: createdUserEmail,
+          entity: latestEntity,
+          originalEntity: originalEntity,
+          isUpdate: eventType === 'update' ? true : false,
+          partyGroupCode,
+          subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
+          language: 'en',
+          template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
         })
       }
       const updatedBy = _.get(latestEntity, 'updatedBy', null)
-      if (updatedBy && createdBy !== updatedBy && finalKeys.includes('updatedBy')) {
+      const updatedPerson = _.get(latestEntity, 'updatedPerson', null)
+      if (updatedBy && finalKeys.includes('updatedBy')) {
         dataList.push({
-          name: updatedBy, // TODO:: updatedBy name
-          email: updatedBy,
+          name: updatedPerson && (updatedPerson.displayName || updatedPerson.lastName || updatedPerson.displayName)
+            ? (updatedPerson.displayName || `${updatedPerson.firstName} ${updatedPerson.lastName}`)
+            : noName,
+          email: createdBy,
           entity: latestEntity,
-          isUpdate: originalEntity ? true : false,
+          originalEntity: originalEntity,
+          isUpdate: eventType === 'update' ? true : false,
           partyGroupCode,
-          subject: originalEntity ? `${tableName}-preview updated by ${updatedBy}` : `new-${tableName}-preview updated by ${updatedBy}`,
+          subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
           language: 'en',
-          template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
+          template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
+        })
+      }
+      const updatedUserId = _.get(latestEntity, 'updatedUserId', null)
+      const updatedUserEmail = _.get(latestEntity, 'updatedUserEmail', null)
+      if ((updatedBy || updatedUserEmail) && finalKeys.includes('updatedBy')) {
+        dataList.push({
+          name: updatedUserId || noName, // TODO:: updatedBy name
+          email: updatedUserEmail,
+          entity: latestEntity,
+          originalEntity: originalEntity,
+          isUpdate: eventType === 'update' ? true : false,
+          partyGroupCode,
+          subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
+          language: 'en',
+          template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
         })
       }
       const partyTable = _.get(latestEntity, `${tableName}Party`, {})
@@ -105,27 +148,29 @@ export default class NotifyEntityEvent extends BaseEventHandler {
             null
           if (party && sentEmail) {
             dataList.push({
-              name: _.get(partyTable, `${mainKey}PartyName`, null) || _.get(partyTable, `${mainKey}Party.name`, null),
+              name: _.get(partyTable, `${mainKey}PartyName`, null) || _.get(partyTable, `${mainKey}Party.name`, null) || noName,
               email: sentEmail,
               entity: latestEntity,
-              isUpdate: originalEntity ? true : false,
+              originalEntity: originalEntity,
+              isUpdate: eventType === 'update' ? true : false,
               partyGroupCode,
-              subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
+              subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
               language: 'en',
-              template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
+              template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
             })
           }
           const mainContactEmail = _.get(partyTable, `${mainKey}PartyContactEmail`, null)
           if (mainContactEmail) {
             dataList.push({
-              name: _.get(partyTable, `${mainKey}PartyContactName`, null),
+              name: _.get(partyTable, `${mainKey}PartyContactName`, noName),
               email: mainContactEmail,
               entity: latestEntity,
-              isUpdate: originalEntity ? true : false,
+              originalEntity: originalEntity,
+              isUpdate: eventType === 'update' ? true : false,
               partyGroupCode,
-              subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
+              subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
               language: 'en',
-              template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
+              template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
             })
           }
           const otherContacts = _.get(partyTable, `${mainKey}PartyContacts`, [])
@@ -133,14 +178,15 @@ export default class NotifyEntityEvent extends BaseEventHandler {
             for (const { Name, Email } of otherContacts) {
               if (Email) {
                 dataList.push({
-                  name: Name,
+                  name: Name || noName,
                   email: Email,
                   entity: latestEntity,
-                  isUpdate: originalEntity ? true : false,
+                  originalEntity: originalEntity,
+                  isUpdate: eventType === 'update' ? true : false,
                   partyGroupCode,
-                  subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
+                  subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
                   language: 'en',
-                  template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
+                  template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
                 })
               }
             }
@@ -161,28 +207,30 @@ export default class NotifyEntityEvent extends BaseEventHandler {
                   null
                 if (party && sentEmail) {
                   dataList.push({
-                    name: _.get(partyTableFlexData, `${morePartyKey}PartyName`, null) || _.get(partyTableFlexData, `${morePartyKey}Party.name`, null),
+                    name: _.get(partyTableFlexData, `${morePartyKey}PartyName`, null) || _.get(partyTableFlexData, `${morePartyKey}Party.name`, null) || noName,
                     email: sentEmail,
                     entity: latestEntity,
-                    isUpdate: originalEntity ? true : false,
+                    originalEntity: originalEntity,
+                    isUpdate: eventType === 'update' ? true : false,
                     partyGroupCode,
-                    subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
+                    subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
                     language: 'en',
-                    template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
+                    template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
                   })
                 }
                 const mainContactName = _.get(partyTableFlexData, `${morePartyKey}PartyContactName`, null)
                 const mainContactEmail = _.get(partyTableFlexData, `${morePartyKey}PartyContactEmail`, null)
                 if (mainContactEmail) {
                   dataList.push({
-                    name: mainContactName,
+                    name: mainContactName || noName,
                     email: mainContactEmail,
                     entity: latestEntity,
-                    isUpdate: originalEntity ? true : false,
+                    originalEntity: originalEntity,
+                    isUpdate: eventType === 'update' ? true : false,
                     partyGroupCode,
-                    subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
+                    subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
                     language: 'en',
-                    template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
+                    template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
                   })
                 }
                 const otherContacts = _.get(partyTableFlexData, `${morePartyKey}PartyContacts`, [])
@@ -190,14 +238,15 @@ export default class NotifyEntityEvent extends BaseEventHandler {
                   for (const { Name, Email } of otherContacts) {
                     if (Email) {
                       dataList.push({
-                        name: Name,
+                        name: Name || noName,
                         email: Email,
                         entity: latestEntity,
-                        isUpdate: originalEntity ? true : false,
+                        originalEntity: originalEntity,
+                        isUpdate: eventType === 'update' ? true : false,
                         partyGroupCode,
-                        subject: originalEntity ? `${tableName}-preview` : `new-${tableName}-preview`,
+                        subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
                         language: 'en',
-                        template: originalEntity ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
+                        template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
                       })
                     }
                   }
@@ -212,13 +261,44 @@ export default class NotifyEntityEvent extends BaseEventHandler {
     }, [])
   }
 
+  public async handleCreatedAtAndCreatedByName(eventDataList: EventData<any>[]) {
+    const emails = eventDataList.reduce((emails: string[], { latestEntity }) => {
+      if (latestEntity) {
+        const createdBy = _.get(latestEntity, 'createdBy', null)
+        if (createdBy && !emails.includes(createdBy)) {
+          emails.push(createdBy)
+        }
+        const updatedBy = _.get(latestEntity, 'updatedBy', null)
+        if (updatedBy && !emails.includes(updatedBy)) {
+          emails.push(updatedBy)
+        }
+      }
+      return emails
+    }, [])
+    const people = await this.allService.personTableService.findWithScope('user', { where: { userName: { [Op.in]: emails } } })
+    return eventDataList.map(eventData => {
+      if (eventData.latestEntity) {
+        const createdBy = _.get(eventData.latestEntity, 'createdBy', null)
+        if (createdBy) {
+          eventData.latestEntity.createdPerson = people.find(person => person.userName === createdBy)
+        }
+        const updatedBy = _.get(eventData.latestEntity, 'updatedBy', null)
+        if (updatedBy) {
+          eventData.latestEntity.updatedPerson = people.find(person => person.userName === updatedBy)
+        }
+      }
+      return eventData
+    })
+  }
+
   public async mainFunction(eventDataList: EventData<any>[]): Promise<any[]> {
     console.debug('Start Excecute [Notify Party]...', this.constructor.name)
     try {
-      const lists = this.getPartyFromEntity(eventDataList)
+
+      const lists = this.getPartyFromEntity(await this.handleCreatedAtAndCreatedByName(eventDataList))
       console.log(`Send out email size = ${lists.length}`, this.constructor.name)
       if (lists && lists.length) {
-        await BluebirdPromise.map(lists, async ({ name, email, entity, isUpdate, partyGroupCode, language, template, subject }: NotifyObject) => {
+        await BluebirdPromise.map(lists, async ({ name, email, entity, originalEntity, isUpdate, partyGroupCode, language, template, subject }: NotifyObject) => {
           try {
             const { frontendUrl } = await this.allService.swivelConfigService.get()
             const partyGroup = await this.allService.partyGroupTableService.findOne({ where: { code: partyGroupCode } }, this.user)
@@ -229,14 +309,18 @@ export default class NotifyEntityEvent extends BaseEventHandler {
               'email',
               {
                 to: [email],
-                subject,
+                subject: { path: subject, language, partyGroupCode },
                 html: { path: template, language, partyGroupCode }
               },
-              { 
-                entity, 
+              {
+                name,
+                entity,
+                originalEntity,
                 frontendUrl: finalFrontendUrl,
                 partyGroup: partyGroup,
-                bookingUrl: finalFrontendUrl + 'bookings/default/booking/' + entity.id
+                bookingUrl: finalFrontendUrl + 'bookings/default/booking/' + entity.id,
+                urlQrcodeBase64: qrcode(finalFrontendUrl + 'bookings/default/booking/' + entity.id),
+                bookingQrCodeBase64: qrcode(entity.bookingNo)
               },
               new Date(),
               'mailgun'
