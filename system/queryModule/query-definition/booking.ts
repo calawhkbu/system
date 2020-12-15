@@ -1628,7 +1628,7 @@ const fieldList = [
   },
   {
     name: 'bookingCbm',
-    expression: new ColumnExpression('booking', 'cbm')
+    expression: new FunctionExpression('ROUND', new ColumnExpression('booking', 'cbm'), 3)
   },
   {
     name: 'specialInstruction',

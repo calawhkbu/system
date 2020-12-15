@@ -424,6 +424,28 @@
           "props": {
             "type": "submit"
           }
+        }],
+        "onChange": [{
+          "type": "function",
+          "otherParams": {
+            "func": [
+              "console.log(form);",
+              "console.log(reportData);",
+              "return {}"
+            ]
+          },
+          "afterActions": [{
+            "type": "axios",
+            "otherParams": {
+              "axiosParams": {
+                "url": "api/workflow/bookings",
+                "data": {
+                  "statusName": "",
+                  "remark": ""
+                }
+              }
+            }
+          }]
         }]
       }, {
         "active": false,

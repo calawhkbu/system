@@ -499,6 +499,16 @@ locationList.map(location => {
         $on: [
           new BinaryExpression(new ColumnExpression(`${location}`, 'portCode'), '=', new ColumnExpression('shipment', locationCode)),
         ]
+      }, {
+        operator: 'LEFT',
+        table: new FromTable({
+          table: 'code_master',
+          $as: `${location}Country`
+        }),
+        $on: [
+          new BinaryExpression(new ColumnExpression(`${location}`, 'countryCode'), '=', new ColumnExpression(`${location}Country`, 'code')),
+          new BinaryExpression(new ColumnExpression(`${location}Country`, 'codeType'), '=', 'COUNTRY')
+        ]
       }]
     }),
 
@@ -2140,6 +2150,17 @@ const locationExpressionList = locationList.reduce((accumulator: ExpressionHelpe
     expression: new ColumnExpression('shipment', `${location}Code`),
   } as ExpressionHelperInterface
 
+  const locationCountryCodeExpressionInfo = {
+    name: `${location}CountryCode`,
+    expression: new ColumnExpression(`${location}`, `countryCode`),
+    companion: [`table:${location}`]
+  } as ExpressionHelperInterface
+  const locationCountryNameExpressionInfo = {
+    name: `${location}CountryName`,
+    expression: new ColumnExpression(`${location}Country`, `name`),
+    companion: [`table:${location}`]
+  } as ExpressionHelperInterface
+
   const locationLatitudeExpressionInfo = {
     name: `${location}Latitude`,
     expression: new ColumnExpression(`${location}`, `latitude`),
@@ -2153,6 +2174,9 @@ const locationExpressionList = locationList.reduce((accumulator: ExpressionHelpe
   } as ExpressionHelperInterface
 
   accumulator.push(locationCodeExpressionInfo)
+  accumulator.push(locationCountryCodeExpressionInfo)
+
+  accumulator.push(locationCountryNameExpressionInfo)
   accumulator.push(locationLatitudeExpressionInfo)
   accumulator.push(locationLongitudeExpressionInfo)
 

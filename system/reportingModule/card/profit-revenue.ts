@@ -25,8 +25,8 @@ export default {
             .endOf('year')
             .format('YYYY-MM-DD')
         }
-        if (subqueries.division && subqueries.division !== true && 'value' in subqueries.division) {
-          subqueries.division.value = [subqueries.division.value]
+        if (subqueries.divisionCode && subqueries.divisionCode !== true && 'value' in subqueries.divisionCode) {
+          subqueries.divisionCode.value = [subqueries.divisionCode.value]
         }
         return params
       }
@@ -60,7 +60,7 @@ export default {
     }
   ],
   filters: [{
-    name: 'division',
+    name: 'divisionCode',
     type: 'list',
     props: {
       multi: false,

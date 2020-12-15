@@ -744,7 +744,7 @@
               {
                 "label": "BookingPage.draftContainer40",
                 "name": "draftContainer40",
-                "component": "v-text-field",
+                "component": "NumberField",
                 "class": "xs-12 md-1 padding-topbottom-4",
                 "checkDisplayWhen": "return form && form.shipmentTypeCode === 'FCL' && form.draftContainer40;"
               },

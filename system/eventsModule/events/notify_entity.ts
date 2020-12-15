@@ -17,6 +17,7 @@ interface NotifyObject {
   subject: string
   language: string
   template: string
+  type: string
 }
 
 const noName = 'Sir / Madam'
@@ -63,6 +64,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
       const picEmail = _.get(latestEntity, 'picEmail', null)
       if (picEmail && finalKeys.includes('pic')) {
         dataList.push({
+          type: 'pic',
           name: _.get(latestEntity, 'picId', noName),
           email: picEmail,
           originalEntity: originalEntity,
@@ -78,6 +80,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
       const createdPerson = _.get(latestEntity, 'createdPerson', null)
       if (createdBy && finalKeys.includes('createdBy')) {
         dataList.push({
+          type: 'createdBy',
           name: createdPerson && (createdPerson.displayName || createdPerson.lastName || createdPerson.displayName)
             ? (createdPerson.displayName || `${createdPerson.firstName} ${createdPerson.lastName}`)
             : noName,
@@ -95,6 +98,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
       const createdUserEmail = _.get(latestEntity, 'createdUserEmail', null)
       if (createdUserEmail && finalKeys.includes('createdBy')) {
         dataList.push({
+          type: 'createdBy',
           name: createdUserId, // TODO:: createdBy name
           email: createdUserEmail,
           entity: latestEntity,
@@ -110,6 +114,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
       const updatedPerson = _.get(latestEntity, 'updatedPerson', null)
       if (updatedBy && finalKeys.includes('updatedBy')) {
         dataList.push({
+          type: 'updatedBy',
           name: updatedPerson && (updatedPerson.displayName || updatedPerson.lastName || updatedPerson.displayName)
             ? (updatedPerson.displayName || `${updatedPerson.firstName} ${updatedPerson.lastName}`)
             : noName,
@@ -125,8 +130,9 @@ export default class NotifyEntityEvent extends BaseEventHandler {
       }
       const updatedUserId = _.get(latestEntity, 'updatedUserId', null)
       const updatedUserEmail = _.get(latestEntity, 'updatedUserEmail', null)
-      if ((updatedBy || updatedUserEmail) && finalKeys.includes('updatedBy')) {
+      if (updatedUserEmail && finalKeys.includes('updatedBy')) {
         dataList.push({
+          type: 'updatedBy',
           name: updatedUserId || noName, // TODO:: updatedBy name
           email: updatedUserEmail,
           entity: latestEntity,
@@ -148,6 +154,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
             null
           if (party && sentEmail) {
             dataList.push({
+              type: 'party',
               name: _.get(partyTable, `${mainKey}PartyName`, null) || _.get(partyTable, `${mainKey}Party.name`, null) || noName,
               email: sentEmail,
               entity: latestEntity,
@@ -162,6 +169,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
           const mainContactEmail = _.get(partyTable, `${mainKey}PartyContactEmail`, null)
           if (mainContactEmail) {
             dataList.push({
+              type: 'partyContact',
               name: _.get(partyTable, `${mainKey}PartyContactName`, noName),
               email: mainContactEmail,
               entity: latestEntity,
@@ -178,6 +186,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
             for (const { Name, Email } of otherContacts) {
               if (Email) {
                 dataList.push({
+                  type: 'partyContact',
                   name: Name || noName,
                   email: Email,
                   entity: latestEntity,
@@ -207,6 +216,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
                   null
                 if (party && sentEmail) {
                   dataList.push({
+                    type: 'party',
                     name: _.get(partyTableFlexData, `${morePartyKey}PartyName`, null) || _.get(partyTableFlexData, `${morePartyKey}Party.name`, null) || noName,
                     email: sentEmail,
                     entity: latestEntity,
@@ -222,6 +232,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
                 const mainContactEmail = _.get(partyTableFlexData, `${morePartyKey}PartyContactEmail`, null)
                 if (mainContactEmail) {
                   dataList.push({
+                    type: 'partyContact',
                     name: mainContactName || noName,
                     email: mainContactEmail,
                     entity: latestEntity,
@@ -238,6 +249,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
                   for (const { Name, Email } of otherContacts) {
                     if (Email) {
                       dataList.push({
+                        type: 'partyContact',
                         name: Name || noName,
                         email: Email,
                         entity: latestEntity,
@@ -298,7 +310,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
       const lists = this.getPartyFromEntity(await this.handleCreatedAtAndCreatedByName(eventDataList))
       console.log(`Send out email size = ${lists.length}`, this.constructor.name)
       if (lists && lists.length) {
-        await BluebirdPromise.map(lists, async ({ name, email, entity, originalEntity, isUpdate, partyGroupCode, language, template, subject }: NotifyObject) => {
+        await BluebirdPromise.map(lists, async ({ name, type, email, entity, originalEntity, isUpdate, partyGroupCode, language, template, subject }: NotifyObject) => {
           try {
             const { frontendUrl } = await this.allService.swivelConfigService.get()
             const partyGroup = await this.allService.partyGroupTableService.findOne({ where: { code: partyGroupCode } }, this.user)
@@ -314,6 +326,7 @@ export default class NotifyEntityEvent extends BaseEventHandler {
               },
               {
                 name,
+                type,
                 entity,
                 originalEntity,
                 frontendUrl: finalFrontendUrl,

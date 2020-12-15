@@ -1,4 +1,11 @@
 export default function fixCardsLayout(cards: any[], original: any[]) {
+  for (const card of cards) {
+    if (card.params && card.params.filters && card.params.filters.division) {
+      card.params.filters.divisionCode = card.params.filters.division
+      delete card.params.filters.division
+    }
+  }
+
   if (cards.length < original.length) {
     // fix layout
     switch (cards.length) {

@@ -323,9 +323,9 @@ export const setDataFunction = {
     if (!cbm) {
       let totalCbm = 0
       for (const { length, width, height, lwhUnit } of bookingPopackings) {
-        const l = (length || 0) / (lwhUnit === 'IN' ? 39.37 : 0.01)
-        const w = (width || 0) / (lwhUnit === 'IN' ? 39.37 : 0.01)
-        const h = (height || 0) / (lwhUnit === 'IN' ? 39.37 : 0.01)
+        const l = (length || 0) / (lwhUnit === 'IN' ? 39.37 : 100)
+        const w = (width || 0) / (lwhUnit === 'IN' ? 39.37 : 100)
+        const h = (height || 0) / (lwhUnit === 'IN' ? 39.37 : 100)
         totalCbm += (l * w * h)
       }
       return totalCbm.toFixed(6)

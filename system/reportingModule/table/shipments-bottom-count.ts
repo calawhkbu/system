@@ -32,10 +32,16 @@ export default {
           if (!(subqueries.locationCode !== true && 'value' in subqueries.locationCode)) throw ERROR.MISSING_LOCATION_CODE()
           const location = subqueries.location.value
           const locationCode = `${location}Code`
-          const subqueriesName = `${location}Join`
           const locationCodeValue = subqueries.locationCode.value
           subqueries[locationCode] = { value: locationCodeValue }
-          subqueries[subqueriesName] = true
+        }
+        if (subqueries.location && subqueries.countryCode) {
+          if (!(subqueries.location !== true && 'value' in subqueries.location)) throw ERROR.MISSING_LOCATION_TYPE()
+          if (!(subqueries.countryCode !== true && 'value' in subqueries.countryCode)) throw ERROR.MISSING_LOCATION_CODE()
+          const location = subqueries.location.value
+          const locationCode = `${location}CountryCode`
+          const countryCodeValue = subqueries.countryCode.value
+          subqueries[locationCode] = { value: countryCodeValue }
         }
 
         // lastStatus case

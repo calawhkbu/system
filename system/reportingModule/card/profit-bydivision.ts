@@ -12,10 +12,10 @@ interface Result {
 
 function prepareParams(params: IQueryParams, type: string): IQueryParams {
   const subqueries = (params.subqueries = params.subqueries || {})
-  if (!subqueries.division) throw ERROR.MISSING_DIVISION()
-  if (subqueries.division && subqueries.division !== true && 'value' in subqueries.division) {
-    if (subqueries.division.value[0] !== 'SE' && subqueries.division.value[0] !== 'SI') throw ERROR.UNSUPPORTED_DIVISION()
-    subqueries.division.value[0] += ' ' + type
+  if (!subqueries.divisionCode) throw ERROR.MISSING_DIVISION()
+  if (subqueries.divisionCode && subqueries.divisionCode !== true && 'value' in subqueries.divisionCode) {
+    if (subqueries.divisionCode.value[0] !== 'SE' && subqueries.divisionCode.value[0] !== 'SI') throw ERROR.UNSUPPORTED_DIVISION()
+    subqueries.divisionCode.value[0] += ' ' + type
   }
   return params
 }

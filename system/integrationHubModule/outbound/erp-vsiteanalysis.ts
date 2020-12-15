@@ -96,8 +96,10 @@ const app = {
     const availableDivisions = helper.getDivisions(roleFilters)
 
     // warning : getting the first one only
-    const xdivision = subqueries.division
-      ? availableDivisions.find(division => subqueries.division.value.indexOf(division) > -1)
+    let divisionCodes = (subqueries.divisionCode || subqueries.division || { value: [] }).value
+    if (!Array.isArray(divisionCodes)) divisionCodes = [divisionCodes]
+    const xdivision = divisionCodes.length
+      ? availableDivisions.find(division => divisionCodes.indexOf(division) > -1)
       : 'Total'
 
     // xsalesman

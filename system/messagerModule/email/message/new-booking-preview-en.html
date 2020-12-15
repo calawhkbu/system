@@ -20,147 +20,143 @@
 </head>
 
 <body style="color:#555555;font-family:'Lato','Roboto','Helvetica','Arial',sans-serif;">
-  <div style="background-color: lightgray;padding:30px">
-    <div style="max-width: 570px;Margin: 0 auto;padding-top:20px;padding-bottom:20px;font-size: 15px;font-family:'Maven Pro', 'Arial', sans-serif !important;background-color:white">
-      <table style="border-color:white;border-style:solid;border-width:10px; font-size: 15px;font-weight:normal;overflow:hidden;padding:7px 15px;word-break:normal;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;Margin: 0 auto;background-color: #FFFFFF;width: 100%;
-                    font-family:'Maven Pro', 'Arial', sans-serif !important;" cellpadding="0" cellspacing="0">
+  <div style="background-color: lightgray;padding:30px 10px">
+    <div style="max-width: 570px;Margin: 0 auto;font-size: 15px;font-family:'Maven Pro', 'Arial', sans-serif !important;background-color:white">
+      <table style="border-color:white;border-style:solid;border-width:0px; font-size: 15px;font-weight:normal;overflow:hidden;padding:7px 25px;padding-bottom:0;word-break:normal;min-width: 320px;width: 100%;
+                    font-family:'Maven Pro', 'Arial', sans-serif !important;color: black;" cellpadding="0" cellspacing="0">
         <thead>
           <tr>
-            <td style="border-color:inherit;text-align:left;vertical-align:top;padding: 10px;padding-bottom: 0;" colspan="2">
-              <span style="white-space: pre-line;font-size:larger;">
-                Dear {{name}},
-              </span>
+            <td style="border-color:inherit;text-align:left;vertical-align:top;padding: 10px;" colspan="2">
+              <span style="white-space: pre-line;">Dear {{name}},</span>
             </td>
           </tr>
           <tr>
-            <td style="border-color:black;text-align:left;vertical-align:top;padding: 10px;padding-top: 0;" colspan="2">
-              <span style="white-space: pre-line;">
-                Thank you for your order.
-                Your booking will be handled by {{entity.bookingParty.forwarderPartyName}}.
-              </span>
+            <td style="border-color:black;text-align:left;vertical-align:top;padding:0px 15px;" colspan="2">
+              <span style="white-space: pre-line;">Thank you for your order.
+                Your booking will be handled by <span style="font-weight:bold;">{{entity.bookingParty.forwarderPartyName}}.</span></span>
             </td>
           </tr>
           <tr>
-            <td style="border-color:black;text-align:left;vertical-align:top;padding: 10px;" colspan="2">
-              <span style="font-size: larger;">Booking No : <span style="font-size: larger;">{{entity.bookingNo}}</span></span>
+            <td style="border-color:black;text-align:left;vertical-align:top;padding:10px 15px;" colspan="2">
+              <span>Booking No : <span style="font-weight:bold;">{{entity.bookingNo}}</span></span>
             </td>
           </tr>
         </thead>
       </table>
 
-      <table style="border: 2px solid black;width:80%;margin:0 auto; font-size: small;">
+      <table style="border: 2px solid black;width:60%;min-width:80%;margin:0 auto; font-size: small;line-height: 1;">
         {% if entity.bookingNo %}
         <tr>
-          <td style="padding:5px 5px;min-width:150px">&nbsp;Customer Ref</td>
-          <td style="padding:5px 5px;">&nbsp;{{entity.bookingNo}}</td>
+          <td style="padding:5px 5px;width:40%">Customer Ref</td>
+          <td>{{entity.bookingNo}}</td>
         </tr>
         {% endif %}
         {% if entity.shipperPartyName %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;Shipper</td>
-          <td>&nbsp;{{entity.shipperPartyName}}</td>
+          <td style="padding:5px 5px;">Shipper</td>
+          <td>{{entity.shipperPartyName}}</td>
         </tr>
         {% endif %}
         {% if entity.shipperPartyNamepoNo %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;Consignee</td>
-          <td>&nbsp;{{entity.shipperPartyName}}</td>
+          <td style="padding:5px 5px;">Consignee</td>
+          <td>{{entity.shipperPartyName}}</td>
         </tr>
         {% endif %}
         {% if entity.portOfLoadingName %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;Port of Loading</td>
-          <td>&nbsp;{{entity.portOfLoadingName}}</td>
+          <td style="padding:5px 5px;">Port of Loading</td>
+          <td>{{entity.portOfLoadingName}}</td>
         </tr>
         {% endif %}
         {% if entity.portOfDischargeName %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;Port of Discharge</td>
-          <td>&nbsp;{{entity.portOfDischargeName}}</td>
+          <td style="padding:5px 5px;">Port of Discharge</td>
+          <td>{{entity.portOfDischargeName}}</td>
         </tr>
         {% endif %}
         {% if entity.finalDestinationName %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;Final Destination</td>
-          <td>&nbsp;{{entity.finalDestinationName}}</td>
+          <td style="padding:5px 5px;">Final Destination</td>
+          <td>{{entity.finalDestinationName}}</td>
         </tr>
         {% endif %}
         {% if entity.carrierCode %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;Carrier</td>
-          <td>&nbsp;{{entity.carrierCode}}</td>
+          <td style="padding:5px 5px;">Carrier</td>
+          <td>{{entity.carrierCode}}</td>
         </tr>
         {% endif %}
         {% if entity.vesselName ||  entity.voyageFlightNumber %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;Vessel / Voyage</td>
-          <td>&nbsp;{{entity.vesselName}}{% if entity.vesselName && entity.voyageFlightNumber %} / {% endif %}{{entity.voyageFlightNumber}}</td>
+          <td style="padding:5px 5px;">Vessel / Voyage</td>
+          <td>{{entity.vesselName}}{% if entity.vesselName && entity.voyageFlightNumber %} / {% endif %}{{entity.voyageFlightNumber}}</td>
         </tr>
         {% endif %}
         {% if entity.cargoReadyDateEstimated %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;Cargo Ready</td>
-          <td>&nbsp;{{entity.cargoReadyDateEstimated}}</td>
+          <td style="padding:5px 5px;">Cargo Ready</td>
+          <td>{{entity.cargoReadyDateEstimated}}</td>
         </tr>
         {% endif %}
         {% if entity.estimatedDepartureDate %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;ETD</td>
-          <td>&nbsp;{% if entity.estimatedDepartureDate %} {{entity.estimatedDepartureDate | date('d M Y')}} {% endif %}</td>
+          <td style="padding:5px 5px;">ETD</td>
+          <td>{% if entity.estimatedDepartureDate %} {{entity.estimatedDepartureDate | date('d M Y')}} {% endif %}</td>
         </tr>
         {% endif %}
         {% if entity.estimatedArrivalDate %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;ETA</td>
-          <td>&nbsp;{% if entity.estimatedArrivalDate %} {{entity.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
+          <td style="padding:5px 5px;">ETA</td>
+          <td>{% if entity.estimatedArrivalDate %} {{entity.estimatedArrivalDate | date('d M Y')}} {% endif %}</td>
         </tr>
         {% endif %}
         {% if entity.commodity %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;Commodity</td>
-          <td>&nbsp;{{entity.commodity}}</td>
+          <td style="padding:5px 5px;">Commodity</td>
+          <td>{{entity.commodity}}</td>
         </tr>
         {% endif %}
         {% if entity.freightTermsCode %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;Pay Terms</td>
-          <td>&nbsp;{{entity.freightTermsCode}}</td>
+          <td style="padding:5px 5px;">Pay Terms</td>
+          <td>{{entity.freightTermsCode}}</td>
         </tr>
         {% endif %}
         {% if entity.serviceCode %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;Container Service</td>
-          <td>&nbsp;{{entity.serviceCode}}</td>
+          <td style="padding:5px 5px;">Container Service</td>
+          <td>{{entity.serviceCode}}</td>
         </tr>
         {% endif %}
         {% if entity.bookingPopackings.quantity %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;Total CTN</td>
-          <td>&nbsp;{{entity.bookingPopackings.quantity}}</td>
+          <td style="padding:5px 5px;">Total CTN</td>
+          <td>{{entity.bookingPopackings.quantity}}</td>
         </tr>
         {% endif %}
         {% if entity.bookingPopackings.weight %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;Total KGS</td>
-          <td>&nbsp;{{entity.bookingPopackings.weight}}</td>
+          <td style="padding:5px 5px;">Total KGS</td>
+          <td>{{entity.bookingPopackings.weight}}</td>
         </tr>
         {% endif %}
-        {% if entity.cbm %}
+        {% if entity.cbm > 0 %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;Total CBM</td>
-          <td>&nbsp;{{entity.cbm}}</td>
+          <td style="padding:5px 5px;">Total CBM</td>
+          <td>{{entity.cbm}}</td>
         </tr>
         {% endif %}
         {% if entity.poNo %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;PO No</td>
-          <td>&nbsp;{{entity.poNo}}</td>
+          <td style="padding:5px 5px;">PO No</td>
+          <td>{{entity.poNo}}</td>
         </tr>
         {% endif %}
         {% if entity.bookingContainers.containerTypeCode %}
         <tr>
-          <td style="padding:5px 5px;">&nbsp;Container</td>
-          <td>&nbsp;{{entity.bookingContainers.containerTypeCode}}</td>
+          <td style="padding:5px 5px;">Container</td>
+          <td>{{entity.bookingContainers.containerTypeCode}}</td>
         </tr>
         {% endif %}
       </table>
@@ -176,13 +172,10 @@
           </td>
         </tr>
         <tr>
-          <td style="text-align: center;font-size:small;padding:5px 20px;font-style:italic;" colspan="2">
-            If you have any doubts on the email, please contact us at ({{entity.bookingParty.forwarderParty.email}})
-          </td>
-        </tr>
-        <tr>
-          <td style="text-align: center;font-size:small;padding:5px 10px;font-style:italic;" colspan="2">
-            {{entity.bookingParty.forwarderParty.name}}
+          <td style="text-align: center;font-size:x-small;padding:5px 20px;font-style:italic;line-height: 1.3;" colspan="2">
+            <span style="white-space: pre-line;">If you have any doubts on the email, please contact us at 
+              {{entity.bookingParty.forwarderParty.email}}
+              {{entity.bookingParty.forwarderParty.name}}</span>
           </td>
         </tr>
       </table>
