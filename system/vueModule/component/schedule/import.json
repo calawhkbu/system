@@ -1,0 +1,66 @@
+{
+  "components": [
+    {
+      "is": "DynamicComponent",
+      "props": {
+        "class": "xs-12 grid min-height-28 align-item-center full-width padding-8",
+        "components": [
+          {
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true
+            },
+            "slots": [
+              {
+                "is": "Icon",
+                "props": {
+                  "icon": "arrow_back"
+                }
+              }
+            ],
+            "events": {
+              "click.stop": [
+                {
+                  "type": "router",
+                  "otherParams": {
+                    "func": "push",
+                    "path": "/admin/schedules"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "is": "I18nText",
+            "props": {
+              "i18nContext": "SchedulePage",
+              "i18nKey": "importTitle"
+            }
+          },
+          {
+            "is": "v-spacer"
+          }
+        ]
+      }
+    },
+    {
+      "is": "ScheduleExcelImport",
+      "props": {
+        "class": "padding-8",
+        "token": "CEC01F7C412C41BDED0B44C5228A8017",
+        "format": [ "xlsx" ],
+        "searchByType": "routeSchedule",
+        "showResult": false,
+        "afterImportFuncs": [{
+          "type": "router",
+          "otherParams": {
+            "func": "push",
+            "path": "/admin/schedules"
+          }
+        }]
+      }
+    }
+  ]
+}

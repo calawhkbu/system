@@ -799,6 +799,7 @@
           }],
           "validator": ["required"],
           "props": {
+            "cache": false,
             "required": true,
             "axiosParams": {
               "url": "api/party/query/office_auto_suggest",

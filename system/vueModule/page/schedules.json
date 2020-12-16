@@ -95,6 +95,29 @@
           "slots": [{
             "is": "Icon",
             "props": {
+              "icon": "fas fa-file-excel"
+            }
+          }],
+          "events": {
+            "click.stop": [{
+              "type": "router",
+              "otherParams": {
+                "func": "push",
+                "path": "schedule/import",
+                "base": true
+              }
+            }]
+          }
+        }, {
+          "is": "v-btn",
+          "props": {
+            "small": true,
+            "flat": true,
+            "icon": true
+          },
+          "slots": [{
+            "is": "Icon",
+            "props": {
               "icon": "add"
             }
           }],

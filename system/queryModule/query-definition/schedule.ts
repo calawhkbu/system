@@ -9,7 +9,8 @@ import {
   OrExpressions,
   Value,
   Unknown,
-  CaseExpression
+  CaseExpression,
+  ResultColumn
 } from 'node-jql'
 import { registerAll } from 'utils/jql-subqueries'
 
@@ -88,7 +89,10 @@ const baseTableName = ''
 
 const fieldList = [
 
-  'id',
+  {
+    name: 'id',
+    expression: new ColumnExpression('schedule', 'id')
+  },
   'partyGroupCode',
   'carrierCode',
   'routeCode',

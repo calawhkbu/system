@@ -38,6 +38,7 @@ export default {
     'Task': true,
     'Purchase Order': true,
     'Base': true,
-    'Chat':true
+    'Chat':true,
+    'Map': true,
   }
 }

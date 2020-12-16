@@ -1,7 +1,7 @@
 import BaseEventHandler from 'modules/events/baseEventHandler'
 import { EventService, EventConfig, EventData, EventHandlerConfig, EventAllService } from 'modules/events/service'
 import { JwtPayload } from 'modules/auth/interfaces/jwt-payload'
-import { Transaction, Op } from 'sequelize'
+import { Transaction, Op, QueryTypes } from 'sequelize'
 import _ = require('lodash')
 import * as qrcode from 'yaqrcode'
 import BluebirdPromise = require('bluebird')
@@ -287,16 +287,25 @@ export default class NotifyEntityEvent extends BaseEventHandler {
       }
       return emails
     }, [])
-    const people = await this.allService.personTableService.findWithScope('user', { where: { userName: { [Op.in]: emails } } })
+    const people = await this.allService.personTableService.findWithScope('user', { where: { userName: { [Op.in]: emails } } }, null, this.transaction)
+    const apis = await this.allService.apiTableService.query(`
+      SELECT CONCAT(api.partyGroupCode, '-', api.name) as userName, NULL as firstName, NULL as lastName, displayName
+      FROM api
+      WHERE CONCAT(api.partyGroupCode, '-', api.name) in (:emails)
+    `, {
+      type: QueryTypes.SELECT,
+      transaction: this.transaction,
+      replacements: { emails }
+    })
     return eventDataList.map(eventData => {
       if (eventData.latestEntity) {
         const createdBy = _.get(eventData.latestEntity, 'createdBy', null)
         if (createdBy) {
-          eventData.latestEntity.createdPerson = people.find(person => person.userName === createdBy)
+          eventData.latestEntity.createdPerson = people.find(person => person.userName === createdBy) || apis.find(api => api.userName === createdBy)
         }
         const updatedBy = _.get(eventData.latestEntity, 'updatedBy', null)
         if (updatedBy) {
-          eventData.latestEntity.updatedPerson = people.find(person => person.userName === updatedBy)
+          eventData.latestEntity.updatedPerson = people.find(person => person.userName === updatedBy) || apis.find(api => api.userName === updatedBy)
         }
       }
       return eventData
@@ -306,7 +315,6 @@ export default class NotifyEntityEvent extends BaseEventHandler {
   public async mainFunction(eventDataList: EventData<any>[]): Promise<any[]> {
     console.debug('Start Excecute [Notify Party]...', this.constructor.name)
     try {
-
       const lists = this.getPartyFromEntity(await this.handleCreatedAtAndCreatedByName(eventDataList))
       console.log(`Send out email size = ${lists.length}`, this.constructor.name)
       if (lists && lists.length) {

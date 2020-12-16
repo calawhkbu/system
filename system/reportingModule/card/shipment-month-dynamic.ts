@@ -82,8 +82,6 @@ export default {
         }
 
         params.limit = topX
-        console.debug("--------params")
-        console.debug(params)
         return params
       }
     },

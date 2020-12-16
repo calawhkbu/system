@@ -73,7 +73,7 @@ query.register(
   new Query({
 
     $select: new ResultColumn(new ColumnExpression('person','userName'),'userphotoURL'),
-    $where:  new OrExpressions((new ColumnExpression('person','userName'),false,new Unknown())),
+    $where:  new InExpression(new ColumnExpression('person','userName'),false,new Unknown()),
     $group:  new GroupBy(new ColumnExpression('person','userName'))
   })
 ).register('value',0)

@@ -15,6 +15,12 @@
                   "label": "InvitationPage.team",
                   "name": "team",
                   "component": "FreeTextAutoSuggest",
+                  "relationMore": [
+                    {
+                      "name": "team",
+                      "selector": "team"
+                    }
+                  ],
                   "props": {
                     "axiosParams": {
                       "method": "POST",
@@ -26,7 +32,8 @@
                       }
                     },
                     "item-text": "team",
-                    "item-value": "team"
+                    "item-value": "team",
+                    "return-object": false
                   }
                 },
                 {

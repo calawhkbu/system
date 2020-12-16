@@ -32,8 +32,8 @@ export async function convertBookingToShipment(bookings: Booking[], helper?: any
     const moduleType = entity.moduleTypeCode;
 
     //check houseNo and masterNo
-    const  { houseNo, masterNo } = (entity.bookingReference || []).reduce((result, ref) => {
-      switch(moduleType) {
+    const { houseNo, masterNo } = (entity.bookingReference || []).reduce((result, ref) => {
+      switch (moduleType) {
         case 'AIR':
           if (ref.refName === 'HAWB') {
             result.houseNo = ref.refDescription
@@ -53,7 +53,7 @@ export async function convertBookingToShipment(bookings: Booking[], helper?: any
       return result
     }, { houseNo: null, masterNo: null })
 
-    const { shipmentPo, shipmentCargo } = ( entity.bookingPopackings || []).reduce((result, popack) => {
+    const { shipmentPo, shipmentCargo } = (entity.bookingPopackings || []).reduce((result, popack) => {
       let dimensionStr = null
       if (popack.length && popack.width && popack.height && popack.lwhUnit) {
         const length = (+popack.length).toFixed(2)
@@ -75,11 +75,11 @@ export async function convertBookingToShipment(bookings: Booking[], helper?: any
       } as ShipmentCargo)
 
       if (popack.purchaseOrderItem &&
-          popack.purchaseOrderItem.purchaseOrder &&
-          popack.purchaseOrderItem.purchaseOrder.poNo) {
+        popack.purchaseOrderItem.purchaseOrder &&
+        popack.purchaseOrderItem.purchaseOrder.poNo) {
         const poNo = popack.purchaseOrderItem.purchaseOrder.poNo
 
-        if(!result.shipmentPo.find((item) => item.poNo === poNo)) {
+        if (!result.shipmentPo.find((item) => item.poNo === poNo)) {
           result.shipmentPo.push({
             poNo: poNo
           } as ShipmentPo)
@@ -87,17 +87,17 @@ export async function convertBookingToShipment(bookings: Booking[], helper?: any
       }
 
       return result
-    }, {shipmentPo: [], shipmentCargo: []})
+    }, { shipmentPo: [], shipmentCargo: [] })
 
     const convertedShipment = {
-      ... entity as any as Shipment,
+      ...entity as any as Shipment,
       houseNo: houseNo,
-      masterNo:  masterNo,
+      masterNo: masterNo,
       taskTemplateIdList: null,
       vessel: entity.vesselName,
       shipmentContainers: (entity.bookingContainers || []).map((container) => {
         const result = {
-          ... container as any as ShipmentContainer,
+          ...container as any as ShipmentContainer,
           carrierBookingNo: container.soNo,
           containerType: container.containerTypeCode,
           quantity: container.ctns,
@@ -111,7 +111,7 @@ export async function convertBookingToShipment(bookings: Booking[], helper?: any
       shipmentDate: entity.bookingDate as any as ShipmentDate,
       shipmentDateUtc: entity.bookingDateUtc as any as ShipmentDateUtc,
       shipmentParty: {
-        ... entity.bookingParty as any as ShipmentParty,
+        ...entity.bookingParty as any as ShipmentParty,
         officePartyId: entity.bookingParty.forwarderPartyId,
         officePartyCode: entity.bookingParty.forwarderPartyCode,
         officePartyName: entity.bookingParty.forwarderPartyName,
@@ -130,7 +130,7 @@ export async function convertBookingToShipment(bookings: Booking[], helper?: any
       } as ShipmentParty,
       shipmentPo: shipmentPo,
       shipmentCargos: shipmentCargo,
-      shipmentReference: entity.bookingReference.map(({id, ...ref}) => {
+      shipmentReference: entity.bookingReference.map(({ id, ...ref }) => {
         return ref
       }),
       shipmentBooking: [{
@@ -172,25 +172,25 @@ export async function convertBookingToShipment(bookings: Booking[], helper?: any
 }
 
 export const setDataFunction = {
-  bookingCreateTime: async({ bookingCreateTime }: Booking, user: JwtPayload) => {
+  bookingCreateTime: async ({ bookingCreateTime }: Booking, user: JwtPayload) => {
     if (!bookingCreateTime) {
       return moment.utc()
     }
     return bookingCreateTime
   },
-  bookingLastUpdateTime: async({ bookingLastUpdateTime }: Booking, user: JwtPayload) => {
+  bookingLastUpdateTime: async ({ bookingLastUpdateTime }: Booking, user: JwtPayload) => {
     if (!bookingLastUpdateTime) {
       return moment.utc()
     }
     return bookingLastUpdateTime
   },
-  partyGroupCode: async({ partyGroupCode }: Booking, user: JwtPayload) => {
+  partyGroupCode: async ({ partyGroupCode }: Booking, user: JwtPayload) => {
     if (user) {
       return user.selectedPartyGroup.code || partyGroupCode
     }
     return partyGroupCode
   },
-  bookingNo: async({ bookingNo }: Booking, user: JwtPayload) => {
+  bookingNo: async ({ bookingNo }: Booking, user: JwtPayload) => {
     if (!bookingNo) {
       let userPartyGroupId: string = (user ? user.selectedPartyGroup.id : '').toString()
       if (userPartyGroupId.length === 0) {
@@ -265,7 +265,7 @@ export const setDataFunction = {
     }
     return null
   },
-  quantity: async({ quantity = null, bookingPopackings = [] }: Booking) => {
+  quantity: async ({ quantity = null, bookingPopackings = [] }: Booking) => {
     if (!quantity) {
       let totalQuantity = 0
       for (const { quantity } of bookingPopackings) {
@@ -287,7 +287,7 @@ export const setDataFunction = {
     }
     return quantityUnit
   },
-  grossWeight: async({ grossWeight = null, bookingPopackings = [] }: Booking) => {
+  grossWeight: async ({ grossWeight = null, bookingPopackings = [] }: Booking) => {
     if (!grossWeight) {
       let totalGrossWeight = 0
       for (const { weight, weightUnit = 'KGs' } of bookingPopackings) {
@@ -297,7 +297,7 @@ export const setDataFunction = {
     }
     return grossWeight
   },
-  chargeableWeight: async({ chargeableWeight = null, bookingPopackings = [] }: Booking) => {
+  chargeableWeight: async ({ chargeableWeight = null, bookingPopackings = [] }: Booking) => {
     if (!chargeableWeight) {
       let totalChargeableWeight = 0
       for (const { weight, weightUnit = 'KGs' } of bookingPopackings) {
@@ -319,7 +319,7 @@ export const setDataFunction = {
     }
     return weightUnit
   },
-  cbm: async({ cbm = null, bookingPopackings = [] }: Booking) => {
+  cbm: async ({ cbm = null, bookingPopackings = [] }: Booking) => {
     if (!cbm) {
       let totalCbm = 0
       for (const { length, width, height, lwhUnit } of bookingPopackings) {
@@ -341,14 +341,14 @@ export const setDataFunction = {
             const containerSize = parseInt(containerTypeCode.substring(0, 1))
             const containerTeu = containerSize / 20
             total += (containerTeu * 1) // load count must be 1
-          } catch (e) {}
+          } catch (e) { }
         }
       }
       return total
     }
     return teu
   },
-  container20: async({ container20 = null, bookingContainers = [] }: Booking) => {
+  container20: async ({ container20 = null, bookingContainers = [] }: Booking) => {
     if (!container20) {
       let total = 0
       for (const { containerTypeCode } of bookingContainers) {
@@ -360,7 +360,7 @@ export const setDataFunction = {
     }
     return container20
   },
-  container40: async({ container40 = null, bookingContainers = [] }: Booking) => {
+  container40: async ({ container40 = null, bookingContainers = [] }: Booking) => {
     if (!container40) {
       let total = 0
       for (const { containerTypeCode } of bookingContainers) {
@@ -372,7 +372,7 @@ export const setDataFunction = {
     }
     return container40
   },
-  containerHQ: async({ containerHQ = null, bookingContainers = [] }: Booking) => {
+  containerHQ: async ({ containerHQ = null, bookingContainers = [] }: Booking) => {
     if (!containerHQ) {
       let total = 0
       for (const { containerTypeCode } of bookingContainers) {
@@ -384,7 +384,7 @@ export const setDataFunction = {
     }
     return containerHQ
   },
-  containerOthers: async({ containerOthers = null, bookingContainers = [] }: Booking) => {
+  containerOthers: async ({ containerOthers = null, bookingContainers = [] }: Booking) => {
     if (!containerOthers) {
       let total = 0
       for (const { containerTypeCode } of bookingContainers) {
@@ -454,6 +454,14 @@ export const fixedPartyKeys = [
   'controllingParty',
 ]
 
+export const fixedLocationList = [
+  'portOfLoading',
+  'portOfDischarge',
+  'placeOfDelivery',
+  'placeOfReceipt',
+  'finalDestination'
+]
+
 export async function applyAccessRightConditions(
   conditions?: IConditionalExpression,
   user?: JwtPayload,
@@ -483,14 +491,14 @@ export async function applyAccessRightConditions(
                 new BinaryExpression(
                   [...fixedPartyKeys, 'office'].includes(type)
                     ? new ColumnExpression(
-                        'booking_party',
-                        `${type === 'office' ? 'forwarder' : type}PartyId`
-                      )
+                      'booking_party',
+                      `${type === 'office' ? 'forwarder' : type}PartyId`
+                    )
                     : new MathExpression(
-                        new ColumnExpression('booking_party', 'flexData'),
-                        '->>',
-                        `$.${type}PartyId`
-                      ),
+                      new ColumnExpression('booking_party', 'flexData'),
+                      '->>',
+                      `$.${type}PartyId`
+                    ),
                   '=',
                   party.id)
               )

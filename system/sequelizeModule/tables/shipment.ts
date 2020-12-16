@@ -222,6 +222,14 @@ export const fixedPartyKeys = [
   'controllingParty',
 ]
 
+export const fixedLocationList = [
+  'portOfLoading',
+  'portOfDischarge',
+  'placeOfDelivery',
+  'placeOfReceipt',
+  'finalDestination'
+]
+
 export async function applyAccessRightConditions(
   conditions?: IConditionalExpression,
   user?: JwtPayload,

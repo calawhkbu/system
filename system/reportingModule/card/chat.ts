@@ -98,7 +98,6 @@ export default {
        }
      });
         //return results && results.length>0?results :null
-      
         params.fields=['displayName','firstName','lastName','photoURL']
         if(res&&res.length>0&&res[2]['mentions'] && res[2]['mentions'].length>0){
           params.subqueries.search={value:res[2]['mentions']}
@@ -109,38 +108,38 @@ export default {
         //remove irrelevant
         delete params.sorting
         delete params.subqueries.userName
-        return params
+        return results
       }
     }, 
-    {
-      type: 'callDataService',
-      dataServiceQuery: ['person', 'person'],
-      onResult(res, params, prevResult: Result,user): any {
-        var finalResults=[]
+    // {
+    //   type: 'callDataService',
+    //   dataServiceQuery: ['person', 'person'],
+    //   onResult(res, params, prevResult: Result,user): any {
+    //     var finalResults=[]
 
-        if(res&&res.length>0 && results&&results.length>0){
-          results[0]['mentionsData']=res
-          results.forEach(el => {
-            let lenOfmentionsData=el.mentionsData&&el.mentionsData.length ||-1
-                for(let i=0;i<lenOfmentionsData;i++){
-                  let name='';
-                  //remove @mention from lastMessage return clean message, no Tags no mentions
-                  if(el.mentionsData[i].displayName){
-                    name=el.mentionsData[i].displayName
-                  }else{
-                    name=el.mentionsData[i].firstName+" "+el.mentionsData[i].lastName
-                  }
+    //     if(res&&res.length>0 && results&&results.length>0){
+    //       results[0]['mentionsData']=res
+    //       results.forEach(el => {
+    //         let lenOfmentionsData=el.mentionsData&&el.mentionsData.length ||-1
+    //             for(let i=0;i<lenOfmentionsData;i++){
+    //               let name='';
+    //               //remove @mention from lastMessage return clean message, no Tags no mentions
+    //               if(el.mentionsData[i].displayName){
+    //                 name=el.mentionsData[i].displayName
+    //               }else{
+    //                 name=el.mentionsData[i].firstName+" "+el.mentionsData[i].lastName
+    //               }
   
-                 el.lastMessage= el.lastMessage.replace('@'+name,'')
-                 el.lastMessage=el.lastMessage.trim()
+    //              el.lastMessage= el.lastMessage.replace('@'+name,'')
+    //              el.lastMessage=el.lastMessage.trim()
 
-                } 
-                finalResults.push(el)
-              }
-          )}
-        return finalResults
-            }
-    },
+    //             } 
+    //             finalResults.push(el)
+    //           }
+    //       )}
+    //     return finalResults
+    //         }
+    // },
   ],
 
   filters: [
