@@ -23,16 +23,13 @@
         "};"
       ],
       "getExternalDateFunc": [
-        "const selectedExtra = context.$store.state.widget.selectedExtra;",
-        "return selectedExtra || context.$store.state.widget.data;"
+        "return context.$store.state.widget.data;"
       ],
       "externalDataDateKey": [
-        "const selectedExtra = context.$store.state.widget.selectedExtra;",
-        "return selectedExtra ? 'bookingDate' : 'shipmentDate';"
+        "return 'shipmentDate';"
       ],
       "externalDataPrimaryKey": [
-        "const selectedExtra = context.$store.state.widget.selectedExtra;",
-        "return selectedExtra ? 'bookingNo' : 'houseNo';"
+        "return 'houseNo';"
       ],
       "createdAtKey": "issueDate",
       "createI18nKey": "shipmentReceivedByForwarder"

@@ -9,7 +9,7 @@ export async function getEntity(this: CtaService, body: IBody, logger: Logger, u
   const { entityId, locals: { backendUrl, accessToken } } = body
   const response = await axios.request({
     method: 'GET',
-    url: `${backendUrl}/api/booking/${entityId}`,
+    url: typeof entityId === 'number' ? `${backendUrl}/api/booking/${entityId}` : `${backendUrl}/api/booking/bookingNo/${entityId}`,
     headers: {
       Authorization: `Bearer ${accessToken || user.fullAccessToken}`
     }

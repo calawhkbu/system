@@ -1,6 +1,39 @@
 {
   "fillParent": true,
   "components": [{
-    "is": "ScheduleSearchComponent"
+    "is": "ScheduleSearchComponent",
+    "props": {
+      "clickFunction": {
+        "type": "function",
+        "otherParams": {
+          "func": [
+            "const value = otherParams.value",
+            "const initData =  {",
+            "moduleTypeCode: 'SEA',",
+            "portOfLoadingCode: value.portOfLoadingCode,",
+            "portOfLoading: value.portOfLoading,",
+            "portOfDischargeCode: value.portOfDischargeCode,",
+            "portOfDischarge: value.portOfDischarge,",
+            "vesselName: value.vessel,",
+            "voyageFlightNumber: value.voyage,",
+            "carrierCode: value.carrierCode,",
+            "carrier: value.carrier,",
+            "bookingDate: {",
+            "cYCutOffDateActual: value.cyCutoffDate,",
+            "departureDateEstimated: value.estimatedDepartureDate,",
+            "arrivalDateEstimated: value.estimatedArrivalDate",
+            "}",
+            "}",
+            "context.runFunctions([{ type: 'dispatch', otherParams: { name: 'widget/initMoreData', data: initData }}]).then()"
+          ]
+        },
+        "afterActions": [{
+          "type": "router",
+          "otherParams": {
+            "path" : "/bookings/default/booking/create"
+          }
+        }]
+      }
+    }
   }]
 }

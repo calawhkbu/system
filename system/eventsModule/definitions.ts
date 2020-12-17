@@ -57,7 +57,7 @@ export default {
     {
       condition: ({ originalEntity }: EventData<any>) => {
         if (process.env.NODE_ENV === 'production') {
-          return originalEntity.from !== 'erp'
+          return originalEntity.from !== 'erp' && (!originalEntity.stopEDI || !originalEntity.stopEDI.includes('erp'))
         }
         return false
       },
@@ -170,7 +170,7 @@ export default {
     {
       condition: ({ originalEntity }: EventData<any>) => {
         if (process.env.NODE_ENV === 'production') {
-          return originalEntity.from !== 'erp'
+          return originalEntity.from !== 'erp' && (!originalEntity.stopEDI || !originalEntity.stopEDI.includes('erp'))
         }
         return false
       },
