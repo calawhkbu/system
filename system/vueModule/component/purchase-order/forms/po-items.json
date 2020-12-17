@@ -28,11 +28,6 @@
                     "label": "PurchaseOrderPage.itemKey",
                     "name": "itemKey",
                     "component": "v-text-field",
-                    "colGroupProps": {
-                      "style": {
-                        "min-width": "200px"
-                      }
-                    },
                     "props": {
                       "placeholder": " "
                     }
@@ -48,11 +43,6 @@
                       "name": "flexData",
                       "selector": "flexData"
                     }],
-                    "colGroupProps": {
-                      "style": {
-                        "min-width": "200px"
-                      }
-                    },
                     "props": {
                       "orderName": "product.skuCode",
                       "searchTextParams": {
@@ -88,22 +78,12 @@
                   {
                     "label": "PurchaseOrderPage.skuName",
                     "name": "product.name",
-                    "component": "v-text-field",
-                    "colGroupProps": {
-                      "style": {
-                        "min-width": "200px"
-                      }
-                    }
+                    "component": "v-text-field"
                   },
                   {
                     "label": "PurchaseOrderPage.htsCode",
                     "name": "htsCode",
                     "component": "v-text-field",
-                    "colGroupProps": {
-                      "style": {
-                        "min-width": "200px"
-                      }
-                    },
                     "props": {
                       "placeholder": " "
                     }
@@ -112,11 +92,6 @@
                     "label": "PurchaseOrderPage.quantity",
                     "name": "quantity",
                     "component": "NumberField",
-                    "colGroupProps": {
-                      "style": {
-                        "min-width": "200px"
-                      }
-                    },
                     "props": {
                       "right": true,
                       "type": "number",
@@ -131,11 +106,6 @@
                     "name": "bookedQuantity",
                     "component": "v-text-field",
                     "checkDisplayWhen": "return mode !== 'create'",
-                    "colGroupProps": {
-                      "style": {
-                        "min-width": "200px"
-                      }
-                    },
                     "props": {
                       "readonly": true,
                       "right": true,
@@ -150,11 +120,6 @@
                     "label": "PurchaseOrderPage.quantityUnit",
                     "name": "quantityUnit",
                     "component": "v-select",
-                    "colGroupProps": {
-                      "style": {
-                        "min-width": "200px"
-                      }
-                    },
                     "props": {
                       "items": [
                         {

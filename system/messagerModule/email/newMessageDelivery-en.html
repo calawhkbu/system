@@ -19,47 +19,51 @@
   <link href="https://s3-ap-southeast-1.amazonaws.com/invitation-email/lato.css" rel="stylesheet" type="text/css">
   <!--<![endif]-->
 </head>
+
 <body>
-<div style="background-color: lightgray;">
+  <div style="background-color: lightgray;">
     <div style="max-width: 400px;Margin: 0 auto;padding-top:50px;padding-bottom:50px;">
-        <table style="border-color:white;border-style:solid;border-width:10px;font-size:20px;font-weight:normal;overflow:hidden;padding:7px15px;word-break:normal;border-collapse:collapse;border-spacing:0;mso-table-lspace:0pt;mso-table-rspace:0pt;vertical-align:top;min-width:320px;Margin:0auto;background-color:#FFFFFF;width:100%;font-family:'Maven Pro','Arial',sans-serif!important;background-color: white;font-size: 16px;">
-            <thead style="text-align:left;">
-                <tr>
-                    <th style="padding-left:25px;padding-top:20px">
-                        Dear {{recevier}}
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="padding:40px;">
-                        {{sender}} is wating for your response under {% if entity.bookingNo %}{{entity.bookingNo}}{% else %}{{entity.houseNo}}{% end if %}
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding:40px;padding-top: 10px;">Click the below button to view the message.</td>
-                </tr>
-                <tr>
-                    <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;" style="align-items: center; text-align: center;" align="center">
-                      <div align="center">
-                          <a href="{{url}}" target="_blank" style="display: block; text-decoration: none; color: #ffffff;background-color: #f15b29;border-radius: 4px;max-width: 164px;padding-top: 10px;padding-right: 25px;padding-bottom: 10px;padding-left: 25px;">
-                            Click For Details
-                          </a>
-                      </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding:40px;padding-bottom:0;font-size:xx-small; text-align: center;font-style:italic;">
-                          This email is sent out under the Swivel 360.
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 40px;padding-top:0;font-size:xx-small; text-align: center;font-style:italic;">
-                          If you have any queries on the email, please contact the administrator.({% if chatRoom.tableName === 'shipment' %} {{entity.shipmentParty.officeParty.email}} {% elseif chatRoom.tableName === 'booking' %}  {{entity.bookingParty.forwarderParty.email}} {% endif %})
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+      <table
+        style="border-color:white;border-style:solid;border-width:10px;font-size:20px;font-weight:normal;overflow:hidden;padding:7px15px;word-break:normal;border-collapse:collapse;border-spacing:0;mso-table-lspace:0pt;mso-table-rspace:0pt;vertical-align:top;min-width:320px;Margin:0auto;background-color:#FFFFFF;width:100%;font-family:'Maven Pro','Arial',sans-serif!important;background-color: white;font-size: 16px;">
+        <thead style="text-align:left;">
+          <tr>
+            <th style="padding-left:25px;padding-top:20px">
+              Dear {{recevier}}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:40px;">
+              {{sender}} is wating for your response under {% if entity.bookingNo %}{{entity.bookingNo}}{% else %}{{entity.houseNo}}{% endif %}
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:40px;padding-top: 10px;">Click the below button to view the message.</td>
+          </tr>
+          <tr>
+            <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;" style="align-items: center; text-align: center;" align="center">
+              <div align="center">
+                <a href="{{url}}" target="_blank"
+                  style="display: block; text-decoration: none; color: #ffffff;background-color: #f15b29;border-radius: 4px;max-width: 164px;padding-top: 10px;padding-right: 25px;padding-bottom: 10px;padding-left: 25px;">
+                  Click For Details
+                </a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:40px;padding-bottom:0;font-size:xx-small; text-align: center;font-style:italic;">
+              This email is sent out under the Swivel 360.
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 40px;padding-top:0;font-size:xx-small; text-align: center;font-style:italic;">
+              If you have any queries on the email, please contact the administrator.({% if chatRoom.tableName === 'shipment' %} {{entity.shipmentParty.officeParty.email}} {% elseif chatRoom.tableName === 'booking' %}
+              {{entity.bookingParty.forwarderParty.email}} {% endif %})
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-</div>
+  </div>
 </body>

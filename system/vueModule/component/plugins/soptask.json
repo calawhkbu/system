@@ -21,6 +21,7 @@
     "size": -3
   },
   "baseDetailProps": {
+    "showTabs": true,
     "headers": [
       {
         "key": "noOfRemarks",

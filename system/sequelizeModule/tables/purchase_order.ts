@@ -4,6 +4,7 @@ import { Transaction, Op } from 'sequelize'
 import moment = require('moment')
 import { PurchaseOrder } from 'models/main/purchaseOrder'
 import { IQueryParams } from 'classes/query'
+import purchaseOrderItems from '../../reportingModule/table/purchase-order-items'
 
 export const setDataFunction = {
   partyGroupCode: async({ partyGroupCode }: PurchaseOrder, user: JwtPayload) => {
@@ -45,6 +46,12 @@ export const setDataFunction = {
       }
     }
     return units.join(',')
+  },
+  bookedQuantity: async ({ bookedQuantity, purchaseOrderItems = [] }: PurchaseOrder) => {
+    return purchaseOrderItems.reduce((total, poItem) => {
+      const finalNumber = (typeof poItem.bookedQuantity === 'number' ? (poItem.bookedQuantity || 0) : (poItem.bookedQuantity ? parseInt(poItem.bookedQuantity) : 0))
+      return total + finalNumber
+    }, 0)
   }
 }
 
@@ -61,9 +68,6 @@ export const dateTimezoneMapping = {
     'arrival',
     'delivery',
   ]
-}
-
-
 }
 
 export async function applyAccessRightConditions(
