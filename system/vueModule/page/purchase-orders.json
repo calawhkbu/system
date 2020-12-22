@@ -9,8 +9,8 @@
       "jql": "purchase-orders",
       "hasReports": true,
       "showFilterBar": true,
-      "enableShare": false,
-      "enableSetting": false,
+      "enableShare": true,
+      "enableSetting": true,
       "noPartyGroupFilters": true,
       "nextPageComponent": "purchase-order",
       "clickFunction": {

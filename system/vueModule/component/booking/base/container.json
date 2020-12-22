@@ -392,6 +392,27 @@
                         "component": "v-text-field"
                       },
                       {
+                        "label": "BookingPage.poItemDefinition",
+                        "name": "flexData",
+                        "component": "DisplayField",
+                        "props": {
+                          "style": {
+                            "white-space": "pre"
+                          },
+                          "onGetFixValueOverrideFunc": [
+                            "return (Object.keys(value) || []).reduce((result, key) => {",
+                            "const item = value[key]",
+                            "return result + `${key}: ${item}\n`",
+                            "}, '')"
+                          ]
+                        },
+                        "tdProps": {
+                          "style": {
+                            "vertical-align": "top"
+                          }
+                        }
+                      },
+                      {
                         "label": "BookingPage.ctns",
                         "name": "ctns",
                         "colGroupProps": {
