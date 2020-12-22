@@ -13,7 +13,8 @@ export async function getEntity(this: CtaService, body: IBody, logger: Logger, u
       method: 'GET',
       url: `${backendUrl}/api/shipment/${entityId}`,
       headers: {
-        Authorization: `Bearer ${accessToken || user.fullAccessToken}`
+        Authorization: `Bearer ${accessToken || user.fullAccessToken}`,
+        'cache-control': 'no-cache'
       }
     })
   }
@@ -22,7 +23,8 @@ export async function getEntity(this: CtaService, body: IBody, logger: Logger, u
       method: 'POST',
       url: `${backendUrl}/api/shipment/findOne`,
       headers: {
-        Authorization: `Bearer ${accessToken || user.fullAccessToken}`
+        Authorization: `Bearer ${accessToken || user.fullAccessToken}`,
+        'cache-control': 'no-cache'
       },
       data: entityId.split('|')
     })

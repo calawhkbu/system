@@ -20,8 +20,12 @@
 </head>
 
 <body style="color:#555555;font-family:'Lato','Roboto','Helvetica','Arial',sans-serif;">
-  <div style="background-color: lightgray;padding:30px 10px">
+  <div style="background-color: #E6E6E6;padding:30px 10px">
     <div style="max-width: 570px;Margin: 0 auto;font-size: 15px;font-family:'Maven Pro', 'Arial', sans-serif !important;background-color:white">
+      <div align="center" bgcolor="#E6E6E6" style="table-layout: fixed;background-color:#E6E6E6;">
+      <table cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF"><tr><td align="center" style="background-color: white;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 500px;"><tr class="layout-full-width" style="background-color:transparent;">
+            <td align="center" width="500" style=" width:500px; padding-right: 0px; padding-left: 0px; padding-top:0px; padding-bottom:0px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
       <table style="border-color:white;border-style:solid;border-width:0px; font-size: 15px;font-weight:normal;overflow:hidden;padding:7px 25px;padding-bottom:0;word-break:normal;min-width: 320px;width: 100%;
                     font-family:'Maven Pro', 'Arial', sans-serif !important;color: black;" cellpadding="0" cellspacing="0">
         <thead>
@@ -33,22 +37,31 @@
           {% if type === 'createdBy' || type === 'updatedBy' %}
           <tr>
             <td style="border-color:black;text-align:left;vertical-align:top;padding:0px 15px;" colspan="2">
-              <span style="white-space: pre-line;">Thank you for your order.
-                Your booking has been updated.</span>
+              <span style="white-space: pre-line;">Your booking has been updated.</span>
             </td>
           </tr>
           {% else %}
           <tr>
             <td style="border-color:black;text-align:left;vertical-align:top;padding:0px 15px;" colspan="2">
-              <span style="white-space: pre-line;">
-                One booking is updated by <span style="font-weight:bold;">
+              <span>
+                This booking is updated by <span style="font-weight:bold;">
                   {% if entity.updatedPerson %}
-                    {% if entity.updatedPerson.displayName %}
-                      {{entity.updatedPerson.displayName}}
-                    {% elseif entity.updatedPerson.lastName || entity.updatedPerson.firstName %}
-                      {{entity.updatedPerson.lastName}} {{entity.updatedPerson.firstName}}
+                    {% if entity.updatedIsAPI %}
+                      {% if entity.updatedUserId %}
+                        {{entity.updatedUserId}}
+                      {% elseif entity.updatedUserEmail %}
+                        {{entity.updatedUserEmail}}
+                      {% else %}
+                        {{entity.updatedPerson.displayName}}
+                      {% endif %}
                     {% else %}
-                      {{entity.updatedPerson.userName}}
+                      {% if entity.updatedPerson.displayName %}
+                        {{entity.updatedPerson.displayName}}
+                      {% elseif entity.updatedPerson.lastName || entity.updatedPerson.firstName %}
+                        {{entity.updatedPerson.lastName}} {{entity.updatedPerson.firstName}}
+                      {% else %}
+                        {{entity.updatedPerson.userName}}
+                      {% endif %}
                     {% endif %}
                   {% else %}
                     {{entity.updatedBy}}
@@ -58,12 +71,6 @@
           </tr>
           {% endif %}
           <tr>
-            <td style="border-color:black;text-align:left;vertical-align:top;padding:0px 15px;" colspan="2">
-              <span style="white-space: pre-line;">Thank you for your order.
-                The booking is updated by <span style="font-weight:bold;">{{entity.updatedBy}}.</span></span>
-            </td>
-          </tr>
-          <tr>
             <td style="border-color:black;text-align:left;vertical-align:top;padding:10px 15px;" colspan="2">
               <span>Booking No : <span style="font-weight:bold;">{{entity.bookingNo}}</span></span>
             </td>
@@ -71,7 +78,7 @@
         </thead>
       </table>
 
-      <table style="border: 2px solid black;width:60%;min-width:80%;margin:0 auto; font-size: small;line-height: 1;">
+      <table style="border: 2px solid black;width:80%;min-width:80%;margin:0 auto; font-size: small;line-height: 1;">
         {% if entity.bookingNo %}
         <tr>
           <td style="padding:5px 5px;width:40%">Customer Ref</td>
@@ -187,14 +194,16 @@
         </tr>
         {% endif %}
       </table>
-      <table style="border: 0px solid black;background-color: #FFFFFF;width: 100%;">
+      <table style="border: 0px solid white;background-color: #FFFFFF;width: 100%;">
         <tr>
           <td colspan="2" style="align-items: center; text-align: center;padding-top:20px;padding-bottom:20px">
-            <div align="center" class="button-container center">
+            <div align="center" class="button-container center" style="padding-right: 10px; padding-left: 10px; padding-top:10px; padding-bottom:10px;">
+              <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top:10px; padding-bottom:10px;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{frontendUrl}}register/{{token}}" style="height:31pt; v-text-anchor:middle; width:123pt;" arcsize="10%" strokecolor="#f15b29" fillcolor="#f15b29"><w:anchorlock/><v:textbox inset="0,0,0,0"><center style="color:#ffffff; font-family:'Roboto', Tahoma, Verdana, Segoe, sans-serif; font-size:16px;"><![endif]-->
               <a href="{{bookingUrl}}" target="_blank"
-                style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff;background-color: #f15b29;border-radius: 4px;-webkit-border-radius: 4px;-moz-border-radius: 4px;max-width: 164px;width: 64px;width: auto;border-top: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-left: 0px solid transparent;padding-top: 10px;padding-right: 25px;padding-bottom: 10px;padding-left: 25px;mso-border-alt: none;">
-                Click For Details
+                style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff; background-color: #f15b29; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; max-width: 164px; width: 64px;width: auto; border-top: 0px solid transparent; border-right: 0px solid transparent; border-bottom: 0px solid transparent; border-left: 0px solid transparent; padding-top: 5px; padding-right: 50px; padding-bottom: 5px; padding-left: 50px; font-family:'Roboto', Tahoma, Verdana, Segoe, sans-serif;mso-border-alt: none">
+                <span style="font-size:16px;line-height:32px;">Click For Details</span>
               </a>
+              <!--[if mso]></center></v:textbox></v:roundrect></td></tr></table><![endif]-->
             </div>
           </td>
         </tr>
@@ -208,7 +217,9 @@
       </table>
     </div>
   </div>
-
+</td></tr></table></table>
+</td></tr></table>
+</div>
 </body>
 
 </html>

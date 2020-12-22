@@ -68,7 +68,8 @@
                                 "props": {
                                   "type": "datetime",
                                   "defaultFormat": "ddd MMM DD YYYY HH:mm",
-                                  "useOwnFormat": true
+                                  "useOwnFormat": true,
+                                  "utc": false
                                 }
                               },
                               {
@@ -94,7 +95,8 @@
                                 "props": {
                                   "type": "datetime",
                                   "defaultFormat": "ddd MMM DD YYYY HH:mm",
-                                  "useOwnFormat": true
+                                  "useOwnFormat": true,
+                                  "utc": false
                                 }
                               }
                             ]
@@ -159,7 +161,8 @@
                       "props": {
                         "type": "datetime",
                         "defaultFormat": "ddd MMM DD YYYY HH:mm",
-                        "useOwnFormat": true
+                        "useOwnFormat": true,
+                        "utc": false
                       }
                     },
                     {
@@ -197,7 +200,8 @@
                       "props": {
                         "type": "datetime",
                         "defaultFormat": "ddd MMM DD YYYY HH:mm",
-                        "useOwnFormat": true
+                        "useOwnFormat": true,
+                        "utc": false
                       }
                     },
                     {

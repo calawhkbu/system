@@ -265,19 +265,19 @@
                     {
                       "label": "PurchaseOrderPage.quantity",
                       "component": "v-text-field",
-                      "class": "xs-2",
+                      "class": "xs-2 padding-topbottom-8",
                       "name": "quantity"
                     },
                     {
                       "label": "PurchaseOrderPage.bookedQuantity",
                       "component": "v-text-field",
-                      "class": "xs-2",
+                      "class": "xs-2 padding-topbottom-8",
                       "name": "bookedQuantity"
                     },
                     {
                       "label": "PurchaseOrderPage.quantityUnit",
                       "component": "v-text-field",
-                      "class": "xs-2",
+                      "class": "xs-2 padding-topbottom-8",
                       "name": "quantityUnit"
                     },
                     {

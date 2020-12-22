@@ -145,8 +145,53 @@
           "checkDisplayWhen": "return (context.isSwivelAdmin ? false : (user.roles || []).filter(role => role.name === 'INTERNAL').length === 0) && ('{{key}}' !== 'forwarder')",
           "relation": "bookingParty.{{flex}}{{key}}Party",
           "relationMore": [{
+            "name": "bookingParty.{{flex}}{{key}}PartyId",
+            "selector": "id"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyCode",
+            "selector": "erpCode"
+          }, {
             "name": "bookingParty.{{flex}}{{key}}PartyName",
             "selector": "name"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyPhone",
+            "selector": "partyPhone"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyFax",
+            "selector": "partyFax"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyEmail",
+            "selector": "partyEmail"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyAddress",
+            "selector": "partyAddress"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyCityCode",
+            "selector": "partyCityCode"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyStateCode",
+            "selector": "partyStateCode"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyCountryCode",
+            "selector": "partyCountryCode"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyZip",
+            "selector": "partyZip"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyContactPersonId",
+            "selector": "contactPersonId"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyContactPersonEmail",
+            "selector": "contactPersonEmail"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyContactPersonName",
+            "selector": "contactPersonName"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyContactPersonPthone",
+            "selector": "contactPersonPhone"
+          }, {
+            "name": "bookingParty.{{flex}}{{key}}PartyIsBuyer",
+            "selector": "isBuyer"
           }],
           "props": {
             "searchTextParams": {
@@ -229,7 +274,7 @@
             "name": "bookingParty.{{flex}}{{key}}PartyContactPersonName",
             "selector": "contactPersonName"
           }, {
-            "name": "bookingParty.{{flex}}{{key}}PartyIsBuyer",
+            "name": "bookingParty.{{flex}}{{key}}PartyContactPersonPthone",
             "selector": "contactPersonPhone"
           }, {
             "name": "bookingParty.{{flex}}{{key}}PartyIsBuyer",

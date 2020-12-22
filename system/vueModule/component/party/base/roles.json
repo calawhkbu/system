@@ -16,6 +16,10 @@
             "class": "xs-12"
           }]
         }
+      }, {
+        "component": "v-text-field",
+        "label": "PartyPage.defaultType",
+        "name": "flexData.defaultType"
       }]
     }
   }]

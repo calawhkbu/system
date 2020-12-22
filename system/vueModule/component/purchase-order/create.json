@@ -131,96 +131,6 @@
                     {
                       "name": "portOfLoadingName",
                       "selector": "name"
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderParty.id",
-                      "selector": "partyId",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderParty.name",
-                      "selector": "partyName",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderParty.erpCode",
-                      "selector": "partyErpCode",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderPartyId",
-                      "selector": "partyId",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderPartyName",
-                      "selector": "partyName",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderPartyCode",
-                      "selector": "partyErpCode",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderPartyPhone",
-                      "selector": "partyPhone",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderPartyFax",
-                      "selector": "partyFax",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderPartyEmail",
-                      "selector": "partyEmail",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderPartyAddress",
-                      "selector": "partyAddress",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderPartyCityCode",
-                      "selector": "partyCityCode",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderPartyStateCode",
-                      "selector": "partyStateCode",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderPartyCountryCode",
-                      "selector": "partyCountryCode",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderPartyZip",
-                      "selector": "partyZip",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderPartyContactPersonId",
-                      "selector": "contactPersonId",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderPartyContactPersonEmail",
-                      "selector": "contactPersonEmail",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderPartyContactPersonName",
-                      "selector": "contactPersonName",
-                      "nullNotApply": true
-                    },
-                    {
-                      "name": "purchaseOrderParty.forwarderPartyContactPersonPhone",
-                      "selector": "contactPersonPhone",
-                      "nullNotApply": true
                     }
                   ],
                   "component": "AsyncAutoSuggest",
@@ -236,18 +146,7 @@
                       "data": {
                         "fields": [
                           "portCode",
-                          "name",
-                          "partyId",
-                          "partyName",
-                          "partyErpCode",
-                          "partyPhone",
-                          "partyFax",
-                          "partyEmail",
-                          "partyAddress",
-                          "partyCityCode",
-                          "partyStateCode",
-                          "partyCountryCode",
-                          "partyZip"
+                          "name"
                         ],
                         "subqueries": {
                           "moduleTypeCode": {
@@ -396,10 +295,54 @@
                   }
                 },
                 {
+                  "name": "purchaseOrderParty.buyerParty",
+                  "label": "PurchaseOrderPage.buyer",
+                  "component": "AsyncAutoSuggest",
+                  "class": "xs-12 md-12 padding-topbottom-4",
+                  "checkDisplayWhen": "return (context.isSwivelAdmin ? false : (user.roles || []).filter(role => role.name === 'INTERNAL').length === 0)",
+                  "relation": "purchaseOrderParty.buyerParty",
+                  "relationMore": [{
+                    "name": "purchaseOrderParty.buyerPartyName",
+                    "selector": "name"
+                  }],
+                  "props": {
+                    "searchTextParams": {
+                      "url": "api/party/query/party_auto_suggest",
+                      "method": "POST",
+                      "data": {
+                        "subqueries": {
+                          "activeStatus": {
+                            "value": "active"
+                          },
+                          "q": {
+                            "value": "{{context.search}}"
+                          },
+                          "checkBuyer": ""
+                        },
+                        "limit": 5
+                      }
+                    },
+                    "ellipsis": false,
+                    "displayText": ["name"],
+                    "displayKey": ["shortName", "erpCode"],
+                    "item-text": "name",
+                    "item-value": "id",
+                    "canCreate": true,
+                    "canCreateValue": {
+                      "name": "{{autoSuggestModel}}"
+                    },
+                    "overrideModel": [
+                      "const name = context._.get(form, 'purchaseOrderParty.buyerPartyName', null);",
+                      "return { id: 0, name };"
+                    ]
+                  }
+                },
+                {
                   "containerComponent": "v-card",
                   "containerComponentProps": {
                     "class": "padding-topbottom-8 padding-leftright-4"
                   },
+                  "checkDisplayWhen": "return (context.isSwivelAdmin || (user.roles || []).filter(role => role.name === 'INTERNAL').length > 0)",
                   "label": "PurchaseOrderPage.buyer",
                   "name": "purchaseOrderParty.buyerParty",
                   "component": "AsyncAutoSuggest",

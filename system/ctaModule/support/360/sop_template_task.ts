@@ -12,7 +12,8 @@ export async function getEntity(this: CtaService, body: IBody, logger: Logger, u
     method: 'GET',
     url: `${backendUrl}/sopTask/${entityId}`,
     headers: {
-      Authorization: `Bearer ${accessToken || user.fullAccessToken}`
+      Authorization: `Bearer ${accessToken || user.fullAccessToken}`,
+      'cache-control': 'no-cache'
     }
   })
   if (!response.data || String(response.data.id) !== String(entityId)) {
@@ -36,7 +37,8 @@ export async function getLocals(this: CtaService, body: IBody, logger: Logger, u
     method: 'GET',
     url: `${backendUrl}/api/${tableName}/${primaryKey}`,
     headers: {
-      Authorization: `Bearer ${accessToken || user.fullAccessToken}`
+      Authorization: `Bearer ${accessToken || user.fullAccessToken}`,
+      'cache-control': 'no-cache'
     }
   })
   if (!response.data || String(response.data.id) !== primaryKey) {

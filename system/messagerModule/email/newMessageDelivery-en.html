@@ -23,12 +23,17 @@
 <body>
   <div style="background-color: lightgray;">
     <div style="max-width: 400px;Margin: 0 auto;padding-top:50px;padding-bottom:50px;">
+      <div style="max-width: 570px;Margin: 0 auto;font-size: 15px;font-family:'Maven Pro', 'Arial', sans-serif !important;background-color:white">
+        <div align="center" bgcolor="#E6E6E6" style="table-layout: fixed;background-color:#E6E6E6;">
+        <table cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF"><tr><td align="center" style="background-color: white;">
+          <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="background-color:transparent;" align="center"><table cellpadding="0" cellspacing="0" border="0" style="width: 500px;"><tr class="layout-full-width" style="background-color:transparent;">
+              <td align="center" width="500" style=" width:500px; padding-right: 0px; padding-left: 0px; padding-top:0px; padding-bottom:0px; border-top: 0px solid transparent; border-left: 0px solid transparent; border-bottom: 0px solid transparent; border-right: 0px solid transparent;" valign="top">
       <table
         style="border-color:white;border-style:solid;border-width:10px;font-size:20px;font-weight:normal;overflow:hidden;padding:7px15px;word-break:normal;border-collapse:collapse;border-spacing:0;mso-table-lspace:0pt;mso-table-rspace:0pt;vertical-align:top;min-width:320px;Margin:0auto;background-color:#FFFFFF;width:100%;font-family:'Maven Pro','Arial',sans-serif!important;background-color: white;font-size: 16px;">
         <thead style="text-align:left;">
           <tr>
             <th style="padding-left:25px;padding-top:20px">
-              Dear {{recevier}}
+              Dear {{receiver}}
             </th>
           </tr>
         </thead>
@@ -43,11 +48,13 @@
           </tr>
           <tr>
             <td style="border-color:inherit;text-align:left;vertical-align:top;border-color:black;border-style:solid;border-width:0px;overflow:hidden;padding:5px 0px;word-break:normal;" style="align-items: center; text-align: center;" align="center">
-              <div align="center">
-                <a href="{{url}}" target="_blank"
-                  style="display: block; text-decoration: none; color: #ffffff;background-color: #f15b29;border-radius: 4px;max-width: 164px;padding-top: 10px;padding-right: 25px;padding-bottom: 10px;padding-left: 25px;">
-                  Click For Details
+              <div align="center" class="button-container center" style="padding-right: 10px; padding-left: 10px; padding-top:10px; padding-bottom:10px;">
+                <!--[if mso]><table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;"><tr><td style="padding-right: 10px; padding-left: 10px; padding-top:10px; padding-bottom:10px;" align="center"><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{frontendUrl}}register/{{token}}" style="height:31pt; v-text-anchor:middle; width:123pt;" arcsize="10%" strokecolor="#f15b29" fillcolor="#f15b29"><w:anchorlock/><v:textbox inset="0,0,0,0"><center style="color:#ffffff; font-family:'Roboto', Tahoma, Verdana, Segoe, sans-serif; font-size:16px;"><![endif]-->
+                <a href="{{chatroomUrl}}" target="_blank"
+                  style="display: block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #ffffff; background-color: #f15b29; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; max-width: 164px; width: 64px;width: auto; border-top: 0px solid transparent; border-right: 0px solid transparent; border-bottom: 0px solid transparent; border-left: 0px solid transparent; padding-top: 5px; padding-right: 50px; padding-bottom: 5px; padding-left: 50px; font-family:'Roboto', Tahoma, Verdana, Segoe, sans-serif;mso-border-alt: none">
+                  <span style="font-size:16px;line-height:32px;">Click For Details</span>
                 </a>
+                <!--[if mso]></center></v:textbox></v:roundrect></td></tr></table><![endif]-->
               </div>
             </td>
           </tr>
@@ -65,5 +72,7 @@
         </tbody>
       </table>
     </div>
+  </td></tr></table></table>
+</td></tr></table>
   </div>
 </body>

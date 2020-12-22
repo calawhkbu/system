@@ -11,7 +11,8 @@ export async function getEntity(this: CtaService, body: IBody, logger: Logger, u
     method: 'GET',
     url: typeof entityId === 'number' ? `${backendUrl}/api/booking/${entityId}` : `${backendUrl}/api/booking/bookingNo/${entityId}`,
     headers: {
-      Authorization: `Bearer ${accessToken || user.fullAccessToken}`
+      Authorization: `Bearer ${accessToken || user.fullAccessToken}`,
+      'cache-control': 'no-cache'
     }
   })
   if (!response.data || String(response.data.id) !== String(entityId)) {

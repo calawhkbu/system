@@ -6,6 +6,19 @@ import BluebirdPromise = require('bluebird')
 
 // import { Booking } from 'models/main/booking';
 
+const removeFunction = (a: any, b: any) => {
+  if (typeof a === 'object' && typeof b === 'object' && !Array.isArray(a) && !Array.isArray(b)) {
+    for (const key of Object.keys(b)) {
+      if (a[key] && b[key] && typeof a[key] === 'object' && typeof b[key] === 'object' && !Array.isArray(a[key]) && !Array.isArray(b[key])) {
+        b[key] = removeFunction(a[key], b[key])
+      } else if (a[key] === null && b[key] === null) {
+        delete b[key]
+      }
+    }
+  }
+  return b
+}
+
 export default class SendDataToExternalEvent extends BaseEventHandler {
   constructor(
     protected eventDataList: EventData<any>[],
@@ -17,6 +30,15 @@ export default class SendDataToExternalEvent extends BaseEventHandler {
     protected readonly transaction?: Transaction
   ) {
     super(eventDataList, eventHandlerConfig, repo, eventService, allService, user, transaction)
+  }
+
+  compare (a: any, b: any): any {
+    if (a && b) {
+      return removeFunction(a, b)
+    } else if (!a && b) {
+      return b
+    }
+    return null
   }
 
   public async mainFunction(eventDataList: EventData<any>[]) {
@@ -39,12 +61,15 @@ export default class SendDataToExternalEvent extends BaseEventHandler {
       }) => {
         const partyGroupCode = this.user.selectedPartyGroup.code
         try {
-          return await outboundService.send(
-            `customer-${partyGroupCode}`,
-            outboundName,
-            header,
-            { latestEntity, ...body }
-          )
+          const finalLatestestEntity = this.compare(originalEntity, latestEntity)
+          if (finalLatestestEntity) {
+            return await outboundService.send(
+              `customer-${partyGroupCode}`,
+              outboundName,
+              header,
+              { latestEntity, ...body }
+            )
+          }
         } catch (e) {
           console.error(e, e.stack, this.constructor.name)
         }

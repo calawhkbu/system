@@ -102,6 +102,7 @@
           "class": "xs-12 md-1 padding-topbottom-4",
           "relation": "service",
           "props": {
+            "loadOnFormChanged": true,
             "axiosParams": {
               "url": "api/code/query/code_master",
               "method": "POST",
@@ -112,6 +113,10 @@
                   },
                   "codeType": {
                     "value": "SERVTYPE"
+                  },
+                  "flexDataFilter": {
+                    "type": "$.shipmentTypeCode",
+                    "value": "{{context.form.shipmentTypeCode}}"
                   }
                 }
               }

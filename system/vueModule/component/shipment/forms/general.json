@@ -537,7 +537,8 @@
                 }
               },
               "item-text": "team",
-              "item-value": "team"
+              "item-value": "team",
+              "return-object": false
             },
             "class": "xs-6 md-3",
             "checkDisplayWhen": "return mode !== 'edit' || (user && user.roles.find(r => r.name === 'SWIVEL_ADMIN' || r.name === 'SOP_TASK_MANAGER'))"
@@ -552,7 +553,8 @@
                 "url": "api/person/same-parties"
               },
               "item-text": "userName",
-              "item-value": "userName"
+              "item-value": "userName",
+              "return-object": false
             },
             "class": "xs-6 md-3",
             "checkDisplayWhen": "return mode !== 'edit' || (user && user.roles.find(r => r.name === 'SWIVEL_ADMIN' || r.name === 'SOP_TASK_MANAGER'))"

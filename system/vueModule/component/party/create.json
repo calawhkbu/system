@@ -346,9 +346,39 @@
               "fields": [{
                 "label": "PartyPage.type",
                 "name": "type",
-                "component": "v-text-field",
-                "class": "xs-12"
+                "component": "AsyncSelect",
+                "class": "xs-12",
+                "props": {
+                  "axiosParams": {
+                    "url": "api/code/query/code_master",
+                    "method": "POST",
+                    "data": {
+                      "subqueries": {
+                        "activeStatus": {
+                          "value": "active"
+                        },
+                        "codeType": {
+                          "value": "PARTY_TYPE"
+                        }
+                      }
+                    }
+                  },
+                  "showValue": false,
+                  "item-text": "name",
+                  "item-value": "code"
+                }
               }]
+            }
+          },
+          {
+            "component": "LocalSelect",
+            "label": "PartyPage.defaultType",
+            "name": "flexData.defaultType",
+            "props": {
+              "item-text": "type",
+              "item-value": "type",
+              "showValue": false,
+              "funcItems": "const data = context.$store.state.widget.data;if (data && data.types && data.types.length) {return data.types}; return [];"
             }
           }]
         }

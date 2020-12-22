@@ -100,7 +100,10 @@
             "name": "purchaseOrderDate.{{flex}}{{key}}Remark",
             "component": "v-text-field",
             "class": "xs-12 md-12",
-            "readonlyClass": "hidden"
+            "readonlyClass": "hidden",
+            "props": {
+              "class": "input-text-small input-text-italic"
+            }
           }
         ]
       }

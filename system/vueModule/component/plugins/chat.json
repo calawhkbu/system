@@ -50,7 +50,8 @@
       "}"
     ],
     "createChatroomBaseParams": [
-      "const entityData = context.$store.state.widget.data;",
+      "const params = context.axiosParamsParams;",
+      "const entityData = context.$store.state.widget.data|| params.data;",
       "return {",
       "url: 'chat/newRoom',",
       "method: 'POST',",

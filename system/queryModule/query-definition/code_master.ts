@@ -19,7 +19,8 @@ import {
   CaseExpression,
   InExpression,
   LikeExpression,
-  OrderBy
+  OrderBy,
+  MathExpression
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
 import { registerAll, ExpressionHelperInterface } from 'utils/jql-subqueries'
@@ -126,5 +127,16 @@ query
   )
   .register('value', 0)
   .register('value', 1)
+
+query.subquery(
+'flexDataFilter',
+new Query({
+  $where: new BinaryExpression(new MathExpression(
+    new ColumnExpression('code_master', 'flexData'),
+    '->>',
+    new Unknown()
+  ), '=', new Unknown())
+})
+).register('type', 0).register('value', 1)
 
 export default query

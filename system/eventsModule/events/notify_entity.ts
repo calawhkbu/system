@@ -78,31 +78,22 @@ export default class NotifyEntityEvent extends BaseEventHandler {
       }
       const createdBy = _.get(latestEntity, 'createdBy', null)
       const createdPerson = _.get(latestEntity, 'createdPerson', null)
-      if (createdBy && finalKeys.includes('createdBy')) {
-        dataList.push({
-          type: 'createdBy',
-          name: createdPerson && (createdPerson.displayName || createdPerson.lastName || createdPerson.displayName)
-            ? (createdPerson.displayName || `${createdPerson.firstName} ${createdPerson.lastName}`)
-            : noName,
-          email: createdBy,
-          originalEntity: originalEntity,
-          entity: latestEntity,
-          isUpdate: eventType === 'update' ? true : false,
-          partyGroupCode,
-          subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
-          language: 'en',
-          template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
-        })
-      }
+      const createdIsAPI = _.get(latestEntity, 'createdIsAPI', null)
       const createdUserId = _.get(latestEntity, 'createdUserId', null)
       const createdUserEmail = _.get(latestEntity, 'createdUserEmail', null)
-      if (createdUserEmail && finalKeys.includes('createdBy')) {
+      if ((createdBy || createdUserEmail) && finalKeys.includes('createdBy')) {
+        const finalName = createdIsAPI
+          ? (createdUserId || createdUserEmail || (createdPerson ? createdPerson.displayName : null) || noName)
+          : (createdPerson && (createdPerson.displayName || createdPerson.lastName || createdPerson.displayName)
+            ? (createdPerson.displayName || `${createdPerson.firstName} ${createdPerson.lastName}`)
+            : noName)
+        const finalEmail = createdIsAPI ? createdUserEmail : createdBy
         dataList.push({
           type: 'createdBy',
-          name: createdUserId, // TODO:: createdBy name
-          email: createdUserEmail,
-          entity: latestEntity,
+          name: finalName,
+          email: finalEmail,
           originalEntity: originalEntity,
+          entity: latestEntity,
           isUpdate: eventType === 'update' ? true : false,
           partyGroupCode,
           subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
@@ -112,29 +103,21 @@ export default class NotifyEntityEvent extends BaseEventHandler {
       }
       const updatedBy = _.get(latestEntity, 'updatedBy', null)
       const updatedPerson = _.get(latestEntity, 'updatedPerson', null)
-      if (updatedBy && finalKeys.includes('updatedBy')) {
-        dataList.push({
-          type: 'updatedBy',
-          name: updatedPerson && (updatedPerson.displayName || updatedPerson.lastName || updatedPerson.displayName)
-            ? (updatedPerson.displayName || `${updatedPerson.firstName} ${updatedPerson.lastName}`)
-            : noName,
-          email: createdBy,
-          entity: latestEntity,
-          originalEntity: originalEntity,
-          isUpdate: eventType === 'update' ? true : false,
-          partyGroupCode,
-          subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
-          language: 'en',
-          template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
-        })
-      }
+      const updatedIsAPI = _.get(latestEntity, 'updatedIsAPI', null)
       const updatedUserId = _.get(latestEntity, 'updatedUserId', null)
       const updatedUserEmail = _.get(latestEntity, 'updatedUserEmail', null)
-      if (updatedUserEmail && finalKeys.includes('updatedBy')) {
+      if ((updatedBy || updatedUserEmail) && finalKeys.includes('updatedBy')) {
+        const finalName = updatedIsAPI
+          ? (updatedUserId || updatedUserEmail || (updatedPerson ? updatedPerson.displayName : null) || noName)
+          : (updatedPerson && (updatedPerson.displayName || updatedPerson.lastName || updatedPerson.displayName)
+            ? (updatedPerson.displayName || `${updatedPerson.firstName} ${updatedPerson.lastName}`)
+            : noName)
+
+        const finalEmail = updatedIsAPI ? updatedUserEmail : updatedBy
         dataList.push({
           type: 'updatedBy',
-          name: updatedUserId || noName, // TODO:: updatedBy name
-          email: updatedUserEmail,
+          name: finalName,
+          email: finalEmail,
           entity: latestEntity,
           originalEntity: originalEntity,
           isUpdate: eventType === 'update' ? true : false,
@@ -301,11 +284,17 @@ export default class NotifyEntityEvent extends BaseEventHandler {
       if (eventData.latestEntity) {
         const createdBy = _.get(eventData.latestEntity, 'createdBy', null)
         if (createdBy) {
-          eventData.latestEntity.createdPerson = people.find(person => person.userName === createdBy) || apis.find(api => api.userName === createdBy)
+          const foundPerson = people.find(person => person.userName === createdBy)
+          const foundApi = apis.find(api => api.userName === createdBy)
+          eventData.latestEntity.createdIsAPI = !!foundApi
+          eventData.latestEntity.createdPerson = foundPerson || foundApi
         }
         const updatedBy = _.get(eventData.latestEntity, 'updatedBy', null)
         if (updatedBy) {
-          eventData.latestEntity.updatedPerson = people.find(person => person.userName === updatedBy) || apis.find(api => api.userName === updatedBy)
+          const foundPerson = people.find(person => person.userName === updatedBy)
+          const foundApi = apis.find(api => api.userName === updatedBy)
+          eventData.latestEntity.updatedIsAPI = !!foundApi
+          eventData.latestEntity.updatedPerson = foundPerson || foundApi
         }
       }
       return eventData

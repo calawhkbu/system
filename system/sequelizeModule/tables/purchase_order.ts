@@ -70,6 +70,14 @@ export const dateTimezoneMapping = {
   ]
 }
 
+export const fixedPartyKeys = [
+  'shipper',
+  'shipTo',
+  'factory',
+  'buyer',
+  'forwarder'
+]
+
 export async function applyAccessRightConditions(
   conditions?: IConditionalExpression,
   user?: JwtPayload,
@@ -90,15 +98,14 @@ export async function applyAccessRightConditions(
       const selectedPartyGroupCode = user.selectedPartyGroup ? user.selectedPartyGroup.code : null
       const partyTypesExpressions = user.parties.reduce(
         (selectedPartyType: BinaryExpression[], party: JwtPayloadParty) => {
+          for (const fixPartyKey of fixedPartyKeys) {
+            selectedPartyType.push(new BinaryExpression(new ColumnExpression('purchase_order_party', `${fixPartyKey}PartyId`), '=', party.id))
+          }
           if (party.partyGroupCode === selectedPartyGroupCode) {
             selectedPartyType = selectedPartyType.concat(
               party.types.map((type: string) => {
                 const con = [
-                  'shipper',
-                  'shipTo',
-                  'factory',
-                  'buyer',
-                  'forwarder'
+                  ...fixedPartyKeys
                 ].includes(type)
                   ? new ColumnExpression(
                       'purchase_order_party',
