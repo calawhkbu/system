@@ -1089,17 +1089,43 @@ query.table('updatedPerson', new Query({
 }))
 const createdByExpression = IfNullExpression(
   new ColumnExpression('booking', 'createdUserId'),
-  IfNullExpression(
-    new ColumnExpression('createdPerson', 'displayName'),
-    new FunctionExpression('CONCAT', new ColumnExpression('createdPerson', 'firstName'), ' ', new ColumnExpression('createdPerson', 'lastName'))
-  )
+  new FunctionExpression(
+    'if',
+    new OrExpressions({
+      expressions: [
+        new IsNullExpression(new ColumnExpression('createdPerson', 'displayName'), true),
+        new IsNullExpression(new ColumnExpression('createdPerson', 'firstName'), true),
+        new IsNullExpression(new ColumnExpression('createdPerson', 'lastName'), true),
+      ]
+    }),
+    IfNullExpression(
+      new ColumnExpression('createdPerson', 'displayName'),
+      new FunctionExpression('CONCAT', new ColumnExpression('createdPerson', 'firstName'), ' ', new ColumnExpression('createdPerson', 'lastName'))
+    ),
+    new ColumnExpression('booking', 'createdBy')
+  ),
 )
 const updatedByExpression = IfNullExpression(
   new ColumnExpression('booking', 'updatedUserId'),
-  IfNullExpression(
-    new ColumnExpression('updatedPerson', 'displayName'),
-    new FunctionExpression('CONCAT', new ColumnExpression('updatedPerson', 'firstName'), ' ', new ColumnExpression('updatedPerson', 'lastName'))
-  )
+  new FunctionExpression(
+    'if',
+    new OrExpressions({
+      expressions: [
+        new IsNullExpression(new ColumnExpression('updatedPerson', 'displayName'), true),
+        new IsNullExpression(new ColumnExpression('updatedPerson', 'firstName'), true),
+        new IsNullExpression(new ColumnExpression('updatedPerson', 'lastName'), true),
+      ]
+    }),
+    IfNullExpression(
+      new ColumnExpression('updatedPerson', 'displayName'),
+      new FunctionExpression('CONCAT', new ColumnExpression('updatedPerson', 'firstName'), ' ', new ColumnExpression('updatedPerson', 'lastName'))
+    ),
+    new ColumnExpression('booking', 'updatedBy')
+  ),
+  // IfNullExpression(
+  //   new ColumnExpression('updatedPerson', 'displayName'),
+  //   new FunctionExpression('CONCAT', new ColumnExpression('updatedPerson', 'firstName'), ' ', new ColumnExpression('updatedPerson', 'lastName'))
+  // )
 )
 
 var jobDateExpression = createdAtExpression

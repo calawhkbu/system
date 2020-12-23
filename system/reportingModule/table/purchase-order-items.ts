@@ -13,6 +13,10 @@ const displayCols = [
   'quantity',
   'bookedQuantity',
   'quantityUnit',
+  'weight',
+  'weightUnit',
+  'volume',
+  'ctns',
   'htsCode',
   'buyerPartyName',
   'flexData',
@@ -68,9 +72,6 @@ export default {
             }
           }
         }
-        
-        console.debug('hhhhh')
-        console.debug(params)
         return params
       }
     },

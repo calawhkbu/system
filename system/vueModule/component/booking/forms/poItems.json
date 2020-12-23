@@ -18,7 +18,7 @@
               },
               "fields": [
                 {
-                  "label": "PO#",
+                  "label": "BookingPage.poNo",
                   "name": "purchaseOrderItem.purchaseOrder.poNo",
                   "component": "v-text-field",
                   "props": {
@@ -31,7 +31,7 @@
                   }
                 },
                 {
-                  "label": "Item Key",
+                  "label": "BookingPage.itemKey",
                   "name": "purchaseOrderItem.itemKey",
                   "component": "v-text-field",
                   "props": {
@@ -44,7 +44,7 @@
                   }
                 },
                 {
-                  "label": "Quantity",
+                  "label": "BookingPage.quantity",
                   "name": "quantity",
                   "component": "NumberField",
                   "props": {
@@ -57,7 +57,7 @@
                   }
                 },
                 {
-                  "label": "Quantity Unit",
+                  "label": "BookingPage.quantityUnit",
                   "name": "purchaseOrderItem.quantityUnit",
                   "component": "v-text-field",
                   "props": {
@@ -515,6 +515,9 @@
                                       "poItemId: item.id,",
                                       "quantity: finalQuantity,",
                                       "quantityUnit: item.quantityUnit,",
+                                      "volume: item.volume,",
+                                      "weight: item.weight,",
+                                      "weightUnit: item.weightUnit,",
                                       "flexData: item.flexData",
                                   "})",
                                   "return result",
@@ -565,6 +568,9 @@
                                       "poItemId: item.id,",
                                       "quantity: finalQuantity,",
                                       "quantityUnit: item.quantityUnit,",
+                                      "volume: item.volume,",
+                                      "weight: item.weight,",
+                                      "weightUnit: item.weightUnit,",
                                       "flexData: item.flexData",
                                   "})",
                                   "return result",

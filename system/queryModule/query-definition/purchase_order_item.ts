@@ -99,6 +99,10 @@ const CONSTANTS = {
     unbookedQuantityExpression,
     'quantityUnit',
     'productId',
+    'weight',
+    'weightUnit',
+    'volume',
+    'ctns',
     {
       name: 'flexData',
       expression: new ColumnExpression('purchase_order_item', 'flexData')

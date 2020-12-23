@@ -3,6 +3,10 @@ export default function fixCardsLayout(cards: any[], original: any[]) {
     if (card.params && card.params.filters && card.params.filters.division) {
       card.params.filters.divisionCode = card.params.filters.division
       delete card.params.filters.division
+
+      if (!Array.isArray(card.params.filters.divisionCode.value)) {
+        card.params.filters.divisionCode.value = [card.params.filters.divisionCode.value]
+      }
     }
   }
 

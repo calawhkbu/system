@@ -107,8 +107,6 @@ export default {
     { key: 'finalDoorDeliveryDateEstimated' },
     { key: 'finalDoorDeliveryDateActual' },
     { key: 'finalDoorDeliveryDateRemark' },
-    { key: 'createdUserEmail' },
-    { key: 'updatedUserEmail' },
     { key: 'shipperPartyCode' },
     { key: 'shipperPartyName' },
     { key: 'shipperPartyContactEmail' },

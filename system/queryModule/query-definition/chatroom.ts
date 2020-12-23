@@ -25,6 +25,8 @@ import {
   ExistsExpression,
   OrderBy,
   Expression,
+  ColumnsExpression,
+  LikeExpression,
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
 import {
@@ -259,16 +261,6 @@ query.table('person',(params:IQueryParams)=>{
 
 
  
-// query.subquery('person',new Query({
-// $select:[
-//   new ResultColumn(new ColumnExpression('person','displayName')),
-//   new ResultColumn(new ColumnExpression('chatroom','roomKey')),
-
-// ],
-// $from: [new FromTable('person', 'person'),new FromTable('chatroom','chatroom')],
-// $where:[new InExpression(new ColumnExpression('person','userName'),false,new Value(['marco.lor@swivelsoftware.com','calvin.law@swivelsoftware.com']))],
-// })).register('value',0)
-
 
 
 const fieldList = [
@@ -330,6 +322,40 @@ const fieldList = [
 ] as ExpressionHelperInterface[]
 
 registerAll(query, baseTableName, fieldList)
+// search chatroom for card speicic Free-text search 
+query.register('chatroomSearch', (value: any, params?: IQueryParams) => {
+  const q = params.subqueries.chatroomSearch.value || ''
+  const chatroomExpression = new ColumnExpression('chatroom','chatroom')
+
+  return new Query({
+    $where: new LikeExpression(chatroomExpression, false, `%${q}%`),
+  })
+})
+
+query.register('refNo', (value: any, params?: IQueryParams) => {
+  const q = params.subqueries.refNo.value || ''
+  const bookingNoExpression = new ColumnExpression('booking','bookingNo')
+  const HouseNoExpression = new ColumnExpression('shipment','houseNo')
+
+  return new Query({
+    $where: new OrExpressions({
+      expressions: [
+        new LikeExpression(bookingNoExpression, false, `%${q}%`),
+        new LikeExpression(HouseNoExpression, false, `%${q}%`),
+      ]})
+  })
+})
+
+query.register('messageSearch', (value: any, params?: IQueryParams) => {
+  const q = params.subqueries.messageSearch.value || ''
+  const messageExpression = new ColumnExpression('chat','message')
+  return new Query({
+    $where: new LikeExpression(messageExpression, false, `%${q}%`),
+  })
+})
+
+
+
 
 
 export default query;

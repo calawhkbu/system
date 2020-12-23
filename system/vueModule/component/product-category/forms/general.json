@@ -77,7 +77,11 @@
             "htsCode",
             "quantity",
             "quantityUnit",
-            "bookedQuantity"
+            "bookedQuantity",
+            "weight",
+            "weightUnit",
+            "ctns",
+            "volume"
           ],
           "formProps": {
             "z": {

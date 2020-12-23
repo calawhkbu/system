@@ -217,6 +217,62 @@
                                   ],
                                   "placeholder": " "
                                 }
+                              },                  
+                              {
+                                "label": "PurchaseOrderPage.weight",
+                                "name": "weight",
+                                "component": "NumberField",
+                                "props": {
+                                  "type": "number"
+                                }
+                              },
+                              {
+                                "label": "PurchaseOrderPage.weightUnit",
+                                "name": "weightUnit",
+                                "component": "v-select",
+                                "props": {
+                                  "items": [{
+                                      "text": "KGs",
+                                      "value": "KGs"
+                                    },
+                                    {
+                                      "text": "LBs",
+                                      "value": "LBs"
+                                    }
+                                  ]
+                                }
+                              },
+                              {
+                                "label": "PurchaseOrderPage.volume",
+                                "name": "volume",
+                                "component": "NumberField",
+                                "props": {
+                                  "type": "number",
+                                  "min": 0
+                                },
+                                "slots": [{
+                                  "name": "append",
+                                  "is": "I18nText",
+                                  "props": {
+                                    "i18nKey": "CBM"
+                                  }
+                                }]
+                              },
+                              {
+                                "label": "PurchaseOrderPage.ctns",
+                                "name": "ctns",
+                                "component": "NumberField",
+                                "props": {
+                                  "type": "number",
+                                  "min": 0
+                                },
+                                "slots": [{
+                                  "name": "append",
+                                  "is": "I18nText",
+                                  "props": {
+                                    "i18nKey": "CTNS"
+                                  }
+                                }]
                               }
                             ],
                             "axiosParams": {
@@ -281,7 +337,46 @@
                       "name": "quantityUnit"
                     },
                     {
-                      "class": "xs-6"
+                      "label": "PurchaseOrderPage.weight",
+                      "component": "v-text-field",
+                      "class": "xs-2 padding-topbottom-8",
+                      "name": "weight"
+                    },
+                    {
+                      "label": "PurchaseOrderPage.weightUnit",
+                      "component": "v-text-field",
+                      "class": "xs-2 padding-topbottom-8",
+                      "name": "weightUnit"
+                    },
+                    {
+                      "label": "PurchaseOrderPage.volume",
+                      "component": "v-text-field",
+                      "class": "xs-2 padding-topbottom-8",
+                      "name": "volume",
+                      "slots": [{
+                        "name": "append",
+                        "is": "I18nText",
+                        "props": {
+                          "i18nKey": "CBM"
+                        }
+                      }]
+                    },
+                    {
+                      "label": "PurchaseOrderPage.ctns",
+                      "component": "v-text-field",
+                      "class": "xs-2 padding-topbottom-8",
+                      "name": "ctns",
+                      "slots": [{
+                        "name": "append",
+                        "is": "I18nText",
+                        "props": {
+                          "i18nKey": "CTNS"
+                        }
+                      }]
+                    },
+                    {
+                      "component": "v-spacer",
+                      "class": "xs-10"
                     },
                     {
                       "label": "PurchaseOrderPage.purchaseOrderItems",

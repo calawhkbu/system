@@ -64,20 +64,11 @@ export default {
 
         //filter Logged In Users's message`
         let tableName=_.clone(params.subqueries.entityType&&params.subqueries.entityType.value)||undefined
-          if(tableName){
-            params.subqueries = {
-              tableName: { value: tableName } ,
-              userName:{value:user.username}
-
-             }
-          }else{
-            params.subqueries = {
-              userName: { value: user.username },
-             }
+          if(!tableName){
+            delete params.subqueries.tableName
           }
-
-
-        return params
+          params.subqueries['userName']={value:user.username}
+          return params
       }
     },
     {
@@ -97,14 +88,8 @@ export default {
         results.push(el)
        }
      });
-        //return results && results.length>0?results :null
-        params.fields=['displayName','firstName','lastName','photoURL']
-        if(res&&res.length>0&&res[2]['mentions'] && res[2]['mentions'].length>0){
-          params.subqueries.search={value:res[2]['mentions']}
-        }else{
+       
           params.subqueries.search={value:[user.username]}
-        }
-      
         //remove irrelevant
         delete params.sorting
         delete params.subqueries.userName
@@ -164,6 +149,21 @@ export default {
         required: true,
       },
       type: 'list'
+    },
+    {
+      display: "Ref #",
+      name: "refNo",
+      type: 'text'
+    },
+    {
+      display: "chatroom",
+      name: "chatroomSearch",
+      type: 'text'
+    },
+    {
+      display: "message",
+      name: "messageSearch",
+      type: 'text'
     }
   ]
 } as JqlDefinition

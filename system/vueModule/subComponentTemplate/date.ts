@@ -3,8 +3,7 @@ import _ = require('lodash')
 
 // just for easier coding
 interface PropParam {
-  
-  tableName?:string
+  tableName?: string
   dateName: string
   includeEstimated?: boolean
   includeActual?: boolean
@@ -12,36 +11,17 @@ interface PropParam {
   isInFlexData?: boolean
 }
 
-
-
-const fieldList = (propParam: PropParam) => {
-
-  const { tableName, dateName, includeEstimated, includeActual, includeRemark,isInFlexData } = propParam
-
+const fieldList = ({ tableName, dateName, includeEstimated, includeActual, includeRemark, isInFlexData }: PropParam) => {
   const fieldList = []
-
   const fieldObject = (dateName: string, component = 'DateTimePicker') => {
-
-
-    const dateTableName = tableName ? `${tableName}Date` : undefined
-    const flexData = isInFlexData ? 'flexData' : undefined
-    const prefix = [ dateTableName, flexData].filter(x => !!x).join('.')
-    
-    // const prefixPath = (isInFlexData ? `${tableName}Date.flexData.` : `${tableName}Date.`)
-    // const prefix = tableName ? prefixPath : ''
-
-    const finalDatePath = prefix ? `${prefix}.${dateName}` : dateName
-
+    const [tableName, actualDateName] = dateName.split('.') // "shipment" "XXDateXX"
     return {
       'label': dateName,
-      'name': finalDatePath,
+      'name': isInFlexData ? `${tableName}Date.flexData.${actualDateName}` : `${tableName}Date.${actualDateName}`,
       'component': component,
       'validator': ['required']
     } as SubComponentField
-
-
   }
-
   if (includeEstimated) {
     fieldList.push(fieldObject(`${tableName}.${dateName}DateEstimated`))
   }
@@ -49,9 +29,8 @@ const fieldList = (propParam: PropParam) => {
     fieldList.push(fieldObject(`${tableName}.${dateName}DateActual`))
   }
   if (includeRemark) {
-    fieldList.push(fieldObject(`${tableName}.${dateName}DateRemark`,'v-text-field'))
+    fieldList.push(fieldObject(`${tableName}.${dateName}DateRemark`, 'v-text-field'))
   }
-
   return fieldList
 }
 
@@ -77,7 +56,7 @@ const adminComponent = ({ }) => {
   }
 }
 
- 
+
 
 
 // changeForm to entityData
@@ -95,7 +74,7 @@ const formDataToEntityFunction = (propParam: PropParam) => {
 
   const dateTableName = tableName ? `${tableName}Date` : undefined
   const flexData = isInFlexData ? 'flexData' : undefined
-  const prefix = [ dateTableName, flexData].filter(x => !!x).join('.')
+  const prefix = [dateTableName, flexData].filter(x => !!x).join('.')
 
   const finalDatePath = prefix ? `${prefix}.${dateName}` : dateName
 
@@ -110,53 +89,45 @@ const formDataToEntityFunction = (propParam: PropParam) => {
 
 
     // assuming have dateTableName
-    if (isInFlexData)
-    {
+    if (isInFlexData) {
 
-      if (!dateTableName)
-      {
+      if (!dateTableName) {
         throw new Error('missing dateTableName')
       }
 
-      if (!entityData[dateTableName].flexData)
-      {
+      if (!entityData[dateTableName].flexData) {
         entityData[dateTableName].flexData = {}
-        // _.set(entityData,'flexData',{}) 
+        // _.set(entityData,'flexData',{})
       }
 
-      if (!entityData[dateTableName].flexData.moreDate)
-      {
+      if (!entityData[dateTableName].flexData.moreDate) {
         entityData[dateTableName].flexData.moreDate = []
-        // _.set(entityData,'flexData.moreDate',[]) 
+        // _.set(entityData,'flexData.moreDate',[])
       }
-  
-      if (!entityData[dateTableName].flexData.moreDate.includes(dateName))
-      {
+
+      if (!entityData[dateTableName].flexData.moreDate.includes(dateName)) {
         entityData[dateTableName].flexData.moreDate = entityData[dateTableName].flexData.moreDate.concat([dateName])
       }
     }
 
-    if (includeActual)
-    {
+    if (includeActual) {
       fieldList.push(`${finalDatePath}DateActual`)
     }
 
-    if (includeEstimated)
-    {
+    if (includeEstimated) {
       fieldList.push(`${finalDatePath}DateEstimated`)
     }
 
-    if (includeRemark)
-    {
+    if (includeRemark) {
       fieldList.push(`${finalDatePath}DateRemark`)
     }
 
 
     fieldList.map(field => {
-      const value = _.get(formData,field)
-      _.set(entityData, field,value)
+      const value = _.get(formData, field)
+      _.set(entityData, field, value)
     })
-  
+
     // entity
     return entityData
   }
@@ -177,5 +148,3 @@ export {
 }
 
 export default component
-
-

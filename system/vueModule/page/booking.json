@@ -67,6 +67,7 @@
               "readonly": true
             },
             "edit": {
+              "reload": true,
               "readonly": false,
               "stepper": 0,
               "saveIcon": "save",

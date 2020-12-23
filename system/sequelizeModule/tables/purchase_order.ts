@@ -41,7 +41,7 @@ export const setDataFunction = {
   quantityUnit: async ({ quantityUnit, purchaseOrderItems = [] }: PurchaseOrder) => {
     const units = []
     for (const { quantityUnit } of purchaseOrderItems) {
-      if (!units.find(u => u === quantityUnit)) {
+      if (quantityUnit && !units.find(u => u === quantityUnit)) {
         units.push(quantityUnit)
       }
     }
@@ -50,6 +50,33 @@ export const setDataFunction = {
   bookedQuantity: async ({ bookedQuantity, purchaseOrderItems = [] }: PurchaseOrder) => {
     return purchaseOrderItems.reduce((total, poItem) => {
       const finalNumber = (typeof poItem.bookedQuantity === 'number' ? (poItem.bookedQuantity || 0) : (poItem.bookedQuantity ? parseInt(poItem.bookedQuantity) : 0))
+      return total + finalNumber
+    }, 0)
+  },
+  weight: async ({ weight, purchaseOrderItems = [] }: PurchaseOrder) => {
+    return purchaseOrderItems.reduce((total, poItem) => {
+      const finalNumber = (typeof poItem.weight === 'number' ? (poItem.weight || 0) : (poItem.weight ? parseInt(poItem.weight) : 0))
+      return total + finalNumber
+    }, 0)
+  },
+  weightUnit: async ({ weightUnit, purchaseOrderItems = [] }: PurchaseOrder) => {
+    const units = []
+    for (const { weightUnit } of purchaseOrderItems) {
+      if (weightUnit && !units.find(u => u === weightUnit)) {
+        units.push(weightUnit)
+      }
+    }
+    return units.join(',')
+  },
+  volume: async ({ volume, purchaseOrderItems = [] }: PurchaseOrder) => {
+    return purchaseOrderItems.reduce((total, poItem) => {
+      const finalNumber = (typeof poItem.volume === 'number' ? (poItem.volume || 0) : (poItem.volume ? parseInt(poItem.volume) : 0))
+      return total + finalNumber
+    }, 0)
+  },
+  ctns: async ({ ctns, purchaseOrderItems = [] }: PurchaseOrder) => {
+    return purchaseOrderItems.reduce((total, poItem) => {
+      const finalNumber = (typeof poItem.ctns === 'number' ? (poItem.ctns || 0) : (poItem.ctns ? parseInt(poItem.ctns) : 0))
       return total + finalNumber
     }, 0)
   }

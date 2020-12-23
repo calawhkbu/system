@@ -25,7 +25,7 @@ export default {
             .endOf('year')
             .format('YYYY-MM-DD')
         }
-        if (subqueries.divisionCode && subqueries.divisionCode !== true && 'value' in subqueries.divisionCode) {
+        if (subqueries.divisionCode && subqueries.divisionCode !== true && 'value' in subqueries.divisionCode && !Array.isArray(subqueries.divisionCode.value)) {
           subqueries.divisionCode.value = [subqueries.divisionCode.value]
         }
         return params

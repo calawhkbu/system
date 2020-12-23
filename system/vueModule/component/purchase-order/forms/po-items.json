@@ -161,6 +161,62 @@
                       ],
                       "placeholder": " "
                     }
+                  },              
+                  {
+                    "label": "PurchaseOrderPage.weight",
+                    "name": "weight",
+                    "component": "NumberField",
+                    "props": {
+                      "type": "number"
+                    }
+                  },
+                  {
+                    "label": "PurchaseOrderPage.weightUnit",
+                    "name": "weightUnit",
+                    "component": "v-select",
+                    "props": {
+                      "items": [{
+                          "text": "KGs",
+                          "value": "KGs"
+                        },
+                        {
+                          "text": "LBs",
+                          "value": "LBs"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "label": "PurchaseOrderPage.volume",
+                    "name": "volume",
+                    "component": "NumberField",
+                    "props": {
+                      "type": "number",
+                      "min": 0
+                    },
+                    "slots": [{
+                      "name": "append",
+                      "is": "I18nText",
+                      "props": {
+                        "i18nKey": "CBM"
+                      }
+                    }]
+                  },
+                  {
+                    "label": "PurchaseOrderPage.ctns",
+                    "name": "ctns",
+                    "component": "NumberField",
+                    "props": {
+                      "type": "number",
+                      "min": 0
+                    },
+                    "slots": [{
+                      "name": "append",
+                      "is": "I18nText",
+                      "props": {
+                        "i18nKey": "CTNS"
+                      }
+                    }]
                   }
                 ],
                 "axiosParams": {
