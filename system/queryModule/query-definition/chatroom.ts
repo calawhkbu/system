@@ -348,9 +348,25 @@ query.register('refNo', (value: any, params?: IQueryParams) => {
 
 query.register('messageSearch', (value: any, params?: IQueryParams) => {
   const q = params.subqueries.messageSearch.value || ''
+  let keywords = []
+  let keywordsExpression = []
   const messageExpression = new ColumnExpression('chat','message')
+
+  if(q){
+    keywords=q.split(' ')
+  }else{
+    keywords.push(q)
+  }
+
+  keywords.forEach(el => {
+    keywordsExpression.push(new LikeExpression(messageExpression, false, `%${el}%`))
+  });
+
+
   return new Query({
-    $where: new LikeExpression(messageExpression, false, `%${q}%`),
+    $where: new AndExpressions({
+      expressions: keywordsExpression
+    })
   })
 })
 

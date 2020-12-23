@@ -151,7 +151,7 @@ export default {
       type: 'list'
     },
     {
-      display: "Ref #",
+      display: "refNo",
       name: "refNo",
       type: 'text'
     },
