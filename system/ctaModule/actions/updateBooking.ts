@@ -3,6 +3,7 @@ import { CtaActionInt, IBody, Result } from 'modules/cta/interface'
 import axios from 'axios'
 import { BadRequestException, InternalServerErrorException } from '@nestjs/common'
 import _ = require('lodash')
+import { callAxios, getAccessToken } from 'modules/cta/utils'
 
 export interface IField {
   key: string
@@ -13,13 +14,14 @@ export interface Props {
   fields: IField[]
 }
 
+// Update booking in 360
 export default class UpdateBookingAction extends CtaActionInt<Props> {
   needLocals = true
 
   async run(system: string, tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
     if (!this.props) throw new InternalServerErrorException('MISSING_PROPS')
     let entity = body.entity
-    const { accessToken, backendUrl } = body.locals
+    const { accessToken } = body.locals
 
     // get booking
     if (tableName !== 'booking') {
@@ -36,15 +38,17 @@ export default class UpdateBookingAction extends CtaActionInt<Props> {
       _.set(entity, path, body.inputResult[key])
     }
 
+    await getAccessToken(user, this.logger)
+
     // save booking
-    const response = await axios.request({
+    const response = await callAxios({
       method: 'POST',
-      url: `${backendUrl}/api/booking`,
+      url: `${user.api['360']}/api/booking`,
       headers: {
         Authorization: `Bearer ${accessToken || user.fullAccessToken}`
       },
       data: entity
-    })
+    }, this.logger)
     if (response.data && response.data.id === entity.id) {
       const result = response.data
       body.locals.booking = result

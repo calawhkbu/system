@@ -50,11 +50,14 @@ export default {
     }
   ],
   columns: [
+    { key: 'createdAt' },
+    { key: 'updatedAt' },
     { key: 'houseNo' },
     { key: 'jobNo' },
     { key: 'masterNo' },
     { key: 'bookingNo' },
     { key: 'poNos' },
+    { key: 'carrierBookingNos' },
     { key: 'containerNos' },
     { key: 'contractNos' },
     { key: 'commodity' },
@@ -62,6 +65,7 @@ export default {
     { key: 'voyageFlightNumber' },
     { key: 'divisionCode' },
     { key: 'serviceCode' },
+    { key: 'shipmentTypeCode' },
     { key: 'incoTermsCode' },
     { key: 'freightTermsCode' },
     { key: 'otherTermsCode' },
@@ -72,6 +76,8 @@ export default {
     { key: 'isDirect' },
     { key: 'isCoload' },
     { key: 'jobDate' },
+    { key: 'cargoReadyDateEstimated' },
+    { key: 'cargoReadyDateActual' },
     { key: 'departureDateEstimated' },
     { key: 'departureDateActual' },
     { key: 'arrivalDateEstimated' },
@@ -98,7 +104,9 @@ export default {
     { key: 'lastStatusCodeOrDescription' },
     { key: 'lastStatusDate' },
     { key: 'lastStatusWidget' },
-
+    { key: 'createdBy' },
+    { key: 'updatedBy' },
+    { key: 'activeStatus' },
     ...documentFileNameList.map(documentFileName => {
 
       return { key: `haveDocument_${documentFileName}` }

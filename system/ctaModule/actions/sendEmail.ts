@@ -3,6 +3,7 @@ import { CtaActionInt, IBody, Result } from 'modules/cta/interface'
 import axios from 'axios'
 import { InternalServerErrorException } from '@nestjs/common'
 import _ = require('lodash')
+import { callAxios } from 'modules/cta/utils'
 
 export interface IProps {
   handler?: string
@@ -13,7 +14,7 @@ export interface IProps {
   ownEntity?: boolean
 
   // parties
-  toParty?: [string, string][]
+  toParty?: [string, string][]  // [['booking', 'shipper']]
   ccParty?: [string, string][]
   bccParty?: [string, string][]
 
@@ -34,7 +35,7 @@ export default class SendEmailAction<Props extends IProps = IProps> extends CtaA
     const { messengerUrl } = await this.ctaService.getConfig()
     const { handler, ownEntity, toParty, ccParty, bccParty, ...data } = this.props
     let { entity, entityId } = body
-    const { backendUrl, ...locals } = body.locals
+    const locals = body.locals
 
     const options = data.options = _.cloneDeep(data.options || {} as any)
     if (this.props.toParty) {
@@ -85,14 +86,14 @@ export default class SendEmailAction<Props extends IProps = IProps> extends CtaA
         accessToken: user.accessToken
       }
 
-      const response = await axios.request({
+      await callAxios({
         method: 'POST',
         url: handler ? `${messengerUrl}/send/cta/email/${handler}` : `${messengerUrl}/send/cta/email`,
         data,
         headers: {
           Authorization: `Bearer ${user.accessToken}`
         }
-      })
+      }, this.logger)
     }
     return Result.SUCCESS
   }

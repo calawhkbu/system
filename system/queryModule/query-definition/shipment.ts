@@ -58,6 +58,7 @@ const updatedAtExpression = new FunctionExpression(
   new ColumnExpression('shipment', 'updatedAt')
 )
 
+
 const jobDateExpression = new ColumnExpression('shipment', 'jobDate')
 
 const jobYearExpression = new FunctionExpression('LPAD', new FunctionExpression('YEAR', jobDateExpression), 4, '0')
@@ -1200,6 +1201,57 @@ query.table('shipment_transport', new Query({
   })
 }))
 
+
+query.table('createdPerson', new Query({
+  $from : new FromTable({
+    table : 'shipment',
+    joinClauses : [
+      {
+        operator: 'LEFT',
+        table: new FromTable('person', 'createdPerson'),
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('shipment', 'createdBy'),
+            '=',
+            new ColumnExpression('createdPerson', 'userName')
+          )
+        ],
+      }
+    ]
+  })
+}))
+query.table('updatedPerson', new Query({
+  $from : new FromTable({
+    table : 'shipment',
+    joinClauses : [
+      {
+        operator: 'LEFT',
+        table: new FromTable('person', 'updatedPerson'),
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('shipment', 'updatedBy'),
+            '=',
+            new ColumnExpression('updatedPerson', 'userName')
+          )
+        ],
+      }
+    ]
+  })
+}))
+const createdByExpression = IfNullExpression(
+  new ColumnExpression('shipment', 'createdUserId'),
+  IfNullExpression(
+    new ColumnExpression('createdPerson', 'displayName'),
+    new FunctionExpression('CONCAT', new ColumnExpression('createdPerson', 'firstName'), ' ', new ColumnExpression('createdPerson', 'lastName'))
+  )
+)
+const updatedByExpression = IfNullExpression(
+  new ColumnExpression('shipment', 'updatedUserId'),
+  IfNullExpression(
+    new ColumnExpression('updatedPerson', 'displayName'),
+    new FunctionExpression('CONCAT', new ColumnExpression('updatedPerson', 'firstName'), ' ', new ColumnExpression('updatedPerson', 'lastName'))
+  )
+)
 // =======================================
 
 //  register field =======================
@@ -2298,6 +2350,20 @@ const fieldList = [
   'jobNo',
   'masterNo',
   'containerNos',
+  {
+    name: 'shipmentVolume',
+    expression: new Value(0)
+  },
+  {
+    name: 'createdBy',
+    expression: createdByExpression,
+    companion : ['table:createdPerson']
+  },
+  {
+    name: 'updatedBy',
+    expression: updatedByExpression,
+    companion : ['table:updatedPerson']
+  },
   {
     name: 'primaryKeyListString',
     expression: primaryKeyListStringExpression

@@ -83,11 +83,9 @@ const dateNameList = [
 //for Bookings
 
 const partyList = [
-
   {
     name: 'shipper',
   },
-
   {
     name: 'consignee',
   },
@@ -114,7 +112,6 @@ const partyList = [
     name: 'controllingParty'
   }
 ] as {
-
   name: string,
   override: string,
   partyNameExpression?: {
@@ -137,7 +134,6 @@ const partyList = [
     companion: string[],
     expression: IExpression
   }
-
 }[]
 
 const locationList = ['portOfLoading', 'portOfDischarge', 'placeOfDelivery', 'placeOfReceipt', 'finalDestination']
@@ -145,9 +141,7 @@ const locationList = ['portOfLoading', 'portOfDischarge', 'placeOfDelivery', 'pl
 
 const query = new QueryDef(
   new Query({
-
     // $distinct: true,
-
     $select: [
       new ResultColumn(new ColumnExpression('booking', '*')),
       new ResultColumn(new ColumnExpression('booking', 'id'), 'bookingId'),
@@ -183,13 +177,10 @@ query.table('booking_date', new Query({
       }
     ]
   })
-
 }))
 
 query.table('booking_party', new Query({
-
   $from : new FromTable({
-
     table : 'booking',
     joinClauses : [
       {
@@ -213,13 +204,10 @@ query.table('booking_party', new Query({
       },
     ]
   })
-
 }))
 
 query.table('booking_amount', new Query({
-
   $from : new FromTable({
-
     table : 'booking',
     joinClauses : [
       {
@@ -240,7 +228,6 @@ query.table('booking_amount', new Query({
       },
     ]
   })
-
 }))
 
 query.table('booking_container', new Query({
@@ -540,31 +527,33 @@ query.table('boundType', new Query({
 }))
 
 query.table('service', new Query({
-
   $from : new FromTable({
     table : 'booking',
-
     joinClauses : [
       {
         operator: 'LEFT',
         table: new FromTable('code_master', 'service'),
         $on: [
-          new BinaryExpression(
-            new ColumnExpression('service', 'codeType'),
-            '=',
-            new Value('SERVTYPE')
-          ),
+          new BinaryExpression(new ColumnExpression('service', 'codeType'), '=', new Value('SERVTYPE')),
+          new BinaryExpression(new ColumnExpression('booking', 'serviceCode'), '=', new ColumnExpression('service', 'code')),
+          new BinaryExpression(new ColumnExpression('booking', 'partyGroupCode'), '=', new ColumnExpression('service', 'partyGroupCode')),
+        ],
+      },
+    ]
+  })
+}))
 
-          new BinaryExpression(
-            new ColumnExpression('booking', 'serviceCode'),
-            '=',
-            new ColumnExpression('service', 'code')
-          ),
-          new BinaryExpression(
-            new ColumnExpression('booking', 'partyGroupCode'),
-            '=',
-            new ColumnExpression('service', 'partyGroupCode')
-          ),
+query.table('shipmentType', new Query({
+  $from : new FromTable({
+    table : 'booking',
+    joinClauses : [
+      {
+        operator: 'LEFT',
+        table: new FromTable('code_master', 'shipmentType'),
+        $on: [
+          new BinaryExpression(new ColumnExpression('shipmentType', 'codeType'), '=', new Value('SHIPTYPE')),
+          new BinaryExpression(new ColumnExpression('booking', 'shipmentTypeCode'), '=', new ColumnExpression('shipmentType', 'code')),
+          new BinaryExpression(new ColumnExpression('booking', 'partyGroupCode'), '=', new ColumnExpression('shipmentType', 'partyGroupCode')),
         ],
       },
     ]
@@ -1053,7 +1042,7 @@ query.table('alert', new Query({
 // )
 
 var createdAtExpression = IfNullExpression(new ColumnExpression('booking', 'bookingCreateTime'), new ColumnExpression('booking','createdAt'));
-var ETDExpression=new ColumnExpression('booking_date','departureDateEstimated');
+var ETDExpression = new ColumnExpression('booking_date','departureDateEstimated');
 
 
 
@@ -1061,6 +1050,56 @@ const updatedAtExpression = new FunctionExpression(
   'IFNULL',
   new ColumnExpression('booking', 'bookingLastUpdateTime'),
   new ColumnExpression('booking', 'updatedAt')
+)
+query.table('createdPerson', new Query({
+  $from : new FromTable({
+    table : 'booking',
+    joinClauses : [
+      {
+        operator: 'LEFT',
+        table: new FromTable('person', 'createdPerson'),
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('booking', 'createdBy'),
+            '=',
+            new ColumnExpression('createdPerson', 'userName')
+          )
+        ],
+      }
+    ]
+  })
+}))
+query.table('updatedPerson', new Query({
+  $from : new FromTable({
+    table : 'booking',
+    joinClauses : [
+      {
+        operator: 'LEFT',
+        table: new FromTable('person', 'updatedPerson'),
+        $on: [
+          new BinaryExpression(
+            new ColumnExpression('booking', 'updatedBy'),
+            '=',
+            new ColumnExpression('updatedPerson', 'userName')
+          )
+        ],
+      }
+    ]
+  })
+}))
+const createdByExpression = IfNullExpression(
+  new ColumnExpression('booking', 'createdUserId'),
+  IfNullExpression(
+    new ColumnExpression('createdPerson', 'displayName'),
+    new FunctionExpression('CONCAT', new ColumnExpression('createdPerson', 'firstName'), ' ', new ColumnExpression('createdPerson', 'lastName'))
+  )
+)
+const updatedByExpression = IfNullExpression(
+  new ColumnExpression('booking', 'updatedUserId'),
+  IfNullExpression(
+    new ColumnExpression('updatedPerson', 'displayName'),
+    new FunctionExpression('CONCAT', new ColumnExpression('updatedPerson', 'firstName'), ' ', new ColumnExpression('updatedPerson', 'lastName'))
+  )
 )
 
 var jobDateExpression = createdAtExpression
@@ -1204,6 +1243,12 @@ const serviceExpression = new FunctionExpression(
   'IFNULL',
   new ColumnExpression('service', 'name'),
   new ColumnExpression('booking', 'serviceCode')
+)
+
+const shipmentTypeExpression = new FunctionExpression(
+  'IFNULL',
+  new ColumnExpression('shipmentType', 'name'),
+  new ColumnExpression('booking', 'shipmentTypeCode')
 )
 
 const moduleTypeExpression = new FunctionExpression(
@@ -1721,6 +1766,12 @@ const fieldList = [
   },
 
   {
+    name : 'shipmentType',
+    expression : shipmentTypeExpression,
+    companion : ['table:shipmentType']
+  },
+
+  {
     name : 'moduleType',
     expression : moduleTypeExpression,
     companion : ['table:moduleType']
@@ -1760,6 +1811,20 @@ const fieldList = [
   {
     name: 'updatedAt',
     expression: updatedAtExpression
+  },
+  {
+    name: 'createdBy',
+    expression: createdByExpression,
+    companion : ['table:createdPerson']
+  },
+  {
+    name: 'updatedBy',
+    expression: updatedByExpression,
+    companion : ['table:updatedPerson']
+  },
+  {
+    name: 'bookingVolume',
+    expression: new Value(0)
   },
 
   {

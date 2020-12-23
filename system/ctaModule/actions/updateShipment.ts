@@ -4,6 +4,7 @@ import axios from 'axios'
 import { BadRequestException, InternalServerErrorException } from '@nestjs/common'
 import _ = require('lodash')
 import { Props } from './updateBooking'
+import { callAxios, getAccessToken } from 'modules/cta/utils'
 
 export default class UpdateShipmentAction extends CtaActionInt<Props> {
   needLocals = true
@@ -11,7 +12,7 @@ export default class UpdateShipmentAction extends CtaActionInt<Props> {
   async run(system: string, tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
     if (!this.props) throw new InternalServerErrorException('MISSING_PROPS')
     let entity = body.entity
-    const { accessToken, backendUrl } = body.locals
+    const { accessToken } = body.locals
 
     // get shipment
     if (tableName !== 'shipment') {
@@ -28,15 +29,17 @@ export default class UpdateShipmentAction extends CtaActionInt<Props> {
       _.set(entity, path, body.inputResult[key])
     }
 
+    await getAccessToken(user, this.logger)
+
     // save shipment
-    const response = await axios.request({
+    const response = await callAxios({
       method: 'POST',
-      url: `${backendUrl}/api/shipment`,
+      url: `${user.api['360']}/api/shipment`,
       headers: {
         Authorization: `Bearer ${accessToken || user.fullAccessToken}`
       },
       data: entity
-    })
+    }, this.logger)
     if (response.data && response.data.id === entity.id) {
       const result = response.data
       body.locals.shipment = result

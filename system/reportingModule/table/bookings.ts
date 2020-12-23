@@ -51,7 +51,6 @@ export default {
     }
   ],
   columns: [
-    { key: 'checkbox' },
     { key: 'createdAt' },
     { key: 'updatedAt' },
     { key: 'id' },
@@ -63,6 +62,7 @@ export default {
     { key: 'bookingNo' },
     { key: 'moduleType' }, //need this
     { key: 'boundType' },
+    { key: 'shipmentType' },
     { key: 'service' },
     { key: 'incoTermsCode' },
     { key: 'freightTerms' },
@@ -162,6 +162,9 @@ export default {
     { key: 'lastStatusCodeOrDescription' },
     { key: 'lastStatusDate' },
     { key: 'lastStatusWidget' },
+    { key: 'createdBy' },
+    { key: 'updatedBy' },
+    { key: 'activeStatus' },
     { key: 'haveCurrentTrackingNo' },
     ...documentFileNameList.map(documentFileName => {
 

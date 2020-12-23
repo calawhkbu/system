@@ -2,24 +2,26 @@ import { JwtMicroPayload } from 'modules/auth/interfaces/jwt-payload'
 import { CtaActionInt, IBody, Result } from 'modules/cta/interface'
 import axios from 'axios'
 import { NotImplementedException } from '@nestjs/common'
+import { callAxios, getAccessToken } from 'modules/cta/utils'
 
 export default class UpdateTaskStatusAction extends CtaActionInt {
   async run(system: string, tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
     switch (tableName) {
       case 'sop_template_task': {
         const task = body.entity
-        const { backendUrl, accessToken } = body.locals
+        const { accessToken } = body.locals
 
         if (task.status && task.status !== 'Not Ready' && task.status !== 'Closed') {
           const nextStatus = task.status !== 'Done' ? 'done' : 'open'
-          const response = await axios.request({
+          await getAccessToken(user, this.logger)
+          const response = await callAxios({
             method: 'POST',
-            url: `${backendUrl}/sopTask/mark/${nextStatus}/${task.id}`,
+            url: `${user.api['360']}/sopTask/mark/${nextStatus}/${task.id}`,
             data: task,
             headers: {
               Authorization: `Bearer ${accessToken || user.fullAccessToken}`
             }
-          })
+          }, this.logger)
           if (response.data && response.data.id === task.id) {
             return Result.SUCCESS
           }

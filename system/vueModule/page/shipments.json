@@ -182,7 +182,58 @@
             "label": ""
           },
           {
+            "key": "createdAt",
+            "width": 150,
             "format": "YYYY-MM-DD",
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "shipment",
+              "name": "createdAt"
+            }
+          },
+          {
+            "key": "updatedAt",
+            "width": 150,
+            "format": "YYYY-MM-DD",
+            "sql": {
+              "classname": "ColumnExpression",
+              "table": "shipment",
+              "name": "updatedAt"
+            }
+          },
+          {
+            "key": "departureDateEstimated",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "departureDateActual",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "arrivalDateEstimated",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "arrivalDateActual",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "cargoReadyDateEstimated",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "key": "cargoReadyDateActual",
+            "width": 150,
+            "format": "YYYY-MM-DD"
+          },
+          {
+            "format": "YYYY-MM-DD",
+            "width": 150,
             "key": "jobDate"
           },
           {
