@@ -1,6 +1,7 @@
-import { EventConfig, EventData, EventHandlerConfig } from 'modules/events/service'
+import { EventConfig, EventData, EventHandlerConfig,  } from 'modules/events/service'
 import { Booking } from 'models/main/booking'
 import { Shipment } from 'models/main/shipment'
+import BaseEventHandler from 'modules/events/baseEventHandler'
 
 export default {
   // BASE EVENT
@@ -90,7 +91,8 @@ export default {
         tableName: 'booking',
         invitationStatus: {
           DEV: 'sent',
-          STD: 'sent'
+          STD: 'sent',
+          FHUB: 'pending'
         }
       },
       afterEvent: [
@@ -119,7 +121,32 @@ export default {
             tableName: 'booking',
             notifyKeys: {
               DEV: ['createdBy', 'forwarder'],
-              STD: ['createdBy', 'forwarder']
+              STD: ['createdBy', 'forwarder'],
+              FHUB: ['createdBy', 'forwarder'],
+            },
+            extraEmail: {
+              DEV: [{
+                func: (originalEntity: any, latestEntity: any, context: BaseEventHandler) => {
+                  return false
+                },
+                name: '',
+                email: 'ken.chan@swivelsoftware.com'
+              }],
+              FHUB: [
+                {
+                  func: (originalEntity: any, latestEntity: any, context: BaseEventHandler) => {
+                    if (process.env.NODE_ENV !== 'production') {
+                      const user = context.user
+                      if (!(user.parties || []).find(p => ['F0001', 'F0002', 'F0003', 'F0004'].includes(p.erpCode))) {
+                        return true
+                      }
+                    }
+                    return false
+                  },
+                  name: '',
+                  email: 'iris.chiu+fortosgn@swivelsoftware.com'// 'jacinta.tan@forto.com'
+                }
+              ]
             }
           },
         }
@@ -203,7 +230,8 @@ export default {
         tableName: 'booking',
         invitationStatus: {
           DEV: 'sent',
-          STD: 'sent'
+          STD: 'sent',
+          FHUB: 'pending'
         }
       },
       afterEvent: [
@@ -217,7 +245,7 @@ export default {
             primaryKey: (eventData: EventData<Shipment>) => {
               return eventData.latestEntity.id
             },
-            tableName: 'shipment',
+            tableName: 'booking',
           }
         }, {// notify entity
           condition: true,
@@ -231,8 +259,33 @@ export default {
             },
             tableName: 'booking',
             notifyKeys: {
-              DEV: ['updatedBy', 'forwarder'],
-              STD: ['updatedBy', 'forwarder']
+              DEV: ['createdBy', 'forwarder'],
+              STD: ['createdBy', 'forwarder'],
+              FHUB: ['createdBy', 'forwarder'],
+            },
+            extraEmail: {
+              DEV: [{
+                func: (originalEntity: any, latestEntity: any, context: BaseEventHandler) => {
+                  return false
+                },
+                name: '',
+                email: 'ken.chan@swivelsoftware.com'
+              }],
+              FHUB: [
+                {
+                  func: (originalEntity: any, latestEntity: any, context: BaseEventHandler) => {
+                    if (process.env.NODE_ENV !== 'production') {
+                      const user = context.user
+                      if (!(user.parties || []).find(p => ['F0001', 'F0002', 'F0003', 'F0004'].includes(p.erpCode))) {
+                        return true
+                      }
+                    }
+                    return false
+                  },
+                  name: 'Forto SIN',
+                  email: 'iris.chiu+fortosgn@swivelsoftware.com'// 'jacinta.tan@forto.com'
+                }
+              ]
             }
           },
         }

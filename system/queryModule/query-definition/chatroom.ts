@@ -354,9 +354,9 @@ query.register('messageSearch', (value: any, params?: IQueryParams) => {
 
   if(q){
     keywords=q.split(' ')
-  }else{
-    keywords.push(q)
   }
+
+  if(keywords && keywords.length === 0) keywords.push(q)
 
   keywords.forEach(el => {
     keywordsExpression.push(new LikeExpression(messageExpression, false, `%${el}%`))
@@ -364,9 +364,7 @@ query.register('messageSearch', (value: any, params?: IQueryParams) => {
 
 
   return new Query({
-    $where: new AndExpressions({
-      expressions: keywordsExpression
-    })
+    $where: new AndExpressions(keywordsExpression)
   })
 })
 

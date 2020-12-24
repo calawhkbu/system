@@ -57,10 +57,31 @@ export default class NotifyEntityEvent extends BaseEventHandler {
         latestEntity,
         tableName,
         notifyKeys = {},
+        extraEmail = {}
       }: EventData<any> & { tableName: string, primaryKey: string }
     ) => {
       const partyGroupCode = _.get(latestEntity, 'partyGroupCode', null)
       const finalKeys = notifyKeys[partyGroupCode] || []
+      const extraEmailHandle = extraEmail[partyGroupCode] || []
+      if (extraEmailHandle && extraEmailHandle.length) {
+        for (const { func = 'return true', name, email } of extraEmailHandle) {
+          const callFunc = typeof func === 'function' ? func : new Function('originalEntity', 'latestEntity', 'context', func)
+          if (callFunc(originalEntity, latestEntity, this)) {
+            dataList.push({
+              type: 'extra',
+              name,
+              email,
+              originalEntity: originalEntity,
+              entity: latestEntity,
+              isUpdate: eventType === 'update' ? true : false,
+              partyGroupCode,
+              subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
+              language: 'en',
+              template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
+            })
+          }
+        }
+      }
       const picEmail = _.get(latestEntity, 'picEmail', null)
       if (picEmail && finalKeys.includes('pic')) {
         dataList.push({

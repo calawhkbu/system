@@ -1240,17 +1240,39 @@ query.table('updatedPerson', new Query({
 }))
 const createdByExpression = IfNullExpression(
   new ColumnExpression('shipment', 'createdUserId'),
-  IfNullExpression(
-    new ColumnExpression('createdPerson', 'displayName'),
-    new FunctionExpression('CONCAT', new ColumnExpression('createdPerson', 'firstName'), ' ', new ColumnExpression('createdPerson', 'lastName'))
+  new FunctionExpression(
+    'if',
+    new OrExpressions({
+      expressions: [
+        new IsNullExpression(new ColumnExpression('createdPerson', 'displayName'), true),
+        new IsNullExpression(new ColumnExpression('createdPerson', 'firstName'), true),
+        new IsNullExpression(new ColumnExpression('createdPerson', 'lastName'), true),
+      ]
+    }),
+    IfNullExpression(
+      new ColumnExpression('createdPerson', 'displayName'),
+      new FunctionExpression('CONCAT', new ColumnExpression('createdPerson', 'firstName'), ' ', new ColumnExpression('createdPerson', 'lastName'))
+    ),
+    new ColumnExpression('shipment', 'createdBy')
   )
 )
 const updatedByExpression = IfNullExpression(
   new ColumnExpression('shipment', 'updatedUserId'),
-  IfNullExpression(
-    new ColumnExpression('updatedPerson', 'displayName'),
-    new FunctionExpression('CONCAT', new ColumnExpression('updatedPerson', 'firstName'), ' ', new ColumnExpression('updatedPerson', 'lastName'))
-  )
+  new FunctionExpression(
+    'if',
+    new OrExpressions({
+      expressions: [
+        new IsNullExpression(new ColumnExpression('updatedPerson', 'displayName'), true),
+        new IsNullExpression(new ColumnExpression('updatedPerson', 'firstName'), true),
+        new IsNullExpression(new ColumnExpression('updatedPerson', 'lastName'), true),
+      ]
+    }),
+    IfNullExpression(
+      new ColumnExpression('updatedPerson', 'displayName'),
+      new FunctionExpression('CONCAT', new ColumnExpression('updatedPerson', 'firstName'), ' ', new ColumnExpression('updatedPerson', 'lastName'))
+    ),
+    new ColumnExpression('shipment', 'updatedBy')
+  ),
 )
 // =======================================
 
