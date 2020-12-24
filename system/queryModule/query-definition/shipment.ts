@@ -25,6 +25,7 @@ import {
   IExpression,
   IConditionalExpression,
   MathExpression,
+  OrderBy,
 } from 'node-jql'
 import { IQueryParams } from 'classes/query'
 import { ExpressionHelperInterface, registerAll, SummaryField, registerSummaryField, NestedSummaryCondition, registerAllDateField, addDateExpression, convertToEndOfDate, convertToStartOfDate, registerQueryCondition, registerCheckboxField, registerNestedSummaryFilter, IfExpression, RegisterInterface, IfNullExpression } from 'utils/jql-subqueries'
@@ -507,8 +508,15 @@ locationList.map(location => {
           $as: `${location}Country`
         }),
         $on: [
+          // TODO user.selectedPartyCode
           new BinaryExpression(new ColumnExpression(`${location}`, 'countryCode'), '=', new ColumnExpression(`${location}Country`, 'code')),
-          new BinaryExpression(new ColumnExpression(`${location}Country`, 'codeType'), '=', 'COUNTRY')
+          new BinaryExpression(new ColumnExpression(`${location}Country`, 'codeType'), '=', 'COUNTRY'),
+          new OrExpressions({
+            expressions: [
+              new BinaryExpression(new ColumnExpression('shipment', 'partyGroupCode'), '=', new ColumnExpression(`${location}Country`, 'partyGroupCode')),
+              new IsNullExpression(new ColumnExpression(`${location}Country`, 'partyGroupCode'), false)
+            ]
+          })
         ]
       }]
     }),
@@ -1348,32 +1356,37 @@ const agentGroupExpression = new CaseExpression({
 
 const carrierCodeExpression = new FunctionExpression('IFNULL',
   new CaseExpression({
-
     cases: [
       {
         $when: new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
         $then: new QueryExpression(new Query({
-
           $select: [
             new ResultColumn(new ColumnExpression('cm1', 'code'))
           ],
           $from: new FromTable({
-
             table: 'code_master',
             $as: 'cm1'
           }),
           $where: [
+            new OrExpressions([
+              new IsNullExpression(new ColumnExpression('cm1', 'partyGroupCode'), false),
+              new BinaryExpression(new ColumnExpression('cm1', 'partyGroupCode'), '=', new ColumnExpression('shipment', 'partyGroupCode'))
+            ]),
             new BinaryExpression(new ColumnExpression('cm1', 'codeType'), '=', 'CARRIER_SWIVEL_TO_YD'),
-            new BinaryExpression(new ColumnExpression('cm1', 'code'), '=', new FunctionExpression('LEFT', new ColumnExpression('shipment', 'masterNo'), 3))
+            new BinaryExpression(new ColumnExpression('cm1', 'code'), '=', new FunctionExpression('LEFT', new ColumnExpression('shipment', 'masterNo'), 3)),
+            new OrExpressions({
+              expressions: [
+                new BinaryExpression(new ColumnExpression('shipment', 'partyGroupCode'), '=', new ColumnExpression(`cm1`, 'partyGroupCode')),
+                new IsNullExpression(new ColumnExpression('cm1', 'partyGroupCode'), false)
+              ]
+            })
           ],
+          $order: new OrderBy(new ColumnExpression('cm1', 'partyGroupCode'), 'DESC'),
           $limit: 1
-
         }))
       }
     ],
-
     $else: new ColumnExpression('shipment', 'carrierCode')
-
   }),
   new ColumnExpression('shipment', 'carrierCode')
 )
@@ -1381,39 +1394,39 @@ const carrierCodeExpression = new FunctionExpression('IFNULL',
 const carrierNameExpression = new FunctionExpression('IFNULL',
   new FunctionExpression('IFNULL',
     new CaseExpression({
-
       cases: [{
-
         $when: new BinaryExpression(new ColumnExpression('shipment', 'moduleTypeCode'), '=', 'AIR'),
         $then: new QueryExpression(new Query({
-
           $select: [
-            new ResultColumn(new ColumnExpression('cm2', 'name'))
+            new ResultColumn(new QueryExpression(new Query({
+              $select: [new ResultColumn(new ColumnExpression('cm2', 'name'), 'name')],
+              $from: new FromTable('code_master', 'cm2'),
+              $where: [
+                new OrExpressions([
+                  new IsNullExpression(new ColumnExpression('cm2', 'partyGroupCode'), false),
+                  new BinaryExpression(new ColumnExpression('cm2', 'partyGroupCode'), '=', new ColumnExpression('shipment', 'partyGroupCode'))
+                ]),
+                new BinaryExpression(new ColumnExpression('cm1', 'name'), '=', new ColumnExpression('cm2', 'code')),
+                new BinaryExpression(new ColumnExpression('cm2', 'codeType'), '=', 'CARRIER')
+              ],
+              $order: new OrderBy(new ColumnExpression('cm2', 'partyGroupCode'), 'DESC'),
+              $limit: 1
+            })), 'name')
           ],
           $from: new FromTable({
             table: 'code_master',
             $as: 'cm1',
-            joinClauses: [
-              new JoinClause({
-
-                table: new FromTable({
-                  table: 'code_master',
-                  $as: 'cm2'
-                }),
-
-                $on: [
-                  new BinaryExpression(new ColumnExpression('cm1', 'name'), '=', new ColumnExpression('cm2', 'code')),
-                  new BinaryExpression(new ColumnExpression('cm2', 'codeType'), '=', 'CARRIER')
-                ]
-
-              })
-            ]
           }),
           $where: [
+            new OrExpressions([
+              new IsNullExpression(new ColumnExpression('cm1', 'partyGroupCode'), false),
+              new BinaryExpression(new ColumnExpression('cm1', 'partyGroupCode'), '=', new ColumnExpression('shipment', 'partyGroupCode'))
+            ]),
             new BinaryExpression(new ColumnExpression('cm1', 'codeType'), '=', 'CARRIER_SWIVEL_TO_YD'),
             new BinaryExpression(new ColumnExpression('cm1', 'code'), '=', new FunctionExpression('LEFT', new ColumnExpression('shipment', 'masterNo'), 3))
-          ]
-
+          ],
+          $order: new OrderBy(new ColumnExpression('cm1', 'partyGroupCode'), 'DESC'),
+          $limit: 1
         }))
       }],
 

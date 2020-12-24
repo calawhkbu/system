@@ -71,21 +71,15 @@ export default {
           nameColumnName = prevResult.nameColumnName = (groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierName`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyShortNameInReport`) + 'Any'
          
         
-        console.debug('preparParams')
-        console.debug(params)
         prevResult.groupByEntity = groupByEntity
         prevResult.codeColumnName = codeColumnName
         prevResult.nameColumnName = nameColumnName
 
         const topX = subqueries.topX.value
-        console.debug("SUBQURIES");
-        console.debug(subqueries)
 
 
 
         const summaryVariables = expandSummaryVariable(subqueries)
-        console.debug("summaryVariables")
-        console.debug(summaryVariables);
 
         prevResult.summaryVariables = summaryVariables
 
@@ -127,9 +121,6 @@ export default {
         }
 
         params.limit = topX
-        console.debug("params JQL expressions")
-        console.debug(params)
-        console.debug(prevResult)
         return params
       }
     },
@@ -139,14 +130,11 @@ export default {
 
       onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
           
-        console.debug("callDataService")
-        console.debug(res)
 
         const selectedsummaryVariable=summaryVariables[0];
         res=res.filter(o=>o[`total_${selectedsummaryVariable}`]!=0);
-        console.debug("filtered res ")
-        console.debug(res);
-        
+console.log('res')
+console.log(res)        
 
 
         return res.map(row => {

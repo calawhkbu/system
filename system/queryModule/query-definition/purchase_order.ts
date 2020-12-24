@@ -348,6 +348,12 @@ query.table('incoTerms', new Query({
             '=',
             new ColumnExpression('incoTerms', 'code')
           ),
+          new OrExpressions({
+            expressions: [
+              new BinaryExpression(new ColumnExpression('purchase_order', 'partyGroupCode'), '=', new ColumnExpression(`incoTerms`, 'partyGroupCode')),
+              new IsNullExpression(new ColumnExpression(`incoTerms`, 'partyGroupCode'), false),
+            ]
+          }),
         ],
       },
     ]
@@ -358,7 +364,6 @@ query.table('freightTerms', new Query({
 
   $from: new FromTable({
     table: 'purchase_order',
-
     joinClauses: [
       {
         operator: 'LEFT',
@@ -369,12 +374,17 @@ query.table('freightTerms', new Query({
             '=',
             new Value('PAYTERMS')
           ),
-
           new BinaryExpression(
             new ColumnExpression('purchase_order', 'freightTermsCode'),
             '=',
             new ColumnExpression('freightTerms', 'code')
           ),
+          new OrExpressions({
+            expressions: [
+              new BinaryExpression(new ColumnExpression('purchase_order', 'partyGroupCode'), '=', new ColumnExpression(`incoTerms`, 'partyGroupCode')),
+              new IsNullExpression(new ColumnExpression(`incoTerms`, 'partyGroupCode'), false),
+            ]
+          }),
         ],
       },
     ]
@@ -396,12 +406,17 @@ query.table('moduleType', new Query({
             '=',
             new Value('MODULE')
           ),
-
           new BinaryExpression(
             new ColumnExpression('purchase_order', 'moduleTypeCode'),
             '=',
             new ColumnExpression('moduleType', 'code')
           ),
+          new OrExpressions({
+            expressions: [
+              new BinaryExpression(new ColumnExpression('purchase_order', 'partyGroupCode'), '=', new ColumnExpression(`moduleType`, 'partyGroupCode')),
+              new IsNullExpression(new ColumnExpression(`moduleType`, 'partyGroupCode'), false),
+            ]
+          }),
         ],
       },
     ]
@@ -474,7 +489,7 @@ partyList.map(party => {
 query.register('getPoItemById',
   new Query({
     $from: new FromTable('purchase_order_item', 'purchase_order_item'),
-    $where: 
+    $where:
         new RegexpExpression(new ColumnExpression('purchase_order_item', 'poId'), false)
   })
 )
@@ -496,7 +511,7 @@ const activeStatusExpression = new CaseExpression({
   $else: new Value('active')
 })
 
-// get poItem that is booked 
+// get poItem that is booked
 query.subquery('bookedPo', new Query({
   $from: new FromTable({
     table: 'booking',

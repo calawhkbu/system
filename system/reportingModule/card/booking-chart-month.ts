@@ -31,8 +31,6 @@ export default {
           params.groupBy = ['jobMonth']
 
           params.fields = ['jobMonth', ...summaryVariables]
-          // console.debug("paramsFIELD")
-          // console.debug(params)
 
           return params
         }

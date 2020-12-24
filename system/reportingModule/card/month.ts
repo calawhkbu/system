@@ -2,53 +2,35 @@ import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
 import { OrderBy } from 'node-jql'
 import Moment = require('moment')
-import { expandGroupEntity, expandSummaryVariable, extendDate } from 'utils/card'
+import { expandGroupEntity, groupByEntityList,summaryVariableList,summaryVariableListBooking,groupByEntityListBooking,expandSummaryVariable,
+extendDate } from 'utils/card'
 import { ERROR } from 'utils/error'
+import { dateSourceList } from '../dateSource'
+import { entityTypeList } from '../entityType'
+let summaryVariables = summaryVariableList
 
-interface Result {
-  moment: typeof Moment
-  groupByEntity: string
-  codeColumnName: string
-  nameColumnName: string
-  summaryVariables: string[]
-}
 
-//base file and list for dateSourceList, implementation 
-//in swivel-backend-new/src/utils/jql-subqueries.ts
-export const dateSourceList=  {
-  display: "dateSource",
-  name: "dateSource",
-  props: {
-    items: [
-      {
-        label: "departureDateEstimated",
-        value: "departureDateEstimated"
-      },
-      {
-        label: "arrivalDateEstimated",
-        value: "arrivalDateEstimated"
-      },
-      {
-        label: "createdAt",
-        value: "createdAt"
-      }
 
-    ],
-    multi: false,
-    required: true,
-  },
-  type: 'list'
-}
+
+
 
 export default {
   jqls: [
     {
       type: 'prepareParams',
       defaultResult: {},
-      async prepareParams(params, prevResult: Result, user): Promise<IQueryParams> {
+      async prepareParams(params, prevResult: any, user): Promise<IQueryParams> {
         function guessSortingExpression(sortingValue: string, subqueries) {
           const variablePart = sortingValue.substr(0, sortingValue.lastIndexOf('_'))
           let sortingDirection = sortingValue.substr(sortingValue.lastIndexOf('_') + 1)
+          const entityType = params.subqueries.entityType && params.subqueries.entityType.value || 'booking'
+          const custom = params.subqueries.custom && params.subqueries.custom.value || null
+
+
+
+          if (!entityType) throw ERROR.MISSING_ENTITY_TYPE()
+
+         
 
           if (!['ASC', 'DESC'].includes(sortingDirection)) {
             sortingDirection = 'ASC'
@@ -77,12 +59,19 @@ export default {
 
         const moment = prevResult.moment = (await this.preparePackages(user)).moment as typeof Moment
         const subqueries = (params.subqueries = params.subqueries || {})
+        const entityType = params.subqueries.entityType && params.subqueries.entityType.value || 'booking'
+        const custom = params.subqueries.custom && params.subqueries.custom.value || null
+
+        if (entityType === 'booking'){
+          let groupByEntityList = groupByEntityListBooking
+         summaryVariables = summaryVariableListBooking 
+      }
 
         // idea: userGroupByVariable and userSummaryVariable is selected within filter by user
-        if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw ERROR.MISSING_GROUP_BY()
-        if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw ERROR.MISSING_TOP_X()
-
-
+        if(params.subqueries.custom !== 'chart'){
+          if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw ERROR.MISSING_GROUP_BY()
+          if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw ERROR.MISSING_TOP_X()
+      
         var { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
   // -----------------------------groupBy variable
   groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
@@ -95,38 +84,8 @@ export default {
 
         const topX = subqueries.topX.value
 
-        // ---------------------summaryVariables
-
-        // let summaryVariables: string[] = []
-        // if (subqueries.summaryVariables && subqueries.summaryVariables !== true && 'value' in subqueries.summaryVariables) {
-        //   // sumamary variable
-        //   summaryVariables = Array.isArray(subqueries.summaryVariables.value ) ? subqueries.summaryVariables.value : [subqueries.summaryVariables.value]
-        // }
-        // if (subqueries.summaryVariable && subqueries.summaryVariable !== true && 'value' in subqueries.summaryVariable) {
-        //   summaryVariables = [...new Set([...summaryVariables, subqueries.summaryVariable.value] as string[])]
-        // }
-        // if (!(summaryVariables && summaryVariables.length)){
-        //   throw new Error('MISSING_summaryVariables')
-        // }
-        // prevResult.summaryVariables = summaryVariables
-
-        const summaryVariables = expandSummaryVariable(subqueries)
-        prevResult.summaryVariables = summaryVariables
-
-
-        // ----------------------- filter
-        // // limit/extend to 1 year
-        // const year = (subqueries.date && subqueries.date !== true && 'from' in subqueries.date ? moment(subqueries.date.from, 'YYYY-MM-DD'): moment()).year()
-        // subqueries.date = {
-        //   from: moment()
-        //     .year(year)
-        //     .startOf('year')
-        //     .format('YYYY-MM-DD'),
-        //   to: moment()
-        //     .year(year)
-        //     .endOf('year')
-        //     .format('YYYY-MM-DD')
-        // }
+    
+        
 
         // extend date into whole year
         extendDate(subqueries,moment,'year')
@@ -144,6 +103,10 @@ export default {
 
         // group by
         params.groupBy = [codeColumnName]
+        params.limit = topX
+      
+
+        
 
         // // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
         // params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
@@ -160,19 +123,71 @@ export default {
         else {
           params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
         }
+      }else if (params.subqueries.custom == 'count'){
+        const summaryVariables = expandSummaryVariable(subqueries)
 
-        params.limit = topX
+        prevResult.summaryVariables = summaryVariables
+        extendDate(subqueries,moment,'year')
+        subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+          value: true
+        }
+    
+        params.fields = [
+          // select Month statistics
+          ...summaryVariables.map(variable => `${variable}Month`),
+          codeColumnName,
+          nameColumnName,
+        ]
 
+        // group by
+        params.groupBy = [codeColumnName]
+
+        // // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
+        // params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
+
+        const sorting = params.sorting = []
+        if (subqueries.sorting && subqueries.sorting !== true && 'value' in subqueries.sorting) {
+          const sortingValueList = subqueries.sorting.value as string[]
+          sortingValueList.forEach(sortingValue => {
+            // will try to find in sortingExpressionMap first, if not found , just use the normal value
+            const orderByExpression = guessSortingExpression(sortingValue, subqueries)
+            sorting.push(orderByExpression)
+          })
+        }
+        else {
+    
+          params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
+        }
+      }else if(params.subqueries.custom === 'chart') { //previously jql as {booking}-chart-month
+        params.groupBy = ['jobMonth']
+        params.fields = ['jobMonth', ...summaryVariables]
+        delete params.sorting
+        params.limit = 10 
+       }
+
+       console.log('params..')
+       console.log(params)
+       console.log('summaryVariables')
+       console.log(summaryVariables)
 
         return params
       }
     },
     {
       type: 'callDataService',
-      dataServiceQuery: ['booking', 'booking'],
-      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName, summaryVariables }: Result): any[] {
-        return res.map(row => {
-          const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
+      getDataServiceQuery: (params): [string, string] {
+        const entityType = params.subqueries.entityType && params.subqueries.entityType.value || 'shipment'
+        return [entityType.toLowerCase(), entityType.toLowerCase()]
+      }, 
+      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName }: any){
+        let row_
+        const selectedsummaryVariable=summaryVariables[0];
+        res=res.filter(o=>o[`total_${selectedsummaryVariable}`]!=0);
+        if (params.subqueries.entityType && params.subqueries.entityType.value === 'booking'){
+         summaryVariables = summaryVariableListBooking 
+         return res.map(row => {
+          var row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
+          var empty=true;
 
           for (const variable of summaryVariables) {
             let total = 0
@@ -186,11 +201,30 @@ export default {
             }
             row_[`total_${variable}`] = total
           }
-
-          return row_
+              return row_
+    
         })
+    
+}else{
+  return res.map(row => {
+    let row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
+    for (const variable of summaryVariables) {
+      let total = 0
+      for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
+        const month = moment().month(m).format('MMMM')
+        const key = `${month}_${variable}`
+        let value = +row[key]
+        if (isNaN(value)) value = 0
+        row_[key] = value
+        total += value
+      }
+      row_[`total_${variable}`] = total
+    }
+    return row_
+      })
       }
     }
+  }
   ],
   filters: [
     // for this filter, user can only select single,
@@ -198,6 +232,8 @@ export default {
 {
   ...dateSourceList
 },
+{...entityTypeList},
+
     {
       display: 'topX',
       name: 'topX',
@@ -234,18 +270,13 @@ export default {
       name: 'summaryVariable',
       props: {
         items: [
-          {
-            label: 'quantity',
-            value: 'quantity',
-          },
-          {
-            label: 'weight',
-            value: 'weight',
-          },
-          {
-            label: 'totalBooking',
-            value: 'totalBooking',
-          },
+
+          ...summaryVariables.map(summaryVariable => {
+            return {
+              label: summaryVariable,
+              value: summaryVariable
+            }
+          })
         ],
         multi : false,
         required: true,
@@ -257,49 +288,13 @@ export default {
       name: 'groupByEntity',
       props: {
         items: [
-          {
-            label: 'carrier',
-            value: 'carrier',
-          },
-          {
-            label: 'shipper',
-            value: 'shipper',
-          },
-          {
-            label: 'consignee',
-            value: 'consignee',
-          },
-          {
-            label: 'agent',
-            value: 'agent',
-          },
 
-          {
-            label: 'controllingCustomer',
-            value: 'controllingCustomer',
-          },
-          {
-            label: 'linerAgent',
-            value: 'linerAgent',
-          },
-          {
-            label: 'roAgent',
-            value: 'roAgent',
-          },
-
-          {
-            label : 'moduleType',
-            value : 'moduleType'
-          },
-          {
-            label : 'bookingNo',
-            value : 'bookingNo'
-          },
-          {
-            label : 'forwarder',
-            value : 'forwarder'
-          },
-
+          ...groupByEntityList.map(item => {
+            return {
+              label: item,
+              value: item
+            }
+          })
         ],
         required: true,
       },
