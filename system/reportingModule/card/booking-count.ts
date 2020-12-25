@@ -133,14 +133,13 @@ export default {
 
         const selectedsummaryVariable=summaryVariables[0];
         res=res.filter(o=>o[`total_${selectedsummaryVariable}`]!=0);
-console.log('res')
-console.log(res)        
 
 
         return res.map(row => {
           var row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
           var empty=true;
-
+          console.log('summaryVariables====')
+          console.log(summaryVariables)
           for (const variable of summaryVariables) {
             let total = 0
             for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {

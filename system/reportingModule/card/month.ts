@@ -1,6 +1,6 @@
 import { JqlDefinition } from 'modules/report/interface'
 import { IQueryParams } from 'classes/query'
-import { OrderBy } from 'node-jql'
+import { OrderBy, ParameterExpression } from 'node-jql'
 import Moment = require('moment')
 import { expandGroupEntity, groupByEntityList,summaryVariableList,summaryVariableListBooking,groupByEntityListBooking,expandSummaryVariable,
 extendDate } from 'utils/card'
@@ -68,7 +68,7 @@ export default {
       }
 
         // idea: userGroupByVariable and userSummaryVariable is selected within filter by user
-        if(params.subqueries.custom !== 'chart'){
+        if(custom !== 'chart'){
           if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw ERROR.MISSING_GROUP_BY()
           if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw ERROR.MISSING_TOP_X()
       
@@ -123,7 +123,7 @@ export default {
         else {
           params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
         }
-      }else if (params.subqueries.custom == 'count'){
+      }else if (custom === 'count'){
         const summaryVariables = expandSummaryVariable(subqueries)
 
         prevResult.summaryVariables = summaryVariables
@@ -158,17 +158,14 @@ export default {
     
           params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
         }
-      }else if(params.subqueries.custom === 'chart') { //previously jql as {booking}-chart-month
-        params.groupBy = ['jobMonth']
-        params.fields = ['jobMonth', ...summaryVariables]
-        delete params.sorting
-        params.limit = 10 
+      }else if(custom === 'chart') { //previously jql as {booking}-chart-month
+      const summaryVariables = expandSummaryVariable(subqueries)
+      prevResult.summaryVariables = summaryVariables
+      extendDate(subqueries,moment,'year')
+      params.groupBy = ['jobMonth']
+      params.fields = ['jobMonth', ...summaryVariables]
+      delete params.sorting
        }
-
-       console.log('params..')
-       console.log(params)
-       console.log('summaryVariables')
-       console.log(summaryVariables)
 
         return params
       }
@@ -179,12 +176,13 @@ export default {
         const entityType = params.subqueries.entityType && params.subqueries.entityType.value || 'shipment'
         return [entityType.toLowerCase(), entityType.toLowerCase()]
       }, 
-      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName }: any){
+      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName,summaryVariables }: any){
         let row_
-        const selectedsummaryVariable=summaryVariables[0];
-        res=res.filter(o=>o[`total_${selectedsummaryVariable}`]!=0);
-        if (params.subqueries.entityType && params.subqueries.entityType.value === 'booking'){
-         summaryVariables = summaryVariableListBooking 
+     // params.subqueries.entityType && params.subqueries.entityType.value === 'booking' && 
+        if (params.subqueries.custom && params.subqueries.custom.value === 'count'){
+          summaryVariables = params.subqueries.summaryVariables.value
+          const selectedsummaryVariable=summaryVariables[0] 
+          res=res.filter(o=>o[`total_${selectedsummaryVariable}`]!=0)
          return res.map(row => {
           var row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
           var empty=true;
@@ -202,26 +200,63 @@ export default {
             row_[`total_${variable}`] = total
           }
               return row_
-    
         })
     
-}else{
-  return res.map(row => {
-    let row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
-    for (const variable of summaryVariables) {
-      let total = 0
-      for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
-        const month = moment().month(m).format('MMMM')
-        const key = `${month}_${variable}`
-        let value = +row[key]
-        if (isNaN(value)) value = 0
-        row_[key] = value
-        total += value
-      }
-      row_[`total_${variable}`] = total
-    }
-    return row_
-      })
+
+      }else if(params.subqueries.custom && params.subqueries.custom.value === 'chart'){
+         res = res.map(row => {
+           row_= { jobMonth: row.jobMonth }
+          for (const variable of summaryVariables) {
+            const value = row[variable]
+            row_[variable] = isNaN(value) ? 0 : value
+          }
+          return row_
+        })
+
+        const result: any[] = []
+        for (const row of res) {
+          for (const variable of summaryVariables) {
+            result.push({
+              type: variable,
+              month: moment(row.jobMonth, 'YYYY-MM').format('MMMM'),
+              value: row[variable]
+            })
+          }
+        }
+        console.log('result')
+        console.log(result)
+        return result
+      }else if(!params.subqueries.custom){
+        return res.map(row => {
+           row_ = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
+          let defaultSummaryVariable = []
+          if(params.subqueries.entityType.value === 'booking'){
+            defaultSummaryVariable = ['totalBooking']
+          }else if(params.subqueries.entityType.value === 'shipment'){
+            defaultSummaryVariable = ['totalShipment']
+          }
+
+
+          summaryVariables = params.subqueries.summaryVariables && params.subqueries.summaryVariables.value || defaultSummaryVariable
+          console.log('summaryVariables')
+          console.log(summaryVariables)
+          for (const variable of summaryVariables) {
+            let total = 0
+            for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
+              const month = moment().month(m).format('MMMM')
+              const key = `${month}_${variable}`
+              let value = +row[key]
+              if (isNaN(value)) value = 0
+              row_[key] = value
+              total += value
+            }
+            row_[`total_${variable}`] = total
+          }
+          console.log('row_')
+          console.log(row_)
+
+          return row_
+        })
       }
     }
   }
