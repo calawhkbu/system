@@ -89,7 +89,6 @@ export default {
       
   // -----------------------------groupBy variable
   groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value || 'carrier' // should be shipper/consignee/agent/controllingCustomer/carrier
-
         extendDate(subqueries,moment,'year')
         subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
           value: true
@@ -104,6 +103,7 @@ export default {
           ...summaryVariables.map(variable => `${variable}Month`),
           codeColumnName,
           nameColumnName,
+          `total${entityType.substr(0,1).toUpperCase()+entityType.slice(1)}`
         ]
      
 
@@ -130,7 +130,7 @@ export default {
 
         }
 
-         
+         return params
       }else if (custom === 'count'){
       
         const summaryVariables = expandSummaryVariable(subqueries)
@@ -150,7 +150,6 @@ export default {
         params.groupBy = [codeColumnName]
 
         // // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
-        // params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
       
         const sorting = params.sorting = []
         if (subqueries.sorting && subqueries.sorting !== true && 'value' in subqueries.sorting) {
@@ -173,11 +172,12 @@ export default {
       params.groupBy = ['jobMonth']
       params.fields = ['jobMonth', ...summaryVariables]
       delete params.sorting
-       }else if(custom === ('frc' || 'fr')){
+      return params
+       }else if(custom === 'frc' || custom === 'fr'){
           delete params.fields
           delete params.groupBy
           delete params.limit
-          extendDate(subqueries,moment,'year')
+          extendDate(params.subqueries,moment,'year')
           subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
             value: true
           }
@@ -196,9 +196,6 @@ export default {
         params.sorting = new OrderBy(`total_T_${summaryVariables[0]}`, 'DESC')
         params.limit = topX
         return params
-
-        
-
        }else if(custom === 'dynamic'){
         delete params.fields
         delete params.groupBy
@@ -276,7 +273,7 @@ export default {
         let row_
         let custom = params.subqueries.custom && params.subqueries.custom.value || undefined
         if (custom === 'count'){
-          summaryVariables = params.subqueries.summaryVariables.value
+          summaryVariables = params.subqueries.summaryVariables && params.subqueries.summaryVariables.value || params.subqueries.summaryVariable.value
           const selectedsummaryVariable=summaryVariables[0] 
           res=res.filter(o=>o[`total_${selectedsummaryVariable}`]!=0)
          return res.map(row => {
@@ -321,7 +318,7 @@ export default {
         }
         return result
       
-      }else if(custom === ('frc' || 'fr')){
+      }else if(custom === 'frc' || custom === 'fr'){
         summaryVariables = params.subqueries.summaryVariable&& params.subqueries.summaryVariable.value || 
         params.subqueries.summaryVariables&&params.subqueries.summaryVariables.value
 
@@ -393,28 +390,23 @@ export default {
       }else if(!params.subqueries.custom){
         return res.map(row => {
            row_ = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
-          let defaultSummaryVariable = []
-          if(params.subqueries.entityType.value === 'booking'){
-            defaultSummaryVariable = ['totalBooking']
-          }else if(params.subqueries.entityType.value === 'shipment'){
-            defaultSummaryVariable = ['totalShipment']
-          }
-
-
-          summaryVariables = params.subqueries.summaryVariables && params.subqueries.summaryVariables.value || defaultSummaryVariable
+      
+          summaryVariables = params.subqueries.summaryVariable && params.subqueries.summaryVariable.value || 
+          params.subqueries.summaryVariables && params.subqueries.summaryVariables.value 
           for (const variable of summaryVariables) {
             let total = 0
             for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
               const month = moment().month(m).format('MMMM')
-              const key = `${month}_${variable}`
+              const key = `${month}_${variable}` 
+              
               let value = +row[key]
               if (isNaN(value)) value = 0
               row_[key] = value
               total += value
             }
             row_[`total_${variable}`] = total
+            if(params.subqueries.entityType.value === 'shipment') row_[`total_totalShipment`]=row['totalShipment']
           }
-
           return row_
         })
       }
@@ -424,9 +416,7 @@ export default {
   filters: [
     // for this filter, user can only select single,
     // but when config in card definition, use summaryVariables. Then we can set as multi
-{
-  ...dateSourceList
-},
+{ ...dateSourceList},
 {...entityTypeList},
 
     {
