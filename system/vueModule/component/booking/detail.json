@@ -6,7 +6,6 @@
         "class": "xs-12 grid min-height-28 align-item-center full-width padding-2",
         "components": [{
             "is": "v-btn",
-            "if": "return context.$store.state.main.widget",
             "props": {
               "class": "margin-0",
               "small": true,
@@ -21,34 +20,24 @@
             }],
             "events": {
               "click.stop": [{
-                "type": "emit-global",
+                "type": "switch",
                 "otherParams": {
-                  "name": "back-list"
-                }
-              }]
-            }
-          },
-          {
-            "is": "v-btn",
-            "if": "return !context.$store.state.main.widget",
-            "props": {
-              "class": "margin-0",
-              "small": true,
-              "flat": true,
-              "icon": true
-            },
-            "slots": [{
-              "is": "Icon",
-              "props": {
-                "icon": "arrow_back"
-              }
-            }],
-            "events": {
-              "click.stop": [{
-                "type": "router",
-                "otherParams": {
-                  "func": "push",
-                  "path": "/{{ p[0] }}/{{ p[1] }}"
+                  "cases": [{
+                    "when": "return context.$store.state.main.widget",
+                    "func": [{
+                      "type": "emit-global",
+                      "otherParams": {
+                        "name": "back-list"
+                      }
+                    }]
+                  }],
+                  "elseCase": [{
+                    "type": "router",
+                    "otherParams": {
+                      "func": "push",
+                      "path": "/{{ p[0] }}/{{ p[1] }}"
+                    }
+                  }]
                 }
               }]
             }
@@ -66,131 +55,33 @@
           },
           {
             "is": "WorkflowStatus",
-            "if": "return false"
+            "if": [
+              "const userParties = context.$store.state.auth.userProfile.selectedParties || [];",
+              "const booking = context.$store.state.widget.data;",
+              "if (context.isSwivelAdmin) { return true; };",
+              "if (userParties.find(p => (p.id === (booking.bookingParty || {}).controllingCustomerPartyId || p.id === (booking.bookingParty || {}).forwarderPartyId))) { return true; };",
+              "return false;"
+            ]
           },
           {
             "is": "v-spacer"
           },
           {
-            "is": "ToolTip",
-            "if": "return !context.$store.state.main.widget",
+            "is": "AsyncComponent",
             "props": {
-              "bottom": true,
-              "activatorComponents": {
-                "layout": "span",
-                "components": [{
-                  "is": "SaveEntityTemplateButton",
-                  "props": {
-                    "tableName": "shipment",
-                    "targePage": "create",
-                    "small": true,
-                    "flat": true,
-                    "icon": true,
-                    "iconValue": "fas fa-shipping-fast",
-                    "axiosParams": [
-                      "const bookingId = context.$store.state.widget.data.id",
-                      "return {",
-                      "url: 'api/booking/convertToShipment',",
-                      "method: 'POST',",
-                      "data: { bookingIds: [ bookingId ] }",
-                      "}"
-                    ]
-                  }
-                }]
-              },
-              "mainComponents": {
-                "layout": "span",
-                "components": [{
-                  "is": "I18nText",
-                  "props": {
-                    "i18nContext": "BookingPage",
-                    "i18nKey": "convertToShipment"
-                  }
-                }]
-              }
-            }
+              "layoutName": "booking/buttons/copyButton"
+            },
+            "if": "return !context.$store.state.main.widget"
           },
           {
             "is": "ToolTip",
-            "if": "return !context.$store.state.main.widget",
-            "props": {
-              "bottom": true,
-              "activatorComponents": {
-                "layout": "span",
-                "components": [{
-                  "is": "SaveEntityTemplateButton",
-                  "props": {
-                    "tableName": "booking",
-                    "small": true,
-                    "flat": true,
-                    "icon": true,
-                    "templateFunc": [
-                      "delete entity.id",
-                      "delete entity.bookingNo",
-                      "delete entity.bookingCreateTime",
-                      "delete entity.bookingLastUpdateTime",
-                      "delete entity.createdUserEmail",
-                      "delete entity.createdUserName",
-                      "delete entity.createdUserPersonId",
-                      "delete entity.createdUserPhone",
-                      "delete entity.currentTrackingNo",
-                      "delete entity.updatedUserEmail",
-                      "delete entity.updatedUserName",
-                      "delete entity.updatedUserPersonId",
-                      "delete entity.updatedUserPhone",
-                      "delete entity.quantity",
-                      "delete entity.quantityUnit",
-                      "delete entity.grossWeight",
-                      "delete entity.volumeWeight",
-                      "delete entity.chargeableWeight",
-                      "delete entity.weightUnit",
-                      "delete entity.teu",
-                      "delete entity.cbm",
-                      "delete entity.container20",
-                      "delete entity.container40",
-                      "delete entity.containerHQ",
-                      "delete entity.containerOthers",
-                      "delete entity.createdAt",
-                      "delete entity.createdBy",
-                      "delete entity.updatedAt",
-                      "delete entity.updatedBy",
-                      "delete entity.deletedAt",
-                      "delete entity.deletedBy",
-                      "delete entity.bookingParty.id",
-                      "delete entity.bookingParty.bookingId",
-                      "delete entity.bookingParty.createdAt",
-                      "delete entity.bookingParty.createdBy",
-                      "delete entity.bookingParty.updatedAt",
-                      "delete entity.bookingParty.updatedBy",
-                      "delete entity.bookingParty.deletedAt",
-                      "delete entity.bookingParty.deletedBy",
-                      "return {",
-                      "...entity,",
-                      "bookingDate: {},",
-                      "bookingDateUtc: {},",
-                      "bookingContainers: entity.bookingContainers.map(({ id, bookingId, createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy, ...bookingContainer }) => ({ ...bookingContainer })),",
-                      "bookingPopackings: entity.bookingPopackings.map(({ id, bookingId, createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy, ...bookingPopacking }) => ({ ...bookingPopacking })),",
-                      "bookingReference: entity.bookingReference.map(({ id, bookingId, createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy, ...bookingReference }) => ({ ...bookingReference })),",
-                      "}"
-                    ]
-                  }
-                }]
-              },
-              "mainComponents": {
-                "layout": "span",
-                "components": [{
-                  "is": "I18nText",
-                  "props": {
-                    "i18nContext": "BookingPage",
-                    "i18nKey": "copy"
-                  }
-                }]
-              }
-            }
-          },
-          {
-            "is": "ToolTip",
-            "if": "return !context.$store.state.main.widget",
+            "if": [
+              "const isWidget = context.$store.state.main.widget;",
+              "if (isWidget) { return false; };",
+              "const booking = context.$store.state.widget.data;",
+              "if (!booking || (booking.deletedAt && booking.deletedBy)) { return false; };",
+              "return true;"
+            ],
             "props": {
               "bottom": true,
               "activatorComponents": {
@@ -219,7 +110,6 @@
           },
           {
             "is": "ToolTip",
-            "if": "return !context.$store.state.main.widget",
             "props": {
               "bottom": true,
               "activatorComponents": {
@@ -261,75 +151,9 @@
             }
           },
           {
-            "is": "ToolTip",
-            "if": [
-              "if (context.isSwivelAdmin) { return true; }",
-              "const user = context.$store.state.auth.userProfile;",
-              "if (!user) { return false; }",
-              "const partyGroup = user.selectedPartyGroup",
-              "const partyGroupInstalled = (user.selectedPartyGroup.configuration || {}).installedService || [];",
-              "const userRoles = user.roles || []",
-              "if (partyGroupInstalled.find(install => install === 'BOOKING_CONTROL') && partyGroupInstalled.find(install => install === 'BOOKING_DELETE')) {",
-              "return !userRoles.find(role => role.name === 'BLOCK_BOOKING_DELETE')",
-              "}",
-              "return false"
-            ],
-            "props": {
-              "bottom": true,
-              "activatorComponents": {
-                "layout": "span",
-                "components": [{
-                  "is": "DoubleConfirmButton",
-                  "props": {
-                    "small": true,
-                    "flat": true,
-                    "icon": "delete",
-                    "color": "error",
-                    "confirmLabel": "Delete ?"
-                  },
-                  "events": {
-                    "click": [{
-                      "type": "axios",
-                      "otherParams": {
-                        "axiosParams": [
-                          "const data = context.$store.state.widget.data;",
-                          "if (!data) {",
-                          "throw new Error('No DATA');",
-                          "}",
-                          "return {",
-                          "url: 'api/booking/status/delete',",
-                          "method: 'POST',",
-                          "data,",
-                          "}"
-                        ]
-                      },
-                      "afterActions": [{
-                        "type": "router",
-                        "otherParams": {
-                          "func": "push",
-                          "path": "/{{ p[0] }}/{{ p[1] }}"
-                        }
-                      }]
-                    }]
-                  }
-                }]
-              },
-              "mainComponents": {
-                "layout": "span",
-                "components": [{
-                  "is": "I18nText",
-                  "props": {
-                    "i18nContext": "BookingPage",
-                    "i18nKey": "delete"
-                  }
-                }]
-              }
-            }
-          },
-          {
             "is": "AsyncComponent",
             "props": {
-              "layoutName": "booking/extraButton"
+              "layoutName": "booking/buttons/extraButton"
             }
           }
         ]

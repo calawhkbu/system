@@ -1930,6 +1930,10 @@ const fieldList = [
     expression: activeStatusExpression
   },
   {
+    name: 'activeStatusHidden',
+    expression: activeStatusExpression
+  },
+  {
     name: 'lastStatusCode',
     expression: lastStatusCodeExpression,
     companion: ['table:lastStatus']

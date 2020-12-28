@@ -5,25 +5,54 @@
     "is": "WidgetForm",
     "props": {
       "fields": [{
+          "label": "PartyPage.contact",
+          "name": "contact",
+          "component": "v-text-field",
+          "props": {
+            "type": "email"
+          },
+          "class": "xs-4"
+        },{
           "label": "PartyPage.email",
           "name": "email",
           "component": "v-text-field",
           "props": {
             "type": "email"
           },
-          "class": "xs-3"
+          "class": "xs-4"
         },
         {
           "label": "PartyPage.phone",
           "name": "phone",
           "component": "v-text-field",
-          "class": "xs-3"
+          "class": "xs-4"
         },
         {
-          "label": "PartyPage.fax",
-          "name": "fax",
-          "component": "v-text-field",
-          "class": "xs-3"
+          "name": "contacts",
+          "component": "GridField",
+          "class": "xs-12",
+          "props": {
+            "overrideRowIndex": 1,
+            "fields": [{
+                "label": "Widget.contactXName",
+                "name": "Name",
+                "component": "v-text-field",
+                "class": "xs-12 md-4"
+              },
+              {
+                "label": "Widget.contactXEmail",
+                "name": "Email",
+                "component": "v-text-field",
+                "class": "xs-12 md-4"
+              },
+              {
+                "label": "Widget.contactXPhone",
+                "name": "Phone",
+                "component": "v-text-field",
+                "class": "xs-12 md-4"
+              }
+            ]
+          }
         }
       ]
     }

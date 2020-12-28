@@ -328,7 +328,7 @@
         {
           "name": "purchaseOrderParty.{{flex}}{{key}}PartyContacts",
           "component": "TableField",
-          "class": "xs-12",
+          "class": "xs-12 padding-topbottom-4",
           "readonlyClass": "hidden",
           "props": {
             "overrideRowIndex": 1,
@@ -337,21 +337,45 @@
                 "name": "Name",
                 "component": "v-text-field",
                 "class": "xs-12 md-4",
-                "_readonlyClass": "hidden"
+                "_readonlyClass": "hidden",
+                "props": {
+                  "placeholder": " "
+                },
+                "colGroupProps": {
+                  "style": {
+                    "padding": "4px 0px"
+                  }
+                }
               },
               {
                 "label": "Widget.contactXEmail",
                 "name": "Email",
                 "component": "v-text-field",
                 "class": "xs-12 md-4",
-                "_readonlyClass": "hidden"
+                "_readonlyClass": "hidden",
+                "props": {
+                  "placeholder": " "
+                },
+                "colGroupProps": {
+                  "style": {
+                    "padding": "4px 0px"
+                  }
+                }
               },
               {
                 "label": "Widget.contactXPhone",
                 "name": "Phone",
                 "component": "v-text-field",
                 "class": "xs-12 md-4",
-                "_readonlyClass": "hidden"
+                "_readonlyClass": "hidden",
+                "props": {
+                  "placeholder": " "
+                },
+                "colGroupProps": {
+                  "style": {
+                    "padding": "4px 0px"
+                  }
+                }
               }
             ]
           }

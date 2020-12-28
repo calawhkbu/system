@@ -47,13 +47,16 @@
         "linerAgent",
         "controllingCustomer",
         "notifyParty",
-        "controllingParty"
+        "controllingParty",
+        "warehouse",
+        "customsBroker",
+        "trucker",
+        "buyer"
       ],
       "canAdd": true,
       "canAddProps": {
         "class": "xs-12 md-6 min-height-200 padding-leftright-1"
       },
-      "addItemsOrFunc": ["Trucker", "Broker", "Factory", "Warehouse"],
       "fields": [{
           "checkDisplayWhen": "return '{{key}}' === 'forwarder'",
           "name": "bookingParty.forwarderParty",

@@ -1,0 +1,137 @@
+{
+  "components": [{
+    "is": "ToolTip",
+    "if": [
+      "const isWidget = context.$store.state.main.widget;",
+      "const isSwivelAdmin = context.isSwivelAdmin;",
+      "const userParties = context.$store.state.auth.userProfile.selectedParties || [];",
+      "const booking = context.$store.state.widget.data;",
+      "if (!booking || (booking.deletedAt && booking.deletedBy)) { return false; };",
+      "if (isWidget) { return false; };",
+      "if (context.isSwivelAdmin) { return true; };",
+      "return false;"
+    ],
+    "props": {
+      "bottom": true,
+      "activatorComponents": {
+        "layout": "span",
+        "components": [{
+          "is": "SaveEntityTemplateButton",
+          "props": {
+            "tableName": "shipment",
+            "targePage": "create",
+            "small": true,
+            "flat": true,
+            "icon": true,
+            "iconValue": "fas fa-shipping-fast",
+            "axiosParams": [
+              "const bookingId = context.$store.state.widget.data.id",
+              "return {",
+              "url: 'api/booking/convertToShipment',",
+              "method: 'POST',",
+              "data: { bookingIds: [ bookingId ] }",
+              "}"
+            ]
+          }
+        }]
+      },
+      "mainComponents": {
+        "layout": "span",
+        "components": [{
+          "is": "I18nText",
+          "props": {
+            "i18nContext": "BookingPage",
+            "i18nKey": "convertToShipment"
+          }
+        }]
+      }
+    }
+  },
+  {
+    "is": "ToolTip",
+    "if": [
+      "const isWidget = context.$store.state.main.widget;",
+      "const isSwivelAdmin = context.isSwivelAdmin;",
+      "const userParties = context.$store.state.auth.userProfile.selectedParties || [];",
+      "const booking = context.$store.state.widget.data;",
+      "if (!booking || (booking.deletedAt && booking.deletedBy)) { return false; };",
+      "if (isWidget) { return false; };",
+      "if (context.isSwivelAdmin) { return true; };",
+      "return false;"
+    ],
+    "props": {
+      "bottom": true,
+      "activatorComponents": {
+        "layout": "span",
+        "components": [{
+          "is": "SaveEntityTemplateButton",
+          "props": {
+            "tableName": "booking",
+            "small": true,
+            "flat": true,
+            "icon": true,
+            "templateFunc": [
+              "delete entity.id",
+              "delete entity.bookingNo",
+              "delete entity.bookingCreateTime",
+              "delete entity.bookingLastUpdateTime",
+              "delete entity.createdUserEmail",
+              "delete entity.createdUserName",
+              "delete entity.createdUserPersonId",
+              "delete entity.createdUserPhone",
+              "delete entity.currentTrackingNo",
+              "delete entity.updatedUserEmail",
+              "delete entity.updatedUserName",
+              "delete entity.updatedUserPersonId",
+              "delete entity.updatedUserPhone",
+              "delete entity.quantity",
+              "delete entity.quantityUnit",
+              "delete entity.grossWeight",
+              "delete entity.volumeWeight",
+              "delete entity.chargeableWeight",
+              "delete entity.weightUnit",
+              "delete entity.teu",
+              "delete entity.cbm",
+              "delete entity.container20",
+              "delete entity.container40",
+              "delete entity.containerHQ",
+              "delete entity.containerOthers",
+              "delete entity.createdAt",
+              "delete entity.createdBy",
+              "delete entity.updatedAt",
+              "delete entity.updatedBy",
+              "delete entity.deletedAt",
+              "delete entity.deletedBy",
+              "delete entity.bookingParty.id",
+              "delete entity.bookingParty.bookingId",
+              "delete entity.bookingParty.createdAt",
+              "delete entity.bookingParty.createdBy",
+              "delete entity.bookingParty.updatedAt",
+              "delete entity.bookingParty.updatedBy",
+              "delete entity.bookingParty.deletedAt",
+              "delete entity.bookingParty.deletedBy",
+              "return {",
+              "...entity,",
+              "bookingDate: {},",
+              "bookingDateUtc: {},",
+              "bookingContainers: entity.bookingContainers.map(({ id, bookingId, createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy, ...bookingContainer }) => ({ ...bookingContainer })),",
+              "bookingPopackings: entity.bookingPopackings.map(({ id, bookingId, createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy, ...bookingPopacking }) => ({ ...bookingPopacking })),",
+              "bookingReference: entity.bookingReference.map(({ id, bookingId, createdAt, createdBy, updatedAt, updatedBy, deletedAt, deletedBy, ...bookingReference }) => ({ ...bookingReference })),",
+              "}"
+            ]
+          }
+        }]
+      },
+      "mainComponents": {
+        "layout": "span",
+        "components": [{
+          "is": "I18nText",
+          "props": {
+            "i18nContext": "BookingPage",
+            "i18nKey": "copy"
+          }
+        }]
+      }
+    }
+  }]
+}

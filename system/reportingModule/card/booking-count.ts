@@ -57,7 +57,8 @@ export default {
 
         const moment = prevResult.moment = (await this.preparePackages(user)).moment as typeof Moment
         const subqueries = (params.subqueries = params.subqueries || {})
-
+console.log('subquries')
+console.log(subqueries)
         // idea: userGroupByVariable and userSummaryVariable is selected within filter by user
         if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw ERROR.MISSING_GROUP_BY()
         if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw ERROR.MISSING_TOP_X()

@@ -1,0 +1,127 @@
+{
+  "components": [{
+      "is": "ToolTip",
+      "if": [
+        "const user = context.$store.state.auth.userProfile;",
+        "const partyGroup = user.selectedPartyGroup",
+        "const partyGroupInstalled = (user.selectedPartyGroup.configuration || {}).installedService || [];",
+        "const userRoles = user.roles || []",
+        "const booking = context.$store.state.widget.data;",
+        "if (!booking || (booking.deletedAt && booking.deletedBy)) { return false; }",
+        "if (context.isSwivelAdmin) { return true; }",
+        "if (!user) { return false; }",
+        "if (partyGroupInstalled.find(install => install === 'BOOKING_CONTROL') && partyGroupInstalled.find(install => install === 'BOOKING_DELETE')) {",
+        "return !userRoles.find(role => role.name === 'BLOCK_BOOKING_DELETE')",
+        "}",
+        "return false"
+      ],
+      "props": {
+        "bottom": true,
+        "activatorComponents": {
+          "layout": "span",
+          "components": [{
+            "is": "DoubleConfirmButton",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": "delete",
+              "color": "error",
+              "confirmLabel": "Delete ?"
+            },
+            "events": {
+              "click": [{
+                "type": "axios",
+                "otherParams": {
+                  "axiosParams": [
+                    "const data = context.$store.state.widget.data;",
+                    "if (!data) {",
+                    "throw new Error('No DATA');",
+                    "}",
+                    "return {",
+                    "url: 'api/booking/status/delete',",
+                    "method: 'POST',",
+                    "data,",
+                    "}"
+                  ]
+                },
+                "afterActions": [{
+                  "type": "router",
+                  "otherParams": {
+                    "func": "push",
+                    "path": "/{{ p[0] }}/{{ p[1] }}"
+                  }
+                }]
+              }]
+            }
+          }]
+        },
+        "mainComponents": {
+          "layout": "span",
+          "components": [{
+            "is": "I18nText",
+            "props": {
+              "i18nContext": "BookingPage",
+              "i18nKey": "delete"
+            }
+          }]
+        }
+      }
+    },
+    {
+      "is": "ToolTip",
+      "if": [
+        "const user = context.$store.state.auth.userProfile;",
+        "const partyGroup = user.selectedPartyGroup",
+        "const partyGroupInstalled = (user.selectedPartyGroup.configuration || {}).installedService || [];",
+        "const booking = context.$store.state.widget.data;",
+        "const userRoles = user.roles || []",
+        "if (!user) { return false; }",
+        "if (!booking || (booking.deletedAt && booking.deletedBy)) { return false; }",
+        "if (partyGroupInstalled.find(install => install === 'BOOKING_CONTROL')) {",
+        "return !userRoles.find(role => role.name === 'BLOCK_BOOKING_EDIT')",
+        "}",
+        "return true"
+      ],
+      "props": {
+        "bottom": true,
+        "activatorComponents": {
+          "layout": "span",
+          "components": [{
+            "is": "v-btn",
+            "props": {
+              "small": true,
+              "flat": true,
+              "icon": true,
+              "class": "primary white-text"
+            },
+            "slots": [{
+              "is": "Icon",
+              "props": {
+                "icon": "edit"
+              }
+            }],
+            "events": {
+              "click.stop": [{
+                "type": "dispatch",
+                "otherParams": {
+                  "name": "widget/changeMode",
+                  "mode": "edit"
+                }
+              }]
+            }
+          }]
+        },
+        "mainComponents": {
+          "layout": "span",
+          "components": [{
+            "is": "I18nText",
+            "props": {
+              "i18nContext": "BookingPage",
+              "i18nKey": "edit"
+            }
+          }]
+        }
+      }
+    }
+  ]
+}

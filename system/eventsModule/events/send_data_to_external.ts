@@ -42,7 +42,7 @@ export default class SendDataToExternalEvent extends BaseEventHandler {
   }
 
   public async mainFunction(eventDataList: EventData<any>[]) {
-    console.debug('Start sending booking to external ...', this.constructor.name)
+    console.log('Start sending booking to external ...', this.constructor.name)
     const { outboundService } = this.allService
     await BluebirdPromise.map(
       eventDataList,
@@ -76,7 +76,7 @@ export default class SendDataToExternalEvent extends BaseEventHandler {
       },
       { concurrency: 10 }
     )
-    console.debug('End sending booking to external ...', this.constructor.name)
+    console.log('End sending booking to external ...', this.constructor.name)
     return eventDataList
   }
 }

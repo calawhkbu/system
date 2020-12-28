@@ -51,6 +51,7 @@ export default {
     }
   ],
   columns: [
+    { key: 'activeStatusHidden' },
     { key: 'createdAt' },
     { key: 'updatedAt' },
     { key: 'id' },

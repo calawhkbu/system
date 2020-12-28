@@ -1,11 +1,11 @@
 import { JwtMicroPayload } from 'modules/auth/interfaces/jwt-payload'
 import { CtaActionInt, IBody, Result } from 'modules/cta/interface'
-import axios from 'axios'
 import { BadRequestException, InternalServerErrorException } from '@nestjs/common'
 import _ = require('lodash')
 import { Props } from './updateBooking'
-import { callAxios, getAccessToken } from 'modules/cta/utils'
+import { call360Axios } from 'modules/cta/utils'
 
+// Update shipment in 360
 export default class UpdateShipmentAction extends CtaActionInt<Props> {
   needLocals = true
 
@@ -29,17 +29,12 @@ export default class UpdateShipmentAction extends CtaActionInt<Props> {
       _.set(entity, path, body.inputResult[key])
     }
 
-    await getAccessToken(user, this.logger)
-
     // save shipment
-    const response = await callAxios({
+    const response = await call360Axios({
       method: 'POST',
       url: `${user.api['360']}/api/shipment`,
-      headers: {
-        Authorization: `Bearer ${accessToken || user.fullAccessToken}`
-      },
       data: entity
-    }, this.logger)
+    }, user, this.logger, accessToken)
     if (response.data && response.data.id === entity.id) {
       const result = response.data
       body.locals.shipment = result

@@ -153,22 +153,44 @@ export default class NotifyEntityEvent extends BaseEventHandler {
       for (const mainKey of this.getFixedKeyByTableName(tableName)) {
         if (finalKeys.includes(mainKey)) {
           const party = _.get(partyTable, `${mainKey}Party`, null)
-          const sentEmail = _.get(partyTable, `${mainKey}PartyEmail`, null) ||
-            _.get(partyTable, `${mainKey}Party.email`, null) ||
-            null
-          if (party && sentEmail) {
-            dataList.push({
-              type: 'party',
-              name: _.get(partyTable, `${mainKey}PartyName`, null) || _.get(partyTable, `${mainKey}Party.name`, null) || noName,
-              email: sentEmail,
-              entity: latestEntity,
-              originalEntity: originalEntity,
-              isUpdate: eventType === 'update' ? true : false,
-              partyGroupCode,
-              subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
-              language: 'en',
-              template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
-            })
+          if (party) {
+            const sentName = _.get(partyTable, `${mainKey}Party.contact`, null)
+              || _.get(partyTable, `${mainKey}PartyName`, null)
+              || _.get(partyTable, `${mainKey}Party.name`, null) || noName
+            const sentEmail = _.get(partyTable, `${mainKey}PartyEmail`, null) ||
+              _.get(partyTable, `${mainKey}Party.email`, null) ||
+              null
+            if (sentEmail) {
+              dataList.push({
+                type: 'party',
+                name: sentName,
+                email: sentEmail,
+                entity: latestEntity,
+                originalEntity: originalEntity,
+                isUpdate: eventType === 'update' ? true : false,
+                partyGroupCode,
+                subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
+                language: 'en',
+                template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
+              })
+            }
+            const contacts = _.get(partyTable, `${mainKey}Party.contacts`, [])
+            for (const { Name, Email } of contacts) {
+              if (Email) {
+                dataList.push({
+                  type: 'party',
+                  name: Name,
+                  email: Email,
+                  entity: latestEntity,
+                  originalEntity: originalEntity,
+                  isUpdate: eventType === 'update' ? true : false,
+                  partyGroupCode,
+                  subject: eventType === 'update' ? `${tableName}-preview` : `new-${tableName}-preview`,
+                  language: 'en',
+                  template: eventType === 'update' ? `message/${tableName}-preview` : `message/new-${tableName}-preview`,
+                })
+              }
+            }
           }
           const mainContactEmail = _.get(partyTable, `${mainKey}PartyContactEmail`, null)
           if (mainContactEmail) {
@@ -291,14 +313,14 @@ export default class NotifyEntityEvent extends BaseEventHandler {
       }
       return emails
     }, [])
-    const people = await this.allService.personTableService.findWithScope('user', { where: { userName: { [Op.in]: emails } } }, null, this.transaction)
+    const people = await this.allService.personTableService.findWithScope('user', { where: { userName: { [Op.in]: emails } } }, null)
     const apis = await this.allService.apiTableService.query(`
       SELECT CONCAT(api.partyGroupCode, '-', api.name) as userName, NULL as firstName, NULL as lastName, displayName
       FROM api
       WHERE CONCAT(api.partyGroupCode, '-', api.name) in (:emails)
     `, {
       type: QueryTypes.SELECT,
-      transaction: this.transaction,
+      // transaction: this.transaction,
       replacements: { emails }
     })
     return eventDataList.map(eventData => {

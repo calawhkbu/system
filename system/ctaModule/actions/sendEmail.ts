@@ -22,6 +22,7 @@ export interface IProps {
   // TODO attachment -> options.attachments
 }
 
+// Send email through swivel-messenger-service
 export default class SendEmailAction<Props extends IProps = IProps> extends CtaActionInt<Props> {
   needLocals = true
 
@@ -54,7 +55,6 @@ export default class SendEmailAction<Props extends IProps = IProps> extends CtaA
     if (!this.props) throw new InternalServerErrorException('MISSING_PROPS')
     const { messengerUrl } = await this.ctaService.getConfig()
     const { handler, toParty, ccParty, bccParty, ...data } = this.props
-    let { entity, entityId } = body
     const locals = body.locals
 
     const options = data.options = _.cloneDeep(data.options || {} as any)
@@ -72,25 +72,10 @@ export default class SendEmailAction<Props extends IProps = IProps> extends CtaA
       this.props.options.html.partyGroupCode = user.customer
     }
 
-    if (entity.tableName && entity.primaryKey) {
-      tableName = entity.tableName
-      entityId = primaryKey = entity.primaryKey
-      entity = locals[tableName]
-    }
-
     if (options.to && (!Array.isArray(options.to) || options.to.length)) {
-      if (!data.context) data.context = {}
-
-      if (!data.context.accessToken) data.context.accessToken = user.accessToken
-
       data.context = {
-        ...data.context,
-        ...locals,
-        system,
-        tableName,
-        primaryKey,
-        entity,
-        entityId
+        ...(data.context || {}),
+        ...locals
       }
 
       await callAxios({

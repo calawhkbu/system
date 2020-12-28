@@ -1,9 +1,9 @@
 import { JwtMicroPayload } from 'modules/auth/interfaces/jwt-payload'
 import { CtaActionInt, IBody, Result } from 'modules/cta/interface'
-import axios from 'axios'
 import { NotImplementedException } from '@nestjs/common'
-import { callAxios, getAccessToken } from 'modules/cta/utils'
+import { call360Axios } from 'modules/cta/utils'
 
+// Update SOP task status (either Open->Done or Done->Open) in 360
 export default class UpdateTaskStatusAction extends CtaActionInt {
   async run(system: string, tableName: string, primaryKey: string, body: IBody, user: JwtMicroPayload): Promise<Result> {
     switch (tableName) {
@@ -13,15 +13,11 @@ export default class UpdateTaskStatusAction extends CtaActionInt {
 
         if (task.status && task.status !== 'Not Ready' && task.status !== 'Closed') {
           const nextStatus = task.status !== 'Done' ? 'done' : 'open'
-          await getAccessToken(user, this.logger)
-          const response = await callAxios({
+          const response = await call360Axios({
             method: 'POST',
             url: `${user.api['360']}/sopTask/mark/${nextStatus}/${task.id}`,
             data: task,
-            headers: {
-              Authorization: `Bearer ${accessToken || user.fullAccessToken}`
-            }
-          }, this.logger)
+          }, user, this.logger, accessToken)
           if (response.data && response.data.id === task.id) {
             return Result.SUCCESS
           }

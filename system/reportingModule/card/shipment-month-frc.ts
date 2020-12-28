@@ -4,6 +4,8 @@ import Moment = require('moment')
 import { OrderBy } from 'node-jql'
 import { expandGroupEntity, expandSummaryVariable, extendDate } from 'utils/card'
 import { ERROR } from 'utils/error'
+import { entityTypeList } from '../entityType'
+
 
 interface Result {
   moment: typeof Moment
@@ -126,6 +128,7 @@ export default {
   filters: [
     // for this filter, user can only select single,
     // but when config in card definition, use summaryVariables. Then we can set as multi
+    {...entityTypeList},
     {
       display: 'topX',
       name: 'topX',

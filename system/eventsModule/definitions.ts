@@ -144,7 +144,7 @@ export default {
                     return false
                   },
                   name: '',
-                  email: 'iris.chiu+fortosgn@swivelsoftware.com'// 'jacinta.tan@forto.com'
+                  email: 'jacinta.tan@forto.com'
                 }
               ]
             }
@@ -283,7 +283,7 @@ export default {
                     return false
                   },
                   name: 'Forto SIN',
-                  email: 'iris.chiu+fortosgn@swivelsoftware.com'// 'jacinta.tan@forto.com'
+                  email: 'jacinta.tan@forto.com'
                 }
               ]
             }

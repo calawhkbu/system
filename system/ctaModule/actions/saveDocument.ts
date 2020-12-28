@@ -1,7 +1,7 @@
 import { BadRequestException, InternalServerErrorException, NotImplementedException } from "@nestjs/common"
 import { JwtMicroPayload } from "modules/auth/interfaces/jwt-payload"
 import { CtaActionInt, IBody, Result } from "modules/cta/interface"
-import { callAxios, getAccessToken } from "modules/cta/utils"
+import { call360Axios } from "modules/cta/utils"
 
 export interface IProps {
   entityType?: string
@@ -12,6 +12,7 @@ export interface IProps {
   key?: string
 }
 
+// Save document in 360
 export default class SaveDocumentAction<Props extends IProps = IProps> extends CtaActionInt<Props> {
   needLocals = true
 
@@ -36,9 +37,7 @@ export default class SaveDocumentAction<Props extends IProps = IProps> extends C
     if (!fileBase64) throw new BadRequestException('NO_FILE')
     if (!entity.id) throw new InternalServerErrorException('NO_ENTITY_ID')
 
-    await getAccessToken(user, this.logger)
-
-    await callAxios({
+    await call360Axios({
       method: 'POST',
       url: `${user.api['360']}/api/document/document/upload`,
       data: {
@@ -48,11 +47,8 @@ export default class SaveDocumentAction<Props extends IProps = IProps> extends C
         fileData: {
           base64String: fileBase64,
         }
-      },
-      headers: {
-        Authorization: `Bearer ${user.fullAccessToken || accessToken}`
       }
-    }, this.logger)
+    }, user, this.logger, accessToken)
     return Result.SUCCESS
   }
 }

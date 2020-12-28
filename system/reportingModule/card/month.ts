@@ -7,6 +7,7 @@ extendDate } from 'utils/card'
 import { ERROR } from 'utils/error'
 import { dateSourceList } from '../dateSource'
 import { entityTypeList } from '../entityType'
+import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript'
 let summaryVariables = summaryVariableList
 
 
@@ -15,6 +16,17 @@ let summaryVariables = summaryVariableList
 
 
 export default {
+    constants: [
+      { // for custom = frc
+      name : 'frc',
+      typeCodeList : ['F', 'R', 'C', 'T']
+
+    },
+    {
+     name: 'fr',
+  typeCodeList: ['F', 'R', 'T']
+    }
+  ],
   jqls: [
     {
       type: 'prepareParams',
@@ -26,11 +38,8 @@ export default {
           const entityType = params.subqueries.entityType && params.subqueries.entityType.value || 'booking'
           const custom = params.subqueries.custom && params.subqueries.custom.value || null
 
-
-
           if (!entityType) throw ERROR.MISSING_ENTITY_TYPE()
 
-         
 
           if (!['ASC', 'DESC'].includes(sortingDirection)) {
             sortingDirection = 'ASC'
@@ -60,39 +69,36 @@ export default {
         const moment = prevResult.moment = (await this.preparePackages(user)).moment as typeof Moment
         const subqueries = (params.subqueries = params.subqueries || {})
         const entityType = params.subqueries.entityType && params.subqueries.entityType.value || 'booking'
-        const custom = params.subqueries.custom && params.subqueries.custom.value || null
+        const custom = params.subqueries.custom && params.subqueries.custom.value || undefined
 
-        if (entityType === 'booking'){
-          let groupByEntityList = groupByEntityListBooking
-         summaryVariables = summaryVariableListBooking 
-      }
-
+     
         // idea: userGroupByVariable and userSummaryVariable is selected within filter by user
-        if(custom !== 'chart'){
+        var { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
+        codeColumnName =  groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierCode`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyCode`
+        nameColumnName = (groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierName`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyShortNameInReport`) + 'Any'
+      
+              prevResult.groupByEntity = groupByEntity
+              prevResult.codeColumnName = codeColumnName
+              prevResult.nameColumnName = nameColumnName
+              const topX = subqueries.topX && subqueries.topX.value || 10
+   
+        if(!custom){
           if (!subqueries.groupByEntity || !(subqueries.groupByEntity !== true && 'value' in subqueries.groupByEntity)) throw ERROR.MISSING_GROUP_BY()
           if (!subqueries.topX || !(subqueries.topX !== true && 'value' in subqueries.topX)) throw ERROR.MISSING_TOP_X()
+
       
-        var { groupByEntity, codeColumnName,nameColumnName } = expandGroupEntity(subqueries,'groupByEntity',true)
   // -----------------------------groupBy variable
-  groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value // should be shipper/consignee/agent/controllingCustomer/carrier
-  codeColumnName = prevResult.codeColumnName = groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierCode`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyCode`
-  nameColumnName = prevResult.nameColumnName = (groupByEntity === 'bookingNo' ? 'bookingNo': groupByEntity === 'carrier' ? `carrierName`: groupByEntity === 'agentGroup' ? 'agentGroup': groupByEntity === 'moduleType' ? 'moduleTypeCode': `${groupByEntity}PartyShortNameInReport`) + 'Any'
+  groupByEntity = prevResult.groupByEntity = subqueries.groupByEntity.value || 'carrier' // should be shipper/consignee/agent/controllingCustomer/carrier
 
-        prevResult.groupByEntity = groupByEntity
-        prevResult.codeColumnName = codeColumnName
-        prevResult.nameColumnName = nameColumnName
-
-        const topX = subqueries.topX.value
-
-    
-        
-
-        // extend date into whole year
         extendDate(subqueries,moment,'year')
-
         subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
           value: true
         }
+
+        summaryVariables = params.subqueries.summaryVariable&& params.subqueries.summaryVariable.value || 
+        params.subqueries.summaryVariables&&params.subqueries.summaryVariables.value        
+        
+        
         params.fields = [
           // select Month statistics
           ...summaryVariables.map(variable => `${variable}Month`),
@@ -110,7 +116,6 @@ export default {
 
         // // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
         // params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
-
         const sorting = params.sorting = []
         if (subqueries.sorting && subqueries.sorting !== true && 'value' in subqueries.sorting) {
           const sortingValueList = subqueries.sorting.value as string[]
@@ -119,19 +124,21 @@ export default {
             const orderByExpression = guessSortingExpression(sortingValue, subqueries)
             sorting.push(orderByExpression)
           })
-        }
-        else {
-          params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
-        }
-      }else if (custom === 'count'){
-        const summaryVariables = expandSummaryVariable(subqueries)
 
+        }else {
+          params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
+
+        }
+
+         
+      }else if (custom === 'count'){
+      
+        const summaryVariables = expandSummaryVariable(subqueries)
         prevResult.summaryVariables = summaryVariables
         extendDate(subqueries,moment,'year')
         subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
           value: true
         }
-    
         params.fields = [
           // select Month statistics
           ...summaryVariables.map(variable => `${variable}Month`),
@@ -144,7 +151,7 @@ export default {
 
         // // warning, will orderBy cbmMonth, if choose cbm as summaryVariables
         // params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
-
+      
         const sorting = params.sorting = []
         if (subqueries.sorting && subqueries.sorting !== true && 'value' in subqueries.sorting) {
           const sortingValueList = subqueries.sorting.value as string[]
@@ -158,6 +165,7 @@ export default {
     
           params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
         }
+        return params
       }else if(custom === 'chart') { //previously jql as {booking}-chart-month
       const summaryVariables = expandSummaryVariable(subqueries)
       prevResult.summaryVariables = summaryVariables
@@ -165,9 +173,97 @@ export default {
       params.groupBy = ['jobMonth']
       params.fields = ['jobMonth', ...summaryVariables]
       delete params.sorting
-       }
+       }else if(custom === ('frc' || 'fr')){
+          delete params.fields
+          delete params.groupBy
+          delete params.limit
+          extendDate(subqueries,moment,'year')
+          subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+            value: true
+          }
+        summaryVariables = params.subqueries.summaryVariable&& params.subqueries.summaryVariable.value || 
+                          params.subqueries.summaryVariables&&params.subqueries.summaryVariables.value
+        let name =params.constants.find(o=>o.name === params.subqueries.custom.value).name || null
+        params.fields = [
+          // select Month statistics
+          ...summaryVariables.map(variable => `${name}_${variable}Month`),
+          codeColumnName,
+          nameColumnName,
+        ]
 
+
+        params.groupBy = [codeColumnName]
+        params.sorting = new OrderBy(`total_T_${summaryVariables[0]}`, 'DESC')
+        params.limit = topX
         return params
+
+        
+
+       }else if(custom === 'dynamic'){
+        delete params.fields
+        delete params.groupBy
+        delete params.limit
+        const topX = subqueries.topX.value
+        const summaryVariables = expandSummaryVariable(subqueries)
+        prevResult.summaryVariables = summaryVariables
+        // extend date into whole year
+        extendDate(subqueries,moment,'year')
+        subqueries[`${codeColumnName}IsNotNull`]  = { // shoulebe carrierCodeIsNotNull/shipperIsNotNull/controllingCustomerIsNotNull
+          value: true
+        }
+
+        if(groupByEntity=='bookingNo'){
+          codeColumnName=groupByEntity;
+          nameColumnName=groupByEntity;
+        }else if(groupByEntity=='carrier'){
+          codeColumnName='carrierCode';
+          nameColumnName='carrierName';
+        }else if(groupByEntity=='moduleType'){
+          codeColumnName='moduleTypeCode';
+          nameColumnName='moduleTypeCode';
+        }else if(groupByEntity=='portOfLoading'){
+          codeColumnName=groupByEntity+"Code";
+          nameColumnName=groupByEntity+"Name";
+        }else if(groupByEntity=='portOfDischarge'){
+          codeColumnName=groupByEntity+"Code";
+          nameColumnName=groupByEntity+"Name";
+        }else if(groupByEntity=='agent'){
+          codeColumnName=groupByEntity+"PartyCode";
+          nameColumnName=groupByEntity+"PartyName";
+        }else if(groupByEntity=='forwarder'){
+          codeColumnName=groupByEntity+"PartyCode";
+          nameColumnName=groupByEntity+"PartyName";
+        }else{
+          codeColumnName=`${groupByEntity}PartyCode`;
+          nameColumnName=`${groupByEntity}PartyShortNameInReport` + 'Any';
+          
+        }
+
+        
+        params.fields = [
+          ...summaryVariables.map(variable => `${variable}Month`),
+          codeColumnName,
+          nameColumnName,
+          'ErpSite'
+        ]
+
+        params.groupBy = [codeColumnName]
+        const sorting = params.sorting = []
+           if (subqueries.sorting && subqueries.sorting !== true && 'value' in subqueries.sorting) {
+             const sortingValueList = subqueries.sorting.value as { value: string; ascOrDesc: 'ASC' | 'DESC' }[]
+             sortingValueList.forEach(({ value, ascOrDesc }) => {
+               const orderByExpression = new OrderBy(value,ascOrDesc)
+               sorting.push(orderByExpression)
+             })
+           }
+           else {
+             params.sorting = new OrderBy(`total_${summaryVariables[0]}`, 'DESC')
+           }
+   
+           params.limit = topX
+           return params
+
+       }
       }
     },
     {
@@ -176,10 +272,10 @@ export default {
         const entityType = params.subqueries.entityType && params.subqueries.entityType.value || 'shipment'
         return [entityType.toLowerCase(), entityType.toLowerCase()]
       }, 
-      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName,summaryVariables }: any){
+      onResult(res, params, { moment, groupByEntity, codeColumnName, nameColumnName,summaryVariables,summaryVariable }: any){
         let row_
-     // params.subqueries.entityType && params.subqueries.entityType.value === 'booking' && 
-        if (params.subqueries.custom && params.subqueries.custom.value === 'count'){
+        let custom = params.subqueries.custom && params.subqueries.custom.value || undefined
+        if (custom === 'count'){
           summaryVariables = params.subqueries.summaryVariables.value
           const selectedsummaryVariable=summaryVariables[0] 
           res=res.filter(o=>o[`total_${selectedsummaryVariable}`]!=0)
@@ -203,7 +299,7 @@ export default {
         })
     
 
-      }else if(params.subqueries.custom && params.subqueries.custom.value === 'chart'){
+      }else if(custom === 'chart'){
          res = res.map(row => {
            row_= { jobMonth: row.jobMonth }
           for (const variable of summaryVariables) {
@@ -223,23 +319,61 @@ export default {
             })
           }
         }
-        console.log('result')
-        console.log(result)
         return result
-      }else if(!params.subqueries.custom){
-        return res.map(row => {
-           row_ = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
-          let defaultSummaryVariable = []
-          if(params.subqueries.entityType.value === 'booking'){
-            defaultSummaryVariable = ['totalBooking']
-          }else if(params.subqueries.entityType.value === 'shipment'){
-            defaultSummaryVariable = ['totalShipment']
+      
+      }else if(custom === ('frc' || 'fr')){
+        summaryVariables = params.subqueries.summaryVariable&& params.subqueries.summaryVariable.value || 
+        params.subqueries.summaryVariables&&params.subqueries.summaryVariables.value
+
+         return res.map(row => {
+
+          const row_: any = { groupByEntity, code: row[codeColumnName], name: row[nameColumnName] }
+          for (const variable of summaryVariables) {
+            let typeCodeList = params.constants.find(o=>o.name === params.subqueries.custom.value).typeCodeList || null
+            //typeCodeList= typeCodeList.typeCodeList
+            for (const typeCode of typeCodeList) {
+              for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]) {
+                const month = m === 12 ? 'total' : moment().month(m).format('MMMM')
+                const key = `${month}_${typeCode}_${variable}`
+                const value = +row[key]
+                row_[key] = isNaN(value) ? 0 : value
+              }
+            }
           }
+          return row_
+        })
 
+      }else if(custom === 'dynamic'){
+        
+        if(groupByEntity=='bookingNo'){
+          codeColumnName=groupByEntity;
+          nameColumnName=groupByEntity;
+        }else if(groupByEntity=='carrier'){
+          codeColumnName='carrierCode';
+          nameColumnName='carrierName';
+        }else if(groupByEntity=='moduleType'){
+          codeColumnName='moduleTypeCode';
+          nameColumnName='moduleTypeCode';
+        }else if(groupByEntity=='portOfLoading'){
+          codeColumnName=groupByEntity+"Code";
+          nameColumnName=groupByEntity+"Name";
+        }else if(groupByEntity=='portOfDischarge'){
+          codeColumnName=groupByEntity+"Code";
+          nameColumnName=groupByEntity+"Name";
+        }else if(groupByEntity=='agent'){
+          codeColumnName=groupByEntity+"PartyCode";
+          nameColumnName=groupByEntity+"PartyName";
+        }else if(groupByEntity=='forwarder'){
+          codeColumnName=groupByEntity+"PartyCode";
+          nameColumnName=groupByEntity+"PartyName";
+        }else{
+          codeColumnName=`${groupByEntity}PartyCode`;
+          nameColumnName=`${groupByEntity}PartyShortNameInReport` + 'Any';
+          
+        }
+        return res.map(row => {
+          const row_: any = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
 
-          summaryVariables = params.subqueries.summaryVariables && params.subqueries.summaryVariables.value || defaultSummaryVariable
-          console.log('summaryVariables')
-          console.log(summaryVariables)
           for (const variable of summaryVariables) {
             let total = 0
             for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
@@ -252,8 +386,34 @@ export default {
             }
             row_[`total_${variable}`] = total
           }
-          console.log('row_')
-          console.log(row_)
+          row_['erpCode']=row['ErpSite']
+          return row_
+
+        })
+      }else if(!params.subqueries.custom){
+        return res.map(row => {
+           row_ = { code: row[codeColumnName], name: row[nameColumnName], groupByEntity }
+          let defaultSummaryVariable = []
+          if(params.subqueries.entityType.value === 'booking'){
+            defaultSummaryVariable = ['totalBooking']
+          }else if(params.subqueries.entityType.value === 'shipment'){
+            defaultSummaryVariable = ['totalShipment']
+          }
+
+
+          summaryVariables = params.subqueries.summaryVariables && params.subqueries.summaryVariables.value || defaultSummaryVariable
+          for (const variable of summaryVariables) {
+            let total = 0
+            for (const m of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
+              const month = moment().month(m).format('MMMM')
+              const key = `${month}_${variable}`
+              let value = +row[key]
+              if (isNaN(value)) value = 0
+              row_[key] = value
+              total += value
+            }
+            row_[`total_${variable}`] = total
+          }
 
           return row_
         })

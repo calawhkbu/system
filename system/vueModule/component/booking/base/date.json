@@ -19,12 +19,13 @@
         "components": [{
           "is": "v-btn",
           "if": [
-            "if (context.isSwivelAdmin) { return true; }",
             "const user = context.$store.state.auth.userProfile;",
-            "if (!user) { return false; }",
             "const partyGroup = user.selectedPartyGroup",
             "const partyGroupInstalled = (user.selectedPartyGroup.configuration || {}).installedService || [];",
+            "const booking = context.$store.state.widget.data;",
             "const userRoles = user.roles || []",
+            "if (!user) { return false; }",
+            "if (!booking || (booking.deletedAt && booking.deletedBy)) { return false; }",
             "if (partyGroupInstalled.find(install => install === 'BOOKING_CONTROL')) {",
               "return !userRoles.find(role => role.name === 'BLOCK_BOOKING_EDIT')",
             "}",

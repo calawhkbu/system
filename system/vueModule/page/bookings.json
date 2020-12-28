@@ -13,12 +13,42 @@
       "enableSetting": true,
       "noPartyGroupFilters": false,
       "clickFunction": {
-        "type": "router",
+        "changeRow": [
+          "return {",
+          "...row,",
+          "bookingParty: {",
+          "officePartyName: row.officePartyName,",
+          "shipperPartyName: row.shipperPartyName,",
+          "consigneePartyName: row.consigneePartyName,",
+          "roAgentPartyName: row.roAgentPartyName,",
+          "linerAgentPartyName: row.linerAgentPartyName,",
+          "agentPartyName: row.agentPartyName,",
+          "controllingCustomerPartyName: row.controllingCustomerPartyName,",
+          "notifyPartyPartyName: row.notifyPartyPartyName,",
+          "controllingPartyPartyName: row.controllingPartyPartyName,",
+          "},",
+          "bookingDate: {",
+          "departureDateEstimated: row.departureDateEstimated,",
+          "departureDateActual: row.departureDateActual,",
+          "arrivalDateEstimated: row.arrivalDateEstimated,",
+          "arrivalDateActual: row.arrivalDateActual,",
+          "},",
+          "};"
+        ],
+        "type": "dispatch",
         "otherParams": {
-          "func": "push",
-          "path": "{% if shipmentId === null %}booking{% else %}shipment{% endif %}/{% if shipmentId === null %}{{id}}{% else %}{{shipmentId}}{% endif %}",
-          "base": true
-        }
+          "name": "widget/initShortData"
+        },
+        "afterActions": [
+          {
+            "type": "router",
+            "otherParams": {
+              "base": true,
+              "func": "push",
+              "path": "{% if shipmentId === null %}booking{% else %}shipment{% endif %}/{% if shipmentId === null %}{{id}}{% else %}{{shipmentId}}{% endif %}"
+            }
+          }
+        ]
       },
       "newReport": {
         "filters": {
@@ -35,7 +65,6 @@
           }
         },
         "configurations": {
-          "checkbox": {},
           "i18nContext": "BookingPage",
           "clickable": true,
           "draggable": true,
@@ -55,7 +84,8 @@
           }
         }
       },
-      "filters": [{
+      "filters": [
+        {
           "name": "activeStatus",
           "type": "list",
           "props": {
@@ -115,10 +145,10 @@
           "display": "missingDocument"
         }
       ],
-      "fieldOptions": [{
-          "key": "checkbox",
-          "checkbox": true,
-          "showCheckAll": true
+      "fieldOptions": [
+        {
+          "key": "activeStatusHidden",
+          "hidden": true
         },
         {
           "key": "id",
