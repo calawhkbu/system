@@ -216,8 +216,6 @@ export default {
           const sortingExpression = guessSortingExpression(sortingValue)
           params.sorting = [sortingExpression]
         }
-        console.log('params ast-current-seperate')
-        console.log(params)
         return params
       }
     },

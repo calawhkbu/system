@@ -88,7 +88,7 @@ export default class SendEmailAction<Props extends IProps = IProps> extends CtaA
       }, this.logger)
     }
     else {
-      throw new BadRequestException('MISSING_RECIPIENT')
+      this.logger.log('NO_RECIPIENTS')
     }
 
     return Result.SUCCESS

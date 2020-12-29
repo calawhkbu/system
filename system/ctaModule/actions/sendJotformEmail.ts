@@ -10,9 +10,6 @@ export interface IProps extends IEmailProps {
 
   // query parameters passed to the jotform
   queryParams?: [string, string?][]
-
-  // if not specified, will use caller's access token (for receiving jotform response)
-  accessTokenParty?: [string, string]
 }
 
 // Send email with jotform link. Can specify whose access token to use
@@ -24,11 +21,11 @@ export default class SendJotformEmailAction extends SendEmailAction<IProps> {
 
     // get target access token
     let accessToken = user.accessToken
-    if (this.props.accessTokenParty) {
-      let [entityType, key] = this.props.accessTokenParty
+    if (this.props.toParty && this.props.toParty.length) {
+      let [entityType, key] = this.props.toParty[0]
       if (entityType === 'purchase_order') entityType = 'purchaseOrder'
       const personId = this.getEmail(tableName, body, [entityType, `${entityType}Party.${key}PartyContactPersonId`])
-      const email = this.getPartyEmail(tableName, body, this.props.accessTokenParty)
+      const email = this.getPartyEmail(tableName, body, this.props.toParty[0])
 
       // in case the cta user is not the same as the target user
       if (email !== user.user) {
@@ -59,7 +56,7 @@ export default class SendJotformEmailAction extends SendEmailAction<IProps> {
       tableName: this.props.context.tableName,
       primaryKey: this.props.context.primaryKey,
       jotformId: this.props.jotformId,
-      party: this.props.accessTokenParty ? this.props.accessTokenParty[1] : undefined,
+      party: this.props.toParty && this.props.toParty.length ? this.props.toParty[0][1] : undefined,
       status: 'prepared'
     }, user)
     this.props.context.jotformId = jotform.id

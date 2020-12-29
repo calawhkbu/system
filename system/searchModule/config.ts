@@ -11,11 +11,23 @@ export default {
       'officePartyName',
       'controllingCustomerPartyName',
       'agentPartyName',
+      'controllingPartyPartyName',
+      'notifyPartyPartyName',
+      'warehousePartyName',
+      'truckerPartyName',
+      'customsBrokerPartyName',
     ],
     type: `shipment`,
     primaryKey: `{{entity.id}}`,
     title: `{{entity.houseNo}}`,
-    subTitle: `<div>{{entity.portOfLoadingName}} => {{entity.portOfDischargeName}} / {{entity.shipperPartyName}} / {{entity.consigneePartyName}} / {{entity.agentPartyName}} </div>`
+    subTitle: `
+      <div>
+        {% if entity.portOfLoadingName && entity.portOfDischargeName %}{{entity.portOfLoadingName}} => {{entity.portOfDischargeName}} /{% endif %}
+        {% if entity.shipperPartyName %}/ {{entity.shipperPartyName}} /{% endif %}
+        {% if entity.consigneePartyName %}/ {{entity.consigneePartyName}} /{% endif %}
+        {% if entity.agentPartyName %}{{entity.agentPartyName}}{% endif %}
+      </div>
+    `
   },
   booking: {
     fields: [
@@ -29,11 +41,30 @@ export default {
       'forwarderPartyName',
       'controllingCustomerPartyName',
       'agentPartyName',
+      'controllingPartyPartyName',
+      'notifyPartyPartyName',
+      'warehousePartyName',
+      'truckerPartyName',
+      'customsBrokerPartyName',
+      'buyerPartyName'
     ],
     type: `{% if entity.shipmentId !== null %}shipment{% else %}booking{% endif %}`,
     primaryKey: `{% if entity.shipmentId !== null %}{{entity.shipmentId}}{% else %}{{entity.id}}{% endif %}`,
-    title: `{% if entity.shipmentId !== null %}{{entity.houseNo || entity.bookingNo}}{% else %}{{entity.bookingNo}}{% endif %}`,
-    subTitle: `<div>{{entity.portOfLoadingName}} => {{entity.portOfDischargeName}} / {{entity.shipperPartyName}} / {{entity.consigneePartyName}} / {{entity.agentPartyName}} </div>`,
+    title: `
+      {% if entity.shipmentId !== null %}
+        {{entity.houseNo}} ({{entity.bookingNo}})
+      {% else %}
+        {{entity.bookingNo}}
+      {% endif %}
+    `,
+    subTitle: `
+      <div>
+        {% if entity.portOfLoadingName && entity.portOfDischargeName %}{{entity.portOfLoadingName}} => {{entity.portOfDischargeName}} /{% endif %}
+        {% if entity.shipperPartyName %}/ {{entity.shipperPartyName}} /{% endif %}
+        {% if entity.consigneePartyName %}/ {{entity.consigneePartyName}} /{% endif %}
+        {% if entity.agentPartyName %}{{entity.agentPartyName}}{% endif %}
+      </div>
+    `,
     limit: 10,
     charLimit: 50
   }
